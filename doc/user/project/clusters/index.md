@@ -83,14 +83,14 @@ To add an existing Kubernetes cluster to your project:
     - **Kubernetes cluster name** (required) - The name you wish to give the cluster.
     - **Environment scope** (required)- The
       [associated environment](#setting-the-environment-scope) to this cluster.
-    - **API URL** (required) -
+    * **API URL** (required) -
       It's the URL that GitLab uses to access the Kubernetes API. Kubernetes
       exposes several APIs, we want the "base" URL that is common to all of them,
       e.g., `https://kubernetes.example.com` rather than `https://kubernetes.example.com/api/v1`.
-    - **CA certificate** (optional) -
+    * **CA certificate** (optional) -
       If the API is using a self-signed TLS certificate, you'll also need to include
       the `ca.crt` contents here.
-    - **Token** -
+    * **Token** -
       GitLab authenticates against Kubernetes using service tokens, which are
       scoped to a particular `namespace`. If you don't have a service token yet,
       you can follow the
@@ -103,11 +103,11 @@ To add an existing Kubernetes cluster to your project:
       - Each project should have a unique namespace.
       - The project namespace is not necessarily the namespace of the secret, if
         you're using a secret with broader permissions, like the secret from `default`.
-      - You should **not** use `default` as the project namespace.
-      - If you or someone created a secret specifically for the project, usually
+      * You should **not** use `default` as the project namespace.
+      * If you or someone created a secret specifically for the project, usually
         with limited permissions, the secret's namespace and project namespace may
         be the same.
-1. Finally, click the **Create Kubernetes cluster** button.
+1.  Finally, click the **Create Kubernetes cluster** button.
 
 After a couple of minutes, your cluster will be ready to go. You can now proceed
 to install some [pre-defined applications](#installing-applications).
@@ -205,6 +205,7 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 ```
 
 > **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
+>
 > ```bash
 > kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
 > ```
@@ -265,11 +266,11 @@ Also, jobs that don't have an environment keyword set will not be able to access
 
 For example, let's say the following Kubernetes clusters exist in a project:
 
-| Cluster    | Environment scope |
-| ---------- | ------------------|
-| Development| `*`               |
-| Staging    | `staging`         |
-| Production | `production`      |
+| Cluster     | Environment scope |
+| ----------- | ----------------- |
+| Development | `*`               |
+| Staging     | `staging`         |
+| Production  | `production`      |
 
 And the following environments are set in [`.gitlab-ci.yml`](../../../ci/yaml/README.md):
 
@@ -299,9 +300,9 @@ deploy to production:
 
 The result will then be:
 
-- The development cluster will be used for the "test" job.
-- The staging cluster will be used for the "deploy to staging" job.
-- The production cluster will be used for the "deploy to production" job.
+* The development cluster will be used for the "test" job.
+* The staging cluster will be used for the "deploy to staging" job.
+* The production cluster will be used for the "deploy to production" job.
 
 ## Deployment variables
 
@@ -309,20 +310,20 @@ The Kubernetes cluster integration exposes the following
 [deployment variables](../../../ci/variables/README.md#deployment-variables) in the
 GitLab CI/CD build environment.
 
-| Variable | Description |
-| -------- | ----------- |
-| `KUBE_URL` | Equal to the API URL. |
-| `KUBE_TOKEN` | The Kubernetes token. |
-| `KUBE_NAMESPACE` | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
-| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data. |
-| `KUBE_CA_PEM` | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data. |
-| `KUBECONFIG` | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified. |
+| Variable           | Description                                                                                                                                                                                                                                   |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `KUBE_URL`         | Equal to the API URL.                                                                                                                                                                                                                         |
+| `KUBE_TOKEN`       | The Kubernetes token.                                                                                                                                                                                                                         |
+| `KUBE_NAMESPACE`   | The Kubernetes namespace is auto-generated if not specified. The default value is `<project_name>-<project_id>`. You can overwrite it to use different one if needed, otherwise the `KUBE_NAMESPACE` variable will receive the default value. |
+| `KUBE_CA_PEM_FILE` | Only present if a custom CA bundle was specified. Path to a file containing PEM data.                                                                                                                                                         |
+| `KUBE_CA_PEM`      | (**deprecated**) Only if a custom CA bundle was specified. Raw PEM data.                                                                                                                                                                      |
+| `KUBECONFIG`       | Path to a file containing `kubeconfig` for this deployment. CA bundle would be embedded if specified.                                                                                                                                         |
 
 ## Monitoring your Kubernetes cluster **[ULTIMATE]**
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/4701) in [GitLab Ultimate][ee] 10.6.
 
-When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start. 
+When [Prometheus is deployed](#installing-applications), GitLab will automatically monitor the cluster's health. At the top of the cluster settings page, CPU and Memory utilization is displayed, along with the total amount available. Keeping an eye on cluster resources can be important, if the cluster runs out of memory pods may be shutdown or fail to start.
 
 ![Cluster Monitoring](img/k8s_cluster_monitoring.png)
 
@@ -331,8 +332,8 @@ When [Prometheus is deployed](#installing-applications), GitLab will automatical
 After you have successfully added your cluster information, you can enable the
 Kubernetes cluster integration:
 
-1. Click the "Enabled/Disabled" switch
-1. Hit **Save** for the changes to take effect
+1.  Click the "Enabled/Disabled" switch
+1.  Hit **Save** for the changes to take effect
 
 You can now start using your Kubernetes cluster for your deployments.
 
