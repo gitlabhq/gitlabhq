@@ -4,9 +4,10 @@ module Gitlab
       class BaseCommand
         attr_reader :name, :chart, :repository, :values, :extra_env
 
-        def initialize(name, chart: nil, values: nil, repository: nil, extra_env: {})
+        def initialize(name, chart: nil, values: nil, version: nil, repository: nil, extra_env: {})
           @name = name
           @chart = chart
+          @version = version
           @values = values
           @repository = repository
           @extra_env = extra_env

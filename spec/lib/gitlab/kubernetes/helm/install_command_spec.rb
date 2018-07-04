@@ -14,7 +14,11 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         echo $CA_CERT | base64 -d > $(helm home)/ca.pem
+         echo $HELM_CERT | base64 -d > $(helm home)/cert.pem
+         echo $HELM_KEY | base64 -d > $(helm home)/key.pem
+
+         helm install --tls #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -27,7 +31,11 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
-         helm install #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         echo $CA_CERT | base64 -d > $(helm home)/ca.pem
+         echo $HELM_CERT | base64 -d > $(helm home)/cert.pem
+         echo $HELM_KEY | base64 -d > $(helm home)/key.pem
+
+         helm install --tls #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -41,8 +49,12 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
+         echo $CA_CERT | base64 -d > $(helm home)/ca.pem
+         echo $HELM_CERT | base64 -d > $(helm home)/cert.pem
+         echo $HELM_KEY | base64 -d > $(helm home)/key.pem
+
          helm repo add #{application.name} #{application.repository}
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm install --tls #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -55,8 +67,12 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
+         echo $CA_CERT | base64 -d > $(helm home)/ca.pem
+         echo $HELM_CERT | base64 -d > $(helm home)/cert.pem
+         echo $HELM_KEY | base64 -d > $(helm home)/key.pem
+
          helm repo add #{application.name} #{application.repository}
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm install --tls #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end

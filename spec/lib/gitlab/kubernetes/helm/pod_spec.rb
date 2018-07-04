@@ -2,7 +2,7 @@ require 'rails_helper'
 
 describe Gitlab::Kubernetes::Helm::Pod do
   describe '#generate' do
-    let(:cluster) { create(:cluster) }
+    let(:cluster) { create(:cluster, :with_installed_helm) }
     let(:app) {  create(:clusters_applications_prometheus, cluster: cluster) }
     let(:command) {  app.install_command }
     let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
@@ -31,8 +31,7 @@ describe Gitlab::Kubernetes::Helm::Pod do
         container = subject.generate.spec.containers.first
         expect(container.name).to eq('helm')
         expect(container.image).to eq('alpine:3.6')
-        expect(container.env.count).to eq(3)
-        expect(container.env.map(&:name)).to match_array([:HELM_VERSION, :TILLER_NAMESPACE, :COMMAND_SCRIPT])
+        expect(container.env.map(&:name)).to include(*%i(HELM_VERSION TILLER_NAMESPACE COMMAND_SCRIPT CA_CERT))
         expect(container.command).to match_array(["/bin/sh"])
         expect(container.args).to match_array(["-c", "$(COMMAND_SCRIPT)"])
       end

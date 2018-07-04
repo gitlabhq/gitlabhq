@@ -36,5 +36,9 @@ FactoryBot.define do
     trait :production_environment do
       sequence(:environment_scope) { |n| "production#{n}/*" }
     end
+
+    trait :with_installed_helm do
+      application_helm factory: %i(clusters_applications_helm installed)
+    end
   end
 end

@@ -73,7 +73,6 @@ module Clusters
         cert.sign ca_key, OpenSSL::Digest::SHA256.new
 
         write_attribute(:server_cert, cert.to_pem)
-
       end
 
       def set_initial_status
@@ -84,16 +83,16 @@ module Clusters
 
       def extra_env
         {
-          "CA_CERT" => Base64.encode64(ca_cert),
-          "TILLER_CERT" => Base64.encode64(server_cert),
-          "TILLER_KEY" => Base64.encode64(server_key),
+          CA_CERT: Base64.encode64(ca_cert),
+          TILLER_CERT: Base64.encode64(server_cert),
+          TILLER_KEY: Base64.encode64(server_key)
         }
       end
 
       def install_command
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name,
-          extra_env: extra_env,
+          extra_env: extra_env
         )
       end
     end

@@ -4,14 +4,6 @@ module Gitlab
       class InstallCommand < BaseCommand
         attr_reader :name, :chart, :version, :repository, :values
 
-        def initialize(name, chart:, values:, version: nil, repository: nil)
-          @name = name
-          @chart = chart
-          @version = version
-          @values = values
-          @repository = repository
-        end
-
         def generate_script
           super + [
             init_command,
