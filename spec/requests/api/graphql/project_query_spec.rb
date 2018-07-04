@@ -26,6 +26,18 @@ describe 'getting project information' do
         post_graphql(query, current_user: current_user)
       end
     end
+
+    context 'when there are pipelines present' do
+      before do
+        create(:ci_pipeline, project: project)
+      end
+
+      it 'is included in the pipelines connection' do
+        post_graphql(query, current_user: current_user)
+
+        expect(graphql_data['project']['pipelines']['edges'].size).to eq(1)
+      end
+    end
   end
 
   context 'when the user does not have access to the project' do

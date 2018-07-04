@@ -67,4 +67,28 @@ describe 'getting merge request information nested in a project' do
       expect(merge_request_graphql_data).to be_nil
     end
   end
+
+  context 'when there are pipelines' do
+    before do
+      pipeline = create(
+        :ci_pipeline,
+        project: merge_request.source_project,
+        ref: merge_request.source_branch,
+        sha: merge_request.diff_head_sha
+      )
+      merge_request.update!(head_pipeline: pipeline)
+    end
+
+    it 'has a head pipeline' do
+      post_graphql(query, current_user: current_user)
+
+      expect(merge_request_graphql_data['headPipeline']).to be_present
+    end
+
+    it 'has pipeline connections' do
+      post_graphql(query, current_user: current_user)
+
+      expect(merge_request_graphql_data['pipelines']['edges'].size).to eq(1)
+    end
+  end
 end

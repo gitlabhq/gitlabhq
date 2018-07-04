@@ -3,6 +3,8 @@ module Gitlab
     module Present
       class Instrumentation
         def instrument(type, field)
+          return field unless field.metadata[:type_class]
+
           presented_in = field.metadata[:type_class].owner
           return field unless presented_in.respond_to?(:presenter_class)
           return field unless presented_in.presenter_class

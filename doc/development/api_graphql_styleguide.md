@@ -54,6 +54,94 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
+### Connection Types
+
+GraphQL uses [cursor based
+pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
+to expose collections of items. This provides the clients with a lot
+of flexibility while also allowing the backend to use different
+pagination models.
+
+To expose a collection of resources we can use a connection type. This wraps the array with default pagination fields. For example a query for project-pipelines could look like this:
+
+```
+query($project_path: ID!) {
+  project(fullPath: $project_path) {
+    pipelines(first: 2) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          status
+        }
+      }
+    }
+  }
+}
+```
+
+This would return the first 2 pipelines of a project and related
+pagination info., ordered by descending ID. The returned data would
+look like this:
+
+```json
+{
+  "data": {
+    "project": {
+      "pipelines": {
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "edges": [
+          {
+            "cursor": "Nzc=",
+            "node": {
+              "id": "77",
+              "status": "FAILED"
+            }
+          },
+          {
+            "cursor": "Njc=",
+            "node": {
+              "id": "67",
+              "status": "FAILED"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+To get the next page, the cursor of the last known element could be
+passed:
+
+```
+query($project_path: ID!) {
+  project(fullPath: $project_path) {
+    pipelines(first: 2, after: "Njc=") {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          status
+        }
+      }
+    }
+  }
+}
+```
+
 ### Exposing permissions for a type
 
 To expose permissions the current user has on a resource, you can call

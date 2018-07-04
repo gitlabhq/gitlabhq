@@ -1038,7 +1038,7 @@ module API
       expose :description
       expose :ip_address
       expose :active
-      expose :is_shared
+      expose :instance_type?, as: :is_shared
       expose :name
       expose :online?, as: :online
       expose :status
@@ -1052,7 +1052,7 @@ module API
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
-      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects

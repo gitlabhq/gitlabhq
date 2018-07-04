@@ -1440,7 +1440,7 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.instance_type : Ci::Runner.none
   end
 
   def group_runners

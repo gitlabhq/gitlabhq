@@ -64,6 +64,10 @@ module QA
       def gcloud_zone
         ENV.fetch('GCLOUD_ZONE')
       end
+
+      def has_gcloud_credentials?
+        %w[GCLOUD_ACCOUNT_KEY GCLOUD_ACCOUNT_EMAIL].none? { |var| ENV[var].to_s.empty? }
+      end
     end
   end
 end

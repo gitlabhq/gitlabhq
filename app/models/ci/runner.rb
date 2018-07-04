@@ -2,6 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
     prepend EE::Ci::Runner
@@ -11,6 +12,8 @@ module Ci
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
+
+    ignore_column :is_shared
 
     has_many :builds
     has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -22,12 +25,15 @@ module Ci
 
     before_validation :set_default_values
 
-    scope :specific, -> { where(is_shared: false) }
-    scope :shared, -> { where(is_shared: true) }
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, -> { order(id: :desc) }
+
+    # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
+    scope :deprecated_shared, -> { instance_type }
+    # this should get replaced with `project_type.or(group_type)` once using Rails5
+    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
@@ -40,9 +46,9 @@ module Ci
       joins(:groups).where(namespaces: { id: hierarchy_groups })
     }
 
-    scope :owned_or_shared, -> (project_id) do
+    scope :owned_or_instance_wide, -> (project_id) do
       union = Gitlab::SQL::Union.new(
-        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), shared],
+        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), instance_type],
         remove_duplicates: false
       )
       from("(#{union.to_sql}) ci_runners")
@@ -64,7 +70,6 @@ module Ci
     validate :no_groups, unless: :group_type?
     validate :any_project, if: :project_type?
     validate :exactly_one_group, if: :group_type?
-    validate :validate_is_shared
 
     acts_as_taggable
 
@@ -114,8 +119,7 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      if shared?
-        self.is_shared = false if shared?
+      if instance_type?
         self.runner_type = :project_type
       elsif group_type?
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
@@ -138,10 +142,6 @@ module Ci
       description
     end
 
-    def shared?
-      is_shared
-    end
-
     def online?
       contacted_at && contacted_at > self.class.contact_time_deadline
     end
@@ -158,10 +158,6 @@ module Ci
 
     def belongs_to_one_project?
       runner_projects.count == 1
-    end
-
-    def specific?
-      !shared?
     end
 
     def assigned_to_group?
@@ -261,7 +257,7 @@ module Ci
     end
 
     def assignable_for?(project_id)
-      self.class.owned_or_shared(project_id).where(id: self.id).any?
+      self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
     end
 
     def no_projects
@@ -285,12 +281,6 @@ module Ci
     def exactly_one_group
       unless groups.one?
         errors.add(:runner, 'needs to be assigned to exactly one group')
-      end
-    end
-
-    def validate_is_shared
-      unless is_shared? == instance_type?
-        errors.add(:is_shared, 'is not equal to instance_type?')
       end
     end
 
