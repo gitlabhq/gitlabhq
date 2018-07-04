@@ -465,14 +465,12 @@ class Project < ActiveRecord::Base
     end
 
     # Pattern used to extract `namespace/project>` project references from text.
-    # (?!\w) matches any non-word character.
     # '>' or its escaped form ('&gt;') are checked for because '>' is sometimes escaped
     # when the reference comes from an external source.
     def markdown_reference_pattern
       %r{
         #{reference_pattern}
         (#{reference_postfix}|#{reference_postfix_escaped})
-        (?!\w)
       }x
     end
 

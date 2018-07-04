@@ -24,9 +24,9 @@ describe Banzai::Filter::ProjectReferenceFilter do
     expect(reference_filter(act).to_html).to eq(CGI.escapeHTML(exp))
   end
 
-  it 'ignores references with text after the > sign' do
-    exp = act = "Hey #{reference}foo"
-    expect(reference_filter(act).to_html).to eq CGI.escapeHTML(exp)
+  it 'allows references with text after the > character' do
+    doc = reference_filter("Hey #{reference}foo")
+    expect(doc.css('a').first.attr('href')).to eq urls.project_url(subject)
   end
 
   %w(pre code a style).each do |elem|
