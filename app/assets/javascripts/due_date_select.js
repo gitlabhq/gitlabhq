@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Pikaday from 'pikaday';
-import dateFormat from 'dateformat';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';

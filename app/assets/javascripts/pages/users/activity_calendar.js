@@ -2,7 +2,6 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
-import dateFormat from 'dateformat';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';

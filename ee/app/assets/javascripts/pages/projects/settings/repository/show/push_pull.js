@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import _ from 'underscore';
-import 'bootstrap-sass/assets/javascripts/bootstrap/collapse';
 import MirrorPull from 'ee/mirrors/mirror_pull';
 import { __ } from '~/locale';
 import Flash from '~/flash';

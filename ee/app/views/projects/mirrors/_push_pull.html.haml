@@ -1,6 +1,6 @@
 - expanded = Rails.env.test?
 - import_data = @project.import_data || @project.build_import_data
-- protocols = AddressableUrlValidator::DEFAULT_OPTIONS[:protocols].join('|')
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 - is_one_user_option = default_mirror_users.count == 1
 - can_push = can?(current_user, :admin_remote_mirror, @project)
 - can_pull = can?(current_user, :admin_mirror, @project)
