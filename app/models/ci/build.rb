@@ -186,7 +186,7 @@ module Ci
       end
 
       after_transition running: any do |build|
-        build.runner_session&.destroy
+        Ci::BuildRunnerSession.where(build: build).delete_all
       end
     end
 

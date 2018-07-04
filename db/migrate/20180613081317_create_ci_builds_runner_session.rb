@@ -8,7 +8,7 @@ class CreateCiBuildsRunnerSession < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :ci_builds_runner_session do |t|
+    create_table :ci_builds_runner_session, id: :bigserial do |t|
       t.integer :build_id, null: false
       t.string :url, null: false
       t.string :certificate

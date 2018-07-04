@@ -447,7 +447,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
   add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
   add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
 
-  create_table "ci_builds_runner_session", force: :cascade do |t|
+  create_table "ci_builds_runner_session", id: :bigserial, force: :cascade do |t|
     t.integer "build_id", null: false
     t.string "url", null: false
     t.string "certificate"
