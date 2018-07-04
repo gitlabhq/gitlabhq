@@ -12,7 +12,7 @@ FactoryBot.define do
       end
 
       after(:create) do |build_trace_chunk, evaluator|
-        Ci::BuildTraceChunk::Redis.new.set_data(build_trace_chunk, evaluator.initial_data)
+        ::Ci::BuildTraceChunk::Redis.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
@@ -28,7 +28,7 @@ FactoryBot.define do
       end
 
       after(:build) do |build_trace_chunk, evaluator|
-        Ci::BuildTraceChunk::Database.new.set_data(build_trace_chunk, evaluator.initial_data)
+        ::Ci::BuildTraceChunk::Database.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
@@ -44,7 +44,7 @@ FactoryBot.define do
       end
 
       after(:create) do |build_trace_chunk, evaluator|
-        Ci::BuildTraceChunk::Fog.new.set_data(build_trace_chunk, evaluator.initial_data)
+        ::Ci::BuildTraceChunk::Fog.new.set_data(build_trace_chunk, evaluator.initial_data)
       end
     end
 
