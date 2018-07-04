@@ -8,6 +8,7 @@ export const projectData = {
   branches: {
     master: {
       treeId: 'abcproject/master',
+      can_push: true,
     },
   },
   mergeRequests: {},

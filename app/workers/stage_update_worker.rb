@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StageUpdateWorker
   include ApplicationWorker
   include PipelineQueue

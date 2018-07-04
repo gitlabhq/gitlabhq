@@ -288,7 +288,32 @@ describe API::Repositories do
 
     shared_examples_for 'repository compare' do
       it "compares branches" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: false
+        }).and_call_original
         get api(route, current_user), from: 'master', to: 'feature'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['commits']).to be_present
+        expect(json_response['diffs']).to be_present
+      end
+
+      it "compares branches with explicit merge-base mode" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: false
+        }).and_call_original
+        get api(route, current_user), from: 'master', to: 'feature', straight: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['commits']).to be_present
+        expect(json_response['diffs']).to be_present
+      end
+
+      it "compares branches with explicit straight mode" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: true
+        }).and_call_original
+        get api(route, current_user), from: 'master', to: 'feature', straight: true
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present

@@ -37,7 +37,7 @@ Doorkeeper.configure do
 
   # Reuse access token for the same resource owner within an application (disabled by default)
   # Rationale: https://github.com/doorkeeper-gem/doorkeeper/issues/383
-  # reuse_access_token
+  reuse_access_token
 
   # Issue access tokens with refresh token (disabled by default)
   use_refresh_token
@@ -105,4 +105,54 @@ Doorkeeper.configure do
   # wildcard_redirect_uri false
 
   base_controller '::Gitlab::BaseDoorkeeperController'
+end
+
+# Monkey patch to avoid creating new applications if the scope of the
+# app created does not match the complete list of scopes of the configured app.
+# It also prevents the OAuth authorize application window to appear every time.
+
+# Remove after we upgrade the doorkeeper gem from version 4.3.2
+if Doorkeeper.gem_version > Gem::Version.new('4.3.2')
+  raise "Doorkeeper was upgraded, please remove the monkey patch in #{__FILE__}"
+end
+
+module Doorkeeper
+  module AccessTokenMixin
+    module ClassMethods
+      def matching_token_for(application, resource_owner_or_id, scopes)
+        resource_owner_id =
+          if resource_owner_or_id.respond_to?(:to_key)
+            resource_owner_or_id.id
+          else
+            resource_owner_or_id
+          end
+
+        tokens = authorized_tokens_for(application.try(:id), resource_owner_id)
+        tokens.detect do |token|
+          scopes_match?(token.scopes, scopes, application.try(:scopes))
+        end
+      end
+
+      def scopes_match?(token_scopes, param_scopes, app_scopes)
+        return true if token_scopes.empty? && param_scopes.empty?
+
+        (token_scopes.sort == param_scopes.sort) &&
+          Doorkeeper::OAuth::Helpers::ScopeChecker.valid?(
+            param_scopes.to_s,
+            Doorkeeper.configuration.scopes,
+            app_scopes)
+      end
+
+      def authorized_tokens_for(application_id, resource_owner_id)
+        ordered_by(:created_at, :desc)
+          .where(application_id: application_id,
+                 resource_owner_id: resource_owner_id,
+                 revoked_at: nil)
+      end
+
+      def last_authorized_token_for(application_id, resource_owner_id)
+        authorized_tokens_for(application_id, resource_owner_id).first
+      end
+    end
+  end
 end

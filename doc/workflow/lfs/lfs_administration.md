@@ -90,6 +90,7 @@ Here is a configuration example with S3.
 | `provider` | The provider name | AWS |
 | `aws_access_key_id` | AWS credentials, or compatible | `ABC123DEF456` |
 | `aws_secret_access_key` | AWS credentials, or compatible | `ABC123DEF456ABC123DEF456ABC123DEF456` |
+| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
@@ -235,5 +236,5 @@ See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-ce/merge_r
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/products/ "GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
 [ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760

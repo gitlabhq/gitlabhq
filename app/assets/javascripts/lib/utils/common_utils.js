@@ -189,12 +189,25 @@ export const getParameterByName = (name, urlToParse) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
+const handleSelectedRange = (range) => {
+  const container = range.commonAncestorContainer;
+  // add context to fragment if needed
+  if (container.tagName === 'OL') {
+    const parentContainer = document.createElement(container.tagName);
+    parentContainer.appendChild(range.cloneContents());
+    return parentContainer;
+  }
+  return range.cloneContents();
+};
+
 export const getSelectedFragment = () => {
   const selection = window.getSelection();
   if (selection.rangeCount === 0) return null;
   const documentFragment = document.createDocumentFragment();
+
   for (let i = 0; i < selection.rangeCount; i += 1) {
-    documentFragment.appendChild(selection.getRangeAt(i).cloneContents());
+    const range = selection.getRangeAt(i);
+    documentFragment.appendChild(handleSelectedRange(range));
   }
   if (documentFragment.textContent.length === 0) return null;
 

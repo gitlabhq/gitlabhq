@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180626125654) do
+ActiveRecord::Schema.define(version: 20180629191052) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1646,6 +1646,7 @@ ActiveRecord::Schema.define(version: 20180626125654) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
+  add_index "projects", ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
@@ -2144,6 +2145,7 @@ ActiveRecord::Schema.define(version: 20180626125654) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "web_hook_logs", ["created_at", "web_hook_id"], name: "index_web_hook_logs_on_created_at_and_web_hook_id", using: :btree
   add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|

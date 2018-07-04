@@ -6,7 +6,8 @@ class MetricsService
     Gitlab::HealthChecks::Redis::RedisCheck,
     Gitlab::HealthChecks::Redis::CacheCheck,
     Gitlab::HealthChecks::Redis::QueuesCheck,
-    Gitlab::HealthChecks::Redis::SharedStateCheck
+    Gitlab::HealthChecks::Redis::SharedStateCheck,
+    Gitlab::HealthChecks::GitalyCheck
   ].freeze
 
   def prometheus_metrics_text

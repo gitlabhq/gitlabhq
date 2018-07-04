@@ -8,6 +8,8 @@ export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
 
+export const isNotesFetched = state => state.isNotesFetched;
+
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;

@@ -318,4 +318,15 @@ describe('Notes Store mutations', () => {
       expect(state.isToggleStateButtonLoading).toEqual(false);
     });
   });
+
+  describe('SET_NOTES_FETCHING_STATE', () => {
+    it('should set the given state', () => {
+      const state = {
+        isNotesFetched: false,
+      };
+
+      mutations.SET_NOTES_FETCHED_STATE(state, true);
+      expect(state.isNotesFetched).toEqual(true);
+    });
+  });
 });

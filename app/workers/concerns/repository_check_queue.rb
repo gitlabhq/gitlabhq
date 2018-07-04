@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Concern for setting Sidekiq settings for the various repository check workers.
 module RepositoryCheckQueue
   extend ActiveSupport::Concern

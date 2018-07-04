@@ -1390,6 +1390,16 @@ POST /projects/:id/housekeeping
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
+### Transfer a project to a new namespace
+
+```
+PUT /projects/:id/transfer
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `namespace` | integer/string | yes | The ID or path of the namespace to transfer to project to |
+
 ## Branches
 
 Read more in the [Branches](branches.md) documentation.

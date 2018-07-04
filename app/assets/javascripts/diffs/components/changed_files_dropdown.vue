@@ -66,59 +66,61 @@ export default {
           @click="clearSearch"
         ></i>
       </div>
-      <ul>
-        <li
-          v-for="diffFile in filteredDiffFiles"
-          :key="diffFile.name"
-        >
-          <a
-            :href="`#${diffFile.fileHash}`"
-            :title="diffFile.newPath"
-            class="diff-changed-file"
+      <div class="dropdown-content">
+        <ul>
+          <li
+            v-for="diffFile in filteredDiffFiles"
+            :key="diffFile.name"
           >
-            <icon
-              :name="fileChangedIcon(diffFile)"
-              :size="16"
-              :class="fileChangedClass(diffFile)"
-              class="diff-file-changed-icon append-right-8"
-            />
-            <span class="diff-changed-file-content append-right-8">
-              <strong
-                v-if="diffFile.blob && diffFile.blob.name"
-                class="diff-changed-file-name"
-              >
-                {{ diffFile.blob.name }}
-              </strong>
-              <strong
-                v-else
-                class="diff-changed-blank-file-name"
-              >
-                {{ s__('Diffs|No file name available') }}
-              </strong>
-              <span class="diff-changed-file-path prepend-top-5">
-                {{ truncatedDiffPath(diffFile.blob.path) }}
+            <a
+              :href="`#${diffFile.fileHash}`"
+              :title="diffFile.newPath"
+              class="diff-changed-file"
+            >
+              <icon
+                :name="fileChangedIcon(diffFile)"
+                :size="16"
+                :class="fileChangedClass(diffFile)"
+                class="diff-file-changed-icon append-right-8"
+              />
+              <span class="diff-changed-file-content append-right-8">
+                <strong
+                  v-if="diffFile.blob && diffFile.blob.name"
+                  class="diff-changed-file-name"
+                >
+                  {{ diffFile.blob.name }}
+                </strong>
+                <strong
+                  v-else
+                  class="diff-changed-blank-file-name"
+                >
+                  {{ s__('Diffs|No file name available') }}
+                </strong>
+                <span class="diff-changed-file-path prepend-top-5">
+                  {{ truncatedDiffPath(diffFile.blob.path) }}
+                </span>
               </span>
-            </span>
-            <span class="diff-changed-stats">
-              <span class="cgreen">
-                +{{ diffFile.addedLines }}
+              <span class="diff-changed-stats">
+                <span class="cgreen">
+                  +{{ diffFile.addedLines }}
+                </span>
+                <span class="cred">
+                  -{{ diffFile.removedLines }}
+                </span>
               </span>
-              <span class="cred">
-                -{{ diffFile.removedLines }}
-              </span>
-            </span>
-          </a>
-        </li>
+            </a>
+          </li>
 
-        <li
-          v-show="filteredDiffFiles.length === 0"
-          class="dropdown-menu-empty-item"
-        >
-          <a>
-            {{ __('No files found') }}
-          </a>
-        </li>
-      </ul>
+          <li
+            v-show="filteredDiffFiles.length === 0"
+            class="dropdown-menu-empty-item"
+          >
+            <a>
+              {{ __('No files found') }}
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </span>
 </template>

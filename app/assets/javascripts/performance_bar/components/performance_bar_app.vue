@@ -113,7 +113,7 @@ export default {
   >
     <div
       v-if="currentRequest"
-      class="container-fluid container-limited"
+      class="d-flex container-fluid container-limited"
     >
       <div
         id="peek-view-host"
@@ -179,6 +179,7 @@ export default {
         v-if="currentRequest"
         :current-request="currentRequest"
         :requests="requests"
+        class="ml-auto"
         @change-current-request="changeCurrentRequest"
       />
     </div>
