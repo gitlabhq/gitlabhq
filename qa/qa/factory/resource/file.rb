@@ -19,7 +19,7 @@ module QA
         def fabricate!
           project.visit!
 
-          Page::Project::Show.act { create_new_file }
+          Page::Project::Show.act { go_to_new_file! }
 
           Page::File::Form.perform do |page|
             page.add_name(@name)

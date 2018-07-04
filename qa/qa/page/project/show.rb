@@ -30,7 +30,7 @@ module QA
           find('.qa-project-name').text
         end
 
-        def create_new_file
+        def go_to_new_file!
           click_on 'New file'
         end
 

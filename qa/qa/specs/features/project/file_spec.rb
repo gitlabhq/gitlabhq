@@ -2,7 +2,7 @@ module QA
   feature 'File Functionality', :core do
     scenario 'User creates, edits and deletes a file via WebUI' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
-      Page::Main::Login.act {sign_in_using_credentials}
+      Page::Main::Login.act { sign_in_using_credentials }
 
       # Create
       file_name = 'QA Test - File name'
