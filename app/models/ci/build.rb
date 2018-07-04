@@ -525,30 +525,7 @@ module Ci
     end
 
     def artifacts
-      list = []
-      list << artifacts_archive if options.dig(:artifacts, :paths)
-      list << artifacts_reports if options.dig(:artifacts, :reports)
-      list
-    end
-
-    def artifacts_archive
-      options[:artifacts].merge(artifact_type: 'archive', artifact_format: 'zip')
-    end
-
-    def artifacts_reports
-      reports = []
-      reports << artifacts_junit if options.dig(:artifacts, :reports, :junit)
-      reports
-    end
-
-    def artifacts_junit
-      {
-        name: 'junit.xml',
-        paths: [options[:artifacts][:reports][:junit]],
-        artifact_type: 'junit',
-        artifact_format: 'gzip',
-        expire_in: options.dig(:artifacts, :expire_in)
-      }
+      [options[:artifacts]]
     end
 
     def cache
