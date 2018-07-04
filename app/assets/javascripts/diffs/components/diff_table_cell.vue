@@ -10,6 +10,12 @@ import {
   NEW_NO_NEW_LINE_TYPE,
   LINE_HOVER_CLASS_NAME,
   LINE_UNFOLD_CLASS_NAME,
+<<<<<<< HEAD
+=======
+  INLINE_DIFF_VIEW_TYPE,
+  LINE_POSITION_LEFT,
+  LINE_POSITION_RIGHT,
+>>>>>>> 4c1a2a9b997... Merge branch '_acet-fix-parallel-diff-lines' into 'master'
 } from '../constants';
 
 export default {
@@ -59,11 +65,22 @@ export default {
   computed: {
     ...mapGetters(['isLoggedIn', 'isInlineView']),
     normalizedLine() {
+<<<<<<< HEAD
       if (this.isInlineView) {
         return this.line;
+=======
+      let normalizedLine;
+
+      if (this.diffViewType === INLINE_DIFF_VIEW_TYPE) {
+        normalizedLine = this.line;
+      } else if (this.linePosition === LINE_POSITION_LEFT) {
+        normalizedLine = this.line.left;
+      } else if (this.linePosition === LINE_POSITION_RIGHT) {
+        normalizedLine = this.line.right;
+>>>>>>> 4c1a2a9b997... Merge branch '_acet-fix-parallel-diff-lines' into 'master'
       }
 
-      return this.lineType === OLD_LINE_TYPE ? this.line.left : this.line.right;
+      return normalizedLine;
     },
     isMatchLine() {
       return this.normalizedLine.type === MATCH_LINE_TYPE;
