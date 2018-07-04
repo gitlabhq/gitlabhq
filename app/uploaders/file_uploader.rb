@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class breaks the actual CarrierWave concept.
 # Every uploader should use a base_dir that is model agnostic so we can build
 # back URLs from base_dir-relative paths saved in the `Upload` model.
@@ -117,7 +119,7 @@ class FileUploader < GitlabUploader
   end
 
   def markdown_link
-    markdown = "[#{markdown_name}](#{secure_url})"
+    markdown = +"[#{markdown_name}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?
     markdown
   end
