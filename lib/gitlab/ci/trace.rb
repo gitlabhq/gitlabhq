@@ -217,7 +217,7 @@ module Gitlab
       end
 
       def trace_artifact
-        ::Ci::JobArtifact.trace.find_by_job_id(job.id)
+        job.job_artifacts_trace&.reload
       end
 
       # For ExclusiveLeaseGuard concern
