@@ -385,7 +385,7 @@ module Ci
     end
 
     def erase_old_trace!
-      update_column(:trace, nil) if old_trace
+      update_column(:trace, nil)
     end
 
     def needs_touch?
