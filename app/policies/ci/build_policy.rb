@@ -18,7 +18,7 @@ module Ci
       @subject.project.branch_allows_collaboration?(@user, @subject.ref)
     end
 
-    condition(:terminal) do
+    condition(:terminal, scope: :subject) do
       @subject.has_terminal?
     end
 
