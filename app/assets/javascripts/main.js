@@ -29,6 +29,7 @@ import './milestone_select';
 import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
 import initDispatcher from './dispatcher';
+import initConsoleSwag from './console_swag';
 
 // expose jQuery as global (TODO: remove these)
 window.jQuery = jQuery;
@@ -269,4 +270,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   initDispatcher();
+
+  initConsoleSwag();
 });
