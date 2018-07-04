@@ -77,7 +77,7 @@ On your GitLab server:
 
     For installations from source:
 
-    ```
+    ```yaml
     - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
       app_secret: 'YOUR_APP_SECRET',
       args: { access_type: 'offline', approval_prompt: '' } }
