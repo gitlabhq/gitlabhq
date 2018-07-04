@@ -13,7 +13,7 @@ module QA
         geo_project_name = project.name
         expect(project.name).to include 'geo-before-rename'
 
-        Factory::Repository::Push.fabricate! do |push|
+        Factory::Repository::ProjectPush.fabricate! do |push|
           push.project = project
           push.file_name = 'README.md'
           push.file_content = '# This is Geo project!'
@@ -36,27 +36,29 @@ module QA
           end
         end
 
-        sleep 2 # wait for replication
-
         # check renamed project exist on secondary node
         Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do
           Page::Main::OAuth.act do
             authorize! if needs_authorization?
           end
 
-          expect(page).to have_content 'You are on a secondary (read-only) Geo node'
+          EE::Page::Main::Banner.perform do |banner|
+            expect(banner).to have_secondary_read_only_banner
+          end
 
           Page::Menu::Main.perform do |menu|
             menu.go_to_projects
-
-            expect(page).to have_content(geo_project_renamed)
           end
 
           Page::Dashboard::Projects.perform do |dashboard|
+            dashboard.wait_for_project_replication(geo_project_renamed)
+
             dashboard.go_to_project(geo_project_renamed)
           end
 
-          Page::Project::Show.perform do
+          Page::Project::Show.perform do |show|
+            show.wait_for_repository_replication
+
             expect(page).to have_content 'README.md'
             expect(page).to have_content 'This is Geo project!'
           end

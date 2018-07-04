@@ -14,6 +14,8 @@ export default () => ({
   vulnerabilityFeedbackPath: null,
   vulnerabilityFeedbackHelpPath: null,
   pipelineId: null,
+  canCreateIssuePermission: false,
+  canCreateFeedbackPermission: false,
 
   sast: {
     paths: {
@@ -132,7 +134,7 @@ export default () => ({
     learnMoreUrl: null,
 
     vulnerability: {
-      isDimissed: false,
+      isDismissed: false,
       hasIssue: false,
     },
 

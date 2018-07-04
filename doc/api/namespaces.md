@@ -55,7 +55,7 @@ Example response:
 ]
 ```
 
-**Note**: `members_count_with_descendants` and `plan` are presented only for group masters/owners.
+**Note**: `members_count_with_descendants` and `plan` are presented only for group maintainers/owners.
 
 ## Search for namespace
 

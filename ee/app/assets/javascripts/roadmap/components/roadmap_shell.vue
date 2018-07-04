@@ -12,6 +12,10 @@
       roadmapTimelineSection,
     },
     props: {
+      presetType: {
+        type: String,
+        required: true,
+      },
       epics: {
         type: Array,
         required: true,
@@ -65,9 +69,7 @@
       },
       handleScroll() {
         const { scrollTop, scrollLeft, clientHeight, scrollHeight } = this.$el;
-        if (!this.noScroll) {
-          eventHub.$emit('epicsListScrolled', { scrollTop, scrollLeft, clientHeight, scrollHeight });
-        }
+        eventHub.$emit('epicsListScrolled', { scrollTop, scrollLeft, clientHeight, scrollHeight });
       },
     },
   };
@@ -75,18 +77,20 @@
 
 <template>
   <div
-    class="roadmap-shell"
     :class="{ 'prevent-vertical-scroll': noScroll }"
     :style="containerStyles"
+    class="roadmap-shell"
     @scroll="handleScroll"
   >
     <roadmap-timeline-section
+      :preset-type="presetType"
       :epics="epics"
       :timeframe="timeframe"
       :shell-width="shellWidth"
       :list-scrollable="!noScroll"
     />
     <epics-list-section
+      :preset-type="presetType"
       :epics="epics"
       :timeframe="timeframe"
       :shell-width="shellWidth"

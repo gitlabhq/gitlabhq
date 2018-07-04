@@ -3,6 +3,8 @@
 
   import { VALUE_TYPE, HELP_INFO_URL } from '../../constants';
 
+  import DetailsSectionMixin from '../../mixins/details_section_mixin';
+
   import GeoNodeDetailItem from '../geo_node_detail_item.vue';
   import SectionRevealButton from './section_reveal_button.vue';
 
@@ -11,6 +13,9 @@
       GeoNodeDetailItem,
       SectionRevealButton,
     },
+    mixins: [
+      DetailsSectionMixin,
+    ],
     props: {
       nodeDetails: {
         type: Object,
@@ -122,6 +127,8 @@
           :item-title="nodeDetailItem.itemTitle"
           :item-value="nodeDetailItem.itemValue"
           :item-value-type="nodeDetailItem.itemValueType"
+          :item-value-stale="statusInfoStale"
+          :item-value-stale-tooltip="statusInfoStaleMessage"
           :success-label="nodeDetailItem.successLabel"
           :neutral-label="nodeDetailItem.neutraLabel"
           :failure-label="nodeDetailItem.failureLabel"

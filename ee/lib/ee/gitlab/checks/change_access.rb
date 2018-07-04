@@ -119,6 +119,10 @@ module EE
             return "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'"
           end
 
+          if push_rule.commit_message_blocked?(commit.safe_message)
+            return "Commit message contains the forbidden pattern '#{push_rule.commit_message_negative_regex}'"
+          end
+
           unless push_rule.author_email_allowed?(commit.committer_email)
             return "Committer's email '#{commit.committer_email}' does not follow the pattern '#{push_rule.author_email_regex}'"
           end
@@ -190,7 +194,7 @@ module EE
         def validate_path_locks?
           strong_memoize(:validate_path_locks) do
             project.feature_available?(:file_locks) &&
-              project.path_locks.any? && newrev && oldrev &&
+              newrev && oldrev && project.any_path_locks? &&
               project.default_branch == branch_name # locks protect default branch only
           end
         end

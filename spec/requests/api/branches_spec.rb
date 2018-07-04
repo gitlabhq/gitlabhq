@@ -155,6 +155,12 @@ describe API::Branches do
       end
 
       it_behaves_like 'repository branch'
+
+      it 'returns that the current user cannot push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(false)
+      end
     end
 
     context 'when unauthenticated', 'and project is private' do
@@ -168,6 +174,12 @@ describe API::Branches do
       let(:current_user) { user }
 
       it_behaves_like 'repository branch'
+
+      it 'returns that the current user can push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(true)
+      end
 
       context 'when branch contains a dot' do
         let(:branch_name) { branch_with_dot.name }
@@ -199,6 +211,23 @@ describe API::Branches do
 
           it_behaves_like 'repository branch'
         end
+      end
+    end
+
+    context 'when authenticated', 'as a developer and branch is protected' do
+      let(:current_user) { create(:user) }
+      let!(:protected_branch) { create(:protected_branch, project: project, name: branch_name) }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'repository branch'
+
+      it 'returns that the current user cannot push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(false)
       end
     end
 

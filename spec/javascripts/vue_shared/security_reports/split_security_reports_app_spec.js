@@ -5,7 +5,7 @@ import component from 'ee/vue_shared/security_reports/split_security_reports_app
 import createStore from 'ee/vue_shared/security_reports/store';
 import state from 'ee/vue_shared/security_reports/store/state';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
-import { sastIssues } from './mock_data';
+import { sastIssues, dast, dockerReport } from './mock_data';
 
 describe('Slipt security reports app', () => {
   const Component = Vue.extend(component);
@@ -34,6 +34,8 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(200, sastIssues);
       mock.onGet('dss_head.json').reply(200, sastIssues);
+      mock.onGet('dast_head.json').reply(200, dast);
+      mock.onGet('sast_container_head.json').reply(200, dockerReport);
       mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponentWithStore(Component, {
@@ -43,11 +45,17 @@ describe('Slipt security reports app', () => {
           baseBlobPath: 'path',
           sastHeadPath: 'sast_head.json',
           dependencyScanningHeadPath: 'dss_head.json',
+          dastHeadPath: 'dast_head.json',
+          sastContainerHeadPath: 'sast_container_head.json',
           sastHelpPath: 'path',
           dependencyScanningHelpPath: 'path',
           vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
           vulnerabilityFeedbackHelpPath: 'path',
+          dastHelpPath: 'path',
+          sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });
@@ -57,6 +65,8 @@ describe('Slipt security reports app', () => {
 
       expect(vm.$el.textContent).toContain('SAST is loading');
       expect(vm.$el.textContent).toContain('Dependency scanning is loading');
+      expect(vm.$el.textContent).toContain('Container scanning is loading');
+      expect(vm.$el.textContent).toContain('DAST is loading');
 
       setTimeout(() => {
         done();
@@ -68,6 +78,8 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(200, sastIssues);
       mock.onGet('dss_head.json').reply(200, sastIssues);
+      mock.onGet('dast_head.json').reply(200, dast);
+      mock.onGet('sast_container_head.json').reply(200, dockerReport);
       mock.onGet('vulnerability_feedback_path.json').reply(200, []);
 
       vm = mountComponentWithStore(Component, {
@@ -77,11 +89,17 @@ describe('Slipt security reports app', () => {
           baseBlobPath: 'path',
           sastHeadPath: 'sast_head.json',
           dependencyScanningHeadPath: 'dss_head.json',
+          dastHeadPath: 'dast_head.json',
+          sastContainerHeadPath: 'sast_container_head.json',
           sastHelpPath: 'path',
           dependencyScanningHelpPath: 'path',
           vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
           vulnerabilityFeedbackHelpPath: 'path',
+          dastHelpPath: 'path',
+          sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });
@@ -95,6 +113,12 @@ describe('Slipt security reports app', () => {
         expect(removeBreakLine(vm.$el.textContent)).toContain(
           'Dependency scanning detected 3 vulnerabilities',
         );
+
+        // Renders container scanning result
+        expect(vm.$el.textContent).toContain('Container scanning detected 2 vulnerabilities');
+
+        // Renders DAST result
+        expect(vm.$el.textContent).toContain('DAST detected 2 vulnerabilities');
         done();
       }, 0);
     });
@@ -104,6 +128,8 @@ describe('Slipt security reports app', () => {
     beforeEach(() => {
       mock.onGet('sast_head.json').reply(500);
       mock.onGet('dss_head.json').reply(500);
+      mock.onGet('dast_head.json').reply(500);
+      mock.onGet('sast_container_head.json').reply(500);
       mock.onGet('vulnerability_feedback_path.json').reply(500, []);
 
       vm = mountComponentWithStore(Component, {
@@ -113,11 +139,17 @@ describe('Slipt security reports app', () => {
           baseBlobPath: 'path',
           sastHeadPath: 'sast_head.json',
           dependencyScanningHeadPath: 'dss_head.json',
+          dastHeadPath: 'dast_head.json',
+          sastContainerHeadPath: 'sast_container_head.json',
           sastHelpPath: 'path',
           dependencyScanningHelpPath: 'path',
           vulnerabilityFeedbackPath: 'vulnerability_feedback_path.json',
           vulnerabilityFeedbackHelpPath: 'path',
+          dastHelpPath: 'path',
+          sastContainerHelpPath: 'path',
           pipelineId: 123,
+          canCreateIssue: true,
+          canCreateFeedback: true,
         },
       });
     });
@@ -130,6 +162,10 @@ describe('Slipt security reports app', () => {
         expect(removeBreakLine(vm.$el.textContent)).toContain(
           'Dependency scanning resulted in error while loading results',
         );
+        expect(vm.$el.textContent).toContain(
+          'Container scanning resulted in error while loading results',
+        );
+        expect(vm.$el.textContent).toContain('DAST resulted in error while loading results');
         done();
       }, 0);
     });

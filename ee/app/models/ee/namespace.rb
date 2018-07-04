@@ -37,6 +37,8 @@ module EE
 
       validate :validate_plan_name
       validate :validate_shared_runner_minutes_support
+
+      before_create :sync_membership_lock_with_parent
     end
 
     module ClassMethods
@@ -66,7 +68,7 @@ module EE
       project.full_path.sub(/\A#{Regexp.escape(full_path)}/, full_path_was)
     end
 
-    # Checks features (i.e. https://about.gitlab.com/products/) availabily
+    # Checks features (i.e. https://about.gitlab.com/pricing/) availabily
     # for a given Namespace plan. This method should consider ancestor groups
     # being licensed.
     def feature_available?(feature)
@@ -100,6 +102,16 @@ module EE
 
     def actual_plan_name
       actual_plan&.name || FREE_PLAN
+    end
+
+    def actual_size_limit
+      ::Gitlab::CurrentSettings.repository_size_limit
+    end
+
+    def sync_membership_lock_with_parent
+      if parent&.membership_lock?
+        self.membership_lock = true
+      end
     end
 
     def shared_runner_minutes_supported?

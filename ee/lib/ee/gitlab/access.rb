@@ -16,8 +16,8 @@ module EE
       def project_creation_options
         {
           s_('ProjectCreationLevel|No one') => NO_ONE_PROJECT_ACCESS,
-          s_('ProjectCreationLevel|Masters') => MASTER_PROJECT_ACCESS,
-          s_('ProjectCreationLevel|Developers + Masters') => DEVELOPER_MASTER_PROJECT_ACCESS
+          s_('ProjectCreationLevel|Maintainers') => MASTER_PROJECT_ACCESS,
+          s_('ProjectCreationLevel|Developers + Maintainers') => DEVELOPER_MASTER_PROJECT_ACCESS
         }
       end
     end

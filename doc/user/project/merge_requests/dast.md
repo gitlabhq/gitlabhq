@@ -50,6 +50,6 @@ see the details and the URL(s) affected.
 ![DAST Widget Clicked](img/dast_single.png)
 
 [ee-4348]: https://gitlab.com/gitlab-org/gitlab-ee/issues/4348
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/dast.md

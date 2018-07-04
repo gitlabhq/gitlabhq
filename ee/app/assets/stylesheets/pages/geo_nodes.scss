@@ -115,6 +115,10 @@
       margin-top: 4px;
     }
 
+    .detail-value-stale-icon {
+      color: $gl-warning;
+    }
+
     .node-detail-value-bold {
       font-weight: $gl-font-weight-bold;
     }
@@ -125,10 +129,16 @@
   }
 
   .section-items-container {
+    display: inline-block;
+
     .node-detail-item {
       &:first-child {
         margin-top: 0;
       }
+    }
+
+    @include media-breakpoint-down(sm) {
+      width: 95%;
     }
   }
 }

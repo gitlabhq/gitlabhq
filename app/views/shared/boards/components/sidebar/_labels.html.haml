@@ -1,15 +1,15 @@
 .block.labels
   .title
-    Labels
+    = _("Labels")
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
+      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value.issuable-show-labels.dont-hide
     %span.no-value{ "v-if" => "issue.labels && issue.labels.length === 0" }
-      None
+      = _("None")
     %a{ href: "#",
       "v-for" => "label in issue.labels" }
-      %span.badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
+      .badge.color-label.has-tooltip{ ":style" => "{ backgroundColor: label.color, color: label.textColor }" }
         {{ label.title }}
   - if can_admin_issue?
     .selectbox
@@ -28,7 +28,7 @@
             namespace_path: @namespace_path,
             project_path: @project.try(:path) } }
           %span.dropdown-toggle-text
-            Label
+            = _("Label")
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
           = render partial: "shared/issuable/label_page_default"

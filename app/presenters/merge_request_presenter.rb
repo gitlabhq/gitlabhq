@@ -22,17 +22,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     end
   end
 
-  def unmergeable_reasons
-    strong_memoize(:unmergeable_reasons) do
-      reasons = []
-      reasons << "no commits" if merge_request.has_no_commits?
-      reasons << "source branch is missing" unless merge_request.source_branch_exists?
-      reasons << "target branch is missing" unless merge_request.target_branch_exists?
-      reasons << "has merge conflicts" unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
-      reasons
-    end
-  end
-
   def cancel_merge_when_pipeline_succeeds_path
     if can_cancel_merge_when_pipeline_succeeds?(current_user)
       cancel_merge_when_pipeline_succeeds_project_merge_request_path(project, merge_request)
@@ -179,6 +168,29 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     !!::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)
+  end
+
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+  end
+
+  def mergeable_discussions_state
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.build(merge_request)
+  end
+
+  def subscribed?
+    merge_request.subscribed?(current_user, merge_request.target_project)
   end
 
   private

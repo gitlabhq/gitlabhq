@@ -1,0 +1,5 @@
+---
+title: Log audit and Geo events within a project destroy transaction
+merge_request: 6059
+author:
+type: fixed

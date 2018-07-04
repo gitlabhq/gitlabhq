@@ -2,9 +2,8 @@
   = form_errors(@application_setting)
 
   %fieldset
-    .form-group.row
-      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'col-form-label col-sm-2'
-      .col-sm-10
-        = f.number_field :container_registry_token_expire_delay, class: 'form-control'
+    .form-group
+      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'label-light'
+      = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

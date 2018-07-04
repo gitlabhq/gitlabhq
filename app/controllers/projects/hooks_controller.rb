@@ -58,8 +58,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def hook_logs
-    @hook_logs ||=
-      Kaminari.paginate_array(hook.web_hook_logs.order(created_at: :desc)).page(params[:page])
+    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
   end
 
   def hook_params

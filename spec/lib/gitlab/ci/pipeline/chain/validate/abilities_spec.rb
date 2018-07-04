@@ -10,8 +10,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
 
   let(:command) do
     Gitlab::Ci::Pipeline::Chain::Command.new(
-      project: project, current_user: user, origin_ref: ref,
-      allow_mirror_update: false)
+      project: project, current_user: user, origin_ref: ref)
   end
 
   let(:step) { described_class.new(pipeline, command) }

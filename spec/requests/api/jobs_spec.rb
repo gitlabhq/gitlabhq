@@ -178,6 +178,18 @@ describe API::Jobs do
           json_response.each { |job| expect(job['pipeline']['id']).to eq(pipeline.id) }
         end
       end
+
+      it 'avoids N+1 queries' do
+        control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+        end.count
+
+        3.times { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+        expect do
+          get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+        end.not_to exceed_all_query_limit(control_count)
+      end
     end
 
     context 'unauthorized user' do

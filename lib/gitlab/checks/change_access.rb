@@ -7,7 +7,7 @@ module Gitlab
         push_code: 'You are not allowed to push code to this project.',
         delete_default_branch: 'The default branch of a project cannot be deleted.',
         force_push_protected_branch: 'You are not allowed to force push code to a protected branch on this project.',
-        non_master_delete_protected_branch: 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.',
+        non_master_delete_protected_branch: 'You are not allowed to delete protected branches from this project. Only a project maintainer or owner can delete a protected branch.',
         non_web_delete_protected_branch: 'You can only delete protected branches using the web interface.',
         merge_protected_branch: 'You are not allowed to merge code into protected branches on this project.',
         push_protected_branch: 'You are not allowed to push code to protected branches on this project.',

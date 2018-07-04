@@ -51,6 +51,10 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json).to include(:codeclimate)
   end
 
+  it 'sets approvals_before_merge to 0 if nil' do
+    expect(subject.as_json[:approvals_before_merge]).to eq(0)
+  end
+
   it 'has performance data' do
     build = create(:ci_build, name: 'job')
 

@@ -17,6 +17,8 @@ module Projects
     def execute
       add_repository_to_project
 
+      download_lfs_objects
+
       import_data
 
       success
@@ -37,7 +39,7 @@ module Projects
 
       # We should skip the repository for a GitHub import or GitLab project import,
       # because these importers fetch the project repositories for us.
-      return if has_importer? && importer_class.try(:imports_repository?)
+      return if importer_imports_repository?
 
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
@@ -73,6 +75,27 @@ module Projects
       end
     end
 
+    def download_lfs_objects
+      # In this case, we only want to import issues
+      return if unknown_url?
+
+      # If it has its own repository importer, it has to implements its own lfs import download
+      return if importer_imports_repository?
+
+      return unless project.lfs_enabled?
+
+      oids_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
+      download_service = Projects::LfsPointers::LfsDownloadService.new(project)
+
+      oids_to_download.each do |oid, link|
+        download_service.execute(oid, link)
+      end
+    rescue => e
+      # Right now, to avoid aborting the importing process, we silently fail
+      # if any exception raises.
+      Rails.logger.error("The Lfs import process failed. #{e.message}")
+    end
+
     def import_data
       return unless has_importer?
 
@@ -97,6 +120,10 @@ module Projects
 
     def unknown_url?
       project.import_url == Project::UNKNOWN_IMPORT_URL
+    end
+
+    def importer_imports_repository?
+      has_importer? && importer_class.try(:imports_repository?)
     end
   end
 end

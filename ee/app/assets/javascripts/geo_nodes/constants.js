@@ -28,4 +28,6 @@ export const TIME_DIFF = {
   HOUR: 3600,
 };
 
+export const STATUS_DELAY_THRESHOLD_MS = 60000;
+
 export const HELP_INFO_URL = 'https://docs.gitlab.com/ee/administration/geo/disaster_recovery/background_verification.html#repository-verification';

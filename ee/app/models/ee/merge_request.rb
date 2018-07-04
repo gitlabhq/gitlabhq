@@ -46,6 +46,8 @@ module EE
       delegate :expose_sast_container_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_container_scanning_data?, to: :head_pipeline, allow_nil: true
       delegate :expose_dast_data?, to: :head_pipeline, allow_nil: true
+
+      participant :participant_approvers
     end
 
     def supports_weight?
@@ -66,6 +68,23 @@ module EE
     def expose_performance_data?
       !!(head_pipeline&.expose_performance_data? &&
          base_pipeline&.expose_performance_data?)
+    end
+
+    def validate_approvals_before_merge
+      return true unless approvals_before_merge
+      return true unless target_project
+
+      # Ensure per-merge-request approvals override is valid
+      if approvals_before_merge >= target_project.approvals_before_merge
+        true
+      else
+        errors.add :validate_approvals_before_merge,
+                   'Number of approvals must be at least that of approvals on the target project'
+      end
+    end
+
+    def participant_approvers
+      approval_needed? ? approvers_left : []
     end
   end
 end

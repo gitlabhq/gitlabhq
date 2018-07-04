@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
   include EE::GeoHelpers
+  include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
@@ -193,6 +194,46 @@ describe Projects::UpdateService, '#execute' do
 
         expect(project.wiki_enabled?).to be true
       end
+    end
+  end
+
+  context 'with external authorization enabled' do
+    before do
+      enable_external_authorization_service_check
+    end
+
+    it 'does not save the project with an error if the service denies access' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label') { false }
+
+      result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
+
+      expect(result[:message]).to be_present
+      expect(result[:status]).to eq(:error)
+    end
+
+    it 'saves the new label if the service allows access' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'new-label') { true }
+
+      result = update_project(project, user, { external_authorization_classification_label: 'new-label' })
+
+      expect(result[:status]).to eq(:success)
+      expect(project.reload.external_authorization_classification_label).to eq('new-label')
+    end
+
+    it 'checks the default label when the classification label was cleared' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .to receive(:access_allowed?).with(user, 'default_label') { true }
+
+      update_project(project, user, { external_authorization_classification_label: '' })
+    end
+
+    it 'does not check the label when it does not change' do
+      expect(EE::Gitlab::ExternalAuthorization)
+        .not_to receive(:access_allowed?)
+
+      update_project(project, user, { name: 'New name' })
     end
   end
 

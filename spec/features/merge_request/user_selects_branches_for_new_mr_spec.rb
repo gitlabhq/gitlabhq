@@ -86,14 +86,6 @@ describe 'Merge request > User selects branches for new MR', :js do
     expect(target_items.count).to be > 1
   end
 
-  context 'when approvals are disabled for the target project' do
-    it 'does not show approval settings' do
-      visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
-
-      expect(page).not_to have_content('Approvers')
-    end
-  end
-
   context 'when approvals are enabled for the target project' do
     before do
       project.update_attributes(approvals_before_merge: 1)

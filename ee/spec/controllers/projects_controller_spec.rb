@@ -188,6 +188,9 @@ describe ProjectsController do
       it 'updates the project classification label' do
         external_service_allow_access(user, project)
 
+        expect(EE::Gitlab::ExternalAuthorization)
+          .to receive(:access_allowed?).with(user, 'new_label') { true }
+
         expect { update_classification_label }
           .to change(project, :external_authorization_classification_label).to('new_label')
       end

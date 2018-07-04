@@ -148,7 +148,6 @@ export default {
       if (!parentGroup.isOpen) {
         if (parentGroup.children.length === 0) {
           parentGroup.isChildrenLoading = true;
-          // eslint-disable-next-line promise/catch-or-return
           this.fetchGroups({
             parentId: parentGroup.id,
           })
@@ -216,10 +215,10 @@ export default {
 <template>
   <div>
     <loading-icon
-      class="loading-animation prepend-top-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
+      class="loading-animation prepend-top-20"
+      size="2"
     />
     <groups-component
       v-if="!isLoading"
@@ -230,10 +229,10 @@ export default {
     />
     <deprecated-modal
       v-show="showModal"
-      kind="warning"
       :primary-button-label="__('Leave')"
       :title="__('Are you sure?')"
       :text="groupLeaveConfirmationMessage"
+      kind="warning"
       @cancel="hideLeaveGroupModal"
       @submit="leaveGroup"
     />

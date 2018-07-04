@@ -1,0 +1,5 @@
+---
+title: Added with_statsoption for GET /projects/:id/repository/commits
+merge_request:
+author:
+type: added

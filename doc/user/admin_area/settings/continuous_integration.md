@@ -35,7 +35,7 @@ expiration.
 1. Hit **Save** for the changes to take effect.
 
 [art-yml]: ../../../administration/job_artifacts.md
-[duration-syntax]: ../../../ci/yaml/README.md#artifactsexpire_in
+[duration-syntax]: ../../../ci/yaml/README.md#artifacts-expire_in
 
 ## Shared Runners pipeline minutes quota
 

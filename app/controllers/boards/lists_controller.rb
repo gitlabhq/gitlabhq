@@ -1,5 +1,7 @@
 module Boards
   class ListsController < Boards::ApplicationController
+    prepend ::EE::Boards::ListsController
+
     include BoardsResponses
 
     before_action :authorize_admin_list, only: [:create, :update, :destroy, :generate]
@@ -56,8 +58,12 @@ module Boards
 
     private
 
+    def list_creation_attrs
+      %i[label_id]
+    end
+
     def list_params
-      params.require(:list).permit(:label_id)
+      params.require(:list).permit(list_creation_attrs)
     end
 
     def move_params
@@ -65,11 +71,15 @@ module Boards
     end
 
     def serialize_as_json(resource)
-      resource.as_json(
+      resource.as_json(serialization_attrs)
+    end
+
+    def serialization_attrs
+      {
         only: [:id, :list_type, :position],
         methods: [:title],
         label: true
-      )
+      }
     end
   end
 end

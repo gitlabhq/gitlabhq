@@ -82,9 +82,9 @@
 
 <template>
   <div
-    class="dragHandle"
     :class="className"
     :style="cursorStyle"
+    class="dragHandle"
     @mousedown="startDrag"
     @dblclick="resetSize"
   ></div>

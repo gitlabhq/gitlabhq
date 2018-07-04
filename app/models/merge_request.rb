@@ -132,8 +132,10 @@ class MergeRequest < ActiveRecord::Base
     end
 
     after_transition unchecked: :cannot_be_merged do |merge_request, transition|
-      NotificationService.new.merge_request_unmergeable(merge_request)
-      TodoService.new.merge_request_became_unmergeable(merge_request)
+      if merge_request.notify_conflict?
+        NotificationService.new.merge_request_unmergeable(merge_request)
+        TodoService.new.merge_request_became_unmergeable(merge_request)
+      end
     end
 
     def check_state?(merge_status)
@@ -169,7 +171,6 @@ class MergeRequest < ActiveRecord::Base
   scope :unassigned, -> { where("assignee_id IS NULL") }
   scope :assigned_to, ->(u) { where(assignee_id: u.id)}
 
-  participant :participant_approvers
   participant :assignee
 
   after_save :keep_around_commit
@@ -301,10 +302,6 @@ class MergeRequest < ActiveRecord::Base
     author_id == user.id || assignee_id == user.id
   end
 
-  def participant_approvers
-    requires_approve? ? approvers_left : []
-  end
-
   # `from` argument can be a Namespace or Project.
   def to_reference(from = nil, full: false)
     reference = "#{self.class.reference_prefix}#{iid}"
@@ -377,6 +374,10 @@ class MergeRequest < ActiveRecord::Base
     else
       merge_request_diff.diffs(diff_options)
     end
+  end
+
+  def non_latest_diffs
+    merge_request_diffs.where.not(id: merge_request_diff.id)
   end
 
   def diff_size
@@ -549,22 +550,6 @@ class MergeRequest < ActiveRecord::Base
     !source_project.in_fork_network_of?(target_project)
   end
 
-  def validate_approvals_before_merge
-    return true unless approvals_before_merge
-    return true unless target_project
-
-    # Approvals disabled
-    if target_project.approvals_before_merge == 0
-      errors.add :validate_approvals_before_merge,
-                 'Approvals disabled for target project'
-    elsif approvals_before_merge > target_project.approvals_before_merge
-      true
-    else
-      errors.add :validate_approvals_before_merge,
-                 'Number of approvals must be greater than those on target project'
-    end
-  end
-
   def reopenable?
     closed? && !source_project_missing? && source_branch_exists?
   end
@@ -636,18 +621,7 @@ class MergeRequest < ActiveRecord::Base
   def reload_diff(current_user = nil)
     return unless open?
 
-    old_diff_refs = self.diff_refs
-    new_diff = create_merge_request_diff
-
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
-
-    new_diff_refs = self.diff_refs
-
-    update_diff_discussion_positions(
-      old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs,
-      current_user: current_user
-    )
+    MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
   def check_if_can_be_merged
@@ -731,6 +705,17 @@ class MergeRequest < ActiveRecord::Base
 
   def remove_source_branch?
     should_remove_source_branch? || force_remove_source_branch?
+  end
+
+  def notify_conflict?
+    (opened? || locked?) &&
+      has_commits? &&
+      !branch_missing? &&
+      !project.repository.can_be_merged?(diff_head_sha, target_branch)
+  rescue Gitlab::Git::CommandError
+    # Checking mergeability can trigger exception, e.g. non-utf8
+    # We ignore this type of errors.
+    false
   end
 
   def related_notes
@@ -1148,6 +1133,10 @@ class MergeRequest < ActiveRecord::Base
       .find_by(sha: diff_base_sha)
   end
 
+  def discussions_rendered_on_frontend?
+    true
+  end
+
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
@@ -1158,8 +1147,11 @@ class MergeRequest < ActiveRecord::Base
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
+  # TODO: remove once production database rename completes
+  alias_attribute :allow_collaboration, :allow_maintainer_to_push
+
   def allow_collaboration
-    collaborative_push_possible? && super
+    collaborative_push_possible? && allow_maintainer_to_push
   end
 
   alias_method :allow_collaboration?, :allow_collaboration

@@ -144,10 +144,10 @@ export default {
       class="card-slim"
     >
       <div
-        class="card-header"
         :class="{ 'panel-empty-heading border-bottom-0': !hasBody }"
+        class="card-header"
       >
-        <h3 class="card-title mb-0">
+        <h3 class="card-title mt-0 mb-0">
           {{ title }}
           <a
             v-if="hasHelpPath"
@@ -164,8 +164,8 @@ fa fa-question-circle"
 related-issues-header-issue-count issue-count-badge"
           >
             <span
-              class="issue-count-badge-count"
               :class="{ 'has-btn': canAdmin }"
+              class="issue-count-badge-count"
             >
               {{ badgeLabel }}
             </span>
@@ -189,10 +189,10 @@ issue-count-badge-add-button btn btn-sm btn-default"
       </div>
       <div
         v-if="isFormVisible"
-        class="js-add-related-issues-form-area card-body"
         :class="{
           'related-issues-add-related-issues-form-with-break': hasRelatedIssues
         }"
+        class="js-add-related-issues-form-area card-body"
       >
         <add-issuable-form
           :is-submitting="isSubmitting"
@@ -202,11 +202,11 @@ issue-count-badge-add-button btn btn-sm btn-default"
         />
       </div>
       <div
-        class="related-issues-token-body card-body"
         :class="{
           'collapsed': !shouldShowTokenBody,
           'sortable-container': canReorder
         }"
+        class="related-issues-token-body card-body"
       >
         <div
           v-if="isFetching"
@@ -218,13 +218,12 @@ issue-count-badge-add-button btn btn-sm btn-default"
         </div>
         <ul
           ref="list"
-          class="flex-list issuable-list"
           :class="{ 'content-list' : !canReorder }"
+          class="flex-list issuable-list"
         >
           <li
-            :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item"
+            :key="issue.id"
             :class="{
               'user-can-drag': canReorder,
               'sortable-row': canReorder,
@@ -232,9 +231,9 @@ issue-count-badge-add-button btn btn-sm btn-default"
             }"
             :data-key="issue.id"
             :data-epic-issue-id="issue.epic_issue_id"
+            class="js-related-issues-token-list-item"
           >
             <issue-item
-              event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"
               :title="issue.title"
@@ -242,6 +241,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
               :state="issue.state"
               :can-remove="canAdmin"
               :can-reorder="canReorder"
+              event-namespace="relatedIssue"
             />
           </li>
         </ul>

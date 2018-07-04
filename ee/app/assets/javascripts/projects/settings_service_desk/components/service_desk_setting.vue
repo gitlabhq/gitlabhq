@@ -32,10 +32,10 @@
     <div class="form-check">
       <label for="service-desk-enabled-checkbox">
         <input
-          ref="enabled-checkbox"
-          type="checkbox"
           id="service-desk-enabled-checkbox"
+          ref="enabled-checkbox"
           :checked="isEnabled"
+          type="checkbox"
           @change="onCheckboxToggle($event)"
         />
         <span class="descr">
@@ -61,10 +61,10 @@
           </span>
           <button
             v-tooltip
+            :data-clipboard-text="incomingEmail"
             type="button"
             class="btn btn-clipboard btn-transparent"
             title="Copy incoming email address to clipboard"
-            :data-clipboard-text="incomingEmail"
           >
             <i
               class="fa fa-clipboard"

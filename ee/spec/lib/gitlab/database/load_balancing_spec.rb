@@ -142,6 +142,18 @@ describe Gitlab::Database::LoadBalancing do
       expect(described_class.enable?).to eq(true)
     end
 
+    it 'returns true when service discovery is enabled' do
+      allow(described_class).to receive(:hosts).and_return([])
+      allow(Sidekiq).to receive(:server?).and_return(false)
+      allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
+
+      allow(described_class)
+        .to receive(:service_discovery_enabled?)
+        .and_return(true)
+
+      expect(described_class.enable?).to eq(true)
+    end
+
     context 'without a license' do
       before do
         License.destroy_all
@@ -195,6 +207,77 @@ describe Gitlab::Database::LoadBalancing do
   describe '.active_record_models' do
     it 'returns an Array' do
       expect(described_class.active_record_models).to be_an_instance_of(Array)
+    end
+  end
+
+  describe '.service_discovery_enabled?' do
+    it 'returns true if service discovery is enabled' do
+      allow(described_class)
+        .to receive(:configuration)
+        .and_return('discover' => { 'record' => 'foo' })
+
+      expect(described_class.service_discovery_enabled?).to eq(true)
+    end
+
+    it 'returns false if service discovery is disabled' do
+      expect(described_class.service_discovery_enabled?).to eq(false)
+    end
+  end
+
+  describe '.service_discovery_configuration' do
+    context 'when no configuration is provided' do
+      it 'returns a default configuration Hash' do
+        expect(described_class.service_discovery_configuration).to eq(
+          nameserver: 'localhost',
+          port: 8600,
+          record: nil,
+          interval: 60,
+          disconnect_timeout: 120
+        )
+      end
+    end
+
+    context 'when configuration is provided' do
+      it 'returns a Hash including the custom configuration' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return('discover' => { 'record' => 'foo' })
+
+        expect(described_class.service_discovery_configuration).to eq(
+          nameserver: 'localhost',
+          port: 8600,
+          record: 'foo',
+          interval: 60,
+          disconnect_timeout: 120
+        )
+      end
+    end
+  end
+
+  describe '.start_service_discovery' do
+    it 'does not start if service discovery is disabled' do
+      expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+        .not_to receive(:new)
+
+      described_class.start_service_discovery
+    end
+
+    it 'starts service discovery if enabled' do
+      allow(described_class)
+        .to receive(:service_discovery_enabled?)
+        .and_return(true)
+
+      instance = double(:instance)
+
+      expect(Gitlab::Database::LoadBalancing::ServiceDiscovery)
+        .to receive(:new)
+        .with(an_instance_of(Hash))
+        .and_return(instance)
+
+      expect(instance)
+        .to receive(:start)
+
+      described_class.start_service_discovery
     end
   end
 end

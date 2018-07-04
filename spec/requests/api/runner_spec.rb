@@ -356,11 +356,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       context 'when valid token is provided' do
         context 'when Runner is not active' do
           let(:runner) { create(:ci_runner, :inactive) }
+          let(:update_value) { runner.ensure_runner_queue_value }
 
           it 'returns 204 error' do
             request_job
 
-            expect(response).to have_gitlab_http_status 204
+            expect(response).to have_gitlab_http_status(204)
+            expect(response.header['X-GitLab-Last-Update']).to eq(update_value)
           end
         end
 
@@ -821,6 +823,18 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           expect(job.reload.trace.raw).to eq 'BUILD TRACE'
         end
+
+        context 'when running state is sent' do
+          it 'updates update_at value' do
+            expect { update_job_after_time }.to change { job.reload.updated_at }
+          end
+        end
+
+        context 'when other state is sent' do
+          it "doesn't update update_at value" do
+            expect { update_job_after_time(20.minutes, state: 'success') }.not_to change { job.reload.updated_at }
+          end
+        end
       end
 
       context 'when job has been erased' do
@@ -843,6 +857,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
 
           expect(response).to have_gitlab_http_status(403)
+          expect(response.header['Job-Status']).to eq 'failed'
           expect(job.trace.raw).to eq 'Job failed'
           expect(job).to be_failed
         end
@@ -851,6 +866,12 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       def update_job(token = job.token, **params)
         new_params = params.merge(token: token)
         put api("/jobs/#{job.id}"), new_params
+      end
+
+      def update_job_after_time(update_interval = 20.minutes, state = 'running')
+        Timecop.travel(job.updated_at + update_interval) do
+          update_job(job.token, state: state)
+        end
       end
     end
 
@@ -984,6 +1005,17 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
           end
         end
+
+        context 'when the job is canceled' do
+          before do
+            job.cancel
+            patch_the_trace
+          end
+
+          it 'receives status in header' do
+            expect(response.header['Job-Status']).to eq 'canceled'
+          end
+        end
       end
 
       context 'when Runner makes a force-patch' do
@@ -1060,8 +1092,8 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
       let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
       let(:headers_with_token) { headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.token) }
-      let(:file_upload) { fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif') }
-      let(:file_upload2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/gif') }
+      let(:file_upload) { fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif') }
+      let(:file_upload2) { fixture_file_upload('spec/fixtures/dk.png', 'image/gif') }
 
       before do
         stub_artifacts_object_storage
@@ -1106,6 +1138,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                   expect(json_response['RemoteObject']).to have_key('GetURL')
                   expect(json_response['RemoteObject']).to have_key('StoreURL')
                   expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                  expect(json_response['RemoteObject']).to have_key('MultipartUpload')
                 end
               end
 

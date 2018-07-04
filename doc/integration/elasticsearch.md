@@ -9,10 +9,10 @@ This document describes how to set up Elasticsearch with GitLab. Once enabled,
 you'll have the benefit of fast search response times and the advantage of two
 special searches:
 
-- [Advance Global Search](../user/search/advanced_global_search.md)
+- [Advanced Global Search](../user/search/advanced_global_search.md)
 - [Advanced Syntax Search](../user/search/advanced_search_syntax.md)
 
-## Requirements
+## Version Requirements
 
 | GitLab version | Elasticsearch version |
 | -------------- | --------------------- |
@@ -36,6 +36,18 @@ service.
 
 You can follow the steps as described in the [official web site][install] or
 use the packages that are available for your OS.
+
+## System Requirements
+
+Elasticsearch requires additional resources in excess of those documented in the
+[GitLab system requirements](../install/requirements.md). These will vary by
+installation size, but you should ensure **at least** an additional 8 GiB of RAM
+for each Elasticsearch node, per the [official guidelines](https://www.elastic.co/guide/en/elasticsearch/guide/current/hardware.html).
+
+Storage requirements also vary based on installation side, but as a rule of
+thumb, you should allocate the total size of your production database, **plus**
+two-thirds of the total size of your git repositories. Efforts to reduce this
+total are being tracked in this epic: [gitlab-org&153](https://gitlab.com/groups/gitlab-org/-/epics/153).
 
 ## Enabling Elasticsearch
 
@@ -306,4 +318,4 @@ Here are some common pitfalls and how to overcome them:
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
 [pkg]: https://about.gitlab.com/downloads/ "Download Omnibus GitLab"
 [elastic-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#settings "Elasticsearch configuration settings"
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

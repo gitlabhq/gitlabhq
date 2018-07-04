@@ -6,7 +6,6 @@ describe Groups::SamlProvidersController do
   let(:user) { create(:user) }
 
   before do
-    request.cookies['enable_group_saml'] = 'true'
     sign_in(user)
   end
 

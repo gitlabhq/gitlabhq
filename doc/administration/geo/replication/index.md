@@ -203,8 +203,8 @@ extra limitations may be in place.
 
 - Pushing code to a secondary redirects the request to the primary instead of handling it directly [gitlab-ee#1381](https://gitlab.com/gitlab-org/gitlab-ee/issues/1381):
     * Only push via HTTP is currently supported
+    * Git LFS is supported
     * Pushing via SSH is currently not supported: [gitlab-ee#5387](https://gitlab.com/gitlab-org/gitlab-ee/issues/5387)
-    * Git LFS is currently not supported: [gitlab-ee#6195](https://gitlab.com/gitlab-org/gitlab-ee/issues/6195)
 - The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
 - The installation takes multiple manual steps that together can take about an hour depending on circumstances; we are
   working on improving this experience, see [gitlab-org/omnibus-gitlab#2978] for details.
@@ -267,7 +267,7 @@ Read the [Geo tuning][tunning] documentation.
 
 Read the [troubleshooting document][troubleshooting].
 
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition landing page"
 [install-requirements]: ../../../install/requirements.md
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"

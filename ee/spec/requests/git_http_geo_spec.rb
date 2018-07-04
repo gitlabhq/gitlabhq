@@ -5,6 +5,7 @@ describe "Git HTTP requests (Geo)" do
   include ::EE::GeoHelpers
   include GitHttpHelpers
   include WorkhorseHelpers
+  using RSpec::Parameterized::TableSyntax
 
   set(:project) { create(:project, :repository, :private) }
   set(:primary) { create(:geo_node, :primary) }
@@ -113,6 +114,80 @@ describe "Git HTTP requests (Geo)" do
       end
 
       it_behaves_like 'Geo sync request'
+    end
+  end
+
+  context 'git-lfs' do
+    context 'API' do
+      describe 'POST batch' do
+        def make_request
+          post url, {}, env.merge(extra_env)
+        end
+
+        let(:extra_env) { {} }
+        let(:incorrect_version_regex) { /You need git-lfs version 2.4.2/ }
+        let(:url) { "/#{project.full_path}.git/info/lfs/objects/batch" }
+
+        subject do
+          make_request
+          response
+        end
+
+        context 'with the correct git-lfs version' do
+          let(:extra_env) { { 'User-Agent' => 'git-lfs/2.4.2 (GitHub; darwin amd64; go 1.10.2)' } }
+
+          it 'redirects to the primary' do
+            is_expected.to have_gitlab_http_status(:redirect)
+            redirect_location = "#{primary.url.chomp('/')}#{url}"
+            expect(subject.header['Location']).to eq(redirect_location)
+          end
+        end
+
+        where(:description, :version) do
+          'outdated' | 'git-lfs/2.4.1'
+          'unknown'  | 'git-lfs'
+        end
+
+        with_them do
+          context "with an #{description} git-lfs version" do
+            let(:extra_env) { { 'User-Agent' => "#{version} (GitHub; darwin amd64; go 1.10.2)" } }
+
+            it 'errors out' do
+              is_expected.to have_gitlab_http_status(:forbidden)
+              expect(json_response['message']).to match(incorrect_version_regex)
+            end
+          end
+        end
+      end
+    end
+
+    context 'Locks API' do
+      where(:description, :path, :args) do
+        'create' | 'info/lfs/locks'          | {}
+        'verify' | 'info/lfs/locks/verify'   | {}
+        'unlock' | 'info/lfs/locks/1/unlock' | { id: 1 }
+      end
+
+      with_them do
+        describe "POST #{description}" do
+          def make_request
+            post url, args, env
+          end
+
+          let(:url) { "/#{project.full_path}.git/#{path}" }
+
+          subject do
+            make_request
+            response
+          end
+
+          it 'redirects to the primary' do
+            is_expected.to have_gitlab_http_status(:redirect)
+            redirect_location = "#{primary.url.chomp('/')}#{url}"
+            expect(subject.header['Location']).to eq(redirect_location)
+          end
+        end
+      end
     end
   end
 

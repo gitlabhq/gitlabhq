@@ -20,6 +20,10 @@ module EE
           attrs << :email_additional_text
         end
 
+        if License.feature_available?(:pseudonymizer)
+          attrs << :pseudonymizer_enabled
+        end
+
         attrs
       end
     end

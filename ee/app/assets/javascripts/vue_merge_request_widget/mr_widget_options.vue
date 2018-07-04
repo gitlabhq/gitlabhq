@@ -245,9 +245,7 @@ export default {
       :service="service"
     />
     <report-section
-      class="js-codequality-widget mr-widget-border-top"
       v-if="shouldRenderCodeQuality"
-      type="codequality"
       :status="codequalityStatus"
       :loading-text="translateText('codeclimate').loading"
       :error-text="translateText('codeclimate').error"
@@ -255,11 +253,11 @@ export default {
       :unresolved-issues="mr.codeclimateMetrics.newIssues"
       :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
       :has-issues="hasCodequalityIssues"
+      class="js-codequality-widget mr-widget-border-top"
+      type="codequality"
     />
     <report-section
-      class="js-performance-widget mr-widget-border-top"
       v-if="shouldRenderPerformance"
-      type="performance"
       :status="performanceStatus"
       :loading-text="translateText('performance').loading"
       :error-text="translateText('performance').error"
@@ -268,6 +266,8 @@ export default {
       :resolved-issues="mr.performanceMetrics.improved"
       :neutral-issues="mr.performanceMetrics.neutral"
       :has-issues="hasPerformanceMetrics"
+      class="js-performance-widget mr-widget-border-top"
+      type="performance"
     />
     <grouped-security-reports-app
       v-if="shouldRenderSecurityReport"
@@ -288,17 +288,19 @@ export default {
       :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
       :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
       :pipeline-id="mr.securityReportsPipelineId"
+      :can-create-issue="mr.canCreateIssue"
+      :can-create-feedback="mr.canCreateFeedback"
     />
     <report-section
-      class="js-license-report-widget mr-widget-border-top"
       v-if="shouldRenderLicenseReport"
-      type="license"
       :status="licenseReportStatus"
       :loading-text="translateText('license management').loading"
       :error-text="translateText('license management').error"
       :success-text="licenseReportText"
       :unresolved-issues="mr.licenseReport"
       :has-issues="hasLicenseReportIssues"
+      class="js-license-report-widget mr-widget-border-top"
+      type="license"
     />
     <div class="mr-widget-section">
       <component
@@ -324,8 +326,8 @@ export default {
       />
     </div>
     <div
-      class="mr-widget-footer"
       v-if="shouldRenderMergeHelp"
+      class="mr-widget-footer"
     >
       <mr-widget-merge-help />
     </div>

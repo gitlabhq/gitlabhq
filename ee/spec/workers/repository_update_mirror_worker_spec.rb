@@ -1,13 +1,14 @@
 require 'rails_helper'
 
 describe RepositoryUpdateMirrorWorker do
+  include ExclusiveLeaseHelpers
+
   describe '#perform' do
     let(:jid) { '12345678' }
     let!(:project) { create(:project) }
     let!(:import_state) { create(:import_state, :mirror, :scheduled, project: project) }
 
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
       allow(subject).to receive(:jid).and_return(jid)
     end
 
@@ -56,6 +57,10 @@ describe RepositoryUpdateMirrorWorker do
       end
 
       context 'when we obtain the lease' do
+        before do
+          allow(stub_exclusive_lease).to receive(:exists?).and_return(false)
+        end
+
         it 'performs UpdateAllMirrorsWorker when reschedule_immediately? returns true' do
           allow(Gitlab::Mirror).to receive(:reschedule_immediately?).and_return(true)
 
@@ -74,7 +79,7 @@ describe RepositoryUpdateMirrorWorker do
       end
 
       it 'does not perform UpdateAllMirrorsWorker when we cannot obtain the lease' do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+        stub_exclusive_lease_taken
 
         expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
 
@@ -82,7 +87,7 @@ describe RepositoryUpdateMirrorWorker do
       end
 
       it 'does not perform UpdateAllMirrorsWorker when the lease already exists' do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:exists?).and_return(true)
+        stub_exclusive_lease_taken
 
         expect(UpdateAllMirrorsWorker).not_to receive(:perform_async)
 

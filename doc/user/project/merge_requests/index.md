@@ -33,7 +33,7 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](../../../ci/multi_project_pipeline_graphs.md#multi-project-pipeline-graphs) **[PREMIUM]**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md#multi-project-pipeline-graphs) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
 - Analyze the impact of your changes with [Code Quality reports](code_quality_diff.md) **[STARTER]**
 - Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
@@ -92,7 +92,7 @@ request is merged.
 
 This option is also visible in an existing merge request next to the merge
 request button and can be selected/deselected before merging. It's only visible
-to users with [Master permissions](../../permissions.md) in the source project.
+to users with [Maintainer permissions](../../permissions.md) in the source project.
 
 If the user viewing the merge request does not have the correct permissions to
 remove the source branch and the source branch is set for removal, the merge
@@ -432,6 +432,6 @@ git checkout origin/merge-requests/1
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition"
 [sitespeed]: https://www.sitespeed.io
 [sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"

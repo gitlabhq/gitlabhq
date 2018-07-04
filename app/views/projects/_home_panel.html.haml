@@ -49,6 +49,10 @@
           .project-clone-holder
             = render "shared/clone_panel"
 
+          - if show_xcode_link?(@project)
+            .project-action-button.project-xcode.inline
+              = render "projects/buttons/xcode_link"
+
         - if current_user
           - if can?(current_user, :download_code, @project)
             = render 'projects/buttons/download', project: @project, ref: @ref

@@ -51,9 +51,9 @@
       <span
         v-tooltip
         v-if="eventTimeStamp"
+        :title="timeStampString"
         class="event-status-timestamp"
         data-placement="bottom"
-        :title="timeStampString"
       >
         ({{ timeFormated(timeStamp) }})
       </span>

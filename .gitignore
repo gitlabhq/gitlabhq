@@ -29,8 +29,7 @@ eslint-report.html
 /app/assets/javascripts/locale/**/app.js
 /backups/*
 /config/aws.yml
-/config/database.yml
-/config/database_geo.yml
+/config/database*.yml
 /config/gitlab.yml
 /config/gitlab_ci.yml
 /config/initializers/rack_attack.rb
@@ -77,3 +76,4 @@ eslint-report.html
 /.rspec
 /plugins/*
 /.gitlab_pages_secret
+package-lock.json

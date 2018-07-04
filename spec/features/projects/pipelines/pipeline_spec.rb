@@ -344,6 +344,16 @@ describe 'Pipeline', :js do
       it 'shows build failure logs' do
         expect(page).to have_content('4 examples, 1 failure')
       end
+
+      it 'shows the failure reason' do
+        expect(page).to have_content('There is an unknown failure, please try again')
+      end
+
+      it 'shows retry button for failed build' do
+        page.within(find('.build-failures', match: :first)) do
+          expect(page).to have_link('Retry')
+        end
+      end
     end
 
     context 'when missing build logs' do

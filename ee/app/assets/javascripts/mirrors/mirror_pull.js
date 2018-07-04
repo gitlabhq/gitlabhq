@@ -80,7 +80,7 @@ export default class MirrorPull {
       axios.get(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
       .then(({ data, status }) => {
         if (status === 204) {
-          this.backOffRequestCounter = this.backOffRequestCounter += 1;
+          this.backOffRequestCounter += 1;
           if (this.backOffRequestCounter < 3) {
             next();
           } else {
@@ -103,7 +103,7 @@ export default class MirrorPull {
     .catch(({ response }) => {
       // Show failure message when there's an error and re-enable Detect host keys button
       const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
-      Flash(failureMessage); // eslint-disable-line
+      Flash(failureMessage);
 
       $btnLoadSpinner.addClass('hidden');
       this.$btnDetectHostKeys.enable();

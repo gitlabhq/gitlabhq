@@ -12,7 +12,7 @@ Parameters:
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
 | `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
-| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
@@ -96,7 +96,7 @@ Parameters:
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
 | `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
-| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
@@ -147,6 +147,8 @@ Parameters:
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:

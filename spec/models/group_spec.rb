@@ -18,7 +18,6 @@ describe Group do
     it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_one(:chat_team) }
     it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
-    it { is_expected.to have_many(:audit_events).dependent(false) }
     it { is_expected.to have_many(:badges).class_name('GroupBadge') }
 
     describe '#members & #requesters' do
@@ -65,6 +64,30 @@ describe Group do
         group = build(:group, path: 'tree', parent: create(:group))
 
         expect(group).not_to be_valid
+      end
+    end
+
+    describe '#notification_settings', :nested_groups do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:sub_group) { create(:group, parent_id: group.id) }
+
+      before do
+        group.add_developer(user)
+        sub_group.add_developer(user)
+      end
+
+      it 'also gets notification settings from parent groups' do
+        expect(sub_group.notification_settings.size).to eq(2)
+        expect(sub_group.notification_settings).to include(group.notification_settings.first)
+      end
+
+      context 'when sub group is deleted' do
+        it 'does not delete parent notification settings' do
+          expect do
+            sub_group.destroy
+          end.to change { NotificationSetting.count }.by(-1)
+        end
       end
     end
 
@@ -241,7 +264,7 @@ describe Group do
 
     it "is false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff"])
+      expect(group.avatar_type).to eq(["file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico"])
     end
   end
 

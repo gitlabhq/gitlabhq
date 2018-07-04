@@ -161,6 +161,35 @@ ul.related-merge-requests > li {
 }
 
 .issues-export-modal {
+  .modal-header {
+    justify-content: flex-start;
+
+    .export-svg-container {
+      flex-grow: 1;
+
+      > svg {
+        float: right;
+      }
+    }
+  }
+
+  .modal-body {
+    padding: 0;
+
+    .export-modal-subheader {
+      justify-content: flex-start;
+      align-items: center;
+      border-bottom: 1px solid $modal-border-color;
+      padding: 14px;
+    }
+
+    .export-modal-text {
+      padding: 24px 16px;
+      line-height: 1.5;
+      min-height: $modal-body-height;
+    }
+  }
+
   .export-svg-container {
     height: 56px;
     padding: 10px 10px 0;

@@ -1,0 +1,9 @@
+- lock_label = local_assigns.fetch(:lock_label)
+- return unless lock_label
+
+:plain
+  var label = $("<span>")
+    .attr('title', '#{escape_javascript lock_label.html_safe}')
+    .attr('data-toggle', 'tooltip')
+    .addClass('fa fa-lock prepend-left-5');
+  row.find('td.tree-item-file-name').append(label);

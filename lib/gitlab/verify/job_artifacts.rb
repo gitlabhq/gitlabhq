@@ -1,8 +1,6 @@
 module Gitlab
   module Verify
     class JobArtifacts < BatchVerifier
-      prepend ::EE::Gitlab::Verify::JobArtifacts
-
       def name
         'Job artifacts'
       end
@@ -13,8 +11,12 @@ module Gitlab
 
       private
 
-      def relation
+      def all_relation
         ::Ci::JobArtifact.all
+      end
+
+      def local?(artifact)
+        artifact.local_store?
       end
 
       def expected_checksum(artifact)
@@ -23,6 +25,10 @@ module Gitlab
 
       def actual_checksum(artifact)
         Digest::SHA256.file(artifact.file.path).hexdigest
+      end
+
+      def remote_object_exists?(artifact)
+        artifact.file.file.exists?
       end
     end
   end

@@ -44,7 +44,7 @@ class MicrosoftTeamsService < ChatNotificationService
   def notify(message, opts)
     MicrosoftTeams::Notifier.new(webhook).ping(
       title: message.project_name,
-      pretext: message.pretext,
+      summary: message.summary,
       activity: message.activity,
       attachments: message.attachments
     )

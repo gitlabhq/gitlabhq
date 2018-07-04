@@ -68,6 +68,6 @@
 
     - if can_update_approvers
       .form-text.text-muted.suggested-approvers
-        - if @suggested_approvers.any?
+        - if @suggested_approvers&.any?
           Suggested approvers:
           = raw @suggested_approvers.map { |approver| link_to sanitize(approver.name), "#", id: dom_id(approver) }.join(", ")

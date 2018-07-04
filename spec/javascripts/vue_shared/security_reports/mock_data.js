@@ -46,6 +46,8 @@ export const sastIssues = [
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
     location: {
       file: 'Gemfile.lock',
+      start_line: 5,
+      end_line: 10,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
@@ -106,6 +108,7 @@ export const oldSastIssues = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
+    line: '5',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
   },
 ];
@@ -120,6 +123,8 @@ export const sastIssuesBase = [
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     location: {
       file: 'Gemfile.lock',
+      start_line: 5,
+      end_line: 10,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
@@ -161,11 +166,13 @@ export const parsedSastIssuesStore = [
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
     title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L5-10',
     category: 'sast',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
     location: {
       file: 'Gemfile.lock',
+      start_line: 5,
+      end_line: 10,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
@@ -235,11 +242,13 @@ export const parsedSastIssuesHead = [
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
     title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L5-10',
     category: 'sast',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
     location: {
       file: 'Gemfile.lock',
+      start_line: 5,
+      end_line: 10,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
@@ -286,11 +295,13 @@ export const parsedSastBaseStore = [
     solution:
       'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
     path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L5-10',
     category: 'sast',
     project_fingerprint: '3f5608c99f0c7442ba59bc6c0c1864d0000f8e1a',
     location: {
       file: 'Gemfile.lock',
+      start_line: 5,
+      end_line: 10,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
@@ -311,6 +322,7 @@ export const dependencyScanningIssues = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
+    line: '5',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
   },
   {
@@ -361,15 +373,16 @@ export const parsedDependencyScanningIssuesStore = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
+    line: '5',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
     title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L5',
     category: 'dependency_scanning',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
     location: {
       file: 'Gemfile.lock',
-      start_line: undefined,
+      start_line: 5,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
@@ -426,15 +439,16 @@ export const parsedDependencyScanningIssuesHead = [
     url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
     cve: 'CVE-2014-7829',
     file: 'Gemfile.lock',
+    line: '5',
     solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
     title: 'Arbitrary file existence disclosure in Action Pack',
     path: 'Gemfile.lock',
-    urlPath: 'path/Gemfile.lock',
+    urlPath: 'path/Gemfile.lock#L5',
     category: 'dependency_scanning',
     project_fingerprint: 'f55331d66fd4f3bfb4237d48e9c9fa8704bd33c6',
     location: {
       file: 'Gemfile.lock',
-      start_line: undefined,
+      start_line: 5,
     },
     links: [{
       url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',

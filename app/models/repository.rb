@@ -26,7 +26,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
-  delegate :bundle_to_disk, :create_from_bundle, to: :raw_repository
+  delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -106,11 +106,11 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def commit(ref = 'HEAD')
+  def commit(ref = nil)
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
 
-    find_commit(ref)
+    find_commit(ref || root_ref)
   end
 
   # Finding a commit by the passed SHA
@@ -161,7 +161,10 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
+    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    end
 
     refs.map { |sha| commit(sha.strip) }
   end
@@ -275,6 +278,20 @@ class Repository
 
       { behind: number_commits_behind, ahead: number_commits_ahead }
     end
+  end
+
+  def archive_metadata(ref, storage_path, format = "tar.gz", append_sha:)
+    raw_repository.archive_metadata(
+      ref,
+      storage_path,
+      project.path,
+      format,
+      append_sha: append_sha
+    )
+  end
+
+  def cached_methods
+    CACHED_METHODS
   end
 
   def expire_tags_cache
@@ -417,7 +434,7 @@ class Repository
 
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
-    expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
+    expire_all_method_caches
   end
 
   # Runs code after a repository has been forked/imported.
@@ -886,7 +903,7 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
-  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -993,6 +1010,10 @@ class Repository
 
   def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
     blob_data_at(sha, path)
+  end
+
+  def lfsconfig_for(sha)
+    blob_data_at(sha, '.lfsconfig')
   end
 
   def fetch_ref(source_repository, source_ref:, target_ref:)

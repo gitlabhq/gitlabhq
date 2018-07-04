@@ -35,6 +35,18 @@ module EE
         "and the value is encrypted at rest.")
     end
 
+    def pseudonymizer_enabled_help_text
+      _("Enable Pseudonymizer data collection")
+    end
+
+    def pseudonymizer_description_text
+      _("GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.")
+    end
+
+    def pseudonymizer_disabled_description_text
+      _("The pseudonymizer data collection is disabled. When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.")
+    end
+
     override :visible_attributes
     def visible_attributes
       super + [
@@ -55,7 +67,8 @@ module EE
         :slack_app_id,
         :slack_app_secret,
         :slack_app_verification_token,
-        :allow_group_owners_to_manage_ldap
+        :allow_group_owners_to_manage_ldap,
+        :pseudonymizer_enabled
       ]
     end
 

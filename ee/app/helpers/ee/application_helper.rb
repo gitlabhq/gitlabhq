@@ -6,16 +6,23 @@ module EE
     def read_only_message
       return super unless ::Gitlab::Geo.secondary_with_primary?
 
-      (_('You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the %{primary_node}.') %
+      (_('You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}.') %
         { primary_node: link_to('primary node', ::Gitlab::Geo.primary_node.url) }).html_safe
     end
 
     def render_ce(partial, locals = {})
-      render template: find_ce_partial(partial), locals: locals
+      render template: find_ce_template(partial), locals: locals
     end
 
-    def find_ce_partial(partial)
-      ce_lookup_context.find(partial, [], true)
+    # Tries to find a matching partial first, if there is none, we try to find a matching view
+    def find_ce_template(name)
+      prefixes = [] # So don't create extra [] garbage
+
+      if ce_lookup_context.exists?(name, prefixes, true)
+        ce_lookup_context.find(name, prefixes, true)
+      else
+        ce_lookup_context.find(name, prefixes, false)
+      end
     end
 
     def ce_lookup_context

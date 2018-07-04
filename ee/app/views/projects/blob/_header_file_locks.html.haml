@@ -1,0 +1,9 @@
+- project = local_assigns.fetch(:project)
+- path = local_assigns.fetch(:path)
+
+- return unless project.feature_available?(:file_locks)
+
+-# haml-lint:disable InlineJavaScript
+%script#js-file-lock{ type: "application/json" }
+  - data = { path: path, toggle_path: toggle_project_path_locks_path(project) }
+  = data.to_json.html_safe

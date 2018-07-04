@@ -22,23 +22,23 @@ export default {
 
 <template>
   <div
-    class="flex"
     :class="{
       'issue-info-container': !canReorder,
       'card-body': canReorder,
     }"
+    class="flex"
   >
     <div class="block-truncated append-right-10">
       <a
-        class="issue-token-title-text sortable-link"
         :href="computedPath"
+        class="issue-token-title-text sortable-link"
       >
         {{ title }}
       </a>
       <div class="block text-secondary">
         <icon
-          v-if="hasState"
           v-tooltip
+          v-if="hasState"
           :css-classes="iconClass"
           :name="iconName"
           :size="12"
@@ -49,14 +49,14 @@ export default {
       </div>
     </div>
     <button
-      v-if="canRemove"
       v-tooltip
+      v-if="canRemove"
       ref="removeButton"
+      :disabled="removeDisabled"
       type="button"
       class="btn btn-default js-issue-item-remove-button flex-align-self-center flex-right"
       title="Remove"
       aria-label="Remove"
-      :disabled="removeDisabled"
       @click="onRemoveRequest"
     >
       <i

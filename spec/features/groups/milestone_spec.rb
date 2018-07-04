@@ -107,19 +107,6 @@ feature 'Group milestones' do
         expect(page).to have_selector("#milestone_#{legacy_milestone.milestones.first.id}", count: 1)
       end
 
-      it 'updates milestone' do
-        page.within(".milestones #milestone_#{active_group_milestone.id}") do
-          click_link('Edit')
-        end
-
-        page.within('.milestone-form') do
-          fill_in 'milestone_title', with: 'new title'
-          click_button('Update milestone')
-        end
-
-        expect(find('#content-body h2')).to have_content('new title')
-      end
-
       it 'shows milestone detail and supports its edit' do
         page.within(".milestones #milestone_#{active_group_milestone.id}") do
           click_link(active_group_milestone.title)

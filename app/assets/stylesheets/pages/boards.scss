@@ -117,6 +117,7 @@
   overflow-x: scroll;
   white-space: nowrap;
   min-height: 200px;
+  display: flex;
 
   @include media-breakpoint-only(sm) {
     height: calc(100vh - #{$issue-board-list-difference-sm});
@@ -147,16 +148,14 @@
 
 .board {
   display: inline-block;
-  width: calc(85vw - 15px);
+  flex: 1;
+  min-width: 300px;
+  max-width: 400px;
   height: 100%;
   padding-right: ($gl-padding / 2);
   padding-left: ($gl-padding / 2);
   white-space: normal;
   vertical-align: top;
-
-  @include media-breakpoint-up(sm) {
-    width: 400px;
-  }
 
   &.is-expandable {
     .board-header {
@@ -165,6 +164,8 @@
   }
 
   &.is-collapsed {
+    flex: none;
+    min-width: 0;
     width: 50px;
 
     .board-header {
@@ -327,9 +328,6 @@
   box-shadow: 0 1px 2px $issue-boards-card-shadow;
   list-style: none;
 
-  // as a fallback, hide overflow content so that dragging and dropping still works
-  overflow: hidden;
-
   &:not(:last-child) {
     margin-bottom: 5px;
   }
@@ -337,10 +335,6 @@
   &.is-active,
   &.is-active .board-card-assignee:hover a {
     background-color: $row-hover;
-
-    &:first-child:not(:only-child) {
-      box-shadow: -10px 0 10px 1px $row-hover;
-    }
   }
 
   .badge {
@@ -748,12 +742,6 @@
     top: 175px;
     min-width: 200px;
   }
-}
-
-.board-milestone-footer-content {
-  padding-left: 12px;
-  padding-right: 12px;
-  color: $gl-gray-dark;
 }
 
 .board-config-modal {

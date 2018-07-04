@@ -5,6 +5,10 @@ describe Group do
 
   it { is_expected.to include_module(EE::Group) }
 
+  describe 'associations' do
+    it { is_expected.to have_many(:audit_events).dependent(false) }
+  end
+
   describe 'states' do
     it { is_expected.to be_ldap_sync_ready }
 

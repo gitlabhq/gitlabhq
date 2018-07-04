@@ -1,0 +1,18 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group.row
+      .offset-sm-2.col-sm-10
+        - is_enabled = @application_setting.pseudonymizer_enabled?
+        .form-check
+          = f.label :pseudonymizer_enabled do
+            = f.check_box :pseudonymizer_enabled
+            = pseudonymizer_enabled_help_text
+          .form-text.text-muted
+            - if is_enabled
+              = pseudonymizer_description_text
+            - else
+              = pseudonymizer_disabled_description_text
+
+  = f.submit 'Save changes', class: "btn btn-success"

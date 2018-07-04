@@ -1,5 +1,8 @@
-import { getTimeframeWindow } from '~/lib/utils/datetime_utility';
-import { TIMEFRAME_LENGTH } from 'ee/roadmap/constants';
+import {
+  getTimeframeForQuartersView,
+  getTimeframeForMonthsView,
+  getTimeframeForWeeksView,
+} from 'ee/roadmap/utils/roadmap_utils';
 
 export const mockScrollBarSize = 15;
 
@@ -15,7 +18,9 @@ export const mockNewEpicEndpoint = '/groups/gitlab-org/-/epics';
 
 export const mockSvgPath = '/foo/bar.svg';
 
-export const mockTimeframe = getTimeframeWindow(TIMEFRAME_LENGTH, new Date(2018, 1, 1));
+export const mockTimeframeQuarters = getTimeframeForQuartersView(new Date(2018, 0, 1));
+export const mockTimeframeMonths = getTimeframeForMonthsView(new Date(2018, 0, 1));
+export const mockTimeframeWeeks = getTimeframeForWeeksView(new Date(2018, 0, 1));
 
 export const mockEpic = {
   id: 1,

@@ -26,7 +26,7 @@ module Gitlab
           def healthy_shard_for?(event)
             return true unless event.respond_to?(:project)
 
-            Gitlab::Geo::ShardHealthCache.healthy_shard?(event.project.repository_storage)
+            Gitlab::ShardHealthCache.healthy_shard?(event.project.repository_storage)
           end
 
           def enqueue_job_if_shard_healthy(event)

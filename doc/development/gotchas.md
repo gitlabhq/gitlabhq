@@ -92,6 +92,54 @@ describe API::Labels do
 end
 ```
 
+## Avoid using `allow_any_instance_of` in RSpec
+
+### Why
+
+* Because it is not isolated therefore it might be broken at times.
+* Because it doesn't work whenever the method we want to stub was defined
+  in a prepended module, which is very likely the case in EE. We could see
+  error like this:
+
+        1.1) Failure/Error: allow_any_instance_of(ApplicationSetting).to receive_messages(messages)
+               Using `any_instance` to stub a method (elasticsearch_indexing) that has been defined on a prepended module (EE::ApplicationSetting) is not supported.
+
+### Alternative: `expect_next_instance_of`
+
+Instead of writing:
+
+```ruby
+# Don't do this:
+allow_any_instance_of(Project).to receive(:add_import_job)
+```
+
+We could write:
+
+```ruby
+# Do this:
+expect_next_instance_of(Project) do |project|
+  expect(project).to receive(:add_import_job)
+end
+```
+
+If we also want to expect the instance was initialized with some particular
+arguments, we could also pass it to `expect_next_instance_of` like:
+
+```ruby
+# Do this:
+expect_next_instance_of(MergeRequests::RefreshService, project, user) do |refresh_service|
+  expect(refresh_service).to receive(:execute).with(oldrev, newrev, ref)
+end
+```
+
+This would expect the following:
+
+```ruby
+# Above expects:
+refresh_service = MergeRequests::RefreshService.new(project, user)
+refresh_service.execute(oldrev, newrev, ref)
+```
+
 ## Do not `rescue Exception`
 
 See ["Why is it bad style to `rescue Exception => e` in Ruby?"][Exception].

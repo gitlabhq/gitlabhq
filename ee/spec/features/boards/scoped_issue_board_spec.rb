@@ -170,8 +170,8 @@ describe 'Scoped issue boards', :js do
           end
         end
 
-        it 'creates board filtering by "Any weight"' do
-          create_board_weight('Any Weight')
+        it 'creates board filtering by "Any" weight' do
+          create_board_weight('Any')
 
           expect(page).to have_selector('.board-card', count: 4)
         end
@@ -356,7 +356,7 @@ describe 'Scoped issue boards', :js do
         end
 
         it 'sets board to Any weight' do
-          update_board_weight('Any Weight')
+          update_board_weight('Any')
 
           expect(page).to have_selector('.board-card', count: 4)
         end

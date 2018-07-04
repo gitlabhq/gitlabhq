@@ -28,12 +28,6 @@ describe GeoNodeStatus, :geo do
 
       described_class.fast_current_node_status
     end
-
-    it 'returns status for primary with no cache' do
-      stub_current_geo_node(primary)
-
-      expect(described_class.fast_current_node_status).to eq described_class.current_node_status
-    end
   end
 
   describe '#update_cache!' do
@@ -57,7 +51,7 @@ describe GeoNodeStatus, :geo do
 
     context 'when health is present' do
       it 'returns true' do
-        subject.status_message = 'Healthy'
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
 
         expect(subject.healthy?).to be true
       end
@@ -67,6 +61,36 @@ describe GeoNodeStatus, :geo do
 
         expect(subject.healthy?).to be false
       end
+    end
+
+    context 'takes outdated? into consideration' do
+      it 'return false' do
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
+        subject.updated_at = 10.minutes.ago
+
+        expect(subject.healthy?).to be false
+      end
+
+      it 'return false' do
+        subject.status_message = 'something went wrong'
+        subject.updated_at = 1.minute.ago
+
+        expect(subject.healthy?).to be false
+      end
+    end
+  end
+
+  describe '#outdated?' do
+    it 'return true' do
+      subject.updated_at = 10.minutes.ago
+
+      expect(subject.outdated?).to be true
+    end
+
+    it 'return false' do
+      subject.updated_at = 1.minute.ago
+
+      expect(subject.outdated?).to be false
     end
   end
 
@@ -78,11 +102,29 @@ describe GeoNodeStatus, :geo do
     end
   end
 
+  describe '#health' do
+    context 'takes outdated? into consideration' do
+      it 'returns expiration error' do
+        subject.status_message = GeoNodeStatus::HEALTHY_STATUS
+        subject.updated_at = 10.minutes.ago
+
+        expect(subject.health).to eq "Status has not been updated in the past #{described_class::EXPIRATION_IN_MINUTES} minutes"
+      end
+
+      it 'returns original message' do
+        subject.status_message = 'something went wrong'
+        subject.updated_at = 1.minute.ago
+
+        expect(subject.health).to eq 'something went wrong'
+      end
+    end
+  end
+
   # Disable transactions via :delete method because a foreign table
   # can't see changes inside a transaction of a different connection.
   describe '#attachments_synced_count', :delete do
     it 'only counts successful syncs' do
-      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      create_list(:user, 3, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
       uploads = Upload.all.pluck(:id)
 
       create(:geo_file_registry, :avatar, file_id: uploads[0])
@@ -93,7 +135,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'does not count synced files that were replaced' do
-      user = create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      user = create(:user, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
 
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(0)
@@ -106,7 +148,7 @@ describe GeoNodeStatus, :geo do
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(1)
 
-      user.update(avatar: fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg'))
+      user.update(avatar: fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg'))
 
       subject = described_class.current_node_status
 
@@ -127,7 +169,7 @@ describe GeoNodeStatus, :geo do
   # can't see changes inside a transaction of a different connection.
   describe '#attachments_synced_missing_on_primary_count', :delete do
     it 'only counts successful syncs' do
-      create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      create_list(:user, 3, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png'))
       uploads = Upload.all.pluck(:id)
 
       create(:geo_file_registry, :avatar, file_id: uploads[0], missing_on_primary: true)
@@ -154,7 +196,7 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#attachments_synced_in_percentage', :delete do
-    let(:avatar) { fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')) }
+    let(:avatar) { fixture_file_upload('spec/fixtures/dk.png') }
     let(:upload_1) { create(:upload, model: group, path: avatar) }
     let(:upload_2) { create(:upload, model: project_1, path: avatar) }
 
@@ -491,7 +533,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of checksummed repositories' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:repository_state, :repository_verified)
       create(:repository_state, :repository_verified)
 
@@ -499,7 +540,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag is off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: primary)
 
       expect(subject.repositories_checksummed_count).to eq(600)
@@ -512,7 +553,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed repositories' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:repository_state, :repository_failed)
       create(:repository_state, :repository_failed)
 
@@ -520,7 +560,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: primary)
 
       expect(subject.repositories_checksum_failed_count).to eq(120)
@@ -555,7 +595,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of checksummed wikis' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:repository_state, :wiki_verified)
       create(:repository_state, :wiki_verified)
 
@@ -563,7 +602,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: primary)
 
       expect(subject.wikis_checksummed_count).to eq(585)
@@ -576,7 +615,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed wikis' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:repository_state, :wiki_failed)
       create(:repository_state, :wiki_failed)
 
@@ -584,7 +622,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: primary)
 
       expect(subject.wikis_checksum_failed_count).to eq(55)
@@ -619,7 +657,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of verified repositories' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :repository_verified)
       create(:geo_project_registry, :repository_verified)
 
@@ -627,7 +664,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.repositories_verified_count).to eq(501)
@@ -640,7 +677,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of repositories that checksum mismatch' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :repository_checksum_mismatch)
       create(:geo_project_registry, :repository_verification_failed)
       create(:geo_project_registry, :repository_verified)
@@ -649,7 +685,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.repositories_checksum_mismatch_count).to eq(15)
@@ -662,7 +698,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed repositories' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :repository_verification_failed)
       create(:geo_project_registry, :repository_verification_failed)
 
@@ -670,7 +705,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.repositories_verification_failed_count).to eq(100)
@@ -683,7 +718,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of verified wikis' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :wiki_verified)
       create(:geo_project_registry, :wiki_verified)
 
@@ -691,7 +725,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.wikis_verified_count).to eq(499)
@@ -704,7 +738,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of wikis that checksum mismatch' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :wiki_checksum_mismatch)
       create(:geo_project_registry, :wiki_verification_failed)
       create(:geo_project_registry, :wiki_verified)
@@ -713,7 +746,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.wikis_checksum_mismatch_count).to eq(10)
@@ -726,7 +759,6 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns the right number of failed wikis' do
-      stub_feature_flags(geo_repository_verification: true)
       create(:geo_project_registry, :wiki_verification_failed)
       create(:geo_project_registry, :wiki_verification_failed)
 
@@ -734,7 +766,7 @@ describe GeoNodeStatus, :geo do
     end
 
     it 'returns existing value when feature flag if off' do
-      stub_feature_flags(geo_repository_verification: false)
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.wikis_verification_failed_count).to eq(99)
@@ -866,6 +898,72 @@ describe GeoNodeStatus, :geo do
       status.storage_shards.shuffle!
 
       expect(result.storage_shards_match?).to be true
+    end
+  end
+
+  describe '#repositories_checked_count' do
+    before do
+      stub_application_setting(repository_checks_enabled: true)
+    end
+
+    context 'current is a Geo primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'counts the number of repo checked projects' do
+        project_1.update!(last_repository_check_at: 2.minutes.ago)
+        project_2.update!(last_repository_check_at: 7.minutes.ago)
+
+        expect(status.repositories_checked_count).to eq(2)
+      end
+    end
+
+    context 'current is a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'counts the number of repo checked projects' do
+        create(:geo_project_registry, project: project_1, last_repository_check_at: 2.minutes.ago)
+        create(:geo_project_registry, project: project_2, last_repository_check_at: 7.minutes.ago)
+        create(:geo_project_registry, project: project_3)
+
+        expect(status.repositories_checked_count).to eq(2)
+      end
+    end
+  end
+
+  describe '#repositories_checked_failed_count' do
+    before do
+      stub_application_setting(repository_checks_enabled: true)
+    end
+
+    context 'current is a Geo primary' do
+      before do
+        stub_current_geo_node(primary)
+      end
+
+      it 'counts the number of repo check failed projects' do
+        project_1.update!(last_repository_check_at: 2.minutes.ago, last_repository_check_failed: true)
+        project_2.update!(last_repository_check_at: 7.minutes.ago, last_repository_check_failed: false)
+
+        expect(status.repositories_checked_failed_count).to eq(1)
+      end
+    end
+
+    context 'current is a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'counts the number of repo check failed projects' do
+        create(:geo_project_registry, project: project_1, last_repository_check_at: 2.minutes.ago, last_repository_check_failed: true)
+        create(:geo_project_registry, project: project_2, last_repository_check_at: 7.minutes.ago, last_repository_check_failed: false)
+        create(:geo_project_registry, project: project_3)
+
+        expect(status.repositories_checked_failed_count).to eq(1)
+      end
     end
   end
 end

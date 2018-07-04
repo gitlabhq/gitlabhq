@@ -13,6 +13,10 @@
       SectionMixin,
     ],
     props: {
+      presetType: {
+        type: String,
+        required: true,
+      },
       epics: {
         type: Array,
         required: true,
@@ -142,12 +146,13 @@
 
 <template>
   <div
-    class="epics-list-section"
     :style="sectionContainerStyles"
+    class="epics-list-section"
   >
     <epic-item
       v-for="(epic, index) in epics"
       :key="index"
+      :preset-type="presetType"
       :epic="epic"
       :timeframe="timeframe"
       :current-group-id="currentGroupId"
@@ -156,22 +161,22 @@
     />
     <div
       v-if="showEmptyRow"
-      class="epics-list-item epics-list-item-empty clearfix"
       :style="emptyRowContainerStyles"
+      class="epics-list-item epics-list-item-empty clearfix"
     >
       <span class="epic-details-cell"></span>
       <span
         v-for="(timeframeItem, index) in timeframe"
         :key="index"
-        class="epic-timeline-cell"
         :style="emptyRowCellStyles"
+        class="epic-timeline-cell"
       >
       </span>
     </div>
     <div
       v-if="showBottomShadow"
-      class="scroll-bottom-shadow"
       :style="shadowCellStyles"
+      class="scroll-bottom-shadow"
     ></div>
   </div>
 </template>

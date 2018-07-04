@@ -2,13 +2,15 @@ require 'spec_helper'
 
 RSpec.describe Geo::WikiSyncService do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
+  set(:project) { create(:project_empty_repo) }
 
-  let(:lease) { double(try_obtain: true, lease_key: anything ) }
-  let(:project) { create(:project_empty_repo) }
   let(:repository) { project.wiki.repository }
+  let(:lease_key) { "geo_sync_service:wiki:#{project.id}" }
+  let(:lease_uuid) { 'uuid'}
 
   subject { described_class.new(project) }
 
@@ -23,7 +25,7 @@ RSpec.describe Geo::WikiSyncService do
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.wiki.git" }
 
     before do
-      allow(subject).to receive(:exclusive_lease).and_return(lease)
+      stub_exclusive_lease(lease_key, lease_uuid)
 
       allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
@@ -39,8 +41,7 @@ RSpec.describe Geo::WikiSyncService do
     end
 
     it 'releases lease' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).at_least(:once).with(
-        subject.__send__(:lease_key), anything).and_call_original
+      expect_to_cancel_exclusive_lease(lease_key, lease_uuid)
 
       subject.execute
     end
@@ -52,7 +53,7 @@ RSpec.describe Geo::WikiSyncService do
     end
 
     it 'does not fetch wiki repository if cannot obtain a lease' do
-      allow(lease).to receive(:try_obtain) { false }
+      stub_exclusive_lease_taken(lease_key)
 
       expect(repository).not_to receive(:fetch_as_mirror)
 
@@ -184,20 +185,21 @@ RSpec.describe Geo::WikiSyncService do
           allow(repository).to receive(:fetch_as_mirror)
             .with(url_to_repo, remote_name: 'geo', forced: true)
             .and_raise(Gitlab::Shell::Error.new('shell error'))
+        end
+
+        it 'sets correct values for registry record' do
+          subject.execute
+
+          expect(registry).to have_attributes(last_wiki_synced_at: be_present,
+                                              last_wiki_successful_sync_at: nil,
+                                              last_wiki_sync_failure: 'Error syncing wiki repository: shell error'
+                                             )
+        end
+
+        it 'calls repository cleanup' do
+          expect(repository).to receive(:clean_stale_repository_files)
 
           subject.execute
-        end
-
-        it 'sets last_wiki_synced_at' do
-          expect(registry.last_wiki_synced_at).not_to be_nil
-        end
-
-        it 'resets last_wiki_successful_sync_at' do
-          expect(registry.last_wiki_successful_sync_at).to be_nil
-        end
-
-        it 'sets last_wiki_sync_failure' do
-          expect(registry.last_wiki_sync_failure).to eq('Error syncing wiki repository: shell error')
         end
       end
 

@@ -41,6 +41,6 @@ in next major release, GitLab 12.0. You are advised to update your current `.git
 configuration to reflect that change.
 
 [ee-3672]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3672
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/container_scanning.md

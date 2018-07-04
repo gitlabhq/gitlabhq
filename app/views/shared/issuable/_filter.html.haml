@@ -1,5 +1,4 @@
 - boards_page = controller.controller_name == 'boards'
-- board = local_assigns[:board]
 
 .issues-filters
   .issues-details-filters.row-content-block.second-block
@@ -20,7 +19,7 @@
             placeholder: "Search assignee", data: { any_user: "Any Assignee", first_user: current_user&.username, null_user: true, current_user: true, project_id: @project&.id, group_id: @group&.id, selected: params[:assignee_id], field_name: "assignee_id", default_label: "Assignee" } })
 
         .filter-item.inline.milestone-filter
-          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true, board: board, show_started: true
+          = render "shared/issuable/milestone_dropdown", selected: finder.milestones.try(:first), name: :milestone_title, show_any: true, show_upcoming: true, show_started: true
 
         .filter-item.inline.labels-filter
           = render "shared/issuable/label_dropdown", selected: selected_labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }

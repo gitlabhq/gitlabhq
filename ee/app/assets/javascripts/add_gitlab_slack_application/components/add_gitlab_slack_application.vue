@@ -91,12 +91,12 @@
     </div>
 
     <div
-      class="append-bottom-20 center"
       v-once
+      class="append-bottom-20 center"
     >
       <img
-        class="gitlab-slack-logo"
         :src="gitlabLogoPath"
+        class="gitlab-slack-logo"
       />
       <div
         class="gitlab-slack-double-headed-arrow inline prepend-left-20 append-right-20"
@@ -104,8 +104,8 @@
       >
       </div>
       <img
-        class="gitlab-slack-logo"
         :src="slackLogoPath"
+        class="gitlab-slack-logo"
       />
     </div>
 
@@ -118,25 +118,25 @@
     </button>
 
     <div
-      class="popup gitlab-slack-popup mx-auto prepend-top-20 text-center js-popup"
       v-if="popupOpen"
+      class="popup gitlab-slack-popup mx-auto prepend-top-20 text-center js-popup"
     >
       <div
-        class="inline"
         v-if="isSignedIn && hasProjects"
+        class="inline"
       >
         <strong>Select GitLab project to link with your Slack team</strong>
 
         <select
+          v-model="selectedProjectId"
           class="gitlab-slack-project-select
 js-project-select form-control prepend-top-10 append-bottom-10"
-          v-model="selectedProjectId"
         >
           <option
             v-for="project in projects"
             :key="project.id"
             :value="project.id
-          ">
+            ">
             {{ project.name }}
           </option>
         </select>
@@ -151,8 +151,8 @@ js-project-select form-control prepend-top-10 append-bottom-10"
       </div>
 
       <span
-        class="js-no-projects"
         v-else-if="isSignedIn && !hasProjects"
+        class="js-no-projects"
       >
         You don't have any projects available.
       </span>
@@ -160,9 +160,9 @@ js-project-select form-control prepend-top-10 append-bottom-10"
       <span v-else>
         You have to
         <a
-          class="js-gitlab-slack-sign-in-link"
           v-once
           :href="signInPath"
+          class="js-gitlab-slack-sign-in-link"
         >
           log in
         </a>
@@ -172,14 +172,14 @@ js-project-select form-control prepend-top-10 append-bottom-10"
     <div class="center prepend-top-20 append-bottom-10 append-right-5 prepend-left-5">
       <img
         v-once
-        class="gitlab-slack-gif"
         :src="gitlabForSlackGifPath"
+        class="gitlab-slack-gif"
       />
     </div>
 
     <div
-      class="gitlab-slack-example"
       v-once
+      class="gitlab-slack-example"
     >
       <h3 class="center">How it works</h3>
 

@@ -15,6 +15,8 @@ describe('sast container issue body', () => {
     vulnerability: 'CVE-2017-11671',
   };
 
+  const status = 'failed';
+
   afterEach(() => {
     vm.$destroy();
   });
@@ -23,6 +25,7 @@ describe('sast container issue body', () => {
     it('renders severity key', () => {
       vm = mountComponent(Component, {
         issue: sastContainerIssue,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(sastContainerIssue.severity);
@@ -36,6 +39,7 @@ describe('sast container issue body', () => {
 
       vm = mountComponent(Component, {
         issue: issueCopy,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).not.toContain(sastContainerIssue.severity);
@@ -45,6 +49,7 @@ describe('sast container issue body', () => {
   it('renders name', () => {
     vm = mountComponent(Component, {
       issue: sastContainerIssue,
+      status,
     });
 
     expect(vm.$el.querySelector('button').textContent.trim()).toEqual(sastContainerIssue.title);
@@ -54,6 +59,7 @@ describe('sast container issue body', () => {
     it('renders path', () => {
       vm = mountComponent(Component, {
         issue: sastContainerIssue,
+        status,
       });
 
       expect(vm.$el.textContent.trim()).toContain(sastContainerIssue.path);

@@ -2,6 +2,7 @@
 require_relative 'cop/gitlab/module_with_instance_variables'
 require_relative 'cop/gitlab/predicate_memoization'
 require_relative 'cop/gitlab/httparty'
+require_relative 'cop/gitlab/finder_with_find_by'
 require_relative 'cop/include_sidekiq_worker'
 require_relative 'cop/avoid_return_from_blocks'
 require_relative 'cop/avoid_break_from_strong_memoize'

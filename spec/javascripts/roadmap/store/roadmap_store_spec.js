@@ -1,11 +1,12 @@
 import RoadmapStore from 'ee/roadmap/store/roadmap_store';
-import { mockGroupId, mockTimeframe, rawEpics } from '../mock_data';
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+import { mockGroupId, mockTimeframeMonths, rawEpics } from '../mock_data';
 
 describe('RoadmapStore', () => {
   let store;
 
   beforeEach(() => {
-    store = new RoadmapStore(mockGroupId, mockTimeframe);
+    store = new RoadmapStore(mockGroupId, mockTimeframeMonths, PRESET_TYPES.MONTHS);
   });
 
   describe('constructor', () => {
@@ -13,9 +14,10 @@ describe('RoadmapStore', () => {
       expect(store.state).toBeDefined();
       expect(Array.isArray(store.state.epics)).toBe(true);
       expect(store.state.currentGroupId).toBe(mockGroupId);
-      expect(store.state.timeframe).toBe(mockTimeframe);
-      expect(store.firstTimeframeItem).toBe(store.state.timeframe[0]);
-      expect(store.lastTimeframeItem).toBe(store.state.timeframe[store.state.timeframe.length - 1]);
+      expect(store.state.timeframe).toBe(mockTimeframeMonths);
+      expect(store.presetType).toBe(PRESET_TYPES.MONTHS);
+      expect(store.timeframeStartDate).toBeDefined();
+      expect(store.timeframeEndDate).toBeDefined();
     });
   });
 
@@ -34,7 +36,7 @@ describe('RoadmapStore', () => {
 
   describe('getTimeframe', () => {
     it('gets timeframe from store state', () => {
-      expect(store.getTimeframe()).toBe(mockTimeframe);
+      expect(store.getTimeframe()).toBe(mockTimeframeMonths);
     });
   });
 
@@ -55,12 +57,12 @@ describe('RoadmapStore', () => {
       });
       const epic = RoadmapStore.formatEpicDetails(
         rawEpicWithoutSD,
-        store.firstTimeframeItem,
-        store.lastTimeframeItem,
+        store.timeframeStartDate,
+        store.timeframeEndDate,
       );
       expect(epic.id).toBe(rawEpic.id);
       expect(epic.startDateUndefined).toBe(true);
-      expect(epic.startDate.getTime()).toBe(store.firstTimeframeItem.getTime());
+      expect(epic.startDate.getTime()).toBe(store.timeframeStartDate.getTime());
     });
 
     it('returns formatted Epic object with endDateUndefined and proxy date set when end date is not available', () => {
@@ -69,12 +71,12 @@ describe('RoadmapStore', () => {
       });
       const epic = RoadmapStore.formatEpicDetails(
         rawEpicWithoutED,
-        store.firstTimeframeItem,
-        store.lastTimeframeItem,
+        store.timeframeStartDate,
+        store.timeframeEndDate,
       );
       expect(epic.id).toBe(rawEpic.id);
       expect(epic.endDateUndefined).toBe(true);
-      expect(epic.endDate.getTime()).toBe(store.lastTimeframeItem.getTime());
+      expect(epic.endDate.getTime()).toBe(store.timeframeEndDate.getTime());
     });
 
     it('returns formatted Epic object with startDateOutOfRange, proxy date and cached original start date set when start date is out of timeframe range', () => {
@@ -84,12 +86,12 @@ describe('RoadmapStore', () => {
       });
       const epic = RoadmapStore.formatEpicDetails(
         rawEpicSDOut,
-        store.firstTimeframeItem,
-        store.lastTimeframeItem,
+        store.timeframeStartDate,
+        store.timeframeEndDate,
       );
       expect(epic.id).toBe(rawEpic.id);
       expect(epic.startDateOutOfRange).toBe(true);
-      expect(epic.startDate.getTime()).toBe(store.firstTimeframeItem.getTime());
+      expect(epic.startDate.getTime()).toBe(store.timeframeStartDate.getTime());
       expect(epic.originalStartDate.getTime()).toBe(new Date(rawStartDate).getTime());
     });
 
@@ -100,12 +102,12 @@ describe('RoadmapStore', () => {
       });
       const epic = RoadmapStore.formatEpicDetails(
         rawEpicEDOut,
-        store.firstTimeframeItem,
-        store.lastTimeframeItem,
+        store.timeframeStartDate,
+        store.timeframeEndDate,
       );
       expect(epic.id).toBe(rawEpic.id);
       expect(epic.endDateOutOfRange).toBe(true);
-      expect(epic.endDate.getTime()).toBe(store.lastTimeframeItem.getTime());
+      expect(epic.endDate.getTime()).toBe(store.timeframeEndDate.getTime());
       expect(epic.originalEndDate.getTime()).toBe(new Date(rawEndDate).getTime());
     });
   });

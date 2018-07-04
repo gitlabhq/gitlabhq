@@ -2,7 +2,7 @@ module EE
   module Projects
     module UpdateService
       extend ::Gitlab::Utils::Override
-
+      include ValidatesClassificationLabel
       include CleanupApprovers
 
       override :execute
@@ -24,6 +24,8 @@ module EE
           if changing_storage_size?
             project.change_repository_storage(params.delete(:repository_storage))
           end
+
+          validate_classification_label(project, :external_authorization_classification_label)
         end
 
         if result[:status] == :success

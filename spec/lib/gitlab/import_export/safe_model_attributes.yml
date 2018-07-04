@@ -173,7 +173,7 @@ MergeRequest:
 - last_edited_by_id
 - head_pipeline_id
 - discussion_locked
-- allow_collaboration
+- allow_maintainer_to_push
 MergeRequestDiff:
 - id
 - state
@@ -567,6 +567,7 @@ ProjectAutoDevops:
 - id
 - enabled
 - domain
+- deploy_strategy
 - project_id
 - created_at
 - updated_at

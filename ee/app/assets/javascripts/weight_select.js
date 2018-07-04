@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, wrap-iife, prefer-arrow-callback, max-len, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-shadow, quotes, no-unused-vars, no-else-return, consistent-return, no-param-reassign, prefer-template, padded-blocks, func-names */
+/* eslint-disable prefer-arrow-callback, max-len, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, no-shadow, quotes, no-unused-vars, no-else-return, func-names */
 
 import $ from 'jquery';
 
@@ -40,7 +40,7 @@ function WeightSelect(els, options = {}) {
         }
       },
       clicked: function(glDropdownEvt) {
-        const e = glDropdownEvt.e;
+        const { e } = glDropdownEvt;
         let selected = glDropdownEvt.selectedObj;
         const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 

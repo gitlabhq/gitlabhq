@@ -10,7 +10,7 @@ export default function initPathLocks(url, path) {
     axios.post(url, {
       path,
     }).then(() => {
-      location.reload();
+      window.location.reload();
     }).catch(() => flash(__('An error occurred while initializing path locks')));
   });
 }

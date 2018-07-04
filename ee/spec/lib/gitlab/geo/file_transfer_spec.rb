@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::FileTransfer do
-  let(:user) { create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png')) }
+  let(:user) { create(:user, avatar: fixture_file_upload('spec/fixtures/dk.png', 'image/png')) }
   let(:upload) { Upload.find_by(model: user, uploader: 'AvatarUploader') }
 
   subject { described_class.new(:file, upload) }

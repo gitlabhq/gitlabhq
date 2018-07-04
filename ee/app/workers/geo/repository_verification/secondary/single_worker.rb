@@ -17,7 +17,7 @@ module Geo
         def perform(registry_id)
           return unless Gitlab::Geo.secondary?
 
-          @registry = Geo::ProjectRegistry.find_by_id(registry_id)
+          @registry = Geo::ProjectRegistry.find_by(id: registry_id)
           return if registry.nil? || project.nil? || project.pending_delete?
 
           try_obtain_lease do
@@ -29,7 +29,7 @@ module Geo
         private
 
         def verify_checksum(type)
-          Geo::RepositoryVerifySecondaryService.new(registry, type).execute
+          Geo::RepositoryVerificationSecondaryService.new(registry, type).execute
         rescue => e
           log_error('Error verifying the repository checksum', e, type: type)
           raise e

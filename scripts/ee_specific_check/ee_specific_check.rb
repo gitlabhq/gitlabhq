@@ -117,8 +117,25 @@ module EESpecificCheck
       head_commit_sha
     else
       say <<~MESSAGE
-        💥 Git status not clean! This shouldn't happen. Please create an issue
-        💥 and ping @godfat to investigate.
+        💥 Git status not clean! This shouldn't happen, but there are two
+        💥 known issues. One can be worked around, and the other can't.
+        💥
+        💥 First please try to update your CE branch with CE master, and
+        💥 retry this job. You could find more information in this issue:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
+        💥
+        💥 It's possible, however, that that doesn't work out. In this case,
+        💥 please just disregard this job. You could find other information at:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
+        💥
+        💥 There's a work-in-progress fix at:
+        💥
+        💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
+        💥
+        💥 If you would like to help, or have any questions, please
+        💥 contact @godfat
 
         ⚠️ Git status:
 
@@ -167,11 +184,9 @@ module EESpecificCheck
   end
 
   def find_remote_ce_branch
-    ls_remote_output = run_git_command("ls-remote #{ce_repo_url} \"*#{minimal_ce_branch_name}*\"")
+    branch_to_fetch = matching_ce_refs.first
 
-    if ls_remote_output.include?(minimal_ce_branch_name)
-      branch_to_fetch = ls_remote_output.scan(%r{(?<=refs/heads/).+}).sort_by(&:size).first
-
+    if branch_to_fetch
       say "💪 We found the branch '#{branch_to_fetch}' in the #{ce_repo_url} repository. We will fetch it."
 
       run_git_command("remote add target-ce #{ce_repo_url}")
@@ -197,6 +212,12 @@ module EESpecificCheck
 
   def minimal_ce_branch_name
     @minimal_ce_branch_name ||= current_branch.sub(/(\Aee\-|\-ee\z)/, '')
+  end
+
+  def matching_ce_refs
+    @matching_ce_refs ||=
+      run_git_command("ls-remote #{ce_repo_url} \"*#{minimal_ce_branch_name}*\"")
+        .scan(%r{(?<=refs/heads/|refs/tags/).+}).sort_by(&:size)
   end
 
   def scan_diff_numstat(numstat)
@@ -231,10 +252,10 @@ if $0 == __FILE__
   require 'rspec/autorun'
 
   RSpec.describe EESpecificCheck do
-    include EESpecificCheck
-
     before do
-      allow(self).to receive(:puts)
+      extend EESpecificCheck
+
+      allow(self).to receive(:warn)
     end
 
     describe '.run_git_command' do
@@ -242,15 +263,32 @@ if $0 == __FILE__
         output = run_git_command('status')
 
         expect(output).to be_kind_of(String)
-        expect(self).to have_received(:puts).with(/git status/)
+        expect(self).to have_received(:warn).with(/git status/)
       end
 
       it 'returns an array of output for more commands' do
         output = run_git_command('status', 'help')
 
         expect(output).to all(be_a(String))
-        expect(self).to have_received(:puts).with(/git status/)
-        expect(self).to have_received(:puts).with(/git help/)
+        expect(self).to have_received(:warn).with(/git status/)
+        expect(self).to have_received(:warn).with(/git help/)
+      end
+    end
+
+    describe '.matching_ce_refs' do
+      before do
+        expect(self).to receive(:current_branch).and_return('v9')
+        expect(self).to receive(:run_git_command)
+          .and_return(<<~OUTPUT)
+            d6602ec5194c87b0fc87103ca4d67251c76f233a\trefs/tags/v9
+            f25a265a342aed6041ab0cc484224d9ca54b6f41\trefs/tags/v9.12
+            c5db5456ae3b0873fc659c19fafdde22313cc441\trefs/tags/v9.123
+            0918385dbd9656cab0d1d81ba7453d49bbc16250\trefs/heads/v9.x
+          OUTPUT
+      end
+
+      it 'sorts by matching size' do
+        expect(matching_ce_refs).to eq(%w[v9 v9.x v9.12 v9.123])
       end
     end
   end

@@ -117,8 +117,6 @@ module Geo
     # will be enqueued by the log cursor, which should resolve any problems
     # it is possible to fix.
     def fetch_snapshot
-      return unless Feature.enabled?(:geo_redownload_with_snapshot)
-
       log_info("Attempting to fetch repository via snapshot")
 
       temp_repo.create_from_snapshot(
@@ -167,8 +165,9 @@ module Geo
       attrs["resync_#{type}"] = true
       attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
       attrs["#{type}_retry_count"] = retry_count + 1
-
       registry.update!(attrs)
+
+      repository.clean_stale_repository_files
     end
 
     def type

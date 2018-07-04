@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, prefer-rest-params, wrap-iife, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, no-lonely-if, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
+/* eslint-disable func-names, one-var, no-var, prefer-rest-params, quotes, max-len, one-var-declaration-per-line, vars-on-top, prefer-arrow-callback, consistent-return, comma-dangle, object-shorthand, no-shadow, no-unused-vars, no-else-return, no-self-compare, prefer-template, no-unused-expressions, yoda, prefer-spread, no-void, camelcase, no-param-reassign */
 /* global Issuable */
 /* global emitSidebarEvent */
 
@@ -250,7 +250,6 @@ function UsersSelect(currentUser, els, options = {}) {
 
           let anyUser;
           let index;
-          let j;
           let len;
           let name;
           let obj;
@@ -259,7 +258,7 @@ function UsersSelect(currentUser, els, options = {}) {
             showDivider = 0;
             if (firstUser) {
               // Move current user to the front of the list
-              for (index = j = 0, len = users.length; j < len; index = (j += 1)) {
+              for (index = 0, len = users.length; index < len; index += 1) {
                 obj = users[index];
                 if (obj.username === firstUser) {
                   users.splice(index, 1);
@@ -501,7 +500,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if (this.multiSelect) {
             selected = getSelected().find(u => user.id === u);
 
-            const fieldName = this.fieldName;
+            const { fieldName } = this;
             const field = $dropdown.closest('.selectbox').find("input[name='" + fieldName + "'][value='" + user.id + "']");
 
             if (field.length) {
@@ -553,7 +552,7 @@ function UsersSelect(currentUser, els, options = {}) {
         minimumInputLength: 0,
         query: function(query) {
           return _this.users(query.term, options, function(users) {
-            var anyUser, data, emailUser, index, j, len, name, nullUser, obj, ref;
+            var anyUser, data, emailUser, index, len, name, nullUser, obj, ref;
             data = {
               results: users
             };
@@ -561,7 +560,8 @@ function UsersSelect(currentUser, els, options = {}) {
               if (firstUser) {
                 // Move current user to the front of the list
                 ref = data.results;
-                for (index = j = 0, len = ref.length; j < len; index = (j += 1)) {
+
+                for (index = 0, len = ref.length; index < len; index += 1) {
                   obj = ref[index];
                   if (obj.username === firstUser) {
                     data.results.splice(index, 1);

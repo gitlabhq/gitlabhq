@@ -301,7 +301,9 @@ describe Namespace do
     end
 
     def project_rugged(project)
-      project.repository.rugged
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.rugged
+      end
     end
   end
 
@@ -318,7 +320,11 @@ describe Namespace do
   end
 
   describe '#rm_dir', 'callback' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
+    let(:repository_storage_path) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.default.legacy_disk_path
+      end
+    end
     let(:path_in_dir) { File.join(repository_storage_path, namespace.full_path) }
     let(:deleted_path) { namespace.full_path.gsub(namespace.path, "#{namespace.full_path}+#{namespace.id}+deleted") }
     let(:deleted_path_in_dir) { File.join(repository_storage_path, deleted_path) }

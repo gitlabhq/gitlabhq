@@ -1,5 +1,0 @@
----
-title: Render a 403 when showing an access denied message
-merge_request: 5964
-author:
-type: fixed

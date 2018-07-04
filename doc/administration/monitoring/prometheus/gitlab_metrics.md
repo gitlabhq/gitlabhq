@@ -49,6 +49,8 @@ The following metrics are available:
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
 | upload_file_does_not_exist                    | Counter   | 10.7  | Number of times an upload record could not find its file |
+| failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
+| successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
 
 ## Sidekiq Metrics available
 
@@ -86,6 +88,22 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 | geo_wikis_verified_count                    | Gauge   | 10.7  | Number of wikis verified on secondary | url
 | geo_wikis_verification_failed_count         | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
 | geo_wikis_checksum_mismatch_count           | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
+| geo_repositories_checked_count              | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | url
+| geo_repositories_checked_failed_count       | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | url
+
+### Ruby metrics
+
+Some basic Ruby runtime metrics are available:
+
+| Metric                                 | Type      | Since | Description |
+|:-------------------------------------- |:--------- |:----- |:----------- |
+| ruby_gc_duration_seconds_total         | Counter   | 11.1  | Time spent by Ruby in GC |
+| ruby_gc_stat_...                       | Gauge     | 11.1  | Various metrics from [GC.stat] |
+| ruby_file_descriptors                  | Gauge     | 11.1  | File descriptors per process |
+| ruby_memory_bytes                      | Gauge     | 11.1  | Memory usage by process |
+| ruby_sampler_duration_seconds_total    | Counter   | 11.1  | Time spent collecting stats |
+
+[GC.stat]: https://ruby-doc.org/core-2.3.0/GC.html#method-c-stat
 
 ## Metrics shared directory
 

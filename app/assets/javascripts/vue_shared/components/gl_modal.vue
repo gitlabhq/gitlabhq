@@ -1,14 +1,20 @@
 <script>
 const buttonVariants = ['danger', 'primary', 'success', 'warning'];
+const sizeVariants = ['sm', 'md', 'lg', 'xl'];
 
 export default {
   name: 'GlModal',
-
   props: {
     id: {
       type: String,
       required: false,
       default: null,
+    },
+    modalSize: {
+      type: String,
+      required: false,
+      default: 'md',
+      validator: value => sizeVariants.includes(value),
     },
     headerTitleText: {
       type: String,
@@ -27,7 +33,11 @@ export default {
       default: '',
     },
   },
-
+  computed: {
+    modalSizeClass() {
+      return this.modalSize === 'md' ? '' : `modal-${this.modalSize}`;
+    },
+  },
   methods: {
     emitCancel(event) {
       this.$emit('cancel', event);
@@ -47,6 +57,7 @@ export default {
     role="dialog"
   >
     <div
+      :class="modalSizeClass"
       class="modal-dialog"
       role="document"
     >
@@ -59,10 +70,10 @@ export default {
               </slot>
             </h4>
             <button
+              :aria-label="s__('Modal|Close')"
               type="button"
               class="close js-modal-close-action"
               data-dismiss="modal"
-              :aria-label="s__('Modal|Close')"
               @click="emitCancel($event)"
             >
               <span aria-hidden="true">&times;</span>
@@ -85,9 +96,9 @@ export default {
               {{ s__('Modal|Cancel') }}
             </button>
             <button
+              :class="`btn-${footerPrimaryButtonVariant}`"
               type="button"
               class="btn js-modal-primary-action"
-              :class="`btn-${footerPrimaryButtonVariant}`"
               data-dismiss="modal"
               @click="emitSubmit($event)"
             >

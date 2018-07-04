@@ -2,7 +2,12 @@ module Approvable
   include Gitlab::Utils::StrongMemoize
 
   def requires_approve?
-    approvals_required.nonzero?
+    # keep until UI changes implemented
+    true
+  end
+
+  def approval_needed?
+    approvals_required&.nonzero?
   end
 
   def approved?

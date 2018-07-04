@@ -126,7 +126,7 @@ describe Projects::UpdateService, '#execute' do
 
     context 'when we update project but not enabling a wiki' do
       it 'does not try to create an empty wiki' do
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, { name: 'test1' })
 
@@ -147,7 +147,7 @@ describe Projects::UpdateService, '#execute' do
     context 'when enabling a wiki' do
       it 'creates a wiki' do
         project.project_feature.update(wiki_access_level: ProjectFeature::DISABLED)
-        FileUtils.rm_rf(project.wiki.repository.path)
+        Gitlab::Shell.new.rm_directory(project.repository_storage, project.wiki.path)
 
         result = update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
 
@@ -273,6 +273,10 @@ describe Projects::UpdateService, '#execute' do
         allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
       end
 
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is nil' do
       it { is_expected.to eq(false) }
     end
 

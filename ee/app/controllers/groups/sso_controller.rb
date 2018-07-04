@@ -3,7 +3,6 @@ class Groups::SsoController < Groups::ApplicationController
   before_action :unauthenticated_group
   before_action :check_group_saml_configured
   before_action :check_group_saml_available!
-  before_action :check_group_saml_beta_enabled
   before_action :require_configured_provider
   before_action :check_user_can_sign_in_with_provider
   before_action :redirect_if_group_moved
@@ -23,10 +22,6 @@ class Groups::SsoController < Groups::ApplicationController
 
   def check_group_saml_configured
     route_not_found unless Gitlab::Auth::GroupSaml::Config.enabled?
-  end
-
-  def check_group_saml_beta_enabled
-    route_not_found unless Gitlab::Utils.to_boolean(cookies['enable_group_saml'])
   end
 
   def unauthenticated_group

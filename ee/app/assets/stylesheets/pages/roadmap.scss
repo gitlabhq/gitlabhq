@@ -6,6 +6,14 @@ $scroll-top-gradient: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%, rgba(25
 $scroll-bottom-gradient: linear-gradient(to bottom, rgba(255, 255, 255, 0.001) 0%, rgba(0, 0, 0, 0.15) 100%);
 $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(255, 255, 255, 0.001) 100%);
 
+.epics-roadmap-filters {
+  .epics-details-filters {
+    .btn-roadmap-preset {
+      padding: 7px $gl-btn-padding;
+    }
+  }
+}
+
 .group-epics-roadmap-wrapper {
   padding-bottom: 0;
 }
@@ -31,6 +39,22 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
 
   &.prevent-vertical-scroll {
     overflow-y: hidden;
+  }
+}
+
+.roadmap-timeline-section .timeline-header-item {
+  .item-label,
+  .item-sublabel .sublabel-value {
+    color: $theme-gray-600;
+    font-weight: 400;
+
+    &.label-dark {
+      color: $theme-gray-900;
+    }
+  
+    &.label-bold {
+      font-weight: 600;
+    }
   }
 }
 
@@ -78,28 +102,10 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
       border-right: none;
     }
 
-    .item-label,
-    .item-sublabel {
-      color: $theme-gray-600;
-      font-weight: 400;
-
-      &.label-dark {
-        color: $theme-gray-900;
-
-        .value-light {
-          color: $theme-gray-600;
-        }
-      }
-    }
-
     .item-label {
       padding: $gl-padding-8 $gl-padding;
       border-right: $border-style;
       border-bottom: $border-style;
-
-      &.label-bold {
-        font-weight: 600;
-      }
     }
 
     .item-sublabel {
@@ -108,6 +114,7 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
 
       .sublabel-value {
         flex-grow: 1;
+        flex-basis: 0;
         text-align: center;
         font-size: $code_font_size;
         line-height: 1.5;

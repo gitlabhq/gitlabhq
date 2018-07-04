@@ -79,36 +79,36 @@
     class="projects-list-item-container"
   >
     <a
-      class="clearfix"
       :href="webUrl"
+      class="clearfix"
     >
       <div
         class="project-item-avatar-container"
       >
         <img
           v-if="hasAvatar"
-          class="avatar s32"
           :src="avatarUrl"
+          class="avatar s32"
         />
         <identicon
           v-else
-          size-class="s32"
           :entity-id="projectId"
           :entity-name="projectName"
+          size-class="s32"
         />
       </div>
       <div
         class="project-item-metadata-container"
       >
         <div
-          class="project-title"
           :title="projectName"
+          class="project-title"
           v-html="highlightedProjectName"
         >
         </div>
         <div
-          class="project-namespace"
           :title="namespace"
+          class="project-namespace"
         >{{ truncatedNamespace }}</div>
       </div>
     </a>

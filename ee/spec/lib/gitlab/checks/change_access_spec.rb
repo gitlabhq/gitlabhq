@@ -71,12 +71,26 @@ describe Gitlab::Checks::ChangeAccess do
 
         it_behaves_like 'check ignored when push rule unlicensed'
 
-        it 'returns an error if the rule fails' do
+        it 'returns an error if the rule fails due to missing required characters' do
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
+        end
+
+        it 'returns an error if the rule fails due to forbidden characters' do
+          push_rule.commit_message_regex = nil
+          push_rule.commit_message_negative_regex = '.*'
+
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message contains the forbidden pattern '#{push_rule.commit_message_negative_regex}'")
         end
 
         it 'returns an error if the regex is invalid' do
           push_rule.commit_message_regex = '+'
+
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
+        end
+
+        it 'returns an error if the negative regex is invalid' do
+          push_rule.commit_message_regex = nil
+          push_rule.commit_message_negative_regex = '+'
 
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /\ARegular expression '\+' is invalid/)
         end
@@ -406,7 +420,9 @@ describe Gitlab::Checks::ChangeAccess do
         #
         # That means only the merge commit should be validated.
         let(:newrev) do
-          rugged = project.repository.raw_repository.rugged
+          rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            project.repository.raw_repository.rugged
+          end
           base = oldrev
           to_merge = '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba'
 

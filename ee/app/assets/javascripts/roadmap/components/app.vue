@@ -22,6 +22,10 @@
         type: Object,
         required: true,
       },
+      presetType: {
+        type: String,
+        required: true,
+      },
       hasFiltersApplied: {
         type: Boolean,
         required: true,
@@ -118,23 +122,25 @@
 
 <template>
   <div
-    class="roadmap-container"
     :class="{ 'overflow-reset': isEpicsListEmpty }"
+    class="roadmap-container"
   >
     <loading-icon
-      class="loading-animation prepend-top-20 append-bottom-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GroupRoadmap|Loading roadmap')"
+      class="loading-animation prepend-top-20 append-bottom-20"
+      size="2"
     />
     <roadmap-shell
       v-if="showRoadmap"
+      :preset-type="presetType"
       :epics="epics"
       :timeframe="timeframe"
       :current-group-id="currentGroupId"
     />
     <epics-list-empty
       v-if="isEpicsListEmpty"
+      :preset-type="presetType"
       :timeframe-start="timeframeStart"
       :timeframe-end="timeframeEnd"
       :has-filters-applied="hasFiltersApplied"

@@ -1,0 +1,5 @@
+---
+title: Add filename filtering to code search with Elasticsearch
+merge_request: 5590
+author:
+type: added

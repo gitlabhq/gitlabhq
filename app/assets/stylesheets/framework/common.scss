@@ -266,12 +266,7 @@ li.note {
 }
 
 .milestone {
-  &.milestone-closed {
-    background: $gray-light;
-  }
-
   .progress {
-    margin-bottom: 0;
     margin-top: 4px;
     box-shadow: none;
     background-color: $border-gray-light;
@@ -307,18 +302,6 @@ img.emoji {
   @extend .light-well;
   @extend .light;
   margin-bottom: 10px;
-}
-
-.available-groups form {
-  margin: 5px 0;
-}
-
-.btn-sign-in {
-  text-shadow: none;
-
-  @include media-breakpoint-up(sm) {
-    margin-top: 8px;
-  }
 }
 
 .side-filters {

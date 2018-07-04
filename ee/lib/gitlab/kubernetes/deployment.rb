@@ -74,6 +74,7 @@ module Gitlab
       def deployment_instance(pod_name:, pod_status:)
         {
           status: pod_status&.downcase,
+          pod_name: pod_name,
           tooltip: "#{name} (#{pod_name}) #{pod_status}",
           track: track,
           stable: stable?

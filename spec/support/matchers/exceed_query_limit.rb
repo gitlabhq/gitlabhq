@@ -1,17 +1,4 @@
-RSpec::Matchers.define :exceed_query_limit do |expected|
-  supports_block_expectations
-
-  match do |block|
-    @subject_block = block
-    actual_count > expected_count + threshold
-  end
-
-  failure_message_when_negated do |actual|
-    threshold_message = threshold > 0 ? " (+#{@threshold})" : ''
-    counts = "#{expected_count}#{threshold_message}"
-    "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
-  end
-
+module ExceedQueryLimitHelpers
   def with_threshold(threshold)
     @threshold = threshold
     self
@@ -43,7 +30,7 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
   end
 
   def recorder
-    @recorder ||= ActiveRecord::QueryRecorder.new(&@subject_block)
+    @recorder ||= ActiveRecord::QueryRecorder.new(skip_cached: skip_cached, &@subject_block)
   end
 
   def count_queries(queries)
@@ -60,5 +47,53 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
     else
       @recorder.log_message
     end
+  end
+
+  def skip_cached
+    true
+  end
+
+  def verify_count(&block)
+    @subject_block = block
+    actual_count > expected_count + threshold
+  end
+
+  def failure_message
+    threshold_message = threshold > 0 ? " (+#{@threshold})" : ''
+    counts = "#{expected_count}#{threshold_message}"
+    "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
+  end
+end
+
+RSpec::Matchers.define :exceed_all_query_limit do |expected|
+  supports_block_expectations
+
+  include ExceedQueryLimitHelpers
+
+  match do |block|
+    verify_count(&block)
+  end
+
+  failure_message_when_negated do |actual|
+    failure_message
+  end
+
+  def skip_cached
+    false
+  end
+end
+
+# Excludes cached methods from the query count
+RSpec::Matchers.define :exceed_query_limit do |expected|
+  supports_block_expectations
+
+  include ExceedQueryLimitHelpers
+
+  match do |block|
+    verify_count(&block)
+  end
+
+  failure_message_when_negated do |actual|
+    failure_message
   end
 end

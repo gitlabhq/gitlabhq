@@ -65,7 +65,7 @@ class JenkinsService < CiService
   end
 
   def help
-    'You must have installed the Git Plugin and GitLab Plugin in Jenkins'
+    "You must have installed the Git Plugin and GitLab Plugin in Jenkins. [More information](#{Gitlab::Routing.url_helpers.help_page_url('integration/jenkins')})"
   end
 
   def self.to_param

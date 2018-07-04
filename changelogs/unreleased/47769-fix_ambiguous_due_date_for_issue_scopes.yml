@@ -1,0 +1,5 @@
+---
+title: Fix ambiguous due_date column for Issue scopes
+merge_request:
+author:
+type: fixed

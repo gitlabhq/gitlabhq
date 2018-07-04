@@ -48,6 +48,9 @@ module Projects
 
       yield(@project) if block_given?
 
+      # If the block added errors, don't try to save the project
+      return @project if @project.errors.any?
+
       @project.creator = current_user
 
       if forked_from_project_id
@@ -65,6 +68,7 @@ module Projects
       message = "Unable to save #{e.record.type}: #{e.record.errors.full_messages.join(", ")} "
       fail(error: message)
     rescue => e
+      @project.errors.add(:base, e.message) if @project
       fail(error: e.message)
     end
 
@@ -143,7 +147,6 @@ module Projects
       Rails.logger.error(log_message)
 
       if @project
-        @project.errors.add(:base, message)
         @project.mark_import_as_failed(message) if @project.persisted? && @project.import?
       end
 

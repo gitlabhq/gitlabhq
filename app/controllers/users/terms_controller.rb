@@ -2,6 +2,7 @@ module Users
   class TermsController < ApplicationController
     include InternalRedirect
 
+    skip_before_action :authenticate_user!
     skip_before_action :enforce_terms!
     skip_before_action :check_password_expiration
     skip_before_action :check_two_factor_requirement
@@ -13,6 +14,10 @@ module Users
 
     def index
       @redirect = redirect_path
+
+      if current_user && @term.accepted_by_user?(current_user)
+        flash.now[:notice] = "You have already accepted the Terms of Service as #{current_user.to_reference}"
+      end
     end
 
     def accept

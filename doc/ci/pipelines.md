@@ -210,7 +210,7 @@ by name. The order of severity is:
 
 ### Multi-project pipelines graphs **[PREMIUM]**
 
-With [multi-project pipeline graphs](multi_project_pipeline_graphs.md),
+With [multi-project pipelines](multi_project_pipelines.md),
 you can visualize cross-project pipelines.
 
 ## How the pipeline duration is calculated
@@ -263,7 +263,7 @@ on that specific branch:
 - trigger **manual actions** on existing pipelines
 - **retry/cancel** existing jobs (using Web UI or Pipelines API)
 
-**Secret variables** marked as **protected** are accessible only to jobs that
+**Variables** marked as **protected** are accessible only to jobs that
 run on protected branches, avoiding untrusted users to get unintended access to
 sensitive information like deployment credentials and tokens.
 
@@ -288,5 +288,5 @@ runners will not use regular runners, they must be tagged accordingly.
 [ce-17782]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782
 [ce-17814]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17814
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
-[eep]: https://about.gitlab.com/products/ "GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
 [ee-2121]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2121

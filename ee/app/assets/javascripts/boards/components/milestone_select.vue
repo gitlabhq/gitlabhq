@@ -51,7 +51,7 @@
     },
     methods: {
       selectMilestone(milestone) {
-        let id = milestone.id;
+        let { id } = milestone;
         // swap the IDs of 'Any' and 'No' milestone to what backend requires
         if (milestone.title === ANY_MILESTONE) {
           id = -1;
@@ -81,8 +81,8 @@
       </button>
     </div>
     <div
-      class="value"
       :class="milestoneTitleClass"
+      class="value"
     >
       {{ milestoneTitle }}
     </div>
@@ -99,14 +99,14 @@
         <button
           ref="dropdownButton"
           :data-selected="selected"
-          class="dropdown-menu-toggle wide"
           :data-milestones="milestonePath"
           :data-show-no="true"
           :data-show-any="true"
           :data-show-started="true"
           :data-show-upcoming="true"
-          data-toggle="dropdown"
           :data-use-id="true"
+          class="dropdown-menu-toggle wide"
+          data-toggle="dropdown"
           type="button"
         >
           Milestone

@@ -203,14 +203,14 @@ describe ProjectTeam do
   end
 
   describe "#human_max_access" do
-    it 'returns Master role' do
+    it 'returns Maintainer role' do
       user = create(:user)
       group = create(:group)
       project = create(:project, namespace: group)
 
       group.add_master(user)
 
-      expect(project.team.human_max_access(user.id)).to eq 'Master'
+      expect(project.team.human_max_access(user.id)).to eq 'Maintainer'
     end
 
     it 'returns Owner role' do

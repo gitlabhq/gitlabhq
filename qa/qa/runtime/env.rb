@@ -1,7 +1,11 @@
 module QA
   module Runtime
     module Env
+      prepend QA::EE::Runtime::Env
+
       extend self
+
+      attr_writer :user_type
 
       # set to 'false' to have Chrome run visibly instead of headless
       def chrome_headless?
@@ -20,7 +24,9 @@ module QA
       # By default, "standard" denotes a standard GitLab user login.
       # Set this to "ldap" if the user should be logged in via LDAP.
       def user_type
-        (ENV['GITLAB_USER_TYPE'] || 'standard').tap do |type|
+        return @user_type if defined?(@user_type) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
+        ENV.fetch('GITLAB_USER_TYPE', 'standard').tap do |type|
           unless %w(ldap standard).include?(type)
             raise ArgumentError.new("Invalid user type '#{type}': must be 'ldap' or 'standard'")
           end
@@ -45,6 +51,18 @@ module QA
 
       def sandbox_name
         ENV['GITLAB_SANDBOX_NAME']
+      end
+
+      def gcloud_account_key
+        ENV.fetch("GCLOUD_ACCOUNT_KEY")
+      end
+
+      def gcloud_account_email
+        ENV.fetch("GCLOUD_ACCOUNT_EMAIL")
+      end
+
+      def gcloud_zone
+        ENV.fetch('GCLOUD_ZONE')
       end
     end
   end

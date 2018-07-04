@@ -15,19 +15,21 @@ module API
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
-        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
-        optional :path,     type: String, desc: 'The file path'
-        optional :all,      type: Boolean, desc: 'Every commit will be returned'
+        optional :since, type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until, type: DateTime, desc: 'Only commits before or on this date will be returned'
+        optional :path, type: String, desc: 'The file path'
+        optional :all, type: Boolean, desc: 'Every commit will be returned'
+        optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         use :pagination
       end
       get ':id/repository/commits' do
-        path   = params[:path]
+        path = params[:path]
         before = params[:until]
-        after  = params[:since]
-        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
+        after = params[:since]
+        ref = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
         offset = (params[:page] - 1) * params[:per_page]
-        all    = params[:all]
+        all = params[:all]
+        with_stats = params[:with_stats]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
@@ -47,7 +49,9 @@ module API
 
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-        present paginate(paginated_commits), with: Entities::Commit
+        serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
+
+        present paginate(paginated_commits), with: serializer
       end
 
       desc 'Commit multiple file changes as one commit' do

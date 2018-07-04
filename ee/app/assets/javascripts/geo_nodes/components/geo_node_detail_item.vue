@@ -1,6 +1,7 @@
 <script>
   import { s__ } from '~/locale';
   import popover from '~/vue_shared/directives/popover';
+  import tooltip from '~/vue_shared/directives/tooltip';
   import Icon from '~/vue_shared/components/icon.vue';
   import StackedProgressBar from '~/vue_shared/components/stacked_progress_bar.vue';
 
@@ -18,6 +19,7 @@
     },
     directives: {
       popover,
+      tooltip,
     },
     props: {
       itemTitle: {
@@ -32,6 +34,16 @@
       itemValue: {
         type: [Object, String, Number],
         required: true,
+      },
+      itemValueStale: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      itemValueStaleTooltip: {
+        type: String,
+        required: false,
+        default: '',
       },
       successLabel: {
         type: String,
@@ -92,8 +104,8 @@
           template: `
             <div class="popover geo-node-detail-popover" role="tooltip">
               <div class="arrow"></div>
-              <p class="popover-title"></p>
-              <div class="popover-content"></div>
+              <p class="popover-header"></p>
+              <div class="popover-body"></div>
             </div>
           `,
           title: this.helpInfo.title,
@@ -117,29 +129,39 @@
       <icon
         v-popover="popoverConfig"
         v-if="hasHelpInfo"
+        :size="12"
         css-classes="node-detail-help-text prepend-left-5"
         name="question"
-        :size="12"
       />
     </div>
     <div
       v-if="isValueTypePlain"
-      class="node-detail-value"
       :class="cssClass"
+      class="node-detail-value"
     >
       {{ itemValue }}
     </div>
     <div
       v-if="isValueTypeGraph"
+      :class="{ 'd-flex': itemValueStale }"
       class="node-detail-value"
     >
       <stacked-progress-bar
+        :css-class="itemValueStale ? 'flex-fill' : ''"
         :success-label="successLabel"
         :failure-label="failureLabel"
         :neutral-label="neutralLabel"
         :success-count="itemValue.successCount"
         :failure-count="itemValue.failureCount"
         :total-count="itemValue.totalCount"
+      />
+      <icon
+        v-tooltip
+        v-show="itemValueStale"
+        :title="itemValueStaleTooltip"
+        name="time-out"
+        css-classes="prepend-left-10 detail-value-stale-icon"
+        data-container="body"
       />
     </div>
     <template v-if="isValueTypeCustom">

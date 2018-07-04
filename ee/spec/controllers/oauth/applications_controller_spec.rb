@@ -15,7 +15,7 @@ describe Oauth::ApplicationsController do
         sign_in(user)
 
         application = build(:oauth_application)
-        application_attributes = application.attributes.merge(scopes: [])
+        application_attributes = application.attributes.merge("scopes" => [])
 
         expect { post :create, doorkeeper_application: application_attributes }.to change { SecurityEvent.count }.by(1)
       end

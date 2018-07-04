@@ -38,7 +38,7 @@ describe Groups::SharedProjectsController do
     end
 
     it 'allows filtering shared projects' do
-      project = create(:project, :archived, namespace: user.namespace, name: "Searching for")
+      project = create(:project, namespace: user.namespace, name: "Searching for")
       share_project(project)
 
       get_shared_projects(filter: 'search')
@@ -54,6 +54,15 @@ describe Groups::SharedProjectsController do
       get_shared_projects(sort: 'name_asc')
 
       expect(json_project_ids).to eq([second_project.id, shared_project.id])
+    end
+
+    it 'does not include archived projects' do
+      archived_project = create(:project, :archived, namespace: user.namespace)
+      share_project(archived_project)
+
+      get_shared_projects
+
+      expect(json_project_ids).to contain_exactly(shared_project.id)
     end
   end
 end

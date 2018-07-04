@@ -90,6 +90,7 @@ module API
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::Applications
+    mount ::API::Avatar
     mount ::API::AwardEmoji
     mount ::API::Badges
     mount ::API::Boards

@@ -9,8 +9,8 @@ module ProtectedRefAccess
   ].freeze
 
   HUMAN_ACCESS_LEVELS = {
-    Gitlab::Access::MASTER => "Masters".freeze,
-    Gitlab::Access::DEVELOPER => "Developers + Masters".freeze,
+    Gitlab::Access::MASTER => "Maintainers".freeze,
+    Gitlab::Access::DEVELOPER => "Developers + Maintainers".freeze,
     Gitlab::Access::NO_ACCESS => "No one".freeze
   }.freeze
 

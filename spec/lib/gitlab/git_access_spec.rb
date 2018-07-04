@@ -552,7 +552,7 @@ describe Gitlab::GitAccess do
       it 'returns not found' do
         project.add_guest(user)
         repo = project.repository
-        FileUtils.rm_rf(repo.path)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access { FileUtils.rm_rf(repo.path) }
 
         # Sanity check for rm_rf
         expect(repo.exists?).to eq(false)
@@ -751,20 +751,22 @@ describe Gitlab::GitAccess do
 
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
-        stub_git_hooks
-        project.repository.add_branch(user, unprotected_branch, 'feature')
-        target_branch = project.repository.lookup('feature')
-        source_branch = project.repository.create_file(
-          user,
-          'filename',
-          'This is the file content',
-          message: 'This is a good commit message',
-          branch_name: unprotected_branch)
-        rugged = project.repository.rugged
-        author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          stub_git_hooks
+          project.repository.add_branch(user, unprotected_branch, 'feature')
+          target_branch = project.repository.lookup('feature')
+          source_branch = project.repository.create_file(
+            user,
+            'filename',
+            'This is the file content',
+            message: 'This is a good commit message',
+            branch_name: unprotected_branch)
+          rugged = project.repository.rugged
+          author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
-        merge_index = rugged.merge_commits(target_branch, source_branch)
-        Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+          merge_index = rugged.merge_commits(target_branch, source_branch)
+          Rugged::Commit.create(rugged, author: author, committer: author, message: "commit message", parents: [target_branch, source_branch], tree: merge_index.write_tree(rugged))
+        end
       end
     end
 
@@ -1052,6 +1054,22 @@ describe Gitlab::GitAccess do
       it 'cleans up the files' do
         expect(project.repository).to receive(:clean_stale_repository_files).and_call_original
         expect { push_access_check }.not_to raise_error
+      end
+
+      it 'avoids N+1 queries', :request_store do
+        # Run this once to establish a baseline. Cached queries should get
+        # cached, so that when we introduce another change we shouldn't see
+        # additional queries.
+        access.check('git-receive-pack', changes)
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          access.check('git-receive-pack', changes)
+        end
+
+        changes = ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature']
+
+        # There is still an N+1 query with protected branches
+        expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(1)
       end
     end
   end

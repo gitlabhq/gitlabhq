@@ -28,7 +28,7 @@ describe NamespaceFileUploader do
 
   describe "#migrate!" do
     before do
-      uploader.store!(fixture_file_upload(Rails.root.join('spec/fixtures/doc_sample.txt')))
+      uploader.store!(fixture_file_upload(File.join('spec/fixtures/doc_sample.txt')))
       stub_uploads_object_storage
     end
 

@@ -1,16 +1,16 @@
 <script>
-/* global monaco */
 import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '~/flash';
 import ContentViewer from '~/vue_shared/components/content_viewer/content_viewer.vue';
+import DiffViewer from '~/vue_shared/components/diff_viewer/diff_viewer.vue';
 import { activityBarViews, viewerTypes } from '../constants';
-import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 import ExternalLink from './external_link.vue';
 
 export default {
   components: {
     ContentViewer,
+    DiffViewer,
     ExternalLink,
   },
   props: {
@@ -20,7 +20,13 @@ export default {
     },
   },
   computed: {
-    ...mapState(['rightPanelCollapsed', 'viewer', 'panelResizing', 'currentActivityView']),
+    ...mapState([
+      'rightPanelCollapsed',
+      'viewer',
+      'panelResizing',
+      'currentActivityView',
+      'rightPane',
+    ]),
     ...mapGetters([
       'currentMergeRequest',
       'getStagedFile',
@@ -31,9 +37,18 @@ export default {
     shouldHideEditor() {
       return this.file && this.file.binary && !this.file.content;
     },
+    showContentViewer() {
+      return (
+        (this.shouldHideEditor || this.file.viewMode === 'preview') &&
+        (this.viewer !== viewerTypes.mr || !this.file.mrChange)
+      );
+    },
+    showDiffViewer() {
+      return this.shouldHideEditor && this.file.mrChange && this.viewer === viewerTypes.mr;
+    },
     editTabCSS() {
       return {
-        active: this.file.viewMode === 'edit',
+        active: this.file.viewMode === 'editor',
       };
     },
     previewTabCSS() {
@@ -50,12 +65,12 @@ export default {
 
       // Compare key to allow for files opened in review mode to be cached differently
       if (oldVal.key !== this.file.key) {
-        this.initMonaco();
+        this.initEditor();
 
         if (this.currentActivityView !== activityBarViews.edit) {
           this.setFileViewMode({
             file: this.file,
-            viewMode: 'edit',
+            viewMode: 'editor',
           });
         }
       }
@@ -64,7 +79,7 @@ export default {
       if (this.currentActivityView !== activityBarViews.edit) {
         this.setFileViewMode({
           file: this.file,
-          viewMode: 'edit',
+          viewMode: 'editor',
         });
       }
     },
@@ -79,20 +94,18 @@ export default {
         this.editor.updateDimensions();
       }
     },
+    rightPane() {
+      this.editor.updateDimensions();
+    },
   },
   beforeDestroy() {
     this.editor.dispose();
   },
   mounted() {
-    if (this.editor && monaco) {
-      this.initMonaco();
-    } else {
-      monacoLoader(['vs/editor/editor.main'], () => {
-        this.editor = Editor.create(monaco);
-
-        this.initMonaco();
-      });
+    if (!this.editor) {
+      this.editor = Editor.create();
     }
+    this.initEditor();
   },
   methods: {
     ...mapActions([
@@ -105,7 +118,7 @@ export default {
       'updateViewer',
       'removePendingTab',
     ]),
-    initMonaco() {
+    initEditor() {
       if (this.shouldHideEditor) return;
 
       this.editor.clearEditor();
@@ -118,7 +131,7 @@ export default {
           this.createEditorInstance();
         })
         .catch(err => {
-          flash('Error setting up monaco. Please try again.', 'alert', document, null, false, true);
+          flash('Error setting up editor. Please try again.', 'alert', document, null, false, true);
           throw err;
         });
     },
@@ -197,14 +210,14 @@ export default {
   >
     <div class="ide-mode-tabs clearfix" >
       <ul
-        class="nav-links float-left"
         v-if="!shouldHideEditor && isEditModeActive"
+        class="nav-links float-left"
       >
         <li :class="editTabCSS">
           <a
             href="javascript:void(0);"
             role="button"
-            @click.prevent="setFileViewMode({ file, viewMode: 'edit' })">
+            @click.prevent="setFileViewMode({ file, viewMode: 'editor' })">
             <template v-if="viewer === $options.viewerTypes.edit">
               {{ __('Edit') }}
             </template>
@@ -229,19 +242,27 @@ export default {
       />
     </div>
     <div
-      v-show="!shouldHideEditor && file.viewMode === 'edit'"
+      v-show="!shouldHideEditor && file.viewMode ==='editor'"
       ref="editor"
-      class="multi-file-editor-holder"
       :class="{
         'is-readonly': isCommitModeActive,
       }"
+      class="multi-file-editor-holder"
     >
     </div>
     <content-viewer
-      v-if="shouldHideEditor || file.viewMode === 'preview'"
+      v-if="showContentViewer"
       :content="file.content || file.raw"
       :path="file.rawPath || file.path"
       :file-size="file.size"
+      :project-path="file.projectId"/>
+    <diff-viewer
+      v-if="showDiffViewer"
+      :diff-mode="file.mrChange.diffMode"
+      :new-path="file.mrChange.new_path"
+      :new-sha="currentMergeRequest.sha"
+      :old-path="file.mrChange.old_path"
+      :old-sha="currentMergeRequest.baseCommitSha"
       :project-path="file.projectId"/>
   </div>
 </template>

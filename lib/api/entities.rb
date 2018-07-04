@@ -308,6 +308,10 @@ module API
       expose :additions, :deletions, :total
     end
 
+    class CommitWithStats < Commit
+      expose :stats, using: Entities::CommitStats
+    end
+
     class CommitDetail < Commit
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
@@ -345,6 +349,10 @@ module API
       expose :developers_can_merge do |repo_branch, options|
         options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
       end
+
+      expose :can_push do |repo_branch, options|
+        Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
+      end
     end
 
     class TreeObject < Grape::Entity
@@ -358,7 +366,7 @@ module API
     end
 
     class Snippet < Grape::Entity
-      expose :id, :title, :file_name, :description
+      expose :id, :title, :file_name, :description, :visibility
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
       expose :project_id
@@ -414,6 +422,10 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
+
+      expose :web_url do |milestone, _options|
+        Gitlab::UrlBuilder.build(milestone)
+      end
     end
 
     class IssueBasic < ProjectEntity
@@ -720,6 +732,12 @@ module API
       expose :id
       expose :individual_note?, as: :individual_note
       expose :notes, using: Entities::Note
+    end
+
+    class Avatar < Grape::Entity
+      expose :avatar_url do |avatarable, options|
+        avatarable.avatar_url(only_path: false, size: options[:size])
+      end
     end
 
     class AwardEmoji < Grape::Entity

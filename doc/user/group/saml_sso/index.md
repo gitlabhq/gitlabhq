@@ -1,6 +1,6 @@
 # SAML SSO for Groups (Beta) **[PREMIUM]**
 
-> Introduced in [GitLab Premium][https://about.gitlab.com/products/] 10.7.
+> Introduced in [GitLab Premium](https://about.gitlab.com/pricing/) 11.0.
 
 This allows SAML to be used for adding users to a group on GitLab.com and other instances where using [site-wide SAML](../../../integration/saml.md) is not possible.
 

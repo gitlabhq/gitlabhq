@@ -3,8 +3,6 @@ module Gitlab
     module LoadBalancing
       # A list of database hosts to use for connections.
       class HostList
-        attr_reader :hosts
-
         # hosts - The list of secondary hosts to add.
         def initialize(hosts = [])
           @hosts = hosts.shuffle
@@ -12,8 +10,23 @@ module Gitlab
           @mutex = Mutex.new
         end
 
+        def hosts
+          @mutex.synchronize { @hosts }
+        end
+
         def length
-          @hosts.length
+          @mutex.synchronize { @hosts.length }
+        end
+
+        def host_names
+          @mutex.synchronize { @hosts.map(&:host) }
+        end
+
+        def hosts=(hosts)
+          @mutex.synchronize do
+            @hosts = hosts.shuffle
+            @index = 0
+          end
         end
 
         # Returns the next available host.
@@ -22,6 +35,8 @@ module Gitlab
         # hosts were available.
         def next
           @mutex.synchronize do
+            break if @hosts.empty?
+
             started_at = @index
 
             loop do

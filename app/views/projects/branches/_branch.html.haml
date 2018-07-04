@@ -77,7 +77,7 @@
         - else
           %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",
             disabled: true,
-            title: s_('Branches|Only a project master or owner can delete a protected branch') }
+            title: s_('Branches|Only a project maintainer or owner can delete a protected branch') }
             = icon("trash-o")
       - else
         = link_to project_branch_path(@project, branch.name),

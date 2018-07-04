@@ -292,7 +292,7 @@
         if (this.model &&
           this.model.last_deployment &&
           this.model.last_deployment.deployable) {
-          const deployable = this.model.last_deployment.deployable;
+          const { deployable } = this.model.last_deployment;
           return `${deployable.name} #${deployable.id}`;
         }
         return '';
@@ -430,11 +430,11 @@
 </script>
 <template>
   <div
-    class="gl-responsive-table-row"
     :class="{
       'js-child-row environment-child-row': model.isChildren,
       'folder-row': model.isFolder,
     }"
+    class="gl-responsive-table-row"
     role="row">
     <div
       class="table-section section-10"
@@ -448,8 +448,8 @@
         {{ s__("Environments|Environment") }}
       </div>
       <span
-        class="deploy-board-icon"
         v-if="model.hasDeployBoard"
+        class="deploy-board-icon"
         @click="toggleDeployBoard">
 
         <i
@@ -466,19 +466,19 @@
       </span>
       <a
         v-if="!model.isFolder"
-        class="environment-name flex-truncate-parent table-mobile-content"
-        :href="environmentPath">
+        :href="environmentPath"
+        class="environment-name flex-truncate-parent table-mobile-content">
         <span
-          class="flex-truncate-child"
           v-tooltip
           :title="model.name"
+          class="flex-truncate-child"
         >{{ model.name }}</span>
       </a>
       <span
         v-else
         class="folder-name"
-        @click="onClickFolder"
-        role="button">
+        role="button"
+        @click="onClickFolder">
 
         <span class="folder-icon">
           <i
@@ -523,11 +523,11 @@
       <span v-if="!model.isFolder && deploymentHasUser">
         by
         <user-avatar-link
-          class="js-deploy-user-container"
           :link-href="deploymentUser.web_url"
           :img-src="deploymentUser.avatar_url"
           :img-alt="userImageAltDescription"
           :tooltip-text="deploymentUser.username"
+          class="js-deploy-user-container"
         />
       </span>
     </div>
@@ -538,8 +538,8 @@
     >
       <a
         v-if="shouldRenderBuildName"
-        class="build-link flex-truncate-parent"
         :href="buildPath"
+        class="build-link flex-truncate-parent"
       >
         <span class="flex-truncate-child">{{ buildName }}</span>
       </a>

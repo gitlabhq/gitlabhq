@@ -88,9 +88,7 @@
               %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
                 = custom_icon('scroll_down')
 
-        %pre.build-trace#build-trace
-          %code.bash.js-build-output
-          .build-loader-animation.js-build-refresh
+        = render 'shared/builds/build_output'
     - else
       = render "empty_states"
 

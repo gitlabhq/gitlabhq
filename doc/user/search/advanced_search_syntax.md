@@ -43,5 +43,5 @@ here's a quick guide:
 * To match a partial word, use `*`: `bug find_by_*`
 * To find a term containing one of these symbols, use `\`: `argument \-last`
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [elastic]: https://www.elastic.co/guide/en/elasticsearch/reference/5.3/query-dsl-simple-query-string-query.html#_simple_query_string_syntax

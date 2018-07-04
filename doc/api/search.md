@@ -345,6 +345,15 @@ Example response:
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
+Filters are available for this scope:
+- filename
+- path
+- extension
+
+to use a filter simply include it in your query like so: `a query filename:some_name*`.
+
+You may use wildcards (`*`) to use glob matching.
+
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/search?scope=blobs&search=installation
 ```
@@ -649,6 +658,15 @@ Example response:
 
 This scope is available only if [Elasticsearch](../integration/elasticsearch.md) is enabled.
 
+Filters are available for this scope:
+- filename
+- path
+- extension
+
+to use a filter simply include it in your query like so: `a query filename:some_name*`.
+
+You may use wildcards (`*`) to use glob matching.
+
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/6/search?scope=blobs&search=installation
 ```
@@ -945,6 +963,15 @@ Example response:
 ```
 
 ### Scope: blobs
+
+Filters are available for this scope:
+- filename
+- path
+- extension
+
+to use a filter simply include it in your query like so: `a query filename:some_name*`.
+
+You may use wildcards (`*`) to use glob matching.
 
 ```bash
 curl --request GET --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/6/search?scope=blobs&search=installation

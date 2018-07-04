@@ -4,6 +4,7 @@ class Projects::IssuesController < Projects::ApplicationController
   include IssuableActions
   include ToggleAwardEmoji
   include IssuableCollections
+  include IssuesCalendar
   include SpammableActions
 
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
@@ -44,14 +45,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def calendar
-    @issues = @issuables
-                  .non_archived
-                  .with_due_date
-                  .limit(100)
-
-    respond_to do |format|
-      format.ics { response.headers['Content-Disposition'] = 'inline' }
-    end
+    render_issues_calendar(@issuables)
   end
 
   def new

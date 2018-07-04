@@ -18,6 +18,14 @@ describe API::V3::Github do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq([])
     end
+
+    it 'returns 200 when namespace path include a dot' do
+      group = create(:group, path: 'foo.bar')
+
+      get v3_api("/orgs/#{group.path}/repos", user)
+
+      expect(response).to have_gitlab_http_status(200)
+    end
   end
 
   describe 'GET /user/repos' do
@@ -116,11 +124,11 @@ describe API::V3::Github do
       before do
         stub_licensed_features(jira_dev_panel_integration: true)
         group.add_master(user)
-
-        get v3_api('/users/foo/repos', user)
       end
 
       it 'returns an array of projects with github format' do
+        get v3_api('/users/foo/repos', user)
+
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an(Array)
@@ -129,7 +137,17 @@ describe API::V3::Github do
         expect(response).to match_response_schema('entities/github/repositories', dir: 'ee')
       end
 
+      it 'returns 200 when namespace path include a dot' do
+        group = create(:group, path: 'foo.bar')
+
+        get v3_api("/users/#{group.path}/repos", user)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
       it 'returns valid project path as name' do
+        get v3_api('/users/foo/repos', user)
+
         project_names = json_response.map { |r| r['name'] }
 
         expect(project_names).to include(project.path, group_project.path)
@@ -165,9 +183,11 @@ describe API::V3::Github do
 
   describe 'GET /repos/:namespace/:project/branches' do
     context 'authenticated' do
-      it 'returns an array of project branches with github format' do
+      before do
         stub_licensed_features(jira_dev_panel_integration: true)
+      end
 
+      it 'returns an array of project branches with github format' do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
 
         expect(response).to have_gitlab_http_status(200)
@@ -175,6 +195,24 @@ describe API::V3::Github do
         expect(json_response).to be_an(Array)
 
         expect(response).to match_response_schema('entities/github/branches', dir: 'ee')
+      end
+
+      it 'returns 200 when project path include a dot' do
+        project.update!(path: 'foo.bar')
+
+        get v3_api("/repos/#{project.namespace.path}/#{project.path}/branches", user)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns 200 when namespace path include a dot' do
+        group = create(:group, path: 'foo.bar')
+        project = create(:project, :repository, group: group)
+        project.add_reporter(user)
+
+        get v3_api("/repos/#{group.path}/#{project.path}/branches", user)
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -206,13 +244,33 @@ describe API::V3::Github do
     let(:commit_id) { commit.id }
 
     context 'authenticated' do
-      it 'returns commit with github format' do
+      before do
         stub_licensed_features(jira_dev_panel_integration: true)
+      end
 
+      it 'returns commit with github format' do
         get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('entities/github/commit', dir: 'ee')
+      end
+
+      it 'returns 200 when project path include a dot' do
+        project.update!(path: 'foo.bar')
+
+        get v3_api("/repos/#{project.namespace.path}/#{project.path}/commits/#{commit_id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns 200 when namespace path include a dot' do
+        group = create(:group, path: 'foo.bar')
+        project = create(:project, :repository, group: group)
+        project.add_reporter(user)
+
+        get v3_api("/repos/#{group.path}/#{project.path}/commits/#{commit_id}", user)
+
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 

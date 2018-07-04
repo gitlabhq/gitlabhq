@@ -35,7 +35,7 @@ gem 'faraday', '~> 0.12'
 # Authentication libraries
 gem 'devise', '~> 4.4'
 gem 'doorkeeper', '~> 4.3'
-gem 'doorkeeper-openid_connect', '~> 1.3'
+gem 'doorkeeper-openid_connect', '~> 1.5'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -96,6 +96,10 @@ gem 'grape', '~> 1.0'
 gem 'grape-entity', '~> 0.7.1'
 gem 'rack-cors', '~> 1.0.0', require: 'rack/cors'
 
+# GraphQL API
+gem 'graphql', '~> 1.8.0'
+gem 'graphiql-rails', '~> 1.4.10'
+
 # Disable strong_params so that Mash does not respond to :permitted?
 gem 'hashie-forbidden_attributes'
 
@@ -107,6 +111,7 @@ gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
 gem 'carrierwave', '~> 1.2'
+gem 'mini_magick'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -139,7 +144,7 @@ gem 'faraday_middleware-aws-signers-v4'
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.7.1'
 gem 'deckar01-task_list', '2.0.0'
-gem 'gitlab-markup', '~> 1.6.2'
+gem 'gitlab-markup', '~> 1.6.4'
 gem 'redcarpet', '~> 3.4'
 gem 'commonmarker', '~> 0.17'
 gem 'RedCloth', '~> 4.3.2'
@@ -235,7 +240,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 2.0'
+gem 'sanitize', '~> 4.6.5'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -306,7 +311,6 @@ gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do
-  gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
 
@@ -340,7 +344,7 @@ group :development, :test do
 
   gem 'database_cleaner', '~> 1.5.0'
   gem 'factory_bot_rails', '~> 4.8.2'
-  gem 'rspec-rails', '~> 3.6.0'
+  gem 'rspec-rails', '~> 3.7.0'
   gem 'rspec-retry', '~> 0.4.5'
   gem 'rspec_profiling', '~> 0.0.5'
   gem 'rspec-set', '~> 0.1.3'
@@ -386,7 +390,7 @@ end
 
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
-  gem 'email_spec', '~> 1.6.0'
+  gem 'email_spec', '~> 2.2.0'
   gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
   gem 'rails-controller-testing' if rails5? # Rails5 only gem.
@@ -419,18 +423,17 @@ gem 'sys-filesystem', '~> 1.1.6'
 gem 'net-ntp'
 
 # SSH host key support
-gem 'net-ssh', '~> 4.2.0'
+gem 'net-ssh', '~> 5.0'
 gem 'sshkey', '~> 1.9.0'
 
 # Required for ED25519 SSH host key support
 group :ed25519 do
-  gem 'rbnacl-libsodium'
-  gem 'rbnacl', '~> 4.0'
+  gem 'ed25519', '~> 1.2'
   gem 'bcrypt_pbkdf', '~> 1.0'
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.100.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.103.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

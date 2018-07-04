@@ -10,7 +10,6 @@ Milestones allow you to organize issues and merge requests into a cohesive group
 
 - **Project milestones** can be assigned to issues or merge requests in that project only.
 - **Group milestones** can be assigned to any issue or merge request of any project in that group.
-- In the [future](https://gitlab.com/gitlab-org/gitlab-ce/issues/36862), you will be able to assign group milestones to issues and merge requests of projects in [subgroups](../../group/subgroups/index.md).
 
 ## Creating milestones
 
@@ -107,13 +106,13 @@ These features are only available for project milestones and not group milestone
 
 ### Project Burndown Charts **[STARTER]**
 
-For project milestones in [GitLab Starter](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For project milestones in [GitLab Starter](https://about.gitlab.com/pricing), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ![burndown chart](img/burndown_chart.png)
 
 ### Group Burndown Charts **[PREMIUM]**
 
-For group milestones in [GitLab Premium](https://about.gitlab.com/products), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
+For group milestones in [GitLab Premium](https://about.gitlab.com/pricing), a [burndown chart](burndown_charts.md) is in the milestone view, showing the progress of completing a milestone.
 
 ### Milestone sidebar
 

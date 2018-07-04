@@ -56,6 +56,22 @@ describe('GeoNodeDetailItemComponent', () => {
       vm.$destroy();
     });
 
+    it('renders stale information status icon when `itemValueStale` prop is true', () => {
+      const itemValueStaleTooltip = 'Data is out of date from 8 hours ago';
+      const vm = createComponent({
+        itemValueType: VALUE_TYPE.GRAPH,
+        itemValue: { successCount: 5, failureCount: 3, totalCount: 10 },
+        itemValueStale: true,
+        itemValueStaleTooltip,
+      });
+
+      const iconEl = vm.$el.querySelector('.detail-value-stale-icon');
+      expect(iconEl).not.toBeNull();
+      expect(iconEl.dataset.originalTitle).toBe(itemValueStaleTooltip);
+      expect(iconEl.querySelector('use').getAttribute('xlink:href')).toContain('time-out');
+      vm.$destroy();
+    });
+
     it('renders sync settings item value', () => {
       const vm = createComponent({
         itemValueType: VALUE_TYPE.CUSTOM,

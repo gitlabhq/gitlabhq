@@ -1,0 +1,5 @@
+---
+title: Memoize the global default for push rules within the request
+merge_request:
+author:
+type: performance

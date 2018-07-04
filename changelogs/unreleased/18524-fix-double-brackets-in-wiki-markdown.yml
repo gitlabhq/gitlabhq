@@ -1,5 +1,0 @@
----
-title: Fix double-brackets being linkified in wiki markdown
-merge_request: 18524
-author: brewingcode
-type: fixed

@@ -75,7 +75,7 @@ module QA
               - docker
         YAML
 
-        Factory::Repository::Push.fabricate! do |resource|
+        Factory::Repository::ProjectPush.fabricate! do |resource|
           resource.project = @project
           resource.file_name = '.gitlab-ci.yml'
           resource.commit_message = 'Add .gitlab-ci.yml'
@@ -92,7 +92,9 @@ module QA
         Page::Project::Pipeline::Show.act { go_to_first_job }
 
         Page::Project::Job::Show.perform do |job|
-          job.wait(reload: false) { job.completed? }
+          job.wait(reload: false) do
+            job.completed? && !job.trace_loading?
+          end
 
           expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
           expect(job.output).to include(sha1sum)

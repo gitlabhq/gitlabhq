@@ -1,5 +1,4 @@
 <script>
-  import arrowSvg from 'ee_icons/_arrow_mini_pipeline_graph.svg';
   import icon from '~/vue_shared/components/icon.vue';
   import ciStatus from '~/vue_shared/components/ci_icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -31,7 +30,6 @@
     },
     data() {
       return {
-        arrowSvg,
         maxRenderedPipelines: 3,
       };
     },
@@ -81,31 +79,29 @@
 <template>
   <span
     v-if="linkedPipelines"
-    class="linked-pipeline-mini-list"
     :class="{
       'is-upstream' : isUpstream,
       'is-downstream': isDownstream
     }"
+    class="linked-pipeline-mini-list"
   >
 
-    <span
-      class="arrow-icon"
+    <icon
       v-if="isDownstream"
-      v-html="arrowSvg"
-      aria-hidden="true"
-    >
-    </span>
+      class="arrow-icon"
+      name="long-arrow"
+    />
 
     <a
-      v-for="pipeline in linkedPipelinesTrimmed"
       v-tooltip
-      class="linked-pipeline-mini-item"
+      v-for="pipeline in linkedPipelinesTrimmed"
       :key="pipeline.id"
       :href="pipeline.path"
       :title="pipelineTooltipText(pipeline)"
+      :class="triggerButtonClass(pipeline.details.status.group)"
+      class="linked-pipeline-mini-item"
       data-placement="top"
       data-container="body"
-      :class="triggerButtonClass(pipeline.details.status.group)"
     >
       <icon
         :name="getStatusIcon(pipeline.details.status.icon)"
@@ -113,23 +109,21 @@
     </a>
 
     <a
-      v-if="shouldRenderCounter"
       v-tooltip
-      class="linked-pipelines-counter linked-pipeline-mini-item"
+      v-if="shouldRenderCounter"
       :title="counterTooltipText"
       :href="pipelinePath"
+      class="linked-pipelines-counter linked-pipeline-mini-item"
       data-placement="top"
       data-container="body"
     >
       {{ counterLabel }}
     </a>
 
-    <span
-      class="arrow-icon"
+    <icon
       v-if="isUpstream"
-      v-html="arrowSvg"
-      aria-hidden="true"
-    >
-    </span>
+      class="arrow-icon"
+      name="long-arrow"
+    />
   </span>
 </template>

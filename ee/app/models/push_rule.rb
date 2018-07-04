@@ -1,10 +1,17 @@
 class PushRule < ActiveRecord::Base
+  extend Gitlab::Cache::RequestCache
+
+  request_cache_key do
+    [self.id]
+  end
+
   MatchError = Class.new(StandardError)
 
   REGEX_COLUMNS = %i[
     force_push_regex
     delete_branch_regex
     commit_message_regex
+    commit_message_negative_regex
     author_email_regex
     file_name_regex
     branch_name_regex
@@ -30,6 +37,7 @@ class PushRule < ActiveRecord::Base
 
   def commit_validation?
     commit_message_regex.present? ||
+      commit_message_negative_regex.present? ||
       branch_name_regex.present? ||
       author_email_regex.present? ||
       reject_unsigned_commits ||
@@ -55,6 +63,10 @@ class PushRule < ActiveRecord::Base
 
   def commit_message_allowed?(message)
     data_match?(message, commit_message_regex, multiline: true)
+  end
+
+  def commit_message_blocked?(message)
+    commit_message_negative_regex.present? && data_match?(message, commit_message_negative_regex, multiline: true)
   end
 
   def branch_name_allowed?(branch)
@@ -131,7 +143,7 @@ class PushRule < ActiveRecord::Base
     !regexp_uses_re2?
   end
 
-  def read_setting_with_global_default(setting)
+  request_cache def read_setting_with_global_default(setting)
     value = read_attribute(setting)
 
     # return if value is true/false or if current object is the global setting

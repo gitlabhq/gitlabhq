@@ -2,23 +2,26 @@ import Vue from 'vue';
 
 import timelineTodayIndicatorComponent from 'ee/roadmap/components/timeline_today_indicator.vue';
 import eventHub from 'ee/roadmap/event_hub';
+import { PRESET_TYPES } from 'ee/roadmap/constants';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframe } from '../mock_data';
+import { mockTimeframeMonths } from '../mock_data';
 
 const mockCurrentDate = new Date(
-  mockTimeframe[0].getFullYear(),
-  mockTimeframe[0].getMonth(),
+  mockTimeframeMonths[0].getFullYear(),
+  mockTimeframeMonths[0].getMonth(),
   15,
 );
 
 const createComponent = ({
+  presetType = PRESET_TYPES.MONTHS,
   currentDate = mockCurrentDate,
-  timeframeItem = mockTimeframe[0],
+  timeframeItem = mockTimeframeMonths[0],
 }) => {
   const Component = Vue.extend(timelineTodayIndicatorComponent);
 
   return mountComponent(Component, {
+    presetType,
     currentDate,
     timeframeItem,
   });
@@ -48,7 +51,7 @@ describe('TimelineTodayIndicatorComponent', () => {
         });
         const stylesObj = vm.todayBarStyles;
         expect(stylesObj.height).toBe('120px');
-        expect(stylesObj.left).toBe('50%');
+        expect(stylesObj.left).toBe('48%');
         expect(vm.todayBarReady).toBe(true);
       });
     });

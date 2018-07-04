@@ -17,8 +17,7 @@ under the URL `/groups/<groupname>/analytics`.
 
 - Analyze your team's contributions along a period of time and offer a bonus
   for the top contributors
-- If you are unhappy with a particular team member, you can use the analytics
-  as argument for demanding efficiency from this person
+- Identify opportunities for improvement with group members who may benefit from additional support 
 
 ## Using Contribution Analytics
 
@@ -54,4 +53,4 @@ which are depicted in a table that can be sorted by:
 
 ![Contribution analytics contributions table](img/group_stats_table.png)
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

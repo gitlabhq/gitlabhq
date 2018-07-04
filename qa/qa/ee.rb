@@ -3,7 +3,20 @@ module QA
   # GitLab EE extensions
   #
   module EE
+    module Runtime
+      autoload :Env, 'qa/ee/runtime/env'
+      autoload :Geo, 'qa/ee/runtime/geo'
+    end
+
     module Page
+      module Dashboard
+        autoload :Projects, 'qa/ee/page/dashboard/projects'
+      end
+
+      module Main
+        autoload :Banner, 'qa/ee/page/main/banner'
+      end
+
       module Menu
         autoload :Admin, 'qa/ee/page/menu/admin'
       end
@@ -20,6 +33,12 @@ module QA
       end
 
       module Project
+        autoload :Show, 'qa/ee/page/project/show'
+
+        module Issue
+          autoload :Index, 'qa/ee/page/project/issue/index'
+        end
+
         module Settings
           autoload :ProtectedBranches, 'qa/ee/page/project/settings/protected_branches'
         end

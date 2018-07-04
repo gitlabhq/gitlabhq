@@ -81,8 +81,8 @@ export default {
       </template>
       <template v-else-if="hasPipeline">
         <a
-          class="append-right-10"
           :href="status.details_path"
+          class="append-right-10"
         >
           <ci-icon :status="status" />
         </a>
@@ -118,10 +118,10 @@ export default {
                 <div
                   v-for="(stage, i) in pipeline.details.stages"
                   :key="i"
-                  class="stage-container dropdown js-mini-pipeline-graph"
                   :class="{
                     'has-downstream': i === pipeline.details.stages.length - 1 && triggered.length
                   }"
+                  class="stage-container dropdown js-mini-pipeline-graph"
                 >
                   <pipeline-stage :stage="stage" />
                 </div>

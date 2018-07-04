@@ -634,15 +634,17 @@ describe API::Issues do
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      get api("/projects/#{project.id}/issues", user)
+
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
 
-      create(:issue, author: user, project: project)
+      create_list(:issue, 3, project: project)
 
       expect do
         get api("/projects/#{project.id}/issues", user)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control_count)
     end
 
     it 'returns 404 when project does not exist' do
@@ -1681,7 +1683,7 @@ describe API::Issues do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     context 'when unauthenticated' do
-      it "returns unautorized" do
+      it "returns unauthorized" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
 
         expect(response).to have_gitlab_http_status(401)
@@ -1697,7 +1699,7 @@ describe API::Issues do
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

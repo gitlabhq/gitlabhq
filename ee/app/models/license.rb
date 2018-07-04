@@ -36,6 +36,7 @@ class License < ActiveRecord::Base
   EEP_FEATURES = EES_FEATURES + %i[
     admin_audit_log
     auditor_user
+    board_assignee_lists
     cross_project_pipelines
     email_additional_text
     db_load_balancing
@@ -71,6 +72,8 @@ class License < ActiveRecord::Base
     epics
     ide
     chatops
+    pod_logs
+    pseudonymizer
   ].freeze
 
   # List all features available for early adopters,

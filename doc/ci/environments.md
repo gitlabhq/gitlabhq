@@ -114,7 +114,7 @@ Let's now see how that information is exposed within GitLab.
 
 ## Viewing the current status of an environment
 
-The environment list under your project's **Pipelines ➔ Environments**, is
+The environment list under your project's **Operations > Environments**, is
 where you can find information of the last deployment status of an environment.
 
 Here's how the Environments page looks so far.
@@ -167,7 +167,7 @@ that works.
 You can't control everything, so sometimes things go wrong. When that unfortunate
 time comes GitLab has you covered. Simply by clicking the **Rollback** button
 that can be found in the deployments page
-(**Pipelines ➔ Environments ➔ `environment name`**) you can relaunch the
+(**Operations > Environments > `environment name`**) you can relaunch the
 job with the commit associated with it.
 
 >**Note:**
@@ -249,7 +249,7 @@ the basis of [Review apps](review_apps/index.md).
 NOTE: **Note:**
 The `name` and `url` parameters can use most of the CI/CD variables,
 including [predefined](variables/README.md#predefined-variables-environment-variables),
-[secret](variables/README.md#secret-variables) and
+[project/group ones](variables/README.md#variables) and
 [`.gitlab-ci.yml` variables](yaml/README.md#variables). You however cannot use variables
 defined under `script` or on the Runner's side. There are also other variables that
 are unsupported in the context of `environment:name`. You can read more about
@@ -593,7 +593,7 @@ version of the app, all without leaving GitLab.
 
 >**Note:**
 Web terminals were added in GitLab 8.15 and are only available to project
-masters and owners.
+maintainers and owners.
 
 If you deploy to your environments with the help of a deployment service (e.g.,
 the [Kubernetes integration][kube]), GitLab can open

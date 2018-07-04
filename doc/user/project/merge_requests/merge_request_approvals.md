@@ -13,9 +13,9 @@ Merge request approvals enable enforced code review by requiring specified peopl
 3. Specifying reviewers for a given proposed code change.
 4. Specifying categories of reviewers, such as BE, FE, QA, DB, etc., for all proposed code changes.
 
-## Activating approvals
+## Editing approvals
 
-To activate the merge request approvals:
+To edit the merge request approvals:
 
 1. Navigate to your project's **Settings > General** and expand the
    **Merge requests settings**
@@ -23,7 +23,7 @@ To activate the merge request approvals:
 1. Search for users or groups that will be [eligible to approve](#eligible-approvers)
    merge requests and click the **Add** button to add them as approvers
 1. Set the minimum number of required approvals under the "Approvals required"
-   box
+   box. Note: the minimum can be 0. 
 1. Click **Save changes**
 
     ![Approvals config project](img/approvals_config_project.png)
@@ -106,7 +106,7 @@ or a [failed CI/CD pipeline](merge_when_pipeline_succeeds.md).
 
 > Introduced in GitLab Enterprise Edition 9.4.
 
-If approvals are [activated at the project level](#activating-approvals), the
+If approvals are [set at the project level](#editing-approvals), the
 default configuration (number of required approvals and approvers) can be
 overridden for each merge request in that project.
 
@@ -151,7 +151,7 @@ Read what happens  when the
 
 ## Resetting approvals on push
 
-If approvals are [activated at the project level](#activating-approvals),
+If approvals are [set at the project level](#editing-approvals),
 you can choose whether all approvals on a merge request are removed when
 new commits are pushed to the source branch of the merge request:
 

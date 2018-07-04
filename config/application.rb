@@ -7,6 +7,12 @@ Bundler.require(:default, Rails.env)
 require 'elasticsearch/rails/instrumentation'
 
 module Gitlab
+  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
+  def self.rails5?
+    ENV["RAILS5"].in?(%w[1 true])
+  end
+
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -14,6 +20,12 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
+    require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
+
+    # This needs to be loaded before DB connection is made
+    # to make sure that all connections have NO_ZERO_DATE
+    # setting disabled
+    require_dependency Rails.root.join('lib/mysql_zero_date')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -70,6 +82,13 @@ module Gitlab
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
+    # ActionCable mount point.
+    # The default Rails' mount point is `/cable` which may conflict with existing
+    # namespaces/users.
+    # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
+    # Please change this value when configuring ActionCable for real usage.
+    config.action_cable.mount_path = "/-/cable" if rails5?
+
     # Configure sensitive parameters which will be filtered from the log file.
     #
     # Parameters filtered:
@@ -84,6 +103,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
+    # - File content from Web Editor (:content)
     config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
@@ -95,6 +115,7 @@ module Gitlab
       sentry_dsn
       trace
       variables
+      content
     )
 
     # Enable escaping HTML in JSON.
@@ -201,7 +222,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, '::Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|
       g.factory_bot false
@@ -228,11 +249,5 @@ module Gitlab
       Gitlab::Routing.add_helpers(project_url_helpers)
       Gitlab::Routing.add_helpers(MilestonesRoutingHelper)
     end
-  end
-
-  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
-  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
-  def self.rails5?
-    ENV["RAILS5"].in?(%w[1 true])
   end
 end

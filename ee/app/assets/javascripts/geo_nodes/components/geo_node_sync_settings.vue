@@ -116,11 +116,11 @@
       {{ __('Unknown') }}
     </span>
     <span
-      v-else
       v-tooltip
+      v-else
+      :title="syncStatusTooltip"
       class="node-sync-settings"
       data-placement="bottom"
-      :title="syncStatusTooltip"
     >
       <strong>{{ syncType }}</strong>
       <icon

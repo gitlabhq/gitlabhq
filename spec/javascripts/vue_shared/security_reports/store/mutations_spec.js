@@ -66,6 +66,20 @@ describe('security reports mutations', () => {
     });
   });
 
+  describe('SET_CAN_CREATE_ISSUE_PERMISSION', () => {
+    it('should set permission for create issue', () => {
+      mutations[types.SET_CAN_CREATE_ISSUE_PERMISSION](stateCopy, true);
+      expect(stateCopy.canCreateIssuePermission).toEqual(true);
+    });
+  });
+
+  describe('SET_CAN_CREATE_FEEDBACK_PERMISSION', () => {
+    it('should set permission for create feedback', () => {
+      mutations[types.SET_CAN_CREATE_FEEDBACK_PERMISSION](stateCopy, true);
+      expect(stateCopy.canCreateFeedbackPermission).toEqual(true);
+    });
+  });
+
   describe('SET_SAST_HEAD_PATH', () => {
     it('should set sast head path', () => {
       mutations[types.SET_SAST_HEAD_PATH](stateCopy, 'sast_head_path');
@@ -310,6 +324,62 @@ describe('security reports mutations', () => {
   });
 
   describe('SET_ISSUE_MODAL_DATA', () => {
+    it('has default data', () => {
+      expect(stateCopy.modal.data.description.value).toEqual(null);
+      expect(stateCopy.modal.data.description.text).toEqual('Description');
+      expect(stateCopy.modal.data.description.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.identifiers.value).toEqual([]);
+      expect(stateCopy.modal.data.identifiers.text).toEqual('Identifiers');
+      expect(stateCopy.modal.data.identifiers.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.file.value).toEqual(null);
+      expect(stateCopy.modal.data.file.text).toEqual('File');
+      expect(stateCopy.modal.data.file.isLink).toEqual(true);
+
+      expect(stateCopy.modal.data.className.value).toEqual(null);
+      expect(stateCopy.modal.data.className.text).toEqual('Class');
+      expect(stateCopy.modal.data.className.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.methodName.value).toEqual(null);
+      expect(stateCopy.modal.data.methodName.text).toEqual('Method');
+      expect(stateCopy.modal.data.methodName.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.namespace.value).toEqual(null);
+      expect(stateCopy.modal.data.namespace.text).toEqual('Namespace');
+      expect(stateCopy.modal.data.namespace.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.severity.value).toEqual(null);
+      expect(stateCopy.modal.data.severity.text).toEqual('Severity');
+      expect(stateCopy.modal.data.severity.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.confidence.value).toEqual(null);
+      expect(stateCopy.modal.data.confidence.text).toEqual('Confidence');
+      expect(stateCopy.modal.data.confidence.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.solution.value).toEqual(null);
+      expect(stateCopy.modal.data.solution.text).toEqual('Solution');
+      expect(stateCopy.modal.data.solution.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.links.value).toEqual([]);
+      expect(stateCopy.modal.data.links.text).toEqual('Links');
+      expect(stateCopy.modal.data.links.isLink).toEqual(false);
+
+      expect(stateCopy.modal.data.instances.value).toEqual([]);
+      expect(stateCopy.modal.data.instances.text).toEqual('Instances');
+      expect(stateCopy.modal.data.instances.isLink).toEqual(false);
+
+      expect(stateCopy.modal.vulnerability.isDismissed).toEqual(false);
+      expect(stateCopy.modal.vulnerability.hasIssue).toEqual(false);
+
+      expect(stateCopy.modal.isCreatingNewIssue).toEqual(false);
+      expect(stateCopy.modal.isDismissingIssue).toEqual(false);
+
+      expect(stateCopy.modal.title).toEqual(null);
+      expect(stateCopy.modal.learnMoreUrl).toEqual(null);
+      expect(stateCopy.modal.error).toEqual(null);
+    });
+
     it('sets modal data', () => {
       stateCopy.vulnerabilityFeedbackPath = 'path';
 
@@ -344,8 +414,9 @@ describe('security reports mutations', () => {
         }],
         isDismissed: true,
       };
+      const status = 'success';
 
-      mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, issue);
+      mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, { issue, status });
 
       expect(stateCopy.modal.title).toEqual(issue.title);
       expect(stateCopy.modal.data.description.value).toEqual(issue.description);
@@ -361,6 +432,7 @@ describe('security reports mutations', () => {
       expect(stateCopy.modal.data.links.value).toEqual(issue.links);
       expect(stateCopy.modal.data.instances.value).toEqual(issue.instances);
       expect(stateCopy.modal.vulnerability).toEqual(issue);
+      expect(stateCopy.modal.isResolved).toEqual(true);
     });
   });
 

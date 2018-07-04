@@ -2,13 +2,15 @@ require 'spec_helper'
 
 describe Geo::RepositorySyncService do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
-
-  let(:lease) { double(try_obtain: true) }
   set(:project) { create(:project_empty_repo) }
+
   let(:repository) { project.repository }
+  let(:lease_key) { "geo_sync_service:repository:#{project.id}" }
+  let(:lease_uuid) { 'uuid'}
 
   subject { described_class.new(project) }
 
@@ -23,7 +25,8 @@ describe Geo::RepositorySyncService do
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.git" }
 
     before do
-      allow(subject).to receive(:exclusive_lease).and_return(lease)
+      stub_exclusive_lease(lease_key, lease_uuid)
+      stub_exclusive_lease("geo_project_housekeeping:#{project.id}")
 
       allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
@@ -47,8 +50,7 @@ describe Geo::RepositorySyncService do
     end
 
     it 'returns the lease when succeed' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
-        subject.__send__(:lease_key), anything).and_call_original
+      expect_to_cancel_exclusive_lease(lease_key, lease_uuid)
 
       subject.execute
     end
@@ -64,14 +66,13 @@ describe Geo::RepositorySyncService do
         .with(url_to_repo, remote_name: 'geo', forced: true)
         .and_raise(Gitlab::Shell::Error)
 
-      expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
-        subject.__send__(:lease_key), anything).and_call_original
+      expect_to_cancel_exclusive_lease(lease_key, lease_uuid)
 
       subject.execute
     end
 
     it 'does not fetch project repository if cannot obtain a lease' do
-      allow(lease).to receive(:try_obtain) { false }
+      stub_exclusive_lease_taken(lease_key)
 
       expect(repository).not_to receive(:fetch_as_mirror)
 
@@ -224,28 +225,23 @@ describe Geo::RepositorySyncService do
           allow(repository).to receive(:fetch_as_mirror)
             .with(url_to_repo, remote_name: 'geo', forced: true)
             .and_raise(Gitlab::Shell::Error.new('shell error'))
+        end
+
+        it 'sets correct values for registry record' do
+          subject.execute
+
+          expect(registry).to have_attributes(last_repository_synced_at: be_present,
+                                              last_repository_successful_sync_at: nil,
+                                              repository_retry_count: 1,
+                                              repository_retry_at: be_present,
+                                              last_repository_sync_failure: 'Error syncing repository: shell error'
+                                             )
+        end
+
+        it 'calls repository cleanup' do
+          expect(repository).to receive(:clean_stale_repository_files)
 
           subject.execute
-        end
-
-        it 'sets last_repository_synced_at' do
-          expect(registry.last_repository_synced_at).not_to be_nil
-        end
-
-        it 'resets last_repository_successful_sync_at' do
-          expect(registry.last_repository_successful_sync_at).to be_nil
-        end
-
-        it 'resets repository_retry_count' do
-          expect(registry.repository_retry_count).to eq(1)
-        end
-
-        it 'resets repository_retry_at' do
-          expect(registry.repository_retry_at).to be_present
-        end
-
-        it 'sets last_repository_sync_failure' do
-          expect(registry.last_repository_sync_failure).to eq('Error syncing repository: shell error')
         end
       end
     end

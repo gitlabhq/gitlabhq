@@ -11,14 +11,16 @@
 - cronjob:remove_old_web_hook_logs
 - cronjob:remove_unreferenced_lfs_objects
 - cronjob:repository_archive_cache
-- cronjob:repository_check_batch
+- cronjob:repository_check_dispatch
 - cronjob:requests_profiles
 - cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
+- cronjob:ci_archive_traces_cron
 - cronjob:trending_projects
 - cronjob:issue_due_scheduler
+- cronjob:prune_web_hook_logs
 
 - gcp_cluster:cluster_install_app
 - gcp_cluster:cluster_provision
@@ -30,12 +32,14 @@
 - github_importer:github_import_import_diff_note
 - github_importer:github_import_import_issue
 - github_importer:github_import_import_note
+- github_importer:github_import_import_lfs_object
 - github_importer:github_import_import_pull_request
 - github_importer:github_import_refresh_import_jid
 - github_importer:github_import_stage_finish_import
 - github_importer:github_import_stage_import_base_data
 - github_importer:github_import_stage_import_issues_and_diff_notes
 - github_importer:github_import_stage_import_notes
+- github_importer:github_import_stage_import_lfs_objects
 - github_importer:github_import_stage_import_pull_requests
 - github_importer:github_import_stage_import_repository
 
@@ -68,6 +72,7 @@
 - pipeline_processing:update_head_pipeline_for_merge_request
 
 - repository_check:repository_check_clear
+- repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
 - default
@@ -115,6 +120,7 @@
 - web_hook
 - repository_update_remote_mirror
 - create_note_diff_file
+- delete_diff_files
 
 # EE-specific queues
 
@@ -141,6 +147,7 @@
 - cronjob:ldap_all_groups_sync
 - cronjob:ldap_sync
 - cronjob:update_all_mirrors
+- cronjob:pseudonymizer
 
 - geo:geo_scheduler_scheduler
 - geo:geo_scheduler_primary_scheduler

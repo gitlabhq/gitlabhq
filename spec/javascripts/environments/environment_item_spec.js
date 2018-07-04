@@ -20,6 +20,7 @@ describe('Environment item', () => {
         size: 3,
         isFolder: true,
         environment_path: 'url',
+        log_path: 'url',
       };
 
       component = new EnvironmentItem({
@@ -108,6 +109,7 @@ describe('Environment item', () => {
         },
         'stop_action?': true,
         environment_path: 'root/ci-folders/environments/31',
+        log_path: 'root/ci-folders/environments/31/logs',
         created_at: '2016-11-07T11:11:16.525Z',
         updated_at: '2016-11-10T15:55:58.778Z',
       };

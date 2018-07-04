@@ -50,6 +50,22 @@ module Gitlab
         configuration['hosts'] || []
       end
 
+      def self.service_discovery_enabled?
+        configuration.dig('discover', 'record').present?
+      end
+
+      def self.service_discovery_configuration
+        conf = configuration['discover'] || {}
+
+        {
+          nameserver: conf['nameserver'] || 'localhost',
+          port: conf['port'] || 8600,
+          record: conf['record'],
+          interval: conf['interval'] || 60,
+          disconnect_timeout: conf['disconnect_timeout'] || 120
+        }
+      end
+
       def self.log(level, message)
         Rails.logger.tagged(LOG_TAG) do
           Rails.logger.send(level, message)
@@ -63,13 +79,20 @@ module Gitlab
       # Returns true if load balancing is to be enabled.
       def self.enable?
         return false unless ::License.feature_available?(:db_load_balancing)
+        return false if program_name == 'rake' || Sidekiq.server?
+        return false unless Database.postgresql?
 
-        program_name != 'rake' && !hosts.empty? && !Sidekiq.server? &&
-          Database.postgresql?
+        hosts.any? || service_discovery_enabled?
       end
 
       def self.program_name
         @program_name ||= File.basename($0)
+      end
+
+      def self.start_service_discovery
+        return unless service_discovery_enabled?
+
+        ServiceDiscovery.new(service_discovery_configuration).start
       end
 
       # Configures proxying of requests.

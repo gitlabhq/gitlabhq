@@ -18,8 +18,6 @@
           = import_will_timeout_message(ci_cd_only)
         %li
           = import_svn_message(ci_cd_only)
-        %li
-          The Git LFS objects will be ignored.
         - unless ci_cd_only
           %li
             - ssh_link = link_to _('here'), help_page_path('/workflow/repository_mirroring.md', anchor: 'ssh-authentication')

@@ -3,18 +3,22 @@ import Vue from 'vue';
 import roadmapTimelineSectionComponent from 'ee/roadmap/components/roadmap_timeline_section.vue';
 import eventHub from 'ee/roadmap/event_hub';
 
+import { PRESET_TYPES } from 'ee/roadmap/constants';
+
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockEpic, mockTimeframe, mockShellWidth } from '../mock_data';
+import { mockEpic, mockTimeframeMonths, mockShellWidth } from '../mock_data';
 
 const createComponent = ({
+  presetType = PRESET_TYPES.MONTHS,
   epics = [mockEpic],
-  timeframe = mockTimeframe,
+  timeframe = mockTimeframeMonths,
   shellWidth = mockShellWidth,
   listScrollable = false,
 }) => {
   const Component = Vue.extend(roadmapTimelineSectionComponent);
 
   return mountComponent(Component, {
+    presetType,
     epics,
     timeframe,
     shellWidth,

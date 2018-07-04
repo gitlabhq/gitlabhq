@@ -19,9 +19,9 @@ It helps you find licenses that you don't want to use in your project and see
 which dependencies use them. For example, your application is using an external (open source)
 library whose license is incompatible with yours.
 
-## Supported languages and dependency managers
+## Supported languages and package managers
 
-The following languages and dependency managers are supported.
+The following languages and package managers are supported.
 
 | Language   | Package managers                                                  |
 |------------|-------------------------------------------------------------------|
@@ -44,6 +44,13 @@ prerequisites:
 - the resulting report **must** be named `gl-license-management-report.json`
   and uploaded as an artifact
 
+>**Note:**
+If the license management report doesn't have anything to compare to, no information
+will be displayed in the merge request area. That is the case when you add the
+`license_management` job in your `.gitlab-ci.yml` for the very first time.
+Consecutive merge requests will have something to compare to and the license
+management report will be shown properly.
+
 The `license_management` job will search the application dependencies for licenses,
 the resulting JSON file will be uploaded as an artifact, and
 GitLab will then check this file and show the information inside the merge
@@ -52,6 +59,6 @@ request.
 ![License Management Widget](img/license_management.jpg)
 
 [ee-5483]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5483
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/license_management.md

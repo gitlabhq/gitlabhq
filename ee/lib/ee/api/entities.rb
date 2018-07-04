@@ -125,7 +125,7 @@ module EE
       ########################
       class ProjectPushRule < Grape::Entity
         expose :id, :project_id, :created_at
-        expose :commit_message_regex, :branch_name_regex, :deny_delete_tag
+        expose :commit_message_regex, :commit_message_negative_regex, :branch_name_regex, :deny_delete_tag
         expose :member_check, :prevent_secrets, :author_email_regex
         expose :file_name_regex, :max_file_size
       end
@@ -218,6 +218,7 @@ module EE
         expose :current?, as: :current
         expose :files_max_capacity
         expose :repos_max_capacity
+        expose :verification_max_capacity
 
         # Retained for backwards compatibility. Remove in API v5
         expose :clone_protocol do |_record, _options|
@@ -330,6 +331,12 @@ module EE
           number_to_percentage(node.replication_slots_used_in_percentage, precision: 2)
         end
         expose :replication_slots_max_retained_wal_bytes
+
+        expose :repositories_checked_count
+        expose :repositories_checked_failed_count
+        expose :repositories_checked_in_percentage do |node|
+          number_to_percentage(node.repositories_checked_in_percentage, precision: 2)
+        end
 
         expose :last_event_id
         expose :last_event_timestamp

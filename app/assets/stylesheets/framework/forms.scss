@@ -174,7 +174,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-text-color-secondary;
+  color: $placeholder-text-color;
 }
 
 .input-group {
@@ -205,6 +205,10 @@ label {
 }
 
 .gl-show-field-errors {
+  .form-control {
+    height: 34px;
+  }
+
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
@@ -241,5 +245,17 @@ label {
     .remember-me-checkbox {
       margin-top: 0;
     }
+  }
+}
+
+.input-icon-wrapper {
+  position: relative;
+
+  .input-icon-right {
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $theme-gray-600;
   }
 }

@@ -8,7 +8,7 @@ It allows you, your team, and your collaborators to share
 and discuss proposals before and while implementing them.
 
 GitLab Issues and the GitLab Issue Tracker are available in all
-[GitLab Products](https://about.gitlab.com/products/) as
+[GitLab Products](https://about.gitlab.com/pricing/) as
 part of the [GitLab Workflow](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/).
 
 ## Use cases
@@ -35,7 +35,7 @@ your project public, open to collaboration.
 ### Streamline collaboration
 
 With [Multiple Assignees for Issues](multiple_assignees_for_issues.md),
-available in [GitLab Starter](https://about.gitlab.com/products/)
+available in [GitLab Starter](https://about.gitlab.com/pricing/)
 you can streamline collaboration and allow shared responsibilities to be clearly displayed.
 All assignees are shown across your workflows and receive notifications (as they
 would as single assignees), simplifying communication and ownership.
@@ -145,7 +145,7 @@ Issues can be [exported as CSV](csv_export.md) from GitLab and are sent to your 
 
 _Exporting issues to CSV is available only in [GitLab Enterprise Edition](https://about.gitlab.com/products/)._
 
-## Related Issues **[STARTER]**
+### Related Issues **[STARTER]**
 
 Related Issues are a bi-directional relationship between any two issues
 and appear in a block below the issue description. Issues can be across groups

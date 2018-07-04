@@ -143,6 +143,24 @@ docker login registry.example.com -u <your_username> -p <your_access_token>
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
 
+#### Enable the registry debug server
+
+The optional debug server can be enabled by setting the registry debug address
+in your `gitlab.rb` configuration.
+
+```ruby
+registry['debug_addr'] = "localhost:5001"
+```
+
+After adding the setting, [reconfigure] GitLab to apply the change.
+
+Use curl to request debug output from the debug server:
+
+```bash
+curl localhost:5001/debug/health
+curl localhost:5001/debug/vars
+```
+
 ### Advanced Troubleshooting
 
 >**NOTE:** The following section is only recommended for experts.
@@ -275,3 +293,4 @@ Once the right permissions were set, the error will go away.
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
 [pat]: ../profile/personal_access_tokens.md
 [pdt]: ../project/deploy_tokens/index.md
+[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure

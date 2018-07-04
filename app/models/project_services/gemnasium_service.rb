@@ -43,13 +43,18 @@ class GemnasiumService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
+    # Gitaly: this class will be removed https://gitlab.com/gitlab-org/gitlab-ee/issues/6010
+    repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.path_to_repo
+    end
+
     Gemnasium::GitlabService.execute(
       ref: data[:ref],
       before: data[:before],
       after: data[:after],
       token: token,
       api_key: api_key,
-      repo: project.repository.path_to_repo # Gitaly: fixed by https://gitlab.com/gitlab-org/security-products/gemnasium-migration/issues/9
+      repo: repo_path
     )
   end
 end

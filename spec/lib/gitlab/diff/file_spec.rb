@@ -26,6 +26,21 @@ describe Gitlab::Diff::File do
     end
   end
 
+  describe '#diff_lines_for_serializer' do
+    it 'includes bottom match line if not in the end' do
+      expect(diff_file.diff_lines_for_serializer.last.type).to eq('match')
+    end
+
+    context 'when deleted' do
+      let(:commit) { project.commit('d59c60028b053793cecfb4022de34602e1a9218e') }
+      let(:diff_file) { commit.diffs.diff_file_with_old_path('files/js/commit.js.coffee') }
+
+      it 'does not include bottom match line' do
+        expect(diff_file.diff_lines_for_serializer.last.type).not_to eq('match')
+      end
+    end
+  end
+
   describe '#mode_changed?' do
     it { expect(diff_file.mode_changed?).to be_falsey }
   end
@@ -79,7 +94,9 @@ describe Gitlab::Diff::File do
     let(:diffs) { commit.diffs }
 
     before do
-      info_dir_path = File.join(project.repository.path_to_repo, 'info')
+      info_dir_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        File.join(project.repository.path_to_repo, 'info')
+      end
 
       FileUtils.mkdir(info_dir_path) unless File.exist?(info_dir_path)
       File.write(File.join(info_dir_path, 'attributes'), "*.md -diff\n")
@@ -470,56 +487,69 @@ describe Gitlab::Diff::File do
   end
 
   describe '#diff_hunk' do
-    let(:raw_diff) do
-      <<EOS
-@@ -6,12 +6,18 @@ module Popen
+    context 'when first line is a match' do
+      let(:raw_diff) do
+        <<~EOS
+          --- a/files/ruby/popen.rb
+          +++ b/files/ruby/popen.rb
+          @@ -6,12 +6,18 @@ module Popen
 
-   def popen(cmd, path=nil)
-     unless cmd.is_a?(Array)
--      raise "System commands must be given as an array of strings"
-+      raise RuntimeError, "System commands must be given as an array of strings"
-     end
+             def popen(cmd, path=nil)
+               unless cmd.is_a?(Array)
+          -      raise "System commands must be given as an array of strings"
+          +      raise RuntimeError, "System commands must be given as an array of strings"
+               end
+        EOS
+      end
 
-     path ||= Dir.pwd
--    vars = { "PWD" => path }
--    options = { chdir: path }
-+
-+    vars = {
-+      "PWD" => path
-+    }
-+
-+    options = {
-+      chdir: path
-+    }
+      it 'returns raw diff up to given line index' do
+        allow(diff_file).to receive(:raw_diff) { raw_diff }
+        diff_line = instance_double(Gitlab::Diff::Line, index: 4)
 
-     unless File.directory?(path)
-       FileUtils.mkdir_p(path)
-@@ -19,6 +25,7 @@ module Popen
+        diff_hunk = <<~EOS
+          @@ -6,12 +6,18 @@ module Popen
 
-     @cmd_output = ""
-     @cmd_status = 0
-+
-     Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
-       @cmd_output << stdout.read
-       @cmd_output << stderr.read
-EOS
+             def popen(cmd, path=nil)
+               unless cmd.is_a?(Array)
+          -      raise "System commands must be given as an array of strings"
+          +      raise RuntimeError, "System commands must be given as an array of strings"
+        EOS
+
+        expect(diff_file.diff_hunk(diff_line)).to eq(diff_hunk.strip)
+      end
     end
 
-    it 'returns raw diff up to given line index' do
-      allow(diff_file).to receive(:raw_diff) { raw_diff }
-      diff_line = instance_double(Gitlab::Diff::Line, index: 5)
+    context 'when first line is not a match' do
+      let(:raw_diff) do
+        <<~EOS
+          @@ -1,4 +1,4 @@
+          -Copyright (c) 2011-2017 GitLab B.V.
+          +Copyright (c) 2011-2019 GitLab B.V.
 
-      diff_hunk = <<EOS
-@@ -6,12 +6,18 @@ module Popen
+          With regard to the GitLab Software:
 
-   def popen(cmd, path=nil)
-     unless cmd.is_a?(Array)
--      raise "System commands must be given as an array of strings"
-+      raise RuntimeError, "System commands must be given as an array of strings"
-     end
-EOS
+          @@ -9,17 +9,21 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+          copies of the Software, and to permit persons to whom the Software is
+          furnished to do so, subject to the following conditions:
+        EOS
+      end
 
-      expect(diff_file.diff_hunk(diff_line)).to eq(diff_hunk)
+      it 'returns raw diff up to given line index' do
+        allow(diff_file).to receive(:raw_diff) { raw_diff }
+        diff_line = instance_double(Gitlab::Diff::Line, index: 5)
+
+        diff_hunk = <<~EOS
+          -Copyright (c) 2011-2017 GitLab B.V.
+          +Copyright (c) 2011-2019 GitLab B.V.
+
+          With regard to the GitLab Software:
+
+          @@ -9,17 +9,21 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+          copies of the Software, and to permit persons to whom the Software is
+        EOS
+
+        expect(diff_file.diff_hunk(diff_line)).to eq(diff_hunk.strip)
+      end
     end
   end
 end

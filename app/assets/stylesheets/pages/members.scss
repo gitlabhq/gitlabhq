@@ -127,10 +127,6 @@
   background: transparent;
   border: 0;
   outline: 0;
-
-  @include media-breakpoint-up(sm) {
-    right: 160px;
-  }
 }
 
 .members-ldap {

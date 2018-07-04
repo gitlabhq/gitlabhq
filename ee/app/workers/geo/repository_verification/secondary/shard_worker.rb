@@ -4,14 +4,12 @@ module Geo
       class ShardWorker < Geo::Scheduler::Secondary::SchedulerWorker
         include CronjobQueue
 
-        MAX_CAPACITY = 1000
-
         attr_accessor :shard_name
 
         def perform(shard_name)
           @shard_name = shard_name
 
-          return unless Gitlab::Geo::ShardHealthCache.healthy_shard?(shard_name)
+          return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
 
           super()
         end
@@ -23,7 +21,7 @@ module Geo
         end
 
         def max_capacity
-          MAX_CAPACITY
+          current_node.verification_max_capacity
         end
 
         def load_pending_resources

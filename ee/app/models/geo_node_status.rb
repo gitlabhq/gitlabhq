@@ -5,9 +5,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   after_initialize :initialize_feature_flags
 
-  # Whether we were successful in reaching this node
-  attr_accessor :success
-  attr_writer   :health_status
   attr_accessor :storage_shards
 
   attr_accessor :repository_verification_enabled
@@ -18,7 +15,8 @@ class GeoNodeStatus < ActiveRecord::Base
                 :repository_deleted_max_id, :repository_renamed_max_id, :repositories_changed_max_id,
                 :lfs_object_deleted_max_id, :job_artifact_deleted_max_id,
                 :lfs_objects_registry_count, :job_artifacts_registry_count, :attachments_registry_count,
-                :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id
+                :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id,
+                :repositories_checked_count, :repositories_checked_failed_count
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -73,8 +71,14 @@ class GeoNodeStatus < ActiveRecord::Base
     lfs_object_deleted_max_id: 'Highest ID present in LFS objects deleted',
     job_artifact_deleted_max_id: 'Highest ID present in job artifacts deleted',
     hashed_storage_migrated_max_id: 'Highest ID present in projects migrated to hashed storage',
-    hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage'
+    hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage',
+    repositories_checked_count: 'Number of repositories checked',
+    repositories_checked_failed_count: 'Number of failed repositories checked'
   }.freeze
+
+  EXPIRATION_IN_MINUTES = 5
+  HEALTHY_STATUS = 'Healthy'.freeze
+  UNHEALTHY_STATUS = 'Unhealthy'.freeze
 
   def self.current_node_status
     current_node = Gitlab::Geo.current_node
@@ -82,8 +86,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
     status = current_node.find_or_build_status
 
-    # Since we're retrieving our own data, we mark this as a successful load
-    status.success = true
     status.load_data_from_current_node
 
     status.save if Gitlab::Geo.primary?
@@ -92,13 +94,14 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def self.fast_current_node_status
-    # Primary's status is easy to calculate so we can calculate it on the fly
-    return current_node_status if Gitlab::Geo.primary?
+    attrs = Rails.cache.read(cache_key)
 
-    spawn_worker
-
-    attrs = Rails.cache.read(cache_key) || {}
-    new(attrs)
+    if attrs
+      new(attrs)
+    else
+      spawn_worker
+      nil
+    end
   end
 
   def self.spawn_worker
@@ -117,9 +120,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   EXCLUDED_PARAMS = %w[id created_at].freeze
   EXTRA_PARAMS = %w[
-    success
-    health
-    health_status
     last_event_timestamp
     cursor_last_event_timestamp
     storage_shards
@@ -130,7 +130,7 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def initialize_feature_flags
-    self.repository_verification_enabled = Feature.enabled?('geo_repository_verification')
+    self.repository_verification_enabled = Gitlab::Geo.repository_verification_enabled?
   end
 
   def update_cache!
@@ -190,6 +190,9 @@ class GeoNodeStatus < ActiveRecord::Base
         self.wikis_checksummed_count = repository_verification_finder.count_verified_wikis
         self.wikis_checksum_failed_count = repository_verification_finder.count_verification_failed_wikis
       end
+
+      self.repositories_checked_count = Project.where.not(last_repository_check_at: nil).count
+      self.repositories_checked_failed_count = Project.where(last_repository_check_failed: true).count
     end
   end
 
@@ -216,6 +219,9 @@ class GeoNodeStatus < ActiveRecord::Base
       self.attachments_synced_missing_on_primary_count = attachments_finder.count_synced_missing_on_primary
 
       load_verification_data
+
+      self.repositories_checked_count = Geo::ProjectRegistry.where.not(last_repository_check_at: nil).count
+      self.repositories_checked_failed_count = Geo::ProjectRegistry.where(last_repository_check_failed: true).count
     end
   end
 
@@ -230,14 +236,30 @@ class GeoNodeStatus < ActiveRecord::Base
     end
   end
 
-  alias_attribute :health, :status_message
-
   def healthy?
-    status_message.blank? || status_message == 'Healthy'.freeze
+    !outdated? && status_message_healthy?
+  end
+
+  def health
+    if outdated?
+      return "Status has not been updated in the past #{EXPIRATION_IN_MINUTES} minutes"
+    end
+
+    status_message
   end
 
   def health_status
-    @health_status || (healthy? ? 'Healthy' : 'Unhealthy')
+    healthy? ? HEALTHY_STATUS : UNHEALTHY_STATUS
+  end
+
+  def outdated?
+    return false unless updated_at
+
+    updated_at < EXPIRATION_IN_MINUTES.minutes.ago
+  end
+
+  def status_message_healthy?
+    status_message.blank? || status_message == HEALTHY_STATUS
   end
 
   def last_successful_status_check_timestamp
@@ -286,6 +308,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def wikis_verified_in_percentage
     calc_percentage(wikis_count, wikis_verified_count)
+  end
+
+  def repositories_checked_in_percentage
+    calc_percentage(repositories_count, repositories_checked_count)
   end
 
   def lfs_objects_synced_in_percentage

@@ -23,6 +23,15 @@ describe Repository, :elastic do
     expect(project.repository.search('initial')[:commits][:total_count]).to eq(1)
   end
 
+  it 'can filter blobs' do
+    project = create :project, :repository
+    index!(project)
+
+    expect(project.repository.search('def | popen filename:test')[:blobs][:total_count]).to eq(1)
+    expect(project.repository.search('def | popen path:ruby')[:blobs][:total_count]).to eq(4)
+    expect(project.repository.search('def | popen extension:md')[:blobs][:total_count]).to eq(1)
+  end
+
   def search_and_check!(on, query, type:, per: 1000)
     results = on.search(query, type: type, per: per)["#{type}s".to_sym][:results]
 

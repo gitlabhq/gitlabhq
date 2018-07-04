@@ -4,7 +4,7 @@
       = @service.title
       = boolean_to_icon @service.activated?
 
-    %p= @service.description
+    %p= #{@service.description}.
 
     - if @service.respond_to?(:detailed_description)
       %p= @service.detailed_description

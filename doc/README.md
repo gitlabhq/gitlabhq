@@ -147,7 +147,7 @@ scales to run your tests faster.
 - [GitLab CI/CD](ci/README.md): Explore the features and capabilities of Continuous Integration, Continuous Delivery, and Continuous Deployment with GitLab.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
 - [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
-- [Multi-project pipeline graphs](ci/multi_project_pipeline_graphs.md) **[PREMIUM]**
+- [Multi-project pipelines](ci/multi_project_pipelines.md) **[PREMIUM]**
 - [Code Quality reports](user/project/merge_requests/code_quality_diff.md) **[STARTER]**
 - [Static Application Security Testing (SAST) reports](user/project/merge_requests/sast.md) **[ULTIMATE]**
 - [Dynamic Application Security Testing (DAST)](user/project/merge_requests/dast.md) **[ULTIMATE]**
@@ -184,10 +184,10 @@ configuration. Then customize everything from buildpacks to CI/CD.
 
 - [Auto DevOps](topics/autodevops/index.md)
 - [Deployment of Helm, Ingress, and Prometheus on Kubernetes](user/project/clusters/index.md#installing-applications)
-- [Protected secret variables](ci/variables/README.md#protected-secret-variables)
+- [Protected variables](ci/variables/README.md#protected-variables)
 - [Easy creation of Kubernetes clusters on GKE](user/project/clusters/index.md#adding-and-creating-a-new-gke-cluster-via-gitlab)
 - [Multiple Kubernetes Clusters](user/project/clusters/index.md#multiple-kubernetes-clusters) **[PREMIUM]**
-- [Environment-specific secret variables](ci/variables/README.md#limiting-environment-scopes-of-secret-variables) **[PREMIUM]**
+- [Environment-specific variables](ci/variables/README.md#limiting-environment-scopes-of-variables) **[PREMIUM]**
 
 ### Monitor
 
@@ -215,7 +215,7 @@ instant how code changes impact your production environment.
 - [User account](user/profile/index.md): Manage your account
   - [Authentication](topics/authentication/index.md): Account security with two-factor authentication, setup your ssh keys and deploy keys for secure access to your projects.
   - [Profile settings](user/profile/index.md#profile-settings): Manage your profile settings, two factor authentication and more.
-- [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/master/owner) can do.
+- [User permissions](user/permissions.md): Learn what each role in a project (external/guest/reporter/developer/maintainer/owner) can do.
 
 ### Git and GitLab
 
@@ -239,7 +239,7 @@ Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.
-- [Writing documentation](development/writing_documentation.md): Contributing to GitLab Docs.
+- [Writing documentation](development/documentation/index.md): Contributing to GitLab Docs.
 
 ## GitLab subscriptions
 
@@ -252,7 +252,7 @@ straight away.
 
 ### GitLab self-hosted
 
-With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Core, Starter, Premium, and Ultimate.
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/pricing/): Core, Starter, Premium, and Ultimate.
 
 Every feature available in Core is also available in Starter, Premium, and Ultimate.
 Starter features are also available in Premium and Ultimate, and Premium features are also

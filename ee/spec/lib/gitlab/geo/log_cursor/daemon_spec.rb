@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared_state do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
@@ -37,9 +38,14 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
     end
 
     it 'skips execution if cannot achieve a lease' do
+      lease = stub_exclusive_lease_taken('geo_log_cursor_processed')
+
+      allow(lease).to receive(:try_obtain_with_ttl).and_return({ ttl: 1, uuid: false })
+      allow(lease).to receive(:same_uuid?).and_return(false)
+      allow(Gitlab::Geo::LogCursor::Lease).to receive(:exclusive_lease).and_return(lease)
+
       is_expected.to receive(:exit?).and_return(false, true)
       is_expected.not_to receive(:run_once!)
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain_with_ttl).and_return({ ttl: 1, uuid: false })
 
       daemon.run!
     end
@@ -90,7 +96,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let!(:registry) { create(:geo_project_registry, :synced, project: project) }
 
       before do
-        allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+        allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do

@@ -32,6 +32,14 @@ export default {
     state.pipelineId = id;
   },
 
+  [types.SET_CAN_CREATE_ISSUE_PERMISSION](state, permission) {
+    state.canCreateIssuePermission = permission;
+  },
+
+  [types.SET_CAN_CREATE_FEEDBACK_PERMISSION](state, permission) {
+    state.canCreateFeedbackPermission = permission;
+  },
+
   // SAST
   [types.SET_SAST_HEAD_PATH](state, path) {
     state.sast.paths.head = path;
@@ -170,7 +178,7 @@ export default {
       state.dast.isLoading = false;
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
-    } else if (reports.head && !reports.base) {
+    } else if (reports.head && reports.head.site && !reports.base) {
       const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
 
       state.dast.newIssues = newIssues;
@@ -247,7 +255,9 @@ export default {
     state.dependencyScanning.hasError = true;
   },
 
-  [types.SET_ISSUE_MODAL_DATA](state, issue) {
+  [types.SET_ISSUE_MODAL_DATA](state, payload) {
+    const { issue, status } = payload;
+
     state.modal.title = issue.title;
     state.modal.data.description.value = issue.description;
     state.modal.data.file.value = issue.location && issue.location.file;
@@ -272,6 +282,7 @@ export default {
     }
     state.modal.data.instances.value = issue.instances;
     state.modal.vulnerability = issue;
+    state.modal.isResolved = status === 'success';
 
     // clear previous state
     state.modal.error = null;

@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import '~/boards/components/issue_card_inner';
+import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import ListIssue from '~/boards/models/issue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
   let vm;
-  const Component = Vue.extend(gl.issueBoards.IssueCardInner);
+  const Component = Vue.extend(IssueCardInner);
   const list = listObj;
   const issue = new ListIssue({
     title: 'Testing',

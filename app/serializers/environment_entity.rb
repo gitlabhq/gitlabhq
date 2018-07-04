@@ -1,6 +1,8 @@
 class EnvironmentEntity < Grape::Entity
   include RequestAwareEntity
 
+  prepend ::EE::EnvironmentEntity
+
   expose :id
   expose :name
   expose :state

@@ -22,8 +22,11 @@ describe RepositoryImportWorker do
         expect_any_instance_of(Projects::ImportService).to receive(:execute)
           .and_return({ status: :ok })
 
-        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
-        expect_any_instance_of(Project).to receive(:import_finish)
+        # Works around https://github.com/rspec/rspec-mocks/issues/910
+        expect(Project).to receive(:find).with(project.id).and_return(project)
+        expect(project.repository).to receive(:expire_emptiness_caches)
+        expect(project.wiki.repository).to receive(:expire_emptiness_caches)
+        expect(project).to receive(:import_finish)
 
         subject.perform(project.id)
       end
@@ -34,9 +37,11 @@ describe RepositoryImportWorker do
         expect_any_instance_of(Projects::ImportService).to receive(:execute)
           .and_return({ status: :ok })
 
-        expect_any_instance_of(Project).to receive(:after_import).and_call_original
-        expect_any_instance_of(Repository).to receive(:expire_emptiness_caches)
-        expect_any_instance_of(Project).to receive(:import_finish)
+        # Works around https://github.com/rspec/rspec-mocks/issues/910
+        expect(Project).to receive(:find).with(project.id).and_return(project)
+        expect(project.repository).to receive(:expire_emptiness_caches)
+        expect(project.wiki.repository).to receive(:expire_emptiness_caches)
+        expect(project).to receive(:import_finish)
 
         subject.perform(project.id)
       end

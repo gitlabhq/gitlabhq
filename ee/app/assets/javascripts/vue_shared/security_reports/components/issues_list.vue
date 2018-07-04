@@ -61,35 +61,35 @@ export default {
     <sast-container-info v-if="type === $options.sastContainer" />
 
     <issues-block
-      class="js-mr-code-new-issues"
       v-if="unresolvedIssues.length"
       :type="type"
       :status="unresolvedIssuesStatus"
       :issues="unresolvedIssues"
+      class="js-mr-code-new-issues"
     />
 
     <issues-block
-      class="js-mr-code-all-issues"
       v-if="isFullReportVisible"
       :type="type"
-      status="failed"
       :issues="allIssues"
+      class="js-mr-code-all-issues"
+      status="failed"
     />
 
     <issues-block
-      class="js-mr-code-non-issues"
       v-if="neutralIssues.length"
       :type="type"
-      status="neutral"
       :issues="neutralIssues"
+      class="js-mr-code-non-issues"
+      status="neutral"
     />
 
     <issues-block
-      class="js-mr-code-resolved-issues"
       v-if="resolvedIssues.length"
       :type="type"
-      status="success"
       :issues="resolvedIssues"
+      class="js-mr-code-resolved-issues"
+      status="success"
     />
 
     <button

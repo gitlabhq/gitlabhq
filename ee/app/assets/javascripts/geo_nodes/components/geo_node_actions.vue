@@ -76,12 +76,12 @@
       class="node-action-container"
     >
       <button
-        type="button"
-        class="btn btn-sm btn-node-action"
         :class="{
           'btn-warning': node.enabled,
           'btn-success': !node.enabled
         }"
+        type="button"
+        class="btn btn-sm btn-node-action"
         @click="onToggleNode"
       >
         {{ nodeToggleLabel }}
@@ -92,8 +92,8 @@
       class="node-action-container"
     >
       <a
-        class="btn btn-sm btn-node-action"
         :href="node.editPath"
+        class="btn btn-sm btn-node-action"
       >
         {{ __('Edit') }}
       </a>

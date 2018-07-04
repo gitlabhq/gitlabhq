@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   let!(:secondary) { create(:geo_node) }
   let(:project)    { create(:project, :repository, :wiki_repo) }
@@ -12,24 +13,30 @@ describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :cle
   end
 
   describe '#perform' do
-    before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
-    end
-
     it 'does not calculate the checksum when not running on a secondary' do
       allow(Gitlab::Geo).to receive(:secondary?) { false }
 
-      expect_any_instance_of(Geo::RepositoryVerifySecondaryService).not_to receive(:execute)
-
       subject.perform(registry.id)
+
+      expect(registry.reload).to have_attributes(
+        repository_verification_checksum_sha: nil,
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum_sha: nil,
+        last_wiki_verification_failure: nil
+      )
     end
 
     it 'does not calculate the checksum when project is pending deletion' do
       registry.project.update!(pending_delete: true)
 
-      expect_any_instance_of(Geo::RepositoryVerifySecondaryService).not_to receive(:execute)
-
       subject.perform(registry.id)
+
+      expect(registry.reload).to have_attributes(
+        repository_verification_checksum_sha: nil,
+        last_repository_verification_failure: nil,
+        wiki_verification_checksum_sha: nil,
+        last_wiki_verification_failure: nil
+      )
     end
 
     it 'does not raise an error when registry could not be found' do
@@ -43,12 +50,24 @@ describe Geo::RepositoryVerification::Secondary::SingleWorker, :postgresql, :cle
     end
 
     it 'runs verification for both repository and wiki' do
-      create(:repository_state, project: project, repository_verification_checksum: 'my_checksum', wiki_verification_checksum: 'my_checksum')
+      stub_exclusive_lease
 
-      expect(Geo::RepositoryVerifySecondaryService).to receive(:new).with(registry, :repository).and_call_original
-      expect(Geo::RepositoryVerifySecondaryService).to receive(:new).with(registry, :wiki).and_call_original
+      service =
+        instance_double(Geo::RepositoryVerificationSecondaryService, execute: true)
+
+      allow(Geo::RepositoryVerificationSecondaryService)
+        .to receive(:new)
+        .with(registry, :repository)
+        .and_return(service)
+
+      allow(Geo::RepositoryVerificationSecondaryService)
+        .to receive(:new)
+        .with(registry, :wiki)
+        .and_return(service)
 
       subject.perform(registry.id)
+
+      expect(service).to have_received(:execute).twice
     end
   end
 end

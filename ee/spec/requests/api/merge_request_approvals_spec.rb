@@ -32,6 +32,21 @@ describe API::MergeRequestApprovals do
       expect(json_response['approvers'][0]['user']['username']).to eq(approver.username)
       expect(json_response['approver_groups'][0]['group']['name']).to eq(group.name)
     end
+
+    context 'when approvers are set to zero' do
+      before do
+        project.update!(approvals_before_merge: 0)
+        get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", user)
+      end
+
+      it 'returns a 200' do
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'does not include an error in the response' do
+        expect(json_response['message']).to eq(nil)
+      end
+    end
   end
 
   describe 'POST :id/merge_requests/:merge_request_iid/approvals' do
@@ -50,26 +65,25 @@ describe API::MergeRequestApprovals do
           expect(json_response['approvals_required']).to eq(5)
         end
 
+        context 'when project approvals are zero' do
+          before do
+            project.update!(approvals_before_merge: 0)
+          end
+
+          it 'does not include an error in the response' do
+            expect do
+              post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", current_user), approvals_required: 0
+            end.to change {merge_request.reload.approvals_before_merge}.from(nil).to(0)
+            expect(json_response['message']).to eq(nil)
+          end
+        end
+
         it 'does not allow approvals required under what the project requires' do
           expect do
             post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", current_user), approvals_required: 1
           end.not_to change { merge_request.reload.approvals_before_merge }
 
           expect(response).to have_gitlab_http_status(400)
-        end
-
-        context 'when project approvals are not enabled' do
-          before do
-            project.update_attribute(:approvals_before_merge, 0)
-          end
-
-          it 'does not allow you to override approvals required' do
-            expect do
-              post api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/approvals", current_user), approvals_required: 5
-            end.not_to change { merge_request.reload.approvals_before_merge }
-
-            expect(response).to have_gitlab_http_status(400)
-          end
         end
       end
 

@@ -102,6 +102,14 @@ export default {
       required: false,
       default: null,
     },
+    canCreateFeedback: {
+      type: Boolean,
+      required: true,
+    },
+    canCreateIssue: {
+      type: Boolean,
+      required: true,
+    },
   },
   sast: SAST,
   dast: DAST,
@@ -129,6 +137,9 @@ export default {
     this.setVulnerabilityFeedbackPath(this.vulnerabilityFeedbackPath);
     this.setVulnerabilityFeedbackHelpPath(this.vulnerabilityFeedbackHelpPath);
     this.setPipelineId(this.pipelineId);
+
+    this.setCanCreateIssuePermission(this.canCreateIssue);
+    this.setCanCreateFeedbackPermission(this.canCreateFeedback);
 
     if (this.sastHeadPath) {
       this.setSastHeadPath(this.sastHeadPath);
@@ -186,18 +197,20 @@ export default {
       'setVulnerabilityFeedbackPath',
       'setVulnerabilityFeedbackHelpPath',
       'setPipelineId',
+      'setCanCreateIssuePermission',
+      'setCanCreateFeedbackPermission',
     ]),
   },
 };
 </script>
 <template>
   <report-section
-    class="mr-widget-border-top"
     :status="summaryStatus"
     :success-text="groupedSummaryText"
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="true"
+    class="mr-widget-border-top"
   >
     <div
       slot="body"
@@ -205,72 +218,72 @@ export default {
     >
       <template v-if="sastHeadPath">
         <summary-row
-          class="js-sast-widget"
           :summary="groupedSastText"
           :status-icon="sastStatusIcon"
           :popover-options="sastPopover"
+          class="js-sast-widget"
         />
 
         <issues-list
-          class="js-sast-issue-list report-block-group-list"
           v-if="sast.newIssues.length || sast.resolvedIssues.length || sast.allIssues.length"
           :unresolved-issues="sast.newIssues"
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
           :type="$options.sast"
+          class="js-sast-issue-list report-block-group-list"
         />
       </template>
 
       <template v-if="dependencyScanningHeadPath">
         <summary-row
-          class="js-dependency-scanning-widget"
           :summary="groupedDependencyText"
           :status-icon="dependencyScanningStatusIcon"
           :popover-options="dependencyScanningPopover"
+          class="js-dependency-scanning-widget"
         />
 
         <issues-list
-          class="js-dss-issue-list report-block-group-list"
           v-if="dependencyScanning.newIssues.length ||
           dependencyScanning.resolvedIssues.length || dependencyScanning.allIssues.length"
           :unresolved-issues="dependencyScanning.newIssues"
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
           :type="$options.sast"
+          class="js-dss-issue-list report-block-group-list"
         />
       </template>
 
       <template v-if="sastContainerHeadPath">
         <summary-row
-          class="js-sast-container"
           :summary="groupedSastContainerText"
           :status-icon="sastContainerStatusIcon"
           :popover-options="sastContainerPopover"
+          class="js-sast-container"
         />
 
         <issues-list
-          class="report-block-group-list"
           v-if="sastContainer.newIssues.length || sastContainer.resolvedIssues.length"
           :unresolved-issues="sastContainer.newIssues"
           :neutral-issues="sastContainer.resolvedIssues"
           :type="$options.sastContainer"
+          class="report-block-group-list"
         />
       </template>
 
       <template v-if="dastHeadPath">
         <summary-row
-          class="js-dast-widget"
           :summary="groupedDastText"
           :status-icon="dastStatusIcon"
           :popover-options="dastPopover"
+          class="js-dast-widget"
         />
 
         <issues-list
-          class="report-block-group-list"
           v-if="dast.newIssues.length || dast.resolvedIssues.length"
           :unresolved-issues="dast.newIssues"
           :resolved-issues="dast.resolvedIssues"
           :type="$options.dast"
+          class="report-block-group-list"
         />
       </template>
 

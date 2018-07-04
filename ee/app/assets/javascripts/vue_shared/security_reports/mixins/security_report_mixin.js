@@ -19,7 +19,7 @@ export default {
       return {
         title: s__('ciReport|Container scanning detects known vulnerabilities in your docker images.'),
         content: sprintf(
-          s__('ciReport|%{linkStartTag}Learn more about SAST image %{linkEndTag}'),
+          s__('ciReport|%{linkStartTag}Learn more about Container Scanning %{linkEndTag}'),
           {
             linkStartTag: `<a href="${this.sastContainerHelpPath}">`,
             linkEndTag: '</a>',

@@ -46,7 +46,7 @@ class ProjectPolicy < BasePolicy
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
-  desc "User has master access"
+  desc "User has maintainer access"
   condition(:master) { team_access_level >= Gitlab::Access::MASTER }
 
   desc "Project is public"
@@ -298,6 +298,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 

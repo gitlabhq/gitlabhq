@@ -29,7 +29,9 @@ The following aspects of a project are imported:
   * Regular issue and pull request comments
 
 References to pull requests and issues are preserved (GitLab.com & 8.7+), and
-each imported repository defaults to `private` but [can be made public](../settings/index.md#sharing-and-permissions), as needed.
+each imported repository maintains visibility level unless that [visibility
+level is restricted](../../../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects),
+in which case it defaults to the default project visibility.
 
 ## How it works
 
@@ -116,9 +118,9 @@ Depending your GitLab tier, [project mirroring](../../../workflow/repository_mir
 your imported project in sync with its GitHub copy.
 
 Additionally, you can configure GitLab to send pipeline status updates back GitHub with the
-[GitHub Project Integration](../integrations/github.md). **[PREMIUM]**
+[GitHub Project Integration](https://docs.gitlab.com/ee/user/project/integrations/github.html). **[PREMIUM]**
 
-If you import your project using [CI/CD for external repo](../../../ci/ci_cd_for_external_repos/index.md), then both
+If you import your project using [CI/CD for external repo](https://docs.gitlab.com/ee/ci/ci_cd_for_external_repos/), then both
 of the above are automatically configured. **[PREMIUM]**
 
 ## Improving the speed of imports on self-hosted instances

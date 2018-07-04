@@ -21,13 +21,13 @@ module EE
       explanation do |weight|
         "Sets weight to #{weight}." if weight
       end
-      params ::Issue::WEIGHT_RANGE.to_s.squeeze('.').tr('.', '-')
+      params "0, 1, 2, …"
       condition do
         issuable.supports_weight? &&
           current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
       end
       parse_params do |weight|
-        weight.to_i if ::Issue.weight_filter_options.include?(weight.to_i)
+        weight.to_i if weight.to_i > 0
       end
       command :weight do |weight|
         @updates[:weight] = weight if weight

@@ -80,8 +80,8 @@ export default {
 <template>
   <gl-modal
     id="promote-milestone-modal"
-    footer-primary-button-variant="warning"
     :footer-primary-button-text="s__('Milestones|Promote Milestone')"
+    footer-primary-button-variant="warning"
     @submit="onSubmit"
   >
     <template

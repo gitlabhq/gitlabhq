@@ -13,6 +13,7 @@ describe('Approvals Body Component', () => {
     userHasApproved: true,
     approvedBy: [],
     approvalsLeft: 1,
+    approvalsOptional: false,
     pendingAvatarSvg: '<svg></svg>',
     checkmarkSvg: '<svg></svg>',
   };
@@ -48,11 +49,35 @@ describe('Approvals Body Component', () => {
       });
 
       it('should display the correct string for 2 possible approvers', done => {
+        const correctText = 'Requires 2 more approvals by';
+
         vm.approvalsLeft = 2;
         vm.suggestedApprovers.push({ name: 'Approver 2' });
 
         Vue.nextTick(() => {
-          const correctText = 'Requires 2 more approvals by';
+          expect(vm.approvalsRequiredStringified).toBe(correctText);
+          done();
+        });
+      });
+
+      it('should display the correct string for 0 approvals required', done => {
+        const correctText = 'No Approval required';
+
+        vm.approvalsOptional = true;
+
+        Vue.nextTick(() => {
+          expect(vm.approvalsRequiredStringified).toBe(correctText);
+          done();
+        });
+      });
+
+      it('should display the correct string for 0 approvals required and if the user is able to approve', done => {
+        const correctText = 'No Approval required; you can still approve';
+
+        vm.approvalsOptional = true;
+        vm.userCanApprove = true;
+
+        Vue.nextTick(() => {
           expect(vm.approvalsRequiredStringified).toBe(correctText);
           done();
         });
@@ -69,6 +94,18 @@ describe('Approvals Body Component', () => {
 
       it('shows the "Requires 1 more approval" without by when no suggested approvals are available', done => {
         const correctText = 'Requires 1 more approval';
+        vm.suggestedApprovers = [];
+
+        Vue.nextTick(() => {
+          expect(vm.approvalsRequiredStringified).toBe(correctText);
+          done();
+        });
+      });
+
+      it('shows the "Requires 2 more approvals" without by when no suggested approvals are available', done => {
+        const correctText = 'Requires 2 more approvals';
+
+        vm.approvalsLeft = 2;
         vm.suggestedApprovers = [];
 
         Vue.nextTick(() => {

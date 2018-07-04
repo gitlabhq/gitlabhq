@@ -5,7 +5,11 @@ describe Projects::DestroyService do
 
   let!(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: user.namespace) }
-  let!(:path) { project.repository.path_to_repo }
+  let!(:path) do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.path_to_repo
+    end
+  end
   let!(:remove_path) { path.sub(/\.git\Z/, "+#{project.id}+deleted.git") }
   let!(:async) { false } # execute or async_execute
 

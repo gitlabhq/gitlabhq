@@ -11,7 +11,7 @@ Regular users don't have access to GitLab administration tools and settings.
 GitLab has two product distributions: the open source
 [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
 and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/products/).
+available through [different subscriptions](https://about.gitlab.com/pricing/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose
@@ -58,6 +58,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 #### Customizing GitLab's appearance
 
 - [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Favicon](../customization/favicon.md): Change the default favicon to your own logo.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
@@ -165,6 +166,10 @@ created in snippets, wikis, and repos.
   - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
   - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
   - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
+
+## Analytics
+
+- [Pseudonymizer](pseudonymizer.md): Export data from GitLab's database to CSV files in a secure way.
 
 ## Troubleshooting
 

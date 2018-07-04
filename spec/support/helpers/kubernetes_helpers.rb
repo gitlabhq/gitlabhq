@@ -9,6 +9,10 @@ module KubernetesHelpers
     kube_response(kube_pods_body)
   end
 
+  def kube_logs_response
+    kube_response(kube_logs_body)
+  end
+
   def kube_deployments_response
     kube_response(kube_deployments_body)
   end
@@ -23,6 +27,13 @@ module KubernetesHelpers
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
+  end
+
+  def stub_kubeclient_logs(pod_name, response = nil)
+    stub_kubeclient_discover(service.api_url)
+    logs_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods/#{pod_name}/log?tailLines=#{Clusters::Platforms::Kubernetes::LOGS_LIMIT}"
+
+    WebMock.stub_request(:get, logs_url).to_return(response || kube_logs_response)
   end
 
   def stub_kubeclient_deployments(response = nil)
@@ -87,6 +98,10 @@ module KubernetesHelpers
       "kind" => "PodList",
       "items" => [kube_pod]
     }
+  end
+
+  def kube_logs_body
+    "Log 1\nLog 2\nLog 3"
   end
 
   def kube_deployments_body

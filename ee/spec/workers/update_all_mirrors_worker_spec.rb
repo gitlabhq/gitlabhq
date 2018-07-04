@@ -1,17 +1,17 @@
 require 'spec_helper'
 
 describe UpdateAllMirrorsWorker do
+  include ExclusiveLeaseHelpers
+
   subject(:worker) { described_class.new }
 
   before do
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+    stub_exclusive_lease
   end
 
   describe '#perform' do
     it 'does not execute if cannot get the lease' do
-      create(:project, :mirror)
-
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+      stub_exclusive_lease_taken
 
       expect(worker).not_to receive(:schedule_mirrors!)
 

@@ -47,9 +47,9 @@ function enrichVulnerabilityWithfeedback(vulnerability, feedback = []) {
  */
 function fileUrl(location, pathPrefix) {
   let lineSuffix = '';
-  if (!_.isEmpty(location.start_line)) {
+  if (location.start_line) {
     lineSuffix += `#L${location.start_line}`;
-    if (!_.isEmpty(location.end_line)) {
+    if (location.end_line) {
       lineSuffix += `-${location.end_line}`;
     }
   }
@@ -82,7 +82,7 @@ function adaptDeprecatedFormat(issue) {
     // Add the new location property
     location: {
       file: adapted.file,
-      start_line: adapted.line,
+      start_line: adapted.line ? parseInt(adapted.line, 10) : undefined,
     },
     links,
   });
@@ -268,11 +268,11 @@ export const textBuilder = (
     if (newIssues > 0) {
       return sprintf(
         n__(
-          '%{type} detected %d vulnerability for the source branch only',
-          '%{type} detected %d vulnerabilities for the source branch only',
+          '%{type} detected 1 vulnerability for the source branch only',
+          '%{type} detected %{vulnerabilityCount} vulnerabilities for the source branch only',
           newIssues,
         ),
-        { type },
+        { type, vulnerabilityCount: newIssues },
       );
     }
 
@@ -287,11 +287,11 @@ export const textBuilder = (
     if (newIssues > 0 && resolvedIssues === 0) {
       return sprintf(
         n__(
-          '%{type} detected %d new vulnerability',
-          '%{type} detected %d new vulnerabilities',
+          '%{type} detected 1 new vulnerability',
+          '%{type} detected %{vulnerabilityCount} new vulnerabilities',
           newIssues,
         ),
-        { type },
+        { type, vulnerabilityCount: newIssues },
       );
     }
 
@@ -299,24 +299,24 @@ export const textBuilder = (
     if (newIssues > 0 && resolvedIssues > 0) {
       return `${sprintf(
         n__(
-          '%{type} detected %d new vulnerability',
-          '%{type} detected %d new vulnerabilities',
+          '%{type} detected 1 new vulnerability',
+          '%{type} detected %{vulnerabilityCount} new vulnerabilities',
           newIssues,
         ),
-        { type },
+        { type, vulnerabilityCount: newIssues },
       )}
-      ${n__('and %d fixed vulnerability', 'and %d fixed vulnerabilities', resolvedIssues)}`;
+      ${n__('and 1 fixed vulnerability', 'and %d fixed vulnerabilities', resolvedIssues)}`;
     }
 
     // with only fixed issues
     if (newIssues === 0 && resolvedIssues > 0) {
       return sprintf(
         n__(
-          '%{type} detected %d fixed vulnerability',
-          '%{type} detected %d fixed vulnerabilities',
+          '%{type} detected 1 fixed vulnerability',
+          '%{type} detected %{vulnerabilityCount} fixed vulnerabilities',
           resolvedIssues,
         ),
-        { type },
+        { type, vulnerabilityCount: resolvedIssues },
       );
     }
   }

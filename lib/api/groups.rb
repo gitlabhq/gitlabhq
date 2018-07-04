@@ -41,7 +41,7 @@ module API
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-        optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
+        optional :order_by, type: String, values: %w[name path id], default: 'name', desc: 'Order by name, path or id'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
@@ -57,7 +57,9 @@ module API
         groups = groups.preload(:ldap_group_links)
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        groups = groups.reorder(params[:order_by] => params[:sort])
+        order_options = { params[:order_by] => params[:sort] }
+        order_options["id"] ||= "asc"
+        groups = groups.reorder(order_options)
 
         groups
       end
@@ -65,6 +67,8 @@ module API
       def find_group_projects(params)
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = reorder_projects(projects)
         paginate(projects)
       end
@@ -225,6 +229,8 @@ module API
                           desc: 'Return only the ID, URL, name, and path of each project'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
 
         use :pagination
         use :with_custom_attributes

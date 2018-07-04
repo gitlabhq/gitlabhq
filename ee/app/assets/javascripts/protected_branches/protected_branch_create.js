@@ -6,8 +6,6 @@ import CreateItemDropdown from '~/create_item_dropdown';
 import AccessDropdown from 'ee/projects/settings/access_dropdown';
 import { ACCESS_LEVELS, LEVEL_TYPES } from './constants';
 
-const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
-
 export default class ProtectedBranchCreate {
   constructor() {
     this.$form = $('.js-new-protected-branch');
@@ -52,8 +50,6 @@ export default class ProtectedBranchCreate {
       onSelect: this.onSelectCallback,
       getData: ProtectedBranchCreate.getProtectedBranches,
     });
-
-    this.loadPreviousSelection();
   }
 
   // Enable submit button after selecting an option
@@ -66,7 +62,6 @@ export default class ProtectedBranchCreate {
       $allowedToPush.length
     );
 
-    this.savePreviousSelection($allowedToMerge, $allowedToPush);
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
   }
 
@@ -109,41 +104,13 @@ export default class ProtectedBranchCreate {
     return formData;
   }
 
-  loadPreviousSelection() {
-    if (this.isLocalStorageAvailable) {
-      const savedDefaults = JSON.parse(window.localStorage.getItem(PB_LOCAL_STORAGE_KEY));
-      if (savedDefaults != null) {
-        this[`${ACCESS_LEVELS.MERGE}_dropdown`].setSelectedItems(savedDefaults.merge);
-        let updatedLabel = this[`${ACCESS_LEVELS.MERGE}_dropdown`].toggleLabel();
-        this[`${ACCESS_LEVELS.MERGE}_dropdown`].$dropdown
-          .find('.dropdown-toggle-text')
-          .text(updatedLabel);
-        this[`${ACCESS_LEVELS.PUSH}_dropdown`].setSelectedItems(savedDefaults.push);
-        updatedLabel = this[`${ACCESS_LEVELS.PUSH}_dropdown`].toggleLabel();
-        this[`${ACCESS_LEVELS.PUSH}_dropdown`].$dropdown
-          .find('.dropdown-toggle-text')
-          .text(updatedLabel);
-      }
-    }
-  }
-
   onFormSubmit(e) {
     e.preventDefault();
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
-        location.reload();
+        window.location.reload();
       })
       .catch(() => Flash('Failed to protect the branch'));
-  }
-
-  savePreviousSelection(mergeSelection, pushSelection) {
-    if (this.isLocalStorageAvailable) {
-      const branchDefaults = {
-        merge: mergeSelection || [],
-        push: pushSelection || [],
-      };
-      window.localStorage.setItem(PB_LOCAL_STORAGE_KEY, JSON.stringify(branchDefaults));
-    }
   }
 }

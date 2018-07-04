@@ -37,7 +37,9 @@ describe API::Settings, 'Settings' do
 
     context "custom repository storage type set in the config" do
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        # Add a possible storage to the config
+        storages = Gitlab.config.repositories.storages
+                     .merge({ 'custom' => 'tmp/tests/custom_repositories' })
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 

@@ -1,10 +1,4 @@
 Unfortunately, your email message to GitLab could not be processed.
 \
 = @reason
-
--# EE-specific start
-- if Gitlab::CurrentSettings.email_additional_text.present?
-  \
-  = '---'
-  = Gitlab::Utils.nlbr(Gitlab::CurrentSettings.email_additional_text)
--# EE-specific end
+= render_if_exists 'shared/additional_email_text'

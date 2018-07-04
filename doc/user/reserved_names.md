@@ -59,6 +59,7 @@ Currently the following names are reserved as top level groups:
 - deploy.html
 - explore
 - favicon.ico
+- favicon.png
 - groups
 - health_check
 - help

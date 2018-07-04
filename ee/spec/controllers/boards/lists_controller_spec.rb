@@ -26,7 +26,7 @@ describe Boards::ListsController do
 
       parsed_response = JSON.parse(response.body)
 
-      expect(response).to match_response_schema('lists')
+      expect(response).to match_response_schema('lists', dir: 'ee')
       expect(parsed_response.length).to eq 3
     end
 
@@ -62,7 +62,7 @@ describe Boards::ListsController do
       it 'returns the created list' do
         create_board_list user: user, board: board, label_id: label.id
 
-        expect(response).to match_response_schema('list')
+        expect(response).to match_response_schema('list', dir: 'ee')
       end
     end
 
@@ -149,11 +149,18 @@ describe Boards::ListsController do
 
     def move(user:, board:, list:, position:)
       sign_in(user)
+      params = {
+        board_id: board.to_param,
+        id: list.to_param,
+        list: { position: position },
+        format: :json
+      }
 
-      patch :update, board_id: board.to_param,
-                     id: list.to_param,
-                     list: { position: position },
-                     format: :json
+      if Gitlab.rails5?
+        patch :update, params: params, as: :json
+      else
+        patch :update, params
+      end
     end
   end
 

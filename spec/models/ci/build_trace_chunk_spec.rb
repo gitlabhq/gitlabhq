@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
+  include ExclusiveLeaseHelpers
+
   set(:build) { create(:ci_build, :running) }
   let(:chunk_index) { 0 }
   let(:data_store) { :redis }
@@ -53,14 +55,6 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
       let(:raw_data) { 'Sample data in db' }
 
       it { is_expected.to eq('Sample data in db') }
-    end
-
-    context 'when data_store is others' do
-      before do
-        build_trace_chunk.send(:write_attribute, :data_store, -1)
-      end
-
-      it { expect { subject }.to raise_error('Unsupported data store') }
     end
   end
 
@@ -132,14 +126,6 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           subject
         end
       end
-    end
-
-    context 'when data_store is others' do
-      before do
-        build_trace_chunk.send(:write_attribute, :data_store, -1)
-      end
-
-      it { expect { subject }.to raise_error('Unsupported data store') }
     end
   end
 
@@ -338,7 +324,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
 
   describe 'ExclusiveLock' do
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
+      stub_exclusive_lease_taken
       stub_const('Ci::BuildTraceChunk::WRITE_LOCK_RETRY', 1)
     end
 

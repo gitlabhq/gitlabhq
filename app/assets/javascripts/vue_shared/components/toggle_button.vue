@@ -63,26 +63,26 @@
   <label class="toggle-wrapper">
     <input
       v-if="name"
-      type="hidden"
       :name="name"
       :value="value"
+      type="hidden"
     />
     <button
-      type="button"
-      class="project-feature-toggle"
       :aria-label="ariaLabel"
       :class="{
         'is-checked': value,
         'is-disabled': disabledInput,
         'is-loading': isLoading
       }"
+      type="button"
+      class="project-feature-toggle"
       @click="toggleFeature"
     >
       <loadingIcon class="loading-icon" />
       <span class="toggle-icon">
         <icon
-          css-classes="toggle-icon-svg"
-          :name="toggleIcon"/>
+          :name="toggleIcon"
+          css-classes="toggle-icon-svg"/>
       </span>
     </button>
   </label>

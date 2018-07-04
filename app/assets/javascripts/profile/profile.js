@@ -1,8 +1,5 @@
-/* eslint-disable comma-dangle, no-unused-vars, class-methods-use-this, quotes, consistent-return, func-names, prefer-arrow-callback, space-before-function-paren, max-len */
-
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
-import { __ } from '~/locale';
 import flash from '../flash';
 
 export default class Profile {
@@ -64,13 +61,23 @@ export default class Profile {
       url: this.form.attr('action'),
       data: formData,
     })
-      .then(({ data }) => flash(data.message, 'notice'))
+      .then(({ data }) => {
+        if (avatarBlob != null) {
+          this.updateHeaderAvatar();
+        }
+
+        flash(data.message, 'notice');
+      })
       .then(() => {
         window.scrollTo(0, 0);
         // Enable submit button after requests ends
         self.form.find(':input[disabled]').enable();
       })
       .catch(error => flash(error.message));
+  }
+
+  updateHeaderAvatar() {
+    $('.header-user-avatar').attr('src', this.avatarGlCrop.dataURL);
   }
 
   setRepoRadio() {

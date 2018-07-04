@@ -1,4 +1,5 @@
 class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
+  include Gitlab::Database::ArelMethods
   include Gitlab::Database::MigrationHelpers
 
   BATCH_SIZE = 500
@@ -33,7 +34,7 @@ class FixProjectRecordsWithInvalidVisibility < ActiveRecord::Migration
       end
 
       updates.each do |visibility_level, project_ids|
-        updater = Arel::UpdateManager.new(ActiveRecord::Base)
+        updater = arel_update_manager
           .table(projects)
           .set(projects[:visibility_level] => visibility_level)
           .where(projects[:id].in(project_ids))

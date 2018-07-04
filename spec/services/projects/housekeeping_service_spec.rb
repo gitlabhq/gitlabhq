@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::HousekeepingService do
   subject { described_class.new(project) }
-  let(:project) { create(:project, :repository) }
+  set(:project) { create(:project, :repository) }
 
   before do
     project.reset_pushes_since_gc
@@ -16,18 +16,28 @@ describe Projects::HousekeepingService do
     it 'enqueues a sidekiq job' do
       expect(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
       expect(subject).to receive(:lease_key).and_return(:the_lease_key)
-      expect(subject).to receive(:task).and_return(:the_task)
-      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :the_task, :the_lease_key, :the_uuid)
+      expect(subject).to receive(:task).and_return(:incremental_repack)
+      expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid).and_call_original
 
-      subject.execute
-
-      expect(project.reload.pushes_since_gc).to eq(0)
+      Sidekiq::Testing.fake! do
+        expect { subject.execute }.to change(GitGarbageCollectWorker.jobs, :size).by(1)
+      end
     end
 
     it 'yields the block if given' do
       expect do |block|
         subject.execute(&block)
       end.to yield_with_no_args
+    end
+
+    it 'resets counter after execution' do
+      expect(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
+      allow(subject).to receive(:gc_period).and_return(1)
+      project.increment_pushes_since_gc
+
+      Sidekiq::Testing.inline! do
+        expect { subject.execute }.to change { project.pushes_since_gc }.to(0)
+      end
     end
 
     context 'when no lease can be obtained' do
@@ -54,6 +64,30 @@ describe Projects::HousekeepingService do
         end.not_to yield_with_no_args
       end
     end
+
+    context 'task type' do
+      it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
+        allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
+        allow(subject).to receive(:lease_key).and_return(:the_lease_key)
+
+        # At push 200
+        expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid)
+          .exactly(1).times
+        # At push 50, 100, 150
+        expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid)
+          .exactly(3).times
+        # At push 10, 20, ... (except those above)
+        expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
+          .exactly(16).times
+
+        201.times do
+          subject.increment!
+          subject.execute if subject.needed?
+        end
+
+        expect(project.pushes_since_gc).to eq(1)
+      end
+    end
   end
 
   describe '#needed?' do
@@ -69,31 +103,7 @@ describe Projects::HousekeepingService do
 
   describe '#increment!' do
     it 'increments the pushes_since_gc counter' do
-      expect do
-        subject.increment!
-      end.to change { project.pushes_since_gc }.from(0).to(1)
+      expect { subject.increment! }.to change { project.pushes_since_gc }.by(1)
     end
-  end
-
-  it 'goes through all three housekeeping tasks, executing only the highest task when there is overlap' do
-    allow(subject).to receive(:try_obtain_lease).and_return(:the_uuid)
-    allow(subject).to receive(:lease_key).and_return(:the_lease_key)
-
-    # At push 200
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :gc, :the_lease_key, :the_uuid)
-      .exactly(1).times
-    # At push 50, 100, 150
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :full_repack, :the_lease_key, :the_uuid)
-      .exactly(3).times
-    # At push 10, 20, ... (except those above)
-    expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid)
-      .exactly(16).times
-
-    201.times do
-      subject.increment!
-      subject.execute if subject.needed?
-    end
-
-    expect(project.pushes_since_gc).to eq(1)
   end
 end

@@ -95,8 +95,8 @@ export default {
 
 <template>
   <div
-    class="block"
     :class="wrapperClass"
+    class="block"
   >
     <div class="title append-bottom-10">
       {{ label }}
@@ -142,7 +142,6 @@ export default {
     >
       <div class="dropdown">
         <button
-          class="dropdown-menu-toggle wide"
           ref="dropdown"
           :data-field-name="fieldName"
           :data-dropdown-title="placeholderText"
@@ -150,6 +149,7 @@ export default {
           :data-group-id="groupId"
           :data-project-id="projectId"
           :data-selected="selectedId"
+          class="dropdown-menu-toggle wide"
           data-toggle="dropdown"
           aria-expanded="false"
           type="button"

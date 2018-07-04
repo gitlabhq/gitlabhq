@@ -177,24 +177,35 @@ feature 'Login' do
     end
 
     context 'logging in via OAuth' do
-      it 'shows 2FA prompt after OAuth login' do
-        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
-        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
-        gitlab_sign_in_via('saml', user, 'my-uid')
-
-        expect(page).to have_content('Two-Factor Authentication')
-        enter_code(user.current_otp)
-        expect(current_path).to eq root_path
+      let(:user) { create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')}
+      let(:mock_saml_response) do
+        File.read('spec/fixtures/authentication/saml_response.xml')
       end
 
-      it 'creates a security event after failed OAuth login' do
-        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: false, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
-        stub_licensed_features(extended_audit_events: true)
+      before do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'],
+                                  providers: [mock_saml_config_with_upstream_two_factor_authn_contexts])
+        gitlab_sign_in_via('saml', user, 'my-uid', mock_saml_response)
+      end
 
-        user = create(:omniauth_user, :two_factor, extern_uid: 'my-uid', provider: 'saml')
-        gitlab_sign_in_via('saml', user, 'wrong-uid')
+      context 'when authn_context is worth two factors' do
+        let(:mock_saml_response) do
+          File.read('spec/fixtures/authentication/saml_response.xml')
+              .gsub('urn:oasis:names:tc:SAML:2.0:ac:classes:Password', 'urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+        end
 
-        expect(SecurityEvent.where(entity_id: -1).count).to eq(1)
+        it 'signs user in without prompting for second factor' do
+          expect(page).not_to have_content('Two-Factor Authentication')
+          expect(current_path).to eq root_path
+        end
+      end
+
+      context 'when authn_context is not worth two factors' do
+        it 'shows 2FA prompt after OAuth login' do
+          expect(page).to have_content('Two-Factor Authentication')
+          enter_code(user.current_otp)
+          expect(current_path).to eq root_path
+        end
       end
     end
   end
@@ -213,14 +224,10 @@ feature 'Login' do
     end
 
     it 'blocks invalid login' do
-      stub_licensed_features(extended_audit_events: true)
-
       user = create(:user, password: 'not-the-default')
 
       gitlab_sign_in(user)
       expect(page).to have_content('Invalid Login or password.')
-
-      expect(SecurityEvent.where(entity_id: -1).count).to eq(1)
     end
   end
 

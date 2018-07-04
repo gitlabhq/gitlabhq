@@ -1,4 +1,4 @@
-# Dependencies license management with GitLab CI/CD
+# Dependencies license management with GitLab CI/CD **[ULTIMATE]**
 
 NOTE: **Note:**
 In order to use this tool, a [GitLab Ultimate][ee] license
@@ -20,9 +20,9 @@ license_management:
     - docker:stable-dind
   script:
     - export LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
-    - docker run 
+    - docker run
         --volume "$PWD:/code"
-        "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" /run.sh /code
+        "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
   artifacts:
     paths: [gl-license-management-report.json]
 ```
@@ -41,4 +41,4 @@ or specify another existing stage inside the `license_management` job.
 [Learn more on license management results shown in merge requests](../../user/project/merge_requests/license_management.md).
 
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

@@ -4,6 +4,8 @@
 
   import { VALUE_TYPE, CUSTOM_TYPE } from '../../constants';
 
+  import DetailsSectionMixin from '../../mixins/details_section_mixin';
+
   import GeoNodeDetailItem from '../geo_node_detail_item.vue';
   import SectionRevealButton from './section_reveal_button.vue';
 
@@ -12,6 +14,9 @@
       SectionRevealButton,
       GeoNodeDetailItem,
     },
+    mixins: [
+      DetailsSectionMixin,
+    ],
     props: {
       nodeDetails: {
         type: Object,
@@ -135,6 +140,8 @@
         :item-title="nodeDetailItem.itemTitle"
         :item-value="nodeDetailItem.itemValue"
         :item-value-type="nodeDetailItem.itemValueType"
+        :item-value-stale="statusInfoStale"
+        :item-value-stale-tooltip="statusInfoStaleMessage"
         :custom-type="nodeDetailItem.customType"
         :event-type-log-status="nodeDetailItem.eventTypeLogStatus"
       />

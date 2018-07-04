@@ -57,6 +57,9 @@
         "folder_path": {
             "type": "string"
         },
+        "logs_path": {
+            "type": "string"
+        },
         "created_at": {
             "type": "date"
         },

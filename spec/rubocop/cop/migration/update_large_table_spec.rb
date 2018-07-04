@@ -32,6 +32,14 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
       include_examples 'large tables', 'add_column_with_default'
     end
 
+    context 'for the change_column_type_concurrently method' do
+      include_examples 'large tables', 'change_column_type_concurrently'
+    end
+
+    context 'for the rename_column_concurrently method' do
+      include_examples 'large tables', 'rename_column_concurrently'
+    end
+
     context 'for the update_column_in_batches method' do
       include_examples 'large tables', 'update_column_in_batches'
     end
@@ -56,6 +64,18 @@ describe RuboCop::Cop::Migration::UpdateLargeTable do
 
     it 'registers no offense for add_column_with_default' do
       inspect_source("add_column_with_default :#{table}, :column, default: true")
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers no offense for change_column_type_concurrently' do
+      inspect_source("change_column_type_concurrently :#{table}, :column, default: true")
+
+      expect(cop.offenses).to be_empty
+    end
+
+    it 'registers no offense for update_column_in_batches' do
+      inspect_source("rename_column_concurrently :#{table}, :column, default: true")
 
       expect(cop.offenses).to be_empty
     end

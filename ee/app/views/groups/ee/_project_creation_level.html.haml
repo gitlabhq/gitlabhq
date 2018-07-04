@@ -1,7 +1,7 @@
 - return unless group.feature_available?(:project_creation_level)
 - form = local_assigns.fetch(:form)
 - group = local_assigns.fetch(:group)
-.form-group
+.form-group.row
   = form.label s_('ProjectCreationLevel|Allowed to create projects'), class: 'col-form-label col-sm-2'
   .col-sm-10
     = form.select :project_creation_level, options_for_select(::Gitlab::Access.project_creation_options, group.project_creation_level), {}, class: 'form-control'

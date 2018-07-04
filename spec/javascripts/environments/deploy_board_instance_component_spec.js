@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import DeployBoardInstance from 'ee/environments/components/deploy_board_instance_component.vue';
+import { folder } from './mock_data';
 
 describe('Deploy Board Instance', () => {
   let DeployBoardInstanceComponent;
@@ -13,6 +14,7 @@ describe('Deploy Board Instance', () => {
       propsData: {
         status: 'ready',
         tooltipText: 'This is a pod',
+        logsPath: folder.log_path,
       },
     }).$mount();
 
@@ -24,6 +26,7 @@ describe('Deploy Board Instance', () => {
     const component = new DeployBoardInstanceComponent({
       propsData: {
         status: 'deploying',
+        logsPath: folder.log_path,
       },
     }).$mount();
 
@@ -36,9 +39,23 @@ describe('Deploy Board Instance', () => {
       propsData: {
         status: 'deploying',
         stable: false,
+        logsPath: folder.log_path,
       },
     }).$mount();
 
     expect(component.$el.classList.contains('deploy-board-instance-canary')).toBe(true);
+  });
+
+  it('should have a log path computed with a pod name as a parameter', () => {
+    const component = new DeployBoardInstanceComponent({
+      propsData: {
+        status: 'deploying',
+        stable: false,
+        logsPath: folder.log_path,
+        podName: 'tanuki-1',
+      },
+    }).$mount();
+
+    expect(component.computedLogPath).toEqual('/root/review-app/environments/12/logs?pod_name=tanuki-1');
   });
 });
