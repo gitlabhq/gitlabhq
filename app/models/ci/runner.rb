@@ -30,9 +30,9 @@ module Ci
     scope :ordered, -> { order(id: :desc) }
 
     # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
-    scope :shared, -> { instance_type }
+    scope :deprecated_shared, -> { instance_type }
     # this should get replaced with `project_type.or(group_type)` once using Rails5
-    scope :specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
+    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })

@@ -170,6 +170,11 @@ module API
           render_api_error!('Scope contains invalid value', 400)
         end
 
+        # Support deprecated scopes
+        if runners.respond_to?("deprecated_#{scope}")
+          scope = "deprecated_#{scope}"
+        end
+
         runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
       end
 

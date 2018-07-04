@@ -90,6 +90,17 @@ describe API::Runners do
       end
 
       it 'filters runners by scope' do
+        get api('/runners/all?scope=shared', admin)
+
+        shared = json_response.all? { |r| r['is_shared'] }
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
+        expect(shared).to be_truthy
+      end
+
+      it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
 
         shared = json_response.any? { |r| r['is_shared'] }
@@ -584,7 +595,7 @@ describe API::Runners do
           end
         end
 
-        it 'enables a instance-wide runner' do
+        it 'enables a instance type runner' do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
           end.to change { project.runners.count }.by(1)
