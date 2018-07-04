@@ -38,7 +38,7 @@ module Clusters
           name,
           chart: chart,
           version: version,
-          values: values
+          values: values,
           extra_env: extra_env
         )
       end
