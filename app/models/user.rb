@@ -1355,8 +1355,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.unique_internal(scope, username, email_pattern, &b)
-    scope.first || create_unique_internal(scope, username, email_pattern, &b)
+  def self.unique_internal(scope, username, email_pattern, &block)
+    scope.first || create_unique_internal(scope, username, email_pattern, &block)
   end
 
   def self.create_unique_internal(scope, username, email_pattern, &creation_block)

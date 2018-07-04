@@ -29,105 +29,105 @@ module Gitlab
       end
 
       class Converter
-        def on_0(s) reset()                            end
+        def on_0(_) reset()                            end
 
-        def on_1(s) enable(STYLE_SWITCHES[:bold])      end
+        def on_1(_) enable(STYLE_SWITCHES[:bold])      end
 
-        def on_3(s) enable(STYLE_SWITCHES[:italic])    end
+        def on_3(_) enable(STYLE_SWITCHES[:italic])    end
 
-        def on_4(s) enable(STYLE_SWITCHES[:underline]) end
+        def on_4(_) enable(STYLE_SWITCHES[:underline]) end
 
-        def on_8(s) enable(STYLE_SWITCHES[:conceal])   end
+        def on_8(_) enable(STYLE_SWITCHES[:conceal])   end
 
-        def on_9(s) enable(STYLE_SWITCHES[:cross])     end
+        def on_9(_) enable(STYLE_SWITCHES[:cross])     end
 
-        def on_21(s) disable(STYLE_SWITCHES[:bold])      end
+        def on_21(_) disable(STYLE_SWITCHES[:bold])      end
 
-        def on_22(s) disable(STYLE_SWITCHES[:bold])      end
+        def on_22(_) disable(STYLE_SWITCHES[:bold])      end
 
-        def on_23(s) disable(STYLE_SWITCHES[:italic])    end
+        def on_23(_) disable(STYLE_SWITCHES[:italic])    end
 
-        def on_24(s) disable(STYLE_SWITCHES[:underline]) end
+        def on_24(_) disable(STYLE_SWITCHES[:underline]) end
 
-        def on_28(s) disable(STYLE_SWITCHES[:conceal])   end
+        def on_28(_) disable(STYLE_SWITCHES[:conceal])   end
 
-        def on_29(s) disable(STYLE_SWITCHES[:cross])     end
+        def on_29(_) disable(STYLE_SWITCHES[:cross])     end
 
-        def on_30(s) set_fg_color(0) end
+        def on_30(_) set_fg_color(0) end
 
-        def on_31(s) set_fg_color(1) end
+        def on_31(_) set_fg_color(1) end
 
-        def on_32(s) set_fg_color(2) end
+        def on_32(_) set_fg_color(2) end
 
-        def on_33(s) set_fg_color(3) end
+        def on_33(_) set_fg_color(3) end
 
-        def on_34(s) set_fg_color(4) end
+        def on_34(_) set_fg_color(4) end
 
-        def on_35(s) set_fg_color(5) end
+        def on_35(_) set_fg_color(5) end
 
-        def on_36(s) set_fg_color(6) end
+        def on_36(_) set_fg_color(6) end
 
-        def on_37(s) set_fg_color(7) end
+        def on_37(_) set_fg_color(7) end
 
-        def on_38(s) set_fg_color_256(s) end
+        def on_38(stack) set_fg_color_256(stack) end
 
-        def on_39(s) set_fg_color(9) end
+        def on_39(_) set_fg_color(9) end
 
-        def on_40(s) set_bg_color(0) end
+        def on_40(_) set_bg_color(0) end
 
-        def on_41(s) set_bg_color(1) end
+        def on_41(_) set_bg_color(1) end
 
-        def on_42(s) set_bg_color(2) end
+        def on_42(_) set_bg_color(2) end
 
-        def on_43(s) set_bg_color(3) end
+        def on_43(_) set_bg_color(3) end
 
-        def on_44(s) set_bg_color(4) end
+        def on_44(_) set_bg_color(4) end
 
-        def on_45(s) set_bg_color(5) end
+        def on_45(_) set_bg_color(5) end
 
-        def on_46(s) set_bg_color(6) end
+        def on_46(_) set_bg_color(6) end
 
-        def on_47(s) set_bg_color(7) end
+        def on_47(_) set_bg_color(7) end
 
-        def on_48(s) set_bg_color_256(s) end
+        def on_48(stack) set_bg_color_256(stack) end
 
-        def on_49(s) set_bg_color(9) end
+        def on_49(_) set_bg_color(9) end
 
-        def on_90(s) set_fg_color(0, 'l') end
+        def on_90(_) set_fg_color(0, 'l') end
 
-        def on_91(s) set_fg_color(1, 'l') end
+        def on_91(_) set_fg_color(1, 'l') end
 
-        def on_92(s) set_fg_color(2, 'l') end
+        def on_92(_) set_fg_color(2, 'l') end
 
-        def on_93(s) set_fg_color(3, 'l') end
+        def on_93(_) set_fg_color(3, 'l') end
 
-        def on_94(s) set_fg_color(4, 'l') end
+        def on_94(_) set_fg_color(4, 'l') end
 
-        def on_95(s) set_fg_color(5, 'l') end
+        def on_95(_) set_fg_color(5, 'l') end
 
-        def on_96(s) set_fg_color(6, 'l') end
+        def on_96(_) set_fg_color(6, 'l') end
 
-        def on_97(s) set_fg_color(7, 'l') end
+        def on_97(_) set_fg_color(7, 'l') end
 
-        def on_99(s) set_fg_color(9, 'l') end
+        def on_99(_) set_fg_color(9, 'l') end
 
-        def on_100(s) set_bg_color(0, 'l') end
+        def on_100(_) set_bg_color(0, 'l') end
 
-        def on_101(s) set_bg_color(1, 'l') end
+        def on_101(_) set_bg_color(1, 'l') end
 
-        def on_102(s) set_bg_color(2, 'l') end
+        def on_102(_) set_bg_color(2, 'l') end
 
-        def on_103(s) set_bg_color(3, 'l') end
+        def on_103(_) set_bg_color(3, 'l') end
 
-        def on_104(s) set_bg_color(4, 'l') end
+        def on_104(_) set_bg_color(4, 'l') end
 
-        def on_105(s) set_bg_color(5, 'l') end
+        def on_105(_) set_bg_color(5, 'l') end
 
-        def on_106(s) set_bg_color(6, 'l') end
+        def on_106(_) set_bg_color(6, 'l') end
 
-        def on_107(s) set_bg_color(7, 'l') end
+        def on_107(_) set_bg_color(7, 'l') end
 
-        def on_109(s) set_bg_color(9, 'l') end
+        def on_109(_) set_bg_color(9, 'l') end
 
         attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask
 
@@ -188,19 +188,19 @@ module Gitlab
           )
         end
 
-        def handle_section(s)
-          action = s[1]
-          timestamp = s[2]
-          section = s[3]
-          line = s.matched()[0...-5] # strips \r\033[0K
+        def handle_section(scanner)
+          action = scanner[1]
+          timestamp = scanner[2]
+          section = scanner[3]
+          line = scanner.matched()[0...-5] # strips \r\033[0K
 
           @out << %{<div class="hidden" data-action="#{action}" data-timestamp="#{timestamp}" data-section="#{section}">#{line}</div>}
         end
 
-        def handle_sequence(s)
-          indicator = s[1]
-          commands = s[2].split ';'
-          terminator = s[3]
+        def handle_sequence(scanner)
+          indicator = scanner[1]
+          commands = scanner[2].split ';'
+          terminator = scanner[3]
 
           # We are only interested in color and text style changes - triggered by
           # sequences starting with '\e[' and ending with 'm'. Any other control

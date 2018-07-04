@@ -8,8 +8,8 @@ module DeclarativePolicy
     # how that affects the actual ability decision - for that, a
     # `Step` is used.
     class Base
-      def self.make(*a)
-        new(*a).simplify
+      def self.make(*args)
+        new(*args).simplify
       end
 
       # true or false whether this rule passes.
