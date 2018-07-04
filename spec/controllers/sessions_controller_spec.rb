@@ -93,6 +93,12 @@ describe SessionsController do
         it 'displays an error when the reCAPTCHA is not solved' do
           # Without this, `verify_recaptcha` arbitraily returns true in test env
           Recaptcha.configuration.skip_verify_env.delete('test')
+          counter = double(:counter)
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                      .with(:failed_login_captcha_total, anything)
+                                      .and_return(counter)
 
           post(:create, user: user_params)
 
@@ -104,6 +110,13 @@ describe SessionsController do
         it 'successfully logs in a user when reCAPTCHA is solved' do
           # Avoid test ordering issue and ensure `verify_recaptcha` returns true
           Recaptcha.configuration.skip_verify_env << 'test'
+          counter = double(:counter)
+
+          expect(counter).to receive(:increment)
+          expect(Gitlab::Metrics).to receive(:counter)
+                                      .with(:successful_login_captcha_total, anything)
+                                      .and_return(counter)
+          expect(Gitlab::Metrics).to receive(:counter).and_call_original
 
           post(:create, user: user_params)
 
