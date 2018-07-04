@@ -62,9 +62,9 @@ module Gitlab
       # b) a group label of a different group than issue's project group
       def check_issues(project_ids)
         issue_ids = Label
-          .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'Issue\' '\
-                 'INNER JOIN issues ON issues.id = label_links.target_id '\
-                 'INNER JOIN projects ON projects.id = issues.project_id')
+          .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'Issue\'
+                  INNER JOIN issues ON issues.id = label_links.target_id
+                  INNER JOIN projects ON projects.id = issues.project_id')
           .where('issues.project_id in (?)', project_ids)
           .where('(labels.project_id is not null and labels.project_id != issues.project_id) '\
                  'or (labels.group_id is not null and labels.group_id != projects.namespace_id)')
@@ -78,9 +78,9 @@ module Gitlab
       # b) a group label of a different group than MR's project group
       def check_merge_requests(project_ids)
         mr_ids = Label
-          .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'MergeRequest\' '\
-                 'INNER JOIN merge_requests ON merge_requests.id = label_links.target_id '\
-                 'INNER JOIN projects ON projects.id = merge_requests.target_project_id')
+          .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'MergeRequest\'
+                  INNER JOIN merge_requests ON merge_requests.id = label_links.target_id
+                  INNER JOIN projects ON projects.id = merge_requests.target_project_id')
           .where('merge_requests.target_project_id in (?)', project_ids)
           .where('(labels.project_id is not null and labels.project_id != merge_requests.target_project_id) '\
                  'or (labels.group_id is not null and labels.group_id != projects.namespace_id)')
@@ -106,7 +106,6 @@ module Gitlab
 
           next unless matching_label
 
-          # puts "#{label.label_link_id};#{resource.class.name.demodulize};project:#{project_id};id:#{resource.id};label:#{label.title}: #{label.label_id} -> #{matching_label.id}"
           LabelLink.find(label.label_link_id).update!(label_id: matching_label.id)
         end
       end
