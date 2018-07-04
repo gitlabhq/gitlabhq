@@ -1,24 +1,24 @@
-%script#js-board-promotion{ type: "text/x-template" }
-  - return unless @project
-  .board-promotion-state
-    .svg-container.center
-      = custom_icon('icon_issue_board')
-    %p
-      - if Gitlab::CurrentSettings.should_check_namespace_plan?
-        = _('Upgrade your plan to improve Issue boards.')
-      - else
-        = _('Improve Issue boards with GitLab Enterprise Edition.')
-    %ul
-      - unless @project.multiple_issue_boards_available?
-        %li
-          = link_to _('Multiple issue boards'), help_page_path('user/project/issue_board.html', anchor:'use-cases-for-multiple-issue-boards'), target: '_blank'
-      - unless @project.feature_available?(:scoped_issue_board)
-        %li
-          = link_to _('Scoped issue boards'), help_page_path('user/project/issue_board.html', anchor:'board-with-a-milestone'), target: '_blank'
-      - unless @project.feature_available?(:issue_board_focus_mode)
-        %li
-          = link_to _('Issue board focus mode'), help_page_path('user/project/issue_board.html', anchor:'focus-mode'), target: '_blank'
-    = render 'shared/promotions/promotion_link_project'
-    .top-space
-      %button.btn.btn-default.btn-block#hide-btn{ :href => "#", "@click.stop" => "clearPromotionState" }
-        = _("Thanks! Don't show me this again")
+- return unless @project
+
+.board-promotion-state
+  .svg-container.center
+    = custom_icon('icon_issue_board')
+  %p
+    - if Gitlab::CurrentSettings.should_check_namespace_plan?
+      = _('Upgrade your plan to improve Issue boards.')
+    - else
+      = _('Improve Issue boards with GitLab Enterprise Edition.')
+  %ul
+    - unless @project.multiple_issue_boards_available?
+      %li
+        = link_to _('Multiple issue boards'), help_page_path('user/project/issue_board.html', anchor:'use-cases-for-multiple-issue-boards'), target: '_blank'
+    - unless @project.feature_available?(:scoped_issue_board)
+      %li
+        = link_to _('Scoped issue boards'), help_page_path('user/project/issue_board.html', anchor:'board-with-a-milestone'), target: '_blank'
+    - unless @project.feature_available?(:issue_board_focus_mode)
+      %li
+        = link_to _('Issue board focus mode'), help_page_path('user/project/issue_board.html', anchor:'focus-mode'), target: '_blank'
+  = render 'shared/promotions/promotion_link_project'
+  .top-space
+    %button.btn.btn-default.btn-block#hide-btn{ :href => "#", "@click.stop" => "clearPromotionState" }
+      = _("Thanks! Don't show me this again")
