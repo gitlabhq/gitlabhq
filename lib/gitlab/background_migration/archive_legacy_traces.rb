@@ -13,7 +13,7 @@ module Gitlab
         ::Ci::Build.finished.without_archived_trace
           .where(id: start_id..stop_id).find_each do |build|
             begin
-              build.trace.archive!
+              build.trace.archive! unless build.job_artifacts_trace
             rescue => e
               Rails.logger.error "Failed to archive live trace. id: #{build.id} message: #{e.message}"
             end
