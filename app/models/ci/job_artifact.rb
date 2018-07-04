@@ -4,6 +4,8 @@ module Ci
     include ObjectStorage::BackgroundMove
     extend Gitlab::Ci::Model
 
+    ACCEPTABLE_FILE_FORMAT = %w[zip gzip].freeze
+
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
@@ -24,12 +26,6 @@ module Ci
       metadata: 2,
       trace: 3,
       junit: 4
-    }
-
-    enum file_format: {
-      zip: 1,
-      gzip: 2,
-      raw: 3
     }
 
     def update_file_store
