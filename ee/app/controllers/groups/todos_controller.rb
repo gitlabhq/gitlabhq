@@ -8,10 +8,9 @@ class Groups::TodosController < Groups::ApplicationController
 
   def issuable
     strong_memoize(:epic) do
-      case params[:issuable_type]
-      when "epic"
-        @group.epics.find_by(id: params[:issuable_id])
-      end
+      next if params[:issuable_type] != 'epic'
+
+      @group.epics.find_by(id: params[:issuable_id])
     end
   end
 end
