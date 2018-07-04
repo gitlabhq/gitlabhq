@@ -152,7 +152,7 @@ module Ci
     def lock_params
       ["trace_write:#{build_id}:chunks:#{chunk_index}",
        { ttl: WRITE_LOCK_TTL,
-         retry_max: WRITE_LOCK_RETRY,
+         retries: WRITE_LOCK_RETRY,
          sleep_sec: WRITE_LOCK_SLEEP }]
     end
   end
