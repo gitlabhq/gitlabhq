@@ -48,6 +48,8 @@ module Gitlab
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
         GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+      rescue GRPC::InvalidArgument => ex
+        raise Gitlab::Git::Repository::InvalidRef, ex
       end
 
       def info_attributes
