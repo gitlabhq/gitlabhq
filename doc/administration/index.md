@@ -11,7 +11,7 @@ Regular users don't have access to GitLab administration tools and settings.
 GitLab has two product distributions: the open source
 [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
 and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/products/).
+available through [different subscriptions](https://about.gitlab.com/pricing/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose

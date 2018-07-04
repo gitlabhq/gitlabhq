@@ -153,6 +153,13 @@ describe MergeRequestDiff do
       expect(mr_diff.empty?).to be_truthy
     end
 
+    it 'expands collapsed diffs before saving' do
+      mr_diff = create(:merge_request, source_branch: 'expand-collapse-lines', target_branch: 'master').merge_request_diff
+      diff_file = mr_diff.merge_request_diff_files.find_by(new_path: 'expand-collapse/file-5.txt')
+
+      expect(diff_file.diff).not_to be_empty
+    end
+
     it 'saves binary diffs correctly' do
       path = 'files/images/icn-time-tracking.pdf'
       mr_diff = create(:merge_request, source_branch: 'add-pdf-text-binary', target_branch: 'master').merge_request_diff

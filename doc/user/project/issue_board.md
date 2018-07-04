@@ -70,7 +70,7 @@ beginning of the development lifecycle until deployed to production
 ### Use cases for Multiple Issue Boards
 
 With [Multiple Issue Boards](#multiple-issue-boards), available only in
-[GitLab Enterprise Edition](https://about.gitlab.com/products/),
+[GitLab Enterprise Edition](https://about.gitlab.com/pricing/),
 each team can have their own board to organize their workflow individually.
 
 #### Scrum team
