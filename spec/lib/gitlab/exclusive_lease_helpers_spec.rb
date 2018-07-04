@@ -9,7 +9,7 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
   describe '#in_lock' do
     subject { class_instance.in_lock(unique_key, **options) { } }
 
-    let(:options) { { } }
+    let(:options) { {} }
 
     context 'when the lease is not obtained yet' do
       before do
@@ -43,11 +43,11 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
       end
 
       context 'when ttl is specified' do
-        let(:options) { { ttl: 10.minute } }
+        let(:options) { { ttl: 10.minutes } }
 
         it 'receives the specified argument' do
-          expect(Gitlab::ExclusiveLease).to receive(:new).with(unique_key, { timeout: 10.minute } )
-  
+          expect(Gitlab::ExclusiveLease).to receive(:new).with(unique_key, { timeout: 10.minutes } )
+
           expect { subject }.to raise_error('Failed to obtain a lock')
         end
       end
@@ -57,17 +57,17 @@ describe Gitlab::ExclusiveLeaseHelpers, :clean_gitlab_redis_shared_state do
 
         it 'retries for the specified times' do
           expect(lease).to receive(:try_obtain).exactly(4).times
-  
+
           expect { subject }.to raise_error('Failed to obtain a lock')
         end
       end
 
       context 'when sleep second is specified' do
-        let(:options) { { retries: 0, sleep_sec: 0.05.second } }
+        let(:options) { { retries: 0, sleep_sec: 0.05.seconds } }
 
         it 'receives the specified argument' do
-          expect(class_instance).to receive(:sleep).with(0.05.second).once
-  
+          expect(class_instance).to receive(:sleep).with(0.05.seconds).once
+
           expect { subject }.to raise_error('Failed to obtain a lock')
         end
       end
