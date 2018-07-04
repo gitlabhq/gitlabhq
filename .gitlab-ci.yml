@@ -298,9 +298,8 @@ review-docs-deploy:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME deploy
   only:
-    - /(^docs[\/-].*|.*-docs$)/
-    - branches@gitlab-org/gitlab-ce
-    - branches@gitlab-org/gitlab-ee
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ee
   <<: *except-qa
 
 # Cleanup remote environment of gitlab-docs
