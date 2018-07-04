@@ -100,14 +100,11 @@ module Gitlab
 
       def erase!
         ##
-        # Erase an archived traces
-        # This removes both a database-row and a real file in either a file storage or a object storage
+        # Erase the archived trace
         trace_artifact&.destroy!
 
         ##
-        # Erase a live trace
-        # Basically, jobs have _one_ of the following live traces, but it might be able to happen by a race condition
-        # Therefore, we remove all type of live traces.
+        # Erase the live trace
         job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
         FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
         job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
