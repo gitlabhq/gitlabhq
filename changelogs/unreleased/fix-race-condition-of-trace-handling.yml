@@ -1,0 +1,5 @@
+---
+title: Reload stale job artifacts in the trace class
+merge_request: 20232
+author:
+type: fixed
