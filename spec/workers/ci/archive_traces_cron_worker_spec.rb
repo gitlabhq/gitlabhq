@@ -31,7 +31,7 @@ describe Ci::ArchiveTracesCronWorker do
     it_behaves_like 'archives trace'
 
     context 'when archive raised an exception' do
-      let!(:build) { create(:ci_build, :success, :trace_artifact, :trace_live) }
+      let!(:build) { create(:ci_build, :success, :trace_live, :trace_artifact) }
       let!(:build2) { create(:ci_build, :success, :trace_live) }
 
       it 'archives valid targets' do
