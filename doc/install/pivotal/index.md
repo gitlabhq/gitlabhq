@@ -21,7 +21,7 @@ and click a button to begin the upgrade process.
 
 ## Features
 
-The GitLab Pivotal Tile is based on [GitLab Premium] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
+The GitLab Pivotal Tile is based on [GitLab Premium][eep] and includes nearly all of its features. The features in Premium but _not_ supported on the Tile are:
 
 * PostgreSQL
 * Pages
@@ -41,5 +41,5 @@ website:
 - [Product page](https://network.pivotal.io/products/p-gitlab/)
 - [Documentation](https://docs.pivotal.io/partners/gitlab/index.html)
 
-[premium]: https://about.gitlab.com/products/
+[eep]: https://about.gitlab.com/pricing/
 [pcf]: https://pivotal.io/platform

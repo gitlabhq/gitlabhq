@@ -76,7 +76,7 @@ describe('QuartersHeaderItemComponent', () => {
           timeframeItem: mockTimeframeQuarters[1],
         });
 
-        vm.currentDate = mockTimeframeQuarters[1].range[1];
+        [, vm.currentDate] = mockTimeframeQuarters[1].range;
         Vue.nextTick()
           .then(() => {
             expect(vm.timelineHeaderClass).toBe('label-dark label-bold');
@@ -93,7 +93,7 @@ describe('QuartersHeaderItemComponent', () => {
           timeframeItem,
         });
 
-        vm.currentDate = mockTimeframeQuarters[0].range[0];
+        [vm.currentDate] = mockTimeframeQuarters[0].range;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });

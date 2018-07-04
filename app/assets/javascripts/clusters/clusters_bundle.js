@@ -81,7 +81,7 @@ export default class Clusters {
   }
 
   initApplications() {
-    const store = this.store;
+    const { store } = this;
     const el = document.querySelector('#js-cluster-applications');
 
     this.applications = new Vue({

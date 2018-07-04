@@ -1,3 +1,6 @@
+require 'net/http'
+require 'json'
+
 module QA
   module EE
     module Scenario
@@ -21,7 +24,10 @@ module QA
                 add_secondary_node
               end
 
-              Geo::Secondary.act { replicate_database }
+              Geo::Secondary.act do
+                replicate_database
+                wait_for_services
+              end
             end
 
             Specs::Runner.perform do |specs|
@@ -86,6 +92,7 @@ module QA
             include QA::Scenario::Actable
 
             def initialize
+              @address = QA::Runtime::Scenario.geo_secondary_address
               @name = QA::Runtime::Scenario.geo_secondary_name
             end
 
@@ -101,10 +108,30 @@ module QA
                 gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} " \
                            "--sslmode=disable --no-wait --force", input: 'echo mypass'
               end
+            end
 
-              puts 'Waiting until secondary node services are restarted ...'
+            def wait_for_services
+              puts 'Waiting until secondary node services are ready ...'
 
-              sleep 60 # Wait until services are restarted correctly
+              Time.new.tap do |start|
+                while Time.new - start < 120
+                  begin
+                    Net::HTTP.get(URI.join(@address, '/-/readiness')).tap do |body|
+                      if JSON.parse(body).all? { |_, service| service['status'] == 'ok' }
+                        return puts "\nSecondary ready after #{Time.now - start} seconds." # rubocop:disable Cop/AvoidReturnFromBlocks
+                      else
+                        print '.'
+                      end
+                    end
+                  rescue StandardError
+                    print 'e'
+                  end
+
+                  sleep 1
+                end
+
+                raise "Secondary node did not start correctly in #{Time.now - start} seconds!"
+              end
             end
           end
         end

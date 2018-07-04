@@ -103,5 +103,5 @@ locks and [remove the ones you have permission for](#permissions-on-file-locking
 ![Locked Files](img/file_lock_list.png)
 
 [ee-440]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/440 "File Lock"
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [push access]: ../../user/permissions.md

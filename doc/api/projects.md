@@ -1502,6 +1502,16 @@ DELETE /projects/:id/push_rule
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
+### Transfer a project to a new namespace
+
+```
+PUT /projects/:id/transfer
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `namespace` | integer/string | yes | The ID or path of the namespace to transfer to project to |
+
 ## Branches
 
 Read more in the [Branches](branches.md) documentation.
@@ -1516,7 +1526,7 @@ Read more in the [Project members](members.md) documentation.
 
 ## Start the pull mirroring process for a Project **[STARTER]**
 
-> Introduced in [GitLab Starter](https://about.gitlab.com/products) 10.3.
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing) 10.3.
 
 ```
 POST /projects/:id/mirror/pull

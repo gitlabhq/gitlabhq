@@ -117,8 +117,6 @@ module Geo
     # will be enqueued by the log cursor, which should resolve any problems
     # it is possible to fix.
     def fetch_snapshot
-      return unless Feature.enabled?(:geo_redownload_with_snapshot)
-
       log_info("Attempting to fetch repository via snapshot")
 
       temp_repo.create_from_snapshot(

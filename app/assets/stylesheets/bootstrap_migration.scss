@@ -128,6 +128,11 @@ table {
   border-spacing: 0;
 }
 
+.tooltip {
+  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
+  pointer-events: none;
+}
+
 .popover {
   font-size: 14px;
 }
@@ -171,6 +176,12 @@ table {
 .dropright .dropdown-menu-toggle::after {
   // Remove bootstrap's dropdown caret
   display: none;
+}
+
+h3.popover-header {
+  // Default bootstrap popovers use <h3>
+  // which we default to having a top margin
+  margin-top: 0;
 }
 
 // Add to .label so that old system notes that are saved to the db
@@ -304,7 +315,7 @@ pre code {
   color: $white-light;
 
   h4,
-  a,
+  a:not(.btn),
   .alert-link {
     color: $white-light;
   }

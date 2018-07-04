@@ -23,7 +23,7 @@ export default () => {
       geoNodesApp,
     },
     data() {
-      const dataset = this.$options.el.dataset;
+      const { dataset } = this.$options.el;
       const nodeActionsAllowed = convertPermissionToBoolean(dataset.nodeActionsAllowed);
       const nodeEditAllowed = convertPermissionToBoolean(dataset.nodeEditAllowed);
       const store = new GeoNodesStore(dataset.primaryVersion, dataset.primaryRevision);

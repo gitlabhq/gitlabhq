@@ -8,10 +8,10 @@ RSpec.describe Geo::ProjectSyncWorker do
     let(:wiki_sync_service) { spy }
 
     before do
-      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?)
+      allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?)
         .with(project.repository_storage).once.and_return(true)
 
-      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?)
+      allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?)
         .with(project_with_broken_storage.repository_storage).once.and_return(false)
 
       allow(Geo::RepositorySyncService).to receive(:new)

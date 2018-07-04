@@ -42,7 +42,7 @@ Set up your project's merge request settings:
 
 ### Service Desk **[PREMIUM]**
 
-Enable [Service Desk](https://docs.gitlab.com/ee/user/project/service_desk.html) for your project to offer customer support.
+Enable [Service Desk](../service_desk.md) for your project to offer customer support.
 
 ### Export project
 

@@ -63,7 +63,7 @@ can easily notice them.
 ![Canary deployments on Deploy Board](img/deploy_boards_canary_deployments.png)
 
 [autodeploy]: ../../ci/autodeploy/index.md "GitLab Autodeploy"
-[eep]: https://about.gitlab.com/products/
+[eep]: https://about.gitlab.com/pricing/
 [ee-1659]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1659
 [kube-canary]: https://kubernetes.io/docs/concepts/cluster-administration/manage-deployment/#canary-deployments
 [deploy board]: deploy_boards.md

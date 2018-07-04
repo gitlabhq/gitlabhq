@@ -14,7 +14,7 @@ The present article follows [How to Configure LDAP with GitLab CE](../how_to_con
 
 ## GitLab Enterprise Edition - LDAP features
 
-[GitLab Enterprise Edition (EE)](https://about.gitlab.com/products/) has a number of advantages when it comes to integrating with Active Directory (LDAP):
+[GitLab Enterprise Edition (EE)](https://about.gitlab.com/pricing/) has a number of advantages when it comes to integrating with Active Directory (LDAP):
 
 - [Administrator Sync](#administrator-sync): As an extension of group sync, you can automatically manage your global GitLab administrators. Specify a group CN for `admin_group` and all members of the LDAP group will be given administrator privileges.
 - [Group Sync](#group-sync): This allows GitLab group membership to be automatically updated based on LDAP group members.

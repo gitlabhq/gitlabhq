@@ -301,7 +301,7 @@ Settings.cron_jobs['expire_build_artifacts_worker']['cron'] ||= '50 * * * *'
 Settings.cron_jobs['expire_build_artifacts_worker']['job_class'] = 'ExpireBuildArtifactsWorker'
 Settings.cron_jobs['repository_check_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['repository_check_worker']['cron'] ||= '20 * * * *'
-Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::BatchWorker'
+Settings.cron_jobs['repository_check_worker']['job_class'] = 'RepositoryCheck::DispatchWorker'
 Settings.cron_jobs['admin_email_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['admin_email_worker']['cron'] ||= '0 0 * * 0'
 Settings.cron_jobs['admin_email_worker']['job_class'] = 'AdminEmailWorker'
@@ -370,6 +370,10 @@ Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
+Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
+Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
+
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
 Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
@@ -393,6 +397,10 @@ Settings.cron_jobs['pages_domain_verification_cron_worker']['job_class'] = 'Page
 Settings.cron_jobs['issue_due_scheduler_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['issue_due_scheduler_worker']['cron'] ||= '50 00 * * *'
 Settings.cron_jobs['issue_due_scheduler_worker']['job_class'] = 'IssueDueSchedulerWorker'
+
+Settings.cron_jobs['prune_web_hook_logs_worker'] ||= Settingslogic.new({})
+Settings.cron_jobs['prune_web_hook_logs_worker']['cron'] ||= '0 */1 * * *'
+Settings.cron_jobs['prune_web_hook_logs_worker']['job_class'] = 'PruneWebHookLogsWorker'
 
 #
 # Sidekiq
@@ -450,7 +458,7 @@ repositories_storages          = Settings.repositories.storages.values
 repository_downloads_path      = Settings.gitlab['repository_downloads_path'].to_s.gsub(%r{/$}, '')
 repository_downloads_full_path = File.expand_path(repository_downloads_path, Settings.gitlab['user_home'])
 
-# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1237
+# Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1255
 Gitlab::GitalyClient::StorageSettings.allow_disk_access do
   if repository_downloads_path.blank? || repositories_storages.any? { |rs| [repository_downloads_path, repository_downloads_full_path].include?(rs.legacy_disk_path.gsub(%r{/$}, '')) }
     Settings.gitlab['repository_downloads_path'] = File.join(Settings.shared['path'], 'cache/archive')
@@ -469,6 +477,14 @@ Settings.backup['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'co
 Settings.backup['upload']['multipart_chunk_size'] ||= 104857600
 Settings.backup['upload']['encryption'] ||= nil
 Settings.backup['upload']['storage_class'] ||= nil
+
+#
+# Pseudonymizer
+#
+Settings['pseudonymizer'] ||= Settingslogic.new({})
+Settings.pseudonymizer['manifest'] = Settings.absolute(Settings.pseudonymizer['manifest'] || Rails.root.join("config/pseudonymizer.yml"))
+Settings.pseudonymizer['upload'] ||= Settingslogic.new({ 'remote_directory' => nil, 'connection' => nil })
+# Settings.pseudonymizer['upload']['multipart_chunk_size'] ||= 104857600
 
 #
 # Git

@@ -77,7 +77,7 @@ export default {
 
   methods: {
     onInput() {
-      const value = this.$refs.input.value;
+      const { value } = this.$refs.input;
       eventHub.$emit('addIssuableFormInput', value, $(this.$refs.input).caret('pos'));
     },
     onFocus() {
@@ -88,7 +88,7 @@ export default {
 
       // Avoid tokenizing partial input when clicking an autocomplete item
       if (!this.isAutoCompleteOpen) {
-        const value = this.$refs.input.value;
+        const { value } = this.$refs.input;
         eventHub.$emit('addIssuableFormBlur', value);
       }
     },
@@ -99,7 +99,7 @@ export default {
       this.$refs.input.focus();
     },
     onFormSubmit() {
-      const value = this.$refs.input.value;
+      const { value } = this.$refs.input;
       eventHub.$emit('addIssuableFormSubmit', value);
     },
     onFormCancel() {

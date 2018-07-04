@@ -95,7 +95,7 @@ then you already have access to its projects' issues.
 
 You may also consult the [group permissions table][permissions].
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [permissions]: ../../permissions.md#group-members-permissions
 
 ## Thread

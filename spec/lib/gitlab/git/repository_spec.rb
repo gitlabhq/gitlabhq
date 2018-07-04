@@ -996,46 +996,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#rugged_commits_between" do
-    around do |example|
-      # TODO #rugged_commits_between will be removed, has been migrated to gitaly
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    context 'two SHAs' do
-      let(:first_sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:second_sha) { '0e50ec4d3c7ce42ab74dda1d422cb2cbffe1e326' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_sha, second_sha).count).to eq(3)
-      end
-    end
-
-    context 'SHA and master branch' do
-      let(:sha) { 'b0e52af38d7ea43cf41d8a6f2471351ac036d6c9' }
-      let(:branch) { 'master' }
-
-      it 'returns the number of commits between a sha and a branch' do
-        expect(repository.rugged_commits_between(sha, branch).count).to eq(5)
-      end
-
-      it 'returns the number of commits between a branch and a sha' do
-        expect(repository.rugged_commits_between(branch, sha).count).to eq(0) # sha is before branch
-      end
-    end
-
-    context 'two branches' do
-      let(:first_branch) { 'feature' }
-      let(:second_branch) { 'master' }
-
-      it 'returns the number of commits between' do
-        expect(repository.rugged_commits_between(first_branch, second_branch).count).to eq(17)
-      end
-    end
-  end
-
   describe '#count_commits_between' do
     subject { repository.count_commits_between('feature', 'master') }
 
@@ -1043,50 +1003,40 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#raw_changes_between' do
-    shared_examples 'raw changes' do
-      let(:old_rev) { }
-      let(:new_rev) { }
-      let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
+    let(:old_rev) { }
+    let(:new_rev) { }
+    let(:changes) { repository.raw_changes_between(old_rev, new_rev) }
 
-      context 'initial commit' do
-        let(:old_rev) { Gitlab::Git::BLANK_SHA }
-        let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+    context 'initial commit' do
+      let(:old_rev) { Gitlab::Git::BLANK_SHA }
+      let(:new_rev) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
 
-        it 'returns the changes' do
-          expect(changes).to be_present
-          expect(changes.size).to eq(3)
-        end
-      end
-
-      context 'with an invalid rev' do
-        let(:old_rev) { 'foo' }
-        let(:new_rev) { 'bar' }
-
-        it 'returns an error' do
-          expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
-        end
-      end
-
-      context 'with valid revs' do
-        let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
-        let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-
-        it 'returns the changes' do
-          expect(changes.size).to eq(9)
-          expect(changes.first.operation).to eq(:modified)
-          expect(changes.first.new_path).to eq('.gitmodules')
-          expect(changes.last.operation).to eq(:added)
-          expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
-        end
+      it 'returns the changes' do
+        expect(changes).to be_present
+        expect(changes.size).to eq(3)
       end
     end
 
-    context 'when gitaly is enabled' do
-      it_behaves_like 'raw changes'
+    context 'with an invalid rev' do
+      let(:old_rev) { 'foo' }
+      let(:new_rev) { 'bar' }
+
+      it 'returns an error' do
+        expect { changes }.to raise_error(Gitlab::Git::Repository::GitError)
+      end
     end
 
-    context 'when gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'raw changes'
+    context 'with valid revs' do
+      let(:old_rev) { 'fa1b1e6c004a68b7d8763b86455da9e6b23e36d6' }
+      let(:new_rev) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+
+      it 'returns the changes' do
+        expect(changes.size).to eq(9)
+        expect(changes.first.operation).to eq(:modified)
+        expect(changes.first.new_path).to eq('.gitmodules')
+        expect(changes.last.operation).to eq(:added)
+        expect(changes.last.new_path).to eq('files/lfs/picture-invalid.png')
+      end
     end
   end
 
@@ -1881,48 +1831,38 @@ describe Gitlab::Git::Repository, seed_helper: true do
       repository_rugged.config["gitlab.fullpath"] = repository_path
     end
 
-    shared_examples 'writing repo config' do
-      context 'is given a path' do
-        it 'writes it to disk' do
-          repository.write_config(full_path: "not-the/real-path.git")
+    context 'is given a path' do
+      it 'writes it to disk' do
+        repository.write_config(full_path: "not-the/real-path.git")
 
-          config = File.read(File.join(repository_path, "config"))
+        config = File.read(File.join(repository_path, "config"))
 
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = not-the/real-path.git")
-        end
-      end
-
-      context 'it is given an empty path' do
-        it 'does not write it to disk' do
-          repository.write_config(full_path: "")
-
-          config = File.read(File.join(repository_path, "config"))
-
-          expect(config).to include("[gitlab]")
-          expect(config).to include("fullpath = #{repository_path}")
-        end
-      end
-
-      context 'repository does not exist' do
-        it 'raises NoRepository and does not call Gitaly WriteConfig' do
-          repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
-
-          expect(repository.gitaly_repository_client).not_to receive(:write_config)
-
-          expect do
-            repository.write_config(full_path: 'foo/bar.git')
-          end.to raise_error(Gitlab::Git::Repository::NoRepository)
-        end
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = not-the/real-path.git")
       end
     end
 
-    context "when gitaly_write_config is enabled" do
-      it_behaves_like "writing repo config"
+    context 'it is given an empty path' do
+      it 'does not write it to disk' do
+        repository.write_config(full_path: "")
+
+        config = File.read(File.join(repository_path, "config"))
+
+        expect(config).to include("[gitlab]")
+        expect(config).to include("fullpath = #{repository_path}")
+      end
     end
 
-    context "when gitaly_write_config is disabled", :disable_gitaly do
-      it_behaves_like "writing repo config"
+    context 'repository does not exist' do
+      it 'raises NoRepository and does not call Gitaly WriteConfig' do
+        repository = Gitlab::Git::Repository.new('default', 'does/not/exist.git', '')
+
+        expect(repository.gitaly_repository_client).not_to receive(:write_config)
+
+        expect do
+          repository.write_config(full_path: 'foo/bar.git')
+        end.to raise_error(Gitlab::Git::Repository::NoRepository)
+      end
     end
   end
 
@@ -2031,21 +1971,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
-    context 'with gitaly' do
-      it "calls Gitaly's OperationService" do
-        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
-          .to receive(:user_ff_branch).with(user, source_sha, target_branch)
-          .and_return(nil)
+    it "calls Gitaly's OperationService" do
+      expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+        .to receive(:user_ff_branch).with(user, source_sha, target_branch)
+        .and_return(nil)
 
-        subject
-      end
-
-      it_behaves_like '#ff_merge'
+      subject
     end
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#ff_merge'
-    end
+    it_behaves_like '#ff_merge'
   end
 
   describe '#delete_all_refs_except' do
@@ -2170,43 +2104,33 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#create_from_bundle' do
-    shared_examples 'creating repo from bundle' do
-      let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
-      let(:project) { create(:project) }
-      let(:imported_repo) { project.repository.raw }
+    let(:bundle_path) { File.join(Dir.tmpdir, "repo-#{SecureRandom.hex}.bundle") }
+    let(:project) { create(:project) }
+    let(:imported_repo) { project.repository.raw }
 
-      before do
-        expect(repository.bundle_to_disk(bundle_path)).to be true
-      end
-
-      after do
-        FileUtils.rm_rf(bundle_path)
-      end
-
-      it 'creates a repo from a bundle file' do
-        expect(imported_repo).not_to exist
-
-        result = imported_repo.create_from_bundle(bundle_path)
-
-        expect(result).to be true
-        expect(imported_repo).to exist
-        expect { imported_repo.fsck }.not_to raise_exception
-      end
-
-      it 'creates a symlink to the global hooks dir' do
-        imported_repo.create_from_bundle(bundle_path)
-        hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
-
-        expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
-      end
+    before do
+      expect(repository.bundle_to_disk(bundle_path)).to be_truthy
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is enabled' do
-      it_behaves_like 'creating repo from bundle'
+    after do
+      FileUtils.rm_rf(bundle_path)
     end
 
-    context 'when Gitaly create_repo_from_bundle feature is disabled', :disable_gitaly do
-      it_behaves_like 'creating repo from bundle'
+    it 'creates a repo from a bundle file' do
+      expect(imported_repo).not_to exist
+
+      result = imported_repo.create_from_bundle(bundle_path)
+
+      expect(result).to be_truthy
+      expect(imported_repo).to exist
+      expect { imported_repo.fsck }.not_to raise_exception
+    end
+
+    it 'creates a symlink to the global hooks dir' do
+      imported_repo.create_from_bundle(bundle_path)
+      hooks_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { File.join(imported_repo.path, 'hooks') }
+
+      expect(File.readlink(hooks_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
     end
   end
 
@@ -2378,92 +2302,95 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
       end
     end
+  end
 
-    describe '#squash' do
-      let(:squash_id) { '1' }
-      let(:branch_name) { 'fix' }
-      let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
-      let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
+  describe '#squash' do
+    let(:squash_id) { '1' }
+    let(:branch_name) { 'fix' }
+    let(:start_sha) { '4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6' }
+    let(:end_sha) { '12d65c8dd2b2676fa3ac47d955accc085a37a9c1' }
 
-      subject do
-        opts = {
-          branch: branch_name,
-          start_sha: start_sha,
-          end_sha: end_sha,
-          author: user,
-          message: 'Squash commit message'
-        }
+    subject do
+      opts = {
+        branch: branch_name,
+        start_sha: start_sha,
+        end_sha: end_sha,
+        author: user,
+        message: 'Squash commit message'
+      }
 
-        repository.squash(user, squash_id, opts)
+      repository.squash(user, squash_id, opts)
+    end
+
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'sparse checkout' do
+      let(:expected_files) { %w(files files/js files/js/application.js) }
+
+      it 'checks out only the files in the diff' do
+        allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
+          m.call(*args) do
+            worktree_path = args[0]
+            files_pattern = File.join(worktree_path, '**', '*')
+            expected = expected_files.map do |path|
+              File.expand_path(path, worktree_path)
+            end
+
+            expect(Dir[files_pattern]).to eq(expected)
+          end
+        end
+
+        subject
       end
 
-      context 'sparse checkout', :skip_gitaly_mock do
-        let(:expected_files) { %w(files files/js files/js/application.js) }
+      context 'when the diff contains a rename' do
+        let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
+        let(:end_sha) { new_commit_move_file(repo).oid }
 
-        it 'checks out only the files in the diff' do
+        after do
+          # Erase our commits so other tests get the original repo
+          repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+          repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
+        end
+
+        it 'does not include the renamed file in the sparse checkout' do
           allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
             m.call(*args) do
               worktree_path = args[0]
               files_pattern = File.join(worktree_path, '**', '*')
-              expected = expected_files.map do |path|
-                File.expand_path(path, worktree_path)
-              end
 
-              expect(Dir[files_pattern]).to eq(expected)
+              expect(Dir[files_pattern]).not_to include('CHANGELOG')
+              expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
             end
           end
 
           subject
         end
-
-        context 'when the diff contains a rename' do
-          let(:repo) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged }
-          let(:end_sha) { new_commit_move_file(repo).oid }
-
-          after do
-            # Erase our commits so other tests get the original repo
-            repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-            repo.references.update('refs/heads/master', SeedRepo::LastCommit::ID)
-          end
-
-          it 'does not include the renamed file in the sparse checkout' do
-            allow(repository).to receive(:with_worktree).and_wrap_original do |m, *args|
-              m.call(*args) do
-                worktree_path = args[0]
-                files_pattern = File.join(worktree_path, '**', '*')
-
-                expect(Dir[files_pattern]).not_to include('CHANGELOG')
-                expect(Dir[files_pattern]).not_to include('encoding/CHANGELOG')
-              end
-            end
-
-            subject
-          end
-        end
       end
+    end
 
-      context 'with an ASCII-8BIT diff', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with an ASCII-8BIT diff' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+✓ testme\n ======\n \n Sample repo for testing gitlab features\n" }
 
-        it 'applies a ASCII-8BIT diff' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'applies a ASCII-8BIT diff' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect(subject).to match(/\h{40}/)
-        end
+        expect(subject).to match(/\h{40}/)
       end
+    end
 
-      context 'with trailing whitespace in an invalid patch', :skip_gitaly_mock do
-        let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
+    # Should be ported to gitaly-ruby rspec suite https://gitlab.com/gitlab-org/gitaly/issues/1234
+    skip 'with trailing whitespace in an invalid patch' do
+      let(:diff) { "diff --git a/README.md b/README.md\nindex faaf198..43c5edf 100644\n--- a/README.md\n+++ b/README.md\n@@ -1,4 +1,4 @@\n-testme\n+   \n ======   \n \n Sample repo for testing gitlab features\n" }
 
-        it 'does not include whitespace warnings in the error' do
-          allow(repository).to receive(:run_git!).and_call_original
-          allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
+      it 'does not include whitespace warnings in the error' do
+        allow(repository).to receive(:run_git!).and_call_original
+        allow(repository).to receive(:run_git!).with(%W(diff --binary #{start_sha}...#{end_sha})).and_return(diff.force_encoding('ASCII-8BIT'))
 
-          expect { subject }.to raise_error do |error|
-            expect(error).to be_a(described_class::GitError)
-            expect(error.message).not_to include('trailing whitespace')
-          end
+        expect { subject }.to raise_error do |error|
+          expect(error).to be_a(described_class::GitError)
+          expect(error.message).not_to include('trailing whitespace')
         end
       end
     end

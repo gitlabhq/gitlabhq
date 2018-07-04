@@ -1,5 +1,5 @@
 class HealthController < ActionController::Base
-  protect_from_forgery with: :exception, except: :storage_check
+  protect_from_forgery with: :exception, except: :storage_check, prepend: true
   include RequiresWhitelistedMonitoringClient
 
   CHECKS = [
@@ -8,7 +8,6 @@ class HealthController < ActionController::Base
     Gitlab::HealthChecks::Redis::CacheCheck,
     Gitlab::HealthChecks::Redis::QueuesCheck,
     Gitlab::HealthChecks::Redis::SharedStateCheck,
-    Gitlab::HealthChecks::FsShardsCheck,
     Gitlab::HealthChecks::GitalyCheck
   ].freeze
 

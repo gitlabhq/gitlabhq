@@ -15,7 +15,8 @@ module EE
             ::Gitlab::PollingInterval.set_header(response, interval: 3_000)
 
             render json: {
-              logs: pod_logs.strip.split("\n").as_json
+              logs: pod_logs.strip.split("\n").as_json,
+              pods: environment.pod_names
             }
           end
         end
@@ -28,7 +29,7 @@ module EE
       end
 
       def pod_logs
-        @pod_logs ||= environment.deployment_platform.read_pod_logs(params[:pod_name])
+        environment.deployment_platform.read_pod_logs(params[:pod_name])
       end
     end
   end

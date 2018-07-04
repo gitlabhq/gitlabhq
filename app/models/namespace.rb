@@ -52,7 +52,6 @@ class Namespace < ActiveRecord::Base
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
   before_create :sync_share_with_group_lock_with_parent
-  before_create :sync_membership_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
   after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
 
@@ -162,10 +161,6 @@ class Namespace < ActiveRecord::Base
   def lfs_enabled?
     # User namespace will always default to the global setting
     Gitlab.config.lfs.enabled
-  end
-
-  def actual_size_limit
-    Gitlab::CurrentSettings.repository_size_limit
   end
 
   def shared_runners_enabled?
@@ -294,12 +289,6 @@ class Namespace < ActiveRecord::Base
   def sync_share_with_group_lock_with_parent
     if parent&.share_with_group_lock?
       self.share_with_group_lock = true
-    end
-  end
-
-  def sync_membership_lock_with_parent
-    if parent&.membership_lock?
-      self.membership_lock = true
     end
   end
 

@@ -152,6 +152,23 @@ module EE
       expose :vulnerability_feedback_path do |merge_request|
         project_vulnerability_feedback_index_path(merge_request.project)
       end
+
+      expose :can_create_feedback do |merge_request|
+        can?(current_user, :admin_vulnerability_feedback, merge_request)
+      end
+
+      expose :rebase_commit_sha
+      expose :rebase_in_progress?, as: :rebase_in_progress
+
+      expose :can_push_to_source_branch do |merge_request|
+        presenter(merge_request).can_push_to_source_branch?
+      end
+      expose :rebase_path do |merge_request|
+        presenter(merge_request).rebase_path
+      end
+      expose :approvals_path do |merge_request|
+        presenter(merge_request).approvals_path
+      end
     end
   end
 end

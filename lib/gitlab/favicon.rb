@@ -38,7 +38,8 @@ module Gitlab
       # we only want to create full urls when there's a different asset_host
       # configured.
       def host
-        if Gitlab::Application.config.asset_host.nil? || Gitlab::Application.config.asset_host == Gitlab.config.gitlab.base_url
+        asset_host = ActionController::Base.asset_host
+        if asset_host.nil? || asset_host == Gitlab.config.gitlab.base_url
           nil
         else
           Gitlab.config.gitlab.base_url

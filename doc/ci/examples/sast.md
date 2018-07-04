@@ -56,4 +56,4 @@ so, the CI job must be named `sast` and the artifact path must be
 
 See [the full list of supported languages and frameworks](../../user/project/merge_requests/sast.md#supported-languages-and-frameworks).
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

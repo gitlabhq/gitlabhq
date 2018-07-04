@@ -7,6 +7,7 @@ import IdeStatusBar from './ide_status_bar.vue';
 import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
+import ErrorMessage from './error_message.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
@@ -18,6 +19,7 @@ export default {
     RepoEditor,
     FindFile,
     RightPane,
+    ErrorMessage,
   },
   computed: {
     ...mapState([
@@ -28,6 +30,7 @@ export default {
       'fileFindVisible',
       'emptyStateSvgPath',
       'currentProjectId',
+      'errorMessage',
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
@@ -72,6 +75,10 @@ export default {
 
 <template>
   <article class="ide">
+    <error-message
+      v-if="errorMessage"
+      :message="errorMessage"
+    />
     <div
       class="ide-view"
     >

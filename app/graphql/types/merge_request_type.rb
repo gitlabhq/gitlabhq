@@ -1,5 +1,7 @@
 module Types
   class MergeRequestType < BaseObject
+    expose_permissions Types::PermissionTypes::MergeRequest
+
     present_using MergeRequestPresenter
 
     graphql_name 'MergeRequest'

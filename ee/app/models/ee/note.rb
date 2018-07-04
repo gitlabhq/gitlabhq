@@ -11,7 +11,7 @@ module EE
       noteable.is_a?(Epic)
     end
 
-    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6347
+    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6793
     def note
       raw_note = super
 
@@ -20,7 +20,7 @@ module EE
       raw_note.delete(',')
     end
 
-    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6347
+    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6783
     def note_html
       raw_note_html = super
 

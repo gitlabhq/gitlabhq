@@ -35,4 +35,4 @@ to keep the simplicity of this feature.
 On unsubscribe, user will receive an email notifying that unsubscribe happened.
 The endpoint that provides the unsubscribe option is rate-limited.
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

@@ -89,9 +89,9 @@ _The artifacts are stored by default in
 
 >**Notes:**
 - [Introduced][ee-1762] in [GitLab Premium][eep] 9.4.
-- Since version 9.5, artifacts are [browsable], when object storage is enabled. 
+- Since version 9.5, artifacts are [browsable], when object storage is enabled.
   9.4 lacks this feature.
-> Since version 10.6, available in [GitLab CE](https://about.gitlab.com/products/)
+> Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
 > Since version 11.0, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -121,6 +121,7 @@ The connection settings match those provided by [Fog](https://github.com/fog), a
 | `provider` | Always `AWS` for compatible hosts | AWS |
 | `aws_access_key_id` | AWS credentials, or compatible | |
 | `aws_secret_access_key` | AWS credentials, or compatible | |
+| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |

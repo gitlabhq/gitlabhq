@@ -5,6 +5,6 @@ import GLForm from '../../../../gl_form';
 
 document.addEventListener('DOMContentLoaded', () => {
   new ZenMode(); // eslint-disable-line no-new
-  new GLForm($('.tag-form'), true); // eslint-disable-line no-new
+  new GLForm($('.tag-form')); // eslint-disable-line no-new
   new RefSelectDropdown($('.js-branch-select')); // eslint-disable-line no-new
 });

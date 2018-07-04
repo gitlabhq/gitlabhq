@@ -109,17 +109,20 @@ export default {
         <sast-issue
           v-if="isTypeSast"
           :issue="issue"
+          :status="status"
         />
 
         <dast-issue
           v-else-if="isTypeDast"
           :issue="issue"
           :issue-index="index"
+          :status="status"
         />
 
         <sast-container-issue
           v-else-if="isTypeSastContainer"
           :issue="issue"
+          :status="status"
         />
 
         <codequality-issue

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EE::Note do
-  # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6347
+  # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6793
   describe "#note and #note_html overrides for weight" do
     using RSpec::Parameterized::TableSyntax
 

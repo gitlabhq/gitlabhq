@@ -52,7 +52,7 @@ export default function initCopyToClipboard() {
    * data types to the intended values.
    */
   $(document).on('copy', 'body > textarea[readonly]', (e) => {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const text = e.target.value;

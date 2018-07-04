@@ -288,6 +288,8 @@ export default {
       :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
       :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
       :pipeline-id="mr.securityReportsPipelineId"
+      :can-create-issue="mr.canCreateIssue"
+      :can-create-feedback="mr.canCreateFeedback"
     />
     <report-section
       v-if="shouldRenderLicenseReport"

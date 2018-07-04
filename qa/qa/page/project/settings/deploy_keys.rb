@@ -57,6 +57,10 @@ module QA
           private
 
           def within_project_deploy_keys
+            wait(reload: false) do
+              has_css?(element_selector_css(:project_deploy_keys))
+            end
+
             within_element(:project_deploy_keys) do
               yield
             end

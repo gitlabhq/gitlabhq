@@ -24,7 +24,7 @@ export default {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
         __(
@@ -35,6 +35,9 @@ export default {
           changedFilesLength: this.changedFiles.length,
         },
       );
+    },
+    commitButtonText() {
+      return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
     },
   },
   watch: {
@@ -117,7 +120,7 @@ export default {
           class="btn btn-primary btn-sm btn-block"
           @click="toggleIsSmall"
         >
-          {{ __('Commit') }}
+          {{ __('Commit…') }}
         </button>
         <p
           class="text-center"
@@ -136,14 +139,14 @@ export default {
         </transition>
         <commit-message-field
           :text="commitMessage"
+          :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
         />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button
             :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            :label="__('Commit')"
+            :label="commitButtonText"
             container-class="btn btn-success btn-sm float-left"
             @click="commitChanges"
           />

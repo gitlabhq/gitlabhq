@@ -86,7 +86,7 @@ describe('WeeksHeaderItemComponent', () => {
           timeframeItem,
         });
 
-        vm.currentDate = mockTimeframeWeeks[0];
+        [vm.currentDate] = mockTimeframeWeeks;
         expect(vm.timelineHeaderClass).toBe('label-dark');
       });
     });

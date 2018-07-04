@@ -33,7 +33,7 @@ production: &base
     port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
-    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # Uncomment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
     # ssh_host: ssh.host_example.com
@@ -310,6 +310,10 @@ production: &base
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_migrated_local_files_clean_up_worker:
       cron: "15 */6 * * *"
+
+    # Export pseudonymized data in CSV format for analysis
+    pseudonymizer_worker:
+      cron: "0 * * * *"
 
   registry:
     # enabled: true
@@ -726,6 +730,20 @@ production: &base
     #   # Specifies Amazon S3 storage class to use for backups, this is optional
     #   # storage_class: 'STANDARD'
 
+  ## Pseudonymizer exporter
+  pseudonymizer:
+    # Tables manifest that specifies the fields to extract and pseudonymize.
+    manifest: config/pseudonymizer.yml
+    upload:
+      remote_directory: 'gitlab-elt'
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+      #   provider: AWS
+      #   region: eu-west-1
+      #   aws_access_key_id: AKIAKIAKI
+      #   aws_secret_access_key: 'secret123'
+      #   # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
+
   ## GitLab Shell settings
   gitlab_shell:
     path: /home/git/gitlab-shell/
@@ -876,6 +894,17 @@ test:
     token: secret
   backup:
     path: tmp/tests/backups
+  pseudonymizer:
+    manifest: config/pseudonymizer.yml
+    upload:
+      # The remote 'directory' to store the CSV files. For S3, this would be the bucket name.
+      remote_directory: gitlab-elt.test
+      # Fog storage connection settings, see http://fog.io/storage/
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   gitlab_shell:
     path: tmp/tests/gitlab-shell/
     hooks_path: tmp/tests/gitlab-shell/hooks/

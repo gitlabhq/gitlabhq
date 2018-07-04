@@ -2,18 +2,18 @@ require 'spec_helper'
 
 describe Geo::FileRegistryRemovalService do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   set(:secondary) { create(:geo_node) }
 
   before do
     stub_current_geo_node(secondary)
-
-    allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
   end
 
   describe '#execute' do
     it 'delegates log_error to the Geo logger' do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(false)
+      stub_exclusive_lease_taken("file_registry_removal_service:lfs:99")
+
       expect(Gitlab::Geo::Logger).to receive(:error)
 
       described_class.new(:lfs, 99).execute
@@ -21,6 +21,11 @@ describe Geo::FileRegistryRemovalService do
 
     shared_examples 'removes' do
       subject(:service) { described_class.new(file_registry.file_type, file_registry.file_id) }
+
+      before do
+        stub_exclusive_lease("file_registry_removal_service:#{file_registry.file_type}:#{file_registry.file_id}",
+          timeout: Geo::FileRegistryRemovalService::LEASE_TIMEOUT)
+      end
 
       it 'file from disk' do
         expect do
@@ -37,6 +42,11 @@ describe Geo::FileRegistryRemovalService do
 
     shared_examples 'removes artifact' do
       subject(:service) { described_class.new('job_artifact', registry.artifact_id) }
+
+      before do
+        stub_exclusive_lease("file_registry_removal_service:job_artifact:#{registry.artifact_id}",
+          timeout: Geo::FileRegistryRemovalService::LEASE_TIMEOUT)
+      end
 
       it 'file from disk' do
         expect do

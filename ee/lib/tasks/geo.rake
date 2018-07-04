@@ -226,29 +226,69 @@ namespace :geo do
       puts
     end
 
-    print 'GitLab version: '.rjust(COLUMN_WIDTH)
+    print 'GitLab Version: '.rjust(COLUMN_WIDTH)
     puts Gitlab::VERSION
 
+    print 'Geo Role: '.rjust(COLUMN_WIDTH)
+    role =
+      if Gitlab::Geo.primary?
+        'Primary'
+      else
+        Gitlab::Geo.secondary? ? 'Secondary' : 'unknown'.color(:yellow)
+      end
+
+    puts role
+
     print 'Health Status: '.rjust(COLUMN_WIDTH)
-    puts current_node_status.health_status
+
+    if current_node_status.healthy?
+      puts current_node_status.health_status
+    else
+      puts current_node_status.health_status.color(:red)
+    end
 
     print 'Repositories: '.rjust(COLUMN_WIDTH)
+    show_failed_value(current_node_status.repositories_failed_count)
     print "#{current_node_status.repositories_synced_count}/#{current_node_status.repositories_count} "
-    puts "(#{number_to_percentage(current_node_status.repositories_synced_in_percentage, precision: 0)})"
+    puts using_percentage(current_node_status.repositories_synced_in_percentage)
 
-    print 'LFS objects: '.rjust(COLUMN_WIDTH)
-    print "#{current_node_status.lfs_objects_synced_count}/#{current_node_status.lfs_objects_count} "
-    puts "(#{number_to_percentage(current_node_status.lfs_objects_synced_in_percentage, precision: 0)})"
-
-    print 'Attachments: '.rjust(COLUMN_WIDTH)
-    print "#{current_node_status.attachments_synced_count}/#{current_node_status.attachments_count} "
-    puts "(#{number_to_percentage(current_node_status.attachments_synced_in_percentage, precision: 0)})"
+    if Gitlab::Geo.repository_verification_enabled?
+      print 'Verified Repositories: '.rjust(COLUMN_WIDTH)
+      show_failed_value(current_node_status.repositories_verification_failed_count)
+      print "#{current_node_status.repositories_verified_count}/#{current_node_status.repositories_count} "
+      puts using_percentage(current_node_status.repositories_verified_in_percentage)
+    end
 
     print 'Wikis: '.rjust(COLUMN_WIDTH)
+    show_failed_value(current_node_status.wikis_failed_count)
     print "#{current_node_status.wikis_synced_count}/#{current_node_status.wikis_count} "
-    puts "(#{number_to_percentage(current_node_status.wikis_synced_in_percentage, precision: 0)})"
+    puts using_percentage(current_node_status.wikis_synced_in_percentage)
 
-    print 'Sync settings: '.rjust(COLUMN_WIDTH)
+    if Gitlab::Geo.repository_verification_enabled?
+      print 'Verified Wikis: '.rjust(COLUMN_WIDTH)
+      show_failed_value(current_node_status.wikis_verification_failed_count)
+      print "#{current_node_status.wikis_verified_count}/#{current_node_status.wikis_count} "
+      puts using_percentage(current_node_status.wikis_verified_in_percentage)
+    end
+
+    print 'LFS Objects: '.rjust(COLUMN_WIDTH)
+    show_failed_value(current_node_status.lfs_objects_failed_count)
+    print "#{current_node_status.lfs_objects_synced_count}/#{current_node_status.lfs_objects_count} "
+    puts using_percentage(current_node_status.lfs_objects_synced_in_percentage)
+
+    print 'Attachments: '.rjust(COLUMN_WIDTH)
+    show_failed_value(current_node_status.attachments_failed_count)
+    print "#{current_node_status.attachments_synced_count}/#{current_node_status.attachments_count} "
+    puts using_percentage(current_node_status.attachments_synced_in_percentage)
+
+    if Gitlab::CurrentSettings.repository_checks_enabled
+      print 'Repositories Checked: '.rjust(COLUMN_WIDTH)
+      show_failed_value(current_node_status.repositories_checked_failed_count)
+      print "#{current_node_status.repositories_checked_count}/#{current_node_status.repositories_count} "
+      puts using_percentage(current_node_status.repositories_checked_in_percentage)
+    end
+
+    print 'Sync Settings: '.rjust(COLUMN_WIDTH)
     puts  geo_node.namespaces.any? ? 'Selective' : 'Full'
 
     print 'Database replication lag: '.rjust(COLUMN_WIDTH)
@@ -286,5 +326,13 @@ namespace :geo do
     end
 
     puts
+  end
+
+  def show_failed_value(value)
+    print "#{value}".color(:red) + '/' if value > 0
+  end
+
+  def using_percentage(value)
+    "(#{number_to_percentage(value.floor, precision: 0, strip_insignificant_zeros: true)})"
   end
 end

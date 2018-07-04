@@ -693,6 +693,6 @@ Example of response
 }
 ```
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
 [triggers]: ../ci/triggers/README.md#when-a-pipeline-depends-on-the-artifacts-of-another-pipeline

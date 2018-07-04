@@ -73,10 +73,6 @@ describe Service do
     end
   end
 
-  describe "Available services" do
-    it { expect(described_class.available_services_names).to include("jenkins", "jira") }
-  end
-
   describe "Template" do
     describe '.build_from_template' do
       context 'when template is invalid' do

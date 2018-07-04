@@ -6,6 +6,10 @@ Starting from GitLab 8.5:
 - the `project.ssh_url` key is deprecated in favor of the `project.git_ssh_url` key
 - the `project.http_url` key is deprecated in favor of the `project.git_http_url` key
 
+>**Note:**
+Starting from GitLab 11.1, the logs of web hooks are automatically removed after
+one month.
+
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
@@ -79,11 +83,11 @@ Below are described the supported events.
 
 Triggered when you push to the repository except when pushing tags.
 
-> **Note:** When more than 20 commits are pushed at once, the `commits` web hook 
-  attribute will only contain the first 20 for performance reasons. Loading 
-  detailed commit data is expensive. Note that despite only 20 commits being 
+> **Note:** When more than 20 commits are pushed at once, the `commits` web hook
+  attribute will only contain the first 20 for performance reasons. Loading
+  detailed commit data is expensive. Note that despite only 20 commits being
   present in the `commits` attribute, the `total_commits_count` attribute will
-  contain the actual total. 
+  contain the actual total.
 
 **Request header**:
 
@@ -1174,11 +1178,11 @@ From this page, you can repeat delivery with the same data by clicking `Resend R
 When GitLab sends a webhook it expects a response in 10 seconds (set default value). If it does not receive one, it'll retry the webhook.
 If the endpoint doesn't send its HTTP response within those 10 seconds, GitLab may decide the hook failed and retry it.
 
-If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook 
+If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook
 by uncommenting or adding the following setting to your `/etc/gitlab/gitlab.rb`:
 
 ```
-gitlab_rails['webhook_timeout'] = 10 
+gitlab_rails['webhook_timeout'] = 10
 ```
 
 ## Example webhook receiver

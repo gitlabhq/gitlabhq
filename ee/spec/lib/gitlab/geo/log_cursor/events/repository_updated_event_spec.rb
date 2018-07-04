@@ -18,7 +18,7 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryUpdatedEvent, :postgresql, :c
 
   before do
     stub_current_geo_node(secondary)
-    allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('broken').and_return(false)
+    allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('broken').and_return(false)
   end
 
   RSpec.shared_examples 'RepositoryUpdatedEvent' do
@@ -81,7 +81,7 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryUpdatedEvent, :postgresql, :c
     let(:now) { Time.now }
 
     before do
-      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(healthy)
+      allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(healthy)
     end
 
     context 'when the associated shard is healthy' do

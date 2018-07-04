@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Worker to destroy projects that do not have a namespace
 #
 # It destroys everything it can without having the info about the namespace it

@@ -7,6 +7,11 @@ class WebHookLog < ActiveRecord::Base
 
   validates :web_hook, presence: true
 
+  def self.recent
+    where('created_at >= ?', 2.days.ago.beginning_of_day)
+      .order(created_at: :desc)
+  end
+
   def success?
     response_status =~ /^2/
   end

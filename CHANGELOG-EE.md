@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.0.2 (2018-06-26)
+
+- No changes.
+
+## 11.0.1 (2018-06-21)
+
+- No changes.
+
 ## 11.0.0 (2018-06-22)
 
 ### Security (2 changes)
@@ -70,6 +78,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Fixed illustration alignment for group milestones promotion. !5677 (Constance Okoghenun)
 - Allow viewing only one when multiple issue boards is not enabled.
 
+
+## 10.8.5 (2018-06-21)
+
+- No changes.
 
 ## 10.8.4 (2018-06-06)
 
@@ -190,6 +202,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Replace the `groups_management.feature` spinach test with an rspec analog. !5516 (@blackst0ne)
 - Remove `features/group_active_tab.feature`. !5554 (@blackst0ne)
 
+
+## 10.7.6 (2018-06-21)
+
+- No changes.
 
 ## 10.7.5 (2018-05-28)
 

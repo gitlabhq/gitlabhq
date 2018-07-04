@@ -109,5 +109,16 @@ module Gitlab
       # urlsafe_base64 may return a string of size * 4/3
       SecureRandom.urlsafe_base64(size)[0, size]
     end
+
+    def self.repository_verification_enabled?
+      feature = Feature.get(:geo_repository_verification)
+
+      # If the feature has been set, always evaluate
+      if Feature.persisted?(feature)
+        return feature.enabled?
+      else
+        true
+      end
+    end
   end
 end

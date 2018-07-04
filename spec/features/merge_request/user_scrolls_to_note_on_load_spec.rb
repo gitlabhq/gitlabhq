@@ -17,11 +17,12 @@ describe 'Merge request > User scrolls to note on load', :js do
   it 'scrolls note into view' do
     visit "#{project_merge_request_path(project, merge_request)}#{fragment_id}"
 
+    wait_for_requests
+
     page_height = page.current_window.size[1]
     page_scroll_y = page.evaluate_script("window.scrollY")
     fragment_position_top = page.evaluate_script("Math.round($('#{fragment_id}').offset().top)")
 
-    expect(find('.js-toggle-content').visible?).to eq true
     expect(find(fragment_id).visible?).to eq true
     expect(fragment_position_top).to be >= page_scroll_y
     expect(fragment_position_top).to be < (page_scroll_y + page_height)
@@ -35,7 +36,7 @@ describe 'Merge request > User scrolls to note on load', :js do
     page.execute_script "window.scrollTo(0,0)"
 
     note_element = find(fragment_id)
-    note_container = note_element.ancestor('.js-toggle-container')
+    note_container = note_element.ancestor('.js-discussion-container')
 
     expect(note_element.visible?).to eq true
 
@@ -44,10 +45,11 @@ describe 'Merge request > User scrolls to note on load', :js do
     end
   end
 
-  it 'expands collapsed notes' do
+  # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+  xit 'expands collapsed notes' do
     visit "#{project_merge_request_path(project, merge_request)}#{collapsed_fragment_id}"
     note_element = find(collapsed_fragment_id)
-    note_container = note_element.ancestor('.js-toggle-container')
+    note_container = note_element.ancestor('.timeline-content')
 
     expect(note_element.visible?).to eq true
     expect(note_container.find('.line_content.noteable_line.old', match: :first).visible?).to eq true

@@ -37,7 +37,7 @@ describe Gitlab::Geo::LogCursor::Events::RepositoryCreatedEvent, :postgresql, :c
 
   describe '#process' do
     before do
-      allow(Gitlab::Geo::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(healthy)
+      allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(healthy)
     end
 
     context 'when the associated shard is healthy' do

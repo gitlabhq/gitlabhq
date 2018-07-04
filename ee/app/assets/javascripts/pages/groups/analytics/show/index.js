@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const dataEl = document.getElementById('js-analytics-data');
   if (dataEl) {
     const data = JSON.parse(dataEl.innerHTML);
-    const labels = data.labels;
+    const { labels } = data;
     const outputElIds = ['push', 'issues_closed', 'merge_requests_created'];
 
     outputElIds.forEach((id) => {

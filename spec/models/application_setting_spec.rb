@@ -25,15 +25,6 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
-    describe 'disabled_oauth_sign_in_sources validations' do
-      before do
-        allow(Devise).to receive(:omniauth_providers).and_return([:github])
-      end
-
-      it { is_expected.to allow_value(['github']).for(:disabled_oauth_sign_in_sources) }
-      it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
-    end
-
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')
@@ -314,6 +305,33 @@ describe ApplicationSetting do
     end
   end
 
+  describe '#disabled_oauth_sign_in_sources=' do
+    before do
+      allow(Devise).to receive(:omniauth_providers).and_return([:github])
+    end
+
+    it 'removes unknown sources (as strings) from the array' do
+      subject.disabled_oauth_sign_in_sources = %w[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'removes unknown sources (as symbols) from the array' do
+      subject.disabled_oauth_sign_in_sources = %i[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'ignores nil' do
+      subject.disabled_oauth_sign_in_sources = nil
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to be_empty
+    end
+  end
+
   context 'restricted signup domains' do
     it 'sets single domain' do
       setting.domain_whitelist_raw = 'example.com'
@@ -468,91 +486,6 @@ describe ApplicationSetting do
           expect(setting.usage_ping_enabled).to be_truthy
         end
       end
-    end
-  end
-
-  describe '#repository_size_limit column' do
-    it 'support values up to 8 exabytes' do
-      setting.update_column(:repository_size_limit, 8.exabytes - 1)
-
-      setting.reload
-
-      expect(setting.repository_size_limit).to eql(8.exabytes - 1)
-    end
-  end
-
-  describe 'elasticsearch licensing' do
-    before do
-      setting.elasticsearch_search = true
-      setting.elasticsearch_indexing = true
-    end
-
-    def expect_is_es_licensed
-      expect(License).to receive(:feature_available?).with(:elastic_search).at_least(:once)
-    end
-
-    it 'disables elasticsearch when unlicensed' do
-      expect_is_es_licensed.and_return(false)
-
-      expect(setting.elasticsearch_indexing?).to be_falsy
-      expect(setting.elasticsearch_indexing).to be_falsy
-      expect(setting.elasticsearch_search?).to be_falsy
-      expect(setting.elasticsearch_search).to be_falsy
-    end
-
-    it 'enables elasticsearch when licensed' do
-      expect_is_es_licensed.and_return(true)
-
-      expect(setting.elasticsearch_indexing?).to be_truthy
-      expect(setting.elasticsearch_indexing).to be_truthy
-      expect(setting.elasticsearch_search?).to be_truthy
-      expect(setting.elasticsearch_search).to be_truthy
-    end
-  end
-
-  describe '#elasticsearch_url' do
-    it 'presents a single URL as a one-element array' do
-      setting.elasticsearch_url = 'http://example.com'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com])
-    end
-
-    it 'presents multiple URLs as a many-element array' do
-      setting.elasticsearch_url = 'http://example.com,https://invalid.invalid:9200'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
-    end
-
-    it 'strips whitespace from around URLs' do
-      setting.elasticsearch_url = ' http://example.com, https://invalid.invalid:9200 '
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://invalid.invalid:9200])
-    end
-
-    it 'strips trailing slashes from URLs' do
-      setting.elasticsearch_url = 'http://example.com/, https://example.com:9200/, https://example.com:9200/prefix//'
-
-      expect(setting.elasticsearch_url).to eq(%w[http://example.com https://example.com:9200 https://example.com:9200/prefix])
-    end
-  end
-
-  describe '#elasticsearch_config' do
-    it 'places all elasticsearch configuration values into a hash' do
-      setting.update!(
-        elasticsearch_url: 'http://example.com:9200',
-        elasticsearch_aws: false,
-        elasticsearch_aws_region:     'test-region',
-        elasticsearch_aws_access_key: 'test-access-key',
-        elasticsearch_aws_secret_access_key: 'test-secret-access-key'
-      )
-
-      expect(setting.elasticsearch_config).to eq(
-        url: ['http://example.com:9200'],
-        aws: false,
-        aws_region:     'test-region',
-        aws_access_key: 'test-access-key',
-        aws_secret_access_key: 'test-secret-access-key'
-      )
     end
   end
 

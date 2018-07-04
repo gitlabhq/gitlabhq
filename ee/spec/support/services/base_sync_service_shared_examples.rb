@@ -74,30 +74,6 @@ shared_examples 'geo base sync fetch and repack' do
       fetch_repository
     end
 
-    context 'redownload' do
-      let(:fetch_repository) { subject.send(:fetch_repository, true) }
-
-      before do
-        stub_feature_flags(geo_redownload_with_snapshot: false)
-      end
-
-      it 'fetches repository from geo node into temporary location' do
-        temporary_repository = instance_double('Repository')
-
-        is_expected.to receive(:temp_repo) { temporary_repository }
-        is_expected.to receive(:fetch_geo_mirror).with(temporary_repository)
-        is_expected.to receive(:set_temp_repository_as_main)
-
-        fetch_repository
-      end
-
-      it 'schedule git repack' do
-        is_expected.to receive(:schedule_repack)
-
-        fetch_repository
-      end
-    end
-
     context 'repository does not exist' do
       before do
         allow_any_instance_of(Repository).to receive(:exists?) { false }
@@ -158,15 +134,6 @@ shared_examples 'sync retries use the snapshot RPC' do
 
       it 'attempts to fetch if snapshotting raises an exception' do
         expect(repository).to receive_create_from_snapshot.and_raise(ArgumentError)
-        expect(subject).to receive(:fetch_geo_mirror).with(repository)
-
-        subject.execute
-      end
-
-      it 'does not attempt to snapshot if the feature flag is disabled' do
-        stub_feature_flags(geo_redownload_with_snapshot: false)
-
-        expect(repository).not_to receive_create_from_snapshot
         expect(subject).to receive(:fetch_geo_mirror).with(repository)
 
         subject.execute

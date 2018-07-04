@@ -1,12 +1,12 @@
 /* eslint-disable consistent-return, no-new */
 
 import $ from 'jquery';
-import Flash from './flash';
 import GfmAutoComplete from './gfm_auto_complete';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 import GlFieldErrors from './gl_field_errors';
 import Shortcuts from './shortcuts';
 import SearchAutocomplete from './search_autocomplete';
+import performanceBar from './performance_bar';
 
 function initSearch() {
   // Only when search form is present
@@ -72,9 +72,7 @@ function initGFMInput() {
 
 function initPerformanceBar() {
   if (document.querySelector('#js-peek')) {
-    import('./performance_bar')
-      .then(m => new m.default({ container: '#js-peek' })) // eslint-disable-line new-cap
-      .catch(() => Flash('Error loading performance bar module'));
+    performanceBar({ container: '#js-peek' });
   }
 }
 

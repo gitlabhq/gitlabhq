@@ -6,6 +6,8 @@ import actions, {
   setVulnerabilityFeedbackPath,
   setVulnerabilityFeedbackHelpPath,
   setPipelineId,
+  setCanCreateIssuePermission,
+  setCanCreateFeedbackPermission,
   setSastHeadPath,
   setSastBasePath,
   requestSastReports,
@@ -156,6 +158,42 @@ describe('security reports actions', () => {
           {
             type: types.SET_PIPELINE_ID,
             payload: 123,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCanCreateIssuePermission', () => {
+    it('should commit set can create issue permission', done => {
+      testAction(
+        setCanCreateIssuePermission,
+        true,
+        mockedState,
+        [
+          {
+            type: types.SET_CAN_CREATE_ISSUE_PERMISSION,
+            payload: true,
+          },
+        ],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setCanCreateFeedbackPermission', () => {
+    it('should commit set can create feedback permission', done => {
+      testAction(
+        setCanCreateFeedbackPermission,
+        true,
+        mockedState,
+        [
+          {
+            type: types.SET_CAN_CREATE_FEEDBACK_PERMISSION,
+            payload: true,
           },
         ],
         [],
@@ -977,13 +1015,13 @@ describe('security reports actions', () => {
     it('dispatches setModalData action', done => {
       testAction(
         openModal,
-        { id: 1 },
+        { issue: { id: 1 }, status: 'failed' },
         mockedState,
         [],
         [
           {
             type: 'setModalData',
-            payload: { id: 1 },
+            payload: { issue: { id: 1 }, status: 'failed' },
           },
         ],
         done,
@@ -995,12 +1033,12 @@ describe('security reports actions', () => {
     it('commits set issue modal data', done => {
       testAction(
         setModalData,
-        { id: 1 },
+        { issue: { id: 1 }, status: 'success' },
         mockedState,
         [
           {
             type: types.SET_ISSUE_MODAL_DATA,
-            payload: { id: 1 },
+            payload: { issue: { id: 1 }, status: 'success' },
           },
         ],
         [],

@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::LogCursor::Lease, :clean_gitlab_redis_shared_state do
+  include ExclusiveLeaseHelpers
+
   describe '.exclusive_lease' do
     it 'returns an exclusive lease instance' do
       expect(described_class.send(:exclusive_lease)).to be_an_instance_of(Gitlab::ExclusiveLease)
@@ -8,15 +10,20 @@ describe Gitlab::Geo::LogCursor::Lease, :clean_gitlab_redis_shared_state do
   end
 
   describe '.renew!' do
+    let(:lease) { stub_exclusive_lease(described_class::LEASE_KEY, renew: true) }
+
+    before do
+      allow(described_class).to receive(:exclusive_lease).and_return(lease)
+    end
+
     it 'returns an exclusive lease instance' do
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew)
+      expect(lease).to receive(:renew)
 
       described_class.renew!
     end
 
     it 'logs with the correct caller class' do
       stub_const("Gitlab::Geo::LogCursor::Logger::PID", 111)
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew).and_return(true)
 
       expect(::Gitlab::Logger).to receive(:debug).with(pid: 111,
                                                        class: 'Gitlab::Geo::LogCursor::Lease',
@@ -44,7 +51,12 @@ describe Gitlab::Geo::LogCursor::Lease, :clean_gitlab_redis_shared_state do
     end
 
     it 'returns > 0 if there was an error' do
-      expect(Gitlab::ExclusiveLease).to receive(:cancel)
+      lease = stub_exclusive_lease(described_class::LEASE_KEY, 'uuid')
+
+      allow(lease).to receive(:try_obtain_with_ttl).and_return({ ttl: 0, uuid: 'uuid' })
+      allow(described_class).to receive(:exclusive_lease).and_return(lease)
+
+      expect_to_cancel_exclusive_lease(described_class::LEASE_KEY, 'uuid')
 
       result = described_class.try_obtain_with_ttl { raise StandardError }
 

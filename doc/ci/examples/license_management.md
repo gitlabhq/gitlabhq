@@ -41,4 +41,4 @@ or specify another existing stage inside the `license_management` job.
 [Learn more on license management results shown in merge requests](../../user/project/merge_requests/license_management.md).
 
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

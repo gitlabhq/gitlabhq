@@ -46,8 +46,10 @@ feature 'Update Epic', :js do
         fill_in 'issuable-title', with: 'New epic title'
         fill_in 'issue-description', with: 'New epic description'
 
-        page.within('.detail-page-description') { click_link('Preview') }
-        expect(find('.md-preview')).to have_content('New epic description')
+        page.within('.detail-page-description') do
+          click_link('Preview')
+          expect(find('.md-preview')).to have_content('New epic description')
+        end
 
         click_button 'Save changes'
 
@@ -68,12 +70,14 @@ feature 'Update Epic', :js do
 
         expect(page.find_field("issue-description").value).to have_content('banana_sample')
 
-        page.within('.detail-page-description') { click_link('Preview') }
-        wait_for_requests
+        page.within('.detail-page-description') do
+          click_link('Preview')
+          wait_for_requests
 
-        within('.md-preview') do
-          link = find(link_css)['src']
-          expect(link).to match(link_match)
+          within('.md-preview') do
+            link = find(link_css)['src']
+            expect(link).to match(link_match)
+          end
         end
 
         click_button 'Save changes'

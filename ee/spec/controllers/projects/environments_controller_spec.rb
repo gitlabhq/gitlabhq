@@ -75,16 +75,17 @@ describe Projects::EnvironmentsController do
   end
 
   describe 'GET logs' do
-    let(:logs) { "Log 1\nLog 2\nLog 3" }
-    let(:pod_name) { 'foo' }
+    let(:pod_name) { "foo" }
 
     before do
       stub_licensed_features(pod_logs: true)
 
       create(:cluster, :provided_by_gcp,
              environment_scope: '*', projects: [project])
+      create(:deployment, environment: environment)
 
-      allow_any_instance_of(EE::KubernetesService).to receive(:read_pod_logs).with(pod_name).and_return(logs)
+      allow_any_instance_of(EE::KubernetesService).to receive(:read_pod_logs).with(pod_name).and_return(kube_logs_body)
+      allow_any_instance_of(Gitlab::Kubernetes::RolloutStatus).to receive(:instances).and_return([{ pod_name: pod_name }])
     end
 
     context 'when unlicensed' do
@@ -114,6 +115,7 @@ describe Projects::EnvironmentsController do
 
         expect(response).to be_ok
         expect(json_response["logs"]).to match_array(["Log 1", "Log 2", "Log 3"])
+        expect(json_response["pods"]).to match_array([pod_name])
       end
     end
   end

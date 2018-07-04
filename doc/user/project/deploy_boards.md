@@ -104,7 +104,7 @@ version of your application.
 - [Kubernetes deploy example][kube-deploy]
 
 [ee-1589]: https://gitlab.com/gitlab-org/gitlab-ee/issues/1589 "Deploy Boards initial issue"
-[ee]: https://about.gitlab.com/products/ "GitLab Enterprise Edition landing page"
+[ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition landing page"
 [kube-deploy]: https://gitlab.com/gitlab-examples/kubernetes-deploy "Kubernetes deploy example project"
 [kubernetes]: https://kubernetes.io "Kubernetes website"
 [environment]: ../../ci/environments.md "Environments and deployments documentation"

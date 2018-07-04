@@ -17,6 +17,11 @@ export default {
       type: Object,
       required: true,
     },
+    // failed || success
+    status: {
+      type: String,
+      required: true,
+    },
   },
 };
 </script>
@@ -25,7 +30,10 @@ export default {
     <div class="report-block-list-issue-description-text">
       <template v-if="issue.severity">{{ issue.severity }}:</template>
 
-      <modal-open-name :issue="issue" />
+      <modal-open-name
+        :issue="issue"
+        :status="status"
+      />
     </div>
 
     <report-link

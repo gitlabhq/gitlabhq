@@ -10,7 +10,7 @@ import '~/vue_shared/models/assignee';
 import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
-import '~/boards/components/issue_card_inner';
+import IssueCardInner from '~/boards/components/issue_card_inner.vue';
 import { listObj } from './mock_data';
 
 describe('Issue card component', () => {
@@ -49,7 +49,7 @@ describe('Issue card component', () => {
     component = new Vue({
       el: document.querySelector('.test-container'),
       components: {
-        'issue-card': gl.issueBoards.IssueCardInner,
+        'issue-card': IssueCardInner,
       },
       data() {
         return {
@@ -258,7 +258,7 @@ describe('Issue card component', () => {
     it('renders label', () => {
       const nodes = [];
       component.$el.querySelectorAll('.badge').forEach((label) => {
-        nodes.push(label.title);
+        nodes.push(label.getAttribute('data-original-title'));
       });
 
       expect(
@@ -268,7 +268,7 @@ describe('Issue card component', () => {
 
     it('sets label description as title', () => {
       expect(
-        component.$el.querySelector('.badge').getAttribute('title'),
+        component.$el.querySelector('.badge').getAttribute('data-original-title'),
       ).toContain(label1.description);
     });
 

@@ -318,4 +318,4 @@ Here are some common pitfalls and how to overcome them:
 [install]: https://www.elastic.co/guide/en/elasticsearch/reference/current/_installation.html "Elasticsearch installation documentation"
 [pkg]: https://about.gitlab.com/downloads/ "Download Omnibus GitLab"
 [elastic-settings]: https://www.elastic.co/guide/en/elasticsearch/reference/current/setup-configuration.html#settings "Elasticsearch configuration settings"
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

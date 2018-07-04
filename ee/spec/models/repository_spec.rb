@@ -7,6 +7,13 @@ describe Repository do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 
+  def create_remote_branch(remote_name, branch_name, target)
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged
+    end
+    rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
+  end
+
   describe '#after_sync' do
     it 'expires repository cache' do
       expect(repository).to receive(:expire_all_method_caches)
@@ -60,6 +67,27 @@ describe Repository do
         expect(project.repository.find_commits_by_message_with_elastic('initial').count).to eq(1)
         expect(project.repository.find_commits_by_message_with_elastic('initial').total_count).to eq(1)
       end
+    end
+  end
+
+  describe '#after_sync' do
+    it 'expires repository cache' do
+      expect(repository).to receive(:expire_all_method_caches)
+      expect(repository).to receive(:expire_branch_cache)
+      expect(repository).to receive(:expire_content_cache)
+
+      repository.after_sync
+    end
+  end
+
+  describe '#upstream_branches' do
+    it 'returns branches from the upstream remote' do
+      masterrev = repository.find_branch('master').dereferenced_target
+      create_remote_branch('upstream', 'upstream_branch', masterrev)
+
+      expect(repository.upstream_branches.size).to eq(1)
+      expect(repository.upstream_branches.first).to be_an_instance_of(Gitlab::Git::Branch)
+      expect(repository.upstream_branches.first.name).to eq('upstream_branch')
     end
   end
 end

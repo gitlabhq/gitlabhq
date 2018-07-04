@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Users::RefreshAuthorizedProjectsService do
+  include ExclusiveLeaseHelpers
+
   # We're using let! here so that any expectations for the service class are not
   # triggered twice.
   let!(:project) { create(:project) }
@@ -10,12 +12,10 @@ describe Users::RefreshAuthorizedProjectsService do
 
   describe '#execute', :clean_gitlab_redis_shared_state do
     it 'refreshes the authorizations using a lease' do
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain)
-        .and_return('foo')
+      lease_key = "refresh_authorized_projects:#{user.id}"
 
-      expect(Gitlab::ExclusiveLease).to receive(:cancel)
-        .with(an_instance_of(String), 'foo')
-
+      expect_to_obtain_exclusive_lease(lease_key, 'uuid')
+      expect_to_cancel_exclusive_lease(lease_key, 'uuid')
       expect(service).to receive(:execute_without_lease)
 
       service.execute

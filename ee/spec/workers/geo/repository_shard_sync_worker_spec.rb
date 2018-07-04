@@ -4,6 +4,7 @@ require 'spec_helper'
 # can't see changes inside a transaction of a different connection.
 describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
+  include ExclusiveLeaseHelpers
 
   let!(:primary) { create(:geo_node, :primary) }
   let!(:secondary) { create(:geo_node) }
@@ -25,10 +26,9 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     before do
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
-      allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
+      stub_exclusive_lease(renew: true)
 
-      Gitlab::Geo::ShardHealthCache.update([shard_name])
+      Gitlab::ShardHealthCache.update([shard_name])
     end
 
     it 'performs Geo::ProjectSyncWorker for each project' do
@@ -47,7 +47,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
     end
 
     it 'does not perform Geo::ProjectSyncWorker when shard becomes unhealthy' do
-      Gitlab::Geo::ShardHealthCache.update([])
+      Gitlab::ShardHealthCache.update([])
 
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
@@ -108,7 +108,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cach
       it 'uses two loops to schedule jobs' do
         expect(subject).to receive(:schedule_jobs).twice.and_call_original
 
-        Gitlab::Geo::ShardHealthCache.update([shard_name, 'shard2', 'shard3', 'shard4', 'shard5'])
+        Gitlab::ShardHealthCache.update([shard_name, 'shard2', 'shard3', 'shard4', 'shard5'])
         secondary.update!(repos_max_capacity: 5)
 
         subject.perform(shard_name)

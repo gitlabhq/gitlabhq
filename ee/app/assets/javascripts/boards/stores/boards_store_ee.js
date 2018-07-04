@@ -51,7 +51,7 @@ class BoardsStoreEE {
         .join('&');
     };
 
-    let milestoneTitle = this.store.boardConfig.milestoneTitle;
+    let { milestoneTitle } = this.store.boardConfig;
     if (this.store.boardConfig.milestoneId === 0) {
       milestoneTitle = 'No+Milestone';
     } else {
@@ -62,7 +62,7 @@ class BoardsStoreEE {
       this.store.cantEdit.push('milestone');
     }
 
-    let weight = this.store.boardConfig.weight;
+    let { weight } = this.store.boardConfig;
     if (weight !== -1) {
       if (weight === 0) {
         weight = 'No+Weight';

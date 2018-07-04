@@ -427,16 +427,10 @@ describe Notify do
         end
 
         it 'has the correct subject and body' do
-          reasons = %w[foo bar]
-
-          allow_any_instance_of(MergeRequestPresenter).to receive(:unmergeable_reasons).and_return(reasons)
           aggregate_failures do
             is_expected.to have_referable_subject(merge_request, reply: true)
             is_expected.to have_body_text(project_merge_request_path(project, merge_request))
-            is_expected.to have_body_text('following reasons:')
-            reasons.each do |reason|
-              is_expected.to have_body_text(reason)
-            end
+            is_expected.to have_body_text('due to conflict.')
           end
         end
       end

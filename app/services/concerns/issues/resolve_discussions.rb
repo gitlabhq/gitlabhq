@@ -14,7 +14,6 @@ module Issues
     def merge_request_to_resolve_discussions_of
       strong_memoize(:merge_request_to_resolve_discussions_of) do
         MergeRequestsFinder.new(current_user, project_id: project.id)
-          .execute
           .find_by(iid: merge_request_to_resolve_discussions_of_iid)
       end
     end

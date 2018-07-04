@@ -16,6 +16,11 @@ export const setVulnerabilityFeedbackHelpPath = ({ commit }, path) =>
 
 export const setPipelineId = ({ commit }, id) => commit(types.SET_PIPELINE_ID, id);
 
+export const setCanCreateIssuePermission = ({ commit }, permission) =>
+  commit(types.SET_CAN_CREATE_ISSUE_PERMISSION, permission);
+export const setCanCreateFeedbackPermission = ({ commit }, permission) =>
+  commit(types.SET_CAN_CREATE_FEEDBACK_PERMISSION, permission);
+
 /**
  * SAST
  */
@@ -32,8 +37,7 @@ export const receiveSastError = ({ commit }, error) =>
   commit(types.RECEIVE_SAST_REPORTS_ERROR, error);
 
 export const fetchSastReports = ({ state, dispatch }) => {
-  const base = state.sast.paths.base;
-  const head = state.sast.paths.head;
+  const { base, head } = state.sast.paths;
 
   dispatch('requestSastReports');
 
@@ -46,16 +50,16 @@ export const fetchSastReports = ({ state, dispatch }) => {
       },
     }),
   ])
-  .then(values => {
-    dispatch('receiveSastReports', {
-      head: values && values[0] ? values[0].data : null,
-      base: values && values[1] ? values[1].data : null,
-      enrichData: values && values[2] ? values[2].data : [],
+    .then(values => {
+      dispatch('receiveSastReports', {
+        head: values && values[0] ? values[0].data : null,
+        base: values && values[1] ? values[1].data : null,
+        enrichData: values && values[2] ? values[2].data : [],
+      });
+    })
+    .catch(() => {
+      dispatch('receiveSastError');
     });
-  })
-  .catch(() => {
-    dispatch('receiveSastError');
-  });
 };
 
 export const updateSastIssue = ({ commit }, issue) => commit(types.UPDATE_SAST_ISSUE, issue);
@@ -79,8 +83,7 @@ export const receiveSastContainerError = ({ commit }, error) =>
   commit(types.RECEIVE_SAST_CONTAINER_ERROR, error);
 
 export const fetchSastContainerReports = ({ state, dispatch }) => {
-  const base = state.sastContainer.paths.base;
-  const head = state.sastContainer.paths.head;
+  const { base, head } = state.sastContainer.paths;
 
   dispatch('requestSastContainerReports');
 
@@ -123,8 +126,7 @@ export const receiveDastReports = ({ commit }, response) =>
 export const receiveDastError = ({ commit }, error) => commit(types.RECEIVE_DAST_ERROR, error);
 
 export const fetchDastReports = ({ state, dispatch }) => {
-  const base = state.dast.paths.base;
-  const head = state.dast.paths.head;
+  const { base, head } = state.dast.paths;
 
   dispatch('requestDastReports');
 
@@ -170,8 +172,7 @@ export const receiveDependencyScanningError = ({ commit }, error) =>
   commit(types.RECEIVE_DEPENDENCY_SCANNING_ERROR, error);
 
 export const fetchDependencyScanningReports = ({ state, dispatch }) => {
-  const base = state.dependencyScanning.paths.base;
-  const head = state.dependencyScanning.paths.head;
+  const { base, head } = state.dependencyScanning.paths;
 
   dispatch('requestDependencyScanningReports');
 
@@ -184,28 +185,28 @@ export const fetchDependencyScanningReports = ({ state, dispatch }) => {
       },
     }),
   ])
-  .then(values => {
-    dispatch('receiveDependencyScanningReports', {
-      head: values[0] ? values[0].data : null,
-      base: values[1] ? values[1].data : null,
-      enrichData: values && values[2] ? values[2].data : [],
+    .then(values => {
+      dispatch('receiveDependencyScanningReports', {
+        head: values[0] ? values[0].data : null,
+        base: values[1] ? values[1].data : null,
+        enrichData: values && values[2] ? values[2].data : [],
+      });
+    })
+    .catch(() => {
+      dispatch('receiveDependencyScanningError');
     });
-  })
-  .catch(() => {
-    dispatch('receiveDependencyScanningError');
-  });
 };
 
 export const updateDependencyScanningIssue = ({ commit }, issue) =>
   commit(types.UPDATE_DEPENDENCY_SCANNING_ISSUE, issue);
 
-export const openModal = ({ dispatch }, issue) => {
-  dispatch('setModalData', issue);
+export const openModal = ({ dispatch }, payload) => {
+  dispatch('setModalData', payload);
 
   $('#modal-mrwidget-security-issue').modal('show');
 };
 
-export const setModalData = ({ commit }, issue) => commit(types.SET_ISSUE_MODAL_DATA, issue);
+export const setModalData = ({ commit }, payload) => commit(types.SET_ISSUE_MODAL_DATA, payload);
 export const requestDismissIssue = ({ commit }) => commit(types.REQUEST_DISMISS_ISSUE);
 export const receiveDismissIssue = ({ commit }) => commit(types.RECEIVE_DISMISS_ISSUE_SUCCESS);
 export const receiveDismissIssueError = ({ commit }, error) =>
@@ -215,13 +216,15 @@ export const dismissIssue = ({ state, dispatch }) => {
   dispatch('requestDismissIssue');
 
   return axios
-    .post(state.vulnerabilityFeedbackPath, { vulnerability_feedback: {
-      feedback_type: 'dismissal',
-      category: state.modal.vulnerability.category,
-      project_fingerprint: state.modal.vulnerability.project_fingerprint,
-      pipeline_id: state.pipelineId,
-      vulnerability_data: state.modal.vulnerability,
-    } })
+    .post(state.vulnerabilityFeedbackPath, {
+      vulnerability_feedback: {
+        feedback_type: 'dismissal',
+        category: state.modal.vulnerability.category,
+        project_fingerprint: state.modal.vulnerability.project_fingerprint,
+        pipeline_id: state.pipelineId,
+        vulnerability_data: state.modal.vulnerability,
+      },
+    })
     .then(({ data }) => {
       dispatch('receiveDismissIssue');
 
@@ -306,13 +309,15 @@ export const createNewIssue = ({ state, dispatch }) => {
   dispatch('requestCreateIssue');
 
   return axios
-    .post(state.vulnerabilityFeedbackPath, { vulnerability_feedback: {
-      feedback_type: 'issue',
-      category: state.modal.vulnerability.category,
-      project_fingerprint: state.modal.vulnerability.project_fingerprint,
-      pipeline_id: state.pipelineId,
-      vulnerability_data: state.modal.vulnerability,
-    } })
+    .post(state.vulnerabilityFeedbackPath, {
+      vulnerability_feedback: {
+        feedback_type: 'issue',
+        category: state.modal.vulnerability.category,
+        project_fingerprint: state.modal.vulnerability.project_fingerprint,
+        pipeline_id: state.pipelineId,
+        vulnerability_data: state.modal.vulnerability,
+      },
+    })
     .then(response => {
       dispatch('receiveCreateIssue');
       // redirect the user to the created issue

@@ -16,7 +16,7 @@ describe 'User comments on a merge request', :js do
 
   it 'adds a comment' do
     page.within('.js-main-target-form') do
-      fill_in(:note_note, with: '# Comment with a header')
+      fill_in('note[note]', with: '# Comment with a header')
       click_button('Comment')
     end
 
@@ -32,7 +32,6 @@ describe 'User comments on a merge request', :js do
     # Add new comment in background in order to check
     # if it's going to be loaded automatically for current user.
     create(:diff_note_on_merge_request, project: project, noteable: merge_request, author: user, note: 'Line is wrong')
-
     # Trigger a refresh of notes.
     execute_script("$(document).trigger('visibilitychange');")
     wait_for_requests

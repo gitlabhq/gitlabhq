@@ -45,11 +45,15 @@ export default {
           return DownloadDiffViewer;
       }
     },
+    basePath() {
+      // We might get the project path from rails with the relative url already setup
+      return this.projectPath.indexOf('/') === 0 ? '' : `${gon.relative_url_root}/`;
+    },
     fullOldPath() {
-      return `${gon.relative_url_root}/${this.projectPath}/raw/${this.oldSha}/${this.oldPath}`;
+      return `${this.basePath}${this.projectPath}/raw/${this.oldSha}/${this.oldPath}`;
     },
     fullNewPath() {
-      return `${gon.relative_url_root}/${this.projectPath}/raw/${this.newSha}/${this.newPath}`;
+      return `${this.basePath}${this.projectPath}/raw/${this.newSha}/${this.newPath}`;
     },
   },
 };

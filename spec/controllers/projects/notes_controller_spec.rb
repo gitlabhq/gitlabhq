@@ -51,7 +51,7 @@ describe Projects::NotesController do
       let(:project) { create(:project, :repository) }
       let!(:note) { create(:discussion_note_on_merge_request, project: project) }
 
-      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
         get :index, params
@@ -67,7 +67,7 @@ describe Projects::NotesController do
       let(:project) { create(:project, :repository) }
       let!(:note) { create(:diff_note_on_merge_request, project: project) }
 
-      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
         get :index, params
@@ -86,7 +86,7 @@ describe Projects::NotesController do
       context 'when displayed on a merge request' do
         let(:merge_request) { create(:merge_request, source_project: project) }
 
-        let(:params) { request_params.merge(target_type: 'merge_request', target_id: merge_request.id) }
+        let(:params) { request_params.merge(target_type: 'merge_request', target_id: merge_request.id, html: true) }
 
         it 'responds with the expected attributes' do
           get :index, params
@@ -99,7 +99,7 @@ describe Projects::NotesController do
       end
 
       context 'when displayed on the commit' do
-        let(:params) { request_params.merge(target_type: 'commit', target_id: note.commit_id) }
+        let(:params) { request_params.merge(target_type: 'commit', target_id: note.commit_id, html: true) }
 
         it 'responds with the expected attributes' do
           get :index, params
@@ -128,7 +128,7 @@ describe Projects::NotesController do
     context 'for a regular note' do
       let!(:note) { create(:note_on_merge_request, project: project) }
 
-      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id) }
+      let(:params) { request_params.merge(target_type: 'merge_request', target_id: note.noteable_id, html: true) }
 
       it 'responds with the expected attributes' do
         get :index, params
@@ -293,7 +293,7 @@ describe Projects::NotesController do
 
       context 'when a noteable is not found' do
         it 'returns 404 status' do
-          request_params[:note][:noteable_id] = 9999
+          request_params[:target_id] = 9999
           post :create, request_params.merge(format: :json)
 
           expect(response).to have_gitlab_http_status(404)
@@ -475,7 +475,7 @@ describe Projects::NotesController do
           end
 
           it "returns the name of the resolving user" do
-            post :resolve, request_params
+            post :resolve, request_params.merge(html: true)
 
             expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
           end

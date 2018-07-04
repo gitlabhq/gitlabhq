@@ -88,12 +88,11 @@ export default class ProjectFindFile {
 
   // render result
   renderList(filePaths, searchText) {
-    var blobItemUrl, filePath, html, i, j, len, matches, results;
+    var blobItemUrl, filePath, html, i, len, matches, results;
     this.element.find(".tree-table > tbody").empty();
     results = [];
 
-    // eslint-disable-next-line no-multi-assign
-    for (i = j = 0, len = filePaths.length; j < len; i = (j += 1)) {
+    for (i = 0, len = filePaths.length; i < len; i += 1) {
       filePath = filePaths[i];
       if (i === 20) {
         break;

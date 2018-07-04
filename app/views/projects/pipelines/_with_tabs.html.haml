@@ -100,4 +100,6 @@
       sast_help_path: help_page_path('user/project/merge_requests/sast'),
       dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning'),
       dast_help_path: help_page_path('user/project/merge_requests/dast'),
-      sast_container_help_path: help_page_path('user/project/merge_requests/sast_container')} }
+      sast_container_help_path: help_page_path('user/project/merge_requests/sast_container'),
+      can_create_feedback: can?(current_user, :admin_vulnerability_feedback, @project),
+      can_create_issue: show_new_issue_link?(@project)} }

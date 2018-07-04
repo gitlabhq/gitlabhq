@@ -104,4 +104,6 @@ export const logMockData = [
   '- -> /',
 ];
 
+export const podMockData = ['production-tanuki-1', 'production-tanuki-2'];
+
 export default {};

@@ -1,4 +1,4 @@
-# GraphQL API (Beta)
+# GraphQL API (Alpha)
 
 > [Introduced][ce-19008] in GitLab 11.0.
 

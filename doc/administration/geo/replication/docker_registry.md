@@ -17,7 +17,7 @@ Docker Registry as well. For more information, read the
 when deploying the Registry, and how to setup the storage driver for GitLab's
 integrated [Container Registry][registry-storage].
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [Docker Registry]: https://docs.docker.com/registry/
 [registry-storage]: ../../container_registry.md#container-registry-storage-driver
 [registry-load-balancing]: https://docs.docker.com/registry/deploying/#load-balancing-considerations
