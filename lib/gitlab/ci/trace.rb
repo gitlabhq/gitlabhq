@@ -108,6 +108,8 @@ module Gitlab
         job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
         FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
         job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
+      ensure
+        @current_path = nil
       end
 
       def archive!
