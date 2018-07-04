@@ -796,7 +796,7 @@ describe API::MergeRequests do
 
     it 'returns 405 if merge request was not approved' do
       project.add_developer(create(:user))
-      project.update_attributes(approvals_before_merge: 1)
+      project.update(approvals_before_merge: 1)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
@@ -807,7 +807,7 @@ describe API::MergeRequests do
     it 'returns 200 if merge request was approved' do
       approver = create(:user)
       project.add_developer(approver)
-      project.update_attributes(approvals_before_merge: 1)
+      project.update(approvals_before_merge: 1)
       merge_request.approvals.create(user: approver)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)

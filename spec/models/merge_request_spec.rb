@@ -826,7 +826,7 @@ describe MergeRequest do
       let(:group) { create(:group) }
 
       before do
-        project.update_attributes(group: group)
+        project.update(group: group)
       end
 
       it "includes group members with developer access and up" do
@@ -913,12 +913,12 @@ describe MergeRequest do
     let(:merge_request) { build(:merge_request) }
 
     before do
-      merge_request.target_project.update_attributes(approvals_before_merge: 3)
+      merge_request.target_project.update(approvals_before_merge: 3)
     end
 
     context "when the MR has approvals_before_merge set" do
       before do
-        merge_request.update_attributes(approvals_before_merge: 1)
+        merge_request.update(approvals_before_merge: 1)
       end
 
       it "uses the approvals_before_merge from the MR" do
@@ -1597,7 +1597,7 @@ describe MergeRequest do
       before do
         allow(subject).to receive(:mergeable_state?).and_return(true)
 
-        subject.target_project.update_attributes(approvals_before_merge: 1)
+        subject.target_project.update(approvals_before_merge: 1)
         project.add_developer(user)
       end
 
@@ -1954,7 +1954,7 @@ describe MergeRequest do
 
       context 'when there is one approver' do
         before do
-          project.update_attributes(approvals_before_merge: 1)
+          project.update(approvals_before_merge: 1)
         end
 
         context 'when that approver is the MR author' do
@@ -1995,7 +1995,7 @@ describe MergeRequest do
 
       context 'when there is one approver required' do
         before do
-          project.update_attributes(approvals_before_merge: 1)
+          project.update(approvals_before_merge: 1)
         end
 
         context 'when that approver is the MR author' do
@@ -2046,7 +2046,7 @@ describe MergeRequest do
 
       context 'when there are multiple approvers required' do
         before do
-          project.update_attributes(approvals_before_merge: 3)
+          project.update(approvals_before_merge: 3)
         end
 
         context 'when one of those approvers is the MR author' do
@@ -2476,7 +2476,7 @@ describe MergeRequest do
 
       context 'with approvals' do
         before do
-          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+          merge_request.target_project.update(approvals_before_merge: 1)
         end
 
         it 'is not mergeable when not approved' do

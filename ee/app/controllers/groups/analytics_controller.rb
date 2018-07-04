@@ -17,7 +17,7 @@ class Groups::AnalyticsController < Groups::ApplicationController
       format.json do
         render json: GroupAnalyticsSerializer
                  .new(events: event_totals)
-                 .represent(users), status: 200
+                 .represent(users), status: :ok
       end
     end
   end

@@ -44,7 +44,7 @@ class Groups::HooksController < Groups::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to group_hooks_path(@group), status: 302
+    redirect_to group_hooks_path(@group), status: :found
   end
 
   private

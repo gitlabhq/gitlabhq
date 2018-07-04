@@ -11,7 +11,7 @@ class Projects::PushRulesController < Projects::ApplicationController
 
   def update
     @push_rule = project.push_rule
-    @push_rule.update_attributes(push_rule_params)
+    @push_rule.update(push_rule_params)
 
     if @push_rule.valid?
       flash[:notice] = 'Push Rules updated successfully.'

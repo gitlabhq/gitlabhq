@@ -46,7 +46,7 @@ describe API::MergeRequests do
       context 'the approvals_before_merge param' do
         context 'when the target project has disable_overriding_approvers_per_merge_request set to true' do
           before do
-            project.update_attributes(disable_overriding_approvers_per_merge_request: true)
+            project.update(disable_overriding_approvers_per_merge_request: true)
             create_merge_request(approvals_before_merge: 1)
           end
 
@@ -57,7 +57,7 @@ describe API::MergeRequests do
 
         context 'when the target project has approvals_before_merge set to zero' do
           before do
-            project.update_attributes(approvals_before_merge: 0)
+            project.update(approvals_before_merge: 0)
             create_merge_request(approvals_before_merge: 1)
           end
 
@@ -73,7 +73,7 @@ describe API::MergeRequests do
         context 'when the target project has a non-zero approvals_before_merge' do
           context 'when the approvals_before_merge param is less than or equal to the value in the target project' do
             before do
-              project.update_attributes(approvals_before_merge: 2)
+              project.update(approvals_before_merge: 2)
               create_merge_request(approvals_before_merge: 1)
             end
 
@@ -88,7 +88,7 @@ describe API::MergeRequests do
 
           context 'when the approvals_before_merge param is greater than the value in the target project' do
             before do
-              project.update_attributes(approvals_before_merge: 1)
+              project.update(approvals_before_merge: 1)
               create_merge_request(approvals_before_merge: 2)
             end
 

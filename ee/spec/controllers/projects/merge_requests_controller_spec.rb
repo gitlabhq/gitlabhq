@@ -99,7 +99,7 @@ describe Projects::MergeRequestsController do
 
   describe 'PUT update' do
     before do
-      project.update_attributes(approvals_before_merge: 2)
+      project.update(approvals_before_merge: 2)
     end
 
     def update_merge_request(params = {})
@@ -112,7 +112,7 @@ describe Projects::MergeRequestsController do
 
     context 'when the merge request requires approval' do
       before do
-        project.update_attributes(approvals_before_merge: 1)
+        project.update(approvals_before_merge: 1)
       end
 
       it_behaves_like 'update invalid issuable', MergeRequest
@@ -120,12 +120,12 @@ describe Projects::MergeRequestsController do
 
     context 'overriding approvers per MR' do
       before do
-        project.update_attributes(approvals_before_merge: 1)
+        project.update(approvals_before_merge: 1)
       end
 
       context 'enabled' do
         before do
-          project.update_attributes(disable_overriding_approvers_per_merge_request: false)
+          project.update(disable_overriding_approvers_per_merge_request: false)
         end
 
         it 'updates approvals' do
@@ -141,7 +141,7 @@ describe Projects::MergeRequestsController do
 
         before do
           project.add_developer(new_approver)
-          project.update_attributes(disable_overriding_approvers_per_merge_request: true)
+          project.update(disable_overriding_approvers_per_merge_request: true)
         end
 
         it 'does not update approvals_before_merge' do
@@ -166,7 +166,7 @@ describe Projects::MergeRequestsController do
 
     shared_examples 'approvals_before_merge param' do
       before do
-        project.update_attributes(approvals_before_merge: 2)
+        project.update(approvals_before_merge: 2)
       end
 
       context 'approvals_before_merge not set for the existing MR' do
@@ -296,7 +296,7 @@ describe Projects::MergeRequestsController do
 
         before do
           upstream.add_developer(user)
-          upstream.update_attributes(approvals_before_merge: 2)
+          upstream.update(approvals_before_merge: 2)
         end
 
         it_behaves_like 'approvals_before_merge param'
@@ -307,7 +307,7 @@ describe Projects::MergeRequestsController do
 
         before do
           project.add_developer(user)
-          project.update_attributes(approvals_before_merge: 0)
+          project.update(approvals_before_merge: 0)
         end
 
         it_behaves_like 'approvals_before_merge param'

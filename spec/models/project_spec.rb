@@ -217,7 +217,7 @@ describe Project do
       it 'fails stuck remote mirrors' do
         project = create(:project, :repository, :remote_mirror)
 
-        project.remote_mirrors.first.update_attributes(
+        project.remote_mirrors.first.update(
           update_status: :started,
           last_update_at: 2.days.ago
         )
@@ -290,7 +290,7 @@ describe Project do
       project2 = create(:project)
 
       expect do
-        project2.update_attributes(mirror: true, import_url: generate(:url), mirror_user: project.creator)
+        project2.update(mirror: true, import_url: generate(:url), mirror_user: project.creator)
       end.to change { ProjectImportState.where(project: project2).count }.from(0).to(1)
     end
 

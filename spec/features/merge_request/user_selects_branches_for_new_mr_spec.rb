@@ -88,7 +88,7 @@ describe 'Merge request > User selects branches for new MR', :js do
 
   context 'when approvals are enabled for the target project' do
     before do
-      project.update_attributes(approvals_before_merge: 1)
+      project.update(approvals_before_merge: 1)
 
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
     end

@@ -17,7 +17,7 @@ describe 'Merge request > User selects branches for new MR', :js do
 
   context 'when approvals are zero for the target project' do
     before do
-      project.update_attributes(approvals_before_merge: 0)
+      project.update(approvals_before_merge: 0)
 
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
     end
