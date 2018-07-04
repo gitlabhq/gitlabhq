@@ -312,7 +312,7 @@ GEM
       mime-types (>= 1.16)
       posix-spawn (~> 0.3)
     gitlab-markup (1.6.4)
-    gitlab-styles (2.4.0)
+    gitlab-styles (2.4.1)
       rubocop (~> 0.54.0)
       rubocop-gitlab-security (~> 0.1.0)
       rubocop-rspec (~> 1.19)
@@ -785,7 +785,7 @@ GEM
       unicode-display_width (~> 1.0, >= 1.0.1)
     rubocop-gitlab-security (0.1.1)
       rubocop (>= 0.51)
-    rubocop-rspec (1.22.1)
+    rubocop-rspec (1.22.2)
       rubocop (>= 0.52.1)
     ruby-enum (0.7.2)
       i18n

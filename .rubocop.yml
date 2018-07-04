@@ -31,12 +31,6 @@ Style/MutableConstant:
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
 
-Naming/UncommunicativeMethodParamName:
-  Enabled: false
-
-Naming/MemoizedInstanceVariableName:
-  Enabled: false
-
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:
