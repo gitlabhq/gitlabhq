@@ -232,7 +232,7 @@ module API
 
       params do
         requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
-        optional :render_html, type: Boolean, desc: 'Returns the description and title rendered html'
+        optional :render_html, type: Boolean, desc: 'Returns the description and title rendered HTML'
       end
       desc 'Get a single merge request' do
         success Entities::MergeRequest
