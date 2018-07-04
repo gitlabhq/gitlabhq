@@ -133,6 +133,19 @@ module IssuablesHelper
     end
   end
 
+  def group_dropdown_label(group_id, default_label)
+    return default_label if group_id.nil?
+    return "Any group" if group_id == "0"
+
+    group = ::Group.find_by(id: group_id)
+
+    if group
+      group.full_name
+    else
+      default_label
+    end
+  end
+
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     title =
       case milestone_title
