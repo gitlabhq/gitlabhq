@@ -3,7 +3,7 @@ module Geo
     module Primary
       class BatchWorker < Geo::Scheduler::Primary::PerShardSchedulerWorker
         def perform
-          return unless Feature.enabled?('geo_repository_verification')
+          return unless Gitlab::Geo.repository_verification_enabled?
 
           super
         end

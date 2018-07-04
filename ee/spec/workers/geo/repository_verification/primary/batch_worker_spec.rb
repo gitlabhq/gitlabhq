@@ -17,66 +17,58 @@ describe Geo::RepositoryVerification::Primary::BatchWorker, :postgresql, :clean_
   end
 
   describe '#perform' do
-    context 'when geo_repository_verification is enabled' do
-      before do
-        stub_feature_flags(geo_repository_verification: true)
+    it 'skips backfill for repositories on other shards' do
+      create(:project, repository_storage: 'broken')
+      unhealthy_outdated = create(:project, repository_storage: 'broken')
+
+      create(:repository_state, :repository_outdated, project: unhealthy_outdated)
+
+      allow(Gitlab::GitalyClient).to receive(:call) do
+        raise GRPC::Unavailable.new('No Gitaly available')
       end
 
-      it 'skips backfill for repositories on other shards' do
-        create(:project, repository_storage: 'broken')
-        unhealthy_outdated = create(:project, repository_storage: 'broken')
+      expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')
 
-        create(:repository_state, :repository_outdated, project: unhealthy_outdated)
+      subject.perform
+    end
 
-        allow(Gitlab::GitalyClient).to receive(:call) do
-          raise GRPC::Unavailable.new('No Gitaly available')
-        end
+    it 'skips backfill for projects on missing shards' do
+      missing_not_verified = create(:project)
+      missing_not_verified.update_column(:repository_storage, 'unknown')
+      missing_outdated = create(:project)
+      missing_outdated.update_column(:repository_storage, 'unknown')
 
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')
+      create(:repository_state, :repository_outdated, project: missing_outdated)
 
-        subject.perform
-      end
+      # hide the 'broken' storage for this spec
+      stub_storage_settings({})
 
-      it 'skips backfill for projects on missing shards' do
-        missing_not_verified = create(:project)
-        missing_not_verified.update_column(:repository_storage, 'unknown')
-        missing_outdated = create(:project)
-        missing_outdated.update_column(:repository_storage, 'unknown')
+      expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
+      expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('unknown')
 
-        create(:repository_state, :repository_outdated, project: missing_outdated)
+      subject.perform
+    end
 
-        # hide the 'broken' storage for this spec
-        stub_storage_settings({})
+    it 'skips backfill for projects with downed Gitaly server' do
+      create(:project, repository_storage: 'broken')
+      unhealthy_outdated = create(:project, repository_storage: 'broken')
 
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('unknown')
+      create(:repository_state, :repository_outdated, project: unhealthy_outdated)
 
-        subject.perform
-      end
+      # Report only one healthy shard
+      expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
+        .and_return([result(true, healthy_shard), result(false, 'broken')])
 
-      it 'skips backfill for projects with downed Gitaly server' do
-        create(:project, repository_storage: 'broken')
-        unhealthy_outdated = create(:project, repository_storage: 'broken')
+      expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
+      expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')
 
-        create(:repository_state, :repository_outdated, project: unhealthy_outdated)
-
-        # Report only one healthy shard
-        expect(Gitlab::HealthChecks::GitalyCheck).to receive(:readiness)
-          .and_return([result(true, healthy_shard), result(false, 'broken')])
-
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).to receive(:perform_async).with(healthy_shard)
-        expect(Geo::RepositoryVerification::Primary::ShardWorker).not_to receive(:perform_async).with('broken')
-
-        subject.perform
-      end
+      subject.perform
     end
 
     context 'when geo_repository_verification is disabled' do
-      before do
-        stub_feature_flags(geo_repository_verification: false)
-      end
-
       it 'does not schedule jobs' do
+        allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
+
         expect(Geo::RepositoryVerification::Primary::ShardWorker)
           .not_to receive(:perform_async).with(healthy_shard)
 

@@ -174,4 +174,34 @@ describe Gitlab::Geo, :geo do
       described_class.configure_cron_jobs!
     end
   end
+
+  describe '.repository_verification_enabled?' do
+    context "when the feature flag hasn't been set" do
+      it 'returns true' do
+        expect(described_class.repository_verification_enabled?).to eq true
+      end
+    end
+
+    context "when the feature flag has been set" do
+      before do
+        allow(Feature).to receive(:persisted?).and_return(true)
+      end
+
+      context "when the feature flag is set to enabled" do
+        it 'returns true' do
+          Feature.enable(:geo_repository_verification)
+
+          expect(described_class.repository_verification_enabled?).to eq true
+        end
+      end
+
+      context "when the feature flag is set to disabled" do
+        it 'returns false' do
+          Feature.disable(:geo_repository_verification)
+
+          expect(described_class.repository_verification_enabled?).to eq false
+        end
+      end
+    end
+  end
 end
