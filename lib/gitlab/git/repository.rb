@@ -556,12 +556,8 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        iterator = gitaly_migrate(:diff_between) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
-          else
-            diff_patches(from, to, options, *paths)
-          end
+        iterator = wrapped_gitaly_errors do
+          gitaly_commit_client.diff(from, to, options.merge(paths: paths))
         end
 
         Gitlab::Git::DiffCollection.new(iterator, options)
@@ -1606,17 +1602,6 @@ module Gitlab
         end
 
         tmp_entry
-      end
-
-      # Return the Rugged patches for the diff between +from+ and +to+.
-      def diff_patches(from, to, options = {}, *paths)
-        options ||= {}
-        break_rewrites = options[:break_rewrites]
-        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
-
-        diff = rugged.diff(from, to, actual_options)
-        diff.find_similar!(break_rewrites: break_rewrites)
-        diff.each_patch
       end
 
       def sort_branches(branches, sort_by)
