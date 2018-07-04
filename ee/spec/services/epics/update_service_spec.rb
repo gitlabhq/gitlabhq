@@ -6,6 +6,9 @@ describe Epics::UpdateService do
   let(:epic) { create(:epic, group: group) }
 
   describe '#execute' do
+    before do
+      stub_licensed_features(epics: true)
+    end
     def update_epic(opts)
       described_class.new(group, user, opts).execute(epic)
     end
@@ -54,6 +57,62 @@ describe Epics::UpdateService do
 
         expect(note.note).to start_with('changed the description')
         expect(note.noteable).to eq(epic)
+      end
+    end
+
+    context 'todos' do
+      before do
+        group.update(visibility: Gitlab::VisibilityLevel::PUBLIC)
+      end
+
+      context 'creating todos' do
+        let(:mentioned1) { create(:user) }
+        let(:mentioned2) { create(:user) }
+
+        before do
+          epic.update(description: "FYI: #{mentioned1.to_reference}")
+        end
+
+        it 'creates todos for only newly mentioned users' do
+          expect do
+            update_epic(description: "FYI: #{mentioned1.to_reference} #{mentioned2.to_reference}")
+          end.to change { Todo.count }.by(1)
+        end
+      end
+
+      context 'adding a label' do
+        let(:label) {  create(:group_label, group: group) }
+        let(:user2) { create(:user) }
+        let!(:todo1) do
+          create(:todo, :mentioned, :pending,
+            target: epic,
+            group: group,
+            project: nil,
+            author: user,
+            user: user)
+        end
+        let!(:todo2) do
+          create(:todo, :mentioned, :pending,
+            target: epic,
+            group: group,
+            project: nil,
+            author: user2,
+            user: user2)
+        end
+
+        before do
+          group.add_developer(user)
+
+          update_epic(label_ids: [label.id])
+        end
+
+        it 'marks todo as done for a user who added a label' do
+          expect(todo1.reload.state).to eq('done')
+        end
+
+        it 'does not mark todos as done for other users' do
+          expect(todo2.reload.state).to eq('pending')
+        end
       end
     end
   end

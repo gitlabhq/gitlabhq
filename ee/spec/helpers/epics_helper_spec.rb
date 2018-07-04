@@ -15,7 +15,7 @@ describe EpicsHelper do
 
       expected_keys = %i(initial meta namespace labels_path toggle_subscription_path labels_web_url epics_web_url)
       expect(data.keys).to match_array(expected_keys)
-      expect(meta_data.keys).to match_array(%w[created author start_date end_date])
+      expect(meta_data.keys).to match_array(%w[created author start_date end_date epic_id todo_exists todo_path])
       expect(meta_data['author']).to eq({
         'name' => user.name,
         'url' => "/#{user.username}",

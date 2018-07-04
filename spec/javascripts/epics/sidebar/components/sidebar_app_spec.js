@@ -13,6 +13,7 @@ describe('epicSidebar', () => {
   let originalCookieState;
   let EpicSidebar;
   const {
+    epicId,
     updateEndpoint,
     labelsPath,
     labelsWebUrl,
@@ -21,18 +22,25 @@ describe('epicSidebar', () => {
     participants,
     subscribed,
     toggleSubscriptionPath,
+    todoExists,
+    todoPath,
+    todoDeletePath,
   } = props;
 
   const defaultPropsData = {
+    epicId,
     endpoint: gl.TEST_HOST,
     initialLabels: labels,
     initialParticipants: participants,
     initialSubscribed: subscribed,
+    initialTodoExists: todoExists,
     updatePath: updateEndpoint,
     toggleSubscriptionPath,
     labelsPath,
     labelsWebUrl,
     epicsWebUrl,
+    todoPath,
+    todoDeletePath,
   };
 
   beforeEach(() => {
@@ -91,7 +99,7 @@ describe('epicSidebar', () => {
     });
 
     it('should render collapsed grouped date picker', () => {
-      expect(vm.$el.querySelector('.sidebar-collapsed-icon span').innerText.trim()).toEqual('From Jan 1 2017');
+      expect(vm.$el.querySelector('.sidebar-grouped-item .sidebar-collapsed-icon span').innerText.trim()).toEqual('From Jan 1 2017');
     });
 
     it('should render collapsed labels picker', () => {
@@ -209,6 +217,96 @@ describe('epicSidebar', () => {
 
       expect(vm.autoExpanded).toBe(false);
       expect(vm.toggleSidebar).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('handleToggleTodo', () => {
+    let mock;
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      setFixtures('<div class="flash-container"></div>');
+    });
+
+    afterEach(() => {
+      document.querySelector('.flash-container').remove();
+      mock.restore();
+    });
+
+    it('calls `addTodo` on service object when `todoExists` prop is `false`', () => {
+      spyOn(vm.service, 'addTodo').and.callThrough();
+      vm.store.setTodoExists(false);
+      expect(vm.savingTodoAction).toBe(false);
+      vm.handleToggleTodo();
+      expect(vm.savingTodoAction).toBe(true);
+      expect(vm.service.addTodo).toHaveBeenCalledWith(epicId);
+    });
+
+    it('calls `addTodo` on service and sets response on store when request is successful', done => {
+      mock.onPost(gl.TEST_HOST).reply(200, {
+        delete_path: '/foo/bar',
+        count: 1,
+      });
+      spyOn(vm.service, 'addTodo').and.callThrough();
+      vm.store.setTodoExists(false);
+
+      vm.handleToggleTodo();
+      setTimeout(() => {
+        expect(vm.savingTodoAction).toBe(false);
+        expect(vm.store.todoDeletePath).toBe('/foo/bar');
+        expect(vm.store.todoExists).toBe(true);
+        done();
+      }, 0);
+    });
+
+    it('calls `addTodo` on service and shows Flash error when request is unsuccessful', done => {
+      mock.onPost(gl.TEST_HOST).reply(500, {});
+      spyOn(vm.service, 'addTodo').and.callThrough();
+      vm.store.setTodoExists(false);
+
+      vm.handleToggleTodo();
+      setTimeout(() => {
+        expect(vm.savingTodoAction).toBe(false);
+        expect(document.querySelector('.flash-text').innerText.trim()).toBe('There was an error adding a todo.');
+        done();
+      }, 0);
+    });
+
+    it('calls `deleteTodo` on service object when `todoExists` prop is `true`', () => {
+      spyOn(vm.service, 'deleteTodo').and.callThrough();
+      vm.store.setTodoExists(true);
+      expect(vm.savingTodoAction).toBe(false);
+      vm.handleToggleTodo();
+      expect(vm.savingTodoAction).toBe(true);
+      expect(vm.service.deleteTodo).toHaveBeenCalledWith(gl.TEST_HOST);
+    });
+
+    it('calls `deleteTodo` on service and sets response on store when request is successful', done => {
+      mock.onDelete(gl.TEST_HOST).reply(200, {
+        count: 1,
+      });
+      spyOn(vm.service, 'deleteTodo').and.callThrough();
+      vm.store.setTodoExists(true);
+
+      vm.handleToggleTodo();
+      setTimeout(() => {
+        expect(vm.savingTodoAction).toBe(false);
+        expect(vm.store.todoExists).toBe(false);
+        done();
+      }, 0);
+    });
+
+    it('calls `deleteTodo` on service and shows Flash error when request is unsuccessful', done => {
+      mock.onDelete(gl.TEST_HOST).reply(500, {});
+      spyOn(vm.service, 'deleteTodo').and.callThrough();
+      vm.store.setTodoExists(true);
+
+      vm.handleToggleTodo();
+      setTimeout(() => {
+        expect(vm.savingTodoAction).toBe(false);
+        expect(document.querySelector('.flash-text').innerText.trim()).toBe('There was an error deleting the todo.');
+        done();
+      }, 0);
     });
   });
 

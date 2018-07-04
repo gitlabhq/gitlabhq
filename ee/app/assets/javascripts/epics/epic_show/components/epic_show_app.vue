@@ -16,6 +16,10 @@
       relatedIssuesRoot,
     },
     props: {
+      epicId: {
+        type: Number,
+        required: true,
+      },
       endpoint: {
         type: String,
         required: true,
@@ -98,6 +102,10 @@
         type: Boolean,
         required: true,
       },
+      todoExists: {
+        type: Boolean,
+        required: true,
+      },
       namespace: {
         type: String,
         required: false,
@@ -110,6 +118,15 @@
       toggleSubscriptionPath: {
         type: String,
         required: true,
+      },
+      todoPath: {
+        type: String,
+        required: true,
+      },
+      todoDeletePath: {
+        type: String,
+        required: false,
+        default: '',
       },
       labelsWebUrl: {
         type: String,
@@ -170,6 +187,7 @@
         />
       </div>
       <epic-sidebar
+        :epic-id="epicId"
         :endpoint="endpoint"
         :editable="canUpdate"
         :initial-start-date="startDate"
@@ -177,10 +195,13 @@
         :initial-labels="labels"
         :initial-participants="participants"
         :initial-subscribed="subscribed"
+        :initial-todo-exists="todoExists"
         :namespace="namespace"
         :update-path="updateEndpoint"
         :labels-path="labelsPath"
         :toggle-subscription-path="toggleSubscriptionPath"
+        :todo-path="todoPath"
+        :todo-delete-path="todoDeletePath"
         :labels-web-url="labelsWebUrl"
         :epics-web-url="epicsWebUrl"
       />

@@ -63,4 +63,22 @@ describe('Sidebar Store', () => {
       expect(store.subscribed).toEqual(false);
     });
   });
+
+  describe('setTodoExists', () => {
+    it('should set store.subscribed value', () => {
+      const store = new SidebarStore({ todoExists: true });
+
+      store.setTodoExists(false);
+      expect(store.todoExists).toEqual(false);
+    });
+  });
+
+  describe('setTodoDeletePath', () => {
+    it('should set store.subscribed value', () => {
+      const store = new SidebarStore({ todoDeletePath: gl.TEST_HOST });
+
+      store.setTodoDeletePath('/foo/bar');
+      expect(store.todoDeletePath).toEqual('/foo/bar');
+    });
+  });
 });

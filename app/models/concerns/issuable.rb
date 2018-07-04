@@ -253,6 +253,12 @@ module Issuable
     opened?
   end
 
+  def overdue?
+    return false unless respond_to?(:due_date)
+
+    due_date.try(:past?) || false
+  end
+
   def user_notes_count
     if notes.loaded?
       # Use the in-memory association to select and count to avoid hitting the db
