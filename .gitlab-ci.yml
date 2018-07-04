@@ -269,7 +269,7 @@ package-and-qa:
     <<: *single-script-job-variables
     SCRIPT_NAME: trigger-build-docs
   environment:
-    name: review-docs/$CI_COMMIT_REF_NAME
+    name: review-docs/$CI_COMMIT_REF_SLUG
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
     url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
@@ -305,7 +305,7 @@ review-docs-cleanup:
   <<: *review-docs
   stage: post-cleanup
   environment:
-    name: review-docs/$CI_COMMIT_REF_NAME
+    name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
   when: manual
   script:
