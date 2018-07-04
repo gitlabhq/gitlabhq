@@ -120,7 +120,7 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
           let(:new_data) { nil }
 
           it 'raises an error' do
-            expect { subject }.to raise_error('New data is nil')
+            expect { subject }.to raise_error('New data is missing')
           end
         end
 
