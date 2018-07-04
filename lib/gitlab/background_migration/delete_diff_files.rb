@@ -4,6 +4,20 @@
 module Gitlab
   module BackgroundMigration
     class DeleteDiffFiles
+      class MergeRequestDiff < ActiveRecord::Base
+        self.table_name = 'merge_request_diffs'
+
+        belongs_to :merge_request
+
+        include EachBatch
+      end
+
+      class MergeRequestDiffFile < ActiveRecord::Base
+        self.table_name = 'merge_request_diff_files'
+
+        include EachBatch
+      end
+
       def perform(merge_request_diff_id)
         merge_request_diff = MergeRequestDiff.find_by(id: merge_request_diff_id)
 

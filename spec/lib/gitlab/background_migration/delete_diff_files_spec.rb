@@ -22,7 +22,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
       end
 
       it 'rollsback if something goes wrong' do
-        expect(MergeRequestDiffFile).to receive_message_chain(:where, :delete_all)
+        expect(described_class::MergeRequestDiffFile).to receive_message_chain(:where, :delete_all)
           .and_raise
 
         expect { described_class.new.perform(merge_request_diff.id) }
