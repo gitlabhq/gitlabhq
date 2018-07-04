@@ -51,11 +51,7 @@ _The uploads are stored by default in
 ### Using object storage **[PREMIUM]**
 
 >**Notes:**
-<<<<<<< HEAD
-- [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
-=======
 - [Introduced][ee-3867] in [GitLab Enterprise Edition Premium][eep] 10.5.
->>>>>>> upstream/master
 - Since version 11.1, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
