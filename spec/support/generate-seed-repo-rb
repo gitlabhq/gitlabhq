@@ -15,7 +15,7 @@
 require 'erb'
 require 'tempfile'
 
-SOURCE = File.expand_path('../gitlab-git-test.git', __FILE__).freeze
+SOURCE = File.expand_path('gitlab-git-test.git', __dir__).freeze
 SCRIPT_NAME = 'generate-seed-repo-rb'.freeze
 REPO_NAME = 'gitlab-git-test.git'.freeze
 

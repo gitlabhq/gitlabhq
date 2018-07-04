@@ -21,7 +21,7 @@ module QA
       end
 
       def self.method_missing(name, *args)
-        self.new.strategy.public_send(name, *args) # rubocop:disable GitlabSecurity/PublicSend
+        self.new.strategy.public_send(name, *args)
       end
     end
   end

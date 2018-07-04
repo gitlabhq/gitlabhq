@@ -24,7 +24,7 @@ class Projects::RunnersController < Projects::ApplicationController
       @runner.destroy
     end
 
-    redirect_to project_runners_path(@project), status: 302
+    redirect_to project_runners_path(@project), status: :found
   end
 
   def resume

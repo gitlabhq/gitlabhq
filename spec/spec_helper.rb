@@ -4,7 +4,7 @@ SimpleCovEnv.start!
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'

@@ -315,7 +315,7 @@ describe Projects::MergeRequestsController do
 
     context 'when the merge request is not mergeable' do
       before do
-        merge_request.update_attributes(title: "WIP: #{merge_request.title}")
+        merge_request.update(title: "WIP: #{merge_request.title}")
 
         post :merge, base_params
       end

@@ -80,7 +80,7 @@ module API
 
         update_params = declared_params(include_missing: false)
 
-        if hook.update_attributes(update_params)
+        if hook.update(update_params)
           present hook, with: Entities::ProjectHook
         else
           error!("Invalid url given", 422) if hook.errors[:url].present?
