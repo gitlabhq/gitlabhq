@@ -24,21 +24,6 @@ describe('DiffsStoreMutations', () => {
     });
   });
 
-  describe('SET_DIFF_FILES', () => {
-    it('should set diff files to state', () => {
-      const filePath = '/first-diff-file-path';
-      const state = {};
-      const diffFiles = {
-        a_mode: 1,
-        highlighted_diff_lines: [{ file_path: filePath }],
-      };
-
-      mutations[types.SET_DIFF_FILES](state, diffFiles);
-      expect(state.diffFiles.aMode).toEqual(1);
-      expect(state.diffFiles.highlightedDiffLines[0].filePath).toEqual(filePath);
-    });
-  });
-
   describe('SET_DIFF_VIEW_TYPE', () => {
     it('should set diff view type properly', () => {
       const state = {};
