@@ -69,7 +69,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def additional_attributes
     {
-      view: params[:view],
+      view_type: params[:view_type],
       environment: @environment,
       merge_request: @merge_request,
       merge_request_diff: @merge_request_diff,

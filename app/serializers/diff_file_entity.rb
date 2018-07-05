@@ -159,7 +159,7 @@ class DiffFileEntity < Grape::Entity
     strong_memoize(:view_type) do
       types = ::Gitlab::Diff::File::VIEW_TYPES
 
-      return options[:view] if types.include?(options[:view])
+      return options[:view_type] if types.include?(options[:view_type])
 
       types.first
     end

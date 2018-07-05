@@ -41,14 +41,14 @@ describe DiffFileEntity do
     end
 
     context 'when view type is parallel' do
-      let(:entity) { described_class.new(diff_file, request: {}, view: 'inline') }
+      let(:entity) { described_class.new(diff_file, request: {}, view_type: 'inline') }
 
       it { is_expected.not_to include(:parallel_diff_lines) }
       it { is_expected.to include(:highlighted_diff_lines) }
     end
 
     context 'when view type is inline' do
-      let(:entity) { described_class.new(diff_file, request: {}, view: 'parallel') }
+      let(:entity) { described_class.new(diff_file, request: {}, view_type: 'parallel') }
 
       it { is_expected.to include(:parallel_diff_lines) }
       it { is_expected.not_to include(:highlighted_diff_lines) }
