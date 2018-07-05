@@ -62,6 +62,7 @@ export default {
           <button
             v-tooltip
             :title="__('Merge Request')"
+            :aria-label="__('Merge Request')"
             :class="{
               active: rightPane === $options.rightSidebarViews.mergeRequestInfo
             }"
@@ -81,6 +82,7 @@ export default {
           <button
             v-tooltip
             :title="__('Pipelines')"
+            :aria-label="__('Pipelines')"
             :class="{
               active: pipelinesActive
             }"
