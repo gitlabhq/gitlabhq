@@ -80,26 +80,6 @@ resource_rules:
             If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
 
             Thanks for your help
-      - name: Close non-updated issues
-        conditions:
-          date:
-            attribute: updated_at
-            condition: older_than
-            interval_type: weeks
-            interval: 2
-          labels:
-            - awaiting feedback
-            - auto updated
-          <<: *label_exemptions
-          state: opened
-        actions:
-          labels:
-            - auto closed
-          mention:
-            - markglenfletcher
-          status: close
-          comment: |
-            Closing this issue down in accordance with our [Issue Triage Policies](https://gitlab.com/gitlab-org/triage). Please reopen the issue if you feel that the issue is still relevant. Thanks!
       - name: Mark potentially interesting feature proposals
         conditions:
           labels:
