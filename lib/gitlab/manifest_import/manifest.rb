@@ -66,7 +66,10 @@ module Gitlab
       end
 
       def remote
-        @remote ||= parsed_xml.css('manifest > remote').first['review']
+        return @remote if defined?(@remote)
+
+        remote_tag = parsed_xml.css('manifest > remote').first
+        @remote = remote_tag['review'] if remote_tag
       end
 
       def raw_projects
