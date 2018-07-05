@@ -191,7 +191,22 @@
   }
 }
 
-<<<<<<< HEAD
+.initialize-with-readme-setting {
+  .form-check {
+    margin-bottom: 10px;
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description {
+      color: $project-option-descr-color;
+    }
+  }
+}
+
 .nested-settings {
   padding-left: 20px;
 }
@@ -214,21 +229,6 @@
 
   .float-right {
     margin-left: auto;
-=======
-.initialize-with-readme-setting {
-  .form-check {
-    margin-bottom: 10px;
-
-    .option-title {
-      font-weight: $gl-font-weight-normal;
-      display: inline-block;
-      color: $gl-text-color;
-    }
-
-    .option-description {
-      color: $project-option-descr-color;
-    }
->>>>>>> upstream/master
   }
 }
 
