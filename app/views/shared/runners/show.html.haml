@@ -3,7 +3,7 @@
 %h3.page-title
   Runner ##{@runner.id}
   .float-right
-    - if @runner.shared?
+    - if @runner.instance_type?
       %span.runner-state.runner-state-shared
         Shared
     - elsif @runner.group_type?

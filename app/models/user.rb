@@ -1054,7 +1054,7 @@ class User < ActiveRecord::Base
 
       union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
 
-      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+      Ci::Runner.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 

@@ -13,4 +13,6 @@ describe GitlabSchema.types['Project'] do
         .to  require_graphql_authorizations(:read_merge_request)
     end
   end
+
+  it { is_expected.to have_graphql_field(:pipelines) }
 end

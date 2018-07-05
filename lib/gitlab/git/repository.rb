@@ -251,7 +251,6 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         wrapped_gitaly_errors do
           gitaly_ref_client.tags
@@ -598,17 +597,9 @@ module Gitlab
       #   @repository.submodule_url_for('master', 'rack')
       #   # => git@localhost:rack.git
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/329
       def submodule_url_for(ref, path)
-        Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
-          if is_enabled
-            gitaly_submodule_url_for(ref, path)
-          else
-            if submodules(ref).any?
-              submodule = submodules(ref)[path]
-              submodule['url'] if submodule
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_submodule_url_for(ref, path)
         end
       end
 
@@ -833,22 +824,14 @@ module Gitlab
       # Ex.
       #   repo.ls_files('master')
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
         gitaly_commit_client.ls_files(ref)
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
-        Gitlab::GitalyClient.migrate(:apply_gitattributes) do |is_enabled|
-          if is_enabled
-            gitaly_copy_gitattributes(ref)
-          else
-            rugged_copy_gitattributes(ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.apply_gitattributes(ref)
         end
-      rescue GRPC::InvalidArgument
-        raise InvalidRef
       end
 
       def info_attributes

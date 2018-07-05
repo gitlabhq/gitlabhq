@@ -90,6 +90,17 @@ describe API::Runners do
       end
 
       it 'filters runners by scope' do
+        get api('/runners/all?scope=shared', admin)
+
+        shared = json_response.all? { |r| r['is_shared'] }
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response[0]).to have_key('ip_address')
+        expect(shared).to be_truthy
+      end
+
+      it 'filters runners by scope' do
         get api('/runners/all?scope=specific', admin)
 
         shared = json_response.any? { |r| r['is_shared'] }
@@ -136,7 +147,7 @@ describe API::Runners do
               delete api("/runners/#{unused_project_runner.id}", admin)
 
               expect(response).to have_gitlab_http_status(204)
-            end.to change { Ci::Runner.specific.count }.by(-1)
+            end.to change { Ci::Runner.project_type.count }.by(-1)
           end
         end
 
@@ -300,7 +311,7 @@ describe API::Runners do
             delete api("/runners/#{shared_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(204)
-          end.to change { Ci::Runner.shared.count }.by(-1)
+          end.to change { Ci::Runner.instance_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -314,7 +325,7 @@ describe API::Runners do
             delete api("/runners/#{project_runner.id}", admin)
 
             expect(response).to have_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.project_type.count }.by(-1)
         end
       end
 
@@ -349,7 +360,7 @@ describe API::Runners do
             delete api("/runners/#{project_runner.id}", user)
 
             expect(response).to have_http_status(204)
-          end.to change { Ci::Runner.specific.count }.by(-1)
+          end.to change { Ci::Runner.project_type.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
@@ -584,12 +595,12 @@ describe API::Runners do
           end
         end
 
-        it 'enables a shared runner' do
+        it 'enables a instance type runner' do
           expect do
             post api("/projects/#{project.id}/runners", admin), runner_id: shared_runner.id
           end.to change { project.runners.count }.by(1)
 
-          expect(shared_runner.reload).not_to be_shared
+          expect(shared_runner.reload).not_to be_instance_type
           expect(response).to have_gitlab_http_status(201)
         end
       end

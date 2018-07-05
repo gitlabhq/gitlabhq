@@ -51,7 +51,7 @@ _The uploads are stored by default in
 ### Using object storage **[PREMIUM]**
 
 >**Notes:**
-- [Introduced][ee-3867] in [GitLab Premium][eep] 10.5.
+- [Introduced][ee-3867] in [GitLab Enterprise Edition Premium][eep] 10.5.
 - Since version 11.1, we support direct_upload to S3.
 
 If you don't want to use the local disk where GitLab is installed to store the
@@ -66,7 +66,7 @@ For source installations the following settings are nested under `uploads:` and 
 |---------|-------------|---------|
 | `enabled` | Enable/disable object storage | `false` |
 | `remote_directory` | The bucket name where Uploads will be stored| |
-| `direct_upload` | Set to true to enable direct upload of Uploads without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. If enabled Workhorse uploads files directly to the object storage | `false` |
+| `direct_upload` | Set to true to enable direct upload of Uploads without the need of local shared storage. Option may be removed once we decide to support only single storage for all files. | `false` |
 | `background_upload` | Set to false to disable automatic upload. Option may be removed once upload is direct to S3 | `true` |
 | `proxy_download` | Set to true to enable proxying all files served. Option allows to reduce egress traffic as this allows clients to download directly from remote storage instead of proxying all data | `false` |
 | `connection` | Various connection options described below | |

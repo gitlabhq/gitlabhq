@@ -4,7 +4,7 @@ describe Projects::PipelinesController do
   include ApiHelpers
 
   set(:user) { create(:user) }
-  set(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
@@ -74,7 +74,7 @@ describe Projects::PipelinesController do
           expect(stages.count).to eq 3
         end
 
-        expect(queries.count).to be_within(3).of(30)
+        expect(queries.count).to be_within(5).of(30)
       end
     end
 
@@ -88,6 +88,24 @@ describe Projects::PipelinesController do
       it 'limits the Gitaly requests' do
         expect { get_pipelines_index_json }
           .to change { Gitlab::GitalyClient.get_request_count }.by(2)
+      end
+    end
+
+    context 'when the project is private' do
+      let(:project) { create(:project, :private, :repository) }
+
+      it 'returns `not_found` when the user does not have access' do
+        sign_in(create(:user))
+
+        get_pipelines_index_json
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns the pipelines when the user has access' do
+        get_pipelines_index_json
+
+        expect(json_response['pipelines'].size).to eq(5)
       end
     end
 
