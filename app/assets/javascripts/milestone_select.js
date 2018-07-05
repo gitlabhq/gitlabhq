@@ -5,6 +5,7 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from '~/locale';
+import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';

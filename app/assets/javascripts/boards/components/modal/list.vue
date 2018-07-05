@@ -121,8 +121,7 @@
     <div
       v-if="issuesCount > 0 && issues.length === 0"
       class="empty-state add-issues-empty-state-filter text-center">
-      <div
-        class="svg-content">
+      <div class="svg-content">
         <img :src="emptyStateSvg" />
       </div>
       <div class="text-content">

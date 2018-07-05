@@ -5,7 +5,7 @@
 
   const Store = gl.issueBoards.BoardsStore;
 
-  export default {
+  export default Vue.extend({
     props: {
       issue: {
         type: Object,
@@ -23,42 +23,16 @@
     },
     methods: {
       removeIssue() {
-        const board = Store.state.currentBoard;
         const { issue } = this;
         const lists = issue.getLists();
-        const boardLabelIds = board.labels.map(label => label.id);
-        const listLabelIds = lists.map(list => list.label.id);
-
-        let labelIds = issue.labels
-          .map(label => label.id)
-          .filter(id => !listLabelIds.includes(id))
-          .filter(id => !boardLabelIds.includes(id));
-
-        if (labelIds.length === 0) {
-          labelIds = [''];
-        }
-
-        let assigneeIds = issue.assignees
-          .map(assignee => assignee.id)
-          .filter(id => id !== board.assignee.id);
-        if (assigneeIds.length === 0) {
-          // for backend to explicitly set No Assignee
-          assigneeIds = ['0'];
-        }
+        const req = this.buildPatchRequest(issue, lists);
 
         const data = {
-          issue: {
-            label_ids: labelIds,
-            assignee_ids: assigneeIds,
-          },
+          issue: this.seedPatchRequest(issue, req),
         };
 
-        if (board.milestone_id) {
-          data.issue.milestone_id = -1;
-        }
-
-        if (board.weight) {
-          data.issue.weight = null;
+        if (data.issue.label_ids.length === 0) {
+          data.issue.label_ids = [''];
         }
 
         // Post the remove data
@@ -77,8 +51,30 @@
 
         Store.detail.issue = {};
       },
+      /**
+      * Build the default patch request.
+      */
+      buildPatchRequest(issue, lists) {
+        const listLabelIds = lists.map(list => list.label.id);
+
+        const labelIds = issue.labels
+          .map(label => label.id)
+          .filter(id => !listLabelIds.includes(id));
+
+        return {
+          label_ids: labelIds,
+        };
+      },
+      /**
+      * Seed the given patch request.
+      *
+      * (This is overridden in EE)
+      */
+      seedPatchRequest(issue, req) {
+        return req;
+      },
     },
-  };
+  });
 </script>
 <template>
   <div

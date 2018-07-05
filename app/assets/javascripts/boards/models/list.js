@@ -7,6 +7,24 @@ import queryData from '../utils/query_data';
 
 const PER_PAGE = 20;
 
+const TYPES = {
+  backlog: {
+    isPreset: true,
+    isExpandable: true,
+    isBlank: false,
+  },
+  closed: {
+    isPreset: true,
+    isExpandable: true,
+    isBlank: false,
+  },
+  blank: {
+    isPreset: true,
+    isExpandable: false,
+    isBlank: true,
+  },
+};
+
 class List {
   constructor(obj, defaultAvatar) {
     this.id = obj.id;
@@ -14,8 +32,10 @@ class List {
     this.position = obj.position;
     this.title = obj.title;
     this.type = obj.list_type;
-    this.preset = ['backlog', 'closed', 'blank', 'promotion'].indexOf(this.type) > -1;
-    this.isExpandable = ['backlog', 'closed'].indexOf(this.type) > -1;
+
+    const typeInfo = this.getTypeInfo(this.type);
+    this.preset = !!typeInfo.isPreset;
+    this.isExpandable = !!typeInfo.isExpandable;
     this.isExpanded = true;
     this.page = 1;
     this.loading = true;
@@ -31,7 +51,7 @@ class List {
       this.title = this.assignee.name;
     }
 
-    if (this.type !== 'blank' && this.type !== 'promotion' && this.id) {
+    if (!typeInfo.isBlank && this.id) {
       this.getIssues().catch(() => {
         // TODO: handle request error
       });
@@ -126,23 +146,7 @@ class List {
     return gl.boardService
       .newIssue(this.id, issue)
       .then(res => res.data)
-      .then(data => {
-        issue.id = data.id;
-        issue.iid = data.iid;
-        issue.milestone = data.milestone;
-        issue.project = data.project;
-        issue.assignees = Array.isArray(data.assignees)
-          ? data.assignees.map(assignee => new ListAssignee(assignee))
-          : data.assignees;
-        issue.labels = data.labels;
-        issue.path = data.real_path;
-        issue.referencePath = data.reference_path;
-
-        if (this.issuesSize > 1) {
-          const moveBeforeId = this.issues[1].id;
-          gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeId);
-        }
-      });
+      .then(data => this.onNewIssueResponse(issue, data));
   }
 
   createIssues(data) {
@@ -222,6 +226,25 @@ class List {
       return !matchesRemove;
     });
   }
+
+  getTypeInfo (type) {
+    return TYPES[type] || {};
+  }
+
+  onNewIssueResponse (issue, data) {
+    issue.id = data.id;
+    issue.iid = data.iid;
+    issue.project = data.project;
+    issue.path = data.real_path;
+    issue.referencePath = data.reference_path;
+
+    if (this.issuesSize > 1) {
+      const moveBeforeId = this.issues[1].id;
+      gl.boardService.moveIssue(issue.id, null, null, null, moveBeforeId);
+    }
+  }
 }
 
 window.List = List;
+
+export default List;
