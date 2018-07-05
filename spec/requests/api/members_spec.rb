@@ -102,6 +102,8 @@ describe API::Members do
   describe 'GET /:source_type/:id/members/all', :nested_groups do
     let(:nested_user) { create(:user) }
     let(:project_user) { create(:user) }
+    let(:linked_group_user) { create(:user) }
+    let!(:project_group_link) { create(:project_group_link, project: project, group: linked_group) }
 
     let(:project) do
       create(:project, :public, group: nested_group) do |project|
@@ -109,8 +111,14 @@ describe API::Members do
       end
     end
 
+    let(:linked_group) do
+      create(:group) do |group|
+        group.add_developer(linked_group_user)
+      end
+    end
+
     let(:nested_group) do
-      create(:group, :public, :access_requestable, parent: group) do |nested_group|
+      create(:group, parent: group) do |nested_group|
         nested_group.add_developer(nested_user)
       end
     end
@@ -121,7 +129,7 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id, project_user.id]
+      expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
     end
 
     it 'finds all group members including inherited members' do
