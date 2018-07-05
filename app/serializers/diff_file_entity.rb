@@ -25,6 +25,8 @@ class DiffFileEntity < Grape::Entity
   expose :can_modify_blob do |diff_file|
     merge_request = options[:merge_request]
 
+    next unless diff_file.blob
+
     if merge_request&.source_project && current_user
       can_modify_blob?(diff_file.blob, merge_request.source_project, merge_request.source_branch)
     else
@@ -108,6 +110,7 @@ class DiffFileEntity < Grape::Entity
     project = merge_request.target_project
 
     next unless project
+    next unless diff_file.content_sha
 
     project_blob_path(project, tree_join(diff_file.content_sha, diff_file.new_path))
   end
@@ -125,6 +128,8 @@ class DiffFileEntity < Grape::Entity
   end
 
   expose :context_lines_path, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
+    next unless diff_file.content_sha
+
     project_blob_diff_path(diff_file.repository.project, tree_join(diff_file.content_sha, diff_file.file_path))
   end
 
