@@ -325,11 +325,9 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
-  before_script:
-    - gem install gitlab --no-rdoc --no-ri
-    - chmod 755 ./scripts/trigger-build-cloud-native
   script:
-    - ./scripts/trigger-build-cloud-native
+    - gem install gitlab --no-ri --no-rdoc
+    - ./trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
