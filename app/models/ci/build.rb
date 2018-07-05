@@ -31,7 +31,13 @@ module Ci
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+
+    accepts_nested_attributes_for :runner_session
+
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :url, to: :runner_session, prefix: true, allow_nil: true
+    delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
 
     ##
@@ -177,6 +183,10 @@ module Ci
 
       after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
+      end
+
+      after_transition running: any do |build|
+        Ci::BuildRunnerSession.where(build: build).delete_all
       end
     end
 
@@ -586,6 +596,10 @@ module Ci
 
     def serializable_hash(options = {})
       super(options).merge(when: read_attribute(:when))
+    end
+
+    def has_terminal?
+      running? && runner_session_url.present?
     end
 
     private

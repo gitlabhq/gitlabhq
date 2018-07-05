@@ -20,6 +20,7 @@ describe Ci::Build do
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:sourced_pipelines) }
   it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_one(:runner_session)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -39,6 +40,20 @@ describe Ci::Build do
         expect(BuildHooksWorker).to receive(:perform_async)
 
         create(:ci_build)
+      end
+    end
+  end
+
+  describe 'status' do
+    context 'when transitioning to any state from running' do
+      it 'removes runner_session' do
+        %w(success drop cancel).each do |event|
+          build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
+
+          build.fire_events!(event)
+
+          expect(build.reload.runner_session).to be_nil
+        end
       end
     end
   end
@@ -2621,6 +2636,41 @@ describe Ci::Build do
           expect(PagesWorker).not_to receive(:perform_async)
 
           build.success
+        end
+      end
+    end
+  end
+
+  describe '#has_terminal?' do
+    let(:states) { described_class.state_machines[:status].states.keys - [:running] }
+
+    subject { build.has_terminal? }
+
+    it 'returns true if the build is running and it has a runner_session_url' do
+      build.build_runner_session(url: 'whatever')
+      build.status = :running
+
+      expect(subject).to be_truthy
+    end
+
+    context 'returns false' do
+      it 'when runner_session_url is empty' do
+        build.status = :running
+
+        expect(subject).to be_falsey
+      end
+
+      context 'unless the build is running' do
+        before do
+          build.build_runner_session(url: 'whatever')
+        end
+
+        it do
+          states.each do |state|
+            build.status = state
+
+            is_expected.to be_falsey
+          end
         end
       end
     end

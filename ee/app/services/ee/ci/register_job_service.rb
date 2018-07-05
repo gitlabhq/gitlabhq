@@ -7,7 +7,7 @@ module EE
     module RegisterJobService
       extend ActiveSupport::Concern
 
-      def execute
+      def execute(params = {})
         db_all_caught_up = ::Gitlab::Database::LoadBalancing::Sticking.all_caught_up?(:runner, runner.id)
 
         super.tap do |result|
