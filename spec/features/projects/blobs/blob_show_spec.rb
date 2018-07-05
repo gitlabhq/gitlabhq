@@ -7,15 +7,11 @@ describe 'File blob', :js do
 
   def visit_blob(path, anchor: nil, ref: 'master')
     visit project_blob_path(project, File.join(ref, path), anchor: anchor)
-
-    wait_for_requests
   end
 
   context 'Ruby file' do
     before do
       visit_blob('files/ruby/popen.rb')
-
-      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -50,69 +46,45 @@ describe 'File blob', :js do
     context 'visiting directly' do
       before do
         visit_blob('files/markdown/ruby-style-guide.md')
-
-        wait_for_requests
       end
 
       it 'displays the blob using the rich viewer' do
-        aggregate_failures do
-          # hides the simple viewer
-          expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
-          expect(page).to have_selector('.blob-viewer[data-type="rich"]')
+        # shows rendered Markdown
+        expect(page).to have_link("PEP-8")
 
-          # shows rendered Markdown
-          expect(page).to have_link("PEP-8")
+        # hides the simple viewer
+        expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
+        expect(page).to have_selector('.blob-viewer[data-type="rich"]')
 
-          # shows a viewer switcher
-          expect(page).to have_selector('.js-blob-viewer-switcher')
+        # shows a viewer switcher
+        expect(page).to have_selector('.js-blob-viewer-switcher')
 
-          # shows a disabled copy button
-          expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
+        # shows a disabled copy button
+        expect(page).to have_selector('.js-copy-blob-source-btn.disabled')
 
-          # shows a raw button
-          expect(page).to have_link('Open raw')
-        end
+        # shows a raw button
+        expect(page).to have_link('Open raw')
       end
 
       context 'switching to the simple viewer' do
         before do
-          find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
-
-          wait_for_requests
         end
 
         it 'displays the blob using the simple viewer' do
-          aggregate_failures do
-            # hides the rich viewer
-            expect(page).to have_selector('.blob-viewer[data-type="simple"]')
-            expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
+          find('.js-blob-viewer-switch-btn[data-viewer=simple]').click
 
-            # shows highlighted Markdown code
-            expect(page).to have_css(".js-syntax-highlight")
-            expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
+          wait_for_requests
 
-            # shows an enabled copy button
-            expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
-          end
-        end
+          # shows highlighted Markdown code
+          expect(page).to have_content("[PEP-8](http://www.python.org/dev/peps/pep-0008/)")
+          expect(page).to have_css(".js-syntax-highlight")
 
-        context 'switching to the rich viewer again' do
-          before do
-            find('.js-blob-viewer-switch-btn[data-viewer=rich]').click
+          # hides the rich viewer
+          expect(page).to have_selector('.blob-viewer[data-type="simple"]')
+          expect(page).to have_selector('.blob-viewer[data-type="rich"]', visible: false)
 
-            wait_for_requests
-          end
-
-          it 'displays the blob using the rich viewer' do
-            aggregate_failures do
-              # hides the simple viewer
-              expect(page).to have_selector('.blob-viewer[data-type="simple"]', visible: false)
-              expect(page).to have_selector('.blob-viewer[data-type="rich"]')
-
-              # shows an enabled copy button
-              expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
-            end
-          end
+          # shows an enabled copy button
+          expect(page).to have_selector('.js-copy-blob-source-btn:not(.disabled)')
         end
       end
     end
@@ -159,12 +131,10 @@ describe 'File blob', :js do
 
     context 'when LFS is enabled on the project' do
       before do
-        allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+        stub_lfs_setting(enabled: true)
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/file.md')
-
-        wait_for_requests
       end
 
       it 'displays an error' do
@@ -213,8 +183,6 @@ describe 'File blob', :js do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/file.md')
-
-        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -250,8 +218,6 @@ describe 'File blob', :js do
       ).execute
 
       visit_blob('files/test.pdf')
-
-      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -274,12 +240,10 @@ describe 'File blob', :js do
   context 'ISO file (stored in LFS)' do
     context 'when LFS is enabled on the project' do
       before do
-        allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
+        stub_lfs_setting(enabled: true)
         project.update_attribute(:lfs_enabled, true)
 
         visit_blob('files/lfs/lfs_object.iso')
-
-        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -302,8 +266,6 @@ describe 'File blob', :js do
     context 'when LFS is disabled on the project' do
       before do
         visit_blob('files/lfs/lfs_object.iso')
-
-        wait_for_requests
       end
 
       it 'displays the blob' do
@@ -327,8 +289,6 @@ describe 'File blob', :js do
   context 'ZIP file' do
     before do
       visit_blob('Gemfile.zip')
-
-      wait_for_requests
     end
 
     it 'displays the blob' do
@@ -363,8 +323,6 @@ describe 'File blob', :js do
       ).execute
 
       visit_blob('files/empty.md')
-
-      wait_for_requests
     end
 
     it 'displays an error' do
