@@ -429,7 +429,7 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      stack_string = caller.drop(1).join("\n")
+      stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
 
       RequestStore.store[:stack_counter] ||= Hash.new
 

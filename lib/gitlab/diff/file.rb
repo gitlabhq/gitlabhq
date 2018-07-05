@@ -247,6 +247,7 @@ module Gitlab
         lines = highlighted_diff_lines
 
         return if lines.empty?
+        return if blob.nil?
 
         last_line = lines.last
 

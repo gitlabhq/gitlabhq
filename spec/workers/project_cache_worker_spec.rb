@@ -61,7 +61,7 @@ describe ProjectCacheWorker do
           expect_any_instance_of(Project).not_to receive(:update_repository_size)
           expect_any_instance_of(Project).not_to receive(:update_commit_count)
 
-          subject.perform(project.id)
+          worker.perform(project.id, %w(readme))
         end
       end
 
