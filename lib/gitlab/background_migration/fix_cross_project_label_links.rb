@@ -33,7 +33,7 @@ module Gitlab
           # To isolate migration code, we avoid usage of
           # Gitlab::GroupHierarchy#base_and_descendants which already
           # does this job better
-          ids = Namespace.where(type: 'Group', id: start_id..stop_id).pluck(:id)
+          ids = Namespace.where(type: 'Group', id: Label.where(type: 'GroupLabel').select('distinct group_id')).where(id: start_id..stop_id).pluck(:id)
           group_ids = ids
 
           GROUP_NESTED_LEVEL.times do
