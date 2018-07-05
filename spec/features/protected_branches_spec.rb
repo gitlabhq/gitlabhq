@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Protected Branches', :js do
+describe 'Protected Branches', :js do
   include EE::ProtectedBranchHelpers
 
   let(:user) { create(:user) }

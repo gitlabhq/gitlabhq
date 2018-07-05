@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'New Epic', :js do
+describe 'New Epic', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Delete Epic', :js do
+describe 'Delete Epic', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
   let(:epic) { create(:epic, group: group) }

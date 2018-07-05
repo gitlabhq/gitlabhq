@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Top Plus Menu', :js do
+describe 'Top Plus Menu', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
@@ -15,7 +15,7 @@ feature 'Top Plus Menu', :js do
       sign_in(user)
     end
 
-    scenario 'click on New project shows new project page' do
+    it 'click on New project shows new project page' do
       visit root_dashboard_path
 
       click_topmenuitem("New project")
@@ -24,7 +24,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Project name')
     end
 
-    scenario 'click on New group shows new group page' do
+    it 'click on New group shows new group page' do
       visit root_dashboard_path
 
       click_topmenuitem("New group")
@@ -33,7 +33,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Group name')
     end
 
-    scenario 'click on New snippet shows new snippet page' do
+    it 'click on New snippet shows new snippet page' do
       visit root_dashboard_path
 
       click_topmenuitem("New snippet")
@@ -42,7 +42,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Title')
     end
 
-    scenario 'click on New issue shows new issue page' do
+    it 'click on New issue shows new issue page' do
       visit project_path(project)
 
       click_topmenuitem("New issue")
@@ -51,7 +51,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Title')
     end
 
-    scenario 'click on New merge request shows new merge request page' do
+    it 'click on New merge request shows new merge request page' do
       visit project_path(project)
 
       click_topmenuitem("New merge request")
@@ -61,7 +61,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Target branch')
     end
 
-    scenario 'click on New project snippet shows new snippet page' do
+    it 'click on New project snippet shows new snippet page' do
       visit project_path(project)
 
       page.within '.header-content' do
@@ -74,7 +74,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Title')
     end
 
-    scenario 'Click on New subgroup shows new group page', :nested_groups do
+    it 'Click on New subgroup shows new group page', :nested_groups do
       visit group_path(group)
 
       click_topmenuitem("New subgroup")
@@ -83,7 +83,7 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Group name')
     end
 
-    scenario 'Click on New project in group shows new project page' do
+    it 'Click on New project in group shows new project page' do
       visit group_path(group)
 
       page.within '.header-content' do
@@ -107,7 +107,7 @@ feature 'Top Plus Menu', :js do
       sign_in(guest_user)
     end
 
-    scenario 'click on New issue shows new issue page' do
+    it 'click on New issue shows new issue page' do
       visit project_path(project)
 
       click_topmenuitem("New issue")
@@ -116,37 +116,37 @@ feature 'Top Plus Menu', :js do
       expect(page).to have_content('Title')
     end
 
-    scenario 'has no New merge request menu item' do
+    it 'has no New merge request menu item' do
       visit project_path(project)
 
       hasnot_topmenuitem("New merge request")
     end
 
-    scenario 'has no New project snippet menu item' do
+    it 'has no New project snippet menu item' do
       visit project_path(project)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
 
-    scenario 'public project has no New merge request menu item' do
+    it 'public project has no New merge request menu item' do
       visit project_path(public_project)
 
       hasnot_topmenuitem("New merge request")
     end
 
-    scenario 'public project has no New project snippet menu item' do
+    it 'public project has no New project snippet menu item' do
       visit project_path(public_project)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-project-snippet')
     end
 
-    scenario 'has no New subgroup menu item' do
+    it 'has no New subgroup menu item' do
       visit group_path(group)
 
       hasnot_topmenuitem("New subgroup")
     end
 
-    scenario 'has no New project for group menu item' do
+    it 'has no New project for group menu item' do
       visit group_path(group)
 
       expect(find('.header-new.dropdown')).not_to have_selector('.header-new-group-project')

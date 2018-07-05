@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'New project' do
+describe 'New project' do
   include Select2Helper
 
   let(:user) { create(:admin) }

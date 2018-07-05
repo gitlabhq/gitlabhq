@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Pipeline Quota' do
+describe 'Groups > Pipeline Quota' do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let!(:project) { create(:project, namespace: group, shared_runners_enabled: true) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'New project' do
+describe 'New project' do
   let(:user) { create(:admin) }
 
   before do

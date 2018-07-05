@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Projects' do
+describe 'Dashboard Projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
@@ -121,7 +121,7 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
     end
 
-    scenario 'shows "Create merge request" button' do
+    it 'shows "Create merge request" button' do
       expect(page).to have_content 'You pushed to feature'
 
       within('#content-body') do

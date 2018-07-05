@@ -1,8 +1,8 @@
 module QA
-  feature 'GitLab Geo attachment replication', :geo do
+  describe 'GitLab Geo attachment replication', :geo do
     let(:file_to_attach) { File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif')) }
 
-    scenario 'user uploads attachment to the primary node' do
+    it 'user uploads attachment to the primary node' do
       Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }
 

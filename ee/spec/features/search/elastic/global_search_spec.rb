@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Global elastic search' do
+describe 'Global elastic search' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, :wiki_repo, namespace: user.namespace) }
 

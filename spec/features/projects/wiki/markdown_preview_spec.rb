@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User previews markdown changes', :js do
+describe 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_content) do
@@ -12,7 +12,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
     HEREDOC
   end
 
-  background do
+  before do
     project.add_master(user)
 
     sign_in(user)

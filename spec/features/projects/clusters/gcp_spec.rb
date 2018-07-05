@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Gcp Cluster', :js do
+describe 'Gcp Cluster', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }

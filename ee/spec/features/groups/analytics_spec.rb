@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Contribution Analytics', :js do
+describe 'Groups > Contribution Analytics', :js do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:empty_project) { create(:project, namespace: group) }

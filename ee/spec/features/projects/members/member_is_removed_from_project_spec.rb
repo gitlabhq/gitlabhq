@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Member is removed from project' do
+describe 'Projects > Members > Member is removed from project' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
-  background do
+  before do
     project.add_master(user)
     sign_in(user)
     visit project_project_members_path(project)
   end
 
-  scenario 'user is removed from project' do
+  it 'user is removed from project' do
     click_link 'Leave'
 
     expect(project.users.exists?(user.id)).to be_falsey
@@ -21,7 +21,7 @@ feature 'Projects > Members > Member is removed from project' do
     let!(:matching_protected_branch) { create(:protected_branch, authorize_user_to_push: user, authorize_user_to_merge: user, project: project) }
     let!(:non_matching_protected_branch) { create(:protected_branch, authorize_user_to_push: other_user, authorize_user_to_merge: other_user, project: project) }
 
-    scenario 'user leaves project' do
+    it 'user leaves project' do
       click_link 'Leave'
 
       expect(project.users.exists?(user.id)).to be_falsey

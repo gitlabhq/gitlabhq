@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project Badges' do
+describe 'Project Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }

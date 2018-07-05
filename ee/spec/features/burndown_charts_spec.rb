@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Burndown charts' do
+describe 'Burndown charts' do
   let(:current_user) { create(:user) }
   let(:milestone) do
     create(:milestone, project: project,

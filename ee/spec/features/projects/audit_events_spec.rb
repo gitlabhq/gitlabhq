@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Audit Events', :js do
+describe 'Projects > Audit Events', :js do
   let(:user) { create(:user) }
   let(:pete) { create(:user, name: 'Pete') }
   let(:project) { create(:project, :repository, namespace: user.namespace) }

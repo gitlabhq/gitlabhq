@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels Hierarchy', :js, :nested_groups do
+describe 'Labels Hierarchy', :js, :nested_groups do
   let!(:user) { create(:user) }
   let!(:grandparent) { create(:group) }
   let!(:parent) { create(:group, parent: grandparent) }

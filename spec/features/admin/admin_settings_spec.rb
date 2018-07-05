@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin updates settings' do
+describe 'Admin updates settings' do
   include StubENV
   include TermsHelper
 
@@ -12,7 +12,7 @@ feature 'Admin updates settings' do
     visit admin_application_settings_path
   end
 
-  scenario 'Change visibility settings' do
+  it 'Change visibility settings' do
     page.within('.as-visibility-access') do
       choose "application_setting_default_project_visibility_20"
       click_button 'Save changes'
@@ -21,7 +21,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Uncheck all restricted visibility levels' do
+  it 'Uncheck all restricted visibility levels' do
     page.within('.as-visibility-access') do
       find('#application_setting_visibility_level_0').set(false)
       find('#application_setting_visibility_level_10').set(false)
@@ -37,7 +37,7 @@ feature 'Admin updates settings' do
 
   describe 'LDAP settings' do
     context 'with LDAP enabled' do
-      scenario 'Change allow group owners to manage ldap' do
+      it 'Change allow group owners to manage ldap' do
         allow(Gitlab::Auth::LDAP::Config).to receive(:enabled?).and_return(true)
         visit admin_application_settings_path
 
@@ -52,7 +52,7 @@ feature 'Admin updates settings' do
     end
 
     context 'with LDAP disabled' do
-      scenario 'Does not show option to allow group owners to manage ldap' do
+      it 'Does not show option to allow group owners to manage ldap' do
         visit admin_application_settings_path
 
         expect(page).not_to have_css('#application_setting_allow_group_owners_to_manage_ldap')
@@ -60,7 +60,7 @@ feature 'Admin updates settings' do
     end
   end
 
-  scenario 'Modify import sources' do
+  it 'Modify import sources' do
     expect(Gitlab::CurrentSettings.import_sources).not_to be_empty
 
     page.within('.as-visibility-access') do
@@ -83,7 +83,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.import_sources).to eq(['git'])
   end
 
-  scenario 'Change Visibility and Access Controls' do
+  it 'Change Visibility and Access Controls' do
     page.within('.as-visibility-access') do
       uncheck 'Project export enabled'
       click_button 'Save changes'
@@ -93,7 +93,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Account and Limit Settings' do
+  it 'Change Account and Limit Settings' do
     page.within('.as-account-limit') do
       uncheck 'Gravatar enabled'
       click_button 'Save changes'
@@ -103,7 +103,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Sign-in restrictions' do
+  it 'Change Sign-in restrictions' do
     page.within('.as-signin') do
       fill_in 'Home page URL', with: 'https://about.gitlab.com/'
       click_button 'Save changes'
@@ -113,7 +113,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Terms of Service' do
+  it 'Terms of Service' do
     # Already have the admin accept terms, so they don't need to accept in this spec.
     _existing_terms = create(:term)
     accept_terms(admin)
@@ -129,7 +129,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content 'Application settings saved successfully'
   end
 
-  scenario 'Modify oauth providers' do
+  it 'Modify oauth providers' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
     page.within('.as-signin') do
@@ -149,7 +149,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).not_to include('google_oauth2')
   end
 
-  scenario 'Oauth providers do not raise validation errors when saving unrelated changes' do
+  it 'Oauth providers do not raise validation errors when saving unrelated changes' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to be_empty
 
     page.within('.as-signin') do
@@ -172,7 +172,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.disabled_oauth_sign_in_sources).to include('google_oauth2')
   end
 
-  scenario 'Change Help page' do
+  it 'Change Help page' do
     page.within('.as-help-page') do
       fill_in 'Help page text', with: 'Example text'
       check 'Hide marketing-related entries from help'
@@ -186,7 +186,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Pages settings' do
+  it 'Change Pages settings' do
     page.within('.as-pages') do
       fill_in 'Maximum size of pages (MB)', with: 15
       check 'Require users to prove ownership of custom domains'
@@ -198,7 +198,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change CI/CD settings' do
+  it 'Change CI/CD settings' do
     page.within('.as-ci-cd') do
       check 'Enabled Auto DevOps for projects by default'
       fill_in 'Auto devops domain', with: 'domain.com'
@@ -210,7 +210,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Influx settings' do
+  it 'Change Influx settings' do
     page.within('.as-influx') do
       check 'Enable InfluxDB Metrics'
       click_button 'Save changes'
@@ -220,7 +220,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Prometheus settings' do
+  it 'Change Prometheus settings' do
     page.within('.as-prometheus') do
       check 'Enable Prometheus Metrics'
       click_button 'Save changes'
@@ -230,7 +230,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Performance bar settings' do
+  it 'Change Performance bar settings' do
     group = create(:group)
 
     page.within('.as-performance-bar') do
@@ -253,7 +253,7 @@ feature 'Admin updates settings' do
     expect(find_field('Allowed group').value).to be_nil
   end
 
-  scenario 'Change Background jobs settings' do
+  it 'Change Background jobs settings' do
     page.within('.as-background') do
       fill_in 'Throttling Factor', with: 1
       click_button 'Save changes'
@@ -263,7 +263,7 @@ feature 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Change Spam settings' do
+  it 'Change Spam settings' do
     page.within('.as-spam') do
       check 'Enable reCAPTCHA'
       fill_in 'reCAPTCHA Site Key', with: 'key'
@@ -277,7 +277,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.unique_ips_limit_per_user).to eq(15)
   end
 
-  scenario 'Configure web terminal' do
+  it 'Configure web terminal' do
     page.within('.as-terminal') do
       fill_in 'Max session time', with: 15
       click_button 'Save changes'
@@ -287,7 +287,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.terminal_max_session_time).to eq(15)
   end
 
-  scenario 'Enable outbound requests' do
+  it 'Enable outbound requests' do
     page.within('.as-outbound') do
       check 'Allow requests to the local network from hooks and services'
       click_button 'Save changes'
@@ -297,7 +297,7 @@ feature 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
   end
 
-  scenario 'Change Slack Notifications Service template settings' do
+  it 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'
     fill_in 'Webhook', with: 'http://localhost'
@@ -321,7 +321,7 @@ feature 'Admin updates settings' do
     expect(find('#service_push_channel').value).to eq '#test_channel'
   end
 
-  scenario 'Change Keys settings' do
+  it 'Change Keys settings' do
     page.within('.as-visibility-access') do
       select 'Are forbidden', from: 'RSA SSH keys'
       select 'Are allowed', from: 'DSA SSH keys'

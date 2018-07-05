@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project > Members > Share with Group', :js do
+describe 'Project > Members > Share with Group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
@@ -8,7 +8,7 @@ feature 'Project > Members > Share with Group', :js do
 
   describe 'Share with group lock' do
     shared_examples 'the project cannot be shared with groups' do
-      scenario 'user is only able to share with members' do
+      it 'user is only able to share with members' do
         visit project_settings_members_path(project)
 
         expect(page).not_to have_selector('#add-member-tab')
@@ -19,7 +19,7 @@ feature 'Project > Members > Share with Group', :js do
     end
 
     shared_examples 'the project cannot be shared with members' do
-      scenario 'user is only able to share with groups' do
+      it 'user is only able to share with groups' do
         visit project_settings_members_path(project)
 
         expect(page).not_to have_selector('#add-member-tab')
@@ -30,7 +30,7 @@ feature 'Project > Members > Share with Group', :js do
     end
 
     shared_examples 'the project cannot be shared with groups and members' do
-      scenario 'no tabs or share content exists' do
+      it 'no tabs or share content exists' do
         visit project_settings_members_path(project)
 
         expect(page).not_to have_selector('#add-member-tab')
@@ -41,7 +41,7 @@ feature 'Project > Members > Share with Group', :js do
     end
 
     shared_examples 'the project can be shared with groups and members' do
-      scenario 'both member and group tabs exist' do
+      it 'both member and group tabs exist' do
         visit project_settings_members_path(project)
 
         expect(page).not_to have_selector('.add-member')
@@ -55,7 +55,7 @@ feature 'Project > Members > Share with Group', :js do
       let!(:group_to_share_with) { create(:group) }
       let(:project) { create(:project, namespace: create(:group)) }
 
-      background do
+      before do
         project.add_master(master)
         sign_in(master)
       end
@@ -63,7 +63,7 @@ feature 'Project > Members > Share with Group', :js do
       context 'when the group has "Share with group lock" and "Member lock" disabled' do
         it_behaves_like 'the project can be shared with groups and members'
 
-        scenario 'the project can be shared with another group' do
+        it 'the project can be shared with another group' do
           visit project_settings_members_path(project)
 
           click_on 'share-with-group-tab'
@@ -108,7 +108,7 @@ feature 'Project > Members > Share with Group', :js do
       let(:subgroup) { create(:group, parent: root_group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      background do
+      before do
         project.add_master(master)
         sign_in(master)
       end
@@ -213,7 +213,7 @@ feature 'Project > Members > Share with Group', :js do
       find('.btn-create').click
     end
 
-    scenario 'the group link shows the expiration time with a warning class' do
+    it 'the group link shows the expiration time with a warning class' do
       page.within('.project-members-groups') do
         # Using distance_of_time_in_words_to_now because it is not the same as
         # subtraction, and this way avoids time zone issues as well
@@ -228,7 +228,7 @@ feature 'Project > Members > Share with Group', :js do
     context 'with multiple groups to choose from' do
       let(:project) { create(:project) }
 
-      background do
+      before do
         project.add_master(master)
         sign_in(master)
 
@@ -260,14 +260,14 @@ feature 'Project > Members > Share with Group', :js do
       let!(:group_to_share_with) { create(:group) }
       let!(:project) { create(:project, namespace: nested_group) }
 
-      background do
+      before do
         project.add_master(master)
         sign_in(master)
         group.add_master(master)
         group_to_share_with.add_master(master)
       end
 
-      scenario 'the groups dropdown does not show ancestors', :nested_groups do
+      it 'the groups dropdown does not show ancestors', :nested_groups do
         visit project_settings_members_path(project)
 
         click_on 'share-with-group-tab'

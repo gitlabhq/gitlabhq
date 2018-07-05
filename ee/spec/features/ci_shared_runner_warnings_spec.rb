@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'CI shared runner limits' do
+describe 'CI shared runner limits' do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, namespace: group, shared_runners_enabled: true) }
   let(:group) { create(:group) }
@@ -15,12 +15,12 @@ feature 'CI shared runner limits' do
     end
 
     context 'without limit' do
-      scenario 'it does not display a warning message on project homepage' do
+      it 'it does not display a warning message on project homepage' do
         visit_project_home
         expect_no_quota_exceeded_alert
       end
 
-      scenario 'it does not display a warning message on pipelines page' do
+      it 'it does not display a warning message on pipelines page' do
         visit_project_pipelines
         expect_no_quota_exceeded_alert
       end
@@ -30,12 +30,12 @@ feature 'CI shared runner limits' do
       context 'when limit is exceeded' do
         let(:group) { create(:group, :with_used_build_minutes_limit) }
 
-        scenario 'it displays a warning message on project homepage' do
+        it 'it displays a warning message on project homepage' do
           visit_project_home
           expect_quota_exceeded_alert("#{group.name} has exceeded their pipeline minutes quota.")
         end
 
-        scenario 'it displays a warning message on pipelines page' do
+        it 'it displays a warning message on pipelines page' do
           visit_project_pipelines
           expect_quota_exceeded_alert("#{group.name} has exceeded their pipeline minutes quota.")
         end
@@ -44,12 +44,12 @@ feature 'CI shared runner limits' do
       context 'when limit not yet exceeded' do
         let(:group) { create(:group, :with_not_used_build_minutes_limit) }
 
-        scenario 'it does not display a warning message on project homepage' do
+        it 'it does not display a warning message on project homepage' do
           visit_project_home
           expect_no_quota_exceeded_alert
         end
 
-        scenario 'it does not display a warning message on pipelines page' do
+        it 'it does not display a warning message on pipelines page' do
           visit_project_pipelines
           expect_no_quota_exceeded_alert
         end
@@ -58,12 +58,12 @@ feature 'CI shared runner limits' do
       context 'when minutes are not yet set' do
         let(:group) { create(:group, :with_build_minutes_limit) }
 
-        scenario 'it does not display a warning message on project homepage' do
+        it 'it does not display a warning message on project homepage' do
           visit_project_home
           expect_no_quota_exceeded_alert
         end
 
-        scenario 'it does not display a warning message on pipelines page' do
+        it 'it does not display a warning message on pipelines page' do
           visit_project_pipelines
           expect_no_quota_exceeded_alert
         end
@@ -75,12 +75,12 @@ feature 'CI shared runner limits' do
     let(:group) { create(:group, :with_used_build_minutes_limit) }
 
     context 'when limit is defined and limit is exceeded' do
-      scenario 'it does not display a warning message on project homepage' do
+      it 'it does not display a warning message on project homepage' do
         visit_project_home
         expect_no_quota_exceeded_alert
       end
 
-      scenario 'it does not display a warning message on pipelines page' do
+      it 'it does not display a warning message on pipelines page' do
         visit_project_pipelines
         expect_no_quota_exceeded_alert
       end

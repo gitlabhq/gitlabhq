@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Blob shortcuts', :js do
+describe 'Blob shortcuts', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue) { create(:issue, project: project, author: user) }

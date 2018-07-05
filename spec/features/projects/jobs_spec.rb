@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :clean_gitlab_redis_shared_state do
+describe 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -259,7 +259,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Raw trace' do
+    describe 'Raw trace' do
       before do
         job.run!
 
@@ -271,7 +271,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'HTML trace', :js do
+    describe 'HTML trace', :js do
       before do
         job.run!
 
@@ -291,7 +291,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Variables' do
+    describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do

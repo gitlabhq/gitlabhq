@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > Master/Owner can override LDAP access levels' do
+describe 'Groups > Members > Master/Owner can override LDAP access levels' do
   include WaitForRequests
 
   let(:johndoe)  { create(:user, name: 'John Doe') }
@@ -13,20 +13,20 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
   let!(:ldap_member)    { create(:group_member, :guest, group: group, user: johndoe, ldap: true) }
   let!(:regular_member) { create(:group_member, :guest, group: group, user: maryjane, ldap: false) }
 
-  background do
+  before do
     # We need to actually activate the LDAP config otherwise `Group#ldap_synced?` will always be false!
     allow(Gitlab.config.ldap).to receive_messages(enabled: true)
 
     sign_in(owner)
   end
 
-  scenario 'override not available on project members page', :js do
+  it 'override not available on project members page', :js do
     visit namespace_project_project_members_path(group, project)
 
     expect(page).not_to have_button 'Edit permissions'
   end
 
-  scenario 'owner cannot override LDAP access level', :js do
+  it 'owner cannot override LDAP access level', :js do
     stub_application_setting(allow_group_owners_to_manage_ldap: false)
 
     visit group_group_members_path(group)
@@ -38,7 +38,7 @@ feature 'Groups > Members > Master/Owner can override LDAP access levels' do
     end
   end
 
-  scenario 'owner can override LDAP access level', :js do
+  it 'owner can override LDAP access level', :js do
     ldap_override_message = 'John Doe is currently an LDAP user. Editing their permissions will override the settings from the LDAP group sync.'
 
     visit group_group_members_path(group)

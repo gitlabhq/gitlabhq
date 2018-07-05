@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Manually create a todo item from epic', :js do
+describe 'Manually create a todo item from epic', :js do
   let(:group) { create(:group) }
   let(:epic)   { create(:epic, group: group) }
   let(:user)    { create(:user)}

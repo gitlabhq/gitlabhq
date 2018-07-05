@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Slack application' do
+describe 'Slack application' do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
   let(:role) { :developer }
   let(:service) { create(:gitlab_slack_application_service, project: project) }
   let(:slack_application_form_path) { edit_project_service_path(project, service) }
 
-  background do
+  before do
     gitlab_sign_in(user)
     project.add_master(user)
 
@@ -16,7 +16,7 @@ feature 'Slack application' do
     allow(Gitlab).to receive(:com?).and_return(true)
   end
 
-  scenario 'I can edit slack integration' do
+  it 'I can edit slack integration' do
     visit slack_application_form_path
 
     within '.js-integration-settings-form' do

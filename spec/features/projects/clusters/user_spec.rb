@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User Cluster', :js do
+describe 'User Cluster', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
