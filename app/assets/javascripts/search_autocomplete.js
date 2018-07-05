@@ -289,7 +289,7 @@ export default class SearchAutocomplete {
     }
 
     // If the dropdown is closed, we'll open it
-    if (!this.dropdown.hasClass('open')) {
+    if (!this.dropdown.hasClass('show')) {
       this.loadingSuggestions = false;
       this.dropdownToggle.dropdown('toggle');
       return this.searchInput.removeClass('disabled');
@@ -424,9 +424,9 @@ export default class SearchAutocomplete {
   }
 
   disableAutocomplete() {
-    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
+    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('show')) {
       this.searchInput.addClass('disabled');
-      this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
+      this.dropdown.removeClass('show').trigger('hidden.bs.dropdown');
       this.restoreMenu();
     }
   }

@@ -201,6 +201,7 @@ export default {
         :title="awardTitle(awardList)"
         @click="handleAward(awardName)"
         class="btn award-control"
+        data-boundary="viewport"
         data-placement="bottom"
         type="button">
         <span v-html="getAwardHTML(awardName)"></span>
@@ -217,6 +218,7 @@ export default {
           class="award-control btn js-add-award"
           title="Add reaction"
           aria-label="Add reaction"
+          data-boundary="viewport"
           data-placement="bottom"
           type="button">
           <span

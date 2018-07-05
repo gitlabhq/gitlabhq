@@ -14,6 +14,7 @@ import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
 import Notes from './notes';
+import { polyfillSticky } from './lib/utils/sticky';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -417,7 +418,6 @@ export default class MergeRequestTabs {
 
   initAffix() {
     const $tabs = $('.js-tabs-affix');
-    const $fixedNav = $('.navbar-gitlab');
 
     // Screen space on small screens is usually very sparse
     // So we dont affix the tabs on these
@@ -430,21 +430,6 @@ export default class MergeRequestTabs {
     */
     if ($tabs.css('position') !== 'static') return;
 
-    const $diffTabs = $('#diff-notes-app');
-
-    $tabs
-      .off('affix.bs.affix affix-top.bs.affix')
-      .affix({
-        offset: {
-          top: () => $diffTabs.offset().top - $tabs.height() - $fixedNav.height(),
-        },
-      })
-      .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
-      .on('affix-top.bs.affix', () => $diffTabs.css({ marginTop: '' }));
-
-    // Fix bug when reloading the page already scrolling
-    if ($tabs.hasClass('affix')) {
-      $tabs.trigger('affix.bs.affix');
-    }
+    polyfillSticky($tabs);
   }
 }

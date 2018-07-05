@@ -32,7 +32,7 @@ RSpec.describe Gitlab::Favicon, :request_store do
       end
 
       it 'returns a full url when the asset host is configured' do
-        allow(Gitlab::Application.config).to receive(:asset_host).and_return('http://assets.local')
+        allow(ActionController::Base).to receive(:asset_host).and_return('http://assets.local')
         expect(described_class.main).to match %r{^http://localhost/assets/favicon-(?:\h+).png$}
       end
     end

@@ -80,6 +80,50 @@ describe FileUploader do
     end
   end
 
+  describe 'copy_to' do
+    shared_examples 'returns a valid uploader' do
+      describe 'returned uploader' do
+        let(:new_project) { create(:project) }
+        let(:moved) { described_class.copy_to(subject, new_project) }
+
+        it 'generates a new secret' do
+          expect(subject).to be
+          expect(described_class).to receive(:generate_secret).once.and_call_original
+          expect(moved).to be
+        end
+
+        it 'create new upload' do
+          expect(moved.upload).not_to eq(subject.upload)
+        end
+
+        it 'copies the file' do
+          expect(subject.file).to exist
+          expect(moved.file).to exist
+          expect(subject.file).not_to eq(moved.file)
+          expect(subject.object_store).to eq(moved.object_store)
+        end
+      end
+    end
+
+    context 'files are stored locally' do
+      before do
+        subject.store!(fixture_file_upload('spec/fixtures/dk.png'))
+      end
+
+      include_examples 'returns a valid uploader'
+    end
+
+    context 'files are stored remotely' do
+      before do
+        stub_uploads_object_storage
+        subject.store!(fixture_file_upload('spec/fixtures/dk.png'))
+        subject.migrate!(ObjectStorage::Store::REMOTE)
+      end
+
+      include_examples 'returns a valid uploader'
+    end
+  end
+
   describe '#secret' do
     it 'generates a secret if none is provided' do
       expect(described_class).to receive(:generate_secret).and_return('secret')

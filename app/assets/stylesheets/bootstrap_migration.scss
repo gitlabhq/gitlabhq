@@ -128,6 +128,11 @@ table {
   border-spacing: 0;
 }
 
+.tooltip {
+  // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
+  pointer-events: none;
+}
+
 .popover {
   font-size: 14px;
 }
