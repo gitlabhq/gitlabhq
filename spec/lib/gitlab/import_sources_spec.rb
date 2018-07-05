@@ -12,7 +12,8 @@ describe Gitlab::ImportSources do
           'FogBugz'       => 'fogbugz',
           'Repo by URL'   => 'git',
           'GitLab export' => 'gitlab_project',
-          'Gitea'         => 'gitea'
+          'Gitea'         => 'gitea',
+          'Manifest file' => 'manifest'
         }
 
       expect(described_class.options).to eq(expected)
@@ -31,6 +32,7 @@ describe Gitlab::ImportSources do
           git
           gitlab_project
           gitea
+          manifest
         )
 
       expect(described_class.values).to eq(expected)
@@ -48,6 +50,7 @@ describe Gitlab::ImportSources do
           fogbugz
           gitlab_project
           gitea
+          manifest
         )
 
       expect(described_class.importer_names).to eq(expected)
@@ -63,7 +66,8 @@ describe Gitlab::ImportSources do
       'fogbugz' => Gitlab::FogbugzImport::Importer,
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
-      'gitea' => Gitlab::LegacyGithubImport::Importer
+      'gitea' => Gitlab::LegacyGithubImport::Importer,
+      'manifest' => Gitlab::ManifestImport::Importer
     }
 
     import_sources.each do |name, klass|
@@ -82,7 +86,8 @@ describe Gitlab::ImportSources do
       'fogbugz' => 'FogBugz',
       'git' => 'Repo by URL',
       'gitlab_project' => 'GitLab export',
-      'gitea' => 'Gitea'
+      'gitea' => 'Gitea',
+      'manifest' => 'Manifest file'
     }
 
     import_sources.each do |name, title|
