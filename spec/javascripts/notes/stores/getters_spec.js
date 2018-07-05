@@ -7,8 +7,12 @@ import {
   collapseNotesMock,
 } from '../mock_data';
 
+const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
+
 describe('Getters Notes Store', () => {
   let state;
+
+  preloadFixtures(discussionWithTwoUnresolvedNotes);
 
   beforeEach(() => {
     state = {
@@ -22,9 +26,23 @@ describe('Getters Notes Store', () => {
       noteableData: noteableDataMock,
     };
   });
+
   describe('discussions', () => {
     it('should return all discussions in the store', () => {
       expect(getters.discussions(state)).toEqual([individualNote]);
+    });
+  });
+
+  describe('resolvedDiscussionsById', () => {
+    it('ignores unresolved system notes', () => {
+      const [discussion] = getJSONFixture(discussionWithTwoUnresolvedNotes);
+      discussion.notes[0].resolved = true;
+      discussion.notes[1].resolved = false;
+      state.discussions.push(discussion);
+
+      expect(getters.resolvedDiscussionsById(state)).toEqual({
+        [discussion.id]: discussion,
+      });
     });
   });
 
