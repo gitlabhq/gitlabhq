@@ -1,4 +1,5 @@
 class Import::ManifestController < Import::BaseController
+  before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
 
   def new
@@ -79,5 +80,9 @@ class Import::ManifestController < Import::BaseController
       .where(import_type: 'manifest')
       .where(creator_id: current_user)
       .includes(:import_state)
+  end
+
+  def verify_import_enabled
+    render_404 unless manifest_import_enabled?
   end
 end
