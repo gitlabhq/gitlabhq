@@ -138,6 +138,28 @@ shared_examples_for 'common trace features' do
     end
   end
 
+  describe '#write' do
+    subject { trace.send(:write, mode) { } }
+
+    let(:mode) { 'wb' }
+
+    context 'when arhicved trace does not exist yet' do
+      it 'does not raise an error' do
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context 'when arhicved trace already exists' do
+      before do
+        create(:ci_job_artifact, :trace, job: build)
+      end
+
+      it 'raises an error' do
+        expect { subject }.to raise_error('Already archived')
+      end
+    end
+  end
+
   describe '#set' do
     before do
       trace.set("12")

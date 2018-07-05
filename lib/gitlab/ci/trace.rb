@@ -6,6 +6,7 @@ module Gitlab
       LEASE_TIMEOUT = 1.hour
 
       ArchiveError = Class.new(StandardError)
+      WriteError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -81,7 +82,9 @@ module Gitlab
 
       def write(mode)
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
+          if trace_artifact
+            raise WriteError, 'Already archived'
+          elsif current_path
             File.open(current_path, mode)
           elsif Feature.enabled?('ci_enable_live_trace')
             Gitlab::Ci::Trace::ChunkedIO.new(job)
