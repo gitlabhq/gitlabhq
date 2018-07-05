@@ -532,13 +532,17 @@ module Ci
     end
 
     def artifacts_archive
-      options[:artifacts].merge(artifact_type: 'archive', artifact_format: 'zip')
+      {
+        name: options[:artifacts][:name],
+        paths: options[:artifacts][:paths],
+        artifact_type: 'archive',
+        artifact_format: 'zip',
+        expire_in: options[:artifacts][:expire_in]
+      }
     end
 
     def artifacts_reports
-      reports = []
-      reports << artifacts_junit if options.dig(:artifacts, :reports, :junit)
-      reports
+      artifacts_junit if options.dig(:artifacts, :reports, :junit)
     end
 
     def artifacts_junit
