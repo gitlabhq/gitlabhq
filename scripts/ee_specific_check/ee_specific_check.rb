@@ -14,7 +14,8 @@ module EESpecificCheck
     'locale/gitlab.pot'
   ].freeze
 
-  CompareBase = Struct.new(:ce_merge_base, :ee_fetch_base, :ce_updated_base)
+  CompareBase = Struct.new(:ce_base, :ee_base, :ce_head, :ee_head)
+  GitStatus = Struct.new(:porcelain, :head)
 
   module_function
 
@@ -30,28 +31,24 @@ module EESpecificCheck
     git_clean
 
     ce_fetch_head = fetch_remote_ce_branch
+    ee_fetch_head = head_commit_sha
     ce_fetch_base = run_git_command("merge-base canonical-ce/master #{ce_fetch_head}")
     ce_merge_base = run_git_command("merge-base canonical-ce/master canonical-ee/master")
     ee_fetch_base = run_git_command("merge-base canonical-ee/master HEAD")
 
-    ce_updated_base =
-      if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
-          ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
-        ce_merge_base
-      else
-        checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
-          ce_fetch_head, ce_fetch_base, ce_merge_base)
-      end
+    ce_updated_head =
+      find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
 
-    CompareBase.new(ce_merge_base, ee_fetch_base, ce_updated_base)
+    CompareBase.new(
+      ce_merge_base, ee_fetch_base, ce_updated_head, ee_fetch_head)
   end
 
   def setup_canonical_remotes
     run_git_command(
       "remote add canonical-ee https://gitlab.com/gitlab-org/gitlab-ee.git",
       "remote add canonical-ce https://gitlab.com/gitlab-org/gitlab-ce.git",
-      "fetch canonical-ee master --quiet",
-      "fetch canonical-ce master --quiet")
+      "fetch canonical-ee master --quiet --depth=9999",
+      "fetch canonical-ce master --quiet --depth=9999")
   end
 
   def fetch_remote_ce_branch
@@ -59,94 +56,152 @@ module EESpecificCheck
 
     remote_to_fetch, branch_to_fetch = find_remote_ce_branch
 
-    run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet")
+    run_git_command("fetch #{remote_to_fetch} #{branch_to_fetch} --quiet --depth=9999")
 
     "#{remote_to_fetch}/#{branch_to_fetch}"
   end
 
-  def checkout_and_rebase_ce_fetch_head_onto_ce_merge_base(
-    ce_fetch_head, ce_fetch_base, ce_merge_base)
-    # So that we could switch back
-    head = head_commit_sha
+  def find_ce_compare_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    if git_ancestor?(ce_merge_base, ce_fetch_base)
+      say("CE is ahead of EE, finding backward CE head")
+      find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    else
+      say("CE is behind of EE, finding forward CE head")
+      find_forward_ce_head(ce_merge_base, ce_fetch_head)
+    end
+  end
+
+  def git_ancestor?(ancestor, descendant)
+    run_git_command(
+      "merge-base --is-ancestor #{ancestor} #{descendant} && echo y") == 'y'
+  end
+
+  def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
+    if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
+        ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+      say("CE is up-to-date, using merge-base directly")
+      run_git_command("merge-base #{ce_merge_base} HEAD")
+    else
+      say("Performing rebase to remove commits in CE haven't merged into EE")
+      checkout_and_rebase(ce_merge_base, ce_fetch_base, ce_fetch_head)
+    end
+  end
+
+  def find_forward_ce_head(ce_merge_base, ce_fetch_head)
+    say("Performing merge with CE master for CE branch #{ce_fetch_head}")
+    with_detached_head(ce_fetch_head) do
+      run_git_command("merge #{ce_merge_base} -s recursive -X patience -m 'ee-specific-auto-merge'")
+
+      status = git_status
+
+      if status.porcelain == ''
+        status.head
+      else
+        run_git_command("merge --abort")
+
+        say <<~MESSAGE
+          💥 Git status not clean! This means there's a conflict in
+          💥 #{ce_fetch_head} with canonical-ce/master. Please resolve
+          💥 the conflict from CE master and retry this job.
+
+          ⚠️ Git status:
+
+          #{status.porcelain}
+        MESSAGE
+
+        exit(254)
+      end
+    end
+  end
+
+  # We rebase onto the commit which is the latest commit presented in both
+  # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
+  # EE yet. Here's an example:
+  #
+  # * o: Relevant commits
+  # * x: Irrelevant commits
+  # * !: Commits we want to cut off from CE branch
+  #
+  #                ^-> o CE branch (ce_fetch_head)
+  #               / (ce_fetch_base)
+  #     o -> o -> ! -> x CE master
+  #          v (ce_merge_base)
+  #     o -> o -> o -> x EE master
+  #               \ (ee_fetch_base)
+  #                v-> o EE branch
+  #
+  # We want to rebase above into this: (we only change the connection)
+  #
+  #            -> - -> o CE branch (ce_fetch_head)
+  #           / (ce_fetch_base)
+  #     o -> o -> ! -> x CE master
+  #          v (ce_merge_base)
+  #     o -> o -> o -> x EE master
+  #               \ (ee_fetch_base)
+  #                v-> o EE branch
+  #
+  # Therefore we rebase onto ce_merge_base, which is based off CE master,
+  # for the CE branch (ce_fetch_head), effective remove the commit marked
+  # as ! in the graph for CE branch. We need to remove it because it's not
+  # merged into EE yet, therefore won't be available in the EE branch.
+  #
+  # After rebase is done, then we could compare against
+  # ce_merge_base..ee_fetch_base along with ce_fetch_head..HEAD (EE branch)
+  # where ce_merge_base..ee_fetch_base is the update-to-date
+  # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
+  # CE and EE branches.
+  def checkout_and_rebase(new_base, old_base, target_head)
+    with_detached_head(target_head) do
+      run_git_command("rebase --onto #{new_base} #{old_base} #{target_head}")
+
+      status = git_status
+
+      if status.porcelain == ''
+        status.head
+      else
+        run_git_command("rebase --abort")
+
+        say <<~MESSAGE
+          💥 Git status not clean! This shouldn't happen, but there are two
+          💥 known issues. One can be worked around, and the other can't.
+          💥
+          💥 First please try to update your CE branch with CE master, and
+          💥 retry this job. You could find more information in this issue:
+          💥
+          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
+          💥
+          💥 It's possible, however, that that doesn't work out. In this case,
+          💥 please just disregard this job. You could find other information at:
+          💥
+          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
+          💥
+          💥 There's a work-in-progress fix at:
+          💥
+          💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
+          💥
+          💥 If you would like to help, or have any questions, please
+          💥 contact @godfat
+
+          ⚠️ Git status:
+
+          #{status.porcelain}
+        MESSAGE
+
+        exit(255)
+      end
+    end
+  end
+
+  def with_detached_head(target_head)
+    # So that we could switch back. CI sometimes doesn't have the branch,
+    # so we don't use current_branch here
+    head = current_head
 
     # Use detached HEAD so that we don't update HEAD
-    run_git_command("checkout -f #{ce_fetch_head}")
+    run_git_command("checkout -f #{target_head}")
     git_clean
 
-    # We rebase onto the commit which is the latest commit presented in both
-    # CE and EE, i.e. ce_merge_base, cutting off commits aren't merged into
-    # EE yet. Here's an example:
-    #
-    # * o: Relevant commits
-    # * x: Irrelevant commits
-    # * !: Commits we want to cut off from CE branch
-    #
-    #                ^-> o CE branch (ce_fetch_head)
-    #               / (ce_fetch_base)
-    #     o -> o -> ! -> x CE master
-    #          v (ce_merge_base)
-    #     o -> o -> o -> x EE master
-    #               \ (ee_fetch_base)
-    #                v-> o EE branch
-    #
-    # We want to rebase above into this: (we only change the connection)
-    #
-    #            -> - -> o CE branch (ce_fetch_head)
-    #           / (ce_fetch_base)
-    #     o -> o -> ! -> x CE master
-    #          v (ce_merge_base)
-    #     o -> o -> o -> x EE master
-    #               \ (ee_fetch_base)
-    #                v-> o EE branch
-    #
-    # Therefore we rebase onto ce_merge_base, which is based off CE master,
-    # for the CE branch (ce_fetch_head), effective remove the commit marked
-    # as ! in the graph for CE branch. We need to remove it because it's not
-    # merged into EE yet, therefore won't be available in the EE branch.
-    #
-    # After rebase is done, then we could compare against
-    # ce_merge_base..ee_fetch_base along with ce_fetch_head..HEAD (EE branch)
-    # where ce_merge_base..ee_fetch_base is the update-to-date
-    # CE/EE difference and ce_fetch_head..HEAD is the changes we made in
-    # CE and EE branches.
-    run_git_command("rebase --onto #{ce_merge_base} #{ce_fetch_base}~1 #{ce_fetch_head}")
-
-    status = git_status
-
-    if status == ''
-      head_commit_sha
-    else
-      say <<~MESSAGE
-        💥 Git status not clean! This shouldn't happen, but there are two
-        💥 known issues. One can be worked around, and the other can't.
-        💥
-        💥 First please try to update your CE branch with CE master, and
-        💥 retry this job. You could find more information in this issue:
-        💥
-        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
-        💥
-        💥 It's possible, however, that that doesn't work out. In this case,
-        💥 please just disregard this job. You could find other information at:
-        💥
-        💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
-        💥
-        💥 There's a work-in-progress fix at:
-        💥
-        💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
-        💥
-        💥 If you would like to help, or have any questions, please
-        💥 contact @godfat
-
-        ⚠️ Git status:
-
-        #{status}
-      MESSAGE
-
-      run_git_command("rebase --abort")
-
-      exit(255)
-    end
-
+    yield
   ensure # ensure would still run if we call exit, don't worry
     # Make sure to switch back
     run_git_command("checkout -f #{head}")
@@ -158,7 +213,10 @@ module EESpecificCheck
   end
 
   def git_status
-    run_git_command("status --porcelain")
+    GitStatus.new(
+      run_git_command("status --porcelain"),
+      head_commit_sha
+    )
   end
 
   def git_clean
@@ -204,6 +262,10 @@ module EESpecificCheck
 
   def ce_repo_url
     @ce_repo_url ||= ENV.fetch('CI_REPOSITORY_URL', 'https://gitlab.com/gitlab-org/gitlab-ce.git').sub('gitlab-ee', 'gitlab-ce')
+  end
+
+  def current_head
+    @current_head ||= ENV.fetch('CI_COMMIT_SHA', current_branch)
   end
 
   def current_branch
