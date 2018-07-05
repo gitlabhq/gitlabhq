@@ -29,8 +29,8 @@
     methods: {
       isValid(form) {
         return !form ||
-          form.find('.js-vue-markdown-field').length ||
-          $(this.$el).closest('form') === form[0];
+          form.find('.js-vue-markdown-field').length &&
+          $(this.$el).closest('form')[0] === form[0];
       },
 
       previewMarkdownTab(event, form) {

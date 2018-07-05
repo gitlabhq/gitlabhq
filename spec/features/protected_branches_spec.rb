@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Protected Branches', :js do
+describe 'Protected Branches', :js do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository) }

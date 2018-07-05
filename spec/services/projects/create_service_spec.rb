@@ -236,6 +236,18 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when readme initialization is requested' do
+    it 'creates README.md' do
+      opts[:initialize_with_readme] = '1'
+
+      project = create_project(user, opts)
+
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.readme.name).to eql('README.md')
+      expect(project.repository.readme.data).to include('# GitLab')
+    end
+  end
+
   context 'when there is an active service template' do
     before do
       create(:service, project: nil, template: true, active: true)

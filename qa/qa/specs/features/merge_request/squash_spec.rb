@@ -1,6 +1,6 @@
 module QA
-  feature 'merge request squash commits', :core do
-    scenario 'when squash commits is marked before merge'  do
+  describe 'merge request squash commits', :core do
+    it 'when squash commits is marked before merge'  do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -23,6 +23,8 @@ module QA
       end
 
       merge_request.visit!
+
+      expect(page).to have_text('to be squashed')
 
       Page::MergeRequest::Show.perform do |merge_request_page|
         merge_request_page.mark_to_squash

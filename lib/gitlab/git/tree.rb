@@ -1,5 +1,3 @@
-# Gitaly note: JV: needs 1 RPC, migration is in progress.
-
 module Gitlab
   module Git
     class Tree
@@ -17,12 +15,8 @@ module Gitlab
         def where(repository, sha, path = nil, recursive = false)
           path = nil if path == '' || path == '/'
 
-          Gitlab::GitalyClient.migrate(:tree_entries) do |is_enabled|
-            if is_enabled
-              repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
-            else
-              tree_entries_from_rugged(repository, sha, path, recursive)
-            end
+          repository.wrapped_gitaly_errors do
+            repository.gitaly_commit_client.tree_entries(repository, sha, path, recursive)
           end
         end
 

@@ -1,7 +1,7 @@
 module QA
-  feature 'clone code from the repository', :core do
+  describe 'clone code from the repository', :core do
     context 'with regular account over http' do
-      given(:location) do
+      let(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http
           repository_location
@@ -31,7 +31,7 @@ module QA
         end
       end
 
-      scenario 'user performs a deep clone' do
+      it 'user performs a deep clone' do
         Git::Repository.perform do |repository|
           repository.uri = location.uri
           repository.use_default_credentials
@@ -42,7 +42,7 @@ module QA
         end
       end
 
-      scenario 'user performs a shallow clone' do
+      it 'user performs a shallow clone' do
         Git::Repository.perform do |repository|
           repository.uri = location.uri
           repository.use_default_credentials

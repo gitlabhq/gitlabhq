@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RecordsUploads
   module Concern
     extend ActiveSupport::Concern

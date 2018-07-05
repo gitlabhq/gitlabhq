@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project Activity RSS' do
+describe 'Project Activity RSS' do
   let(:project) { create(:project, :public) }
   let(:user) { project.owner }
   let(:path) { activity_project_path(project) }

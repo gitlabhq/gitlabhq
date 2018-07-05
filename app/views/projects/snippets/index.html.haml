@@ -1,4 +1,4 @@
-- page_title "Snippets"
+- page_title _("Snippets")
 
 - if current_user
   .top-area
@@ -7,6 +7,6 @@
 
     .nav-controls
       - if can?(current_user, :create_project_snippet, @project)
-        = link_to "New snippet", new_project_snippet_path(@project), class: "btn btn-new", title: "New snippet"
+        = link_to _("New snippet"), new_project_snippet_path(@project), class: "btn btn-new", title: _("New snippet")
 
 = render 'snippets/snippets'

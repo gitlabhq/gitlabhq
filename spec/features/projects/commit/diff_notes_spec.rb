@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Commit diff', :js do
+describe 'Commit diff', :js do
   include RepoHelpers
 
   let(:user)          { create(:user) }

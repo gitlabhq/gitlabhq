@@ -122,7 +122,7 @@ module CiStatusHelper
 
   def no_runners_for_project?(project)
     project.runners.blank? &&
-      Ci::Runner.shared.blank?
+      Ci::Runner.instance_type.blank?
   end
 
   def render_status_with_link(type, status, path = nil, tooltip_placement: 'left', cssclass: '', container: 'body')

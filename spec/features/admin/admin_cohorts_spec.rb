@@ -1,11 +1,11 @@
 require 'rails_helper'
 
-feature 'Admin cohorts page' do
+describe 'Admin cohorts page' do
   before do
     sign_in(create(:admin))
   end
 
-  scenario 'See users count per month' do
+  it 'See users count per month' do
     2.times { create(:user) }
 
     visit admin_cohorts_path

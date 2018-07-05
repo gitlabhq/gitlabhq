@@ -1,7 +1,7 @@
 import Visibility from 'visibilityjs';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import actions, {
+import {
   requestLatestPipeline,
   receiveLatestPipelineError,
   receiveLatestPipelineSuccess,
@@ -59,7 +59,7 @@ describe('IDE pipelines actions', () => {
     it('commits error', done => {
       testAction(
         receiveLatestPipelineError,
-        null,
+        { status: 404 },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
         [{ type: 'stopPipelinePolling' }],
@@ -67,12 +67,26 @@ describe('IDE pipelines actions', () => {
       );
     });
 
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveLatestPipelineError({ commit() {}, dispatch() {} });
-
-      expect(flashSpy).toHaveBeenCalled();
+    it('dispatches setErrorMessage is not 404', done => {
+      testAction(
+        receiveLatestPipelineError,
+        { status: 500 },
+        mockedState,
+        [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst fetching the latest pipline.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: null,
+            },
+          },
+          { type: 'stopPipelinePolling' },
+        ],
+        done,
+      );
     });
   });
 
@@ -181,7 +195,10 @@ describe('IDE pipelines actions', () => {
 
         new Promise(resolve => requestAnimationFrame(resolve))
           .then(() => {
-            expect(dispatch.calls.argsFor(1)).toEqual(['receiveLatestPipelineError']);
+            expect(dispatch.calls.argsFor(1)).toEqual([
+              'receiveLatestPipelineError',
+              jasmine.anything(),
+            ]);
           })
           .then(done)
           .catch(done.fail);
@@ -199,20 +216,22 @@ describe('IDE pipelines actions', () => {
     it('commits error', done => {
       testAction(
         receiveJobsError,
-        1,
+        { id: 1 },
         mockedState,
         [{ type: types.RECEIVE_JOBS_ERROR, payload: 1 }],
-        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst loading the pipelines jobs.',
+              action: jasmine.anything(),
+              actionText: 'Please try again',
+              actionPayload: { id: 1 },
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveJobsError({ commit() {} }, 1);
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 
@@ -268,7 +287,7 @@ describe('IDE pipelines actions', () => {
           [],
           [
             { type: 'requestJobs', payload: stage.id },
-            { type: 'receiveJobsError', payload: stage.id },
+            { type: 'receiveJobsError', payload: stage },
           ],
           done,
         );
@@ -337,17 +356,19 @@ describe('IDE pipelines actions', () => {
         null,
         mockedState,
         [{ type: types.RECEIVE_JOB_TRACE_ERROR }],
-        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst fetching the job trace.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: null,
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveJobTraceError({ commit() {} });
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 

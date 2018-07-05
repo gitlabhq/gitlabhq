@@ -1,7 +1,7 @@
 require 'securerandom'
 
 module QA
-  feature 'API basics', :core do
+  describe 'API basics', :core do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
     end
@@ -9,7 +9,7 @@ module QA
     let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
     let(:sanitized_project_path) { CGI.escape("#{Runtime::User.name}/#{project_name}") }
 
-    scenario 'user creates a project with a file and deletes them afterwards' do
+    it 'user creates a project with a file and deletes them afterwards' do
       create_project_request = Runtime::API::Request.new(@api_client, '/projects')
       post create_project_request.url, path: project_name, name: project_name
 

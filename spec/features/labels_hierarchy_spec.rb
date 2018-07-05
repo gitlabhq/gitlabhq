@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels Hierarchy', :js, :nested_groups do
+describe 'Labels Hierarchy', :js, :nested_groups do
   include FilteredSearchHelpers
 
   let!(:user) { create(:user) }

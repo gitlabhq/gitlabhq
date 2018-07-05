@@ -251,7 +251,6 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         wrapped_gitaly_errors do
           gitaly_ref_client.tags
@@ -556,12 +555,8 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        iterator = gitaly_migrate(:diff_between) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
-          else
-            diff_patches(from, to, options, *paths)
-          end
+        iterator = wrapped_gitaly_errors do
+          gitaly_commit_client.diff(from, to, options.merge(paths: paths))
         end
 
         Gitlab::Git::DiffCollection.new(iterator, options)
@@ -602,17 +597,9 @@ module Gitlab
       #   @repository.submodule_url_for('master', 'rack')
       #   # => git@localhost:rack.git
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/329
       def submodule_url_for(ref, path)
-        Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
-          if is_enabled
-            gitaly_submodule_url_for(ref, path)
-          else
-            if submodules(ref).any?
-              submodule = submodules(ref)[path]
-              submodule['url'] if submodule
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_submodule_url_for(ref, path)
         end
       end
 
@@ -837,22 +824,14 @@ module Gitlab
       # Ex.
       #   repo.ls_files('master')
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
         gitaly_commit_client.ls_files(ref)
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
-        Gitlab::GitalyClient.migrate(:apply_gitattributes) do |is_enabled|
-          if is_enabled
-            gitaly_copy_gitattributes(ref)
-          else
-            rugged_copy_gitattributes(ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.apply_gitattributes(ref)
         end
-      rescue GRPC::InvalidArgument
-        raise InvalidRef
       end
 
       def info_attributes
@@ -1606,17 +1585,6 @@ module Gitlab
         end
 
         tmp_entry
-      end
-
-      # Return the Rugged patches for the diff between +from+ and +to+.
-      def diff_patches(from, to, options = {}, *paths)
-        options ||= {}
-        break_rewrites = options[:break_rewrites]
-        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
-
-        diff = rugged.diff(from, to, actual_options)
-        diff.find_similar!(break_rewrites: break_rewrites)
-        diff.each_patch
       end
 
       def sort_branches(branches, sort_by)

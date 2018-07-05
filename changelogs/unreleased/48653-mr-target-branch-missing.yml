@@ -1,5 +1,0 @@
----
-title: Fix merge request page rendering error when its target/source branch is missing
-merge_request: 20280
-author:
-type: fixed

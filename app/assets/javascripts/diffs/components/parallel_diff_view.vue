@@ -1,24 +1,54 @@
 <script>
-import diffContentMixin from '../mixins/diff_content';
+import { mapGetters } from 'vuex';
+import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
 import { EMPTY_CELL_TYPE } from '../constants';
+import { trimFirstCharOfLineContent } from '../store/utils';
 
 export default {
   components: {
+    parallelDiffTableRow,
     parallelDiffCommentRow,
   },
-  mixins: [diffContentMixin],
+  props: {
+    diffFile: {
+      type: Object,
+      required: true,
+    },
+    diffLines: {
+      type: Array,
+      required: true,
+    },
+  },
   computed: {
+    ...mapGetters(['commit']),
     parallelDiffLines() {
-      return this.normalizedDiffLines.map(line => {
-        if (!line.left) {
-          Object.assign(line, { left: { type: EMPTY_CELL_TYPE } });
-        } else if (!line.right) {
-          Object.assign(line, { right: { type: EMPTY_CELL_TYPE } });
+      return this.diffLines.map(line => {
+        const parallelLine = Object.assign({}, line);
+
+        if (line.left) {
+          parallelLine.left = trimFirstCharOfLineContent(line.left);
+        } else {
+          parallelLine.left = { type: EMPTY_CELL_TYPE };
         }
 
-        return line;
+        if (line.right) {
+          parallelLine.right = trimFirstCharOfLineContent(line.right);
+        } else {
+          parallelLine.right = { type: EMPTY_CELL_TYPE };
+        }
+
+        return parallelLine;
       });
+    },
+    diffLinesLength() {
+      return this.parallelDiffLines.length;
+    },
+    commitId() {
+      return this.commit && this.commit.id;
+    },
+    userColorScheme() {
+      return window.gon.user_color_scheme;
     },
   },
 };
@@ -35,7 +65,7 @@ export default {
         <template
           v-for="(line, index) in parallelDiffLines"
         >
-          <diff-table-row
+          <parallel-diff-table-row
             :diff-file="diffFile"
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
