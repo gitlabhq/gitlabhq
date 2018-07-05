@@ -1,9 +1,14 @@
 - type = local_assigns.fetch(:type)
+- board = local_assigns.fetch(:board, nil)
 - block_css_class = type != :boards_modal ? 'row-content-block second-block' : ''
 - full_path = @project.present? ? @project.full_path : @group.full_path
+- user_can_admin_list = board && can?(current_user, :admin_list, board.parent)
 
 .issues-filters
   .issues-details-filters.filtered-search-block{ class: block_css_class, "v-pre" => type == :boards_modal }
+    - if type == :boards
+      #js-multiple-boards-switcher.inline.boards-switcher{ "v-cloak" => true }
+        = render_if_exists "shared/boards/switcher", board: board
     = form_tag page_filter_path(without: [:assignee_id, :author_id, :milestone_title, :label_name, :search]), method: :get, class: 'filter-form js-filter-form' do
       - if params[:search].present?
         = hidden_field_tag :search, params[:search]
@@ -99,13 +104,18 @@
                     %gl-emoji
                     %span.js-data-value.prepend-left-10
                       {{name}}
+
+            = render_if_exists 'shared/issuable/filter_weight', type: type
+
           %button.clear-search.hidden{ type: 'button' }
             = icon('times')
         .filter-dropdown-container
           - if type == :boards
-            - if can?(current_user, :admin_list, board.parent)
-              = render_if_exists 'shared/issuable/board_create_list_dropdown', board: board
+            .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
+            - if user_can_admin_list
+              = render 'shared/issuable/board_create_list_dropdown', board: board
               - if @project
                 #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
+            #js-toggle-focus-btn
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'
