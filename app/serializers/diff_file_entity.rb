@@ -134,12 +134,12 @@ class DiffFileEntity < Grape::Entity
   end
 
   # Used for inline diffs
-  expose :highlighted_diff_lines, if: -> (diff_file, _) { diff_file.text? } do |diff_file|
+  expose :highlighted_diff_lines, if: -> (diff_file, _) { diff_file.text? && view_type == ::Gitlab::Diff::File::VIEW_TYPES[0] } do |diff_file|
     diff_file.diff_lines_for_serializer
   end
 
   # Used for parallel diffs
-  expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? }
+  expose :parallel_diff_lines, if: -> (diff_file, _) { diff_file.text? && view_type == ::Gitlab::Diff::File::VIEW_TYPES[1] }
 
   def current_user
     request.current_user
@@ -152,6 +152,16 @@ class DiffFileEntity < Grape::Entity
       else
         []
       end
+    end
+  end
+
+  def view_type
+    strong_memoize(:view_type) do
+      types = ::Gitlab::Diff::File::VIEW_TYPES
+
+      return options[:view] if types.include?(options[:view])
+
+      types.first
     end
   end
 end

@@ -7,6 +7,8 @@ module Gitlab
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
         :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, :has_binary_notice?, to: :diff, prefix: false
 
+      VIEW_TYPES = %w(inline parallel).freeze
+
       # Finding a viewer for a diff file happens based only on extension and whether the
       # diff file blobs are binary or text, which means 1 diff file should only be matched by 1 viewer,
       # and the order of these viewers doesn't really matter.

@@ -19,7 +19,7 @@ describe DiffFileEntity do
         :submodule, :submodule_link, :submodule_tree_url, :file_path,
         :deleted_file, :old_path, :new_path, :mode_changed,
         :a_mode, :b_mode, :text, :old_path_html,
-        :new_path_html, :highlighted_diff_lines, :parallel_diff_lines,
+        :new_path_html, :highlighted_diff_lines,
         :blob, :file_hash, :added_lines, :removed_lines, :diff_refs, :content_sha,
         :stored_externally, :external_storage, :too_large, :collapsed, :new_file,
         :context_lines_path
@@ -38,6 +38,20 @@ describe DiffFileEntity do
         expect(subject[:highlighted_diff_lines]).to be_nil
         expect(subject[:can_modify_blob]).to be_nil
       end
+    end
+
+    context 'when view type is parallel' do
+      let(:entity) { described_class.new(diff_file, request: {}, view: 'inline') }
+
+      it { is_expected.not_to include(:parallel_diff_lines) }
+      it { is_expected.to include(:highlighted_diff_lines) }
+    end
+
+    context 'when view type is inline' do
+      let(:entity) { described_class.new(diff_file, request: {}, view: 'parallel') }
+
+      it { is_expected.to include(:parallel_diff_lines) }
+      it { is_expected.not_to include(:highlighted_diff_lines) }
     end
   end
 
