@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master deletes tag' do
+describe 'Master deletes tag' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -11,7 +11,7 @@ feature 'Master deletes tag' do
   end
 
   context 'from the tags list page', :js do
-    scenario 'deletes the tag' do
+    it 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
       delete_first_tag
@@ -21,7 +21,7 @@ feature 'Master deletes tag' do
   end
 
   context 'from a specific tag page' do
-    scenario 'deletes the tag' do
+    it 'deletes the tag' do
       click_on 'v1.0.0'
       expect(current_path).to eq(
         project_tag_path(project, 'v1.0.0'))
@@ -40,7 +40,7 @@ feature 'Master deletes tag' do
         .and_raise(Gitlab::Git::PreReceiveError, 'Do not delete tags')
     end
 
-    scenario 'shows the error message' do
+    it 'shows the error message' do
       delete_first_tag
 
       expect(page).to have_content('Do not delete tags')

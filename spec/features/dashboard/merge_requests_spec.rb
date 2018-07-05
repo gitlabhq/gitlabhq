@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Merge Requests' do
+describe 'Dashboard Merge Requests' do
   include Spec::Support::Helpers::Features::SortingHelpers
   include FilterItemSelectHelper
   include ProjectForksHelper

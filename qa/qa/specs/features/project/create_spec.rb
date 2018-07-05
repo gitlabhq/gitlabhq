@@ -1,6 +1,6 @@
 module QA
-  feature 'create a new project', :core do
-    scenario 'user creates a new project' do
+  describe 'create a new project', :core do
+    it 'user creates a new project' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
