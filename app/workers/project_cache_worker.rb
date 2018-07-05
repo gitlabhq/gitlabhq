@@ -3,10 +3,7 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
   include ApplicationWorker
-<<<<<<< HEAD
   prepend EE::Workers::ProjectCacheWorker
-=======
->>>>>>> upstream/master
 
   LEASE_TIMEOUT = 15.minutes.to_i
 
