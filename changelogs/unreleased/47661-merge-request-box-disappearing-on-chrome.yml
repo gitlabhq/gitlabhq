@@ -1,5 +1,0 @@
----
-title: Replace deprecated bs.affix in merge request tabs with sticky polyfill
-merge_request:
-author:
-type: fixed
