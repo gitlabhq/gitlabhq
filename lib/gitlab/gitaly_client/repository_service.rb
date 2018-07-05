@@ -21,7 +21,7 @@ module Gitlab
 
       def cleanup
         request = Gitaly::CleanupRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :cleanup, request)
+        GitalyClient.call(@storage, :repository_service, :cleanup, request, timeout: GitalyClient.fast_timeout)
       end
 
       def garbage_collect(create_bitmap)
@@ -41,13 +41,13 @@ module Gitlab
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :repository_size, request)
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request, timeout: GitalyClient.medium_timeout)
         response.size
       end
 
       def apply_gitattributes(revision)
         request = Gitaly::ApplyGitattributesRequest.new(repository: @gitaly_repo, revision: encode_binary(revision))
-        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request)
+        GitalyClient.call(@storage, :repository_service, :apply_gitattributes, request, timeout: GitalyClient.fast_timeout)
       rescue GRPC::InvalidArgument => ex
         raise Gitlab::Git::Repository::InvalidRef, ex
       end
@@ -55,7 +55,7 @@ module Gitlab
       def info_attributes
         request = Gitaly::GetInfoAttributesRequest.new(repository: @gitaly_repo)
 
-        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request)
+        response = GitalyClient.call(@storage, :repository_service, :get_info_attributes, request, timeout: GitalyClient.fast_timeout)
         response.each_with_object("") do |message, attributes|
           attributes << message.attributes
         end
@@ -82,7 +82,7 @@ module Gitlab
 
       def create_repository
         request = Gitaly::CreateRepositoryRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :create_repository, request)
+        GitalyClient.call(@storage, :repository_service, :create_repository, request, timeout: GitalyClient.medium_timeout)
       end
 
       def has_local_branches?
@@ -98,7 +98,7 @@ module Gitlab
           revisions: revisions.map { |r| encode_binary(r) }
         )
 
-        response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request)
+        response = GitalyClient.call(@storage, :repository_service, :find_merge_base, request, timeout: GitalyClient.fast_timeout)
         response.base.presence
       end
 
@@ -258,7 +258,7 @@ module Gitlab
         )
         request.old_revision = old_ref.b unless old_ref.nil?
 
-        response = GitalyClient.call(@storage, :repository_service, :write_ref, request)
+        response = GitalyClient.call(@storage, :repository_service, :write_ref, request, timeout: GitalyClient.fast_timeout)
 
         raise Gitlab::Git::CommandError, encode!(response.error) if response.error.present?
 
@@ -288,7 +288,7 @@ module Gitlab
 
       def calculate_checksum
         request  = Gitaly::CalculateChecksumRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request)
+        response = GitalyClient.call(@storage, :repository_service, :calculate_checksum, request, timeout: GitalyClient.fast_timeout)
         response.checksum.presence
       rescue GRPC::DataLoss => e
         raise Gitlab::Git::Repository::InvalidRepository.new(e)
@@ -297,12 +297,12 @@ module Gitlab
       def raw_changes_between(from, to)
         request = Gitaly::GetRawChangesRequest.new(repository: @gitaly_repo, from_revision: from, to_revision: to)
 
-        GitalyClient.call(@storage, :repository_service, :get_raw_changes, request)
+        GitalyClient.call(@storage, :repository_service, :get_raw_changes, request, timeout: GitalyClient.fast_timeout)
       end
 
       def search_files_by_name(ref, query)
         request = Gitaly::SearchFilesByNameRequest.new(repository: @gitaly_repo, ref: ref, query: query)
-        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request).flat_map(&:files)
+        GitalyClient.call(@storage, :repository_service, :search_files_by_name, request, timeout: GitalyClient.fast_timeout).flat_map(&:files)
       end
 
       def search_files_by_content(ref, query)
