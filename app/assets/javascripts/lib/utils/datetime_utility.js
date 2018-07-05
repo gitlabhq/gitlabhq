@@ -1,5 +1,6 @@
 import $ from 'jquery';
 import timeago from 'timeago.js';
+import dateFormat from 'dateformat';
 import { pluralize } from './text_utility';
 import { languageCode, s__ } from '../../locale';
 
