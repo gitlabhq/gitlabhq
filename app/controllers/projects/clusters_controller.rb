@@ -1,9 +1,6 @@
 class Projects::ClustersController < Projects::ApplicationController
-<<<<<<< HEAD
   prepend EE::Projects::ClustersController
 
-=======
->>>>>>> upstream/master
   before_action :cluster, except: [:index, :new, :create_gcp, :create_user]
   before_action :authorize_read_cluster!
   before_action :generate_gcp_authorize_url, only: [:new]
