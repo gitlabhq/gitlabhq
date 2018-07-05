@@ -30,7 +30,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?,
+    :gitea_import_enabled?, :github_import_configured?,
+    :gitlab_import_enabled?, :gitlab_import_configured?,
+    :bitbucket_import_enabled?, :bitbucket_import_configured?,
+    :google_code_import_enabled?, :fogbugz_import_enabled?,
+    :git_import_enabled?, :gitlab_project_import_enabled?,
+    :manifest_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -349,6 +355,10 @@ class ApplicationController < ActionController::Base
 
   def gitlab_project_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+  end
+
+  def manifest_import_enabled?
+    Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application
