@@ -1,6 +1,27 @@
 class Import::BitbucketServerController < Import::BaseController
   before_action :verify_bitbucket_server_import_enabled
   before_action :bitbucket_auth, except: [:new, :configure]
+  before_action :validate_import_params, only: [:create]
+
+  # As a basic sanity check to prevent URL injection, restrict project
+  # repostiory input and repository slugs to allowed characters. For Bitbucket:
+  #
+  # Project keys must start with a letter and may only consist of ASCII letters, numbers and underscores (A-Z, a-z, 0-9, _).
+  #
+  # Repository names are limited to 128 characters. They must start with a
+  # letter or number and may contain spaces, hyphens, underscores, and periods.
+  # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
+  VALID_BITBUCKET_CHARS = %r(\A[a-zA-z0-9\-_\.\s]*$)
+
+  SERVER_ERRORS = [SocketError,
+                   OpenSSL::SSL::SSLError,
+                   Errno::ECONNRESET,
+                   Errno::ECONNREFUSED,
+                   Errno::EHOSTUNREACH,
+                   Net::OpenTimeout,
+                   Net::ReadTimeout,
+                   Gitlab::HTTP::BlockedUrlError,
+                   BitbucketServer::Error::Unauthorized].freeze
 
   def new
   end
@@ -8,10 +29,12 @@ class Import::BitbucketServerController < Import::BaseController
   def create
     bitbucket_client = BitbucketServer::Client.new(credentials)
 
-    repo_id = params[:repo_id].to_s
-    # XXX must be a better way
-    project_slug, repo_slug = repo_id.split("___")
-    repo = bitbucket_client.repo(project_slug, repo_slug)
+    repo = bitbucket_client.repo(@project_key, @repo_slug)
+
+    unless repo
+      return render json: { errors: "Project #{@project_key}/#{repo_slug} could not be found" }
+    end
+
     project_name = params[:new_name].presence || repo.name
 
     repo_owner = current_user.username
@@ -19,7 +42,7 @@ class Import::BitbucketServerController < Import::BaseController
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
     if current_user.can?(:create_projects, target_namespace)
-      project = Gitlab::BitbucketServerImport::ProjectCreator.new(project_slug, repo_slug, repo, project_name, target_namespace, current_user, credentials).execute
+      project = Gitlab::BitbucketServerImport::ProjectCreator.new(@project_key, @repo_slug, repo, project_name, target_namespace, current_user, credentials).execute
 
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
@@ -29,6 +52,8 @@ class Import::BitbucketServerController < Import::BaseController
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
+  rescue *SERVER_ERRROS => e
+    render json: { errors: "Unable to connect to server: #{e}" }
   end
 
   def configure
@@ -49,6 +74,10 @@ class Import::BitbucketServerController < Import::BaseController
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
+  rescue *SERVER_ERRORS => e
+    flash[:alert] = "Unable to connect to server: #{e}"
+    clear_session_data
+    redirect_to new_import_bitbucket_server_path
   end
 
   def jobs
@@ -56,6 +85,16 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   private
+
+  def validate_import_params
+    @project_key = params[:project]
+    @repo_slug = params[:repository]
+
+    return render json: { errors: 'Missing project key' } unless @project_key.present? && @repo_slug.present?
+    return render json: { errors: 'Missing repository slug' } unless @repo_slug.present?
+    return render json: { errors: 'Invalid project key' } unless @project_key =~ VALID_BITBUCKET_CHARS
+    return render json: { errors: 'Invalid repository slug' } unless @repo_slug =~ VALID_BITBUCKET_CHARS
+  end
 
   def bitbucket_auth
     unless session[bitbucket_server_url_key].present? &&
@@ -79,6 +118,14 @@ class Import::BitbucketServerController < Import::BaseController
 
   def personal_access_token_key
     :bitbucket_server_personal_access_token
+  end
+
+  def clear_session_data
+    return unless session
+
+    session[bitbucket_server_url_key] = nil
+    session[bitbucket_server_username_key] = nil
+    session[personal_access_token_key] = nil
   end
 
   def credentials

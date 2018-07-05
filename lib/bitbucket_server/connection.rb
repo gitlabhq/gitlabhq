@@ -1,5 +1,7 @@
 module BitbucketServer
   class Connection
+    include ActionView::Helpers::SanitizeHelper
+
     DEFAULT_API_VERSION = '1.0'.freeze
 
     attr_reader :api_version, :base_uri, :username, :token
@@ -15,18 +17,35 @@ module BitbucketServer
       response = Gitlab::HTTP.get(build_url(path),
                                   basic_auth: auth,
                                   params: extra_query)
-      ## Handle failure
+
+      check_errors!(response)
       response.parsed_response
     end
 
     def post(path, body)
-      Gitlab::HTTP.post(build_url(path),
+      response = Gitlab::HTTP.post(build_url(path),
                         basic_auth: auth,
                         headers: post_headers,
                         body: body)
+
+      check_errors!(response)
+      response
     end
 
     private
+
+    def check_errors!(response)
+      if response.code != 200
+        error =
+          if response.parsed_response
+            sanitize(response.parsed_response.dig('errors', 0, 'message'))
+          end
+
+        message = "Error #{response.code}"
+        message += ": #{error}" if error
+        raise ::BitbucketServer::Error::Unauthorized, message
+      end
+    end
 
     def auth
       @auth ||= { username: username, password: token }

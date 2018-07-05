@@ -36,6 +36,8 @@ class ImporterStatus {
     const $targetField = $tr.find('.import-target');
     const $namespaceInput = $targetField.find('.js-select-namespace option:selected');
     const id = $tr.attr('id').replace('repo_', '');
+    const repoData = $tr.data();
+
     let targetNamespace;
     let newName;
     if ($namespaceInput.length > 0) {
@@ -47,12 +49,18 @@ class ImporterStatus {
 
     this.id = id;
 
-    return axios.post(this.importUrl, {
+    let attributes = {
       repo_id: id,
       target_namespace: targetNamespace,
       new_name: newName,
-      ci_cd_only: this.ciCdOnly,
-    })
+      ci_cd_only: this.ciCdOnly
+    };
+
+    if (repoData) {
+      attributes = Object.assign(repoData, attributes);
+    }
+
+    return axios.post(this.importUrl, attributes)
     .then(({ data }) => {
       const job = $(`tr#repo_${id}`);
       job.attr('id', `project_${data.id}`);

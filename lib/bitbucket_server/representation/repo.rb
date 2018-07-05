@@ -5,6 +5,10 @@ module BitbucketServer
         super(raw)
       end
 
+      def project_name
+        raw.dig('project', 'name')
+      end
+
       def owner
         project['name']
       end
