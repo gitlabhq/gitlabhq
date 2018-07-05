@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Sorting' do
+describe 'Projects > Members > Sorting' do
   let(:master)    { create(:user, name: 'John Doe') }
   let(:developer) { create(:user, name: 'Mary Jane', last_sign_in_at: 5.days.ago) }
   let(:project)   { create(:project, namespace: master.namespace, creator: master) }
 
-  background do
+  before do
     create(:project_member, :developer, user: developer, project: project, created_at: 3.days.ago)
 
     sign_in(master)
   end
 
-  scenario 'sorts alphabetically by default' do
+  it 'sorts alphabetically by default' do
     visit_members_list(sort: nil)
 
     expect(first_member).to include(master.name)
@@ -19,7 +19,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
-  scenario 'sorts by access level ascending' do
+  it 'sorts by access level ascending' do
     visit_members_list(sort: :access_level_asc)
 
     expect(first_member).to include(developer.name)
@@ -27,7 +27,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, ascending')
   end
 
-  scenario 'sorts by access level descending' do
+  it 'sorts by access level descending' do
     visit_members_list(sort: :access_level_desc)
 
     expect(first_member).to include(master.name)
@@ -35,7 +35,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Access level, descending')
   end
 
-  scenario 'sorts by last joined' do
+  it 'sorts by last joined' do
     visit_members_list(sort: :last_joined)
 
     expect(first_member).to include(master.name)
@@ -43,7 +43,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Last joined')
   end
 
-  scenario 'sorts by oldest joined' do
+  it 'sorts by oldest joined' do
     visit_members_list(sort: :oldest_joined)
 
     expect(first_member).to include(developer.name)
@@ -51,7 +51,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Oldest joined')
   end
 
-  scenario 'sorts by name ascending' do
+  it 'sorts by name ascending' do
     visit_members_list(sort: :name_asc)
 
     expect(first_member).to include(master.name)
@@ -59,7 +59,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, ascending')
   end
 
-  scenario 'sorts by name descending' do
+  it 'sorts by name descending' do
     visit_members_list(sort: :name_desc)
 
     expect(first_member).to include(developer.name)
@@ -67,7 +67,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Name, descending')
   end
 
-  scenario 'sorts by recent sign in', :clean_gitlab_redis_shared_state do
+  it 'sorts by recent sign in', :clean_gitlab_redis_shared_state do
     visit_members_list(sort: :recent_sign_in)
 
     expect(first_member).to include(master.name)
@@ -75,7 +75,7 @@ feature 'Projects > Members > Sorting' do
     expect(page).to have_css('.member-sort-dropdown .dropdown-toggle-text', text: 'Recent sign in')
   end
 
-  scenario 'sorts by oldest sign in', :clean_gitlab_redis_shared_state do
+  it 'sorts by oldest sign in', :clean_gitlab_redis_shared_state do
     visit_members_list(sort: :oldest_sign_in)
 
     expect(first_member).to include(developer.name)

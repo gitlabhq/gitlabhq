@@ -1,10 +1,10 @@
 module QA
-  feature 'LDAP user login', :ldap do
+  describe 'LDAP user login', :ldap do
     before do
       Runtime::Env.user_type = 'ldap'
     end
 
-    scenario 'user logs in using LDAP credentials' do
+    it 'user logs in using LDAP credentials' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 

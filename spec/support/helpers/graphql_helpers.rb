@@ -57,12 +57,12 @@ module GraphqlHelpers
 
     type.fields.map do |name, field|
       # We can't guess arguments, so skip fields that require them
-      next if field.arguments.any?
+      next if required_arguments?(field)
 
-      if scalar?(field)
-        name
-      else
+      if nested_fields?(field)
         "#{name} { #{all_graphql_fields_for(field_type(field))} }"
+      else
+        name
       end
     end.compact.join("\n")
   end
@@ -85,8 +85,20 @@ module GraphqlHelpers
     json_response['data']
   end
 
+  def nested_fields?(field)
+    !scalar?(field) && !enum?(field)
+  end
+
   def scalar?(field)
     field_type(field).kind.scalar?
+  end
+
+  def enum?(field)
+    field_type(field).kind.enum?
+  end
+
+  def required_arguments?(field)
+    field.arguments.values.any? { |argument| argument.type.non_null? }
   end
 
   def field_type(field)

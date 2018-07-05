@@ -298,9 +298,8 @@ review-docs-deploy:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME deploy
   only:
-    - /(^docs[\/-].*|.*-docs$)/
-    - branches@gitlab-org/gitlab-ce
-    - branches@gitlab-org/gitlab-ee
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ee
   <<: *except-qa
 
 # Cleanup remote environment of gitlab-docs
@@ -326,11 +325,9 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
-  before_script:
-    - gem install gitlab --no-rdoc --no-ri
-    - chmod 755 ./scripts/trigger-build-cloud-native
   script:
-    - ./scripts/trigger-build-cloud-native
+    - gem install gitlab --no-ri --no-rdoc
+    - ./trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee

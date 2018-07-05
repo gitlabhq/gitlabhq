@@ -7,18 +7,47 @@ describe Gitlab::Middleware::Multipart do
   let(:middleware) { described_class.new(app) }
   let(:original_filename) { 'filename' }
 
-  it 'opens top-level files' do
-    Tempfile.open('top-level') do |tempfile|
-      env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+  shared_examples_for 'multipart upload files' do
+    it 'opens top-level files' do
+      Tempfile.open('top-level') do |tempfile|
+        env = post_env({ 'file' => tempfile.path }, { 'file.name' => original_filename, 'file.path' => tempfile.path, 'file.remote_id' => remote_id }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
 
+        expect_uploaded_file(tempfile, %w(file))
+
+        middleware.call(env)
+      end
+    end
+
+    it 'opens files one level deep' do
+      Tempfile.open('one-level') do |tempfile|
+        in_params = { 'user' => { 'avatar' => { '.name' => original_filename, '.path' => tempfile.path, '.remote_id' => remote_id } } }
+        env = post_env({ 'user[avatar]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+
+        expect_uploaded_file(tempfile, %w(user avatar))
+
+        middleware.call(env)
+      end
+    end
+
+    it 'opens files two levels deep' do
+      Tempfile.open('two-levels') do |tempfile|
+        in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => original_filename, '.path' => tempfile.path, '.remote_id' => remote_id } } } }
+        env = post_env({ 'project[milestone][themesong]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+
+        expect_uploaded_file(tempfile, %w(project milestone themesong))
+
+        middleware.call(env)
+      end
+    end
+
+    def expect_uploaded_file(tempfile, path, remote: false)
       expect(app).to receive(:call) do |env|
-        file = Rack::Request.new(env).params['file']
+        file = Rack::Request.new(env).params.dig(*path)
         expect(file).to be_a(::UploadedFile)
         expect(file.path).to eq(tempfile.path)
         expect(file.original_filename).to eq(original_filename)
+        expect(file.remote_id).to eq(remote_id)
       end
-
-      middleware.call(env)
     end
   end
 
@@ -34,36 +63,16 @@ describe Gitlab::Middleware::Multipart do
     expect { middleware.call(env) }.to raise_error(JWT::InvalidIssuerError)
   end
 
-  it 'opens files one level deep' do
-    Tempfile.open('one-level') do |tempfile|
-      in_params = { 'user' => { 'avatar' => { '.name' => original_filename } } }
-      env = post_env({ 'user[avatar]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+  context 'with remote file' do
+    let(:remote_id) { 'someid' }
 
-      expect(app).to receive(:call) do |env|
-        file = Rack::Request.new(env).params['user']['avatar']
-        expect(file).to be_a(::UploadedFile)
-        expect(file.path).to eq(tempfile.path)
-        expect(file.original_filename).to eq(original_filename)
-      end
-
-      middleware.call(env)
-    end
+    it_behaves_like 'multipart upload files'
   end
 
-  it 'opens files two levels deep' do
-    Tempfile.open('two-levels') do |tempfile|
-      in_params = { 'project' => { 'milestone' => { 'themesong' => { '.name' => original_filename } } } }
-      env = post_env({ 'project[milestone][themesong]' => tempfile.path }, in_params, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+  context 'with local file' do
+    let(:remote_id) { nil }
 
-      expect(app).to receive(:call) do |env|
-        file = Rack::Request.new(env).params['project']['milestone']['themesong']
-        expect(file).to be_a(::UploadedFile)
-        expect(file.path).to eq(tempfile.path)
-        expect(file.original_filename).to eq(original_filename)
-      end
-
-      middleware.call(env)
-    end
+    it_behaves_like 'multipart upload files'
   end
 
   def post_env(rewritten_fields, params, secret, issuer)

@@ -28,23 +28,29 @@ export default {
     },
   },
   methods: {
+    buildUpdateRequest(list) {
+      return {
+        add_label_ids: [list.label.id],
+      };
+    },
     addIssues() {
       const firstListIndex = 1;
       const list = this.modal.selectedList || this.state.lists[firstListIndex];
       const selectedIssues = ModalStore.getSelectedIssues();
       const issueIds = selectedIssues.map(issue => issue.id);
+      const req = this.buildUpdateRequest(list);
 
       // Post the data to the backend
-      gl.boardService.bulkUpdate(issueIds, {
-        add_label_ids: [list.label.id],
-      }).catch(() => {
-        Flash(__('Failed to update issues, please try again.'));
+      gl.boardService
+        .bulkUpdate(issueIds, req)
+        .catch(() => {
+          Flash(__('Failed to update issues, please try again.'));
 
-        selectedIssues.forEach((issue) => {
-          list.removeIssue(issue);
-          list.issuesSize -= 1;
+          selectedIssues.forEach((issue) => {
+            list.removeIssue(issue);
+            list.issuesSize -= 1;
+          });
         });
-      });
 
       // Add the issues on the frontend
       selectedIssues.forEach((issue) => {

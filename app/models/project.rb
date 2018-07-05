@@ -1422,7 +1422,7 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.instance_type : Ci::Runner.none
   end
 
   def group_runners
@@ -1772,6 +1772,15 @@ class Project < ActiveRecord::Base
         variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url)
       end
     end
+  end
+
+  def default_environment
+    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+
+    environments
+      .with_state(:available)
+      .reorder(production_first)
+      .first
   end
 
   def secret_variables_for(ref:, environment: nil)

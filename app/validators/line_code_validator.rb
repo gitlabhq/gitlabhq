@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # LineCodeValidator
 #
 # Custom validator for GitLab line codes.

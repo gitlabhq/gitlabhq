@@ -1,7 +1,7 @@
 module QA
-  feature 'push code to repository', :core do
+  describe 'push code to repository', :core do
     context 'with regular account over http' do
-      scenario 'user pushes code to the repository'  do
+      it 'user pushes code to the repository'  do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 

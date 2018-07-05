@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group issues page' do
+describe 'Group issues page' do
   include FilteredSearchHelpers
 
   let(:group) { create(:group) }
