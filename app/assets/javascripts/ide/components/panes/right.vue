@@ -74,7 +74,7 @@ export default {
           >
             <icon
               :size="16"
-              name="book"
+              name="text-description"
             />
           </button>
         </li>
