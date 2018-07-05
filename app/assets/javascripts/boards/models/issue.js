@@ -4,6 +4,7 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
+import '~/vue_shared/models/label';
 import IssueProject from './project';
 
 class ListIssue {
