@@ -20,7 +20,7 @@ class Import::ManifestController < Import::BaseController
     unless can?(current_user, :create_projects, group)
       @errors = ["You don't have enough permissions to create projects in the selected group"]
 
-      render :new and return
+      render :new && return
     end
 
     manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
