@@ -45,7 +45,7 @@
       %div
         - if manifest_import_enabled?
           %button.btn{ type: "button" }
-            = icon('file', text: 'Manifest file')
+            = icon('file-text-o', text: 'Manifest file')
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
     = form_for @project, html: { class: 'new_project' } do |f|
