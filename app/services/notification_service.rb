@@ -136,7 +136,8 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #  * watchers of the mr's labels
   #  * users with custom level checked with "new merge request"
-  #  * approvers of the merge request
+  #
+  # In EE, approvers of the merge request are also included
   #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, :new_merge_request_email)
@@ -215,14 +216,6 @@ class NotificationService
     reopen_resource_email(issue, current_user, :issue_status_changed_email, 'reopened')
   end
 
-  # When we add approvers to a merge request we should send an email to:
-  #
-  #  * the new approvers
-  #
-  def add_merge_request_approvers(merge_request, new_approvers, current_user)
-    add_mr_approvers_email(merge_request, new_approvers, current_user)
-  end
-
   def merge_mr(merge_request, current_user)
     close_resource_email(
       merge_request,
@@ -239,14 +232,6 @@ class NotificationService
       :merge_request_status_email,
       'reopened'
     )
-  end
-
-  def approve_mr(merge_request, current_user)
-    approve_mr_email(merge_request, merge_request.target_project, current_user)
-  end
-
-  def unapprove_mr(merge_request, current_user)
-    unapprove_mr_email(merge_request, merge_request.target_project, current_user)
   end
 
   def resolve_all_discussions(merge_request, current_user)
@@ -522,30 +507,6 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.merge_request_unmergeable_email(recipient.user.id, merge_request.id).deliver_later
-    end
-  end
-
-  def approve_mr_email(merge_request, project, current_user)
-    recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: 'approve')
-
-    recipients.each do |recipient|
-      mailer.approved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
-    end
-  end
-
-  def unapprove_mr_email(merge_request, project, current_user)
-    recipients = NotificationRecipientService.build_recipients(merge_request, current_user, action: 'unapprove')
-
-    recipients.each do |recipient|
-      mailer.unapproved_merge_request_email(recipient.user.id, merge_request.id, current_user.id).deliver_later
-    end
-  end
-
-  def add_mr_approvers_email(merge_request, approvers, current_user)
-    approvers.each do |approver|
-      recipient = approver.user
-
-      mailer.add_merge_request_approver_email(recipient.id, merge_request.id, current_user.id).deliver_later
     end
   end
 
