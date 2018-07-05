@@ -1,6 +1,0 @@
----
-title: Always serve favicon from main GitLab domain so that CI badge can be drawn
-  over it
-merge_request:
-author:
-type: fixed
