@@ -28,8 +28,10 @@ module API
           not_found! unless Gitlab::Jira::Middleware.jira_dvcs_connector?(request.env)
         end
 
-        def find_project_with_access(full_path)
-          project = find_project!(full_path)
+        def find_project_with_access(params)
+          project = find_project!(
+            ::Gitlab::Jira::Dvcs.restore_full_path(params.slice(:namespace, :project).symbolize_keys)
+          )
           not_found! unless licensed_project?(project)
           project
         end
@@ -79,7 +81,11 @@ module API
           use :pagination
         end
         get ':namespace/repos', requirements: NAMESPACE_ENDPOINT_REQUIREMENTS do
-          projects = current_user.authorized_projects.select { |project| licensed_project?(project) }
+          namespace = Namespace.find_by_full_path(params[:namespace])
+          not_found!('Namespace') unless namespace
+
+          projects = current_user.authorized_projects.where(namespace_id: namespace.self_and_descendants).to_a
+          projects.select! { |project| licensed_project?(project) }
           projects = ::Kaminari.paginate_array(projects)
           present paginate(projects), with: ::API::Github::Entities::Repository
         end
@@ -124,9 +130,7 @@ module API
           use :pagination
         end
         get ':namespace/:project/branches', requirements: PROJECT_ENDPOINT_REQUIREMENTS do
-          namespace = params[:namespace]
-          project = params[:project]
-          user_project = find_project_with_access("#{namespace}/#{project}")
+          user_project = find_project_with_access(params)
 
           branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
 
@@ -137,9 +141,7 @@ module API
           use :project_full_path
         end
         get ':namespace/:project/commits/:sha', requirements: PROJECT_ENDPOINT_REQUIREMENTS do
-          namespace = params[:namespace]
-          project = params[:project]
-          user_project = find_project_with_access("#{namespace}/#{project}")
+          user_project = find_project_with_access(params)
 
           commit = user_project.commit(params[:sha])
 

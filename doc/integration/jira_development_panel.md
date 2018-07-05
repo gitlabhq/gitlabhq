@@ -50,7 +50,7 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
 
     Select GitHub Enterprise for the `Host` field.
 
-    For the `Team or User Account` field, enter the group name of a GitLab group that you have access to.
+    For the `Team or User Account` field, enter the group name of a GitLab group that you have access to. This must be a top-level group, but all its subgroups will be imported.
 
     ![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 
@@ -97,7 +97,6 @@ Click the links to see your GitLab repository data.
 ## Limitations
 
 - This integration is currently not supported on GitLab instances under a [relative url][relative-url] (e.g. `http://example.com/gitlab`).
-- Projects under nested groups are not supported
 
 [existing-jira]: ../user/project/integrations/jira.md
 [jira-development-panel]: https://confluence.atlassian.com/adminjiraserver070/integrating-with-development-tools-776637096.html#Integratingwithdevelopmenttools-Developmentpanelonissues
