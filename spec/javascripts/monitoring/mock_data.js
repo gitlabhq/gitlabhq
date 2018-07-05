@@ -6542,3 +6542,44 @@ export function convertDatesMultipleSeries(multipleSeries) {
   });
   return convertedMultiple;
 }
+
+export const environmentData = [
+  {
+    name: 'production',
+    size: 1,
+    latest: {
+      id: 34,
+      name: 'production',
+      state: 'available',
+      external_url: 'http://root-autodevops-deploy.my-fake-domain.com',
+      environment_type: null,
+      stop_action: false,
+      metrics_path: '/root/hello-prometheus/environments/34/metrics',
+      environment_path: '/root/hello-prometheus/environments/34',
+      stop_path: '/root/hello-prometheus/environments/34/stop',
+      terminal_path: '/root/hello-prometheus/environments/34/terminal',
+      folder_path: '/root/hello-prometheus/environments/folders/production',
+      created_at: '2018-06-29T16:53:38.301Z',
+      updated_at: '2018-06-29T16:57:09.825Z',
+    },
+  },
+  {
+    name: 'review',
+    size: 1,
+    latest: {
+      id: 35,
+      name: 'review/noop-branch',
+      state: 'available',
+      external_url: 'http://root-autodevops-deploy-review-noop-branc-die93w.my-fake-domain.com',
+      environment_type: 'review',
+      stop_action: true,
+      metrics_path: '/root/hello-prometheus/environments/35/metrics',
+      environment_path: '/root/hello-prometheus/environments/35',
+      stop_path: '/root/hello-prometheus/environments/35/stop',
+      terminal_path: '/root/hello-prometheus/environments/35/terminal',
+      folder_path: '/root/hello-prometheus/environments/folders/review',
+      created_at: '2018-07-03T18:39:41.702Z',
+      updated_at: '2018-07-03T18:44:54.010Z',
+    },
+  },
+];
