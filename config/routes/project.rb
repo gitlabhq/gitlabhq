@@ -528,17 +528,36 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
     end
   end
+end
 
-  # EE-specific
-  scope path: '/-/jira', as: :jira do
-    scope path: '*namespace_id', namespace_id: Gitlab::PathRegex.full_namespace_route_regex do
-      resources :projects, path: '/', constraints: { id: Gitlab::PathRegex.project_route_regex }, only: :show
+# EE-specific
+scope path: '/-/jira', as: :jira do
+  scope path: '*namespace_id/:project_id',
+        namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
+        project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do
+    get '/', to: redirect { |params, req|
+      ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+    }
 
-      scope path: ':project_id', constraints: { project_id: Gitlab::PathRegex.project_route_regex }, module: :projects do
-        resources :commit, only: :show, constraints: { id: /\h{7,40}/ }
+    get 'commit/:id', constraints: { id: /\h{7,40}/ }, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
 
-        get 'tree/*id', to: 'tree#show', as: nil
-      end
-    end
+      "/#{project_full_path}/commit/#{params[:id]}"
+    }
+
+    get 'tree/*id', as: nil, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+
+      "/#{project_full_path}/tree/#{params[:id]}"
+    }
   end
 end

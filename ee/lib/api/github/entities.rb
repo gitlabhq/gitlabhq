@@ -4,14 +4,14 @@
 module API
   module Github
     module Entities
-      class Namespace < Grape::Entity
-        expose :path, as: :login
-      end
-
       class Repository < Grape::Entity
         expose :id
-        expose :namespace, as: :owner, using: Namespace
-        expose :path, as: :name
+        expose :owner do |project, options|
+          { login: project.root_namespace.path }
+        end
+        expose :name do |project, options|
+          ::Gitlab::Jira::Dvcs.encode_project_name(project)
+        end
       end
 
       class BranchCommit < Grape::Entity
