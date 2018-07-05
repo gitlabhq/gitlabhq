@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import BoardService from '~/boards/services/board_service';
+import BoardService from 'ee/boards/services/board_service';
 import 'ee/boards/components/boards_selector';
 import setTimeoutPromiseHelper from 'spec/helpers/set_timeout_promise_helper';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';

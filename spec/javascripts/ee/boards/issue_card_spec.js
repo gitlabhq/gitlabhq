@@ -1,8 +1,9 @@
 import Vue from 'vue';
+import '~/boards/models/issue';
 import IssueCardInner from '~/boards/components/issue_card_inner.vue';
-import ListIssue from '~/boards/models/issue';
+import ListIssue from 'ee/boards/models/issue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { listObj } from './mock_data';
+import { listObj } from 'spec/boards/mock_data';
 
 describe('Issue card component', () => {
   let vm;

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import $ from 'jquery';
 import { throttle } from 'underscore';
+import '~/boards/stores/boards_store';
 import BoardForm from './board_form.vue';
 import AssigneesList from './assignees_list';
 

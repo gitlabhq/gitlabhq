@@ -4,7 +4,8 @@
 /* global ListAssignee */
 
 import Vue from 'vue';
-import IssueProject from 'ee/boards/models/project';
+import '~/vue_shared/models/label';
+import IssueProject from './project';
 
 class ListIssue {
   constructor (obj, defaultAvatar) {
@@ -20,18 +21,14 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
     this.isFetching = {
       subscriptions: true,
-      weight: true,
     };
-    this.isLoading = {
-      weight: false,
-    };
+    this.isLoading = {};
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.referencePath = obj.reference_path;
     this.path = obj.real_path;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
-    this.weight = obj.weight;
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);

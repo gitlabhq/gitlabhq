@@ -22,36 +22,6 @@ export default class BoardService {
     return `${gon.relative_url_root}/-/boards/${boardId ? `${boardId}` : ''}/issues${id ? `/${id}` : ''}`;
   }
 
-  allBoards() {
-    return axios.get(this.generateBoardsPath());
-  }
-
-  createBoard(board) {
-    const boardPayload = { ...board };
-    boardPayload.label_ids = (board.labels || []).map(b => b.id);
-
-    if (boardPayload.label_ids.length === 0) {
-      boardPayload.label_ids = [''];
-    }
-
-    if (boardPayload.assignee) {
-      boardPayload.assignee_id = boardPayload.assignee.id;
-    }
-
-    if (boardPayload.milestone) {
-      boardPayload.milestone_id = boardPayload.milestone.id;
-    }
-
-    if (boardPayload.id) {
-      return axios.put(this.generateBoardsPath(boardPayload.id), { board: boardPayload });
-    }
-    return axios.post(this.generateBoardsPath(), { board: boardPayload });
-  }
-
-  deleteBoard({ id }) {
-    return axios.delete(this.generateBoardsPath(id));
-  }
-
   all() {
     return axios.get(this.listsEndpoint);
   }
@@ -120,12 +90,6 @@ export default class BoardService {
 
   static getIssueInfo(endpoint) {
     return axios.get(endpoint);
-  }
-
-  static updateWeight(endpoint, weight = null) {
-    return axios.put(endpoint, {
-      weight,
-    });
   }
 
   static toggleIssueSubscription(endpoint) {
