@@ -13,16 +13,15 @@ module API
 
       def find_all_members(source_type, source)
         members = (source_type == 'project') ? find_all_members_for_project(source) : find_all_members_for_group(source)
-        members.references(:user).
-          non_invite.
-          non_request.
-          select(%w[members.expires_at members.access_level users.*])
+        members.non_invite.
+          non_request
       end
 
       def find_all_members_for_project(project)
         shared_group_ids = project.project_group_links.pluck(:group_id)
         source_ids = [project.id, project.group&.id].concat(shared_group_ids).compact
-        Member.includes(user: :project_authorizations).
+        Member.includes(:user).
+          joins(user: :project_authorizations).
           where(project_authorizations: { project_id: project.id }).
           where(source_id: source_ids)
       end
