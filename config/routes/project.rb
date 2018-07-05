@@ -279,6 +279,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :erase
             get :trace, defaults: { format: 'json' }
             get :raw
+            get :terminal
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
           end
 
           resource :artifacts, only: [] do
