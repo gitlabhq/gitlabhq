@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group merge requests page' do
+describe 'Group merge requests page' do
   include FilteredSearchHelpers
 
   let(:path) { merge_requests_group_path(group) }

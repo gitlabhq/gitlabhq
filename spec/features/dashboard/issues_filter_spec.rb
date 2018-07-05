@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Issues filtering', :js do
+describe 'Dashboard Issues filtering', :js do
   include Spec::Support::Helpers::Features::SortingHelpers
 
   let(:user)      { create(:user) }

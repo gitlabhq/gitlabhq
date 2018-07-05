@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group empty states' do
+describe 'Group empty states' do
   let(:group) { create(:group) }
   let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
 

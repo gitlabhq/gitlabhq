@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User creates a project', :js do
+describe 'User creates a project', :js do
   let(:user) { create(:user) }
 
   before do

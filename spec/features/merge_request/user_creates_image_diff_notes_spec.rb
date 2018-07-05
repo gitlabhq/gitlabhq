@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge request > User creates image diff notes', :js do
+describe 'Merge request > User creates image diff notes', :js do
   include NoteInteractionHelpers
 
   let(:project) { create(:project, :public, :repository) }
