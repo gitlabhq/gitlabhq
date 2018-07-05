@@ -40,6 +40,8 @@ Example response:
     "username": "raymond_smith",
     "name": "Raymond Smith",
     "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root",
     "created_at": "2012-10-22T14:13:35Z",
     "access_level": 30
   },
@@ -48,6 +50,8 @@ Example response:
     "username": "john_doe",
     "name": "John Doe",
     "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root",
     "created_at": "2012-10-22T14:13:35Z",
     "access_level": 30
   }
@@ -82,6 +86,8 @@ Example response:
     "username": "raymond_smith",
     "name": "Raymond Smith",
     "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root",
     "created_at": "2012-10-22T14:13:35Z",
     "access_level": 30
   },
@@ -90,6 +96,8 @@ Example response:
     "username": "john_doe",
     "name": "John Doe",
     "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root",
     "created_at": "2012-10-22T14:13:35Z",
     "access_level": 30
   },
@@ -98,6 +106,8 @@ Example response:
     "username": "foo_bar",
     "name": "Foo bar",
     "state": "active",
+    "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+    "web_url": "http://192.168.1.8:3000/root",
     "created_at": "2012-11-22T14:13:35Z",
     "access_level": 30
   }
@@ -131,6 +141,8 @@ Example response:
   "username": "raymond_smith",
   "name": "Raymond Smith",
   "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
   "created_at": "2012-10-22T14:13:35Z",
   "access_level": 30,
   "expires_at": null
@@ -166,6 +178,8 @@ Example response:
   "username": "raymond_smith",
   "name": "Raymond Smith",
   "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
   "created_at": "2012-10-22T14:13:35Z",
   "access_level": 30
 }
@@ -200,6 +214,8 @@ Example response:
   "username": "raymond_smith",
   "name": "Raymond Smith",
   "state": "active",
+  "avatar_url": "https://www.gravatar.com/avatar/c2525a7f58ae3776070e44c106c48e15?s=80&d=identicon",
+  "web_url": "http://192.168.1.8:3000/root",
   "created_at": "2012-10-22T14:13:35Z",
   "access_level": 40
 }
