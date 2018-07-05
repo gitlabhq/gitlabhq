@@ -15,6 +15,7 @@ export default {
     this.protectedBranchesInput = this.form.querySelector('.js-mirror-protected');
     this.mirrorEndpoint = this.form.dataset.projectMirrorEndpoint;
     this.$table = $('.js-mirrors-table-body', this.container);
+    this.$repoCount = $('.js-mirrored-repo-count', this.container);
     this.trTemplate = _.template(this.container.querySelector('.js-tr-template').innerHTML);
 
     this.directionFormMap = {
@@ -117,7 +118,11 @@ export default {
 
     return axios.put(this.mirrorEndpoint, payload)
       .then(() => {
-        $(target).closest('tr').remove();
+        const row = $(target).closest('tr');
+        $('.js-delete-mirror', row).tooltip('hide');
+        row.remove();
+        const currentCount = parseInt(this.$repoCount.text().replace(/(\(|\))/, ''), 10);
+        this.$repoCount.text(`(${currentCount - 1})`);
       })
       .catch(() => Flash(__('Failed to remove mirror.')));
   },
