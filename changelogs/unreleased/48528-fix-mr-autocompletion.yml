@@ -1,5 +1,0 @@
----
-title: Fix broken '!' support to autocomplete MRs in GFM fields
-merge_request: 20204
-author:
-type: fixed
