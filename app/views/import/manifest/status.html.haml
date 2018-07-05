@@ -3,8 +3,10 @@
 - provider = 'manifest'
 
 %h3.page-title
-  = icon('git')
-  = _('Import multiple repositories')
+  = _('Manifest file import')
+
+%p.light
+  = _('Import multiple repositories by uploading a manifest file.')
 
 %p
   = button_tag class: "btn btn-import btn-success js-import-all" do
@@ -25,9 +27,9 @@
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
           %td
-            = link_to_project project
-          %td
             = project.import_url
+          %td
+            = link_to_project project
           %td.job-status
             - if project.import_status == 'finished'
               %span
@@ -41,15 +43,15 @@
             - else
               = project.human_import_status_name
 
-      - @repos.each do |repo|
-        %tr{ id: "repo_#{repo[:id]}" }
+      - @pending_repositories.each do |repository|
+        %tr{ id: "repo_#{repository[:id]}" }
           %td
-            = repo[:url]
+            = repository[:url]
           %td.import-target
-            = import_project_target(@group.path, repo[:path])
+            = import_project_target(@group.full_path, repository[:path])
           %td.import-actions.job-status
             = button_tag class: "btn btn-import js-add-to-import" do
-              Import
+              = _('Import')
               = icon("spinner spin", class: "loading-icon")
 
 .js-importer-status{ data: { jobs_import_path: "#{url_for([:jobs, :import, provider])}",

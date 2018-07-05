@@ -1,17 +1,16 @@
 class Import::ManifestController < Import::BaseController
-  before_action :ensure_session, only: [:create, :status, :jobs]
-  before_action :group, only: [:status, :create]
+  before_action :ensure_import_vars, only: [:create, :status]
 
   def new
   end
 
   def status
-    @repos = session[:projects]
+    @already_added_projects = find_already_added_projects
+    already_added_import_urls = @already_added_projects.pluck(:import_url)
 
-    @already_added_projects = find_already_added_projects('manifest').where(namespace_id: group)
-    already_added_projects_names = @already_added_projects.pluck(:import_url)
-
-    @repos = @repos.to_a.reject { |repo| already_added_projects_names.include? repo[:url] }
+    @pending_repositories = repositories.to_a.reject do |repository|
+      already_added_import_urls.include?(repository[:url])
+    end
   end
 
   def upload
@@ -26,10 +25,8 @@ class Import::ManifestController < Import::BaseController
     manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
 
     if manifest.valid?
-      session[:projects] = manifest.projects
+      session[:repositories] = manifest.projects
       session[:group_id] = group.id
-
-      flash[:notice] = "Import successfully started."
 
       redirect_to status_import_manifest_path
     else
@@ -40,11 +37,11 @@ class Import::ManifestController < Import::BaseController
   end
 
   def jobs
-    render json: find_jobs('manifest')
+    render json: find_jobs
   end
 
   def create
-    repository = session[:projects].find do |project|
+    repository = repositories.find do |project|
       project[:id] == params[:repo_id].to_i
     end
 
@@ -59,13 +56,28 @@ class Import::ManifestController < Import::BaseController
 
   private
 
-  def ensure_session
-    if session[:projects].blank? || session[:group_id].blank?
+  def ensure_import_vars
+    unless group && repositories.present?
       redirect_to(new_import_manifest_path)
     end
   end
 
   def group
-    @group ||= Group.find(session[:group_id])
+    @group ||= Group.find_by(id: session[:group_id])
+  end
+
+  def repositories
+    @repositories ||= session[:repositories]
+  end
+
+  def find_jobs
+    find_already_added_projects.to_json(only: [:id], methods: [:import_status])
+  end
+
+  def find_already_added_projects
+    group.all_projects
+      .where(import_type: 'manifest')
+      .where(creator_id: current_user)
+      .includes(:import_state)
   end
 end
