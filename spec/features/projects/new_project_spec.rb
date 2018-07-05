@@ -48,6 +48,15 @@ describe 'New project' do
     end
   end
 
+  context 'Readme selector' do
+    it 'shows the initialize with Readme checkbox' do
+      visit new_project_path
+
+      expect(page).to have_css('input#project_initialize_with_readme')
+      expect(page).to have_content('Initialize repository with a README')
+    end
+  end
+
   context 'Namespace selector' do
     context 'with user namespace' do
       before do

@@ -1792,6 +1792,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def default_environment
+    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+
+    environments
+      .with_state(:available)
+      .reorder(production_first)
+      .first
+  end
+
   def secret_variables_for(ref:, environment: nil)
     # EE would use the environment
     if protected_for?(ref)

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-01 16:35+1000\n"
+"POT-Creation-Date: 2018-07-01 21:24+1000\n"
+"PO-Revision-Date: 2018-07-01 21:24+1000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1815,6 +1815,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete Snippet"
+msgstr ""
+
 msgid "Delete list"
 msgstr ""
 
@@ -2034,6 +2037,9 @@ msgid "Edit Label"
 msgstr ""
 
 msgid "Edit Pipeline Schedule %{id}"
+msgstr ""
+
+msgid "Edit Snippet"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
@@ -2978,6 +2984,9 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
+msgid "New"
+msgstr ""
+
 msgid "New Identity"
 msgstr ""
 
@@ -2996,6 +3005,12 @@ msgid "New Label"
 msgstr ""
 
 msgid "New Pipeline Schedule"
+msgstr ""
+
+msgid "New Snippet"
+msgstr ""
+
+msgid "New Snippets"
 msgstr ""
 
 msgid "New branch"
@@ -4299,6 +4314,9 @@ msgid "Storage"
 msgstr ""
 
 msgid "Subgroups"
+msgstr ""
+
+msgid "Submit as spam"
 msgstr ""
 
 msgid "Subscribe"

@@ -45,6 +45,7 @@ describe ProjectCacheWorker do
         expect_any_instance_of(Repository).to receive(:refresh_method_caches)
           .with(%i(readme))
           .and_call_original
+<<<<<<< HEAD
 
         worker.perform(project.id, %w(readme))
       end
@@ -63,6 +64,10 @@ describe ProjectCacheWorker do
 
           subject.perform(project.id)
         end
+=======
+
+        worker.perform(project.id, %w(readme))
+>>>>>>> upstream/master
       end
 
       context 'with plain readme' do

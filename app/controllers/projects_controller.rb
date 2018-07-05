@@ -349,6 +349,7 @@ class ProjectsController < Projects::ApplicationController
       :visibility_level,
       :template_name,
       :merge_method,
+      :initialize_with_readme,
 
       project_feature_attributes: %i[
         builds_access_level

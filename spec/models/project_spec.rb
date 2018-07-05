@@ -2631,6 +2631,28 @@ describe Project do
     end
   end
 
+  describe '#default_environment' do
+    let(:project) { create(:project) }
+
+    it 'returns production environment when it exists' do
+      production = create(:environment, name: "production", project: project)
+      create(:environment, name: 'staging', project: project)
+
+      expect(project.default_environment).to eq(production)
+    end
+
+    it 'returns first environment when no production environment exists' do
+      create(:environment, name: 'staging', project: project)
+      create(:environment, name: 'foo', project: project)
+
+      expect(project.default_environment).to eq(project.environments.first)
+    end
+
+    it 'returns nil when no available environment exists' do
+      expect(project.default_environment).to be_nil
+    end
+  end
+
   describe '#secret_variables_for' do
     let(:project) { create(:project) }
 

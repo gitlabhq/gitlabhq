@@ -122,6 +122,16 @@ class Projects::EnvironmentsController < Projects::ApplicationController
     end
   end
 
+  def metrics_redirect
+    environment = project.default_environment
+
+    if environment
+      redirect_to environment_metrics_path(environment)
+    else
+      render :empty
+    end
+  end
+
   def metrics
     # Currently, this acts as a hint to load the metrics details into the cache
     # if they aren't there already
