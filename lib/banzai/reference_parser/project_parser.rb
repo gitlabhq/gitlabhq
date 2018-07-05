@@ -29,7 +29,7 @@ module Banzai
       # projects - The projects to reduce down to those readable by the user.
       # user - The User for which to check the projects
       def projects_readable_by_user(projects, user)
-        Project.public_or_visible_to_user(user).where("projects.id IN (?)", projects.collect(&:id)).pluck(:id)
+        Project.public_or_visible_to_user(user).where("projects.id IN (?)", projects.map(&:id)).pluck(:id)
       end
     end
   end
