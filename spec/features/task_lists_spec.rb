@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Task Lists' do
+describe 'Task Lists' do
   include Warden::Test::Helpers
 
   let(:project) { create(:project, :repository) }

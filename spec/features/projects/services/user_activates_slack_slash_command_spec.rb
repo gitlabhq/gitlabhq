@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Slack slash commands' do
-  given(:user) { create(:user) }
-  given(:project) { create(:project) }
-  given(:service) { project.create_slack_slash_commands_service }
+describe 'Slack slash commands' do
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:service) { project.create_slack_slash_commands_service }
 
-  background do
+  before do
     project.add_master(user)
     sign_in(user)
     visit edit_project_service_path(project, service)

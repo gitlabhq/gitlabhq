@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'CI shared runner settings' do
+describe 'CI shared runner settings' do
   include StubENV
 
   let(:admin) { create(:admin) }
@@ -13,7 +13,7 @@ feature 'CI shared runner settings' do
   end
 
   context 'without global shared runners quota' do
-    scenario 'should display ratio with global quota' do
+    it 'should display ratio with global quota' do
       visit_admin_group_path
       expect(page).to have_content("Pipeline minutes quota: 400 / Unlimited")
       expect(page).to have_selector('.shared_runners_limit_disabled')
@@ -25,20 +25,20 @@ feature 'CI shared runner settings' do
       set_admin_shared_runners_minutes 500
     end
 
-    scenario 'should display ratio with global quota' do
+    it 'should display ratio with global quota' do
       visit_admin_group_path
       expect(page).to have_content("Pipeline minutes quota: 400 / 500")
       expect(page).to have_selector('.shared_runners_limit_under_quota')
     end
 
-    scenario 'should display new ratio with overridden group quota' do
+    it 'should display new ratio with overridden group quota' do
       set_group_shared_runners_minutes 300
       visit_admin_group_path
       expect(page).to have_content("Pipeline minutes quota: 400 / 300")
       expect(page).to have_selector('.shared_runners_limit_over_quota')
     end
 
-    scenario 'should display unlimited ratio with overridden group quota' do
+    it 'should display unlimited ratio with overridden group quota' do
       set_group_shared_runners_minutes 0
       visit_admin_group_path
       expect(page).to have_content("Pipeline minutes quota: 400 / Unlimited")

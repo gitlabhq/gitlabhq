@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Projects > Members > Member leaves project' do
+describe 'Projects > Members > Member leaves project' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
-  background do
+  before do
     project.add_developer(user)
     sign_in(user)
     visit project_path(project)
@@ -16,7 +16,7 @@ feature 'Projects > Members > Member leaves project' do
     let!(:non_matching_protected_branch) { create(:protected_branch, authorize_user_to_push: other_user, authorize_user_to_merge: other_user, project: project) }
 
     context 'user leaves project' do
-      scenario "removes the user's branch permissions" do
+      it "removes the user's branch permissions" do
         click_link 'Leave project'
 
         expect(current_path).to eq(dashboard_projects_path)

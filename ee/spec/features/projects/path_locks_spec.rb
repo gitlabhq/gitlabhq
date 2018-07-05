@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Path Locks', :js do
+describe 'Path Locks', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:tree_path) { project_tree_path(project, project.repository.root_ref) }
@@ -14,7 +14,7 @@ feature 'Path Locks', :js do
     visit tree_path
   end
 
-  scenario 'Locking folders' do
+  it 'Locking folders' do
     within '.tree-content-holder' do
       click_link "encoding"
     end
@@ -27,7 +27,7 @@ feature 'Path Locks', :js do
     expect(page).to have_selector('.fa-lock')
   end
 
-  scenario 'Locking files' do
+  it 'Locking files' do
     page_tree = find('.tree-content-holder')
 
     within page_tree do
@@ -47,7 +47,7 @@ feature 'Path Locks', :js do
     end
   end
 
-  scenario 'Unlocking files' do
+  it 'Unlocking files' do
     within find('.tree-content-holder') do
       click_link "VERSION"
     end
@@ -65,7 +65,7 @@ feature 'Path Locks', :js do
     end
   end
 
-  scenario 'Managing of lock list' do
+  it 'Managing of lock list' do
     create :path_lock, path: 'encoding', user: user, project: project
 
     click_link "Locked Files"

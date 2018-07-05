@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'EE Clusters', :js do
+describe 'EE Clusters', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }

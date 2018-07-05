@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-feature 'Environment > Pod Logs', :js do
+describe 'Environment > Pod Logs', :js do
   include KubernetesHelpers
 
-  given(:pod_names) { %w(foo bar) }
-  given(:pod_name) { pod_names.first }
-  given(:project) { create(:project, :repository) }
-  given(:environment) { create(:environment, project: project) }
+  let(:pod_names) { %w(foo bar) }
+  let(:pod_name) { pod_names.first }
+  let(:project) { create(:project, :repository) }
+  let(:environment) { create(:environment, project: project) }
 
-  background do
+  before do
     stub_licensed_features(pod_logs: true)
 
     create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project])
@@ -21,7 +21,7 @@ feature 'Environment > Pod Logs', :js do
   end
 
   context 'with logs' do
-    scenario "shows pod logs" do
+    it "shows pod logs" do
       visit logs_project_environment_path(environment.project, environment, pod_name: pod_name)
 
       wait_for_requests

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'The group dashboard' do
+describe 'The group dashboard' do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

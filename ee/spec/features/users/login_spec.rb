@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Login' do
+describe 'Login' do
   before do
     stub_licensed_features(extended_audit_events: true)
   end

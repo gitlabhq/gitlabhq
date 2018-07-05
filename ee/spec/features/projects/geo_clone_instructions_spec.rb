@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'Geo clone instructions', :js do
+describe 'Geo clone instructions', :js do
   include Devise::Test::IntegrationHelpers
   include ::EE::GeoHelpers
 
   let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 
-  background do
+  before do
     primary = create(:geo_node, :primary, url: 'https://primary.domain.com')
     primary.update_columns(clone_url_prefix: 'git@primary.domain.com:')
     secondary = create(:geo_node)
@@ -19,11 +19,11 @@ feature 'Geo clone instructions', :js do
   end
 
   context 'with an SSH key' do
-    background do
+    before do
       create(:personal_key, user: developer)
     end
 
-    scenario 'defaults to SSH' do
+    it 'defaults to SSH' do
       visit_project
 
       show_geo_clone_instructions
@@ -31,7 +31,7 @@ feature 'Geo clone instructions', :js do
       expect_instructions_for('ssh')
     end
 
-    scenario 'switches to HTTP' do
+    it 'switches to HTTP' do
       visit_project
       select_protocol('HTTP')
 

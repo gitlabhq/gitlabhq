@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Milestones sorting', :js do
+describe 'Milestones sorting', :js do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let!(:other_project) { create(:project_empty_repo, group: group) }
@@ -15,7 +15,7 @@ feature 'Milestones sorting', :js do
     sign_in(user)
   end
 
-  scenario 'visit group milestones and sort by due_date_asc' do
+  it 'visit group milestones and sort by due_date_asc' do
     visit group_milestones_path(group)
 
     expect(page).to have_button('Due soon')

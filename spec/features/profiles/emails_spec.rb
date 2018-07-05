@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > Emails' do
+describe 'Profile > Emails' do
   let(:user) { create(:user) }
 
   before do
@@ -12,7 +12,7 @@ feature 'Profile > Emails' do
       visit profile_emails_path
     end
 
-    scenario 'saves the new email' do
+    it 'saves the new email' do
       fill_in('Email', with: 'my@email.com')
       click_button('Add email address')
 
@@ -21,7 +21,7 @@ feature 'Profile > Emails' do
       expect(page).to have_content('Resend confirmation email')
     end
 
-    scenario 'does not add a duplicate email' do
+    it 'does not add a duplicate email' do
       fill_in('Email', with: user.email)
       click_button('Add email address')
 
@@ -31,7 +31,7 @@ feature 'Profile > Emails' do
     end
   end
 
-  scenario 'User removes email' do
+  it 'User removes email' do
     user.emails.create(email: 'my@email.com')
     visit profile_emails_path
     expect(page).to have_content("my@email.com")
@@ -40,7 +40,7 @@ feature 'Profile > Emails' do
     expect(page).not_to have_content("my@email.com")
   end
 
-  scenario 'User confirms email' do
+  it 'User confirms email' do
     email = user.emails.create(email: 'my@email.com')
     visit profile_emails_path
     expect(page).to have_content("#{email.email} Unverified")
@@ -52,7 +52,7 @@ feature 'Profile > Emails' do
     expect(page).to have_content("#{email.email} Verified")
   end
 
-  scenario 'User re-sends confirmation email' do
+  it 'User re-sends confirmation email' do
     email = user.emails.create(email: 'my@email.com')
     visit profile_emails_path
 
@@ -60,7 +60,7 @@ feature 'Profile > Emails' do
     expect(page).to have_content("Confirmation email sent to #{email.email}")
   end
 
-  scenario 'old unconfirmed emails show Send Confirmation button' do
+  it 'old unconfirmed emails show Send Confirmation button' do
     email = user.emails.create(email: 'my@email.com')
     email.update_attribute(:confirmation_sent_at, nil)
     visit profile_emails_path

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Multi-file editor new directory', :js do
+describe 'Multi-file editor new directory', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Project settings > Issues', :js do
+describe 'Project settings > Issues', :js do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
 
-  background do
+  before do
     project.add_master(user)
 
     sign_in(user)
@@ -16,7 +16,7 @@ feature 'Project settings > Issues', :js do
         visit edit_project_path(project)
       end
 
-      scenario 'shows the Issues settings' do
+      it 'shows the Issues settings' do
         expect(page).to have_content('Customize your issue restrictions')
 
         within('.sharing-permissions-form') do
@@ -35,7 +35,7 @@ feature 'Project settings > Issues', :js do
       visit edit_project_path(project)
     end
 
-    scenario 'does not show the Issues settings' do
+    it 'does not show the Issues settings' do
       expect(page).not_to have_content('Customize your issue restrictions')
 
       within('.sharing-permissions-form') do
@@ -52,7 +52,7 @@ feature 'Project settings > Issues', :js do
       stub_licensed_features(issuable_default_templates: false)
     end
 
-    scenario 'input to configure issue template is not shown' do
+    it 'input to configure issue template is not shown' do
       visit edit_project_path(project)
 
       expect(page).not_to have_selector('#project_issues_template')
@@ -64,7 +64,7 @@ feature 'Project settings > Issues', :js do
       stub_licensed_features(issuable_default_templates: true)
     end
 
-    scenario 'input to configure issue template is not shown' do
+    it 'input to configure issue template is not shown' do
       visit edit_project_path(project)
 
       expect(page).to have_selector('#project_issues_template')

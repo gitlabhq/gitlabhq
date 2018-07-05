@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'The group page' do
+describe 'The group page' do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }

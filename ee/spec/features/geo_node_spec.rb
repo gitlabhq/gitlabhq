@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'GEO Nodes' do
+describe 'GEO Nodes' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:geo_url) { 'http://geo.example.com' }
