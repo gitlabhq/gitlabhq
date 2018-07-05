@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeleteMergedBranchesService < BaseService
   def async_execute
     DeleteMergedBranchesWorker.perform_async(project.id, current_user.id)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Used by NotificationService to determine who should receive notification
 #
