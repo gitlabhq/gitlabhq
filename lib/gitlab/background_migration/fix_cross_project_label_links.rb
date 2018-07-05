@@ -49,10 +49,10 @@ module Gitlab
 
       def perform(start_id, stop_id)
         group_ids = Namespace.groups_with_descendants_ids(start_id, stop_id)
-        project_ids = Project.where(namespace_id: group_ids).pluck(:id)
+        project_ids = Project.where(namespace_id: group_ids).select(:id)
 
-        check_issues(project_ids)
-        check_merge_requests(project_ids)
+        fix_issues(project_ids)
+        fix_merge_requests(project_ids)
       end
 
       private
@@ -60,7 +60,7 @@ module Gitlab
       # select IDs of issues which reference a label which is:
       # a) a project label of a different project, or
       # b) a group label of a different group than issue's project group
-      def check_issues(project_ids)
+      def fix_issues(project_ids)
         issue_ids = Label
           .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'Issue\'
                   INNER JOIN issues ON issues.id = label_links.target_id
@@ -68,7 +68,7 @@ module Gitlab
           .where('issues.project_id in (?)', project_ids)
           .where('(labels.project_id is not null and labels.project_id != issues.project_id) '\
                  'or (labels.group_id is not null and labels.group_id != projects.namespace_id)')
-          .pluck('distinct issues.id')
+          .select('distinct issues.id')
 
         Issue.where(id: issue_ids).find_each { |issue| check_resource_labels(issue, issue.project_id) }
       end
@@ -76,7 +76,7 @@ module Gitlab
       # select IDs of MRs which reference a label which is:
       # a) a project label of a different project, or
       # b) a group label of a different group than MR's project group
-      def check_merge_requests(project_ids)
+      def fix_merge_requests(project_ids)
         mr_ids = Label
           .joins('INNER JOIN label_links ON label_links.label_id = labels.id AND label_links.target_type = \'MergeRequest\'
                   INNER JOIN merge_requests ON merge_requests.id = label_links.target_id
@@ -84,7 +84,7 @@ module Gitlab
           .where('merge_requests.target_project_id in (?)', project_ids)
           .where('(labels.project_id is not null and labels.project_id != merge_requests.target_project_id) '\
                  'or (labels.group_id is not null and labels.group_id != projects.namespace_id)')
-          .pluck('distinct merge_requests.id')
+          .select('distinct merge_requests.id')
 
         MergeRequest.where(id: mr_ids).find_each { |merge_request| check_resource_labels(merge_request, merge_request.target_project_id) }
       end
@@ -106,6 +106,7 @@ module Gitlab
 
           next unless matching_label
 
+          Rails.logger.info "#{resource.class.name.demodulize} #{resource.id}: replacing #{label.label_id} with #{matching_label.id}"
           LabelLink.update(label.label_link_id, label_id: matching_label.id)
         end
       end
