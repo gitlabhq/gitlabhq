@@ -3,7 +3,7 @@ class DiscussionEntity < Grape::Entity
   include NotesHelper
 
   expose :id, :reply_id
-  expose :position, if: -> (d, _) { d.diff_discussion? }
+  expose :position, if: -> (d, _) { d.diff_discussion? && !d.legacy_diff_discussion? }
   expose :line_code, if: -> (d, _) { d.diff_discussion? }
   expose :expanded?, as: :expanded
   expose :active?, as: :active, if: -> (d, _) { d.diff_discussion? }

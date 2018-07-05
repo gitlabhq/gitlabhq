@@ -36,6 +36,25 @@ describe DiscussionEntity do
     )
   end
 
+  context 'when is LegacyDiffDiscussion' do
+    let(:project) { create(:project) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+    let(:discussion) { create(:legacy_diff_note_on_merge_request, noteable: merge_request, project: project).to_discussion }
+
+    it 'exposes correct attributes' do
+      expect(subject.keys.sort).to include(
+        :diff_discussion,
+        :expanded,
+        :id,
+        :individual_note,
+        :notes,
+        :discussion_path,
+        :for_commit,
+        :commit_id
+      )
+    end
+  end
+
   context 'when diff file is present' do
     let(:note) { create(:diff_note_on_merge_request) }
 
