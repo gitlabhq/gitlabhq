@@ -1331,9 +1331,12 @@
 }
 
 .ide-merge-request-info {
-  overflow: auto;
-
   .detail-page-header {
     line-height: initial;
+    height: 38px;
+  }
+
+  .issuable-details {
+    overflow: auto;
   }
 }

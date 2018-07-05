@@ -17,8 +17,8 @@ export default {
 </script>
 
 <template>
-  <div class="ide-merge-request-info">
-    <div class="detail-page-header sticky-top bg-white">
+  <div class="ide-merge-request-info h-100 d-flex flex-column">
+    <div class="detail-page-header">
       <icon
         name="git-merge"
         class="align-self-center append-right-8"
