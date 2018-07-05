@@ -4,19 +4,19 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
   describe '#perform' do
     context 'when diff files can be deleted' do
       let(:merge_request) { create(:merge_request, :merged) }
-      let(:merge_request_diff) do
+      let!(:merge_request_diff) do
         merge_request.create_merge_request_diff
         merge_request.merge_request_diffs.first
       end
 
       it 'deletes all merge request diff files' do
-        expect { described_class.new.perform(merge_request_diff.id) }
+        expect { described_class.new.perform }
           .to change { merge_request_diff.merge_request_diff_files.count }
           .from(20).to(0)
       end
 
       it 'updates state to without_files' do
-        expect { described_class.new.perform(merge_request_diff.id) }
+        expect { described_class.new.perform }
           .to change { merge_request_diff.reload.state }
           .from('collected').to('without_files')
       end
@@ -25,7 +25,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
         expect(described_class::MergeRequestDiffFile).to receive_message_chain(:where, :delete_all)
           .and_raise
 
-        expect { described_class.new.perform(merge_request_diff.id) }
+        expect { described_class.new.perform }
           .to raise_error
 
         merge_request_diff.reload
@@ -40,7 +40,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
       merge_request.create_merge_request_diff
       merge_request_diff = merge_request.merge_request_diffs.first
 
-      expect { described_class.new.perform(merge_request_diff.id) }
+      expect { described_class.new.perform }
         .not_to change { merge_request_diff.merge_request_diff_files.count }
         .from(20)
     end
@@ -52,7 +52,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
 
       merge_request_diff.clean!
 
-      expect { described_class.new.perform(merge_request_diff.id) }
+      expect { described_class.new.perform }
         .not_to change { merge_request_diff.merge_request_diff_files.count }
         .from(20)
     end
@@ -61,9 +61,26 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
       merge_request = create(:merge_request, :merged)
       merge_request_diff = merge_request.merge_request_diff
 
-      expect { described_class.new.perform(merge_request_diff.id) }
+      expect { described_class.new.perform }
         .not_to change { merge_request_diff.merge_request_diff_files.count }
         .from(20)
+    end
+  end
+
+  describe '#wait_deadtuple_vacuum' do
+    it 'sleeps process for VACUUM_WAIT_TIME when hitting DEAD_TUPLES_THRESHOLD', :postgresql do
+      worker = described_class.new
+      threshold_query_result = [{ "n_dead_tup" => described_class::DEAD_TUPLES_THRESHOLD.to_s }]
+      normal_query_result = [{ "n_dead_tup" => '3' }]
+
+      allow(worker)
+        .to receive(:execute_statement)
+        .with(/SELECT n_dead_tup */)
+        .and_return(threshold_query_result, normal_query_result)
+
+      expect(worker).to receive(:sleep).with(described_class::VACUUM_WAIT_TIME).once
+
+      worker.wait_deadtuple_vacuum(1)
     end
   end
 end
