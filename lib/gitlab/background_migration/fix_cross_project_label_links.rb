@@ -106,7 +106,7 @@ module Gitlab
 
           next unless matching_label
 
-          LabelLink.find(label.label_link_id).update!(label_id: matching_label.id)
+          LabelLink.update(label.label_link_id, label_id: matching_label.id)
         end
       end
 
