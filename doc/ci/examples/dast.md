@@ -3,6 +3,9 @@
 [Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_program_analysis)
 is using the popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
 to perform an analysis on your running web application.
+Since it is based on [ZAP Baseline](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan)
+DAST will perform passive scanning only;
+it will not actively attack your application.
 
 It can be very useful combined with [Review Apps](../review_apps/index.md).
 
