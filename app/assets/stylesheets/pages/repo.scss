@@ -1333,7 +1333,7 @@
 .ide-merge-request-info {
   .detail-page-header {
     line-height: initial;
-    height: 38px;
+    min-height: 38px;
   }
 
   .issuable-details {
