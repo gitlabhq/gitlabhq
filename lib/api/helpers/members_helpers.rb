@@ -19,7 +19,10 @@ module API
 
       def find_all_members_for_project(project)
         shared_group_ids = project.project_group_links.pluck(:group_id)
-        source_ids = [project.id, project.group&.id].concat(shared_group_ids).compact
+        project_group_ids = project.group&.self_and_ancestors&.pluck(:id)
+        source_ids = [project.id, project_group_ids, shared_group_ids]
+          .flatten
+          .compact
         Member.includes(:user)
           .joins(user: :project_authorizations)
           .where(project_authorizations: { project_id: project.id })

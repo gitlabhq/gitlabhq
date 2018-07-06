@@ -61,7 +61,7 @@ describe API::Members do
         project.add_developer(create(:user))
 
         expect do
-          get api(members_url, master)
+          get api(members_url, maintainer)
         end.not_to exceed_query_limit(control)
       end
 
@@ -112,8 +112,8 @@ describe API::Members do
     end
 
     let(:linked_group) do
-      create(:group) do |group|
-        group.add_developer(linked_group_user)
+      create(:group) do |linked_group|
+        linked_group.add_developer(linked_group_user)
       end
     end
 
@@ -129,7 +129,7 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
+      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
     end
 
     it 'finds all group members including inherited members' do
@@ -138,7 +138,7 @@ describe API::Members do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id, nested_user.id]
+      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id]
     end
   end
 
