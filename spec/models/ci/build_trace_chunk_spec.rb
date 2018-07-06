@@ -38,6 +38,22 @@ describe Ci::BuildTraceChunk, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '.all_stores' do
+    subject { described_class.all_stores }
+
+    it 'returns a correctly ordered array' do
+      is_expected.to eq(%w[redis database fog])
+    end
+
+    it 'returns redis store as the the lowest precedence' do
+      expect(subject.first).to eq('redis')
+    end
+
+    it 'returns fog store as the the highest precedence' do
+      expect(subject.last).to eq('fog')
+    end
+  end
+
   describe '#data' do
     subject { build_trace_chunk.data }
 
