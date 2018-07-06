@@ -593,7 +593,7 @@ shared_examples_for 'trace with disabled live trace feature' do
   describe '#erase!' do
     subject { trace.erase! }
 
-    context 'when it is a live trace' do   
+    context 'when it is a live trace' do
       context 'when trace is stored in database' do
         let(:build) { create(:ci_build) }
 
@@ -605,7 +605,7 @@ shared_examples_for 'trace with disabled live trace feature' do
 
         it "removes trace" do
           subject
-    
+
           expect(trace.raw).to be_nil
         end
       end
@@ -617,7 +617,7 @@ shared_examples_for 'trace with disabled live trace feature' do
 
         it "removes trace" do
           subject
-    
+
           expect(trace.raw).to be_nil
         end
       end
@@ -629,10 +629,10 @@ shared_examples_for 'trace with disabled live trace feature' do
       it "has trace at first" do
         expect(trace.raw).not_to be_nil
       end
-  
+
       it "removes trace" do
         subject
-  
+
         build.reload
         expect(trace.raw).to be_nil
       end
@@ -836,7 +836,7 @@ shared_examples_for 'trace with enabled live trace feature' do
 
       it "removes trace" do
         subject
-  
+
         expect(trace.raw).to be_nil
       end
     end
@@ -847,10 +847,10 @@ shared_examples_for 'trace with enabled live trace feature' do
       it "has trace at first" do
         expect(trace.raw).not_to be_nil
       end
-  
+
       it "removes trace" do
         subject
-  
+
         build.reload
         expect(trace.raw).to be_nil
       end
