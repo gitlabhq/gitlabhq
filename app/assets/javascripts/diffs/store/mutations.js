@@ -66,15 +66,10 @@ export default {
   },
 
   [types.EXPAND_ALL_FILES](state) {
-    const diffFiles = [];
-
-    state.diffFiles.forEach(file => {
-      diffFiles.push({
-        ...file,
-        collapsed: false,
-      });
-    });
-
-    Object.assign(state, { diffFiles });
+    // eslint-disable-next-line no-param-reassign
+    state.diffFiles = state.diffFiles.map(file => ({
+      ...file,
+      collapsed: false,
+    }));
   },
 };

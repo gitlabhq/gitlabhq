@@ -21,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commit']),
+    ...mapGetters(['commitId']),
     parallelDiffLines() {
       return this.diffLines.map(line => {
         const parallelLine = Object.assign({}, line);
@@ -43,9 +43,6 @@ export default {
     },
     diffLinesLength() {
       return this.parallelDiffLines.length;
-    },
-    commitId() {
-      return this.commit && this.commit.id;
     },
     userColorScheme() {
       return window.gon.user_color_scheme;

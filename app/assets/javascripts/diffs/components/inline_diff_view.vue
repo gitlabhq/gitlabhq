@@ -20,15 +20,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commit']),
+    ...mapGetters(['commitId']),
     normalizedDiffLines() {
       return this.diffLines.map(line => (line.richText ? trimFirstCharOfLineContent(line) : line));
     },
     diffLinesLength() {
       return this.normalizedDiffLines.length;
-    },
-    commitId() {
-      return this.commit && this.commit.id;
     },
     userColorScheme() {
       return window.gon.user_color_scheme;
