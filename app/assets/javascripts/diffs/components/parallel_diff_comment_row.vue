@@ -13,8 +13,8 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     diffLines: {
@@ -91,8 +91,7 @@ export default {
       <diff-line-note-form
         v-if="diffLineCommentForms[leftLineCode] &&
         diffLineCommentForms[leftLineCode]"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="diffLines[lineIndex].left"
         position="left"
@@ -112,8 +111,7 @@ export default {
       <diff-line-note-form
         v-if="diffLineCommentForms[rightLineCode] &&
         diffLineCommentForms[rightLineCode] && line.right.type"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        :diff-file-hash="diffFileHash"
         :line="line.right"
         :note-target-line="diffLines[lineIndex].right"
         position="right"

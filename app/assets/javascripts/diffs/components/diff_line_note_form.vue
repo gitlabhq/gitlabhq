@@ -13,12 +13,8 @@ export default {
     noteForm,
   },
   props: {
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     line: {
@@ -40,7 +36,13 @@ export default {
       noteableData: state => state.notes.noteableData,
       diffViewType: state => state.diffs.diffViewType,
     }),
-    ...mapGetters(['isLoggedIn', 'noteableType', 'getNoteableData', 'getNotesDataByProp']),
+    ...mapGetters([
+      'isLoggedIn',
+      'noteableType',
+      'getNoteableData',
+      'getNotesDataByProp',
+      'getDiffFileByHash',
+    ]),
   },
   mounted() {
     if (this.isLoggedIn) {
@@ -68,13 +70,14 @@ export default {
       });
     },
     handleSaveNote(note) {
+      const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
       const postData = getNoteFormData({
         note,
         noteableData: this.noteableData,
         noteableType: this.noteableType,
         noteTargetLine: this.noteTargetLine,
         diffViewType: this.diffViewType,
-        diffFile: this.diffFile,
+        diffFile: selectedDiffFile,
         linePosition: this.position,
       });
 

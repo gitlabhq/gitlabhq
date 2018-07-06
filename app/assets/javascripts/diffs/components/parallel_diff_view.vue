@@ -103,7 +103,7 @@ export default {
             v-if="shouldRenderCommentRow(line)"
             :key="line.left.lineCode || line.right.lineCode"
             :line="line"
-            :diff-file="diffFile"
+            :diff-file-hash="diffFile.fileHash"
             :diff-lines="parallelDiffLines"
             :line-index="index"
           />
