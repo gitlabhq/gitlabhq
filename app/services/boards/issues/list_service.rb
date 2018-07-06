@@ -1,13 +1,34 @@
 module Boards
   module Issues
     class ListService < Boards::BaseService
+      include Gitlab::Utils::StrongMemoize
+
       def execute
-        issues = IssuesFinder.new(current_user, filter_params).execute
-        issues = filter(issues)
-        issues.order_by_position_and_priority
+        fetch_issues.order_by_position_and_priority
+      end
+
+      def metadata
+        # This is needed because when issues are filtered by label
+        # and the collection is empty ActiveRecord::Relation#count will return {}
+        issues_count = issues_present? ? fetch_issues.count : 0
+
+        { size: issues_count }
       end
 
       private
+
+      def fetch_issues
+        strong_memoize(:fetch_issues) do
+          issues = IssuesFinder.new(current_user, filter_params).execute
+          filter(issues)
+        end
+      end
+
+      def issues_present?
+        strong_memoize(:issues_present) do
+          fetch_issues.exists?
+        end
+      end
 
       def filter(issues)
         issues = without_board_labels(issues) unless list&.movable? || list&.closed?
