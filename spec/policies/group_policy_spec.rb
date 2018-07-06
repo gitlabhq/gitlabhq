@@ -10,7 +10,11 @@ describe GroupPolicy do
   let(:admin) { create(:admin) }
   let(:group) { create(:group, :private) }
 
-  let(:guest_permissions) { [:read_label, :read_group, :upload_file, :read_namespace] }
+  let(:guest_permissions) do
+    [:read_label, :read_group, :upload_file, :read_namespace, :read_group_activity,
+     :read_group_issues, :read_group_boards, :read_group_labels, :read_group_milestones,
+     :read_group_merge_requests]
+  end
 
   let(:reporter_permissions) { [:admin_label] }
 

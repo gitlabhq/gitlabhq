@@ -21,7 +21,7 @@ describe 'layouts/nav/sidebar/_group' do
         allow(License).to receive(:current).and_return(nil)
         stub_application_setting(check_namespace_plan: false)
 
-        allow(view).to receive(:can?).and_return(true)
+        allow(view).to receive(:can?) { |*args| Ability.allowed?(*args) }
         allow(view).to receive(:current_user).and_return(cuser)
       end
 

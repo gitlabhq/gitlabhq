@@ -75,6 +75,19 @@ class GroupPolicy < BasePolicy
     enable :change_visibility_level
   end
 
+  rule { can?(:read_nested_project_resources) }.policy do
+    enable :read_group_activity
+    enable :read_group_issues
+    enable :read_group_boards
+    enable :read_group_labels
+    enable :read_group_milestones
+    enable :read_group_merge_requests
+  end
+
+  rule { can?(:read_cross_project) & can?(:read_group) }.policy do
+    enable :read_nested_project_resources
+  end
+
   rule { owner & nested_groups_supported }.enable :create_subgroup
 
   rule { public_group | logged_in_viewable }.enable :view_globally
