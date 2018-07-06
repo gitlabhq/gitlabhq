@@ -91,16 +91,12 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawDiffRequest' => Gitaly::RawDiffRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawDiffRequest' => Gitaly::RawDiffRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
