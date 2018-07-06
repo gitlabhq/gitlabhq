@@ -16,7 +16,7 @@ module BitbucketServer
     def get(path, extra_query = {})
       response = Gitlab::HTTP.get(build_url(path),
                                   basic_auth: auth,
-                                  params: extra_query)
+                                  query: extra_query)
 
       check_errors!(response)
       response.parsed_response

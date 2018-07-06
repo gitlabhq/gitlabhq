@@ -1,6 +1,6 @@
 module BitbucketServer
   class Paginator
-    PAGE_LENGTH = 25 # The minimum length is 10 and the maximum is 100.
+    PAGE_LENGTH = 25
 
     def initialize(connection, url, type)
       @connection = connection
@@ -24,12 +24,12 @@ module BitbucketServer
       page.nil? || page.next?
     end
 
-    def next_url
-      page.nil? ? url : page.next
+    def next_offset
+      page.nil? ? 0 : page.next
     end
 
     def fetch_next_page
-      parsed_response = connection.get(next_url, pagelen: PAGE_LENGTH, sort: :created_on)
+      parsed_response = connection.get(@url, start: next_offset, limit: PAGE_LENGTH)
       Page.new(parsed_response, type)
     end
   end
