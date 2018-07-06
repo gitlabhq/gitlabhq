@@ -172,6 +172,17 @@ RSpec.configure do |config|
     redis_queues_cleanup!
   end
 
+  config.around(:each, :use_clean_rails_memory_store_fragment_caching) do |example|
+    caching_store = ActionController::Base.cache_store
+    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+    ActionController::Base.perform_caching = true
+
+    example.run
+
+    ActionController::Base.perform_caching = false
+    ActionController::Base.cache_store = caching_store
+  end
+
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the
   # correct state before any examples' before hooks are called. This prevents a
   # problem where `ScheduleIssuesClosedAtTypeChange` (or any migration that depends
