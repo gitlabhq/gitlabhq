@@ -399,7 +399,7 @@ module Ci
     end
 
     def erase_old_trace!
-      raise Gitlab::Ci::Trace::EraseError, 'Old trace does not exist' unless has_old_trace?
+      return unless has_old_trace?
 
       update_column(:trace, nil)
     end
