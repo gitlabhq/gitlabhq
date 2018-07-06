@@ -6,7 +6,6 @@ module Gitlab
       LEASE_TIMEOUT = 1.hour
 
       ArchiveError = Class.new(StandardError)
-      EraseError = Class.new(StandardError)
 
       attr_reader :job
 
