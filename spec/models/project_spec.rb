@@ -3131,6 +3131,10 @@ describe Project do
     let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
+    before do
+      stub_feature_flags(import_export_object_storage: false)
+    end
+
     it 'removes the exports directory for the project' do
       expect(File.exist?(project.export_path)).to be_truthy
 
@@ -3179,12 +3183,14 @@ describe Project do
     let(:project) { create(:project, :with_export) }
 
     it 'removes the exported project file' do
+      stub_feature_flags(import_export_object_storage: false)
+
       exported_file = project.export_project_path
 
       expect(File.exist?(exported_file)).to be_truthy
 
-      allow(FileUtils).to receive(:rm_f).and_call_original
-      expect(FileUtils).to receive(:rm_f).with(exported_file).and_call_original
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(exported_file).and_call_original
 
       project.remove_exported_project_file
 
