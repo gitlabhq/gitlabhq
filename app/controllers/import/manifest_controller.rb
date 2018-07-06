@@ -47,7 +47,7 @@ class Import::ManifestController < Import::BaseController
       project[:id] == params[:repo_id].to_i
     end
 
-    project = Gitlab::ManifestImport::Importer.new(repository, group, current_user).execute
+    project = Gitlab::ManifestImport::ProjectCreator.new(repository, group, current_user).execute
 
     if project.persisted?
       render json: ProjectSerializer.new.represent(project)
