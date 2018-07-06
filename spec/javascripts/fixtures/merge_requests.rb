@@ -80,6 +80,13 @@ describe Projects::MergeRequestsController, '(JavaScript fixtures)', type: :cont
     render_discussions_json(merge_request, example.description)
   end
 
+  it 'merge_requests/resolved_diff_discussion.json' do |example|
+    note = create(:discussion_note_on_merge_request, :resolved, project: project, author: admin, position: position, noteable: merge_request)
+    create(:system_note, project: project, author: admin, noteable: merge_request, discussion_id: note.discussion.id)
+
+    render_discussions_json(merge_request, example.description)
+  end
+
   context 'with image diff' do
     let(:merge_request2) { create(:merge_request_with_diffs, :with_image_diffs, source_project: project, title: "Added images") }
     let(:image_path) { "files/images/ee_repo_logo.png" }
