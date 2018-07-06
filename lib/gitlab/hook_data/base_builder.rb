@@ -22,7 +22,10 @@ module Gitlab
 
         markdown_text.gsub(MARKDOWN_SIMPLE_IMAGE) do
           if $~[:image]
-            "![#{$~[:title]}](#{Gitlab.config.gitlab.url}/#{$~[:url]})"
+            url = $~[:url]
+            url = "/#{url}" unless url.start_with?('/')
+
+            "![#{$~[:title]}](#{Gitlab.config.gitlab.url}#{url})"
           else
             $~[0]
           end
