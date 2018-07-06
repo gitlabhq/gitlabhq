@@ -11,7 +11,6 @@ describe ImportExportCleanUpService do
         path = '/invalid/path/'
         stub_repository_downloads_path(path)
 
-        expect(File).to receive(:directory?).with(path + tmp_import_export_folder).and_return(false).at_least(:once)
         expect(service).not_to receive(:clean_up_export_files)
 
         service.execute
