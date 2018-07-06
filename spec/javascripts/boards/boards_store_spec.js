@@ -170,7 +170,7 @@ describe('Store', () => {
 
       expect(gl.issueBoards.BoardsStore.state.lists.length).toBe(2);
 
-      Vue.nextTick(() => {
+      setTimeout(() => {
         expect(backlog.issues.length).toBe(1);
         expect(listTwo.issues.length).toBe(1);
 
@@ -178,9 +178,9 @@ describe('Store', () => {
 
         expect(backlog.issues.length).toBe(0);
         expect(listTwo.issues.length).toBe(1);
-      })
-        .then(done)
-        .catch(done.fail);
+
+        done();
+      }, 0);
     });
 
     it('moves issue to top of another list', (done) => {
