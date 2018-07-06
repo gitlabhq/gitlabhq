@@ -1,4 +1,5 @@
 class Import::ManifestController < Import::BaseController
+  before_action :whitelist_query_limiting, only: [:create]
   before_action :verify_import_enabled
   before_action :ensure_import_vars, only: [:create, :status]
 
@@ -84,5 +85,9 @@ class Import::ManifestController < Import::BaseController
 
   def verify_import_enabled
     render_404 unless manifest_import_enabled?
+  end
+
+  def whitelist_query_limiting
+    Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/48939')
   end
 end
