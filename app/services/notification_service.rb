@@ -135,6 +135,8 @@ class NotificationService
   #  * watchers of the mr's labels
   #  * users with custom level checked with "new merge request"
   #
+  # In EE, approvers of the merge request are also included
+  #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, :new_merge_request_email)
   end
@@ -256,6 +258,10 @@ class NotificationService
     # ignore gitlab service messages
     return true if note.cross_reference? && note.system?
 
+    send_new_note_notifications(note)
+  end
+
+  def send_new_note_notifications(note)
     notify_method = "note_#{note.to_ability_name}_email".to_sym
 
     recipients = NotificationRecipientService.build_new_note_recipients(note)
