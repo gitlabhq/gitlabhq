@@ -306,6 +306,14 @@ describe API::MergeRequests do
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
     end
 
+    it 'exposes description and title html when render_html is true' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), render_html: true
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response).to include('title_html', 'description_html')
+    end
+
     context 'merge_request_metrics' do
       before do
         merge_request.metrics.update!(merged_by: user,

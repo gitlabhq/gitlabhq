@@ -533,6 +533,22 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_old_trace?' do
+    subject { build.has_old_trace? }
+
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when old trace does not exist' do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#trace=' do
     it "expect to fail trace=" do
       expect { build.trace = "new" }.to raise_error(NotImplementedError)
@@ -552,16 +568,32 @@ describe Ci::Build do
   end
 
   describe '#erase_old_trace!' do
-    subject { build.send(:read_attribute, :trace) }
+    subject { build.erase_old_trace! }
 
-    before do
-      build.send(:write_attribute, :trace, 'old trace')
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it "erases old trace" do
+        subject
+
+        expect(build.old_trace).to be_nil
+      end
+
+      it "executes UPDATE query" do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(1)
+      end
     end
 
-    it "expect to receive data from database" do
-      build.erase_old_trace!
+    context 'when old trace does not exist' do
+      it 'does not execute UPDATE query' do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
 
-      is_expected.to be_nil
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(0)
+      end
     end
   end
 

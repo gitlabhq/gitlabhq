@@ -390,6 +390,10 @@ module Ci
       trace.exist?
     end
 
+    def has_old_trace?
+      old_trace.present?
+    end
+
     def trace=(data)
       raise NotImplementedError
     end
@@ -399,6 +403,8 @@ module Ci
     end
 
     def erase_old_trace!
+      return unless has_old_trace?
+
       update_column(:trace, nil)
     end
 
