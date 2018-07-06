@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-06 14:35+0200\n"
-"PO-Revision-Date: 2018-07-06 14:35+0200\n"
+"POT-Creation-Date: 2018-07-09 08:42+0200\n"
+"PO-Revision-Date: 2018-07-09 08:42+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -233,6 +233,15 @@ msgid "404|Page Not Found"
 msgstr ""
 
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
+msgstr ""
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
+msgstr ""
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
+msgstr ""
+
+msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
@@ -2568,6 +2577,9 @@ msgstr ""
 msgid "Expand sidebar"
 msgstr ""
 
+msgid "Explore groups"
+msgstr ""
+
 msgid "Explore projects"
 msgstr ""
 
@@ -3050,6 +3062,27 @@ msgstr ""
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
 
+msgid "GroupsDropdown|Frequently visited"
+msgstr ""
+
+msgid "GroupsDropdown|Groups you visit often will appear here"
+msgstr ""
+
+msgid "GroupsDropdown|Loading groups"
+msgstr ""
+
+msgid "GroupsDropdown|Search your groups"
+msgstr ""
+
+msgid "GroupsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "GroupsDropdown|Sorry, no groups matched your search"
+msgstr ""
+
+msgid "GroupsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr ""
 
@@ -3283,6 +3316,9 @@ msgid "Issues"
 msgstr ""
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
+msgstr ""
+
+msgid "Issues closed"
 msgstr ""
 
 msgid "Jan"
@@ -3527,10 +3563,16 @@ msgstr ""
 msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
 msgstr ""
 
+msgid "Merge Request"
+msgstr ""
+
 msgid "Merge Request:"
 msgstr ""
 
 msgid "Merge Requests"
+msgstr ""
+
+msgid "Merge Requests created"
 msgstr ""
 
 msgid "Merge events"
@@ -3862,10 +3904,19 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No issues for the selected time period."
+msgstr ""
+
+msgid "No merge requests for the selected time period."
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No pushes for the selected time period."
 msgstr ""
 
 msgid "No repository"
@@ -4004,6 +4055,9 @@ msgid "Only comments from the following commit are shown below"
 msgstr ""
 
 msgid "Only project members can comment."
+msgstr ""
+
+msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open"
@@ -4324,6 +4378,9 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
+msgid "Profiles|Add key"
+msgstr ""
+
 msgid "Profiles|Change username"
 msgstr ""
 
@@ -4351,7 +4408,13 @@ msgstr ""
 msgid "Profiles|Path"
 msgstr ""
 
+msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
+msgstr ""
+
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
 msgid "Profiles|Update username"
@@ -4370,6 +4433,9 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|e.g. My MacBook key"
 msgstr ""
 
 msgid "Profiles|your account"
@@ -4496,9 +4562,6 @@ msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
-msgstr ""
-
-msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "PrometheusDashboard|Time"
@@ -4637,6 +4700,9 @@ msgid "PushRule|Committer restriction"
 msgstr ""
 
 msgid "Pushed"
+msgstr ""
+
+msgid "Pushes"
 msgstr ""
 
 msgid "Quarters"
@@ -4914,7 +4980,16 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
+msgid "Security Dashboard"
+msgstr ""
+
 msgid "Security report"
+msgstr ""
+
+msgid "SecurityDashboard|Monitor vulnerabilities in your code"
+msgstr ""
+
+msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
 msgstr ""
 
 msgid "Select"
@@ -6331,6 +6406,9 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "Yes, add it"
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -6376,9 +6454,7 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-msgid ""
-"You cannot write to a read-only secondary GitLab Geo instance.\n"
-"          Please use %{link_to_primary_node} instead."
+msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
@@ -6411,9 +6487,7 @@ msgstr ""
 msgid "You need a different license to enable FileLocks feature"
 msgstr ""
 
-msgid ""
-"You need git-lfs version %{min_git_lfs_version} (or greater) to\n"
-"            continue. Please visit https://git-lfs.github.com"
+msgid "You need git-lfs version %{min_git_lfs_version} (or greater) to continue. Please visit https://git-lfs.github.com"
 msgstr ""
 
 msgid "You need permission."
@@ -6879,6 +6953,9 @@ msgstr ""
 msgid "mrWidget|No Approval required; you can still approve"
 msgstr ""
 
+msgid "mrWidget|Open in Web IDE"
+msgstr ""
+
 msgid "mrWidget|Plain diff"
 msgstr ""
 
@@ -6949,9 +7026,6 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
-msgstr ""
-
-msgid "mrWidget|Web IDE"
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"
