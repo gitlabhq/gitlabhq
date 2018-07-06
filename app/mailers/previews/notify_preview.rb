@@ -153,7 +153,7 @@ class NotifyPreview < ActionMailer::Preview
     cleanup do
       note = yield
 
-      Notify.public_send(method, user.id, note)
+      Notify.public_send(method, user.id, note) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
