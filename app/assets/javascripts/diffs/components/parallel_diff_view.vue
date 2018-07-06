@@ -21,7 +21,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commitId']),
+    ...mapGetters('diffs', ['commitId']),
     parallelDiffLines() {
       return this.diffLines.map(line => {
         const parallelLine = Object.assign({}, line);

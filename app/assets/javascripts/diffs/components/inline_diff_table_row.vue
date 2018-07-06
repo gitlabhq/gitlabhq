@@ -36,7 +36,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInlineView']),
+    ...mapGetters('diffs', ['isInlineView']),
     isContextLine() {
       return this.line.type === CONTEXT_LINE_TYPE;
     },

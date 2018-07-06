@@ -55,7 +55,7 @@ export default {
     document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
-    ...mapActions(['loadCollapsedDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff']),
     handleToggle() {
       const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
 

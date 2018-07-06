@@ -59,7 +59,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['cancelCommentForm', 'saveNote', 'fetchDiscussions']),
+    ...mapActions('diffs', ['cancelCommentForm']),
+    ...mapActions(['saveNote', 'fetchDiscussions']),
     handleCancelCommentForm() {
       this.autosave.reset();
       this.cancelCommentForm({

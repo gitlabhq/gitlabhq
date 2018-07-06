@@ -20,7 +20,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commitId']),
+    ...mapGetters('diffs', ['commitId']),
     normalizedDiffLines() {
       return this.diffLines.map(line => (line.richText ? trimFirstCharOfLineContent(line) : line));
     },
