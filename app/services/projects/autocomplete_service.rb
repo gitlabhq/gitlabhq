@@ -30,7 +30,8 @@ module Projects
       hashes = available_labels.as_json(only: [:title, :color])
 
       if target&.respond_to?(:labels)
-        if already_set_labels = available_labels & target.labels
+        already_set_labels = available_labels & target.labels
+        if already_set_labels.present?
           titles = already_set_labels.map(&:title)
           hashes.each do |hash|
             if titles.include?(hash['title'])
