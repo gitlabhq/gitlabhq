@@ -13,14 +13,6 @@ describe Gitlab::GitAccess do
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
   let(:auth_result_type) { nil }
-
-  let(:access) do
-    described_class.new(actor, project,
-      protocol, authentication_abilities: authentication_abilities,
-                namespace_path: namespace_path, project_path: project_path,
-                redirected_path: redirected_path, auth_result_type: auth_result_type)
-  end
-
   let(:changes) { '_any' }
   let(:push_access_check) { access.check('git-receive-pack', changes) }
   let(:pull_access_check) { access.check('git-upload-pack', changes) }
@@ -724,10 +716,11 @@ describe Gitlab::GitAccess do
   end
 
   describe '#check_push_access!' do
+    let(:unprotected_branch) { 'unprotected_branch' }
+
     before do
       merge_into_protected_branch
     end
-    let(:unprotected_branch) { 'unprotected_branch' }
 
     let(:changes) do
       { push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
@@ -785,7 +778,7 @@ describe Gitlab::GitAccess do
 
           aggregate_failures do
             matrix.each do |action, allowed|
-              check = -> { access.send(:check_push_access!, changes[action]) }
+              check = -> { push_changes(changes[action]) }
 
               if allowed
                 expect(&check).not_to raise_error,
@@ -1151,6 +1144,17 @@ describe Gitlab::GitAccess do
   end
 
   private
+
+  def access
+    described_class.new(actor, project, protocol,
+                        authentication_abilities: authentication_abilities,
+                        namespace_path: namespace_path, project_path: project_path,
+                        redirected_path: redirected_path, auth_result_type: auth_result_type)
+  end
+
+  def push_changes(changes)
+    access.check('git-receive-pack', changes)
+  end
 
   def raise_unauthorized(message)
     raise_error(Gitlab::GitAccess::UnauthorizedError, message)
