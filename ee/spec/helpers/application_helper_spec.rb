@@ -2,13 +2,29 @@ require 'spec_helper'
 
 describe ApplicationHelper do
   describe '#autocomplete_data_sources' do
-    let(:object) { create(:group) }
-    let(:noteable_type) { Epic }
-    it 'returns paths for autocomplete_sources_controller' do
+    def expect_autocomplete_data_sources(object, noteable_type, source_keys)
       sources = helper.autocomplete_data_sources(object, noteable_type)
-      expect(sources.keys).to match_array([:members])
+      expect(sources.keys).to match_array(source_keys)
       sources.keys.each do |key|
         expect(sources[key]).not_to be_nil
+      end
+    end
+
+    context 'group' do
+      let(:object) { create(:group) }
+      let(:noteable_type) { Epic }
+
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources(object, noteable_type, [:members, :labels, :epics])
+      end
+    end
+
+    context 'project' do
+      let(:object) { create(:project) }
+      let(:noteable_type) { Issue }
+
+      it 'returns paths for autocomplete_sources_controller' do
+        expect_autocomplete_data_sources(object, noteable_type, [:members, :issues, :mergeRequests, :labels, :milestones, :commands])
       end
     end
   end
