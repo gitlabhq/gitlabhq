@@ -82,6 +82,7 @@ website with GitLab Pages
 - [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki
 - [Snippets](../snippets.md): Store, share and collaborate on code snippets
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
+- [Security Dashboard](security_dashboard.md): Security Dashboard
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
 - [Badges](badges.md): Badges for the project overview

@@ -303,4 +303,56 @@ describe ProjectPolicy do
       it { is_expected.to be_disallowed(:admin_vulnerability_feedback) }
     end
   end
+
+  describe 'read_project_security_dashboard' do
+    subject { described_class.new(current_user, project) }
+
+    context 'with admin' do
+      let(:current_user) { admin }
+
+      it { is_expected.to be_allowed(:read_project_security_dashboard) }
+    end
+
+    context 'with owner' do
+      let(:current_user) { owner }
+
+      it { is_expected.to be_allowed(:read_project_security_dashboard) }
+    end
+
+    context 'with master' do
+      let(:current_user) { master }
+
+      it { is_expected.to be_allowed(:read_project_security_dashboard) }
+    end
+
+    context 'with developer' do
+      let(:current_user) { developer }
+
+      it { is_expected.to be_allowed(:read_project_security_dashboard) }
+    end
+
+    context 'with reporter' do
+      let(:current_user) { reporter }
+
+      it { is_expected.to be_disallowed(:read_project_security_dashboard) }
+    end
+
+    context 'with guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_disallowed(:read_project_security_dashboard) }
+    end
+
+    context 'with non member' do
+      let(:current_user) { create(:user) }
+
+      it { is_expected.to be_disallowed(:read_project_security_dashboard) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:read_project_security_dashboard) }
+    end
+  end
 end

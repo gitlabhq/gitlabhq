@@ -88,6 +88,17 @@ module EE
       end
     end
 
+    def security_reports_feature_available?
+      feature_available?(:sast) ||
+        feature_available?(:dependency_scanning) ||
+        feature_available?(:sast_container) ||
+        feature_available?(:dast)
+    end
+
+    def latest_pipeline_with_security_reports
+      pipelines.newest_first(default_branch).with_security_reports.first
+    end
+
     def ensure_external_webhook_token
       return if external_webhook_token.present?
 

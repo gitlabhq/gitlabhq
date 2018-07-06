@@ -14,6 +14,22 @@
 
   .media {
     align-items: center;
+    padding: 10px;
+    line-height: 20px;
+
+    /*
+    This fixes the wrapping div of the icon in the report header.
+    Apparently the borderless status icons are half the size of the status icons with border.
+    This means we have to double the size of the wrapping div for borderless icons.
+    */
+    .space-children:first-child {
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+      margin-left: 1px;
+    }
   }
 
   .code-text {
@@ -108,7 +124,7 @@
 }
 
 .report-block-list-issue-description-text::after {
-  content: "\00a0";
+  content: '\00a0';
 }
 
 .report-block-list-issue-description {

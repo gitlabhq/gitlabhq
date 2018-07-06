@@ -3,7 +3,8 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import component from 'ee/vue_shared/security_reports/grouped_security_reports_app.vue';
 import state from 'ee/vue_shared/security_reports/store/state';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { trimText } from 'spec/helpers/vue_component_helper';
 import {
   sastIssues,
   sastIssuesBase,
@@ -19,13 +20,6 @@ describe('Grouped security reports app', () => {
   let vm;
   let mock;
   const Component = Vue.extend(component);
-
-  function removeBreakLine(data) {
-    return data
-      .replace(/\r?\n|\r/g, '')
-      .replace(/\s\s+/g, ' ')
-      .trim();
-  }
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -80,10 +74,10 @@ describe('Grouped security reports app', () => {
         );
         expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
 
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
+        expect(trimText(vm.$el.textContent)).toContain(
           'SAST resulted in error while loading results',
         );
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
+        expect(trimText(vm.$el.textContent)).toContain(
           'Dependency scanning resulted in error while loading results',
         );
         expect(vm.$el.textContent).toContain(
@@ -130,7 +124,7 @@ describe('Grouped security reports app', () => {
       });
     });
 
-    it('renders loading summary text + spinner', (done) => {
+    it('renders loading summary text + spinner', done => {
       expect(vm.$el.querySelector('.fa-spinner')).not.toBeNull();
       expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
         'Security scanning is loading',
@@ -197,12 +191,12 @@ describe('Grouped security reports app', () => {
         expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
 
         // Renders Sast result
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
+        expect(trimText(vm.$el.textContent)).toContain(
           'SAST detected 2 new vulnerabilities and 1 fixed vulnerability',
         );
 
         // Renders DSS result
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
+        expect(trimText(vm.$el.textContent)).toContain(
           'Dependency scanning detected 2 new vulnerabilities and 1 fixed vulnerability',
         );
         // Renders container scanning result
@@ -214,12 +208,14 @@ describe('Grouped security reports app', () => {
       }, 0);
     });
 
-    it('opens modal with more information', (done) => {
+    it('opens modal with more information', done => {
       setTimeout(() => {
         vm.$el.querySelector('.break-link').click();
 
         Vue.nextTick(() => {
-          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual(sastIssues[0].message);
+          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toEqual(
+            sastIssues[0].message,
+          );
           expect(vm.$el.querySelector('.modal-body').textContent).toContain(sastIssues[0].solution);
 
           done();

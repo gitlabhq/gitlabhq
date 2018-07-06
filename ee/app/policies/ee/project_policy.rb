@@ -81,6 +81,7 @@ module EE
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
+        enable :read_project_security_dashboard
       end
 
       rule { can?(:read_project) }.enable :read_vulnerability_feedback

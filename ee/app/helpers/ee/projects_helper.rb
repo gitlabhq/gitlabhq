@@ -2,6 +2,11 @@ module EE
   module ProjectsHelper
     extend ::Gitlab::Utils::Override
 
+    override :sidebar_projects_paths
+    def sidebar_projects_paths
+      super + %w(projects/security/dashboard#show)
+    end
+
     override :sidebar_settings_paths
     def sidebar_settings_paths
       super + %w(audit_events#index)
@@ -94,6 +99,54 @@ module EE
         end
 
       description.to_s.html_safe
+    end
+
+    def project_security_dashboard_config(project, pipeline)
+      if pipeline.nil?
+        {
+          empty_state_illustration_path: image_path('illustrations/security-dashboard_empty.svg'),
+          security_dashboard_help_path: help_page_path("user/project/security_dashboard"),
+          has_pipeline_data: "false",
+          can_create_feedback: "false",
+          can_create_issue: "false"
+        }
+      else
+        # Handle old job and artifact names for container scanning
+        sast_container_head_path = if pipeline.expose_sast_container_data?
+                                     sast_container_artifact_url(pipeline)
+                                   elsif pipeline.expose_container_scanning_data?
+                                     container_scanning_artifact_url(pipeline)
+                                   else
+                                     nil
+                                   end
+
+        {
+          head_blob_path: project_blob_path(project, pipeline.sha),
+          sast_head_path: pipeline.expose_sast_data? ? sast_artifact_url(pipeline) : nil,
+          dependency_scanning_head_path: pipeline.expose_dependency_scanning_data? ? dependency_scanning_artifact_url(pipeline) : nil,
+          dast_head_path: pipeline.expose_dast_data? ? dast_artifact_url(pipeline) : nil,
+          sast_container_head_path: sast_container_head_path,
+          vulnerability_feedback_path: project_vulnerability_feedback_index_path(project),
+          pipeline_id: pipeline.id,
+          vulnerability_feedback_help_path: help_page_path("user/project/merge_requests/index", anchor: "interacting-with-security-reports-ultimate"),
+          sast_help_path: help_page_path('user/project/merge_requests/sast'),
+          dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning'),
+          dast_help_path: help_page_path('user/project/merge_requests/dast'),
+          sast_container_help_path: help_page_path('user/project/merge_requests/sast_container'),
+          user_path: user_url(pipeline.user),
+          user_avatar_path: pipeline.user.avatar_url,
+          user_name: pipeline.user.name,
+          commit_id: pipeline.commit.short_id,
+          commit_path: project_commit_url(project, pipeline.commit),
+          ref_id: pipeline.ref,
+          ref_path: project_commits_url(project, pipeline.ref),
+          pipeline_path: pipeline_url(pipeline),
+          pipeline_created: pipeline.created_at.to_s,
+          has_pipeline_data: "true",
+          can_create_feedback: can?(current_user, :admin_vulnerability_feedback, project).to_s,
+          can_create_issue: can?(current_user, :create_issue, project).to_s
+        }
+      end
     end
   end
 end

@@ -1,7 +1,6 @@
 <script>
 import { __ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
-import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import IssuesList from './issues_list.vue';
 import Popover from './help_popover.vue';
 import { LOADING, ERROR, SUCCESS } from '../store/constants';
@@ -10,11 +9,15 @@ export default {
   name: 'ReportSection',
   components: {
     IssuesList,
-    LoadingIcon,
     StatusIcon,
     Popover,
   },
   props: {
+    alwaysOpen: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     type: {
       type: String,
       required: false,
@@ -76,12 +79,14 @@ export default {
 
   data() {
     return {
-      collapseText: __('Expand'),
       isCollapsed: true,
     };
   },
 
   computed: {
+    collapseText() {
+      return this.isCollapsed ? __('Expand') : __('Collapse');
+    },
     isLoading() {
       return this.status === LOADING;
     },
@@ -91,7 +96,16 @@ export default {
     isSuccess() {
       return this.status === SUCCESS;
     },
+    isCollapsible() {
+      return !this.alwaysOpen && this.hasIssues;
+    },
+    isExpanded() {
+      return this.alwaysOpen || !this.isCollapsed;
+    },
     statusIconName() {
+      if (this.isLoading) {
+        return 'loading';
+      }
       if (this.loadingFailed || this.unresolvedIssues.length || this.neutralIssues.length) {
         return 'warning';
       }
@@ -116,13 +130,9 @@ export default {
       return Object.keys(this.popoverOptions).length > 0;
     },
   },
-
   methods: {
     toggleCollapsed() {
       this.isCollapsed = !this.isCollapsed;
-
-      const text = this.isCollapsed ? __('Expand') : __('Collapse');
-      this.collapseText = text;
     },
   },
 };
@@ -130,15 +140,9 @@ export default {
 <template>
   <section>
     <div
-      class="media prepend-top-default prepend-left-default
- append-right-default append-bottom-default"
+      class="media"
     >
-      <loading-icon
-        v-if="isLoading"
-        class="mr-widget-icon"
-      />
       <status-icon
-        v-else
         :status="statusIconName"
       />
       <div
@@ -157,7 +161,7 @@ export default {
         </span>
 
         <button
-          v-if="hasIssues"
+          v-if="isCollapsible"
           type="button"
           class="js-collapse-btn btn bt-default float-right btn-sm"
           @click="toggleCollapsed"
@@ -169,7 +173,7 @@ export default {
 
     <div
       v-if="hasIssues"
-      v-show="!isCollapsed"
+      v-show="isExpanded"
       class="js-report-section-container"
     >
       <slot name="body">

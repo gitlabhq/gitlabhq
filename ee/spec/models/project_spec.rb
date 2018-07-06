@@ -1420,4 +1420,65 @@ describe Project do
       2.times { expect(project.any_path_locks?).to be_truthy }
     end
   end
+
+  describe '#security_reports_feature_available?' do
+    security_features = %i[sast dependency_scanning sast_container dast]
+
+    let(:project) { create(:project) }
+
+    security_features.each do |feature|
+      it "returns true when at least #{feature} is enabled" do
+        allow(project).to receive(:feature_available?) { false }
+        allow(project).to receive(:feature_available?).with(feature) { true }
+
+        expect(project.security_reports_feature_available?).to eq(true)
+      end
+    end
+
+    it "returns false when all security features are disabled" do
+      security_features.each do |feature|
+        allow(project).to receive(:feature_available?).with(feature) { false }
+      end
+
+      expect(project.security_reports_feature_available?).to eq(false)
+    end
+  end
+
+  describe '#latest_pipeline_with_security_reports' do
+    let(:project) { create(:project) }
+    let(:pipeline_1) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_2) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_3) { create(:ci_pipeline_without_jobs, project: project) }
+
+    before do
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'sast',
+        pipeline: pipeline_1,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::SAST_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'sast',
+        pipeline: pipeline_2,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::SAST_FILE]
+          }
+        }
+      )
+    end
+
+    it "returns the latest pipeline with security reports" do
+      expect(project.latest_pipeline_with_security_reports).to eq(pipeline_2)
+    end
+  end
 end

@@ -7,18 +7,11 @@ import state from 'ee/vue_shared/security_reports/store/state';
 import { mountComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { sastIssues, dast, dockerReport } from './mock_data';
 
-describe('Slipt security reports app', () => {
+describe('Split security reports app', () => {
   const Component = Vue.extend(component);
 
   let vm;
   let mock;
-
-  function removeBreakLine(data) {
-    return data
-      .replace(/\r?\n|\r/g, '')
-      .replace(/\s\s+/g, ' ')
-      .trim();
-  }
 
   beforeEach(() => {
     mock = new MockAdapter(axios);
@@ -107,18 +100,48 @@ describe('Slipt security reports app', () => {
     it('renders reports', done => {
       setTimeout(() => {
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
-        expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
 
-        expect(removeBreakLine(vm.$el.textContent)).toContain('SAST detected 3 vulnerabilities');
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
-          'Dependency scanning detected 3 vulnerabilities',
-        );
+        expect(vm.$el.textContent).toContain('SAST detected 3 vulnerabilities');
+        expect(vm.$el.textContent).toContain('Dependency scanning detected 3 vulnerabilities');
 
         // Renders container scanning result
         expect(vm.$el.textContent).toContain('Container scanning detected 2 vulnerabilities');
 
         // Renders DAST result
         expect(vm.$el.textContent).toContain('DAST detected 2 vulnerabilities');
+
+        done();
+      }, 0);
+    });
+
+    it('renders all reports collapsed by default', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
+        expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
+
+        const reports = vm.$el.querySelectorAll('.js-report-section-container');
+
+        reports.forEach(report => {
+          expect(report).toHaveCss({ display: 'none' });
+        });
+
+        done();
+      }, 0);
+    });
+
+    it('renders all reports expanded with the option always-open', done => {
+      vm.alwaysOpen = true;
+
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
+        expect(vm.$el.querySelector('.js-collapse-btn')).toBeNull();
+
+        const reports = vm.$el.querySelectorAll('.js-report-section-container');
+
+        reports.forEach(report => {
+          expect(report).not.toHaveCss({ display: 'none' });
+        });
+
         done();
       }, 0);
     });
@@ -158,8 +181,8 @@ describe('Slipt security reports app', () => {
       setTimeout(() => {
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
 
-        expect(removeBreakLine(vm.$el.textContent)).toContain('SAST resulted in error while loading results');
-        expect(removeBreakLine(vm.$el.textContent)).toContain(
+        expect(vm.$el.textContent).toContain('SAST resulted in error while loading results');
+        expect(vm.$el.textContent).toContain(
           'Dependency scanning resulted in error while loading results',
         );
         expect(vm.$el.textContent).toContain(

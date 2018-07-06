@@ -362,6 +362,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      # EE-specific start
+      namespace :security do
+        resource :dashboard, only: [:show], controller: :dashboard
+      end
+      # EE-specific end
+
       resources :milestones, constraints: { id: /\d+/ } do
         member do
           post :promote
