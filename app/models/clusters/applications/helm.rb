@@ -83,9 +83,9 @@ module Clusters
 
       def extra_env
         {
-          CA_CERT: Base64.encode64(ca_cert),
-          TILLER_CERT: Base64.encode64(server_cert),
-          TILLER_KEY: Base64.encode64(server_key)
+          CA_CERT: ca_cert,
+          TILLER_CERT: server_cert,
+          TILLER_KEY: server_key
         }
       end
 
