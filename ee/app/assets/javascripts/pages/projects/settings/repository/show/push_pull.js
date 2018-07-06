@@ -7,20 +7,20 @@ import axios from '~/lib/utils/axios_utils';
 
 export default {
   init(container) {
-    this.container = container;
-    this.form = container.querySelector('.js-mirror-form');
-    this.mirrorDirectionSelect = this.form.querySelector('.js-mirror-direction');
-    this.$insertionPoint = $('.js-form-insertion-point', this.form);
-    this.urlInput = this.form.querySelector('.js-mirror-url');
-    this.protectedBranchesInput = this.form.querySelector('.js-mirror-protected');
-    this.mirrorEndpoint = this.form.dataset.projectMirrorEndpoint;
-    this.$table = $('.js-mirrors-table-body', this.container);
-    this.$repoCount = $('.js-mirrored-repo-count', this.container);
-    this.trTemplate = _.template(this.container.querySelector('.js-tr-template').innerHTML);
+    this.$container = $(container);
+    this.$form = $('.js-mirror-form', this.$container);
+    this.$mirrorDirectionSelect = $('.js-mirror-direction', this.$form);
+    this.$insertionPoint = $('.js-form-insertion-point', this.$form);
+    this.$urlInput = $('.js-mirror-url', this.$form);
+    this.$protectedBranchesInput = $('.js-mirror-protected', this.$form);
+    this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
+    this.$table = $('.js-mirrors-table-body', this.$container);
+    this.$repoCount = $('.js-mirrored-repo-count', this.$container);
+    this.trTemplate = _.template($('.js-tr-template', this.$container).html());
 
     this.directionFormMap = {
-      push: this.form.querySelector('.js-push-mirrors-form').innerHTML,
-      pull: this.form.querySelector('.js-pull-mirrors-form').innerHTML,
+      push: $('.js-push-mirrors-form', this.$form).html(),
+      pull: $('.js-pull-mirrors-form', this.$form).html(),
     };
 
     this.boundUpdateForm = this.handleUpdate.bind(this);
@@ -30,8 +30,7 @@ export default {
     this.boundUpdateForm();
     this.registerUpdateListeners();
 
-    $(this.$table)
-      .on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
+    this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
   },
 
   handleUpdate() {
@@ -56,7 +55,7 @@ export default {
   },
 
   updateForm() {
-    const direction = this.mirrorDirectionSelect.value;
+    const direction = this.$mirrorDirectionSelect.val();
 
     this.$insertionPoint.html(this.directionFormMap[direction]);
 
@@ -69,11 +68,11 @@ export default {
   },
 
   updateUrl() {
-    this.form.querySelector('.js-mirror-url-hidden').value = this.urlInput.value;
+    $('.js-mirror-url-hidden', this.$form).value = this.$urlInput.value;
   },
 
   updateProtectedBranches() {
-    this.form.querySelector('.js-mirror-protected-hidden').value = this.protectedBranchesInput.checked ? this.protectedBranchesInput.value : '0';
+    $('.js-mirror-protected-hidden', this.$form).value = this.$protectedBranchesInput.get(0).checked ? this.$protectedBranchesInput.val() : '0';
   },
 
   initMirrorPull() {
@@ -81,28 +80,28 @@ export default {
 
     if (!mirrorPull) return;
 
-    if (this.urlInput.value !== '') mirrorPull.handleRepositoryUrlInput();
+    if (this.$urlInput.value !== '') mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
 
     this.initSelect2();
   },
 
   initSelect2() {
-    $('.js-mirror-user', this.form).select2({
+    $('.js-mirror-user', this.$form).select2({
       width: 'resolve',
       dropdownAutoWidth: true,
     });
   },
 
   registerUpdateListeners() {
-    this.mirrorDirectionSelect.addEventListener('change', this.boundUpdateForm);
-    this.urlInput.addEventListener('change', this.boundUpdateUrl);
-    this.protectedBranchesInput.addEventListener('change', this.boundUpdateProtectedBranches);
+    this.$mirrorDirectionSelect.on('change', this.boundUpdateForm);
+    this.$urlInput.on('change', this.boundUpdateUrl);
+    this.$protectedBranchesInput.on('change', this.boundUpdateProtectedBranches);
   },
 
   deleteMirror(event) {
-    const target = event.currentTarget;
-    const isPullMirror = target.classList.contains('js-delete-pull-mirror');
+    const $target = $(event.currentTarget);
+    const isPullMirror = $target.hasClass('js-delete-pull-mirror');
     const payload = { project: {} };
 
     if (isPullMirror) {
@@ -110,7 +109,7 @@ export default {
     } else {
       payload.project = {
         remote_mirrors_attributes: {
-          id: target.dataset.mirrorId,
+          id: $target.data('mirrorId'),
           enabled: 0,
         },
       };
@@ -118,7 +117,7 @@ export default {
 
     return axios.put(this.mirrorEndpoint, payload)
       .then(() => {
-        const row = $(target).closest('tr');
+        const row = $target.closest('tr');
         $('.js-delete-mirror', row).tooltip('hide');
         row.remove();
         const currentCount = parseInt(this.$repoCount.text().replace(/(\(|\))/, ''), 10);
