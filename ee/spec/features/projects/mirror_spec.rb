@@ -30,7 +30,7 @@ feature 'Project mirror', :js do
             visit project_mirror_path(project)
           end
 
-          Sidekiq::Testing.fake! { click_link('Update Now') }
+          Sidekiq::Testing.fake! { find('.js-force-update-mirror').click }
         end
       end
 
@@ -44,7 +44,7 @@ feature 'Project mirror', :js do
             visit project_mirror_path(project)
           end
 
-          expect(page).to have_content('Update Now')
+          expect(page).to have_selector('.js-force-update-mirror')
           expect(page).to have_selector('.btn.disabled')
         end
       end
