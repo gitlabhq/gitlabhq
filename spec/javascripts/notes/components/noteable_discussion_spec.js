@@ -4,22 +4,23 @@ import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
+const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
+
 describe('noteable_discussion component', () => {
+  const Component = Vue.extend(noteableDiscussion);
   let store;
   let vm;
 
-  beforeEach(() => {
-    const Component = Vue.extend(noteableDiscussion);
+  preloadFixtures(discussionWithTwoUnresolvedNotes);
 
+  beforeEach(() => {
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({
       store,
-      propsData: {
-        discussion: discussionMock,
-      },
+      propsData: { discussion: discussionMock },
     }).$mount();
   });
 
@@ -84,7 +85,9 @@ describe('noteable_discussion component', () => {
       });
 
       it('is true if there are two unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([{}, {}]);
+        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+        discussion.notes[0].resolved = false;
+        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
 
         Vue.nextTick()
           .then(() => {
@@ -105,12 +108,12 @@ describe('noteable_discussion component', () => {
           {
             ...discussionMock,
             id: discussionMock.id + 1,
-            notes: [{ ...discussionMock.notes[0], resolved: true }],
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
           },
           {
             ...discussionMock,
             id: discussionMock.id + 2,
-            notes: [{ ...discussionMock.notes[0], resolved: false }],
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: false }],
           },
         ];
         const nextDiscussionId = discussionMock.id + 2;

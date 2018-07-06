@@ -530,6 +530,39 @@ GET /projects/:id
 }
 ```
 
+If the project is a fork, and you provide a valid token to authenticate, the
+`forked_from_project` field will appear in the response.
+
+```json
+{
+   "id":3,
+
+   ...
+
+   "forked_from_project":{
+      "id":13083,
+      "description":"GitLab Community Edition",
+      "name":"GitLab Community Edition",
+      "name_with_namespace":"GitLab.org / GitLab Community Edition",
+      "path":"gitlab-ce",
+      "path_with_namespace":"gitlab-org/gitlab-ce",
+      "created_at":"2013-09-26T06:02:36.000Z",
+      "default_branch":"master",
+      "tag_list":[],
+      "ssh_url_to_repo":"git@gitlab.com:gitlab-org/gitlab-ce.git",
+      "http_url_to_repo":"https://gitlab.com/gitlab-org/gitlab-ce.git",
+      "web_url":"https://gitlab.com/gitlab-org/gitlab-ce",
+      "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
+      "star_count":3812,
+      "forks_count":3561,
+      "last_activity_at":"2018-01-02T11:40:26.570Z"
+   }
+
+   ...
+
+}
+```
+
 ## Get project users
 
 Get the users list of a project.
