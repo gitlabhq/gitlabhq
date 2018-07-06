@@ -1858,35 +1858,6 @@ module Gitlab
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
       end
-
-      def build_git_cmd(*args)
-        object_directories = alternate_object_directories.join(File::PATH_SEPARATOR)
-
-        env = { 'PWD' => self.path }
-        env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories if object_directories.present?
-
-        [
-          env,
-          ::Gitlab.config.git.bin_path,
-          *args,
-          { chdir: self.path }
-        ]
-      end
-
-      def git_diff_cmd(old_rev, new_rev)
-        old_rev = old_rev == ::Gitlab::Git::BLANK_SHA ? ::Gitlab::Git::EMPTY_TREE_ID : old_rev
-
-        build_git_cmd('diff', old_rev, new_rev, '--raw')
-      end
-
-      def git_cat_file_cmd
-        format = '%(objectname) %(objectsize) %(rest)'
-        build_git_cmd('cat-file', "--batch-check=#{format}")
-      end
-
-      def format_git_cat_file_script
-        File.expand_path('../support/format-git-cat-file-input', __FILE__)
-      end
     end
   end
 end
