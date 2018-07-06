@@ -53,7 +53,7 @@ class ImporterStatus {
       repo_id: id,
       target_namespace: targetNamespace,
       new_name: newName,
-      ci_cd_only: this.ciCdOnly
+      ci_cd_only: this.ciCdOnly,
     };
 
     if (repoData) {
