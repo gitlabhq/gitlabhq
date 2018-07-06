@@ -265,17 +265,39 @@ module Gitlab
         true
       end
 
-      def write_config(full_path:)
-        request = Gitaly::WriteConfigRequest.new(repository: @gitaly_repo, full_path: full_path)
-        response = GitalyClient.call(
+      def set_config(entries)
+        return if entries.empty?
+
+        request = Gitaly::SetConfigRequest.new(repository: @gitaly_repo)
+        entries.each do |key, value|
+          request.entries << build_set_config_entry(key, value)
+        end
+
+        GitalyClient.call(
           @storage,
           :repository_service,
-          :write_config,
+          :set_config,
           request,
           timeout: GitalyClient.fast_timeout
         )
 
-        raise Gitlab::Git::OSError.new(response.error) unless response.error.empty?
+        nil
+      end
+
+      def delete_config(keys)
+        return if keys.empty?
+
+        request = Gitaly::DeleteConfigRequest.new(repository: @gitaly_repo, keys: keys)
+
+        GitalyClient.call(
+          @storage,
+          :repository_service,
+          :delete_config,
+          request,
+          timeout: GitalyClient.fast_timeout
+        )
+
+        nil
       end
 
       def license_short_name
@@ -351,6 +373,23 @@ module Gitlab
           enum,
           timeout: timeout
         )
+      end
+
+      def build_set_config_entry(key, value)
+        entry = Gitaly::SetConfigRequest::Entry.new(key: key)
+
+        case value
+        when String
+          entry.value_str = value
+        when Integer
+          entry.value_int32 = value
+        when TrueClass, FalseClass
+          entry.value_bool = value
+        else
+          raise InvalidArgument, "invalid git config value: #{value.inspect}"
+        end
+
+        entry
       end
     end
   end

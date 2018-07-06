@@ -90,7 +90,7 @@ class Repository
     @raw_repository&.cleanup
   end
 
-  # Return absolute path to repository
+  # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
       begin
@@ -257,7 +257,7 @@ class Repository
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
   rescue Gitlab::Git::CommandError => ex
-    Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
   end
 
   def kept_around?(sha)
