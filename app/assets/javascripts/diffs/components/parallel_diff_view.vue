@@ -24,19 +24,21 @@ export default {
     ...mapGetters(['commit']),
     parallelDiffLines() {
       return this.diffLines.map(line => {
+        const parallelLine = Object.assign({}, line);
+
         if (line.left) {
-          Object.assign(line, { left: trimFirstCharOfLineContent(line.left) });
+          parallelLine.left = trimFirstCharOfLineContent(line.left);
         } else {
-          Object.assign(line, { left: { type: EMPTY_CELL_TYPE } });
+          parallelLine.left = { type: EMPTY_CELL_TYPE };
         }
 
         if (line.right) {
-          Object.assign(line, { right: trimFirstCharOfLineContent(line.right) });
+          parallelLine.right = trimFirstCharOfLineContent(line.right);
         } else {
-          Object.assign(line, { right: { type: EMPTY_CELL_TYPE } });
+          parallelLine.right = { type: EMPTY_CELL_TYPE };
         }
 
-        return line;
+        return parallelLine;
       });
     },
     diffLinesLength() {

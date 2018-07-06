@@ -70,5 +70,10 @@ module Types
           resolver: Resolvers::MergeRequestResolver do
       authorize :read_merge_request
     end
+
+    field :pipelines,
+          Types::Ci::PipelineType.connection_type,
+          null: false,
+          resolver: Resolvers::ProjectPipelinesResolver
   end
 end

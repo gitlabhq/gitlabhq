@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Resolve an open discussion in a merge request by creating an issue', :js do
+describe 'Resolve an open discussion in a merge request by creating an issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, only_allow_merge_if_all_discussions_are_resolved: true) }
   let(:merge_request) { create(:merge_request, source_project: project) }

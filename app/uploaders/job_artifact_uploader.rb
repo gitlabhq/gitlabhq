@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern

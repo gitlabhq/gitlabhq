@@ -1,6 +1,8 @@
 module Gitlab
   module Diff
     class Line
+      SERIALIZE_KEYS = %i(line_code text type index old_pos new_pos).freeze
+
       attr_reader :line_code, :type, :index, :old_pos, :new_pos
       attr_writer :rich_text
       attr_accessor :text
@@ -19,13 +21,9 @@ module Gitlab
         new(hash[:text], hash[:type], hash[:index], hash[:old_pos], hash[:new_pos], line_code: hash[:line_code])
       end
 
-      def serialize_keys
-        @serialize_keys ||= %i(line_code text type index old_pos new_pos)
-      end
-
       def to_hash
         hash = {}
-        serialize_keys.each { |key| hash[key] = send(key) } # rubocop:disable GitlabSecurity/PublicSend
+        SERIALIZE_KEYS.each { |key| hash[key] = send(key) } # rubocop:disable GitlabSecurity/PublicSend
         hash
       end
 

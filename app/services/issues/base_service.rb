@@ -32,8 +32,9 @@ module Issues
     def filter_assignee(issuable)
       return if params[:assignee_ids].blank?
 
-      # The number of assignees is limited by one for GitLab CE
-      params[:assignee_ids] = params[:assignee_ids][0, 1]
+      unless issuable.allows_multiple_assignees?
+        params[:assignee_ids] = params[:assignee_ids].take(1)
+      end
 
       assignee_ids = params[:assignee_ids].select { |assignee_id| assignee_can_read?(issuable, assignee_id) }
 

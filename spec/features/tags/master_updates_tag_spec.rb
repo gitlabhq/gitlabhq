@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Master updates tag' do
+describe 'Master updates tag' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
 
@@ -11,7 +11,7 @@ feature 'Master updates tag' do
   end
 
   context 'from the tags list page' do
-    scenario 'updates the release notes' do
+    it 'updates the release notes' do
       page.within(first('.content-list .controls')) do
         click_link 'Edit release notes'
       end
@@ -25,7 +25,7 @@ feature 'Master updates tag' do
       expect(page).to have_content 'Awesome release notes'
     end
 
-    scenario 'description has emoji autocomplete', :js do
+    it 'description has emoji autocomplete', :js do
       page.within(first('.content-list .controls')) do
         click_link 'Edit release notes'
       end
@@ -38,7 +38,7 @@ feature 'Master updates tag' do
   end
 
   context 'from a specific tag page' do
-    scenario 'updates the release notes' do
+    it 'updates the release notes' do
       click_on 'v1.1.0'
       click_link 'Edit release notes'
       fill_in 'release_description', with: 'Awesome release notes'

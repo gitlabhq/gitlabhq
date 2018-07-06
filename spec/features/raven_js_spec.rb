@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'RavenJS' do
+describe 'RavenJS' do
   let(:raven_path) { '/raven.chunk.js' }
 
   it 'should not load raven if sentry is disabled' do

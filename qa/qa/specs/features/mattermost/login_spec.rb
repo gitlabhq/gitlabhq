@@ -1,6 +1,6 @@
 module QA
-  feature 'logging in to Mattermost', :mattermost do
-    scenario 'can use gitlab oauth' do
+  describe 'logging in to Mattermost', :mattermost do
+    it 'can use gitlab oauth' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }
 
