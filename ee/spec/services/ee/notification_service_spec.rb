@@ -62,7 +62,7 @@ describe EE::NotificationService, :mailer do
     end
 
     def execute!
-      subject.send_service_desk_notification(note)
+      subject.new_note(note)
     end
 
     def self.it_should_email!
@@ -105,7 +105,7 @@ describe EE::NotificationService, :mailer do
 
       context 'when the license doesn\'t allow service desk' do
         before do
-          expect(EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
+          allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
         end
 
         it_should_not_email!
