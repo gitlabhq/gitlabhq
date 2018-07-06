@@ -120,7 +120,7 @@ gitlabConfigStorageSize: 1Gi
 Ingress routing and SSL are automatically configured within this Chart. An NGINX ingress is provisioned and configured, and will route traffic to any service. SSL certificates are automatically created and configured by [kube-lego](https://github.com/kubernetes/charts/tree/master/stable/kube-lego).
 
 > **Note:**
-Let's Encrypt limits a single TLD to five certificate requests within a single week. This means that common DNS wildcard services like [nip.io](http://nip.io) and [nip.io](http://nip.io) are unlikely to work.
+Let's Encrypt limits a single TLD to five certificate requests within a single week. This means that common DNS wildcard services like [nip.io](http://nip.io) are unlikely to work.
 
 ## Installing GitLab using the Helm Chart
 > **Note:**
