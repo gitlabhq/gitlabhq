@@ -92,6 +92,7 @@ export default {
       :is-editing="isEditing"
       :note-body="noteBody"
       :note-id="note.id"
+      :markdown-version="note.cached_markdown_version"
       @handleFormUpdate="handleFormUpdate"
       @cancelForm="formCancelHandler"
     />
