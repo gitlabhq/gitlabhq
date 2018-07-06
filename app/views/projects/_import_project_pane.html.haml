@@ -44,7 +44,7 @@
             = icon('git', text: 'Repo by URL')
       %div
         - if manifest_import_enabled?
-          %button.btn{ type: "button" }
+          = link_to new_import_manifest_path, class: 'btn import_manifest' do
             = icon('file-text-o', text: 'Manifest file')
 
   .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
@@ -52,7 +52,3 @@
       %hr
       = render "shared/import_form", f: f
       = render 'new_project_fields', f: f, project_name_id: "import-url-name"
-
-  .toggle-manifest-form
-    %hr
-    = render 'import/manifest/form'
