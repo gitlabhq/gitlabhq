@@ -1,5 +1,0 @@
----
-title: Remove unused running_or_pending_build_count
-merge_request:
-author:
-type: performance

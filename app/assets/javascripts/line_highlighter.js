@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-use-before-define, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, prefer-arrow-callback, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
+/* eslint-disable func-names, no-var, no-underscore-dangle, no-param-reassign, prefer-template, quotes, comma-dangle, consistent-return, one-var, one-var-declaration-per-line, no-else-return, max-len */
 
 import $ from 'jquery';
 
@@ -142,14 +142,14 @@ LineHighlighter.prototype.highlightLine = function(lineNumber) {
 //
 // range - Array containing the starting and ending line numbers
 LineHighlighter.prototype.highlightRange = function(range) {
-  var i, lineNumber, ref, ref1, results;
   if (range[1]) {
-    results = [];
+    const results = [];
+    const ref = range[0] <= range[1] ? range : range.reverse();
 
-    // eslint-disable-next-line no-multi-assign
-    for (lineNumber = i = ref = range[0], ref1 = range[1]; ref <= ref1 ? i <= ref1 : i >= ref1; lineNumber = ref <= ref1 ? (i += 1) : (i -= 1)) {
+    for (let lineNumber = range[0]; lineNumber <= ref[1]; lineNumber += 1) {
       results.push(this.highlightLine(lineNumber));
     }
+
     return results;
   } else {
     return this.highlightLine(range[0]);

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FaviconUploader < AttachmentUploader
   EXTENSION_WHITELIST = %w[png ico].freeze
 

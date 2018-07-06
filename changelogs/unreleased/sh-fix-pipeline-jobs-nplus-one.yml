@@ -1,5 +1,0 @@
----
-title: Eliminate N+1 queries for CI job artifacts in /api/prjoects/:id/pipelines/:pipeline_id/jobs
-merge_request:
-author:
-type: performance

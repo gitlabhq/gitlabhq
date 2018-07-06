@@ -30,7 +30,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
     - [Type labels](#type-labels)
     - [Subject labels](#subject-labels)
     - [Team labels](#team-labels)
-    - [Milestone labels](#milestone-labels)
+    - [Release Scoping labels](#release-scoping-labels)
     - [Bug Priority labels](#bug-priority-labels)
     - [Bug Severity labels](#bug-severity-labels)
         - [Severity impact guidance](#severity-impact-guidance)
@@ -133,7 +133,7 @@ Most issues will have labels for at least one of the following:
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
 - Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
-- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
 
@@ -207,10 +207,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Milestone labels
+### Release Scoping labels
 
-Milestone labels help us clearly communicate expectations of the work for the
-release. There are three levels of Milestone labels:
+Release Scoping labels help us clearly communicate expectations of the work for the
+release. There are three levels of Release Scoping labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
@@ -650,7 +650,7 @@ the feature you contribute through all of these steps.
 1. Working and clean code that is commented where needed
 1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
-1. [Documented][doc-styleguide] in the `/doc` directory
+1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
 1. Reviewed and any concerns are addressed
 1. Merged by a project maintainer
@@ -687,7 +687,7 @@ merge request:
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide][doc-styleguide]
+1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead

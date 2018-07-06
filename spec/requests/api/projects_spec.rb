@@ -1990,6 +1990,38 @@ describe API::Projects do
     end
   end
 
+  describe 'PUT /projects/:id/transfer' do
+    context 'when authenticated as owner' do
+      let(:group) { create :group }
+
+      it 'transfers the project to the new namespace' do
+        group.add_owner(user)
+
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'fails when transferring to a non owned namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails when transferring to an unknown namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: 'unknown'
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails on missing namespace' do
+        put api("/projects/#{project.id}/transfer", user)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+    end
+  end
+
   it_behaves_like 'custom attributes endpoints', 'projects' do
     let(:attributable) { project }
     let(:other_attributable) { project2 }

@@ -62,7 +62,15 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
+      return new GLForm($(this.$refs['gl-form']), {
+        emojis: this.enableAutocomplete,
+        members: this.enableAutocomplete,
+        issues: this.enableAutocomplete,
+        mergeRequests: this.enableAutocomplete,
+        epics: this.enableAutocomplete,
+        milestones: this.enableAutocomplete,
+        labels: this.enableAutocomplete,
+      });
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('glForm');
@@ -150,7 +158,7 @@
     </div>
     <div
       v-show="previewMarkdown"
-      class="md md-preview-holder md-preview"
+      class="md md-preview-holder md-preview js-vue-md-preview"
     >
       <div
         ref="markdown-preview"

@@ -107,6 +107,10 @@ module Issuable
       false
     end
 
+    def etag_caching_enabled?
+      false
+    end
+
     def has_multiple_assignees?
       assignees.count > 1
     end
@@ -237,6 +241,12 @@ module Issuable
 
   def open?
     opened?
+  end
+
+  def overdue?
+    return false unless respond_to?(:due_date)
+
+    due_date.try(:past?) || false
   end
 
   def user_notes_count

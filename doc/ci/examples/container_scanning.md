@@ -57,10 +57,10 @@ so, the CI/CD job must be named `container_scanning` and the artifact path must 
 [Learn more on container scanning results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/container_scanning.html).
 
 CAUTION: **Caution:**
-Container Scanning was previously using `sast:container` for job name and
+Before GitLab 11.0, Container Scanning was previously using `sast:container` for job name and
 `gl-sast-container-report.json` for the artifact name. While these old names
-are still maintained they have been deprecated with GitLab 11.0 and may be removed
+are still maintained, they have been deprecated with GitLab 11.0 and may be removed
 in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
 configuration to reflect that change.
 
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/

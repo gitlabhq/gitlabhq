@@ -164,7 +164,7 @@ export default class Job extends LogOutputBehaviours {
   // eslint-disable-next-line class-methods-use-this
   shouldHideSidebarForViewport() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+    return bootstrapBreakpoint === 'xs';
   }
 
   toggleSidebar(shouldHide) {

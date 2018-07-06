@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
+/* eslint-disable func-names, no-underscore-dangle, no-var, one-var, one-var-declaration-per-line, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func */
 /* global fuzzaldrinPlus */
 
 import $ from 'jquery';
@@ -613,7 +613,7 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.renderItem = function(data, group, index) {
-    var field, fieldName, html, selected, text, url, value, rowHidden;
+    var field, html, selected, text, url, value, rowHidden;
 
     if (!this.options.renderRow) {
       value = this.options.id ? this.options.id(data) : data.id;
@@ -651,7 +651,7 @@ GitLabDropdown = (function() {
       html = this.options.renderRow.call(this.options, data, this);
     } else {
       if (!selected) {
-        fieldName = this.options.fieldName;
+        const { fieldName } = this.options;
 
         if (value) {
           field = this.dropdown.parent().find(`input[name='${fieldName}'][value='${value}']`);
@@ -705,7 +705,8 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.highlightTextMatches = function(text, term) {
     const occurrences = fuzzaldrinPlus.match(text, term);
-    const indexOf = [].indexOf;
+    const { indexOf } = [];
+
     return text.split('').map(function(character, i) {
       if (indexOf.call(occurrences, i) !== -1) {
         return "<b>" + character + "</b>";
@@ -721,9 +722,9 @@ GitLabDropdown = (function() {
   };
 
   GitLabDropdown.prototype.rowClicked = function(el) {
-    var field, fieldName, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
+    var field, groupName, isInput, selectedIndex, selectedObject, value, isMarking;
 
-    fieldName = this.options.fieldName;
+    const { fieldName } = this.options;
     isInput = $(this.el).is('input');
     if (this.renderedData) {
       groupName = el.data('group');

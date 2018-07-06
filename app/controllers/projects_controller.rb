@@ -63,7 +63,7 @@ class ProjectsController < Projects::ApplicationController
           redirect_to(edit_project_path(@project))
         end
       else
-        flash[:alert] = result[:message]
+        flash.now[:alert] = result[:message]
 
         format.html { render 'edit' }
       end
@@ -347,6 +347,7 @@ class ProjectsController < Projects::ApplicationController
       :visibility_level,
       :template_name,
       :merge_method,
+      :initialize_with_readme,
 
       project_feature_attributes: %i[
         builds_access_level

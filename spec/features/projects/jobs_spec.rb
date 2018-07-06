@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :clean_gitlab_redis_shared_state do
+describe 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -165,7 +165,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Job Failed ##{job.id}"
-          job_url = project_job_path(project, job)
+          job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
@@ -259,7 +259,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Raw trace' do
+    describe 'Raw trace' do
       before do
         job.run!
 
@@ -271,7 +271,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'HTML trace', :js do
+    describe 'HTML trace', :js do
       before do
         job.run!
 
@@ -291,7 +291,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Variables' do
+    describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do

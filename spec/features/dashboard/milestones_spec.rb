@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > Milestones' do
+describe 'Dashboard > Milestones' do
   describe 'as anonymous user' do
     before do
       visit dashboard_milestones_path

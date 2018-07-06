@@ -32,7 +32,7 @@
   };
 </script>
 <template>
-  <div class="space-children flex-container-block append-right-10">
+  <div class="space-children d-flex append-right-10">
     <div
       v-if="isLoading"
       class="mr-widget-icon"

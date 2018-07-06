@@ -571,13 +571,13 @@ describe Project do
                                   last_activity_at: timestamp,
                                   last_repository_updated_at: timestamp - 1.hour)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
 
         project.update_attributes(updated_at: timestamp,
                                   last_activity_at: timestamp - 1.hour,
                                   last_repository_updated_at: nil)
 
-        expect(project.last_activity_date).to eq(timestamp)
+        expect(project.last_activity_date).to be_like_time(timestamp)
       end
     end
   end
@@ -2289,6 +2289,28 @@ describe Project do
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
+    end
+  end
+
+  describe '#default_environment' do
+    let(:project) { create(:project) }
+
+    it 'returns production environment when it exists' do
+      production = create(:environment, name: "production", project: project)
+      create(:environment, name: 'staging', project: project)
+
+      expect(project.default_environment).to eq(production)
+    end
+
+    it 'returns first environment when no production environment exists' do
+      create(:environment, name: 'staging', project: project)
+      create(:environment, name: 'foo', project: project)
+
+      expect(project.default_environment).to eq(project.environments.first)
+    end
+
+    it 'returns nil when no available environment exists' do
+      expect(project.default_environment).to be_nil
     end
   end
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, consistent-return, object-shorthand, prefer-template, quotes, class-methods-use-this, no-lonely-if, no-else-return, vars-on-top, max-len */
 
 import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
@@ -289,7 +289,7 @@ export default class SearchAutocomplete {
     }
 
     // If the dropdown is closed, we'll open it
-    if (!this.dropdown.hasClass('open')) {
+    if (!this.dropdown.hasClass('show')) {
       this.loadingSuggestions = false;
       this.dropdownToggle.dropdown('toggle');
       return this.searchInput.removeClass('disabled');
@@ -424,9 +424,9 @@ export default class SearchAutocomplete {
   }
 
   disableAutocomplete() {
-    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
+    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('show')) {
       this.searchInput.addClass('disabled');
-      this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
+      this.dropdown.removeClass('show').trigger('hidden.bs.dropdown');
       this.restoreMenu();
     }
   }

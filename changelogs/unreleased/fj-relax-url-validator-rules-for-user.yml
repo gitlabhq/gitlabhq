@@ -1,5 +1,0 @@
----
-title: Avoid checking the user format in every url validation
-merge_request: 19575
-author:
-type: changed

@@ -1422,7 +1422,7 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.instance_type : Ci::Runner.none
   end
 
   def group_runners
@@ -1774,6 +1774,15 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def default_environment
+    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+
+    environments
+      .with_state(:available)
+      .reorder(production_first)
+      .first
+  end
+
   def secret_variables_for(ref:, environment: nil)
     # EE would use the environment
     if protected_for?(ref)
@@ -2018,6 +2027,10 @@ class Project < ActiveRecord::Base
     lfs_file_locks.any?
   end
   request_cache(:any_lfs_file_locks?) { self.id }
+
+  def auto_cancel_pending_pipelines?
+    auto_cancel_pending_pipelines == 'enabled'
+  end
 
   private
 

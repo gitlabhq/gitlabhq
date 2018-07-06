@@ -1,10 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from '~/locale';
+import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
@@ -251,3 +252,5 @@ export default class MilestoneSelect {
     });
   }
 }
+
+window.MilestoneSelect = MilestoneSelect;

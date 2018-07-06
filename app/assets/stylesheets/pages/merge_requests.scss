@@ -46,7 +46,6 @@
 
   .btn {
     font-size: $gl-font-size;
-    max-height: 26px;
 
     &[disabled] {
       opacity: 0.3;
@@ -600,14 +599,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -739,6 +736,10 @@
 
   > *:not(:last-child) {
     margin-right: .3em;
+  }
+
+  svg {
+    vertical-align: text-top;
   }
 }
 

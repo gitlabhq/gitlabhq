@@ -990,7 +990,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolved])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
       end
 
       context 'with cross-reference system note', :request_store do

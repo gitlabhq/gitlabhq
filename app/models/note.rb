@@ -229,6 +229,10 @@ class Note < ActiveRecord::Base
     !for_personal_snippet?
   end
 
+  def for_issuable?
+    for_issue? || for_merge_request?
+  end
+
   def skip_project_check?
     !for_project_noteable?
   end
@@ -384,6 +388,7 @@ class Note < ActiveRecord::Base
 
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
+    return unless noteable&.etag_caching_enabled?
 
     Gitlab::EtagCaching::Store.new.touch(etag_key)
   end

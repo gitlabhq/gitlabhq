@@ -54,6 +54,8 @@ module Gitlab
         @project = project
         @imported_object_retries = 0
 
+        @relation_hash['project_id'] = @project.id
+
         # Remove excluded keys from relation_hash
         # We don't do this in the parsed_relation_hash because of the 'transformed attributes'
         # For example, MergeRequestDiffFiles exports its diff attribute as utf8_diff. Then,
@@ -80,15 +82,12 @@ module Gitlab
         case @relation_name
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
-        when :project_label, :project_labels then setup_label
-        when :milestone, :milestones         then setup_milestone
         when 'Ci::Pipeline'                  then setup_pipeline
-        else
-          @relation_hash['project_id'] = @project.id
         end
 
         update_user_references
         update_project_references
+        update_group_references
         remove_duplicate_assignees
 
         reset_tokens!
@@ -151,39 +150,23 @@ module Gitlab
       end
 
       def update_project_references
-        project_id = @relation_hash.delete('project_id')
-
         # If source and target are the same, populate them with the new project ID.
         if @relation_hash['source_project_id']
-          @relation_hash['source_project_id'] = same_source_and_target? ? project_id : MergeRequestParser::FORKED_PROJECT_ID
+          @relation_hash['source_project_id'] = same_source_and_target? ? @relation_hash['project_id'] : MergeRequestParser::FORKED_PROJECT_ID
         end
 
-        # project_id may not be part of the export, but we always need to populate it if required.
-        @relation_hash['project_id'] = project_id
-        @relation_hash['target_project_id'] = project_id if @relation_hash['target_project_id']
+        @relation_hash['target_project_id'] = @relation_hash['project_id'] if @relation_hash['target_project_id']
       end
 
       def same_source_and_target?
         @relation_hash['target_project_id'] && @relation_hash['target_project_id'] == @relation_hash['source_project_id']
       end
 
-      def setup_label
-        # If there's no group, move the label to a project label
-        if @relation_hash['type'] == 'GroupLabel' && @relation_hash['group_id']
-          @relation_hash['project_id'] = nil
-          @relation_name = :group_label
-        else
-          @relation_hash['group_id'] = nil
-          @relation_hash['type'] = 'ProjectLabel'
-        end
-      end
+      def update_group_references
+        return unless EXISTING_OBJECT_CHECK.include?(@relation_name)
+        return unless @relation_hash['group_id']
 
-      def setup_milestone
-        if @relation_hash['group_id']
-          @relation_hash['group_id'] = @project.group.id
-        else
-          @relation_hash['project_id'] = @project.id
-        end
+        @relation_hash['group_id'] = @project.group&.id
       end
 
       def reset_tokens!
@@ -271,15 +254,7 @@ module Gitlab
       end
 
       def existing_object
-        @existing_object ||=
-          begin
-            existing_object = find_or_create_object!
-
-            # Done in two steps, as MySQL behaves differently than PostgreSQL using
-            # the +find_or_create_by+ method and does not return the ID the second time.
-            existing_object.update!(parsed_relation_hash)
-            existing_object
-          end
+        @existing_object ||= find_or_create_object!
       end
 
       def unknown_service?
@@ -288,29 +263,16 @@ module Gitlab
       end
 
       def find_or_create_object!
-        finder_attributes = if @relation_name == :group_label
-                              %w[title group_id]
-                            elsif parsed_relation_hash['project_id']
-                              %w[title project_id]
-                            else
-                              %w[title group_id]
-                            end
+        return relation_class.find_or_create_by(project_id: @project.id) if @relation_name == :project_feature
 
-        finder_hash = parsed_relation_hash.slice(*finder_attributes)
-
-        if label?
-          label = relation_class.find_or_initialize_by(finder_hash)
-          parsed_relation_hash.delete('priorities') if label.persisted?
-
-          label.save!
-          label
-        else
-          relation_class.find_or_create_by(finder_hash)
+        # Can't use IDs as validation exists calling `group` or `project` attributes
+        finder_hash = parsed_relation_hash.tap do |hash|
+          hash['group'] = @project.group if relation_class.attribute_method?('group_id')
+          hash['project'] = @project
+          hash.delete('project_id')
         end
-      end
 
-      def label?
-        @relation_name.to_s.include?('label')
+        GroupProjectObjectBuilder.build(relation_class, finder_hash)
       end
     end
   end

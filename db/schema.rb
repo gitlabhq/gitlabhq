@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180608201435) do
+ActiveRecord::Schema.define(version: 20180702120647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -357,6 +357,15 @@ ActiveRecord::Schema.define(version: 20180608201435) do
 
   add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
   add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
+
+  create_table "ci_builds_runner_session", id: :bigserial, force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.string "url", null: false
+    t.string "certificate"
+    t.string "authorization"
+  end
+
+  add_index "ci_builds_runner_session", ["build_id"], name: "index_ci_builds_runner_session_on_build_id", unique: true, using: :btree
 
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -757,6 +766,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   end
 
   add_index "deployments", ["created_at"], name: "index_deployments_on_created_at", using: :btree
+  add_index "deployments", ["deployable_type", "deployable_id"], name: "index_deployments_on_deployable_type_and_deployable_id", using: :btree
   add_index "deployments", ["environment_id", "id"], name: "index_deployments_on_environment_id_and_id", using: :btree
   add_index "deployments", ["environment_id", "iid", "project_id"], name: "index_deployments_on_environment_id_and_iid_and_project_id", using: :btree
   add_index "deployments", ["project_id", "iid"], name: "index_deployments_on_project_id_and_iid", unique: true, using: :btree
@@ -1645,6 +1655,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   add_index "projects", ["description"], name: "index_projects_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "projects", ["id"], name: "index_projects_on_id_partial_for_visibility", unique: true, where: "(visibility_level = ANY (ARRAY[10, 20]))", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
+  add_index "projects", ["last_repository_check_at"], name: "index_projects_on_last_repository_check_at", where: "(last_repository_check_at IS NOT NULL)", using: :btree
   add_index "projects", ["last_repository_check_failed"], name: "index_projects_on_last_repository_check_failed", using: :btree
   add_index "projects", ["last_repository_updated_at"], name: "index_projects_on_last_repository_updated_at", using: :btree
   add_index "projects", ["name"], name: "index_projects_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
@@ -1928,7 +1939,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.integer "target_id"
     t.string "target_type", null: false
     t.integer "author_id", null: false
@@ -1938,10 +1949,12 @@ ActiveRecord::Schema.define(version: 20180608201435) do
     t.datetime "updated_at"
     t.integer "note_id"
     t.string "commit_id"
+    t.integer "group_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
   add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
+  add_index "todos", ["group_id"], name: "index_todos_on_group_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
@@ -2143,6 +2156,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "web_hook_logs", ["created_at", "web_hook_id"], name: "index_web_hook_logs_on_created_at_and_web_hook_id", using: :btree
   add_index "web_hook_logs", ["web_hook_id"], name: "index_web_hook_logs_on_web_hook_id", using: :btree
 
   create_table "web_hooks", force: :cascade do |t|
@@ -2186,6 +2200,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
+  add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
@@ -2312,6 +2327,7 @@ ActiveRecord::Schema.define(version: 20180608201435) do
   add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade

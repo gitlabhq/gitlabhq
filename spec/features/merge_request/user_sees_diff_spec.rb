@@ -6,20 +6,6 @@ describe 'Merge request > User sees diff', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
 
-  context 'when visit with */* as accept header' do
-    it 'renders the notes' do
-      create :note_on_merge_request, project: project, noteable: merge_request, note: 'Rebasing with master'
-
-      inspect_requests(inject_headers: { 'Accept' => '*/*' }) do
-        visit diffs_project_merge_request_path(project, merge_request)
-      end
-
-      # Load notes and diff through AJAX
-      expect(page).to have_css('.note-text', visible: false, text: 'Rebasing with master')
-      expect(page).to have_css('.diffs.tab-pane.active')
-    end
-  end
-
   context 'when linking to note' do
     describe 'with unresolved note' do
       let(:note) { create :diff_note_on_merge_request, project: project, noteable: merge_request }
@@ -51,6 +37,7 @@ describe 'Merge request > User sees diff', :js do
   context 'when merge request has overflow' do
     it 'displays warning' do
       allow(Commit).to receive(:max_diff_options).and_return(max_files: 3)
+      allow_any_instance_of(DiffHelper).to receive(:render_overflow_warning?).and_return(true)
 
       visit diffs_project_merge_request_path(project, merge_request)
 

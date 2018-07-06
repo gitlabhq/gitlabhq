@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, arrow-body-style */
+/* eslint-disable arrow-body-style */
 
 import $ from 'jquery';
 import GlFieldErrors from '~/gl_field_errors';
@@ -18,7 +18,7 @@ describe('GL Style Field Errors', function() {
     expect(this.$form).toBeDefined();
     expect(this.$form.length).toBe(1);
     expect(this.fieldErrors).toBeDefined();
-    const inputs = this.fieldErrors.state.inputs;
+    const { inputs } = this.fieldErrors.state;
     expect(inputs.length).toBe(4);
   });
 

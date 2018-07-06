@@ -31,7 +31,7 @@ A Todo appears in your Todos dashboard when:
 - you are `@mentioned` in a comment on a commit,
 - a job in the CI pipeline running for your merge request failed, but this
   job is not allowed to fail.
-- a merge request becomes unmergeable, and you are either:
+- an open merge request becomes unmergeable due to conflict, and you are either:
   - the author, or
   - have set it to automatically merge once pipeline succeeds.
 
@@ -109,6 +109,7 @@ There are four kinds of filters you can use on your Todos dashboard.
 | Filter  | Description |
 | ------- | ----------- |
 | Project | Filter by project |
+| Group   | Filter by group |
 | Author  | Filter by the author that triggered the Todo |
 | Type    | Filter by issue or merge request |
 | Action  | Filter by the action that triggered the Todo |

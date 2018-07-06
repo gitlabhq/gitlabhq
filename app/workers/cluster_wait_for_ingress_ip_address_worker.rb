@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ClusterWaitForIngressIpAddressWorker
   include ApplicationWorker
   include ClusterQueue

@@ -35,7 +35,7 @@ gem 'faraday', '~> 0.12'
 # Authentication libraries
 gem 'devise', '~> 4.4'
 gem 'doorkeeper', '~> 4.3'
-gem 'doorkeeper-openid_connect', '~> 1.3'
+gem 'doorkeeper-openid_connect', '~> 1.5'
 gem 'omniauth', '~> 1.8'
 gem 'omniauth-auth0', '~> 2.0.0'
 gem 'omniauth-azure-oauth2', '~> 0.0.9'
@@ -47,7 +47,7 @@ gem 'omniauth-google-oauth2', '~> 0.5.3'
 gem 'omniauth-kerberos', '~> 0.3.0', group: :kerberos
 gem 'omniauth-oauth2-generic', '~> 0.2.2'
 gem 'omniauth-saml', '~> 1.10'
-gem 'omniauth-shibboleth', '~> 1.2.0'
+gem 'omniauth-shibboleth', '~> 1.3.0'
 gem 'omniauth-twitter', '~> 1.4'
 gem 'omniauth_crowd', '~> 2.2.0'
 gem 'omniauth-authentiq', '~> 0.3.3'
@@ -132,7 +132,7 @@ gem 'unf', '~> 0.1.4'
 gem 'seed-fu', '~> 2.3.7'
 
 # Markdown and HTML processing
-gem 'html-pipeline', '~> 2.7.1'
+gem 'html-pipeline', '~> 2.8'
 gem 'deckar01-task_list', '2.0.0'
 gem 'gitlab-markup', '~> 1.6.4'
 gem 'redcarpet', '~> 3.4'
@@ -230,7 +230,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 2.0'
+gem 'sanitize', '~> 4.6.5'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -299,7 +299,6 @@ gem 'peek-sidekiq', '~> 1.0.3'
 
 # Metrics
 group :metrics do
-  gem 'allocations', '~> 1.0', require: false, platform: :mri
   gem 'method_source', '~> 0.8', require: false
   gem 'influxdb', '~> 0.2', require: false
 
@@ -419,7 +418,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.102.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.103.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

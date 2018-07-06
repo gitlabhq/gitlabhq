@@ -191,6 +191,22 @@
   }
 }
 
+.initialize-with-readme-setting {
+  .form-check {
+    margin-bottom: 10px;
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description {
+      color: $project-option-descr-color;
+    }
+  }
+}
+
 .prometheus-metrics-monitoring {
   .card {
     .card-toggle {
@@ -255,22 +271,9 @@
   }
 }
 
-.modal-doorkeepr-auth,
-.doorkeeper-app-form {
-  .scope-description {
-    color: $theme-gray-700;
-  }
-}
-
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
-  }
-}
-
-.doorkeeper-app-form {
-  .scope-description {
-    margin: 0 0 5px 17px;
   }
 }
 

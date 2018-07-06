@@ -12,7 +12,7 @@ module Gitlab
       private
 
       def all_relation
-        Upload.all
+        Upload.all.preload(:model)
       end
 
       def local?(upload)

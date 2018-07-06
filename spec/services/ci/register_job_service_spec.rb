@@ -548,8 +548,21 @@ module Ci
       end
     end
 
-    def execute(runner)
-      described_class.new(runner).execute.build
+    context 'when runner_session params are' do
+      it 'present sets runner session configuration in the build' do
+        runner_session_params = { session: { 'url' => 'https://example.com' } }
+
+        expect(execute(specific_runner, runner_session_params).runner_session.attributes)
+          .to include(runner_session_params[:session])
+      end
+
+      it 'not present it does not configure the runner session' do
+        expect(execute(specific_runner).runner_session).to be_nil
+      end
+    end
+
+    def execute(runner, params = {})
+      described_class.new(runner).execute(params).build
     end
   end
 end

@@ -1,5 +1,0 @@
----
-title: Add support for verifying remote uploads, artifacts, and LFS objects in check rake tasks
-merge_request: 19501
-author:
-type: added

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, object-shorthand, comma-dangle, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, object-shorthand, prefer-arrow-callback */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
@@ -43,7 +43,7 @@ MarkdownPreview.prototype.showPreview = function ($form) {
     this.fetchMarkdownPreview(mdText, url, (function (response) {
       var body;
       if (response.body.length > 0) {
-        body = response.body;
+        ({ body } = response);
       } else {
         body = this.emptyMessage;
       }

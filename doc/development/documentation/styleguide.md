@@ -26,7 +26,11 @@ Check the GitLab handbook for the [writing styles guidelines](https://about.gitl
 - Jump a line between different markups (e.g., after every paragraph, header, list, etc)
 - Capitalize "G" and "L" in GitLab
 - Use sentence case for titles, headings, labels, menu items, and buttons.
-- Use title case when referring to [features](https://about.gitlab.com/features/) or [products](https://about.gitlab.com/pricing/), and methods. Note that some features are also objects (e.g. "Merge Requests" and "merge requests"). E.g.: GitLab Runner, Geo, Issue Boards, Git, Prometheus, Continuous Integration.
+- Use title case when referring to [features](https://about.gitlab.com/features/) or
+[products](https://about.gitlab.com/pricing/) (e.g., GitLab Runner, Geo,
+Issue Boards, GitLab Core, Git, Prometheus, Kubernetes, etc), and methods or methodologies
+(e.g., Continuous Integration, Continuous Deployment, Scrum, Agile, etc). Note that
+some features are also objects (e.g. "Merge Requests" and "merge requests").
 
 ## Formatting
 
@@ -72,7 +76,7 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
   This is to ensure that no document with wrong heading is going
   live without an audit, thus preventing dead links and redirection issues when
   corrected
-- Leave exactly one newline after a heading
+- Leave exactly one new line after a heading
 
 ## Links
 
@@ -94,6 +98,16 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 - Use [meaningful anchor texts](https://www.futurehosting.com/blog/links-should-have-meaningful-anchor-text-heres-why/).
   E.g., instead of writing something like `Read more about GitLab Issue Boards [here](LINK)`,
   write `Read more about [GitLab Issue Boards](LINK)`.
+
+## Navigation
+
+To indicate the steps of navigation through the UI:
+
+- Use the exact word as shown in the UI, including any capital letters as-is
+- Use bold text for navigation items and the char `>` as separator
+(e.g., `Navigate to your project's **Settings > CI/CD**` )
+- If there are any expandable menus, make sure to mention that the user
+needs to expand the tab to find the settings you're referring to
 
 ## Images
 

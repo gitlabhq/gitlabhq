@@ -14,6 +14,7 @@ describe API::MergeRequests do
   let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
+  let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
   let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   let!(:label) do
@@ -85,7 +86,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), scope: :all
 
-        expect_response_contain_exactly(merge_request2, merge_request_merged, merge_request_closed, merge_request)
+        expect_response_contain_exactly(merge_request2, merge_request_merged, merge_request_closed, merge_request, merge_request_locked)
         expect(json_response.map { |mr| mr['id'] }).not_to include(merge_request3.id)
       end
 
@@ -158,7 +159,7 @@ describe API::MergeRequests do
         it 'returns merge requests with the given source branch' do
           get api('/merge_requests', user), source_branch: merge_request_closed.source_branch, state: 'all'
 
-          expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+          expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
         end
       end
 
@@ -166,7 +167,7 @@ describe API::MergeRequests do
         it 'returns merge requests with the given target branch' do
           get api('/merge_requests', user), target_branch: merge_request_closed.target_branch, state: 'all'
 
-          expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+          expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
         end
       end
 
@@ -217,6 +218,14 @@ describe API::MergeRequests do
           get api("/merge_requests", user), project_id: project.id, search: merge_request.description
 
           expect_response_ordered_exactly(merge_request)
+        end
+      end
+
+      context 'state param' do
+        it 'returns merge requests with the given state' do
+          get api('/merge_requests', user), state: 'locked'
+
+          expect_response_contain_exactly(merge_request_locked)
         end
       end
     end

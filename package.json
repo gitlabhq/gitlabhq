@@ -3,12 +3,13 @@
   "scripts": {
     "clean": "rm -rf public/assets tmp/cache/*-loader",
     "dev-server": "nodemon -w 'config/webpack.config.js' --exec 'webpack-dev-server --config config/webpack.config.js'",
-    "eslint": "eslint --max-warnings 0 --ext .js,.vue .",
-    "eslint-fix": "eslint --max-warnings 0 --ext .js,.vue --fix .",
+    "eslint": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue .",
+    "eslint-fix": "eslint --max-warnings 0 --report-unused-disable-directives --ext .js,.vue --fix .",
     "eslint-report": "eslint --max-warnings 0 --ext .js,.vue --format html --output-file ./eslint-report.html --no-inline-config .",
     "karma": "BABEL_ENV=${BABEL_ENV:=karma} karma start --single-run true config/karma.config.js",
     "karma-coverage": "BABEL_ENV=coverage karma start --single-run true config/karma.config.js",
     "karma-start": "BABEL_ENV=karma karma start config/karma.config.js",
+    "postinstall": "node ./scripts/frontend/postinstall.js",
     "prettier-staged": "node ./scripts/frontend/prettier.js",
     "prettier-staged-save": "node ./scripts/frontend/prettier.js save",
     "prettier-all": "node ./scripts/frontend/prettier.js check-all",
@@ -17,7 +18,7 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.23.0",
+    "@gitlab-org/gitlab-svgs": "^1.24.0",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
@@ -44,6 +45,7 @@
     "d3-shape": "^1.2.0",
     "d3-time": "^1.0.8",
     "d3-time-format": "^2.1.1",
+    "dateformat": "^3.0.3",
     "deckar01-task_list": "^2.0.0",
     "diff": "^3.4.0",
     "document-register-element": "1.3.0",

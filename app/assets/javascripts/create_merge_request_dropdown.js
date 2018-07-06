@@ -281,7 +281,7 @@ export default class CreateMergeRequestDropdown {
 
     if (event.target === this.branchInput) {
       target = 'branch';
-      value = this.branchInput.value;
+      ({ value } = this.branchInput);
     } else if (event.target === this.refInput) {
       target = 'ref';
       value =

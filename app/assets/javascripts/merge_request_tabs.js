@@ -1,6 +1,7 @@
 /* eslint-disable no-new, class-methods-use-this */
 
 import $ from 'jquery';
+import Vue from 'vue';
 import Cookies from 'js-cookie';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
@@ -8,12 +9,14 @@ import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
 import { parseUrlPathname, handleLocationHash, isMetaClick } from './lib/utils/common_utils';
+import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
 import Notes from './notes';
+import { polyfillSticky } from './lib/utils/sticky';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -62,32 +65,45 @@ import Notes from './notes';
 /* eslint-enable max-len */
 
 // Store the `location` object, allowing for easier stubbing in tests
-let location = window.location;
+let { location } = window;
 
 export default class MergeRequestTabs {
   constructor({ action, setUrl, stubLocation } = {}) {
-    const mergeRequestTabs = document.querySelector('.js-tabs-affix');
+    this.mergeRequestTabs = document.querySelector('.merge-request-tabs-container');
+    this.mergeRequestTabsAll =
+      this.mergeRequestTabs && this.mergeRequestTabs.querySelectorAll
+        ? this.mergeRequestTabs.querySelectorAll('.merge-request-tabs li')
+        : null;
+    this.mergeRequestTabPanes = document.querySelector('#diff-notes-app');
+    this.mergeRequestTabPanesAll =
+      this.mergeRequestTabPanes && this.mergeRequestTabPanes.querySelectorAll
+        ? this.mergeRequestTabPanes.querySelectorAll('.tab-pane')
+        : null;
     const navbar = document.querySelector('.navbar-gitlab');
     const peek = document.getElementById('js-peek');
     const paddingTop = 16;
 
+    this.commitsTab = document.querySelector('.tab-content .commits.tab-pane');
+
+    this.currentTab = null;
     this.diffsLoaded = false;
     this.pipelinesLoaded = false;
     this.commitsLoaded = false;
     this.fixedLayoutPref = null;
+    this.eventHub = new Vue();
 
     this.setUrl = setUrl !== undefined ? setUrl : true;
     this.setCurrentAction = this.setCurrentAction.bind(this);
     this.tabShown = this.tabShown.bind(this);
-    this.showTab = this.showTab.bind(this);
+    this.clickTab = this.clickTab.bind(this);
     this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
 
     if (peek) {
       this.stickyTop += peek.offsetHeight;
     }
 
-    if (mergeRequestTabs) {
-      this.stickyTop += mergeRequestTabs.offsetHeight;
+    if (this.mergeRequestTabs) {
+      this.stickyTop += this.mergeRequestTabs.offsetHeight;
     }
 
     if (stubLocation) {
@@ -95,25 +111,22 @@ export default class MergeRequestTabs {
     }
 
     this.bindEvents();
-    this.activateTab(action);
+    if (
+      this.mergeRequestTabs &&
+      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`) &&
+      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click
+    )
+      this.mergeRequestTabs.querySelector(`a[data-action='${action}']`).click();
     this.initAffix();
   }
 
   bindEvents() {
-    $(document)
-      .on('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
-      .on('click', '.js-show-tab', this.showTab);
-
-    $('.merge-request-tabs a[data-toggle="tab"]').on('click', this.clickTab);
+    $('.merge-request-tabs a[data-toggle="tabvue"]').on('click', this.clickTab);
   }
 
   // Used in tests
   unbindEvents() {
-    $(document)
-      .off('shown.bs.tab', '.merge-request-tabs a[data-toggle="tab"]', this.tabShown)
-      .off('click', '.js-show-tab', this.showTab);
-
-    $('.merge-request-tabs a[data-toggle="tab"]').off('click', this.clickTab);
+    $('.merge-request-tabs a[data-toggle="tabvue"]').off('click', this.clickTab);
   }
 
   destroyPipelinesView() {
@@ -125,52 +138,86 @@ export default class MergeRequestTabs {
     }
   }
 
-  showTab(e) {
-    e.preventDefault();
-    this.activateTab($(e.target).data('action'));
-  }
-
   clickTab(e) {
-    if (e.currentTarget && isMetaClick(e)) {
-      const targetLink = e.currentTarget.getAttribute('href');
+    if (e.currentTarget) {
       e.stopImmediatePropagation();
       e.preventDefault();
-      window.open(targetLink, '_blank');
+
+      const { action } = e.currentTarget.dataset;
+
+      if (action) {
+        const href = e.currentTarget.getAttribute('href');
+        this.tabShown(action, href);
+      } else if (isMetaClick(e)) {
+        const targetLink = e.currentTarget.getAttribute('href');
+        window.open(targetLink, '_blank');
+      }
     }
   }
 
-  tabShown(e) {
-    const $target = $(e.target);
-    const action = $target.data('action');
+  tabShown(action, href) {
+    if (action !== this.currentTab && this.mergeRequestTabs) {
+      this.currentTab = action;
 
-    if (action === 'commits') {
-      this.loadCommits($target.attr('href'));
-      this.expandView();
-      this.resetViewContainer();
-      this.destroyPipelinesView();
-    } else if (this.isDiffAction(action)) {
-      this.loadDiff($target.attr('href'));
-      if (bp.getBreakpointSize() !== 'lg') {
-        this.shrinkView();
+      if (this.mergeRequestTabPanesAll) {
+        this.mergeRequestTabPanesAll.forEach(el => {
+          const tabPane = el;
+          tabPane.style.display = 'none';
+        });
       }
-      if (this.diffViewType() === 'parallel') {
-        this.expandViewContainer();
+
+      if (this.mergeRequestTabsAll) {
+        this.mergeRequestTabsAll.forEach(el => {
+          el.classList.remove('active');
+        });
       }
-      this.destroyPipelinesView();
-    } else if (action === 'pipelines') {
-      this.resetViewContainer();
-      this.mountPipelinesView();
-    } else {
-      if (bp.getBreakpointSize() !== 'xs') {
+
+      const tabPane = this.mergeRequestTabPanes.querySelector(`#${action}`);
+      if (tabPane) tabPane.style.display = 'block';
+      const tab = this.mergeRequestTabs.querySelector(`.${action}-tab`);
+      if (tab) tab.classList.add('active');
+
+      if (action === 'commits') {
+        this.loadCommits(href);
         this.expandView();
-      }
-      this.resetViewContainer();
-      this.destroyPipelinesView();
+        this.resetViewContainer();
+        this.destroyPipelinesView();
+      } else if (action === 'new') {
+        this.expandView();
+        this.resetViewContainer();
+        this.destroyPipelinesView();
+      } else if (this.isDiffAction(action)) {
+        if (!isInVueNoteablePage()) {
+          this.loadDiff(href);
+        }
+        if (bp.getBreakpointSize() !== 'lg') {
+          this.shrinkView();
+        }
+        if (this.diffViewType() === 'parallel') {
+          this.expandViewContainer();
+        }
+        this.destroyPipelinesView();
+        this.commitsTab.classList.remove('active');
+      } else if (action === 'pipelines') {
+        this.resetViewContainer();
+        this.mountPipelinesView();
+      } else {
+        this.mergeRequestTabPanes.querySelector('#notes').style.display = 'block';
+        this.mergeRequestTabs.querySelector('.notes-tab').classList.add('active');
 
-      initDiscussionTab();
-    }
-    if (this.setUrl) {
-      this.setCurrentAction(action);
+        if (bp.getBreakpointSize() !== 'xs') {
+          this.expandView();
+        }
+        this.resetViewContainer();
+        this.destroyPipelinesView();
+
+        initDiscussionTab();
+      }
+      if (this.setUrl) {
+        this.setCurrentAction(action);
+      }
+
+      this.eventHub.$emit('MergeRequestTabChange', this.getCurrentAction());
     }
   }
 
@@ -182,12 +229,6 @@ export default class MergeRequestTabs {
         $.scrollTo($el[0], { offset });
       }
     }
-  }
-
-  // Activate a tab based on the current action
-  activateTab(action) {
-    // important note: the .tab('show') method triggers 'shown.bs.tab' event itself
-    $(`.merge-request-tabs a[data-action='${action}']`).tab('show');
   }
 
   // Replaces the current Merge Request-specific action in the URL with a new one
@@ -270,7 +311,7 @@ export default class MergeRequestTabs {
 
   mountPipelinesView() {
     const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
-    const CommitPipelinesTable = gl.CommitPipelinesTable;
+    const { CommitPipelinesTable } = gl;
     this.commitPipelinesTable = new CommitPipelinesTable({
       propsData: {
         endpoint: pipelineTableViewEl.dataset.endpoint,
@@ -417,7 +458,6 @@ export default class MergeRequestTabs {
 
   initAffix() {
     const $tabs = $('.js-tabs-affix');
-    const $fixedNav = $('.navbar-gitlab');
 
     // Screen space on small screens is usually very sparse
     // So we dont affix the tabs on these
@@ -430,21 +470,6 @@ export default class MergeRequestTabs {
     */
     if ($tabs.css('position') !== 'static') return;
 
-    const $diffTabs = $('#diff-notes-app');
-
-    $tabs
-      .off('affix.bs.affix affix-top.bs.affix')
-      .affix({
-        offset: {
-          top: () => $diffTabs.offset().top - $tabs.height() - $fixedNav.height(),
-        },
-      })
-      .on('affix.bs.affix', () => $diffTabs.css({ marginTop: $tabs.height() }))
-      .on('affix-top.bs.affix', () => $diffTabs.css({ marginTop: '' }));
-
-    // Fix bug when reloading the page already scrolling
-    if ($tabs.hasClass('affix')) {
-      $tabs.trigger('affix.bs.affix');
-    }
+    polyfillSticky($tabs);
   }
 }

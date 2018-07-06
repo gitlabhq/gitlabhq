@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import issueSystemNote from '~/vue_shared/components/notes/system_note.vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 
-describe('issue system note', () => {
+describe('system note component', () => {
   let vm;
   let props;
 
@@ -24,6 +24,7 @@ describe('issue system note', () => {
       },
     };
 
+    const store = createStore();
     store.dispatch('setTargetNoteHash', `note_${props.note.id}`);
 
     const Component = Vue.extend(issueSystemNote);
@@ -49,9 +50,10 @@ describe('issue system note', () => {
     expect(vm.$el.querySelector('.timeline-icon svg')).toBeDefined();
   });
 
-  it('should render note header component', () => {
-    expect(
-      vm.$el.querySelector('.system-note-message').innerHTML,
-    ).toEqual(props.note.note_html);
+  // Redcarpet Markdown renderer wraps text in `<p>` tags
+  // we need to strip them because they break layout of commit lists in system notes:
+  // https://gitlab.com/gitlab-org/gitlab-ce/uploads/b07a10670919254f0220d3ff5c1aa110/jqzI.png
+  it('removes wrapping paragraph from note HTML', () => {
+    expect(vm.$el.querySelector('.system-note-message').innerHTML).toEqual('<span>closed</span>');
   });
 });

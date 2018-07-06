@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', :js do
+describe 'Import/Export - project import integration test', :js do
   include Select2Helper
 
   let(:user) { create(:user) }
   let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
-  background do
+  before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     gitlab_sign_in(user)
   end
@@ -22,7 +22,7 @@ feature 'Import/Export - project import integration test', :js do
     let(:project_path) { 'test-project-path' + SecureRandom.hex }
 
     context 'prefilled the path' do
-      scenario 'user imports an exported project successfully' do
+      it 'user imports an exported project successfully' do
         visit new_project_path
 
         select2(namespace.id, from: '#project_namespace_id')
@@ -51,7 +51,7 @@ feature 'Import/Export - project import integration test', :js do
     end
 
     context 'path is not prefilled' do
-      scenario 'user imports an exported project successfully' do
+      it 'user imports an exported project successfully' do
         visit new_project_path
         click_import_project_tab
         click_link 'GitLab export'
@@ -68,7 +68,7 @@ feature 'Import/Export - project import integration test', :js do
     end
   end
 
-  scenario 'invalid project' do
+  it 'invalid project' do
     project = create(:project, namespace: user.namespace)
 
     visit new_project_path
