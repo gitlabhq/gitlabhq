@@ -269,14 +269,8 @@
 .navbar-sub-nav,
 .navbar-nav {
   > li {
-    > a:hover,
-    > a:focus {
-      text-decoration: none;
-      outline: 0;
-      color: $white-light;
-    }
-
-    > a {
+    > a,
+    > button {
       display: -webkit-flex;
       display: flex;
       align-items: center;
@@ -288,6 +282,18 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        outline: 0;
+        color: $white-light;
+      }
+    }
+
+    > button {
+      background: transparent;
+      border: 0;
     }
 
     &.line-separator {
@@ -311,7 +317,7 @@
     font-size: 10px;
   }
 
-  .project-item-select-holder {
+  .frequent-items-item-select-holder {
     display: inline;
   }
 

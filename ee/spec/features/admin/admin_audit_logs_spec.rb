@@ -71,7 +71,6 @@ describe 'Admin::AuditLogs', :js do
       it 'filters by group' do
         filter_by_type('Group Events')
 
-        click_button 'Group'
         find('.group-item-select').click
         wait_for_requests
         find('.select2-results').click
@@ -95,7 +94,6 @@ describe 'Admin::AuditLogs', :js do
       it 'filters by project' do
         filter_by_type('Project Events')
 
-        click_button 'Project'
         find('.project-item-select').click
         wait_for_requests
         find('.select2-results').click
