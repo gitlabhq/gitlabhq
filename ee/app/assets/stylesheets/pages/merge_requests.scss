@@ -16,12 +16,19 @@
 }
 
 .mr-widget-approvals-container {
+  border: 1px solid $border-color;
+  margin-bottom: -1px;
+  border-radius: $border-radius-default $border-radius-default 0 0;
+
   .zero-approvals .ci-status-icon-success svg {
     fill: $gray-darkest;
   }
 }
 
 .approvals-body {
+  display: flex;
+  align-items: center;
+
   .approve-btn {
    vertical-align: baseline;
   }
