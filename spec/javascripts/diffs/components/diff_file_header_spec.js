@@ -280,11 +280,11 @@ describe('diff_file_header', () => {
       });
     });
 
-    it('displays an icon in the title', () => {
+    it('displays an file icon in the title', () => {
       vm = mountComponent(Component, props);
-
-      const icon = vm.$el.querySelector(`i[class="fa fa-fw fa-${vm.icon}"]`);
-      expect(icon).not.toBe(null);
+      expect(vm.$el.querySelector('svg.js-file-icon use').getAttribute('xlink:href')).toContain(
+        'ruby',
+      );
     });
 
     describe('file paths', () => {

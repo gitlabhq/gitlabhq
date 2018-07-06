@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Login' do
+describe 'Login' do
   include TermsHelper
 
-  scenario 'Successful user signin invalidates password reset token' do
+  it 'Successful user signin invalidates password reset token' do
     user = create(:user)
 
     expect(user.reset_password_token).to be_nil

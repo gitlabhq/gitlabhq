@@ -196,7 +196,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: [:environments, :clusters, :user, :gcp]) do
-          = link_to project_environments_path(@project), class: 'shortcuts-operations' do
+          = link_to metrics_project_environments_path(@project), class: 'shortcuts-operations' do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
@@ -204,14 +204,19 @@
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: [:environments, :clusters, :user, :gcp], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_environments_path(@project) do
+              = link_to metrics_project_environments_path(@project) do
                 %strong.fly-out-top-item-name
                   =  _('Operations')
             %li.divider.fly-out-top-item
 
             - if project_nav_tab? :environments
-              = nav_link(controller: :environments) do
-                = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
+              = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
+                = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics' do
+                  %span
+                    = _('Metrics')
+
+              = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
+                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments' do
                   %span
                     = _('Environments')
 

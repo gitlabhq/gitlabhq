@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'New project' do
+describe 'New project' do
   include Select2Helper
 
   let(:user) { create(:admin) }
@@ -45,6 +45,15 @@ feature 'New project' do
           expect(find_field("project_visibility_level_#{level}")).to be_checked
         end
       end
+    end
+  end
+
+  context 'Readme selector' do
+    it 'shows the initialize with Readme checkbox' do
+      visit new_project_path
+
+      expect(page).to have_css('input#project_initialize_with_readme')
+      expect(page).to have_content('Initialize repository with a README')
     end
   end
 

@@ -110,6 +110,14 @@ describe 'User uses shortcuts', :js do
   end
 
   context 'when navigating to the Operations pages' do
+    it 'redirects to the Metrics page' do
+      find('body').native.send_key('g')
+      find('body').native.send_key('l')
+
+      expect(page).to have_active_navigation('Operations')
+      expect(page).to have_active_sub_navigation('Metrics')
+    end
+
     it 'redirects to the Environments page' do
       find('body').native.send_key('g')
       find('body').native.send_key('e')

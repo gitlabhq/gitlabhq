@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/merge_requests/state';
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
-import actions, {
+import {
   requestMergeRequests,
   receiveMergeRequestsError,
   receiveMergeRequestsSuccess,
@@ -41,27 +41,25 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    let flashSpy;
-
-    beforeEach(() => {
-      flashSpy = spyOnDependency(actions, 'flash');
-    });
-
     it('should should commit error', done => {
       testAction(
         receiveMergeRequestsError,
-        'created',
+        { type: 'created', search: '' },
         mockedState,
         [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR, payload: 'created' }],
-        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'Error loading merge requests.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: { type: 'created', search: '' },
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      receiveMergeRequestsError({ commit() {} }, 'created');
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 

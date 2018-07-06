@@ -120,6 +120,10 @@ All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
 
+## Why?
+
+[Read here](https://about.gitlab.com/why/)
+
 ## Is it any good?
 
 [Yes](https://news.ycombinator.com/item?id=3067434)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fog/aws'
 require 'carrierwave/storage/fog'
 

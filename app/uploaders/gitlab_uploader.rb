@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitlabUploader < CarrierWave::Uploader::Base
   class_attribute :options
 

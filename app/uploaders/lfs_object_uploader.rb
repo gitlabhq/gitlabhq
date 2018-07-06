@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LfsObjectUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern

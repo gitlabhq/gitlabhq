@@ -78,7 +78,7 @@ describe Service do
       context 'when template is invalid' do
         it 'sets service template to inactive when template is invalid' do
           project = create(:project)
-          template = JiraService.new(template: true, active: true)
+          template = KubernetesService.new(template: true, active: true)
           template.save(validate: false)
 
           service = described_class.build_from_template(project.id, template)

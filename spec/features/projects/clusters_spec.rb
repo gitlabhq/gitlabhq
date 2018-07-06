@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Clusters', :js do
+describe 'Clusters', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
@@ -83,7 +83,7 @@ feature 'Clusters', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create on Google Kubernetes Engine'
+      click_link 'Create new Cluster on GKE'
     end
 
     it 'user sees a login page' do

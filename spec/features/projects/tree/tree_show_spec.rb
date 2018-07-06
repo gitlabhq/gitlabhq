@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects tree' do
+describe 'Projects tree' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

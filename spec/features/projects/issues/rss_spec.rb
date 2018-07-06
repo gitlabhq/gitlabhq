@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project Issues RSS' do
+describe 'Project Issues RSS' do
   let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_issues_path(project) }
 
