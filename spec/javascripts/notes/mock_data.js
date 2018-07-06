@@ -303,6 +303,7 @@ export const discussionMock = {
     },
   ],
   individual_note: false,
+  resolvable: true,
 };
 
 export const loggedOutnoteableData = {
