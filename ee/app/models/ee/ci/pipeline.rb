@@ -10,6 +10,10 @@ module EE
 
       included do
         has_one :chat_data, class_name: 'Ci::PipelineChatData'
+
+        scope :with_security_reports, -> {
+          joins(:artifacts).where(ci_builds: { name: %w[sast dependency_scanning sast:container container_scanning dast] })
+        }
       end
 
       # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
