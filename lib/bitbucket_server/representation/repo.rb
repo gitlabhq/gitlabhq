@@ -18,7 +18,7 @@ module BitbucketServer
       end
 
       def browse_url
-        link = raw.dig('project', 'links', 'self').first.fetch('href')
+        raw.dig('project', 'links', 'self').first.fetch('href')
       end
 
       def clone_url
