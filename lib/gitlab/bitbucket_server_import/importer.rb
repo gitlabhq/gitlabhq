@@ -5,6 +5,7 @@ module Gitlab
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
       REMOTE_NAME = 'bitbucket_server'.freeze
+      BATCH_SIZE = 100
 
       def self.imports_repository?
         true
@@ -64,31 +65,42 @@ module Gitlab
         project.repository.commit(sha)
       end
 
-      def track_temp_branch(pull_request, index)
-        temp_branch_name = "gitlab/import/pull-request/#{pull_request.iid}-#{index}"
-
-        @temp_branches << temp_branch_name
-        temp_branch_name
+      def temp_branch_name(pull_request, suffix)
+        "gitlab/import/pull-request/#{pull_request.iid}/#{suffix}"
       end
 
-      def restore_branches(pull_request)
-        shas_to_restore = [pull_request.source_branch_sha, pull_request.target_branch_sha]
-        resync = false
+      def restore_branches(pull_requests)
+        shas_to_restore = []
+        pull_requests.each do |pull_request|
+          shas_to_restore << {
+            temp_branch_name(pull_request, :from) => pull_request.source_branch_sha,
+            temp_branch_name(pull_request, :to) => pull_request.target_branch_sha
+          }
+        end
 
-        shas_to_restore.each_with_index do |sha, index|
-          next if sha_exists?(sha)
+        created_branches = restore_branch_shas(shas_to_restore)
+        @temp_branches << created_branches
+        import_repository unless created_branches.empty?
+      end
 
-          branch_name = track_temp_branch(pull_request, index)
-          response = client.create_branch(project_key, repository_slug, branch_name, sha)
+      def restore_branch_shas(shas_to_restore)
+        branches_created = []
 
-          if response.success?
-            resync = true
-          else
-            Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{response.code}")
+        shas_to_restore.each_with_index do |shas, index|
+          shas.each do |branch_name, sha|
+            next if sha_exists?(sha)
+
+            response = client.create_branch(project_key, repository_slug, branch_name, sha)
+
+            if response.success?
+              branches_created << branch_name
+            else
+              Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{response.code}")
+            end
           end
         end
 
-        import_repository if resync
+        branches_created
       end
 
       def import_repository
@@ -103,20 +115,35 @@ module Gitlab
         raise e.message
       end
 
+      # Bitbucket Server keeps tracks of references for open pull requests in
+      # refs/heads/pull-requests, but closed and merged requests get moved
+      # into hidden internal refs under stash-refs/pull-requests. Unless the
+      # SHAs involved are at the tip of a branch or tag, there is no way to
+      # retrieve the server for those commits.
+      #
+      # To avoid losing history, we use the Bitbucket API to re-create the branch
+      # on the remote server. Then we have to issue a `git fetch` to download these
+      # branches.
       def import_pull_requests
-        pull_requests = client.pull_requests(project_key, repository_slug)
-        pull_requests.each do |pull_request|
-          begin
-            import_bitbucket_pull_request(pull_request)
-          rescue StandardError => e
-            errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
+        pull_requests = client.pull_requests(project_key, repository_slug).to_a
+
+        # Creating branches on the server and fetching the newly-created branches
+        # may take a number of network round-trips. Do this in batches so that we can
+        # avoid doing a git fetch for every new branch.
+        pull_requests.each_slice(BATCH_SIZE) do |batch|
+          restore_branches(batch)
+
+          batch.each do |pull_request|
+            begin
+              import_bitbucket_pull_request(pull_request)
+            rescue StandardError => e
+              errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
+            end
           end
         end
       end
 
       def import_bitbucket_pull_request(pull_request)
-        restore_branches(pull_request)
-
         description = ''
         description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
         description += pull_request.description
