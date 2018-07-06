@@ -25,6 +25,20 @@ describe DiffFileEntity do
         :context_lines_path
       )
     end
+
+    # Converted diff files from GitHub import does not contain blob file
+    # and content sha.
+    context 'when diff file does not have a blob and content sha' do
+      it 'exposes some attributes as nil' do
+        allow(diff_file).to receive(:content_sha).and_return(nil)
+        allow(diff_file).to receive(:blob).and_return(nil)
+
+        expect(subject[:context_lines_path]).to be_nil
+        expect(subject[:view_path]).to be_nil
+        expect(subject[:highlighted_diff_lines]).to be_nil
+        expect(subject[:can_modify_blob]).to be_nil
+      end
+    end
   end
 
   context 'when there is no merge request' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Extra methods for uploader
 module UploaderHelper
   IMAGE_EXT = %w[png jpg jpeg gif bmp tiff ico].freeze

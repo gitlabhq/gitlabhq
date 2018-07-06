@@ -4,7 +4,7 @@ import Project from './project';
 import ShortcutsNavigation from '../../shortcuts_navigation';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const page = document.body.dataset.page;
+  const { page } = document.body.dataset;
   const newClusterViews = [
     'projects:clusters:new',
     'projects:clusters:create_gcp',

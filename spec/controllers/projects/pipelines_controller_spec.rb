@@ -74,7 +74,7 @@ describe Projects::PipelinesController do
           expect(stages.count).to eq 3
         end
 
-        expect(queries.count).to be_within(3).of(30)
+        expect(queries.count).to be_within(5).of(30)
       end
     end
 

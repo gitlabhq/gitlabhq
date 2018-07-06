@@ -1,6 +1,6 @@
 module QA
-  feature 'standard user login', :core do
-    scenario 'user logs in using credentials' do
+  describe 'standard user login', :core do
+    it 'user logs in using credentials' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 

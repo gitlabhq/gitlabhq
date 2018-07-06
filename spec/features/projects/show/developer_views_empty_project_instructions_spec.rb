@@ -1,23 +1,23 @@
 require 'rails_helper'
 
-feature 'Projects > Show > Developer views empty project instructions' do
+describe 'Projects > Show > Developer views empty project instructions' do
   let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 
-  background do
+  before do
     project.add_developer(developer)
 
     sign_in(developer)
   end
 
   context 'without an SSH key' do
-    scenario 'defaults to HTTP' do
+    it 'defaults to HTTP' do
       visit_project
 
       expect_instructions_for('http')
     end
 
-    scenario 'switches to SSH', :js do
+    it 'switches to SSH', :js do
       visit_project
 
       select_protocol('SSH')
@@ -27,17 +27,17 @@ feature 'Projects > Show > Developer views empty project instructions' do
   end
 
   context 'with an SSH key' do
-    background do
+    before do
       create(:personal_key, user: developer)
     end
 
-    scenario 'defaults to SSH' do
+    it 'defaults to SSH' do
       visit_project
 
       expect_instructions_for('ssh')
     end
 
-    scenario 'switches to HTTP', :js do
+    it 'switches to HTTP', :js do
       visit_project
 
       select_protocol('HTTP')

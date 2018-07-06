@@ -63,6 +63,14 @@ describe "User comments on issue", :js do
 
       page.within(".current-note-edit-form") do
         fill_in("note[note]", with: comment)
+        find('textarea').send_keys [:control, :shift, 'p']
+        expect(page).to have_selector('.current-note-edit-form .md-preview-holder')
+        expect(page.find('.current-note-edit-form .md-preview-holder p')).to have_content(comment)
+      end
+
+      expect(page).to have_selector('.new-note .note-textarea')
+
+      page.within(".current-note-edit-form") do
         click_button("Save comment")
       end
 

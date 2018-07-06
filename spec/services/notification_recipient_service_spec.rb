@@ -12,15 +12,15 @@ describe NotificationRecipientService do
 
     def create_watcher
       watcher = create(:user)
-      create(:notification_setting, project: project, user: watcher, level: :watch)
+      create(:notification_setting, source: project, user: watcher, level: :watch)
 
       other_projects.each do |other_project|
-        create(:notification_setting, project: other_project, user: watcher, level: :watch)
+        create(:notification_setting, source: other_project, user: watcher, level: :watch)
       end
     end
 
     it 'avoids N+1 queries', :request_store do
-      Gitlab::GitalyClient.allow_n_plus_1_calls { create_watcher }
+      create_watcher
 
       service.build_new_note_recipients(note)
 
@@ -28,7 +28,7 @@ describe NotificationRecipientService do
         service.build_new_note_recipients(note)
       end
 
-      Gitlab::GitalyClient.allow_n_plus_1_calls { create_watcher }
+      create_watcher
 
       expect { service.build_new_note_recipients(note) }.not_to exceed_query_limit(control_count)
     end

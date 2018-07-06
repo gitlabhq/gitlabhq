@@ -101,7 +101,7 @@ describe 'Projects > Settings > Repository settings' do
         visit project_settings_repository_path(project)
       end
 
-      scenario 'view deploy tokens' do
+      it 'view deploy tokens' do
         within('.deploy-tokens') do
           expect(page).to have_content(deploy_token.name)
           expect(page).to have_content('read_repository')
@@ -109,7 +109,7 @@ describe 'Projects > Settings > Repository settings' do
         end
       end
 
-      scenario 'add a new deploy token' do
+      it 'add a new deploy token' do
         fill_in 'deploy_token_name', with: 'new_deploy_key'
         fill_in 'deploy_token_expires_at', with: (Date.today + 1.month).to_s
         check 'deploy_token_read_repository'

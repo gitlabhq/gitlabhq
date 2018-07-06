@@ -5,7 +5,7 @@
 
   const Store = gl.issueBoards.BoardsStore;
 
-  export default {
+  export default Vue.extend({
     props: {
       issue: {
         type: Object,
@@ -25,18 +25,15 @@
       removeIssue() {
         const { issue } = this;
         const lists = issue.getLists();
-        const listLabelIds = lists.map(list => list.label.id);
-
-        let labelIds = issue.labels.map(label => label.id).filter(id => !listLabelIds.includes(id));
-        if (labelIds.length === 0) {
-          labelIds = [''];
-        }
+        const req = this.buildPatchRequest(issue, lists);
 
         const data = {
-          issue: {
-            label_ids: labelIds,
-          },
+          issue: this.seedPatchRequest(issue, req),
         };
+
+        if (data.issue.label_ids.length === 0) {
+          data.issue.label_ids = [''];
+        }
 
         // Post the remove data
         Vue.http.patch(this.updateUrl, data).catch(() => {
@@ -54,8 +51,30 @@
 
         Store.detail.issue = {};
       },
+      /**
+      * Build the default patch request.
+      */
+      buildPatchRequest(issue, lists) {
+        const listLabelIds = lists.map(list => list.label.id);
+
+        const labelIds = issue.labels
+          .map(label => label.id)
+          .filter(id => !listLabelIds.includes(id));
+
+        return {
+          label_ids: labelIds,
+        };
+      },
+      /**
+      * Seed the given patch request.
+      *
+      * (This is overridden in EE)
+      */
+      seedPatchRequest(issue, req) {
+        return req;
+      },
     },
-  };
+  });
 </script>
 <template>
   <div

@@ -32,6 +32,12 @@ module QA
       end
 
       def self.configure!
+        RSpec.configure do |config|
+          config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
+            metadata[:type] = :feature
+          end
+        end
+
         return if Capybara.drivers.include?(:chrome)
 
         Capybara.register_driver :chrome do |app|

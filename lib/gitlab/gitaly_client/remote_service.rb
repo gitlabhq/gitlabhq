@@ -28,13 +28,13 @@ module Gitlab
           mirror_refmaps: Array.wrap(mirror_refmaps).map(&:to_s)
         )
 
-        GitalyClient.call(@storage, :remote_service, :add_remote, request)
+        GitalyClient.call(@storage, :remote_service, :add_remote, request, timeout: GitalyClient.fast_timeout)
       end
 
       def remove_remote(name)
         request = Gitaly::RemoveRemoteRequest.new(repository: @gitaly_repo, name: name)
 
-        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request)
+        response = GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.fast_timeout)
 
         response.result
       end

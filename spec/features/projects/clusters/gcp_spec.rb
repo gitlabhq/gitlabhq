@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Gcp Cluster', :js do
+describe 'Gcp Cluster', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
@@ -162,7 +162,7 @@ feature 'Gcp Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Add an existing Kubernetes cluster'
+      click_link 'Add existing cluster'
     end
 
     it 'user does not see the "Environment scope" field' do

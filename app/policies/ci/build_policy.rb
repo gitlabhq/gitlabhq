@@ -18,6 +18,10 @@ module Ci
       @subject.project.branch_allows_collaboration?(@user, @subject.ref)
     end
 
+    condition(:terminal, scope: :subject) do
+      @subject.has_terminal?
+    end
+
     rule { protected_ref }.policy do
       prevent :update_build
       prevent :erase_build
@@ -29,5 +33,7 @@ module Ci
       enable :update_build
       enable :update_commit_status
     end
+
+    rule { can?(:update_build) & terminal }.enable :create_build_terminal
   end
 end

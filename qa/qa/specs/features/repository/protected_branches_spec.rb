@@ -1,8 +1,8 @@
 module QA
-  feature 'branch protection support', :core do
-    given(:branch_name) { 'protected-branch' }
-    given(:commit_message) { 'Protected push commit message' }
-    given(:project) do
+  describe 'branch protection support', :core do
+    let(:branch_name) { 'protected-branch' }
+    let(:commit_message) { 'Protected push commit message' }
+    let(:project) do
       Factory::Resource::Project.fabricate! do |resource|
         resource.name = 'protected-branch-project'
       end
@@ -27,7 +27,7 @@ module QA
     context 'when developers and maintainers are allowed to push to a protected branch' do
       let!(:protected_branch) { create_protected_branch(allow_to_push: true) }
 
-      scenario 'user with push rights successfully pushes to the protected branch' do
+      it 'user with push rights successfully pushes to the protected branch' do
         expect(protected_branch.name).to have_content(branch_name)
         expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
 
@@ -38,7 +38,7 @@ module QA
     end
 
     context 'when developers and maintainers are not allowed to push to a protected branch' do
-      scenario 'user without push rights fails to push to the protected branch' do
+      it 'user without push rights fails to push to the protected branch' do
         create_protected_branch(allow_to_push: false)
 
         @push = push_new_file(branch_name)
