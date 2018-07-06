@@ -9,7 +9,7 @@ export const getMergeRequestData = (
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId] || force) {
       service
-        .getProjectMergeRequestData(projectId, mergeRequestId)
+        .getProjectMergeRequestData(projectId, mergeRequestId, { render_html: true })
         .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST, {
             projectPath: projectId,

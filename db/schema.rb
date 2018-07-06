@@ -358,6 +358,15 @@ ActiveRecord::Schema.define(version: 20180702174635) do
   add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
   add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
 
+  create_table "ci_builds_runner_session", id: :bigserial, force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.string "url", null: false
+    t.string "certificate"
+    t.string "authorization"
+  end
+
+  add_index "ci_builds_runner_session", ["build_id"], name: "index_ci_builds_runner_session_on_build_id", unique: true, using: :btree
+
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -1930,7 +1939,7 @@ ActiveRecord::Schema.define(version: 20180702174635) do
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "project_id", null: false
+    t.integer "project_id"
     t.integer "target_id"
     t.string "target_type", null: false
     t.integer "author_id", null: false
@@ -1940,10 +1949,12 @@ ActiveRecord::Schema.define(version: 20180702174635) do
     t.datetime "updated_at"
     t.integer "note_id"
     t.string "commit_id"
+    t.integer "group_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
   add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
+  add_index "todos", ["group_id"], name: "index_todos_on_group_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
@@ -2189,6 +2200,7 @@ ActiveRecord::Schema.define(version: 20180702174635) do
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
+  add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
@@ -2315,6 +2327,7 @@ ActiveRecord::Schema.define(version: 20180702174635) do
   add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
+  add_foreign_key "todos", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade

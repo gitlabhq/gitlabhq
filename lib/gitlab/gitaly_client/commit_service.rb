@@ -70,7 +70,7 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout)
 
         response.flat_map { |msg| msg.deltas }
       end
@@ -302,7 +302,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum)
+        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout)
 
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
@@ -330,7 +330,7 @@ module Gitlab
 
       def get_commit_signatures(commit_ids)
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
         signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
         current_commit_id = nil
@@ -349,7 +349,7 @@ module Gitlab
 
       def get_commit_messages(commit_ids)
         request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request, timeout: GitalyClient.fast_timeout)
 
         messages = Hash.new { |h, k| h[k] = ''.b }
         current_commit_id = nil

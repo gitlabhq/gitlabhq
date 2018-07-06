@@ -19,6 +19,7 @@ describe Ci::Build do
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:deployments) }
   it { is_expected.to have_many(:trace_sections)}
+  it { is_expected.to have_one(:runner_session)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -38,6 +39,20 @@ describe Ci::Build do
         expect(BuildHooksWorker).to receive(:perform_async)
 
         create(:ci_build)
+      end
+    end
+  end
+
+  describe 'status' do
+    context 'when transitioning to any state from running' do
+      it 'removes runner_session' do
+        %w(success drop cancel).each do |event|
+          build = FactoryBot.create(:ci_build, :running, :with_runner_session, pipeline: pipeline)
+
+          build.fire_events!(event)
+
+          expect(build.reload.runner_session).to be_nil
+        end
       end
     end
   end
@@ -499,6 +514,22 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_old_trace?' do
+    subject { build.has_old_trace? }
+
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when old trace does not exist' do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#trace=' do
     it "expect to fail trace=" do
       expect { build.trace = "new" }.to raise_error(NotImplementedError)
@@ -518,16 +549,32 @@ describe Ci::Build do
   end
 
   describe '#erase_old_trace!' do
-    subject { build.send(:read_attribute, :trace) }
+    subject { build.erase_old_trace! }
 
-    before do
-      build.send(:write_attribute, :trace, 'old trace')
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it "erases old trace" do
+        subject
+
+        expect(build.old_trace).to be_nil
+      end
+
+      it "executes UPDATE query" do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(1)
+      end
     end
 
-    it "expect to receive data from database" do
-      build.erase_old_trace!
+    context 'when old trace does not exist' do
+      it 'does not execute UPDATE query' do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
 
-      is_expected.to be_nil
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(0)
+      end
     end
   end
 
@@ -2601,6 +2648,41 @@ describe Ci::Build do
           expect(PagesWorker).not_to receive(:perform_async)
 
           build.success
+        end
+      end
+    end
+  end
+
+  describe '#has_terminal?' do
+    let(:states) { described_class.state_machines[:status].states.keys - [:running] }
+
+    subject { build.has_terminal? }
+
+    it 'returns true if the build is running and it has a runner_session_url' do
+      build.build_runner_session(url: 'whatever')
+      build.status = :running
+
+      expect(subject).to be_truthy
+    end
+
+    context 'returns false' do
+      it 'when runner_session_url is empty' do
+        build.status = :running
+
+        expect(subject).to be_falsey
+      end
+
+      context 'unless the build is running' do
+        before do
+          build.build_runner_session(url: 'whatever')
+        end
+
+        it do
+          states.each do |state|
+            build.status = state
+
+            is_expected.to be_falsey
+          end
         end
       end
     end

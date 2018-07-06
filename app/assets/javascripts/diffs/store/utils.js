@@ -155,18 +155,21 @@ export function addContextLines(options) {
   }
 }
 
-export function trimFirstCharOfLineContent(line) {
-  if (!line.richText) {
-    return line;
+/**
+ * Trims the first char of the `richText` property when it's either a space or a diff symbol.
+ * @param {Object} line
+ * @returns {Object}
+ */
+export function trimFirstCharOfLineContent(line = {}) {
+  const parsedLine = Object.assign({}, line);
+
+  if (line.richText) {
+    const firstChar = parsedLine.richText.charAt(0);
+
+    if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
+      parsedLine.richText = line.richText.substring(1);
+    }
   }
 
-  const firstChar = line.richText.charAt(0);
-
-  if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
-    Object.assign(line, {
-      richText: line.richText.substring(1),
-    });
-  }
-
-  return line;
+  return parsedLine;
 }

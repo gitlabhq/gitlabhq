@@ -63,12 +63,8 @@ module Gitlab
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
-            if is_enabled
-              repo.gitaly_commit_client.find_commit(commit_id)
-            else
-              rugged_find(repo, commit_id)
-            end
+          commit = repo.wrapped_gitaly_errors do
+            repo.gitaly_commit_client.find_commit(commit_id)
           end
 
           decorate(repo, commit) if commit
@@ -76,12 +72,6 @@ module Gitlab
                Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
                Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
-        end
-
-        def rugged_find(repo, commit_id)
-          obj = repo.rev_parse_target(commit_id)
-
-          obj.is_a?(Rugged::Commit) ? obj : nil
         end
 
         # Get last commit for HEAD

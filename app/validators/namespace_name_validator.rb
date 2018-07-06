@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # NamespaceNameValidator
 #
 # Custom validator for GitLab namespace name strings.

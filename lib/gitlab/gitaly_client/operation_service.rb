@@ -17,7 +17,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.medium_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -33,7 +33,7 @@ module Gitlab
           message: encode_binary(message.to_s)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.medium_timeout)
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
@@ -276,7 +276,8 @@ module Gitlab
           :operation_service,
           :"user_#{rpc}",
           request,
-          remote_storage: start_repository.storage
+          remote_storage: start_repository.storage,
+          timeout: GitalyClient.medium_timeout
         )
 
         handle_cherry_pick_or_revert_response(response)

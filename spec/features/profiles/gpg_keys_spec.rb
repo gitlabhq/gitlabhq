@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > GPG Keys' do
+describe 'Profile > GPG Keys' do
   let(:user) { create(:user, email: GpgHelpers::User2.emails.first) }
 
   before do
@@ -12,7 +12,7 @@ feature 'Profile > GPG Keys' do
       visit profile_gpg_keys_path
     end
 
-    scenario 'saves the new key' do
+    it 'saves the new key' do
       fill_in('Key', with: GpgHelpers::User2.public_key)
       click_button('Add key')
 
@@ -21,7 +21,7 @@ feature 'Profile > GPG Keys' do
       expect(page).to have_content(GpgHelpers::User2.fingerprint)
     end
 
-    scenario 'with multiple subkeys' do
+    it 'with multiple subkeys' do
       fill_in('Key', with: GpgHelpers::User3.public_key)
       click_button('Add key')
 
@@ -34,7 +34,7 @@ feature 'Profile > GPG Keys' do
     end
   end
 
-  scenario 'User sees their key' do
+  it 'User sees their key' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit profile_gpg_keys_path
 
@@ -43,7 +43,7 @@ feature 'Profile > GPG Keys' do
     expect(page).to have_content(GpgHelpers::User2.fingerprint)
   end
 
-  scenario 'User removes a key via the key index' do
+  it 'User removes a key via the key index' do
     create(:gpg_key, user: user, key: GpgHelpers::User2.public_key)
     visit profile_gpg_keys_path
 
@@ -52,7 +52,7 @@ feature 'Profile > GPG Keys' do
     expect(page).to have_content('Your GPG keys (0)')
   end
 
-  scenario 'User revokes a key via the key index' do
+  it 'User revokes a key via the key index' do
     gpg_key = create :gpg_key, user: user, key: GpgHelpers::User2.public_key
     gpg_signature = create :gpg_signature, gpg_key: gpg_key, verification_status: :verified
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group Badges' do
+describe 'Group Badges' do
   include WaitForRequests
 
   let(:user) { create(:user) }

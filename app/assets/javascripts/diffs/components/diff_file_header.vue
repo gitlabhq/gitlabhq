@@ -2,6 +2,7 @@
 import _ from 'underscore';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import FileIcon from '~/vue_shared/components/file_icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import { truncateSha } from '~/lib/utils/text_utility';
 import { __, s__, sprintf } from '~/locale';
@@ -12,6 +13,7 @@ export default {
     ClipboardButton,
     EditButton,
     Icon,
+    FileIcon,
   },
   directives: {
     Tooltip,
@@ -139,18 +141,20 @@ export default {
         :name="collapseIcon"
         :size="16"
         aria-hidden="true"
-        class="diff-toggle-caret"
+        class="diff-toggle-caret append-right-5"
         @click.stop="handleToggle"
       />
       <a
         ref="titleWrapper"
         :href="titleLink"
+        class="append-right-4"
       >
-        <i
-          :class="`fa-${icon}`"
-          class="fa fa-fw"
+        <file-icon
+          :file-name="filePath"
+          :size="18"
           aria-hidden="true"
-        ></i>
+          css-classes="js-file-icon append-right-5"
+        />
         <span v-if="diffFile.renamedFile">
           <strong
             v-tooltip
