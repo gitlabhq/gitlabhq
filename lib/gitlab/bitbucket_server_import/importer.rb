@@ -100,58 +100,60 @@ module Gitlab
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
         project.repository.expire_content_cache if project.repository_exists?
 
-        raise RuntimeError, e.message
+        raise e.message
       end
 
       def import_pull_requests
         pull_requests = client.pull_requests(project_key, repository_slug)
         pull_requests.each do |pull_request|
           begin
-            restore_branches(pull_request)
-
-            description = ''
-            description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
-            description += pull_request.description
-
-            source_branch_sha = pull_request.source_branch_sha
-            target_branch_sha = pull_request.target_branch_sha
-            source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
-            target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
-            project.merge_requests.find_by(iid: pull_request.iid)&.destroy
-
-            attributes = {
-              iid: pull_request.iid,
-              title: pull_request.title,
-              description: description,
-              source_project: project,
-              source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
-              source_branch_sha: source_branch_sha,
-              target_project: project,
-              target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
-              target_branch_sha: target_branch_sha,
-              state: pull_request.state,
-              author_id: gitlab_user_id(project, pull_request.author_email),
-              assignee_id: nil,
-              created_at: pull_request.created_at,
-              updated_at: pull_request.updated_at
-            }
-
-            attributes[:merge_commit_sha] = target_branch_sha if pull_request.merged?
-            merge_request = project.merge_requests.create!(attributes)
-            import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+            import_bitbucket_pull_request(pull_request)
           rescue StandardError => e
             errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
           end
         end
       end
 
+      def import_bitbucket_pull_request(pull_request)
+        restore_branches(pull_request)
+
+        description = ''
+        description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
+        description += pull_request.description
+
+        source_branch_sha = pull_request.source_branch_sha
+        target_branch_sha = pull_request.target_branch_sha
+        source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
+        target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
+        project.merge_requests.find_by(iid: pull_request.iid)&.destroy
+
+        attributes = {
+          iid: pull_request.iid,
+          title: pull_request.title,
+          description: description,
+          source_project: project,
+          source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
+          source_branch_sha: source_branch_sha,
+          target_project: project,
+          target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
+          target_branch_sha: target_branch_sha,
+          state: pull_request.state,
+          author_id: gitlab_user_id(project, pull_request.author_email),
+          assignee_id: nil,
+          created_at: pull_request.created_at,
+          updated_at: pull_request.updated_at
+        }
+
+        attributes[:merge_commit_sha] = target_branch_sha if pull_request.merged?
+        merge_request = project.merge_requests.create!(attributes)
+        import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
+      end
+
       def import_pull_request_comments(pull_request, merge_request)
-        # XXX This is inefficient since we are making multiple requests to the activities endpoint
-        merge_event = client.activities(project_key, repository_slug, pull_request.iid).find(&:merge_event?)
+        comments, other_activities = client.activities(project_key, repository_slug, pull_request.iid).partition(&:comment?)
 
+        merge_event = other_activities.find(&:merge_event?)
         import_merge_event(merge_request, merge_event) if merge_event
-
-        comments = client.activities(project_key, repository_slug, pull_request.iid).select(&:comment?)
 
         inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
@@ -162,22 +164,11 @@ module Gitlab
       def import_merge_event(merge_request, merge_event)
         committer = merge_event.committer_email
 
-        return unless committer
-
-        user_id =
-          if committer
-            find_user_id(committer)
-          else
-            User.ghost
-          end
-
-        user_id = find_user_id(committer) if committer
+        user = User.ghost
+        user ||= find_user_id(committer) if committer
         timestamp = merge_event.merge_timestamp
-
-        return unless user_id
-
-        event = Event.create(merged_by_id: user_id, merged_at: timestamp)
-        MergeRequestMetricsService.new(merge_request.metrics).merge(event)
+        metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
+        metric.update_attributes(merged_by: user, merged_at: timestamp)
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)
