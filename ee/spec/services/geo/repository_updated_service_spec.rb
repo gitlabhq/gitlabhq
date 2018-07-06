@@ -48,13 +48,23 @@ describe Geo::RepositoryUpdatedService do
           expect { subject.execute }.to change { repository_state.reload.public_send("last_#{method_prefix}_verification_failure") }.to(nil)
         end
 
+        it 'resets the retry_at column' do
+          repository_state.update!("#{method_prefix}_retry_at" => 1.hour.from_now)
+          expect { subject.execute }.to change { repository_state.reload.public_send("#{method_prefix}_retry_at") }.to(nil)
+        end
+
+        it 'resets the retry_count column' do
+          repository_state.update!("#{method_prefix}_retry_count" => 1)
+          expect { subject.execute }.to change { repository_state.reload.public_send("#{method_prefix}_retry_count") }.to(nil)
+        end
+
         it 'does not raise an error when project have never been verified' do
           expect { described_class.new(create(:project)) }.not_to raise_error
         end
 
         it 'raises a Geo::RepositoryUpdatedService::RepositoryUpdateError when an error occurs' do
           allow(subject.repository_state).to receive(:update!)
-            .with("#{method_prefix}_verification_checksum" => nil, "last_#{method_prefix}_verification_failure" => nil)
+            .with("#{method_prefix}_verification_checksum" => nil, "last_#{method_prefix}_verification_failure" => nil, "#{method_prefix}_retry_at" => nil, "#{method_prefix}_retry_count" => nil)
             .and_raise(ActiveRecord::RecordInvalid.new(repository_state))
 
           expect { subject.execute }.to raise_error Geo::RepositoryUpdatedService::RepositoryUpdateError, /Cannot reset repository checksum/

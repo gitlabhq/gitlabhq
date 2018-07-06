@@ -1,5 +1,6 @@
 module Geo
   class RepositoryVerificationPrimaryService
+    include Delay
     include Gitlab::Geo::ProjectLogHelpers
 
     def initialize(project)
@@ -33,10 +34,27 @@ module Geo
     end
 
     def update_repository_state!(type, checksum: nil, failure: nil)
+      retry_at, retry_count =
+        if failure.present?
+          retry_count = repository_state.public_send("#{type}_retry_count").to_i + 1 # rubocop:disable GitlabSecurity/PublicSend
+          [next_retry_time(retry_count), retry_count]
+        end
+
       repository_state.update!(
         "#{type}_verification_checksum" => checksum,
-        "last_#{type}_verification_failure" => failure
+        "last_#{type}_verification_failure" => failure,
+        "#{type}_retry_at" => retry_at,
+        "#{type}_retry_count" => retry_count
       )
+    end
+
+    # To prevent the retry time from storing invalid dates in the database,
+    # cap the max time to a week plus some random jitter value.
+    def next_retry_time(retry_count)
+      proposed_time = Time.now + delay(retry_count).seconds
+      max_future_time = Time.now + 7.days + delay(1).seconds
+
+      [proposed_time, max_future_time].min
     end
 
     def repository_state
