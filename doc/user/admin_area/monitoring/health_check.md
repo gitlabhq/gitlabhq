@@ -27,7 +27,7 @@ With default whitelist settings, the probes can be accessed from localhost:
 - `http://localhost/-/readiness`
 - `http://localhost/-/liveness`
 
-which will then provide a report of system health in JSON format.
+The readiness endpoint will provide a report of system health in JSON format.
 
 Readiness example output:
 
@@ -57,29 +57,12 @@ Readiness example output:
 }
 ```
 
-Liveness example output:
+The liveness endpoint only checks whether the application server is running. It does
+not verify the database or other services are running. A successful response with return
+a 200 status code with the following message:
 
 ```
-{
-   "fs_shards_check" : {
-      "status" : "ok"
-   },
-   "cache_check" : {
-      "status" : "ok"
-   },
-   "db_check" : {
-      "status" : "ok"
-   },
-   "redis_check" : {
-      "status" : "ok"
-   },
-   "queues_check" : {
-      "status" : "ok"
-   },
-   "shared_state_check" : {
-      "status" : "ok"
-   }
-}
+GitLab is alive
 ```
 
 ## Status

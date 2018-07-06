@@ -1,0 +1,5 @@
+---
+title: Simplify /-/liveness check to avoid connecting to the database
+merge_request:
+author:
+type: changed

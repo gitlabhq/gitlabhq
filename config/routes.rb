@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   scope path: '-' do
-    get 'liveness' => 'health#liveness'
+    get 'liveness' => 'health#liveness' # Intercepted via Gitlab::Middleware::LivenessHealthCheck
     get 'readiness' => 'health#readiness'
     post 'storage_check' => 'health#storage_check'
     resources :metrics, only: [:index]
