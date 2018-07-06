@@ -138,6 +138,8 @@ class NotificationService
   #  * users with custom level checked with "new merge request"
   #  * approvers of the merge request
   #
+  # In EE, approvers of the merge request are also included
+  #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, :new_merge_request_email)
   end

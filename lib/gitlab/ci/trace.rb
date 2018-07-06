@@ -101,14 +101,17 @@ module Gitlab
       end
 
       def erase!
-        trace_artifact&.destroy
+        ##
+        # Erase the archived trace
+        trace_artifact&.destroy!
 
-        paths.each do |trace_path|
-          FileUtils.rm(trace_path, force: true)
-        end
-
-        job.trace_chunks.fast_destroy_all
-        job.erase_old_trace!
+        ##
+        # Erase the live trace
+        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+        FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
+        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
+      ensure
+        @current_path = nil
       end
 
       def archive!

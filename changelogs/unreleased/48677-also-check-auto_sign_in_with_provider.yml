@@ -1,0 +1,5 @@
+---
+title: Load Devise with Omniauth when auto_sign_in_with_provider is configured
+merge_request: 20302
+author:
+type: fixed

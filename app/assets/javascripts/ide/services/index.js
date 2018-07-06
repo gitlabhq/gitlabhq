@@ -40,8 +40,8 @@ export default {
   getProjectData(namespace, project) {
     return Api.project(`${namespace}/${project}`);
   },
-  getProjectMergeRequestData(projectId, mergeRequestId) {
-    return Api.mergeRequest(projectId, mergeRequestId);
+  getProjectMergeRequestData(projectId, mergeRequestId, params = {}) {
+    return Api.mergeRequest(projectId, mergeRequestId, params);
   },
   getProjectMergeRequestChanges(projectId, mergeRequestId) {
     return Api.mergeRequestChanges(projectId, mergeRequestId);

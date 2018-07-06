@@ -611,6 +611,55 @@ shared_examples_for 'trace with disabled live trace feature' do
       end
     end
   end
+
+  describe '#erase!' do
+    subject { trace.erase! }
+
+    context 'when it is a live trace' do
+      context 'when trace is stored in database' do
+        let(:build) { create(:ci_build) }
+
+        before do
+          build.update_column(:trace, 'sample trace')
+        end
+
+        it { expect(trace.raw).not_to be_nil }
+
+        it "removes trace" do
+          subject
+
+          expect(trace.raw).to be_nil
+        end
+      end
+
+      context 'when trace is stored in file storage' do
+        let(:build) { create(:ci_build, :trace_live) }
+
+        it { expect(trace.raw).not_to be_nil }
+
+        it "removes trace" do
+          subject
+
+          expect(trace.raw).to be_nil
+        end
+      end
+    end
+
+    context 'when it is an archived trace' do
+      let(:build) { create(:ci_build, :trace_artifact) }
+
+      it "has trace at first" do
+        expect(trace.raw).not_to be_nil
+      end
+
+      it "removes trace" do
+        subject
+
+        build.reload
+        expect(trace.raw).to be_nil
+      end
+    end
+  end
 end
 
 shared_examples_for 'trace with enabled live trace feature' do
@@ -795,6 +844,37 @@ shared_examples_for 'trace with enabled live trace feature' do
         expect_any_instance_of(described_class).not_to receive(:archive_stream!)
         expect { subject }.to raise_error('Job is not finished yet')
         expect(build.trace.exist?).to be_truthy
+      end
+    end
+  end
+
+  describe '#erase!' do
+    subject { trace.erase! }
+
+    context 'when it is a live trace' do
+      let(:build) { create(:ci_build, :trace_live) }
+
+      it { expect(trace.raw).not_to be_nil }
+
+      it "removes trace" do
+        subject
+
+        expect(trace.raw).to be_nil
+      end
+    end
+
+    context 'when it is an archived trace' do
+      let(:build) { create(:ci_build, :trace_artifact) }
+
+      it "has trace at first" do
+        expect(trace.raw).not_to be_nil
+      end
+
+      it "removes trace" do
+        subject
+
+        build.reload
+        expect(trace.raw).to be_nil
       end
     end
   end
