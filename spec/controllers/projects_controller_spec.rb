@@ -661,12 +661,39 @@ describe ProjectsController do
   end
 
   describe 'POST #preview_markdown' do
-    it 'renders json in a correct format' do
+    before do
       sign_in(user)
+    end
 
+    it 'renders json in a correct format' do
       post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+
+    context 'state filter on references' do
+      let(:issue) { create(:issue, :closed, project: public_project) }
+      let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
+
+      it 'renders JSON body with state filter for issues' do
+        post :preview_markdown, namespace_id: public_project.namespace,
+                                id: public_project,
+                                text: issue.to_reference
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['body']).to match(/\##{issue.iid} \(closed\)/)
+      end
+
+      it 'renders JSON body with state filter for MRs' do
+        post :preview_markdown, namespace_id: public_project.namespace,
+                                id: public_project,
+                                text: merge_request.to_reference
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['body']).to match(/\!#{merge_request.iid} \(closed\)/)
+      end
     end
   end
 
