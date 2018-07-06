@@ -1,23 +1,21 @@
 import Vue from 'vue';
-
-import projectsListItemComponent from '~/projects_dropdown/components/projects_list_item.vue';
-
+import frequentItemsListItemComponent from '~/frequent_items/components/frequent_items_list_item.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockProject } from '../mock_data';
+import { mockProject } from '../mock_data'; // can also use 'mockGroup', but not useful to test here
 
 const createComponent = () => {
-  const Component = Vue.extend(projectsListItemComponent);
+  const Component = Vue.extend(frequentItemsListItemComponent);
 
   return mountComponent(Component, {
-    projectId: mockProject.id,
-    projectName: mockProject.name,
+    itemId: mockProject.id,
+    itemName: mockProject.name,
     namespace: mockProject.namespace,
     webUrl: mockProject.webUrl,
     avatarUrl: mockProject.avatarUrl,
   });
 };
 
-describe('ProjectsListItemComponent', () => {
+describe('FrequentItemsListItemComponent', () => {
   let vm;
 
   beforeEach(() => {
@@ -32,22 +30,22 @@ describe('ProjectsListItemComponent', () => {
     describe('hasAvatar', () => {
       it('should return `true` or `false` if whether avatar is present or not', () => {
         vm.avatarUrl = 'path/to/avatar.png';
-        expect(vm.hasAvatar).toBeTruthy();
+        expect(vm.hasAvatar).toBe(true);
 
         vm.avatarUrl = null;
-        expect(vm.hasAvatar).toBeFalsy();
+        expect(vm.hasAvatar).toBe(false);
       });
     });
 
-    describe('highlightedProjectName', () => {
+    describe('highlightedItemName', () => {
       it('should enclose part of project name in <b> & </b> which matches with `matcher` prop', () => {
         vm.matcher = 'lab';
-        expect(vm.highlightedProjectName).toContain('<b>Lab</b>');
+        expect(vm.highlightedItemName).toContain('<b>Lab</b>');
       });
 
       it('should return project name as it is if `matcher` is not available', () => {
         vm.matcher = null;
-        expect(vm.highlightedProjectName).toBe(mockProject.name);
+        expect(vm.highlightedItemName).toBe(mockProject.name);
       });
     });
 
@@ -66,12 +64,12 @@ describe('ProjectsListItemComponent', () => {
 
   describe('template', () => {
     it('should render component element', () => {
-      expect(vm.$el.classList.contains('projects-list-item-container')).toBeTruthy();
+      expect(vm.$el.classList.contains('frequent-items-list-item-container')).toBeTruthy();
       expect(vm.$el.querySelectorAll('a').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.project-item-avatar-container').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.project-item-metadata-container').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.project-title').length).toBe(1);
-      expect(vm.$el.querySelectorAll('.project-namespace').length).toBe(1);
+      expect(vm.$el.querySelectorAll('.frequent-items-item-avatar-container').length).toBe(1);
+      expect(vm.$el.querySelectorAll('.frequent-items-item-metadata-container').length).toBe(1);
+      expect(vm.$el.querySelectorAll('.frequent-items-item-title').length).toBe(1);
+      expect(vm.$el.querySelectorAll('.frequent-items-item-namespace').length).toBe(1);
     });
   });
 });
