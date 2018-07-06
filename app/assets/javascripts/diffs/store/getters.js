@@ -56,5 +56,8 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
       discussion.diff_discussion && _.isEqual(discussion.diff_file.file_hash, diff.fileHash),
   ) || [];
 
-// prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
+export const getDiffFileByHash = state => fileHash =>
+  state.diffFiles.find(file => file.fileHash === fileHash);
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
