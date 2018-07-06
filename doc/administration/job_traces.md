@@ -77,10 +77,10 @@ cloud-native, for example on Kubernetes.
 
 The data flow is the same as described in the [data flow section](#data-flow)
 with one change: _the stored path of the first two phases is different_. This new live
-trace architecture stores chunks of traces in Redis and the database instead of
+trace architecture stores chunks of traces in Redis and a persistent store (object storage or database) instead of
 file storage. Redis is used as first-class storage, and it stores up-to 128KB
-of data. Once the full chunk is sent, it is flushed to database. After a while,
-the data in Redis and database will be archived to [object storage](#uploading-traces-to-object-storage).
+of data. Once the full chunk is sent, it is flushed a persistent store, either object storage(temporary directory) or database.
+After a while, the data in Redis and a persitent store will be archived to [object storage](#uploading-traces-to-object-storage).
 
 The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
 
@@ -89,11 +89,11 @@ Here is the detailed data flow:
 1. GitLab Runner picks a job from GitLab
 1. GitLab Runner sends a piece of trace to GitLab
 1. GitLab appends the data to Redis
-1. Once the data in Redis reach 128KB, the data is flushed to the database.
+1. Once the data in Redis reach 128KB, the data is flushed to a persistent store (object storage or the database).
 1. The above steps are repeated until the job is finished.
 1. Once the job is finished, GitLab schedules a Sidekiq worker to archive the trace.
 1. The Sidekiq worker archives the trace to object storage and cleans up the trace
-   in Redis and the database.
+   in Redis and a persistent store (object storage or the database).
 
 ### Enabling live trace
 
