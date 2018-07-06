@@ -40,7 +40,7 @@
               = project.human_import_status_name
 
       - @repos.each do |repo|
-        %tr{ id: "repo_#{repo.id}" }
+        %tr{ id: "repo_#{repo.id}", data: { qa: { repo_path: repo.full_name } } }
           %td
             = provider_project_link(provider, repo.full_name)
           %td.import-target
@@ -50,7 +50,7 @@
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
                   - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner.login, path: repo.owner.login) } : {}
-                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace', tabindex: 1 }
+                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace qa-project-namespace-select', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
               %span.input-group-prepend
