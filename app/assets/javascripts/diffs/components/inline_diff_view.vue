@@ -60,7 +60,8 @@ export default {
         v-for="(line, index) in normalizedDiffLines"
       >
         <inline-diff-table-row
-          :diff-file="diffFile"
+          :file-hash="diffFile.fileHash"
+          :context-lines-path="diffFile.contextLinesPath"
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"
           :key="line.lineCode"
