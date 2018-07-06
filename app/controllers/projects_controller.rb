@@ -3,6 +3,7 @@ class ProjectsController < Projects::ApplicationController
   include ExtractsPath
   include PreviewMarkdown
   prepend EE::ProjectsController
+  include SendFileUpload
 
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
@@ -190,9 +191,9 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    export_project_path = @project.export_project_path
-
-    if export_project_path
+    if export_project_object_storage?
+      send_upload(@project.import_export_upload.export_file)
+    elsif export_project_path
       send_file export_project_path, disposition: 'attachment'
     else
       redirect_to(
@@ -266,8 +267,6 @@ class ProjectsController < Projects::ApplicationController
 
     render json: options.to_json
   end
-
-  private
 
   # Render project landing depending of which features are available
   # So if page is not availble in the list it renders the next page
@@ -432,5 +431,13 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
+  end
+
+  def export_project_path
+    @export_project_path ||= @project.export_project_path
+  end
+
+  def export_project_object_storage?
+    @project.export_project_object_exists?
   end
 end

@@ -330,6 +330,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- import_export_upload
 - vulnerability_feedback
 award_emoji:
 - awardable
