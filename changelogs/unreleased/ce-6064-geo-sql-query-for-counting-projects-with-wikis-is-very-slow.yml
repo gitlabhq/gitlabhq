@@ -1,0 +1,5 @@
+---
+title: Tracking the number of repositories and wikis with a cached counter for site-wide statistics
+merge_request: 20413
+author:
+type: performance
