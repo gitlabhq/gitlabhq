@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702120647) do
+ActiveRecord::Schema.define(version: 20180702181530) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -2048,6 +2048,10 @@ ActiveRecord::Schema.define(version: 20180702120647) do
     t.binary "wiki_verification_checksum"
     t.string "last_repository_verification_failure"
     t.string "last_wiki_verification_failure"
+    t.datetime_with_timezone "repository_retry_at"
+    t.datetime_with_timezone "wiki_retry_at"
+    t.integer "repository_retry_count"
+    t.integer "wiki_retry_count"
   end
 
   add_index "project_repository_states", ["last_repository_verification_failure"], name: "idx_repository_states_on_repository_failure_partial", where: "(last_repository_verification_failure IS NOT NULL)", using: :btree

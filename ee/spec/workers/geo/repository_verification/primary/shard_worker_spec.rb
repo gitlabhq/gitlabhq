@@ -63,6 +63,26 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
       subject.perform(shard_name)
     end
 
+    it 'performs Geo::RepositoryVerification::Primary::SingleWorker for projects where repository verification failed' do
+      repository_verification_failed = create(:project)
+
+      create(:repository_state, :repository_failed, :wiki_verified, project: repository_verification_failed)
+
+      expect(primary_singleworker).to receive(:perform_async).with(repository_verification_failed.id)
+
+      subject.perform(shard_name)
+    end
+
+    it 'performs Geo::RepositoryVerification::Primary::SingleWorker for projects where wiki verification failed' do
+      wiki_verification_failed = create(:project)
+
+      create(:repository_state, :repository_verified, :wiki_failed, project: wiki_verification_failed)
+
+      expect(primary_singleworker).to receive(:perform_async).with(wiki_verification_failed.id)
+
+      subject.perform(shard_name)
+    end
+
     it 'does not perform Geo::RepositoryVerification::Primary::SingleWorker when shard becomes unhealthy' do
       create(:project)
 
@@ -133,14 +153,14 @@ describe Geo::RepositoryVerification::Primary::ShardWorker, :postgresql, :clean_
         end
       end
 
-      it 'handles multiple batches of projects needing verification, skipping failed repos' do
+      it 'handles multiple batches of projects needing verification, including failed repos' do
         expect(primary_singleworker).to receive(:perform_async).with(project_repo_unverified.id).once.and_call_original
         expect(primary_singleworker).to receive(:perform_async).with(project_wiki_unverified.id).once.and_call_original
         expect(primary_singleworker).to receive(:perform_async).with(project_repo_verified.id).once.and_call_original
         expect(primary_singleworker).to receive(:perform_async).with(project_wiki_verified.id).once.and_call_original
-        expect(primary_singleworker).not_to receive(:perform_async).with(project_both_failed.id)
-        expect(primary_singleworker).not_to receive(:perform_async).with(project_repo_failed_wiki_verified.id)
-        expect(primary_singleworker).not_to receive(:perform_async).with(project_repo_verified_wiki_failed.id)
+        expect(primary_singleworker).to receive(:perform_async).with(project_both_failed.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_repo_failed_wiki_verified.id).once.and_call_original
+        expect(primary_singleworker).to receive(:perform_async).with(project_repo_verified_wiki_failed.id).once.and_call_original
 
         8.times do
           Sidekiq::Testing.inline! { subject.perform(shard_name) }

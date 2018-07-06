@@ -18,7 +18,11 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: 'e321',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
@@ -38,7 +42,11 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: 'e321',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
@@ -58,7 +66,11 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: 'e321',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
@@ -89,7 +101,11 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: 'f123',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: 'e321',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
@@ -100,7 +116,11 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: '0000000000000000000000000000000000000000',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: '0000000000000000000000000000000000000000',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
@@ -114,25 +134,58 @@ describe Geo::RepositoryVerificationPrimaryService do
         repository_verification_checksum: '0000000000000000000000000000000000000000',
         last_repository_verification_failure: nil,
         wiki_verification_checksum: '0000000000000000000000000000000000000000',
-        last_wiki_verification_failure: nil
+        last_wiki_verification_failure: nil,
+        repository_retry_at: nil,
+        repository_retry_count: nil,
+        wiki_retry_at: nil,
+        wiki_retry_count: nil
       )
     end
 
-    it 'keeps track of failures when calculating the repository checksum' do
-      stub_project_repository(project, repository)
-      stub_wiki_repository(project.wiki, wiki)
+    context 'when checksum calculation fails' do
+      before do
+        stub_project_repository(project, repository)
+        stub_wiki_repository(project.wiki, wiki)
 
-      allow(repository).to receive(:checksum).and_raise('Something went wrong with repository')
-      allow(wiki).to receive(:checksum).twice.and_raise('Something went wrong with wiki')
+        allow(repository).to receive(:checksum).and_raise('Something went wrong with repository')
+        allow(wiki).to receive(:checksum).twice.and_raise('Something went wrong with wiki')
+      end
 
-      subject.execute
+      it 'keeps track of failures' do
+        subject.execute
 
-      expect(project.repository_state).to have_attributes(
-        repository_verification_checksum: nil,
-        last_repository_verification_failure: 'Something went wrong with repository',
-        wiki_verification_checksum: nil,
-        last_wiki_verification_failure: 'Something went wrong with wiki'
-      )
+        expect(project.repository_state).to have_attributes(
+          repository_verification_checksum: nil,
+          last_repository_verification_failure: 'Something went wrong with repository',
+          wiki_verification_checksum: nil,
+          last_wiki_verification_failure: 'Something went wrong with wiki',
+          repository_retry_at: be_present,
+          repository_retry_count: 1,
+          wiki_retry_at: be_present,
+          wiki_retry_count: 1
+        )
+      end
+
+      it 'ensures the next retry time is capped properly' do
+        repository_state =
+          create(:repository_state,
+            project: project,
+            repository_retry_count: 30,
+            wiki_retry_count: 30)
+
+        subject.execute
+
+        expect(repository_state.reload).to have_attributes(
+          repository_verification_checksum: nil,
+          last_repository_verification_failure: 'Something went wrong with repository',
+          wiki_verification_checksum: nil,
+          last_wiki_verification_failure: 'Something went wrong with wiki',
+          repository_retry_at: be_within(100.seconds).of(Time.now + 7.days),
+          repository_retry_count: 31,
+          wiki_retry_at: be_within(100.seconds).of(Time.now + 7.days),
+          wiki_retry_count: 31
+        )
+      end
     end
   end
 

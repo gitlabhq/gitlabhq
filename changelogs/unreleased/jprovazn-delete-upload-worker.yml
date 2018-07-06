@@ -1,0 +1,5 @@
+---
+title: Remove deprecated object_storage_upload queue.
+merge_request:
+author:
+type: removed

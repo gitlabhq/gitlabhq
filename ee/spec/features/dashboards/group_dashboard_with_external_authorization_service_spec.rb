@@ -14,8 +14,8 @@ describe 'The group dashboard' do
       visit dashboard_groups_path
 
       within('.navbar') do
-        expect(page).to have_link('Projects')
-        expect(page).to have_link('Groups')
+        expect(page).to have_button('Projects')
+        expect(page).to have_button('Groups')
         expect(page).to have_link('Activity')
         expect(page).to have_link('Milestones')
         expect(page).to have_link('Snippets')
@@ -27,8 +27,8 @@ describe 'The group dashboard' do
       visit dashboard_groups_path
 
       within('.navbar') do
-        expect(page).to have_link('Projects')
-        expect(page).to have_link('Groups')
+        expect(page).to have_button('Projects')
+        expect(page).to have_button('Groups')
         expect(page).not_to have_link('Activity')
         expect(page).not_to have_link('Milestones')
         expect(page).to have_link('Snippets')

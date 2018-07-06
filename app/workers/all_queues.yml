@@ -46,7 +46,6 @@
 - mail_scheduler:mail_scheduler_issue_due
 - mail_scheduler:mail_scheduler_notification_service
 
-- object_storage_upload
 - object_storage:object_storage_background_move
 - object_storage:object_storage_migrate_uploads
 
@@ -166,10 +165,6 @@
 - geo:geo_repository_verification_primary_single
 - geo:geo_repository_verification_secondary_single
 - geo:geo_truncate_event_log
-
-- object_storage_upload
-- object_storage:object_storage_background_move
-- object_storage:object_storage_migrate_uploads
 
 - admin_emails
 - create_github_webhook

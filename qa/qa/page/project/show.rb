@@ -24,6 +24,10 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/_files.html.haml' do
+          element :tree_holder, '.tree-holder'
+        end
+
         def project_name
           find('.qa-project-name').text
         end
@@ -46,6 +50,12 @@ module QA
           end
 
           click_element :create_merge_request
+        end
+
+        def wait_for_import
+          wait(reload: true) do
+            has_css?('.tree-holder')
+          end
         end
 
         def go_to_new_issue
