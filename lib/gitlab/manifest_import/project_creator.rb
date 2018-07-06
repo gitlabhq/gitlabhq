@@ -1,21 +1,15 @@
 module Gitlab
   module ManifestImport
-    class Importer
-      attr_reader :repository, :destination, :user
+    class ProjectCreator
+      attr_reader :repository, :destination, :current_user
 
-      def initialize(repository, destination, user)
+      def initialize(repository, destination, current_user)
         @repository = repository
         @destination = destination
-        @user = user
+        @current_user = current_user
       end
 
       def execute
-        import_project
-      end
-
-      private
-
-      def import_project
         group_full_path, _, project_path = repository[:path].rpartition('/')
         group_full_path = File.join(destination.full_path, group_full_path) if destination
         group = Group.find_by_full_path(group_full_path) ||
@@ -30,8 +24,10 @@ module Gitlab
           visibility_level: destination.visibility_level
         }
 
-        Projects::CreateService.new(user, params).execute
+        Projects::CreateService.new(current_user, params).execute
       end
+
+      private
 
       def create_group_with_parents(full_path)
         params = {
@@ -39,7 +35,7 @@ module Gitlab
           visibility_level: destination.visibility_level
         }
 
-        Groups::NestedCreateService.new(user, params).execute
+        Groups::NestedCreateService.new(current_user, params).execute
       end
     end
   end

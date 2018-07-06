@@ -50,7 +50,6 @@ describe Gitlab::ImportSources do
           fogbugz
           gitlab_project
           gitea
-          manifest
         )
 
       expect(described_class.importer_names).to eq(expected)
@@ -67,7 +66,7 @@ describe Gitlab::ImportSources do
       'git' => nil,
       'gitlab_project' => Gitlab::ImportExport::Importer,
       'gitea' => Gitlab::LegacyGithubImport::Importer,
-      'manifest' => Gitlab::ManifestImport::Importer
+      'manifest' => nil
     }
 
     import_sources.each do |name, klass|

@@ -10,7 +10,7 @@ You can do it by following next steps:
 1. Click on the **Manifest file** button
 1. Provide GitLab with a manifest xml file
 1. Select a group you want to import to (you need to create a group first if you don't have one)
-1. Click **Import projects** 
+1. Click **Continue to the next step** 
 1. You will be redirected to the import status page with projects list based on manifest file
 1. Check the list and click 'Import all repositories' to start import.
 
