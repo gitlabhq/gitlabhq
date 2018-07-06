@@ -25,7 +25,7 @@ describe Ci::JobArtifact do
         end
 
         it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
         end
