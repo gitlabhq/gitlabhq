@@ -7,10 +7,7 @@ all your GitLab projects with [JIRA Development Panel][jira-development-panel]. 
 simultaneously. This works with self-hosted GitLab or GitLab.com integrated with self-hosted JIRA
 or cloud JIRA.
 
-By doing this you can easily access related GitLab branches and commits directly from a JIRA issue.
-
->**Note:**
-In the future, we plan to also support merge requests from the Development Panel.
+By doing this you can easily access related GitLab merge requests, branches, and commits directly from a JIRA issue.
 
 This integration connects all GitLab projects a user has access to with all projects in the JIRA instance.
 (Note this is different from the [existing JIRA][existing-jira] project integration, where the mapping
