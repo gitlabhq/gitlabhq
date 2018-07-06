@@ -9,14 +9,10 @@ module Gitlab
 
         belongs_to :merge_request
         has_many :merge_request_diff_files
-
-        include EachBatch
       end
 
       class MergeRequestDiffFile < ActiveRecord::Base
         self.table_name = 'merge_request_diff_files'
-
-        include EachBatch
       end
 
       DIFF_ROWS_LIMIT = 5_000
