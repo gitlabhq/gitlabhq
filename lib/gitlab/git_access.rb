@@ -5,6 +5,7 @@ module Gitlab
     prepend ::EE::Gitlab::GitAccess
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
+    include Gitlab::Utils::StrongMemoize
 
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
@@ -30,7 +31,7 @@ module Gitlab
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
 
-    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type
+    attr_reader :actor, :project, :protocol, :authentication_abilities, :namespace_path, :project_path, :redirected_path, :auth_result_type, :changes
 
     def initialize(actor, project, protocol, authentication_abilities:, namespace_path: nil, project_path: nil, redirected_path: nil, auth_result_type: nil)
       @actor    = actor
@@ -44,6 +45,8 @@ module Gitlab
     end
 
     def check(cmd, changes)
+      @changes = changes
+
       check_protocol!
       check_valid_actor!
       check_active_user!
@@ -62,7 +65,7 @@ module Gitlab
       when *DOWNLOAD_COMMANDS
         check_download_access!
       when *PUSH_COMMANDS
-        check_push_access!(changes)
+        check_push_access!
       end
 
       true
@@ -223,7 +226,7 @@ module Gitlab
     end
 
     # TODO: please clean this up
-    def check_push_access!(changes)
+    def check_push_access!
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
       end
@@ -240,7 +243,7 @@ module Gitlab
 
       return if changes.blank? # Allow access this is needed for EE.
 
-      if project.above_size_limit?
+      if check_size_limit? && project.above_size_limit?
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).push_error
       end
 
@@ -249,16 +252,14 @@ module Gitlab
         raise UnauthorizedError, strip_tags(message)
       end
 
-      check_change_access!(changes)
+      check_change_access!
     end
 
-    def check_change_access!(changes)
+    def check_change_access!
       # If there are worktrees with a HEAD pointing to a non-existent object,
       # calls to `git rev-list --all` will fail in git 2.15+. This should also
       # clear stale lock files.
       project.repository.clean_stale_repository_files
-
-      changes_list = Gitlab::ChangesList.new(changes)
 
       push_size_in_bytes = 0
 
@@ -275,7 +276,7 @@ module Gitlab
         end
       end
 
-      if project.changes_will_exceed_size_limit?(push_size_in_bytes)
+      if check_size_limit? && project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
     end
@@ -367,6 +368,18 @@ module Gitlab
     end
 
     protected
+
+    def check_size_limit?
+      strong_memoize(:check_size_limit) do
+        changes_list.any? do |change|
+          change[:newrev] && change[:newrev] != ::Gitlab::Git::BLANK_SHA
+        end
+      end
+    end
+
+    def changes_list
+      @changes_list ||= Gitlab::ChangesList.new(changes)
+    end
 
     def user
       return @user if defined?(@user)
