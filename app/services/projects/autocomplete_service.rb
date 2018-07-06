@@ -27,13 +27,13 @@ module Projects
         include_ancestor_groups: true
       ).execute
 
-      hashes = available_labels.as_json(only: [:title, :color])
+      label_hashes = available_labels.as_json(only: [:title, :color])
 
       if target&.respond_to?(:labels)
         already_set_labels = available_labels & target.labels
         if already_set_labels.present?
           titles = already_set_labels.map(&:title)
-          hashes.each do |hash|
+          label_hashes.each do |hash|
             if titles.include?(hash['title'])
               hash[:set] = true
             end
@@ -41,7 +41,7 @@ module Projects
         end
       end
 
-      hashes
+      label_hashes
     end
 
     def commands(noteable, type)
