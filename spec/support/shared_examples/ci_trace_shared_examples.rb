@@ -155,7 +155,7 @@ shared_examples_for 'common trace features' do
       end
 
       it 'raises an error' do
-        expect { subject }.to raise_error('Already archived')
+        expect { subject }.to raise_error(Gitlab::Ci::Trace::AlreadyArchivedError)
       end
     end
   end
@@ -596,7 +596,7 @@ shared_examples_for 'trace with disabled live trace feature' do
 
       it 'does not archive' do
         expect_any_instance_of(described_class).not_to receive(:archive_stream!)
-        expect { subject }.to raise_error('Already archived')
+        expect { subject }.to raise_error(Gitlab::Ci::Trace::AlreadyArchivedError)
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
       end
     end
@@ -783,7 +783,7 @@ shared_examples_for 'trace with enabled live trace feature' do
 
       it 'does not archive' do
         expect_any_instance_of(described_class).not_to receive(:archive_stream!)
-        expect { subject }.to raise_error('Already archived')
+        expect { subject }.to raise_error(Gitlab::Ci::Trace::AlreadyArchivedError)
         expect(build.job_artifacts_trace.file.exists?).to be_truthy
       end
     end

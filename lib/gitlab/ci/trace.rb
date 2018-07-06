@@ -6,7 +6,7 @@ module Gitlab
       LEASE_TIMEOUT = 1.hour
 
       ArchiveError = Class.new(StandardError)
-      WriteError = Class.new(StandardError)
+      AlreadyArchivedError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -83,7 +83,7 @@ module Gitlab
       def write(mode)
         stream = Gitlab::Ci::Trace::Stream.new do
           if trace_artifact
-            raise WriteError, 'Already archived'
+            raise AlreadyArchivedError, 'Could not write to the archived trace'
           elsif current_path
             File.open(current_path, mode)
           elsif Feature.enabled?('ci_enable_live_trace')
@@ -120,7 +120,7 @@ module Gitlab
       private
 
       def unsafe_archive!
-        raise ArchiveError, 'Already archived' if trace_artifact
+        raise AlreadyArchivedError, 'Could not archive again' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if job.trace_chunks.any?
