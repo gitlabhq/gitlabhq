@@ -65,10 +65,27 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
         .not_to change { merge_request_diff.merge_request_diff_files.count }
         .from(20)
     end
+
+    it 'reschedules itself when should_wait_deadtuple_vacuum' do
+      Sidekiq::Testing.fake! do
+        worker = described_class.new
+
+        allow(worker).to receive(:should_wait_deadtuple_vacuum?) { true }
+
+        expect(BackgroundMigrationWorker)
+          .to receive(:perform_in)
+          .with(described_class::VACUUM_WAIT_TIME, 'DeleteDiffFiles')
+          .and_call_original
+
+        worker.perform
+
+        expect(BackgroundMigrationWorker.jobs.size).to eq(1)
+      end
+    end
   end
 
-  describe '#wait_deadtuple_vacuum' do
-    it 'sleeps process for VACUUM_WAIT_TIME when hitting DEAD_TUPLES_THRESHOLD', :postgresql do
+  describe '#should_wait_deadtuple_vacuum?' do
+    it 'returns true when hitting merge_request_diff_files hits DEAD_TUPLES_THRESHOLD', :postgresql do
       worker = described_class.new
       threshold_query_result = [{ "n_dead_tup" => described_class::DEAD_TUPLES_THRESHOLD.to_s }]
       normal_query_result = [{ "n_dead_tup" => '3' }]
@@ -78,9 +95,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
         .with(/SELECT n_dead_tup */)
         .and_return(threshold_query_result, normal_query_result)
 
-      expect(worker).to receive(:sleep).with(described_class::VACUUM_WAIT_TIME).once
-
-      worker.wait_deadtuple_vacuum(1)
+      expect(worker.should_wait_deadtuple_vacuum?).to be(true)
     end
   end
 end

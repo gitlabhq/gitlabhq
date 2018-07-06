@@ -19,51 +19,60 @@ module Gitlab
         include EachBatch
       end
 
-      BATCH = 5_000
+      DIFF_ROWS_LIMIT = 5_000
       DEAD_TUPLES_THRESHOLD = 50_000
       VACUUM_WAIT_TIME = 5.minutes
 
       def perform
-        diffs_with_files = MergeRequestDiff
+        rescheduling do
+          prune_diff_files(diffs_collection.limit(DIFF_ROWS_LIMIT))
+        end
+      end
+
+      def should_wait_deadtuple_vacuum?
+        return false unless Gitlab::Database.postgresql?
+
+        diff_files_dead_tuples_count >= DEAD_TUPLES_THRESHOLD
+      end
+
+      private
+
+      def rescheduling(&block)
+        # We should reschedule until deadtuples get in a desirable
+        # state (e.g. < 50_000). That may take move than one reschedule.
+        #
+        if should_wait_deadtuple_vacuum?
+          reschedule
+          return
+        end
+
+        block.call
+
+        reschedule if diffs_collection.limit(1).count > 0
+      end
+
+      def reschedule
+        BackgroundMigrationWorker.perform_in(VACUUM_WAIT_TIME, self.class.name.demodulize)
+      end
+
+      def diffs_collection
+        MergeRequestDiff
           .joins(:merge_request)
           .where("merge_requests.state = 'merged'")
           .where('merge_requests.latest_merge_request_diff_id IS NOT NULL')
           .where('merge_requests.latest_merge_request_diff_id != merge_request_diffs.id')
           .where("merge_request_diffs.state NOT IN ('without_files', 'empty')")
-
-        diffs_with_files.each_batch(of: BATCH) do |batch, index|
-          wait_deadtuple_vacuum(index)
-          prune_diff_files(batch, index)
-        end
       end
-
-      def wait_deadtuple_vacuum(index)
-        db_klass = Gitlab::Database
-
-        if defined?(db_klass) && db_klass.respond_to?(:postgresql?) && db_klass.postgresql?
-          while diff_files_dead_tuples_count >= DEAD_TUPLES_THRESHOLD
-            log_info("Dead tuple threshold hit on merge_request_diff_files (#{index}th batch): " \
-                     "#{diff_files_dead_tuples_count}, waiting 5 minutes")
-            sleep VACUUM_WAIT_TIME
-          end
-        end
-      end
-
-      private
 
       def diff_files_dead_tuples_count
         dead_tuple =
           execute_statement("SELECT n_dead_tup FROM pg_stat_all_tables "\
                             "WHERE relname = 'merge_request_diff_files'")[0]
 
-        if dead_tuple.present?
-          dead_tuple['n_dead_tup'].to_i
-        else
-          0
-        end
+        dead_tuple&.fetch('n_dead_tup', 0).to_i
       end
 
-      def prune_diff_files(batch, index)
+      def prune_diff_files(batch)
         diff_ids = batch.pluck(:id)
 
         removed = 0
@@ -76,7 +85,7 @@ module Gitlab
             .delete_all
         end
 
-        log_info("#{index}th batch - Removed #{removed} merge_request_diff_files rows, "\
+        log_info("Removed #{removed} merge_request_diff_files rows, "\
                  "updated #{updated} merge_request_diffs rows")
       end
 
