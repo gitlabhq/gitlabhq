@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import multiple repositories by uploading a manifest file', :js do
+feature 'Import multiple repositories by uploading a manifest file', :js, :postgresql do
   include Select2Helper
 
   let(:user) { create(:admin) }
