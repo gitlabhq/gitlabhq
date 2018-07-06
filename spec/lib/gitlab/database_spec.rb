@@ -443,7 +443,6 @@ describe Gitlab::Database do
     end
   end
 
-<<<<<<< HEAD
   describe '#disable_prepared_statements' do
     it 'disables prepared statements' do
       config = {}
@@ -489,7 +488,9 @@ describe Gitlab::Database do
       it 'returns false' do
         expect(described_class.read_only?).to be_falsey
       end
-=======
+    end
+  end
+
   describe '.db_read_only?' do
     context 'when using PostgreSQL' do
       before do
@@ -516,7 +517,6 @@ describe Gitlab::Database do
       end
 
       it { expect(described_class.db_read_only?).to be_falsey }
->>>>>>> upstream/master
     end
   end
 
