@@ -38,14 +38,20 @@ module Gitlab
         private
 
         def send_file
-          export_file = File.open(project.export_project_path)
-
-          Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options(export_file)) # rubocop:disable GitlabSecurity/PublicSend
+          Gitlab::HTTP.public_send(http_method.downcase, url, send_file_options) # rubocop:disable GitlabSecurity/PublicSend
         ensure
-          export_file.close if export_file
+          export_file.close if export_file && !object_storage?
         end
 
-        def send_file_options(export_file)
+        def export_file
+          if object_storage?
+            project.import_export_upload.export_file.file.open
+          else
+            File.open(project.export_project_path)
+          end
+        end
+
+        def send_file_options
           {
             body_stream: export_file,
             headers: headers
@@ -53,7 +59,15 @@ module Gitlab
         end
 
         def headers
-          { 'Content-Length' => File.size(project.export_project_path).to_s }
+          { 'Content-Length' => export_size.to_s }
+        end
+
+        def export_size
+          if object_storage?
+            project.import_export_upload.export_file.file.size
+          else
+            File.size(project.export_project_path)
+          end
         end
       end
     end
