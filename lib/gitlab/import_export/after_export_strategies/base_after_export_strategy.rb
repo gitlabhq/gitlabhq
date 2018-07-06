@@ -2,6 +2,7 @@ module Gitlab
   module ImportExport
     module AfterExportStrategies
       class BaseAfterExportStrategy
+        extend Gitlab::ImportExport::CommandLineUtil
         include ActiveModel::Validations
         extend Forwardable
 
@@ -56,7 +57,7 @@ module Gitlab
 
           lock_path = project.import_export_shared.archive_path
 
-          FileUtils.mkdir_p(lock_path)
+          mkdir_p(lock_path)
           File.join(lock_path, AFTER_EXPORT_LOCK_FILE_NAME)
         end
 
