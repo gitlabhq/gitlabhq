@@ -491,6 +491,35 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.db_read_only?' do
+    context 'when using PostgreSQL' do
+      before do
+        allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+        expect(described_class).to receive(:postgresql?).and_return(true)
+      end
+
+      it 'detects a read only database' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
+
+        expect(described_class.db_read_only?).to be_truthy
+      end
+
+      it 'detects a read write database' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
+
+        expect(described_class.db_read_only?).to be_falsey
+      end
+    end
+
+    context 'when using MySQL' do
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(false)
+      end
+
+      it { expect(described_class.db_read_only?).to be_falsey }
+    end
+  end
+
   describe '#sanitize_timestamp' do
     let(:max_timestamp) { Time.at((1 << 31) - 1) }
 

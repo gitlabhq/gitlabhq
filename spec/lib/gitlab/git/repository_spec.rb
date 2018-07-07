@@ -1856,6 +1856,54 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#set_config' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:rugged) { repository_rugged }
+    let(:entries) do
+      {
+        'test.foo1' => 'bla bla',
+        'test.foo2' => 1234,
+        'test.foo3' => true
+      }
+    end
+
+    it 'can set config settings' do
+      expect(repository.set_config(entries)).to be_nil
+
+      expect(rugged.config['test.foo1']).to eq('bla bla')
+      expect(rugged.config['test.foo2']).to eq('1234')
+      expect(rugged.config['test.foo3']).to eq('true')
+    end
+
+    after do
+      entries.keys.each { |k| rugged.config.delete(k) }
+    end
+  end
+
+  describe '#delete_config' do
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:rugged) { repository_rugged }
+    let(:entries) do
+      {
+        'test.foo1' => 'bla bla',
+        'test.foo2' => 1234,
+        'test.foo3' => true
+      }
+    end
+
+    it 'can delete config settings' do
+      entries.each do |key, value|
+        rugged.config[key] = value
+      end
+
+      expect(repository.delete_config(*%w[does.not.exist test.foo1 test.foo2])).to be_nil
+
+      config_keys = rugged.config.each_key.to_a
+      expect(config_keys).not_to include('test.foo1')
+      expect(config_keys).not_to include('test.foo2')
+    end
+  end
+
   describe '#merge' do
     let(:repository) do
       Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
