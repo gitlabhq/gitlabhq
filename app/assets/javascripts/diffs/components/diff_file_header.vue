@@ -228,7 +228,7 @@ export default {
 
         <edit-button
           v-if="!diffFile.deletedFile"
-          :current-user="currentUser"
+          :current-user-show-fork="currentUserShowFork"
           :edit-path="diffFile.editPath"
           :can-modify-blob="diffFile.canModifyBlob"
           @showForkMessage="showForkMessage"

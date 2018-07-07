@@ -104,7 +104,6 @@ export default {
             :key="line.left.lineCode || line.right.lineCode"
             :line="line"
             :diff-file-hash="diffFile.fileHash"
-            :diff-lines="parallelDiffLines"
             :line-index="index"
           />
         </template>

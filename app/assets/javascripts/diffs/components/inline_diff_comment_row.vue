@@ -17,10 +17,6 @@ export default {
       type: String,
       required: true,
     },
-    diffLines: {
-      type: Array,
-      required: true,
-    },
     lineIndex: {
       type: Number,
       required: true,
@@ -60,7 +56,7 @@ export default {
           v-if="diffLineCommentForms[line.lineCode]"
           :diff-file-hash="diffFileHash"
           :line="line"
-          :note-target-line="diffLines[lineIndex]"
+          :note-target-line="line"
         />
       </div>
     </td>

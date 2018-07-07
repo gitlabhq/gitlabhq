@@ -17,10 +17,6 @@ export default {
       type: String,
       required: true,
     },
-    diffLines: {
-      type: Array,
-      required: true,
-    },
     lineIndex: {
       type: Number,
       required: true,
@@ -93,7 +89,7 @@ export default {
         diffLineCommentForms[leftLineCode]"
         :diff-file-hash="diffFileHash"
         :line="line.left"
-        :note-target-line="diffLines[lineIndex].left"
+        :note-target-line="line.left"
         position="left"
       />
     </td>
@@ -113,7 +109,7 @@ export default {
         diffLineCommentForms[rightLineCode] && line.right.type"
         :diff-file-hash="diffFileHash"
         :line="line.right"
-        :note-target-line="diffLines[lineIndex].right"
+        :note-target-line="line.right"
         position="right"
       />
     </td>
