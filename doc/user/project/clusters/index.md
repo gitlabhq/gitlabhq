@@ -207,7 +207,7 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 > **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
 >
 > ```bash
-> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
+> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}".
 > ```
 
 The output is the external IP address of your cluster. This information can then

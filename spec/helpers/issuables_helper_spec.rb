@@ -185,6 +185,7 @@ describe IssuablesHelper do
         issuableRef: "##{issue.iid}",
         markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
         markdownDocsPath: '/help/user/markdown',
+        markdownVersion: 11,
         issuableTemplates: [],
         projectPath: @project.path,
         projectNamespace: @project.namespace.path,

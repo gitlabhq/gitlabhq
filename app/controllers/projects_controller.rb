@@ -2,7 +2,10 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
   include PreviewMarkdown
+<<<<<<< HEAD
   prepend EE::ProjectsController
+=======
+>>>>>>> upstream/master
   include SendFileUpload
 
   before_action :whitelist_query_limiting, only: [:create]
