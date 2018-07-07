@@ -69,6 +69,7 @@ module Gitlab
           @route_hash ||= Rails.application.routes.recognize_path(request.url, { method: request.request_method }) rescue {}
         end
 
+        # Overridden in EE module
         def whitelisted_routes
           grack_route || ReadOnly.internal_routes.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
         end
