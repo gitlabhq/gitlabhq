@@ -233,7 +233,6 @@
   max-width: 100%;
 }
 
-<<<<<<< HEAD
 /*
 * Mixin that handles the container for the job logs (CI/CD and kubernetes pod logs)
 */
@@ -333,8 +332,6 @@
   animation: blinking-dots 1s linear infinite;
 }
 
-=======
->>>>>>> upstream/master
 @mixin borderless-status-icon($color) {
   svg {
     border: 1px solid $color;
