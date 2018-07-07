@@ -555,8 +555,12 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        iterator = wrapped_gitaly_errors do
-          gitaly_commit_client.diff(from, to, options.merge(paths: paths))
+        iterator = gitaly_migrate(:diff_between) do |is_enabled|
+          if is_enabled
+            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
+          else
+            diff_patches(from, to, options, *paths)
+          end
         end
 
         Gitlab::Git::DiffCollection.new(iterator, options)
@@ -1111,8 +1115,18 @@ module Gitlab
         # This guard avoids Gitaly log/error spam
         raise NoRepository, 'repository does not exist' unless exists?
 
+        set_config('gitlab.fullpath' => full_path)
+      end
+
+      def set_config(entries)
         wrapped_gitaly_errors do
-          gitaly_repository_client.write_config(full_path: full_path)
+          gitaly_repository_client.set_config(entries)
+        end
+      end
+
+      def delete_config(*keys)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.delete_config(keys)
         end
       end
 
@@ -1585,6 +1599,17 @@ module Gitlab
         end
 
         tmp_entry
+      end
+
+      # Return the Rugged patches for the diff between +from+ and +to+.
+      def diff_patches(from, to, options = {}, *paths)
+        options ||= {}
+        break_rewrites = options[:break_rewrites]
+        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
+
+        diff = rugged.diff(from, to, actual_options)
+        diff.find_similar!(break_rewrites: break_rewrites)
+        diff.each_patch
       end
 
       def sort_branches(branches, sort_by)

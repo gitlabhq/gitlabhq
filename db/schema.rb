@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180629191052) do
+ActiveRecord::Schema.define(version: 20180702120647) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -948,6 +948,16 @@ ActiveRecord::Schema.define(version: 20180629191052) do
   end
 
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
+
+  create_table "import_export_uploads", force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "project_id"
+    t.text "import_file"
+    t.text "export_file"
+  end
+
+  add_index "import_export_uploads", ["project_id"], name: "index_import_export_uploads_on_project_id", using: :btree
+  add_index "import_export_uploads", ["updated_at"], name: "index_import_export_uploads_on_updated_at", using: :btree
 
   create_table "internal_ids", id: :bigserial, force: :cascade do |t|
     t.integer "project_id"

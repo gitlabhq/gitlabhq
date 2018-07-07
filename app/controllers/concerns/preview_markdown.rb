@@ -10,8 +10,11 @@ module PreviewMarkdown
       when 'wikis'    then { pipeline: :wiki, project_wiki: @project_wiki, page_slug: params[:id] }
       when 'snippets' then { skip_project_check: true }
       when 'groups'   then { group: group }
+      when 'projects' then { issuable_state_filter_enabled: true }
       else {}
       end
+
+    markdown_params[:markdown_engine] = result[:markdown_engine]
 
     render json: {
       body: view_context.markdown(result[:text], markdown_params),

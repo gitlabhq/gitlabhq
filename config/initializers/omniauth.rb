@@ -17,7 +17,7 @@ OmniAuth.config.before_request_phase do |env|
   Gitlab::RequestForgeryProtection.call(env)
 end
 
-if Gitlab.config.omniauth.enabled
+if Gitlab::OmniauthInitializer.enabled?
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
   Gitlab::Auth.omniauth_setup_providers(provider_names)
 end

@@ -78,9 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.24.0.tgz#3b2b58c5a1d58ce784f486d648bd87cbbb06cedc"
+"@gitlab-org/gitlab-svgs@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.25.0.tgz#1a82b1be43e1a46e6b0767ef46f26f5fd6bbd101"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"

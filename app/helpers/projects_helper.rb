@@ -177,6 +177,7 @@ module ProjectsHelper
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
+      max_project_member_access_cache_key(project),
       'v2.6'
     ]
 

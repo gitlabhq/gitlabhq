@@ -1329,3 +1329,14 @@
   line-height: 16px;
   color: $gl-text-color-secondary;
 }
+
+.ide-merge-request-info {
+  .detail-page-header {
+    line-height: initial;
+    min-height: 38px;
+  }
+
+  .issuable-details {
+    overflow: auto;
+  }
+}

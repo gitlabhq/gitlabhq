@@ -12,6 +12,7 @@ module Ci
       Ci::Build.finished.with_live_trace.find_each(batch_size: 100) do |build|
         begin
           build.trace.archive!
+        rescue ::Gitlab::Ci::Trace::AlreadyArchivedError
         rescue => e
           failed_archive_counter.increment
           Rails.logger.error "Failed to archive stale live trace. id: #{build.id} message: #{e.message}"

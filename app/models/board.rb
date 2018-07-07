@@ -26,4 +26,8 @@ class Board < ActiveRecord::Base
   def closed_list
     lists.merge(List.closed).take
   end
+
+  def scoped?
+    false
+  end
 end
