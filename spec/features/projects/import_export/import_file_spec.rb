@@ -35,18 +35,14 @@ describe 'Import/Export - project import integration test', :js do
         expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}\z/).and_call_original
 
         attach_file('file', file)
-        click_on 'Import project'
 
-        expect(Project.count).to eq(1)
+        # Disable the actual import because this can take over 40 seconds to
+        # run. This should be done inside gitlab-qa.
+        Sidekiq::Testing.fake! do
+          click_on 'Import project'
+        end
 
-        project = Project.last
-        expect(project).not_to be_nil
-        expect(project.description).to eq("Foo Bar")
-        expect(project.issues).not_to be_empty
-        expect(project.merge_requests).not_to be_empty
-        expect(project_hook_exists?(project)).to be true
-        expect(wiki_exists?(project)).to be true
-        expect(project.import_state.status).to eq('finished')
+        expect(page).to have_content("Project '#{project_path}' is being imported")
       end
     end
 
@@ -59,10 +55,12 @@ describe 'Import/Export - project import integration test', :js do
         fill_in :path, with: 'test-project-path', visible: true
         attach_file('file', file)
 
-        expect { click_on 'Import project' }.to change { Project.count }.by(1)
+        # Disable the actual import because this can take over 40 seconds to
+        # run. This should be done inside gitlab-qa.
+        Sidekiq::Testing.fake! do
+          click_on 'Import project'
+        end
 
-        project = Project.last
-        expect(project).not_to be_nil
         expect(page).to have_content("Project 'test-project-path' is being imported")
       end
     end
