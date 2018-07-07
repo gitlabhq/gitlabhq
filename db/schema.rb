@@ -1322,7 +1322,6 @@ ActiveRecord::Schema.define(version: 20180702181530) do
   add_index "import_export_uploads", ["project_id"], name: "index_import_export_uploads_on_project_id", using: :btree
   add_index "import_export_uploads", ["updated_at"], name: "index_import_export_uploads_on_updated_at", using: :btree
 
-<<<<<<< HEAD
   create_table "index_statuses", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "indexed_at"
@@ -1334,8 +1333,6 @@ ActiveRecord::Schema.define(version: 20180702181530) do
 
   add_index "index_statuses", ["project_id"], name: "index_index_statuses_on_project_id", unique: true, using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "internal_ids", id: :bigserial, force: :cascade do |t|
     t.integer "project_id"
     t.integer "usage", null: false
