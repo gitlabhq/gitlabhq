@@ -117,14 +117,6 @@ export default {
 
 <template>
   <td
-    v-if="isContentLine"
-    :class="lineType"
-    class="line_content"
-    v-html="normalizedLine.richText"
-  >
-  </td>
-  <td
-    v-else
     :class="classNameMap"
   >
     <diff-line-gutter-content
