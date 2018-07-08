@@ -27,13 +27,11 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def create
-    bitbucket_client = BitbucketServer::Client.new(credentials)
-
     repo = bitbucket_client.repo(@project_key, @repo_slug)
 
     unless repo
       return render json: { errors: "Project #{@project_key}/#{repo_slug} could not be found" }
-    end
+   end
 
     project_name = params[:new_name].presence || repo.name
 
@@ -52,7 +50,7 @@ class Import::BitbucketServerController < Import::BaseController
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
-  rescue *SERVER_ERRROS => e
+  rescue *SERVER_ERRORS => e
     render json: { errors: "Unable to connect to server: #{e}" }
   end
 
@@ -86,14 +84,19 @@ class Import::BitbucketServerController < Import::BaseController
 
   private
 
+  def bitbucket_client
+    @bitbucket_client ||= BitbucketServer::Client.new(credentials)
+  end
+
   def validate_import_params
     @project_key = params[:project]
     @repo_slug = params[:repository]
+    status = :unprocessable_entity
 
-    return render json: { errors: 'Missing project key' } unless @project_key.present? && @repo_slug.present?
-    return render json: { errors: 'Missing repository slug' } unless @repo_slug.present?
-    return render json: { errors: 'Invalid project key' } unless @project_key =~ VALID_BITBUCKET_CHARS
-    return render json: { errors: 'Invalid repository slug' } unless @repo_slug =~ VALID_BITBUCKET_CHARS
+    return render json: { errors: 'Missing project key' }, status: status unless @project_key.present? && @repo_slug.present?
+    return render json: { errors: 'Missing repository slug' }, status: status unless @repo_slug.present?
+    return render json: { errors: 'Invalid project key' }, status: status unless @project_key =~ VALID_BITBUCKET_CHARS
+    return render json: { errors: 'Invalid repository slug' }, status: status unless @repo_slug =~ VALID_BITBUCKET_CHARS
   end
 
   def bitbucket_auth

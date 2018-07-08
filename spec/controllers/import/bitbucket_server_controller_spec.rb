@@ -48,9 +48,15 @@ describe Import::BitbucketServerController do
     end
 
     it 'returns an error when an invalid project key is used' do
+      post :create, project: 'some&project'
+
+      expect(response).to have_gitlab_http_status(422)
     end
 
     it 'returns an error when an invalid repository slug is used' do
+      post :create, project: 'some-project', repository: 'try*this'
+
+      expect(response).to have_gitlab_http_status(422)
     end
 
     it 'returns an error when the project cannot be saved' do
