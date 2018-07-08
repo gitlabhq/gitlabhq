@@ -59,6 +59,16 @@ describe Import::BitbucketServerController do
       expect(response).to have_gitlab_http_status(422)
     end
 
+    it 'returns an error when the project cannot be found' do
+      client = instance_double(BitbucketServer::Client)
+      expect(client).to receive(:repo).with(project_key, repo_slug).and_return(nil)
+      expect(controller).to receive(:bitbucket_client).and_return(client)
+
+      post :create, project: project_key, repository: repo_slug, format: :json
+
+      expect(response).to have_gitlab_http_status(422)
+    end
+
     it 'returns an error when the project cannot be saved' do
     end
 

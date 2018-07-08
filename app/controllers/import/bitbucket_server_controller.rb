@@ -30,7 +30,7 @@ class Import::BitbucketServerController < Import::BaseController
     repo = bitbucket_client.repo(@project_key, @repo_slug)
 
     unless repo
-      return render json: { errors: "Project #{@project_key}/#{repo_slug} could not be found" }
+      return render json: { errors: "Project #{@project_key}/#{@repo_slug} could not be found" }, status: :unprocessable_entity
    end
 
     project_name = params[:new_name].presence || repo.name
