@@ -34,7 +34,7 @@ There are currently three options for `merge_method` to choose from:
 ## List all projects
 
 Get a list of all visible projects across GitLab for the authenticated user.
-When accessed without authentication, only public projects are returned.
+When accessed without authentication, only public projects with "simple" fields are returned.
 
 ```
 GET /projects
@@ -47,7 +47,7 @@ GET /projects
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
-| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
@@ -55,6 +55,41 @@ GET /projects
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+
+When `simple=true` or the user is unauthenticated this returns something like:
+
+```json
+[
+  {
+    "id": 4,
+    "description": null,
+    "default_branch": "master",
+    "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
+    "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
+    "web_url": "http://example.com/diaspora/diaspora-client",
+    "readme_url": "http://example.com/diaspora/diaspora-client/blob/master/README.md",
+    "tag_list": [
+      "example",
+      "disapora client"
+    ],
+    "name": "Diaspora Client",
+    "name_with_namespace": "Diaspora / Diaspora Client",
+    "path": "diaspora-client",
+    "path_with_namespace": "diaspora/diaspora-client",
+    "created_at": "2013-09-30T13:46:02Z",
+    "last_activity_at": "2013-09-30T13:46:02Z",
+    "forks_count": 0,
+    "avatar_url": "http://example.com/uploads/project/avatar/4/uploads/avatar.png",
+    "star_count": 0,
+  },
+  {
+    "id": 6,
+    "description": null,
+    "default_branch": "master",
+...
+```
+
+When the user is authenticated and `simple` is not set this returns something like:
 
 ```json
 [
@@ -235,7 +270,7 @@ GET /users/:user_id/projects
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
-| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
@@ -723,7 +758,7 @@ GET /projects/:id/forks
 | `order_by` | string | no | Return projects ordered by `id`, `name`, `path`, `created_at`, `updated_at`, or `last_activity_at` fields. Default is `created_at` |
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
-| `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
+| `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
