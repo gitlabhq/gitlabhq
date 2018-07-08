@@ -1,7 +1,6 @@
 - if milestone.expired? and not milestone.closed?
-  %span.cred (Expired)
+  .status-box.status-box-expired.append-bottom-5 Expired
 - if milestone.upcoming?
-  %span.clgray (Upcoming)
-- if milestone.due_date || milestone.start_date
-  %span
-    = milestone_date_range(milestone)
+  .status-box.status-box-mr-merged.append-bottom-5 Upcoming
+- if milestone.closed?
+  .status-box.status-box-closed.append-bottom-5 Closed

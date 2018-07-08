@@ -23,6 +23,7 @@
         let { result } = target;
 
         if (!isText) {
+          // eslint-disable-next-line prefer-destructuring
           result = result.split('base64,')[1];
         }
 

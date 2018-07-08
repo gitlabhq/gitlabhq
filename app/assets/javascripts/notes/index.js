@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const notesDataset = document.getElementById('js-vue-notes').dataset;
       const parsedUserData = JSON.parse(notesDataset.currentUserData);
       const noteableData = JSON.parse(notesDataset.noteableData);
+      const { markdownVersion } = notesDataset;
       let currentUserData = {};
 
       noteableData.noteableType = notesDataset.noteableType;
@@ -33,6 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return {
         noteableData,
         currentUserData,
+        markdownVersion,
         notesData: JSON.parse(notesDataset.notesData),
       };
     },
@@ -42,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
           noteableData: this.noteableData,
           notesData: this.notesData,
           userData: this.currentUserData,
+          markdownVersion: this.markdownVersion,
         },
       });
     },

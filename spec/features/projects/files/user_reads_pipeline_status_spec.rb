@@ -17,7 +17,7 @@ describe 'user reads pipeline status', :js do
   end
 
   shared_examples 'visiting project tree' do
-    scenario 'sees the correct pipeline status' do
+    it 'sees the correct pipeline status' do
       visit project_tree_path(project, expected_pipeline.ref)
       wait_for_requests
 

@@ -206,7 +206,7 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 
 > **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
 > ```bash
-> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
+> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}".
 > ```
 
 The output is the external IP address of your cluster. This information can then
@@ -406,5 +406,5 @@ the deployment variables above, ensuring any pods you create are labelled with
 - [Connecting and deploying to an Amazon EKS cluster](eks_and_gitlab/index.md)
 
 [permissions]: ../../permissions.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [Auto DevOps]: ../../../topics/autodevops/index.md

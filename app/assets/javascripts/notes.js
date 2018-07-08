@@ -20,6 +20,7 @@ import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_c
 import axios from './lib/utils/axios_utils';
 import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
+import { defaultAutocompleteConfig } from './gfm_auto_complete';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
 import loadAwardsHandler from './awards_handler';
@@ -45,7 +46,7 @@ const MAX_VISIBLE_COMMIT_LIST_COUNT = 3;
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
-  static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
+  static initialize(notes_url, note_ids, last_fetched_at, view, enableGFM) {
     if (!this.instance) {
       this.instance = new Notes(notes_url, note_ids, last_fetched_at, view, enableGFM);
     }
@@ -55,7 +56,7 @@ export default class Notes {
     return this.instance;
   }
 
-  constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = true) {
+  constructor(notes_url, note_ids, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);
     this.visibilityChange = this.visibilityChange.bind(this);
@@ -94,7 +95,7 @@ export default class Notes {
     this.cleanBinding();
     this.addBinding();
     this.setPollingInterval();
-    this.setupMainTargetNoteForm();
+    this.setupMainTargetNoteForm(enableGFM);
     this.taskList = new TaskList({
       dataType: 'note',
       fieldName: 'note',
@@ -310,7 +311,7 @@ export default class Notes {
         },
       })
       .then(({ data }) => {
-        const notes = data.notes;
+        const { notes } = data;
         this.last_fetched_at = data.last_fetched_at;
         this.setPollingInterval(data.notes.length);
         $.each(notes, (i, note) => this.renderNote(note));
@@ -598,14 +599,14 @@ export default class Notes {
    *
    * Sets some hidden fields in the form.
    */
-  setupMainTargetNoteForm() {
+  setupMainTargetNoteForm(enableGFM) {
     var form;
     // find the form
     form = $('.js-new-note-form');
     // Set a global clone of the form for later cloning
     this.formClone = form.clone();
     // show the form
-    this.setupNoteForm(form);
+    this.setupNoteForm(form, enableGFM);
     // fix classes
     form.removeClass('js-new-note-form');
     form.addClass('js-main-target-form');
@@ -633,9 +634,9 @@ export default class Notes {
    * setup GFM auto complete
    * show the form
    */
-  setupNoteForm(form) {
+  setupNoteForm(form, enableGFM = defaultAutocompleteConfig) {
     var textarea, key;
-    this.glForm = new GLForm(form, this.enableGFM);
+    this.glForm = new GLForm(form, enableGFM);
     textarea = form.find('.js-note-text');
     key = [
       'Note',
@@ -1250,13 +1251,15 @@ export default class Notes {
     var postUrl = $originalContentEl.data('postUrl');
     var targetId = $originalContentEl.data('targetId');
     var targetType = $originalContentEl.data('targetType');
+    var markdownVersion = $originalContentEl.data('markdownVersion');
 
     this.glForm = new GLForm($editForm.find('form'), this.enableGFM);
 
     $editForm
       .find('form')
       .attr('action', `${postUrl}?html=true`)
-      .attr('data-remote', 'true');
+      .attr('data-remote', 'true')
+      .attr('data-markdown-version', markdownVersion);
     $editForm.find('.js-form-target-id').val(targetId);
     $editForm.find('.js-form-target-type').val(targetType);
     $editForm

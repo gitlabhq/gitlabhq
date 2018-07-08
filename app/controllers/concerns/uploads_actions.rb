@@ -45,6 +45,16 @@ module UploadsActions
     send_upload(uploader, attachment: uploader.filename, disposition: disposition)
   end
 
+  def authorize
+    set_workhorse_internal_api_content_type
+
+    authorized = uploader_class.workhorse_authorize(
+      has_length: false,
+      maximum_size: Gitlab::CurrentSettings.max_attachment_size.megabytes.to_i)
+
+    render json: authorized
+  end
+
   private
 
   # Explicitly set the format.

@@ -4,7 +4,7 @@
 - expanded = Rails.env.test?
 
 .project-edit-container
-  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
+  %section.settings.general-settings.no-animate#js-general-project-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         General project
@@ -65,7 +65,7 @@
               = link_to _('Remove avatar'), project_avatar_path(@project), data: { confirm: _("Avatar will be removed. Are you sure?") }, method: :delete, class: "btn btn-danger btn-inverted"
         = f.submit 'Save changes', class: "btn btn-success js-btn-save-general-project-settings"
 
-  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
+  %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Permissions
@@ -82,7 +82,7 @@
 
   = render_if_exists 'projects/issues_settings'
 
-  %section.qa-merge-request-settings.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
+  %section.qa-merge-request-settings.settings.merge-requests-feature.no-animate#js-merge-request-settings{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
         Merge request
@@ -101,7 +101,7 @@
 
   = render 'export', project: @project
 
-  %section.qa-advanced-settings.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
+  %section.qa-advanced-settings.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Advanced

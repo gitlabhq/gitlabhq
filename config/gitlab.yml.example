@@ -33,7 +33,7 @@ production: &base
     port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
-    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # Uncomment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
     # ssh_host: ssh.host_example.com

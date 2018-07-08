@@ -10,7 +10,7 @@ export default () => new Vue({
     registryApp,
   },
   data() {
-    const dataset = document.querySelector(this.$options.el).dataset;
+    const { dataset } = document.querySelector(this.$options.el);
     return {
       endpoint: dataset.endpoint,
     };

@@ -63,7 +63,7 @@ describe('Multi-file editor library dirty diff controller', () => {
           [type]: true,
         };
 
-        const range = getDecorator(change).range;
+        const { range } = getDecorator(change);
 
         expect(range.startLineNumber).toBe(1);
         expect(range.endLineNumber).toBe(2);

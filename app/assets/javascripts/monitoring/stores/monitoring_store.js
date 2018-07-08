@@ -24,6 +24,7 @@ export default class MonitoringStore {
   constructor() {
     this.groups = [];
     this.deploymentData = [];
+    this.environmentsData = [];
   }
 
   storeMetrics(groups = []) {
@@ -35,6 +36,10 @@ export default class MonitoringStore {
 
   storeDeploymentData(deploymentData = []) {
     this.deploymentData = deploymentData;
+  }
+
+  storeEnvironmentsData(environmentsData = []) {
+    this.environmentsData = environmentsData;
   }
 
   getMetricsCount() {

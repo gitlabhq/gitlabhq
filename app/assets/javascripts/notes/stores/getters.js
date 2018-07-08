@@ -8,6 +8,8 @@ export const targetNoteHash = state => state.targetNoteHash;
 
 export const getNotesData = state => state.notesData;
 
+export const isNotesFetched = state => state.isNotesFetched;
+
 export const getNotesDataByProp = state => prop => state.notesData[prop];
 
 export const getNoteableData = state => state.noteableData;
@@ -83,9 +85,9 @@ export const allDiscussions = (state, getters) => {
 export const resolvedDiscussionsById = state => {
   const map = {};
 
-  state.discussions.forEach(n => {
+  state.discussions.filter(d => d.resolvable).forEach(n => {
     if (n.notes) {
-      const resolved = n.notes.every(note => note.resolved && !note.system);
+      const resolved = n.notes.filter(note => note.resolvable).every(note => note.resolved);
 
       if (resolved) {
         map[n.id] = n;

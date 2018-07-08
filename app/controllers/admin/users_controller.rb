@@ -187,10 +187,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(user_params_ce)
+    params.require(:user).permit(allowed_user_params)
   end
 
-  def user_params_ce
+  def allowed_user_params
     [
       :access_level,
       :avatar,

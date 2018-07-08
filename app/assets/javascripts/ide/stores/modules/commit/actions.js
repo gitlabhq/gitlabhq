@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import { sprintf, __ } from '~/locale';
 import flash from '~/flash';
-import { stripHtml } from '~/lib/utils/text_utility';
 import * as rootTypes from '../../mutation_types';
 import { createCommitPayload, createNewMergeRequestUrl } from '../../utils';
 import router from '../../../ide_router';
@@ -103,17 +102,24 @@ export const updateFilesAfterCommit = ({ commit, dispatch, rootState }, { data }
 
 export const commitChanges = ({ commit, state, getters, dispatch, rootState, rootGetters }) => {
   const newBranch = state.commitAction !== consts.COMMIT_TO_CURRENT_BRANCH;
-  const payload = createCommitPayload({
-    branch: getters.branchName,
-    newBranch,
-    state,
-    rootState,
-  });
+  const stageFilesPromise = rootState.stagedFiles.length
+    ? Promise.resolve()
+    : dispatch('stageAllChanges', null, { root: true });
 
   commit(types.UPDATE_LOADING, true);
 
-  return service
-    .commit(rootState.currentProjectId, payload)
+  return stageFilesPromise
+    .then(() => {
+      const payload = createCommitPayload({
+        branch: getters.branchName,
+        newBranch,
+        getters,
+        state,
+        rootState,
+      });
+
+      return service.commit(rootState.currentProjectId, payload);
+    })
     .then(({ data }) => {
       commit(types.UPDATE_LOADING, false);
 
@@ -191,11 +197,18 @@ export const commitChanges = ({ commit, state, getters, dispatch, rootState, roo
       if (err.response.status === 400) {
         $('#ide-create-branch-modal').modal('show');
       } else {
-        let errMsg = __('Error committing changes. Please try again.');
-        if (err.response.data && err.response.data.message) {
-          errMsg += ` (${stripHtml(err.response.data.message)})`;
-        }
-        flash(errMsg, 'alert', document, null, false, true);
+        dispatch(
+          'setErrorMessage',
+          {
+            text: __('An error accured whilst committing your changes.'),
+            action: () =>
+              dispatch('commitChanges').then(() =>
+                dispatch('setErrorMessage', null, { root: true }),
+              ),
+            actionText: __('Please try again'),
+          },
+          { root: true },
+        );
         window.dispatchEvent(new Event('resize'));
       }
 

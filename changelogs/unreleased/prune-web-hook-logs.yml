@@ -1,0 +1,5 @@
+---
+title: Prune web hook logs older than 90 days
+merge_request:
+author:
+type: added

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'File blob', :js do
+describe 'File blob', :js do
   include MobileHelpers
 
   let(:project) { create(:project, :public, :repository) }

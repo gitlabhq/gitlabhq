@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group show page' do
+describe 'Group show page' do
   let(:group) { create(:group) }
   let(:path) { group_path(group) }
 

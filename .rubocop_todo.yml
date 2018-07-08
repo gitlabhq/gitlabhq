@@ -10,10 +10,6 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 956
-Capybara/FeatureMethods:
-  Enabled: false
-
 # Offense count: 23
 FactoryBot/DynamicAttributeDefinedStatically:
   Exclude:

@@ -10,12 +10,9 @@ import {
   DIFF_VIEW_COOKIE_NAME,
 } from '../constants';
 
-export const setEndpoint = ({ commit }, endpoint) => {
-  commit(types.SET_ENDPOINT, endpoint);
-};
-
-export const setLoadingState = ({ commit }, state) => {
-  commit(types.SET_LOADING, state);
+export const setBaseConfig = ({ commit }, options) => {
+  const { endpoint, projectPath } = options;
+  commit(types.SET_BASE_CONFIG, { endpoint, projectPath });
 };
 
 export const fetchDiffFiles = ({ state, commit }) => {
@@ -86,8 +83,7 @@ export const expandAllFiles = ({ commit }) => {
 };
 
 export default {
-  setEndpoint,
-  setLoadingState,
+  setBaseConfig,
   fetchDiffFiles,
   setInlineDiffViewType,
   setParallelDiffViewType,

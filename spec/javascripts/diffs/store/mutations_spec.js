@@ -3,13 +3,15 @@ import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 
 describe('DiffsStoreMutations', () => {
-  describe('SET_ENDPOINT', () => {
-    it('should set endpoint', () => {
+  describe('SET_BASE_CONFIG', () => {
+    it('should set endpoint and project path', () => {
       const state = {};
       const endpoint = '/diffs/endpoint';
+      const projectPath = '/root/project';
 
-      mutations[types.SET_ENDPOINT](state, endpoint);
+      mutations[types.SET_BASE_CONFIG](state, { endpoint, projectPath });
       expect(state.endpoint).toEqual(endpoint);
+      expect(state.projectPath).toEqual(projectPath);
     });
   });
 
@@ -19,21 +21,6 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.SET_LOADING](state, false);
       expect(state.isLoading).toEqual(false);
-    });
-  });
-
-  describe('SET_DIFF_FILES', () => {
-    it('should set diff files to state', () => {
-      const filePath = '/first-diff-file-path';
-      const state = {};
-      const diffFiles = {
-        a_mode: 1,
-        highlighted_diff_lines: [{ file_path: filePath }],
-      };
-
-      mutations[types.SET_DIFF_FILES](state, diffFiles);
-      expect(state.diffFiles.aMode).toEqual(1);
-      expect(state.diffFiles.highlightedDiffLines[0].filePath).toEqual(filePath);
     });
   });
 

@@ -58,7 +58,8 @@ module Issues
     def cloneable_label_ids
       params = {
         project_id: @new_project.id,
-        title: @old_issue.labels.pluck(:title)
+        title: @old_issue.labels.pluck(:title),
+        include_ancestor_groups: true
       }
 
       LabelsFinder.new(current_user, params).execute.pluck(:id)

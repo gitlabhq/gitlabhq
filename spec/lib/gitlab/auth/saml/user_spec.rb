@@ -400,4 +400,45 @@ describe Gitlab::Auth::Saml::User do
       end
     end
   end
+
+  describe '#bypass_two_factor?' do
+    let(:saml_config) { mock_saml_config_with_upstream_two_factor_authn_contexts }
+
+    subject { saml_user.bypass_two_factor? }
+
+    context 'with authn_contexts_worth_two_factors configured' do
+      before do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [saml_config])
+      end
+
+      it 'returns true when authn_context is worth two factors' do
+        allow(saml_user.auth_hash).to receive(:authn_context).and_return('urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+        is_expected.to be_truthy
+      end
+
+      it 'returns false when authn_context is not worth two factors' do
+        allow(saml_user.auth_hash).to receive(:authn_context).and_return('urn:oasis:names:tc:SAML:2.0:ac:classes:Password')
+        is_expected.to be_falsey
+      end
+
+      it 'returns false when authn_context is blank' do
+        is_expected.to be_falsey
+      end
+    end
+
+    context 'without auth_contexts_worth_two_factors_configured' do
+      before do
+        stub_omniauth_saml_config(enabled: true, auto_link_saml_user: true, allow_single_sign_on: ['saml'], providers: [mock_saml_config])
+      end
+
+      it 'returns false when authn_context is present' do
+        allow(saml_user.auth_hash).to receive(:authn_context).and_return('urn:oasis:names:tc:SAML:2.0:ac:classes:SecondFactorOTPSMS')
+        is_expected.to be_falsey
+      end
+
+      it 'returns false when authn_context is blank' do
+        is_expected.to be_falsey
+      end
+    end
+  end
 end

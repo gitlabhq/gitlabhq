@@ -21,13 +21,31 @@ module Gitlab
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
-        def find(repository, sha, path)
-          Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
-            if is_enabled
-              find_by_gitaly(repository, sha, path)
-            else
-              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-            end
+        def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+          return unless path
+
+          path = path.sub(%r{\A/*}, '')
+          path = '/' if path.empty?
+          name = File.basename(path)
+
+          # Gitaly will think that setting the limit to 0 means unlimited, while
+          # the client might only need the metadata and thus set the limit to 0.
+          # In this method we'll then set the limit to 1, but clear the byte of data
+          # that we got back so for the outside world it looks like the limit was
+          # actually 0.
+          req_limit = limit == 0 ? 1 : limit
+
+          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
+          return unless entry
+
+          entry.data = "" if limit == 0
+
+          case entry.type
+          when :COMMIT
+            new(id: entry.oid, name: name, size: 0, data: '', path: path, commit_id: sha)
+          when :BLOB
+            new(id: entry.oid, name: name, size: entry.size, data: entry.data.dup, mode: entry.mode.to_s(8),
+                path: path, commit_id: sha, binary: binary?(entry.data))
           end
         end
 
@@ -56,7 +74,7 @@ module Gitlab
               repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
             else
               blob_references.map do |sha, path|
-                find_by_rugged(repository, sha, path, limit: blob_size_limit)
+                find(repository, sha, path, limit: blob_size_limit)
               end
             end
           end
@@ -134,85 +152,6 @@ module Gitlab
             path: path,
             commit_id: sha
           )
-        end
-
-        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-          return unless path
-
-          path = path.sub(%r{\A/*}, '')
-          path = '/' if path.empty?
-          name = File.basename(path)
-
-          # Gitaly will think that setting the limit to 0 means unlimited, while
-          # the client might only need the metadata and thus set the limit to 0.
-          # In this method we'll then set the limit to 1, but clear the byte of data
-          # that we got back so for the outside world it looks like the limit was
-          # actually 0.
-          req_limit = limit == 0 ? 1 : limit
-
-          entry = Gitlab::GitalyClient::CommitService.new(repository).tree_entry(sha, path, req_limit)
-          return unless entry
-
-          entry.data = "" if limit == 0
-
-          case entry.type
-          when :COMMIT
-            new(
-              id: entry.oid,
-              name: name,
-              size: 0,
-              data: '',
-              path: path,
-              commit_id: sha
-            )
-          when :BLOB
-            new(
-              id: entry.oid,
-              name: name,
-              size: entry.size,
-              data: entry.data.dup,
-              mode: entry.mode.to_s(8),
-              path: path,
-              commit_id: sha,
-              binary: binary?(entry.data)
-            )
-          end
-        end
-
-        def find_by_rugged(repository, sha, path, limit:)
-          return unless path
-
-          # Strip any leading / characters from the path
-          path = path.sub(%r{\A/*}, '')
-
-          rugged_commit = repository.lookup(sha)
-          root_tree = rugged_commit.tree
-
-          blob_entry = find_entry_by_path(repository, root_tree.oid, *path.split('/'))
-
-          return nil unless blob_entry
-
-          if blob_entry[:type] == :commit
-            submodule_blob(blob_entry, path, sha)
-          else
-            blob = repository.lookup(blob_entry[:oid])
-
-            if blob
-              new(
-                id: blob.oid,
-                name: blob_entry[:name],
-                size: blob.size,
-                # Rugged::Blob#content is expensive; don't call it if we don't have to.
-                data: limit.zero? ? '' : blob.content(limit),
-                mode: blob_entry[:filemode].to_s(8),
-                path: path,
-                commit_id: sha,
-                binary: blob.binary?
-              )
-            end
-          end
-        rescue Rugged::ReferenceError
-          nil
         end
 
         def rugged_raw(repository, sha, limit:)

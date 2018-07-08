@@ -18,7 +18,7 @@ import './components/new_issue_for_discussion';
 export default () => {
   const projectPathHolder =
     document.querySelector('.merge-request') || document.querySelector('.commit-box');
-  const projectPath = projectPathHolder.dataset.projectPath;
+  const { projectPath } = projectPathHolder.dataset;
   const COMPONENT_SELECTOR =
     'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
 

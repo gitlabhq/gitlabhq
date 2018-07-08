@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
@@ -67,23 +66,6 @@ describe('RepoCommitSection', () => {
     spyOn(vm, 'openPendingTab').and.callThrough();
 
     vm.$mount();
-
-    spyOn(service, 'getTreeData').and.returnValue(
-      Promise.resolve({
-        headers: {
-          'page-title': 'test',
-        },
-        json: () =>
-          Promise.resolve({
-            last_commit_path: 'last_commit_path',
-            parent_tree_url: 'parent_tree_url',
-            path: '/',
-            trees: [{ name: 'tree' }],
-            blobs: [{ name: 'blob' }],
-            submodules: [{ name: 'submodule' }],
-          }),
-      }),
-    );
 
     Vue.nextTick(done);
   });

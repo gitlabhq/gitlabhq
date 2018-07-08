@@ -1,12 +1,12 @@
 module QA
-  feature 'CI/CD Pipelines', :core, :docker do
+  describe 'CI/CD Pipelines', :core, :docker do
     let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
     after do
       Service::Runner.new(executor).remove!
     end
 
-    scenario 'user registers a new specific runner' do
+    it 'user registers a new specific runner' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -25,7 +25,7 @@ module QA
       end
     end
 
-    scenario 'users creates a new pipeline' do
+    it 'users creates a new pipeline' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
