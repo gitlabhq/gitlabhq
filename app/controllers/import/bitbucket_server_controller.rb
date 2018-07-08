@@ -51,7 +51,7 @@ class Import::BitbucketServerController < Import::BaseController
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
   rescue *SERVER_ERRORS => e
-    render json: { errors: "Unable to connect to server: #{e}" }
+    render json: { errors: "Unable to connect to server: #{e}" }, status: :unprocessable_entity
   end
 
   def configure
