@@ -1,6 +1,6 @@
 module QA
-  feature 'File Functionality', :core do
-    scenario 'User creates, edits and deletes a file via WebUI' do
+  describe 'File Functionality', :core do
+    it 'lets a user create, edit and delete a file via WebUI' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
