@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe API::Boards do
   set(:user)        { create(:user) }
-  set(:user2)       { create(:user) }
   set(:non_member)  { create(:user) }
   set(:guest)       { create(:user) }
   set(:admin)       { create(:user, :admin) }

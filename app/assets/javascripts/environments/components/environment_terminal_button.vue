@@ -30,15 +30,15 @@
 <template>
   <a
     v-tooltip
-    class="btn terminal-button d-none d-sm-none d-md-block"
-    data-container="body"
     :title="title"
     :aria-label="title"
     :href="terminalPath"
+    class="btn terminal-button d-none d-sm-none d-md-block"
+    data-container="body"
   >
     <icon
-      name="terminal"
       :size="12"
+      name="terminal"
     />
   </a>
 </template>

@@ -1,16 +1,7 @@
+# frozen_string_literal: true
+
 class FaviconUploader < AttachmentUploader
   EXTENSION_WHITELIST = %w[png ico].freeze
-
-  include CarrierWave::MiniMagick
-
-  version :favicon_main do
-    process resize_to_fill: [32, 32]
-    process convert: 'png'
-
-    def full_filename(filename)
-      filename_for_different_format(super(filename), 'png')
-    end
-  end
 
   def extension_whitelist
     EXTENSION_WHITELIST

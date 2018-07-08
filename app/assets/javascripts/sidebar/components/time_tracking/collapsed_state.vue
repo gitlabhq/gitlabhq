@@ -110,12 +110,12 @@
 
 <template>
   <div
-    class="sidebar-collapsed-icon"
     v-tooltip
+    :title="tooltipText"
+    class="sidebar-collapsed-icon"
     data-container="body"
     data-placement="left"
     data-boundary="viewport"
-    :title="tooltipText"
   >
     <icon name="timer" />
     <div class="time-tracking-collapsed-summary">

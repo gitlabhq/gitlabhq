@@ -169,7 +169,7 @@
   .settings-content
     = render 'logging'
 
-%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
+%section.qa-repository-storage-settings.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       = _('Repository storage')
@@ -324,3 +324,6 @@
       = _('Configure push mirrors.')
   .settings-content
     = render partial: 'repository_mirrors_form'
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
+

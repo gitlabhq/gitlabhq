@@ -1,7 +1,6 @@
-/* global dateFormat */
-
 import $ from 'jquery';
 import Pikaday from 'pikaday';
+import dateFormat from 'dateformat';
 import { __ } from '~/locale';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
@@ -55,7 +54,7 @@ class DueDateSelect {
       format: 'yyyy-mm-dd',
       parse: dateString => parsePikadayDate(dateString),
       toString: date => pikadayToString(date),
-      onSelect: (dateText) => {
+      onSelect: dateText => {
         $dueDateInput.val(calendar.toString(dateText));
 
         if (this.$dropdown.hasClass('js-issue-boards-due-date')) {
@@ -73,7 +72,7 @@ class DueDateSelect {
   }
 
   initRemoveDueDate() {
-    this.$block.on('click', '.js-remove-due-date', (e) => {
+    this.$block.on('click', '.js-remove-due-date', e => {
       const calendar = this.$datePicker.data('pikaday');
       e.preventDefault();
 
@@ -124,7 +123,8 @@ class DueDateSelect {
       this.$loading.fadeOut();
     };
 
-    gl.issueBoards.BoardsStore.detail.issue.update(this.$dropdown.attr('data-issue-update'))
+    gl.issueBoards.BoardsStore.detail.issue
+      .update(this.$dropdown.attr('data-issue-update'))
       .then(fadeOutLoader)
       .catch(fadeOutLoader);
   }
@@ -147,17 +147,18 @@ class DueDateSelect {
 
     $('.js-remove-due-date-holder').toggleClass('hidden', selectedDateValue.length);
 
-    return axios.put(this.issueUpdateURL, this.datePayload)
-      .then(() => {
-        const tooltipText = hasDueDate ? `${__('Due date')}<br />${selectedDateValue} (${timeFor(selectedDateValue)})` : __('Due date');
-        if (isDropdown) {
-          this.$dropdown.trigger('loaded.gl.dropdown');
-          this.$dropdown.dropdown('toggle');
-        }
-        this.$sidebarCollapsedValue.attr('data-original-title', tooltipText);
+    return axios.put(this.issueUpdateURL, this.datePayload).then(() => {
+      const tooltipText = hasDueDate
+        ? `${__('Due date')}<br />${selectedDateValue} (${timeFor(selectedDateValue)})`
+        : __('Due date');
+      if (isDropdown) {
+        this.$dropdown.trigger('loaded.gl.dropdown');
+        this.$dropdown.dropdown('toggle');
+      }
+      this.$sidebarCollapsedValue.attr('data-original-title', tooltipText);
 
-        return this.$loading.fadeOut();
-      });
+      return this.$loading.fadeOut();
+    });
   }
 }
 
@@ -187,15 +188,19 @@ export default class DueDateSelectors {
       $datePicker.data('pikaday', calendar);
     });
 
-    $('.js-clear-due-date,.js-clear-start-date').on('click', (e) => {
+    $('.js-clear-due-date,.js-clear-start-date').on('click', e => {
       e.preventDefault();
-      const calendar = $(e.target).siblings('.datepicker').data('pikaday');
+      const calendar = $(e.target)
+        .siblings('.datepicker')
+        .data('pikaday');
       calendar.setDate(null);
     });
   }
   // eslint-disable-next-line class-methods-use-this
   initIssuableSelect() {
-    const $loading = $('.js-issuable-update .due_date').find('.block-loading').hide();
+    const $loading = $('.js-issuable-update .due_date')
+      .find('.block-loading')
+      .hide();
 
     $('.js-due-date-select').each((i, dropdown) => {
       const $dropdown = $(dropdown);

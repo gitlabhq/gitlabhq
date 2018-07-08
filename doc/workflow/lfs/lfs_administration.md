@@ -17,7 +17,7 @@ There are various configuration options to help GitLab server administrators:
 
 * Enabling/disabling Git LFS support
 * Changing the location of LFS object storage
-* Setting up AWS S3 compatible object storage
+* Setting up object storage supported by [Fog](http://fog.io/about/provider_documentation.html)
 
 ### Configuration for Omnibus installations
 
@@ -44,19 +44,31 @@ In `config/gitlab.yml`:
     storage_path: /mnt/storage/lfs-objects
 ```
 
-## Storing the LFS objects in an S3-compatible object storage
+## Storing LFS objects in remote object storage
 
 > [Introduced][ee-2760] in [GitLab Premium][eep] 10.0. Brought to GitLab Core
 in 10.7.
 
-It is possible to store LFS objects on a remote object storage which allows you
-to offload storage to an external AWS S3 compatible service, freeing up disk
-space locally. You can also host your own S3 compatible storage decoupled from
-GitLab, with with a service such as [Minio](https://www.minio.io/).
+It is possible to store LFS objects in remote object storage which allows you
+to offload local hard disk R/W operations, and free up disk space significantly.
+GitLab is tightly integrated with `Fog`, so you can refer to its [documentation](http://fog.io/about/provider_documentation.html)
+to check which storage services can be integrated with GitLab.
+You can also use external object storage in a private local network. For example,
+[Minio](https://www.minio.io/) is a standalone object storage service, is easy to setup, and works well with GitLab instances.
 
-Object storage currently transfers files first to GitLab, and then on the
-object storage in a second stage. This can be done either by using a rake task
-to transfer existing objects, or in a background job after each file is received.
+GitLab provides two different options for the uploading mechanism: "Direct upload" and "Background upload".
+
+**Option 1. Direct upload**
+
+1. User pushes an lfs file to the GitLab instance
+1. GitLab-workhorse uploads the file directly to the external object storage
+1. GitLab-workhorse notifies GitLab-rails that the upload process is complete
+
+**Option 2. Background upload**
+
+1. User pushes an lfs file to the GitLab instance
+1. GitLab-rails stores the file in the local file storage
+1. GitLab-rails then uploads the file to the external object storage asynchronously
 
 The following general settings are supported.
 
@@ -71,15 +83,50 @@ The following general settings are supported.
 
 The `connection` settings match those provided by [Fog](https://github.com/fog).
 
-| Setting | Description | Default |
+Here is a configuration example with S3.
+
+| Setting | Description | example |
 |---------|-------------|---------|
-| `provider` | Always `AWS` for compatible hosts | AWS |
-| `aws_access_key_id` | AWS credentials, or compatible | |
-| `aws_secret_access_key` | AWS credentials, or compatible | |
+| `provider` | The provider name | AWS |
+| `aws_access_key_id` | AWS credentials, or compatible | `ABC123DEF456` |
+| `aws_secret_access_key` | AWS credentials, or compatible | `ABC123DEF456ABC123DEF456ABC123DEF456` |
+| `aws_signature_version` | AWS signature version to use. 2 or 4 are valid options. Digital Ocean Spaces and other providers may need 2. | 4 |
 | `region` | AWS region | us-east-1 |
 | `host` | S3 compatible host for when not using AWS, e.g. `localhost` or `storage.example.com` | s3.amazonaws.com |
 | `endpoint` | Can be used when configuring an S3 compatible service such as [Minio](https://www.minio.io), by entering a URL such as `http://127.0.0.1:9000` | (optional) |
 | `path_style` | Set to true to use `host/bucket_name/object` style paths instead of `bucket_name.host/object`. Leave as false for AWS S3 | false |
+
+Here is a configuration example with GCS.
+
+| Setting | Description | example |
+|---------|-------------|---------|
+| `provider` | The provider name | `Google` |
+| `google_project` | GCP project name | `gcp-project-12345` |
+| `google_client_email` | The email address of the service account | `foo@gcp-project-12345.iam.gserviceaccount.com` |
+| `google_json_key_location` | The json key path | `/path/to/gcp-project-12345-abcde.json` |
+
+_NOTE: The service account must have permission to access the bucket. [See more](https://cloud.google.com/storage/docs/authentication)_
+
+### Manual uploading to an object storage
+
+There are two ways to manually do the same thing as automatic uploading (described above).
+
+**Option 1: rake task**
+
+```
+$ rake gitlab:lfs:migrate
+```
+
+**Option 2: rails console**
+
+```
+$ sudo gitlab-rails console            # Login to rails console
+
+> # Upload LFS files manually
+> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+>   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+> end
+```
 
 ### S3 for Omnibus installations
 
@@ -156,6 +203,29 @@ You can see the total storage used for LFS objects on groups and projects
 in the administration area, as well as through the [groups](../../api/groups.md)
 and [projects APIs](../../api/projects.md).
 
+## Troubleshooting: `Google::Apis::TransmissionError: execution expired`
+
+If LFS integration is configred with Google Cloud Storage and background uploads (`background_upload: true` and `direct_upload: false`),
+sidekiq workers may encouter this error. This is because the uploading timed out with very large files.
+LFS files up to 6Gb can be uploaded without any extra steps, otherwise you need to use the following workaround.
+
+```shell
+$ sudo gitlab-rails console            # Login to rails console
+
+> # Set up timeouts. 20 minutes is enough to upload 30GB LFS files.
+> # These settings are only in effect for the same session, i.e. they are not effective for sidekiq workers.
+> ::Google::Apis::ClientOptions.default.open_timeout_sec = 1200
+> ::Google::Apis::ClientOptions.default.read_timeout_sec = 1200
+> ::Google::Apis::ClientOptions.default.send_timeout_sec = 1200
+
+> # Upload LFS files manually. This process does not use sidekiq at all.
+> LfsObject.where(file_store: [nil, 1]).find_each do |lfs_object|
+>   lfs_object.file.migrate!(ObjectStorage::Store::REMOTE) if lfs_object.file.file.exists?
+> end
+```
+
+See more information in [!19581](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19581)
+
 ## Known limitations
 
 * Support for removing unreferenced LFS objects was added in 8.14 onwards.
@@ -166,5 +236,5 @@ and [projects APIs](../../api/projects.md).
 
 [reconfigure gitlab]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: ../../administration/restart_gitlab.md#installations-from-source "How to restart GitLab"
-[eep]: https://about.gitlab.com/products/ "GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
 [ee-2760]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2760

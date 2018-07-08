@@ -5,6 +5,7 @@ import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
 import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
+import MergeRequestInfo from '../merge_requests/info.vue';
 import ResizablePanel from '../resizable_panel.vue';
 
 export default {
@@ -16,9 +17,10 @@ export default {
     PipelinesList,
     JobsDetail,
     ResizablePanel,
+    MergeRequestInfo,
   },
   computed: {
-    ...mapState(['rightPane']),
+    ...mapState(['rightPane', 'currentMergeRequestId']),
     pipelinesActive() {
       return (
         this.rightPane === rightSidebarViews.pipelines ||
@@ -44,32 +46,55 @@ export default {
   >
     <resizable-panel
       v-if="rightPane"
-      class="multi-file-commit-panel-inner"
       :collapsible="false"
       :initial-width="350"
       :min-size="350"
+      class="multi-file-commit-panel-inner"
       side="right"
     >
       <component :is="rightPane" />
     </resizable-panel>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
+        <li
+          v-if="currentMergeRequestId"
+        >
+          <button
+            v-tooltip
+            :title="__('Merge Request')"
+            :aria-label="__('Merge Request')"
+            :class="{
+              active: rightPane === $options.rightSidebarViews.mergeRequestInfo
+            }"
+            data-container="body"
+            data-placement="left"
+            class="ide-sidebar-link is-right"
+            type="button"
+            @click="clickTab($event, $options.rightSidebarViews.mergeRequestInfo)"
+          >
+            <icon
+              :size="16"
+              name="text-description"
+            />
+          </button>
+        </li>
         <li>
           <button
             v-tooltip
-            data-container="body"
-            data-placement="left"
             :title="__('Pipelines')"
-            class="ide-sidebar-link is-right"
+            :aria-label="__('Pipelines')"
             :class="{
               active: pipelinesActive
             }"
+            data-container="body"
+            data-placement="left"
+            class="ide-sidebar-link is-right"
             type="button"
             @click="clickTab($event, $options.rightSidebarViews.pipelines)"
           >
             <icon
               :size="16"
-              name="pipeline"
+              name="rocket"
             />
           </button>
         </li>

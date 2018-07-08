@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-return-assign, max-len */
+/* eslint-disable no-var, no-return-assign */
 export default class NewCommitForm {
   constructor(form) {
     this.form = form;

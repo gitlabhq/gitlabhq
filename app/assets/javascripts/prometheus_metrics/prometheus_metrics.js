@@ -107,7 +107,7 @@ export default class PrometheusMetrics {
           if (data && data.success) {
             stop(data);
           } else {
-            this.backOffRequestCounter = this.backOffRequestCounter += 1;
+            this.backOffRequestCounter += 1;
             if (this.backOffRequestCounter < 3) {
               next();
             } else {

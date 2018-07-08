@@ -2,7 +2,7 @@
   %h3.project-title
     Runner ##{@runner.id}
     .float-right
-      - if @runner.shared?
+      - if @runner.instance_type?
         %span.runner-state.runner-state-shared
           Shared
       - else
@@ -13,7 +13,7 @@
 - breadcrumb_title "##{@runner.id}"
 - @no_container = true
 
-- if @runner.shared?
+- if @runner.instance_type?
   .bs-callout.bs-callout-success
     %h4 This Runner will process jobs from ALL UNASSIGNED projects
     %p

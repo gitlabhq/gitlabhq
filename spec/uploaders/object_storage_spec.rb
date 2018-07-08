@@ -191,6 +191,18 @@ describe ObjectStorage do
           it "calls a cache path" do
             expect { |b| uploader.use_file(&b) }.to yield_with_args(%r[tmp/cache])
           end
+
+          it "cleans up the cached file" do
+            cached_path = ''
+
+            uploader.use_file do |path|
+              cached_path = path
+
+              expect(File.exist?(cached_path)).to be_truthy
+            end
+
+            expect(File.exist?(cached_path)).to be_falsey
+          end
         end
       end
 
@@ -321,7 +333,7 @@ describe ObjectStorage do
       when_file_is_in_use do
         expect(uploader).not_to receive(:unsafe_migrate!)
 
-        expect { uploader.migrate!(described_class::Store::REMOTE) }.to raise_error('exclusive lease already taken')
+        expect { uploader.migrate!(described_class::Store::REMOTE) }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
       end
     end
 
@@ -329,7 +341,19 @@ describe ObjectStorage do
       when_file_is_in_use do
         expect(uploader).not_to receive(:unsafe_use_file)
 
-        expect { uploader.use_file }.to raise_error('exclusive lease already taken')
+        expect { uploader.use_file }.to raise_error(ObjectStorage::ExclusiveLeaseTaken)
+      end
+    end
+
+    it 'can still migrate other files of the same model' do
+      uploader2 = uploader_class.new(object, :file)
+      uploader2.upload = create(:upload)
+      uploader.upload = create(:upload)
+
+      when_file_is_in_use do
+        expect(uploader2).to receive(:unsafe_migrate!)
+
+        uploader2.migrate!(described_class::Store::REMOTE)
       end
     end
   end

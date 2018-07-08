@@ -186,6 +186,7 @@
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   display: flex;
+  flex-wrap: nowrap;
 
   &::-webkit-scrollbar {
     display: none;
@@ -230,4 +231,11 @@
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
+}
+
+@mixin borderless-status-icon($color) {
+  svg {
+    border: 1px solid $color;
+    border-radius: 50%;
+  }
 }

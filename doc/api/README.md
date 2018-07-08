@@ -104,7 +104,7 @@ with a major point release of GitLab itself. All deprecations and changes
 between two versions should be listed in the documentation. For the changes
 between v3 and v4; please read the [v3 to v4 documentation](v3_to_v4.md)
 
-#### Current status
+### Current status
 
 Currently only API version v4 is available. Version v3 was removed in
 [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).

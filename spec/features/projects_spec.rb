@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project' do
+describe 'Project' do
   include ProjectForksHelper
 
   describe 'creating from template' do

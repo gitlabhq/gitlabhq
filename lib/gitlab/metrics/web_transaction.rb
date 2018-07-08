@@ -3,6 +3,7 @@ module Gitlab
     class WebTransaction < Transaction
       CONTROLLER_KEY = 'action_controller.instance'.freeze
       ENDPOINT_KEY = 'api.endpoint'.freeze
+      ALLOWED_SUFFIXES = Set.new(%w[json js atom rss xml zip])
 
       def initialize(env)
         super()
@@ -32,9 +33,13 @@ module Gitlab
         # Devise exposes a method called "request_format" that does the below.
         # However, this method is not available to all controllers (e.g. certain
         # Doorkeeper controllers). As such we use the underlying code directly.
-        suffix = controller.request.format.try(:ref)
+        suffix = controller.request.format.try(:ref).to_s
 
-        if suffix && suffix != :html
+        # Sometimes the request format is set to silly data such as
+        # "application/xrds+xml" or actual URLs. To prevent such values from
+        # increasing the cardinality of our metrics, we limit the number of
+        # possible suffixes.
+        if suffix && ALLOWED_SUFFIXES.include?(suffix)
           action += ".#{suffix}"
         end
 

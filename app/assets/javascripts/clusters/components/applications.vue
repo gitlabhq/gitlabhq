@@ -152,11 +152,11 @@ export default {
         <application-row
           id="helm"
           :title="applications.helm.title"
-          title-link="https://docs.helm.sh/"
           :status="applications.helm.status"
           :status-reason="applications.helm.statusReason"
           :request-status="applications.helm.requestStatus"
           :request-reason="applications.helm.requestReason"
+          title-link="https://docs.helm.sh/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|Helm streamlines installing
@@ -168,11 +168,11 @@ export default {
         <application-row
           :id="ingressId"
           :title="applications.ingress.title"
-          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
           :status="applications.ingress.status"
           :status-reason="applications.ingress.statusReason"
           :request-status="applications.ingress.requestStatus"
           :request-reason="applications.ingress.requestReason"
+          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
         >
           <div slot="description">
             <p>
@@ -191,10 +191,10 @@ export default {
                   class="input-group"
                 >
                   <input
-                    type="text"
                     id="ingress-ip-address"
-                    class="form-control js-ip-address"
                     :value="ingressExternalIp"
+                    type="text"
+                    class="form-control js-ip-address"
                     readonly
                   />
                   <span class="input-group-append">
@@ -255,12 +255,12 @@ export default {
         <application-row
           id="prometheus"
           :title="applications.prometheus.title"
-          title-link="https://prometheus.io/docs/introduction/overview/"
           :manage-link="managePrometheusPath"
           :status="applications.prometheus.status"
           :status-reason="applications.prometheus.statusReason"
           :request-status="applications.prometheus.requestStatus"
           :request-reason="applications.prometheus.requestReason"
+          title-link="https://prometheus.io/docs/introduction/overview/"
         >
           <div
             slot="description"
@@ -271,11 +271,11 @@ export default {
         <application-row
           id="runner"
           :title="applications.runner.title"
-          title-link="https://docs.gitlab.com/runner/"
           :status="applications.runner.status"
           :status-reason="applications.runner.statusReason"
           :request-status="applications.runner.requestStatus"
           :request-reason="applications.runner.requestReason"
+          title-link="https://docs.gitlab.com/runner/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|GitLab Runner connects to this
@@ -287,12 +287,12 @@ export default {
         <application-row
           id="jupyter"
           :title="applications.jupyter.title"
-          title-link="https://jupyterhub.readthedocs.io/en/stable/"
           :status="applications.jupyter.status"
           :status-reason="applications.jupyter.statusReason"
           :request-status="applications.jupyter.requestStatus"
           :request-reason="applications.jupyter.requestReason"
           :install-application-request-params="{ hostname: applications.jupyter.hostname }"
+          title-link="https://jupyterhub.readthedocs.io/en/stable/"
         >
           <div slot="description">
             <p>
@@ -311,10 +311,10 @@ export default {
 
                 <div class="input-group">
                   <input
-                    type="text"
-                    class="form-control js-hostname"
                     v-model="applications.jupyter.hostname"
                     :readonly="jupyterInstalled"
+                    type="text"
+                    class="form-control js-hostname"
                   />
                   <span
                     class="input-group-btn"

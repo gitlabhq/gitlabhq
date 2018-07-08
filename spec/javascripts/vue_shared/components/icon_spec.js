@@ -44,7 +44,7 @@ describe('Sprite Icon Component', function () {
     });
 
     it('should properly render img css', function () {
-      const classList = icon.$el.classList;
+      const { classList } = icon.$el;
       const containsSizeClass = classList.contains('s32');
       const containsCustomClass = classList.contains('extraclasses');
       expect(containsSizeClass).toBe(true);

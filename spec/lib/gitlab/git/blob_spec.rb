@@ -15,7 +15,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
-  shared_examples 'finding blobs' do
+  describe '.find' do
     context 'nil path' do
       let(:blob) { Gitlab::Git::Blob.find(repository, SeedRepo::Commit::ID, nil) }
 
@@ -125,16 +125,6 @@ describe Gitlab::Git::Blob, seed_helper: true do
     end
   end
 
-  describe '.find' do
-    context 'when project_raw_show Gitaly feature is enabled' do
-      it_behaves_like 'finding blobs'
-    end
-
-    context 'when project_raw_show Gitaly feature is disabled', :skip_gitaly_mock do
-      it_behaves_like 'finding blobs'
-    end
-  end
-
   shared_examples 'finding blobs by ID' do
     let(:raw_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::RubyBlob::ID) }
     let(:bad_blob) { Gitlab::Git::Blob.raw(repository, SeedRepo::BigCommit::ID) }
@@ -149,7 +139,9 @@ describe Gitlab::Git::Blob, seed_helper: true do
       it 'limits the size of a large file' do
         blob_size = Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE + 1
         buffer = Array.new(blob_size, 0)
-        rugged_blob = Rugged::Blob.from_buffer(repository.rugged, buffer.join(''))
+        rugged_blob = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          Rugged::Blob.from_buffer(repository.rugged, buffer.join(''))
+        end
         blob = Gitlab::Git::Blob.raw(repository, rugged_blob)
 
         expect(blob.size).to eq(blob_size)
@@ -164,7 +156,9 @@ describe Gitlab::Git::Blob, seed_helper: true do
 
     context 'when sha references a tree' do
       it 'returns nil' do
-        tree = repository.rugged.rev_parse('master^{tree}')
+        tree = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          repository.rugged.rev_parse('master^{tree}')
+        end
 
         blob = Gitlab::Git::Blob.raw(repository, tree.oid)
 
@@ -278,7 +272,11 @@ describe Gitlab::Git::Blob, seed_helper: true do
   end
 
   describe '.batch_lfs_pointers' do
-    let(:tree_object) { repository.rugged.rev_parse('master^{tree}') }
+    let(:tree_object) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository.rugged.rev_parse('master^{tree}')
+      end
+    end
 
     let(:non_lfs_blob) do
       Gitlab::Git::Blob.find(

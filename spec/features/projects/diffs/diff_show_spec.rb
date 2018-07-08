@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff file viewer', :js do
+describe 'Diff file viewer', :js do
   let(:project) { create(:project, :public, :repository) }
 
   def visit_commit(sha, anchor: nil)
@@ -166,8 +166,7 @@ feature 'Diff file viewer', :js do
 
     context 'expanding the diff' do
       before do
-        # We can't use `click_link` because the "link" doesn't have an `href`.
-        find('a.click-to-expand').click
+        click_button 'Click to expand it.'
 
         wait_for_requests
       end

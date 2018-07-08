@@ -1,0 +1,5 @@
+---
+title: Allow querying a single merge request within a project
+merge_request: 19853
+author:
+type: changed

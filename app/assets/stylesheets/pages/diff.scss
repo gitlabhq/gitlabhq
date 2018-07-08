@@ -14,8 +14,8 @@
       background-color: $gray-normal;
     }
 
-    .diff-toggle-caret {
-      padding-right: 6px;
+    svg {
+      vertical-align: middle;
     }
   }
 
@@ -23,6 +23,10 @@
     background: $white-light;
     color: $gl-text-color;
     border-radius: 0 0 3px 3px;
+
+    .code {
+      padding: 0;
+    }
 
     .unfold {
       cursor: pointer;
@@ -61,6 +65,7 @@
 
       .diff-line-num {
         width: 50px;
+        position: relative;
 
         a {
           transition: none;
@@ -77,6 +82,12 @@
 
         span {
           white-space: pre-wrap;
+
+          &.context-cell {
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+          }
         }
 
         .line {
@@ -189,8 +200,22 @@
 
       img {
         border: 1px solid $white-light;
-        background-image: linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%),
-        linear-gradient(45deg, $border-color 25%, transparent 25%, transparent 75%, $border-color 75%, $border-color 100%);
+        background-image: linear-gradient(
+            45deg,
+            $border-color 25%,
+            transparent 25%,
+            transparent 75%,
+            $border-color 75%,
+            $border-color 100%
+          ),
+          linear-gradient(
+            45deg,
+            $border-color 25%,
+            transparent 25%,
+            transparent 75%,
+            $border-color 75%,
+            $border-color 100%
+          );
         background-size: 10px 10px;
         background-position: 0 0, 5px 5px;
         max-width: 100%;
@@ -395,6 +420,69 @@
   .line_content {
     white-space: pre-wrap;
   }
+
+  .diff-file-container {
+    .frame.deleted {
+      border: 0;
+      background-color: inherit;
+
+      .image_file img {
+        border: 1px solid $deleted;
+      }
+    }
+
+    .frame.added {
+      border: 0;
+      background-color: inherit;
+
+      .image_file img {
+        border: 1px solid $added;
+      }
+    }
+
+    .swipe.view,
+    .onion-skin.view {
+      .swipe-wrap {
+        top: 0;
+        right: 0;
+      }
+
+      .frame.deleted {
+        top: 0;
+        right: 0;
+      }
+
+      .swipe-bar {
+        top: 0;
+
+        .top-handle {
+          top: -14px;
+          left: -7px;
+        }
+
+        .bottom-handle {
+          bottom: -14px;
+          left: -7px;
+        }
+      }
+
+      .file-container {
+        display: inline-block;
+
+        .file-content {
+          padding: 0;
+
+          img {
+            max-width: none;
+          }
+        }
+      }
+    }
+
+    .onion-skin.view .controls {
+      bottom: -25px;
+    }
+  }
 }
 
 .file-content .diff-file {
@@ -412,6 +500,10 @@
 
 .files-changed {
   border-bottom: 0;
+}
+
+.merge-request-details .file-content.image_file img {
+  max-height: 50vh;
 }
 
 .diff-stats-summary-toggler {
@@ -536,7 +628,7 @@
   margin-right: 0;
   border-color: $white-light;
   cursor: pointer;
-  transition: all .1s ease-out;
+  transition: all 0.1s ease-out;
 
   @for $i from 1 through 4 {
     &:nth-child(#{$i}) {
@@ -563,7 +655,7 @@
   height: 24px;
   border-radius: 50%;
   padding: 0;
-  transition: transform .1s ease-out;
+  transition: transform 0.1s ease-out;
   z-index: 100;
 
   .collapse-icon {
@@ -600,21 +692,22 @@
   }
 
   @include media-breakpoint-up(sm) {
-    position: -webkit-sticky;
-    position: sticky;
     top: 24px;
     background-color: $white-light;
-    z-index: 190;
 
     &.diff-files-changed-merge-request {
-      top: 76px;
+      position: sticky;
+      top: 90px;
+      z-index: 200;
+      margin: $gl-padding 0;
+      padding: 0;
     }
 
     &.is-stuck {
       padding-top: 0;
       padding-bottom: 0;
+      border-top: 1px solid $white-dark;
       border-bottom: 1px solid $white-dark;
-      transform: translateY(16px);
 
       .diff-stats-additions-deletions-expanded,
       .inline-parallel-buttons {
@@ -644,6 +737,10 @@
   max-width: 560px;
   width: 100%;
   z-index: 150;
+  min-height: $dropdown-min-height;
+  max-height: $dropdown-max-height;
+  overflow-y: auto;
+  margin-bottom: 0;
 
   @include media-breakpoint-up(sm) {
     left: $gl-padding;
@@ -708,11 +805,35 @@
     width: 100%;
     height: 10px;
     background-color: $white-light;
-    background-image: linear-gradient(45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(225deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(135deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%),
-      linear-gradient(-45deg, transparent, transparent 73%, $diff-jagged-border-gradient-color 75%, $white-light 80%);
-    background-position: 5px 5px,0 5px,0 5px,5px 5px;
+    background-image: linear-gradient(
+        45deg,
+        transparent,
+        transparent 73%,
+        $diff-jagged-border-gradient-color 75%,
+        $white-light 80%
+      ),
+      linear-gradient(
+        225deg,
+        transparent,
+        transparent 73%,
+        $diff-jagged-border-gradient-color 75%,
+        $white-light 80%
+      ),
+      linear-gradient(
+        135deg,
+        transparent,
+        transparent 73%,
+        $diff-jagged-border-gradient-color 75%,
+        $white-light 80%
+      ),
+      linear-gradient(
+        -45deg,
+        transparent,
+        transparent 73%,
+        $diff-jagged-border-gradient-color 75%,
+        $white-light 80%
+      );
+    background-position: 5px 5px, 0 5px, 0 5px, 5px 5px;
     background-size: 10px 10px;
     background-repeat: repeat;
   }
@@ -750,11 +871,16 @@
 .frame.click-to-comment {
   position: relative;
   cursor: image-url('illustrations/image_comment_light_cursor.svg')
-    $image-comment-cursor-left-offset $image-comment-cursor-top-offset, auto;
+      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    auto;
 
   // Retina cursor
-  cursor: -webkit-image-set(image-url('illustrations/image_comment_light_cursor.svg') 1x, image-url('illustrations/image_comment_light_cursor@2x.svg') 2x)
-    $image-comment-cursor-left-offset $image-comment-cursor-top-offset, auto;
+  cursor: -webkit-image-set(
+        image-url('illustrations/image_comment_light_cursor.svg') 1x,
+        image-url('illustrations/image_comment_light_cursor@2x.svg') 2x
+      )
+      $image-comment-cursor-left-offset $image-comment-cursor-top-offset,
+    auto;
 
   .comment-indicator {
     position: absolute;
@@ -840,7 +966,7 @@
 
     .diff-notes-collapse,
     .note,
-    .discussion-reply-holder, {
+    .discussion-reply-holder {
       display: none;
     }
 

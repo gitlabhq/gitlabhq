@@ -134,7 +134,9 @@ describe 'gitlab:gitaly namespace rake task' do
 
       parsed_output = TomlRB.parse(expected_output)
       config.each do |name, params|
-        expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params.legacy_disk_path })
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          expect(parsed_output['storage']).to include({ 'name' => name, 'path' => params.legacy_disk_path })
+        end
       end
     end
   end

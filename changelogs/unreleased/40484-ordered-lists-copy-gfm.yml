@@ -1,0 +1,5 @@
+---
+title: Keep lists ordered when copying only list items
+merge_request: 18522
+author: Jan Beckmann
+type: fixed

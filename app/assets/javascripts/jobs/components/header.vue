@@ -74,13 +74,13 @@ export default {
       <ci-header
         v-if="shouldRenderContent"
         :status="status"
-        item-name="Job"
         :item-id="job.id"
         :time="headerTime"
         :user="job.user"
         :actions="actions"
         :has-sidebar-button="true"
         :should-render-triggered-label="jobStarted"
+        item-name="Job"
       />
       <loading-icon
         v-if="isLoading"

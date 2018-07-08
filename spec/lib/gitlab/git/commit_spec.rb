@@ -4,12 +4,15 @@ describe Gitlab::Git::Commit, seed_helper: true do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do
-    repository.rugged.lookup(SeedRepo::Commit::ID)
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged.lookup(SeedRepo::Commit::ID)
+    end
   end
-
   describe "Commit info" do
     before do
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
 
       @committer = {
         email: 'mike@smith.com',
@@ -58,7 +61,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
     after do
       # Erase the new commit so other tests get the original repo
-      repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      repo = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
+      end
       repo.references.update("refs/heads/master", SeedRepo::LastCommit::ID)
     end
   end
@@ -115,7 +120,9 @@ describe Gitlab::Git::Commit, seed_helper: true do
     describe '.find' do
       it "should return first head commit if without params" do
         expect(described_class.last(repository).id).to eq(
-          repository.rugged.head.target.oid
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            repository.rugged.head.target.oid
+          end
         )
       end
 
@@ -302,7 +309,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       it { is_expected.not_to include(SeedRepo::FirstCommit::ID) }
     end
 
-    shared_examples '.shas_with_signatures' do
+    describe '.shas_with_signatures' do
       let(:signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e 570e7b2abdd848b95f2f578043fc23bd6f6fd24d] }
       let(:unsigned_shas) { %w[19e2e9b4ef76b422ce1154af39a91323ccc57434 c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
       let(:first_signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
@@ -323,93 +330,65 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
-    describe '.shas_with_signatures with gitaly on' do
-      it_should_behave_like '.shas_with_signatures'
-    end
-
-    describe '.shas_with_signatures with gitaly disabled', :disable_gitaly do
-      it_should_behave_like '.shas_with_signatures'
-    end
-
     describe '.find_all' do
-      shared_examples 'finding all commits' do
-        it 'should return a return a collection of commits' do
-          commits = described_class.find_all(repository)
+      it 'should return a return a collection of commits' do
+        commits = described_class.find_all(repository)
 
-          expect(commits).to all( be_a_kind_of(described_class) )
+        expect(commits).to all( be_a_kind_of(described_class) )
+      end
+
+      context 'max_count' do
+        subject do
+          commits = described_class.find_all(
+            repository,
+            max_count: 50
+          )
+
+          commits.map(&:id)
         end
 
-        context 'max_count' do
-          subject do
-            commits = described_class.find_all(
-              repository,
-              max_count: 50
-            )
-
-            commits.map(&:id)
-          end
-
-          it 'has 34 elements' do
-            expect(subject.size).to eq(34)
-          end
-
-          it 'includes the expected commits' do
-            expect(subject).to include(
-              SeedRepo::Commit::ID,
-              SeedRepo::Commit::PARENT_ID,
-              SeedRepo::FirstCommit::ID
-            )
-          end
+        it 'has 34 elements' do
+          expect(subject.size).to eq(34)
         end
 
-        context 'ref + max_count + skip' do
-          subject do
-            commits = described_class.find_all(
-              repository,
-              ref: 'master',
-              max_count: 50,
-              skip: 1
-            )
-
-            commits.map(&:id)
-          end
-
-          it 'has 24 elements' do
-            expect(subject.size).to eq(24)
-          end
-
-          it 'includes the expected commits' do
-            expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
-            expect(subject).not_to include(SeedRepo::LastCommit::ID)
-          end
+        it 'includes the expected commits' do
+          expect(subject).to include(
+            SeedRepo::Commit::ID,
+            SeedRepo::Commit::PARENT_ID,
+            SeedRepo::FirstCommit::ID
+          )
         end
       end
 
-      context 'when Gitaly find_all_commits feature is enabled' do
-        it_behaves_like 'finding all commits'
+      context 'ref + max_count + skip' do
+        subject do
+          commits = described_class.find_all(
+            repository,
+            ref: 'master',
+            max_count: 50,
+            skip: 1
+          )
+
+          commits.map(&:id)
+        end
+
+        it 'has 24 elements' do
+          expect(subject.size).to eq(24)
+        end
+
+        it 'includes the expected commits' do
+          expect(subject).to include(SeedRepo::Commit::ID, SeedRepo::FirstCommit::ID)
+          expect(subject).not_to include(SeedRepo::LastCommit::ID)
+        end
       end
+    end
 
-      context 'when Gitaly find_all_commits feature is disabled', :skip_gitaly_mock do
-        it_behaves_like 'finding all commits'
+    describe '#batch_by_oid' do
+      context 'when oids is empty' do
+        it 'makes no Gitaly request' do
+          expect(Gitlab::GitalyClient).not_to receive(:call)
 
-        context 'while applying a sort order based on the `order` option' do
-          it "allows ordering topologically (no parents shown before their children)" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_TOPO)
-
-            described_class.find_all(repository, order: :topo)
-          end
-
-          it "allows ordering by date" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_DATE | Rugged::SORT_TOPO)
-
-            described_class.find_all(repository, order: :date)
-          end
-
-          it "applies no sorting by default" do
-            expect_any_instance_of(Rugged::Walker).to receive(:sorting).with(Rugged::SORT_NONE)
-
-            described_class.find_all(repository)
-          end
+          described_class.batch_by_oid(repository, [])
         end
       end
     end
@@ -481,7 +460,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     end
 
     describe '.extract_signature_lazily' do
-      shared_examples 'loading signatures in batch once' do
+      describe 'loading signatures in batch once' do
         it 'fetches signatures in batch once' do
           commit_ids = %w[0b4bc9a49b562e85de7cc9e834518ea6828729b9 4b4918a572fa86f9771e5ba40fbd48e1eb03e2c6]
           signatures = commit_ids.map do |commit_id|
@@ -499,27 +478,13 @@ describe Gitlab::Git::Commit, seed_helper: true do
 
       subject { described_class.extract_signature_lazily(repository, commit_id).itself }
 
-      context 'with Gitaly extract_commit_signature_in_batch feature enabled' do
-        it_behaves_like 'extracting commit signature'
-        it_behaves_like 'loading signatures in batch once'
-      end
-
-      context 'with Gitaly extract_commit_signature_in_batch feature disabled', :disable_gitaly do
-        it_behaves_like 'extracting commit signature'
-        it_behaves_like 'loading signatures in batch once'
-      end
+      it_behaves_like 'extracting commit signature'
     end
 
     describe '.extract_signature' do
       subject { described_class.extract_signature(repository, commit_id) }
 
-      context 'with gitaly' do
-        it_behaves_like 'extracting commit signature'
-      end
-
-      context 'without gitaly', :disable_gitaly do
-        it_behaves_like 'extracting commit signature'
-      end
+      it_behaves_like 'extracting commit signature'
     end
   end
 

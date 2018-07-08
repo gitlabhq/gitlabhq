@@ -39,8 +39,8 @@
 <template>
   <div :class="cssContainerClass">
     <div
-      class="top-area"
       v-if="!isLoading"
+      class="top-area"
     >
 
       <h4 class="js-folder-name environments-folder-name">
@@ -49,8 +49,8 @@
 
       <tabs
         :tabs="tabs"
-        @onChangeTab="onChangeTab"
         scope="environments"
+        @onChangeTab="onChangeTab"
       />
     </div>
 

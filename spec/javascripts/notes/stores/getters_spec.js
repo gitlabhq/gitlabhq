@@ -1,29 +1,54 @@
 import * as getters from '~/notes/stores/getters';
-import { notesDataMock, userDataMock, noteableDataMock, individualNote, collapseNotesMock } from '../mock_data';
+import {
+  notesDataMock,
+  userDataMock,
+  noteableDataMock,
+  individualNote,
+  collapseNotesMock,
+} from '../mock_data';
+
+const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
 
 describe('Getters Notes Store', () => {
   let state;
 
+  preloadFixtures(discussionWithTwoUnresolvedNotes);
+
   beforeEach(() => {
     state = {
-      notes: [individualNote],
+      discussions: [individualNote],
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
+      isNotesFetched: false,
 
       notesData: notesDataMock,
       userData: userDataMock,
       noteableData: noteableDataMock,
     };
   });
-  describe('notes', () => {
-    it('should return all notes in the store', () => {
-      expect(getters.notes(state)).toEqual([individualNote]);
+
+  describe('discussions', () => {
+    it('should return all discussions in the store', () => {
+      expect(getters.discussions(state)).toEqual([individualNote]);
+    });
+  });
+
+  describe('resolvedDiscussionsById', () => {
+    it('ignores unresolved system notes', () => {
+      const [discussion] = getJSONFixture(discussionWithTwoUnresolvedNotes);
+      discussion.notes[0].resolved = true;
+      discussion.notes[1].resolved = false;
+      state.discussions.push(discussion);
+
+      expect(getters.resolvedDiscussionsById(state)).toEqual({
+        [discussion.id]: discussion,
+      });
     });
   });
 
   describe('Collapsed notes', () => {
     const stateCollapsedNotes = {
-      notes: collapseNotesMock,
+      discussions: collapseNotesMock,
       targetNoteHash: 'hash',
       lastFetchedAt: 'timestamp',
 
@@ -33,7 +58,7 @@ describe('Getters Notes Store', () => {
     };
 
     it('should return a single system note when a description was updated multiple times', () => {
-      expect(getters.notes(stateCollapsedNotes).length).toEqual(1);
+      expect(getters.discussions(stateCollapsedNotes).length).toEqual(1);
     });
   });
 
@@ -76,6 +101,12 @@ describe('Getters Notes Store', () => {
   describe('openState', () => {
     it('should return the issue state', () => {
       expect(getters.openState(state)).toEqual(noteableDataMock.state);
+    });
+  });
+
+  describe('isNotesFetched', () => {
+    it('should return the state for the fetching notes', () => {
+      expect(getters.isNotesFetched(state)).toBeFalsy();
     });
   });
 });

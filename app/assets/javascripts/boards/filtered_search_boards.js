@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import FilteredSearchContainer from '../filtered_search/container';
 import FilteredSearchManager from '../filtered_search/filtered_search_manager';
 

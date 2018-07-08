@@ -39,15 +39,15 @@
 <template>
   <button
     v-tooltip
-    type="button"
-    class="toolbar-btn js-md"
-    tabindex="-1"
-    data-container="body"
     :data-md-tag="tag"
     :data-md-block="tagBlock"
     :data-md-prepend="prepend"
     :title="buttonTitle"
     :aria-label="buttonTitle"
+    type="button"
+    class="toolbar-btn js-md"
+    tabindex="-1"
+    data-container="body"
   >
     <icon
       :name="icon"

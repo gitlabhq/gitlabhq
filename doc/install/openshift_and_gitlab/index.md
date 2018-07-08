@@ -307,10 +307,10 @@ hostname** and use greater values for the volume sizes. If you don't provide a
 password for PostgreSQL, it will be created automatically.
 
 >**Note:**
-The `gitlab.apps.10.2.2.2.xip.io` hostname that is used by default will
+The `gitlab.apps.10.2.2.2.nip.io` hostname that is used by default will
 resolve to the host with IP `10.2.2.2` which is the IP our VM uses. It is a
 trick to have distinct FQDNs pointing to services that are on our local network.
-Read more on how this works in <http://xip.io>.
+Read more on how this works in <http://nip.io>.
 
 Now that we configured this, let's see how to manage and scale GitLab.
 
@@ -347,7 +347,7 @@ Navigate back to the **Overview** and hopefully all pods will be up and running.
 ![GitLab running](img/gitlab-running.png)
 
 Congratulations! You can now navigate to your new shinny GitLab instance by
-visiting <http://gitlab.apps.10.2.2.2.xip.io> where you will be asked to
+visiting <http://gitlab.apps.10.2.2.2.nip.io> where you will be asked to
 change the root user password. Login using `root` as username and providing the
 password you just set, and start using GitLab!
 

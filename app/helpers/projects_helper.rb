@@ -40,7 +40,8 @@ module ProjectsHelper
       name_tag_options[:class] << 'has-tooltip'
     end
 
-    content_tag(:span, sanitize(username), name_tag_options)
+    # NOTE: ActionView::Helpers::TagHelper#content_tag HTML escapes username
+    content_tag(:span, username, name_tag_options)
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -171,11 +172,13 @@ module ProjectsHelper
     key = [
       project.route.cache_key,
       project.cache_key,
+      project.last_activity_date,
       controller.controller_name,
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
-      'v2.5'
+      max_project_member_access_cache_key(project),
+      'v2.6'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -349,11 +352,15 @@ module ProjectsHelper
     if allowed_protocols_present?
       enabled_protocol
     else
-      if !current_user || current_user.require_ssh_key?
-        gitlab_config.protocol
-      else
-        'ssh'
-      end
+      extra_default_clone_protocol
+    end
+  end
+
+  def extra_default_clone_protocol
+    if !current_user || current_user.require_ssh_key?
+      gitlab_config.protocol
+    else
+      'ssh'
     end
   end
 
@@ -406,6 +413,7 @@ module ProjectsHelper
     @ref || @repository.try(:root_ref)
   end
 
+  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1235
   def sanitize_repo_path(project, message)
     return '' unless message.present?
 
@@ -498,5 +506,46 @@ module ProjectsHelper
     else
       "list-label"
     end
+  end
+
+  def sidebar_projects_paths
+    %w[
+      projects#show
+      projects#activity
+      cycle_analytics#show
+    ]
+  end
+
+  def sidebar_settings_paths
+    %w[
+      projects#edit
+      project_members#index
+      integrations#show
+      services#edit
+      repository#show
+      ci_cd#show
+      badges#index
+      pages#show
+    ]
+  end
+
+  def sidebar_repository_paths
+    %w[
+      tree
+      blob
+      blame
+      edit_tree
+      new_tree
+      find_file
+      commit
+      commits
+      compare
+      projects/repositories
+      tags
+      branches
+      releases
+      graphs
+      network
+    ]
   end
 end

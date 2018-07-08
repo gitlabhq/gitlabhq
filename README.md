@@ -35,7 +35,7 @@ We're hiring developers, support people, and production engineers all the time, 
 There are two editions of GitLab:
 
 - GitLab Community Edition (CE) is available freely under the MIT Expat license.
-- GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/products/#compare-options) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/products/).
+- GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/pricing/#compare-options) that are more useful for organizations with more than 100 users. To use EE and get official support please [become a subscriber](https://about.gitlab.com/pricing/).
 
 ## Website
 
@@ -119,6 +119,10 @@ All documentation can be found on [docs.gitlab.com/ce/](https://docs.gitlab.com/
 ## Getting help
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
+
+## Why?
+
+[Read here](https://about.gitlab.com/why/)
 
 ## Is it any good?
 

@@ -304,7 +304,6 @@ describe('Job', () => {
   describe('getBuildTrace', () => {
     it('should request build trace with state parameter', (done) => {
       spyOn(axios, 'get').and.callThrough();
-      // eslint-disable-next-line no-new
       job = new Job();
 
       setTimeout(() => {

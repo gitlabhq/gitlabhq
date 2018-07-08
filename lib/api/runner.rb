@@ -24,13 +24,13 @@ module API
         attributes =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            attributes.merge(is_shared: true, runner_type: :instance_type)
+            attributes.merge(runner_type: :instance_type)
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for the project
-            attributes.merge(is_shared: false, runner_type: :project_type, projects: [project])
+            attributes.merge(runner_type: :project_type, projects: [project])
           elsif group = Group.find_by(runners_token: params[:token])
             # Create a specific runner for the group
-            attributes.merge(is_shared: false, runner_type: :group_type, groups: [group])
+            attributes.merge(runner_type: :group_type, groups: [group])
           else
             forbidden!
           end
@@ -81,19 +81,30 @@ module API
         requires :token, type: String, desc: %q(Runner's authentication token)
         optional :last_update, type: String, desc: %q(Runner's queue last_update token)
         optional :info, type: Hash, desc: %q(Runner's metadata)
+        optional :session, type: Hash, desc: %q(Runner's session data) do
+          optional :url, type: String, desc: %q(Session's url)
+          optional :certificate, type: String, desc: %q(Session's certificate)
+          optional :authorization, type: String, desc: %q(Session's authorization)
+        end
       end
       post '/request' do
         authenticate_runner!
-        no_content! unless current_runner.active?
 
-        if current_runner.runner_queue_value_latest?(params[:last_update])
-          header 'X-GitLab-Last-Update', params[:last_update]
+        unless current_runner.active?
+          header 'X-GitLab-Last-Update', current_runner.ensure_runner_queue_value
+          break no_content!
+        end
+
+        runner_params = declared_params(include_missing: false)
+
+        if current_runner.runner_queue_value_latest?(runner_params[:last_update])
+          header 'X-GitLab-Last-Update', runner_params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
           break no_content!
         end
 
         new_update = current_runner.ensure_runner_queue_value
-        result = ::Ci::RegisterJobService.new(current_runner).execute
+        result = ::Ci::RegisterJobService.new(current_runner).execute(runner_params)
 
         if result.valid?
           if result.build

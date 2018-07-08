@@ -1,5 +1,0 @@
----
-title: Add a cronworker to rescue stale live traces
-merge_request: 18680
-author:
-type: performance

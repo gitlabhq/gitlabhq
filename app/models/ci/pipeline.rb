@@ -549,7 +549,10 @@ module Ci
 
     def persisted_variables
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
-        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s) if persisted?
+        break variables unless persisted?
+
+        variables.append(key: 'CI_PIPELINE_ID', value: id.to_s)
+        variables.append(key: 'CI_PIPELINE_URL', value: Gitlab::Routing.url_helpers.project_pipeline_url(project, self))
       end
     end
 
@@ -558,9 +561,9 @@ module Ci
         .append(key: 'CI_PIPELINE_IID', value: iid.to_s)
         .append(key: 'CI_CONFIG_PATH', value: ci_yaml_file_path)
         .append(key: 'CI_PIPELINE_SOURCE', value: source.to_s)
-        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message)
-        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title)
-        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description)
+        .append(key: 'CI_COMMIT_MESSAGE', value: git_commit_message.to_s)
+        .append(key: 'CI_COMMIT_TITLE', value: git_commit_full_title.to_s)
+        .append(key: 'CI_COMMIT_DESCRIPTION', value: git_commit_description.to_s)
     end
 
     def queued_duration

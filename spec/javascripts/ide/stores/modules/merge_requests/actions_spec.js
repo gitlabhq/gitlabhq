@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/merge_requests/state';
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
-import actions, {
+import {
   requestMergeRequests,
   receiveMergeRequestsError,
   receiveMergeRequestsSuccess,
@@ -41,27 +41,25 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    let flashSpy;
-
-    beforeEach(() => {
-      flashSpy = spyOnDependency(actions, 'flash');
-    });
-
     it('should should commit error', done => {
       testAction(
         receiveMergeRequestsError,
-        'created',
+        { type: 'created', search: '' },
         mockedState,
         [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR, payload: 'created' }],
-        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'Error loading merge requests.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: { type: 'created', search: '' },
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      receiveMergeRequestsError({ commit() {} }, 'created');
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 
@@ -199,28 +197,40 @@ describe('IDE merge requests actions', () => {
     });
 
     it('commits reset mutations and actions', done => {
-      testAction(
-        openMergeRequest,
-        { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
-        mockedState,
-        [
-          { type: 'CLEAR_PROJECTS' },
-          { type: 'SET_CURRENT_MERGE_REQUEST', payload: '1' },
-          { type: 'RESET_OPEN_FILES' },
-        ],
-        [
-          { type: 'pipelines/stopPipelinePolling' },
-          { type: 'pipelines/clearEtagPoll' },
-          { type: 'pipelines/resetLatestPipeline' },
-          { type: 'setCurrentBranchId', payload: '' },
-        ],
-        done,
-      );
+      const commit = jasmine.createSpy();
+      const dispatch = jasmine.createSpy().and.returnValue(Promise.resolve());
+      openMergeRequest({ commit, dispatch }, { projectPath: 'gitlab-org/gitlab-ce', id: '1' });
+
+      setTimeout(() => {
+        expect(commit.calls.argsFor(0)).toEqual(['CLEAR_PROJECTS', null, { root: true }]);
+        expect(commit.calls.argsFor(1)).toEqual(['SET_CURRENT_MERGE_REQUEST', '1', { root: true }]);
+        expect(commit.calls.argsFor(2)).toEqual(['RESET_OPEN_FILES', null, { root: true }]);
+
+        expect(dispatch.calls.argsFor(0)).toEqual(['setCurrentBranchId', '', { root: true }]);
+        expect(dispatch.calls.argsFor(1)).toEqual([
+          'pipelines/stopPipelinePolling',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(2)).toEqual(['setRightPane', null, { root: true }]);
+        expect(dispatch.calls.argsFor(3)).toEqual([
+          'pipelines/resetLatestPipeline',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(4)).toEqual([
+          'pipelines/clearEtagPoll',
+          null,
+          { root: true },
+        ]);
+
+        done();
+      });
     });
 
     it('pushes new route', () => {
       openMergeRequest(
-        { commit() {}, dispatch() {} },
+        { commit() {}, dispatch: () => Promise.resolve() },
         { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
       );
 

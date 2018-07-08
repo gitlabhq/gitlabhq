@@ -96,26 +96,26 @@ export default {
     <div class="board-card">
       <form @submit="submit($event)">
         <div
-          class="flash-container"
           v-if="error"
+          class="flash-container"
         >
           <div class="flash-alert">
             An error occurred. Please try again.
           </div>
         </div>
         <label
-          class="label-light"
           :for="list.id + '-title'"
+          class="label-light"
         >
           Title
         </label>
         <input
+          ref="input"
+          v-model="title"
+          :id="list.id + '-title'"
           class="form-control"
           type="text"
-          v-model="title"
-          ref="input"
           autocomplete="off"
-          :id="list.id + '-title'"
         />
         <project-select
           v-if="groupId"
@@ -123,10 +123,10 @@ export default {
         />
         <div class="clearfix prepend-top-10">
           <button
+            ref="submit-button"
+            :disabled="disabled"
             class="btn btn-success float-left"
             type="submit"
-            :disabled="disabled"
-            ref="submit-button"
           >
             Submit issue
           </button>

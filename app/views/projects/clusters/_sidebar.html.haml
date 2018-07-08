@@ -1,7 +1,9 @@
+- clusters_help_url = help_page_path('user/project/clusters/index.md')
+- help_link_start = "<a href=\"%{url}\" target=\"_blank\" rel=\"noopener noreferrer\">".html_safe
+- help_link_end = '</a>'.html_safe
 %h4.prepend-top-0
   = s_('ClusterIntegration|Kubernetes cluster integration')
 %p
   = s_('ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way.')
 %p
-  - link = link_to(_('Kubernetes'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
-  = s_('ClusterIntegration|Learn more about %{link_to_documentation}').html_safe % { link_to_documentation: link }
+  = s_('ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: clusters_help_url }, help_link_end: help_link_end }

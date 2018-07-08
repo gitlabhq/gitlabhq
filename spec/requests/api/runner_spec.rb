@@ -351,11 +351,13 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
       context 'when valid token is provided' do
         context 'when Runner is not active' do
           let(:runner) { create(:ci_runner, :inactive) }
+          let(:update_value) { runner.ensure_runner_queue_value }
 
           it 'returns 204 error' do
             request_job
 
-            expect(response).to have_gitlab_http_status 204
+            expect(response).to have_gitlab_http_status(204)
+            expect(response.header['X-GitLab-Last-Update']).to eq(update_value)
           end
         end
 
@@ -849,6 +851,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
         it 'does not update job status and job trace' do
           update_job(state: 'success', trace: 'BUILD TRACE UPDATED')
 
+          job.reload
           expect(response).to have_gitlab_http_status(403)
           expect(response.header['Job-Status']).to eq 'failed'
           expect(job.trace.raw).to eq 'Job failed'

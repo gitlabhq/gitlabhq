@@ -23,9 +23,13 @@ module API
       get ':id/export/download' do
         path = user_project.export_project_path
 
-        render_api_error!('404 Not found or has expired', 404) unless path
-
-        present_disk_file!(path, File.basename(path), 'application/gzip')
+        if path
+          present_disk_file!(path, File.basename(path), 'application/gzip')
+        elsif user_project.export_project_object_exists?
+          present_carrierwave_file!(user_project.import_export_upload.export_file)
+        else
+          render_api_error!('404 Not found or has expired', 404)
+        end
       end
 
       desc 'Start export' do

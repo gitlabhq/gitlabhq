@@ -1,15 +1,29 @@
 # Job traces (logs)
 
-By default, all job traces (logs) are saved to `/var/opt/gitlab/gitlab-ci/builds`
-and `/home/git/gitlab/builds` for Omnibus packages and installations from source
-respectively. The job logs are organized by year and month (for example, `2017_03`),
-and then by project ID.
+Job traces are sent by GitLab Runner while it's processing a job. You can see
+traces in job pages, pipelines, email notifications, etc.
 
 There isn't a way to automatically expire old job logs, but it's safe to remove
 them if they're taking up too much space. If you remove the logs manually, the
 job output in the UI will be empty.
 
-## Changing the job traces location
+## Data flow
+
+In general, there are two states in job traces: "live trace" and "archived trace".
+In the following table you can see the phases a trace goes through.
+
+| Phase          | State          | Condition                 | Data flow                                       |  Stored path |
+| -----          | -----          | ---------                 | ---------                                       |  ----------- |
+| 1: patching    | Live trace     | When a job is running     | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+| 2: overwriting | Live trace     | When a job is finished    | GitLab Runner => Unicorn => file storage        |`#{ROOT_PATH}/builds/#{YYYY_mm}/#{project_id}/#{job_id}.log`|
+| 3: archiving   | Archived trace | After a job is finished   | Sidekiq moves live trace to artifacts folder    |`#{ROOT_PATH}/shared/artifacts/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+| 4: uploading   | Archived trace | After a trace is archived | Sidekiq moves archived trace to [object storage](#uploading-traces-to-object-storage) (if configured)  |`#{bucket_name}/#{disk_hash}/#{YYYY_mm_dd}/#{job_id}/#{job_artifact_id}/trace.log`|
+
+The `ROOT_PATH` varies per your environment. For Omnibus GitLab it
+would be `/var/opt/gitlab/gitlab-ci`, whereas for installations from source
+it would be `/home/git/gitlab`.
+
+## Changing the job traces local location
 
 To change the location where the job logs will be stored, follow the steps below.
 
@@ -41,97 +55,110 @@ To change the location where the job logs will be stored, follow the steps below
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 
+## Uploading traces to object storage
+
+An archived trace is considered as a [job artifact](job_artifacts.md).
+Therefore, when you [set up an object storage](job_artifacts.md#object-storage-settings),
+job traces are automatically migrated to it along with the other job artifacts.
+
+See [Data flow](#data-flow) to learn about the process.
+
 ## New live trace architecture
 
 > [Introduced][ce-18169] in GitLab 10.4.
+> [Announced as General availability][ce-46097] in GitLab 11.0.
 
-> **Notes**:
-- This feature is still Beta, which could impact GitLab.com/on-premises instances, and in the worst case scenario, traces will be lost.
-- This feature is still being discussed in [an issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46097) for the performance improvements.
-- This feature is off by default. Please check below how to enable/disable this featrue.
+NOTE: **Note:**
+This feature is off by default. Check below how to [enable/disable](#enabling-live-trace) it.
 
-**What is "live trace"?**
+By combining the process with object storage settings, we can completely bypass
+the local file storage. This is a useful option if GitLab is installed as
+cloud-native, for example on Kubernetes.
 
-Job trace that is sent by runner while jobs are running. You can see live trace in job pages UI.
-The live traces are archived once job finishes.
+The data flow is the same as described in the [data flow section](#data-flow)
+with one change: _the stored path of the first two phases is different_. This new live
+trace architecture stores chunks of traces in Redis and a persistent store (object storage or database) instead of
+file storage. Redis is used as first-class storage, and it stores up-to 128KB
+of data. Once the full chunk is sent, it is flushed a persistent store, either object storage(temporary directory) or database.
+After a while, the data in Redis and a persitent store will be archived to [object storage](#uploading-traces-to-object-storage).
 
-**What is new architecture?**
+The data are stored in the following Redis namespace: `Gitlab::Redis::SharedState`.
 
-So far, when GitLab Runner sends a job trace to GitLab-Rails, traces have been saved to file storage as text files.
-This was a problem for [Cloud Native-compatible GitLab application](https://gitlab.com/gitlab-com/migration/issues/23) where GitLab had to rely on File Storage.
+Here is the detailed data flow:
 
-This new live trace architecture stores chunks of traces in Redis and database instead of file storage.
-Redis is used as first-class storage, and it stores up-to 128kB. Once the full chunk is sent it will be flushed to database. Afterwhile, the data in Redis and database will be archived to ObjectStorage.
+1. GitLab Runner picks a job from GitLab
+1. GitLab Runner sends a piece of trace to GitLab
+1. GitLab appends the data to Redis
+1. Once the data in Redis reach 128KB, the data is flushed to a persistent store (object storage or the database).
+1. The above steps are repeated until the job is finished.
+1. Once the job is finished, GitLab schedules a Sidekiq worker to archive the trace.
+1. The Sidekiq worker archives the trace to object storage and cleans up the trace
+   in Redis and a persistent store (object storage or the database).
 
-Here is the detailed data flow.
+### Enabling live trace
 
-1. GitLab Runner picks a job from GitLab-Rails
-1. GitLab Runner sends a piece of trace to GitLab-Rails
-1. GitLab-Rails appends the data to Redis
-1. If the data in Redis is fulfilled 128kB, the data is flushed to Database.
-1. 2.~4. is continued until the job is finished
-1. Once the job is finished, GitLab-Rails schedules a sidekiq worker to archive the trace
-1. The sidekiq worker archives the trace to Object Storage, and cleanup the trace in Redis and Database
+The following commands are to be issues in a Rails console:
 
-**How to check if it's on or off?**
+```sh
+# Omnibus GitLab
+gitlab-rails console
+
+# Installation from source
+cd /home/git/gitlab
+sudo -u git -H bin/rails console RAILS_ENV=production
+```
+
+**To check if live trace is enabled:**
 
 ```ruby
 Feature.enabled?('ci_enable_live_trace')
 ```
 
-**How to enable?**
+**To enable live trace:**
 
 ```ruby
 Feature.enable('ci_enable_live_trace')
 ```
 
->**Note:**
-The transition period will be handled gracefully. Upcoming traces will be generated with the new architecture, and on-going live traces will stay with the legacy architecture (i.e. on-going live traces won't be re-generated forcibly with the new architecture).
+NOTE: **Note:**
+The transition period will be handled gracefully. Upcoming traces will be
+generated with the new architecture, and on-going live traces will stay with the
+legacy architecture, which means that on-going live traces won't be forcibly
+re-generated with the new architecture.
 
-**How to disable?**
+**To disable live trace:**
 
 ```ruby
 Feature.disable('ci_enable_live_trace')
 ```
 
->**Note:**
-The transition period will be handled gracefully. Upcoming traces will be generated with the legacy architecture, and on-going live traces will stay with the new architecture (i.e. on-going live traces won't be re-generated forcibly with the legacy architecture).
+NOTE: **Note:**
+The transition period will be handled gracefully. Upcoming traces will be generated
+with the legacy architecture, and on-going live traces will stay with the new
+architecture, which means that on-going live traces won't be forcibly re-generated
+with the legacy architecture.
 
-**Redis namespace:**
+### Potential implications
 
-`Gitlab::Redis::SharedState`
+In some cases, having data stored on Redis could incur data loss:
 
-**Potential impact:**
+1. **Case 1: When all data in Redis are accidentally flushed**
+  - On going live traces could be recovered by re-sending traces (this is
+    supported by all versions of the GitLab Runner).
+  - Finished jobs which have not archived live traces will lose the last part
+    (~128KB) of trace data.
 
-- This feature could incur data loss:
-  - Case 1: When all data in Redis are accidentally flushed.
-    - On-going live traces could be recovered by re-sending traces (This is supported by all versions of GitLab Runner)
-    - Finished jobs which has not archived live traces will lose the last part (~128kB) of trace data.
-  - Case 2: When sidekiq workers failed to archive (e.g. There was a bug that prevents archiving process, Sidekiq inconsistancy, etc):
-    - Currently all trace data in Redis will be deleted after one week. If the sidekiq workers can't finish by the expiry date, the part of trace data will be lost.
-- This feature could consume all memory on Redis instance. If the number of jobs is 1000, 128MB (128kB * 1000) is consumed.
-- This feature could pressure Database replication lag. `INSERT` are generated to indicate that we have trace chunk. `UPDATE` with 128kB of data is issued once we receive multiple chunks.
-- and so on
+1. **Case 2: When Sidekiq workers fail to archive (e.g., there was a bug that
+   prevents archiving process, Sidekiq inconsistency, etc.)**
+  - Currently all trace data in Redis will be deleted after one week. If the
+    Sidekiq workers can't finish by the expiry date, the part of trace data will be lost.
 
-**How to test?**
+Another issue that might arise is that it could consume all memory on the Redis
+instance. If the number of jobs is 1000, 128MB (128KB * 1000) is consumed.
 
-We're currently evaluating this feature on dev.gitalb.org or staging.gitlab.com to verify this features. Here is the list of tests/measurements.
+Also, it could pressure the database replication lag. `INSERT`s are generated to
+indicate that we have trace chunk. `UPDATE`s with 128KB of data is issued once we
+receive multiple chunks.
 
-- Features:
-  - Live traces should be visible on job pages
-  - Archived traces should be visible on job pages
-  - Live traces should be archived to Object storage
-  - Live traces should be cleaned up after archived
-  - etc
-- Performance:
-  - Schedule 1000~10000 jobs and let GitLab-runners process concurrently. Measure memoery presssure, IO load, etc.
-  - etc
-- Failover:
-  - Simulate Redis outage
-  - etc
-
-**How to verify the correctnesss?**
-
-- TBD
-
-[ce-44935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
+[ce-18169]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18169
+[ce-46097]: https://gitlab.com/gitlab-org/gitlab-ce/issues/46097

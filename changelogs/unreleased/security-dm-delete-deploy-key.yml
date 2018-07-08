@@ -1,5 +1,0 @@
----
-title: Fix API to remove deploy key from project instead of deleting it entirely
-merge_request:
-author:
-type: security

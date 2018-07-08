@@ -1,0 +1,5 @@
+---
+title: Move Gitaly branch/tag/ref RPC's to opt-out
+merge_request: 19644
+author:
+type: other

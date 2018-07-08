@@ -10,9 +10,12 @@ module QA
           element :operations_kubernetes_link, "title: _('Kubernetes')"
           element :issues_link, /link_to.*shortcuts-issues/
           element :issues_link_text, "Issues"
+          element :merge_requests_link, /link_to.*shortcuts-merge_requests/
+          element :merge_requests_link_text, "Merge Requests"
           element :top_level_items, '.sidebar-top-level-items'
           element :operations_section, "class: 'shortcuts-operations'"
           element :activity_link, "title: 'Activity'"
+          element :wiki_link_text, "Wiki"
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
@@ -58,6 +61,18 @@ module QA
         def click_issues
           within_sidebar do
             click_link('Issues')
+          end
+        end
+
+        def click_merge_requests
+          within_sidebar do
+            click_link('Merge Requests')
+          end
+        end
+
+        def click_wiki
+          within_sidebar do
+            click_link('Wiki')
           end
         end
 

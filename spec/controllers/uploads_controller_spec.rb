@@ -562,7 +562,7 @@ describe UploadsController do
     end
 
     context 'original filename or a version filename must match' do
-      let!(:appearance) { create :appearance, favicon: fixture_file_upload(Rails.root.join('spec/fixtures/dk.png'), 'image/png') }
+      let!(:appearance) { create :appearance, favicon: fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
 
       context 'has a valid filename on the original file' do
         it 'successfully returns the file' do
@@ -576,23 +576,6 @@ describe UploadsController do
       context 'has an invalid filename on the original file' do
         it 'returns a 404' do
           get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'bogus.png'
-
-          expect(response).to have_gitlab_http_status(404)
-        end
-      end
-
-      context 'has a valid filename on the version file' do
-        it 'successfully returns the file' do
-          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_main_dk.png'
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.header['Content-Disposition']).to end_with 'filename="favicon_main_dk.png"'
-        end
-      end
-
-      context 'has an invalid filename on the version file' do
-        it 'returns a 404' do
-          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_bogusversion_dk.png'
 
           expect(response).to have_gitlab_http_status(404)
         end

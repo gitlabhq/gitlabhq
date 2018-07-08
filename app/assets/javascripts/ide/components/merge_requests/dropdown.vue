@@ -42,8 +42,8 @@ export default {
           </span>
         </template>
         <list
-          type="created"
           :empty-text="__('You have not created any merge requests')"
+          type="created"
         />
       </tab>
       <tab>
@@ -54,8 +54,8 @@ export default {
           </span>
         </template>
         <list
-          type="assigned"
           :empty-text="__('You do not have any assigned merge requests')"
+          type="assigned"
         />
       </tab>
     </tabs>

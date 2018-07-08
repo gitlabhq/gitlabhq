@@ -1,6 +1,6 @@
 module QA
-  feature 'creates a merge request', :core do
-    scenario 'user creates a new merge request'  do
+  describe 'creates a merge request', :core do
+    it 'user creates a new merge request'  do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -11,7 +11,7 @@ module QA
 
       expect(page).to have_content('This is a merge request')
       expect(page).to have_content('Great feature')
-      expect(page).to have_content(/Opened [\w\s]+ a minute ago/)
+      expect(page).to have_content(/Opened [\w\s]+ ago/)
     end
   end
 end

@@ -86,8 +86,8 @@
   <div class="modal-open">
     <div
       :id="id"
-      class="modal"
       :class="id ? '' : 'd-block'"
+      class="modal"
       role="dialog"
       tabindex="-1"
     >
@@ -105,9 +105,9 @@
               <button
                 type="button"
                 class="close float-right"
-                @click="emitCancel($event)"
                 data-dismiss="modal"
                 aria-label="Close"
+                @click="emitCancel($event)"
               >
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -115,22 +115,22 @@
           </div>
           <div class="modal-body">
             <slot
-              name="body"
               :text="text"
+              name="body"
             >
               <p>{{ text }}</p>
             </slot>
           </div>
           <div
-            class="modal-footer"
             v-if="!hideFooter"
+            class="modal-footer"
           >
             <button
+              :class="btnCancelKindClass"
               type="button"
               class="btn"
-              :class="btnCancelKindClass"
-              @click="emitCancel($event)"
               data-dismiss="modal"
+              @click="emitCancel($event)"
             >
               {{ closeButtonLabel }}
             </button>
@@ -151,12 +151,12 @@
 
             <button
               v-if="primaryButtonLabel"
-              type="button"
-              class="btn js-primary-button"
               :disabled="submitDisabled"
               :class="btnKindClass"
-              @click="emitSubmit($event)"
+              type="button"
+              class="btn js-primary-button"
               data-dismiss="modal"
+              @click="emitSubmit($event)"
             >
               {{ primaryButtonLabel }}
             </button>

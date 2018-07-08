@@ -25,35 +25,51 @@ export default {
 <template>
   <div
     v-once
-    class="multi-file-discard-btn"
+    class="multi-file-discard-btn dropdown"
   >
     <button
       v-tooltip
-      type="button"
-      class="btn btn-blank append-right-5"
       :aria-label="__('Stage changes')"
       :title="__('Stage changes')"
+      type="button"
+      class="btn btn-blank append-right-5 d-flex align-items-center"
       data-container="body"
+      data-boundary="viewport"
+      data-placement="bottom"
       @click.stop="stageChange(path)"
     >
       <icon
-        name="mobile-issue-close"
         :size="12"
+        name="mobile-issue-close"
       />
     </button>
     <button
       v-tooltip
+      :title="__('More actions')"
       type="button"
-      class="btn btn-blank"
-      :aria-label="__('Discard changes')"
-      :title="__('Discard changes')"
+      class="btn btn-blank d-flex align-items-center"
       data-container="body"
-      @click.stop="discardFileChanges(path)"
+      data-boundary="viewport"
+      data-placement="bottom"
+      data-toggle="dropdown"
+      data-display="static"
     >
       <icon
-        name="remove"
         :size="12"
+        name="more"
       />
     </button>
+    <div class="dropdown-menu dropdown-menu-right">
+      <ul>
+        <li>
+          <button
+            type="button"
+            @click.stop="discardFileChanges(path)"
+          >
+            {{ __('Discard changes') }}
+          </button>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

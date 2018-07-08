@@ -58,8 +58,13 @@ table {
         display: none;
       }
 
+      &,
+      tbody,
       td {
         display: block;
+      }
+
+      td {
         color: $gl-text-color-secondary;
       }
 

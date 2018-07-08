@@ -55,7 +55,7 @@
       },
       getItems() {
         const total = this.pageInfo.totalPages;
-        const page = this.pageInfo.page;
+        const { page } = this.pageInfo;
         const items = [];
 
         if (page > 1) {
@@ -153,8 +153,8 @@
         class="page-item"
       >
         <a
-          @click.prevent="changePage(item.title, item.disabled)"
           class="page-link"
+          @click.prevent="changePage(item.title, item.disabled)"
         >
           {{ item.title }}
         </a>

@@ -1,6 +1,7 @@
 @import 'framework/variables';
 @import 'framework/mixins';
-@import '../../../node_modules/bootstrap/scss/bootstrap';
+
+@import 'bootstrap';
 @import 'bootstrap_migration';
 @import 'framework/layout';
 

@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-mixed-operators, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
+/* eslint-disable func-names, no-var, wrap-iife, quotes, comma-dangle, one-var, one-var-declaration-per-line, no-loop-func, no-floating-decimal, consistent-return, no-unused-vars, prefer-template, prefer-arrow-callback, camelcase, max-len */
 
 import $ from 'jquery';
 import { __ } from '../locale';
@@ -101,8 +101,8 @@ export default (function() {
   };
 
   BranchGraph.prototype.buildGraph = function() {
-    var cuday, cumonth, day, j, len, mm, r, ref;
-    r = this.r;
+    var cuday, cumonth, day, j, len, mm, ref;
+    const { r } = this;
     cuday = 0;
     cumonth = "";
     r.rect(0, 0, 40, this.barHeight).attr({
@@ -112,7 +112,8 @@ export default (function() {
       fill: "#444"
     });
     ref = this.days;
-    for (mm = j = 0, len = ref.length; j < len; mm = (j += 1)) {
+
+    for (mm = 0, len = ref.length; mm < len; mm += 1) {
       day = ref[mm];
       if (cuday !== day[0] || cumonth !== day[1]) {
         // Dates
@@ -120,7 +121,7 @@ export default (function() {
           font: "12px Monaco, monospace",
           fill: "#BBB"
         });
-        cuday = day[0];
+        [cuday] = day;
       }
       if (cumonth !== day[1]) {
         // Months
@@ -128,6 +129,8 @@ export default (function() {
           font: "12px Monaco, monospace",
           fill: "#EEE"
         });
+
+        // eslint-disable-next-line prefer-destructuring
         cumonth = day[1];
       }
     }
@@ -168,8 +171,8 @@ export default (function() {
   };
 
   BranchGraph.prototype.bindEvents = function() {
-    var element;
-    element = this.element;
+    const { element } = this;
+
     return $(element).scroll((function(_this) {
       return function(event) {
         return _this.renderPartialGraph();
@@ -206,11 +209,13 @@ export default (function() {
   };
 
   BranchGraph.prototype.appendLabel = function(x, y, commit) {
-    var label, r, rect, shortrefs, text, textbox, triangle;
+    var label, rect, shortrefs, text, textbox, triangle;
+
     if (!commit.refs) {
       return;
     }
-    r = this.r;
+
+    const { r } = this;
     shortrefs = commit.refs;
     // Truncate if longer than 15 chars
     if (shortrefs.length > 17) {
@@ -241,11 +246,8 @@ export default (function() {
   };
 
   BranchGraph.prototype.appendAnchor = function(x, y, commit) {
-    var anchor, options, r, top;
-    r = this.r;
-    top = this.top;
-    options = this.options;
-    anchor = r.circle(x, y, 10).attr({
+    const { r, top, options } = this;
+    const anchor = r.circle(x, y, 10).attr({
       fill: "#000",
       opacity: 0,
       cursor: "pointer"
@@ -261,14 +263,15 @@ export default (function() {
   };
 
   BranchGraph.prototype.drawDot = function(x, y, commit) {
-    var avatar_box_x, avatar_box_y, r;
-    r = this.r;
+    const { r } = this;
     r.circle(x, y, 3).attr({
       fill: this.colors[commit.space],
       stroke: "none"
     });
-    avatar_box_x = this.offsetX + this.unitSpace * this.mspace + 10;
-    avatar_box_y = y - 10;
+
+    const avatar_box_x = this.offsetX + this.unitSpace * this.mspace + 10;
+    const avatar_box_y = y - 10;
+
     r.rect(avatar_box_x, avatar_box_y, 20, 20).attr({
       stroke: this.colors[commit.space],
       "stroke-width": 2
@@ -281,11 +284,12 @@ export default (function() {
   };
 
   BranchGraph.prototype.drawLines = function(x, y, commit) {
-    var arrow, color, i, j, len, offset, parent, parentCommit, parentX1, parentX2, parentY, r, ref, results, route;
-    r = this.r;
-    ref = commit.parents;
-    results = [];
-    for (i = j = 0, len = ref.length; j < len; i = (j += 1)) {
+    var arrow, color, i, len, offset, parent, parentCommit, parentX1, parentX2, parentY, route;
+    const { r } = this;
+    const ref = commit.parents;
+    const results = [];
+
+    for (i = 0, len = ref.length; i < len; i += 1) {
       parent = ref[i];
       parentCommit = this.preparedCommits[parent[0]];
       parentY = this.offsetY + this.unitTime * parentCommit.time;
@@ -329,11 +333,10 @@ export default (function() {
   };
 
   BranchGraph.prototype.markCommit = function(commit) {
-    var r, x, y;
     if (commit.id === this.options.commit_id) {
-      r = this.r;
-      x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
-      y = this.offsetY + this.unitTime * commit.time;
+      const { r } = this;
+      const x = this.offsetX + this.unitSpace * (this.mspace - commit.space);
+      const y = this.offsetY + this.unitTime * commit.time;
       r.path(["M", x + 5, y, "L", x + 15, y + 4, "L", x + 15, y - 4, "Z"]).attr({
         fill: "#000",
         "fill-opacity": .5,

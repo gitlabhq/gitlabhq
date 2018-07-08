@@ -10,10 +10,6 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 956
-Capybara/FeatureMethods:
-  Enabled: false
-
 # Offense count: 23
 FactoryBot/DynamicAttributeDefinedStatically:
   Exclude:
@@ -487,7 +483,7 @@ Style/EmptyLiteral:
     - 'lib/gitlab/fogbugz_import/importer.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/gitaly_client.rb'
-    - 'scripts/trigger-build-omnibus'
+    - 'scripts/trigger-build'
     - 'spec/features/merge_requests/versions_spec.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/lib/gitlab/request_context_spec.rb'

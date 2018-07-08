@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
+describe 'Using U2F (Universal 2nd Factor) Devices for Authentication', :js do
   def manage_two_factor_authentication
     click_on 'Manage two-factor authentication'
     expect(page).to have_content("Setup new U2F device")

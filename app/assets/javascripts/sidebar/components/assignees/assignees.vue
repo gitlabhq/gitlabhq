@@ -125,13 +125,13 @@ export default {
 <template>
   <div>
     <div
-      class="sidebar-collapsed-icon sidebar-collapsed-user"
-      :class="{ 'multiple-users': hasMoreThanOneAssignee }"
       v-tooltip
+      :class="{ 'multiple-users': hasMoreThanOneAssignee }"
+      :title="collapsedTooltipTitle"
+      class="sidebar-collapsed-icon sidebar-collapsed-user"
       data-container="body"
       data-placement="left"
       data-boundary="viewport"
-      :title="collapsedTooltipTitle"
     >
       <i
         v-if="hasNoUsers"
@@ -140,17 +140,17 @@ export default {
       >
       </i>
       <button
-        type="button"
-        class="btn-link"
         v-for="(user, index) in users"
         v-if="shouldRenderCollapsedAssignee(index)"
         :key="user.id"
+        type="button"
+        class="btn-link"
       >
         <img
-          width="24"
-          class="avatar avatar-inline s24"
           :alt="assigneeAlt(user)"
           :src="avatarUrl(user)"
+          width="24"
+          class="avatar avatar-inline s24"
         />
         <span class="author">
           {{ user.name }}
@@ -186,14 +186,14 @@ export default {
       </template>
       <template v-else-if="hasOneUser">
         <a
-          class="author_link bold"
           :href="assigneeUrl(firstUser)"
+          class="author_link bold"
         >
           <img
-            width="32"
-            class="avatar avatar-inline s32"
             :alt="assigneeAlt(firstUser)"
             :src="avatarUrl(firstUser)"
+            width="32"
+            class="avatar avatar-inline s32"
           />
           <span class="author">
             {{ firstUser.name }}
@@ -206,23 +206,23 @@ export default {
       <template v-else>
         <div class="user-list">
           <div
-            class="user-item"
             v-for="(user, index) in users"
             v-if="renderAssignee(index)"
             :key="user.id"
+            class="user-item"
           >
             <a
+              :href="assigneeUrl(user)"
+              :data-title="user.name"
               class="user-link has-tooltip"
               data-container="body"
               data-placement="bottom"
-              :href="assigneeUrl(user)"
-              :data-title="user.name"
             >
               <img
-                width="32"
-                class="avatar avatar-inline s32"
                 :alt="assigneeAlt(user)"
                 :src="avatarUrl(user)"
+                width="32"
+                class="avatar avatar-inline s32"
               />
             </a>
           </div>

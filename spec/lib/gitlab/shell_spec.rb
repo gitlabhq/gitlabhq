@@ -499,13 +499,15 @@ describe Gitlab::Shell do
       end
 
       it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { true }
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fork_repository)
+          .with(repository.raw_repository) { :gitaly_response_object }
 
         is_expected.to be_truthy
       end
 
       it 'return false when the command fails' do
-        expect(gitlab_projects).to receive(:fork_repository).with('nfs-file05', 'fork/path.git') { false }
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:fork_repository)
+          .with(repository.raw_repository) { raise GRPC::BadStatus, 'bla' }
 
         is_expected.to be_falsy
       end
@@ -647,7 +649,7 @@ describe Gitlab::Shell do
 
         subject do
           gitlab_shell.fetch_remote(repository.raw_repository, remote_name,
-            forced: true, no_tags: true, ssh_auth: ssh_auth)
+                                    forced: true, no_tags: true, ssh_auth: ssh_auth)
         end
 
         it 'passes the correct params to the gitaly service' do
@@ -662,21 +664,43 @@ describe Gitlab::Shell do
     describe '#import_repository' do
       let(:import_url) { 'https://gitlab.com/gitlab-org/gitlab-ce.git' }
 
-      it 'returns true when the command succeeds' do
-        expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
+      context 'with gitaly' do
+        it 'returns true when the command succeeds' do
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository).with(import_url)
 
-        result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+          result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
 
-        expect(result).to be_truthy
+          expect(result).to be_truthy
+        end
+
+        it 'raises an exception when the command fails' do
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
+            .with(import_url) { raise GRPC::BadStatus, 'bla' }
+          expect_any_instance_of(Gitlab::Shell::GitalyGitlabProjects).to receive(:output) { 'error'}
+
+          expect do
+            gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+          end.to raise_error(Gitlab::Shell::Error, "error")
+        end
       end
 
-      it 'raises an exception when the command fails' do
-        allow(gitlab_projects).to receive(:output) { 'error' }
-        expect(gitlab_projects).to receive(:import_project) { false }
+      context 'without gitaly', :disable_gitaly do
+        it 'returns true when the command succeeds' do
+          expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
 
-        expect do
-          gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
-        end.to raise_error(Gitlab::Shell::Error, "error")
+          result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+
+          expect(result).to be_truthy
+        end
+
+        it 'raises an exception when the command fails' do
+          allow(gitlab_projects).to receive(:output) { 'error' }
+          expect(gitlab_projects).to receive(:import_project) { false }
+
+          expect do
+            gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
+          end.to raise_error(Gitlab::Shell::Error, "error")
+        end
       end
     end
   end

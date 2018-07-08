@@ -40,16 +40,20 @@ module QA
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
+      autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :Wiki, 'qa/factory/resource/wiki'
     end
 
     module Repository
       autoload :Push, 'qa/factory/repository/push'
+      autoload :ProjectPush, 'qa/factory/repository/project_push'
+      autoload :WikiPush, 'qa/factory/repository/wiki_push'
     end
 
     module Settings
@@ -76,6 +80,7 @@ module QA
       autoload :Instance, 'qa/scenario/test/instance'
 
       module Integration
+        autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
         autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
@@ -129,6 +134,10 @@ module QA
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
 
+      module Import
+        autoload :Github, 'qa/page/project/import/github'
+      end
+
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
         autoload :Show, 'qa/page/project/pipeline/show'
@@ -165,10 +174,24 @@ module QA
           autoload :Show, 'qa/page/project/operations/kubernetes/show'
         end
       end
+
+      module Wiki
+        autoload :Edit, 'qa/page/project/wiki/edit'
+        autoload :New, 'qa/page/project/wiki/new'
+        autoload :Show, 'qa/page/project/wiki/show'
+      end
+    end
+
+    module Shared
+      autoload :ClonePanel, 'qa/page/shared/clone_panel'
     end
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module Issuable
+      autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 
     module MergeRequest
@@ -193,6 +216,7 @@ module QA
     #
     module Component
       autoload :Dropzone, 'qa/page/component/dropzone'
+      autoload :Select2, 'qa/page/component/select2'
     end
   end
 

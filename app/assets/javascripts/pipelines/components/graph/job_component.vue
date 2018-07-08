@@ -46,6 +46,11 @@ export default {
       required: false,
       default: '',
     },
+    dropdownLength: {
+      type: Number,
+      required: false,
+      default: Infinity,
+    },
   },
   computed: {
     status() {
@@ -68,6 +73,10 @@ export default {
       }
 
       return textBuilder.join(' ');
+    },
+
+    tooltipBoundary() {
+      return this.dropdownLength < 5 ? 'viewport' : null;
     },
 
     /**
@@ -94,9 +103,9 @@ export default {
       :href="status.details_path"
       :title="tooltipText"
       :class="cssClassJobName"
+      :data-boundary="tooltipBoundary"
       data-container="body"
       data-html="true"
-      data-boundary="viewport"
       class="js-pipeline-graph-job-link"
     >
 
@@ -107,11 +116,11 @@ export default {
     </a>
 
     <div
-      v-else
       v-tooltip
-      class="js-job-component-tooltip non-details-job-component"
+      v-else
       :title="tooltipText"
       :class="cssClassJobName"
+      class="js-job-component-tooltip non-details-job-component"
       data-html="true"
       data-container="body"
     >

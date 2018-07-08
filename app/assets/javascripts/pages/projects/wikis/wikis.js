@@ -48,7 +48,7 @@ export default class Wikis {
 
   static sidebarCanCollapse() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+    return bootstrapBreakpoint === 'xs';
   }
 
   renderSidebar() {

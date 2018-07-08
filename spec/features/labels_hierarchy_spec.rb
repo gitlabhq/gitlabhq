@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels Hierarchy', :js, :nested_groups do
+describe 'Labels Hierarchy', :js, :nested_groups do
   include FilteredSearchHelpers
 
   let!(:user) { create(:user) }
@@ -34,7 +34,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
         wait_for_requests
 
-        expect(page).to have_selector('span.badge', text: label.title)
+        expect(page).to have_selector('.badge', text: label.title)
       end
     end
 
@@ -45,7 +45,7 @@ feature 'Labels Hierarchy', :js, :nested_groups do
 
       wait_for_requests
 
-      expect(page).not_to have_selector('span.badge', text: child_group_label.title)
+      expect(page).not_to have_selector('.badge', text: child_group_label.title)
     end
   end
 

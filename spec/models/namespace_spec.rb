@@ -655,6 +655,19 @@ describe Namespace do
     end
   end
 
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
+
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
+    end
+  end
+
   describe '#remove_exports' do
     let(:legacy_project) { create(:project, :with_export, :legacy_storage, namespace: namespace) }
     let(:hashed_project) { create(:project, :with_export, namespace: namespace) }

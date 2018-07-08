@@ -19,14 +19,14 @@
     class="events-info float-right"
   >
     <i
-      class="fa fa-warning"
       v-tooltip
-      aria-hidden="true"
       :title="n__(
         'Limited to showing %d event at most',
         'Limited to showing %d events at most',
         50
       )"
+      class="fa fa-warning"
+      aria-hidden="true"
       data-placement="top"
     >
     </i>

@@ -41,9 +41,9 @@ export default {
 <template>
   <div class="gl-responsive-table-row-layout gl-responsive-table-row">
     <badge
-      class="table-section section-30"
       :image-url="badge.renderedImageUrl"
       :link-url="badge.renderedLinkUrl"
+      class="table-section section-30"
     />
     <span class="table-section section-50 str-truncated">{{ badge.linkUrl }}</span>
     <div class="table-section section-10">
@@ -54,29 +54,29 @@ export default {
         v-if="canEditBadge"
         class="table-action-buttons">
         <button
+          :disabled="badge.isDeleting"
           class="btn btn-default append-right-8"
           type="button"
-          :disabled="badge.isDeleting"
           @click="editBadge(badge)"
         >
           <icon
-            name="pencil"
             :size="16"
             :aria-label="__('Edit')"
+            name="pencil"
           />
         </button>
         <button
+          :disabled="badge.isDeleting"
           class="btn btn-danger"
           type="button"
           data-toggle="modal"
           data-target="#delete-badge-modal"
-          :disabled="badge.isDeleting"
           @click="updateBadgeInModal(badge)"
         >
           <icon
-            name="remove"
             :size="16"
             :aria-label="__('Delete')"
+            name="remove"
           />
         </button>
         <loading-icon

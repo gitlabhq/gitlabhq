@@ -49,14 +49,14 @@ export default {
 
 <template>
   <button
-    type="button"
-    class="btn"
+    v-tooltip
     :class="cssClass"
     :title="title"
     :data-clipboard-text="text"
-    v-tooltip
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
+    type="button"
+    class="btn"
   >
     <i
       aria-hidden="true"

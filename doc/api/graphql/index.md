@@ -1,4 +1,4 @@
-# GraphQL API (Beta)
+# GraphQL API (Alpha)
 
 > [Introduced][ce-19008] in GitLab 11.0.
 
@@ -29,9 +29,7 @@ curl --data "value=100" --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://g
 
 ## Available queries
 
-A first iteration of a GraphQL API includes only 2 queries: `project` and
-`merge_request` and only returns scalar fields, or fields of the type `Project`
-or `MergeRequest`.
+A first iteration of a GraphQL API includes a query for: `project`. Within a project it is also possible to fetch a `mergeRequest` by IID.
 
 ## GraphiQL
 

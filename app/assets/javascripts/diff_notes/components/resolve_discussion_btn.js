@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, space-before-function-paren, comma-dangle, no-else-return, quotes, max-len */
+/* eslint-disable object-shorthand, func-names, comma-dangle, no-else-return, quotes */
 /* global CommentsStore */
 /* global ResolveService */
 
@@ -6,9 +6,18 @@ import Vue from 'vue';
 
 const ResolveDiscussionBtn = Vue.extend({
   props: {
-    discussionId: String,
-    mergeRequestId: Number,
-    canResolve: Boolean,
+    discussionId: {
+      type: String,
+      required: true,
+    },
+    mergeRequestId: {
+      type: Number,
+      required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: true,
+    },
   },
   data: function() {
     return {
@@ -45,16 +54,16 @@ const ResolveDiscussionBtn = Vue.extend({
       }
     }
   },
+  created: function () {
+    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
+
+    this.discussion = CommentsStore.state[this.discussionId];
+  },
   methods: {
     resolve: function () {
       ResolveService.toggleResolveForDiscussion(this.mergeRequestId, this.discussionId);
     }
   },
-  created: function () {
-    CommentsStore.createDiscussion(this.discussionId, this.canResolve);
-
-    this.discussion = CommentsStore.state[this.discussionId];
-  }
 });
 
 Vue.component('resolve-discussion-btn', ResolveDiscussionBtn);

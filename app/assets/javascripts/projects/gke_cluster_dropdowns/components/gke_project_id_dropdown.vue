@@ -192,11 +192,11 @@ export default {
       </div>
     </div>
     <span
-      class="form-text"
       :class="{
         'text-danger': hasErrors,
         'text-muted': !hasErrors
       }"
+      class="form-text"
       v-html="helpText"
     ></span>
   </div>

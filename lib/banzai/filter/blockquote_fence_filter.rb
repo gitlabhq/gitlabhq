@@ -10,7 +10,7 @@ module Banzai
 
             ^```
             .+?
-            \n```$
+            \n```\ *$
           )
         |
           (?<html>
@@ -19,9 +19,9 @@ module Banzai
             # Anything, including `>>>` blocks which are ignored by this filter
             # </tag>
 
-            ^<[^>]+?>\n
+            ^<[^>]+?>\ *\n
             .+?
-            \n<\/[^>]+?>$
+            \n<\/[^>]+?>\ *$
           )
         |
           (?:
@@ -30,14 +30,14 @@ module Banzai
             # Anything, including code and HTML blocks
             # >>>
 
-            ^>>>\n
+            ^>>>\ *\n
             (?<quote>
               (?:
                   # Any character that doesn't introduce a code or HTML block
                   (?!
                       ^```
                     |
-                      ^<[^>]+?>\n
+                      ^<[^>]+?>\ *\n
                   )
                   .
                 |
@@ -48,7 +48,7 @@ module Banzai
                   \g<html>
               )+?
             )
-            \n>>>$
+            \n>>>\ *$
           )
       }mx.freeze
 
