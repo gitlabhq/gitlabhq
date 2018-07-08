@@ -28,19 +28,19 @@ describe Import::BitbucketServerController do
 
   describe 'POST create' do
     before do
+      allow(controller).to receive(:bitbucket_client).and_return(client)
+      repo = double(name: 'my-project')
+      allow(client).to receive(:repo).with(project_key, repo_slug).and_return(repo)
       assign_session_tokens
     end
 
     set(:project) { create(:project) }
+    let(:client) { instance_double(BitbucketServer::Client) }
 
     it 'returns the new project' do
-      client = instance_double(BitbucketServer::Client)
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
         .to receive(:new).with(project_key, repo_slug, anything, 'my-project', user.namespace, user, anything)
         .and_return(double(execute: project))
-      repo = double(name: 'my-project')
-      expect(client).to receive(:repo).with(project_key, repo_slug).and_return(repo)
-      expect(controller).to receive(:bitbucket_client).and_return(client)
 
       post :create, project: project_key, repository: repo_slug, format: :json
 
@@ -60,9 +60,7 @@ describe Import::BitbucketServerController do
     end
 
     it 'returns an error when the project cannot be found' do
-      client = instance_double(BitbucketServer::Client)
-      expect(client).to receive(:repo).with(project_key, repo_slug).and_return(nil)
-      expect(controller).to receive(:bitbucket_client).and_return(client)
+      allow(client).to receive(:repo).with(project_key, repo_slug).and_return(nil)
 
       post :create, project: project_key, repository: repo_slug, format: :json
 
@@ -70,6 +68,13 @@ describe Import::BitbucketServerController do
     end
 
     it 'returns an error when the project cannot be saved' do
+      allow(Gitlab::BitbucketServerImport::ProjectCreator)
+        .to receive(:new).with(project_key, repo_slug, anything, 'my-project', user.namespace, user, anything)
+        .and_return(double(execute: build(:project)))
+
+      post :create, project: project_key, repository: repo_slug, format: :json
+
+      expect(response).to have_gitlab_http_status(422)
     end
 
     it "returns an error when the server can't be contacted" do
