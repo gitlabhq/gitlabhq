@@ -16,4 +16,14 @@ shared_examples 'helm commands' do
       expect(subject.generate_script).to eq(helm_setup + commands)
     end
   end
+
+  describe '#extra_env' do
+    let(:extra_env) { subject.extra_env }
+    it 'should include the expected keys' do
+      expected_env.each do |key|
+        expect(extra_env).to be_key(key)
+        expect(extra_env[key]).not_to be_blank
+      end
+    end
+  end
 end

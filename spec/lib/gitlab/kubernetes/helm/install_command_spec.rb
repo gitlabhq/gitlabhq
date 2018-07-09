@@ -11,6 +11,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     let(:application) { create(:clusters_applications_ingress) }
 
     it_behaves_like 'helm commands' do
+      let(:expected_env) { %i{CA_CERT HELM_CERT HELM_KEY} }
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
@@ -28,6 +29,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     let(:application) { create(:clusters_applications_prometheus) }
 
     it_behaves_like 'helm commands' do
+      let(:expected_env) { %i{CA_CERT HELM_CERT HELM_KEY} }
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
@@ -46,6 +48,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
 
     it_behaves_like 'helm commands' do
+      let(:expected_env) { %i{CA_CERT HELM_CERT HELM_KEY} }
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
@@ -64,6 +67,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     let(:application) { create(:clusters_applications_jupyter) }
 
     it_behaves_like 'helm commands' do
+      let(:expected_env) { %i{CA_CERT HELM_CERT HELM_KEY} }
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
