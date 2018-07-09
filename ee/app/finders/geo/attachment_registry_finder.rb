@@ -103,16 +103,23 @@ module Geo
           Namespace.none
         end
 
-      arel_namespace_ids = Arel::Nodes::SqlLiteral.new(namespace_ids.to_sql)
+      # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+      # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+      # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+      namespace_ids_in_sql = Arel::Nodes::SqlLiteral.new("uploads.model_id IN (#{namespace_ids.to_sql})")
 
-      upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(arel_namespace_ids))
+      upload_table[:model_type].eq('Namespace').and(namespace_ids_in_sql)
     end
 
     def project_uploads
       project_ids = current_node.projects.select(:id)
-      arel_project_ids = Arel::Nodes::SqlLiteral.new(project_ids.to_sql)
 
-      upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(arel_project_ids))
+      # This query was intentionally converted to a raw one to get it work in Rails 5.0.
+      # In Rails 5.0 and 5.1 there's a bug: https://github.com/rails/arel/issues/531
+      # Please convert it back when on rails 5.2 as it works again as expected since 5.2.
+      project_ids_in_sql = Arel::Nodes::SqlLiteral.new("uploads.model_id IN (#{project_ids.to_sql})")
+
+      upload_table[:model_type].eq('Project').and(project_ids_in_sql)
     end
 
     def other_uploads
