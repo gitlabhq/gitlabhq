@@ -9,14 +9,18 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
         merge_request.merge_request_diffs.first
       end
 
+      let(:perform) do
+        described_class.new.perform(MergeRequestDiff.pluck(:id))
+      end
+
       it 'deletes all merge request diff files' do
-        expect { described_class.new.perform }
+        expect { perform }
           .to change { merge_request_diff.merge_request_diff_files.count }
           .from(20).to(0)
       end
 
       it 'updates state to without_files' do
-        expect { described_class.new.perform }
+        expect { perform }
           .to change { merge_request_diff.reload.state }
           .from('collected').to('without_files')
       end
@@ -25,7 +29,7 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
         expect(described_class::MergeRequestDiffFile).to receive_message_chain(:where, :delete_all)
           .and_raise
 
-        expect { described_class.new.perform }
+        expect { perform }
           .to raise_error
 
         merge_request_diff.reload
@@ -35,50 +39,18 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
       end
     end
 
-    it 'deletes no merge request diff files when MR is not merged' do
-      merge_request = create(:merge_request, :opened)
-      merge_request.create_merge_request_diff
-      merge_request_diff = merge_request.merge_request_diffs.first
-
-      expect { described_class.new.perform }
-        .not_to change { merge_request_diff.merge_request_diff_files.count }
-        .from(20)
-    end
-
-    it 'deletes no merge request diff files when diff is marked as "without_files"' do
-      merge_request = create(:merge_request, :merged)
-      merge_request.create_merge_request_diff
-      merge_request_diff = merge_request.merge_request_diffs.first
-
-      merge_request_diff.clean!
-
-      expect { described_class.new.perform }
-        .not_to change { merge_request_diff.merge_request_diff_files.count }
-        .from(20)
-    end
-
-    it 'deletes no merge request diff files when diff is the latest' do
-      merge_request = create(:merge_request, :merged)
-      merge_request_diff = merge_request.merge_request_diff
-
-      expect { described_class.new.perform }
-        .not_to change { merge_request_diff.merge_request_diff_files.count }
-        .from(20)
-    end
-
     it 'reschedules itself when should_wait_deadtuple_vacuum' do
+      merge_request = create(:merge_request, :merged)
+      first_diff = merge_request.merge_request_diff
+      second_diff = merge_request.create_merge_request_diff
+
       Sidekiq::Testing.fake! do
         worker = described_class.new
-
         allow(worker).to receive(:should_wait_deadtuple_vacuum?) { true }
 
-        expect(BackgroundMigrationWorker)
-          .to receive(:perform_in)
-          .with(described_class::VACUUM_WAIT_TIME, 'DeleteDiffFiles')
-          .and_call_original
+        worker.perform([first_diff.id, second_diff.id])
 
-        worker.perform
-
+        expect(described_class.name.demodulize).to be_scheduled_delayed_migration(5.minutes, [first_diff.id, second_diff.id])
         expect(BackgroundMigrationWorker.jobs.size).to eq(1)
       end
     end
