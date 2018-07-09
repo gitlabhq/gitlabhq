@@ -4,7 +4,7 @@ To make use of Helm, you must have a [Kubernetes][k8s-io] cluster. Ensure you ca
 
 Helm consists of two parts, the `helm` client and a `tiller` server inside Kubernetes.
 
-> **Note**: If you are not able to run tiller in your cluster, for example on OpenShift, it is possible to use [tiller locally](#local-tiller) and avoid deploying it into the cluster. This should only be used when Tiller cannot be normally deployed.
+> **Note**: If you are not able to run Tiller in your cluster, for example on OpenShift, it is possible to use [Tiller locally](https://gitlab.com/charts/gitlab/tree/master/doc/helm#local-tiller) and avoid deploying it into the cluster. This should only be used when Tiller cannot be normally deployed.
 
 ## Initialize Helm and Tiller
 
@@ -65,28 +65,32 @@ kubectl --username=admin --password=xxxxxxxxxxxxxx create -f rbac-config.yaml
 
 For other clusters like Amazon EKS, you can directly upload the RBAC configuration.
 
+```
 kubectl create -f rbac-config.yaml
+```
 
 ## Initialize Helm
 
-Deploy Helm Tiller with a service account
+Deploy Helm Tiller with a service account:
 
 ```
 helm init --service-account tiller
 ```
 
-If your cluster
-previously had Helm/Tiller installed, run the following to ensure that the deployed version of Tiller matches the local Helm version:
+If your cluster previously had Helm/Tiller installed,
+run the following to ensure that the deployed version of Tiller matches the local Helm version:
 
 ```
 helm init --upgrade --service-account tiller
 ```
 
-### Patching Helm Tiller for EKS
+### Patching Helm Tiller for Amazon EKS
 
-Helm Tiller requires a flag to be enabled to work properly on EKS:
+Helm Tiller requires a flag to be enabled to work properly on Amazon EKS:
 
-`kubectl -n kube-system patch deployment tiller-deploy -p '{"spec": {"template": {"spec": {"automountServiceAccountToken": true}}}}'`
+```
+kubectl -n kube-system patch deployment tiller-deploy -p '{"spec": {"template": {"spec": {"automountServiceAccountToken": true}}}}'
+```
 
 [helm]: https://helm.sh
 [helm-using]: https://docs.helm.sh/using_helm
