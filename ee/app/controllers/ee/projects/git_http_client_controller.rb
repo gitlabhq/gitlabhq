@@ -74,9 +74,8 @@ module EE
         end
 
         def incorrect_version_message
-          _("You need git-lfs version %{min_git_lfs_version} (or greater) to
-            continue. Please visit https://git-lfs.github.com") %
-            { min_git_lfs_version: MINIMUM_GIT_LFS_VERSION }
+          translation = _("You need git-lfs version %{min_git_lfs_version} (or greater) to continue. Please visit https://git-lfs.github.com")
+          translation % { min_git_lfs_version: MINIMUM_GIT_LFS_VERSION }
         end
       end
 
