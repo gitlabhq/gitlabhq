@@ -7,7 +7,7 @@ module Gitlab
 
           def process
             log_event
-            registry.save!
+            registry.repository_created!(event)
 
             enqueue_job_if_shard_healthy(event) do
               ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
@@ -15,12 +15,6 @@ module Gitlab
           end
 
           private
-
-          def registry
-            @registry ||= find_or_initialize_registry(
-              resync_repository: true,
-              resync_wiki: event.wiki_path.present?)
-          end
 
           def log_event
             logger.event_info(

@@ -16,7 +16,6 @@ module Geo
     GEO_REMOTE_NAME = 'geo'.freeze
     LEASE_TIMEOUT    = 8.hours.freeze
     LEASE_KEY_PREFIX = 'geo_sync_service'.freeze
-    RETRIES_BEFORE_REDOWNLOAD = 5
 
     def initialize(project)
       @project = project
@@ -26,11 +25,7 @@ module Geo
       try_obtain_lease do
         log_info("Started #{type} sync")
 
-        if should_be_retried?
-          sync_repository
-        else
-          sync_repository(true)
-        end
+        sync_repository
 
         log_info("Finished #{type} sync")
       end
@@ -46,15 +41,16 @@ module Geo
 
     private
 
-    def fetch_repository(redownload)
+    def fetch_repository
       log_info("Trying to fetch #{type}")
       clean_up_temporary_repository
 
-      update_registry!(started_at: DateTime.now)
+      log_info("Marking #{type} sync as started")
 
-      if redownload
+      registry.start_sync!(type)
+
+      if redownload?
         redownload_repository
-        set_temp_repository_as_main
         schedule_repack
       elsif repository.exists?
         fetch_geo_mirror(repository)
@@ -63,6 +59,10 @@ module Geo
         fetch_geo_mirror(repository)
         schedule_repack
       end
+    end
+
+    def redownload?
+      registry.should_be_redownloaded?(type)
     end
 
     def schedule_repack
@@ -82,16 +82,10 @@ module Geo
       end
 
       fetch_geo_mirror(temp_repo)
-    end
 
-    def retry_count
-      registry.public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
-    end
-
-    def should_be_retried?
-      return false if registry.public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
-
-      retry_count <= RETRIES_BEFORE_REDOWNLOAD
+      set_temp_repository_as_main
+    ensure
+      clean_up_temporary_repository
     end
 
     def current_node
@@ -132,40 +126,28 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
-    def update_registry!(started_at: nil, finished_at: nil, attrs: {})
-      return unless started_at || finished_at
+    def mark_sync_as_successful
+      log_info("Marking #{type} sync as successful")
 
-      log_info("Updating #{type} sync information")
+      persisted = registry.finish_sync!(type)
 
-      if started_at
-        attrs["last_#{type}_synced_at"] = started_at
-        attrs["#{type}_retry_count"] = retry_count + 1
-        attrs["#{type}_retry_at"] = next_retry_time(attrs["#{type}_retry_count"])
-      end
+      reschedule_sync unless persisted
 
-      if finished_at
-        attrs["last_#{type}_successful_sync_at"] = finished_at
-        attrs["resync_#{type}"] = false
-        attrs["#{type}_retry_count"] = nil
-        attrs["#{type}_retry_at"] = nil
-        attrs["force_to_redownload_#{type}"] = false
+      log_info("Finished #{type} sync",
+               update_delay_s: update_delay_in_seconds,
+               download_time_s: download_time_in_seconds)
+    end
 
-        # Indicate that repository verification needs to be done again
-        attrs["#{type}_verification_checksum_sha"] = nil
-        attrs["#{type}_checksum_mismatch"] = false
-        attrs["last_#{type}_verification_failure"] = nil
-      end
+    def reschedule_sync
+      log_info("Reschedule #{type} sync because a RepositoryUpdateEvent was processed during the sync")
 
-      registry.update!(attrs)
+      ::Geo::ProjectSyncWorker.perform_async(project.id, Time.now)
     end
 
     def fail_registry!(message, error, attrs = {})
       log_error(message, error)
 
-      attrs["resync_#{type}"] = true
-      attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
-      attrs["#{type}_retry_count"] = retry_count + 1
-      registry.update!(attrs)
+      registry.fail_sync!(type, message, error, attrs)
 
       repository.clean_stale_repository_files
     end
@@ -258,15 +240,6 @@ module Geo
         project.repository_storage,
         File.dirname(disk_path)
       )
-    end
-
-    # To prevent the retry time from storing invalid dates in the database,
-    # cap the max time to a week plus some random jitter value.
-    def next_retry_time(retry_count)
-      proposed_time = Time.now + delay(retry_count).seconds
-      max_future_time = Time.now + 7.days + delay(1).seconds
-
-      [proposed_time, max_future_time].min
     end
   end
 end

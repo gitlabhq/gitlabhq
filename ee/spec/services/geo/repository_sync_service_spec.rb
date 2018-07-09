@@ -20,6 +20,7 @@ describe Geo::RepositorySyncService do
 
   it_behaves_like 'geo base sync execution'
   it_behaves_like 'geo base sync fetch and repack'
+  it_behaves_like 'reschedules sync due to race condition instead of waiting for backfill'
 
   describe '#execute' do
     let(:url_to_repo) { "#{primary.url}#{project.full_path}.git" }
@@ -130,7 +131,9 @@ describe Geo::RepositorySyncService do
     end
 
     it 'marks resync as true after a failure' do
-      subject.execute
+      described_class.new(project).execute
+
+      expect(Geo::ProjectRegistry.last.resync_repository).to be false
 
       allow(repository).to receive(:fetch_as_mirror)
         .with(url_to_repo, remote_name: 'geo', forced: true)
@@ -248,15 +251,15 @@ describe Geo::RepositorySyncService do
 
     context 'retries' do
       it 'tries to fetch repo' do
-        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD - 1)
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD - 1)
 
-        expect(subject).to receive(:sync_repository).with(no_args)
+        expect(subject).to receive(:sync_repository)
 
         subject.execute
       end
 
       it 'sets the redownload flag to false after success' do
-        registry = create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD + 1, force_to_redownload_repository: true)
+        registry = create(:geo_project_registry, project: project, repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD + 1, force_to_redownload_repository: true)
 
         subject.execute
 
@@ -264,9 +267,9 @@ describe Geo::RepositorySyncService do
       end
 
       it 'tries to redownload repo' do
-        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD + 1)
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD + 1)
 
-        expect(subject).to receive(:sync_repository).with(true).and_call_original
+        expect(subject).to receive(:sync_repository).and_call_original
         expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
 
         expect(subject.gitlab_shell).to receive(:add_namespace).with(
@@ -294,11 +297,11 @@ describe Geo::RepositorySyncService do
         create(
           :geo_project_registry,
           project: project,
-          repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD - 1,
+          repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD - 1,
           force_to_redownload_repository: true
         )
 
-        expect(subject).to receive(:sync_repository).with(true)
+        expect(subject).to receive(:sync_repository)
 
         subject.execute
       end
@@ -307,7 +310,7 @@ describe Geo::RepositorySyncService do
         create(
           :geo_project_registry,
           project: project,
-          repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD - 1,
+          repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD - 1,
           force_to_redownload_repository: true
         )
 
@@ -323,7 +326,7 @@ describe Geo::RepositorySyncService do
         registry = create(
           :geo_project_registry,
           project: project,
-          repository_retry_count: Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD + 2000,
+          repository_retry_count: Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD + 2000,
           repository_retry_at: timestamp,
           force_to_redownload_repository: true
         )
