@@ -439,29 +439,9 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
-        gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.find_commits(options)
-          else
-            raw_log(options).map { |c| Commit.decorate(self, c) }
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.find_commits(options)
         end
-      end
-
-      # Used in gitaly-ruby
-      def raw_log(options)
-        sha =
-          unless options[:all]
-            actual_ref = options[:ref] || root_ref
-            begin
-              sha_from_ref(actual_ref)
-            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-              # Return an empty array if the ref wasn't found
-              return []
-            end
-          end
-
-        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -1223,12 +1203,10 @@ module Gitlab
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
-        gitaly_migrate(:commits_by_message) do |is_enabled|
-          if is_enabled
-            find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-          else
-            find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client
+            .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+            .map { |c| commit(c) }
         end
       end
 
@@ -1238,12 +1216,8 @@ module Gitlab
       end
 
       def last_commit_for_path(sha, path)
-        gitaly_migrate(:last_commit_for_path) do |is_enabled|
-          if is_enabled
-            last_commit_for_path_by_gitaly(sha, path)
-          else
-            last_commit_for_path_by_rugged(sha, path)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.last_commit_for_path(sha, path)
         end
       end
 
@@ -1454,46 +1428,6 @@ module Gitlab
         end
       end
 
-      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
-      # complexity is such that we should migrate it as Ruby before trying to
-      # do it in Go.
-      def log_by_shell(sha, options)
-        limit = options[:limit].to_i
-        offset = options[:offset].to_i
-        use_follow_flag = options[:follow] && options[:path].present?
-
-        # We will perform the offset in Ruby because --follow doesn't play well with --skip.
-        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
-        offset_in_ruby = use_follow_flag && options[:offset].present?
-        limit += offset if offset_in_ruby
-
-        cmd = %w[log]
-        cmd << "--max-count=#{limit}"
-        cmd << '--format=%H'
-        cmd << "--skip=#{offset}" unless offset_in_ruby
-        cmd << '--follow' if use_follow_flag
-        cmd << '--no-merges' if options[:skip_merges]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-
-        if options[:all]
-          cmd += %w[--all --reverse]
-        else
-          cmd << sha
-        end
-
-        # :path can be a string or an array of strings
-        if options[:path].present?
-          cmd << '--'
-          cmd += Array(options[:path])
-        end
-
-        raw_output, _status = run_git(cmd)
-        lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
-
-        lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
-      end
-
       # We are trying to deprecate this method because it does a lot of work
       # but it seems to be used only to look up submodule URL's.
       # https://gitlab.com/gitlab-org/gitaly/issues/329
@@ -1621,11 +1555,6 @@ module Gitlab
         else
           branches
         end
-      end
-
-      def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path_by_shelling_out(sha, path)
-        commit(sha)
       end
 
       # Returns true if the given ref name exists
@@ -1818,35 +1747,6 @@ module Gitlab
 
       def gitlab_projects_error
         raise CommandError, @gitlab_projects.output
-      end
-
-      def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-        ref ||= root_ref
-
-        args = %W(
-          log #{ref} --pretty=%H --skip #{offset}
-          --max-count #{limit} --grep=#{query} --regexp-ignore-case
-        )
-        args = args.concat(%W(-- #{path})) if path.present?
-
-        git_log_results = run_git(args).first.lines
-
-        git_log_results.map { |c| commit(c.chomp) }.compact
-      end
-
-      def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-        gitaly_commit_client
-          .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
-          .map { |c| commit(c) }
-      end
-
-      def last_commit_for_path_by_gitaly(sha, path)
-        gitaly_commit_client.last_commit_for_path(sha, path)
-      end
-
-      def last_commit_id_for_path_by_shelling_out(sha, path)
-        args = %W(rev-list --max-count=1 #{sha} -- #{path})
-        run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
       end
 
       def rugged_merge_base(from, to)
