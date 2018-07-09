@@ -58,7 +58,6 @@ module Gitlab
 
         if Database.postgresql?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
         if index_exists?(table_name, column_name, options)
@@ -66,7 +65,9 @@ module Gitlab
           return
         end
 
-        add_index(table_name, column_name, options)
+        disable_statement_timeout(transaction: false) do
+          add_index(table_name, column_name, options)
+        end
       end
 
       # Removes an existed index, concurrently when supported
@@ -87,7 +88,6 @@ module Gitlab
 
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
         unless index_exists?(table_name, column_name, options)
@@ -95,7 +95,9 @@ module Gitlab
           return
         end
 
-        remove_index(table_name, options.merge({ column: column_name }))
+        disable_statement_timeout(transaction: false) do
+          remove_index(table_name, options.merge({ column: column_name }))
+        end
       end
 
       # Removes an existing index, concurrently when supported
@@ -116,7 +118,6 @@ module Gitlab
 
         if supports_drop_index_concurrently?
           options = options.merge({ algorithm: :concurrently })
-          disable_statement_timeout
         end
 
         unless index_exists_by_name?(table_name, index_name)
@@ -124,7 +125,9 @@ module Gitlab
           return
         end
 
-        remove_index(table_name, options.merge({ name: index_name }))
+        disable_statement_timeout(transaction: false) do
+          remove_index(table_name, options.merge({ name: index_name }))
+        end
       end
 
       # Only available on Postgresql >= 9.2
@@ -171,8 +174,6 @@ module Gitlab
           on_delete = 'SET NULL' if on_delete == :nullify
         end
 
-        disable_statement_timeout
-
         key_name = concurrent_foreign_key_name(source, column)
 
         unless foreign_key_exists?(source, target, column: column)
@@ -199,7 +200,9 @@ module Gitlab
         # while running.
         #
         # Note this is a no-op in case the constraint is VALID already
-        execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+        disable_statement_timeout(transaction: false) do
+          execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
+        end
       end
 
       def foreign_key_exists?(source, target = nil, column: nil)
@@ -224,8 +227,49 @@ module Gitlab
       # Long-running migrations may take more than the timeout allowed by
       # the database. Disable the session's statement timeout to ensure
       # migrations don't get killed prematurely. (PostgreSQL only)
-      def disable_statement_timeout
-        execute('SET statement_timeout TO 0') if Database.postgresql?
+      #
+      # There are two possible ways to disable the statement timeout:
+      #
+      # - Per transaction (this is the preferred and default mode)
+      # - Per connection (requires a cleanup after the execution)
+      #
+      # When using a per connection disable statement, code must be inside a block
+      # so we can automatically `RESET ALL` after it has executed otherwise the statement
+      # will still be disabled until connection is dropped or `RESET ALL` is executed
+      #
+      # - +transaction:+ true to disable for current transaction only *(default)*
+      # - +transaction:+ false to disable for current session (requires block)
+      def disable_statement_timeout(transaction: true)
+        # bypass disabled_statement logic when not using postgres, but still execute block when one is given
+        unless Database.postgresql?
+          if block_given?
+            yield
+          end
+
+          return
+        end
+
+        if transaction
+          unless transaction_open?
+            raise 'disable_statement_timeout() cannot be run without a transaction, ' \
+              'use it inside a transaction block. Alternatively you can use: ' \
+              'disable_statement_timeout(transaction: false) { #code here } to make sure ' \
+              'statement_timeout is reset after the block execution is finished.'
+          end
+
+          execute('SET LOCAL statement_timeout TO 0')
+        else
+          unless block_given?
+            raise ArgumentError, 'disable_statement_timeout(transaction: false) requires a block encapsulating' \
+              'code that will be executed with the statement_timeout disabled.'
+          end
+
+          execute('SET statement_timeout TO 0')
+
+          yield
+
+          execute('RESET ALL')
+        end
       end
 
       def true_value
@@ -367,30 +411,30 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        disable_statement_timeout
+        disable_statement_timeout(transaction: false) do
+          transaction do
+            if limit
+              add_column(table, column, type, default: nil, limit: limit)
+            else
+              add_column(table, column, type, default: nil)
+            end
 
-        transaction do
-          if limit
-            add_column(table, column, type, default: nil, limit: limit)
-          else
-            add_column(table, column, type, default: nil)
+            # Changing the default before the update ensures any newly inserted
+            # rows already use the proper default value.
+            change_column_default(table, column, default)
           end
 
-          # Changing the default before the update ensures any newly inserted
-          # rows already use the proper default value.
-          change_column_default(table, column, default)
-        end
+          begin
+            update_column_in_batches(table, column, default, &block)
 
-        begin
-          update_column_in_batches(table, column, default, &block)
+            change_column_null(table, column, false) unless allow_null
+          # We want to rescue _all_ exceptions here, even those that don't inherit
+          # from StandardError.
+          rescue Exception => error # rubocop: disable all
+            remove_column(table, column)
 
-          change_column_null(table, column, false) unless allow_null
-        # We want to rescue _all_ exceptions here, even those that don't inherit
-        # from StandardError.
-        rescue Exception => error # rubocop: disable all
-          remove_column(table, column)
-
-          raise error
+            raise error
+          end
         end
       end
 
