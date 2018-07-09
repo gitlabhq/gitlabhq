@@ -41,6 +41,15 @@ export const fetchDiscussions = ({ commit }, path) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
+export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+  service
+    .fetchDiscussions(path)
+    .then(res => res.json())
+    .then(discussions => {
+      const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
+      if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
+    });
+
 export const deleteNote = ({ commit }, note) =>
   service.deleteNote(note.path).then(() => {
     commit(types.DELETE_NOTE, note);
