@@ -571,7 +571,7 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project, markdown_engine: :redcarpet) if readme
   end
   cache_method :rendered_readme
 
