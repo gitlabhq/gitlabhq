@@ -53,8 +53,8 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
 
     Select GitHub Enterprise for the `Host` field.
 
-    For the `Team or User Account` field, enter the group name of a top-level GitLab group that you have access to,
-    or the name of your personal namespace.
+    For the `Team or User Account` field, enter the relative path of a top-level GitLab group that you have access to,
+    or the relative path of your personal namespace.
 
     ![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 
