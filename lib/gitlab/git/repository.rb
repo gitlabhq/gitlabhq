@@ -898,12 +898,8 @@ module Gitlab
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
-        Gitlab::GitalyClient.migrate(:fetch_source_branch) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
-          else
-            rugged_fetch_source_branch(source_repository, source_branch, local_ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
         end
       end
 
@@ -1058,12 +1054,8 @@ module Gitlab
       end
 
       def bundle_to_disk(save_path)
-        gitaly_migrate(:bundle_to_disk) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.create_bundle(save_path)
-          else
-            run_git!(%W(bundle create #{save_path} --all))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.create_bundle(save_path)
         end
 
         true

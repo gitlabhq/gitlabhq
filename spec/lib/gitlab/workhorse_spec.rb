@@ -36,22 +36,20 @@ describe Gitlab::Workhorse do
       allow(described_class).to receive(:git_archive_cache_disabled?).and_return(cache_disabled)
     end
 
-    context 'when Gitaly workhorse_archive feature is enabled' do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
 
-        expect(key).to eq('Gitlab-Workhorse-Send-Data')
-        expect(command).to eq('git-archive')
-        expect(params).to include(gitaly_params)
-      end
+      expect(key).to eq('Gitlab-Workhorse-Send-Data')
+      expect(command).to eq('git-archive')
+      expect(params).to include(gitaly_params)
+    end
 
-      context 'when archive caching is disabled' do
-        let(:cache_disabled) { true }
+    context 'when archive caching is disabled' do
+      let(:cache_disabled) { true }
 
-        it 'tells workhorse not to use the cache' do
-          _, _, params = decode_workhorse_header(subject)
-          expect(params).to include({ 'DisableCache' => true })
-        end
+      it 'tells workhorse not to use the cache' do
+        _, _, params = decode_workhorse_header(subject)
+        expect(params).to include({ 'DisableCache' => true })
       end
     end
 
