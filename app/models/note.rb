@@ -88,9 +88,6 @@ class Note < ActiveRecord::Base
     end
   end
 
-  # @deprecated attachments are handler by the MarkdownUploader
-  mount_uploader :attachment, AttachmentUploader
-
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :system, -> { where(system: true) }
