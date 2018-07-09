@@ -142,7 +142,7 @@ module ExtractsPath
 
     # When current endpoint is a Blob then `tree.blobs` will be empty, it means we need to analyze
     # the current Blob in order to determine if it's a LFS object
-    blob_ids = Array.wrap(@repo.blob_at(@ref, @path)&.id) if blob_ids.empty? # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    blob_ids = Array.wrap(@repo.blob_at(@commit.id, @path)&.id) if blob_ids.empty? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
