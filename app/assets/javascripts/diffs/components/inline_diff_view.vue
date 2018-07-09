@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
 import { trimFirstCharOfLineContent } from '../store/utils';
@@ -20,7 +20,10 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commitId']),
+    ...mapGetters(['commitId', 'discussionsByLineCode']),
+    ...mapState({
+      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
+    }),
     normalizedDiffLines() {
       return this.diffLines.map(line => (line.richText ? trimFirstCharOfLineContent(line) : line));
     },
@@ -29,6 +32,18 @@ export default {
     },
     userColorScheme() {
       return window.gon.user_color_scheme;
+    },
+  },
+  methods: {
+    shouldRenderCommentRow(line) {
+      if (this.diffLineCommentForms[line.lineCode]) return true;
+
+      const lineDiscussions = this.discussionsByLineCode[line.lineCode];
+      if (lineDiscussions === undefined) {
+        return false;
+      }
+
+      return lineDiscussions.every(discussion => discussion.expanded);
     },
   },
 };
@@ -50,6 +65,7 @@ export default {
           :key="line.lineCode"
         />
         <inline-diff-comment-row
+          v-if="shouldRenderCommentRow(line)"
           :diff-file="diffFile"
           :diff-lines="normalizedDiffLines"
           :line="line"

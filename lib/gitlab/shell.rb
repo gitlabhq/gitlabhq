@@ -74,17 +74,10 @@ module Gitlab
       relative_path = name.dup
       relative_path << '.git' unless relative_path.end_with?('.git')
 
-      gitaly_migrate(:create_repository,
-                     status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-        if is_enabled
-          repository = Gitlab::Git::Repository.new(storage, relative_path, '')
-          repository.gitaly_repository_client.create_repository
-          true
-        else
-          repo_path = File.join(Gitlab.config.repositories.storages[storage].legacy_disk_path, relative_path)
-          Gitlab::Git::Repository.create(repo_path, bare: true, symlink_hooks_to: gitlab_shell_hooks_path)
-        end
-      end
+      repository = Gitlab::Git::Repository.new(storage, relative_path, '')
+      wrapped_gitaly_errors { repository.gitaly_repository_client.create_repository }
+
+      true
     rescue => err # Once the Rugged codes gets removes this can be improved
       Rails.logger.error("Failed to add repository #{storage}/#{name}: #{err}")
       false
@@ -448,7 +441,11 @@ module Gitlab
     end
 
     def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-      Gitlab::GitalyClient.migrate(method, status: status, &block)
+      wrapped_gitaly_errors { Gitlab::GitalyClient.migrate(method, status: status, &block) }
+    end
+
+    def wrapped_gitaly_errors
+      yield
     rescue GRPC::NotFound, GRPC::BadStatus => e
       # Old Popen code returns [Error, output] to the caller, so we
       # need to do the same here...
