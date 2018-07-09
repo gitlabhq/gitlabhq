@@ -68,6 +68,22 @@ module Gitlab
         raise Gitlab::Git::Repository::InvalidRef, ex
       end
 
+      def user_update_branch(branch_name, user, newrev, oldrev)
+        request = Gitaly::UserUpdateBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: encode_binary(branch_name),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          newrev: encode_binary(newrev),
+          oldrev: encode_binary(oldrev)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_update_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
+      end
+
       def user_delete_branch(branch_name, user)
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
