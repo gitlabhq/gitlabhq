@@ -181,8 +181,8 @@ if (process.env.BABEL_ENV === 'coverage') {
 
     $.holdReady(true);
 
-    sourceFilesContexts.forEach(function(context) {
-      context.keys().forEach(function(path) {
+    sourceFilesContexts.forEach(context => {
+      context.keys().forEach(path => {
         // ignore if there is a matching spec file
         if (allTestFiles.indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
           return;
