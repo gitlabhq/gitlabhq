@@ -2,21 +2,7 @@ module QA
   module Factory
     module Resource
       class Fork < Factory::Base
-        dependency Factory::Resource::Sandbox, as: :sandbox do |sandbox|
-          sandbox.name = "Sandbox-#{SecureRandom.hex(8)}"
-          sandbox.visibility = 'Public'
-        end
-
-        dependency Factory::Resource::Project, as: :project do |project, factory|
-          project.group = factory.sandbox
-          project.namespace = factory.sandbox.name
-          project.name = 'project-to-fork'
-          project.visibility = 'Public'
-        end
-
-        dependency Factory::Repository::ProjectPush, as: :push do |push, factory|
-          push.project = factory.project
-        end
+        dependency Factory::Repository::ProjectPush, as: :push
 
         dependency Factory::Resource::User, as: :user
 

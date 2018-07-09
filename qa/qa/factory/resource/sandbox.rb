@@ -6,14 +6,8 @@ module QA
       # creating it if it doesn't yet exist.
       #
       class Sandbox < Factory::Base
-        attr_accessor :name, :visibility
-
         def initialize
           @name = Runtime::Namespace.sandbox_name
-        end
-
-        product :name do |factory|
-          factory.name
         end
 
         def fabricate!
