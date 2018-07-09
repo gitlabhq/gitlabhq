@@ -82,6 +82,36 @@ export const expandAllFiles = ({ commit }) => {
   commit(types.EXPAND_ALL_FILES);
 };
 
+/**
+ * Toggles the file discussions after user clicked on the toggle discussions button.
+ *
+ * Gets the discussions for the provided diff.
+ *
+ * If all discussions are expanded, it will collapse all of them
+ * If all discussions are collapsed, it will expand all of them
+ * If some discussions are open and others closed, it will expand the closed ones.
+ *
+ * @param {Object} diff
+ */
+export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
+  const discussions = getters.getDiffFileDiscussions(diff);
+
+  const shouldCloseAll = getters.diffHasAllExpandedDiscussions(diff);
+  const shouldExpandAll = getters.diffHasAllCollpasedDiscussions(diff);
+
+  discussions.forEach(discussion => {
+    const data = { discussionId: discussion.id };
+
+    if (shouldCloseAll) {
+      dispatch('collapseDiscussion', data, { root: true });
+    } else if (shouldExpandAll) {
+      dispatch('expandDiscussion', data, { root: true });
+    } else if (!shouldCloseAll && !shouldExpandAll && !discussion.expanded) {
+      dispatch('expandDiscussion', data, { root: true });
+    }
+  });
+};
+
 export default {
   setBaseConfig,
   fetchDiffFiles,
@@ -92,4 +122,5 @@ export default {
   loadMoreLines,
   loadCollapsedDiff,
   expandAllFiles,
+  toggleFileDiscussions,
 };
