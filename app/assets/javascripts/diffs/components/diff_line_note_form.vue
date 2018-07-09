@@ -59,7 +59,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['cancelCommentForm', 'saveNote', 'fetchDiscussions']),
+    ...mapActions(['cancelCommentForm', 'saveNote', 'refetchDiscussionById']),
     handleCancelCommentForm() {
       this.autosave.reset();
       this.cancelCommentForm({
@@ -78,10 +78,10 @@ export default {
       });
 
       this.saveNote(postData)
-        .then(() => {
+        .then(result => {
           const endpoint = this.getNotesDataByProp('discussionsPath');
 
-          this.fetchDiscussions(endpoint)
+          this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
             .then(() => {
               this.handleCancelCommentForm();
             })
