@@ -1,0 +1,12 @@
+- faq_link        = link_to s_("BillingPlans|frequently asked questions"), "https://about.gitlab.com/gitlab-com/#faq"
+- features_link   = link_to s_("BillingPlans|features"), "https://about.gitlab.com/features"
+- learn_more_text = s_("BillingPlans|Learn more about each plan by reading our %{faq_link}.").html_safe % { faq_link: faq_link }
+
+- if namespace.eligible_for_trial?
+  = s_("BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Gold.").html_safe % { faq_link: faq_link }
+- elsif namespace.trial_active?
+  = s_("BillingPlans|Your Gold trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}.").html_safe % { expiration_date: namespace.trial_ends_on, features_link: features_link }
+- elsif namespace.trial_expired?
+  = s_("BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn_more_text}").html_safe % { expiration_date: namespace.trial_ends_on, learn_more_text: learn_more_text }
+- else
+  = learn_more_text

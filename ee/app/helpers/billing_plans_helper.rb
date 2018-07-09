@@ -22,4 +22,8 @@ module BillingPlansHelper
       button_tag link_text, class: 'btn disabled'
     end
   end
+
+  def new_gitlab_com_trial_url
+    "#{EE::SUBSCRIPTIONS_URL}/trials/new?gl_com=true"
+  end
 end
