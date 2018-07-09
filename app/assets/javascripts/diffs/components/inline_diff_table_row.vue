@@ -94,11 +94,12 @@ export default {
       :is-hover="isHover"
       class="diff-line-num new_line"
     />
-    <diff-table-cell
+    <td
+      v-once
       :class="line.type"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-    />
+      class="line_content"
+      v-html="line.richText"
+    >
+    </td>
   </tr>
 </template>

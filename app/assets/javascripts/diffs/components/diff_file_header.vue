@@ -145,6 +145,7 @@ export default {
         @click.stop="handleToggle"
       />
       <a
+        v-once
         ref="titleWrapper"
         :href="titleLink"
         class="append-right-4"

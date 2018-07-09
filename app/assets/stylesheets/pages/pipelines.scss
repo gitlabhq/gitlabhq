@@ -301,6 +301,21 @@
         border-bottom: 2px solid $border-color;
       }
     }
+
+    //delete when all pipelines are updated to new size
+    &.mr-widget-pipeline-stages {
+      + .stage-container {
+        margin-left: 4px;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          width: 4px;
+          right: -4px;
+          top: 11px;
+        }
+      }
+    }
   }
 }
 

@@ -153,7 +153,7 @@ describe('Deployment component', () => {
 
     it('renders external URL', () => {
       expect(el.querySelector('.js-deploy-url').getAttribute('href')).toEqual(deploymentMockData.external_url);
-      expect(el.querySelector('.js-deploy-url').innerText).toContain(deploymentMockData.external_url_formatted);
+      expect(el.querySelector('.js-deploy-url').innerText).toContain('View app');
     });
 
     it('renders stop button', () => {

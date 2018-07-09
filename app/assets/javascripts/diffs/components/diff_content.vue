@@ -39,12 +39,12 @@ export default {
     <div class="diff-viewer">
       <template v-if="isTextFile">
         <inline-diff-view
-          v-show="isInlineView"
+          v-if="isInlineView"
           :diff-file="diffFile"
           :diff-lines="diffFile.highlightedDiffLines || []"
         />
         <parallel-diff-view
-          v-show="isParallelView"
+          v-if="isParallelView"
           :diff-file="diffFile"
           :diff-lines="diffFile.parallelDiffLines || []"
         />
