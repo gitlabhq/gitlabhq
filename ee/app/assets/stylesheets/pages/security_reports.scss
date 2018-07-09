@@ -34,10 +34,13 @@
 
   .code-text {
     width: 100%;
+    flex: 1;
   }
 }
 
 .mr-widget-grouped-section {
+  margin-top: $gl-padding;
+
   .report-block-container {
     max-height: 170px;
     overflow: auto;
