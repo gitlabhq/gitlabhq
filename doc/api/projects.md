@@ -1569,6 +1569,10 @@ POST /projects/:id/mirror/pull
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/mirror/pull
+```
+
 ## Project badges
 
 Read more in the [Project Badges](project_badges.md) documentation.
