@@ -88,9 +88,10 @@ _The artifacts are stored by default in
 ### Using object storage
 
 >**Notes:**
-- [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
-- Since version 9.5, artifacts are [browsable](https://docs.gitlab.com/ee/user/project/pipelines/job_artifacts.html#browsing-artifacts), when object storage is enabled. 
-  9.4 lacks this feature.
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762) in
+  [GitLab Premium](https://about.gitlab.com/pricing/) 9.4.
+- Since version 9.5, artifacts are [browsable](../user/project/pipelines/job_artifacts.md#browsing-artifacts),
+  when object storage is enabled. 9.4 lacks this feature.
 - Since version 10.6, available in [GitLab Core](https://about.gitlab.com/pricing/)
 - Since version 11.0, we support `direct_upload` to S3.
 
