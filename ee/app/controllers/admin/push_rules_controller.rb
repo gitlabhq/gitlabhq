@@ -8,7 +8,7 @@ class Admin::PushRulesController < Admin::ApplicationController
   end
 
   def update
-    @push_rule.update_attributes(push_rule_params)
+    @push_rule.update(push_rule_params)
 
     if @push_rule.valid?
       redirect_to admin_push_rule_path, notice: 'Push Rule updated successfully.'

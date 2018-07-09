@@ -139,7 +139,7 @@ describe PushRule do
       it 'raises a MatchError when the regex is invalid' do
         push_rule[regex_attr] = '+'
 
-        expect { push_rule.public_send(method_name, 'foo') } # rubocop:disable GitlabSecurity/PublicSend
+        expect { push_rule.public_send(method_name, 'foo') }
           .to raise_error(PushRule::MatchError, /\ARegular expression '\+' is invalid/)
       end
     end

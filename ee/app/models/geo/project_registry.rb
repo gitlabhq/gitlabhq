@@ -1,7 +1,10 @@
 class Geo::ProjectRegistry < Geo::BaseRegistry
+  include ::Delay
   include ::EachBatch
   include ::IgnorableColumn
   include ::ShaAttribute
+
+  RETRIES_BEFORE_REDOWNLOAD = 5
 
   ignore_column :last_repository_verification_at
   ignore_column :last_repository_verification_failed
@@ -52,6 +55,61 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     )
   end
 
+  # Must be run before fetching the repository to avoid a race condition
+  def start_sync!(type)
+    new_count = retry_count(type) + 1
+
+    update!(
+      "last_#{type}_synced_at" => Time.now,
+      "#{type}_retry_count" => new_count,
+      "#{type}_retry_at" => next_retry_time(new_count))
+  end
+
+  def finish_sync!(type)
+    update!(
+      # Indicate that the sync succeeded (but separately mark as synced atomically)
+      "last_#{type}_successful_sync_at" => Time.now,
+      "#{type}_retry_count" => nil,
+      "#{type}_retry_at" => nil,
+      "force_to_redownload_#{type}" => false,
+      "last_#{type}_sync_failure" => nil,
+
+      # Indicate that repository verification needs to be done again
+      "#{type}_verification_checksum_sha" => nil,
+      "#{type}_checksum_mismatch" => false,
+      "last_#{type}_verification_failure" => nil)
+
+    mark_synced_atomically(type)
+  end
+
+  def fail_sync!(type, message, error, attrs = {})
+    attrs["resync_#{type}"] = true
+    attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
+    attrs["#{type}_retry_count"] = retry_count(type) + 1
+
+    update!(attrs)
+  end
+
+  def repository_created!(repository_created_event)
+    update!(resync_repository: true,
+            resync_wiki: repository_created_event.wiki_path.present?)
+  end
+
+  # Marks the project as dirty.
+  #
+  # resync_#{type}_was_scheduled_at tracks scheduled_at to avoid a race condition.
+  # See the method #mark_synced_atomically.
+  def repository_updated!(repository_updated_event, scheduled_at)
+    type = repository_updated_event.source
+
+    update!(
+      "resync_#{type}" => true,
+      "#{type}_verification_checksum_sha" => nil,
+      "#{type}_checksum_mismatch" => false,
+      "last_#{type}_verification_failure" => nil,
+      "resync_#{type}_was_scheduled_at" => scheduled_at)
+  end
+
   def repository_sync_due?(scheduled_time)
     never_synced_repository? || repository_sync_needed?(scheduled_time)
   end
@@ -76,6 +134,12 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     return false if !value.is_a?(Integer) || value < 0
 
     Gitlab::Redis::SharedState.with { |redis| redis.set(fetches_since_gc_redis_key, value) }
+  end
+
+  def should_be_redownloaded?(type)
+    return true if public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
+
+    retry_count(type) > RETRIES_BEFORE_REDOWNLOAD
   end
 
   private
@@ -104,5 +168,48 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     return false if wiki_retry_at && timestamp < wiki_retry_at
 
     last_wiki_synced_at && timestamp > last_wiki_synced_at
+  end
+
+  # To prevent the retry time from storing invalid dates in the database,
+  # cap the max time to a week plus some random jitter value.
+  def next_retry_time(retry_count)
+    proposed_time = Time.now + delay(retry_count).seconds
+    max_future_time = Time.now + 7.days + delay(1).seconds
+
+    [proposed_time, max_future_time].min
+  end
+
+  def retry_count(type)
+    public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  # @return [Boolean] whether the update was successful
+  def mark_synced_atomically(type)
+    # Indicates whether the project is dirty (needs to be synced).
+    #
+    # This is the field we intend to reset to false.
+    sync_column = "resync_#{type}"
+
+    # The latest time that this project was marked as dirty.
+    #
+    # This field may change at any time when processing
+    # `RepositoryUpdatedEvent`s.
+    sync_scheduled_column = "resync_#{type}_was_scheduled_at"
+
+    # The time recorded just before syncing.
+    #
+    # We know this field won't change between `start_sync!` and `finish_sync!`
+    # because it is only updated by `start_sync!`, which is only done in the
+    # exclusive lease block.
+    sync_started_column = "last_#{type}_synced_at"
+
+    # This conditional update must be atomic since RepositoryUpdatedEvent may
+    # update resync_*_was_scheduled_at at any time.
+    num_rows = self.class
+                   .where(project: project)
+                   .where("#{sync_scheduled_column} IS NULL OR #{sync_scheduled_column} < #{sync_started_column}")
+                   .update_all(sync_column => false)
+
+    num_rows > 0
   end
 end

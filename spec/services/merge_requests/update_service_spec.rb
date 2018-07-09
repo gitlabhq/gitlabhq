@@ -260,7 +260,7 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'when not approved' do
         before do
-          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.update(approvals_before_merge: 1)
 
           perform_enqueued_jobs do
             service.execute(merge_request)
@@ -274,7 +274,7 @@ describe MergeRequests::UpdateService, :mailer do
 
       context 'when approved' do
         before do
-          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.update(approvals_before_merge: 1)
           merge_request.approvals.create(user: user)
 
           perform_enqueued_jobs do

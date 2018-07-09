@@ -50,7 +50,7 @@ end
 
 shared_examples 'geo base sync fetch and repack' do
   describe '#fetch_repository' do
-    let(:fetch_repository) { subject.send(:fetch_repository, false) }
+    let(:fetch_repository) { subject.send(:fetch_repository) }
 
     before do
       allow(subject).to receive(:fetch_geo_mirror).and_return(true)
@@ -62,8 +62,9 @@ shared_examples 'geo base sync fetch and repack' do
       fetch_repository
     end
 
-    it 'updates registry' do
-      is_expected.to receive(:update_registry!)
+    it 'tells registry that sync will start now' do
+      registry = subject.send(:registry)
+      expect(registry).to receive(:start_sync!)
 
       fetch_repository
     end
@@ -95,7 +96,7 @@ shared_examples 'geo base sync fetch and repack' do
 end
 
 shared_examples 'sync retries use the snapshot RPC' do
-  let(:retry_count) { Geo::BaseSyncService::RETRIES_BEFORE_REDOWNLOAD }
+  let(:retry_count) { Geo::ProjectRegistry::RETRIES_BEFORE_REDOWNLOAD }
 
   context 'snapshot synchronization method' do
     before do
@@ -137,6 +138,22 @@ shared_examples 'sync retries use the snapshot RPC' do
         expect(subject).to receive(:fetch_geo_mirror).with(repository)
 
         subject.execute
+      end
+    end
+  end
+end
+
+shared_examples 'reschedules sync due to race condition instead of waiting for backfill' do
+  describe '#mark_sync_as_successful' do
+    let(:mark_sync_as_successful) { subject.send(:mark_sync_as_successful) }
+    let(:registry) { subject.send(:registry) }
+
+    context 'when RepositoryUpdatedEvent was processed during a sync' do
+      it 'reschedules the sync' do
+        expect(::Geo::ProjectSyncWorker).to receive(:perform_async)
+        expect(registry).to receive(:finish_sync!).and_return(false)
+
+        mark_sync_as_successful
       end
     end
   end

@@ -217,7 +217,7 @@ describe Project do
       it 'fails stuck remote mirrors' do
         project = create(:project, :repository, :remote_mirror)
 
-        project.remote_mirrors.first.update_attributes(
+        project.remote_mirrors.first.update(
           update_status: :started,
           last_update_at: 2.days.ago
         )
@@ -290,7 +290,7 @@ describe Project do
       project2 = create(:project)
 
       expect do
-        project2.update_attributes(mirror: true, import_url: generate(:url), mirror_user: project.creator)
+        project2.update(mirror: true, import_url: generate(:url), mirror_user: project.creator)
       end.to change { ProjectImportState.where(project: project2).count }.from(0).to(1)
     end
 
@@ -610,15 +610,15 @@ describe Project do
       end
 
       it 'returns the most recent timestamp' do
-        project.update_attributes(updated_at: nil,
-                                  last_activity_at: timestamp,
-                                  last_repository_updated_at: timestamp - 1.hour)
+        project.update(updated_at: nil,
+                       last_activity_at: timestamp,
+                       last_repository_updated_at: timestamp - 1.hour)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
 
-        project.update_attributes(updated_at: timestamp,
-                                  last_activity_at: timestamp - 1.hour,
-                                  last_repository_updated_at: nil)
+        project.update(updated_at: timestamp,
+                       last_activity_at: timestamp - 1.hour,
+                       last_repository_updated_at: nil)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
       end
@@ -1931,7 +1931,7 @@ describe Project do
       it 'resets project import_error' do
         error_message = 'Some error'
         mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update_attributes(last_error: error_message)
+        mirror.import_state.update(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -2118,7 +2118,7 @@ describe Project do
     end
 
     it 'returns false when remote mirror is disabled' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       is_expected.to be_falsy
     end
@@ -2148,7 +2148,7 @@ describe Project do
     end
 
     it 'does not sync disabled remote mirrors' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       expect_any_instance_of(RemoteMirror).not_to receive(:sync)
 

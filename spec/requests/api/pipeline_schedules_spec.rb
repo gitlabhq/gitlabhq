@@ -22,7 +22,7 @@ describe API::PipelineSchedules do
           .each do |pipeline_schedule|
           create(:user).tap do |user|
             project.add_developer(user)
-            pipeline_schedule.update_attributes(owner: user)
+            pipeline_schedule.update(owner: user)
           end
           pipeline_schedule.pipelines << build(:ci_pipeline, project: project)
         end

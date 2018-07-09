@@ -60,8 +60,8 @@ module Gitlab
 
       private
 
-      def method_missing(m, *args, &block)
-        @hash.public_send(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      def method_missing(msg, *args, &block)
+        @hash.public_send(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
       end
     end
   end

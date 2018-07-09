@@ -514,7 +514,7 @@ class User < ActiveRecord::Base
 
   def disable_two_factor!
     transaction do
-      update_attributes(
+      update(
         otp_required_for_login:      false,
         encrypted_otp_secret:        nil,
         encrypted_otp_secret_iv:     nil,
@@ -1075,7 +1075,7 @@ class User < ActiveRecord::Base
     return @global_notification_setting if defined?(@global_notification_setting)
 
     @global_notification_setting = notification_settings.find_or_initialize_by(source: nil)
-    @global_notification_setting.update_attributes(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
+    @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
 
     @global_notification_setting
   end
@@ -1355,8 +1355,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.unique_internal(scope, username, email_pattern, &b)
-    scope.first || create_unique_internal(scope, username, email_pattern, &b)
+  def self.unique_internal(scope, username, email_pattern, &block)
+    scope.first || create_unique_internal(scope, username, email_pattern, &block)
   end
 
   def self.create_unique_internal(scope, username, email_pattern, &creation_block)

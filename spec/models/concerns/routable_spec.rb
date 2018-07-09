@@ -29,7 +29,7 @@ describe Group, 'Routable' do
     end
 
     it 'updates route record on path change' do
-      group.update_attributes(path: 'wow', name: 'much')
+      group.update(path: 'wow', name: 'much')
 
       expect(group.route.path).to eq('wow')
       expect(group.route.name).to eq('much')

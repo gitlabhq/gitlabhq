@@ -1170,7 +1170,7 @@ describe NotificationService, :mailer do
         let(:project_approvers) { create_list(:user, 3) }
 
         before do
-          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+          merge_request.target_project.update(approvals_before_merge: 1)
           project_approvers.each { |approver| create(:approver, user: approver, target: merge_request.target_project) }
         end
 
@@ -1181,7 +1181,7 @@ describe NotificationService, :mailer do
         end
 
         it 'does not email the approvers when approval is not necessary' do
-          merge_request.target_project.update_attributes(approvals_before_merge: 0)
+          merge_request.target_project.update(approvals_before_merge: 0)
           notification.new_merge_request(merge_request, @u_disabled)
 
           project_approvers.each { |approver| should_not_email(approver) }
@@ -1356,7 +1356,7 @@ describe NotificationService, :mailer do
 
       describe 'when merge_when_pipeline_succeeds is true' do
         before do
-          merge_request.update_attributes(
+          merge_request.update(
             merge_when_pipeline_succeeds: true,
             merge_user: create(:user)
           )

@@ -67,7 +67,7 @@ module EE
 
           respond_to do |format|
             format.html do
-              redirect_to edit_project_service_path(project, ::PrometheusService), status: 303
+              redirect_to edit_project_service_path(project, ::PrometheusService), status: :see_other
             end
             format.json do
               head :ok

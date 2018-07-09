@@ -96,7 +96,7 @@ describe 'Project > Members > Share with Group', :js do
 
       context 'when the group has membership lock and "Share with group lock" enabled' do
         before do
-          project.namespace.update_attributes(share_with_group_lock: true, membership_lock: true)
+          project.namespace.update(share_with_group_lock: true, membership_lock: true)
         end
 
         it_behaves_like 'the project cannot be shared with groups and members'
@@ -136,7 +136,7 @@ describe 'Project > Members > Share with Group', :js do
 
         context 'when the group has membership lock and "Share with group lock" enabled' do
           before do
-            subgroup.update_attributes(share_with_group_lock: true, membership_lock: true)
+            subgroup.update(share_with_group_lock: true, membership_lock: true)
           end
 
           it_behaves_like 'the project cannot be shared with groups and members'
@@ -145,7 +145,7 @@ describe 'Project > Members > Share with Group', :js do
 
       context 'when the root_group has "Share with group lock" and membership lock enabled' do
         before do
-          root_group.update_attributes(share_with_group_lock: true, membership_lock: true)
+          root_group.update(share_with_group_lock: true, membership_lock: true)
           subgroup.reload
         end
 
@@ -155,7 +155,7 @@ describe 'Project > Members > Share with Group', :js do
 
         context 'when the subgroup has "Share with group lock" and membership lock disabled (parent overridden)' do
           before do
-            subgroup.update_attributes(share_with_group_lock: false, membership_lock: false)
+            subgroup.update(share_with_group_lock: false, membership_lock: false)
           end
 
           it_behaves_like 'the project can be shared with groups and members'
@@ -181,7 +181,7 @@ describe 'Project > Members > Share with Group', :js do
 
         context 'when the subgroup has "Share with group lock" and membership lock enabled' do
           before do
-            subgroup.update_attributes(membership_lock: true, share_with_group_lock: true)
+            subgroup.update(membership_lock: true, share_with_group_lock: true)
           end
 
           it_behaves_like 'the project cannot be shared with groups and members'

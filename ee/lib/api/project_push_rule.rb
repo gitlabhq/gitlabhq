@@ -58,7 +58,7 @@ module API
         push_rule = user_project.push_rule
         not_found!('Push Rule') unless push_rule
 
-        if push_rule.update_attributes(declared_params(include_missing: false))
+        if push_rule.update(declared_params(include_missing: false))
           present push_rule, with: EE::API::Entities::ProjectPushRule
         else
           render_validation_error!(push_rule)

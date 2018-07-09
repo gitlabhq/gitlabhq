@@ -39,7 +39,7 @@ class Projects::LabelsController < Projects::ApplicationController
     else
       respond_to do |format|
         format.html { render :new }
-        format.json { render json: { message: @label.errors.messages }, status: 400 }
+        format.json { render json: { message: @label.errors.messages }, status: :bad_request }
       end
     end
   end
@@ -115,7 +115,7 @@ class Projects::LabelsController < Projects::ApplicationController
       flash[:notice] = "#{@label.title} promoted to <a href=\"#{group_labels_path(@project.group)}\">group label</a>.".html_safe
       respond_to do |format|
         format.html do
-          redirect_to(project_labels_path(@project), status: 303)
+          redirect_to(project_labels_path(@project), status: :see_other)
         end
         format.json do
           render json: { url: project_labels_path(@project) }

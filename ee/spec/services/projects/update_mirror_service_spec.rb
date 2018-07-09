@@ -60,7 +60,7 @@ describe Projects::UpdateMirrorService do
         let(:protected_branch_name) { 'existing-branch' }
 
         before do
-          project.update_attributes(only_mirror_protected_branches: true)
+          project.update(only_mirror_protected_branches: true)
         end
 
         it 'creates a new protected branch' do

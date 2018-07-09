@@ -14,7 +14,7 @@ describe IssuesMovedToIdForeignKey, :migration, schema: 20171114150259 do
   it 'removes the orphaned moved_to_id' do
     subject.down
 
-    issue_third.update_attributes(moved_to_id: 100000)
+    issue_third.update(moved_to_id: 100000)
 
     subject.up
 

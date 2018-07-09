@@ -87,7 +87,6 @@ module Gitlab
           end
         end
 
-        # rubocop: disable Rails/Output
         def status
           Gitlab::Geo::DatabaseTasks.with_geo_db do
             unless ActiveRecord::SchemaMigration.table_exists?
@@ -118,7 +117,6 @@ module Gitlab
             puts
           end
         end
-        # rubocop: enable Rails/Output
       end
 
       module Test

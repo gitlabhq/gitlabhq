@@ -48,7 +48,6 @@ module EE
                                          .find_by!(iid: params[:id])
         super
       end
-      # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
       def define_edit_vars
         super
