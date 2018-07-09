@@ -12,7 +12,7 @@ class Projects::ImportsController < Projects::ApplicationController
   end
 
   def create
-    if @project.update_attributes(safe_import_params)
+    if @project.update(safe_import_params)
       @project.reload.import_schedule
     end
 

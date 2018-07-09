@@ -85,7 +85,7 @@ module Gitlab
 
         sha = head_commit.try(:sha)
         sha ||= Gitlab::Git::BLANK_SHA
-        index_status.update_attributes(last_commit: sha, indexed_at: Time.now)
+        index_status.update(last_commit: sha, indexed_at: Time.now)
         project.index_status(true)
       end
     end

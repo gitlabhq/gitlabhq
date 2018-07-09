@@ -13,20 +13,20 @@ module EE
 
         if lookup.error.present?
           # Failed to read keys
-          render json: { message: lookup.error }, status: 400
+          render json: { message: lookup.error }, status: :bad_request
         elsif lookup.known_hosts.nil?
           # Still working, come back later
-          render body: nil, status: 204
+          render body: nil, status: :no_content
         else
           render json: lookup
         end
       rescue ArgumentError => err
-        render json: { message: err.message }, status: 400
+        render json: { message: err.message }, status: :bad_request
       end
 
       override :update
       def update
-        if project.update_attributes(safe_mirror_params)
+        if project.update(safe_mirror_params)
           if project.mirror?
             project.force_import_job!
 

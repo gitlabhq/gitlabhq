@@ -13,7 +13,7 @@ describe RepositoryUpdateRemoteMirrorWorker do
   describe '#perform' do
     context 'with status none' do
       before do
-        remote_mirror.update_attributes(update_status: 'none')
+        remote_mirror.update(update_status: 'none')
       end
 
       it 'sets status as finished when update remote mirror service executes successfully' do
@@ -34,7 +34,7 @@ describe RepositoryUpdateRemoteMirrorWorker do
       end
 
       it 'does nothing if last_update_started_at is higher than the time the job was scheduled in' do
-        remote_mirror.update_attributes(last_update_started_at: Time.now)
+        remote_mirror.update(last_update_started_at: Time.now)
 
         expect_any_instance_of(RemoteMirror).to receive(:updated_since?).with(scheduled_time).and_return(true)
         expect_any_instance_of(Projects::UpdateRemoteMirrorService).not_to receive(:execute).with(remote_mirror)
@@ -56,7 +56,7 @@ describe RepositoryUpdateRemoteMirrorWorker do
 
     context 'with another worker already running' do
       before do
-        remote_mirror.update_attributes(update_status: 'started')
+        remote_mirror.update(update_status: 'started')
       end
 
       it 'raises RemoteMirrorUpdateAlreadyInProgressError' do
@@ -68,11 +68,11 @@ describe RepositoryUpdateRemoteMirrorWorker do
 
     context 'with status failed' do
       before do
-        remote_mirror.update_attributes(update_status: 'failed')
+        remote_mirror.update(update_status: 'failed')
       end
 
       it 'sets status as finished if last_update_started_at is higher than the time the job was scheduled in' do
-        remote_mirror.update_attributes(last_update_started_at: Time.now)
+        remote_mirror.update(last_update_started_at: Time.now)
 
         expect_any_instance_of(RemoteMirror).to receive(:updated_since?).with(scheduled_time).and_return(false)
         expect_any_instance_of(Projects::UpdateRemoteMirrorService).to receive(:execute).with(remote_mirror).and_return(status: :success)

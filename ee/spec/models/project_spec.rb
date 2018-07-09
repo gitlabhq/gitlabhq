@@ -71,7 +71,7 @@ describe Project do
 
           Timecop.freeze do
             expect do
-              project.update_attributes(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
+              project.update(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
             end.to change { ProjectImportState.count }.by(1)
 
             expect(project.import_state.next_execution_timestamp).to eq(Time.now)
@@ -85,7 +85,7 @@ describe Project do
 
           Timecop.freeze do
             expect do
-              project.update_attributes(mirror: true, mirror_user_id: project.creator.id)
+              project.update(mirror: true, mirror_user_id: project.creator.id)
             end.not_to change { ProjectImportState.count }
 
             expect(project.import_state.next_execution_timestamp).to eq(Time.now)
@@ -123,7 +123,7 @@ describe Project do
       end
 
       it 'returns empty if next_execution_timestamp is in the future' do
-        import_state.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+        import_state.update(next_execution_timestamp: timestamp + 2.minutes)
 
         expect(described_class.mirrors_to_sync(timestamp)).to be_empty
       end
@@ -137,7 +137,7 @@ describe Project do
       end
 
       it 'returns empty if next_execution_timestamp is in the future' do
-        project.import_state.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+        project.import_state.update(next_execution_timestamp: timestamp + 2.minutes)
 
         expect(described_class.mirrors_to_sync(timestamp)).to be_empty
       end
@@ -167,7 +167,7 @@ describe Project do
   describe 'hard failing a mirror' do
     it 'sends a notification' do
       project = create(:project, :mirror, :import_started)
-      project.import_state.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+      project.import_state.update(retry_count: Gitlab::Mirror::MAX_RETRY)
 
       expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
 
@@ -407,7 +407,7 @@ describe Project do
 
       expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(project.id, ::Repository::MIRROR_REMOTE).and_call_original
 
-      project.update_attributes(import_url: "http://test.com")
+      project.update(import_url: "http://test.com")
     end
   end
 
@@ -416,7 +416,7 @@ describe Project do
       project = create(:project, :mirror, :import_scheduled)
       import_state = project.import_state
 
-      import_state.update_attributes(last_update_started_at: import_state.last_update_scheduled_at + 5.minutes)
+      import_state.update(last_update_started_at: import_state.last_update_scheduled_at + 5.minutes)
 
       expect(project.mirror_waiting_duration).to eq(300)
     end
@@ -426,7 +426,7 @@ describe Project do
     it 'returns in seconds the time spent updating' do
       project = create(:project, :mirror, :import_started)
 
-      project.update_attributes(mirror_last_update_at: project.import_state.last_update_started_at + 5.minutes)
+      project.update(mirror_last_update_at: project.import_state.last_update_started_at + 5.minutes)
 
       expect(project.mirror_update_duration).to eq(300)
     end
@@ -734,7 +734,7 @@ describe Project do
 
     context 'when repository_size_limit is configured' do
       before do
-        project.update_attributes(repository_size_limit: 1024)
+        project.update(repository_size_limit: 1024)
       end
 
       context 'with an EES license' do

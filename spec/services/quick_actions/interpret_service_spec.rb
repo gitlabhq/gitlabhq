@@ -447,7 +447,7 @@ describe QuickActions::InterpretService do
 
       context 'not approved merge request can not be merged' do
         before do
-          merge_request.target_project.update_attributes(approvals_before_merge: 1)
+          merge_request.target_project.update(approvals_before_merge: 1)
         end
 
         it_behaves_like 'empty command' do
@@ -458,7 +458,7 @@ describe QuickActions::InterpretService do
 
       context 'approved merge request can be merged' do
         before do
-          merge_request.update_attributes(approvals_before_merge: 1)
+          merge_request.update(approvals_before_merge: 1)
           merge_request.approvals.create(user: developer)
         end
 

@@ -120,7 +120,7 @@ class Projects::WikisController < Projects::ApplicationController
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
-    return false
+    false
   end
 
   def wiki_params
@@ -129,7 +129,7 @@ class Projects::WikisController < Projects::ApplicationController
 
   def build_page(args)
     WikiPage.new(@project_wiki).tap do |page|
-      page.update_attributes(args)
+      page.update_attributes(args) # rubocop:disable Rails/ActiveRecordAliases
     end
   end
 end

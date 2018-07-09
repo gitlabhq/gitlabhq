@@ -10,16 +10,16 @@ module Geo
         return false
       end
 
-      return true
+      true
     rescue Gitlab::Geo::GeoNodeNotFoundError => e
       log_error(e.to_s)
-      return false
+      false
     rescue OpenSSL::Cipher::CipherError => e
       log_error('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.', e)
-      return false
+      false
     rescue Gitlab::HTTP::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
       log_error('Failed to post status data to primary', e)
-      return false
+      false
     end
 
     private

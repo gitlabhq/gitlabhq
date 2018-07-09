@@ -81,7 +81,7 @@ describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update_attributes(external: true)
+          current_user.update(external: true)
         end
 
         it { is_expected.to match_array([shared_project_2, shared_project_1]) }
@@ -112,7 +112,7 @@ describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update_attributes(external: true)
+          current_user.update(external: true)
         end
 
         context 'with subgroups projects', :nested_groups do

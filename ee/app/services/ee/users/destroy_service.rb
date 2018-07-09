@@ -16,7 +16,7 @@ module EE
         user_mirrors.find_each do |mirror|
           new_mirror_user = first_mirror_owner(user, mirror)
 
-          mirror.update_attributes(mirror_user: new_mirror_user)
+          mirror.update(mirror_user: new_mirror_user)
           ::NotificationService.new.project_mirror_user_changed(new_mirror_user, user.name, mirror)
         end
       end

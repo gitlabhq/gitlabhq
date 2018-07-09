@@ -13,7 +13,7 @@ module EpicIssues
       epic_issue.save!
       success
     rescue ActiveRecord::RecordNotFound
-      return error('Epic issue not found for given params', 404)
+      error('Epic issue not found for given params', 404)
     end
 
     private

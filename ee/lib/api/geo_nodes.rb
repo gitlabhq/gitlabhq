@@ -143,7 +143,7 @@ module API
 
           if geo_node.primary?
             forbidden!('Primary node cannot be edited')
-          elsif geo_node.update_attributes(update_params)
+          elsif geo_node.update(update_params)
             present geo_node, with: EE::API::Entities::GeoNode
           else
             render_validation_error!(geo_node)

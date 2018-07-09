@@ -10,7 +10,7 @@ FactoryBot.define do
       end
 
       after(:create) do |epic, evaluator|
-        epic.update_attributes(labels: evaluator.labels)
+        epic.update(labels: evaluator.labels)
       end
     end
   end

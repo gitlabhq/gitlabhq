@@ -401,8 +401,8 @@ module Gitlab
       path.read.chomp
     end
 
-    def self.timestamp(t)
-      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    def self.timestamp(time)
+      Google::Protobuf::Timestamp.new(seconds: time.to_i)
     end
 
     # The default timeout on all Gitaly calls

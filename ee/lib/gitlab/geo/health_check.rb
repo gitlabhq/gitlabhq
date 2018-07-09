@@ -25,7 +25,7 @@ module Gitlab
           end
         end
 
-        return ''
+        ''
       rescue => e
         e.message
       end

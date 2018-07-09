@@ -70,7 +70,7 @@ describe Projects::UpdateService, '#execute' do
         let!(:old_name) { project.full_name }
         let(:operation) { update_project(project, user, name: 'foobar') }
         let(:fail_condition!) do
-          allow_any_instance_of(Project).to receive(:update_attributes).and_return(false)
+          allow_any_instance_of(Project).to receive(:update).and_return(false)
         end
 
         let(:attributes) do
@@ -89,7 +89,7 @@ describe Projects::UpdateService, '#execute' do
       include_examples 'audit event logging' do
         let(:operation) { update_project(project, user, path: 'foobar1') }
         let(:fail_condition!) do
-          allow_any_instance_of(Project).to receive(:update_attributes).and_return(false)
+          allow_any_instance_of(Project).to receive(:update).and_return(false)
         end
 
         let(:attributes) do
@@ -110,7 +110,7 @@ describe Projects::UpdateService, '#execute' do
           update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         end
         let(:fail_condition!) do
-          allow_any_instance_of(Project).to receive(:update_attributes).and_return(false)
+          allow_any_instance_of(Project).to receive(:update).and_return(false)
         end
 
         let(:attributes) do

@@ -74,7 +74,7 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
         subject.perform(shard_name)
 
-        reg1.update_attributes!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
+        reg1.update!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg2.id).once
 
@@ -93,19 +93,19 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
 
         subject.perform(shard_name)
 
-        reg1.update_attributes!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
+        reg1.update!(repository_verification_checksum_sha: project1_repo_verified.repository_state.repository_verification_checksum)
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg2.id).once
 
         subject.perform(shard_name)
 
-        reg2.update_attributes!(repository_verification_checksum_sha: project2_repo_verified.repository_state.repository_verification_checksum)
+        reg2.update!(repository_verification_checksum_sha: project2_repo_verified.repository_state.repository_verification_checksum)
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg4.id).once
 
         subject.perform(shard_name)
 
-        reg4.update_attributes!(last_wiki_verification_failure: 'Failed!')
+        reg4.update!(last_wiki_verification_failure: 'Failed!')
 
         expect(secondary_singleworker).to receive(:perform_async).with(reg6.id).once
 

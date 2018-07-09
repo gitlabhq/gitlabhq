@@ -177,7 +177,7 @@ describe Gitlab::Workhorse do
     end
 
     it 'accepts a trailing newline' do
-      open(described_class.secret_path, 'a') { |f| f.write "\n" }
+      File.open(described_class.secret_path, 'a') { |f| f.write "\n" }
       expect(subject.length).to eq(32)
     end
 
