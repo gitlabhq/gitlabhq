@@ -100,7 +100,11 @@ describe Ci::RetryBuildService do
   end
 
   describe '#execute' do
-    let(:new_build) { service.execute(build) }
+    let(:new_build) do
+      Timecop.freeze(1.second.from_now) do
+        service.execute(build)
+      end
+    end
 
     context 'when user has ability to execute build' do
       before do
@@ -150,7 +154,11 @@ describe Ci::RetryBuildService do
   end
 
   describe '#reprocess' do
-    let(:new_build) { service.reprocess!(build) }
+    let(:new_build) do
+      Timecop.freeze(1.second.from_now) do
+        service.reprocess!(build)
+      end
+    end
 
     context 'when user has ability to execute build' do
       before do
