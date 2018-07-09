@@ -19,10 +19,12 @@ module Clusters
         end
 
         def extra_env
+          client_cert = cluster.application_helm.issue_cert
+
           {
             CA_CERT: cluster.application_helm.ca_cert,
-            HELM_CERT: cluster.application_helm.client_cert,
-            HELM_KEY: cluster.application_helm.client_key
+            HELM_CERT: client_cert.cert_string,
+            HELM_KEY: client_cert.key_string
           }
         end
       end
