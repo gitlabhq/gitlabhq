@@ -45,6 +45,11 @@ export const setParallelDiffViewType = ({ commit }) => {
   historyPushState(url);
 };
 
+export const setNextFileToRender = ({ commit }) => {
+  console.log('SET NEXT FILE TO RN)');
+  commit(types.SET_NEXT_DIFF_FILE_TO_RENDER);
+};
+
 export const showCommentForm = ({ commit }, params) => {
   commit(types.ADD_COMMENT_FORM_LINE, params);
 };

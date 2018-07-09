@@ -15,6 +15,12 @@ export default {
   },
 
   [types.SET_DIFF_DATA](state, data) {
+    // eslint-disable-next-line no-param-reassign
+    data.diff_files = data.diff_files.map((file, index) => ({
+      ...file,
+      renderIt: index < 5,
+    }));
+
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data, { deep: true }),
     });
@@ -63,6 +69,11 @@ export default {
       const index = _.findIndex(state.diffFiles, f => f.fileHash === file.fileHash);
       state.diffFiles.splice(index, 1, newFileData);
     }
+  },
+
+  [types.SET_NEXT_DIFF_FILE_TO_RENDER](state) {
+    const nextFile = state.diffFiles.find(checkFile => checkFile.renderIt === false);
+    if (nextFile) Object.assign(nextFile, { renderIt: true });
   },
 
   [types.EXPAND_ALL_FILES](state) {

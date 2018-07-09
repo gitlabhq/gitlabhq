@@ -121,7 +121,7 @@ export default {
     </div>
 
     <diff-content
-      v-if="!isCollapsed"
+      v-if="file.renderIt && !isCollapsed"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />

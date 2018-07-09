@@ -1,4 +1,5 @@
 <script>
+import Vue from 'vue';
 import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
@@ -109,12 +110,25 @@ export default {
     if (this.shouldShow) {
       this.fetchData();
     }
+
+    console.log('We are done!');
+  },
+  updated() {
+    console.log('We are upd ated ' + this.diffFiles.length);
+    if (this.diffFiles.length) {
+      Vue.nextTick()
+        .then(() => {
+          this.setNextFileToRender();
+          requestAnimationFrame(this.setNextFileToRender);
+        })
+        .catch(() => {});
+    }
   },
   created() {
     this.adjustView();
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles', 'setNextFileToRender']),
     fetchData() {
       this.fetchDiffFiles().catch(() => {
         createFlash(__('Something went wrong on our end. Please try again!'));
