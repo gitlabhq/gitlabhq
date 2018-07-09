@@ -31,7 +31,7 @@ class Import::BitbucketServerController < Import::BaseController
 
     unless repo
       return render json: { errors: "Project #{@project_key}/#{@repo_slug} could not be found" }, status: :unprocessable_entity
-   end
+    end
 
     project_name = params[:new_name].presence || repo.name
 
