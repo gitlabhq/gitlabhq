@@ -48,7 +48,7 @@ describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
       end
 
-      context 'using PostgreSQL' do
+      context 'using PostgreSQL', :postgresql do
         before do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
           allow(model).to receive(:disable_statement_timeout).and_call_original
@@ -224,6 +224,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'using PostgreSQL' do
         before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
