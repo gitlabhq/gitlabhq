@@ -69,7 +69,7 @@
     "katex": "^0.8.3",
     "marked": "^0.3.12",
     "monaco-editor": "0.13.1",
-    "monaco-editor-webpack-plugin": "^1.2.1",
+    "monaco-editor-webpack-plugin": "^1.4.0",
     "mousetrap": "^1.4.6",
     "pikaday": "^1.6.1",
     "popper.js": "^1.14.3",

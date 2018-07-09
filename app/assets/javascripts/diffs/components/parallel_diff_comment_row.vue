@@ -55,13 +55,6 @@ export default {
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
-    shouldRenderDiscussionsRow() {
-      const hasDiscussion = this.hasDiscussion && this.hasAnyExpandedDiscussion;
-      const hasCommentFormOnLeft = this.diffLineCommentForms[this.leftLineCode];
-      const hasCommentFormOnRight = this.diffLineCommentForms[this.rightLineCode];
-
-      return hasDiscussion || hasCommentFormOnLeft || hasCommentFormOnRight;
-    },
     shouldRenderDiscussionsOnLeft() {
       return this.discussionsByLineCode[this.leftLineCode] && this.hasExpandedDiscussionOnLeft;
     },
@@ -81,7 +74,6 @@ export default {
 
 <template>
   <tr
-    v-if="shouldRenderDiscussionsRow"
     :class="className"
     class="notes_holder"
   >
@@ -92,6 +84,7 @@ export default {
         class="content"
       >
         <diff-discussions
+          v-if="discussionsByLineCode[leftLineCode].length"
           :discussions="discussionsByLineCode[leftLineCode]"
         />
       </div>
@@ -112,6 +105,7 @@ export default {
         class="content"
       >
         <diff-discussions
+          v-if="discussionsByLineCode[rightLineCode].length"
           :discussions="discussionsByLineCode[rightLineCode]"
         />
       </div>
