@@ -437,9 +437,9 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      artifacts_metadata.use_file do |metadata_path|
+      artifacts_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-          metadata_path,
+          metadata_stream,
           path,
           **options)
 

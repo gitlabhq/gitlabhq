@@ -245,7 +245,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         end
 
         it 'returns a trace' do
-          expect { get_trace }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
+          expect { get_trace }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
         end
       end
     end

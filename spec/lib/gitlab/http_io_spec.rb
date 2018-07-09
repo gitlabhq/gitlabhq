@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Trace::HttpIO do
+describe Gitlab::HttpIO do
   include HttpIOHelpers
 
   let(:http_io) { described_class.new(url, size) }

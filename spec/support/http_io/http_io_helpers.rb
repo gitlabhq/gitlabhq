@@ -54,12 +54,12 @@ module HttpIOHelpers
   def set_smaller_buffer_size_than(file_size)
     blocks = (file_size / 128)
     new_size = (blocks / 2) * 128
-    stub_const("Gitlab::Ci::Trace::HttpIO::BUFFER_SIZE", new_size)
+    stub_const("Gitlab::HttpIO::BUFFER_SIZE", new_size)
   end
 
   def set_larger_buffer_size_than(file_size)
     blocks = (file_size / 128)
     new_size = (blocks * 2) * 128
-    stub_const("Gitlab::Ci::Trace::HttpIO::BUFFER_SIZE", new_size)
+    stub_const("Gitlab::HttpIO::BUFFER_SIZE", new_size)
   end
 end

@@ -55,7 +55,7 @@ describe JobArtifactUploader do
       end
 
       it 'returns http io stream' do
-        is_expected.to be_a(Gitlab::Ci::Trace::HttpIO)
+        is_expected.to be_a(Gitlab::HttpIO)
       end
     end
   end
