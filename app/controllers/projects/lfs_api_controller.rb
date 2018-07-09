@@ -25,7 +25,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
         documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
-      status: 501
+      status: :not_implemented
     )
   end
 

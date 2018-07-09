@@ -29,7 +29,7 @@ describe 'User activates Slack notifications' do
   context 'when service is already configured' do
     before do
       service.fields
-      service.update_attributes(
+      service.update(
         push_channel: 1,
         issue_channel: 2,
         merge_request_channel: 3,

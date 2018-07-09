@@ -50,7 +50,7 @@ class Projects::TagsController < Projects::ApplicationController
     respond_to do |format|
       if result[:status] == :success
         format.html do
-          redirect_to project_tags_path(@project), status: 303
+          redirect_to project_tags_path(@project), status: :see_other
         end
 
         format.js

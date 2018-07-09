@@ -532,8 +532,8 @@ describe Gitlab::Git::Blob, seed_helper: true do
     subject { blob.load_all_data!(repository) }
 
     it 'loads missing data' do
-      expect(Gitlab::GitalyClient).to receive(:migrate)
-        .with(:git_blob_load_all_data).and_return(full_data)
+      expect(repository.gitaly_blob_client).to receive(:get_blob)
+        .and_return(double(:response, data: full_data))
 
       subject
 
@@ -544,8 +544,7 @@ describe Gitlab::Git::Blob, seed_helper: true do
       let(:blob) { Gitlab::Git::Blob.new(name: 'test', size: 4, data: full_data) }
 
       it "doesn't perform any loading" do
-        expect(Gitlab::GitalyClient).not_to receive(:migrate)
-          .with(:git_blob_load_all_data)
+        expect(repository.gitaly_blob_client).not_to receive(:get_blob)
 
         subject
 

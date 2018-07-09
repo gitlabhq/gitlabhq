@@ -50,13 +50,7 @@ module Gitlab
         end
 
         def raw(repository, sha)
-          Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
-            if is_enabled
-              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
-            else
-              rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
-            end
-          end
+          repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
         end
 
         # Returns an array of Blob instances, specified in blob_references as
@@ -207,16 +201,7 @@ module Gitlab
 
         return if @loaded_all_data
 
-        @data = Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
-          begin
-            if is_enabled
-              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
-            else
-              repository.lookup(id).content
-            end
-          end
-        end
-
+        @data = repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
         @loaded_all_data = true
         @loaded_size = @data.bytesize
       end

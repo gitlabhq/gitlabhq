@@ -13,7 +13,7 @@ module Sherlock
     def destroy_all
       Gitlab::Sherlock.collection.clear
 
-      redirect_to :back, status: 302
+      redirect_to :back, status: :found
     end
   end
 end

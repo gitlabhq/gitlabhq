@@ -63,7 +63,8 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapGetters(['isParallelView', 'isNotesFetched']),
+    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters(['isNotesFetched']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -115,7 +116,7 @@ export default {
     this.adjustView();
   },
   methods: {
-    ...mapActions(['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
     fetchData() {
       this.fetchDiffFiles().catch(() => {
         createFlash(__('Something went wrong on our end. Please try again!'));

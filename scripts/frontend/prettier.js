@@ -49,7 +49,7 @@ const stagedFiles =
 if (stagedFiles) {
   if (!stagedFiles.length || (stagedFiles.length === 1 && !stagedFiles[0])) {
     console.log('No matching staged files.');
-    return;
+    process.exit(1);
   }
   console.log(`Matching staged Files : ${stagedFiles.length}`);
 }
@@ -78,7 +78,7 @@ files = prettierIgnore.filter(files);
 
 if (!files.length) {
   console.log('No Files found to process with Prettier');
-  return;
+  process.exit(1);
 }
 
 console.log(`${shouldSave ? 'Updating' : 'Checking'} ${files.length} file(s)`);

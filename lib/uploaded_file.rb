@@ -28,7 +28,7 @@ class UploadedFile
     @tempfile = File.new(path, 'rb')
   end
 
-  def self.from_params(params, field, upload_path)
+  def self.from_params(params, field, upload_paths)
     unless params["#{field}.path"]
       raise InvalidPathError, "file is invalid" if params["#{field}.remote_id"]
 
@@ -37,7 +37,8 @@ class UploadedFile
 
     file_path = File.realpath(params["#{field}.path"])
 
-    unless self.allowed_path?(file_path, [upload_path, Dir.tmpdir].compact)
+    paths = Array(upload_paths) << Dir.tmpdir
+    unless self.allowed_path?(file_path, paths.compact)
       raise InvalidPathError, "insecure path used '#{file_path}'"
     end
 

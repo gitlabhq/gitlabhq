@@ -37,21 +37,14 @@ module Gitlab
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'GetBlobRequest' => {
-                       repository: repository.gitaly_repository.to_h,
-                       oid: blob.id,
-                       limit: -1
-                     }
-                   }
-                 else
-                   {
-                     'RepoPath' => repository.path_to_repo,
-                     'BlobId' => blob.id
-                   }
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }
 
         [
           SEND_DATA_HEADER,
@@ -91,16 +84,12 @@ module Gitlab
       end
 
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawDiffRequest' => Gitaly::RawDiffRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawDiffRequest' => Gitaly::RawDiffRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,

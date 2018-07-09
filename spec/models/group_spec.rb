@@ -617,7 +617,7 @@ describe Group do
           expect(group).to receive(:system_hook_service).and_return(system_hook_service)
           expect(system_hook_service).to receive(:execute_hooks_for).with(group, :rename)
 
-          group.update_attributes!(path: new_path)
+          group.update!(path: new_path)
         end
       end
 
@@ -625,7 +625,7 @@ describe Group do
         it 'does not trigger system hook' do
           expect(group).not_to receive(:system_hook_service)
 
-          group.update_attributes!(name: 'new name')
+          group.update!(name: 'new name')
         end
       end
     end

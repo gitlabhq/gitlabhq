@@ -127,7 +127,7 @@ module DeclarativePolicy
     #
     # For each step, we yield the step object along with the computed score
     # for debugging purposes.
-    def steps_by_score(&b)
+    def steps_by_score
       flatten_steps!
 
       if @steps.size > 50

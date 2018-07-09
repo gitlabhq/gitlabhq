@@ -186,7 +186,7 @@ module API
           identity = user.identities.find_by(provider: identity_attrs[:provider])
 
           if identity
-            identity.update_attributes(identity_attrs)
+            identity.update(identity_attrs)
           else
             identity = user.identities.build(identity_attrs)
             identity.save

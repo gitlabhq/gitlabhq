@@ -7,9 +7,9 @@ describe Gitlab::Sanitizers::SVG do
 
   describe '.clean' do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
-    let(:data) { open(input_svg_path).read }
+    let(:data) { File.read(input_svg_path) }
     let(:sanitized_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
-    let(:sanitized) { open(sanitized_svg_path).read }
+    let(:sanitized) { File.read(sanitized_svg_path) }
 
     it 'delegates sanitization to scrubber' do
       expect_any_instance_of(Gitlab::Sanitizers::SVG::Scrubber).to receive(:scrub).at_least(:once)

@@ -145,7 +145,7 @@ describe('MRWidgetHeader', () => {
       it('renders web ide button', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
-        expect(button.textContent.trim()).toEqual('Web IDE');
+        expect(button.textContent.trim()).toEqual('Open in Web IDE');
         expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
       });
 
@@ -154,7 +154,7 @@ describe('MRWidgetHeader', () => {
 
         const button = vm.$el.querySelector('.js-web-ide');
 
-        expect(button.textContent.trim()).toEqual('Web IDE');
+        expect(button.textContent.trim()).toEqual('Open in Web IDE');
         expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
       });
 
@@ -253,8 +253,8 @@ describe('MRWidgetHeader', () => {
       });
 
       it('renders diverged commits info', () => {
-        expect(vm.$el.querySelector('.diverged-commits-count').textContent.trim()).toEqual(
-          '(12 commits behind)',
+        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toMatch(
+          /(mr-widget-refactor[\s\S]+?is 12 commits behind[\s\S]+?master)/,
         );
       });
     });

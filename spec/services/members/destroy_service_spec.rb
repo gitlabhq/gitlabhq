@@ -142,8 +142,8 @@ describe Members::DestroyService do
 
   context 'with an access requester' do
     before do
-      group_project.update_attributes(request_access_enabled: true)
-      group.update_attributes(request_access_enabled: true)
+      group_project.update(request_access_enabled: true)
+      group.update(request_access_enabled: true)
       group_project.request_access(member_user)
       group.request_access(member_user)
     end

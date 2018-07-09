@@ -383,7 +383,7 @@ describe User do
       let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
 
       it 'allows a verfied secondary email to be used as the primary without needing reconfirmation' do
-        user.update_attributes!(email: secondary.email)
+        user.update!(email: secondary.email)
         user.reload
         expect(user.email).to eq secondary.email
         expect(user.unconfirmed_email).to eq nil
@@ -405,11 +405,11 @@ describe User do
       it 'gets called when email updated' do
         expect(@user).to receive(:update_emails_with_primary_email)
 
-        @user.update_attributes!(email: 'new_primary@example.com')
+        @user.update!(email: 'new_primary@example.com')
       end
 
       it 'adds old primary to secondary emails when secondary is a new email ' do
-        @user.update_attributes!(email: 'new_primary@example.com')
+        @user.update!(email: 'new_primary@example.com')
         @user.reload
 
         expect(@user.emails.count).to eq 2
@@ -417,7 +417,7 @@ describe User do
       end
 
       it 'adds old primary to secondary emails if secondary is becoming a primary' do
-        @user.update_attributes!(email: @secondary.email)
+        @user.update!(email: @secondary.email)
         @user.reload
 
         expect(@user.emails.count).to eq 1
@@ -425,7 +425,7 @@ describe User do
       end
 
       it 'transfers old confirmation values into new secondary' do
-        @user.update_attributes!(email: @secondary.email)
+        @user.update!(email: @secondary.email)
         @user.reload
 
         expect(@user.emails.count).to eq 1
@@ -494,12 +494,12 @@ describe User do
 
       it 'does nothing when the name is updated' do
         expect(user).not_to receive(:update_invalid_gpg_signatures)
-        user.update_attributes!(name: 'Bette')
+        user.update!(name: 'Bette')
       end
 
       it 'synchronizes the gpg keys when the email is updated' do
         expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
-        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
+        user.update!(email: 'shawnee.ritchie@denesik.com')
       end
     end
   end
@@ -617,13 +617,13 @@ describe User do
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
 
-        user.update_attributes(external: false)
+        user.update(external: false)
       end
 
       it 'ensures correct rights and limits for user' do
         stub_config_setting(default_can_create_group: true)
 
-        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+        expect { user.update(external: false) }.to change { user.can_create_group }.to(true)
           .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
@@ -634,11 +634,11 @@ describe User do
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
 
-        user.update_attributes(external: true)
+        user.update(external: true)
       end
 
       it 'ensures correct rights and limits for user' do
-        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+        expect { user.update(external: true) }.to change { user.can_create_group }.to(false)
           .and change { user.projects_limit }.to(0)
       end
     end
@@ -2461,18 +2461,20 @@ describe User do
 
           it 'changes the namespace (just to compare to when username is not changed)' do
             expect do
-              user.update_attributes!(username: new_username)
+              Timecop.freeze(1.second.from_now) do
+                user.update!(username: new_username)
+              end
             end.to change { user.namespace.updated_at }
           end
 
           it 'updates the namespace name' do
-            user.update_attributes!(username: new_username)
+            user.update!(username: new_username)
 
             expect(user.namespace.name).to eq(new_username)
           end
 
           it 'updates the namespace path' do
-            user.update_attributes!(username: new_username)
+            user.update!(username: new_username)
 
             expect(user.namespace.path).to eq(new_username)
           end
@@ -2481,12 +2483,12 @@ describe User do
             let!(:conflicting_namespace) { create(:group, path: new_username) }
 
             it 'causes the user save to fail' do
-              expect(user.update_attributes(username: new_username)).to be_falsey
+              expect(user.update(username: new_username)).to be_falsey
               expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
             end
 
             it 'adds the namespace errors to the user' do
-              user.update_attributes(username: new_username)
+              user.update(username: new_username)
 
               expect(user.errors.full_messages.first).to eq('Username has already been taken')
             end
@@ -2496,7 +2498,7 @@ describe User do
         context 'when the username is not changed' do
           it 'does not change the namespace' do
             expect do
-              user.update_attributes!(email: 'asdf@asdf.com')
+              user.update!(email: 'asdf@asdf.com')
             end.not_to change { user.namespace.updated_at }
           end
         end
@@ -2526,7 +2528,7 @@ describe User do
           expect(system_hook_service).to receive(:execute_hooks_for).with(user, :rename)
           expect(user).to receive(:system_hook_service).and_return(system_hook_service)
 
-          user.update_attributes!(username: new_username)
+          user.update!(username: new_username)
         end
       end
 
@@ -2534,7 +2536,7 @@ describe User do
         it 'does not trigger system hook' do
           expect(user).not_to receive(:system_hook_service)
 
-          user.update_attributes!(email: 'asdf@asdf.com')
+          user.update!(email: 'asdf@asdf.com')
         end
       end
     end
