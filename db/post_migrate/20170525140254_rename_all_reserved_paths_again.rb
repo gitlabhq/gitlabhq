@@ -87,16 +87,16 @@ class RenameAllReservedPathsAgain < ActiveRecord::Migration
   ].freeze
 
   def up
-    disable_statement_timeout
-
-    TOP_LEVEL_ROUTES.each { |route| rename_root_paths(route) }
-    PROJECT_WILDCARD_ROUTES.each { |route| rename_wildcard_paths(route) }
-    GROUP_ROUTES.each { |route| rename_child_paths(route) }
+    disable_statement_timeout(transaction: false) do
+      TOP_LEVEL_ROUTES.each { |route| rename_root_paths(route) }
+      PROJECT_WILDCARD_ROUTES.each { |route| rename_wildcard_paths(route) }
+      GROUP_ROUTES.each { |route| rename_child_paths(route) }
+    end
   end
 
   def down
-    disable_statement_timeout
-
-    revert_renames
+    disable_statement_timeout(transaction: false) do
+      revert_renames
+    end
   end
 end

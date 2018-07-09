@@ -8,9 +8,9 @@ class EnableAutoCancelPendingPipelinesForAll < ActiveRecord::Migration
   DOWNTIME = false
 
   def up
-    disable_statement_timeout
-
-    update_column_in_batches(:projects, :auto_cancel_pending_pipelines, 1)
+    disable_statement_timeout(transaction: false) do
+      update_column_in_batches(:projects, :auto_cancel_pending_pipelines, 1)
+    end
   end
 
   def down
