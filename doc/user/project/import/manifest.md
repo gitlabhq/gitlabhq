@@ -5,7 +5,7 @@ based a manifest file like the one used by the Android repository.
 
 
 >**Note:** 
-This feature requires [subgroups](user/group/subgroups/index.md) to be supported by your database. 
+This feature requires [subgroups](../../group/subgroups/index.md) to be supported by your database. 
 
 You can do it by following next steps: 
 
