@@ -34,6 +34,33 @@ describe Repository do
     end
   end
 
+  describe '#with_config' do
+    let(:rugged) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository.rugged
+      end
+    end
+    let(:entries) { { 'test.foo1' => 'hello', 'test.foo2' => 'world' } }
+
+    it 'sets config only during the block' do
+      keys_should_not_be_set
+
+      repository.with_config(entries) do
+        entries.each do |key, value|
+          expect(rugged.config[key]).to eq(value)
+        end
+      end
+
+      keys_should_not_be_set
+    end
+
+    def keys_should_not_be_set
+      entries.each do |key, value|
+        expect(rugged.config[key]).to be_blank
+      end
+    end
+  end
+
   describe "Elastic search", :elastic do
     before do
       stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)

@@ -283,7 +283,11 @@ describe Geo::RepositorySyncService do
 
         subject.execute
 
-        expect(File.directory?(project.repository.path)).to be true
+        repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          project.repository.path
+        end
+
+        expect(File.directory?(repo_path)).to be true
       end
 
       it 'tries to redownload repo when force_redownload flag is set' do
