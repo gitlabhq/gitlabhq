@@ -2687,4 +2687,58 @@ describe Ci::Build do
       end
     end
   end
+
+  describe '#artifacts_metadata_entry' do
+    set(:build) { create(:ci_build, project: project) }
+    let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
+
+    before do
+      stub_artifacts_object_storage
+    end
+
+    subject { build.artifacts_metadata_entry(path) }
+
+    context 'when using local storage' do
+      let!(:metadata) { create(:ci_job_artifact, :metadata, job: build) }
+
+      context 'for existing file' do
+        it 'does exist' do
+          is_expected.to be_exists
+        end
+      end
+
+      context 'for non-existing file' do
+        let(:path) { 'invalid-file' }
+
+        it 'does not exist' do
+          is_expected.not_to be_exists
+        end
+      end
+    end
+
+    context 'when using remote storage' do
+      include HttpIOHelpers
+
+      let!(:metadata) { create(:ci_job_artifact, :remote_store, :metadata, job: build) }
+      let(:file_path) { expand_fixture_path('ci_build_artifacts_metadata.gz') }
+
+      before do
+        stub_remote_url_206(metadata.file.url, file_path)
+      end
+
+      context 'for existing file' do
+        it 'does exist' do
+          is_expected.to be_exists
+        end
+      end
+
+      context 'for non-existing file' do
+        let(:path) { 'invalid-file' }
+
+        it 'does not exist' do
+          is_expected.not_to be_exists
+        end
+      end
+    end
+  end
 end

@@ -225,8 +225,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       context 'when there are no network issues' do
+        let(:url) { 'http://object-storage/trace' }
+        let(:file) { expand_fixture_path('trace/sample_trace') }
+
         before do
-          stub_remote_trace_206
+          stub_remote_url_206(url, file)
 
           get_trace
         end
@@ -241,7 +244,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'when there is a network issue' do
         before do
-          stub_remote_trace_500
+          stub_remote_url_500(url)
         end
 
         it 'returns a trace' do

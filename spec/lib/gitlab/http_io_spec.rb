@@ -4,8 +4,11 @@ describe Gitlab::HttpIO do
   include HttpIOHelpers
 
   let(:http_io) { described_class.new(url, size) }
-  let(:url) { remote_trace_url }
-  let(:size) { remote_trace_size }
+
+  let(:url) { 'http://object-storage/trace' }
+  let(:file_path) { expand_fixture_path('trace/sample_trace') }
+  let(:file_body) { File.read(file_path).force_encoding(Encoding::BINARY) }
+  let(:size) { File.size(file_path) }
 
   describe '#close' do
     subject { http_io.close }
@@ -86,10 +89,10 @@ describe Gitlab::HttpIO do
   describe '#each_line' do
     subject { http_io.each_line }
 
-    let(:string_io) { StringIO.new(remote_trace_body) }
+    let(:string_io) { StringIO.new(file_body) }
 
     before do
-      stub_remote_trace_206
+      stub_remote_url_206(url, file_path)
     end
 
     it 'yields lines' do
@@ -99,7 +102,7 @@ describe Gitlab::HttpIO do
     context 'when buckets on GCS' do
       context 'when BUFFER_SIZE is larger than file size' do
         before do
-          stub_remote_trace_200
+          stub_remote_url_200(url, file_path)
           set_larger_buffer_size_than(size)
         end
 
@@ -117,7 +120,7 @@ describe Gitlab::HttpIO do
 
     context 'when there are no network issue' do
       before do
-        stub_remote_trace_206
+        stub_remote_url_206(url, file_path)
       end
 
       context 'when read whole size' do
@@ -129,7 +132,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body)
+            is_expected.to eq(file_body)
           end
         end
 
@@ -139,7 +142,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body)
+            is_expected.to eq(file_body)
           end
         end
       end
@@ -153,7 +156,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body[0, length])
+            is_expected.to eq(file_body[0, length])
           end
         end
 
@@ -163,7 +166,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body[0, length])
+            is_expected.to eq(file_body[0, length])
           end
         end
       end
@@ -177,7 +180,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body)
+            is_expected.to eq(file_body)
           end
         end
 
@@ -187,7 +190,7 @@ describe Gitlab::HttpIO do
           end
 
           it 'reads a trace' do
-            is_expected.to eq(remote_trace_body)
+            is_expected.to eq(file_body)
           end
         end
       end
@@ -221,11 +224,11 @@ describe Gitlab::HttpIO do
       let(:length) { nil }
 
       before do
-        stub_remote_trace_500
+        stub_remote_url_500(url)
       end
 
       it 'reads a trace' do
-        expect { subject }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
+        expect { subject }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
       end
     end
   end
@@ -233,15 +236,15 @@ describe Gitlab::HttpIO do
   describe '#readline' do
     subject { http_io.readline }
 
-    let(:string_io) { StringIO.new(remote_trace_body) }
+    let(:string_io) { StringIO.new(file_body) }
 
     before do
-      stub_remote_trace_206
+      stub_remote_url_206(url, file_path)
     end
 
     shared_examples 'all line matching' do
       it 'reads a line' do
-        (0...remote_trace_body.lines.count).each do
+        (0...file_body.lines.count).each do
           expect(http_io.readline).to eq(string_io.readline)
         end
       end
@@ -251,11 +254,11 @@ describe Gitlab::HttpIO do
       let(:length) { nil }
 
       before do
-        stub_remote_trace_500
+        stub_remote_url_500(url)
       end
 
       it 'reads a trace' do
-        expect { subject }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
+        expect { subject }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
       end
     end
 

@@ -71,6 +71,10 @@ class GitlabUploader < CarrierWave::Uploader::Base
     File.join('/', self.class.base_dir, dynamic_segment, filename)
   end
 
+  def cached_size
+    size
+  end
+
   def open
     stream = if file_storage?
       File.open(path, "rb") if path
