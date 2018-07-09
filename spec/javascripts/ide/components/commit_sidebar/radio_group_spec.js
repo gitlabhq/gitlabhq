@@ -114,4 +114,19 @@ describe('IDE commit sidebar radio group', () => {
       });
     });
   });
+
+  describe('tooltipTitle', () => {
+    it('returns title when disabled', () => {
+      vm.title = 'test title';
+      vm.disabled = true;
+
+      expect(vm.tooltipTitle).toBe('test title');
+    });
+
+    it('returns blank when not disabled', () => {
+      vm.title = 'test title';
+
+      expect(vm.tooltipTitle).not.toBe('test title');
+    });
+  });
 });

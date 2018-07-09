@@ -1178,6 +1178,61 @@ describe Gitlab::Database::MigrationHelpers do
     end
   end
 
+  describe '#rename_column_using_background_migration' do
+    let!(:issue) { create(:issue, :closed, closed_at: Time.zone.now) }
+
+    it 'renames a column using a background migration' do
+      expect(model)
+        .to receive(:add_column)
+        .with(
+          'issues',
+          :closed_at_timestamp,
+          :datetime_with_timezone,
+          limit: anything,
+          precision: anything,
+          scale: anything
+        )
+
+      expect(model)
+        .to receive(:install_rename_triggers)
+        .with('issues', :closed_at, :closed_at_timestamp)
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          10.minutes,
+          'CopyColumn',
+          ['issues', :closed_at, :closed_at_timestamp, issue.id, issue.id]
+        )
+
+      expect(BackgroundMigrationWorker)
+        .to receive(:perform_in)
+        .ordered
+        .with(
+          1.hour + 10.minutes,
+          'CleanupConcurrentRename',
+          ['issues', :closed_at, :closed_at_timestamp]
+        )
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CopyColumn')
+
+      expect(Gitlab::BackgroundMigration)
+        .to receive(:steal)
+        .ordered
+        .with('CleanupConcurrentRename')
+
+      model.rename_column_using_background_migration(
+        'issues',
+        :closed_at,
+        :closed_at_timestamp
+      )
+    end
+  end
+
   describe '#perform_background_migration_inline?' do
     it 'returns true in a test environment' do
       allow(Rails.env)

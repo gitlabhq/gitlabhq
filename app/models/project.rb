@@ -171,6 +171,7 @@ class Project < ActiveRecord::Base
   has_one :fork_network, through: :fork_network_member
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
+  has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -1422,7 +1423,7 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.instance_type : Ci::Runner.none
   end
 
   def group_runners
@@ -1712,7 +1713,7 @@ class Project < ActiveRecord::Base
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path
+    elsif export_project_path || export_project_object_exists?
       :finished
     else
       :none
@@ -1727,16 +1728,21 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports
-    return nil unless export_path.present?
-
-    FileUtils.rm_rf(export_path)
+  def remove_exports(path = export_path)
+    if path.present?
+      FileUtils.rm_rf(path)
+    elsif export_project_object_exists?
+      import_export_upload.remove_export_file!
+      import_export_upload.save
+    end
   end
 
   def remove_exported_project_file
-    return unless export_project_path.present?
+    remove_exports(export_project_path)
+  end
 
-    FileUtils.rm_f(export_project_path)
+  def export_project_object_exists?
+    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
   end
 
   def full_path_slug
@@ -1772,6 +1778,15 @@ class Project < ActiveRecord::Base
         variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url)
       end
     end
+  end
+
+  def default_environment
+    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+
+    environments
+      .with_state(:available)
+      .reorder(production_first)
+      .first
   end
 
   def secret_variables_for(ref:, environment: nil)
@@ -2018,6 +2033,10 @@ class Project < ActiveRecord::Base
     lfs_file_locks.any?
   end
   request_cache(:any_lfs_file_locks?) { self.id }
+
+  def auto_cancel_pending_pipelines?
+    auto_cancel_pending_pipelines == 'enabled'
+  end
 
   private
 

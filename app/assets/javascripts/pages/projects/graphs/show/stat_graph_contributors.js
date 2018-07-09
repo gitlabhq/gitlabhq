@@ -80,10 +80,11 @@ export default (function() {
   };
 
   ContributorsStatGraph.prototype.redraw_authors = function() {
-    var author_commits, x_domain;
     $("ol").html("");
-    x_domain = ContributorsGraph.prototype.x_domain;
-    author_commits = ContributorsStatGraphUtil.get_author_data(this.parsed_log, this.field, x_domain);
+
+    const { x_domain } = ContributorsGraph.prototype;
+    const author_commits = ContributorsStatGraphUtil.get_author_data(this.parsed_log, this.field, x_domain);
+
     return _.each(author_commits, (function(_this) {
       return function(d) {
         _this.redraw_author_commit_info(d);
@@ -102,7 +103,7 @@ export default (function() {
   };
 
   ContributorsStatGraph.prototype.change_date_header = function() {
-    const x_domain = ContributorsGraph.prototype.x_domain;
+    const { x_domain } = ContributorsGraph.prototype;
     const formattedDateRange = sprintf(
       s__('ContributorsPage|%{startDate} – %{endDate}'),
       {

@@ -168,6 +168,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       .can_push_to_branch?(source_branch)
   end
 
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+  end
+
   def mergeable_discussions_state
     # This avoids calling MergeRequest#mergeable_discussions_state without
     # considering the state of the MR first. If a MR isn't mergeable, we can

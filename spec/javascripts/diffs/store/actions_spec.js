@@ -5,38 +5,22 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
-import store from '~/diffs/store';
 import * as actions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
-  describe('setEndpoint', () => {
-    it('should set given endpoint', done => {
+  describe('setBaseConfig', () => {
+    it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
+      const projectPath = '/root/project';
 
       testAction(
-        actions.setEndpoint,
-        endpoint,
-        { endpoint: '' },
-        [{ type: types.SET_ENDPOINT, payload: endpoint }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setLoadingState', () => {
-    it('should set loading state', done => {
-      expect(store.state.diffs.isLoading).toEqual(true);
-      const loadingState = false;
-
-      testAction(
-        actions.setLoadingState,
-        loadingState,
-        {},
-        [{ type: types.SET_LOADING, payload: loadingState }],
+        actions.setBaseConfig,
+        { endpoint, projectPath },
+        { endpoint: '', projectPath: '' },
+        [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
         [],
         done,
       );

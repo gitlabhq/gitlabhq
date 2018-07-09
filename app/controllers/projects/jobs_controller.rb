@@ -2,11 +2,12 @@ class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
 
   before_action :build, except: [:index, :cancel_all]
-  before_action :authorize_read_build!,
-    only: [:index, :show, :status, :raw, :trace]
+  before_action :authorize_read_build!
   before_action :authorize_update_build!,
     except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
   before_action :authorize_erase_build!, only: [:erase]
+  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_workhorse_authorize]
+  before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   layout 'project'
 
@@ -44,12 +45,10 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.pipelines
-      .find_by_sha(@build.sha)
-      .builds
+    @pipeline = @build.pipeline
+    @builds = @pipeline.builds
       .order('id DESC')
       .present(current_user: current_user)
-    @pipeline = @build.pipeline
 
     respond_to do |format|
       format.html
@@ -136,6 +135,15 @@ class Projects::JobsController < Projects::ApplicationController
     end
   end
 
+  def terminal
+  end
+
+  # GET .../terminal.ws : implemented in gitlab-workhorse
+  def terminal_websocket_authorize
+    set_workhorse_internal_api_content_type
+    render json: Gitlab::Workhorse.terminal_websocket(@build.terminal_specification)
+  end
+
   private
 
   def authorize_update_build!
@@ -144,6 +152,14 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_erase_build!
     return access_denied! unless can?(current_user, :erase_build, build)
+  end
+
+  def authorize_use_build_terminal!
+    return access_denied! unless can?(current_user, :create_build_terminal, build)
+  end
+
+  def verify_api_request!
+    Gitlab::Workhorse.verify_api_request!(request.headers)
   end
 
   def raw_send_params
@@ -160,7 +176,7 @@ class Projects::JobsController < Projects::ApplicationController
 
   def build
     @build ||= project.builds.find(params[:id])
-                 .present(current_user: current_user)
+      .present(current_user: current_user)
   end
 
   def build_path(build)

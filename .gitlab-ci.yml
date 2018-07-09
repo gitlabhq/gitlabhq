@@ -220,18 +220,6 @@ stages:
     paths:
       - log/development.log
 
-# Review docs base
-.review-docs: &review-docs
-  <<: *dedicated-runner
-  <<: *except-qa
-  <<: *single-script-job
-  variables:
-    <<: *single-script-job-variables
-    SCRIPT_NAME: trigger-build-docs
-  when: manual
-  only:
-    - branches
-
 # DB migration, rollback, and seed jobs
 .db-migrate-reset: &db-migrate-reset
   <<: *dedicated-no-docs-and-no-qa-pull-cache-job
@@ -273,31 +261,58 @@ package-and-qa:
     - //@gitlab-org/gitlab-ce
     - //@gitlab-org/gitlab-ee
 
-# Trigger a docs build in gitlab-docs
-# Useful to preview the docs changes live
-review-docs-deploy:
-  <<: *review-docs
-  stage: build
+# Review docs base
+.review-docs: &review-docs
+  <<: *dedicated-runner
+  <<: *single-script-job
+  variables:
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build-docs
   environment:
-    name: review-docs/$CI_COMMIT_REF_NAME
+    name: review-docs/$CI_COMMIT_REF_SLUG
     # DOCS_REVIEW_APPS_DOMAIN and DOCS_GITLAB_REPO_SUFFIX are secret variables
     # Discussion: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14236/diffs#note_40140693
-    url: http://$DOCS_GITLAB_REPO_SUFFIX-$CI_COMMIT_REF_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
+    url: http://$CI_ENVIRONMENT_SLUG.$DOCS_REVIEW_APPS_DOMAIN/$DOCS_GITLAB_REPO_SUFFIX
     on_stop: review-docs-cleanup
+
+# Trigger a manual docs build in gitlab-docs only on non docs-only branches.
+# Useful to preview the docs changes live.
+review-docs-deploy-manual:
+  <<: *review-docs
+  stage: build
   script:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME deploy
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
+  <<: *except-docs-and-qa
+
+# Always trigger a docs build in gitlab-docs only on docs-only branches.
+# Useful to preview the docs changes live.
+review-docs-deploy:
+  <<: *review-docs
+  stage: post-test
+  script:
+    - gem install gitlab --no-ri --no-rdoc
+    - ./$SCRIPT_NAME deploy
+  only:
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ce
+    - /(^docs[\/-].*|.*-docs$)/@gitlab-org/gitlab-ee
+  <<: *except-qa
 
 # Cleanup remote environment of gitlab-docs
 review-docs-cleanup:
   <<: *review-docs
   stage: post-cleanup
   environment:
-    name: review-docs/$CI_COMMIT_REF_NAME
+    name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
+  when: manual
   script:
     - gem install gitlab --no-ri --no-rdoc
-    - ./SCRIPT_NAME cleanup
+    - ./$SCRIPT_NAME cleanup
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
@@ -310,11 +325,9 @@ cloud-native-image:
   variables:
     GIT_DEPTH: "1"
   cache: {}
-  before_script:
-    - gem install gitlab --no-rdoc --no-ri
-    - chmod 755 ./scripts/trigger-build-cloud-native
   script:
-    - ./scripts/trigger-build-cloud-native
+    - gem install gitlab --no-ri --no-rdoc
+    - ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee

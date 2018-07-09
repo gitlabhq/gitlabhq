@@ -25,7 +25,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
         documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
-      status: 501
+      status: :not_implemented
     )
   end
 
@@ -93,7 +93,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   end
 
   def lfs_check_batch_operation!
-    if upload_request? && Gitlab::Database.read_only?
+    if batch_operation_disallowed?
       render(
         json: {
           message: lfs_read_only_message
@@ -102,6 +102,11 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         status: 403
       )
     end
+  end
+
+  # Overridden in EE
+  def batch_operation_disallowed?
+    upload_request? && Gitlab::Database.read_only?
   end
 
   # Overridden in EE

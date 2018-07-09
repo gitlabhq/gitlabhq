@@ -109,7 +109,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   expose :current_user do
     expose :can_remove_source_branch do |merge_request|
-      merge_request.source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+      presenter(merge_request).can_remove_source_branch?
     end
 
     expose :can_revert_on_current_merge_request do |merge_request|

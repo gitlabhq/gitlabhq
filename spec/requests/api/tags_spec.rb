@@ -109,7 +109,7 @@ describe API::Tags do
 
       before do
         release = project.releases.find_or_initialize_by(tag: tag_name)
-        release.update_attributes(description: description)
+        release.update(description: description)
       end
 
       it 'returns an array of project tags with release info' do
@@ -400,7 +400,7 @@ describe API::Tags do
       context 'on tag with existing release' do
         before do
           release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
+          release.update(description: description)
         end
 
         it 'returns 409 if there is already a release' do
@@ -422,7 +422,7 @@ describe API::Tags do
       context 'on tag with existing release' do
         before do
           release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
+          release.update(description: description)
         end
 
         it 'updates the release description' do

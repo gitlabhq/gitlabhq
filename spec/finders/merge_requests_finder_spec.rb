@@ -19,7 +19,7 @@ describe MergeRequestsFinder do
 
   let!(:merge_request1) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project1) }
   let!(:merge_request2) { create(:merge_request, :conflict, author: user, source_project: project2, target_project: project1, state: 'closed') }
-  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2) }
+  let!(:merge_request3) { create(:merge_request, :simple, author: user, source_project: project2, target_project: project2, state: 'locked') }
   let!(:merge_request4) { create(:merge_request, :simple, author: user, source_project: project3, target_project: project3) }
   let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4) }
 
@@ -35,7 +35,7 @@ describe MergeRequestsFinder do
     it 'filters by scope' do
       params = { scope: 'authored', state: 'opened' }
       merge_requests = described_class.new(user, params).execute
-      expect(merge_requests.size).to eq(4)
+      expect(merge_requests.size).to eq(3)
     end
 
     it 'filters by project' do
@@ -88,6 +88,14 @@ describe MergeRequestsFinder do
       merge_requests = described_class.new(user, params).execute
 
       expect(merge_requests).to contain_exactly(merge_request2)
+    end
+
+    it 'filters by state' do
+      params = { state: 'locked' }
+
+      merge_requests = described_class.new(user, params).execute
+
+      expect(merge_requests).to contain_exactly(merge_request3)
     end
 
     context 'filtering by group milestone' do
@@ -199,7 +207,7 @@ describe MergeRequestsFinder do
     it 'returns the number of rows for the default state' do
       finder = described_class.new(user)
 
-      expect(finder.row_count).to eq(4)
+      expect(finder.row_count).to eq(3)
     end
 
     it 'returns the number of rows for a given state' do

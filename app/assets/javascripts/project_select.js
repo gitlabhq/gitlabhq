@@ -47,7 +47,10 @@ export default function projectSelect() {
             projectsCallback = finalCallback;
           }
           if (_this.groupId) {
-            return Api.groupProjects(_this.groupId, query.term, projectsCallback);
+            return Api.groupProjects(_this.groupId, query.term, {
+              with_issues_enabled: _this.withIssuesEnabled,
+              with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+            }, projectsCallback);
           } else {
             return Api.projects(query.term, {
               order_by: _this.orderBy,

@@ -15,8 +15,7 @@ describe('RecentSearchesRoot', () => {
       };
 
       VueSpy = spyOnDependency(RecentSearchesRoot, 'Vue').and.callFake((options) => {
-        data = options.data;
-        template = options.template;
+        ({ data, template } = options);
       });
 
       RecentSearchesRoot.prototype.render.call(recentSearchesRoot);

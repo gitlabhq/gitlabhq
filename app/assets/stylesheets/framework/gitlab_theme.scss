@@ -29,15 +29,21 @@
     .navbar-sub-nav,
     .navbar-nav {
       > li {
-        > a:hover,
-        > a:focus {
-          background-color: rgba($search-and-nav-links, 0.2);
+        > a,
+        > button {
+          &:hover,
+          &:focus {
+            background-color: rgba($search-and-nav-links, 0.2);
+          }
         }
 
-        &.active > a,
-        &.dropdown.show > a {
-          color: $nav-svg-color;
-          background-color: $color-alternate;
+        &.active,
+        &.dropdown.show {
+          > a,
+          > button {
+            color: $nav-svg-color;
+            background-color: $color-alternate;
+          }
         }
 
         &.line-separator {
@@ -147,7 +153,6 @@
     }
   }
 
-
   // Sidebar
   .nav-sidebar li.active {
     box-shadow: inset 4px 0 0 $border-and-box-shadow;
@@ -177,10 +182,6 @@
   }
 
   .branch-header-title {
-    color: $border-and-box-shadow;
-  }
-
-  .ide-file-list .file.file-active {
     color: $border-and-box-shadow;
   }
 

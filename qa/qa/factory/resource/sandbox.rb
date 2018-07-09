@@ -10,7 +10,6 @@ module QA
 
         def initialize
           @name = Runtime::Namespace.sandbox_name
-          @visibility = 'Private'
         end
 
         product :name do |factory|
@@ -28,8 +27,8 @@ module QA
 
               Page::Group::New.perform do |group|
                 group.set_path(@name)
-                group.set_description('GitLab QA Sandbox')
-                group.set_visibility(@visibility)
+                group.set_description('GitLab QA Sandbox Group')
+                group.set_visibility('Public')
                 group.create
               end
             end

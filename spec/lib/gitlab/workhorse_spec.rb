@@ -143,34 +143,22 @@ describe Gitlab::Workhorse do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
     subject { described_class.send_git_diff(repository, diff_refs) }
 
-    context 'when Gitaly workhorse_send_git_diff feature is enabled' do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
 
-        expect(key).to eq("Gitlab-Workhorse-Send-Data")
-        expect(command).to eq("git-diff")
-        expect(params).to eq({
-          'GitalyServer' => {
-            address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage)
-          },
-          'RawDiffRequest' => Gitaly::RawDiffRequest.new(
-            repository: repository.gitaly_repository,
-            left_commit_id: 'base',
-            right_commit_id: 'head'
-          ).to_json
-        }.deep_stringify_keys)
-      end
-    end
-
-    context 'when Gitaly workhorse_send_git_diff feature is disabled', :disable_gitaly do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
-
-        expect(key).to eq("Gitlab-Workhorse-Send-Data")
-        expect(command).to eq("git-diff")
-        expect(params).to eq("RepoPath" => repository.path_to_repo, "ShaFrom" => "base", "ShaTo" => "head")
-      end
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-diff")
+      expect(params).to eq({
+        'GitalyServer' => {
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'RawDiffRequest' => Gitaly::RawDiffRequest.new(
+          repository: repository.gitaly_repository,
+          left_commit_id: 'base',
+          right_commit_id: 'head'
+        ).to_json
+      }.deep_stringify_keys)
     end
   end
 
@@ -189,7 +177,7 @@ describe Gitlab::Workhorse do
     end
 
     it 'accepts a trailing newline' do
-      open(described_class.secret_path, 'a') { |f| f.write "\n" }
+      File.open(described_class.secret_path, 'a') { |f| f.write "\n" }
       expect(subject.length).to eq(32)
     end
 
@@ -425,34 +413,22 @@ describe Gitlab::Workhorse do
 
     subject { described_class.send_git_blob(repository, blob) }
 
-    context 'when Gitaly workhorse_raw_show feature is enabled' do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
 
-        expect(key).to eq('Gitlab-Workhorse-Send-Data')
-        expect(command).to eq('git-blob')
-        expect(params).to eq({
-          'GitalyServer' => {
-            address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage)
-          },
-          'GetBlobRequest' => {
-            repository: repository.gitaly_repository.to_h,
-            oid: blob.id,
-            limit: -1
-          }
-        }.deep_stringify_keys)
-      end
-    end
-
-    context 'when Gitaly workhorse_raw_show feature is disabled', :disable_gitaly do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
-
-        expect(key).to eq('Gitlab-Workhorse-Send-Data')
-        expect(command).to eq('git-blob')
-        expect(params).to eq('RepoPath' => repository.path_to_repo, 'BlobId' => blob.id)
-      end
+      expect(key).to eq('Gitlab-Workhorse-Send-Data')
+      expect(command).to eq('git-blob')
+      expect(params).to eq({
+        'GitalyServer' => {
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'GetBlobRequest' => {
+          repository: repository.gitaly_repository.to_h,
+          oid: blob.id,
+          limit: -1
+        }
+      }.deep_stringify_keys)
     end
   end
 

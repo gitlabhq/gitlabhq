@@ -28,6 +28,9 @@ export const setInitialNotes = ({ commit }, discussions) =>
 
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
 
+export const setNotesFetchedState = ({ commit }, state) =>
+  commit(types.SET_NOTES_FETCHED_STATE, state);
+
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
 export const fetchDiscussions = ({ commit }, path) =>
@@ -36,6 +39,15 @@ export const fetchDiscussions = ({ commit }, path) =>
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+    });
+
+export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+  service
+    .fetchDiscussions(path)
+    .then(res => res.json())
+    .then(discussions => {
+      const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
+      if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
     });
 
 export const deleteNote = ({ commit }, note) =>

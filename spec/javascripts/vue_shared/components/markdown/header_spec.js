@@ -51,7 +51,7 @@ describe('Markdown field header component', () => {
     spyOn(vm, '$emit');
 
     $(document).triggerHandler('markdown-preview:show', [
-      $('<form><textarea class="markdown-area"></textarea></textarea></form>'),
+      $('<form><div class="js-vue-markdown-field"><textarea class="markdown-area"></textarea></div></form>'),
     ]);
 
     expect(vm.$emit).not.toHaveBeenCalled();

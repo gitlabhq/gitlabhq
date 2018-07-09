@@ -56,7 +56,7 @@ class UserRecentEventsFinder
 
     visible = target_user
       .project_interactions
-      .where(visibility_level: [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC])
+      .where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(current_user))
       .select(:id)
 
     Gitlab::SQL::Union.new([authorized, visible]).to_sql

@@ -114,7 +114,6 @@ export default {
 
     Object.assign(state, { discussions });
   },
-
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
     Object.assign(state, { lastFetchedAt: fetchedAt });
   },
@@ -203,6 +202,10 @@ export default {
 
   [types.TOGGLE_STATE_BUTTON_LOADING](state, value) {
     Object.assign(state, { isToggleStateButtonLoading: value });
+  },
+
+  [types.SET_NOTES_FETCHED_STATE](state, value) {
+    Object.assign(state, { isNotesFetched: value });
   },
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {

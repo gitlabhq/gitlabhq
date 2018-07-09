@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Multi-file editor upload file', :js do
+describe 'Multi-file editor upload file', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:txt_file) { File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt') }

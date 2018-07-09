@@ -130,7 +130,7 @@ class IssuableBaseService < BaseService
   def create_issuable(issuable, attributes, label_ids:)
     issuable.with_transaction_returning_status do
       if issuable.save
-        issuable.update_attributes(label_ids: label_ids)
+        issuable.update(label_ids: label_ids)
       end
     end
   end

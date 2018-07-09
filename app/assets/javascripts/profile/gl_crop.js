@@ -47,7 +47,8 @@ import _ from 'underscore';
       var _this;
       _this = this;
       this.fileInput.on('change', function(e) {
-        return _this.onFileInputChange(e, this);
+        _this.onFileInputChange(e, this);
+        this.value = null;
       });
       this.pickImageEl.on('click', this.onPickImageClick);
       this.modalCrop.on('shown.bs.modal', this.onModalShow);
@@ -85,11 +86,10 @@ import _ from 'underscore';
         cropBoxResizable: false,
         toggleDragModeOnDblclick: false,
         built: function() {
-          var $image, container, cropBoxHeight, cropBoxWidth;
-          $image = $(this);
-          container = $image.cropper('getContainerData');
-          cropBoxWidth = _this.cropBoxWidth;
-          cropBoxHeight = _this.cropBoxHeight;
+          const $image = $(this);
+          const container = $image.cropper('getContainerData');
+          const { cropBoxWidth, cropBoxHeight } = _this;
+
           return $image.cropper('setCropBoxData', {
             width: cropBoxWidth,
             height: cropBoxHeight,
@@ -136,7 +136,7 @@ import _ from 'underscore';
     }
 
     dataURLtoBlob(dataURL) {
-      var array, binary, i, k, len, v;
+      var array, binary, i, len, v;
       binary = atob(dataURL.split(',')[1]);
       array = [];
 

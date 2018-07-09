@@ -164,7 +164,7 @@ export const scrollToElement = element => {
   if (!(element instanceof $)) {
     $el = $(element);
   }
-  const top = $el.offset().top;
+  const { top } = $el.offset();
 
   return $('body, html').animate(
     {
@@ -189,12 +189,25 @@ export const getParameterByName = (name, urlToParse) => {
   return decodeURIComponent(results[2].replace(/\+/g, ' '));
 };
 
+const handleSelectedRange = (range) => {
+  const container = range.commonAncestorContainer;
+  // add context to fragment if needed
+  if (container.tagName === 'OL') {
+    const parentContainer = document.createElement(container.tagName);
+    parentContainer.appendChild(range.cloneContents());
+    return parentContainer;
+  }
+  return range.cloneContents();
+};
+
 export const getSelectedFragment = () => {
   const selection = window.getSelection();
   if (selection.rangeCount === 0) return null;
   const documentFragment = document.createDocumentFragment();
+
   for (let i = 0; i < selection.rangeCount; i += 1) {
-    documentFragment.appendChild(selection.getRangeAt(i).cloneContents());
+    const range = selection.getRangeAt(i);
+    documentFragment.appendChild(handleSelectedRange(range));
   }
   if (documentFragment.textContent.length === 0) return null;
 
@@ -203,9 +216,7 @@ export const getSelectedFragment = () => {
 
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
-  const selectionStart = target.selectionStart;
-  const selectionEnd = target.selectionEnd;
-  const value = target.value;
+  const { selectionStart, selectionEnd, value } = target;
 
   const textBefore = value.substring(0, selectionStart);
   const textAfter = value.substring(selectionEnd, value.length);
@@ -245,7 +256,8 @@ export const nodeMatchesSelector = (node, selector) => {
 
   // IE11 doesn't support `node.matches(selector)`
 
-  let parentNode = node.parentNode;
+  let { parentNode } = node;
+
   if (!parentNode) {
     parentNode = document.createElement('div');
     // eslint-disable-next-line no-param-reassign
@@ -281,6 +293,8 @@ export const normalizeCRLFHeaders = headers => {
 
   headersArray.forEach(header => {
     const keyValue = header.split(': ');
+
+    // eslint-disable-next-line prefer-destructuring
     headersObject[keyValue[0]] = keyValue[1];
   });
 

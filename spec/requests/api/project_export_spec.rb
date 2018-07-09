@@ -192,6 +192,13 @@ describe API::ProjectExport do
       context 'when upload complete' do
         before do
           FileUtils.rm_rf(project_after_export.export_path)
+
+          if project_after_export.export_project_object_exists?
+            upload = project_after_export.import_export_upload
+
+            upload.remove_export_file!
+            upload.save
+          end
         end
 
         it_behaves_like '404 response' do
@@ -260,6 +267,22 @@ describe API::ProjectExport do
       context 'when user is not a member' do
         it_behaves_like 'get project export download not found'
       end
+    end
+
+    context 'when an uploader is used' do
+      before do
+        stub_uploads_object_storage(ImportExportUploader)
+
+        [project, project_finished, project_after_export].each do |p|
+          p.add_master(user)
+
+          upload = ImportExportUpload.new(project: p)
+          upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
+          upload.save!
+        end
+      end
+
+      it_behaves_like 'get project download by strategy'
     end
   end
 

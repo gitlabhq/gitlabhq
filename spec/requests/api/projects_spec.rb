@@ -312,7 +312,7 @@ describe API::Projects do
 
         before do
           project_member
-          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+          user3.update(starred_projects: [project, project2, project3, public_project])
         end
 
         it 'returns the starred projects viewable by the user' do
@@ -333,7 +333,7 @@ describe API::Projects do
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project7, project8, project9])
+          user.update(starred_projects: [project5, project7, project8, project9])
         end
 
         context 'including owned filter' do
@@ -1451,7 +1451,7 @@ describe API::Projects do
       end
 
       it 'updates visibility_level from public to private' do
-        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+        project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
         put api("/projects/#{project3.id}", user), project_param
@@ -1986,6 +1986,38 @@ describe API::Projects do
         post api("/projects/#{project.id}/housekeeping")
 
         expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/transfer' do
+    context 'when authenticated as owner' do
+      let(:group) { create :group }
+
+      it 'transfers the project to the new namespace' do
+        group.add_owner(user)
+
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'fails when transferring to a non owned namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails when transferring to an unknown namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: 'unknown'
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails on missing namespace' do
+        put api("/projects/#{project.id}/transfer", user)
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end

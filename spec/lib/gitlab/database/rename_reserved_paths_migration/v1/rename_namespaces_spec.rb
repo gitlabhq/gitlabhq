@@ -281,7 +281,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
     it "doesn't break when the namespace was renamed" do
       subject.rename_namespace(namespace)
-      namespace.update_attributes!(path: 'renamed-afterwards')
+      namespace.update!(path: 'renamed-afterwards')
 
       expect { subject.revert_renames }.not_to raise_error
     end

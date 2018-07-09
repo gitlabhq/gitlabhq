@@ -3,8 +3,20 @@
 }
 
 .milestones {
+  padding: $gl-padding-8;
+  margin-top: $gl-padding-8;
+  border-radius: $border-radius-default;
+  background-color: $theme-gray-100;
+
   .milestone {
-    padding: 10px 16px;
+    border: 0;
+    padding: $gl-padding-top $gl-padding;
+    border-radius: $border-radius-default;
+    background-color: $white-light;
+
+    &:not(:last-child) {
+      margin-bottom: $gl-padding-4;
+    }
 
     h4 {
       font-weight: $gl-font-weight-bold;
@@ -13,6 +25,24 @@
     .progress {
       width: 100%;
       height: 6px;
+      margin-bottom: $gl-padding-4;
+    }
+
+    .milestone-progress {
+      a {
+        color: $gl-link-color;
+      }
+    }
+
+    .status-box {
+      font-size: $tooltip-font-size;
+      margin-top: 0;
+      margin-right: $gl-padding-4;
+
+      @include media-breakpoint-down(xs) {
+        line-height: unset;
+        padding: $gl-padding-4 $gl-input-padding;
+      }
     }
   }
 }
@@ -227,6 +257,10 @@
   > li {
     padding-left: 1em;
   }
+}
+
+.milestone-range {
+  color: $gl-text-color-tertiary;
 }
 
 @include media-breakpoint-down(xs) {

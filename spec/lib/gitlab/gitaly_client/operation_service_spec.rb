@@ -53,6 +53,47 @@ describe Gitlab::GitalyClient::OperationService do
     end
   end
 
+  describe '#user_update_branch' do
+    let(:branch_name) { 'my-branch' }
+    let(:newrev) { '01e' }
+    let(:oldrev) { '01d' }
+    let(:request) do
+      Gitaly::UserUpdateBranchRequest.new(
+        repository: repository.gitaly_repository,
+        branch_name: branch_name,
+        newrev: newrev,
+        oldrev: oldrev,
+        user: gitaly_user
+      )
+    end
+    let(:response) { Gitaly::UserUpdateBranchResponse.new }
+
+    subject { client.user_update_branch(branch_name, user, newrev, oldrev) }
+
+    it 'sends a user_update_branch message' do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_update_branch).with(request, kind_of(Hash))
+        .and_return(response)
+
+      subject
+    end
+
+    context "when pre_receive_error is present" do
+      let(:response) do
+        Gitaly::UserUpdateBranchResponse.new(pre_receive_error: "something failed")
+      end
+
+      it "throws a PreReceive exception" do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_update_branch).with(request, kind_of(Hash))
+          .and_return(response)
+
+        expect { subject }.to raise_error(
+          Gitlab::Git::PreReceiveError, "something failed")
+      end
+    end
+  end
+
   describe '#user_delete_branch' do
     let(:branch_name) { 'my-branch' }
     let(:request) do
