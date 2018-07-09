@@ -245,8 +245,12 @@ module ObjectStorage
     end
 
     def use_file(&blk)
-      with_exclusive_lease do
-        unsafe_use_file(&blk)
+      begin
+        cache_stored_file!
+        yield cache_path
+      ensure
+        FileUtils.rm_f(cache_path)
+        cache_storage.delete_dir!(cache_path(nil))
       end
     end
 
@@ -439,20 +443,6 @@ module ObjectStorage
       self.object_store = from_object_store
       self.file = file_to_delete
       raise e
-    end
-  end
-
-  def unsafe_use_file
-    if file_storage?
-      return yield path
-    end
-
-    begin
-      cache_stored_file!
-      yield cache_path
-    ensure
-      FileUtils.rm_f(cache_path)
-      cache_storage.delete_dir!(cache_path(nil))
     end
   end
 end
