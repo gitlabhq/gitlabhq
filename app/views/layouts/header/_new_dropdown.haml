@@ -37,7 +37,7 @@
           %li.dropdown-bold-header GitLab
       - if current_user.can_create_project?
         %li
-          = link_to 'New project', new_project_path
+          = link_to 'New project', new_project_path, class: 'qa-global-new-project-link'
       - if current_user.can_create_group?
         %li
           = link_to 'New group', new_group_path

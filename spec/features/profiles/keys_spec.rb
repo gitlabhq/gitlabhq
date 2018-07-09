@@ -30,6 +30,20 @@ describe 'Profile > SSH Keys' do
       expect(find('.breadcrumbs-sub-title')).to have_link(attrs[:title])
     end
 
+    it 'shows a confirmable warning if the key does not start with ssh-' do
+      attrs = attributes_for(:key)
+
+      fill_in('Key', with: 'invalid-key')
+      fill_in('Title', with: attrs[:title])
+      click_button('Add key')
+
+      expect(page).to have_selector('.js-add-ssh-key-validation-warning')
+
+      find('.js-add-ssh-key-validation-confirm-submit').click
+
+      expect(page).to have_content('Key is invalid')
+    end
+
     context 'when only DSA and ECDSA keys are allowed' do
       before do
         forbidden = ApplicationSetting::FORBIDDEN_KEY_VALUE

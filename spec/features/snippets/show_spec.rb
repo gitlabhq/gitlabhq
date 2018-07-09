@@ -68,6 +68,26 @@ describe 'Snippet', :js do
         end
       end
 
+      context 'with cached Redcarpet html' do
+        let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION) }
+        let(:file_name) { 'test.md' }
+        let(:content) { "1. one\n  - sublist\n" }
+
+        it 'renders correctly' do
+          expect(page).to have_xpath("//ol//li//ul")
+        end
+      end
+
+      context 'with cached CommonMark html' do
+        let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+        let(:file_name) { 'test.md' }
+        let(:content) { "1. one\n  - sublist\n" }
+
+        it 'renders correctly' do
+          expect(page).not_to have_xpath("//ol//li//ul")
+        end
+      end
+
       context 'switching to the simple viewer' do
         before do
           find('.js-blob-viewer-switch-btn[data-viewer=simple]').click

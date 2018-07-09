@@ -43,6 +43,11 @@ export default {
       required: false,
       default: true,
     },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -192,6 +197,7 @@ export default {
 
     <comment-form
       :noteable-type="noteableType"
+      :markdown-version="markdownVersion"
     />
   </div>
 </template>

@@ -40,6 +40,18 @@ module CacheMarkdownField
     end
   end
 
+  class MarkdownEngine
+    def self.from_version(version = nil)
+      return :common_mark if version.nil? || version == 0
+
+      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+        :redcarpet
+      else
+        :common_mark
+      end
+    end
+  end
+
   def skip_project_check?
     false
   end
@@ -57,7 +69,7 @@ module CacheMarkdownField
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
 
-    context[:markdown_engine] = markdown_engine
+    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
 
     context
   end
@@ -120,14 +132,6 @@ module CacheMarkdownField
       CacheMarkdownField::CACHE_REDCARPET_VERSION
     else
       CacheMarkdownField::CACHE_COMMONMARK_VERSION
-    end
-  end
-
-  def markdown_engine
-    if latest_cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
-      :redcarpet
-    else
-      :common_mark
     end
   end
 

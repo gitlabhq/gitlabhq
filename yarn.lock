@@ -78,9 +78,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.24.0":
-  version "1.24.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.24.0.tgz#3b2b58c5a1d58ce784f486d648bd87cbbb06cedc"
+"@gitlab-org/gitlab-svgs@^1.25.0":
+  version "1.25.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.25.0.tgz#1a82b1be43e1a46e6b0767ef46f26f5fd6bbd101"
 
 "@sindresorhus/is@^0.7.0":
   version "0.7.0"
@@ -5272,9 +5272,9 @@ moment@2.x, moment@^2.18.1:
   version "2.19.2"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.19.2.tgz#8a7f774c95a64550b4c7ebd496683908f9419dbe"
 
-monaco-editor-webpack-plugin@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.2.1.tgz#577ed091420f422bb8f0ff3a8899dd82344da56d"
+monaco-editor-webpack-plugin@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/monaco-editor-webpack-plugin/-/monaco-editor-webpack-plugin-1.4.0.tgz#7324258ab3695464cfe3bc12edb2e8c55b80d92f"
 
 monaco-editor@0.13.1:
   version "0.13.1"
