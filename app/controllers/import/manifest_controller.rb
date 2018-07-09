@@ -27,8 +27,8 @@ class Import::ManifestController < Import::BaseController
     manifest = Gitlab::ManifestImport::Manifest.new(params[:manifest].tempfile)
 
     if manifest.valid?
-      session[:repositories] = manifest.projects
-      session[:group_id] = group.id
+      session[:manifest_import_repositories] = manifest.projects
+      session[:manifest_import_group_id] = group.id
 
       redirect_to status_import_manifest_path
     else
@@ -65,11 +65,11 @@ class Import::ManifestController < Import::BaseController
   end
 
   def group
-    @group ||= Group.find_by(id: session[:group_id])
+    @group ||= Group.find_by(id: session[:manifest_import_group_id])
   end
 
   def repositories
-    @repositories ||= session[:repositories]
+    @repositories ||= session[:manifest_import_repositories]
   end
 
   def find_jobs

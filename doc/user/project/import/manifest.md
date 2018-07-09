@@ -1,7 +1,11 @@
 # Import multiple repositories by uploading a manifest file
 
-GitLab allows you to import all the required git repositories based on the 
-Android repository manifest file.
+GitLab allows you to import all the required git repositories 
+based a manifest file like the one used by the Android repository.
+
+
+>**Note:** 
+This feature requires [subgroups](user/group/subgroups/index.md) to be supported by your database. 
 
 You can do it by following next steps: 
 

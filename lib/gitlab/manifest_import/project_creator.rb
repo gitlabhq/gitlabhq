@@ -12,8 +12,7 @@ module Gitlab
       def execute
         group_full_path, _, project_path = repository[:path].rpartition('/')
         group_full_path = File.join(destination.full_path, group_full_path) if destination
-        group = Group.find_by_full_path(group_full_path) ||
-          create_group_with_parents(group_full_path)
+        group = create_group_with_parents(group_full_path)
 
         params = {
           import_url: repository[:url],

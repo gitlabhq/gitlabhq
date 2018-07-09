@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import multiple repositories by uploading a manifest file', :js, :postgresql do
+describe 'Import multiple repositories by uploading a manifest file', :js, :postgresql do
   include Select2Helper
 
   let(:user) { create(:admin) }
@@ -34,6 +34,15 @@ feature 'Import multiple repositories by uploading a manifest file', :js, :postg
       expect(page).to have_content 'Done'
       expect(page).to have_content("#{group.full_path}/build/make")
     end
+  end
+
+  it 'renders an error if invalid file was provided' do
+    visit new_import_manifest_path
+
+    attach_file('manifest', Rails.root.join('spec/fixtures/banana_sample.gif'))
+    click_on 'List available repositories'
+
+    expect(page).to have_content 'The uploaded file is not a valid XML file.'
   end
 
   def first_row

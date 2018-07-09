@@ -358,7 +358,7 @@ class ApplicationController < ActionController::Base
   end
 
   def manifest_import_enabled?
-    Gitlab::CurrentSettings.import_sources.include?('manifest')
+    Group.supports_nested_groups? && Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application
