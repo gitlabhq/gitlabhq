@@ -82,8 +82,10 @@ Specify the GitLab group name accordingly. (Note that you can also specify GitLa
 are really GitLab "groups" behind the scenes. In that case, all the projects for that user would
 be made known to JIRA, up to the permissions of the user setting up the integration.)
 
-You can now see the linked `branches`, `commits`, and `merge requests` when entering a JIRA issue.
-(Inside the Jira issue, merge requests will be called "pull requests").
+You may now refer any Jira issue by its ID in branch names, commit messages and  merge request names on GitLab's side,
+and you will be able to see the linked `branches`, `commits`, and `merge requests` when entering a JIRA issue
+(inside the Jira issue, merge requests will be called "pull requests").
+
 
 ![Branch, Commit and Pull Requests links on JIRA issue](img/jira_dev_panel_jira_setup_3.png)
 
