@@ -13,8 +13,6 @@ module Commits
 
       # rubocop:disable GitlabSecurity/PublicSend
       message = @commit.public_send(:"#{action}_message", current_user)
-
-      # rubocop:disable GitlabSecurity/PublicSend
       repository.public_send(
         action,
         current_user,

@@ -1,3 +1,4 @@
+# rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)

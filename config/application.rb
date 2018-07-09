@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 
 require 'rails/all'
 
@@ -211,7 +211,7 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
+            send(name, project&.namespace, project, *args)
           end
         end
       end

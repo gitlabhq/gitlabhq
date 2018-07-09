@@ -462,12 +462,12 @@ class Repository
     expire_branches_cache
   end
 
-  def method_missing(m, *args, &block)
-    if m == :lookup && !block_given?
-      lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(msg, *args, &block)
+    if msg == :lookup && !block_given?
+      lookup_cache[msg] ||= {}
+      lookup_cache[msg][args.join(":")] ||= raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 

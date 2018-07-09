@@ -787,7 +787,7 @@ module API
           service = user_project.find_or_initialize_service(service_slug.underscore)
           service_params = declared_params(include_missing: false).merge(active: true)
 
-          if service.update_attributes(service_params)
+          if service.update(service_params)
             present service, with: Entities::ProjectService
           else
             render_api_error!('400 Bad Request', 400)
@@ -807,7 +807,7 @@ module API
             hash.merge!(key => nil)
           end
 
-          unless service.update_attributes(attrs.merge(active: false))
+          unless service.update(attrs.merge(active: false))
             render_api_error!('400 Bad Request', 400)
           end
         end

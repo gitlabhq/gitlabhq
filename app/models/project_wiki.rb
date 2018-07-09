@@ -107,7 +107,7 @@ class ProjectWiki
     update_project_activity
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
-    return false
+    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)

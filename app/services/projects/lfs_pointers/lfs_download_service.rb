@@ -22,7 +22,7 @@ module Projects
       private
 
       def download_and_save_file(file, sanitized_uri)
-        IO.copy_stream(open(sanitized_uri.sanitized_url, headers(sanitized_uri)), file)
+        IO.copy_stream(open(sanitized_uri.sanitized_url, headers(sanitized_uri)), file) # rubocop:disable Security/Open
       end
 
       def headers(sanitized_uri)

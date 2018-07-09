@@ -501,7 +501,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label, label3])
+          issue.update(labels: [label, label3])
         end
 
         it 'ignores the label_ids parameter' do
@@ -517,7 +517,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label])
+          issue.update(labels: [label])
         end
 
         it 'adds the passed labels' do

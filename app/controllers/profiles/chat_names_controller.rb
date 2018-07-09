@@ -39,7 +39,7 @@ class Profiles::ChatNamesController < Profiles::ApplicationController
       flash[:alert] = "Could not delete chat nickname #{@chat_name.chat_name}."
     end
 
-    redirect_to profile_chat_names_path, status: 302
+    redirect_to profile_chat_names_path, status: :found
   end
 
   private
