@@ -32,6 +32,7 @@ following locations:
 - [Group Members](members.md)
 - [Issues](issues.md)
 - [Issue Boards](boards.md)
+- [Issue Links](issue_links.md)
 - [Group Issue Boards](group_boards.md)
 - [Jobs](jobs.md)
 - [Keys](keys.md)
