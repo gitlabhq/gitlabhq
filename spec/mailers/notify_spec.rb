@@ -314,6 +314,17 @@ describe Notify do
         end
       end
 
+      describe 'that are new with a description' do
+        subject { described_class.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
+
+        it_behaves_like 'it should show Gmail Actions View Merge request link'
+        it_behaves_like "an unsubscribeable thread"
+
+        it 'contains the description' do
+          is_expected.to have_body_text(merge_request.description)
+        end
+      end
+
       describe 'that have been relabeled' do
         subject { described_class.relabeled_merge_request_email(recipient.id, merge_request.id, %w[foo bar baz], current_user.id) }
 
