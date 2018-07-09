@@ -40,7 +40,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView']),
     isContextLine() {
       return this.line.left.type === CONTEXT_LINE_TYPE;
     },
