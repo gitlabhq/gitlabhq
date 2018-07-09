@@ -82,14 +82,5 @@ export const expandAllFiles = ({ commit }) => {
   commit(types.EXPAND_ALL_FILES);
 };
 
-export default {
-  setBaseConfig,
-  fetchDiffFiles,
-  setInlineDiffViewType,
-  setParallelDiffViewType,
-  showCommentForm,
-  cancelCommentForm,
-  loadMoreLines,
-  loadCollapsedDiff,
-  expandAllFiles,
-};
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};
