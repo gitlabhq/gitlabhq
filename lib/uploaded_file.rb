@@ -37,7 +37,7 @@ class UploadedFile
 
     file_path = File.realpath(params["#{field}.path"])
 
-    paths = Array.wrap(upload_paths) << Dir.tmpdir
+    paths = Array(upload_paths) << Dir.tmpdir
     unless self.allowed_path?(file_path, paths.compact)
       raise InvalidPathError, "insecure path used '#{file_path}'"
     end
