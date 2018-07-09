@@ -49,8 +49,8 @@ supporting custom domains a secondary IP is not needed.
 
 Before proceeding with the Pages configuration, you will need to:
 
-1. Have a separate domain under which the GitLab Pages will be served. In this
-   document we assume that to be `example.io`.
+1. Have an exclusive root domain for serving GitLab Pages. Note that you cannot
+   use a subdomain of your GitLab's instance domain.
 1. Configure a **wildcard DNS record**.
 1. (Optional) Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
