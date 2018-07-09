@@ -63,7 +63,6 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def status
-    bitbucket_client = BitbucketServer::Client.new(credentials)
     repos = bitbucket_client.repos
 
     @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }

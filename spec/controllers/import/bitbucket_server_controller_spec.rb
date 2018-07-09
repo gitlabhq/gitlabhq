@@ -4,6 +4,7 @@ describe Import::BitbucketServerController do
   let(:user) { create(:user) }
   let(:project_key) { 'test-project' }
   let(:repo_slug) { 'some-repo' }
+  let(:client) { instance_double(BitbucketServer::Client) }
 
   def assign_session_tokens
     session[:bitbucket_server_url] = 'http://localhost:7990'
@@ -35,7 +36,6 @@ describe Import::BitbucketServerController do
     end
 
     set(:project) { create(:project) }
-    let(:client) { instance_double(BitbucketServer::Client) }
 
     it 'returns the new project' do
       allow(Gitlab::BitbucketServerImport::ProjectCreator)
@@ -87,17 +87,68 @@ describe Import::BitbucketServerController do
   end
 
   describe 'POST configure' do
+    let(:token) { 'token' }
+    let(:username) { 'bitbucket-user' }
+    let(:url) { 'http://localhost:7990/bitbucket' }
+
+    it 'clears out existing session' do
+      post :configure
+
+      expect(session[:bitbucket_server_url]).to be_nil
+      expect(session[:bitbucket_server_username]).to be_nil
+      expect(session[:bitbucket_server_personal_access_token]).to be_nil
+
+      expect(response).to have_gitlab_http_status(302)
+      expect(response).to redirect_to(status_import_bitbucket_server_path)
+    end
+
     it 'sets the session variables' do
+      post :configure, personal_access_token: token, bitbucket_username: username, bitbucket_server_url: url
+
+      expect(session[:bitbucket_server_url]).to eq(url)
+      expect(session[:bitbucket_server_username]).to eq(username)
+      expect(session[:bitbucket_server_personal_access_token]).to eq(token)
+      expect(response).to have_gitlab_http_status(302)
+      expect(response).to redirect_to(status_import_bitbucket_server_path)
     end
   end
 
   describe 'GET status' do
-    it 'shows the list of projects to be imported' do
+    render_views
+
+    before do
+      allow(controller).to receive(:bitbucket_client).and_return(client)
+
+      @repo = double(slug: 'vim', owner: 'asd', full_name: 'asd/vim', "valid?" => true, project_name: 'asd', browse_url: 'http://test', name: 'vim')
+      @invalid_repo = double(slug: 'invalid', owner: 'foobar', full_name: 'asd/foobar', "valid?" => false)
+      assign_session_tokens
+    end
+
+    it 'assigns repository categories' do
+      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id, import_source: 'foo/bar', import_status: 'finished')
+      expect(client).to receive(:repos).and_return([@repo, @invalid_repo])
+
+      get :status
+
+      expect(assigns(:already_added_projects)).to eq([created_project])
+      expect(assigns(:repos)).to eq([@repo])
+      expect(assigns(:incompatible_repos)).to eq([@invalid_repo])
     end
   end
 
   describe 'GET jobs' do
+    before do
+      assign_session_tokens
+    end
+
     it 'returns a list of imported projects' do
+      created_project = create(:project, import_type: 'bitbucket_server', creator_id: user.id)
+
+      get :jobs
+
+      expect(json_response.count).to eq(1)
+      expect(json_response.first['id']).to eq(created_project.id)
+      expect(json_response.first['import_status']).to eq('none')
     end
   end
 end
