@@ -47,6 +47,9 @@ export default {
         false,
       );
     },
+    showExpandMessage() {
+      return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
+    },
   },
   mounted() {
     document.addEventListener('scroll', this.handleScroll);
@@ -159,7 +162,7 @@ export default {
     </div>
 
     <diff-content
-      v-show="!isCollapsed"
+      v-if="!isCollapsed"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
@@ -168,7 +171,7 @@ export default {
       class="diff-content loading"
     />
     <div
-      v-show="isCollapsed && !isLoadingCollapsedDiff && !file.tooLarge"
+      v-if="showExpandMessage"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}
