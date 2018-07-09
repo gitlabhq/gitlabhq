@@ -1,4 +1,4 @@
-# Class to parse manifest file to import multiple projects at once
+# Class to parse manifest file and build a list of repositories for import
 #
 # <manifest>
 #   <remote review="https://android-review.googlesource.com/" />
@@ -11,17 +11,16 @@
 #    For example, you can't have projects with 'foo' and 'foo/bar' paths.
 # 2. Remote must be present with review attribute so GitLab knows
 #    where to fetch source code
-# 3. For each nested keyword in path a corresponding group will be created.
-#    For example if a path is 'foo/bar' then GitLab will create a group 'foo'
-#    and a project 'bar' in it.
 module Gitlab
   module ManifestImport
     class Manifest
       attr_reader :parsed_xml, :errors
 
       def initialize(file)
-        @parsed_xml = File.open(file) { |f| Nokogiri::XML(f) }
+        @parsed_xml = Nokogiri::XML(file) { |config| config.strict }
         @errors = []
+      rescue Nokogiri::XML::SyntaxError
+        @errors = ['The uploaded file is not a valid XML file.']
       end
 
       def projects
@@ -36,6 +35,8 @@ module Gitlab
       end
 
       def valid?
+        return false if @errors.any?
+
         unless validate_remote
           @errors << 'Make sure a <remote> tag is present and is valid.'
         end
