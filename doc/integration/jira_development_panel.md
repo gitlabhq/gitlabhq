@@ -11,8 +11,8 @@ By doing this you can easily access related GitLab merge requests, branches, and
 
 This integration connects all GitLab projects within a top-level group or a personal namespace to projects in the JIRA instance.
 A top-level GitLab group is one that does not have any parent group itself. All the projects of that top-level group,
-as well as projects of the top-level group's subgroups nesting down, are connected. Alternatively, you can configure
-a GitLab personal namespace, which will then connect the projects in that personal namespace to JIRA.
+as well as projects of the top-level group's subgroups nesting down, are connected. Alternatively, you can specify
+a GitLab personal namespace in the JIRA configuration, which will then connect the projects in that personal namespace to JIRA.
 
 (Note this is different from the [existing JIRA][existing-jira] project integration, where the mapping
 is one GitLab project to the entire JIRA instance.) 
