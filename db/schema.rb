@@ -2905,12 +2905,9 @@ ActiveRecord::Schema.define(version: 20180702181530) do
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
-  add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
-=======
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
->>>>>>> upstream/master
+  add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
