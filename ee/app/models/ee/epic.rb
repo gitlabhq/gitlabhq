@@ -109,6 +109,16 @@ module EE
     # Needed to use EntityDateHelper#remaining_days_in_words
     alias_attribute(:due_date, :end_date)
 
+    # Earliest start date from issues' milestones
+    def start_date_from_milestones
+      epic_issues.joins(issue: :milestone).minimum('milestones.start_date')
+    end
+
+    # Latest end date from issues' milestones
+    def due_date_from_milestones
+      epic_issues.joins(issue: :milestone).maximum('milestones.due_date')
+    end
+
     def to_reference(from = nil, full: false)
       reference = "#{self.class.reference_prefix}#{iid}"
 

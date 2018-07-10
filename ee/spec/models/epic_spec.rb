@@ -7,6 +7,7 @@ describe Epic do
     it { is_expected.to belong_to(:author).class_name('User') }
     it { is_expected.to belong_to(:assignee).class_name('User') }
     it { is_expected.to belong_to(:group) }
+    it { is_expected.to have_many(:epic_issues) }
   end
 
   describe 'validations' do
@@ -81,6 +82,60 @@ describe Epic do
       epic = build(:epic, start_date: 7.days.ago)
 
       expect(epic.elapsed_days).to eq(7)
+    end
+  end
+
+  describe '#start_date_from_milestones' do
+    subject { create(:epic) }
+    let(:date) { Date.new(2017, 3, 4) }
+
+    before do
+      milestone1 = create(
+        :milestone,
+        start_date: date,
+        due_date: date + 10.days
+      )
+      epic_issue1 = create(:epic_issue, epic: subject)
+      epic_issue1.issue.update(milestone: milestone1)
+
+      milestone2 = create(
+        :milestone,
+        start_date: date + 5.days,
+        due_date: date + 15.days
+      )
+      epic_issue2 = create(:epic_issue, epic: subject)
+      epic_issue2.issue.update(milestone: milestone2)
+    end
+
+    it 'returns earliest start date from issue milestones' do
+      expect(subject.start_date_from_milestones).to eq(date)
+    end
+  end
+
+  describe '#due_date_from_milestones' do
+    subject { create(:epic) }
+    let(:date) { Date.new(2017, 3, 4) }
+
+    before do
+      milestone1 = create(
+        :milestone,
+        start_date: date - 30.days,
+        due_date: date - 20.days
+      )
+      epic_issue1 = create(:epic_issue, epic: subject)
+      epic_issue1.issue.update(milestone: milestone1)
+
+      milestone2 = create(
+        :milestone,
+        start_date: date - 10.days,
+        due_date: date
+      )
+      epic_issue2 = create(:epic_issue, epic: subject)
+      epic_issue2.issue.update(milestone: milestone2)
+    end
+
+    it 'returns latest due date from issue milestones' do
+      expect(subject.due_date_from_milestones).to eq(date)
     end
   end
 
