@@ -23,7 +23,7 @@
     }
 
     .btn-group {
-      > a {
+      > .btn:not(.btn-danger) {
         color: $gl-text-color-secondary;
       }
 
