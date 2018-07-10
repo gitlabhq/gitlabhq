@@ -20,5 +20,8 @@
     %p= s_("BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}.").html_safe % { parent_billing_page_link: parent_billing_page_link }
     = link_to s_("BillingPlans|Manage plan"), group_billings_path(parent_group), class: 'btn btn-success'
   - else
-    - faq_link = link_to s_("BillingPlans|frequently asked questions"), "https://about.gitlab.com/gitlab-com/#faq"
-    = s_("BillingPlans|Learn more about each plan by reading our %{faq_link}.").html_safe % { faq_link: faq_link }
+    = render 'shared/billings/trial_status', namespace: namespace
+
+  - if namespace.eligible_for_trial?
+    - namespace_billing_url = namespace.is_a?(Group) ? group_billings_url(namespace) : profile_billings_url
+    %p= link_to 'Start your free trial', new_gitlab_com_trial_url, class: 'btn btn-primary btn-inverted'

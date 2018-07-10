@@ -23,12 +23,10 @@ describe API::Namespaces do
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
-        expect(group_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
-                                                                 'parent_id', 'members_count_with_descendants',
-                                                                 'plan', 'shared_runners_minutes_limit')
+        expect(group_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
+                                                         'parent_id', 'members_count_with_descendants')
 
-        expect(user_kind_json_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
-                                                                'parent_id', 'plan', 'shared_runners_minutes_limit')
+        expect(user_kind_json_response.keys).to include('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
       end
 
       it "admin: returns an array of all namespaces" do
@@ -60,8 +58,8 @@ describe API::Namespaces do
 
         owned_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
-        expect(owned_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path',
-                                                             'plan', 'parent_id', 'members_count_with_descendants')
+        expect(owned_group_response.keys).to include('id', 'kind', 'name', 'path', 'full_path',
+                                                     'parent_id', 'members_count_with_descendants')
       end
 
       it "returns correct attributes when user cannot admin group" do
@@ -71,7 +69,7 @@ describe API::Namespaces do
 
         guest_group_response = json_response.find { |resource| resource['id'] == group1.id }
 
-        expect(guest_group_response.keys).to contain_exactly('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
+        expect(guest_group_response.keys).to include('id', 'kind', 'name', 'path', 'full_path', 'parent_id')
       end
 
       it "user: returns an array of namespaces" do
@@ -90,56 +88,6 @@ describe API::Namespaces do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
-      end
-    end
-  end
-
-  describe 'PUT /namespaces/:id' do
-    before do
-      create(:silver_plan)
-    end
-
-    context 'when authenticated as admin' do
-      it 'updates namespace using full_path' do
-        put api("/namespaces/#{group1.full_path}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response['plan']).to eq('silver')
-        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
-      end
-
-      it 'updates namespace using id' do
-        put api("/namespaces/#{group1.id}", admin), plan: 'silver', shared_runners_minutes_limit: 9001
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response['plan']).to eq('silver')
-        expect(json_response['shared_runners_minutes_limit']).to eq(9001)
-      end
-    end
-
-    context 'when not authenticated as admin' do
-      it 'retuns 403' do
-        put api("/namespaces/#{group1.id}", user), plan: 'silver'
-
-        expect(response).to have_gitlab_http_status(403)
-      end
-    end
-
-    context 'when namespace not found' do
-      it 'returns 404' do
-        put api("/namespaces/12345", admin), plan: 'silver'
-
-        expect(response).to have_gitlab_http_status(404)
-        expect(json_response).to eq('message' => '404 Namespace Not Found')
-      end
-    end
-
-    context 'when invalid params' do
-      it 'returns validation error' do
-        put api("/namespaces/#{group1.id}", admin), plan: 'unknown'
-
-        expect(response).to have_gitlab_http_status(400)
-        expect(json_response['message']).to eq('plan' => ['is not included in the list'])
       end
     end
   end

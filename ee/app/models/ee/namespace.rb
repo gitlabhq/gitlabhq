@@ -180,6 +180,23 @@ module EE
         end
     end
 
+    def eligible_for_trial?
+      ::Gitlab.com? &&
+        parent_id.nil? &&
+        trial_ends_on.blank? &&
+        [EARLY_ADOPTER_PLAN, FREE_PLAN].include?(actual_plan_name)
+    end
+
+    def trial_active?
+      trial_ends_on.present? && trial_ends_on >= Date.today
+    end
+
+    def trial_expired?
+      trial_ends_on.present? &&
+        trial_ends_on < Date.today &&
+        actual_plan_name == FREE_PLAN
+    end
+
     private
 
     def validate_plan_name
