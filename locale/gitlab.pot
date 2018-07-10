@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-09 08:28+0200\n"
-"PO-Revision-Date: 2018-07-09 08:28+0200\n"
+"POT-Creation-Date: 2018-07-09 19:16+0200\n"
+"PO-Revision-Date: 2018-07-09 19:16+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -2099,7 +2099,16 @@ msgstr ""
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
+msgid "Environments|An error occurred while stopping the environment, please try again"
+msgstr ""
+
+msgid "Environments|Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Environments|Commit"
+msgstr ""
+
+msgid "Environments|Deploy to..."
 msgstr ""
 
 msgid "Environments|Deployment"
@@ -2114,25 +2123,37 @@ msgstr ""
 msgid "Environments|Job"
 msgstr ""
 
+msgid "Environments|Learn more about stopping environments"
+msgstr ""
+
 msgid "Environments|New environment"
 msgstr ""
 
 msgid "Environments|No deployments yet"
 msgstr ""
 
-msgid "Environments|Open"
+msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
 msgstr ""
 
-msgid "Environments|Re-deploy"
+msgid "Environments|Open live environment"
+msgstr ""
+
+msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
-msgid "Environments|Rollback"
+msgid "Environments|Rollback environment"
 msgstr ""
 
 msgid "Environments|Show all"
+msgstr ""
+
+msgid "Environments|Stop"
+msgstr ""
+
+msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -3799,9 +3820,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Re-deploy"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -3934,9 +3952,6 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
-msgstr ""
-
-msgid "Rollback"
 msgstr ""
 
 msgid "Runner token"
