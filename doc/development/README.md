@@ -46,6 +46,7 @@ description: 'Learn how to contribute to GitLab.'
 - [How to dump production data to staging](db_dump.md)
 - [Working with the GitHub importer](github_importer.md)
 - [Working with Merge Request diffs](diffs.md)
+- [API First Architecture Guidelines](api_first_architecture_guidelines.md)
 
 ## Performance guides
 
