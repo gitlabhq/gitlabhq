@@ -85,19 +85,25 @@ beforeEach(() => {
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
-const testsContext = require.context('.', true, /_spec$/);
-testsContext.keys().forEach(function(path) {
-  try {
-    testsContext(path);
-  } catch (err) {
-    console.log(err);
-    console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
-    describe('Test bundle', function() {
-      it(`includes '${path}'`, function() {
-        expect(err).toBeNull();
+const testContexts = [
+  require.context('spec', true, /_spec$/),
+  require.context('ee_spec', true, /_spec$/),
+];
+
+testContexts.forEach(context => {
+  context.keys().forEach(path => {
+    try {
+      context(path);
+    } catch (err) {
+      console.log(err);
+      console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
+      describe('Test bundle', function() {
+        it(`includes '${path}'`, function() {
+          expect(err).toBeNull();
+        });
       });
-    });
-  }
+    }
+  });
 });
 
 describe('test errors', () => {
@@ -166,24 +172,31 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-    const sourceFiles = require.context('~', true, /\.js$/);
+    const sourceFilesContexts = [
+      require.context('~', true, /\.js$/),
+      require.context('ee', true, /\.js$/),
+    ];
+    const allTestFiles = testContexts.reduce((accumulator, context) =>
+      accumulator.concat(context.keys()), []);
 
     $.holdReady(true);
 
-    sourceFiles.keys().forEach(function(path) {
-      // ignore if there is a matching spec file
-      if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
-        return;
-      }
-
-      it(`includes '${path}'`, function() {
-        try {
-          sourceFiles(path);
-        } catch (err) {
-          if (troubleMakers.indexOf(path) === -1) {
-            expect(err).toBeNull();
-          }
+    sourceFilesContexts.forEach(context => {
+      context.keys().forEach(path => {
+        // ignore if there is a matching spec file
+        if (allTestFiles.indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
+          return;
         }
+
+        it(`includes '${path}'`, function() {
+          try {
+            context(path);
+          } catch (err) {
+            if (troubleMakers.indexOf(path) === -1) {
+              expect(err).toBeNull();
+            }
+          }
+        });
       });
     });
   });
