@@ -159,6 +159,7 @@ module EESpecificCheck
       if status.porcelain == ''
         status.head
       else
+        diff = run_git_command("diff")
         run_git_command("rebase --abort")
 
         say <<~MESSAGE
@@ -182,9 +183,9 @@ module EESpecificCheck
           💥 If you would like to help, or have any questions, please
           💥 contact @godfat
 
-          ⚠️ Git status:
+          ⚠️ Git diff:
 
-          #{status.porcelain}
+          #{diff}
         MESSAGE
 
         exit(255)
