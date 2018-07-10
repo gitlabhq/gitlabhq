@@ -20,15 +20,21 @@ namespace :gettext do
   end
 
   task :regenerate do
+    pot_file = 'locale/gitlab.pot'
     # Remove all translated files, this speeds up finding
     FileUtils.rm Dir['locale/**/gitlab.*']
     # remove the `pot` file to ensure it's completely regenerated
-    FileUtils.rm_f 'locale/gitlab.pot'
+    FileUtils.rm_f pot_file
 
     Rake::Task['gettext:find'].invoke
 
     # leave only the required changes.
     `git checkout -- locale/*/gitlab.po`
+
+    # Remove timestamps from the pot file
+    pot_content = File.read pot_file
+    pot_content.gsub!(/^"POT?\-(?:Creation|Revision)\-Date\:.*\n/, '')
+    File.write pot_file, pot_content
 
     puts <<~MSG
     All done. Please commit the changes to `locale/gitlab.pot`.
