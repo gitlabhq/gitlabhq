@@ -2,7 +2,7 @@
 
 import Sortable from 'sortablejs';
 import Vue from 'vue';
-import { __, n__, sprintf } from '~/locale';
+import { n__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
 import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
