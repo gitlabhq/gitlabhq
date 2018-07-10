@@ -535,12 +535,14 @@ describe API::Jobs do
     context 'authorized user' do
       context 'when trace is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+        let(:url) { 'http://object-storage/trace' }
+        let(:file_path) { expand_fixture_path('trace/sample_trace') }
 
         before do
-          stub_remote_trace_206
+          stub_remote_url_206(url, file_path)
           allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
-          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
-          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { File.size(file_path) }
         end
 
         it 'returns specific job trace' do

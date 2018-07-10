@@ -18,14 +18,6 @@ class JobArtifactUploader < GitlabUploader
     dynamic_segment
   end
 
-  def open
-    if file_storage?
-      File.open(path, "rb") if path
-    else
-      ::Gitlab::Ci::Trace::HttpIO.new(url, cached_size) if url
-    end
-  end
-
   private
 
   def dynamic_segment
