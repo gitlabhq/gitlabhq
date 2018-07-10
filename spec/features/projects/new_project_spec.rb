@@ -23,7 +23,22 @@ describe 'New project' do
     expect(page).to have_link('Google Code')
     expect(page).to have_button('Repo by URL')
     expect(page).to have_link('GitLab export')
-    expect(page).to have_link('Manifest file')
+  end
+
+  describe 'manifest import option' do
+    before do
+      visit new_project_path
+
+      find('#import-project-tab').click
+    end
+
+    context 'when using postgres', :postgresql do
+      it { expect(page).to have_link('Manifest file') }
+    end
+
+    context 'when using mysql', :mysql do
+      it { expect(page).not_to have_link('Manifest file') }
+    end
   end
 
   context 'Visibility level selector', :js do
@@ -203,7 +218,7 @@ describe 'New project' do
       end
     end
 
-    context 'from manifest file' do
+    context 'from manifest file', :postgresql do
       before do
         first('.import_manifest').click
       end
