@@ -1186,13 +1186,13 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
+msgid "Choose the top-level group for your repository imports."
+msgstr ""
+
 msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr ""
 
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
-msgstr ""
-
-msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
 msgid "Choose which repositories you want to import."
@@ -4844,10 +4844,10 @@ msgstr ""
 msgid "Repository Settings"
 msgstr ""
 
-msgid "Repository has no locks."
+msgid "Repository URL"
 msgstr ""
 
-msgid "Repository URL"
+msgid "Repository has no locks."
 msgstr ""
 
 msgid "Repository maintenance"
