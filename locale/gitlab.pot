@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-07-10 08:56+0200\n"
-"PO-Revision-Date: 2018-07-10 08:56+0200\n"
-=======
-"POT-Creation-Date: 2018-07-10 17:09+0300\n"
-"PO-Revision-Date: 2018-07-10 17:09+0300\n"
->>>>>>> upstream/master
+"POT-Creation-Date: 2018-07-10 13:57-0500\n"
+"PO-Revision-Date: 2018-07-10 13:57-0500\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1926,7 +1921,6 @@ msgstr ""
 msgid "Control the display of third party offers."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr ""
 
@@ -1939,8 +1933,6 @@ msgstr ""
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -2486,46 +2478,22 @@ msgstr ""
 msgid "Environments|No deployments yet"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Environments|No pod name has been specified"
 msgstr ""
 
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
-=======
-msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
 msgstr ""
 
 msgid "Environments|Open live environment"
 msgstr ""
 
-msgid "Environments|Re-deploy to environment"
->>>>>>> upstream/master
-msgstr ""
-
-msgid "Environments|Open live environment"
-msgstr ""
-
-<<<<<<< HEAD
 msgid "Environments|Pod logs from"
-=======
-msgid "Environments|Rollback environment"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Environments|Re-deploy to environment"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Environments|Read more about environments"
-=======
-msgid "Environments|Stop"
-msgstr ""
-
-msgid "Environments|Stop environment"
-msgstr ""
-
-msgid "Environments|Updated"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Environments|Rollback environment"
@@ -4779,12 +4747,9 @@ msgstr ""
 msgid "Quarters"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Read more"
 msgstr ""
 
@@ -4940,15 +4905,12 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Runner token"
 msgstr ""
 
