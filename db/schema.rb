@@ -206,7 +206,6 @@ ActiveRecord::Schema.define(version: 20180704204006) do
     t.string "encrypted_external_auth_client_key_pass_iv"
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
-<<<<<<< HEAD
     t.boolean "pseudonymizer_enabled", default: false, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
   end
@@ -226,10 +225,6 @@ ActiveRecord::Schema.define(version: 20180704204006) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "mirror_available", default: true, null: false
-    t.boolean "hide_third_party_offers", default: false, null: false
->>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
