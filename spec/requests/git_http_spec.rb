@@ -792,23 +792,6 @@ describe 'Git HTTP requests' do
           end
         end
 
-        context "when repository is above size limit" do
-          let(:env) { { user: user.username, password: user.password } }
-
-          before do
-            project.add_master(user)
-          end
-
-          it 'responds with status 403 Forbidden' do
-            allow_any_instance_of(EE::Project)
-              .to receive(:above_size_limit?).and_return(true)
-
-            upload(path, env) do |response|
-              expect(response).to have_gitlab_http_status(:forbidden)
-            end
-          end
-        end
-
         context 'when license is not provided' do
           let(:env) { { user: user.username, password: user.password } }
 
