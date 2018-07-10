@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-01 21:24+1000\n"
-"PO-Revision-Date: 2018-07-01 21:24+1000\n"
+"POT-Creation-Date: 2018-07-10 08:56+0200\n"
+"PO-Revision-Date: 2018-07-10 08:56+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -369,7 +369,16 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "An error accured whilst committing your changes."
+msgstr ""
+
 msgid "An error occured creating the new branch."
+msgstr ""
+
+msgid "An error occured whilst fetching the job trace."
+msgstr ""
+
+msgid "An error occured whilst fetching the latest pipline."
 msgstr ""
 
 msgid "An error occured whilst loading all the files."
@@ -388,6 +397,9 @@ msgid "An error occured whilst loading the merge request version data."
 msgstr ""
 
 msgid "An error occured whilst loading the merge request."
+msgstr ""
+
+msgid "An error occured whilst loading the pipelines jobs."
 msgstr ""
 
 msgid "An error occurred previewing the blob"
@@ -1085,9 +1097,6 @@ msgstr ""
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Add an existing Kubernetes cluster"
-msgstr ""
-
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr ""
 
@@ -1107,9 +1116,6 @@ msgid "ClusterIntegration|CA Certificate"
 msgstr ""
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
-msgstr ""
-
-msgid "ClusterIntegration|Choose how to set up Kubernetes cluster integration"
 msgstr ""
 
 msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
@@ -1137,18 +1143,6 @@ msgid "ClusterIntegration|Copy Token"
 msgstr ""
 
 msgid "ClusterIntegration|Create Kubernetes cluster"
-msgstr ""
-
-msgid "ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab"
-msgstr ""
-
-msgid "ClusterIntegration|Create on Google Kubernetes Engine"
-msgstr ""
-
-msgid "ClusterIntegration|Enter the details for an existing Kubernetes cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
@@ -1650,6 +1644,9 @@ msgstr ""
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
+msgid "Control the display of third party offers."
+msgstr ""
+
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -1660,6 +1657,9 @@ msgid "Copy command to clipboard"
 msgstr ""
 
 msgid "Copy commit SHA to clipboard"
+msgstr ""
+
+msgid "Copy file name to clipboard"
 msgstr ""
 
 msgid "Copy file path to clipboard"
@@ -2102,7 +2102,16 @@ msgstr ""
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
+msgid "Environments|An error occurred while stopping the environment, please try again"
+msgstr ""
+
+msgid "Environments|Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Environments|Commit"
+msgstr ""
+
+msgid "Environments|Deploy to..."
 msgstr ""
 
 msgid "Environments|Deployment"
@@ -2117,25 +2126,37 @@ msgstr ""
 msgid "Environments|Job"
 msgstr ""
 
+msgid "Environments|Learn more about stopping environments"
+msgstr ""
+
 msgid "Environments|New environment"
 msgstr ""
 
 msgid "Environments|No deployments yet"
 msgstr ""
 
-msgid "Environments|Open"
+msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
 msgstr ""
 
-msgid "Environments|Re-deploy"
+msgid "Environments|Open live environment"
+msgstr ""
+
+msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
-msgid "Environments|Rollback"
+msgid "Environments|Rollback environment"
 msgstr ""
 
 msgid "Environments|Show all"
+msgstr ""
+
+msgid "Environments|Stop"
+msgstr ""
+
+msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -2147,13 +2168,7 @@ msgstr ""
 msgid "Error Reporting and Logging"
 msgstr ""
 
-msgid "Error committing changes. Please try again."
-msgstr ""
-
 msgid "Error fetching contributors data."
-msgstr ""
-
-msgid "Error fetching job trace"
 msgstr ""
 
 msgid "Error fetching labels."
@@ -2172,6 +2187,9 @@ msgid "Error loading branch data. Please try again."
 msgstr ""
 
 msgid "Error loading last commit."
+msgstr ""
+
+msgid "Error loading markdown preview"
 msgstr ""
 
 msgid "Error loading merge requests."
@@ -2229,6 +2247,9 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Explore groups"
 msgstr ""
 
 msgid "Explore projects"
@@ -2446,6 +2467,27 @@ msgstr ""
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
 
+msgid "GroupsDropdown|Frequently visited"
+msgstr ""
+
+msgid "GroupsDropdown|Groups you visit often will appear here"
+msgstr ""
+
+msgid "GroupsDropdown|Loading groups"
+msgstr ""
+
+msgid "GroupsDropdown|Search your groups"
+msgstr ""
+
+msgid "GroupsDropdown|Something went wrong on our end."
+msgstr ""
+
+msgid "GroupsDropdown|Sorry, no groups matched your search"
+msgstr ""
+
+msgid "GroupsDropdown|This feature requires browser localStorage support"
+msgstr ""
+
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr ""
 
@@ -2628,7 +2670,7 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Issue Board"
+msgid "Issue Boards"
 msgstr ""
 
 msgid "Issue events"
@@ -2822,9 +2864,6 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
-msgid "Login"
-msgstr ""
-
 msgid "Manage all notifications"
 msgstr ""
 
@@ -2859,6 +2898,9 @@ msgid "Median"
 msgstr ""
 
 msgid "Members"
+msgstr ""
+
+msgid "Merge Request"
 msgstr ""
 
 msgid "Merge Request:"
@@ -2903,10 +2945,40 @@ msgstr ""
 msgid "Messages"
 msgstr ""
 
+msgid "Metrics"
+msgstr ""
+
 msgid "Metrics - Influx"
 msgstr ""
 
 msgid "Metrics - Prometheus"
+msgstr ""
+
+msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
+msgstr ""
+
+msgid "Metrics|Environment"
+msgstr ""
+
+msgid "Metrics|Learn about environments"
+msgstr ""
+
+msgid "Metrics|No deployed environments"
+msgstr ""
+
+msgid "Metrics|There was an error fetching the environments data, please try again"
+msgstr ""
+
+msgid "Metrics|There was an error getting deployment information."
+msgstr ""
+
+msgid "Metrics|There was an error getting environments information."
+msgstr ""
+
+msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
+msgstr ""
+
+msgid "Metrics|Unexpected metrics data response from prometheus endpoint"
 msgstr ""
 
 msgid "Milestone"
@@ -2991,12 +3063,6 @@ msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "New Kubernetes Cluster"
-msgstr ""
-
-msgid "New Kubernetes cluster"
-msgstr ""
 
 msgid "New Label"
 msgstr ""
@@ -3212,6 +3278,9 @@ msgid "Only comments from the following commit are shown below"
 msgstr ""
 
 msgid "Only project members can comment."
+msgstr ""
+
+msgid "Oops, are you sure?"
 msgstr ""
 
 msgid "Open in Xcode"
@@ -3502,6 +3571,9 @@ msgstr ""
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
+msgid "Profiles|Add key"
+msgstr ""
+
 msgid "Profiles|Change username"
 msgstr ""
 
@@ -3529,7 +3601,13 @@ msgstr ""
 msgid "Profiles|Path"
 msgstr ""
 
+msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
+msgstr ""
+
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
+msgstr ""
+
+msgid "Profiles|Typically starts with \"ssh-rsa …\""
 msgstr ""
 
 msgid "Profiles|Update username"
@@ -3548,6 +3626,9 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|e.g. My MacBook key"
 msgstr ""
 
 msgid "Profiles|your account"
@@ -3635,9 +3716,6 @@ msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
-msgstr ""
-
-msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "PrometheusDashboard|Time"
@@ -3743,9 +3821,6 @@ msgid "Push to create a project"
 msgstr ""
 
 msgid "Quick actions can be used in the issues description and comment boxes."
-msgstr ""
-
-msgid "Re-deploy"
 msgstr ""
 
 msgid "Read more"
@@ -3880,9 +3955,6 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
-msgstr ""
-
-msgid "Rollback"
 msgstr ""
 
 msgid "Runner token"
@@ -4525,12 +4597,6 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
-msgid "There was an error loading jobs"
-msgstr ""
-
-msgid "There was an error loading latest pipeline"
-msgstr ""
-
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
@@ -4550,6 +4616,9 @@ msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
 msgid "They can be managed using the %{link}."
+msgstr ""
+
+msgid "Third party offers"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
@@ -4809,6 +4878,9 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Tip:"
+msgstr ""
+
+msgid "Title"
 msgstr ""
 
 msgid "To GitLab"
@@ -5179,6 +5251,9 @@ msgstr ""
 msgid "Yes"
 msgstr ""
 
+msgid "Yes, add it"
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -5438,6 +5513,9 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
+msgid "mrWidget|Open in Web IDE"
+msgstr ""
+
 msgid "mrWidget|Plain diff"
 msgstr ""
 
@@ -5505,9 +5583,6 @@ msgid "mrWidget|This merge request is in the process of being merged"
 msgstr ""
 
 msgid "mrWidget|This project is archived, write access has been disabled"
-msgstr ""
-
-msgid "mrWidget|Web IDE"
 msgstr ""
 
 msgid "mrWidget|You can merge this merge request manually using the"

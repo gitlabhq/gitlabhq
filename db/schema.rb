@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702120647) do
+ActiveRecord::Schema.define(version: 20180704204006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20180702120647) do
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
     t.boolean "enforce_terms", default: false
     t.boolean "mirror_available", default: true, null: false
+    t.boolean "hide_third_party_offers", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
