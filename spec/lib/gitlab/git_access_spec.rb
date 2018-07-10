@@ -779,7 +779,6 @@ describe Gitlab::GitAccess do
           aggregate_failures do
             matrix.each do |action, allowed|
               check = -> { push_changes(changes[action]) }
-<<<<<<< HEAD
 
               if allowed
                 expect(&check).not_to raise_error,
@@ -805,8 +804,6 @@ describe Gitlab::GitAccess do
           aggregate_failures do
             matrix.each do |action, allowed|
               check = -> { push_changes(changes[action]) }
-=======
->>>>>>> upstream/master
 
               if allowed
                 expect(&check).not_to raise_error,
