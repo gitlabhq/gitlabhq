@@ -32,15 +32,7 @@
           this.modal.vulnerability.dismissalFeedback.author
         );
       },
-      /**
-       * The slot for the footer should be rendered if any of the conditions is true.
-       */
-      shouldRenderFooterSection() {
-        return (
-          !this.modal.isResolved &&
-          (this.canCreateFeedbackPermission || this.canCreateIssuePermission)
-        );
-      },
+
     },
     methods: {
       ...mapActions(['dismissIssue', 'revertDismissIssue', 'createNewIssue']),
@@ -66,6 +58,15 @@
       hasLinks(field, key) {
         return key === 'links' && this.hasValue(field);
       },
+      /**
+       * The slot for the footer should be rendered if any of the conditions is true.
+       */
+      shouldRenderFooterSection() {
+        return (
+          !this.modal.isResolved &&
+          (this.canCreateFeedbackPermission || this.canCreateIssuePermission)
+        );
+      },
     },
   };
 </script>
@@ -73,7 +74,7 @@
   <modal
     id="modal-mrwidget-security-issue"
     :header-title-text="modal.title"
-    :class="{ 'modal-hide-footer': !shouldRenderFooterSection }"
+    :class="{ 'modal-hide-footer': !shouldRenderFooterSection() }"
     class="modal-security-report-dast"
   >
     <slot>
@@ -212,7 +213,7 @@
       </div>
     </slot>
     <div slot="footer">
-      <template v-if="shouldRenderFooterSection">
+      <template v-if="shouldRenderFooterSection()">
         <button
           type="button"
           class="btn btn-default"
