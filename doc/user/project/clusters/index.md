@@ -153,6 +153,13 @@ GitLab provides a one-click install for various applications which will be
 added directly to your configured cluster. Those applications are needed for
 [Review Apps](../../../ci/review_apps/index.md) and [deployments](../../../ci/environments.md).
 
+NOTE: **Note:**
+The applications will be installed in a dedicated namespace called
+`gitlab-managed-apps`. In case you have added an existing Kubernetes cluster
+with Tiller already installed, you should be careful as GitLab cannot
+detect it. By installing it via the applications will result into having it
+twice, which can lead to confusion during deployments.
+
 | Application | GitLab version | Description |
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
@@ -206,7 +213,7 @@ kubectl get svc --all-namespaces -o jsonpath='{range.items[?(@.status.loadBalanc
 
 > **Note**: Some Kubernetes clusters return a hostname instead, like [Amazon EKS](https://aws.amazon.com/eks/). For these platforms, run:
 > ```bash
-> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"`.
+> kubectl get service ingress-nginx-ingress-controller -n gitlab-managed-apps -o jsonpath="{.status.loadBalancer.ingress[0].hostname}".
 > ```
 
 The output is the external IP address of your cluster. This information can then

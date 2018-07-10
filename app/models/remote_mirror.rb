@@ -57,7 +57,7 @@ class RemoteMirror < ActiveRecord::Base
       Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
 
       timestamp = Time.now
-      remote_mirror.update_attributes!(
+      remote_mirror.update!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end

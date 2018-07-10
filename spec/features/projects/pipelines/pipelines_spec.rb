@@ -606,7 +606,7 @@ describe 'Pipelines', :js do
       describe 'user clicks the button' do
         context 'when project already has jobs_cache_index' do
           before do
-            project.update_attributes(jobs_cache_index: 1)
+            project.update(jobs_cache_index: 1)
           end
 
           it 'increments jobs_cache_index' do

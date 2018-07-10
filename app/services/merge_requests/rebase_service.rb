@@ -26,7 +26,7 @@ module MergeRequests
 
       Gitlab::GitLogger.info("#{log_prefix} rebased to #{rebase_sha}")
 
-      merge_request.update_attributes(rebase_commit_sha: rebase_sha)
+      merge_request.update(rebase_commit_sha: rebase_sha)
 
       Gitlab::GitLogger.info("#{log_prefix} rebase SHA saved: #{rebase_sha}")
 

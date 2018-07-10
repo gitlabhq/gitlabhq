@@ -23,7 +23,7 @@ module QA
               Page::Group::New.perform do |group|
                 group.set_path(@path)
                 group.set_description(@description)
-                group.set_visibility('Private')
+                group.set_visibility('Public')
                 group.create
               end
             end

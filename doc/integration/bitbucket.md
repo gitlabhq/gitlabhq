@@ -1,5 +1,8 @@
 # Integrate your GitLab server with Bitbucket
 
+NOTE: **Note:**
+You need to [enable OmniAuth](omniauth.md) in order to use this.
+
 Import projects from Bitbucket.org and login to your GitLab instance with your
 Bitbucket.org account.
 
@@ -76,13 +79,13 @@ you to use.
     sudo -u git -H editor /home/git/gitlab/config/gitlab.yml
     ```
 
-1.  Follow the [Initial OmniAuth Configuration](omniauth.md#initial-omniauth-configuration)
-    for initial settings.
 1.  Add the Bitbucket provider configuration:
 
     For Omnibus packages:
 
     ```ruby
+    gitlab_rails['omniauth_enabled'] = true
+
     gitlab_rails['omniauth_providers'] = [
       {
         "name" => "bitbucket",
@@ -96,10 +99,13 @@ you to use.
     For installations from source:
 
     ```yaml
-    - { name: 'bitbucket',
-        app_id: 'BITBUCKET_APP_KEY',
-        app_secret: 'BITBUCKET_APP_SECRET',
-        url: 'https://bitbucket.org/' }
+    omniauth:
+      enabled: true
+      providers:
+        - { name: 'bitbucket',
+            app_id: 'BITBUCKET_APP_KEY',
+            app_secret: 'BITBUCKET_APP_SECRET',
+            url: 'https://bitbucket.org/' }
     ```
 
     ---
@@ -120,6 +126,9 @@ well, the user will be returned to GitLab and will be signed in.
 
 Once the above configuration is set up, you can use Bitbucket to sign into
 GitLab and [start importing your projects][bb-import].
+
+If you don't want to enable signing in with Bitbucket but just want to import
+projects from Bitbucket, you could [disable it in the admin panel](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
 
 [init-oauth]: omniauth.md#initial-omniauth-configuration
 [bb-import]: ../workflow/importing/import_projects_from_bitbucket.md

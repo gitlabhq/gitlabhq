@@ -27,7 +27,7 @@ module LfsRequest
         message: 'Git LFS is not enabled on this GitLab server, contact your admin.',
         documentation_url: help_url
       },
-      status: 501
+      status: :not_implemented
     )
   end
 

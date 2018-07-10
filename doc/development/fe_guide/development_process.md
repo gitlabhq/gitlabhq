@@ -1,6 +1,6 @@
 # Frontend Development Process
 
-You can find more about the organization of the frontend team in the [handbook](https://about.gitlab.com/handbook/frontend/).
+You can find more about the organization of the frontend team in the [handbook](https://about.gitlab.com/handbook/engineering/frontend/).
 
 ## Development Checklist
 
@@ -34,7 +34,7 @@ Please use your best judgement when to use it and please contribute new points t
     - [ ] **Cookie Mode** Think about hiding the feature behind a cookie flag if the implementation is on top of existing features
     - [ ] **New route** Are you refactoring something big then you might consider adding a new route where you implement the new feature and when finished delete the current route and rename the new one. (for example 'merge_request' and 'new_merge_request')
 - [ ] **Setup** Is there any specific setup needed for your implementation (for example a kubernetes cluster)? Then let everyone know if it is not already mentioned where they can find documentation (if it doesn't exist - create it)
-- [ ] **Security** Are there any new security relevant implementations? Then please contact the security team for an app security review. If you are not sure ask our [domain expert](https://about.gitlab.com/handbook/frontend/#frontend-domain-experts)
+- [ ] **Security** Are there any new security relevant implementations? Then please contact the security team for an app security review. If you are not sure ask our [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
 
 #### During development
 
@@ -51,7 +51,7 @@ Please use your best judgement when to use it and please contribute new points t
 - [ ] **Performance** Have you checked performance? For example do the same thing with 500 comments instead of 1. Document the tests and possible findings in the MR so a reviewer can directly see it.
 - [ ] Have you tested with a variety of our [supported browsers](../../install/requirements.md#supported-web-browsers)? You can use [browserstack](https://www.browserstack.com/) to be able to access a wide variety of browsers and operating systems.
 - [ ] Did you check the mobile view?
-- [ ] Check the built webpack bundle (For the report run `WEBPACK_REPORT=true gdk run`, then open `webpack-report/index.html`) if we have unnecessary bloat due to wrong references, including libraries multiple times, etc.. If you need help contact the webpack [domain expert](https://about.gitlab.com/handbook/frontend/#frontend-domain-experts)
+- [ ] Check the built webpack bundle (For the report run `WEBPACK_REPORT=true gdk run`, then open `webpack-report/index.html`) if we have unnecessary bloat due to wrong references, including libraries multiple times, etc.. If you need help contact the webpack [domain expert](https://about.gitlab.com/handbook/engineering/frontend/#frontend-domain-experts)
 - [ ] **Tests** Not only greenfield tests - Test also all bad cases that come to your mind.
 - [ ] If you have multiple MR's then also smoke test against the final merge.
 - [ ] Are there any big changes on how and especially how frequently we use the API then let production know about it

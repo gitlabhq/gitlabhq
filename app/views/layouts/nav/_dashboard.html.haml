@@ -1,16 +1,19 @@
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
     = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown" }) do
-      %a{ href: "#", data: { toggle: "dropdown" } }
+      %button{ type: 'button', data: { toggle: "dropdown" } }
         Projects
         = sprite_icon('angle-down', css_class: 'caret-down')
-      .dropdown-menu.projects-dropdown-menu
+      .dropdown-menu.frequent-items-dropdown-menu
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
-    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "d-none d-sm-block" }) do
-      = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups qa-groups-link', title: 'Groups' do
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "home dropdown header-groups qa-groups-dropdown" }) do
+      %button{ type: 'button', data: { toggle: "dropdown" } }
         Groups
+        = sprite_icon('angle-down', css_class: 'caret-down')
+      .dropdown-menu.frequent-items-dropdown-menu
+        = render "layouts/nav/groups_dropdown/show"
 
   - if dashboard_nav_link?(:activity)
     = nav_link(path: 'dashboard#activity', html_options: { class: "d-none d-lg-block d-xl-block" }) do
@@ -34,11 +37,6 @@
         = sprite_icon('angle-down', css_class: 'caret-down')
       .dropdown-menu
         %ul
-          - if dashboard_nav_link?(:groups)
-            = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { class: "d-block d-sm-none" }) do
-              = link_to dashboard_groups_path, class: 'dashboard-shortcuts-groups', title: 'Groups' do
-                Groups
-
           - if dashboard_nav_link?(:activity)
             = nav_link(path: 'dashboard#activity') do
               = link_to activity_dashboard_path, title: 'Activity' do

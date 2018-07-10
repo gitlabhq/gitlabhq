@@ -371,7 +371,7 @@ module Ci
 
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
-      update_attributes(coverage: coverage) if coverage.present?
+      update(coverage: coverage) if coverage.present?
     end
 
     def parse_trace_sections!
@@ -386,6 +386,10 @@ module Ci
       trace.exist?
     end
 
+    def has_old_trace?
+      old_trace.present?
+    end
+
     def trace=(data)
       raise NotImplementedError
     end
@@ -395,6 +399,8 @@ module Ci
     end
 
     def erase_old_trace!
+      return unless has_old_trace?
+
       update_column(:trace, nil)
     end
 

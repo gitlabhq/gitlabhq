@@ -62,6 +62,8 @@ class NoteEntity < API::Entities::Note
 
   expose :attachment, using: NoteAttachmentEntity, if: -> (note, _) { note.attachment? }
 
+  expose :cached_markdown_version
+
   private
 
   def current_user

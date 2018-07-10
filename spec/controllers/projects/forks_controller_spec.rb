@@ -31,7 +31,7 @@ describe Projects::ForksController do
 
     context 'when fork is private' do
       before do
-        forked_project.update_attributes(visibility_level: Project::PRIVATE, group: group)
+        forked_project.update(visibility_level: Project::PRIVATE, group: group)
       end
 
       it 'is not be visible for non logged in users' do

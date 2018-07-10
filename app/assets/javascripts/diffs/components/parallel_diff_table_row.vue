@@ -40,7 +40,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView']),
     isContextLine() {
       return this.line.left.type === CONTEXT_LINE_TYPE;
     },
@@ -113,17 +113,15 @@ export default {
       :diff-view-type="parallelDiffViewType"
       class="diff-line-num old_line"
     />
-    <diff-table-cell
+    <td
+      v-once
       :id="line.left.lineCode"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-      :line-position="linePositionLeft"
-      :line-type="parallelViewLeftLineType"
-      :diff-view-type="parallelDiffViewType"
+      :class="parallelViewLeftLineType"
       class="line_content parallel left-side"
       @mousedown.native="handleParallelLineMouseDown"
-    />
+      v-html="line.left.richText"
+    >
+    </td>
     <diff-table-cell
       :diff-file="diffFile"
       :line="line"
@@ -135,16 +133,14 @@ export default {
       :diff-view-type="parallelDiffViewType"
       class="diff-line-num new_line"
     />
-    <diff-table-cell
+    <td
+      v-once
       :id="line.right.lineCode"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-      :line-position="linePositionRight"
-      :line-type="line.right.type"
-      :diff-view-type="parallelDiffViewType"
+      :class="line.right.type"
       class="line_content parallel right-side"
       @mousedown.native="handleParallelLineMouseDown"
-    />
+      v-html="line.right.richText"
+    >
+    </td>
   </tr>
 </template>

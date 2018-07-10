@@ -1314,7 +1314,7 @@ describe NotificationService, :mailer do
 
       describe 'when merge_when_pipeline_succeeds is true' do
         before do
-          merge_request.update_attributes(
+          merge_request.update(
             merge_when_pipeline_succeeds: true,
             merge_user: create(:user)
           )

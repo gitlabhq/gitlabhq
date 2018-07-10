@@ -186,18 +186,18 @@ describe Ci::Build do
       let(:runner) { create(:ci_runner, :project, projects: [build.project]) }
 
       before do
-        runner.update_attributes(contacted_at: 1.second.ago)
+        runner.update(contacted_at: 1.second.ago)
       end
 
       it { is_expected.to be_truthy }
 
       it 'that is inactive' do
-        runner.update_attributes(active: false)
+        runner.update(active: false)
         is_expected.to be_falsey
       end
 
       it 'that is not online' do
-        runner.update_attributes(contacted_at: nil)
+        runner.update(contacted_at: nil)
         is_expected.to be_falsey
       end
 
@@ -261,7 +261,7 @@ describe Ci::Build do
 
     context 'artifacts metadata does not exist' do
       before do
-        build.update_attributes(legacy_artifacts_metadata: nil)
+        build.update(legacy_artifacts_metadata: nil)
       end
 
       it { is_expected.to be_falsy }
@@ -514,6 +514,22 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_old_trace?' do
+    subject { build.has_old_trace? }
+
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when old trace does not exist' do
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#trace=' do
     it "expect to fail trace=" do
       expect { build.trace = "new" }.to raise_error(NotImplementedError)
@@ -533,16 +549,32 @@ describe Ci::Build do
   end
 
   describe '#erase_old_trace!' do
-    subject { build.send(:read_attribute, :trace) }
+    subject { build.erase_old_trace! }
 
-    before do
-      build.send(:write_attribute, :trace, 'old trace')
+    context 'when old trace exists' do
+      before do
+        build.update_column(:trace, 'old trace')
+      end
+
+      it "erases old trace" do
+        subject
+
+        expect(build.old_trace).to be_nil
+      end
+
+      it "executes UPDATE query" do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
+
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(1)
+      end
     end
 
-    it "expect to receive data from database" do
-      build.erase_old_trace!
+    context 'when old trace does not exist' do
+      it 'does not execute UPDATE query' do
+        recorded = ActiveRecord::QueryRecorder.new { subject }
 
-      is_expected.to be_nil
+        expect(recorded.log.select { |l| l.match?(/UPDATE.*ci_builds/) }.count).to eq(0)
+      end
     end
   end
 
@@ -1503,7 +1535,7 @@ describe Ci::Build do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        build.project.update_attributes(pending_delete: true)
+        build.project.update(pending_delete: true)
         build.project.destroy!
       end
     end
@@ -1630,7 +1662,7 @@ describe Ci::Build do
       end
 
       before do
-        build.update_attributes(user: user)
+        build.update(user: user)
       end
 
       it { user_variables.each { |v| is_expected.to include(v) } }
@@ -1708,7 +1740,7 @@ describe Ci::Build do
 
     context 'when build started manually' do
       before do
-        build.update_attributes(when: :manual)
+        build.update(when: :manual)
       end
 
       let(:manual_variable) do
@@ -1724,7 +1756,7 @@ describe Ci::Build do
       end
 
       before do
-        build.update_attributes(tag: true)
+        build.update(tag: true)
       end
 
       it { is_expected.to include(tag_variable) }

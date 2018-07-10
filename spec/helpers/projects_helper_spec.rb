@@ -80,6 +80,7 @@ describe ProjectsHelper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
+      allow(user).to receive(:max_member_access_for_project).and_return(40)
     end
 
     it "includes the route" do
@@ -124,6 +125,10 @@ describe ProjectsHelper do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+
+    it "includes the user max member access" do
+      expect(helper.project_list_cache_key(project)).to include('access:40')
     end
   end
 

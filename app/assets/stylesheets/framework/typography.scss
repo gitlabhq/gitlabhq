@@ -350,7 +350,8 @@ code {
 }
 
 .commit-sha,
-.ref-name {
+.ref-name,
+.pipeline-number {
   @extend .monospace;
   font-size: 95%;
 }

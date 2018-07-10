@@ -52,7 +52,7 @@ describe 'projects/merge_requests/show.html.haml' do
 
   context 'when the merge request is open' do
     it 'closes the merge request if the source project does not exist' do
-      closed_merge_request.update_attributes(state: 'open')
+      closed_merge_request.update(state: 'open')
       forked_project.destroy
       # Reload merge request so MergeRequest#source_project turns to `nil`
       closed_merge_request.reload
