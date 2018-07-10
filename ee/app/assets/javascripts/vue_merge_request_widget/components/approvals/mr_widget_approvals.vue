@@ -61,7 +61,7 @@ export default {
 <template>
   <section
     v-if="mr.approvalsRequired"
-    class="mr-widget-approvals-container mr-widget-section media bordered-widget-section"
+    class="mr-widget-approvals-container mr-widget-section media media-section"
   >
     <status-icon
       :class="approvalsOptional ? 'zero-approvals' : ''"

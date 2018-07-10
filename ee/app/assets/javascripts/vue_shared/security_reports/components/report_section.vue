@@ -138,7 +138,7 @@ export default {
 };
 </script>
 <template>
-  <section class="mr-widget-section bordered-widget-section">
+  <section class="media-section">
     <div
       class="media"
     >

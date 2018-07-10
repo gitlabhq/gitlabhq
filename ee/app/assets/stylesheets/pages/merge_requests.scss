@@ -23,14 +23,7 @@
   }
 }
 
-.bordered-widget-section {
-  border: 1px solid $border-color;
-  margin-bottom: -1px;
-
-  &:first-of-type {
-    border-radius: $border-radius-default $border-radius-default 0 0;
-  }
-
+.media-section {
   @include media-breakpoint-down(md) {
     align-items: flex-start;
 
@@ -95,5 +88,27 @@
 
   .approver-avatar {
     position: relative;
+  }
+}
+
+.mr-state-widget {
+  .media-section {
+    padding: $gl-padding;
+    border: 1px solid $border-color;
+    margin-bottom: -1px;
+
+    &:first-of-type {
+      border-radius: $border-radius-default $border-radius-default 0 0;
+    }
+  }
+}
+
+.mr-widget-section {
+  .media {
+    align-items: center;
+  }
+
+  .code-text {
+    flex: 1;
   }
 }
