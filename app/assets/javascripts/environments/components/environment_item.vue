@@ -443,12 +443,9 @@ export default {
     onClickFolder() {
       eventHub.$emit('toggleFolder', this.model);
     },
-<<<<<<< HEAD
     toggleDeployBoard() {
       eventHub.$emit('toggleDeployBoard', this.model);
     },
-=======
->>>>>>> upstream/master
   },
 };
 </script>
