@@ -441,6 +441,20 @@ class User < ActiveRecord::Base
     [:ghost]
   end
 
+  def full_website_url
+    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
+
+    website_url
+  end
+
+  def short_website_url
+    website_url.sub(%r{\Ahttps?://}, '')
+  end
+
+  def all_ssh_keys
+    keys.map(&:publishable_key)
+  end
+
   def internal?
     self.class.internal_attributes.any? { |a| self[a] }
   end
@@ -845,19 +859,6 @@ class User < ActiveRecord::Base
       project.project_member(self)
   end
 
-  def full_website_url
-    return "http://#{website_url}" if website_url !~ %r{\Ahttps?://}
-
-    website_url
-  end
-
-  def short_website_url
-    website_url.sub(%r{\Ahttps?://}, '')
-  end
-
-  def all_ssh_keys
-    keys.map(&:publishable_key)
-  end
 
   def temp_oauth_email?
     email.start_with?('temp-email-for-oauth')
