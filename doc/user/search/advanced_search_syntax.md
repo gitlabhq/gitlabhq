@@ -36,7 +36,7 @@ here's a quick guide:
 
 - Searches look for all the words in a query, in any order - e.g.: searching
   issues for `display bug` will return all issues matching both those words, in any order.
-- To find the exact term, use double quotes: `"display bug"`
+- To find the exact phrase (stemming still applies), use double quotes: `"display bug"`
 - To find bugs not mentioning display, use `-`: `bug -display`
 - To find a bug in display or sound, use `|`: `bug display | sound`
 - To group terms together, use parentheses: `bug | (display +sound)`
