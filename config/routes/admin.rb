@@ -136,6 +136,9 @@ namespace :admin do
       post :toggle
       get  :status
     end
+    collection do
+      get :projects
+    end
   end
 
   get '/dashboard/stats', to: 'dashboard#stats'

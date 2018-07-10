@@ -13,6 +13,10 @@ class Admin::GeoNodesController < Admin::ApplicationController
     end
   end
 
+  def projects
+    @nodes = GeoNode.all.order(:id)
+  end
+
   def create
     @node = Geo::NodeCreateService.new(geo_node_params).execute
 
