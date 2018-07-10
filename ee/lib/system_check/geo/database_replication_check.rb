@@ -9,7 +9,7 @@ module SystemCheck
       end
 
       def check?
-        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()').first.fetch('pg_is_in_recovery') == 't'
+        Gitlab::Database.db_read_only?
       end
 
       def show_error
