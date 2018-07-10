@@ -9,6 +9,7 @@ describe Gitlab::ImportExport::AvatarSaver do
   before do
     FileUtils.mkdir_p("#{shared.export_path}/avatar/")
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    stub_feature_flags(import_export_object_storage: false)
   end
 
   after do
@@ -17,6 +18,8 @@ describe Gitlab::ImportExport::AvatarSaver do
 
   it 'saves a project avatar' do
     described_class.new(project: project_with_avatar, shared: shared).save
+
+    puts "#{shared.export_path}/avatar/dk.png"
 
     expect(File).to exist("#{shared.export_path}/avatar/dk.png")
   end
