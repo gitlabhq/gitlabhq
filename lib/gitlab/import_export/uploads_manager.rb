@@ -22,8 +22,6 @@ module Gitlab
         return unless Gitlab::ImportExport.object_storage?
         return if uploads.empty?
 
-        mkdir_p(uploads_export_path)
-
         uploads.each do |upload_model|
           next unless upload_model.file
           next if upload_model.upload.local? # Already copied
@@ -51,7 +49,9 @@ module Gitlab
       end
 
       def download_and_copy(upload)
-        upload_path = File.join(uploads_export_path, upload.filename)
+        mkdir_p(File.join(uploads_export_path, upload.secret))
+
+        upload_path = File.join(uploads_export_path, upload.secret, upload.filename)
 
         File.open(upload_path, 'w') do |file|
           IO.copy_stream(URI.parse(upload.file.url).open, file)
