@@ -6,7 +6,7 @@ class AddGroupToTodos < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column :todos, :group_id, :integer
+    add_column :todos, :group_id, :integer unless group_id_exists?
     add_concurrent_foreign_key :todos, :namespaces, column: :group_id, on_delete: :cascade
     add_concurrent_index :todos, :group_id
 
@@ -16,7 +16,7 @@ class AddGroupToTodos < ActiveRecord::Migration
   def down
     return unless group_id_exists?
 
-    remove_foreign_key :todos, column: :group_id
+    remove_foreign_key :todos, column: :group_id if foreign_key_exists?(:todos, :namespaces, column: :group_id)
     remove_index :todos, :group_id if index_exists?(:todos, :group_id)
     remove_column :todos, :group_id
 
