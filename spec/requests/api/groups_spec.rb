@@ -251,14 +251,22 @@ describe API::Groups do
       projects
     end
 
+    def response_project_ids(json_response, key)
+      json_response[key].map do |project|
+        project['id'].to_i
+      end
+    end
+
     context 'when unauthenticated' do
       it 'returns 404 for a private group' do
         get api("/groups/#{group2.id}")
+
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 200 for a public group' do
         get api("/groups/#{group1.id}")
+
         expect(response).to have_gitlab_http_status(200)
       end
 
@@ -268,7 +276,7 @@ describe API::Groups do
 
         get api("/groups/#{public_group.id}")
 
-        expect(json_response['projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'projects'))
           .to contain_exactly(projects[:public].id)
       end
 
@@ -278,7 +286,7 @@ describe API::Groups do
 
         get api("/groups/#{group1.id}")
 
-        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'shared_projects'))
           .to contain_exactly(projects[:public].id)
       end
     end
@@ -309,6 +317,17 @@ describe API::Groups do
         expect(json_response['shared_projects'][0]['id']).to eq(project.id)
       end
 
+      it "returns one of user1's groups without projects when with_projects option is set to false" do
+        project = create(:project, namespace: group2, path: 'Foo')
+        create(:project_group_link, project: project, group: group1)
+
+        get api("/groups/#{group1.id}", user1), with_projects: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['projects']).to be_nil
+        expect(json_response['shared_projects']).to be_nil
+      end
+
       it "does not return a non existing group" do
         get api("/groups/1328", user1)
 
@@ -327,7 +346,7 @@ describe API::Groups do
 
         get api("/groups/#{public_group.id}", user2)
 
-        expect(json_response['projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'projects'))
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
 
@@ -337,7 +356,7 @@ describe API::Groups do
 
         get api("/groups/#{group1.id}", user2)
 
-        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+        expect(response_project_ids(json_response, 'shared_projects'))
           .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
     end
