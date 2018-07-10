@@ -13,7 +13,16 @@ module Gitlab
       def copy
         copy_files(@from, uploads_export_path) if File.directory?(@from)
 
+        if File.file?(@from) && @relative_export_path == 'avatar'
+          copy_files(@from, File.join(uploads_export_path, @project.avatar.filename))
+        end
+
         copy_from_object_storage
+
+        true
+      rescue => e
+        @shared.error(e)
+        false
       end
 
       private
@@ -49,9 +58,10 @@ module Gitlab
       end
 
       def download_and_copy(upload)
-        mkdir_p(File.join(uploads_export_path, upload.secret))
+        secret = upload.try(:secret) || ''
+        upload_path = File.join(uploads_export_path, secret, upload.filename)
 
-        upload_path = File.join(uploads_export_path, upload.secret, upload.filename)
+        mkdir_p(File.join(uploads_export_path, secret))
 
         File.open(upload_path, 'w') do |file|
           IO.copy_stream(URI.parse(upload.file.url).open, file)
