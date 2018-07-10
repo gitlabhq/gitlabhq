@@ -433,7 +433,7 @@ cloud-native-image:
   cache: {}
   script:
     - gem install gitlab --no-ri --no-rdoc
-    - ./trigger-build cng
+    - ./scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee

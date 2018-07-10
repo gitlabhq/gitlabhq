@@ -275,24 +275,6 @@ describe Ci::Build do
     end
   end
 
-  describe '#browsable_artifacts?' do
-    subject { build.browsable_artifacts? }
-
-    context 'artifacts metadata does not exist' do
-      before do
-        build.update(legacy_artifacts_metadata: nil)
-      end
-
-      it { is_expected.to be_falsy }
-    end
-
-    context 'artifacts metadata does exists' do
-      let(:build) { create(:ci_build, :artifacts) }
-
-      it { is_expected.to be_truthy }
-    end
-  end
-
   describe '#artifacts_expired?' do
     subject { build.artifacts_expired? }
 

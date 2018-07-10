@@ -4,6 +4,7 @@ import mutations from '../mutations';
 import createState from './diff_state';
 
 export default {
+  namespaced: true,
   state: createState(),
   getters,
   actions,

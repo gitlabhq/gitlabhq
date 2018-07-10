@@ -1,0 +1,5 @@
+---
+title: Fix handling of annotated tags when Gitaly is not in use
+merge_request:
+author:
+type: fixed
