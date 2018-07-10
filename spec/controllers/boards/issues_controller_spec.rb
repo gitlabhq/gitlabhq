@@ -42,7 +42,7 @@ describe Boards::IssuesController do
           parsed_response = JSON.parse(response.body)
 
           expect(response).to match_response_schema('issues')
-          expect(parsed_response.length).to eq 2
+          expect(parsed_response['issues'].length).to eq 2
           expect(development.issues.map(&:relative_position)).not_to include(nil)
         end
 
@@ -80,7 +80,7 @@ describe Boards::IssuesController do
         parsed_response = JSON.parse(response.body)
 
         expect(response).to match_response_schema('issues')
-        expect(parsed_response.length).to eq 2
+        expect(parsed_response['issues'].length).to eq 2
       end
     end
 
