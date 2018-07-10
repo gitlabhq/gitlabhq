@@ -447,6 +447,15 @@ You can specify a different Git repository by providing it as an extra parameter
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
+### Install gitlab-pages
+
+GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab-Pages in `/home/git/gitlab-pages`. For additional setup steps, please consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be ran several different ways.
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+    cd gitlab-pages
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+    sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
 
