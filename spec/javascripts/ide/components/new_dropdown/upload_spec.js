@@ -9,7 +9,6 @@ describe('new dropdown upload', () => {
     const Component = Vue.extend(upload);
 
     vm = createComponent(Component, {
-      branchId: 'master',
       path: '',
     });
 
@@ -65,7 +64,6 @@ describe('new dropdown upload', () => {
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: file.name,
-        branchId: 'master',
         type: 'blob',
         content: target.result,
         base64: false,
@@ -77,7 +75,6 @@ describe('new dropdown upload', () => {
 
       expect(vm.$emit).toHaveBeenCalledWith('create', {
         name: file.name,
-        branchId: 'master',
         type: 'blob',
         content: binaryTarget.result.split('base64,')[1],
         base64: true,
