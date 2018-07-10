@@ -45,6 +45,10 @@ module Clusters
           extra_env: extra_env
         )
       end
+
+      def has_ssl?
+        ca_key.present? && ca_cert.present?
+      end
     end
   end
 end

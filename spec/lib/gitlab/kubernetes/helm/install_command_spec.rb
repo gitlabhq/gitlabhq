@@ -23,6 +23,23 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         EOS
       end
     end
+
+    context 'when tiller does not have mutual ssl' do
+      before do
+        application.cluster.application_helm.update!(ca_cert: nil, ca_key: nil)
+      end
+
+      it_behaves_like 'helm commands' do
+        let(:expected_env) { %i{} }
+        let(:commands) do
+          <<~EOS
+          helm init --client-only >/dev/null
+
+          helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+          EOS
+        end
+      end
+    end
   end
 
   context 'for prometheus' do

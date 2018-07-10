@@ -19,6 +19,7 @@ module Clusters
         end
 
         def extra_env
+          return {} unless cluster.application_helm.has_ssl?
           client_cert = cluster.application_helm.issue_cert
 
           {
