@@ -95,6 +95,7 @@ class Project < ActiveRecord::Base
   before_destroy :remove_private_deploy_keys
 
   use_fast_destroy :build_trace_chunks
+  use_fast_destroy :uploads
 
   after_destroy -> { run_after_commit { remove_pages } }
   after_destroy :remove_exports

@@ -385,6 +385,7 @@ module ObjectStorage
     end
 
     def storage_for(store)
+      pp store
       case store
       when Store::REMOTE
         raise 'Object Storage is not enabled' unless self.class.object_store_enabled?

@@ -18,8 +18,48 @@ class Upload < ActiveRecord::Base
   # hooks are not executed and the file will not be deleted
   after_destroy :delete_file!, if: -> { uploader_class <= FileUploader }
 
+  enum upload_store: {
+    local: 1,
+    fog: 2
+  }
+
   def self.hexdigest(path)
     Digest::SHA256.file(path).hexdigest
+  end
+
+  class << self
+    def all_stores
+      @all_stores ||= self.stores.keys
+    end
+
+    def persistable_store
+      # get first available store from the back of the list
+      all_stores.reverse.find { |store| get_store_class(store).available? }
+    end
+
+    def get_store_class(store)
+      @stores ||= {}
+      @stores[store] ||= "Store::#{store.capitalize}".constantize.new
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def begin_fast_destroy
+      all_stores.each_with_object({}) do |store, result|
+        relation = public_send(store) # rubocop:disable GitlabSecurity/PublicSend
+        keys = get_store_class(store).keys(relation)
+
+        result[store] = keys if keys.present?
+      end
+    end
+
+    ##
+    # FastDestroyAll concerns
+    def finalize_fast_destroy(keys)
+      keys.each do |store, value|
+        get_store_class(store).delete_keys(value)
+      end
+    end
   end
 
   def absolute_path
