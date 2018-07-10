@@ -108,7 +108,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['loadMoreLines', 'showCommentForm']),
+    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
       this.showCommentForm({ lineCode: this.lineCode });
     },

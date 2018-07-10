@@ -31,7 +31,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isInlineView', 'isParallelView', 'areAllFilesCollapsed']),
+    ...mapGetters('diffs', ['isInlineView', 'isParallelView', 'areAllFilesCollapsed']),
     sumAddedLines() {
       return this.sumValues('addedLines');
     },
@@ -66,7 +66,7 @@ export default {
     document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
-    ...mapActions(['setInlineDiffViewType', 'setParallelDiffViewType', 'expandAllFiles']),
+    ...mapActions('diffs', ['setInlineDiffViewType', 'setParallelDiffViewType', 'expandAllFiles']),
     pluralize,
     handleScroll() {
       if (!this.updating) {

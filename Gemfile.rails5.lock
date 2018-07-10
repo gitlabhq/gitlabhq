@@ -87,7 +87,7 @@ GEM
     babosa (1.0.2)
     base32 (0.3.2)
     batch-loader (1.2.1)
-    bcrypt (3.1.11)
+    bcrypt (3.1.12)
     bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
     better_errors (2.1.1)
@@ -119,7 +119,7 @@ GEM
     capybara-screenshot (1.0.14)
       capybara (>= 1.0, < 3)
       launchy
-    carrierwave (1.2.1)
+    carrierwave (1.2.3)
       activemodel (>= 4.0.0)
       activesupport (>= 4.0.0)
       mime-types (>= 1.16)
@@ -411,8 +411,8 @@ GEM
       rake (>= 10, < 13)
       rubocop (>= 0.49.0)
       sysexits (~> 1.1)
-    hamlit (2.6.1)
-      temple (~> 0.7.6)
+    hamlit (2.8.8)
+      temple (>= 0.8.0)
       thor
       tilt
     hashdiff (0.3.4)
@@ -543,7 +543,7 @@ GEM
     net-ssh (5.0.1)
     netrc (0.11.0)
     nio4r (2.3.1)
-    nokogiri (1.8.2)
+    nokogiri (1.8.3)
       mini_portile2 (~> 2.3.0)
     nokogumbo (1.5.0)
       nokogiri
@@ -840,7 +840,7 @@ GEM
     rubyzip (1.2.1)
     rufus-scheduler (3.4.0)
       et-orbi (~> 1.0)
-    rugged (0.27.1)
+    rugged (0.27.2)
     safe_yaml (1.0.4)
     sanitize (4.6.5)
       crass (~> 1.0.2)
@@ -906,7 +906,7 @@ GEM
       activesupport (>= 4.2)
     spring-commands-rspec (1.0.4)
       spring (>= 0.9.1)
-    sprockets (3.7.1)
+    sprockets (3.7.2)
       concurrent-ruby (~> 1.0)
       rack (> 1, < 3)
     sprockets-rails (3.2.1)
@@ -927,7 +927,7 @@ GEM
     sys-filesystem (1.1.6)
       ffi
     sysexits (1.2.0)
-    temple (0.7.7)
+    temple (0.8.0)
     test-prof (0.2.5)
     text (1.3.1)
     thin (1.7.0)
@@ -1103,7 +1103,7 @@ DEPENDENCIES
   grpc (~> 1.11.0)
   gssapi
   haml_lint (~> 0.26.0)
-  hamlit (~> 2.6.1)
+  hamlit (~> 2.8.8)
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
   hipchat (~> 1.5.0)
