@@ -11,12 +11,17 @@ module EE
     end
 
     # Transiently sets a configuration variable
+    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1241
     def with_config(values = {})
-      raw_repository.set_config(values)
+      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        values.each { |k, v| rugged.config[k] = v }
+      end
 
       yield
     ensure
-      raw_repository.delete_config(*values.keys)
+      ::Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        values.keys.each { |key| rugged.config.delete(key) }
+      end
     end
 
     # Runs code after a repository has been synced.
