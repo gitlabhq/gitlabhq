@@ -176,3 +176,46 @@
     }
   }
 }
+
+.geo-admin-projects {
+  .btn-card-header {
+    &:hover,
+    &:focus {
+      text-decoration: none;
+    }
+
+    .card-collapse-icon,
+    .card-expand-icon {
+      color: $gl-text-color;
+      margin-right: 5px;
+    }
+
+    &.collapsed {
+      .card-collapse-icon {
+        display: none;
+      }
+    }
+
+    &:not(.collapsed) {
+      .card-expand-icon {
+        display: none;
+      }
+    }
+
+    .header-text {
+      color: $gl-link-color;
+
+      &:hover {
+        color: $gl-link-hover-color;
+      }
+    }
+  }
+
+  .card-body {
+    @include media-breakpoint-down(xs) {
+      .project-status-container + .project-status-container {
+        margin-top: 10px;
+      }
+    }
+  }
+}

@@ -2915,6 +2915,9 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
+msgid "Failures"
+msgstr ""
+
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
 msgstr ""
 
@@ -4342,6 +4345,9 @@ msgstr ""
 msgid "Network"
 msgstr ""
 
+msgid "Never"
+msgstr ""
+
 msgid "New"
 msgstr ""
 
@@ -4486,6 +4492,9 @@ msgid "No schedules"
 msgstr ""
 
 msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
+
+msgid "Nodes"
 msgstr ""
 
 msgid "None"
@@ -5718,6 +5727,9 @@ msgid "SecurityDashboard|Monitor vulnerabilities in your code"
 msgstr ""
 
 msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
+msgstr ""
+
+msgid "See all of the projects and registries files of Geo Secondaries"
 msgstr ""
 
 msgid "Select"
