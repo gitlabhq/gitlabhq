@@ -89,9 +89,10 @@ module API
         requires :environment_id, type: Integer,  desc: 'The environment ID'
       end
       post ':id/environments/:environment_id/stop' do
-        authorize! :create_deployment, user_project
+        authorize! :read_environment, user_project
 
         environment = user_project.environments.find(params[:environment_id])
+        authorize! :stop_environment, environment
 
         environment.stop_with_action!(current_user)
 
