@@ -107,6 +107,7 @@ module.exports = {
       ee_empty_states: path.join(ROOT_PATH, 'ee/app/views/shared/empty_states'),
       ee_icons: path.join(ROOT_PATH, 'ee/app/views/shared/icons'),
       ee_images: path.join(ROOT_PATH, 'ee/app/assets/images'),
+      ee_spec: path.join(ROOT_PATH, 'ee/spec/javascripts'),
     },
   },
 

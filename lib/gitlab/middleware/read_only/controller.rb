@@ -2,6 +2,8 @@ module Gitlab
   module Middleware
     class ReadOnly
       class Controller
+        prepend EE::Gitlab::Middleware::ReadOnly::Controller
+
         DISALLOWED_METHODS = %w(POST PATCH PUT DELETE).freeze
         APPLICATION_JSON = 'application/json'.freeze
         APPLICATION_JSON_TYPES = %W{#{APPLICATION_JSON} application/vnd.git-lfs+json}.freeze

@@ -3,18 +3,21 @@
 > [Introduced][ee-2381] in [GitLab Premium][eep] 10.0.
 
 As an extension to our [existing JIRA][existing-jira] project integration, you're now able to integrate
-all your GitLab projects with [JIRA Development Panel][jira-development-panel]. Both can be used
+GitLab projects with [JIRA Development Panel][jira-development-panel]. Both can be used
 simultaneously. This works with self-hosted GitLab or GitLab.com integrated with self-hosted JIRA
 or cloud JIRA.
 
-By doing this you can easily access related GitLab branches and commits directly from a JIRA issue.
+By doing this you can easily access related GitLab merge requests, branches, and commits directly from a JIRA issue.
 
->**Note:**
-In the future, we plan to also support merge requests from the Development Panel.
+This integration connects all GitLab projects within a top-level group or a personal namespace to projects in the JIRA instance.
+A top-level GitLab group is one that does not have any parent group itself. All the projects of that top-level group,
+as well as projects of the top-level group's subgroups nesting down, are connected. Alternatively, you can specify
+a GitLab personal namespace in the JIRA configuration, which will then connect the projects in that personal namespace to JIRA.
 
-This integration connects all GitLab projects a user has access to with all projects in the JIRA instance.
 (Note this is different from the [existing JIRA][existing-jira] project integration, where the mapping
-is one GitLab project to the entire JIRA instance.) We recommend that a GitLab group admin
+is one GitLab project to the entire JIRA instance.) 
+
+We recommend that a GitLab group admin
 or instance admin (in the case of self-hosted GitLab) set up the integration with respect to their
 account, in order to maximize the integrated GitLab projects used by your team.
 
@@ -50,7 +53,8 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
 
     Select GitHub Enterprise for the `Host` field.
 
-    For the `Team or User Account` field, enter the group name of a GitLab group that you have access to. This must be a top-level group, but all its subgroups will be imported.
+    For the `Team or User Account` field, enter the relative path of a top-level GitLab group that you have access to,
+    or the relative path of your personal namespace.
 
     ![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 
@@ -77,10 +81,8 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
 
     > ![Refresh GitLab information in JIRA](img/jira_dev_panel_manual_refresh.png)
 
-4. Repeat the above steps for each GitLab group's projects that you want to be made known to JIRA.
-Specify the GitLab group name accordingly. (Note that you can also specify GitLab user names, as they
-are really GitLab "groups" behind the scenes. In that case, all the projects for that user would
-be made known to JIRA, up to the permissions of the user setting up the integration.)
+To connect additional GitLab projects from other GitLab top-level groups (or personal namespaces), repeat the above
+steps with additional JIRA DVCS accounts.
 
 You may now refer any Jira issue by its ID in branch names, commit messages and  merge request names on GitLab's side,
 and you will be able to see the linked `branches`, `commits`, and `merge requests` when entering a JIRA issue
