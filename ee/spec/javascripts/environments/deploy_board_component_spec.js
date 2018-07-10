@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import DeployBoard from 'ee/environments/components/deploy_board_component.vue';
-import { deployBoardMockData, environment } from './mock_data';
+import { deployBoardMockData, environment } from 'spec/environments/mock_data';
 
 describe('Deploy Board', () => {
   let DeployBoardComponent;

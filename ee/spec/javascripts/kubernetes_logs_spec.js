@@ -2,7 +2,7 @@ import $ from 'jquery';
 import KubernetesLogs from 'ee/kubernetes_logs';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import { logMockData, podMockData } from './ee/kubernetes_mock_data';
+import { logMockData, podMockData } from './kubernetes_mock_data';
 
 describe('Kubernetes Logs', () => {
   const fixtureTemplate = 'static/environments_logs.html.raw';
