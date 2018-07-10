@@ -4,7 +4,8 @@ class AddColumnsForHelmTillerCertificates < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    add_column :clusters_applications_helm, :ca_key, :text
+    add_column :clusters_applications_helm, :encrypted_ca_key, :text
+    add_column :clusters_applications_helm, :encrypted_ca_key_iv, :string
     add_column :clusters_applications_helm, :ca_cert, :text
   end
 end
