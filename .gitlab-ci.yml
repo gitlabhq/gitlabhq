@@ -355,9 +355,13 @@ danger-review:
     - source scripts/utils.sh
     - retry gem install danger --no-ri --no-rdoc
   cache: {}
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
   except:
-    - tags
-    - master
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
   script:
     - git version
     - danger --fail-on-errors=true

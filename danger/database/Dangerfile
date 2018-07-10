@@ -1,16 +1,31 @@
 # rubocop:disable Style/SignalException
 
-db_schema_updated = !git.modified_files.grep(%r{\A(ee/)?(db/(geo/)?(post_)?migrate)/}).empty?
-migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
-geo_migration_created = !git.added_files.grep(%r{\Aee/(db/geo/(post_)?migrate)/}).empty?
+ANY_MIGRATIONS_REGEX = %r{\A(ee/)?(db/(geo/)?(post_)?migrate)/}
+SCHEMA_NOT_UPDATED_MESSAGE = <<~MSG
+**New %<migrations>s added but %<schema>s wasn't updated.**
 
-if (migration_created || geo_migration_created) && !db_schema_updated
-  msg = ["New migrations were added but #{gitlab.html_link("db/schema.rb")}"]
-  msg << "(nor #{gitlab.html_link("ee/db/geo/schema.rb")})" if geo_migration_created
-  msg << "wasn't. Usually, when adding new migrations, #{gitlab.html_link("db/schema.rb")}"
-  msg << "(and #{gitlab.html_link("ee/db/geo/schema.rb")})" if geo_migration_created
-  msg << "should be updated too (unless your migrations are data migrations and your"
-  msg << "migration isn't the most recent one)."
+Usually, when adding new %<migrations>s, %<schema>s should be
+updated too (unless the migration isn't changing the DB schema
+and isn't the most recent one).
+MSG
 
-  warn msg.join(" ")
+non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb/}).empty?
+geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb/}).empty?
+
+any_migration_created = !git.added_files.grep(ANY_MIGRATIONS_REGEX).empty?
+any_migration_updated = !git.modified_files.grep(ANY_MIGRATIONS_REGEX).empty?
+
+non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
+geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).empty?
+
+if any_migration_created || any_migration_updated || non_geo_db_schema_updated || geo_db_schema_updated
+  message "Please make sure to ask a Database engineer for a review."
+end
+
+if non_geo_migration_created && !non_geo_db_schema_updated
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'migrations', schema: gitlab.html_link("db/schema.rb"))
+end
+
+if geo_migration_created && !geo_db_schema_updated
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'Geo migrations', schema: gitlab.html_link("ee/db/geo/schema.rb"))
 end

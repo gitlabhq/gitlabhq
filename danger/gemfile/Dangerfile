@@ -1,15 +1,26 @@
 # rubocop:disable Style/SignalException
 
+GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG
+**%<gemfile>s was updated but %<gemfile_lock>s wasn't updated.**
+
+Usually, when %<gemfile>s is updated, you should run
+```
+bundle install && \
+  BUNDLE_GEMFILE=Gemfile.rails5 bundle install
+```
+
+or
+
+```
+bundle update <the-added-or-updated-gem>
+```
+
+and commit the %<gemfile_lock>s changes.
+MSG
+
 gemfile_modified = git.modified_files.include?("Gemfile")
 gemfile_lock_modified = git.modified_files.include?("Gemfile.lock")
 
 if gemfile_modified && !gemfile_lock_modified
-  msg = [
-    "#{gitlab.html_link("Gemfile")} was edited but #{gitlab.html_link("Gemfile.lock")} wasn't.",
-    "Usually, when #{gitlab.html_link("Gemfile")} is updated, you should run",
-    "`bundle install && BUNDLE_GEMFILE=Gemfile.rails5 bundle install` or",
-    "`bundle update <the-added-or-updated-gem>` and commit the #{gitlab.html_link("Gemfile.lock")} changes."
-  ]
-
-  warn msg.join(" ")
+  warn format(GEMFILE_LOCK_NOT_UPDATED_MESSAGE, gemfile: gitlab.html_link("Gemfile"), gemfile_lock: gitlab.html_link("Gemfile.lock"))
 end

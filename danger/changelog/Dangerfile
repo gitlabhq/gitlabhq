@@ -2,23 +2,55 @@
 
 require 'yaml'
 
+NO_CHANGELOG_LABELS = %w[backstage QA test]
+SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html)."
+MISSING_CHANGELOG_MESSAGE = <<~MSG
+**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html).**
+
+You can create one with:
+
+```
+bin/changelog -m %<mr_iid>s
+```
+
+If your merge request doesn't warrant a CHANGELOG entry,
+consider adding any of the %<labels>s labels.
+#{SEE_DOC}
+MSG
+
+def ee?
+  ENV['CI_PROJECT_NAME'] == 'gitlab-ee' || File.exist?('../../CHANGELOG-EE.md')
+end
+
+def ee_changelog?(changelog_path)
+  changelog_path =~ /unreleased-ee/
+end
+
+def ce_port_changelog?(changelog_path)
+  ee? && !ee_changelog?(changelog_path)
+end
+
 def check_changelog(path)
   yaml = YAML.safe_load(File.read(path))
 
-  fail "`title` should be set, in #{gitlab.html_link(path)}." if yaml["title"].nil?
-  fail "`type` should be set, in #{gitlab.html_link(path)}." if yaml["type"].nil?
+  fail "`title` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["title"].nil?
+  fail "`type` should be set, in #{gitlab.html_link(path)}! #{SEE_DOC}" if yaml["type"].nil?
 
   if yaml["merge_request"].nil?
-    message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}."
-  elsif yaml["merge_request"] != gitlab.mr_json["iid"]
-    fail "Merge request IID was not set to #{gitlab.mr_json["iid"]}!"
+    message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
+  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !ce_port_changelog?(changelog_path)
+    fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end
 rescue StandardError
   # YAML could not be parsed, fail the build.
-  fail "#{gitlab.html_link(path)} isn't valid YAML!"
+  fail "#{gitlab.html_link(path)} isn't valid YAML! #{SEE_DOC}"
 end
 
-changelog_needed = !gitlab.mr_labels.include?("backstage")
+def presented_no_changelog_labels
+  NO_CHANGELOG_LABELS.map { |label| "~#{label}" }.join(', ')
+end
+
+changelog_needed = (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
 changelog_found = git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
 
 if git.modified_files.include?("CHANGELOG.md")
@@ -29,11 +61,6 @@ if changelog_needed
   if changelog_found
     check_changelog(path)
   else
-    msg = [
-      "This merge request is missing a CHANGELOG entry, you can create one with `bin/changelog -m #{gitlab.mr_json["iid"]}`.",
-      "If your merge request doesn't warrant a CHANGELOG entry, consider adding the ~backstage label."
-    ]
-
-    warn msg.join(" ")
+    warn format(MISSING_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], labels: presented_no_changelog_labels)
   end
 end
