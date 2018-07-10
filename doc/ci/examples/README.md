@@ -43,15 +43,9 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-<<<<<<< HEAD
 ## Code Quality analysis **[STARTER]**
 
 [Analyze your project's Code Quality](code_quality.md).
-=======
-## Code Quality analysis
-
-**(Starter)** [Analyze your project's Code Quality](code_quality.md).
->>>>>>> upstream/master
 
 ## Dependencies license management **[ULTIMATE]**
 

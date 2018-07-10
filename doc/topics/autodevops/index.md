@@ -297,11 +297,7 @@ out.
 
 In GitLab Starter, differences between the source and
 target branches are also
-<<<<<<< HEAD
 [shown in the merge request widget](../../user/project/merge_requests/code_quality.md).
-=======
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
->>>>>>> upstream/master
 
 ### Auto SAST **[ULTIMATE]**
 
