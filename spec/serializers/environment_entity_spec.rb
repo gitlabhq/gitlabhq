@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe EnvironmentEntity do
-<<<<<<< HEAD
   include KubernetesHelpers
 
   let(:user) { create(:user) }
@@ -9,11 +8,6 @@ describe EnvironmentEntity do
 
   let(:entity) do
     described_class.new(environment, request: double(current_user: user))
-=======
-  let(:request) { double('request') }
-  let(:entity) do
-    described_class.new(environment, request: spy('request'))
->>>>>>> upstream/master
   end
 
   subject { entity.as_json }
