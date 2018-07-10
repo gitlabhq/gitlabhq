@@ -62,7 +62,7 @@ describe "User adds a comment on a commit", :js do
           click_diff_line(sample_commit.line_code)
 
           expect(page).to have_css(".js-temp-notes-holder form.new-note")
-                    .and have_css(".js-close-discussion-note-form", text: "Discard draft")
+                    .and have_css(".js-close-discussion-note-form", text: "Cancel")
 
           # The `Cancel` button closes the current form. The page should not have any open forms after that.
           find(".js-close-discussion-note-form").click
