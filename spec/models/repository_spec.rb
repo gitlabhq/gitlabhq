@@ -431,6 +431,18 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'non merged branch' do
+      subject { repository.merged_to_root_ref?('fix') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'non existent branch' do
+      subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#can_be_merged?' do
@@ -452,16 +464,10 @@ describe Repository do
       it { is_expected.to be_falsey }
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
+    context 'submodule changes that confuse rugged' do
+      subject { repository.can_be_merged?('update-gitlab-shell-v-6-0-1', 'update-gitlab-shell-v-6-0-3') }
 
       it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
     end
   end
 

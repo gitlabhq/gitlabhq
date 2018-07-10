@@ -1592,6 +1592,20 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'updates avatar' do
+        project_param = {
+          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
+                                      'image/gif')
+        }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                  '-/system/project/avatar/'\
+                                                  "#{project3.id}/banana_sample.gif")
+      end
     end
 
     context 'when authenticated as project master' do

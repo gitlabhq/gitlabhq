@@ -325,6 +325,7 @@
   .settings-content
     = render partial: 'repository_mirrors_form'
 
+<<<<<<< HEAD
 -# EE-only
 - if Gitlab::Geo.license_allows?
   %section.settings.as-geo.no-animate#js-geo-settings{ class: ('expanded' if expanded) }
@@ -374,6 +375,8 @@
     .settings-content
       = render partial: 'slack'
 
+=======
+>>>>>>> upstream/master
 %section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4
@@ -384,5 +387,10 @@
       = _('Control the display of third party offers.')
   .settings-content
     = render 'third_party_offers', application_setting: @application_setting
+<<<<<<< HEAD
+=======
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
+>>>>>>> upstream/master
 
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded

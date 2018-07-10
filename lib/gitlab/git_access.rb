@@ -2,9 +2,12 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+<<<<<<< HEAD
     prepend ::EE::Gitlab::GitAccess
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
+=======
+>>>>>>> upstream/master
     include Gitlab::Utils::StrongMemoize
 
     UnauthorizedError = Class.new(StandardError)
@@ -225,7 +228,10 @@ module Gitlab
       end
     end
 
+<<<<<<< HEAD
     # TODO: please clean this up
+=======
+>>>>>>> upstream/master
     def check_push_access!
       if project.repository_read_only?
         raise UnauthorizedError, ERROR_MESSAGES[:read_only]
@@ -243,6 +249,7 @@ module Gitlab
 
       return if changes.blank? # Allow access this is needed for EE.
 
+<<<<<<< HEAD
       if check_size_limit? && project.above_size_limit?
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).push_error
       end
@@ -252,6 +259,8 @@ module Gitlab
         raise UnauthorizedError, strip_tags(message)
       end
 
+=======
+>>>>>>> upstream/master
       check_change_access!
     end
 
@@ -261,8 +270,11 @@ module Gitlab
       # clear stale lock files.
       project.repository.clean_stale_repository_files
 
+<<<<<<< HEAD
       push_size_in_bytes = 0
 
+=======
+>>>>>>> upstream/master
       # Iterate over all changes to find if user allowed all of them to be applied
       changes_list.each.with_index do |change, index|
         first_change = index == 0
@@ -369,6 +381,7 @@ module Gitlab
 
     protected
 
+<<<<<<< HEAD
     def check_size_limit?
       strong_memoize(:check_size_limit) do
         changes_list.any? do |change|
@@ -377,6 +390,8 @@ module Gitlab
       end
     end
 
+=======
+>>>>>>> upstream/master
     def changes_list
       @changes_list ||= Gitlab::ChangesList.new(changes)
     end

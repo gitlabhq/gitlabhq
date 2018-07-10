@@ -1716,59 +1716,51 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#fetch_source_branch!' do
-    shared_examples '#fetch_source_branch!' do
-      let(:local_ref) { 'refs/merge-requests/1/head' }
-      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
-      let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
+    let(:local_ref) { 'refs/merge-requests/1/head' }
+    let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+    let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
-      after do
-        ensure_seeds
-      end
+    after do
+      ensure_seeds
+    end
 
-      context 'when the branch exists' do
-        context 'when the commit does not exist locally' do
-          let(:source_branch) { 'new-branch-for-fetch-source-branch' }
-          let(:source_rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { source_repository.rugged } }
-          let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
+    context 'when the branch exists' do
+      context 'when the commit does not exist locally' do
+        let(:source_branch) { 'new-branch-for-fetch-source-branch' }
+        let(:source_rugged) { Gitlab::GitalyClient::StorageSettings.allow_disk_access { source_repository.rugged } }
+        let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
 
-          before do
-            source_rugged.branches.create(source_branch, new_oid)
-          end
-
-          it 'writes the ref' do
-            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
-            expect(repository.commit(local_ref).sha).to eq(new_oid)
-          end
+        before do
+          source_rugged.branches.create(source_branch, new_oid)
         end
 
-        context 'when the commit exists locally' do
-          let(:source_branch) { 'master' }
-          let(:expected_oid) { SeedRepo::LastCommit::ID }
-
-          it 'writes the ref' do
-            # Sanity check: the commit should already exist
-            expect(repository.commit(expected_oid)).not_to be_nil
-
-            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
-            expect(repository.commit(local_ref).sha).to eq(expected_oid)
-          end
+        it 'writes the ref' do
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.commit(local_ref).sha).to eq(new_oid)
         end
       end
 
-      context 'when the branch does not exist' do
-        let(:source_branch) { 'definitely-not-master' }
+      context 'when the commit exists locally' do
+        let(:source_branch) { 'master' }
+        let(:expected_oid) { SeedRepo::LastCommit::ID }
 
-        it 'does not write the ref' do
-          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
-          expect(repository.commit(local_ref)).to be_nil
+        it 'writes the ref' do
+          # Sanity check: the commit should already exist
+          expect(repository.commit(expected_oid)).not_to be_nil
+
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          expect(repository.commit(local_ref).sha).to eq(expected_oid)
         end
       end
     end
 
-    it_behaves_like '#fetch_source_branch!'
+    context 'when the branch does not exist' do
+      let(:source_branch) { 'definitely-not-master' }
 
-    context 'without gitaly', :skip_gitaly_mock do
-      it_behaves_like '#fetch_source_branch!'
+      it 'does not write the ref' do
+        expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
+        expect(repository.commit(local_ref)).to be_nil
+      end
     end
   end
 

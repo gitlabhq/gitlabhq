@@ -10,8 +10,11 @@ class EnvironmentEntity < Grape::Entity
   expose :environment_type
   expose :last_deployment, using: DeploymentEntity
   expose :stop_action?, as: :has_stop_action
+<<<<<<< HEAD
 
   expose :rollout_status, if: -> (*) { can_read_deploy_board? }, using: RolloutStatusEntity
+=======
+>>>>>>> upstream/master
 
   expose :metrics_path, if: -> (*) { environment.has_metrics? } do |environment|
     metrics_project_environment_path(environment.project, environment)
@@ -42,6 +45,7 @@ class EnvironmentEntity < Grape::Entity
 
   private
 
+<<<<<<< HEAD
   alias_method :environment, :object
 
   def current_user
@@ -51,4 +55,9 @@ class EnvironmentEntity < Grape::Entity
   def can_read_deploy_board?
     can?(current_user, :read_deploy_board, environment.project)
   end
+=======
+  def current_user
+    request.current_user
+  end
+>>>>>>> upstream/master
 end
