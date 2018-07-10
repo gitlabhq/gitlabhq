@@ -164,3 +164,11 @@
     display: none;
   }
 }
+
+.build-security.tab-pane {
+  .mr-widget-section {
+    padding: 0;
+    border: 0;
+    border-bottom: 1px solid $gray-darker;
+  }
+}
