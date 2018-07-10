@@ -7,6 +7,7 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
   subject { base_command }
 
   it_behaves_like 'helm commands' do
+    let(:expected_env) { %i{} }
     let(:commands) { '' }
   end
 
