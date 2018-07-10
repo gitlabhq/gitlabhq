@@ -1,6 +1,6 @@
 module QA
-  feature 'fork project', :core do
-    scenario 'user submits merge request from a forked project' do
+  describe 'Project fork', :core do
+    it 'can submit merge requests to upstream master' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 

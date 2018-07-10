@@ -9,7 +9,7 @@ module QA
         product(:user) { |factory| factory.user }
 
         def fabricate!
-          project.visit!
+          push.project.visit!
           Page::Project::Show.act { fork_project }
           Page::Project::Fork::New.perform do |page|
             page.choose_namespace(user.name)
