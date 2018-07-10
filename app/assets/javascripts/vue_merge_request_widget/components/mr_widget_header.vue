@@ -43,7 +43,11 @@ export default {
       return this.isBranchTitleLong(this.mr.targetBranch);
     },
     webIdePath() {
-      return webIDEUrl(this.mr.statusPath.replace('.json', ''));
+      return webIDEUrl(
+        `/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}?target_project=${
+          this.mr.targetProjectFullPath
+        }`,
+      );
     },
   },
   methods: {
