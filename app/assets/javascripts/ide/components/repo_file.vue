@@ -40,6 +40,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      mouseOver: false,
+    };
+  },
   computed: {
     ...mapGetters([
       'getChangesInFolder',
@@ -142,6 +147,9 @@ export default {
     hasUrlAtCurrentRoute() {
       return this.$router.currentRoute.path === `/project${this.file.url}`;
     },
+    toggleHover(over) {
+      this.mouseOver = over;
+    },
   },
 };
 </script>
@@ -153,6 +161,8 @@ export default {
       class="file"
       role="button"
       @click="clickFile"
+      @mouseover="toggleHover(true)"
+      @mouseout="toggleHover(false)"
     >
       <div
         class="file-name"
@@ -206,6 +216,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
+          :mouse-over="mouseOver"
           class="float-right prepend-left-8"
         />
       </div>
