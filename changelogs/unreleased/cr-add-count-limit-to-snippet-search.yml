@@ -1,0 +1,5 @@
+---
+title: Adds a count limit to the number of snippet search results.
+merge_request: 20531
+author:
+type: fixed

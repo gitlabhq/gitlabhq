@@ -9,23 +9,28 @@ module Gitlab
       @query = query
     end
 
-    def objects(scope, page = nil)
-      case scope
-      when 'snippet_titles'
-        snippet_titles.page(page).per(per_page)
-      when 'snippet_blobs'
-        snippet_blobs.page(page).per(per_page)
-      else
-        super(scope, nil, false)
-      end
+    def objects(scope, page = nil, without_count = true)
+      collection = case scope
+                   when 'snippet_titles'
+                     snippet_titles.page(page).per(per_page)
+                   when 'snippet_blobs'
+                     snippet_blobs.page(page).per(per_page)
+                   else
+                     super(scope, nil, false)
+                   end
+      without_count ? collection.without_count : collection
     end
 
     def snippet_titles_count
-      @snippet_titles_count ||= snippet_titles.count
+      @snippet_titles_count ||= snippet_titles.limit(count_limit).count
     end
 
     def snippet_blobs_count
-      @snippet_blobs_count ||= snippet_blobs.count
+      @snippet_blobs_count ||= snippet_blobs.limit(count_limit).count
+    end
+
+    def count_limit
+      1001
     end
 
     private
