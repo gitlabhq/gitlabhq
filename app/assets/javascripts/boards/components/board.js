@@ -55,7 +55,7 @@ gl.issueBoards.Board = Vue.extend({
   },
   computed: {
     counterTooltip() {
-      const { issuesSize, totalWeight } = this.list;
+      const { issuesSize } = this.list;
       return `${n__('%d issue', '%d issues', issuesSize)}`;
     },
   },

@@ -36,7 +36,7 @@
           %span.issue-count-badge-count
             %icon.mr-1{ name: "issues" }
             {{ list.issuesSize }}
-          = render "shared/boards/components/list_weight"
+          = render_if_exists "shared/boards/components/list_weight"
 
         - if can?(current_user, :admin_list, current_board_parent)
           %button.issue-count-badge-add-button.btn.btn-sm.btn-default.ml-1.has-tooltip.js-no-trigger-collapse{ type: "button",

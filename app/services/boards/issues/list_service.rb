@@ -8,9 +8,7 @@ module Boards
       end
 
       def metadata
-        # This is needed because when issues are filtered by label
-        # and the collection is empty ActiveRecord::Relation#count will return {}
-        issues_count = issues_present? ? fetch_issues.count : 0
+        issues_count = issues_to_array.size
 
         { size: issues_count }
       end
@@ -24,9 +22,11 @@ module Boards
         end
       end
 
-      def issues_present?
-        strong_memoize(:issues_present) do
-          fetch_issues.exists?
+      # We have to convert relation to array because when issues are filtered by label
+      # ActiveRecord::Relation#count will return { 10 => 4 } or {} when collection is nil
+      def issues_to_array
+        strong_memoize(:issues_to_array) do
+          fetch_issues.to_a
         end
       end
 
