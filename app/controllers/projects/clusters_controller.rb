@@ -62,7 +62,7 @@ class Projects::ClustersController < Projects::ApplicationController
   def destroy
     if cluster.destroy
       flash[:notice] = _('Kubernetes cluster integration was successfully removed.')
-      redirect_to project_clusters_path(project), status: 302
+      redirect_to project_clusters_path(project), status: :found
     else
       flash[:notice] = _('Kubernetes cluster integration was not removed.')
       render :show

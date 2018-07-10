@@ -166,7 +166,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end
@@ -188,7 +188,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end

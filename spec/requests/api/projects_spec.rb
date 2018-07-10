@@ -312,7 +312,7 @@ describe API::Projects do
 
         before do
           project_member
-          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+          user3.update(starred_projects: [project, project2, project3, public_project])
         end
 
         it 'returns the starred projects viewable by the user' do
@@ -333,7 +333,7 @@ describe API::Projects do
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project7, project8, project9])
+          user.update(starred_projects: [project5, project7, project8, project9])
         end
 
         context 'including owned filter' do
@@ -1451,7 +1451,7 @@ describe API::Projects do
       end
 
       it 'updates visibility_level from public to private' do
-        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+        project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
         put api("/projects/#{project3.id}", user), project_param
@@ -1525,6 +1525,20 @@ describe API::Projects do
         put api("/projects/#{project3.id}", user), project_param
 
         expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'updates avatar' do
+        project_param = {
+          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
+                                      'image/gif')
+        }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                  '-/system/project/avatar/'\
+                                                  "#{project3.id}/banana_sample.gif")
       end
     end
 

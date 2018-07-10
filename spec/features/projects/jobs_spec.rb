@@ -187,7 +187,7 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Download artifacts" do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file)
+        job.update(legacy_artifacts_file: artifacts_file)
         visit project_job_path(project, job)
       end
 
@@ -198,8 +198,8 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
     context 'Artifacts expire date' do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file,
-                              artifacts_expire_at: expire_at)
+        job.update(legacy_artifacts_file: artifacts_file,
+                   artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
       end
@@ -530,14 +530,14 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
 
   describe "GET /:project/jobs/:id/download" do
     before do
-      job.update_attributes(legacy_artifacts_file: artifacts_file)
+      job.update(legacy_artifacts_file: artifacts_file)
       visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        job2.update_attributes(legacy_artifacts_file: artifacts_file)
+        job2.update(legacy_artifacts_file: artifacts_file)
         visit download_project_job_artifacts_path(project, job2)
       end
 

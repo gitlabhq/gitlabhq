@@ -1891,7 +1891,7 @@ describe MergeRequest do
         end
 
         it 'returns false if the merge request is merged' do
-          merge_request.update_attributes(state: 'merged')
+          merge_request.update(state: 'merged')
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end

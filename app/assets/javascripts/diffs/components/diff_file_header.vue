@@ -39,11 +39,6 @@ export default {
       required: false,
       default: true,
     },
-    discussionsExpanded: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     currentUser: {
       type: Object,
       required: true,
@@ -116,7 +111,7 @@ export default {
   },
   methods: {
     ...mapActions('diffs', ['toggleFileDiscussions']),
-    handleToggle(e, checkTarget) {
+    handleToggleFile(e, checkTarget) {
       if (
         !checkTarget ||
         e.target === this.$refs.header ||
@@ -128,7 +123,7 @@ export default {
     showForkMessage() {
       this.$emit('showForkMessage');
     },
-    handleToggleDiscussions(){
+    handleToggleDiscussions() {
       this.toggleFileDiscussions(this.diffFile);
     },
   },
@@ -139,7 +134,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggle($event, true)"
+    @click="handleToggleFile($event, true)"
   >
     <div class="file-header-content">
       <icon
@@ -224,9 +219,9 @@ export default {
         <button
           :class="{ active: hasExpandedDiscussions }"
           :title="s__('MergeRequests|Toggle comments for this file')"
-          @click="handleToggleDiscussions"
-          class="btn"
+          class="js-btn-vue-toggle-comments btn"
           type="button"
+          @click="handleToggleDiscussions"
         >
           <icon name="comment" />
         </button>

@@ -112,15 +112,5 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
   });
 };
 
-export default {
-  setBaseConfig,
-  fetchDiffFiles,
-  setInlineDiffViewType,
-  setParallelDiffViewType,
-  showCommentForm,
-  cancelCommentForm,
-  loadMoreLines,
-  loadCollapsedDiff,
-  expandAllFiles,
-  toggleFileDiscussions,
-};
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
+export default () => {};

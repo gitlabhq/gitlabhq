@@ -32,6 +32,20 @@ export const diffHasAllCollpasedDiscussions = (state, getters) => diff => {
 };
 
 /**
+ * Checks if the diff has any open discussions
+ * @param {Object} diff
+ * @returns {Boolean}
+ */
+export const diffHasExpandedDiscussions = (state, getters) => diff => {
+  const discussions = getters.getDiffFileDiscussions(diff);
+
+  return (
+    (discussions.length && discussions.find(discussion => discussion.expanded) !== undefined) ||
+    false
+  );
+};
+
+/**
  * Returns an array with the discussions of the given diff
  * @param {Object} diff
  * @returns {Array}
