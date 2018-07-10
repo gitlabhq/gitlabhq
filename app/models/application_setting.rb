@@ -295,6 +295,7 @@ class ApplicationSetting < ActiveRecord::Base
       gitaly_timeout_medium: 30,
       gitaly_timeout_default: 55,
       allow_local_requests_from_hooks_and_services: false,
+      hide_third_party_offers: false,
       mirror_available: true
     }
   end
