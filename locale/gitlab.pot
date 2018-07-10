@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-09 20:54+0200\n"
-"PO-Revision-Date: 2018-07-09 20:54+0200\n"
+"POT-Creation-Date: 2018-07-10 08:56+0200\n"
+"PO-Revision-Date: 2018-07-10 08:56+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1916,6 +1916,9 @@ msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limi
 msgstr ""
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
+msgstr ""
+
+msgid "Control the display of third party offers."
 msgstr ""
 
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
@@ -5702,6 +5705,9 @@ msgid "There was an error when unsubscribing from this label."
 msgstr ""
 
 msgid "They can be managed using the %{link}."
+msgstr ""
+
+msgid "Third party offers"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."

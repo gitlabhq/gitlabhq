@@ -54,6 +54,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data. **[STARTER ONLY]**
 - [External Classification Policy Authorization](../user/admin_area/settings/external_authorization.md) **[PREMIUM ONLY]**
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
+- [Third party offers](../user/admin_area/settings/third_party_offers.md)
 
 #### Customizing GitLab's appearance
 

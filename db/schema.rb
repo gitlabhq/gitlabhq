@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702181530) do
+ActiveRecord::Schema.define(version: 20180704204006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(version: 20180702181530) do
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
     t.boolean "pseudonymizer_enabled", default: false, null: false
+    t.boolean "hide_third_party_offers", default: false, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
