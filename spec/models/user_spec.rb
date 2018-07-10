@@ -2564,13 +2564,9 @@ describe User do
 
           it 'changes the namespace (just to compare to when username is not changed)' do
             expect do
-<<<<<<< HEAD
-              user.update!(username: new_username)
-=======
               Timecop.freeze(1.second.from_now) do
                 user.update!(username: new_username)
               end
->>>>>>> upstream/master
             end.to change { user.namespace.updated_at }
           end
 
