@@ -16,18 +16,35 @@
 }
 
 .mr-widget-approvals-container {
-  border: 1px solid $border-color;
-  margin-bottom: -1px;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  align-items: center;
 
   .zero-approvals .ci-status-icon-success svg {
     fill: $gray-darkest;
   }
 }
 
+.media-section {
+  @include media-breakpoint-down(md) {
+    align-items: flex-start;
+
+    .media-body {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .code-text {
+    @include media-breakpoint-up(lg) {
+      align-self: center;
+    }
+  }
+}
+
 .approvals-body {
-  display: flex;
-  align-items: center;
+  @include media-breakpoint-up(md) {
+    display: flex;
+    align-items: center;
+  }
 
   .approve-btn {
    vertical-align: baseline;
@@ -71,5 +88,27 @@
 
   .approver-avatar {
     position: relative;
+  }
+}
+
+.mr-state-widget {
+  .media-section {
+    padding: $gl-padding;
+    border: 1px solid $border-color;
+    margin-bottom: -1px;
+
+    &:first-of-type {
+      border-radius: $border-radius-default $border-radius-default 0 0;
+    }
+  }
+}
+
+.mr-widget-section {
+  .media {
+    align-items: center;
+  }
+
+  .code-text {
+    flex: 1;
   }
 }

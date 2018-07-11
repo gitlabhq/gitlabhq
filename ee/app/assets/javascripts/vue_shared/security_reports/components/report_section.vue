@@ -138,7 +138,7 @@ export default {
 };
 </script>
 <template>
-  <section>
+  <section class="media-section">
     <div
       class="media"
     >
@@ -146,7 +146,7 @@ export default {
         :status="statusIconName"
       />
       <div
-        class="media-body space-children"
+        class="media-body space-children d-flex"
       >
         <span
           class="js-code-text code-text"
