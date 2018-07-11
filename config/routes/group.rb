@@ -110,8 +110,6 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       end
     end
 
-    resources :todos, only: [:create]
-
     # On CE only index and show are needed
     resources :boards, only: [:index, :show, :create, :update, :destroy]
 

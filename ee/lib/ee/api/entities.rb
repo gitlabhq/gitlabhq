@@ -121,16 +121,6 @@ module EE
         end
       end
 
-      module Todo
-        extend ActiveSupport::Concern
-
-        def todo_target_class(target_type)
-          ::EE::API::Entities.const_get(target_type, false)
-        rescue NameError
-          super
-        end
-      end
-
       ########################
       # EE-specific entities #
       ########################

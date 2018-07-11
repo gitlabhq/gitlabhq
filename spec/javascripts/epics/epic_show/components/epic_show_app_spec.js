@@ -23,7 +23,6 @@ describe('EpicShowApp', () => {
     mock.onAny().reply(404, null);
 
     const {
-      epicId,
       canUpdate,
       canDestroy,
       endpoint,
@@ -44,9 +43,6 @@ describe('EpicShowApp', () => {
       participants,
       subscribed,
       toggleSubscriptionPath,
-      todoExists,
-      todoPath,
-      todoDeletePath,
     } = props;
 
     const EpicShowApp = Vue.extend(epicShowApp);
@@ -80,7 +76,6 @@ describe('EpicShowApp', () => {
 
     const EpicSidebar = Vue.extend(epicSidebar);
     sidebarVm = mountComponent(EpicSidebar, {
-      epicId,
       endpoint,
       editable: canUpdate,
       initialStartDate: startDate,
@@ -88,15 +83,12 @@ describe('EpicShowApp', () => {
       initialLabels: labels,
       initialParticipants: participants,
       initialSubscribed: subscribed,
-      initialTodoExists: todoExists,
       updatePath: updateEndpoint,
       toggleSubscriptionPath,
       labelsPath,
       labelsWebUrl,
       epicsWebUrl,
       namespace,
-      todoPath,
-      todoDeletePath,
     });
 
     setTimeout(done);

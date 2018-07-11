@@ -1,7 +1,6 @@
 module API
   class Todos < Grape::API
     include PaginationParams
-    prepend EE::API::Todos
 
     before { authenticate! }
 

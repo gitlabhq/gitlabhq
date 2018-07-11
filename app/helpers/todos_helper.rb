@@ -1,6 +1,4 @@
 module TodosHelper
-  prepend EE::NotesHelper
-
   def todos_pending_count
     @todos_pending_count ||= current_user.todos_pending_count
   end
@@ -45,7 +43,7 @@ module TodosHelper
       project_commit_path(todo.project,
                                     todo.target, anchor: anchor)
     else
-      path = [todo.parent, todo.target]
+      path = [todo.project.namespace.becomes(Namespace), todo.project, todo.target]
 
       path.unshift(:pipelines) if todo.build_failed?
 
@@ -168,13 +166,5 @@ module TodosHelper
 
   def show_todo_state?(todo)
     (todo.target.is_a?(MergeRequest) || todo.target.is_a?(Issue)) && %w(closed merged).include?(todo.target.state)
-  end
-
-  def todo_group_options
-    groups = current_user.authorized_groups.map do |group|
-      { id: group.id, text: group.full_name }
-    end
-
-    groups.unshift({ id: '', text: 'Any Group' }).to_json
   end
 end
