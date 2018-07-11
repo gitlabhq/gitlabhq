@@ -48,7 +48,7 @@ describe Gitlab::ImportExport::UploadsManager do
         stub_uploads_object_storage(FileUploader)
       end
 
-      it 'downloads the file to include in an archive' do
+      it 'saves the file' do
         fake_uri = double
 
         expect(fake_uri).to receive(:open).and_return(StringIO.new('File content'))
@@ -70,7 +70,7 @@ describe Gitlab::ImportExport::UploadsManager do
           FileUtils.touch(File.join(shared.export_path, 'uploads/random', "dummy.txt"))
         end
 
-        it 'downloads the file to include in an archive' do
+        it 'restores the file' do
           manager.restore
 
           expect(project.uploads.size).to eq(1)

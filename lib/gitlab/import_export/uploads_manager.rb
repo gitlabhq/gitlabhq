@@ -29,10 +29,15 @@ module Gitlab
         Dir["#{uploads_export_path}/**/*"].each do |upload|
           next if File.directory?(upload)
 
-          UploadService.new(@project, File.open(upload, 'r'), FileUploader).execute
-        end
+          secret, identifier = upload.split('/').last(2)
 
-        true
+          uploader_context = {
+            secret: secret,
+            identifier: identifier
+          }
+
+          UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
+        end
       rescue => e
         @shared.error(e)
         false
