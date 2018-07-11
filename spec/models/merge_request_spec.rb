@@ -790,7 +790,7 @@ describe MergeRequest do
         project.add_guest(create(:user))
         project.add_reporter(create(:user))
         project.add_developer(developer)
-        project.add_master(create(:user))
+        project.add_maintainer(create(:user))
 
         # Add this user as both someone with access, and an explicit approver,
         # to ensure they aren't double-counted.
@@ -834,7 +834,7 @@ describe MergeRequest do
           group.add_guest(create(:user))
           group.add_reporter(create(:user))
           group.add_developer(create(:user))
-          group.add_master(create(:user))
+          group.add_maintainer(create(:user))
           blocked_developer = create(:user).tap { |u| u.block! }
           group.add_developer(blocked_developer)
         end.to change { reloaded_merge_request.number_of_potential_approvers }.by(2)
@@ -881,12 +881,12 @@ describe MergeRequest do
 
       project = create :project
       group = create :group
-      group.add_master user
+      group.add_maintainer user
       create :approver_group, target: project, group: group
 
       merge_request = create :merge_request, target_project: project, source_project: project
       group1 = create :group
-      group1.add_master user1
+      group1.add_maintainer user1
       create :approver_group, target: merge_request, group: group1
 
       create(:approver, user: user2, target: merge_request)
@@ -940,7 +940,7 @@ describe MergeRequest do
     subject { merge_request }
 
     before do
-      subject.source_project.add_master(user)
+      subject.source_project.add_maintainer(user)
     end
 
     it "can't be removed when its a protected branch" do
@@ -1415,7 +1415,7 @@ describe MergeRequest do
         end
 
         before do
-          project.add_master(current_user)
+          project.add_maintainer(current_user)
 
           ProcessCommitWorker.new.perform(project.id,
                                           current_user.id,
@@ -1805,8 +1805,8 @@ describe MergeRequest do
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     before do
-      merge_request.source_project.add_master(user)
-      merge_request.target_project.add_master(user)
+      merge_request.source_project.add_maintainer(user)
+      merge_request.target_project.add_maintainer(user)
     end
 
     context 'with multiple environments' do

@@ -188,7 +188,7 @@ describe 'Commits' do
     let(:branch_name) { 'master' }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit project_commits_path(project, branch_name)
     end

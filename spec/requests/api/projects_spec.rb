@@ -40,7 +40,7 @@ describe API::Projects do
     create(:project_member,
     user: user4,
     project: project3,
-    access_level: ProjectMember::MASTER)
+    access_level: ProjectMember::MAINTAINER)
   end
   let(:project4) do
     create(:project,
@@ -353,7 +353,7 @@ describe API::Projects do
             create(:project_member,
                    user: user,
                    project: project5,
-                   access_level: ProjectMember::MASTER)
+                   access_level: ProjectMember::MAINTAINER)
           end
 
           it 'returns only projects that satisfy all query parameters' do
@@ -1011,7 +1011,7 @@ describe API::Projects do
       describe 'permissions' do
         context 'all projects' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'contains permission information' do
@@ -1019,19 +1019,19 @@ describe API::Projects do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.first['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.add_master(user)
+            project.add_maintainer(user)
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -1608,7 +1608,7 @@ describe API::Projects do
       end
     end
 
-    context 'when authenticated as project master' do
+    context 'when authenticated as project maintainer' do
       it 'updates path' do
         project_param = { path: 'bar' }
         put api("/projects/#{project3.id}", user4), project_param

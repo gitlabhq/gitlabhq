@@ -4,7 +4,7 @@ describe ProjectPolicy do
   set(:guest) { create(:user) }
   set(:reporter) { create(:user) }
   set(:developer) { create(:user) }
-  set(:master) { create(:user) }
+  set(:maintainer) { create(:user) }
   set(:owner) { create(:user) }
   set(:admin) { create(:admin) }
   let(:project) { create(:project, :public, namespace: owner.namespace) }
@@ -42,7 +42,7 @@ describe ProjectPolicy do
     ]
   end
 
-  let(:base_master_permissions) do
+  let(:base_maintainer_permissions) do
     %i[
       push_to_delete_protected_branch update_project_snippet update_environment
       update_deployment admin_project_snippet
@@ -70,15 +70,15 @@ describe ProjectPolicy do
   # Used in EE specs
   let(:additional_guest_permissions)  { [] }
   let(:additional_reporter_permissions) { [] }
-  let(:additional_master_permissions) { [] }
+  let(:additional_maintainer_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }
-  let(:master_permissions) { base_master_permissions + additional_master_permissions }
+  let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
 
   before do
     project.add_guest(guest)
-    project.add_master(master)
+    project.add_maintainer(maintainer)
     project.add_developer(developer)
     project.add_reporter(reporter)
   end
@@ -193,7 +193,7 @@ describe ProjectPolicy do
     let(:feature_write_abilities) do
       described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
         described_class.create_update_admin_destroy(feature)
-      end + additional_reporter_permissions + additional_master_permissions
+      end + additional_reporter_permissions + additional_maintainer_permissions
     end
 
     let(:other_write_abilities) do
@@ -276,7 +276,7 @@ describe ProjectPolicy do
         expect_disallowed(*reporter_public_build_permissions)
         expect_disallowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
 
@@ -326,7 +326,7 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
 
@@ -346,7 +346,7 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
 
@@ -356,23 +356,23 @@ describe ProjectPolicy do
     end
   end
 
-  shared_examples 'project policies as master' do
+  shared_examples 'project policies as maintainer' do
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
 
-      subject { described_class.new(master, project) }
+      subject { described_class.new(maintainer, project) }
 
       it do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
       end
 
       it_behaves_like 'archived project policies' do
-        let(:regular_abilities) { master_permissions }
+        let(:regular_abilities) { maintainer_permissions }
       end
     end
   end
@@ -388,7 +388,7 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_allowed(*owner_permissions)
       end
 
@@ -409,7 +409,7 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_disallowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_allowed(*owner_permissions)
       end
 
@@ -423,14 +423,14 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as guest'
   it_behaves_like 'project policies as reporter'
   it_behaves_like 'project policies as developer'
-  it_behaves_like 'project policies as master'
+  it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
 
   context 'EE' do
     let(:additional_guest_permissions)  { [:read_issue_link] }
     let(:additional_reporter_permissions) { [:admin_issue_link]}
-    let(:additional_master_permissions) { [:push_code_to_protected_branches] }
+    let(:additional_maintainer_permissions) { [:push_code_to_protected_branches] }
     let(:auditor_permissions) do
       %i[
         download_code download_wiki_code read_project read_board read_list
@@ -447,7 +447,7 @@ describe ProjectPolicy do
     it_behaves_like 'project policies as guest'
     it_behaves_like 'project policies as reporter'
     it_behaves_like 'project policies as developer'
-    it_behaves_like 'project policies as master'
+    it_behaves_like 'project policies as maintainer'
     it_behaves_like 'project policies as owner'
     it_behaves_like 'project policies as admin'
 
@@ -459,7 +459,7 @@ describe ProjectPolicy do
       context 'who is not a team member' do
         it do
           is_expected.to be_disallowed(*developer_permissions)
-          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*maintainer_permissions)
           is_expected.to be_disallowed(*owner_permissions)
           is_expected.to be_disallowed(*(guest_permissions - auditor_permissions))
           is_expected.to be_allowed(*auditor_permissions)
@@ -473,7 +473,7 @@ describe ProjectPolicy do
 
         it do
           is_expected.to be_disallowed(*developer_permissions)
-          is_expected.to be_disallowed(*master_permissions)
+          is_expected.to be_disallowed(*maintainer_permissions)
           is_expected.to be_disallowed(*owner_permissions)
           is_expected.to be_allowed(*(guest_permissions - auditor_permissions))
           is_expected.to be_allowed(*auditor_permissions)

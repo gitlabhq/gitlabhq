@@ -88,7 +88,7 @@ module EE
       def defaults
         super.merge(
           allow_group_owners_to_manage_ldap: true,
-          default_project_creation: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS,
+          default_project_creation: ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS,
           elasticsearch_aws: false,
           elasticsearch_aws_region: ENV['ELASTIC_REGION'] || 'us-east-1',
           elasticsearch_url: ENV['ELASTIC_URL'] || 'http://localhost:9200',

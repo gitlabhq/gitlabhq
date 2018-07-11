@@ -298,7 +298,7 @@ describe Projects::IssuesController do
           sign_in(user)
         end
 
-        %i(reporter developer master).each do |access|
+        %i(reporter developer maintainer).each do |access|
           it_behaves_like 'user can see confidential issue', access
         end
 

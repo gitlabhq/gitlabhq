@@ -4,7 +4,7 @@ describe GroupPolicy do
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
   let(:developer) { create(:user) }
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
   let(:owner) { create(:user) }
   let(:auditor) { create(:user, :auditor) }
   let(:admin) { create(:admin) }
@@ -14,7 +14,7 @@ describe GroupPolicy do
     group.add_guest(guest)
     group.add_reporter(reporter)
     group.add_developer(developer)
-    group.add_master(master)
+    group.add_maintainer(maintainer)
     group.add_owner(owner)
   end
 
@@ -57,7 +57,7 @@ describe GroupPolicy do
   end
 
   describe 'per group SAML' do
-    let(:current_user) { master }
+    let(:current_user) { maintainer }
 
     it { is_expected.to be_disallowed(:admin_group_saml) }
 
@@ -131,8 +131,8 @@ describe GroupPolicy do
       it { is_expected.to be_disallowed(:admin_ldap_group_links) }
     end
 
-    context 'master' do
-      let(:current_user) { master }
+    context 'maintainer' do
+      let(:current_user) { maintainer }
 
       it { is_expected.to be_disallowed(:override_group_member) }
       it { is_expected.to be_disallowed(:admin_ldap_group_links) }
@@ -184,8 +184,8 @@ describe GroupPolicy do
           it { is_expected.to be_allowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -212,8 +212,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_disallowed(:create_projects) }
         end
@@ -225,8 +225,8 @@ describe GroupPolicy do
         end
       end
 
-      context 'when group has project creation level set to master only' do
-        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS) }
+      context 'when group has project creation level set to maintainer only' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
 
         context 'reporter' do
           let(:current_user) { reporter }
@@ -240,8 +240,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -253,8 +253,8 @@ describe GroupPolicy do
         end
       end
 
-      context 'when group has project creation level set to developers + master' do
-        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS) }
+      context 'when group has project creation level set to developers + maintainer' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
 
         context 'reporter' do
           let(:current_user) { reporter }
@@ -268,8 +268,8 @@ describe GroupPolicy do
           it { is_expected.to be_allowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -302,8 +302,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -330,8 +330,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -343,8 +343,8 @@ describe GroupPolicy do
         end
       end
 
-      context 'when group has project creation level set to master only' do
-        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS) }
+      context 'when group has project creation level set to maintainer only' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::MAINTAINER_PROJECT_ACCESS) }
 
         context 'reporter' do
           let(:current_user) { reporter }
@@ -358,8 +358,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end
@@ -371,8 +371,8 @@ describe GroupPolicy do
         end
       end
 
-      context 'when group has project creation level set to developers + master' do
-        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS) }
+      context 'when group has project creation level set to developers + maintainer' do
+        let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
 
         context 'reporter' do
           let(:current_user) { reporter }
@@ -386,8 +386,8 @@ describe GroupPolicy do
           it { is_expected.to be_disallowed(:create_projects) }
         end
 
-        context 'master' do
-          let(:current_user) { master }
+        context 'maintainer' do
+          let(:current_user) { maintainer }
 
           it { is_expected.to be_allowed(:create_projects) }
         end

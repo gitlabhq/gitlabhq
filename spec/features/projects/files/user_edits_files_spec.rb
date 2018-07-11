@@ -31,7 +31,7 @@ describe 'Projects > Files > User edits files' do
 
   context 'when an user has write access' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       visit(project_tree_path_root_ref)
     end
 

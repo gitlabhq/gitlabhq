@@ -9,14 +9,14 @@ module ProtectedBranches
         if params.delete(:developers_can_push)
           Gitlab::Access::DEVELOPER
         else
-          Gitlab::Access::MASTER
+          Gitlab::Access::MAINTAINER
         end
 
       merge_access_level =
         if params.delete(:developers_can_merge)
           Gitlab::Access::DEVELOPER
         else
-          Gitlab::Access::MASTER
+          Gitlab::Access::MAINTAINER
         end
 
       @params.merge!(push_access_levels_attributes: [{ access_level: push_access_level }],

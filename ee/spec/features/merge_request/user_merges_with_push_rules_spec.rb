@@ -6,7 +6,7 @@ describe 'Merge request > User merges with Push Rules', :js do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'commit message is invalid' do

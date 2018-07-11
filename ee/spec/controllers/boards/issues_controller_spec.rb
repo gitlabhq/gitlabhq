@@ -17,7 +17,7 @@ describe Boards::IssuesController do
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     group.add_guest(guest)
   end
 

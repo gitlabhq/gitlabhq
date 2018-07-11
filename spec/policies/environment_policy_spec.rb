@@ -17,11 +17,11 @@ describe EnvironmentPolicy do
         end
 
         where(:access_level, :allowed?) do
-          nil        | false
-          :guest     | false
-          :reporter  | false
-          :developer | true
-          :master    | true
+          nil         | false
+          :guest      | false
+          :reporter   | false
+          :developer  | true
+          :maintainer | true
         end
 
         with_them do
@@ -63,11 +63,11 @@ describe EnvironmentPolicy do
         end
 
         where(:access_level, :allowed?) do
-          nil        | false
-          :guest     | false
-          :reporter  | false
-          :developer | false
-          :master    | true
+          nil         | false
+          :guest      | false
+          :reporter   | false
+          :developer  | false
+          :maintainer | true
         end
 
         with_them do

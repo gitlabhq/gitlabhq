@@ -127,9 +127,9 @@ describe API::ProjectMirror do
           end
         end
 
-        context 'is authenticated as master' do
+        context 'is authenticated as maintainer' do
           it 'triggers the pull mirroring operation' do
-            project_member(:master, user2)
+            project_member(:maintainer, user2)
 
             post api("/projects/#{project_mirrored.id}/mirror/pull", user2)
 

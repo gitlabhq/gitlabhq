@@ -9,7 +9,7 @@ describe API::Variables do
       before do
         stub_licensed_features(variable_environment_scope: true)
 
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'creates variable with a specific environment scope' do

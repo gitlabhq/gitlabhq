@@ -21,7 +21,7 @@ describe ProjectAuthorization do
     it do
       expect(amount_for_kind('reporter')).to eq(1)
       expect(amount_for_kind('developer')).to eq(2)
-      expect(amount_for_kind('master')).to eq(2)
+      expect(amount_for_kind('maintainer')).to eq(2)
     end
 
     def amount_for_kind(access_level)

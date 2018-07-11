@@ -10,7 +10,7 @@ describe Projects::ServiceDeskController do
     allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -25,7 +25,7 @@ describe Projects::ServiceDeskController do
       expect(response.status).to eq(200)
     end
 
-    context 'when user is not project master' do
+    context 'when user is not project maintainer' do
       let(:guest) { create(:user) }
 
       it 'renders 404' do

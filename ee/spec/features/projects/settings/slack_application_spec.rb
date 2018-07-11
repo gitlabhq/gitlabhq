@@ -9,7 +9,7 @@ describe 'Slack application' do
 
   before do
     gitlab_sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
 
     create(:slack_integration, service: service)
 

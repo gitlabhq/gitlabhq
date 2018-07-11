@@ -70,7 +70,7 @@ describe Projects::MirrorsController do
             expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
             new_user = create(:user)
-            project.add_master(new_user)
+            project.add_maintainer(new_user)
 
             do_put(project, mirror: true, mirror_user_id: new_user.id, import_url: 'http://local.dev')
 
@@ -213,7 +213,7 @@ describe Projects::MirrorsController do
         mirror_user = project.mirror_user
 
         other_user = create(:user)
-        project.add_master(other_user)
+        project.add_maintainer(other_user)
 
         do_put(project, { mirror_user_id: other_user.id }, format: :json)
 

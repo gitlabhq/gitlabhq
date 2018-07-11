@@ -47,7 +47,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects

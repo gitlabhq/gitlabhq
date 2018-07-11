@@ -462,11 +462,11 @@ describe Ci::CreatePipelineService do
         end
       end
 
-      context 'when user is master' do
+      context 'when user is maintainer' do
         let(:pipeline) { execute_service }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'creates a protected pipeline' do
@@ -503,13 +503,13 @@ describe Ci::CreatePipelineService do
         end
       end
 
-      context 'when trigger belongs to a master' do
+      context 'when trigger belongs to a maintainer' do
         let(:user) { create(:user) }
         let(:trigger) { create(:ci_trigger, owner: user) }
         let(:trigger_request) { create(:ci_trigger_request, trigger: trigger) }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'creates a pipeline' do

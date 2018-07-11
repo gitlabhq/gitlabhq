@@ -46,7 +46,7 @@ build status. This is because a successful build status can trigger a merge
 when 'Merge when pipeline succeeds' feature is used. Some features of the GitLab
 Plugin may require additional privileges. For example, there is an option to
 accept a merge request if the build is successful. Using this feature would
-require developer, master or owner-level permission.
+require developer, maintainer or owner-level permission.
 
 Copy the private API token from **Profile Settings -> Account**. You will need this
 when configuring the Jenkins server later.

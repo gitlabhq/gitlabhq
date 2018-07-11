@@ -10,7 +10,7 @@ describe 'GEO Nodes' do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
 
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

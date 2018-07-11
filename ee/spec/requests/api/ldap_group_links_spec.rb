@@ -9,8 +9,8 @@ describe API::LdapGroupLinks, api: true  do
 
   let!(:group_with_ldap_links) do
     group = create(:group)
-    group.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldap1'
-    group.ldap_group_links.create cn: 'ldap-group2', group_access: Gitlab::Access::MASTER, provider: 'ldap2'
+    group.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MAINTAINER, provider: 'ldap1'
+    group.ldap_group_links.create cn: 'ldap-group2', group_access: Gitlab::Access::MAINTAINER, provider: 'ldap2'
     group
   end
 

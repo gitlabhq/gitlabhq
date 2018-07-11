@@ -4,7 +4,8 @@ class ProjectGroupLink < ActiveRecord::Base
   GUEST     = 10
   REPORTER  = 20
   DEVELOPER = 30
-  MASTER    = 40
+  MAINTAINER = 40
+  MASTER = MAINTAINER # @deprecated
 
   belongs_to :project
   belongs_to :group

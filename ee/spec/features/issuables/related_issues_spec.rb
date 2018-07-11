@@ -217,8 +217,8 @@ describe 'Related issues', :js do
 
   context 'when user has permission to manage related issues' do
     before do
-      project.add_master(user)
-      project_b.add_master(user)
+      project.add_maintainer(user)
+      project_b.add_maintainer(user)
       gitlab_sign_in(user)
     end
 

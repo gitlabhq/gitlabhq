@@ -15,8 +15,8 @@ describe 'New/edit issue', :js do
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
 
-    project.add_master(user)
-    project.add_master(user2)
+    project.add_maintainer(user)
+    project.add_maintainer(user2)
     sign_in(user)
   end
 
@@ -323,7 +323,7 @@ describe 'New/edit issue', :js do
     let(:sub_group_project) { create(:project, group: nested_group_1) }
 
     before do
-      sub_group_project.add_master(user)
+      sub_group_project.add_maintainer(user)
 
       visit new_project_issue_path(sub_group_project)
     end

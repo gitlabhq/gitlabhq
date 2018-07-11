@@ -177,7 +177,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
         it 'converts an existing membership access request to a real member' do
           group.add_owner(create(:user))
           access_requester = group.request_access(user)
-          access_requester.update(access_level: ::Gitlab::Access::MASTER)
+          access_requester.update(access_level: ::Gitlab::Access::MAINTAINER)
           # Validate that the user is properly created as a requester first.
           expect(group.requesters.pluck(:id)).to include(access_requester.id)
 
@@ -190,7 +190,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
 
         it 'downgrades existing member access' do
           # Create user with higher access
-          group.add_user(user, Gitlab::Access::MASTER)
+          group.add_user(user, Gitlab::Access::MAINTAINER)
 
           sync_group.update_permissions
 
@@ -222,7 +222,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
         it 'does not alter an ldap member that has a permission override' do
           group.members.create(
             user: user,
-            access_level: ::Gitlab::Access::MASTER,
+            access_level: ::Gitlab::Access::MAINTAINER,
             ldap: true,
             override: true
           )
@@ -230,7 +230,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
           sync_group.update_permissions
 
           expect(group.members.find_by(user_id: user.id).access_level)
-            .to eq(::Gitlab::Access::MASTER)
+            .to eq(::Gitlab::Access::MAINTAINER)
         end
       end
 
@@ -240,7 +240,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
         end
 
         it 'removes the user from the group' do
-          group.add_user(user, Gitlab::Access::MASTER)
+          group.add_user(user, Gitlab::Access::MAINTAINER)
 
           sync_group.update_permissions
 
@@ -258,7 +258,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
 
         it 'updates projects authorizations' do
           project = create(:project, namespace: group)
-          group.add_user(user, Gitlab::Access::MASTER)
+          group.add_user(user, Gitlab::Access::MAINTAINER)
 
           sync_group.update_permissions
 
@@ -303,7 +303,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
           create(:identity, user: user2, extern_uid: user_dn(user2.username).upcase)
           group.members.create(
             user: user1,
-            access_level: ::Gitlab::Access::MASTER,
+            access_level: ::Gitlab::Access::MAINTAINER,
             ldap: true,
             override: true
           )
@@ -317,7 +317,7 @@ describe EE::Gitlab::Auth::LDAP::Sync::Group do
           sync_group.update_permissions
 
           expect(group.members.pluck(:access_level))
-            .to match_array([::Gitlab::Access::MASTER, ::Gitlab::Access::OWNER])
+            .to match_array([::Gitlab::Access::MAINTAINER, ::Gitlab::Access::OWNER])
         end
 
         it 'does not update permissions when group base is missing' do

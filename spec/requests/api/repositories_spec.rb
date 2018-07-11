@@ -8,7 +8,7 @@ describe API::Repositories do
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
   let!(:project) { create(:project, :repository, creator: user) }
-  let!(:master) { create(:project_member, :master, user: user, project: project) }
+  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
 
   describe "GET /projects/:id/repository/tree" do
     let(:route) { "/projects/#{project.id}/repository/tree" }

@@ -5,14 +5,14 @@ describe ProjectPolicy do
 
   set(:owner) { create(:user) }
   set(:admin) { create(:admin) }
-  set(:master) { create(:user) }
+  set(:maintainer) { create(:user) }
   set(:developer) { create(:user) }
   set(:reporter) { create(:user) }
   set(:guest) { create(:user) }
   let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   before do
-    project.add_master(master)
+    project.add_maintainer(maintainer)
     project.add_developer(developer)
     project.add_reporter(reporter)
     project.add_guest(guest)
@@ -214,8 +214,8 @@ describe ProjectPolicy do
         it { is_expected.to be_allowed(:read_vulnerability_feedback) }
       end
 
-      context 'with master' do
-        let(:current_user) { master }
+      context 'with maintainer' do
+        let(:current_user) { maintainer }
 
         it { is_expected.to be_allowed(:read_vulnerability_feedback) }
       end
@@ -267,8 +267,8 @@ describe ProjectPolicy do
       it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
     end
 
-    context 'with master' do
-      let(:current_user) { master }
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
 
       it { is_expected.to be_allowed(:admin_vulnerability_feedback) }
     end
@@ -319,8 +319,8 @@ describe ProjectPolicy do
       it { is_expected.to be_allowed(:read_project_security_dashboard) }
     end
 
-    context 'with master' do
-      let(:current_user) { master }
+    context 'with maintainer' do
+      let(:current_user) { maintainer }
 
       it { is_expected.to be_allowed(:read_project_security_dashboard) }
     end

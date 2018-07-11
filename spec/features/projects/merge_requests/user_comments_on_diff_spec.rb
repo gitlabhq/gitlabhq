@@ -11,7 +11,7 @@ describe 'User comments on a diff', :js do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(diffs_project_merge_request_path(project, merge_request))

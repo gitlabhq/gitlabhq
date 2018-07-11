@@ -7,7 +7,7 @@ shared_examples 'a finder with external authorization service' do
   let(:project) { create(:project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   it 'finds the subject' do

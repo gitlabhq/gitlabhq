@@ -11,7 +11,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     group.add_developer(user)
     group.add_developer(group_member)
   end

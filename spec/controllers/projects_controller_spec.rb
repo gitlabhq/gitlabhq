@@ -236,7 +236,7 @@ describe ProjectsController do
           allow_any_instance_of(EE::Project)
             .to receive(:above_size_limit?).and_return(true)
 
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'shows the over size limit warning message for project members' do
@@ -804,7 +804,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -832,7 +832,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'object storage disabled' do
@@ -892,7 +892,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -920,7 +920,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do

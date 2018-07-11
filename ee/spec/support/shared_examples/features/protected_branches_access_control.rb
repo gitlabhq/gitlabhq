@@ -174,7 +174,7 @@ shared_examples "protected branches > access control > EE" do
       stub_licensed_features(unprotection_restrictions: true)
     end
 
-    it 'unprotect/delete can be performed by a master' do
+    it 'unprotect/delete can be performed by a maintainer' do
       visit project_protected_branches_path(project)
 
       expect do

@@ -9,7 +9,7 @@ describe 'Projects > Settings > User manages project members' do
   let(:user_mike) { create(:user, name: 'Mike') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user_dmitriy)
     sign_in(user)
   end
@@ -30,7 +30,7 @@ describe 'Projects > Settings > User manages project members' do
   end
 
   it 'imports a team from another project' do
-    project2.add_master(user)
+    project2.add_maintainer(user)
     project2.add_reporter(user_mike)
 
     visit(project_project_members_path(project))
@@ -54,7 +54,7 @@ describe 'Projects > Settings > User manages project members' do
     group.add_owner(user)
     group.add_developer(user_dmitriy)
 
-    share_link = project.project_group_links.new(group_access: Gitlab::Access::MASTER)
+    share_link = project.project_group_links.new(group_access: Gitlab::Access::MAINTAINER)
     share_link.group_id = group.id
     share_link.save!
 

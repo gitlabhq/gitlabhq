@@ -121,7 +121,7 @@ describe Group do
 
   describe 'project_creation_level' do
     it 'outputs the default one if it is nil' do
-      stub_application_setting(default_project_creation: ::EE::Gitlab::Access::MASTER_PROJECT_ACCESS)
+      stub_application_setting(default_project_creation: ::EE::Gitlab::Access::MAINTAINER_PROJECT_ACCESS)
 
       group = create(:group, project_creation_level: nil)
 

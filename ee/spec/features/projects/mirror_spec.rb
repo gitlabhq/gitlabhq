@@ -9,7 +9,7 @@ describe 'Project mirror', :js do
 
   describe 'On a project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
     end
 
@@ -57,7 +57,7 @@ describe 'Project mirror', :js do
     let(:import_data) { project.import_data(true) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

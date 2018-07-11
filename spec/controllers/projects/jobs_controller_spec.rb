@@ -431,7 +431,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'POST erase' do
-    let(:role) { :master }
+    let(:role) { :maintainer }
 
     before do
       project.add_role(user, role)

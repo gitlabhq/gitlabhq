@@ -12,7 +12,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -83,7 +83,7 @@ describe Projects::ClustersController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }

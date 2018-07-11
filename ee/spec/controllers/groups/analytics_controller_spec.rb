@@ -27,7 +27,7 @@ describe Groups::AnalyticsController do
   before do
     group.add_owner(user)
     group.add_user(user2, GroupMember::DEVELOPER)
-    group.add_user(user3, GroupMember::MASTER)
+    group.add_user(user3, GroupMember::MAINTAINER)
     sign_in(user)
 
     create_event(user, project, issue, Event::CLOSED)
