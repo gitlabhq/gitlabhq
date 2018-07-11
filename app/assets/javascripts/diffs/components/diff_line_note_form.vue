@@ -57,10 +57,16 @@ export default {
     ...mapActions('diffs', ['cancelCommentForm']),
     ...mapActions(['saveNote', 'refetchDiscussionById']),
     handleCancelCommentForm() {
+      if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+        return;
+      }
+
       this.cancelCommentForm({
         lineCode: this.line.lineCode,
       });
-      this.resetAutoSave();
+      this.$nextTick(() => {
+        this.resetAutoSave();
+      });
     },
     handleSaveNote(note) {
       const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
