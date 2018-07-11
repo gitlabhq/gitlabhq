@@ -171,7 +171,7 @@ module QA
       end
 
       module Fork
-        autoload :New, 'qa/page/project/fork/new.rb'
+        autoload :New, 'qa/page/project/fork/new'
       end
 
       module Operations

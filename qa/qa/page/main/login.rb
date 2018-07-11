@@ -36,13 +36,13 @@ module QA
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
             page.has_css?('.login-page') ||
-              Page::Menu::Main.act { has_personal_area?(0) }
+              Page::Menu::Main.act { has_personal_area?(wait: 0) }
           end
         end
 
         def sign_in_using_credentials
           # Don't try to log-in if we're already logged-in
-          return if Page::Menu::Main.act { has_personal_area?(0) }
+          return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present

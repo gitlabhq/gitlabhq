@@ -33,11 +33,11 @@ module QA
           Git::Repository.perform do |repository|
             repository.uri = repository_uri
 
-            if user.nil?
-              repository.use_default_credentials
-              username = 'GitLab QA'
-              email = 'root@gitlab.com'
-            else
+            repository.use_default_credentials
+            username = 'GitLab QA'
+            email = 'root@gitlab.com'
+
+            if user
               repository.username = user.username
               repository.password = user.password
               username = user.name
