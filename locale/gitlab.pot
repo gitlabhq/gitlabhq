@@ -16,11 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid "Adding 4 lines"
-msgid_plural "%d changed files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -36,8 +31,18 @@ msgid_plural "%d commits behind"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d exporter"
+msgid_plural "%d exporters"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d issue"
 msgid_plural "%d issues"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d layer"
+msgid_plural "%d layers"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -1429,13 +1434,13 @@ msgstr ""
 msgid "Comment & unresolve discussion"
 msgstr ""
 
+msgid "Comments"
+msgstr ""
+
 msgid "Commit"
 msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Comments"
-msgstr ""
 
 msgid "Commit (%{commit_count})"
 msgid_plural "Commits (%{commit_count})"
