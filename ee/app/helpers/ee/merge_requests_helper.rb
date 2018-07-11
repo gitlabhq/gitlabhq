@@ -26,18 +26,20 @@ module EE
         more_approvals = merge_request.approvals_left - merge_request.approvers_left.count
         approvers_names = merge_request.approvers_left.map(&:name)
 
-        str <<
-
-          if more_approvals > 0
-            " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
-          elsif more_approvals < 0
-            " (from #{render_items_list(approvers_names, "or")})"
-          else
-            " (from #{render_items_list(approvers_names)})"
-          end
+        str << approval_items(more_approvals, approvers_names)
       end
 
       str
+    end
+
+    def approval_items(more_approvals, approvers_names)
+      if more_approvals > 0
+        " (from #{render_items_list(approvers_names + ["#{more_approvals} more"])})"
+      elsif more_approvals < 0
+        " (from #{render_items_list(approvers_names, "or")})"
+      else
+        " (from #{render_items_list(approvers_names)})"
+      end
     end
   end
 end
