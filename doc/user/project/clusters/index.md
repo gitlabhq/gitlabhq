@@ -96,8 +96,9 @@ To add an existing Kubernetes cluster to your project:
       you can follow the
       [Kubernetes documentation](https://kubernetes.io/docs/tasks/configure-pod-container/configure-service-account/)
       to create one. You can also view or create service tokens in the
-      [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/#config)
-      (under **Config > Secrets**).
+      [Kubernetes dashboard](https://kubernetes.io/docs/tasks/access-application-cluster/web-ui-dashboard/)
+      (under **Config > Secrets**). **The account that will issue the service token
+      must have admin privileges on the cluster.**
     - **Project namespace** (optional) - You don't have to fill it in; by leaving
       it blank, GitLab will create one for you. Also:
       - Each project should have a unique namespace.
