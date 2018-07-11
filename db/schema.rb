@@ -954,6 +954,10 @@ ActiveRecord::Schema.define(version: 20180803001726) do
     t.string "title_html", null: false
     t.text "description"
     t.text "description_html"
+    t.boolean "start_date_is_fixed"
+    t.boolean "due_date_is_fixed"
+    t.date "start_date_fixed"
+    t.date "due_date_fixed"
   end
 
   add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
