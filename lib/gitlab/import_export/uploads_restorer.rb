@@ -16,6 +16,10 @@ module Gitlab
         @shared.error(e)
         false
       end
+
+      def uploads_path
+        FileUploader.absolute_base_dir(@project)
+      end
     end
   end
 end
