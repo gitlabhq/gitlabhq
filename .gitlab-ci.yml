@@ -707,6 +707,7 @@ karma:
     - date
     - scripts/gitaly-test-spawn
     - date
+    - yarn add karma-jsdom-launcher jsdom
     - bundle exec rake karma
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
