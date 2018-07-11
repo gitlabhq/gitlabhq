@@ -5,9 +5,20 @@ import discussion from '../mock_data/diff_discussions';
 
 describe('Diffs Module Getters', () => {
   let localState;
+  let discussionMock;
+  let discussionMock1;
+
+  const diffFileMock = {
+    fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
+  };
 
   beforeEach(() => {
     localState = state();
+    discussionMock = Object.assign({}, discussion);
+    discussionMock.diff_file.file_hash = diffFileMock.fileHash;
+
+    discussionMock1 = Object.assign({}, discussion);
+    discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
   });
 
   describe('isParallelView', () => {
@@ -67,13 +78,6 @@ describe('Diffs Module Getters', () => {
 
   describe('diffHasAllExpandedDiscussions', () => {
     it('returns true when all discussions are expanded', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
-      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
-
       expect(
         getters.diffHasAllExpandedDiscussions(localState, {
           getDiffFileDiscussions: () => [discussionMock, discussionMock],
@@ -82,10 +86,6 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when there are no discussions', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
       expect(
         getters.diffHasAllExpandedDiscussions(localState, {
           getDiffFileDiscussions: () => [],
@@ -94,15 +94,6 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when one discussions is collapsed', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
-      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
-      const discussionMock1 = Object.assign({}, discussion);
-      discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
-
       discussionMock1.expanded = false;
 
       expect(
@@ -115,11 +106,6 @@ describe('Diffs Module Getters', () => {
 
   describe('diffHasAllCollpasedDiscussions', () => {
     it('returns true when all discussions are collapsed', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
       discussionMock.diff_file.file_hash = diffFileMock.fileHash;
       discussionMock.expanded = false;
 
@@ -131,10 +117,6 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when there are no discussions', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
       expect(
         getters.diffHasAllCollpasedDiscussions(localState, {
           getDiffFileDiscussions: () => [],
@@ -143,14 +125,6 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when one discussions is expanded', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
-      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
-      const discussionMock1 = Object.assign({}, discussion);
-      discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
       discussionMock1.expanded = false;
 
       expect(
@@ -163,14 +137,6 @@ describe('Diffs Module Getters', () => {
 
   describe('diffHasExpandedDiscussions', () => {
     it('returns true when one of the discussions is expanded', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
-      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
-      const discussionMock1 = Object.assign({}, discussion);
-      discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
       discussionMock1.expanded = false;
 
       expect(
@@ -181,10 +147,6 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when there are no discussions', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
       expect(
         getters.diffHasExpandedDiscussions(localState, { getDiffFileDiscussions: () => [] })(
           diffFileMock,
@@ -193,17 +155,7 @@ describe('Diffs Module Getters', () => {
     });
 
     it('returns false when no discussion is expanded', () => {
-      const diffFileMock = {
-        fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-      };
-
-      const discussionMock = Object.assign({}, discussion);
-      discussion.diff_file.file_hash = diffFileMock.fileHash;
       discussionMock.expanded = false;
-
-      const discussionMock1 = Object.assign({}, discussion);
-      discussionMock1.diff_file.file_hash = diffFileMock.fileHash;
-
       discussionMock1.expanded = false;
 
       expect(
@@ -214,38 +166,22 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-  // describe('getDiffFileDiscussions', () => {
-  //   it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
-  //     const diffFileMock = {
-  //       fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-  //     };
+  describe('getDiffFileDiscussions', () => {
+    it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
+      discussionMock.diff_file.file_hash = diffFileMock.fileHash;
 
-  //     const discussionMock = Object.assign({}, discussion);
-  //     discussionMock.diff_file.file_hash = diffFileMock.fileHash;
+      expect(
+        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [discussionMock] })(
+          diffFileMock,
+        ).length,
+      ).toEqual(1);
+    });
 
-  //     expect(
-  //       getters.getDiffFileDiscussions(
-  //         localState,
-  //         {},
-  //         {},
-  //         { discussions: [discussionMock] },
-  //       )(diffFileMock).length,
-  //     ).toEqual(1);
-  //   });
-
-  //   it('returns an empty array when no discussions are found in the given diff', () => {
-  //     const diffFileMock = {
-  //       fileHash: '9732849daca6ae818696d9575f5d1207d1a7f8bb',
-  //     };
-
-  //     expect(
-  //       getters.getDiffFileDiscussions(
-  //         localState,
-  //         {},
-  //         {},
-  //         { discussions: () => ([]) },
-  //       )(diffFileMock).length,
-  //     ).toEqual(0);
-  //   });
-  // });
+    it('returns an empty array when no discussions are found in the given diff', () => {
+      expect(
+        getters.getDiffFileDiscussions(localState, {}, {}, { discussions: [] })(diffFileMock)
+          .length,
+      ).toEqual(0);
+    });
+  });
 });

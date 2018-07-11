@@ -4,7 +4,7 @@ import diffsModule from '~/diffs/store/modules';
 import notesModule from '~/notes/stores/modules';
 import DiffFileHeader from '~/diffs/components/diff_file_header.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import mountComponent, { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 
