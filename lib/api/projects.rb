@@ -260,7 +260,8 @@ module API
             :snippets_enabled,
             :tag_list,
             :visibility,
-            :wiki_enabled
+            :wiki_enabled,
+            :avatar
           ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
