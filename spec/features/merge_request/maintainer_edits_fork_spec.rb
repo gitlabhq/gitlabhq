@@ -18,7 +18,7 @@ describe 'a maintainer edits files on a source-branch of an MR from a fork', :js
   end
 
   before do
-    target_project.add_master(user)
+    target_project.add_maintainer(user)
     sign_in(user)
 
     visit project_merge_request_path(target_project, merge_request)

@@ -759,7 +759,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -787,7 +787,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'object storage disabled' do
@@ -847,7 +847,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -875,7 +875,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do

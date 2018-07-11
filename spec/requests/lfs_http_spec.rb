@@ -63,7 +63,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS disabled globally' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
       end
 
@@ -106,7 +106,7 @@ describe 'Git LFS API and storage' do
 
     context 'with LFS enabled globally' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         enable_lfs
       end
 
@@ -236,7 +236,7 @@ describe 'Git LFS API and storage' do
 
           context 'and does have project access' do
             let(:update_permissions) do
-              project.add_master(user)
+              project.add_maintainer(user)
               project.lfs_objects << lfs_object
             end
 
@@ -293,7 +293,7 @@ describe 'Git LFS API and storage' do
 
           context 'when user allowed' do
             let(:update_permissions) do
-              project.add_master(user)
+              project.add_maintainer(user)
               project.lfs_objects << lfs_object
             end
 
@@ -829,7 +829,7 @@ describe 'Git LFS API and storage' do
       context 'when user is not authenticated' do
         context 'when user has push access' do
           let(:update_user_permissions) do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'responds with status 401' do
@@ -874,7 +874,7 @@ describe 'Git LFS API and storage' do
 
     before do
       allow(Gitlab::Database).to receive(:read_only?) { true }
-      project.add_master(user)
+      project.add_maintainer(user)
       enable_lfs
     end
 
@@ -1307,7 +1307,7 @@ describe 'Git LFS API and storage' do
         let(:authorization) { authorize_user }
 
         before do
-          second_project.add_master(user)
+          second_project.add_maintainer(user)
           upstream_project.lfs_objects << lfs_object
         end
 

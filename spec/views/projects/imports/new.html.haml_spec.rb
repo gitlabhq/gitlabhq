@@ -9,7 +9,7 @@ describe "projects/imports/new.html.haml" do
     before do
       project.import_state.update(last_error: '<a href="http://googl.com">Foo</a>')
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it "escapes HTML in import errors" do

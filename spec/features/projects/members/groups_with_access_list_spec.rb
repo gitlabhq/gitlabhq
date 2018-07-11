@@ -6,7 +6,7 @@ describe 'Projects > Members > Groups with access list', :js do
   let(:project) { create(:project, :public) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     @group_link = create(:project_group_link, project: project, group: group)
 
     sign_in(user)

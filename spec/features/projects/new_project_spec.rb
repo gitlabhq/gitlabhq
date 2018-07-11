@@ -94,7 +94,7 @@ describe 'New project' do
       let(:subgroup) { create(:group, parent: group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
         visit new_project_path(namespace_id: subgroup.id)
       end
 

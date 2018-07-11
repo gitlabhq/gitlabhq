@@ -215,7 +215,7 @@ describe API::Groups do
 
     context 'when using owned in the request' do
       it 'returns an array of groups the user owns' do
-        group1.add_master(user2)
+        group1.add_maintainer(user2)
 
         get api('/groups', user2), owned: true
 
@@ -734,9 +734,9 @@ describe API::Groups do
         end
       end
 
-      context 'as master', :nested_groups do
+      context 'as maintainer', :nested_groups do
         before do
-          group2.add_master(user1)
+          group2.add_maintainer(user1)
         end
 
         it 'cannot create subgroups' do
@@ -812,7 +812,7 @@ describe API::Groups do
 
       it "does not remove a group if not an owner" do
         user4 = create(:user)
-        group1.add_master(user4)
+        group1.add_maintainer(user4)
 
         delete api("/groups/#{group1.id}", user3)
 
