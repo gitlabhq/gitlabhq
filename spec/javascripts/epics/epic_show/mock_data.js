@@ -28,12 +28,9 @@ export const mockParticipants = [
 ];
 
 export const contentProps = {
-  epicId: 1,
   endpoint: '',
   toggleSubscriptionPath: gl.TEST_HOST,
   updateEndpoint: gl.TEST_HOST,
-  todoPath: gl.TEST_HOST,
-  todoDeletePath: gl.TEST_HOST,
   canAdmin: true,
   canUpdate: true,
   canDestroy: true,
@@ -52,7 +49,6 @@ export const contentProps = {
   labels: mockLabels,
   participants: mockParticipants,
   subscribed: true,
-  todoExists: false,
 };
 
 export const headerProps = {

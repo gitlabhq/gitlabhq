@@ -1,10 +1,9 @@
 import axios from '~/lib/utils/axios_utils';
 
 export default class SidebarService {
-  constructor({ endpoint, subscriptionEndpoint, todoPath }) {
+  constructor(endpoint, subscriptionEndpoint) {
     this.endpoint = endpoint;
     this.subscriptionEndpoint = subscriptionEndpoint;
-    this.todoPath = todoPath;
   }
 
   updateStartDate(startDate) {
@@ -17,17 +16,5 @@ export default class SidebarService {
 
   toggleSubscribed() {
     return axios.post(this.subscriptionEndpoint);
-  }
-
-  addTodo(epicId) {
-    return axios.post(this.todoPath, {
-      issuable_id: epicId,
-      issuable_type: 'epic',
-    });
-  }
-
-  // eslint-disable-next-line class-methods-use-this
-  deleteTodo(todoDeletePath) {
-    return axios.delete(todoDeletePath);
   }
 }
