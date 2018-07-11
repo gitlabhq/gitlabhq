@@ -21,24 +21,26 @@ module API
         attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
 
-        runner =
+        attributes =
           if runner_registration_token_valid?
             # Create shared runner. Requires admin access
-            Ci::Runner.create(attributes.merge(is_shared: true, runner_type: :instance_type))
+            attributes.merge(runner_type: :instance_type)
           elsif project = Project.find_by(runners_token: params[:token])
             # Create a specific runner for the project
-            project.runners.create(attributes.merge(runner_type: :project_type))
+            attributes.merge(runner_type: :project_type, projects: [project])
           elsif group = Group.find_by(runners_token: params[:token])
             # Create a specific runner for the group
-            group.runners.create(attributes.merge(runner_type: :group_type))
+            attributes.merge(runner_type: :group_type, groups: [group])
+          else
+            forbidden!
           end
 
-        break forbidden! unless runner
+        runner = Ci::Runner.create(attributes)
 
-        if runner.id
+        if runner.persisted?
           present runner, with: Entities::RunnerRegistrationDetails
         else
-          not_found!
+          render_validation_error!(runner)
         end
       end
 
@@ -79,19 +81,30 @@ module API
         requires :token, type: String, desc: %q(Runner's authentication token)
         optional :last_update, type: String, desc: %q(Runner's queue last_update token)
         optional :info, type: Hash, desc: %q(Runner's metadata)
+        optional :session, type: Hash, desc: %q(Runner's session data) do
+          optional :url, type: String, desc: %q(Session's url)
+          optional :certificate, type: String, desc: %q(Session's certificate)
+          optional :authorization, type: String, desc: %q(Session's authorization)
+        end
       end
       post '/request' do
         authenticate_runner!
-        no_content! unless current_runner.active?
 
-        if current_runner.runner_queue_value_latest?(params[:last_update])
-          header 'X-GitLab-Last-Update', params[:last_update]
+        unless current_runner.active?
+          header 'X-GitLab-Last-Update', current_runner.ensure_runner_queue_value
+          break no_content!
+        end
+
+        runner_params = declared_params(include_missing: false)
+
+        if current_runner.runner_queue_value_latest?(runner_params[:last_update])
+          header 'X-GitLab-Last-Update', runner_params[:last_update]
           Gitlab::Metrics.add_event(:build_not_found_cached)
           break no_content!
         end
 
         new_update = current_runner.ensure_runner_queue_value
-        result = ::Ci::RegisterJobService.new(current_runner).execute
+        result = ::Ci::RegisterJobService.new(current_runner).execute(runner_params)
 
         if result.valid?
           if result.build
@@ -123,6 +136,7 @@ module API
       end
       put '/:id' do
         job = authenticate_job!
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         job.trace.set(params[:trace]) if params[:trace]
 
@@ -130,10 +144,12 @@ module API
                                   project: job.project.full_path)
 
         case params[:state].to_s
+        when 'running'
+          job.touch if job.needs_touch?
         when 'success'
-          job.success
+          job.success!
         when 'failed'
-          job.drop(params[:failure_reason] || :unknown_failure)
+          job.drop!(params[:failure_reason] || :unknown_failure)
         end
       end
 
@@ -149,7 +165,7 @@ module API
       end
       patch '/:id/trace' do
         job = authenticate_job!
-        forbidden!('Job is not running') unless job.running?
+        job_forbidden!(job, 'Job is not running') unless job.running?
 
         error!('400 Missing header Content-Range', 400) unless request.headers.key?('Content-Range')
         content_range = request.headers['Content-Range']
@@ -202,7 +218,7 @@ module API
 
         status 200
         content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        JobArtifactUploader.workhorse_authorize
+        JobArtifactUploader.workhorse_authorize(has_length: false, maximum_size: max_artifacts_size)
       end
 
       desc 'Upload artifacts for job' do

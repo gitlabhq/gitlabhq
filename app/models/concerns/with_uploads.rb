@@ -36,4 +36,8 @@ module WithUploads
       upload.destroy
     end
   end
+
+  def retrieve_upload(_identifier, paths)
+    uploads.find_by(path: paths)
+  end
 end

@@ -42,6 +42,21 @@ module Gitlab
       !self.read_only?
     end
 
+    # check whether the underlying database is in read-only mode
+    def self.db_read_only?
+      if postgresql?
+        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
+          .first
+          .fetch('pg_is_in_recovery') == 't'
+      else
+        false
+      end
+    end
+
+    def self.db_read_write?
+      !self.db_read_only?
+    end
+
     def self.version
       @version ||= database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end
@@ -188,8 +203,11 @@ module Gitlab
     end
 
     def self.cached_table_exists?(table_name)
-      # Rails 5 uses data_source_exists? instead of table_exists?
-      connection.schema_cache.table_exists?(table_name)
+      if Gitlab.rails5?
+        connection.schema_cache.data_source_exists?(table_name)
+      else
+        connection.schema_cache.table_exists?(table_name)
+      end
     end
 
     private_class_method :connection

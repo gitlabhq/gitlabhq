@@ -19,6 +19,18 @@ describe Gitlab::BitbucketImport::Importer do
     ]
   end
 
+  let(:reporters) do
+    [
+      nil,
+      { "username" => "reporter1" },
+      nil,
+      { "username" => "reporter2" },
+      { "username" => "reporter1" },
+      nil,
+      { "username" => "reporter3" }
+    ]
+  end
+
   let(:sample_issues_statuses) do
     issues = []
 
@@ -34,6 +46,10 @@ describe Gitlab::BitbucketImport::Importer do
             html: "Some content to issue #{index}"
         }
       }
+    end
+
+    reporters.map.with_index do |reporter, index|
+      issues[index]['reporter'] = reporter
     end
 
     issues
@@ -144,6 +160,20 @@ describe Gitlab::BitbucketImport::Importer do
 
         importer.execute
 
+        expect(importer.errors).to be_empty
+      end
+    end
+
+    describe 'issue import' do
+      it 'maps reporters to anonymous if bitbucket reporter is nil' do
+        allow(importer).to receive(:import_wiki)
+        importer.execute
+
+        expect(project.issues.size).to eq(7)
+        expect(project.issues.where("description LIKE ?", '%Anonymous%').size).to eq(3)
+        expect(project.issues.where("description LIKE ?", '%reporter1%').size).to eq(2)
+        expect(project.issues.where("description LIKE ?", '%reporter2%').size).to eq(1)
+        expect(project.issues.where("description LIKE ?", '%reporter3%').size).to eq(1)
         expect(importer.errors).to be_empty
       end
     end

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import _ from 'underscore';
 import { headersInterceptor } from 'spec/helpers/vue_resource_helper';
 import * as actions from '~/notes/stores/actions';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import testAction from '../../helpers/vuex_action_helper';
 import { resetStore } from '../helpers';
 import {
@@ -14,6 +14,12 @@ import {
 } from '../mock_data';
 
 describe('Actions Notes Store', () => {
+  let store;
+
+  beforeEach(() => {
+    store = createStore();
+  });
+
   afterEach(() => {
     resetStore(store);
   });
@@ -76,7 +82,7 @@ describe('Actions Notes Store', () => {
         actions.setInitialNotes,
         [individualNote],
         { notes: [] },
-        [{ type: 'SET_INITIAL_NOTES', payload: [individualNote] }],
+        [{ type: 'SET_INITIAL_DISCUSSIONS', payload: [individualNote] }],
         [],
         done,
       );
@@ -103,6 +109,32 @@ describe('Actions Notes Store', () => {
         { discussionId: discussionMock.id },
         { notes: [discussionMock] },
         [{ type: 'TOGGLE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('expandDiscussion', () => {
+    it('should expand discussion', done => {
+      testAction(
+        actions.expandDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'EXPAND_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('collapseDiscussion', () => {
+    it('should commit collapse discussion', done => {
+      testAction(
+        actions.collapseDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'COLLAPSE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
         [],
         done,
       );
@@ -194,7 +226,14 @@ describe('Actions Notes Store', () => {
     });
 
     it('sets issue state as reopened', done => {
-      testAction(actions.toggleIssueLocalState, 'reopened', {}, [{ type: 'REOPEN_ISSUE' }], [], done);
+      testAction(
+        actions.toggleIssueLocalState,
+        'reopened',
+        {},
+        [{ type: 'REOPEN_ISSUE' }],
+        [],
+        done,
+      );
     });
   });
 
@@ -239,13 +278,7 @@ describe('Actions Notes Store', () => {
         .dispatch('poll')
         .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
         .then(() => {
-          expect(Vue.http.get).toHaveBeenCalledWith(jasmine.anything(), {
-            url: jasmine.anything(),
-            method: 'get',
-            headers: {
-              'X-Last-Fetched-At': undefined,
-            },
-          });
+          expect(Vue.http.get).toHaveBeenCalled();
           expect(store.state.lastFetchedAt).toBe('123456');
 
           jasmine.clock().tick(1500);
@@ -269,6 +302,19 @@ describe('Actions Notes Store', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('setNotesFetchedState', () => {
+    it('should set notes fetched state', done => {
+      testAction(
+        actions.setNotesFetchedState,
+        true,
+        {},
+        [{ type: 'SET_NOTES_FETCHED_STATE', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });

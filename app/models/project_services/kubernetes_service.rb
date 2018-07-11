@@ -24,7 +24,7 @@ class KubernetesService < DeploymentService
   prop_accessor :ca_pem
 
   with_options presence: true, if: :activated? do
-    validates :api_url, url: true
+    validates :api_url, public_url: true
     validates :token
   end
 
@@ -240,7 +240,7 @@ class KubernetesService < DeploymentService
   end
 
   def deprecation_validation
-    return if active_changed?(from: true, to: false)
+    return if active_changed?(from: true, to: false) || (new_record? && !active?)
 
     if deprecated?
       errors[:base] << deprecation_message

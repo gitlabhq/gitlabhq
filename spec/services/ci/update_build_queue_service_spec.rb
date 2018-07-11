@@ -6,19 +6,18 @@ describe Ci::UpdateBuildQueueService do
   let(:pipeline) { create(:ci_pipeline, project: project) }
 
   context 'when updating specific runners' do
-    let(:runner) { create(:ci_runner) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
     context 'when there is a runner that can pick build' do
-      before do
-        build.project.runners << runner
-      end
-
       it 'ticks runner queue value' do
         expect { subject.execute(build) }.to change { runner.ensure_runner_queue_value }
       end
     end
 
     context 'when there is no runner that can pick build' do
+      let(:another_project) { create(:project) }
+      let(:runner) { create(:ci_runner, :project, projects: [another_project]) }
+
       it 'does not tick runner queue value' do
         expect { subject.execute(build) }.not_to change { runner.ensure_runner_queue_value }
       end
@@ -26,7 +25,7 @@ describe Ci::UpdateBuildQueueService do
   end
 
   context 'when updating shared runners' do
-    let(:runner) { create(:ci_runner, :shared) }
+    let(:runner) { create(:ci_runner, :instance) }
 
     context 'when there is no runner that can pick build' do
       it 'ticks runner queue value' do
@@ -56,9 +55,9 @@ describe Ci::UpdateBuildQueueService do
   end
 
   context 'when updating group runners' do
-    let(:group) { create :group }
-    let(:project) { create :project, group: group }
-    let(:runner) { create :ci_runner, groups: [group] }
+    let(:group) { create(:group) }
+    let(:project) { create(:project, group: group) }
+    let(:runner) { create(:ci_runner, :group, groups: [group]) }
 
     context 'when there is a runner that can pick build' do
       it 'ticks runner queue value' do

@@ -15,6 +15,11 @@ module Gitlab
 
       def perform_request(env)
         if @proxy_path && env['PATH_INFO'].start_with?("/#{@proxy_path}")
+          if relative_url_root = Rails.application.config.relative_url_root
+            env['SCRIPT_NAME'] = ""
+            env['REQUEST_PATH'].sub!(/\A#{Regexp.escape(relative_url_root)}/, '')
+          end
+
           super(env)
         else
           @app.call(env)

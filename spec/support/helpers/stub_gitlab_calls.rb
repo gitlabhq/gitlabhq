@@ -1,6 +1,5 @@
 module StubGitlabCalls
   def stub_gitlab_calls
-    stub_session
     stub_user
     stub_project_8
     stub_project_8_hooks
@@ -71,23 +70,14 @@ module StubGitlabCalls
     Gitlab.config.gitlab.url
   end
 
-  def stub_session
-    f = File.read(Rails.root.join('spec/support/gitlab_stubs/session.json'))
-
-    stub_request(:post, "#{gitlab_url}api/v3/session.json")
-      .with(body: "{\"email\":\"test@test.com\",\"password\":\"123456\"}",
-            headers: { 'Content-Type' => 'application/json' })
-      .to_return(status: 201, body: f, headers: { 'Content-Type' => 'application/json' })
-  end
-
   def stub_user
     f = File.read(Rails.root.join('spec/support/gitlab_stubs/user.json'))
 
-    stub_request(:get, "#{gitlab_url}api/v3/user?private_token=Wvjy2Krpb7y8xi93owUz")
+    stub_request(:get, "#{gitlab_url}api/v4/user?private_token=Wvjy2Krpb7y8xi93owUz")
       .with(headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: f, headers: { 'Content-Type' => 'application/json' })
 
-    stub_request(:get, "#{gitlab_url}api/v3/user?access_token=some_token")
+    stub_request(:get, "#{gitlab_url}api/v4/user?access_token=some_token")
       .with(headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: f, headers: { 'Content-Type' => 'application/json' })
   end
@@ -105,19 +95,19 @@ module StubGitlabCalls
   def stub_projects
     f = File.read(Rails.root.join('spec/support/gitlab_stubs/projects.json'))
 
-    stub_request(:get, "#{gitlab_url}api/v3/projects.json?archived=false&ci_enabled_first=true&private_token=Wvjy2Krpb7y8xi93owUz")
+    stub_request(:get, "#{gitlab_url}api/v4/projects.json?archived=false&ci_enabled_first=true&private_token=Wvjy2Krpb7y8xi93owUz")
       .with(headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: f, headers: { 'Content-Type' => 'application/json' })
   end
 
   def stub_projects_owned
-    stub_request(:get, "#{gitlab_url}api/v3/projects/owned.json?archived=false&ci_enabled_first=true&private_token=Wvjy2Krpb7y8xi93owUz")
+    stub_request(:get, "#{gitlab_url}api/v4/projects?owned=true&archived=false&ci_enabled_first=true&private_token=Wvjy2Krpb7y8xi93owUz")
       .with(headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: "", headers: {})
   end
 
   def stub_ci_enable
-    stub_request(:put, "#{gitlab_url}api/v3/projects/2/services/gitlab-ci.json?private_token=Wvjy2Krpb7y8xi93owUz")
+    stub_request(:put, "#{gitlab_url}api/v4/projects/2/services/gitlab-ci.json?private_token=Wvjy2Krpb7y8xi93owUz")
       .with(headers: { 'Content-Type' => 'application/json' })
       .to_return(status: 200, body: "", headers: {})
   end

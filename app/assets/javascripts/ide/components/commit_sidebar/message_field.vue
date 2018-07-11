@@ -16,6 +16,10 @@ export default {
       type: String,
       required: true,
     },
+    placeholder: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {
@@ -54,7 +58,7 @@ export default {
     placement: 'top',
     content: sprintf(
       __(`
-        The character highligher helps you keep the subject line to %{titleLength} characters
+        The character highlighter helps you keep the subject line to %{titleLength} characters
         and wrap the body at %{bodyLength} so they are readable in git.
       `),
       { titleLength: MAX_TITLE_LENGTH, bodyLength: MAX_BODY_LENGTH },
@@ -66,10 +70,10 @@ export default {
 <template>
   <fieldset class="common-note-form ide-commit-message-field">
     <div
-      class="md-area"
       :class="{
         'is-focused': isFocused
       }"
+      class="md-area"
     >
       <div
         v-once
@@ -80,7 +84,7 @@ export default {
             {{ __('Commit Message') }}
             <span
               v-popover="$options.popoverOptions"
-              class="help-block prepend-left-10"
+              class="form-text text-muted prepend-left-10"
             >
               <icon
                 name="question"
@@ -92,10 +96,10 @@ export default {
       <div class="ide-commit-message-textarea-container">
         <div class="ide-commit-message-highlights-container">
           <div
-            class="note-textarea highlights monospace"
             :style="{
               transform: `translate3d(0, ${-scrollTop}px, 0)`
             }"
+            class="note-textarea highlights monospace"
           >
             <div
               v-for="(line, index) in allLines"
@@ -113,15 +117,15 @@ export default {
           </div>
         </div>
         <textarea
+          ref="textarea"
+          :placeholder="placeholder"
+          :value="text"
           class="note-textarea ide-commit-message-textarea"
           name="commit-message"
-          :placeholder="__('Write a commit message...')"
-          :value="text"
           @scroll="handleScroll"
           @input="onInput"
           @focus="updateIsFocused(true)"
           @blur="updateIsFocused(false)"
-          ref="textarea"
         >
         </textarea>
       </div>

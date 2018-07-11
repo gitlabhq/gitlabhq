@@ -82,7 +82,7 @@ describe('DropdownValueComponent', () => {
     });
 
     it('renders label element with tooltip and styles based on label details', () => {
-      const labelEl = vm.$el.querySelector('a span.label.color-label');
+      const labelEl = vm.$el.querySelector('a span.badge.color-label');
       expect(labelEl).not.toBeNull();
       expect(labelEl.dataset.placement).toBe('bottom');
       expect(labelEl.dataset.container).toBe('body');

@@ -13,7 +13,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   def index
     @scope = params[:scope]
     @pipelines = PipelinesFinder
-      .new(project, scope: @scope)
+      .new(project, current_user, scope: @scope)
       .execute
       .page(params[:page])
       .per(30)
@@ -22,8 +22,6 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pending_count = limited_pipelines_count(project, 'pending')
     @finished_count = limited_pipelines_count(project, 'finished')
     @pipelines_count = limited_pipelines_count(project)
-
-    Gitlab::Ci::Pipeline::Preloader.preload(@pipelines)
 
     respond_to do |format|
       format.html
@@ -34,7 +32,7 @@ class Projects::PipelinesController < Projects::ApplicationController
           pipelines: PipelineSerializer
             .new(project: @project, current_user: @current_user)
             .with_pagination(request, response)
-            .represent(@pipelines, disable_coverage: true),
+            .represent(@pipelines, disable_coverage: true, preload: true),
           count: {
             all: @pipelines_count,
             running: @running_count,
@@ -180,7 +178,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def limited_pipelines_count(project, scope = nil)
-    finder = PipelinesFinder.new(project, scope: scope)
+    finder = PipelinesFinder.new(project, current_user, scope: scope)
 
     view_context.limited_counter_with_delimiter(finder.execute)
   end

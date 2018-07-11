@@ -5,10 +5,10 @@ export default {};
 <template>
   <div class="dropdown-input">
     <input
+      :placeholder="__('Search')"
       autocomplete="off"
       class="dropdown-input-field"
       type="search"
-      :placeholder="__('Search')"
     />
     <i
       aria-hidden="true"

@@ -5,7 +5,7 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
     user = create :user, email: 'unrelated.user@example.org'
-    project.add_master(user)
+    project.add_maintainer(user)
 
     Sidekiq::Testing.inline! do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
@@ -23,7 +23,7 @@ describe 'GPG signed commits', :js do
     # user changes his email which makes the gpg key verified
     Sidekiq::Testing.inline! do
       user.skip_reconfirmation!
-      user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      user.update!(email: GpgHelpers::User1.emails.first)
     end
 
     visit project_commits_path(project, :'signed-commits')
@@ -36,7 +36,7 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
     user = create :user, email: GpgHelpers::User1.emails.first
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -86,7 +86,7 @@ describe 'GPG signed commits', :js do
 
     before do
       user = create :user
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end
@@ -96,10 +96,11 @@ describe 'GPG signed commits', :js do
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
-        within '.popover' do
-          expect(page).to have_content 'This commit was signed with an unverified signature.'
-          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
-        end
+      end
+
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with an unverified signature.'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
       end
     end
 
@@ -110,12 +111,13 @@ describe 'GPG signed commits', :js do
 
       within(find('.commit', text: 'signed and authored commit by bette cartwright, different email')) do
         click_on 'Unverified'
-        within '.popover' do
-          expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not verified to belong to the same user.'
-          expect(page).to have_content 'Bette Cartwright'
-          expect(page).to have_content '@bette.cartwright'
-          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
-        end
+      end
+
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with a verified signature, but the committer email is not verified to belong to the same user.'
+        expect(page).to have_content 'Bette Cartwright'
+        expect(page).to have_content '@bette.cartwright'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
       end
     end
 
@@ -126,12 +128,13 @@ describe 'GPG signed commits', :js do
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
-        within '.popover' do
-          expect(page).to have_content "This commit was signed with a different user's verified signature."
-          expect(page).to have_content 'Bette Cartwright'
-          expect(page).to have_content '@bette.cartwright'
-          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
-        end
+      end
+
+      within '.popover' do
+        expect(page).to have_content "This commit was signed with a different user's verified signature."
+        expect(page).to have_content 'Bette Cartwright'
+        expect(page).to have_content '@bette.cartwright'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User2.primary_keyid}"
       end
     end
 
@@ -142,12 +145,13 @@ describe 'GPG signed commits', :js do
 
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
         click_on 'Verified'
-        within '.popover' do
-          expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
-          expect(page).to have_content 'Nannie Bernhard'
-          expect(page).to have_content '@nannie.bernhard'
-          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
-        end
+      end
+
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
+        expect(page).to have_content 'Nannie Bernhard'
+        expect(page).to have_content '@nannie.bernhard'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end
 
@@ -167,12 +171,13 @@ describe 'GPG signed commits', :js do
 
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
         click_on 'Verified'
-        within '.popover' do
-          expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
-          expect(page).to have_content 'Nannie Bernhard'
-          expect(page).to have_content 'nannie.bernhard@example.com'
-          expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
-        end
+      end
+
+      within '.popover' do
+        expect(page).to have_content 'This commit was signed with a verified signature and the committer email is verified to belong to the same user.'
+        expect(page).to have_content 'Nannie Bernhard'
+        expect(page).to have_content 'nannie.bernhard@example.com'
+        expect(page).to have_content "GPG Key ID: #{GpgHelpers::User1.primary_keyid}"
       end
     end
   end

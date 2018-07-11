@@ -7,7 +7,7 @@ describe 'User searches for milestones', :js do
   let!(:milestone2) { create(:milestone, title: 'Bar', project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(search_path)

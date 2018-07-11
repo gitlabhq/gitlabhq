@@ -7,7 +7,7 @@ class UpdateReleaseService < BaseService
       release = project.releases.find_by(tag: tag_name)
 
       if release
-        release.update_attributes(description: release_description)
+        release.update(description: release_description)
 
         success(release)
       else

@@ -16,11 +16,11 @@
 
   .row.prepend-top-10
     .col-lg-12
-      .panel.panel-default
-        .panel-heading
-          %h4.panel-title
+      .card
+        .card-header
+          %h4.card-title
             = s_('ContainerRegistry|How to use the Container Registry')
-        .panel-body
+        .card-body
           %p
             - link_token = link_to(_('personal access token'), help_page_path('user/profile/account/two_factor_authentication', anchor: 'personal-access-tokens'), target: '_blank')
             - link_2fa = link_to(_('2FA enabled'), help_page_path('user/profile/account/two_factor_authentication'), target: '_blank')

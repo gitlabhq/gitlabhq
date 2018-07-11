@@ -23,7 +23,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user)
+      expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -47,7 +47,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to contain_exactly(user)
+      expect(project.team.maintainers).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -236,6 +236,18 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'when readme initialization is requested' do
+    it 'creates README.md' do
+      opts[:initialize_with_readme] = '1'
+
+      project = create_project(user, opts)
+
+      expect(project.repository.commit_count).to be(1)
+      expect(project.repository.readme.name).to eql('README.md')
+      expect(project.repository.readme.data).to include('# GitLab')
+    end
+  end
+
   context 'when there is an active service template' do
     before do
       create(:service, project: nil, template: true, active: true)
@@ -272,8 +284,11 @@ describe Projects::CreateService, '#execute' do
 
   it 'writes project full path to .git/config' do
     project = create_project(user, opts)
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
 
-    expect(project.repository.rugged.config['gitlab.fullpath']).to eq project.full_path
+    expect(rugged.config['gitlab.fullpath']).to eq project.full_path
   end
 
   def create_project(user, opts)

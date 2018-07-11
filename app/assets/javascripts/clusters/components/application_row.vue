@@ -52,6 +52,11 @@
         type: String,
         required: false,
       },
+      installApplicationRequestParams: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
     },
     computed: {
       rowJsClass() {
@@ -109,7 +114,10 @@
     },
     methods: {
       installClicked() {
-        eventHub.$emit('installApplication', this.id);
+        eventHub.$emit('installApplication', {
+          id: this.id,
+          params: this.installApplicationRequestParams,
+        });
       },
     },
   };
@@ -117,8 +125,8 @@
 
 <template>
   <div
-    class="gl-responsive-table-row gl-responsive-table-row-col-span"
     :class="rowJsClass"
+    class="gl-responsive-table-row gl-responsive-table-row-col-span"
   >
     <div
       class="gl-responsive-table-row-layout"
@@ -147,8 +155,8 @@
         <slot name="description"></slot>
       </div>
       <div
-        class="table-section table-button-footer section-align-top"
         :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
+        class="table-section table-button-footer section-align-top"
         role="gridcell"
       >
         <div
@@ -156,18 +164,18 @@
           class="btn-group table-action-buttons"
         >
           <a
-            class="btn"
             :href="manageLink"
+            class="btn"
           >
             {{ manageButtonLabel }}
           </a>
         </div>
         <div class="btn-group table-action-buttons">
           <loading-button
-            class="js-cluster-application-install-button"
             :loading="installButtonLoading"
             :disabled="installButtonDisabled"
             :label="installButtonLabel"
+            class="js-cluster-application-install-button"
             @click="installClicked"
           />
         </div>
@@ -179,7 +187,7 @@
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0"
+        class="alert alert-danger alert-block append-bottom-0 clusters-error-alert"
         role="gridcell"
       >
         <div>

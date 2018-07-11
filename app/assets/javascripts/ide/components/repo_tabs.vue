@@ -52,8 +52,8 @@ export default {
 <template>
   <div class="multi-file-tabs">
     <ul
-      class="list-unstyled append-bottom-0"
       ref="tabsScroller"
+      class="list-unstyled append-bottom-0"
     >
       <repo-tab
         v-for="tab in files"

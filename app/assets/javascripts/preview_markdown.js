@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-var, object-shorthand, comma-dangle, prefer-arrow-callback */
+/* eslint-disable func-names, no-var, object-shorthand, prefer-arrow-callback */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
@@ -28,12 +28,16 @@ MarkdownPreview.prototype.ajaxCache = {};
 
 MarkdownPreview.prototype.showPreview = function ($form) {
   var mdText;
+  var markdownVersion;
+  var url;
   var preview = $form.find('.js-md-preview');
-  var url = preview.data('url');
   if (preview.hasClass('md-preview-loading')) {
     return;
   }
+
   mdText = $form.find('textarea.markdown-area').val();
+  markdownVersion = $form.attr('data-markdown-version');
+  url = this.versionedPreviewPath(preview.data('url'), markdownVersion);
 
   if (mdText.trim().length === 0) {
     preview.text(this.emptyMessage);
@@ -43,7 +47,7 @@ MarkdownPreview.prototype.showPreview = function ($form) {
     this.fetchMarkdownPreview(mdText, url, (function (response) {
       var body;
       if (response.body.length > 0) {
-        body = response.body;
+        ({ body } = response);
       } else {
         body = this.emptyMessage;
       }
@@ -57,6 +61,14 @@ MarkdownPreview.prototype.showPreview = function ($form) {
       }
     }).bind(this));
   }
+};
+
+MarkdownPreview.prototype.versionedPreviewPath = function (markdownPreviewPath, markdownVersion) {
+  if (typeof markdownVersion === 'undefined') {
+    return markdownPreviewPath;
+  }
+
+  return `${markdownPreviewPath}${markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'}markdown_version=${markdownVersion}`;
 };
 
 MarkdownPreview.prototype.fetchMarkdownPreview = function (text, url, success) {

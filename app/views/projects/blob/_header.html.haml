@@ -11,6 +11,7 @@
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
 
     .btn-group{ role: "group" }<
+      = render_if_exists 'projects/blob/header_file_locks_link'
       = edit_blob_button
       = ide_edit_button
       - if current_user
@@ -18,3 +19,4 @@
         = delete_blob_link
 
 = render 'projects/fork_suggestion'
+= render_if_exists 'projects/blob/header_file_locks', project: @project, path: @path

@@ -11,15 +11,15 @@
     padding-top: $gl-padding;
   }
 
-  .panel {
-    .panel-heading {
+  .card {
+    .card-header {
       display: -webkit-flex;
       display: flex;
       align-items: center;
       justify-content: space-between;
       line-height: $line-height-base;
 
-      .title {
+      .card-title {
         display: flex;
         align-items: center;
 
@@ -34,6 +34,8 @@
 
       .navbar-collapse {
         padding-right: 0;
+        flex-grow: 0;
+        flex-basis: auto;
 
         .navbar-nav {
           margin: 0;

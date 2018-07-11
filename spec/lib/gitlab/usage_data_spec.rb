@@ -29,19 +29,20 @@ describe Gitlab::UsageData do
         active_user_count
         counts
         recorded_at
-        mattermost_enabled
         edition
         version
+        installation_type
         uuid
         hostname
-        signup
-        ldap
-        gravatar
-        omniauth
-        reply_by_email
-        container_registry
+        mattermost_enabled
+        signup_enabled
+        ldap_enabled
+        gravatar_enabled
+        omniauth_enabled
+        reply_by_email_enabled
+        container_registry_enabled
+        gitlab_shared_runners_enabled
         gitlab_pages
-        gitlab_shared_runners
         git
         database
         avg_cycle_analytics
@@ -128,13 +129,14 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ce }
 
     it 'gathers feature usage data' do
-      expect(subject[:signup]).to eq(Gitlab::CurrentSettings.allow_signup?)
-      expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
-      expect(subject[:gravatar]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
-      expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)
-      expect(subject[:reply_by_email]).to eq(Gitlab::IncomingEmail.enabled?)
-      expect(subject[:container_registry]).to eq(Gitlab.config.registry.enabled)
-      expect(subject[:gitlab_shared_runners]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
+      expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
+      expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
+      expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
+      expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
+      expect(subject[:omniauth_enabled]).to eq(Gitlab.config.omniauth.enabled)
+      expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
+      expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
+      expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
     end
   end
 
@@ -156,6 +158,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
+      expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
     end

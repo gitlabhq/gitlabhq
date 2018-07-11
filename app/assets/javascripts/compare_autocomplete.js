@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, one-var, no-var, one-var-declaration-per-line, object-shorthand, comma-dangle, prefer-arrow-callback, no-else-return, newline-per-chained-call, wrap-iife, max-len */
+/* eslint-disable func-names, one-var, no-var, one-var-declaration-per-line, object-shorthand, no-else-return, max-len */
 
 import $ from 'jquery';
 import { __ } from './locale';
@@ -54,7 +54,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
             .attr('href', '#')
             .addClass(ref === selected ? 'is-active' : '')
             .text(ref)
-            .attr('data-ref', escape(ref));
+            .attr('data-ref', ref);
           return $('<li />').append(link);
         }
       },
@@ -78,7 +78,7 @@ export default function initCompareAutocomplete(limitTo = null, clickHandler = (
     $dropdownContainer.on('click', '.dropdown-content a', e => {
       $dropdown.prop('title', e.target.text.replace(/_+?/g, '-'));
       if ($dropdown.hasClass('has-tooltip')) {
-        $dropdown.tooltip('fixTitle');
+        $dropdown.tooltip('_fixTitle');
       }
     });
   });

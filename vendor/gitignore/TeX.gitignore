@@ -40,6 +40,10 @@
 *.synctex.gz(busy)
 *.pdfsync
 
+## Build tool directories for auxiliary files
+# latexrun
+latex.out/
+
 ## Auxiliary and intermediate files from other packages:
 # algorithms
 *.alg
@@ -222,6 +226,9 @@ TSWLatexianTemp*
 # Texpad
 .texpadtmp
 
+# LyX
+*.lyx~
+
 # Kile
 *.backup
 
@@ -237,6 +244,3 @@ TSWLatexianTemp*
 
 # standalone packages
 *.sta
-
-# generated if using elsarticle.cls
-*.spl

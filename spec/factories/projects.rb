@@ -47,7 +47,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects
@@ -103,6 +103,22 @@ FactoryBot.define do
     end
 
     trait :with_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { false }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { false }
+      end
+
+      after(:create) do |project, _evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
+    end
+
+    trait :with_object_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { true }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { true }
+      end
+
       after(:create) do |project, evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
@@ -151,11 +167,6 @@ FactoryBot.define do
     trait :empty_repo do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
-
-        # We delete hooks so that gitlab-shell will not try to authenticate with
-        # an API that isn't running
-        project.gitlab_shell.rm_directory(project.repository_storage,
-                                          File.join("#{project.disk_path}.git", 'hooks'))
       end
     end
 
@@ -180,13 +191,6 @@ FactoryBot.define do
     trait :wiki_repo do
       after(:create) do |project|
         raise 'Failed to create wiki repository!' unless project.create_wiki
-
-        # We delete hooks so that gitlab-shell will not try to authenticate with
-        # an API that isn't running
-        project.gitlab_shell.rm_directory(
-          project.repository_storage,
-          File.join("#{project.wiki.repository.disk_path}.git", "hooks")
-        )
       end
     end
 

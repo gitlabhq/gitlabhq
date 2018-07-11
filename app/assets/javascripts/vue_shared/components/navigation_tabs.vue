@@ -59,15 +59,15 @@ export default {
       }"
     >
       <a
+        :class="`js-${scope}-tab-${tab.scope}`"
         role="button"
         @click="onTabClick(tab)"
-        :class="`js-${scope}-tab-${tab.scope}`"
       >
         {{ tab.name }}
 
         <span
           v-if="shouldRenderBadge(tab.count)"
-          class="badge"
+          class="badge badge-pill"
         >
           {{ tab.count }}
         </span>

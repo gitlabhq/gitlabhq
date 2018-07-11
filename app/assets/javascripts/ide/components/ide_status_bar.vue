@@ -1,14 +1,16 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import timeAgoMixin from '~/vue_shared/mixins/timeago';
+import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
 
 export default {
   components: {
     icon,
     userAvatarImage,
+    CiIcon,
   },
   directives: {
     tooltip,
@@ -27,7 +29,14 @@ export default {
     };
   },
   computed: {
+    ...mapState(['currentBranchId', 'currentProjectId']),
     ...mapGetters(['currentProject', 'lastCommit']),
+    ...mapState('pipelines', ['latestPipeline']),
+  },
+  watch: {
+    lastCommit() {
+      this.initPipelinePolling();
+    },
   },
   mounted() {
     this.startTimer();
@@ -36,12 +45,20 @@ export default {
     if (this.intervalId) {
       clearInterval(this.intervalId);
     }
+
+    this.stopPipelinePolling();
   },
   methods: {
+    ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
     startTimer() {
       this.intervalId = setInterval(() => {
         this.commitAgeUpdate();
       }, 1000);
+    },
+    initPipelinePolling() {
+      if (this.lastCommit) {
+        this.fetchLatestPipeline();
+      }
     },
     commitAgeUpdate() {
       if (this.lastCommit) {
@@ -58,26 +75,43 @@ export default {
 <template>
   <footer class="ide-status-bar">
     <div
-      class="ide-status-branch"
       v-if="lastCommit && lastCommitFormatedAge"
+      class="ide-status-branch"
     >
+      <span
+        v-if="latestPipeline && latestPipeline.details"
+        class="ide-status-pipeline"
+      >
+        <ci-icon
+          v-tooltip
+          :status="latestPipeline.details.status"
+          :title="latestPipeline.details.status.text"
+        />
+        Pipeline
+        <a
+          :href="latestPipeline.details.status.details_path"
+          class="monospace">#{{ latestPipeline.id }}</a>
+        {{ latestPipeline.details.status.text }}
+        for
+      </span>
+
       <icon
         name="commit"
       />
       <a
         v-tooltip
-        class="commit-sha"
         :title="lastCommit.message"
         :href="getCommitPath(lastCommit.short_id)"
+        class="commit-sha"
       >{{ lastCommit.short_id }}</a>
       by
       {{ lastCommit.author_name }}
       <time
         v-tooltip
-        data-placement="top"
-        data-container="body"
         :datetime="lastCommit.committed_date"
         :title="tooltipTitle(lastCommit.committed_date)"
+        data-placement="top"
+        data-container="body"
       >
         {{ lastCommitFormatedAge }}
       </time>
@@ -95,8 +129,8 @@ export default {
       {{ file.eol }}
     </div>
     <div
-      class="ide-status-file"
-      v-if="file && !file.binary">
+      v-if="file && !file.binary"
+      class="ide-status-file">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
     <div

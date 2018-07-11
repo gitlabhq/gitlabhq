@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe ReactiveCaching, :use_clean_rails_memory_store_caching do
+  include ExclusiveLeaseHelpers
   include ReactiveCachingHelpers
 
   class CacheTest
@@ -94,6 +95,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     it { expect(instance.result).to be_nil }
+    it { expect(reactive_cache_alive?(instance)).to be_falsy }
   end
 
   describe '#exclusively_update_reactive_cache!' do
@@ -105,8 +107,8 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'takes and releases the lease' do
-        expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return("000000")
-        expect(Gitlab::ExclusiveLease).to receive(:cancel).with(cache_key, "000000")
+        expect_to_obtain_exclusive_lease(cache_key, 'uuid')
+        expect_to_cancel_exclusive_lease(cache_key, 'uuid')
 
         go!
       end
@@ -152,11 +154,9 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     context 'when the lease is already taken' do
-      before do
-        expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(nil)
-      end
-
       it 'skips the calculation' do
+        stub_exclusive_lease_taken(cache_key)
+
         expect(instance).to receive(:calculate_reactive_cache).never
 
         go!

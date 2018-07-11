@@ -121,6 +121,12 @@ export default {
         false,
       );
     },
+    jupyterInstalled() {
+      return this.applications.jupyter.status === APPLICATION_INSTALLED;
+    },
+    jupyterHostname() {
+      return this.applications.jupyter.hostname;
+    },
   },
 };
 </script>
@@ -146,11 +152,11 @@ export default {
         <application-row
           id="helm"
           :title="applications.helm.title"
-          title-link="https://docs.helm.sh/"
           :status="applications.helm.status"
           :status-reason="applications.helm.statusReason"
           :request-status="applications.helm.requestStatus"
           :request-reason="applications.helm.requestReason"
+          title-link="https://docs.helm.sh/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|Helm streamlines installing
@@ -162,11 +168,11 @@ export default {
         <application-row
           :id="ingressId"
           :title="applications.ingress.title"
-          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
           :status="applications.ingress.status"
           :status-reason="applications.ingress.statusReason"
           :request-status="applications.ingress.requestStatus"
           :request-reason="applications.ingress.requestReason"
+          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
         >
           <div slot="description">
             <p>
@@ -185,17 +191,17 @@ export default {
                   class="input-group"
                 >
                   <input
-                    type="text"
                     id="ingress-ip-address"
-                    class="form-control js-ip-address"
                     :value="ingressExternalIp"
+                    type="text"
+                    class="form-control js-ip-address"
                     readonly
                   />
-                  <span class="input-group-btn">
+                  <span class="input-group-append">
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      class="js-clipboard-btn"
+                      class="input-group-text js-clipboard-btn"
                     />
                   </span>
                 </div>
@@ -249,12 +255,12 @@ export default {
         <application-row
           id="prometheus"
           :title="applications.prometheus.title"
-          title-link="https://prometheus.io/docs/introduction/overview/"
           :manage-link="managePrometheusPath"
           :status="applications.prometheus.status"
           :status-reason="applications.prometheus.statusReason"
           :request-status="applications.prometheus.requestStatus"
           :request-reason="applications.prometheus.requestReason"
+          title-link="https://prometheus.io/docs/introduction/overview/"
         >
           <div
             slot="description"
@@ -265,11 +271,11 @@ export default {
         <application-row
           id="runner"
           :title="applications.runner.title"
-          title-link="https://docs.gitlab.com/runner/"
           :status="applications.runner.status"
           :status-reason="applications.runner.statusReason"
           :request-status="applications.runner.requestStatus"
           :request-reason="applications.runner.requestReason"
+          title-link="https://docs.gitlab.com/runner/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|GitLab Runner connects to this
@@ -278,11 +284,67 @@ export default {
               applications to production.`) }}
           </div>
         </application-row>
+        <application-row
+          id="jupyter"
+          :title="applications.jupyter.title"
+          :status="applications.jupyter.status"
+          :status-reason="applications.jupyter.statusReason"
+          :request-status="applications.jupyter.requestStatus"
+          :request-reason="applications.jupyter.requestReason"
+          :install-application-request-params="{ hostname: applications.jupyter.hostname }"
+          title-link="https://jupyterhub.readthedocs.io/en/stable/"
+        >
+          <div slot="description">
+            <p>
+              {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+                manages, and proxies multiple instances of the single-user
+                Jupyter notebook server. JupyterHub can be used to serve
+                notebooks to a class of students, a corporate data science group,
+                or a scientific research group.`) }}
+            </p>
+
+            <template v-if="ingressExternalIp">
+              <div class="form-group">
+                <label for="jupyter-hostname">
+                  {{ s__('ClusterIntegration|Jupyter Hostname') }}
+                </label>
+
+                <div class="input-group">
+                  <input
+                    v-model="applications.jupyter.hostname"
+                    :readonly="jupyterInstalled"
+                    type="text"
+                    class="form-control js-hostname"
+                  />
+                  <span
+                    class="input-group-btn"
+                  >
+                    <clipboard-button
+                      :text="jupyterHostname"
+                      :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                      class="js-clipboard-btn"
+                    />
+                  </span>
+                </div>
+              </div>
+              <p v-if="ingressInstalled">
+                {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                If you do so, point hostname to Ingress IP Address from above.`) }}
+                <a
+                  :href="ingressDnsHelpPath"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __('More information') }}
+                </a>
+              </p>
+            </template>
+          </div>
+        </application-row>
         <!--
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
         -->
-        <!-- Add GitLab Runner row, all other plumbing is complete -->
       </div>
     </div>
   </section>

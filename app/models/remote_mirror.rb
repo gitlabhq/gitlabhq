@@ -5,7 +5,7 @@ class RemoteMirror < ActiveRecord::Base
   UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
   attr_encrypted :credentials,
-                 key: Gitlab::Application.secrets.db_key_base,
+                 key: Settings.attr_encrypted_db_key_base,
                  marshal: true,
                  encode: true,
                  mode: :per_attribute_iv_and_salt,
@@ -16,8 +16,7 @@ class RemoteMirror < ActiveRecord::Base
 
   belongs_to :project, inverse_of: :remote_mirrors
 
-  validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
-  validates :url, addressable_url: true, if: :url_changed?
+  validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true, enforce_user: true }
 
   before_save :set_new_remote_name, if: :mirror_url_changed?
 
@@ -58,7 +57,7 @@ class RemoteMirror < ActiveRecord::Base
       Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
 
       timestamp = Time.now
-      remote_mirror.update_attributes!(
+      remote_mirror.update!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end

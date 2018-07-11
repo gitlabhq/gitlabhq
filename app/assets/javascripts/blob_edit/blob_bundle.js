@@ -1,5 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, prefer-arrow-callback, no-var, quotes, vars-on-top, no-unused-vars, no-new, max-len */
-/* global EditBlob */
+/* eslint-disable no-new */
 
 import $ from 'jquery';
 import NewCommitForm from '../new_commit_form';

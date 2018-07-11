@@ -186,6 +186,8 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
+      metadata.merge!(server_feature_flags)
+
       result = { metadata: metadata }
 
       # nil timeout indicates that we should use the default
@@ -202,6 +204,14 @@ module Gitlab
       result[:deadline] = deadline
 
       result
+    end
+
+    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
+
+    def self.server_feature_flags
+      SERVER_FEATURE_FLAGS.map do |f|
+        ["gitaly-feature-#{f.tr('_', '-')}", feature_enabled?(f).to_s]
+      end.to_h
     end
 
     def self.token(storage)
@@ -234,10 +244,21 @@ module Gitlab
       when MigrationStatus::OPT_OUT
         true
       when MigrationStatus::OPT_IN
-        opt_into_all_features?
+        opt_into_all_features? && !explicit_opt_in_required.include?(feature_name)
       else
         false
       end
+    rescue => ex
+      # During application startup feature lookups in SQL can fail
+      Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
+      false
+    end
+
+    # We have a mechanism to let GitLab automatically opt in to all Gitaly
+    # features. We want to be able to exclude some features from automatic
+    # opt-in. This function has an override in EE.
+    def self.explicit_opt_in_required
+      []
     end
 
     # opt_into_all_features? returns true when the current environment
@@ -380,8 +401,8 @@ module Gitlab
       path.read.chomp
     end
 
-    def self.timestamp(t)
-      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    def self.timestamp(time)
+      Google::Protobuf::Timestamp.new(seconds: time.to_i)
     end
 
     # The default timeout on all Gitaly calls
@@ -408,7 +429,7 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      stack_string = caller.drop(1).join("\n")
+      stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
 
       RequestStore.store[:stack_counter] ||= Hash.new
 

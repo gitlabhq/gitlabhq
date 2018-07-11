@@ -69,7 +69,7 @@ $(document).on('keyup.quick_submit', '.js-quick-submit input[type=submit], .js-q
   $this.tooltip({
     container: 'body',
     html: 'true',
-    placement: 'auto top',
+    placement: 'top',
     title,
     trigger: 'manual',
   });

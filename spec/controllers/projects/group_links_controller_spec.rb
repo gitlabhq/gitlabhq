@@ -7,7 +7,7 @@ describe Projects::GroupLinksController do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -18,6 +18,18 @@ describe Projects::GroupLinksController do
                       project_id: project,
                       link_group_id: group.id,
                       link_group_access: ProjectGroupLink.default_access)
+      end
+    end
+
+    context 'when project is not allowed to be shared with a group' do
+      before do
+        group.update(share_with_group_lock: false)
+      end
+
+      include_context 'link project to group'
+
+      it 'responds with status 404' do
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

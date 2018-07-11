@@ -14,7 +14,7 @@
 
 - if event.push_with_commits?
   .event-body
-    %ul.well-list.event_commits
+    %ul.content-list.event_commits
       = render "events/commit", project: project, event: event
 
       - create_mr = event.new_ref? && create_mr_button?(project.default_branch, event.ref_name, project) && event.authored_by?(current_user)

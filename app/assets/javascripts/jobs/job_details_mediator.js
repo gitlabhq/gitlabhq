@@ -1,5 +1,3 @@
-/* global Build */
-
 import Visibility from 'visibilityjs';
 import Flash from '../flash';
 import Poll from '../lib/utils/poll';
@@ -50,7 +48,8 @@ export default class JobMediator {
   }
 
   getJob() {
-    return this.service.getJob()
+    return this.service
+      .getJob()
       .then(response => this.successCallback(response))
       .catch(() => this.errorCallback());
   }

@@ -92,7 +92,7 @@ class Import::GoogleCodeController < Import::BaseController
     if project.persisted?
       render json: ProjectSerializer.new.represent(project)
     else
-      render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+      render json: { errors: project_save_error(project) }, status: :unprocessable_entity
     end
   end
 

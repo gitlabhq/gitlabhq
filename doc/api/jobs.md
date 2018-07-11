@@ -32,14 +32,12 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
-    "created_at": "2015-12-24T15:51:21.802Z",
-    "artifacts_file": {
-      "filename": "artifacts.zip",
-      "size": 1000
-    },
-    "finished_at": "2015-12-24T17:54:27.895Z",
-    "id": 7,
-    "name": "teaspoon",
+    "created_at": "2015-12-24T15:51:21.727Z",
+    "artifacts_file": null,
+    "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z",
+    "id": 6,
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -49,7 +47,7 @@ Example of response
     "ref": "master",
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
+    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "user": {
@@ -78,11 +76,15 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
-    "created_at": "2015-12-24T15:51:21.727Z",
-    "artifacts_file": null,
-    "finished_at": "2015-12-24T17:54:24.921Z",
-    "id": 6,
-    "name": "rspec:other",
+    "created_at": "2015-12-24T15:51:21.802Z",
+    "artifacts_file": {
+      "filename": "artifacts.zip",
+      "size": 1000
+    },
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
+    "id": 7,
+    "name": "teaspoon",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -92,7 +94,7 @@ Example of response
     "ref": "master",
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "user": {
@@ -146,14 +148,12 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
-    "created_at": "2015-12-24T15:51:21.802Z",
-    "artifacts_file": {
-      "filename": "artifacts.zip",
-      "size": 1000
-    },
-    "finished_at": "2015-12-24T17:54:27.895Z",
-    "id": 7,
-    "name": "teaspoon",
+    "created_at": "2015-12-24T15:51:21.727Z",
+    "artifacts_file": null,
+    "finished_at": "2015-12-24T17:54:24.921Z",
+    "artifacts_expire_at": "2016-01-23T17:54:24.921Z"
+    "id": 6,
+    "name": "rspec:other",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -163,7 +163,7 @@ Example of response
     "ref": "master",
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:27.722Z",
+    "started_at": "2015-12-24T17:54:24.729Z",
     "status": "failed",
     "tag": false,
     "user": {
@@ -192,11 +192,15 @@ Example of response
       "title": "Test the CI integration."
     },
     "coverage": null,
-    "created_at": "2015-12-24T15:51:21.727Z",
-    "artifacts_file": null,
-    "finished_at": "2015-12-24T17:54:24.921Z",
-    "id": 6,
-    "name": "rspec:other",
+    "created_at": "2015-12-24T15:51:21.802Z",
+    "artifacts_file": {
+      "filename": "artifacts.zip",
+      "size": 1000
+    },
+    "finished_at": "2015-12-24T17:54:27.895Z",
+    "artifacts_expire_at": "2016-01-23T17:54:27.895Z"
+    "id": 7,
+    "name": "teaspoon",
     "pipeline": {
       "id": 6,
       "ref": "master",
@@ -206,7 +210,7 @@ Example of response
     "ref": "master",
     "runner": null,
     "stage": "test",
-    "started_at": "2015-12-24T17:54:24.729Z",
+    "started_at": "2015-12-24T17:54:27.722Z",
     "status": "failed",
     "tag": false,
     "user": {
@@ -261,6 +265,7 @@ Example of response
   "created_at": "2015-12-24T15:51:21.880Z",
   "artifacts_file": null,
   "finished_at": "2015-12-24T17:54:31.198Z",
+  "artifacts_expire_at": "2016-01-23T17:54:31.198Z",
   "id": 8,
   "name": "rubocop",
   "pipeline": {

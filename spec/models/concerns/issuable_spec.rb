@@ -12,6 +12,7 @@ describe Issuable do
     it { is_expected.to belong_to(:author) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:todos).dependent(:destroy) }
+    it { is_expected.to have_many(:labels) }
 
     context 'Notes' do
       let!(:note) { create(:note, noteable: issue, project: issue.project) }
@@ -274,8 +275,8 @@ describe Issuable do
 
     it 'skips coercion for not Integer values' do
       expect { issue.time_estimate = nil }.to change { issue.time_estimate }.to(nil)
-      expect { issue.time_estimate = 'invalid time' }.not_to raise_error(StandardError)
-      expect { issue.time_estimate = 22.33 }.not_to raise_error(StandardError)
+      expect { issue.time_estimate = 'invalid time' }.not_to raise_error
+      expect { issue.time_estimate = 22.33 }.not_to raise_error
     end
   end
 
@@ -548,7 +549,7 @@ describe Issuable do
     let(:project) { create(:project, namespace: group) }
     let(:other_project) { create(:project) }
     let(:owner) { create(:owner) }
-    let(:master) { create(:user) }
+    let(:maintainer) { create(:user) }
     let(:reporter) { create(:user) }
     let(:guest) { create(:user) }
 
@@ -557,7 +558,7 @@ describe Issuable do
 
     before do
       group.add_owner(owner)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.add_reporter(reporter)
       project.add_guest(guest)
       project.add_guest(contributor)
@@ -569,8 +570,8 @@ describe Issuable do
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
-      it "is false for MASTER" do
-        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+      it "is false for MAINTAINER" do
+        mr = create(:merge_request, author: maintainer, target_project: project, source_project: project)
 
         expect(mr).not_to be_first_contribution
       end

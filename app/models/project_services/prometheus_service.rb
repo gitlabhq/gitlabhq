@@ -6,7 +6,7 @@ class PrometheusService < MonitoringService
   boolean_accessor :manual_configuration
 
   with_options presence: true, if: :manual_configuration? do
-    validates :api_url, url: true
+    validates :api_url, public_url: true
   end
 
   before_save :synchronize_service_state

@@ -11,13 +11,14 @@ describe 'User views a wiki page' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
 
         click_on('New page')
 
@@ -140,6 +141,7 @@ describe 'User views a wiki page' do
       visit(project_path(project))
 
       find('.shortcuts-wiki').click
+      click_link "Create your first page"
 
       expect(page).to have_content('Home · Create Page')
     end

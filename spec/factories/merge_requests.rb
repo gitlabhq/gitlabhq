@@ -54,6 +54,11 @@ FactoryBot.define do
       state :opened
     end
 
+    trait :invalid do
+      source_branch "feature_one"
+      target_branch "feature_two"
+    end
+
     trait :locked do
       state :locked
     end
@@ -98,6 +103,7 @@ FactoryBot.define do
     factory :merged_merge_request, traits: [:merged]
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:opened]
+    factory :invalid_merge_request, traits: [:invalid]
     factory :merge_request_with_diffs, traits: [:with_diffs]
     factory :merge_request_with_diff_notes do
       after(:create) do |mr|
@@ -111,7 +117,7 @@ FactoryBot.define do
       end
 
       after(:create) do |merge_request, evaluator|
-        merge_request.update_attributes(labels: evaluator.labels)
+        merge_request.update(labels: evaluator.labels)
       end
     end
   end

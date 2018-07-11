@@ -27,7 +27,7 @@ module CommitsHelper
     return unless @project && @ref
 
     # Add the root project link and the arrow icon
-    crumbs = content_tag(:li) do
+    crumbs = content_tag(:li, class: 'breadcrumb-item') do
       link_to(
         @project.path,
         project_commits_path(@project, @ref)
@@ -38,7 +38,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs << content_tag(:li) do
+        crumbs << content_tag(:li, class: 'breadcrumb-item') do
           # The text is just the individual part, but the link needs all the parts before it
           link_to(
             part,
@@ -62,8 +62,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
-    link_to(url, class: 'label label-gray ref-name branch-link') do
-      sprite_icon('fork', size: 12, css_class: 'fork-svg') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name branch-link') do
+      sprite_icon('branch', size: 12, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -76,8 +76,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
-    link_to(url, class: 'label label-gray ref-name') do
-      icon('tag', class: 'append-right-5') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name') do
+      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
     end
   end
 

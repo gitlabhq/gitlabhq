@@ -5,7 +5,7 @@
   Import projects from Google Code
 %hr
 
-= form_tag create_user_map_import_google_code_path, class: 'form-horizontal' do
+= form_tag create_user_map_import_google_code_path do
   %p
     Customize how Google Code email addresses and usernames are imported into GitLab.
     In the next step, you'll be able to select the projects you want to import.
@@ -36,7 +36,7 @@
         will add "By <a href="#">johnsmith@example.com</a>" to all issues and comments originally created by johnsmith@example.com.
         By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address.
 
-  .form-group
+  .form-group.row
     .col-sm-12
       = text_area_tag :user_map, JSON.pretty_generate(@user_map), class: 'form-control', rows: 15
 

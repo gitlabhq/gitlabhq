@@ -1,7 +1,7 @@
 module API
   module Helpers
     module RelatedResourcesHelpers
-      include GrapeRouteHelpers::NamedRouteMatcher
+      include GrapePathHelpers::NamedRouteMatcher
 
       def issues_available?(project, options)
         available?(:issues, project, options[:current_user])

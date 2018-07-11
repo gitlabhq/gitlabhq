@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Contributions Calendar', :js do
+describe 'Contributions Calendar', :js do
   let(:user) { create(:user) }
   let(:contributed_project) { create(:project, :public, :repository) }
   let(:issue_note) { create(:note, project: contributed_project) }

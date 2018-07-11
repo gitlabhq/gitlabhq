@@ -32,7 +32,7 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown open">
+  <div class="dropdown show">
     <div class="dropdown-menu sidebar-item-warning-message">
       <div>
         <p

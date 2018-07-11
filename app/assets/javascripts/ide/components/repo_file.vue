@@ -95,23 +95,52 @@ export default {
       return this.file.changed || this.file.tempFile || this.file.staged;
     },
   },
+  mounted() {
+    if (this.hasPathAtCurrentRoute()) {
+      this.scrollIntoView(true);
+    }
+  },
   updated() {
     if (this.file.type === 'blob' && this.file.active) {
-      this.$el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
+      this.scrollIntoView();
     }
   },
   methods: {
     ...mapActions(['toggleTreeOpen']),
     clickFile() {
       // Manual Action if a tree is selected/opened
-      if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
+      if (this.isTree && this.hasUrlAtCurrentRoute()) {
         this.toggleTreeOpen(this.file.path);
       }
 
       router.push(`/project${this.file.url}`);
+    },
+    scrollIntoView(isInit = false) {
+      const block = isInit && this.isTree ? 'center' : 'nearest';
+
+      this.$el.scrollIntoView({
+        behavior: 'smooth',
+        block,
+      });
+    },
+    hasPathAtCurrentRoute() {
+      if (!this.$router || !this.$router.currentRoute) {
+        return false;
+      }
+
+      // - strip route up to "/-/" and ending "/"
+      const routePath = this.$router.currentRoute.path
+        .replace(/^.*?[/]-[/]/g, '')
+        .replace(/[/]$/g, '');
+
+      // - strip ending "/"
+      const filePath = this.file.path
+        .replace(/[/]$/g, '');
+
+      return filePath === routePath;
+    },
+    hasUrlAtCurrentRoute() {
+      return this.$router.currentRoute.path === `/project${this.file.url}`;
     },
   },
 };
@@ -120,17 +149,17 @@ export default {
 <template>
   <div>
     <div
-      class="file"
       :class="fileClass"
-      @click="clickFile"
+      class="file"
       role="button"
+      @click="clickFile"
     >
       <div
         class="file-name"
       >
         <span
-          class="ide-file-name str-truncated"
           :style="levelIndentation"
+          class="ide-file-name str-truncated"
         >
           <file-icon
             :file-name="file.name"
@@ -144,7 +173,7 @@ export default {
             :file="file"
           />
         </span>
-        <span class="pull-right ide-file-icon-holder">
+        <span class="float-right ide-file-icon-holder">
           <mr-file-icon
             v-if="file.mrChange"
           />
@@ -156,10 +185,10 @@ export default {
             <icon
               v-tooltip
               :title="folderChangesTooltip"
+              :size="12"
               data-container="body"
               data-placement="right"
               name="file-modified"
-              :size="12"
               css-classes="prepend-left-5 multi-file-modified"
             />
           </span>
@@ -169,7 +198,7 @@ export default {
             :show-tooltip="true"
             :show-staged-icon="true"
             :force-modified-icon="true"
-            class="pull-right"
+            class="float-right"
           />
         </span>
         <new-dropdown
@@ -177,7 +206,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
-          class="pull-right prepend-left-8"
+          class="float-right prepend-left-8"
         />
       </div>
     </div>

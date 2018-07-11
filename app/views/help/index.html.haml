@@ -8,7 +8,7 @@
   Community Edition
   - if user_signed_in?
     %span= Gitlab::VERSION
-    %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
+    %small= link_to Gitlab.revision, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab.revision)
     = version_status_badge
   %hr
 
@@ -33,10 +33,10 @@
     .documentation-index.wiki
       = markdown(@help_index)
   .col-md-4
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Quick help
-      %ul.well-list
+      %ul.content-list
         %li= link_to 'See our website for getting help', support_url
         %li
           %button.btn-blank.btn-link.js-trigger-search-bar{ type: 'button' }

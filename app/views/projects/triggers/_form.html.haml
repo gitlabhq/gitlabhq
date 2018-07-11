@@ -4,7 +4,7 @@
   - if @trigger.token
     .form-group
       %label.label-light Token
-      %p.form-control-static= @trigger.token
+      %p.form-control-plaintext= @trigger.token
   .form-group
     = f.label :key, "Description", class: "label-light"
     = f.text_field :description, class: "form-control", required: true, title: 'Trigger description is required.', placeholder: "Trigger description"

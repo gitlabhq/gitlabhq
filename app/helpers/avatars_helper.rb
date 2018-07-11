@@ -78,7 +78,7 @@ module AvatarsHelper
       user: commit_or_event.author,
       user_name: commit_or_event.author_name,
       user_email: commit_or_event.author_email,
-      css_class: 'hidden-xs'
+      css_class: 'd-none d-sm-inline'
     }))
   end
 

@@ -10,13 +10,13 @@ module QA
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar
           element :user_avatar
-          element :user_menu, '.dropdown-menu-nav'
+          element :user_menu, '.dropdown-menu'
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
           element :admin_area_link
           element :projects_dropdown
-          element :groups_link
+          element :groups_dropdown
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
@@ -25,7 +25,13 @@ module QA
         end
 
         def go_to_groups
-          within_top_menu { click_element :groups_link }
+          within_top_menu do
+            click_element :groups_dropdown
+          end
+
+          page.within('.qa-groups-dropdown-sidebar') do
+            click_element :your_groups_link
+          end
         end
 
         def go_to_projects
@@ -55,7 +61,8 @@ module QA
         end
 
         def has_personal_area?
-          page.has_selector?('.qa-user-avatar')
+          # No need to wait, either we're logged-in, or not.
+          using_wait_time(0) { page.has_selector?('.qa-user-avatar') }
         end
 
         private
@@ -70,7 +77,7 @@ module QA
           within_top_menu do
             click_element :user_avatar
 
-            page.within('.dropdown-menu-nav') do
+            page.within('.dropdown-menu') do
               yield
             end
           end

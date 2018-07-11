@@ -11,11 +11,11 @@ module Gitlab
       gon.asset_host             = ActionController::Base.asset_host
       gon.webpack_public_path    = webpack_public_path
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
-      gon.shortcuts_path         = help_page_path('shortcuts')
+      gon.shortcuts_path         = Gitlab::Routing.url_helpers.help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
       gon.sentry_dsn             = Gitlab::CurrentSettings.clientside_sentry_dsn if Gitlab::CurrentSettings.clientside_sentry_enabled
       gon.gitlab_url             = Gitlab.config.gitlab.url
-      gon.revision               = Gitlab::REVISION
+      gon.revision               = Gitlab.revision
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.sprite_icons           = IconsHelper.sprite_icon_path
       gon.sprite_file_icons      = IconsHelper.sprite_file_icons_path

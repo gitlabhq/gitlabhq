@@ -98,6 +98,7 @@ module SeedRepo
       master
       merge-test
       missing-gitmodules
+      Ääh-test-utf-8
     ].freeze
     TAGS = %w[
       v1.0.0

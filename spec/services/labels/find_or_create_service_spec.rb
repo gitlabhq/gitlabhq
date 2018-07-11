@@ -44,6 +44,26 @@ describe Labels::FindOrCreateService do
             expect(service.execute).to eq project_label
           end
         end
+
+        context 'when include_ancestor_groups is true' do
+          let(:group)   { create(:group, :nested) }
+          let(:params) do
+            {
+              title: 'Audit',
+              include_ancestor_groups: true
+            }
+          end
+
+          it 'returns the ancestor group labels' do
+            group_label = create(:group_label, group: group.parent, title: 'Audit')
+
+            expect(service.execute).to eq group_label
+          end
+
+          it 'creates new labels if labels are not found' do
+            expect { service.execute }.to change(project.labels, :count).by(1)
+          end
+        end
       end
 
       context 'when finding labels on group level' do

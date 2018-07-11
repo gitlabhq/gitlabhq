@@ -32,7 +32,7 @@ class Environment < ActiveRecord::Base
   validates :external_url,
             length: { maximum: 255 },
             allow_nil: true,
-            addressable_url: true
+            url: true
 
   delegate :stop_action, :manual_actions, to: :last_deployment, allow_nil: true
 

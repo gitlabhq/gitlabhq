@@ -43,7 +43,7 @@ module Clusters
 
       def create_and_assign_runner
         transaction do
-          project.runners.create!(runner_create_params).tap do |runner|
+          Ci::Runner.create!(runner_create_params).tap do |runner|
             update!(runner_id: runner.id)
           end
         end
@@ -53,7 +53,8 @@ module Clusters
         {
           name: 'kubernetes-cluster',
           runner_type: :project_type,
-          tag_list: %w(kubernetes cluster)
+          tag_list: %w(kubernetes cluster),
+          projects: [project]
         }
       end
 

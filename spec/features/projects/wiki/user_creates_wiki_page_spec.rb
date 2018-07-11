@@ -4,10 +4,11 @@ describe "User creates wiki page" do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(project_wikis_path(project))
+    click_link "Create your first page"
   end
 
   context "when wiki is empty" do
@@ -241,7 +242,7 @@ describe "User creates wiki page" do
         end
       end
 
-      it "shows the autocompletion dropdown" do
+      it "shows the emoji autocompletion dropdown" do
         click_link("New page")
 
         page.within("#modal-new-wiki") do
@@ -253,7 +254,7 @@ describe "User creates wiki page" do
         page.within(".wiki-form") do
           find("#wiki_content").native.send_keys("")
 
-          fill_in(:wiki_content, with: "@")
+          fill_in(:wiki_content, with: ":")
         end
 
         expect(page).to have_selector(".atwho-view")

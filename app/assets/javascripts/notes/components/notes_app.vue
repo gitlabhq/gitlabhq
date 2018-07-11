@@ -1,10 +1,9 @@
 <script>
-import $ from 'jquery';
 import { mapGetters, mapActions } from 'vuex';
 import { getLocationHash } from '../../lib/utils/url_utility';
 import Flash from '../../flash';
-import store from '../stores/';
 import * as constants from '../constants';
+import eventHub from '../event_hub';
 import noteableNote from './noteable_note.vue';
 import noteableDiscussion from './noteable_discussion.vue';
 import systemNote from '../../vue_shared/components/notes/system_note.vue';
@@ -39,19 +38,28 @@ export default {
       required: false,
       default: () => ({}),
     },
+    shouldShow: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    markdownVersion: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
-  store,
   data() {
     return {
       isLoading: true,
     };
   },
   computed: {
-    ...mapGetters(['notes', 'getNotesDataByProp', 'discussionCount']),
+    ...mapGetters(['isNotesFetched', 'discussions', 'getNotesDataByProp', 'discussionCount']),
     noteableType() {
       return this.noteableData.noteableType;
     },
-    allNotes() {
+    allDiscussions() {
       if (this.isLoading) {
         const totalNotes = parseInt(this.notesData.totalNotes, 10) || 0;
 
@@ -59,36 +67,40 @@ export default {
           isSkeletonNote: true,
         });
       }
-      return this.notes;
+
+      return this.discussions;
+    },
+  },
+  watch: {
+    shouldShow() {
+      if (!this.isNotesFetched) {
+        this.fetchNotes();
+      }
     },
   },
   created() {
     this.setNotesData(this.notesData);
     this.setNoteableData(this.noteableData);
     this.setUserData(this.userData);
+    this.setTargetNoteHash(getLocationHash());
+    eventHub.$once('fetchNotesData', this.fetchNotes);
   },
   mounted() {
-    this.fetchNotes();
+    if (this.shouldShow) {
+      this.fetchNotes();
+    }
 
-    const parentElement = this.$el.parentElement;
-
-    if (
-      parentElement &&
-      parentElement.classList.contains('js-vue-notes-event')
-    ) {
+    const { parentElement } = this.$el;
+    if (parentElement && parentElement.classList.contains('js-vue-notes-event')) {
       parentElement.addEventListener('toggleAward', event => {
         const { awardName, noteId } = event.detail;
         this.actionToggleAward({ awardName, noteId });
       });
     }
-    document.addEventListener('refreshVueNotes', this.fetchNotes);
-  },
-  beforeDestroy() {
-    document.removeEventListener('refreshVueNotes', this.fetchNotes);
   },
   methods: {
     ...mapActions({
-      actionFetchNotes: 'fetchNotes',
+      fetchDiscussions: 'fetchDiscussions',
       poll: 'poll',
       actionToggleAward: 'toggleAward',
       scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
@@ -97,38 +109,42 @@ export default {
       setUserData: 'setUserData',
       setLastFetchedAt: 'setLastFetchedAt',
       setTargetNoteHash: 'setTargetNoteHash',
+      toggleDiscussion: 'toggleDiscussion',
+      setNotesFetchedState: 'setNotesFetchedState',
     }),
-    getComponentName(note) {
-      if (note.isSkeletonNote) {
+    getComponentName(discussion) {
+      if (discussion.isSkeletonNote) {
         return skeletonLoadingContainer;
       }
-      if (note.isPlaceholderNote) {
-        if (note.placeholderType === constants.SYSTEM_NOTE) {
+      if (discussion.isPlaceholderNote) {
+        if (discussion.placeholderType === constants.SYSTEM_NOTE) {
           return placeholderSystemNote;
         }
         return placeholderNote;
-      } else if (note.individual_note) {
-        return note.notes[0].system ? systemNote : noteableNote;
+      } else if (discussion.individual_note) {
+        return discussion.notes[0].system ? systemNote : noteableNote;
       }
 
       return noteableDiscussion;
     },
-    getComponentData(note) {
-      return note.individual_note ? note.notes[0] : note;
+    getComponentData(discussion) {
+      return discussion.individual_note ? { note: discussion.notes[0] } : { discussion };
     },
     fetchNotes() {
-      return this.actionFetchNotes(this.getNotesDataByProp('discussionsPath'))
-        .then(() => this.initPolling())
+      return this.fetchDiscussions(this.getNotesDataByProp('discussionsPath'))
+        .then(() => {
+          this.initPolling();
+        })
         .then(() => {
           this.isLoading = false;
+          this.setNotesFetchedState(true);
         })
         .then(() => this.$nextTick())
         .then(() => this.checkLocationHash())
         .catch(() => {
           this.isLoading = false;
-          Flash(
-            'Something went wrong while fetching comments. Please try again.',
-          );
+          this.setNotesFetchedState(true);
+          Flash('Something went wrong while fetching comments. Please try again.');
         });
     },
     initPolling() {
@@ -143,11 +159,19 @@ export default {
     },
     checkLocationHash() {
       const hash = getLocationHash();
-      const element = document.getElementById(hash);
+      const noteId = hash && hash.replace(/^note_/, '');
 
-      if (hash && element) {
-        this.setTargetNoteHash(hash);
-        this.scrollToNoteIfNeeded($(element));
+      if (noteId) {
+        this.discussions.forEach(discussion => {
+          if (discussion.notes) {
+            discussion.notes.forEach(note => {
+              if (`${note.id}` === `${noteId}`) {
+                // FIXME: this modifies the store state without using a mutation/action
+                Object.assign(discussion, { expanded: true });
+              }
+            });
+          }
+        });
       }
     },
   },
@@ -155,21 +179,25 @@ export default {
 </script>
 
 <template>
-  <div id="notes">
+  <div
+    v-show="shouldShow"
+    id="notes"
+  >
     <ul
       id="notes-list"
-      class="notes main-notes-list timeline">
-
+      class="notes main-notes-list timeline"
+    >
       <component
-        v-for="note in allNotes"
-        :is="getComponentName(note)"
-        :note="getComponentData(note)"
-        :key="note.id"
+        v-for="discussion in allDiscussions"
+        :is="getComponentName(discussion)"
+        v-bind="getComponentData(discussion)"
+        :key="discussion.id"
       />
     </ul>
 
     <comment-form
       :noteable-type="noteableType"
+      :markdown-version="markdownVersion"
     />
   </div>
 </template>

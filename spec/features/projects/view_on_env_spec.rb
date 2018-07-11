@@ -7,7 +7,7 @@ describe 'View on environment', :js do
   let(:user) { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'when the branch has a route map' do
@@ -59,7 +59,9 @@ describe 'View on environment', :js do
 
         it 'has a "View on env" button' do
           within '.diffs' do
-            expect(page).to have_link('View on feature.review.example.com', href: 'http://feature.review.example.com/ruby/feature')
+            text = 'View on feature.review.example.com'
+            url = 'http://feature.review.example.com/ruby/feature'
+            expect(page).to have_selector("a[data-original-title='#{text}'][href='#{url}']")
           end
         end
       end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Member autocomplete', :js do
+describe 'Member autocomplete', :js do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:author) { create(:user) }
@@ -14,10 +14,10 @@ feature 'Member autocomplete', :js do
   shared_examples "open suggestions when typing @" do |resource_name|
     before do
       page.within('.new-note') do
-        if resource_name == 'issue'
-          find('#note-body').send_keys('@')
-        else
+        if resource_name == 'commit'
           find('#note_note').send_keys('@')
+        else
+          find('#note-body').send_keys('@')
         end
       end
     end

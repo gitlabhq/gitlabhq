@@ -1,8 +1,8 @@
 module QA
-  feature 'creates issue', :core do
+  describe 'creates issue', :core do
     let(:issue_title) { 'issue title' }
 
-    scenario 'user creates issue' do
+    it 'user creates issue' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 

@@ -93,7 +93,7 @@ module Gitlab
 
       private
 
-      def longest_common_prefix(a, b)
+      def longest_common_prefix(a, b) # rubocop:disable Naming/UncommunicativeMethodParamName
         max_length = [a.length, b.length].max
 
         length = 0
@@ -109,7 +109,7 @@ module Gitlab
         length
       end
 
-      def longest_common_suffix(a, b)
+      def longest_common_suffix(a, b) # rubocop:disable Naming/UncommunicativeMethodParamName
         longest_common_prefix(a.reverse, b.reverse)
       end
     end

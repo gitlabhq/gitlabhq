@@ -55,10 +55,10 @@ export default {
 <template>
   <div class="ide-new-btn">
     <div
-      class="dropdown"
       :class="{
-        open: dropdownOpen,
+        show: dropdownOpen,
       }"
+      class="dropdown"
     >
       <button
         type="button"
@@ -67,19 +67,19 @@ export default {
         @click.stop="openDropdown()"
       >
         <icon
-          name="plus"
           :size="12"
-          css-classes="pull-left"
+          name="plus"
+          css-classes="float-left"
         />
         <icon
-          name="arrow-down"
           :size="12"
-          css-classes="pull-left"
+          name="arrow-down"
+          css-classes="float-left"
         />
       </button>
       <ul
-        class="dropdown-menu dropdown-menu-right"
         ref="dropdownMenu"
+        class="dropdown-menu dropdown-menu-right"
       >
         <li>
           <a

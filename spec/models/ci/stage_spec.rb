@@ -65,7 +65,31 @@ describe Ci::Stage, :models do
       end
     end
 
-    context 'when stage is skipped' do
+    context 'when stage has only created builds' do
+      let(:stage) { create(:ci_stage_entity, status: :created) }
+
+      before do
+        create(:ci_build, :created, stage_id: stage.id)
+      end
+
+      it 'updates status to skipped' do
+        expect(stage.reload.status).to eq 'created'
+      end
+    end
+
+    context 'when stage is skipped because of skipped builds' do
+      before do
+        create(:ci_build, :skipped, stage_id: stage.id)
+      end
+
+      it 'updates status to skipped' do
+        expect { stage.update_status }
+          .to change { stage.reload.status }
+          .to 'skipped'
+      end
+    end
+
+    context 'when stage is skipped because is empty' do
       it 'updates status to skipped' do
         expect { stage.update_status }
           .to change { stage.reload.status }
@@ -86,9 +110,85 @@ describe Ci::Stage, :models do
         expect(stage.reload).to be_failed
       end
     end
+
+    context 'when statuses status was not recognized' do
+      before do
+        allow(stage)
+          .to receive_message_chain(:statuses, :latest, :status)
+          .and_return(:unknown)
+      end
+
+      it 'raises an exception' do
+        expect { stage.update_status }
+          .to raise_error(HasStatus::UnknownStatusError)
+      end
+    end
   end
 
-  describe '#index' do
+  describe '#detailed_status' do
+    using RSpec::Parameterized::TableSyntax
+
+    let(:user) { create(:user) }
+    let(:stage) { create(:ci_stage_entity, status: :created) }
+    subject { stage.detailed_status(user) }
+
+    where(:statuses, :label) do
+      %w[created]         | :created
+      %w[success]         | :passed
+      %w[pending]         | :pending
+      %w[skipped]         | :skipped
+      %w[canceled]        | :canceled
+      %w[success failed]  | :failed
+      %w[running pending] | :running
+    end
+
+    with_them do
+      before do
+        statuses.each do |status|
+          create(:commit_status, project: stage.project,
+                                 pipeline: stage.pipeline,
+                                 stage_id: stage.id,
+                                 status: status)
+
+          stage.update_status
+        end
+      end
+
+      it 'has a correct label' do
+        expect(subject.label).to eq label.to_s
+      end
+    end
+
+    context 'when stage has warnings' do
+      before do
+        create(:ci_build, project: stage.project,
+                          pipeline: stage.pipeline,
+                          stage_id: stage.id,
+                          status: :failed,
+                          allow_failure: true)
+
+        stage.update_status
+      end
+
+      it 'is passed with warnings' do
+        expect(subject.label).to eq 'passed with warnings'
+      end
+    end
+  end
+
+  describe '#groups' do
+    before do
+      create(:ci_build, stage_id: stage.id, name: 'rspec 0 1')
+      create(:ci_build, stage_id: stage.id, name: 'rspec 0 2')
+    end
+
+    it 'groups stage builds by name' do
+      expect(stage.groups).to be_one
+      expect(stage.groups.first.name).to eq 'rspec'
+    end
+  end
+
+  describe '#position' do
     context 'when stage has been imported and does not have position index set' do
       before do
         stage.update_column(:position, nil)
@@ -116,6 +216,44 @@ describe Ci::Stage, :models do
 
           expect(stage.reload.position).to eq 0
         end
+      end
+    end
+  end
+
+  context 'when stage has warnings' do
+    before do
+      create(:ci_build, :failed, :allowed_to_fail, stage_id: stage.id)
+    end
+
+    describe '#has_warnings?' do
+      it 'returns true' do
+        expect(stage).to have_warnings
+      end
+    end
+
+    describe '#number_of_warnings' do
+      it 'returns a lazy stage warnings counter' do
+        lazy_queries = ActiveRecord::QueryRecorder.new do
+          stage.number_of_warnings
+        end
+
+        synced_queries = ActiveRecord::QueryRecorder.new do
+          stage.number_of_warnings.to_i
+        end
+
+        expect(lazy_queries.count).to eq 0
+        expect(synced_queries.count).to eq 1
+
+        expect(stage.number_of_warnings.inspect).to include 'BatchLoader'
+        expect(stage.number_of_warnings).to eq 1
+      end
+    end
+  end
+
+  context 'when stage does not have warnings' do
+    describe '#has_warnings?' do
+      it 'returns false' do
+        expect(stage).not_to have_warnings
       end
     end
   end

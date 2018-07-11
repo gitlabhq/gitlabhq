@@ -54,8 +54,8 @@ Vuex specific design patterns and practices.
 ## [Axios](axios.md)
 Axios specific practices and gotchas.
 
-## [Icons](icons.md)
-How we use SVG for our Icons.
+## [Icons and Illustrations](icons.md)
+How we use SVG for our Icons and Illustrations.
 
 ## [Components](components.md)
 

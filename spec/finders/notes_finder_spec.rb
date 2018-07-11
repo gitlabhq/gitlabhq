@@ -5,7 +5,7 @@ describe NotesFinder do
   let(:project) { create(:project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do
@@ -133,7 +133,7 @@ describe NotesFinder do
 
       it 'raises an exception for an invalid target_type' do
         params[:target_type] = 'invalid'
-        expect { described_class.new(project, user, params).execute }.to raise_error('invalid target_type')
+        expect { described_class.new(project, user, params).execute }.to raise_error("invalid target_type '#{params[:target_type]}'")
       end
 
       it 'filters out old notes' do

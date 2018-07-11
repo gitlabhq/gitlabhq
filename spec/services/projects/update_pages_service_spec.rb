@@ -4,13 +4,13 @@ describe Projects::UpdatePagesService do
   set(:project) { create(:project, :repository) }
   set(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit('HEAD').sha) }
   set(:build) { create(:ci_build, pipeline: pipeline, ref: 'HEAD') }
-  let(:invalid_file) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png') }
+  let(:invalid_file) { fixture_file_upload('spec/fixtures/dk.png') }
   let(:extension) { 'zip' }
 
-  let(:file) { fixture_file_upload(Rails.root + "spec/fixtures/pages.#{extension}") }
-  let(:empty_file) { fixture_file_upload(Rails.root + "spec/fixtures/pages_empty.#{extension}") }
+  let(:file) { fixture_file_upload("spec/fixtures/pages.#{extension}") }
+  let(:empty_file) { fixture_file_upload("spec/fixtures/pages_empty.#{extension}") }
   let(:metadata) do
-    filename = Rails.root + "spec/fixtures/pages.#{extension}.meta"
+    filename = "spec/fixtures/pages.#{extension}.meta"
     fixture_file_upload(filename) if File.exist?(filename)
   end
 
@@ -24,8 +24,8 @@ describe Projects::UpdatePagesService do
     let(:extension) { 'zip' }
 
     before do
-      build.update_attributes(legacy_artifacts_file: file)
-      build.update_attributes(legacy_artifacts_metadata: metadata)
+      build.update(legacy_artifacts_file: file)
+      build.update(legacy_artifacts_metadata: metadata)
     end
 
     describe 'pages artifacts' do
@@ -62,13 +62,13 @@ describe Projects::UpdatePagesService do
     end
 
     it 'fails if sha on branch is not latest' do
-      build.update_attributes(ref: 'feature')
+      build.update(ref: 'feature')
 
       expect(execute).not_to eq(:success)
     end
 
     it 'fails for empty file fails' do
-      build.update_attributes(legacy_artifacts_file: empty_file)
+      build.update(legacy_artifacts_file: empty_file)
 
       expect { execute }
         .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
@@ -118,7 +118,7 @@ describe Projects::UpdatePagesService do
       end
 
       it 'fails if sha on branch is not latest' do
-        build.update_attributes(ref: 'feature')
+        build.update(ref: 'feature')
 
         expect(execute).not_to eq(:success)
       end
@@ -188,7 +188,7 @@ describe Projects::UpdatePagesService do
   end
 
   it 'fails for invalid archive' do
-    build.update_attributes(legacy_artifacts_file: invalid_file)
+    build.update(legacy_artifacts_file: invalid_file)
     expect(execute).not_to eq(:success)
   end
 
@@ -196,11 +196,11 @@ describe Projects::UpdatePagesService do
     let(:metadata) { spy('metadata') }
 
     before do
-      file = fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip')
-      metafile = fixture_file_upload(Rails.root + 'spec/fixtures/pages.zip.meta')
+      file = fixture_file_upload('spec/fixtures/pages.zip')
+      metafile = fixture_file_upload('spec/fixtures/pages.zip.meta')
 
-      build.update_attributes(legacy_artifacts_file: file)
-      build.update_attributes(legacy_artifacts_metadata: metafile)
+      build.update(legacy_artifacts_file: file)
+      build.update(legacy_artifacts_metadata: metafile)
 
       allow(build).to receive(:artifacts_metadata_entry)
         .and_return(metadata)

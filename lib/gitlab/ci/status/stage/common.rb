@@ -8,7 +8,9 @@ module Gitlab
           end
 
           def details_path
-            project_pipeline_path(subject.project, subject.pipeline, anchor: subject.name)
+            project_pipeline_path(subject.pipeline.project,
+                                  subject.pipeline,
+                                  anchor: subject.name)
           end
 
           def has_action?

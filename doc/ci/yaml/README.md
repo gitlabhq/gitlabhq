@@ -88,18 +88,18 @@ The example below simply moves all files from the root of the project to the
 `public/` directory. The `.public` workaround is so `cp` doesn't also copy
 `public/` to itself in an infinite loop:
 
-```
+```yaml
 pages:
   stage: deploy
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 ```
 
 Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
@@ -131,15 +131,15 @@ if you set it per-job:
 
 ```yaml
 before_script:
-- global before script
+  - global before script
 
 job:
   before_script:
-  - execute this instead of global before script
+    - execute this instead of global before script
   script:
-  - my command
+    - my command
   after_script:
-  - execute this after my script
+    - execute this after my script
 ```
 
 ## `stages`
@@ -327,7 +327,7 @@ Refs strategy equals to simplified only/except configuration, whereas
 kubernetes strategy accepts only `active` keyword.
 
 `variables` keyword is used to define variables expressions. In other words
-you can use predefined variables / secret variables / project / group or
+you can use predefined variables / project / group or
 environment-scoped variables to define an expression GitLab is going to
 evaluate in order to decide whether a job should be created or not.
 
@@ -409,18 +409,18 @@ fails, it will not stop the next stage from running, since it's marked with
 job1:
   stage: test
   script:
-  - execute_script_that_will_fail
+    - execute_script_that_will_fail
   allow_failure: true
 
 job2:
   stage: test
   script:
-  - execute_script_that_will_succeed
+    - execute_script_that_will_succeed
 
 job3:
   stage: deploy
   script:
-  - deploy_to_staging
+    - deploy_to_staging
 ```
 
 ## `when`
@@ -442,38 +442,38 @@ For example:
 
 ```yaml
 stages:
-- build
-- cleanup_build
-- test
-- deploy
-- cleanup
+  - build
+  - cleanup_build
+  - test
+  - deploy
+  - cleanup
 
 build_job:
   stage: build
   script:
-  - make build
+    - make build
 
 cleanup_build_job:
   stage: cleanup_build
   script:
-  - cleanup build when failed
+    - cleanup build when failed
   when: on_failure
 
 test_job:
   stage: test
   script:
-  - make test
+    - make test
 
 deploy_job:
   stage: deploy
   script:
-  - make deploy
+    - make deploy
   when: manual
 
 cleanup_job:
   stage: cleanup
   script:
-  - cleanup after jobs
+    - cleanup after jobs
   when: always
 ```
 
@@ -734,8 +734,8 @@ rspec:
   script: test
   cache:
     paths:
-    - binaries/*.apk
-    - .config
+      - binaries/*.apk
+      - .config
 ```
 
 Locally defined cache overrides globally defined options. The following `rspec`
@@ -744,14 +744,14 @@ job will cache only `binaries/`:
 ```yaml
 cache:
   paths:
-  - my/files
+    - my/files
 
 rspec:
   script: test
   cache:
     key: rspec
     paths:
-    - binaries/
+      - binaries/
 ```
 
 Note that since cache is shared between jobs, if you're using different
@@ -786,7 +786,7 @@ For example, to enable per-branch caching:
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-  - binaries/
+    - binaries/
 ```
 
 If you use **Windows Batch** to run your shell scripts you need to replace
@@ -796,17 +796,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 cache:
   key: "%CI_COMMIT_REF_SLUG%"
   paths:
-  - binaries/
-```
-
-If you use **Windows PowerShell** to run your shell scripts you need to replace
-`$` with `$env:`:
-
-```yaml
-cache:
-  key: "$env:CI_COMMIT_REF_SLUG"
-  paths:
-  - binaries/
+    - binaries/
 ```
 
 ### `cache:untracked`
@@ -829,7 +819,7 @@ rspec:
   cache:
     untracked: true
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ### `cache:policy`
@@ -907,8 +897,8 @@ Send all files in `binaries` and `.config`:
 ```yaml
 artifacts:
   paths:
-  - binaries/
-  - .config
+    - binaries/
+    - .config
 ```
 
 To disable artifact passing, define the job with empty [dependencies](#dependencies):
@@ -937,7 +927,7 @@ release-job:
     - mvn package -U
   artifacts:
     paths:
-    - target/*.war
+      - target/*.war
   only:
     - tags
 ```
@@ -952,6 +942,11 @@ useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
+NOTE: **Note:**
+If your branch-name contains forward slashes
+(e.g. `feature/my-feature`) it is advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
+
 To create an archive with a name of the current job:
 
 ```yaml
@@ -959,7 +954,7 @@ job:
   artifacts:
     name: "$CI_JOB_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current branch or tag including only
@@ -970,7 +965,7 @@ job:
    artifacts:
      name: "$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current job and the current branch or
@@ -981,7 +976,7 @@ job:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current [stage](#stages) and branch name:
@@ -991,7 +986,7 @@ job:
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ---
@@ -1004,7 +999,7 @@ job:
   artifacts:
     name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 If you use **Windows PowerShell** to run your shell scripts you need to replace
@@ -1015,7 +1010,7 @@ job:
   artifacts:
     name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ### `artifacts:untracked`
@@ -1040,7 +1035,7 @@ Send all Git untracked files and files in `binaries`:
 artifacts:
   untracked: true
   paths:
-  - binaries/
+    - binaries/
 ```
 
 ### `artifacts:when`
@@ -1130,26 +1125,26 @@ build:osx:
   script: make build:osx
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 build:linux:
   stage: build
   script: make build:linux
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 test:osx:
   stage: test
   script: make test:osx
   dependencies:
-  - build:osx
+    - build:osx
 
 test:linux:
   stage: test
   script: make test:linux
   dependencies:
-  - build:linux
+    - build:linux
 
 deploy:
   stage: deploy
@@ -1249,7 +1244,7 @@ Runner itself](../variables/README.md#predefined-variables-environment-variables
 One example would be `CI_COMMIT_REF_NAME` which has the value of
 the branch or tag name for which project is built. Apart from the variables
 you can set in `.gitlab-ci.yml`, there are also the so called
-[secret variables](../variables/README.md#secret-variables)
+[Variables](../variables/README.md#variables)
 which can be set in GitLab's UI.
 
 [Learn more about variables and their priority.][variables]
@@ -1415,6 +1410,43 @@ variables:
 ```
 
 You can set it globally or per-job in the [`variables`](#variables) section.
+
+### Custom build directories
+
+> [Introduced][gitlab-runner-876] in Gitlab Runner 11.1
+
+NOTE: **Note:**
+This can only be used when `custom_build_dir` is set to true in the [Runner's
+configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
+
+By default, GitLab Runner clones the repository in the `/builds` directory,
+but sometimes your project might require to have the code in a specific
+directory, like the GO projects for example. In that case, you can specify
+the `CI_PROJECT_DIR` variable to tell the Runner in which directory to clone
+the repository:
+
+```yml
+image: golang:1.10-alpine3.7
+
+variables:
+  CI_PROJECT_DIR: /go/src/gitlab.com/namespace/project-name
+
+stages:
+    - test
+
+dir:
+    stage: test
+    script:
+      - pwd # /go/src/gitlab.com/namespace/project-name
+```
+
+The following executors may use this feature only when
+[concurrent](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+is set to `1`:
+
+- `shell`
+- `ssh`
+- `docker`, `docker+machine` when the job's working directory is mounted as a host volume.
 
 ## Special YAML features
 
@@ -1609,5 +1641,6 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
+[gitlab-runner-876]: https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/876
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions

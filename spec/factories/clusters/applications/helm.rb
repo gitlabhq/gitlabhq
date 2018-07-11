@@ -35,5 +35,8 @@ FactoryBot.define do
     factory :clusters_applications_ingress, class: Clusters::Applications::Ingress
     factory :clusters_applications_prometheus, class: Clusters::Applications::Prometheus
     factory :clusters_applications_runner, class: Clusters::Applications::Runner
+    factory :clusters_applications_jupyter, class: Clusters::Applications::Jupyter do
+      oauth_application factory: :oauth_application
+    end
   end
 end

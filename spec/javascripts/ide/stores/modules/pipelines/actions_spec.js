@@ -1,17 +1,28 @@
+import Visibility from 'visibilityjs';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import actions, {
+import {
   requestLatestPipeline,
   receiveLatestPipelineError,
   receiveLatestPipelineSuccess,
   fetchLatestPipeline,
+  stopPipelinePolling,
+  clearEtagPoll,
   requestJobs,
   receiveJobsError,
   receiveJobsSuccess,
   fetchJobs,
+  toggleStageCollapsed,
+  setDetailJob,
+  requestJobTrace,
+  receiveJobTraceError,
+  receiveJobTraceSuccess,
+  fetchJobTrace,
+  resetLatestPipeline,
 } from '~/ide/stores/modules/pipelines/actions';
 import state from '~/ide/stores/modules/pipelines/state';
 import * as types from '~/ide/stores/modules/pipelines/mutation_types';
+import { rightSidebarViews } from '~/ide/constants';
 import testAction from '../../../../helpers/vuex_action_helper';
 import { pipelines, jobs } from '../../../mock_data';
 
@@ -48,102 +59,156 @@ describe('IDE pipelines actions', () => {
     it('commits error', done => {
       testAction(
         receiveLatestPipelineError,
-        null,
+        { status: 404 },
         mockedState,
         [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
-        [],
+        [{ type: 'stopPipelinePolling' }],
         done,
       );
     });
 
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveLatestPipelineError({ commit() {} });
-
-      expect(flashSpy).toHaveBeenCalled();
+    it('dispatches setErrorMessage is not 404', done => {
+      testAction(
+        receiveLatestPipelineError,
+        { status: 500 },
+        mockedState,
+        [{ type: types.RECEIVE_LASTEST_PIPELINE_ERROR }],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst fetching the latest pipline.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: null,
+            },
+          },
+          { type: 'stopPipelinePolling' },
+        ],
+        done,
+      );
     });
   });
 
   describe('receiveLatestPipelineSuccess', () => {
-    it('commits pipeline', done => {
-      testAction(
-        receiveLatestPipelineSuccess,
+    const rootGetters = {
+      lastCommit: { id: '123' },
+    };
+    let commit;
+
+    beforeEach(() => {
+      commit = jasmine.createSpy('commit');
+    });
+
+    it('commits pipeline', () => {
+      receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines });
+
+      expect(commit.calls.argsFor(0)).toEqual([
+        types.RECEIVE_LASTEST_PIPELINE_SUCCESS,
         pipelines[0],
-        mockedState,
-        [{ type: types.RECEIVE_LASTEST_PIPELINE_SUCCESS, payload: pipelines[0] }],
-        [],
-        done,
-      );
+      ]);
+    });
+
+    it('commits false when there are no pipelines', () => {
+      receiveLatestPipelineSuccess({ rootGetters, commit }, { pipelines: [] });
+
+      expect(commit.calls.argsFor(0)).toEqual([types.RECEIVE_LASTEST_PIPELINE_SUCCESS, false]);
     });
   });
 
   describe('fetchLatestPipeline', () => {
+    beforeEach(() => {
+      jasmine.clock().install();
+    });
+
+    afterEach(() => {
+      jasmine.clock().uninstall();
+      stopPipelinePolling();
+      clearEtagPoll();
+    });
+
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(200, pipelines);
+        mock
+          .onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines')
+          .reply(200, { data: { foo: 'bar' } }, { 'poll-interval': '10000' });
       });
 
       it('dispatches request', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [{ type: 'requestLatestPipeline' }, { type: 'receiveLatestPipelineSuccess' }],
-          done,
-        );
-      });
+        spyOn(axios, 'get').and.callThrough();
+        spyOn(Visibility, 'hidden').and.returnValue(false);
 
-      it('dispatches success with latest pipeline', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [
-            { type: 'requestLatestPipeline' },
-            { type: 'receiveLatestPipelineSuccess', payload: pipelines[0] },
-          ],
-          done,
-        );
-      });
+        const dispatch = jasmine.createSpy('dispatch');
+        const rootGetters = {
+          lastCommit: { id: 'abc123def456ghi789jkl' },
+          currentProject: { path_with_namespace: 'abc/def' },
+        };
 
-      it('calls axios with correct params', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
+        fetchLatestPipeline({ dispatch, rootGetters });
 
-        fetchLatestPipeline({ dispatch() {}, rootState: state }, '123');
+        expect(dispatch.calls.argsFor(0)).toEqual(['requestLatestPipeline']);
 
-        expect(apiSpy).toHaveBeenCalledWith(jasmine.anything(), {
-          params: {
-            sha: '123',
-            per_page: '1',
-          },
-        });
+        jasmine.clock().tick(1000);
+
+        new Promise(resolve => requestAnimationFrame(resolve))
+          .then(() => {
+            expect(axios.get).toHaveBeenCalled();
+            expect(axios.get.calls.count()).toBe(1);
+
+            expect(dispatch.calls.argsFor(1)).toEqual([
+              'receiveLatestPipelineSuccess',
+              jasmine.anything(),
+            ]);
+
+            jasmine.clock().tick(10000);
+          })
+          .then(() => new Promise(resolve => requestAnimationFrame(resolve)))
+          .then(() => {
+            expect(axios.get).toHaveBeenCalled();
+            expect(axios.get.calls.count()).toBe(2);
+
+            expect(dispatch.calls.argsFor(2)).toEqual([
+              'receiveLatestPipelineSuccess',
+              jasmine.anything(),
+            ]);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(500);
+        mock.onGet('/abc/def/commit/abc123def456ghi789jkl/pipelines').reply(500);
       });
 
       it('dispatches error', done => {
-        testAction(
-          fetchLatestPipeline,
-          '123',
-          mockedState,
-          [],
-          [{ type: 'requestLatestPipeline' }, { type: 'receiveLatestPipelineError' }],
-          done,
-        );
+        const dispatch = jasmine.createSpy('dispatch');
+        const rootGetters = {
+          lastCommit: { id: 'abc123def456ghi789jkl' },
+          currentProject: { path_with_namespace: 'abc/def' },
+        };
+
+        fetchLatestPipeline({ dispatch, rootGetters });
+
+        jasmine.clock().tick(1500);
+
+        new Promise(resolve => requestAnimationFrame(resolve))
+          .then(() => {
+            expect(dispatch.calls.argsFor(1)).toEqual([
+              'receiveLatestPipelineError',
+              jasmine.anything(),
+            ]);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });
 
   describe('requestJobs', () => {
     it('commits request', done => {
-      testAction(requestJobs, null, mockedState, [{ type: types.REQUEST_JOBS }], [], done);
+      testAction(requestJobs, 1, mockedState, [{ type: types.REQUEST_JOBS, payload: 1 }], [], done);
     });
   });
 
@@ -151,30 +216,32 @@ describe('IDE pipelines actions', () => {
     it('commits error', done => {
       testAction(
         receiveJobsError,
-        null,
+        { id: 1 },
         mockedState,
-        [{ type: types.RECEIVE_JOBS_ERROR }],
-        [],
+        [{ type: types.RECEIVE_JOBS_ERROR, payload: 1 }],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst loading the pipelines jobs.',
+              action: jasmine.anything(),
+              actionText: 'Please try again',
+              actionPayload: { id: 1 },
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      const flashSpy = spyOnDependency(actions, 'flash');
-
-      receiveJobsError({ commit() {} });
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 
   describe('receiveJobsSuccess', () => {
-    it('commits jobs', done => {
+    it('commits data', done => {
       testAction(
         receiveJobsSuccess,
-        jobs,
+        { id: 1, data: jobs },
         mockedState,
-        [{ type: types.RECEIVE_JOBS_SUCCESS, payload: jobs }],
+        [{ type: types.RECEIVE_JOBS_SUCCESS, payload: { id: 1, data: jobs } }],
         [],
         done,
       );
@@ -182,108 +249,209 @@ describe('IDE pipelines actions', () => {
   });
 
   describe('fetchJobs', () => {
-    let page = '';
-
-    beforeEach(() => {
-      mockedState.latestPipeline = pipelines[0];
-    });
+    const stage = {
+      id: 1,
+      dropdownPath: `${gl.TEST_HOST}/jobs`,
+    };
 
     describe('success', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines\/(.*)\/jobs/).replyOnce(() => [
-          200,
-          jobs,
-          {
-            'x-next-page': page,
-          },
-        ]);
+        mock.onGet(stage.dropdownPath).replyOnce(200, jobs);
       });
 
       it('dispatches request', done => {
         testAction(
           fetchJobs,
-          null,
+          stage,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsSuccess' }],
+          [
+            { type: 'requestJobs', payload: stage.id },
+            { type: 'receiveJobsSuccess', payload: { id: stage.id, data: jobs } },
+          ],
           done,
         );
       });
+    });
 
-      it('dispatches success with latest pipeline', done => {
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(stage.dropdownPath).replyOnce(500);
+      });
+
+      it('dispatches error', done => {
         testAction(
           fetchJobs,
-          null,
+          stage,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsSuccess', payload: jobs }],
+          [
+            { type: 'requestJobs', payload: stage.id },
+            { type: 'receiveJobsError', payload: stage },
+          ],
           done,
         );
       });
+    });
+  });
 
-      it('dispatches twice for both pages', done => {
-        page = '2';
+  describe('toggleStageCollapsed', () => {
+    it('commits collapse', done => {
+      testAction(
+        toggleStageCollapsed,
+        1,
+        mockedState,
+        [{ type: types.TOGGLE_STAGE_COLLAPSE, payload: 1 }],
+        [],
+        done,
+      );
+    });
+  });
 
+  describe('setDetailJob', () => {
+    it('commits job', done => {
+      testAction(
+        setDetailJob,
+        'job',
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
+        [{ type: 'setRightPane' }],
+        done,
+      );
+    });
+
+    it('dispatches setRightPane as pipeline when job is null', done => {
+      testAction(
+        setDetailJob,
+        null,
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: 'setRightPane', payload: rightSidebarViews.pipelines }],
+        done,
+      );
+    });
+
+    it('dispatches setRightPane as job', done => {
+      testAction(
+        setDetailJob,
+        'job',
+        mockedState,
+        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: 'setRightPane', payload: rightSidebarViews.jobsDetail }],
+        done,
+      );
+    });
+  });
+
+  describe('requestJobTrace', () => {
+    it('commits request', done => {
+      testAction(requestJobTrace, null, mockedState, [{ type: types.REQUEST_JOB_TRACE }], [], done);
+    });
+  });
+
+  describe('receiveJobTraceError', () => {
+    it('commits error', done => {
+      testAction(
+        receiveJobTraceError,
+        null,
+        mockedState,
+        [{ type: types.RECEIVE_JOB_TRACE_ERROR }],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'An error occured whilst fetching the job trace.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: null,
+            },
+          },
+        ],
+        done,
+      );
+    });
+  });
+
+  describe('receiveJobTraceSuccess', () => {
+    it('commits data', done => {
+      testAction(
+        receiveJobTraceSuccess,
+        'data',
+        mockedState,
+        [{ type: types.RECEIVE_JOB_TRACE_SUCCESS, payload: 'data' }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('fetchJobTrace', () => {
+    beforeEach(() => {
+      mockedState.detailJob = {
+        path: `${gl.TEST_HOST}/project/builds`,
+      };
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        spyOn(axios, 'get').and.callThrough();
+        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(200, { html: 'html' });
+      });
+
+      it('dispatches request', done => {
         testAction(
-          fetchJobs,
+          fetchJobTrace,
           null,
           mockedState,
           [],
           [
-            { type: 'requestJobs' },
-            { type: 'receiveJobsSuccess', payload: jobs },
-            { type: 'fetchJobs', payload: '2' },
-            { type: 'requestJobs' },
-            { type: 'receiveJobsSuccess', payload: jobs },
+            { type: 'requestJobTrace' },
+            { type: 'receiveJobTraceSuccess', payload: { html: 'html' } },
           ],
           done,
         );
       });
 
-      it('calls axios with correct URL', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
+      it('sends get request to correct URL', () => {
+        fetchJobTrace({ state: mockedState, dispatch() {} });
 
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
-
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '1' },
-        });
-      });
-
-      it('calls axios with page next page', () => {
-        const apiSpy = spyOn(axios, 'get').and.callThrough();
-
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState });
-
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '1' },
-        });
-
-        page = '2';
-
-        fetchJobs({ dispatch() {}, state: mockedState, rootState: mockedState }, page);
-
-        expect(apiSpy).toHaveBeenCalledWith('/api/v4/projects/test%2Fproject/pipelines/1/jobs', {
-          params: { page: '2' },
+        expect(axios.get).toHaveBeenCalledWith(`${gl.TEST_HOST}/project/builds/trace`, {
+          params: { format: 'json' },
         });
       });
     });
 
     describe('error', () => {
       beforeEach(() => {
-        mock.onGet(/\/api\/v4\/projects\/(.*)\/pipelines(.*)/).replyOnce(500);
+        mock.onGet(`${gl.TEST_HOST}/project/builds/trace`).replyOnce(500);
       });
 
       it('dispatches error', done => {
         testAction(
-          fetchJobs,
+          fetchJobTrace,
           null,
           mockedState,
           [],
-          [{ type: 'requestJobs' }, { type: 'receiveJobsError' }],
+          [{ type: 'requestJobTrace' }, { type: 'receiveJobTraceError' }],
           done,
         );
       });
+    });
+  });
+
+  describe('resetLatestPipeline', () => {
+    it('commits reset mutations', done => {
+      testAction(
+        resetLatestPipeline,
+        null,
+        mockedState,
+        [
+          { type: types.RECEIVE_LASTEST_PIPELINE_SUCCESS, payload: null },
+          { type: types.SET_DETAIL_JOB, payload: null },
+        ],
+        [],
+        done,
+      );
     });
   });
 });

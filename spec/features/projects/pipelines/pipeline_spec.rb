@@ -165,7 +165,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows Pipeline tab as active' do
-        expect(page).to have_css('.js-pipeline-tab-link.active')
+        expect(page).to have_css('.js-pipeline-tab-link .active')
       end
 
       context 'without permission to access builds' do
@@ -271,7 +271,7 @@ describe 'Pipeline', :js do
       end
 
       it 'shows Jobs tab as active' do
-        expect(page).to have_css('li.js-builds-tab-link.active')
+        expect(page).to have_css('li.js-builds-tab-link .active')
       end
     end
 
@@ -344,6 +344,16 @@ describe 'Pipeline', :js do
       it 'shows build failure logs' do
         expect(page).to have_content('4 examples, 1 failure')
       end
+
+      it 'shows the failure reason' do
+        expect(page).to have_content('There is an unknown failure, please try again')
+      end
+
+      it 'shows retry button for failed build' do
+        page.within(find('.build-failures', match: :first)) do
+          expect(page).to have_link('Retry')
+        end
+      end
     end
 
     context 'when missing build logs' do
@@ -379,7 +389,7 @@ describe 'Pipeline', :js do
         end
 
         it 'fails to access the page' do
-          expect(page).to have_content('Access Denied')
+          expect(page).to have_title('Access Denied')
         end
       end
     end

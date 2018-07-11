@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssueDueSchedulerWorker
   include ApplicationWorker
   include CronjobQueue

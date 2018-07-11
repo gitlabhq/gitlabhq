@@ -17,14 +17,7 @@ OmniAuth.config.before_request_phase do |env|
   Gitlab::RequestForgeryProtection.call(env)
 end
 
-if Gitlab.config.omniauth.enabled
+if Gitlab::OmniauthInitializer.enabled?
   provider_names = Gitlab.config.omniauth.providers.map(&:name)
-  require 'omniauth-kerberos' if provider_names.include?('kerberos')
-end
-
-module OmniAuth
-  module Strategies
-    autoload :Bitbucket, Rails.root.join('lib', 'omni_auth', 'strategies', 'bitbucket')
-    autoload :Jwt, Rails.root.join('lib', 'omni_auth', 'strategies', 'jwt')
-  end
+  Gitlab::Auth.omniauth_setup_providers(provider_names)
 end

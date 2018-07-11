@@ -19,7 +19,9 @@ There's also a collection of repositories with [example projects](https://gitlab
   - [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](laravel_with_gitlab_and_envoy/index.md)
 - **Ruby**: [Test and deploy a Ruby application to Heroku](test-and-deploy-ruby-application-to-heroku.md)
 - **Python**: [Test and deploy a Python application to Heroku](test-and-deploy-python-application-to-heroku.md)
-- **Java**: [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
+- **Java**:
+  - [Deploy a Spring Boot application to Cloud Foundry with GitLab CI/CD](deploy_spring_boot_to_cloud_foundry/index.md)
+  - [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
 - **Scala**: [Test a Scala application](test-scala-application.md)
 - **Clojure**: [Test a Clojure application](test-clojure-application.md)
 - **Elixir**:
@@ -41,9 +43,9 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-## Code quality analysis
+## Code Quality analysis
 
-[Analyze code quality with the Code Climate CLI](code_climate.md).
+**(Starter)** [Analyze your project's Code Quality](code_quality.md).
 
 ## Static Application Security Testing (SAST)
 

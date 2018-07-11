@@ -70,7 +70,7 @@
       .md {
         font-size: $gl-font-size;
 
-        .label {
+        .badge.badge-pill {
           color: $gl-text-color;
         }
 
@@ -173,7 +173,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .event-item {
     padding-left: 0;
 

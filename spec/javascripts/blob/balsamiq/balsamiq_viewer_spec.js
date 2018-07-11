@@ -257,9 +257,9 @@ describe('BalsamiqViewer', () => {
       name = 'name';
       resource = 'resource';
       template = `
-        <div class="panel panel-default">
-          <div class="panel-heading">name</div>
-          <div class="panel-body">
+        <div class="card">
+          <div class="card-header">name</div>
+          <div class="card-body">
             <img class="img-thumbnail" src="data:image/png;base64,image"/>
           </div>
         </div>

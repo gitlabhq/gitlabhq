@@ -1,26 +1,26 @@
 require 'spec_helper'
 
-feature 'Projects > Members > User requests access', :js do
+describe 'Projects > Members > User requests access', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable, :repository) }
-  let(:master) { project.owner }
+  let(:maintainer) { project.owner }
 
-  background do
+  before do
     sign_in(user)
     visit project_path(project)
   end
 
-  scenario 'request access feature is disabled' do
-    project.update_attributes(request_access_enabled: false)
+  it 'request access feature is disabled' do
+    project.update(request_access_enabled: false)
     visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'
   end
 
-  scenario 'user can request access to a project' do
+  it 'user can request access to a project' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
-    expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
+    expect(ActionMailer::Base.deliveries.last.to).to eq [maintainer.notification_email]
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
@@ -31,7 +31,7 @@ feature 'Projects > Members > User requests access', :js do
   end
 
   context 'code access is restricted' do
-    scenario 'user can request access' do
+    it 'user can request access' do
       project.project_feature.update!(repository_access_level: ProjectFeature::PRIVATE,
                                       builds_access_level: ProjectFeature::PRIVATE,
                                       merge_requests_access_level: ProjectFeature::PRIVATE)
@@ -41,7 +41,7 @@ feature 'Projects > Members > User requests access', :js do
     end
   end
 
-  scenario 'user is not listed in the project members page' do
+  it 'user is not listed in the project members page' do
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy
@@ -55,7 +55,7 @@ feature 'Projects > Members > User requests access', :js do
     end
   end
 
-  scenario 'user can withdraw its request for access' do
+  it 'user can withdraw its request for access' do
     click_link 'Request Access'
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy

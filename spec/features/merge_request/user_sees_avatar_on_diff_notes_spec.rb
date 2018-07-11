@@ -19,7 +19,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
 
     set_cookie('sidebar_collapsed', 'true')
@@ -35,7 +35,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
       expect(page).not_to have_selector('.diff-comment-avatar-holders')
     end
 
-    it 'does not render avatars after commening on discussion tab' do
+    it 'does not render avatars after commenting on discussion tab' do
       click_button 'Reply...'
 
       page.within('.js-discussion-note-form') do
@@ -75,7 +75,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
     end
   end
 
-  %w(inline parallel).each do |view|
+  %w(parallel).each do |view|
     context "#{view} view" do
       before do
         visit diffs_project_merge_request_path(project, merge_request, view: view)
@@ -104,7 +104,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
           find('.diff-notes-collapse').send_keys(:return)
         end
 
-        expect(page).to have_selector('.notes_holder', visible: false)
+        expect(page).not_to have_selector('.notes_holder')
 
         page.within find_line(position.line_code(project.repository)) do
           first('img.js-diff-comment-avatar').click

@@ -8,7 +8,7 @@ describe Projects::ForkService do
       before do
         @from_user = create(:user)
         @from_namespace = @from_user.namespace
-        avatar = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+        avatar = fixture_file_upload("spec/fixtures/dk.png", "image/png")
         @from_project = create(:project,
                                :repository,
                                creator_id: @from_user.id,
@@ -135,7 +135,7 @@ describe Projects::ForkService do
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do
-            @from_project.update_attributes(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            @from_project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 

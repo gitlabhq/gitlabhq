@@ -121,10 +121,6 @@
   &.btn-sm {
     margin-left: $btn-sm-side-margin;
   }
-
-  &.btn-xs {
-    margin-left: $btn-xs-side-margin;
-  }
 }
 
 @mixin btn-svg {
@@ -148,10 +144,6 @@
     padding: 4px 10px;
     font-size: 13px;
     line-height: 18px;
-  }
-
-  &.btn-xs {
-    padding: 2px 5px;
   }
 
   &.btn-success,
@@ -304,7 +296,8 @@
   padding: 0 5px;
 }
 
-.input-group-btn {
+.input-group-prepend,
+.input-group-append {
   .btn {
     @include btn-middle;
 
@@ -393,7 +386,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .btn-wide-on-xs {
     width: 100%;
   }
@@ -494,6 +487,10 @@ fieldset[disabled] .btn,
   &:hover {
     @extend %disabled;
   }
+}
+
+[readonly] {
+  cursor: default;
 }
 
 .btn-no-padding {

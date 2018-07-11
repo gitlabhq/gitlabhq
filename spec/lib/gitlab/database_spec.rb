@@ -314,8 +314,13 @@ describe Gitlab::Database do
 
   describe '.cached_table_exists?' do
     it 'only retrieves data once per table' do
-      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
-      expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
+      if Gitlab.rails5?
+        expect(ActiveRecord::Base.connection).to receive(:data_source_exists?).with(:projects).once.and_call_original
+        expect(ActiveRecord::Base.connection).to receive(:data_source_exists?).with(:bogus_table_name).once.and_call_original
+      else
+        expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:projects).once.and_call_original
+        expect(ActiveRecord::Base.connection).to receive(:table_exists?).with(:bogus_table_name).once.and_call_original
+      end
 
       2.times do
         expect(described_class.cached_table_exists?(:projects)).to be_truthy
@@ -349,6 +354,35 @@ describe Gitlab::Database do
       expect(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.false_value).to eq 0
+    end
+  end
+
+  describe '.db_read_only?' do
+    context 'when using PostgreSQL' do
+      before do
+        allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+        expect(described_class).to receive(:postgresql?).and_return(true)
+      end
+
+      it 'detects a read only database' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "t" }])
+
+        expect(described_class.db_read_only?).to be_truthy
+      end
+
+      it 'detects a read write database' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with('SELECT pg_is_in_recovery()').and_return([{ "pg_is_in_recovery" => "f" }])
+
+        expect(described_class.db_read_only?).to be_falsey
+      end
+    end
+
+    context 'when using MySQL' do
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(false)
+      end
+
+      it { expect(described_class.db_read_only?).to be_falsey }
     end
   end
 

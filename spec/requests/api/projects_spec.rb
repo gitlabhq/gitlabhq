@@ -40,7 +40,7 @@ describe API::Projects do
     create(:project_member,
     user: user4,
     project: project3,
-    access_level: ProjectMember::MASTER)
+    access_level: ProjectMember::MAINTAINER)
   end
   let(:project4) do
     create(:project,
@@ -312,7 +312,7 @@ describe API::Projects do
 
         before do
           project_member
-          user3.update_attributes(starred_projects: [project, project2, project3, public_project])
+          user3.update(starred_projects: [project, project2, project3, public_project])
         end
 
         it 'returns the starred projects viewable by the user' do
@@ -333,7 +333,7 @@ describe API::Projects do
         let!(:project9) { create(:project, :public, path: 'gitlab9') }
 
         before do
-          user.update_attributes(starred_projects: [project5, project7, project8, project9])
+          user.update(starred_projects: [project5, project7, project8, project9])
         end
 
         context 'including owned filter' do
@@ -353,7 +353,7 @@ describe API::Projects do
             create(:project_member,
                    user: user,
                    project: project5,
-                   access_level: ProjectMember::MASTER)
+                   access_level: ProjectMember::MAINTAINER)
           end
 
           it 'returns only projects that satisfy all query parameters' do
@@ -518,7 +518,7 @@ describe API::Projects do
     end
 
     it 'uploads avatar for project a project' do
-      project = attributes_for(:project, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif'))
+      project = attributes_for(:project, avatar: fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif'))
 
       post api('/projects', user), project
 
@@ -777,7 +777,7 @@ describe API::Projects do
     end
 
     it "uploads the file and returns its info" do
-      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")
+      post api("/projects/#{project.id}/uploads", user), file: fixture_file_upload("spec/fixtures/dk.png", "image/png")
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['alt']).to eq("dk")
@@ -961,7 +961,7 @@ describe API::Projects do
       describe 'permissions' do
         context 'all projects' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it 'contains permission information' do
@@ -969,19 +969,19 @@ describe API::Projects do
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response.first['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response.first['permissions']['group_access']).to be_nil
           end
         end
 
         context 'personal project' do
           it 'sets project access and returns 200' do
-            project.add_master(user)
+            project.add_maintainer(user)
             get api("/projects/#{project.id}", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(json_response['permissions']['project_access']['access_level'])
-            .to eq(Gitlab::Access::MASTER)
+            .to eq(Gitlab::Access::MAINTAINER)
             expect(json_response['permissions']['group_access']).to be_nil
           end
         end
@@ -1451,7 +1451,7 @@ describe API::Projects do
       end
 
       it 'updates visibility_level from public to private' do
-        project3.update_attributes({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+        project3.update({ visibility_level: Gitlab::VisibilityLevel::PUBLIC })
         project_param = { visibility: 'private' }
 
         put api("/projects/#{project3.id}", user), project_param
@@ -1526,9 +1526,23 @@ describe API::Projects do
 
         expect(response).to have_gitlab_http_status(400)
       end
+
+      it 'updates avatar' do
+        project_param = {
+          avatar: fixture_file_upload('spec/fixtures/banana_sample.gif',
+                                      'image/gif')
+        }
+
+        put api("/projects/#{project3.id}", user), project_param
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['avatar_url']).to eq('http://localhost/uploads/'\
+                                                  '-/system/project/avatar/'\
+                                                  "#{project3.id}/banana_sample.gif")
+      end
     end
 
-    context 'when authenticated as project master' do
+    context 'when authenticated as project maintainer' do
       it 'updates path' do
         project_param = { path: 'bar' }
         put api("/projects/#{project3.id}", user4), project_param
@@ -1986,6 +2000,38 @@ describe API::Projects do
         post api("/projects/#{project.id}/housekeeping")
 
         expect(response).to have_gitlab_http_status(401)
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id/transfer' do
+    context 'when authenticated as owner' do
+      let(:group) { create :group }
+
+      it 'transfers the project to the new namespace' do
+        group.add_owner(user)
+
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'fails when transferring to a non owned namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: group.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails when transferring to an unknown namespace' do
+        put api("/projects/#{project.id}/transfer", user), namespace: 'unknown'
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'fails on missing namespace' do
+        put api("/projects/#{project.id}/transfer", user)
+
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end

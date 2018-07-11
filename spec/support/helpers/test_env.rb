@@ -47,8 +47,11 @@ module TestEnv
     'v1.1.0'                             => 'b83d6e3',
     'add-ipython-files'                  => '93ee732',
     'add-pdf-file'                       => 'e774ebd',
+    'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
-    'add_images_and_changes'             => '010d106'
+    'add_images_and_changes'             => '010d106',
+    'update-gitlab-shell-v-6-0-1'        => '2f61d70',
+    'update-gitlab-shell-v-6-0-3'        => 'de78448'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -134,6 +137,16 @@ module TestEnv
       install_dir: Gitlab.config.gitlab_shell.path,
       version: Gitlab::Shell.version_required,
       task: 'gitlab:shell:install')
+
+    create_fake_git_hooks
+  end
+
+  def create_fake_git_hooks
+    # gitlab-shell hooks don't work in our test environment because they try to make internal API calls
+    hooks_dir = File.join(Gitlab.config.gitlab_shell.path, 'hooks')
+    %w[pre-receive post-receive update].each do |hook|
+      File.open(File.join(hooks_dir, hook), 'w', 0755) { |f| f.puts '#!/bin/sh' }
+    end
   end
 
   def setup_gitaly

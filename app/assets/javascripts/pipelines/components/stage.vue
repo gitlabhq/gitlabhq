@@ -158,22 +158,23 @@ export default {
   <div class="dropdown">
     <button
       v-tooltip
+      id="stageDropdown"
+      ref="dropdown"
       :class="triggerButtonClass"
-      @click="onClickStage"
-      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       :title="stage.title"
+      class="mini-pipeline-graph-dropdown-toggle js-builds-dropdown-button"
       data-placement="top"
       data-toggle="dropdown"
+      data-display="static"
       type="button"
-      id="stageDropdown"
       aria-haspopup="true"
       aria-expanded="false"
-      ref="dropdown"
+      @click="onClickStage"
     >
 
       <span
-        aria-hidden="true"
         :aria-label="stage.title"
+        aria-hidden="true"
       >
         <icon :name="borderlessIcon" />
       </span>
@@ -185,32 +186,27 @@ export default {
       </i>
     </button>
 
-    <ul
+    <div
       class="dropdown-menu mini-pipeline-graph-dropdown-menu js-builds-dropdown-container"
       aria-labelledby="stageDropdown"
     >
-
-      <li
+      <loading-icon v-if="isLoading"/>
+      <ul
+        v-else
         class="js-builds-dropdown-list scrollable-menu"
       >
-
-        <loading-icon v-if="isLoading"/>
-
-        <ul
-          v-else
+        <li
+          v-for="job in dropdownContent"
+          :key="job.id"
         >
-          <li
-            v-for="job in dropdownContent"
-            :key="job.id"
-          >
-            <job-component
-              :job="job"
-              css-class-job-name="mini-pipeline-graph-dropdown-item"
-              @pipelineActionRequestComplete="pipelineActionRequestComplete"
-            />
-          </li>
-        </ul>
-      </li>
-    </ul>
+          <job-component
+            :dropdown-length="dropdownContent.length"
+            :job="job"
+            css-class-job-name="mini-pipeline-graph-dropdown-item"
+            @pipelineActionRequestComplete="pipelineActionRequestComplete"
+          />
+        </li>
+      </ul>
+    </div>
   </div>
 </template>

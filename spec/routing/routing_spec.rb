@@ -162,8 +162,8 @@ describe ProfilesController, "routing" do
     expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
   end
 
-  it "to #reset_rss_token" do
-    expect(put("/profile/reset_rss_token")).to route_to('profiles#reset_rss_token')
+  it "to #reset_feed_token" do
+    expect(put("/profile/reset_feed_token")).to route_to('profiles#reset_feed_token')
   end
 
   it "to #show" do
@@ -249,7 +249,11 @@ describe DashboardController, "routing" do
   end
 
   it "to #issues" do
-    expect(get("/dashboard/issues")).to route_to('dashboard#issues')
+    expect(get("/dashboard/issues.html")).to route_to('dashboard#issues', format: 'html')
+  end
+
+  it "to #calendar_issues" do
+    expect(get("/dashboard/issues.ics")).to route_to('dashboard#issues_calendar', format: 'ics')
   end
 
   it "to #merge_requests" do

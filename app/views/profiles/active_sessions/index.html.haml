@@ -10,5 +10,6 @@
   .col-lg-8
     .append-bottom-default
 
-      %ul.well-list
-        = render partial: 'profiles/active_sessions/active_session', collection: @sessions
+      .card.border-0
+        %ul.list-group.list-group-flush
+          = render partial: 'profiles/active_sessions/active_session', collection: @sessions

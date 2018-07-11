@@ -2,7 +2,11 @@ require 'backup/files'
 
 module Backup
   class Registry < Files
-    def initialize
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+
       super('registry', Settings.registry.path)
     end
   end

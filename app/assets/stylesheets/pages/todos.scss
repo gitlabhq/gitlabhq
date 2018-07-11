@@ -126,7 +126,7 @@
         color: $gl-grayish-blue;
         font-size: $gl-font-size;
 
-        .label {
+        .badge.badge-pill {
           color: $gl-text-color;
         }
 
@@ -162,7 +162,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   .todos-filters {
     .dropdown-menu-toggle {
       width: 130px;
@@ -174,7 +174,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .todo {
     .avatar {
       display: none;
@@ -214,7 +214,7 @@
   margin-left: auto;
   margin-right: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     -webkit-flex-direction: row;
     flex-direction: row;
     padding-top: 80px;
@@ -233,7 +233,7 @@
   margin-left: auto;
   margin-right: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     width: 300px;
     margin-right: 0;
     -webkit-order: 2;
@@ -244,7 +244,7 @@
 .todos-all-done {
   padding-top: 20px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-top: 50px;
   }
 

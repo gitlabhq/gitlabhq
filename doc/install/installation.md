@@ -12,9 +12,8 @@ Since installations from source don't have Runit, Sidekiq can't be terminated an
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the tag (version) of GitLab you would like to install.
-In most cases this should be the highest numbered production tag (without rc in it).
-You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-1-stable`).
+You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -133,9 +132,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.7.tar.gz
-    echo '540996fec64984ab6099e34d2f5820b14904f15a  ruby-2.3.7.tar.gz' | shasum -c - && tar xzf ruby-2.3.7.tar.gz
-    cd ruby-2.3.7
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz
+    echo 'ec82b0d53bd0adad9b19e6b45e44d54e9ec3f10c  ruby-2.4.4.tar.gz' | shasum -c - && tar xzf ruby-2.4.4.tar.gz
+    cd ruby-2.4.4
 
     ./configure --disable-install-rdoc
     make
@@ -154,12 +153,12 @@ page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
-
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
-    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
+    
+    curl --remote-name --progress https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    echo 'fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  go1.10.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.8.3.linux-amd64.tar.gz
+    rm go1.10.3.linux-amd64.tar.gz
 
 ## 4. Node
 
@@ -301,9 +300,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-8-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-1-stable gitlab
 
-**Note:** You can change `10-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `11-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -448,6 +447,15 @@ You can specify a different Git repository by providing it as an extra parameter
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
+### Install gitlab-pages
+
+GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab-Pages in `/home/git/gitlab-pages`. For additional setup steps, please consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be ran several different ways.
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+    cd gitlab-pages
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+    sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
 

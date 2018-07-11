@@ -14,8 +14,12 @@ module Ci
       @subject.triggered_by?(@user)
     end
 
-    condition(:branch_allows_maintainer_push) do
-      @subject.project.branch_allows_maintainer_push?(@user, @subject.ref)
+    condition(:branch_allows_collaboration) do
+      @subject.project.branch_allows_collaboration?(@user, @subject.ref)
+    end
+
+    condition(:terminal, scope: :subject) do
+      @subject.has_terminal?
     end
 
     rule { protected_ref }.policy do
@@ -25,9 +29,11 @@ module Ci
 
     rule { can?(:admin_build) | (can?(:update_build) & owner_of_job) }.enable :erase_build
 
-    rule { can?(:public_access) & branch_allows_maintainer_push }.policy do
+    rule { can?(:public_access) & branch_allows_collaboration }.policy do
       enable :update_build
       enable :update_commit_status
     end
+
+    rule { can?(:update_build) & terminal }.enable :create_build_terminal
   end
 end

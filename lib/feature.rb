@@ -63,8 +63,15 @@ class Feature
     end
 
     def flipper
-      Thread.current[:flipper] ||=
-        Flipper.new(flipper_adapter).tap { |flip| flip.memoize = true }
+      if RequestStore.active?
+        RequestStore[:flipper] ||= build_flipper_instance
+      else
+        @flipper ||= build_flipper_instance
+      end
+    end
+
+    def build_flipper_instance
+      Flipper.new(flipper_adapter).tap { |flip| flip.memoize = true }
     end
 
     # This method is called from config/initializers/flipper.rb and can be used

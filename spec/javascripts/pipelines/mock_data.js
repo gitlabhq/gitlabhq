@@ -217,7 +217,7 @@ export const pipelineWithStages = {
         browse_path: '/gitlab-org/gitlab-ee/-/jobs/62411442/artifacts/browse',
       },
       {
-        name: 'codequality',
+        name: 'code_quality',
         expired: false,
         expire_at: '2018-04-18T14:16:24.484Z',
         path: '/gitlab-org/gitlab-ee/-/jobs/62411441/artifacts/download',

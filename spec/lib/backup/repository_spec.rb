@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Backup::Repository do
   let(:progress) { StringIO.new }
   let!(:project) { create(:project, :wiki_repo) }
+  subject { described_class.new(progress) }
 
   before do
     allow(progress).to receive(:puts)
@@ -24,18 +25,18 @@ describe Backup::Repository do
       end
 
       it 'does not raise error' do
-        expect { described_class.new.dump }.not_to raise_error
+        expect { subject.dump }.not_to raise_error
       end
     end
   end
 
   describe '#restore' do
-    subject { described_class.new }
-
     let(:timestamp) { Time.utc(2017, 3, 22) }
     let(:temp_dirs) do
       Gitlab.config.repositories.storages.map do |name, storage|
-        File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          File.join(storage.legacy_disk_path, '..', 'repositories.old.' + timestamp.to_i.to_s)
+        end
       end
     end
 
@@ -49,14 +50,14 @@ describe Backup::Repository do
 
     describe 'command failure' do
       before do
-        allow(Gitlab::Popen).to receive(:popen).and_return(['error', 1])
+        allow_any_instance_of(Gitlab::Shell).to receive(:create_repository).and_return(false)
       end
 
       context 'hashed storage' do
         it 'shows the appropriate error' do
           subject.restore
 
-          expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} (#{project.disk_path}) - error")
+          expect(progress).to have_received(:puts).with("[Failed] restoring #{project.full_path} repository")
         end
       end
 
@@ -66,32 +67,43 @@ describe Backup::Repository do
         it 'shows the appropriate error' do
           subject.restore
 
-          expect(progress).to have_received(:puts).with("Ignoring error on #{project.full_path} - error")
+          expect(progress).to have_received(:puts).with("[Failed] restoring #{project.full_path} repository")
         end
       end
     end
+  end
 
-    describe 'folders without permissions' do
+  describe '#delete_all_repositories', :seed_helper do
+    shared_examples('delete_all_repositories') do
       before do
-        allow(FileUtils).to receive(:mv).and_raise(Errno::EACCES)
+        allow(FileUtils).to receive(:mkdir_p).and_call_original
+        allow(FileUtils).to receive(:mv).and_call_original
       end
 
-      it 'shows error message' do
-        expect(subject).to receive(:access_denied_error)
-        subject.restore
+      after(:all) do
+        ensure_seeds
+      end
+
+      it 'removes all repositories' do
+        # Sanity check: there should be something for us to delete
+        expect(list_repositories).to include(File.join(SEED_STORAGE_PATH, TEST_REPO_PATH))
+
+        subject.delete_all_repositories('default', Gitlab.config.repositories.storages['default'])
+
+        expect(list_repositories).to be_empty
+      end
+
+      def list_repositories
+        Dir[File.join(SEED_STORAGE_PATH, '*.git')]
       end
     end
 
-    describe 'folder that is a mountpoint' do
-      before do
-        allow(FileUtils).to receive(:mv).and_raise(Errno::EBUSY)
-      end
+    context 'with gitaly' do
+      it_behaves_like 'delete_all_repositories'
+    end
 
-      it 'shows error message' do
-        expect(subject).to receive(:resource_busy_error).and_call_original
-
-        expect { subject.restore }.to raise_error(/is a mountpoint/)
-      end
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like 'delete_all_repositories'
     end
   end
 
@@ -102,20 +114,20 @@ describe Backup::Repository do
       it 'invalidates the emptiness cache' do
         expect(wiki.repository).to receive(:expire_emptiness_caches).once
 
-        described_class.new.send(:empty_repo?, wiki)
+        subject.send(:empty_repo?, wiki)
       end
 
       context 'wiki repo has content' do
         let!(:wiki_page) { create(:wiki_page, wiki: wiki) }
 
         it 'returns true, regardless of bad cache value' do
-          expect(described_class.new.send(:empty_repo?, wiki)).to be(false)
+          expect(subject.send(:empty_repo?, wiki)).to be(false)
         end
       end
 
       context 'wiki repo does not have content' do
         it 'returns true, regardless of bad cache value' do
-          expect(described_class.new.send(:empty_repo?, wiki)).to be_truthy
+          expect(subject.send(:empty_repo?, wiki)).to be_truthy
         end
       end
     end

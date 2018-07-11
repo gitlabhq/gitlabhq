@@ -1,3 +1,4 @@
+require 'google/apis/compute_v1'
 require 'google/apis/container_v1'
 require 'google/apis/cloudbilling_v1'
 require 'google/apis/cloudresourcemanager_v1'
@@ -40,22 +41,6 @@ module GoogleApi
         return false if token_life_time(expires_at) < LEAST_TOKEN_LIFE_TIME
 
         true
-      end
-
-      def projects_list
-        service = Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService.new
-        service.authorization = access_token
-
-        service.fetch_all(items: :projects) do |token|
-          service.list_projects(page_token: token, options: user_agent_header)
-        end
-      end
-
-      def projects_get_billing_info(project_id)
-        service = Google::Apis::CloudbillingV1::CloudbillingService.new
-        service.authorization = access_token
-
-        service.get_project_billing_info("projects/#{project_id}", options: user_agent_header)
       end
 
       def projects_zones_clusters_get(project_id, zone, cluster_id)

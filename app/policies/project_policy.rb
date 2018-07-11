@@ -45,8 +45,8 @@ class ProjectPolicy < BasePolicy
   desc "User has developer access"
   condition(:developer) { team_access_level >= Gitlab::Access::DEVELOPER }
 
-  desc "User has master access"
-  condition(:master) { team_access_level >= Gitlab::Access::MASTER }
+  desc "User has maintainer access"
+  condition(:maintainer) { team_access_level >= Gitlab::Access::MAINTAINER }
 
   desc "Project is public"
   condition(:public_project, scope: :subject, score: 0) { project.public? }
@@ -123,14 +123,14 @@ class ProjectPolicy < BasePolicy
   rule { guest }.enable :guest_access
   rule { reporter }.enable :reporter_access
   rule { developer }.enable :developer_access
-  rule { master }.enable :master_access
+  rule { maintainer }.enable :maintainer_access
   rule { owner | admin }.enable :owner_access
 
   rule { can?(:owner_access) }.policy do
     enable :guest_access
     enable :reporter_access
     enable :developer_access
-    enable :master_access
+    enable :maintainer_access
 
     enable :change_namespace
     enable :change_visibility_level
@@ -228,7 +228,7 @@ class ProjectPolicy < BasePolicy
     enable :create_deployment
   end
 
-  rule { can?(:master_access) }.policy do
+  rule { can?(:maintainer_access) }.policy do
     enable :push_to_delete_protected_branch
     enable :update_project_snippet
     enable :update_environment
@@ -297,6 +297,7 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:build))
     prevent(*create_read_update_admin_destroy(:pipeline_schedule))
     prevent(*create_read_update_admin_destroy(:environment))
+    prevent(*create_read_update_admin_destroy(:cluster))
     prevent(*create_read_update_admin_destroy(:deployment))
   end
 

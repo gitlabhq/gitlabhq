@@ -15,7 +15,7 @@ module Spec
           def sort_by(value)
             find('button.dropdown-toggle').click
 
-            page.within('.content ul.dropdown-menu.dropdown-menu-align-right li') do
+            page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
               click_link(value)
             end
           end

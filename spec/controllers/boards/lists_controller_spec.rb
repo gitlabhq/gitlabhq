@@ -7,7 +7,7 @@ describe Boards::ListsController do
   let(:guest)   { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(guest)
   end
 
@@ -156,12 +156,18 @@ describe Boards::ListsController do
     def move(user:, board:, list:, position:)
       sign_in(user)
 
-      patch :update, namespace_id: project.namespace.to_param,
-                     project_id: project,
-                     board_id: board.to_param,
-                     id: list.to_param,
-                     list: { position: position },
-                     format: :json
+      params = { namespace_id: project.namespace.to_param,
+                 project_id: project,
+                 board_id: board.to_param,
+                 id: list.to_param,
+                 list: { position: position },
+                 format: :json }
+
+      if Gitlab.rails5?
+        patch :update, params: params, as: :json
+      else
+        patch :update, params
+      end
     end
   end
 

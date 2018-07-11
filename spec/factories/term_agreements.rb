@@ -3,4 +3,12 @@ FactoryBot.define do
     term
     user
   end
+
+  trait :declined do
+    accepted false
+  end
+
+  trait :accepted do
+    accepted true
+  end
 end

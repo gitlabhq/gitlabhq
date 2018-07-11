@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin Groups' do
+describe 'Admin Groups' do
   include Select2Helper
 
   let(:internal) { Gitlab::VisibilityLevel::INTERNAL }
@@ -31,6 +31,7 @@ feature 'Admin Groups' do
       path_component = 'gitlab'
       group_name = 'GitLab group name'
       group_description = 'Description of group for GitLab'
+
       fill_in 'group_path', with: path_component
       fill_in 'group_name', with: group_name
       fill_in 'group_description', with: group_description
@@ -46,13 +47,13 @@ feature 'Admin Groups' do
       expect(li_texts).to match group_description
     end
 
-    scenario 'shows the visibility level radio populated with the default value' do
+    it 'shows the visibility level radio populated with the default value' do
       visit new_admin_group_path
 
       expect_selected_visibility(internal)
     end
 
-    scenario 'when entered in group path, it auto filled the group name', :js do
+    it 'when entered in group path, it auto filled the group name', :js do
       visit admin_groups_path
       click_link "New group"
       group_path = 'gitlab'
@@ -63,7 +64,7 @@ feature 'Admin Groups' do
   end
 
   describe 'show a group' do
-    scenario 'shows the group' do
+    it 'shows the group' do
       group = create(:group, :private)
 
       visit admin_group_path(group)
@@ -73,7 +74,7 @@ feature 'Admin Groups' do
   end
 
   describe 'group edit' do
-    scenario 'shows the visibility level radio populated with the group visibility_level value' do
+    it 'shows the visibility level radio populated with the group visibility_level value' do
       group = create(:group, :private)
 
       visit admin_group_edit_path(group)
@@ -81,7 +82,7 @@ feature 'Admin Groups' do
       expect_selected_visibility(group.visibility_level)
     end
 
-    scenario 'edit group path does not change group name', :js do
+    it 'edit group path does not change group name', :js do
       group = create(:group, :private)
 
       visit admin_group_edit_path(group)
@@ -167,7 +168,7 @@ feature 'Admin Groups' do
     it 'renders shared project' do
       empty_project = create(:project)
       empty_project.project_group_links.create!(
-        group_access: Gitlab::Access::MASTER,
+        group_access: Gitlab::Access::MAINTAINER,
         group: group
       )
 

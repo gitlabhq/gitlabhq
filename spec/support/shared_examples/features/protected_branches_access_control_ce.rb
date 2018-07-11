@@ -5,12 +5,18 @@ shared_examples "protected branches > access control > CE" do
 
       set_protected_branch_name('master')
 
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
       within('.js-new-protected-branch') do
         allowed_to_push_button = find(".js-allowed-to-push")
 
         unless allowed_to_push_button.text == access_type_name
           allowed_to_push_button.click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
         end
       end
 
@@ -24,6 +30,18 @@ shared_examples "protected branches > access control > CE" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
+
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
 
       click_on "Protect"
 
@@ -55,8 +73,14 @@ shared_examples "protected branches > access control > CE" do
 
         unless allowed_to_merge_button.text == access_type_name
           allowed_to_merge_button.click
-          within(".dropdown.open .dropdown-menu") { click_on access_type_name }
+          within(".dropdown.show .dropdown-menu") { click_on access_type_name }
         end
+      end
+
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
       end
 
       click_on "Protect"
@@ -69,6 +93,18 @@ shared_examples "protected branches > access control > CE" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
+
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
 
       click_on "Protect"
 

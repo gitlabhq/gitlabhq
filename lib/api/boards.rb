@@ -33,6 +33,7 @@ module API
           success Entities::Board
         end
         get '/:board_id' do
+          authorize!(:read_board, user_project)
           present board, with: Entities::Board
         end
       end

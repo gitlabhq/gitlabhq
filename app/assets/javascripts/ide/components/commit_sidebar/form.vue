@@ -24,7 +24,7 @@ export default {
     ...mapState(['changedFiles', 'stagedFiles', 'currentActivityView', 'lastCommitMsg']),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['hasChanges']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled', 'preBuiltCommitMessage']),
     overviewText() {
       return sprintf(
         __(
@@ -35,6 +35,9 @@ export default {
           changedFilesLength: this.changedFiles.length,
         },
       );
+    },
+    commitButtonText() {
+      return this.stagedFiles.length ? __('Commit') : __('Stage & Commit');
     },
   },
   watch: {
@@ -91,7 +94,6 @@ export default {
 
 <template>
   <div
-    class="multi-file-commit-form"
     :class="{
       'is-compact': isCompact,
       'is-full': !isCompact
@@ -99,6 +101,7 @@ export default {
     :style="{
       height: componentHeight ? `${componentHeight}px` : null,
     }"
+    class="multi-file-commit-form"
   >
     <transition
       name="commit-form-slide-up"
@@ -108,16 +111,16 @@ export default {
     >
       <div
         v-if="isCompact"
-        class="commit-form-compact"
         ref="compactEl"
+        class="commit-form-compact"
       >
         <button
-          type="button"
           :disabled="!hasChanges"
+          type="button"
           class="btn btn-primary btn-sm btn-block"
           @click="toggleIsSmall"
         >
-          {{ __('Commit') }}
+          {{ __('Commit…') }}
         </button>
         <p
           class="text-center"
@@ -126,9 +129,8 @@ export default {
       </div>
       <form
         v-if="!isCompact"
-        class="form-horizontal"
-        @submit.prevent.stop="commitChanges"
         ref="formEl"
+        @submit.prevent.stop="commitChanges"
       >
         <transition name="fade">
           <success-message
@@ -137,21 +139,21 @@ export default {
         </transition>
         <commit-message-field
           :text="commitMessage"
+          :placeholder="preBuiltCommitMessage"
           @input="updateCommitMessage"
         />
         <div class="clearfix prepend-top-15">
           <actions />
           <loading-button
             :loading="submitCommitLoading"
-            :disabled="commitButtonDisabled"
-            container-class="btn btn-success btn-sm pull-left"
-            :label="__('Commit')"
+            :label="commitButtonText"
+            container-class="btn btn-success btn-sm float-left"
             @click="commitChanges"
           />
           <button
             v-if="!discardDraftButtonDisabled"
             type="button"
-            class="btn btn-default btn-sm pull-right"
+            class="btn btn-default btn-sm float-right"
             @click="discardDraft"
           >
             {{ __('Discard draft') }}
@@ -159,7 +161,7 @@ export default {
           <button
             v-else
             type="button"
-            class="btn btn-default btn-sm pull-right"
+            class="btn btn-default btn-sm float-right"
             @click="toggleIsSmall"
           >
             {{ __('Collapse') }}

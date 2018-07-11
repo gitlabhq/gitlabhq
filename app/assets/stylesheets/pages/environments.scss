@@ -1,4 +1,4 @@
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .deployments-container {
     width: 100%;
     overflow: auto;
@@ -23,8 +23,7 @@
     }
 
     .btn-group {
-
-      > a {
+      > .btn:not(.btn-danger) {
         color: $gl-text-color-secondary;
       }
 
@@ -138,7 +137,7 @@
   border-left: 0;
   border-right: 0;
 
-  @media (min-width: $screen-sm-max) {
+  @media (min-width: map-get($grid-breakpoints, md)-1) {
     border-top: 0;
   }
 }
@@ -223,6 +222,23 @@
   }
 }
 
+.prometheus-graphs {
+  .environments {
+    .dropdown-menu-toggle {
+      svg {
+        position: absolute;
+        right: 5%;
+        top: 25%;
+      }
+    }
+
+    .dropdown-menu-toggle,
+    .dropdown-menu {
+      width: 240px;
+    }
+  }
+}
+
 .environments-actions {
   .external-url,
   .monitoring-url,
@@ -245,14 +261,26 @@
 .prometheus-graph {
   flex: 1 0 auto;
   min-width: 450px;
+  max-width: 100%;
   padding: $gl-padding / 2;
 
   h5 {
     font-size: 16px;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     min-width: 100%;
+  }
+}
+
+.prometheus-graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $gl-padding-8;
+
+  h5 {
+    margin: 0;
   }
 }
 
@@ -432,7 +460,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       .label-axis-text,
       .text-metric-usage,
       .legend-axis-text {

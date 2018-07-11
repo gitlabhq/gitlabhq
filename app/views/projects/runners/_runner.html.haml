@@ -15,7 +15,7 @@
       %span.commit-sha
         = runner.short_sha
 
-    .pull-right
+    .float-right
       - if @project_runners.include?(runner)
         - if runner.active?
           = link_to _('Pause'), pause_project_runner_path(@project, runner), method: :post, class: 'btn btn-sm btn-danger', data: { confirm: _("Are you sure?") }
@@ -26,11 +26,11 @@
         - else
           - runner_project = @project.runner_projects.find_by(runner_id: runner)
           = link_to _('Disable for this project'), project_runner_project_path(@project, runner_project), data: { confirm: _("Are you sure?") }, method: :delete, class: 'btn btn-danger btn-sm'
-      - elsif !(runner.is_shared? || runner.group_type?) # We can simplify this to `runner.project_type?` when migrating #runner_type is complete
+      - elsif runner.project_type?
         = form_for [@project.namespace.becomes(Namespace), @project, @project.runner_projects.new] do |f|
           = f.hidden_field :runner_id, value: runner.id
           = f.submit _('Enable for this project'), class: 'btn btn-sm'
-  .pull-right
+  .float-right
     %small.light
       \##{runner.id}
   - if runner.description.present?
@@ -39,5 +39,5 @@
   - if runner.tag_list.present?
     %p
       - runner.tag_list.sort.each do |tag|
-        %span.label.label-primary
+        %span.badge.badge-primary
           = tag

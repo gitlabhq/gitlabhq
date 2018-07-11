@@ -37,35 +37,4 @@ describe('IDE pipeline getters', () => {
       expect(getters.hasLatestPipeline(mockedState)).toBe(true);
     });
   });
-
-  describe('failedJobs', () => {
-    it('returns array of failed jobs', () => {
-      mockedState.stages = [
-        {
-          title: 'test',
-          jobs: [{ id: 1, status: 'failed' }, { id: 2, status: 'success' }],
-        },
-        {
-          title: 'build',
-          jobs: [{ id: 3, status: 'failed' }, { id: 4, status: 'failed' }],
-        },
-      ];
-
-      expect(getters.failedJobs(mockedState).length).toBe(3);
-      expect(getters.failedJobs(mockedState)).toEqual([
-        {
-          id: 1,
-          status: jasmine.anything(),
-        },
-        {
-          id: 3,
-          status: jasmine.anything(),
-        },
-        {
-          id: 4,
-          status: jasmine.anything(),
-        },
-      ]);
-    });
-  });
 });

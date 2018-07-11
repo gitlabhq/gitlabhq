@@ -14,6 +14,25 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
+      def omniauth_customized_providers
+        @omniauth_customized_providers ||= %w[bitbucket jwt]
+      end
+
+      def omniauth_setup_providers(provider_names)
+        provider_names.each do |provider|
+          omniauth_setup_a_provider(provider)
+        end
+      end
+
+      def omniauth_setup_a_provider(provider)
+        case provider
+        when 'kerberos'
+          require 'omniauth-kerberos'
+        when *omniauth_customized_providers
+          require_dependency "omni_auth/strategies/#{provider}"
+        end
+      end
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -221,7 +240,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = ::Ci::Build.running.find_by_token(password)
+        build = find_build_by_token(password)
         return unless build
         return unless build.project.builds_enabled?
 
@@ -281,6 +300,12 @@ module Gitlab
         return [] unless Gitlab.config.registry.enabled
 
         REGISTRY_SCOPES
+      end
+
+      private
+
+      def find_build_by_token(token)
+        ::Ci::Build.running.find_by_token(token)
       end
     end
   end

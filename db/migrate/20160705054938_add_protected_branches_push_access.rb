@@ -9,7 +9,7 @@ class AddProtectedBranchesPushAccess < ActiveRecord::Migration
     create_table :protected_branch_push_access_levels do |t|
       t.references :protected_branch, index: { name: "index_protected_branch_push_access" }, foreign_key: true, null: false
 
-      # Gitlab::Access::MASTER == 40
+      # Gitlab::Access::MAINTAINER == 40
       t.integer :access_level, default: 40, null: false
 
       t.timestamps null: false

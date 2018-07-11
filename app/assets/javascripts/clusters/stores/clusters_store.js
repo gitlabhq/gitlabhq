@@ -1,5 +1,5 @@
 import { s__ } from '../../locale';
-import { INGRESS } from '../constants';
+import { INGRESS, JUPYTER } from '../constants';
 
 export default class ClusterStore {
   constructor() {
@@ -37,6 +37,14 @@ export default class ClusterStore {
           statusReason: null,
           requestStatus: null,
           requestReason: null,
+        },
+        jupyter: {
+          title: s__('ClusterIntegration|JupyterHub'),
+          status: null,
+          statusReason: null,
+          requestStatus: null,
+          requestReason: null,
+          hostname: null,
         },
       },
     };
@@ -83,6 +91,12 @@ export default class ClusterStore {
 
       if (appId === INGRESS) {
         this.state.applications.ingress.externalIp = serverAppEntry.external_ip;
+      } else if (appId === JUPYTER) {
+        this.state.applications.jupyter.hostname =
+          serverAppEntry.hostname ||
+          (this.state.applications.ingress.externalIp
+            ? `jupyter.${this.state.applications.ingress.externalIp}.nip.io`
+            : '');
       }
     });
   }

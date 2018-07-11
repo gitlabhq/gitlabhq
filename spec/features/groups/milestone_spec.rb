@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-feature 'Group milestones' do
+describe 'Group milestones' do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
-  let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }
+  let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -105,19 +105,6 @@ feature 'Group milestones' do
 
         expect(page).to have_selector("#milestone_#{active_group_milestone.id}", count: 1)
         expect(page).to have_selector("#milestone_#{legacy_milestone.milestones.first.id}", count: 1)
-      end
-
-      it 'updates milestone' do
-        page.within(".milestones #milestone_#{active_group_milestone.id}") do
-          click_link('Edit')
-        end
-
-        page.within('.milestone-form') do
-          fill_in 'milestone_title', with: 'new title'
-          click_button('Update milestone')
-        end
-
-        expect(find('#content-body h2')).to have_content('new title')
       end
 
       it 'shows milestone detail and supports its edit' do

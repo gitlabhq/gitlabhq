@@ -54,7 +54,7 @@ class DashboardController < Dashboard::ApplicationController
     return unless @no_filters_set
 
     respond_to do |format|
-      format.html
+      format.html { render }
       format.atom { head :bad_request }
     end
   end

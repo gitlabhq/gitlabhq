@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     pathWithEllipsis() {
-      const path = this.file.path;
+      const { path } = this.file;
 
       return path.length < MAX_PATH_LENGTH
         ? path
@@ -59,11 +59,11 @@ export default {
 
 <template>
   <button
-    type="button"
-    class="diff-changed-file"
     :class="{
       'is-focused': focused,
     }"
+    type="button"
+    class="diff-changed-file"
     @click.prevent="clickRow"
     @mouseover="mouseOverRow"
     @mousemove="mouseMove"

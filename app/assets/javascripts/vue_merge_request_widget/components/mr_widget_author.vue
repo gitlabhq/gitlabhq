@@ -35,17 +35,17 @@
 <template>
   <a
     :href="authorUrl"
-    class="author-link inline"
     :v-tooltip="showAuthorTooltip"
     :title="author.name"
+    class="author-link inline"
   >
     <img
       :src="avatarUrl"
       class="avatar avatar-inline s16"
     />
     <span
-      class="author"
       v-if="showAuthorName"
+      class="author"
     >
       {{ author.name }}
     </span>

@@ -20,11 +20,6 @@ export default {
       required: false,
       default: '',
     },
-    actionTextHtml: {
-      type: String,
-      required: false,
-      default: '',
-    },
     noteId: {
       type: Number,
       required: true,
@@ -66,9 +61,9 @@ export default {
       v-if="includeToggle"
       class="discussion-actions">
       <button
-        @click="handleToggle"
         class="note-action-button discussion-toggle-button js-vue-toggle-button"
-        type="button">
+        type="button"
+        @click="handleToggle">
         <i
           :class="toggleChevronClass"
           class="fa"
@@ -88,18 +83,16 @@ export default {
         <template v-if="actionText">
           {{ actionText }}
         </template>
-        <span
-          v-if="actionTextHtml"
-          v-html="actionTextHtml"
-          class="system-note-message">
+        <span class="system-note-message">
+          <slot></slot>
         </span>
         <span class="system-note-separator">
           &middot;
         </span>
         <a
           :href="noteTimestampLink"
-          @click="updateTargetNoteHash"
-          class="note-timestamp system-note-separator">
+          class="note-timestamp system-note-separator"
+          @click="updateTargetNoteHash">
           <time-ago-tooltip
             :time="createdAt"
             tooltip-placement="bottom"

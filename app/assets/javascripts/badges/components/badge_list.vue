@@ -23,8 +23,8 @@ export default {
 </script>
 
 <template>
-  <div class="panel panel-default">
-    <div class="panel-heading">
+  <div class="card">
+    <div class="card-header">
       {{ s__('Badges|Your badges') }}
       <span
         v-show="!isLoading"
@@ -33,19 +33,19 @@ export default {
     </div>
     <loading-icon
       v-show="isLoading"
-      class="panel-body"
+      class="card-body"
       size="2"
     />
     <div
       v-if="hasNoBadges"
-      class="panel-body"
+      class="card-body"
     >
       <span v-if="isGroupBadge">{{ s__('Badges|This group has no badges') }}</span>
       <span v-else>{{ s__('Badges|This project has no badges') }}</span>
     </div>
     <div
       v-else
-      class="panel-body"
+      class="card-body"
     >
       <badge-list-row
         v-for="badge in badges"

@@ -1,7 +1,7 @@
 shared_examples 'handle uploads' do
   let(:user)  { create(:user) }
-  let(:jpg)   { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
-  let(:txt)   { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
+  let(:jpg)   { fixture_file_upload('spec/fixtures/rails_sample.jpg', 'image/jpg') }
+  let(:txt)   { fixture_file_upload('spec/fixtures/doc_sample.txt', 'text/plain') }
   let(:secret) { FileUploader.generate_secret }
   let(:uploader_class) { FileUploader }
 
@@ -255,6 +255,85 @@ shared_examples 'handle uploads' do
 
               expect(response).to have_gitlab_http_status(404)
             end
+          end
+        end
+      end
+    end
+  end
+
+  describe "POST #authorize" do
+    context 'when a user is not authorized to upload a file' do
+      it 'returns 404 status' do
+        post_authorize
+
+        expect(response.status).to eq(404)
+      end
+    end
+
+    context 'when a user can upload a file' do
+      before do
+        sign_in(user)
+        model.add_developer(user)
+      end
+
+      context 'and the request bypassed workhorse' do
+        it 'raises an exception' do
+          expect { post_authorize(verified: false) }.to raise_error JWT::DecodeError
+        end
+      end
+
+      context 'and request is sent by gitlab-workhorse to authorize the request' do
+        shared_examples 'a valid response' do
+          before do
+            post_authorize
+          end
+
+          it 'responds with status 200' do
+            expect(response).to have_gitlab_http_status(200)
+          end
+
+          it 'uses the gitlab-workhorse content type' do
+            expect(response.headers["Content-Type"]).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          end
+        end
+
+        shared_examples 'a local file' do
+          it_behaves_like 'a valid response' do
+            it 'responds with status 200, location of uploads store and object details' do
+              expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
+              expect(json_response['RemoteObject']).to be_nil
+            end
+          end
+        end
+
+        context 'when using local storage' do
+          it_behaves_like 'a local file'
+        end
+
+        context 'when using remote storage' do
+          context 'when direct upload is enabled' do
+            before do
+              stub_uploads_object_storage(uploader_class, direct_upload: true)
+            end
+
+            it_behaves_like 'a valid response' do
+              it 'responds with status 200, location of uploads remote store and object details' do
+                expect(json_response['TempPath']).to eq(uploader_class.workhorse_local_upload_path)
+                expect(json_response['RemoteObject']).to have_key('ID')
+                expect(json_response['RemoteObject']).to have_key('GetURL')
+                expect(json_response['RemoteObject']).to have_key('StoreURL')
+                expect(json_response['RemoteObject']).to have_key('DeleteURL')
+                expect(json_response['RemoteObject']).to have_key('MultipartUpload')
+              end
+            end
+          end
+
+          context 'when direct upload is disabled' do
+            before do
+              stub_uploads_object_storage(uploader_class, direct_upload: false)
+            end
+
+            it_behaves_like 'a local file'
           end
         end
       end

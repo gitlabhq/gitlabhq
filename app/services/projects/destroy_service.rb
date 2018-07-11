@@ -51,11 +51,11 @@ module Projects
 
       flush_caches(@project)
 
-      unless mv_repository(removal_path(repo_path), repo_path)
+      unless rollback_repository(removal_path(repo_path), repo_path)
         raise_error('Failed to restore project repository. Please contact the administrator.')
       end
 
-      unless mv_repository(removal_path(wiki_path), wiki_path)
+      unless rollback_repository(removal_path(wiki_path), wiki_path)
         raise_error('Failed to restore wiki repository. Please contact the administrator.')
       end
     end
@@ -84,6 +84,9 @@ module Projects
       # Skip repository removal. We use this flag when remove user or group
       return true if params[:skip_repo] == true
 
+      # There is a possibility project does not have repository or wiki
+      return true unless repo_exists?(path)
+
       new_path = removal_path(path)
 
       if mv_repository(path, new_path)
@@ -98,8 +101,18 @@ module Projects
       end
     end
 
-    def mv_repository(from_path, to_path)
+    def rollback_repository(old_path, new_path)
       # There is a possibility project does not have repository or wiki
+      return true unless repo_exists?(old_path)
+
+      mv_repository(old_path, new_path)
+    end
+
+    def repo_exists?(path)
+      gitlab_shell.exists?(project.repository_storage, path + '.git')
+    end
+
+    def mv_repository(from_path, to_path)
       return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
@@ -111,7 +124,7 @@ module Projects
       # It's possible that the project was destroyed, but some after_commit
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
-      project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+      project.update(delete_error: message, pending_delete: false) unless project.destroyed?
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end
@@ -122,11 +135,22 @@ module Projects
           raise_error('Failed to remove some tags in project container registry. Please try again or contact administrator.')
         end
 
+        log_destroy_event
         trash_repositories!
 
-        project.team.truncate
+        # Rails attempts to load all related records into memory before
+        # destroying: https://github.com/rails/rails/issues/22510
+        # This ensures we delete records in batches.
+        #
+        # Exclude container repositories because its before_destroy would be
+        # called multiple times, and it doesn't destroy any database records.
+        project.destroy_dependent_associations_in_batches(exclude: [:container_repositories])
         project.destroy!
       end
+    end
+
+    def log_destroy_event
+      log_info("Attempting to destroy #{project.full_path} (#{project.id})")
     end
 
     ##

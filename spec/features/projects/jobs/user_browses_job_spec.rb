@@ -8,7 +8,7 @@ describe 'User browses a job', :js do
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.enable_ci
 
     sign_in(user)
@@ -32,8 +32,6 @@ describe 'User browses a job', :js do
     page.within('.erased') do
       expect(page).to have_content('Job has been erased')
     end
-
-    expect(build.project.running_or_pending_build_count).to eq(build.project.builds.running_or_pending.count(:all))
   end
 
   context 'with a failed job' do

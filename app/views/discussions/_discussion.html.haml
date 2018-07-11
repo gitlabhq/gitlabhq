@@ -51,5 +51,5 @@
           - if discussion.diff_discussion? && discussion.diff_file
             = render "discussions/diff_with_notes", discussion: discussion
           - else
-            .panel.panel-default
+            .card
               = render partial: "discussions/notes", locals: { discussion: discussion, disable_collapse_class: true }

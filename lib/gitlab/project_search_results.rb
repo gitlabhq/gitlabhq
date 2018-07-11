@@ -106,7 +106,8 @@ module Gitlab
           project_wiki = ProjectWiki.new(project)
 
           unless project_wiki.empty?
-            project_wiki.search_files(query)
+            ref = repository_ref || project.wiki.default_branch
+            Gitlab::WikiFileFinder.new(project, ref).find(query)
           else
             []
           end

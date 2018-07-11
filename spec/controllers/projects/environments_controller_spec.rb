@@ -9,7 +9,7 @@ describe Projects::EnvironmentsController do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end
@@ -20,6 +20,13 @@ describe Projects::EnvironmentsController do
         get :index, environment_params
 
         expect(response).to have_gitlab_http_status(:ok)
+      end
+
+      it 'expires etag cache to force reload environments list' do
+        expect_any_instance_of(Gitlab::EtagCaching::Store)
+          .to receive(:touch).with(project_environments_path(project, format: :json))
+
+        get :index, environment_params
       end
     end
 
@@ -267,6 +274,25 @@ describe Projects::EnvironmentsController do
         # controller tests don't set the response status correctly. It's enough
         # to check that the action raised an exception
       end
+    end
+  end
+
+  describe 'GET #metrics_redirect' do
+    let(:project) { create(:project) }
+
+    it 'redirects to environment if it exists' do
+      environment = create(:environment, name: 'production', project: project)
+
+      get :metrics_redirect, namespace_id: project.namespace, project_id: project
+
+      expect(response).to redirect_to(environment_metrics_path(environment))
+    end
+
+    it 'redirects to empty page if no environment exists' do
+      get :metrics_redirect, namespace_id: project.namespace, project_id: project
+
+      expect(response).to be_ok
+      expect(response).to render_template 'empty'
     end
   end
 

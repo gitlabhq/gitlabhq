@@ -25,7 +25,7 @@ describe Ci::JobArtifact do
         end
 
         it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
         end
@@ -76,12 +76,12 @@ describe Ci::JobArtifact do
 
   context 'updating the artifact file' do
     it 'updates the artifact size' do
-      artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png')))
+      artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png'))
       expect(artifact.size).to eq(1062)
     end
 
     it 'updates the project statistics' do
-      expect { artifact.update!(file: fixture_file_upload(File.join(Rails.root, 'spec/fixtures/dk.png'))) }
+      expect { artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png')) }
         .to change { artifact.project.statistics.reload.build_artifacts_size }
         .by(1062 - 106365)
     end
@@ -163,7 +163,7 @@ describe Ci::JobArtifact do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        project.update_attributes(pending_delete: true)
+        project.update(pending_delete: true)
         project.destroy!
       end
     end

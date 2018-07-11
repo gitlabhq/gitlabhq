@@ -23,7 +23,7 @@
     border-bottom: 1px solid $border-color;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     justify-content: center;
     flex-direction: column;
     align-items: center;

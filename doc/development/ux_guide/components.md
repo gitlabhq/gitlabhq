@@ -193,7 +193,7 @@ List with avatar, title and description using .content-list
 
 ![List with avatar](img/components-listwithavatar.png)
 
-List with hover effect .well-list
+List with hover effect .content-list
 
 ![List with hover effect](img/components-listwithhover.png)
 

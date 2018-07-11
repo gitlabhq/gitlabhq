@@ -2,6 +2,7 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
   include PreviewMarkdown
+  include SendFileUpload
 
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
@@ -63,7 +64,7 @@ class ProjectsController < Projects::ApplicationController
           redirect_to(edit_project_path(@project))
         end
       else
-        flash[:alert] = result[:message]
+        flash.now[:alert] = result[:message]
 
         format.html { render 'edit' }
       end
@@ -132,7 +133,7 @@ class ProjectsController < Projects::ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
-    redirect_to dashboard_projects_path, status: 302
+    redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
@@ -188,9 +189,9 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    export_project_path = @project.export_project_path
-
-    if export_project_path
+    if export_project_object_storage?
+      send_upload(@project.import_export_upload.export_file)
+    elsif export_project_path
       send_file export_project_path, disposition: 'attachment'
     else
       redirect_to(
@@ -247,13 +248,13 @@ class ProjectsController < Projects::ApplicationController
 
     if find_branches
       branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
-      options[s_('RefSwitcher|Branches')] = branches
+      options['Branches'] = branches
     end
 
     if find_tags && @repository.tag_count.nonzero?
       tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
 
-      options[s_('RefSwitcher|Tags')] = tags
+      options['Tags'] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
@@ -264,8 +265,6 @@ class ProjectsController < Projects::ApplicationController
 
     render json: options.to_json
   end
-
-  private
 
   # Render project landing depending of which features are available
   # So if page is not availble in the list it renders the next page
@@ -347,6 +346,7 @@ class ProjectsController < Projects::ApplicationController
       :visibility_level,
       :template_name,
       :merge_method,
+      :initialize_with_readme,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -422,5 +422,13 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
+  end
+
+  def export_project_path
+    @export_project_path ||= @project.export_project_path
+  end
+
+  def export_project_object_storage?
+    @project.export_project_object_exists?
   end
 end

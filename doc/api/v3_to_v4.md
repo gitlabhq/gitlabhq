@@ -2,10 +2,9 @@
 
 Since GitLab 9.0, API V4 is the preferred version to be used.
 
-API V3 will be unsupported from GitLab 9.5, to be released on August
-22, 2017. It will be removed in GitLab 9.5 or later. In the meantime, we advise
-you to make any necessary changes to applications that use V3. The V3 API
-documentation is still
+API V3 was unsupported from GitLab 9.5, released on August
+22, 2017. API v3 was removed in [GitLab 11.0](https://gitlab.com/gitlab-org/gitlab-ce/issues/36819).
+The V3 API documentation is still
 [available](https://gitlab.com/gitlab-org/gitlab-ce/blob/8-16-stable/doc/api/README.md).
 
 Below are the changes made between V3 and V4.

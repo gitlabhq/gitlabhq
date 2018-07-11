@@ -41,17 +41,17 @@ export default {
 </script>
 
 <template>
-  <div class="dropdown open">
+  <div class="dropdown show">
     <div class="dropdown-menu sidebar-item-warning-message">
       <p
-        class="text"
         v-if="isLocked"
+        class="text"
         v-html="unlockWarning">
       </p>
 
       <p
-        class="text"
         v-else
+        class="text"
         v-html="lockWarning">
       </p>
 

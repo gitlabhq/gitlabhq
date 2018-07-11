@@ -1,5 +1,3 @@
-require 'gitlab/webpack/manifest'
-
 module WebpackHelper
   def webpack_bundle_tag(bundle)
     javascript_include_tag(*webpack_entrypoint_paths(bundle))

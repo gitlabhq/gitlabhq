@@ -42,6 +42,9 @@ export default {
     jobStarted() {
       return !this.job.started === false;
     },
+    headerTime() {
+      return this.jobStarted ? this.job.started : this.job.created_at;
+    },
   },
   watch: {
     job() {
@@ -56,7 +59,7 @@ export default {
         actions.push({
           label: 'New issue',
           path: this.job.new_issue_path,
-          cssClass: 'js-new-issue btn btn-new btn-inverted visible-md-block visible-lg-block',
+          cssClass: 'js-new-issue btn btn-new btn-inverted d-none d-md-block d-lg-block d-xl-block',
           type: 'link',
         });
       }
@@ -71,13 +74,13 @@ export default {
       <ci-header
         v-if="shouldRenderContent"
         :status="status"
-        item-name="Job"
         :item-id="job.id"
-        :time="job.created_at"
+        :time="headerTime"
         :user="job.user"
         :actions="actions"
         :has-sidebar-button="true"
         :should-render-triggered-label="jobStarted"
+        item-name="Job"
       />
       <loading-icon
         v-if="isLoading"

@@ -308,6 +308,10 @@ module API
       expose :additions, :deletions, :total
     end
 
+    class CommitWithStats < Commit
+      expose :stats, using: Entities::CommitStats
+    end
+
     class CommitDetail < Commit
       expose :stats, using: Entities::CommitStats, if: :stats
       expose :status
@@ -345,6 +349,10 @@ module API
       expose :developers_can_merge do |repo_branch, options|
         options[:project].protected_branches.developers_can?(:merge, repo_branch.name)
       end
+
+      expose :can_push do |repo_branch, options|
+        Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
+      end
     end
 
     class TreeObject < Grape::Entity
@@ -358,7 +366,7 @@ module API
     end
 
     class Snippet < Grape::Entity
-      expose :id, :title, :file_name, :description
+      expose :id, :title, :file_name, :description, :visibility
       expose :author, using: Entities::UserBasic
       expose :updated_at, :created_at
       expose :project_id
@@ -412,6 +420,10 @@ module API
       expose :state, :created_at, :updated_at
       expose :due_date
       expose :start_date
+
+      expose :web_url do |milestone, _options|
+        Gitlab::UrlBuilder.build(milestone)
+      end
     end
 
     class IssueBasic < ProjectEntity
@@ -520,6 +532,12 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :title)
+      end
+      expose :description_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :description)
+      end
       expose :target_branch, :source_branch
       expose :upvotes do |merge_request, options|
         if options[:issuable_metadata]
@@ -559,7 +577,9 @@ module API
       expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
-      expose :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
+      expose :allow_collaboration, if: -> (merge_request, _) { merge_request.for_fork? }
+      # Deprecated
+      expose :allow_collaboration, as: :allow_maintainer_to_push, if: -> (merge_request, _) { merge_request.for_fork? }
 
       expose :web_url do |merge_request, options|
         Gitlab::UrlBuilder.build(merge_request)
@@ -568,6 +588,8 @@ module API
       expose :time_stats, using: 'API::Entities::IssuableTimeStats' do |merge_request|
         merge_request
       end
+
+      expose :squash
     end
 
     class MergeRequest < MergeRequestBasic
@@ -688,6 +710,12 @@ module API
       expose :id
       expose :individual_note?, as: :individual_note
       expose :notes, using: Entities::Note
+    end
+
+    class Avatar < Grape::Entity
+      expose :avatar_url do |avatarable, options|
+        avatarable.avatar_url(only_path: false, size: options[:size])
+      end
     end
 
     class AwardEmoji < Grape::Entity
@@ -830,8 +858,8 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          if options.key?(:project_members)
-            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          if options[:project_members]
+            options[:project_members].find { |member| member.source_id == project.id }
           else
             project.project_member(options[:current_user])
           end
@@ -839,8 +867,8 @@ module API
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            if options.key?(:group_members)
-              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            if options[:group_members]
+              options[:group_members].find { |member| member.source_id == project.namespace_id }
             else
               project.group.group_member(options[:current_user])
             end
@@ -851,13 +879,24 @@ module API
       def self.preload_relation(projects_relation, options = {})
         relation = super(projects_relation, options)
 
-        unless options.key?(:group_members)
-          relation = relation.preload(group: [group_members: [:source, user: [notification_settings: :source]]])
+        # MySQL doesn't support LIMIT inside an IN subquery
+        if Gitlab::Database.mysql?
+          project_ids = relation.pluck('projects.id')
+          namespace_ids = relation.pluck(:namespace_id)
+        else
+          project_ids = relation.select('projects.id')
+          namespace_ids = relation.select(:namespace_id)
         end
 
-        unless options.key?(:project_members)
-          relation = relation.preload(project_members: [:source, user: [notification_settings: :source]])
-        end
+        options[:project_members] = options[:current_user]
+          .project_members
+          .where(source_id: project_ids)
+          .preload(:source, user: [notification_settings: :source])
+
+        options[:group_members] = options[:current_user]
+          .group_members
+          .where(source_id: namespace_ids)
+          .preload(:source, user: [notification_settings: :source])
 
         relation
       end
@@ -933,8 +972,16 @@ module API
     end
 
     class ApplicationSetting < Grape::Entity
-      expose :id
-      expose(*::ApplicationSettingsHelper.visible_attributes)
+      def self.exposed_attributes
+        attributes = ::ApplicationSettingsHelper.visible_attributes
+        attributes.delete(:performance_bar_allowed_group_path)
+        attributes.delete(:performance_bar_enabled)
+
+        attributes
+      end
+
+      expose :id, :performance_bar_allowed_group_id
+      expose(*exposed_attributes)
       expose(:restricted_visibility_levels) do |setting, _options|
         setting.restricted_visibility_levels.map { |level| Gitlab::VisibilityLevel.string_level(level) }
       end
@@ -969,7 +1016,7 @@ module API
       expose :description
       expose :ip_address
       expose :active
-      expose :is_shared
+      expose :instance_type?, as: :is_shared
       expose :name
       expose :online?, as: :online
       expose :status
@@ -983,7 +1030,7 @@ module API
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
-      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects
@@ -1020,6 +1067,7 @@ module API
     class Job < JobBasic
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :runner, with: Runner
+      expose :artifacts_expire_at
     end
 
     class JobBasicWithProject < JobBasic
@@ -1156,6 +1204,7 @@ module API
 
       class RunnerInfo < Grape::Entity
         expose :metadata_timeout, as: :timeout
+        expose :runner_session_url
       end
 
       class Step < Grape::Entity

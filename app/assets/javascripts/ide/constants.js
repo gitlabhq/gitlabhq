@@ -20,3 +20,21 @@ export const viewerTypes = {
   edit: 'editor',
   diff: 'diff',
 };
+
+export const diffModes = {
+  replaced: 'replaced',
+  new: 'new',
+  deleted: 'deleted',
+  renamed: 'renamed',
+};
+
+export const rightSidebarViews = {
+  pipelines: 'pipelines-list',
+  jobsDetail: 'jobs-detail',
+  mergeRequestInfo: 'merge-request-info',
+};
+
+export const stageKeys = {
+  unstaged: 'unstaged',
+  staged: 'staged',
+};

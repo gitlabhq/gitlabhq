@@ -8,7 +8,7 @@ The access levels are defined in the `Gitlab::Access` module. Currently, these l
 10 => Guest access
 20 => Reporter access
 30 => Developer access
-40 => Master access
+40 => Maintainer access
 50 => Owner access # Only valid for groups
 ```
 
@@ -173,3 +173,7 @@ DELETE /projects/:id/members/:user_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/:id/members/:user_id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/members/:user_id
 ```
+
+## Give a group access to a project
+
+Look at [share project with group](projects.md#share-project-with-group)

@@ -1,24 +1,25 @@
-= form_for @label, as: :label, url: url, html: { class: 'form-horizontal label-form js-quick-submit js-requires-input' } do |f|
+= form_for @label, as: :label, url: url, html: { class: 'label-form js-quick-submit js-requires-input' } do |f|
   = form_errors(@label)
 
-  .form-group
-    = f.label :title, class: 'control-label'
+  .form-group.row
+    = f.label :title, class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.text_field :title, class: "form-control", required: true, autofocus: true
-  .form-group
-    = f.label :description, class: 'control-label'
+  .form-group.row
+    = f.label :description, class: 'col-form-label col-sm-2'
     .col-sm-10
       = f.text_field :description, class: "form-control js-quick-submit"
-  .form-group
-    = f.label :color, "Background color", class: 'control-label'
+  .form-group.row
+    = f.label :color, "Background color", class: 'col-form-label col-sm-2'
     .col-sm-10
       .input-group
-        .input-group-addon.label-color-preview &nbsp;
+        .input-group-prepend
+          .input-group-text.label-color-preview &nbsp;
         = f.text_field :color, class: "form-control"
-      .help-block
+      .form-text.text-muted
         Choose any color.
         %br
-        Or you can choose one of suggested colors below
+        Or you can choose one of the suggested colors below
 
       .suggest-colors
         - suggested_colors.each do |color|

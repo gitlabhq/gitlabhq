@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::ProjectImport do
   let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
   let(:user) { create(:user) }
-  let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
+  let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
@@ -146,7 +146,7 @@ describe API::ProjectImport do
   describe 'GET /projects/:id/import' do
     it 'returns the import status' do
       project = create(:project, :import_started)
-      project.add_master(user)
+      project.add_maintainer(user)
 
       get api("/projects/#{project.id}/import", user)
 
@@ -156,8 +156,8 @@ describe API::ProjectImport do
 
     it 'returns the import status and the error if failed' do
       project = create(:project, :import_failed)
-      project.add_master(user)
-      project.import_state.update_attributes(last_error: 'error')
+      project.add_maintainer(user)
+      project.import_state.update(last_error: 'error')
 
       get api("/projects/#{project.id}/import", user)
 

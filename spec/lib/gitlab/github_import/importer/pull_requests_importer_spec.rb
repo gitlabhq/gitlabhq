@@ -27,9 +27,9 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
       milestone: double(:milestone, number: 4),
       user: double(:user, id: 4, login: 'alice'),
       assignee: double(:user, id: 4, login: 'alice'),
-      created_at: Time.zone.now,
-      updated_at: Time.zone.now,
-      merged_at: Time.zone.now
+      created_at: 1.second.ago,
+      updated_at: 1.second.ago,
+      merged_at: 1.second.ago
     )
   end
 
@@ -164,7 +164,7 @@ describe Gitlab::GithubImport::Importer::PullRequestsImporter do
       Timecop.freeze do
         importer.update_repository
 
-        expect(project.last_repository_updated_at).to eq(Time.zone.now)
+        expect(project.last_repository_updated_at).to be_like_time(Time.zone.now)
       end
     end
   end

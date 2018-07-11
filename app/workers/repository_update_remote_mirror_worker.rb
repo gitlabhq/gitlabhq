@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RepositoryUpdateRemoteMirrorWorker
   UpdateAlreadyInProgressError = Class.new(StandardError)
   UpdateError = Class.new(StandardError)

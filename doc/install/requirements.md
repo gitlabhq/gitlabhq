@@ -27,8 +27,8 @@ Please see the [installation from source guide](installation.md) and the [instal
 
 ### Non-Unix operating systems such as Windows
 
-GitLab is developed for Unix operating systems.
-GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
+GitLab is developed for Unix operating systems. 
+It does **not** run on Windows, and we have no plans to support it in the near future. For the latest development status view this [issue](https://gitlab.com/gitlab-org/gitlab-ce/issues/46567).
 Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
@@ -64,16 +64,14 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 ### Memory
 
-You need at least 4GB of addressable memory (RAM + swap) to install and use GitLab!
+You need at least 8GB of addressable memory (RAM + swap) to install and use GitLab!
 The operating system and any other running applications will also be using memory
 so keep in mind that you need at least 4GB available before running GitLab. With
 less memory GitLab will give strange errors during the reconfigure run and 500
 errors during usage.
 
-- 1GB RAM + 3GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the [unicorn worker section below](#unicorn-workers) for more advice.
-- 2GB RAM + 2GB swap supports up to 100 users but it will be very slow
-- **4GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
-- 8GB RAM supports up to 1,000 users
+- 4GB RAM + 4GB swap supports up to 100 users but it will be very slow
+- **8GB RAM** is the **recommended** memory size for all installations and supports up to 100 users
 - 16GB RAM supports up to 2,000 users
 - 32GB RAM supports up to 4,000 users
 - 64GB RAM supports up to 8,000 users

@@ -25,7 +25,7 @@
           = render "shared/issuable/label_dropdown", selected: selected_labels, use_id: false, selected_toggle: params[:label_name], data_options: { field_name: "label_name[]" }
 
         - unless @no_filters_set
-          .pull-right
+          .float-right
             = render 'shared/sort_dropdown'
 
   - has_labels = @labels && @labels.any?

@@ -27,6 +27,10 @@ export default {
       type: Number,
       required: true,
     },
+    noteUrl: {
+      type: String,
+      required: true,
+    },
     accessLevel: {
       type: String,
       required: false,
@@ -47,6 +51,11 @@ export default {
     canDelete: {
       type: Boolean,
       required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     resolvable: {
       type: Boolean,
@@ -125,16 +134,16 @@ export default {
       {{ accessLevel }}
     </span>
     <div
-      v-if="resolvable"
+      v-if="canResolve"
       class="note-actions-item">
       <button
         v-tooltip
-        @click="onResolve"
         :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
         :title="resolveButtonTitle"
         :aria-label="resolveButtonTitle"
         type="button"
-        class="line-resolve-btn note-action-button">
+        class="line-resolve-btn note-action-button"
+        @click="onResolve">
         <template v-if="!isResolving">
           <div
             v-if="isResolved"
@@ -164,16 +173,16 @@ export default {
       >
         <loading-icon :inline="true" />
         <span
-          v-html="emojiSmiling"
-          class="link-highlight award-control-icon-neutral">
+          class="link-highlight award-control-icon-neutral"
+          v-html="emojiSmiling">
         </span>
         <span
-          v-html="emojiSmiley"
-          class="link-highlight award-control-icon-positive">
+          class="link-highlight award-control-icon-positive"
+          v-html="emojiSmiley">
         </span>
         <span
-          v-html="emojiSmile"
-          class="link-highlight award-control-icon-super-positive">
+          class="link-highlight award-control-icon-super-positive"
+          v-html="emojiSmile">
         </span>
       </a>
     </div>
@@ -181,16 +190,16 @@ export default {
       v-if="canEdit"
       class="note-actions-item">
       <button
-        @click="onEdit"
         v-tooltip
         type="button"
         title="Edit comment"
         class="note-action-button js-note-edit btn btn-transparent"
         data-container="body"
-        data-placement="bottom">
+        data-placement="bottom"
+        @click="onEdit">
         <span
-          v-html="editSvg"
-          class="link-highlight">
+          class="link-highlight"
+          v-html="editSvg">
         </span>
       </button>
     </div>
@@ -216,11 +225,20 @@ export default {
             Report as abuse
           </a>
         </li>
+        <li>
+          <button
+            :data-clipboard-text="noteUrl"
+            type="button"
+            css-class="btn-default btn-transparent"
+          >
+            Copy link
+          </button>
+        </li>
         <li v-if="canEdit">
           <button
-            @click.prevent="onDelete"
             class="btn btn-transparent js-note-delete js-note-delete"
-            type="button">
+            type="button"
+            @click.prevent="onDelete">
             <span class="text-danger">
               Delete comment
             </span>

@@ -632,7 +632,7 @@ Useful links:
     // good
     <span title="tooltip text">Foo</span>
 
-    $('span').tooltip('fixTitle');
+    $('span').tooltip('_fixTitle');
   ```
 
 ### The Javascript/Vue Accord

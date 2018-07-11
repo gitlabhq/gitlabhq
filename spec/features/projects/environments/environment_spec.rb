@@ -1,42 +1,42 @@
 require 'spec_helper'
 
-feature 'Environment' do
-  given(:project) { create(:project) }
-  given(:user) { create(:user) }
-  given(:role) { :developer }
+describe 'Environment' do
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:role) { :developer }
 
-  background do
+  before do
     sign_in(user)
     project.add_role(user, role)
   end
 
-  feature 'environment details page' do
-    given!(:environment) { create(:environment, project: project) }
-    given!(:permissions) { }
-    given!(:deployment) { }
-    given!(:action) { }
+  describe 'environment details page' do
+    let!(:environment) { create(:environment, project: project) }
+    let!(:permissions) { }
+    let!(:deployment) { }
+    let!(:action) { }
 
     before do
       visit_environment(environment)
     end
 
-    scenario 'shows environment name' do
+    it 'shows environment name' do
       expect(page).to have_content(environment.name)
     end
 
     context 'without deployments' do
-      scenario 'does show no deployments' do
+      it 'does show no deployments' do
         expect(page).to have_content('You don\'t have any deployments right now.')
       end
     end
 
     context 'with deployments' do
       context 'when there is no related deployable' do
-        given(:deployment) do
+        let(:deployment) do
           create(:deployment, environment: environment, deployable: nil)
         end
 
-        scenario 'does show deployment SHA' do
+        it 'does show deployment SHA' do
           expect(page).to have_link(deployment.short_sha)
           expect(page).not_to have_link('Re-deploy')
           expect(page).not_to have_terminal_button
@@ -44,27 +44,27 @@ feature 'Environment' do
       end
 
       context 'with related deployable present' do
-        given(:pipeline) { create(:ci_pipeline, project: project) }
-        given(:build) { create(:ci_build, pipeline: pipeline) }
+        let(:pipeline) { create(:ci_pipeline, project: project) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
 
-        given(:deployment) do
+        let(:deployment) do
           create(:deployment, environment: environment, deployable: build)
         end
 
-        scenario 'does show build name' do
+        it 'does show build name' do
           expect(page).to have_link("#{build.name} (##{build.id})")
           expect(page).to have_link('Re-deploy')
           expect(page).not_to have_terminal_button
         end
 
         context 'with manual action' do
-          given(:action) do
+          let(:action) do
             create(:ci_build, :manual, pipeline: pipeline,
                                        name: 'deploy to production')
           end
 
           context 'when user has ability to trigger deployment' do
-            given(:permissions) do
+            let(:permissions) do
               create(:protected_branch, :developers_can_merge,
                      name: action.ref, project: project)
             end
@@ -91,21 +91,21 @@ feature 'Environment' do
           end
 
           context 'with external_url' do
-            given(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
-            given(:build) { create(:ci_build, pipeline: pipeline) }
-            given(:deployment) { create(:deployment, environment: environment, deployable: build) }
+            let(:environment) { create(:environment, project: project, external_url: 'https://git.gitlab.com') }
+            let(:build) { create(:ci_build, pipeline: pipeline) }
+            let(:deployment) { create(:deployment, environment: environment, deployable: build) }
 
-            scenario 'does show an external link button' do
+            it 'does show an external link button' do
               expect(page).to have_link(nil, href: environment.external_url)
             end
           end
 
           context 'with terminal' do
             shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-              context 'for project master' do
-                let(:role) { :master }
+              context 'for project maintainer' do
+                let(:role) { :maintainer }
 
-                scenario 'it shows the terminal button' do
+                it 'it shows the terminal button' do
                   expect(page).to have_terminal_button
                 end
 
@@ -126,7 +126,7 @@ feature 'Environment' do
               context 'for developer' do
                 let(:role) { :developer }
 
-                scenario 'does not show terminal button' do
+                it 'does not show terminal button' do
                   expect(page).not_to have_terminal_button
                 end
               end
@@ -148,25 +148,26 @@ feature 'Environment' do
 
           context 'when environment is available' do
             context 'with stop action' do
-              given(:action) do
+              let(:action) do
                 create(:ci_build, :manual, pipeline: pipeline,
                                            name: 'close_app')
               end
 
-              given(:deployment) do
+              let(:deployment) do
                 create(:deployment, environment: environment,
                                     deployable: build,
                                     on_stop: 'close_app')
               end
 
               context 'when user has ability to stop environment' do
-                given(:permissions) do
+                let(:permissions) do
                   create(:protected_branch, :developers_can_merge,
                          name: action.ref, project: project)
                 end
 
                 it 'allows to stop environment' do
-                  click_link('Stop')
+                  click_button('Stop')
+                  click_button('Stop environment') # confirm modal
 
                   expect(page).to have_content('close_app')
                 end
@@ -174,25 +175,25 @@ feature 'Environment' do
 
               context 'when user has no ability to stop environment' do
                 it 'does not allow to stop environment' do
-                  expect(page).to have_no_link('Stop')
+                  expect(page).not_to have_button('Stop')
                 end
               end
 
               context 'for reporter' do
                 let(:role) { :reporter }
 
-                scenario 'does not show stop button' do
-                  expect(page).not_to have_link('Stop')
+                it 'does not show stop button' do
+                  expect(page).not_to have_button('Stop')
                 end
               end
             end
           end
 
           context 'when environment is stopped' do
-            given(:environment) { create(:environment, project: project, state: :stopped) }
+            let(:environment) { create(:environment, project: project, state: :stopped) }
 
-            scenario 'does not show stop button' do
-              expect(page).not_to have_link('Stop')
+            it 'does not show stop button' do
+              expect(page).not_to have_button('Stop')
             end
           end
         end
@@ -200,7 +201,7 @@ feature 'Environment' do
     end
   end
 
-  feature 'environment folders', :js do
+  describe 'environment folders', :js do
     context 'when folder name contains special charaters' do
       before do
         create(:environment, project: project,
@@ -219,21 +220,21 @@ feature 'Environment' do
     end
   end
 
-  feature 'auto-close environment when branch is deleted' do
-    given(:project) { create(:project, :repository) }
+  describe 'auto-close environment when branch is deleted' do
+    let(:project) { create(:project, :repository) }
 
-    given!(:environment) do
+    let!(:environment) do
       create(:environment, :with_review_app, project: project,
                                              ref: 'feature')
     end
 
-    scenario 'user visits environment page' do
+    it 'user visits environment page' do
       visit_environment(environment)
 
-      expect(page).to have_link('Stop')
+      expect(page).to have_button('Stop')
     end
 
-    scenario 'user deletes the branch with running environment' do
+    it 'user deletes the branch with running environment' do
       visit project_branches_filtered_path(project, state: 'all', search: 'feature')
 
       remove_branch_with_hooks(project, user, 'feature') do
@@ -242,7 +243,7 @@ feature 'Environment' do
 
       visit_environment(environment)
 
-      expect(page).to have_no_link('Stop')
+      expect(page).not_to have_button('Stop')
     end
 
     ##

@@ -1,15 +1,16 @@
-
 import Vue from 'vue';
-import store from '~/notes/stores';
+import createStore from '~/notes/stores';
 import noteBody from '~/notes/components/note_body.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note_body component', () => {
+  let store;
   let vm;
 
   beforeEach(() => {
     const Component = Vue.extend(noteBody);
 
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
@@ -37,7 +38,7 @@ describe('issue_note_body component', () => {
   });
 
   describe('isEditing', () => {
-    beforeEach((done) => {
+    beforeEach(done => {
       vm.isEditing = true;
       Vue.nextTick(done);
     });

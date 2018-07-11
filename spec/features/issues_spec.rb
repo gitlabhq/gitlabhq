@@ -340,6 +340,20 @@ describe 'Issues' do
             expect(page).to have_content('baz')
           end
         end
+
+        it 'filters by due next month and previous two weeks' do
+          foo.update(due_date: Date.today - 4.weeks)
+          bar.update(due_date: (Date.today + 2.months).beginning_of_month)
+          baz.update(due_date: Date.yesterday)
+
+          visit project_issues_path(project, due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name)
+
+          page.within '.issues-holder' do
+            expect(page).not_to have_content('foo')
+            expect(page).not_to have_content('bar')
+            expect(page).to have_content('baz')
+          end
+        end
       end
 
       describe 'sorting by milestone' do
@@ -384,7 +398,7 @@ describe 'Issues' do
 
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
-        project1.add_master(user)
+        project1.add_maintainer(user)
         visit namespace_project_issues_path(user.namespace, project1)
       end
 
@@ -588,6 +602,20 @@ describe 'Issues' do
           gitlab_sign_in(create(:user))
 
           expect(current_path).to eq new_project_issue_path(project)
+        end
+      end
+
+      it 'clears local storage after creating a new issue', :js do
+        2.times do
+          visit new_project_issue_path(project)
+          wait_for_requests
+
+          expect(page).to have_field('Title', with: '')
+
+          fill_in 'issue_title', with: 'bug 345'
+          fill_in 'issue_description', with: 'bug description'
+
+          click_button 'Submit issue'
         end
       end
 

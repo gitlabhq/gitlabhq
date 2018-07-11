@@ -50,6 +50,19 @@ describe Event do
       end
     end
 
+    describe '#set_last_repository_updated_at' do
+      it 'only updates once every Event::REPOSITORY_UPDATED_AT_INTERVAL minutes' do
+        last_known_timestamp = (Event::REPOSITORY_UPDATED_AT_INTERVAL - 1.minute).ago
+        project.update(last_repository_updated_at: last_known_timestamp)
+        project.reload # a reload removes fractions of seconds
+
+        expect do
+          create_push_event(project, project.owner)
+          project.reload
+        end.not_to change { project.last_repository_updated_at }
+      end
+    end
+
     describe 'after_create :track_user_interacted_projects' do
       let(:event) { build(:push_event, project: project, author: project.owner) }
 

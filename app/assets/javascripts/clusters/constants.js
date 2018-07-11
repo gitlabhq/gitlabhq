@@ -11,3 +11,4 @@ export const REQUEST_LOADING = 'request-loading';
 export const REQUEST_SUCCESS = 'request-success';
 export const REQUEST_FAILURE = 'request-failure';
 export const INGRESS = 'ingress';
+export const JUPYTER = 'jupyter';

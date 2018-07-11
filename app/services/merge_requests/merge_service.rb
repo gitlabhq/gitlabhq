@@ -34,6 +34,19 @@ module MergeRequests
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
 
+    def source
+      return merge_request.diff_head_sha unless merge_request.squash
+
+      squash_result = ::MergeRequests::SquashService.new(project, current_user, params).execute(merge_request)
+
+      case squash_result[:status]
+      when :success
+        squash_result[:squash_sha]
+      when :error
+        raise ::MergeRequests::MergeService::MergeError, squash_result[:message]
+      end
+    end
+
     private
 
     def error_check!
@@ -66,7 +79,7 @@ module MergeRequests
       message = params[:commit_message] || merge_request.merge_commit_message
 
       repository.merge(current_user, source, merge_request, message)
-    rescue Gitlab::Git::HooksService::PreReceiveError => e
+    rescue Gitlab::Git::PreReceiveError => e
       handle_merge_error(log_message: e.message)
       raise MergeError, 'Something went wrong during merge pre-receive hook'
     rescue => e
@@ -115,10 +128,6 @@ module MergeRequests
 
     def merge_request_info
       merge_request.to_reference(full: true)
-    end
-
-    def source
-      @source ||= @merge_request.diff_head_sha
     end
   end
 end

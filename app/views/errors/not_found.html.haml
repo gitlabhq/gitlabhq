@@ -1,8 +1,15 @@
 - content_for(:title, 'Not Found')
-%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
-  %h1
-    404
+= image_tag('illustrations/error-404.svg', alt: '404', lazy: false)
 .container
-  %h3 The resource you were looking for doesn't exist.
-  %hr
-  %p You may have mistyped the address or the page may have moved.
+  %h3
+    = s_('404|Page Not Found')
+  %p
+    = s_("404|Make sure the address is correct and the page hasn't moved.")
+  %p
+    = s_('404|Please contact your GitLab administrator if you think this is a mistake.')
+  .action-container
+    = form_tag search_path, method: :get, class: 'form-inline-flex' do |f|
+      .field
+        = search_field_tag :search, '', placeholder: _('Search for projects, issues, etc.'), class: 'form-control'
+      = button_tag 'Search', class: 'btn btn-success', name: nil, type: 'submit'
+= render 'errors/footer'

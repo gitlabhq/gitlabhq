@@ -98,7 +98,7 @@ export default {
     },
     disableKey(deployKey, callback) {
       // eslint-disable-next-line no-alert
-      if (confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
+      if (window.confirm(s__('DeployKeys|You are going to remove this deploy key. Are you sure?'))) {
         this.service
           .disableKey(deployKey.id)
           .then(this.fetchKeys)
@@ -116,8 +116,8 @@ export default {
   <div class="append-bottom-default deploy-keys">
     <loading-icon
       v-if="isLoading && !hasKeys"
-      size="2"
       :label="s__('DeployKeys|Loading deploy keys')"
+      size="2"
     />
     <template v-else-if="hasKeys">
       <div class="top-area scrolling-tabs-container inner-page-scroll-tabs">
@@ -138,16 +138,16 @@ export default {
 
         <navigation-tabs
           :tabs="tabs"
-          @onChangeTab="onChangeTab"
           scope="deployKeys"
+          @onChangeTab="onChangeTab"
         />
       </div>
       <keys-panel
-        class="qa-project-deploy-keys"
         :project-id="projectId"
         :keys="keys[currentTab]"
         :store="store"
         :endpoint="endpoint"
+        class="qa-project-deploy-keys"
       />
     </template>
   </div>

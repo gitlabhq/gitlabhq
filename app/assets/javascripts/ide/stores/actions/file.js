@@ -1,5 +1,5 @@
-import { normalizeHeaders } from '~/lib/utils/common_utils';
-import flash from '~/flash';
+import { __ } from '../../../locale';
+import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import eventHub from '../../eventhub';
 import service from '../../services';
 import * as types from '../mutation_types';
@@ -8,7 +8,7 @@ import { setPageTitle } from '../utils';
 import { viewerTypes } from '../../constants';
 
 export const closeFile = ({ commit, state, dispatch }, file) => {
-  const path = file.path;
+  const { path } = file;
   const indexOfClosedFile = state.openFiles.findIndex(f => f.key === file.key);
   const fileWasActive = file.active;
 
@@ -66,13 +66,10 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     .getFileData(
       `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
     )
-    .then(res => {
-      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-      setPageTitle(pageTitle);
+    .then(({ data, headers }) => {
+      const normalizedHeaders = normalizeHeaders(headers);
+      setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
-      return res.json();
-    })
-    .then(data => {
       commit(types.SET_FILE_DATA, { data, file });
       commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
@@ -80,11 +77,17 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, { entry: file });
-      flash('Error loading file data. Please try again.', 'alert', document, null, false, true);
+      dispatch('setErrorMessage', {
+        text: __('An error occured whilst loading the file.'),
+        action: payload =>
+          dispatch('getFileData', payload).then(() => dispatch('setErrorMessage', null)),
+        actionText: __('Please try again'),
+        actionPayload: { path, makeFileActive },
+      });
     });
 };
 
-export const setFileMrChange = ({ state, commit }, { file, mrChange }) => {
+export const setFileMrChange = ({ commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
@@ -113,7 +116,13 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
         }
       })
       .catch(() => {
-        flash('Error loading file content. Please try again.');
+        dispatch('setErrorMessage', {
+          text: __('An error occured whilst loading the file content.'),
+          action: payload =>
+            dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
+          actionText: __('Please try again'),
+          actionPayload: { path, baseSha },
+        });
         reject();
       });
   });
@@ -156,7 +165,7 @@ export const setEditorPosition = ({ getters, commit }, { editorRow, editorColumn
   }
 };
 
-export const setFileViewMode = ({ state, commit }, { file, viewMode }) => {
+export const setFileViewMode = ({ commit }, { file, viewMode }) => {
   commit(types.SET_FILE_VIEWMODE, { file, viewMode });
 };
 

@@ -40,7 +40,7 @@
 }
 
 .snippet-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: right;
   }
 }
@@ -49,26 +49,11 @@
   margin-top: 15px;
 }
 
-.snippet-embed-input {
-  height: 35px;
-}
-
 .embed-snippet {
   padding-right: 0;
   padding-top: $gl-padding;
 
-  .form-control {
-    cursor: auto;
-    width: 101%;
-    margin-left: -1px;
-  }
-
   .embed-toggle-list li button {
     padding: 8px 40px;
-  }
-
-  .embed-toggle,
-  .snippet-clipboard-btn {
-    height: 35px;
   }
 }

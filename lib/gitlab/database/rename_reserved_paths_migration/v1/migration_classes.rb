@@ -37,6 +37,7 @@ module Gitlab
           class Namespace < ActiveRecord::Base
             include MigrationClasses::Routable
             self.table_name = 'namespaces'
+            self.inheritance_column = :_type_disabled
             belongs_to :parent,
                        class_name: "#{MigrationClasses.name}::Namespace"
             has_one :route, as: :source

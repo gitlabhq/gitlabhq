@@ -5,14 +5,16 @@ module Projects
     def execute(noteable)
       @noteable = noteable
 
-      project_members = sorted(project.team.members)
       participants = noteable_owner + participants_in_noteable + all_members + groups + project_members
       participants.uniq
     end
 
+    def project_members
+      @project_members ||= sorted(project.team.members)
+    end
+
     def all_members
-      count = project.team.members.flatten.count
-      [{ username: "all", name: "All Project and Group Members", count: count }]
+      [{ username: "all", name: "All Project and Group Members", count: project_members.count }]
     end
   end
 end

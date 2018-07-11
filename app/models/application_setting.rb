@@ -212,14 +212,6 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
-    value&.each do |source|
-      unless Devise.omniauth_providers.include?(source.to_sym)
-        record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-      end
-    end
-  end
-
   validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
@@ -230,6 +222,7 @@ class ApplicationSetting < ActiveRecord::Base
   after_commit do
     reset_memoized_terms
   end
+  after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
 
   def self.defaults
     {
@@ -301,6 +294,7 @@ class ApplicationSetting < ActiveRecord::Base
       gitaly_timeout_medium: 30,
       gitaly_timeout_default: 55,
       allow_local_requests_from_hooks_and_services: false,
+      hide_third_party_offers: false,
       mirror_available: true
     }
   end
@@ -327,6 +321,11 @@ class ApplicationSetting < ActiveRecord::Base
 
   def sidekiq_throttling_column_exists?
     ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
+  end
+
+  def disabled_oauth_sign_in_sources=(sources)
+    sources = (sources || []).map(&:to_s) & Devise.omniauth_providers.map(&:to_s)
+    super(sources)
   end
 
   def domain_whitelist_raw
@@ -359,17 +358,6 @@ class ApplicationSetting < ActiveRecord::Base
     Array(read_attribute(:repository_storages))
   end
 
-  # DEPRECATED
-  # repository_storage is still required in the API. Remove in 9.0
-  # Still used in API v3
-  def repository_storage
-    repository_storages.first
-  end
-
-  def repository_storage=(value)
-    self.repository_storages = [value]
-  end
-
   def default_project_visibility=(level)
     super(Gitlab::VisibilityLevel.level_value(level))
   end
@@ -386,31 +374,6 @@ class ApplicationSetting < ActiveRecord::Base
     super(levels.map { |level| Gitlab::VisibilityLevel.level_value(level) })
   end
 
-  def performance_bar_allowed_group_id=(group_full_path)
-    group_full_path = nil if group_full_path.blank?
-
-    if group_full_path.nil?
-      if group_full_path != performance_bar_allowed_group_id
-        super(group_full_path)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-
-      return
-    end
-
-    group = Group.find_by_full_path(group_full_path)
-
-    if group
-      if group.id != performance_bar_allowed_group_id
-        super(group.id)
-        Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-      end
-    else
-      super(nil)
-      Gitlab::PerformanceBar.expire_allowed_user_ids_cache
-    end
-  end
-
   def performance_bar_allowed_group
     Group.find_by_id(performance_bar_allowed_group_id)
   end
@@ -418,15 +381,6 @@ class ApplicationSetting < ActiveRecord::Base
   # Return true if the Performance Bar is enabled for a given group
   def performance_bar_enabled
     performance_bar_allowed_group_id.present?
-  end
-
-  # - If `enable` is true, we early return since the actual attribute that holds
-  #   the enabling/disabling is `performance_bar_allowed_group_id`
-  # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
-  def performance_bar_enabled=(enable)
-    return if Gitlab::Utils.to_boolean(enable)
-
-    self.performance_bar_allowed_group_id = nil
   end
 
   # Choose one of the available repository storage options. Currently all have
@@ -505,5 +459,9 @@ class ApplicationSetting < ActiveRecord::Base
     return unless enforce_terms?
 
     errors.add(:terms, "You need to set terms to be enforced") unless terms.present?
+  end
+
+  def expire_performance_bar_allowed_user_ids_cache
+    Gitlab::PerformanceBar.expire_allowed_user_ids_cache
   end
 end

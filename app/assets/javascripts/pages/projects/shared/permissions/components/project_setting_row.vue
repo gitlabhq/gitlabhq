@@ -42,7 +42,7 @@
     </label>
     <span
       v-if="helpText"
-      class="help-block"
+      class="form-text text-muted"
     >
       {{ helpText }}
     </span>

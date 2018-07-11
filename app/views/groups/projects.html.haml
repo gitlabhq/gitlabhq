@@ -1,24 +1,24 @@
 - breadcrumb_title "Projects"
 
-.panel.panel-default.prepend-top-default
-  .panel-heading
+.card.prepend-top-default
+  .card-header
     %strong= @group.name
     projects:
     - if can? current_user, :admin_group, @group
       .controls
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-sm btn-success" do
           New project
-  %ul.well-list
+  %ul.content-list
     - @projects.each do |project|
       %li
         .list-item-name
           %span{ class: visibility_level_color(project.visibility_level) }
             = visibility_level_icon(project.visibility_level)
           %strong= link_to project.full_name, project
-        .pull-right
+        .float-right
           - if project.archived
-            %span.label.label-warning archived
-          %span.badge
+            %span.badge.badge-warning archived
+          %span.badge.badge-pill
             = storage_counter(project.statistics.storage_size)
           = link_to 'Members', project_project_members_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
           = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"

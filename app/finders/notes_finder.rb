@@ -83,7 +83,7 @@ class NotesFinder
     when "personal_snippet"
       PersonalSnippet.all
     else
-      raise 'invalid target_type'
+      raise "invalid target_type '#{noteable_type}'"
     end
   end
 

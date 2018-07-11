@@ -3,7 +3,7 @@
 %hr
 
 %div
-  = form_for [@project.namespace.becomes(Namespace), @project, @deploy_key], html: { class: 'form-horizontal js-requires-input' } do |f|
+  = form_for [@project.namespace.becomes(Namespace), @project, @deploy_key], html: { class: 'js-requires-input' } do |f|
     = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
     .form-actions
       = f.submit 'Save changes', class: 'btn-save btn'

@@ -3,7 +3,7 @@ require 'jwt'
 
 module OmniAuth
   module Strategies
-    class JWT
+    class Jwt
       ClaimInvalid = Class.new(StandardError)
 
       include OmniAuth::Strategy
@@ -56,7 +56,5 @@ module OmniAuth
         fail! :claim_invalid, e
       end
     end
-
-    class Jwt < JWT; end
   end
 end

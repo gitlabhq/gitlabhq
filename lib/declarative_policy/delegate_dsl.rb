@@ -7,10 +7,10 @@ module DeclarativePolicy
       @delegate_name = delegate_name
     end
 
-    def method_missing(m, *a, &b)
-      return super unless a.empty? && !block_given?
+    def method_missing(msg, *args)
+      return super unless args.empty? && !block_given?
 
-      @rule_dsl.delegate(@delegate_name, m)
+      @rule_dsl.delegate(@delegate_name, msg)
     end
   end
 end

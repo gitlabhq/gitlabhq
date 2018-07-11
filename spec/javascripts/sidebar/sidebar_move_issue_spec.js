@@ -14,7 +14,9 @@ describe('SidebarMoveIssue', function () {
     this.$content = $(`
       <div class="dropdown">
         <div class="js-toggle"></div>
-        <div class="dropdown-content"></div>
+        <div class="dropdown-menu">
+          <div class="dropdown-content"></div>
+        </div>
         <div class="js-confirm-button"></div>
       </div>
     `);

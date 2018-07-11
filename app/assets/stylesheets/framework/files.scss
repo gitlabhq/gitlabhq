@@ -75,7 +75,7 @@
     padding: 8px $gl-padding;
     border-bottom: 1px solid $border-color;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       text-align: left;
     }
 
@@ -125,7 +125,7 @@
     &.wiki {
       padding: $gl-padding;
 
-      @media (min-width: $screen-md-min) {
+      @include media-breakpoint-up(md) {
         padding: $gl-padding * 2;
       }
     }
@@ -322,14 +322,17 @@ span.idiff {
 }
 
 .file-title-flex-parent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: $gray-light;
-  border-bottom: 1px solid $border-color;
-  padding: 5px $gl-padding;
-  margin: 0;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  &,
+  .file-holder & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $gray-light;
+    border-bottom: 1px solid $border-color;
+    padding: 5px $gl-padding;
+    margin: 0;
+    border-radius: $border-radius-default $border-radius-default 0 0;
+  }
 
   .file-header-content {
     white-space: nowrap;
@@ -337,6 +340,17 @@ span.idiff {
     text-overflow: ellipsis;
     padding-right: 30px;
     position: relative;
+    width: auto;
+
+    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+      width: 100%;
+    }
+  }
+
+  .file-holder & {
+    .file-actions {
+      position: static;
+    }
   }
 
   .btn-clipboard {
@@ -364,7 +378,7 @@ span.idiff {
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: block;
 
     .file-actions {
@@ -399,4 +413,52 @@ span.idiff {
 .label-lfs {
   color: $common-gray-light;
   border: 1px solid $common-gray-light;
+}
+
+.preview-container {
+  height: 100%;
+  overflow: auto;
+
+  .file-container {
+    background-color: $gray-darker;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    .file-content {
+      padding: $gl-padding;
+      max-width: 100%;
+      max-height: 100%;
+
+      img {
+        max-width: 90%;
+        max-height: 70vh;
+      }
+
+      .is-zoomable {
+        cursor: pointer;
+        cursor: zoom-in;
+
+        &.is-zoomed {
+          cursor: pointer;
+          cursor: zoom-out;
+          max-width: none;
+          max-height: none;
+          margin-right: $gl-padding;
+        }
+      }
+    }
+
+    .file-info {
+      font-size: $label-font-size;
+      color: $diff-image-info-color;
+    }
+  }
+
+  .md-previewer {
+    padding: $gl-padding;
+  }
 }

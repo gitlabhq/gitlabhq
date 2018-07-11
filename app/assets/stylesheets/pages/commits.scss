@@ -23,7 +23,7 @@
 }
 
 .commit-hash-full {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     width: 80px;
     white-space: nowrap;
     overflow: hidden;
@@ -135,10 +135,10 @@
 }
 
 .text-expander {
-  display: inline-block;
+  display: inline-flex;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 4px;
+  padding: 1px $gl-padding-4;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
@@ -180,10 +180,15 @@
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+
+  .commit-title {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .commit-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .fa-spinner {
       font-size: 12px;
     }
@@ -191,6 +196,10 @@
 
   .ci-status-link {
     display: inline-flex;
+  }
+
+  .ci-status-icon svg {
+    vertical-align: text-bottom;
   }
 
   > .ci-status-link,
@@ -249,16 +258,19 @@
 .generic_commit_status {
   a,
   button {
-    color: $gl-text-color;
     vertical-align: baseline;
   }
 
-  a.autodevops-badge {
-    color: $white-light;
-  }
+  a {
+    color: $gl-text-color;
 
-  a.autodevops-link {
-    color: $gl-link-color;
+    &.autodevops-badge {
+      color: $white-light;
+    }
+
+    &.autodevops-link {
+      color: $gl-link-color;
+    }
   }
 
   .commit-row-description {
@@ -327,11 +339,11 @@
   }
 
   &.invalid {
-    @include status-color($gray-dark, $gray, $gray-darkest);
+    @include status-color($gray-dark, color("gray"), $gray-darkest);
     border-color: $gray-darkest;
 
     &:not(span):hover {
-      color: $gray;
+      color: color("gray");
     }
   }
 }

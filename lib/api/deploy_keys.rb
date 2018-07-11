@@ -112,9 +112,9 @@ module API
         can_push = params[:can_push].nil? ? deploy_keys_project.can_push : params[:can_push]
         title = params[:title] || deploy_keys_project.deploy_key.title
 
-        result = deploy_keys_project.update_attributes(can_push: can_push,
-                                                       deploy_key_attributes: { id: params[:key_id],
-                                                                                title: title })
+        result = deploy_keys_project.update(can_push: can_push,
+                                            deploy_key_attributes: { id: params[:key_id],
+                                                                     title: title })
 
         if result
           present deploy_keys_project, with: Entities::DeployKeysProject
@@ -148,10 +148,10 @@ module API
         requires :key_id, type: Integer, desc: 'The ID of the deploy key'
       end
       delete ":id/deploy_keys/:key_id" do
-        key = user_project.deploy_keys.find(params[:key_id])
-        not_found!('Deploy Key') unless key
+        deploy_key_project = user_project.deploy_keys_projects.find_by(deploy_key_id: params[:key_id])
+        not_found!('Deploy Key') unless deploy_key_project
 
-        destroy_conditionally!(key)
+        destroy_conditionally!(deploy_key_project)
       end
     end
   end

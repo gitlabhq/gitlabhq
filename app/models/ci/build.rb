@@ -27,7 +27,13 @@ module Ci
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+
+    accepts_nested_attributes_for :runner_session
+
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :url, to: :runner_session, prefix: true, allow_nil: true
+    delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
 
     ##
@@ -55,12 +61,18 @@ module Ci
       where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
+
+    scope :without_archived_trace, ->() do
+      where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+    end
+
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
+    scope :with_live_trace, -> { where('EXISTS (?)', Ci::BuildTraceChunk.where('ci_builds.id = ci_build_trace_chunks.build_id').select(1)) }
 
     scope :matches_tag_ids, -> (tag_ids) do
       matcher = ::ActsAsTaggableOn::Tagging
@@ -144,6 +156,7 @@ module Ci
       after_transition any => [:success] do |build|
         build.run_after_commit do
           BuildSuccessWorker.perform_async(id)
+          PagesWorker.perform_async(:deploy, id) if build.pages_generator?
         end
       end
 
@@ -167,6 +180,10 @@ module Ci
       after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
       end
+
+      after_transition running: any do |build|
+        Ci::BuildRunnerSession.where(build: build).delete_all
+      end
     end
 
     def ensure_metadata
@@ -181,6 +198,11 @@ module Ci
 
     def other_actions
       pipeline.manual_actions.where.not(name: name)
+    end
+
+    def pages_generator?
+      Gitlab.config.pages.enabled &&
+        self.name == 'pages'
     end
 
     def playable?
@@ -349,7 +371,7 @@ module Ci
 
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
-      update_attributes(coverage: coverage) if coverage.present?
+      update(coverage: coverage) if coverage.present?
     end
 
     def parse_trace_sections!
@@ -364,6 +386,10 @@ module Ci
       trace.exist?
     end
 
+    def has_old_trace?
+      old_trace.present?
+    end
+
     def trace=(data)
       raise NotImplementedError
     end
@@ -373,6 +399,8 @@ module Ci
     end
 
     def erase_old_trace!
+      return unless has_old_trace?
+
       update_column(:trace, nil)
     end
 
@@ -402,8 +430,6 @@ module Ci
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)
-      PagesService.new(build_data).execute
-      project.running_or_pending_build_count(force: true)
     end
 
     def browsable_artifacts?
@@ -411,9 +437,9 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      artifacts_metadata.use_file do |metadata_path|
+      artifacts_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-          metadata_path,
+          metadata_stream,
           path,
           **options)
 
@@ -574,6 +600,10 @@ module Ci
       super(options).merge(when: read_attribute(:when))
     end
 
+    def has_terminal?
+      running? && runner_session_url.present?
+    end
+
     private
 
     def update_artifacts_size
@@ -601,6 +631,7 @@ module Ci
         variables
           .concat(pipeline.persisted_variables)
           .append(key: 'CI_JOB_ID', value: id.to_s)
+          .append(key: 'CI_JOB_URL', value: Gitlab::Routing.url_helpers.project_job_url(project, self))
           .append(key: 'CI_JOB_TOKEN', value: token, public: false)
           .append(key: 'CI_BUILD_ID', value: id.to_s)
           .append(key: 'CI_BUILD_TOKEN', value: token, public: false)
@@ -618,7 +649,7 @@ module Ci
         variables.append(key: 'GITLAB_FEATURES', value: project.licensed_features.join(','))
         variables.append(key: 'CI_SERVER_NAME', value: 'GitLab')
         variables.append(key: 'CI_SERVER_VERSION', value: Gitlab::VERSION)
-        variables.append(key: 'CI_SERVER_REVISION', value: Gitlab::REVISION)
+        variables.append(key: 'CI_SERVER_REVISION', value: Gitlab.revision)
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
         variables.append(key: 'CI_COMMIT_SHA', value: sha)

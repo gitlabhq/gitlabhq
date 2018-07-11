@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group show page' do
+describe 'Group show page' do
   let(:group) { create(:group) }
   let(:path) { group_path(group) }
 
@@ -14,7 +14,7 @@ feature 'Group show page' do
       visit path
     end
 
-    it_behaves_like "an autodiscoverable RSS feed with current_user's RSS token"
+    it_behaves_like "an autodiscoverable RSS feed with current_user's feed token"
 
     context 'when group does not exist' do
       let(:path) { group_path('not-exist') }
@@ -29,7 +29,7 @@ feature 'Group show page' do
         visit path
       end
 
-      it_behaves_like "an autodiscoverable RSS feed without an RSS token"
+      it_behaves_like "an autodiscoverable RSS feed without a feed token"
     end
 
     context 'when group has a public project', :js do

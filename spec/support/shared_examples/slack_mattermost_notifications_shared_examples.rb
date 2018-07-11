@@ -130,7 +130,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
     context "event channels" do
       it "uses the right channel for push event" do
-        chat_service.update_attributes(push_channel: "random")
+        chat_service.update(push_channel: "random")
 
         expect(Slack::Notifier).to receive(:new)
          .with(webhook_url, channel: "random")
@@ -142,7 +142,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       end
 
       it "uses the right channel for merge request event" do
-        chat_service.update_attributes(merge_request_channel: "random")
+        chat_service.update(merge_request_channel: "random")
 
         expect(Slack::Notifier).to receive(:new)
          .with(webhook_url, channel: "random")
@@ -154,7 +154,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       end
 
       it "uses the right channel for issue event" do
-        chat_service.update_attributes(issue_channel: "random")
+        chat_service.update(issue_channel: "random")
 
         expect(Slack::Notifier).to receive(:new)
          .with(webhook_url, channel: "random")
@@ -169,7 +169,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         let(:issue_service_options) { { title: 'Secret', confidential: true } }
 
         it "uses confidential issue channel" do
-          chat_service.update_attributes(confidential_issue_channel: 'confidential')
+          chat_service.update(confidential_issue_channel: 'confidential')
 
           expect(Slack::Notifier).to execute_with_options(channel: 'confidential')
 
@@ -177,7 +177,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         end
 
         it 'falls back to issue channel' do
-          chat_service.update_attributes(issue_channel: 'fallback_channel')
+          chat_service.update(issue_channel: 'fallback_channel')
 
           expect(Slack::Notifier).to execute_with_options(channel: 'fallback_channel')
 
@@ -186,7 +186,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
       end
 
       it "uses the right channel for wiki event" do
-        chat_service.update_attributes(wiki_page_channel: "random")
+        chat_service.update(wiki_page_channel: "random")
 
         expect(Slack::Notifier).to receive(:new)
          .with(webhook_url, channel: "random")
@@ -203,7 +203,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
         end
 
         it "uses the right channel" do
-          chat_service.update_attributes(note_channel: "random")
+          chat_service.update(note_channel: "random")
 
           note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -222,7 +222,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           end
 
           it "uses confidential channel" do
-            chat_service.update_attributes(confidential_note_channel: "confidential")
+            chat_service.update(confidential_note_channel: "confidential")
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -232,7 +232,7 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           end
 
           it 'falls back to note channel' do
-            chat_service.update_attributes(note_channel: "fallback_channel")
+            chat_service.update(note_channel: "fallback_channel")
 
             note_data = Gitlab::DataBuilder::Note.build(issue_note, user)
 
@@ -240,6 +240,70 @@ RSpec.shared_examples 'slack or mattermost notifications' do
 
             chat_service.execute(note_data)
           end
+        end
+      end
+    end
+  end
+
+  describe 'Push events' do
+    let(:user) { create(:user) }
+    let(:project) { create(:project, :repository, creator: user) }
+
+    before do
+      allow(chat_service).to receive_messages(
+        project: project,
+        service_hook: true,
+        webhook: webhook_url
+      )
+
+      WebMock.stub_request(:post, webhook_url)
+    end
+
+    context 'only notify for the default branch' do
+      context 'when enabled' do
+        before do
+          chat_service.notify_only_default_branch = true
+        end
+
+        it 'does not notify push events if they are not for the default branch' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).not_to have_requested(:post, webhook_url)
+        end
+
+        it 'notifies about push events for the default branch' do
+          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+
+        it 'still notifies about pushed tags' do
+          ref = "#{Gitlab::Git::TAG_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
+        end
+      end
+
+      context 'when disabled' do
+        before do
+          chat_service.notify_only_default_branch = false
+        end
+
+        it 'notifies about all push events' do
+          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
+          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+
+          chat_service.execute(push_sample_data)
+
+          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
     end
@@ -393,23 +457,6 @@ RSpec.shared_examples 'slack or mattermost notifications' do
           result = chat_service.execute(data)
 
           expect(result).to be_falsy
-        end
-
-        it 'does not notify push events if they are not for the default branch' do
-          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          push_sample_data = Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).not_to have_requested(:post, webhook_url)
-        end
-
-        it 'notifies about push events for the default branch' do
-          push_sample_data = Gitlab::DataBuilder::Push.build_sample(project, user)
-
-          chat_service.execute(push_sample_data)
-
-          expect(WebMock).to have_requested(:post, webhook_url).once
         end
       end
 

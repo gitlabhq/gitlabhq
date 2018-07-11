@@ -4,6 +4,11 @@ describe 'admin/dashboard/index.html.haml' do
   include Devise::Test::ControllerHelpers
 
   before do
+    counts = Admin::DashboardController::COUNTED_ITEMS.each_with_object({}) do |item, hash|
+      hash[item] = 100
+    end
+
+    assign(:counts, counts)
     assign(:projects, create_list(:project, 1))
     assign(:users, create_list(:user, 1))
     assign(:groups, create_list(:group, 1))
@@ -22,6 +27,6 @@ describe 'admin/dashboard/index.html.haml' do
   it "includes revision of GitLab" do
     render
 
-    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab::REVISION})"
+    expect(rendered).to have_content "#{Gitlab::VERSION} (#{Gitlab.revision})"
   end
 end

@@ -1,6 +1,7 @@
 require "spec_helper"
 
 describe 'Git HTTP requests' do
+  include ProjectForksHelper
   include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
@@ -305,6 +306,22 @@ describe 'Git HTTP requests' do
                 expect(response.body).to eq(change_access_error(:push_code))
               end
             end
+
+            context 'when merge requests are open that allow maintainer access' do
+              let(:canonical_project) { create(:project, :public, :repository) }
+              let(:project) { fork_project(canonical_project, nil, repository: true) }
+
+              before do
+                canonical_project.add_maintainer(user)
+                create(:merge_request,
+                       source_project: project,
+                       target_project:  canonical_project,
+                       source_branch: 'fixes',
+                       allow_collaboration: true)
+              end
+
+              it_behaves_like 'pushes are allowed'
+            end
           end
         end
 
@@ -381,13 +398,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               context "when the user is blocked" do
                 it "rejects pulls with 401 Unauthorized" do
                   user.block
-                  project.add_master(user)
+                  project.add_maintainer(user)
 
                   download(path, env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -450,7 +467,7 @@ describe 'Git HTTP requests' do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_master(user)
+                  project.add_maintainer(user)
                 end
 
                 context 'when username and password are provided' do
@@ -810,7 +827,7 @@ describe 'Git HTTP requests' do
 
         context 'and the user is on the team' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it "responds with status 200" do
@@ -833,7 +850,7 @@ describe 'Git HTTP requests' do
     let(:env) { { user: user.username, password: user.password } }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       enforce_terms
     end
 

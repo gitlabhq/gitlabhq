@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Abuse reports' do
+describe 'Abuse reports' do
   let(:another_user) { create(:user) }
 
   before do
     sign_in(create(:user))
   end
 
-  scenario 'Report abuse' do
+  it 'Report abuse' do
     visit user_path(another_user)
 
     click_link 'Report abuse'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Groups > Members > List members' do
+describe 'Groups > Members > List members' do
   include Select2Helper
 
   let(:user1) { create(:user, name: 'John Doe') }
@@ -8,11 +8,11 @@ feature 'Groups > Members > List members' do
   let(:group) { create(:group) }
   let(:nested_group) { create(:group, parent: group) }
 
-  background do
+  before do
     gitlab_sign_in(user1)
   end
 
-  scenario 'show members from current group and parent', :nested_groups do
+  it 'show members from current group and parent', :nested_groups do
     group.add_developer(user1)
     nested_group.add_developer(user2)
 
@@ -22,7 +22,7 @@ feature 'Groups > Members > List members' do
     expect(second_row.text).to include(user2.name)
   end
 
-  scenario 'show user once if member of both current group and parent', :nested_groups do
+  it 'show user once if member of both current group and parent', :nested_groups do
     group.add_developer(user1)
     nested_group.add_developer(user1)
 

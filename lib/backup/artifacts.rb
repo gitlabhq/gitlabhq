@@ -2,7 +2,11 @@ require 'backup/files'
 
 module Backup
   class Artifacts < Files
-    def initialize
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+
       super('artifacts', JobArtifactUploader.root)
     end
   end

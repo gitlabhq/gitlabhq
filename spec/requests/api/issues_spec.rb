@@ -630,15 +630,17 @@ describe API::Issues do
     end
 
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      get api("/projects/#{project.id}/issues", user)
+
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
 
-      create(:issue, author: user, project: project)
+      create_list(:issue, 3, project: project)
 
       expect do
         get api("/projects/#{project.id}/issues", user)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control_count)
     end
 
     it 'returns 404 when project does not exist' do
@@ -1081,7 +1083,7 @@ describe API::Issues do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       context 'resolving all discussions in a merge request' do
@@ -1351,19 +1353,25 @@ describe API::Issues do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+    it 'removes all labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+      end
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
+      expect(json_response['updated_at']).to be > Time.now
     end
 
-    it 'updates labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+    it 'updates labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'foo,bar'
+      end
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
+      expect(json_response['updated_at']).to be > Time.now
     end
 
     it 'allows special label names' do
@@ -1671,7 +1679,7 @@ describe API::Issues do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     context 'when unauthenticated' do
-      it "returns unautorized" do
+      it "returns unauthorized" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
 
         expect(response).to have_gitlab_http_status(401)
@@ -1687,7 +1695,7 @@ describe API::Issues do
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

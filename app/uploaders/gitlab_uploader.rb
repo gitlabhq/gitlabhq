@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitlabUploader < CarrierWave::Uploader::Base
   class_attribute :options
 
@@ -67,6 +69,28 @@ class GitlabUploader < CarrierWave::Uploader::Base
 
   def local_url
     File.join('/', self.class.base_dir, dynamic_segment, filename)
+  end
+
+  def cached_size
+    size
+  end
+
+  def open
+    stream =
+      if file_storage?
+        File.open(path, "rb") if path
+      else
+        ::Gitlab::HttpIO.new(url, cached_size) if url
+      end
+
+    return unless stream
+    return stream unless block_given?
+
+    begin
+      yield(stream)
+    ensure
+      stream.close
+    end
   end
 
   private

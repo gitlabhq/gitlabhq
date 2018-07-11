@@ -2,10 +2,11 @@
   .modal-dialog.modal-lg
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } &times;
         %h3.page-title= title
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
       .modal-body
-        = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form form-horizontal', data: { method: method } do
+        = form_tag form_path, method: method, class: 'js-quick-submit js-upload-blob-form', data: { method: method } do
           .dropzone
             .dropzone-previews.blob-upload-dropzone-previews
               %p.dz-message.light

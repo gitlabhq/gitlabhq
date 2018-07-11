@@ -11,6 +11,7 @@ class Group < Namespace
   include GroupDescendant
   include TokenAuthenticatable
   include WithUploads
+  include Gitlab::Utils::StrongMemoize
 
   has_many :group_members, -> { where(requested_at: nil) }, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
   alias_method :members, :group_members
@@ -26,7 +27,11 @@ class Group < Namespace
   has_many :milestones
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
+
+  # Overridden on another method
+  # Left here just to be dependent: :destroy
   has_many :notification_settings, dependent: :destroy, as: :source # rubocop:disable Cop/ActiveRecordDependent
+
   has_many :labels, class_name: 'GroupLabel'
   has_many :variables, class_name: 'Ci::GroupVariable'
   has_many :custom_attributes, class_name: 'GroupCustomAttribute'
@@ -88,6 +93,15 @@ class Group < Namespace
     end
   end
 
+  # Overrides notification_settings has_many association
+  # This allows to apply notification settings from parent groups
+  # to child groups and projects.
+  def notification_settings
+    source_type = self.class.base_class.name
+
+    NotificationSetting.where(source_type: source_type, source_id: self_and_ancestors_ids)
+  end
+
   def to_reference(_from = nil, full: nil)
     "#{self.class.reference_prefix}#{full_path}"
   end
@@ -141,13 +155,14 @@ class Group < Namespace
     )
   end
 
-  def add_user(user, access_level, current_user: nil, expires_at: nil)
+  def add_user(user, access_level, current_user: nil, expires_at: nil, ldap: false)
     GroupMember.add_user(
       self,
       user,
       access_level,
       current_user: current_user,
-      expires_at: expires_at
+      expires_at: expires_at,
+      ldap: ldap
     )
   end
 
@@ -163,9 +178,12 @@ class Group < Namespace
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user = nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user = nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
@@ -183,16 +201,23 @@ class Group < Namespace
     members_with_parents.owners.where(user_id: user).any?
   end
 
-  def has_master?(user)
+  def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.masters.where(user_id: user).any?
+    members_with_parents.maintainers.where(user_id: user).any?
   end
+
+  # @deprecated
+  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   # Parent owners are ignored for nested groups.
   def last_owner?(user)
     owners.include?(user) && owners.size == 1
+  end
+
+  def ldap_synced?
+    false
   end
 
   def post_create_hook
@@ -218,6 +243,12 @@ class Group < Namespace
 
   def user_ids_for_project_authorizations
     members_with_parents.pluck(:user_id)
+  end
+
+  def self_and_ancestors_ids
+    strong_memoize(:self_and_ancestors_ids) do
+      self_and_ancestors.pluck(:id)
+    end
   end
 
   def members_with_parents

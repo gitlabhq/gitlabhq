@@ -41,7 +41,7 @@ describe ProjectsFinder do
 
       describe 'with private projects' do
         before do
-          private_project.add_master(user)
+          private_project.add_maintainer(user)
         end
 
         it { is_expected.to match_array([public_project, internal_project, private_project]) }
@@ -56,7 +56,7 @@ describe ProjectsFinder do
 
     describe 'filter by visibility_level' do
       before do
-        private_project.add_master(user)
+        private_project.add_maintainer(user)
       end
 
       context 'private' do

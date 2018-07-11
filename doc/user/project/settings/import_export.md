@@ -19,7 +19,7 @@
 >  - The exports are stored in a temporary [shared directory][tmp] and are deleted
 >    every 24 hours by a specific worker.
 >  - Group members will get exported as project members, as long as the user has
->    master or admin access to the group where the exported project lives. An admin
+>    maintainer or admin access to the group where the exported project lives. An admin
 >    in the import side is required to map the users, based on email or username.
 >    Otherwise, a supplementary comment is left to mention the original author and
 >    the MRs, notes or issues will be owned by the importer.
@@ -32,7 +32,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
-| 10.8 to current  | 0.2.3                 |
+| 11.1 to current  | 0.2.4                 |
+| 10.8             | 0.2.3                 |
 | 10.4             | 0.2.2                 |
 | 10.3             | 0.2.1                 |
 | 10.0             | 0.2.0                 |

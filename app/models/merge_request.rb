@@ -1,5 +1,6 @@
 class MergeRequest < ActiveRecord::Base
   include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable
@@ -58,6 +59,7 @@ class MergeRequest < ActiveRecord::Base
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
+  after_save :ensure_metrics
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -104,23 +106,36 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :merge_status, initial: :unchecked do
     event :mark_as_unchecked do
-      transition [:can_be_merged, :cannot_be_merged] => :unchecked
+      transition [:can_be_merged, :unchecked] => :unchecked
+      transition [:cannot_be_merged, :cannot_be_merged_recheck] => :cannot_be_merged_recheck
     end
 
     event :mark_as_mergeable do
-      transition [:unchecked, :cannot_be_merged] => :can_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :can_be_merged
     end
 
     event :mark_as_unmergeable do
-      transition [:unchecked, :can_be_merged] => :cannot_be_merged
+      transition [:unchecked, :cannot_be_merged_recheck] => :cannot_be_merged
     end
 
     state :unchecked
+    state :cannot_be_merged_recheck
     state :can_be_merged
     state :cannot_be_merged
 
     around_transition do |merge_request, transition, block|
       Gitlab::Timeless.timeless(merge_request, &block)
+    end
+
+    after_transition unchecked: :cannot_be_merged do |merge_request, transition|
+      if merge_request.notify_conflict?
+        NotificationService.new.merge_request_unmergeable(merge_request)
+        TodoService.new.merge_request_became_unmergeable(merge_request)
+      end
+    end
+
+    def check_state?(merge_status)
+      [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
     end
   end
 
@@ -327,6 +342,16 @@ class MergeRequest < ActiveRecord::Base
     update_column(:merge_jid, jid)
   end
 
+  def merge_participants
+    participants = [author]
+
+    if merge_when_pipeline_succeeds? && !participants.include?(merge_user)
+      participants << merge_user
+    end
+
+    participants
+  end
+
   def first_commit
     merge_request_diff ? merge_request_diff.first_commit : compare_commits.first
   end
@@ -344,6 +369,10 @@ class MergeRequest < ActiveRecord::Base
     else
       merge_request_diff.diffs(diff_options)
     end
+  end
+
+  def non_latest_diffs
+    merge_request_diffs.where.not(id: merge_request_diff.id)
   end
 
   def diff_size
@@ -587,22 +616,11 @@ class MergeRequest < ActiveRecord::Base
   def reload_diff(current_user = nil)
     return unless open?
 
-    old_diff_refs = self.diff_refs
-    new_diff = create_merge_request_diff
-
-    MergeRequests::MergeRequestDiffCacheService.new.execute(self, new_diff)
-
-    new_diff_refs = self.diff_refs
-
-    update_diff_discussion_positions(
-      old_diff_refs: old_diff_refs,
-      new_diff_refs: new_diff_refs,
-      current_user: current_user
-    )
+    MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
 
   def check_if_can_be_merged
-    return unless unchecked? && Gitlab::Database.read_write?
+    return unless self.class.state_machines[:merge_status].check_state?(merge_status) && Gitlab::Database.read_write?
 
     can_be_merged =
       !broken? && project.repository.can_be_merged?(diff_head_sha, target_branch)
@@ -681,6 +699,17 @@ class MergeRequest < ActiveRecord::Base
 
   def remove_source_branch?
     should_remove_source_branch? || force_remove_source_branch?
+  end
+
+  def notify_conflict?
+    (opened? || locked?) &&
+      has_commits? &&
+      !branch_missing? &&
+      !project.repository.can_be_merged?(diff_head_sha, target_branch)
+  rescue Gitlab::Git::CommandError
+    # Checking mergeability can trigger exception, e.g. non-utf8
+    # We ignore this type of errors.
+    false
   end
 
   def related_notes
@@ -1092,6 +1121,10 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  def discussions_rendered_on_frontend?
+    true
+  end
+
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
@@ -1102,21 +1135,31 @@ class MergeRequest < ActiveRecord::Base
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
 
-  def allow_maintainer_to_push
-    maintainer_push_possible? && super
+  # TODO: remove once production database rename completes
+  alias_attribute :allow_collaboration, :allow_maintainer_to_push
+
+  def allow_collaboration
+    collaborative_push_possible? && allow_maintainer_to_push
   end
 
-  alias_method :allow_maintainer_to_push?, :allow_maintainer_to_push
+  alias_method :allow_collaboration?, :allow_collaboration
 
-  def maintainer_push_possible?
+  def collaborative_push_possible?
     source_project.present? && for_fork? &&
       target_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
       source_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE &&
       !ProtectedBranch.protected?(source_project, source_branch)
   end
 
-  def can_allow_maintainer_to_push?(user)
-    maintainer_push_possible? &&
+  def can_allow_collaboration?(user)
+    collaborative_push_possible? &&
       Ability.allowed?(user, :push_code, source_project)
+  end
+
+  def squash_in_progress?
+    # The source project can be deleted
+    return false unless source_project
+
+    source_project.repository.squash_in_progress?(id)
   end
 end

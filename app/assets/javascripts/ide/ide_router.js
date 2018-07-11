@@ -63,7 +63,7 @@ router.beforeEach((to, from, next) => {
       .then(() => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
-        const baseSplit = to.params[0].split('/-/');
+        const baseSplit = (to.params[0] && to.params[0].split('/-/')) || [''];
         const branchId = baseSplit[0].slice(-1) === '/' ? baseSplit[0].slice(0, -1) : baseSplit[0];
 
         if (branchId) {
@@ -95,14 +95,6 @@ router.beforeEach((to, from, next) => {
               }
             })
             .catch(e => {
-              flash(
-                'Error while loading the branch files. Please try again.',
-                'alert',
-                document,
-                null,
-                false,
-                true,
-              );
               throw e;
             });
         } else if (to.params.mrid) {

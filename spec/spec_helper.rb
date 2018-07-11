@@ -4,7 +4,7 @@ SimpleCovEnv.start!
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
@@ -69,6 +69,7 @@ RSpec.configure do |config|
   config.include StubFeatureFlags
   config.include StubGitlabCalls
   config.include StubGitlabData
+  config.include ExpectNextInstanceOf
   config.include TestEnv
   config.include Devise::Test::ControllerHelpers, type: :controller
   config.include Devise::Test::IntegrationHelpers, type: :feature
@@ -87,6 +88,7 @@ RSpec.configure do |config|
   config.include LiveDebugger, :js
   config.include MigrationsHelpers, :migration
   config.include RedisHelpers
+  config.include Rails.application.routes.url_helpers, type: :routing
 
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
@@ -107,19 +109,6 @@ RSpec.configure do |config|
   end
 
   config.before(:example) do
-    # Skip pre-receive hook check so we can use the web editor and merge.
-    allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
-
-    allow_any_instance_of(Gitlab::Git::GitlabProjects).to receive(:fork_repository).and_wrap_original do |m, *args|
-      m.call(*args)
-
-      shard_name, repository_relative_path = args
-      # We can't leave the hooks in place after a fork, as those would fail in tests
-      # The "internal" API is not available
-      Gitlab::Shell.new.rm_directory(shard_name,
-                                     File.join(repository_relative_path, 'hooks'))
-    end
-
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
   end
@@ -131,6 +120,10 @@ RSpec.configure do |config|
   config.after(:example, :request_store) do
     RequestStore.end!
     RequestStore.clear!
+  end
+
+  config.after(:example) do
+    Fog.unmock! if Fog.mock?
   end
 
   config.before(:example, :mailer) do
@@ -175,6 +168,17 @@ RSpec.configure do |config|
     example.run
 
     redis_queues_cleanup!
+  end
+
+  config.around(:each, :use_clean_rails_memory_store_fragment_caching) do |example|
+    caching_store = ActionController::Base.cache_store
+    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+    ActionController::Base.perform_caching = true
+
+    example.run
+
+    ActionController::Base.perform_caching = false
+    ActionController::Base.cache_store = caching_store
   end
 
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the

@@ -43,7 +43,7 @@ export default {
       return `${this.changedIcon}-solid`;
     },
     changedIconClass() {
-      return `multi-${this.changedIcon} pull-left`;
+      return `multi-${this.changedIcon} float-left`;
     },
     tooltipTitle() {
       if (!this.showTooltip) return undefined;

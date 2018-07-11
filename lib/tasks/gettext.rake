@@ -4,7 +4,7 @@ namespace :gettext do
   # Customize list of translatable files
   # See: https://github.com/grosser/gettext_i18n_rails#customizing-list-of-translatable-files
   def files_to_translate
-    folders = %W(app lib config #{locale_path}).join(',')
+    folders = %W(ee app lib config #{locale_path}).join(',')
     exts = %w(rb erb haml slim rhtml js jsx vue handlebars hbs mustache).join(',')
 
     Dir.glob(
@@ -16,8 +16,30 @@ namespace :gettext do
     # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/33014#note_31218998
     FileUtils.touch(File.join(Rails.root, 'locale/gitlab.pot'))
 
-    Rake::Task['gettext:pack'].invoke
     Rake::Task['gettext:po_to_json'].invoke
+  end
+
+  task :regenerate do
+    pot_file = 'locale/gitlab.pot'
+    # Remove all translated files, this speeds up finding
+    FileUtils.rm Dir['locale/**/gitlab.*']
+    # remove the `pot` file to ensure it's completely regenerated
+    FileUtils.rm_f pot_file
+
+    Rake::Task['gettext:find'].invoke
+
+    # leave only the required changes.
+    `git checkout -- locale/*/gitlab.po`
+
+    # Remove timestamps from the pot file
+    pot_content = File.read pot_file
+    pot_content.gsub!(/^"POT?\-(?:Creation|Revision)\-Date\:.*\n/, '')
+    File.write pot_file, pot_content
+
+    puts <<~MSG
+    All done. Please commit the changes to `locale/gitlab.pot`.
+
+    MSG
   end
 
   desc 'Lint all po files in `locale/'
@@ -47,6 +69,40 @@ namespace :gettext do
       end
 
       raise "Not all PO-files are valid: #{failed_linters.map(&:po_path).to_sentence}"
+    end
+  end
+
+  task :updated_check do
+    pot_file = 'locale/gitlab.pot'
+    # Removing all pre-translated files speeds up `gettext:find` as the
+    # files don't need to be merged.
+    # Having `LC_MESSAGES/gitlab.mo files present also confuses the output.
+    FileUtils.rm Dir['locale/**/gitlab.*']
+    FileUtils.rm_f pot_file
+
+    # `gettext:find` writes touches to temp files to `stderr` which would cause
+    # `static-analysis` to report failures. We can ignore these.
+    silence_stream($stderr) do
+      Rake::Task['gettext:find'].invoke
+    end
+
+    pot_diff = `git diff -- #{pot_file} | grep -E '^(\\+|-)msgid'`.strip
+
+    # reset the locale folder for potential next tasks
+    `git checkout -- locale`
+
+    if pot_diff.present?
+      raise <<~MSG
+        Newly translated strings found, please add them to `#{pot_file}` by running:
+
+          bin/rake gettext:regenerate
+
+        Then commit and push the resulting changes to `#{pot_file}`.
+
+        The diff was:
+
+        #{pot_diff}
+      MSG
     end
   end
 

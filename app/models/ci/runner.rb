@@ -2,6 +2,7 @@ module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include IgnorableColumn
     include RedisCacheable
     include ChronicDurationAttribute
 
@@ -11,22 +12,27 @@ module Ci
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
     FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
 
+    ignore_column :is_shared
+
     has_many :builds
-    has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
-    has_many :runner_namespaces
+    has_many :runner_namespaces, inverse_of: :runner
     has_many :groups, through: :runner_namespaces
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
     before_validation :set_default_values
 
-    scope :specific, -> { where(is_shared: false) }
-    scope :shared, -> { where(is_shared: true) }
     scope :active, -> { where(active: true) }
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, -> { order(id: :desc) }
+
+    # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
+    scope :deprecated_shared, -> { instance_type }
+    # this should get replaced with `project_type.or(group_type)` once using Rails5
+    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
 
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
@@ -39,9 +45,9 @@ module Ci
       joins(:groups).where(namespaces: { id: hierarchy_groups })
     }
 
-    scope :owned_or_shared, -> (project_id) do
+    scope :owned_or_instance_wide, -> (project_id) do
       union = Gitlab::SQL::Union.new(
-        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), shared],
+        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), instance_type],
         remove_duplicates: false
       )
       from("(#{union.to_sql}) ci_runners")
@@ -56,9 +62,13 @@ module Ci
     end
 
     validate :tag_constraints
-    validate :either_projects_or_group
     validates :access_level, presence: true
     validates :runner_type, presence: true
+
+    validate :no_projects, unless: :project_type?
+    validate :no_groups, unless: :group_type?
+    validate :any_project, if: :project_type?
+    validate :exactly_one_group, if: :group_type?
 
     acts_as_taggable
 
@@ -108,25 +118,27 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      if shared?
-        self.is_shared = false if shared?
+      if instance_type?
         self.runner_type = :project_type
       elsif group_type?
         raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
       end
 
-      self.save
-      project.runner_projects.create(runner_id: self.id)
+      begin
+        transaction do
+          self.projects << project
+          self.save!
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        self.errors.add(:assign_to, e.message)
+        false
+      end
     end
 
     def display_name
       return short_sha if description.blank?
 
       description
-    end
-
-    def shared?
-      is_shared
     end
 
     def online?
@@ -145,10 +157,6 @@ module Ci
 
     def belongs_to_one_project?
       runner_projects.count == 1
-    end
-
-    def specific?
-      !shared?
     end
 
     def assigned_to_group?
@@ -207,10 +215,8 @@ module Ci
 
       cache_attributes(values)
 
-      if persist_cached_data?
-        self.assign_attributes(values)
-        self.save if self.changed?
-      end
+      # We save data without validation, it will always change due to `contacted_at`
+      self.update_columns(values) if persist_cached_data?
     end
 
     def pick_build!(build)
@@ -250,16 +256,30 @@ module Ci
     end
 
     def assignable_for?(project_id)
-      self.class.owned_or_shared(project_id).where(id: self.id).any?
+      self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
     end
 
-    def either_projects_or_group
-      if groups.many?
-        errors.add(:runner, 'can only be assigned to one group')
+    def no_projects
+      if projects.any?
+        errors.add(:runner, 'cannot have projects assigned')
       end
+    end
 
-      if assigned_to_group? && assigned_to_project?
-        errors.add(:runner, 'can only be assigned either to projects or to a group')
+    def no_groups
+      if groups.any?
+        errors.add(:runner, 'cannot have groups assigned')
+      end
+    end
+
+    def any_project
+      unless projects.any?
+        errors.add(:runner, 'needs to be assigned to at least one project')
+      end
+    end
+
+    def exactly_one_group
+      unless groups.one?
+        errors.add(:runner, 'needs to be assigned to exactly one group')
       end
     end
 

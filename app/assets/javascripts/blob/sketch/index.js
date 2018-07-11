@@ -44,7 +44,7 @@ export default class SketchLoader {
     previewLink.href = previewUrl;
     previewLink.target = '_blank';
     previewImage.src = previewUrl;
-    previewImage.className = 'img-responsive';
+    previewImage.className = 'img-fluid';
 
     previewLink.appendChild(previewImage);
     this.container.appendChild(previewLink);

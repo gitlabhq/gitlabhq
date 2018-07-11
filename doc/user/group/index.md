@@ -125,7 +125,7 @@ side of your screen.
 
 ---
 
-Group owners and masters will be notified of your request and will be able to approve or
+Group owners and maintainers will be notified of your request and will be able to approve or
 decline it on the members page.
 
 ![Manage access requests](img/access_requests_management.png)

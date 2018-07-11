@@ -3,7 +3,6 @@
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
 import '~/commons';
-
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
@@ -39,7 +38,8 @@ jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 beforeAll(() => jasmine.addMatchers(customMatchers));
 
 // globalize common libraries
-window.$ = window.jQuery = $;
+window.$ = $;
+window.jQuery = window.$;
 
 // stub expected globals
 window.gl = window.gl || {};
@@ -90,7 +90,8 @@ testsContext.keys().forEach(function(path) {
   try {
     testsContext(path);
   } catch (err) {
-    console.error('[ERROR] Unable to load spec: ', path);
+    console.log(err);
+    console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
     describe('Test bundle', function() {
       it(`includes '${path}'`, function() {
         expect(err).toBeNull();
@@ -134,7 +135,7 @@ if (process.env.BABEL_ENV === 'coverage') {
   // exempt these files from the coverage report
   const troubleMakers = [
     './blob_edit/blob_bundle.js',
-    './boards/components/modal/empty_state.js',
+    './boards/components/modal/empty_state.vue',
     './boards/components/modal/footer.js',
     './boards/components/modal/header.js',
     './cycle_analytics/cycle_analytics_bundle.js',

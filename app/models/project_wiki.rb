@@ -107,7 +107,7 @@ class ProjectWiki
     update_project_activity
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
-    return false
+    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -138,10 +138,6 @@ class ProjectWiki
     title_array = title.split("/")
     title = title_array.pop
     [title, title_array.join("/")]
-  end
-
-  def search_files(query)
-    repository.search_files_by_content(query, default_branch)
   end
 
   def repository

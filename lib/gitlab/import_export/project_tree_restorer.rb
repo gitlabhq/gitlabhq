@@ -1,8 +1,8 @@
 module Gitlab
   module ImportExport
     class ProjectTreeRestorer
-      # Relations which cannot have both group_id and project_id at the same time
-      RESTRICT_PROJECT_AND_GROUP = %i(milestone milestones).freeze
+      # Relations which cannot be saved at project level (and have a group assigned)
+      GROUP_MODELS = [GroupLabel, Milestone].freeze
 
       def initialize(user:, shared:, project:)
         @path = File.join(shared.export_path, 'project.json')
@@ -70,10 +70,21 @@ module Gitlab
       def save_relation_hash(relation_hash_batch, relation_key)
         relation_hash = create_relation(relation_key, relation_hash_batch)
 
+        remove_group_models(relation_hash) if relation_hash.is_a?(Array)
+
         @saved = false unless restored_project.append_or_update_attribute(relation_key, relation_hash)
 
         # Restore the project again, extra query that skips holding the AR objects in memory
         @restored_project = Project.find(@project_id)
+      end
+
+      # Remove project models that became group models as we found them at group level.
+      # This no longer required saving them at the root project level.
+      # For example, in the case of an existing group label that matched the title.
+      def remove_group_models(relation_hash)
+        relation_hash.reject! do |value|
+          GROUP_MODELS.include?(value.class) && value.group_id
+        end
       end
 
       def default_relation_list
@@ -88,16 +99,18 @@ module Gitlab
       end
 
       def project_params
-        @project_params ||= json_params.merge(override_params)
+        @project_params ||= begin
+          attrs = json_params.merge(override_params)
+
+          # Cleaning all imported and overridden params
+          Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: attrs,
+                                                       relation_class: Project,
+                                                       excluded_keys: excluded_keys_for_relation(:project))
+        end
       end
 
       def override_params
-        return {} unless params = @project.import_data&.data&.fetch('override_params', nil)
-
-        @override_params ||= params.select do |key, _value|
-          Project.column_names.include?(key.to_s) &&
-            !reader.project_tree[:except].include?(key.to_sym)
-        end
+        @override_params ||= @project.import_data&.data&.fetch('override_params', nil) || {}
       end
 
       def json_params
@@ -168,29 +181,22 @@ module Gitlab
       def create_relation(relation, relation_hash_list)
         relation_array = [relation_hash_list].flatten.map do |relation_hash|
           Gitlab::ImportExport::RelationFactory.create(relation_sym: relation.to_sym,
-                                                       relation_hash: parsed_relation_hash(relation_hash, relation.to_sym),
+                                                       relation_hash: relation_hash,
                                                        members_mapper: members_mapper,
                                                        user: @user,
-                                                       project: @restored_project)
+                                                       project: @restored_project,
+                                                       excluded_keys: excluded_keys_for_relation(relation))
         end.compact
 
         relation_hash_list.is_a?(Array) ? relation_array : relation_array.first
       end
 
-      def parsed_relation_hash(relation_hash, relation_type)
-        if RESTRICT_PROJECT_AND_GROUP.include?(relation_type)
-          params = {}
-          params['group_id'] = restored_project.group.try(:id) if relation_hash['group_id']
-          params['project_id'] = restored_project.id if relation_hash['project_id']
-        else
-          params = { 'group_id' => restored_project.group.try(:id), 'project_id' => restored_project.id }
-        end
-
-        relation_hash.merge(params)
-      end
-
       def reader
         @reader ||= Gitlab::ImportExport::Reader.new(shared: @shared)
+      end
+
+      def excluded_keys_for_relation(relation)
+        @reader.attributes_finder.find_excluded_keys(relation)
       end
     end
   end

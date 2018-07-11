@@ -13,6 +13,9 @@ describe('Job details header', () => {
     const threeWeeksAgo = new Date();
     threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
     props = {
       job: {
         status: {
@@ -31,7 +34,7 @@ describe('Job details header', () => {
           email: 'foo@bar.com',
           avatar_url: 'link',
         },
-        started: '2018-01-08T09:48:27.319Z',
+        started: twoDaysAgo.toISOString(),
         new_issue_path: 'path',
       },
       isLoading: false,
@@ -69,7 +72,7 @@ describe('Job details header', () => {
           .querySelector('.header-main-content')
           .textContent.replace(/\s+/g, ' ')
           .trim(),
-      ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
+      ).toEqual('failed Job #123 triggered 2 days ago by Foo');
     });
 
     it('should render new issue link', () => {

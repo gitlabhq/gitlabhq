@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > Milestones' do
+describe 'Dashboard > Milestones' do
   describe 'as anonymous user' do
     before do
       visit dashboard_milestones_path
@@ -16,7 +16,7 @@ feature 'Dashboard > Milestones' do
     let(:project) { create(:project, namespace: user.namespace) }
     let!(:milestone) { create(:milestone, project: project) }
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit dashboard_milestones_path
     end

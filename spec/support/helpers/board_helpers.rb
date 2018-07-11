@@ -1,7 +1,7 @@
 module BoardHelpers
   def click_card(card)
     within card do
-      first('.card-number').click
+      first('.board-card-number').click
     end
 
     wait_for_sidebar

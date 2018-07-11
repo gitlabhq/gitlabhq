@@ -6,7 +6,8 @@
 
 - if @branches.any? || @tags.any? || @tags_limit_exceeded
   %span
-    = link_to "…", "#", class: "js-details-expand label label-gray"
+    = link_to "#", class: "js-details-expand badge badge-gray ref-name" do
+      = sprite_icon('ellipsis_h', size: 12, css_class: 'vertical-align-middle')
     %span.js-details-content.hide
       = commit_branches_links(@project, @branches)
       - if @tags_limit_exceeded

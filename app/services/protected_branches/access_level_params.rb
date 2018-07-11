@@ -14,7 +14,7 @@ module ProtectedBranches
     private
 
     def params_with_default(params)
-      params[:"#{type}_access_level"] ||= Gitlab::Access::MASTER if use_default_access_level?(params)
+      params[:"#{type}_access_level"] ||= Gitlab::Access::MAINTAINER if use_default_access_level?(params)
       params
     end
 

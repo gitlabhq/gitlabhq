@@ -26,10 +26,6 @@ module Gitlab
         @shared.error(e)
         false
       end
-
-      def path_to_repo
-        @project.repository.path_to_repo
-      end
     end
   end
 end

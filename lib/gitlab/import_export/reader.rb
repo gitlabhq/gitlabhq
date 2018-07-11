@@ -1,7 +1,7 @@
 module Gitlab
   module ImportExport
     class Reader
-      attr_reader :tree
+      attr_reader :tree, :attributes_finder
 
       def initialize(shared:)
         @shared = shared

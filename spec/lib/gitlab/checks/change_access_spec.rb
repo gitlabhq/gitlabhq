@@ -52,9 +52,9 @@ describe Gitlab::Checks::ChangeAccess do
       context 'with protected tag' do
         let!(:protected_tag) { create(:protected_tag, project: project, name: 'v*') }
 
-        context 'as master' do
+        context 'as maintainer' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           context 'deletion' do
@@ -138,13 +138,13 @@ describe Gitlab::Checks::ChangeAccess do
 
           context 'if the user is not allowed to delete protected branches' do
             it 'raises an error' do
-              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project maintainer or owner can delete a protected branch.')
             end
           end
 
           context 'if the user is allowed to delete protected branches' do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context 'through the web interface' do

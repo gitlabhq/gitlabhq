@@ -2,6 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
   include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable
@@ -14,12 +15,13 @@ class Issue < ActiveRecord::Base
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
-  DueDateStruct = Struct.new(:title, :name).freeze
-  NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
-  AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
-  Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
-  DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
-  DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
+  DueDateStruct                   = Struct.new(:title, :name).freeze
+  NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
+  AnyDueDate                      = DueDateStruct.new('Any Due Date', '').freeze
+  Overdue                         = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueThisWeek                     = DueDateStruct.new('Due This Week', 'week').freeze
+  DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
+  DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
@@ -46,6 +48,7 @@ class Issue < ActiveRecord::Base
   scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
   scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
 
+  scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
@@ -53,12 +56,14 @@ class Issue < ActiveRecord::Base
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+  scope :order_closest_future_date, -> { reorder('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC') }
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   scope :public_only, -> { where(confidential: false) }
 
   after_save :expire_etag_cache
+  after_save :ensure_metrics, unless: :imported?
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -119,6 +124,7 @@ class Issue < ActiveRecord::Base
 
   def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
+    when 'closest_future_date' then order_closest_future_date
     when 'due_date'      then order_due_date_asc
     when 'due_date_asc'  then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
@@ -300,6 +306,10 @@ class Issue < ActiveRecord::Base
         )
       end
     end
+  end
+
+  def etag_caching_enabled?
+    true
   end
 
   def discussions_rendered_on_frontend?

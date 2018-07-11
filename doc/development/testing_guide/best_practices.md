@@ -120,6 +120,10 @@ Add `screenshot_and_save_page` in a `:js` spec to screenshot what Capybara
 Add `screenshot_and_open_image` in a `:js` spec to screenshot what Capybara
 "sees", and automatically open the image.
 
+The HTML dumps created by this are missing CSS.
+This results in them looking very different from the actual application.
+There is a [small hack](https://gitlab.com/gitlab-org/gitlab-ce/snippets/1718469) to add CSS which makes debugging easier.
+
 ### Fast unit tests
 
 Some classes are well-isolated from Rails and you should be able to test them

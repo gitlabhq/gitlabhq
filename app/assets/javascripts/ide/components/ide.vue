@@ -6,6 +6,8 @@ import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
 import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
+import RightPane from './panes/right.vue';
+import ErrorMessage from './error_message.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
@@ -16,6 +18,8 @@ export default {
     IdeStatusBar,
     RepoEditor,
     FindFile,
+    RightPane,
+    ErrorMessage,
   },
   computed: {
     ...mapState([
@@ -25,6 +29,8 @@ export default {
       'currentMergeRequestId',
       'fileFindVisible',
       'emptyStateSvgPath',
+      'currentProjectId',
+      'errorMessage',
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
@@ -69,6 +75,10 @@ export default {
 
 <template>
   <article class="ide">
+    <error-message
+      v-if="errorMessage"
+      :message="errorMessage"
+    />
     <div
       class="ide-view"
     >
@@ -90,8 +100,8 @@ export default {
             :merge-request-id="currentMergeRequestId"
           />
           <repo-editor
-            class="multi-file-edit-pane-content"
             :file="activeFile"
+            class="multi-file-edit-pane-content"
           />
         </template>
         <template
@@ -102,12 +112,12 @@ export default {
             class="ide-empty-state"
           >
             <div class="row js-empty-state">
-              <div class="col-xs-12">
+              <div class="col-12">
                 <div class="svg-content svg-250">
                   <img :src="emptyStateSvgPath" />
                 </div>
               </div>
-              <div class="col-xs-12">
+              <div class="col-12">
                 <div class="text-content text-center">
                   <h4>
                     Welcome to the GitLab IDE
@@ -122,9 +132,10 @@ export default {
           </div>
         </template>
       </div>
+      <right-pane
+        v-if="currentProjectId"
+      />
     </div>
-    <ide-status-bar
-      :file="activeFile"
-    />
+    <ide-status-bar :file="activeFile"/>
   </article>
 </template>

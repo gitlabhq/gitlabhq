@@ -16,7 +16,7 @@ describe Projects::MergeRequests::CreationsController do
   end
 
   before do
-    fork_project.add_master(user)
+    fork_project.add_maintainer(user)
     Projects::ForkService.new(project, user).execute(fork_project)
     sign_in(user)
   end
@@ -94,7 +94,7 @@ describe Projects::MergeRequests::CreationsController do
       let(:other_project) { create(:project, :repository) }
 
       before do
-        other_project.add_master(user)
+        other_project.add_maintainer(user)
       end
 
       context 'when the path exists in the diff' do

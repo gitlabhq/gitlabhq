@@ -171,7 +171,7 @@ describe API::Helpers do
         end
 
         it 'returns a 403 when a user has not accepted the terms' do
-          expect { current_user }.to raise_error /You must accept the Terms of Service/
+          expect { current_user }.to raise_error /must accept the Terms of Service/
         end
 
         it 'sets the current user when the user accepted the terms' do
@@ -201,7 +201,7 @@ describe API::Helpers do
       end
 
       it 'does not allow expired tokens' do
-        personal_access_token.update_attributes!(expires_at: 1.day.ago)
+        personal_access_token.update!(expires_at: 1.day.ago)
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error Gitlab::Auth::ExpiredError

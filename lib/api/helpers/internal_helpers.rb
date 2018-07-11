@@ -89,12 +89,6 @@ module API
         end
       end
 
-      # Return the repository full path so that gitlab-shell has it when
-      # handling ssh commands
-      def repository_path
-        repository.path_to_repo
-      end
-
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
         return unless %w[git-receive-pack git-upload-pack git-upload-archive].include?(action)

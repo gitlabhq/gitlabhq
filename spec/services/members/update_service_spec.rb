@@ -8,7 +8,7 @@ describe Members::UpdateService do
   let(:permission) { :update }
   let(:member) { source.members_and_requesters.find_by!(user_id: member_user.id) }
   let(:params) do
-    { access_level: Gitlab::Access::MASTER }
+    { access_level: Gitlab::Access::MAINTAINER }
   end
 
   shared_examples 'a service raising Gitlab::Access::AccessDeniedError' do
@@ -23,7 +23,7 @@ describe Members::UpdateService do
       updated_member = described_class.new(current_user, params).execute(member, permission: permission)
 
       expect(updated_member).to be_valid
-      expect(updated_member.access_level).to eq(Gitlab::Access::MASTER)
+      expect(updated_member.access_level).to eq(Gitlab::Access::MAINTAINER)
     end
   end
 
@@ -44,7 +44,7 @@ describe Members::UpdateService do
 
   context 'when current user can update the given member' do
     before do
-      project.add_master(current_user)
+      project.add_maintainer(current_user)
       group.add_owner(current_user)
     end
 
