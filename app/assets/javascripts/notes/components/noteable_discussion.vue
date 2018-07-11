@@ -194,16 +194,16 @@ export default {
     showReplyForm() {
       this.isReplying = true;
     },
-    cancelReplyForm(shouldConfirm) {
-      if (shouldConfirm && this.$refs.noteForm.isDirty) {
+    cancelReplyForm(shouldConfirm, isDirty) {
+      if (shouldConfirm && isDirty) {
         // eslint-disable-next-line no-alert
         if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
           return;
         }
       }
 
-      this.resetAutoSave();
       this.isReplying = false;
+      this.resetAutoSave();
     },
     saveReply(noteText, form, callback) {
       const postData = {
