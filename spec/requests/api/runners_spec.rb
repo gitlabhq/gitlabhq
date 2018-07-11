@@ -211,6 +211,69 @@ describe API::Runners do
 
   describe 'PUT /runners/:id' do
     context 'admin user' do
+      # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48625
+      context 'single parameter update' do
+        it 'runner description' do
+          description = shared_runner.description
+          update_runner(shared_runner.id, admin, description: "#{description}_updated")
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.description).to eq("#{description}_updated")
+        end
+
+        it 'runner active state' do
+          active = shared_runner.active
+          update_runner(shared_runner.id, admin, active: !active)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.active).to eq(!active)
+        end
+
+        it 'runner tag list' do
+          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.tag_list).to include('ruby2.1', 'pgsql', 'mysql')
+        end
+
+        it 'runner untagged flag' do
+          # Ensure tag list is non-empty before setting untagged to false.
+          update_runner(shared_runner.id, admin, tag_list: ['ruby2.1', 'pgsql', 'mysql'])
+          update_runner(shared_runner.id, admin, run_untagged: 'false')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.run_untagged?).to be(false)
+        end
+
+        it 'runner unlocked flag' do
+          update_runner(shared_runner.id, admin, locked: 'true')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.locked?).to be(true)
+        end
+
+        it 'runner access level' do
+          update_runner(shared_runner.id, admin, access_level: 'ref_protected')
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.ref_protected?).to be_truthy
+        end
+
+        it 'runner maximum timeout' do
+          update_runner(shared_runner.id, admin, maximum_timeout: 1234)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(shared_runner.reload.maximum_timeout).to eq(1234)
+        end
+
+        it 'fails with no parameters' do
+          put api("/runners/#{shared_runner.id}", admin)
+
+          shared_runner.reload
+          expect(response).to have_gitlab_http_status(400)
+        end
+      end
+
       context 'when runner is shared' do
         it 'updates runner' do
           description = shared_runner.description
