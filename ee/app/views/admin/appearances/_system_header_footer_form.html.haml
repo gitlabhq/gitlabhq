@@ -1,3 +1,5 @@
+- return unless License.feature_available?(:system_header_footer_form)
+
 - form = local_assigns.fetch(:form)
 
 %fieldset.system_header_footer
