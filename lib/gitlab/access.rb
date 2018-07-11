@@ -17,10 +17,7 @@ module Gitlab
     # @deprecated
     MASTER     = MAINTAINER
     OWNER      = 50
-<<<<<<< HEAD
     ADMIN      = 60
-=======
->>>>>>> upstream/master
 
     # Branch protection settings
     PROTECTION_NONE          = 0

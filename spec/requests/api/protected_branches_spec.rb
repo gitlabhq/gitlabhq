@@ -56,10 +56,7 @@ describe API::ProtectedBranches do
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
-<<<<<<< HEAD
         expect(json_response['unprotect_access_levels']).to eq([])
-=======
->>>>>>> upstream/master
       end
 
       context 'when protected branch does not exist' do
@@ -149,10 +146,7 @@ describe API::ProtectedBranches do
         expect(json_response['name']).to eq(branch_name)
         expect(json_response['push_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         expect(json_response['merge_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
-<<<<<<< HEAD
         expect(json_response['unprotect_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
-=======
->>>>>>> upstream/master
       end
 
       it 'protects a single branch and developers can push' do
