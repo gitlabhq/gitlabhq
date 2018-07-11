@@ -10,14 +10,29 @@ module Gitlab
         @from = from || default_uploads_path
       end
 
-      def copy
-        copy_files(@from, uploads_export_path) if File.directory?(@from)
+      def save
+        copy_files(@from, default_uploads_path) if File.directory?(@from)
 
         if File.file?(@from) && @relative_export_path == 'avatar'
           copy_files(@from, File.join(uploads_export_path, @project.avatar.filename))
         end
 
         copy_from_object_storage
+
+        true
+      rescue => e
+        @shared.error(e)
+        false
+      end
+
+      def restore
+        Dir["#{uploads_export_path}/**/*"].each do |upload|
+          next if File.directory?(upload)
+
+          upload_path = File.join(uploads_export_path, upload)
+
+          UploadService.new(@project, File.open(upload_path, 'r'), FileUploader).execute
+        end
 
         true
       rescue => e

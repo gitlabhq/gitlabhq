@@ -16,7 +16,7 @@ module Gitlab
           shared: @shared,
           relative_export_path: 'avatar',
           from: avatar_path
-        ).copy
+        ).save
       rescue => e
         @shared.error(e)
         false
