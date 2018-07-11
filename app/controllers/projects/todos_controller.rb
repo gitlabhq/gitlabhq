@@ -1,13 +1,19 @@
 class Projects::TodosController < Projects::ApplicationController
-  include Gitlab::Utils::StrongMemoize
-  include TodosActions
-
   before_action :authenticate_user!, only: [:create]
+
+  def create
+    todo = TodoService.new.mark_todo(issuable, current_user)
+
+    render json: {
+      count: TodosFinder.new(current_user, state: :pending).execute.count,
+      delete_path: dashboard_todo_path(todo)
+    }
+  end
 
   private
 
   def issuable
-    strong_memoize(:issuable) do
+    @issuable ||= begin
       case params[:issuable_type]
       when "issue"
         IssuesFinder.new(current_user, project_id: @project.id).find(params[:issuable_id])
