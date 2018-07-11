@@ -103,9 +103,7 @@ export const toggleFileDiscussions = ({ getters, dispatch }, diff) => {
 
     if (shouldCloseAll) {
       dispatch('collapseDiscussion', data, { root: true });
-    } else if (shouldExpandAll) {
-      dispatch('expandDiscussion', data, { root: true });
-    } else if (!shouldCloseAll && !shouldExpandAll && !discussion.expanded) {
+    } else if (shouldExpandAll || (!shouldCloseAll && !shouldExpandAll && !discussion.expanded)) {
       dispatch('expandDiscussion', data, { root: true });
     }
   });
