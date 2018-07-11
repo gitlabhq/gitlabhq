@@ -11,7 +11,7 @@ class DropDuplicateProtectedTags < ActiveRecord::Migration
   def up
     execute <<~SQL
       DELETE FROM protected_tags
-      WHERE id NOT IN (
+      WHERE id IN (
         SELECT * FROM (
           SELECT MAX(id) FROM protected_tags
               GROUP BY name, project_id
