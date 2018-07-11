@@ -17,7 +17,7 @@ describe Gitlab::ImportExport::UploadsManager do
     FileUtils.rm_rf(shared.export_path)
   end
 
-  describe '#copy' do
+  describe '#save' do
     context 'when the project has uploads locally stored' do
       let(:upload) { create(:upload, :issuable_upload, :with_file, model: project) }
 
@@ -26,13 +26,15 @@ describe Gitlab::ImportExport::UploadsManager do
       end
 
       it 'does not cause errors' do
-        manager.copy
+        manager.save
 
         expect(shared.errors).to be_empty
       end
 
       it 'copies the file in the correct location when there is an upload' do
-        manager.copy
+        manager.save
+
+        puts exported_file_path
 
         expect(File).to exist(exported_file_path)
       end
@@ -52,9 +54,28 @@ describe Gitlab::ImportExport::UploadsManager do
         expect(fake_uri).to receive(:open).and_return(StringIO.new('File content'))
         expect(URI).to receive(:parse).and_return(fake_uri)
 
-        manager.copy
+        manager.save
 
         expect(File.read(exported_file_path)).to eq('File content')
+      end
+    end
+
+    describe '#restore' do
+      context 'using object storage' do
+        before do
+          stub_feature_flags(import_export_object_storage: true)
+          stub_uploads_object_storage(FileUploader)
+
+          FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/random'))
+          FileUtils.touch(File.join(shared.export_path, 'uploads/random', "dummy.txt"))
+        end
+
+        it 'downloads the file to include in an archive' do
+          manager.restore
+
+          expect(project.uploads.size).to eq(1)
+          expect(project.uploads.first.build_uploader.filename).to eq('dummy.txt')
+        end
       end
     end
   end

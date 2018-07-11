@@ -11,8 +11,8 @@ module Gitlab
       def save
         Gitlab::ImportExport::UploadsManager.new(
           project: @project,
-          shared: @shared,
-        ).copy
+          shared: @shared
+        ).save
       rescue => e
         @shared.error(e)
         false

@@ -11,7 +11,7 @@ module Gitlab
       end
 
       def save
-        copy_files(@from, default_uploads_path) if File.directory?(@from)
+        copy_files(@from, uploads_export_path) if File.directory?(@from)
 
         if File.file?(@from) && @relative_export_path == 'avatar'
           copy_files(@from, File.join(uploads_export_path, @project.avatar.filename))
@@ -29,9 +29,7 @@ module Gitlab
         Dir["#{uploads_export_path}/**/*"].each do |upload|
           next if File.directory?(upload)
 
-          upload_path = File.join(uploads_export_path, upload)
-
-          UploadService.new(@project, File.open(upload_path, 'r'), FileUploader).execute
+          UploadService.new(@project, File.open(upload, 'r'), FileUploader).execute
         end
 
         true
