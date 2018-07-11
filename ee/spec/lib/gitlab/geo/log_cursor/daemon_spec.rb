@@ -115,6 +115,22 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         daemon.run_once!
       end
 
+      it 'logs a message for skipped events' do
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [group_2])
+
+        expect(Gitlab::Geo::Logger).to receive(:info).with(hash_including(
+                                                             :pid,
+                                                             :cursor_delay_s,
+                                                             message: 'Skipped event',
+                                                             class: 'Gitlab::Geo::LogCursor::Daemon',
+                                                             event_log_id: event_log.id,
+                                                             event_id: repository_updated_event.id,
+                                                             event_type: 'Geo::RepositoryUpdatedEvent',
+                                                             project_id: project.id))
+
+        daemon.run_once!
+      end
+
       it 'does not replay events for projects that do not belong to selected shards to replicate' do
         secondary.update!(selective_sync_type: 'shards', selective_sync_shards: ['broken'])
 
