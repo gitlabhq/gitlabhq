@@ -1,0 +1,5 @@
+---
+title: Add missing maximum_timeout parameter
+merge_request: 20355 
+author: gfyoung
+type: fixed
