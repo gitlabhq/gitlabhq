@@ -144,19 +144,17 @@ export default {
       return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
     },
   },
-  mounted() {
-    if (this.isReplying) {
-      this.initAutoSave(this.transformedDiscussion);
-    }
-  },
-  updated() {
-    if (this.isReplying) {
-      if (!this.autosave) {
-        this.initAutoSave(this.transformedDiscussion);
+  watch: {
+    isReplying() {
+      if (this.isReplying) {
+        this.$nextTick(() => {
+          // Pass an extra key to separate reply and note edit forms
+          this.initAutoSave(this.transformedDiscussion, ['Reply']);
+        });
       } else {
-        this.setAutoSave();
+        this.autosave.dispose();
       }
-    }
+    },
   },
   created() {
     this.resolveDiscussionsSvg = resolveDiscussionsSvg;
@@ -420,7 +418,8 @@ Please check your network connection and try again.`;
                     :is-editing="false"
                     save-button-title="Comment"
                     @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm" />
+                    @cancelForm="cancelReplyForm"
+                  />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
