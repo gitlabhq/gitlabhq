@@ -19,8 +19,6 @@ describe Gitlab::ImportExport::AvatarSaver do
   it 'saves a project avatar' do
     described_class.new(project: project_with_avatar, shared: shared).save
 
-    puts "#{shared.export_path}/avatar/dk.png"
-
     expect(File).to exist("#{shared.export_path}/avatar/dk.png")
   end
 

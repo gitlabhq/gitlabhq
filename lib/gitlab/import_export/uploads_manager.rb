@@ -47,11 +47,10 @@ module Gitlab
 
       def copy_from_object_storage
         return unless Gitlab::ImportExport.object_storage?
-        return if uploads.empty?
 
         uploads.each do |upload_model|
           next unless upload_model.file
-          next if upload_model.upload.local? # Already copied
+          next if upload_model.upload.local? # Already copied, using  the old  method
 
           download_and_copy(upload_model)
         end

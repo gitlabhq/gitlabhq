@@ -34,8 +34,6 @@ describe Gitlab::ImportExport::UploadsManager do
       it 'copies the file in the correct location when there is an upload' do
         manager.save
 
-        puts exported_file_path
-
         expect(File).to exist(exported_file_path)
       end
     end
