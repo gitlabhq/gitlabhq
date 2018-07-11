@@ -2,9 +2,9 @@
 
 require 'yaml'
 
-NO_CHANGELOG_LABELS = %w[backstage QA test]
-SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html)."
-MISSING_CHANGELOG_MESSAGE = <<~MSG
+NO_CHANGELOG_LABELS = %w[backstage QA test].freeze
+SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html).".freeze
+MISSING_CHANGELOG_MESSAGE = <<~MSG.freeze
 **[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html).**
 
 You can create one with:

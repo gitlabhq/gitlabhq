@@ -1,6 +1,4 @@
-# rubocop:disable Style/SignalException
-
-GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG
+GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG.freeze
 **%<gemfile>s was updated but %<gemfile_lock>s wasn't updated.**
 
 Usually, when %<gemfile>s is updated, you should run

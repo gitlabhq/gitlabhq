@@ -1,6 +1,4 @@
-# rubocop:disable Style/SignalException
-
-NO_NEW_SPEC_MESSAGE = <<~MSG
+NO_NEW_SPEC_MESSAGE = <<~MSG.freeze
 You've made some app changes, but didn't add any tests.
 That's OK as long as you're refactoring existing code,
 but please consider adding the ~backstage label in that case.

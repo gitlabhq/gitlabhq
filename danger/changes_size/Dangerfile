@@ -1,5 +1,3 @@
-# rubocop:disable Style/SignalException
-
 # FIXME: git.info_for_file raises the following error
 # /usr/local/bundle/gems/git-1.4.0/lib/git/lib.rb:956:in `command':  (Danger::DSLError)
 # [!] Invalid `Dangerfile` file:

@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-# rubocop:disable Style/SignalException
 
 # All the files/directories that should be reviewed by the DB team.
 DB_FILES = [
