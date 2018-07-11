@@ -48,7 +48,7 @@ describe Gitlab::Checks::ChangeAccess do
         let(:ref) { 'refs/tags/v1.0.0' }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it_behaves_like 'check ignored when push rule unlicensed'

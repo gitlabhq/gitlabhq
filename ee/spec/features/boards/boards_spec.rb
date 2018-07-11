@@ -33,7 +33,7 @@ describe 'issue boards', :js do
     let(:project) { create(:project, :public, namespace: group) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       group.add_reporter(user)
       login_as(user)
     end
@@ -57,7 +57,7 @@ describe 'issue boards', :js do
     let(:project) { create(:project, :public, namespace: group) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       group.add_reporter(user)
       login_as(user)
     end

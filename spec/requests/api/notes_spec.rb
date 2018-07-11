@@ -44,7 +44,7 @@ describe API::Notes do
       # For testing the cross-reference of a private issue in a public project
       let(:private_project) do
         create(:project, namespace: private_user.namespace)
-        .tap { |p| p.add_master(private_user) }
+        .tap { |p| p.add_maintainer(private_user) }
       end
       let(:private_issue)    { create(:issue, project: private_project) }
 

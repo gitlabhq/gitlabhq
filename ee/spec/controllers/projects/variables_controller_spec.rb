@@ -6,7 +6,7 @@ describe Projects::VariablesController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
 
     allow_any_instance_of(License).to receive(:feature_available?).and_call_original
     allow_any_instance_of(License).to receive(:feature_available?).with(:variable_environment_scope).and_return(true)

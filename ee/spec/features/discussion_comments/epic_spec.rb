@@ -6,7 +6,7 @@ describe 'Discussion Comments Epic', :js do
 
   before do
     stub_licensed_features(epics: true)
-    epic.group.add_master(user)
+    epic.group.add_maintainer(user)
     sign_in(user)
 
     visit group_epic_path(epic.group, epic)

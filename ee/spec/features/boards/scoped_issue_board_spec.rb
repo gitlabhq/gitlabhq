@@ -28,7 +28,7 @@ describe 'Scoped issue boards', :js do
 
   context 'user with edit permissions' do
     before do
-      group.add_master(user)
+      group.add_maintainer(user)
 
       login_as(user)
 
@@ -421,7 +421,7 @@ describe 'Scoped issue boards', :js do
     before do
       stub_licensed_features(scoped_issue_boards: false)
 
-      project.add_master(user)
+      project.add_maintainer(user)
       login_as(user)
 
       visit project_boards_path(project)

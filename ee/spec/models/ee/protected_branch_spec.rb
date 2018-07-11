@@ -108,8 +108,8 @@ describe ProtectedBranch do
 
   describe '#can_unprotect?' do
     let(:admin) { create(:user, :admin) }
-    let(:master) do
-      create(:user).tap { |user| project.add_master(user) }
+    let(:maintainer) do
+      create(:user).tap { |user| project.add_maintainer(user) }
     end
 
     context 'without unprotect_access_levels' do
@@ -118,14 +118,14 @@ describe ProtectedBranch do
       end
     end
 
-    context 'with access level set to MASTER' do
+    context 'with access level set to MAINTAINER' do
       before do
-        subject.unprotect_access_levels.create!(access_level: Gitlab::Access::MASTER)
+        subject.unprotect_access_levels.create!(access_level: Gitlab::Access::MAINTAINER)
       end
 
-      it 'defaults to requiring master access' do
+      it 'defaults to requiring maintainer access' do
         expect(subject.can_unprotect?(user)).to eq false
-        expect(subject.can_unprotect?(master)).to eq true
+        expect(subject.can_unprotect?(maintainer)).to eq true
         expect(subject.can_unprotect?(admin)).to eq true
       end
     end
@@ -135,8 +135,8 @@ describe ProtectedBranch do
         subject.unprotect_access_levels.create!(access_level: Gitlab::Access::ADMIN)
       end
 
-      it 'prevents access to masters' do
-        expect(subject.can_unprotect?(master)).to eq false
+      it 'prevents access to maintainers' do
+        expect(subject.can_unprotect?(maintainer)).to eq false
       end
 
       it 'grants access to admins' do
@@ -146,7 +146,7 @@ describe ProtectedBranch do
 
     context 'multiple access levels' do
       before do
-        subject.unprotect_access_levels.create!(user: master)
+        subject.unprotect_access_levels.create!(user: maintainer)
         subject.unprotect_access_levels.create!(user: user)
       end
 

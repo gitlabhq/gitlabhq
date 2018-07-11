@@ -39,15 +39,15 @@ describe EE::Gitlab::Auth::LDAP::AccessLevels do
         }
       end
       before do
-        access_levels.set(master_dns, to: Gitlab::Access::MASTER)
+        access_levels.set(master_dns, to: Gitlab::Access::MAINTAINER)
         access_levels.set(developer_dns, to: Gitlab::Access::DEVELOPER)
       end
 
       it 'keeps the higher of all access values' do
         is_expected
           .to eq({
-             'uid=janedoe,ou=users,dc=example,dc=com'  => Gitlab::Access::MASTER,
-             'uid=johndoe,ou=users,dc=example,dc=com'  => Gitlab::Access::MASTER,
+             'uid=janedoe,ou=users,dc=example,dc=com'  => Gitlab::Access::MAINTAINER,
+             'uid=johndoe,ou=users,dc=example,dc=com'  => Gitlab::Access::MAINTAINER,
              'uid=jamesdoe,ou=users,dc=example,dc=com' => Gitlab::Access::DEVELOPER
           })
       end

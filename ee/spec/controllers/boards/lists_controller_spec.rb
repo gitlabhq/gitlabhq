@@ -7,7 +7,7 @@ describe Boards::ListsController do
   let(:guest)   { create(:user) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     group.add_guest(guest)
   end
 

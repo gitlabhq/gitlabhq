@@ -8,7 +8,7 @@ describe 'Path Locks', :js do
   before do
     allow(project).to receive(:feature_available?).with(:file_locks) { true }
 
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit tree_path

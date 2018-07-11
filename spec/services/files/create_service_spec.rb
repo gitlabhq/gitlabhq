@@ -23,7 +23,7 @@ describe Files::CreateService do
   subject { described_class.new(project, user, commit_params) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "#execute" do

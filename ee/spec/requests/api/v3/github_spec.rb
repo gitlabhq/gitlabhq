@@ -6,7 +6,7 @@ describe API::V3::Github do
 
   before do
     allow(Gitlab::Jira::Middleware).to receive(:jira_dvcs_connector?) { true }
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /orgs/:namespace/repos' do
@@ -143,7 +143,7 @@ describe API::V3::Github do
 
       before do
         stub_licensed_features(jira_dev_panel_integration: true)
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns an array of projects belonging to group with github format' do
@@ -158,7 +158,7 @@ describe API::V3::Github do
 
       before do
         stub_licensed_features(jira_dev_panel_integration: true)
-        group.parent.add_master(user)
+        group.parent.add_maintainer(user)
       end
 
       it 'returns an array of projects belonging to group with github format' do
@@ -184,7 +184,7 @@ describe API::V3::Github do
 
       before do
         stub_licensed_features(jira_dev_panel_integration: true)
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'returns an array of projects belonging to group with github format' do

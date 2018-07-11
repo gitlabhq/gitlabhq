@@ -7,7 +7,7 @@ describe 'Group variables', :js do
   let(:page_path) { group_settings_ci_cd_path(group) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     gitlab_sign_in(user)
 
     visit page_path

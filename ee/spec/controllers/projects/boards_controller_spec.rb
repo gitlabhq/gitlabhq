@@ -7,7 +7,7 @@ describe Projects::BoardsController do
   let(:user)    { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     allow(Ability).to receive(:allowed?).and_call_original
     sign_in(user)
   end

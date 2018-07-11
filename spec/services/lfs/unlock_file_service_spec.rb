@@ -62,11 +62,11 @@ describe Lfs::UnlockFileService do
 
       context 'when forced' do
         let(:developer) { create(:user) }
-        let(:master)    { create(:user) }
+        let(:maintainer)    { create(:user) }
 
         before do
           project.add_developer(developer)
-          project.add_master(master)
+          project.add_maintainer(maintainer)
         end
 
         context 'by a regular user' do
@@ -86,7 +86,7 @@ describe Lfs::UnlockFileService do
         end
 
         context 'by a maintainer user' do
-          let(:current_user) { master }
+          let(:current_user) { maintainer }
           let(:params) do
             { id: lock.id,
               force: true }

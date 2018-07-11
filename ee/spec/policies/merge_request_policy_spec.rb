@@ -5,11 +5,11 @@ describe MergeRequestPolicy do
 
   let(:guest) { create(:user) }
   let(:developer) { create(:user) }
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
 
   let(:fork_guest) { create(:user) }
   let(:fork_developer) { create(:user) }
-  let(:fork_master) { create(:user) }
+  let(:fork_maintainer) { create(:user) }
 
   let(:project) { create(:project, :public) }
   let(:fork_project) { create(:project, :public, forked_from_project: project) }
@@ -20,11 +20,11 @@ describe MergeRequestPolicy do
   before do
     project.add_guest(guest)
     project.add_developer(developer)
-    project.add_master(master)
+    project.add_maintainer(maintainer)
 
     fork_project.add_guest(fork_guest)
     fork_project.add_developer(fork_guest)
-    fork_project.add_master(fork_master)
+    fork_project.add_maintainer(fork_maintainer)
   end
 
   context 'for a merge request within the same project' do
@@ -40,23 +40,23 @@ describe MergeRequestPolicy do
       it 'does not allow anyone to update approvers' do
         expect(policy_for(guest)).to be_disallowed(:update_approvers)
         expect(policy_for(developer)).to be_disallowed(:update_approvers)
-        expect(policy_for(master)).to be_disallowed(:update_approvers)
+        expect(policy_for(maintainer)).to be_disallowed(:update_approvers)
 
         expect(policy_for(fork_guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_developer)).to be_disallowed(:update_approvers)
-        expect(policy_for(fork_master)).to be_disallowed(:update_approvers)
+        expect(policy_for(fork_maintainer)).to be_disallowed(:update_approvers)
       end
     end
 
     context 'when overwriting approvers is enabled on the project' do
       it 'allows only project developers and above to update the approvers' do
         expect(policy_for(developer)).to be_allowed(:update_approvers)
-        expect(policy_for(master)).to be_allowed(:update_approvers)
+        expect(policy_for(maintainer)).to be_allowed(:update_approvers)
 
         expect(policy_for(guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_developer)).to be_disallowed(:update_approvers)
-        expect(policy_for(fork_master)).to be_disallowed(:update_approvers)
+        expect(policy_for(fork_maintainer)).to be_disallowed(:update_approvers)
       end
     end
   end
@@ -74,11 +74,11 @@ describe MergeRequestPolicy do
       it 'does not allow anyone to update approvers' do
         expect(policy_for(guest)).to be_disallowed(:update_approvers)
         expect(policy_for(developer)).to be_disallowed(:update_approvers)
-        expect(policy_for(master)).to be_disallowed(:update_approvers)
+        expect(policy_for(maintainer)).to be_disallowed(:update_approvers)
 
         expect(policy_for(fork_guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_developer)).to be_disallowed(:update_approvers)
-        expect(policy_for(fork_master)).to be_disallowed(:update_approvers)
+        expect(policy_for(fork_maintainer)).to be_disallowed(:update_approvers)
       end
     end
 
@@ -89,24 +89,24 @@ describe MergeRequestPolicy do
 
       it 'has no effect - project developers and above, as well as the author, can update the approvers' do
         expect(policy_for(developer)).to be_allowed(:update_approvers)
-        expect(policy_for(master)).to be_allowed(:update_approvers)
+        expect(policy_for(maintainer)).to be_allowed(:update_approvers)
         expect(policy_for(fork_developer)).to be_allowed(:update_approvers)
 
         expect(policy_for(guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_guest)).to be_disallowed(:update_approvers)
-        expect(policy_for(fork_master)).to be_disallowed(:update_approvers)
+        expect(policy_for(fork_maintainer)).to be_disallowed(:update_approvers)
       end
     end
 
     context 'when overwriting approvers is enabled on the target project' do
       it 'allows project developers and above, as well as the author, to update the approvers' do
         expect(policy_for(developer)).to be_allowed(:update_approvers)
-        expect(policy_for(master)).to be_allowed(:update_approvers)
+        expect(policy_for(maintainer)).to be_allowed(:update_approvers)
         expect(policy_for(fork_developer)).to be_allowed(:update_approvers)
 
         expect(policy_for(guest)).to be_disallowed(:update_approvers)
         expect(policy_for(fork_guest)).to be_disallowed(:update_approvers)
-        expect(policy_for(fork_master)).to be_disallowed(:update_approvers)
+        expect(policy_for(fork_maintainer)).to be_disallowed(:update_approvers)
       end
     end
   end

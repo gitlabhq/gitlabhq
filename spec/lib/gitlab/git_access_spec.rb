@@ -40,7 +40,7 @@ describe Gitlab::GitAccess do
 
       before do
         disable_protocol('http')
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'blocks http push and pull' do
@@ -105,7 +105,7 @@ describe Gitlab::GitAccess do
         context 'when actor is a User' do
           context 'when the User can read the project' do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             it 'allows push and pull access' do
@@ -246,7 +246,7 @@ describe Gitlab::GitAccess do
 
   shared_examples '#check with a key that is not valid' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'key is too small' do
@@ -299,7 +299,7 @@ describe Gitlab::GitAccess do
 
   describe '#add_project_moved_message!', :clean_gitlab_redis_shared_state do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when a redirect was not followed to find the project' do
@@ -327,7 +327,7 @@ describe Gitlab::GitAccess do
 
   describe '#check_authentication_abilities!' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when download' do
@@ -373,7 +373,7 @@ describe Gitlab::GitAccess do
 
   describe '#check_command_disabled!' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'over http' do
@@ -521,8 +521,8 @@ describe Gitlab::GitAccess do
   end
 
   describe '#check_download_access!' do
-    it 'allows masters to pull' do
-      project.add_master(user)
+    it 'allows maintainers to pull' do
+      project.add_maintainer(user)
 
       expect { pull_access_check }.not_to raise_error
     end
@@ -534,7 +534,7 @@ describe Gitlab::GitAccess do
     end
 
     it 'disallows blocked users to pull' do
-      project.add_master(user)
+      project.add_maintainer(user)
       user.block
 
       expect { pull_access_check }.to raise_unauthorized('Your account has been blocked.')
@@ -830,7 +830,7 @@ describe Gitlab::GitAccess do
         merge_into_protected_branch: true
       },
 
-      master: {
+      maintainer: {
         push_new_branch: true,
         push_master: true,
         push_protected_branch: true,
@@ -878,7 +878,7 @@ describe Gitlab::GitAccess do
     [%w(feature exact), ['feat*', 'wildcard']].each do |protected_branch_name, protected_branch_type|
       context do
         before do
-          create(:protected_branch, :masters_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :maintainers_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix)
@@ -886,7 +886,7 @@ describe Gitlab::GitAccess do
 
       context "when developers are allowed to push into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :masters_can_push, :developers_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :maintainers_can_push, :developers_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
@@ -894,7 +894,7 @@ describe Gitlab::GitAccess do
 
       context "developers are allowed to merge into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :masters_can_push, :developers_can_merge, name: protected_branch_name, project: project)
+          create(:protected_branch, :maintainers_can_push, :developers_can_merge, name: protected_branch_name, project: project)
         end
 
         context "when a merge request exists for the given source/target branch" do
@@ -923,7 +923,7 @@ describe Gitlab::GitAccess do
 
       context "when developers are allowed to push and merge into the #{protected_branch_type} protected branch" do
         before do
-          create(:protected_branch, :masters_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
+          create(:protected_branch, :maintainers_can_push, :developers_can_merge, :developers_can_push, name: protected_branch_name, project: project)
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: true, push_all: true, merge_into_protected_branch: true }))
@@ -951,7 +951,7 @@ describe Gitlab::GitAccess do
           end
 
           run_permission_checks(permissions_matrix.deep_merge(admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
-                                                              master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+                                                              maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
                                                               developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
                                                               guest: { push_protected_branch: false, merge_into_protected_branch: false },
                                                               reporter: { push_protected_branch: false, merge_into_protected_branch: false }))
@@ -977,7 +977,7 @@ describe Gitlab::GitAccess do
           let(:group) { create(:group) }
 
           before do
-            group.add_master(user)
+            group.add_maintainer(user)
             create(:protected_branch, authorize_group_to_push: group, name: protected_branch_name, project: project)
           end
 
@@ -993,12 +993,12 @@ describe Gitlab::GitAccess do
           let(:group) { create(:group) }
 
           before do
-            group.add_master(user)
+            group.add_maintainer(user)
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             create(:protected_branch, authorize_group_to_merge: group, name: protected_branch_name, project: project)
           end
 
-          permissions = permissions_matrix.except(:admin).deep_merge(master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
+          permissions = permissions_matrix.except(:admin).deep_merge(maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
                                                                      developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: true },
                                                                      guest: { push_protected_branch: false, merge_into_protected_branch: false },
                                                                      reporter: { push_protected_branch: false, merge_into_protected_branch: false })
@@ -1011,7 +1011,7 @@ describe Gitlab::GitAccess do
           let(:group) { create(:group) }
 
           before do
-            group.add_master(user)
+            group.add_maintainer(user)
             create(:merge_request, source_project: project, source_branch: unprotected_branch, target_branch: 'feature', state: 'locked', in_progress_merge_commit_sha: merge_into_protected_branch)
             create(:protected_branch, authorize_group_to_push: group, authorize_group_to_merge: group, name: protected_branch_name, project: project)
           end
@@ -1030,7 +1030,7 @@ describe Gitlab::GitAccess do
         end
 
         run_permission_checks(permissions_matrix.deep_merge(developer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
-                                                            master: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
+                                                            maintainer: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false },
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
@@ -1102,7 +1102,7 @@ describe Gitlab::GitAccess do
     let(:project) { create(:project, :repository, :read_only) }
 
     it 'denies push access' do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       expect { push_access_check }.to raise_unauthorized('The repository is temporarily read-only. Please try again later.')
     end
@@ -1239,9 +1239,9 @@ describe Gitlab::GitAccess do
       it_behaves_like 'access after accepting terms'
     end
 
-    describe 'as a master of the project' do
+    describe 'as a maintainer of the project' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'access after accepting terms'

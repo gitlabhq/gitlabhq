@@ -14,7 +14,7 @@ describe SnippetsFinder do
     let!(:snippet) { create(:project_snippet, :public, project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'includes the result if the external service allows access' do

@@ -23,7 +23,7 @@ describe Gitlab::GitAccessWiki do
     end
 
     it 'denies push access' do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       expect { subject }.to raise_unauthorized("You can't push code to a read-only GitLab instance.")
     end
@@ -38,7 +38,7 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
       allow(Gitlab::Geo).to receive(:primary).and_return(primary_node)
       allow(Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
 
-      project.add_master(user)
+      project.add_maintainer(user)
 
       expect { subject }.to raise_unauthorized(error_message)
     end

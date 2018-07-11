@@ -669,7 +669,7 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
-    let(:role) { :master }
+    let(:role) { :maintainer }
 
     before do
       project.add_role(user, role)

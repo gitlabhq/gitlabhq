@@ -16,8 +16,8 @@ module EE
         @subject.project_creation_level == ::EE::Gitlab::Access::NO_ONE_PROJECT_ACCESS
       end
 
-      condition(:developer_master_access) do
-        @subject.project_creation_level == ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS
+      condition(:developer_maintainer_access) do
+        @subject.project_creation_level == ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
       end
 
       condition(:can_owners_manage_ldap, scope: :global) do
@@ -63,7 +63,7 @@ module EE
 
       rule { ldap_synced & (admin | (can_owners_manage_ldap & owner)) }.enable :override_group_member
 
-      rule { project_creation_level_enabled & developer & developer_master_access }.enable :create_projects
+      rule { project_creation_level_enabled & developer & developer_maintainer_access }.enable :create_projects
       rule { project_creation_level_enabled & create_projects_disabled }.prevent :create_projects
     end
   end

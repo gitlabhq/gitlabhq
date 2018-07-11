@@ -8,7 +8,7 @@ describe 'GFM autocomplete', :js do
 
   before do
     stub_licensed_features(epics: true)
-    group.add_master(user)
+    group.add_maintainer(user)
     sign_in(user)
     visit group_epic_path(group, epic)
 

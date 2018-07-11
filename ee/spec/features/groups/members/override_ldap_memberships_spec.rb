@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Groups > Members > Master/Owner can override LDAP access levels' do
+describe 'Groups > Members > Maintainer/Owner can override LDAP access levels' do
   include WaitForRequests
 
   let(:johndoe)  { create(:user, name: 'John Doe') }

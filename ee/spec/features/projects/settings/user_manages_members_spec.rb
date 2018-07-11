@@ -29,9 +29,9 @@ describe "User manages members" do
     it { expect(page).to have_no_button("Add members").and have_no_link("Import members") }
   end
 
-  context "as project master" do
+  context "as project maintainer" do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it_behaves_like "when group membership is unlocked"

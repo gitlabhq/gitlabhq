@@ -18,7 +18,7 @@ describe 'Burndown charts' do
     let(:project) { create(:project) }
 
     before do
-      project.add_master(current_user)
+      project.add_maintainer(current_user)
     end
 
     it 'presents burndown charts when available' do
@@ -46,7 +46,7 @@ describe 'Burndown charts' do
     let(:project) { nil }
 
     before do
-      group.add_master(current_user)
+      group.add_maintainer(current_user)
     end
 
     it 'presents burndown charts when available' do
@@ -74,7 +74,7 @@ describe 'Burndown charts' do
     let(:project) { create(:project) }
 
     before do
-      project.add_master(current_user)
+      project.add_maintainer(current_user)
     end
 
     it 'does not present burndown chart or promotion' do

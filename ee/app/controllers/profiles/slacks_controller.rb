@@ -20,7 +20,7 @@ class Profiles::SlacksController < Profiles::ApplicationController
 
   def disabled_projects
     @disabled_projects ||= current_user
-      .authorized_projects(Gitlab::Access::MASTER)
+      .authorized_projects(Gitlab::Access::MAINTAINER)
       .with_slack_application_disabled
   end
 end

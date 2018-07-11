@@ -6,7 +6,7 @@ describe 'Projects > Push Rules', :js do
   let(:foo) {{ reject_unsigned_commits: 'Reject unsigned commits' }}
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

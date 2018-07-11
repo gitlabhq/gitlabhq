@@ -5,7 +5,7 @@ describe 'Service Desk Setting', :js do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(project: project).and_return(true)

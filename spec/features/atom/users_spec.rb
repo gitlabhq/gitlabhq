@@ -47,7 +47,7 @@ describe "User Feed"  do
       let!(:push_event_payload) { create(:push_event_payload, event: push_event) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         issue_event(issue, user)
         note_event(note, user)
         merge_request_event(merge_request, user)

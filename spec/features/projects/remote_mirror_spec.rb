@@ -7,7 +7,7 @@ describe 'Project remote mirror', :feature do
 
   describe 'On a project', :js do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
     end
 

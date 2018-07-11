@@ -118,10 +118,10 @@ following.
 
 ---
 
-To take advantage of group sync, group owners or masters will need to create an
+To take advantage of group sync, group owners or maintainers will need to create an
 LDAP group link in their group **Settings > LDAP Groups** page. Multiple LDAP
 groups and/or filters can be linked with a single GitLab group. When the link is
-created, an access level/role is specified (Guest, Reporter, Developer, Master,
+created, an access level/role is specified (Guest, Reporter, Developer, Maintainer,
 or Owner).
 
 ## Administrator sync
@@ -523,7 +523,7 @@ and more DNs may be added, or existing entries modified, based on additional
 LDAP group lookups. The very last occurrence of this entry should indicate
 exactly which users GitLab believes should be added to the group.
 
-> **Note:** 10 is 'Guest', 20 is 'Reporter', 30 is 'Developer', 40 is 'Master'
+> **Note:** 10 is 'Guest', 20 is 'Reporter', 30 is 'Developer', 40 is 'Maintainer'
   and 50 is 'Owner'
 
 ```bash
