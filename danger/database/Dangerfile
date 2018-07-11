@@ -65,7 +65,7 @@ unless db_paths_to_review.empty?
   markdown(<<~MARKDOWN.strip)
 ## Database Review
 
-The following files require a review from the Database Team:
+The following files require a review from the Database team:
 
 * #{db_paths_to_review.join("\n* ")}
 
