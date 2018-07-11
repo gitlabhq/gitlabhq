@@ -6,14 +6,14 @@
           = sprite_icon('admin', size: 24)
         .sidebar-context-title Admin Area
     %ul.sidebar-top-level-items
-      = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: {class: 'home'}) do
+      = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers cohorts conversational_development_index), html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'shortcuts-tree' do
           .nav-icon-container
             = sprite_icon('overview')
           %span.nav-item-name
             Overview
         %ul.sidebar-sub-level-items
-          = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers cohorts conversational_development_index), html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_root_path do
               %strong.fly-out-top-item-name
                 #{ _('Overview') }
@@ -42,6 +42,10 @@
             = link_to admin_runners_path, title: 'Runners' do
               %span
                 Runners
+          = nav_link(controller: :gitaly_servers) do
+            = link_to admin_gitaly_servers_path, title: 'Gitaly Servers' do
+              %span
+                Gitaly Servers
           = nav_link path: 'cohorts#index' do
             = link_to admin_cohorts_path, title: 'Cohorts' do
               %span
