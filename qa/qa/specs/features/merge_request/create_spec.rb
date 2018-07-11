@@ -20,11 +20,12 @@ module QA
         merge_request.milestone = current_milestone
       end
 
-      Page::MergeRequest::Show.perform do |merge_request|
-        expect(page).to have_content('This is a merge request with a milestone')
-        expect(page).to have_content('Great feature with milestone')
-        expect(page).to have_content(/Opened [\w\s]+ ago/)
-        expect(merge_request).to have_milestone(current_milestone.title)
+      expect(page).to have_content('This is a merge request with a milestone')
+      expect(page).to have_content('Great feature with milestone')
+      expect(page).to have_content(/Opened [\w\s]+ ago/)
+
+      Page::Issuable::Sidebar.perform do |sidebar|
+        expect(sidebar).to have_milestone(current_milestone.title)
       end
     end
   end
