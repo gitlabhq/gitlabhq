@@ -116,10 +116,8 @@
 
       .modify-merge-commit-link {
         padding: 0;
-
         background-color: transparent;
         border: 0;
-
         color: $gl-text-color;
 
         &:hover,
@@ -499,10 +497,6 @@
       margin-left: 5px;
     }
   }
-}
-
-.merge-request-details .content-block {
-  border-bottom: 0;
 }
 
 .mr-source-target {
