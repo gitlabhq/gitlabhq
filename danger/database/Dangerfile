@@ -67,7 +67,7 @@ unless db_paths_to_review.empty?
 
 The following files require a review from the Database team:
 
-* #{db_paths_to_review.join("\n* ")}
+* #{db_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
 
 To make sure these changes are reviewed, take the following steps:
 
