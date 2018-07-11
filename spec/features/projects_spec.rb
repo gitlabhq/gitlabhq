@@ -155,6 +155,12 @@ describe 'Project' do
       visit edit_project_path(project)
     end
 
+    it 'focuses on the confirmation field' do
+      click_button 'Remove project'
+
+      expect(page).to have_selector '#confirm_name_input:focus'
+    end
+
     it 'removes a project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change { Project.count }.by(-1)
       expect(page).to have_content "Project '#{project.full_name}' is in the process of being deleted."
