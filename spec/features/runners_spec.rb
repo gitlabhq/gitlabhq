@@ -11,7 +11,7 @@ describe 'Runners' do
     let(:project) { create(:project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'user can see a button to install runners on kubernetes clusters' do
@@ -25,7 +25,7 @@ describe 'Runners' do
     let(:project) { create(:project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when a project_type runner is activated on the project' do
@@ -125,7 +125,7 @@ describe 'Runners' do
       let!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       before do
-        another_project.add_master(user)
+        another_project.add_maintainer(user)
       end
 
       it 'user enables and disables a specific runner' do
@@ -165,7 +165,7 @@ describe 'Runners' do
     let(:project) { create(:project, shared_runners_enabled: false) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'user enables shared runners' do
@@ -179,14 +179,14 @@ describe 'Runners' do
 
   context 'group runners in project settings' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     let(:group) { create :group }
 
     context 'as project and group maintainer' do
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       context 'project with a group but no group runner' do
@@ -260,7 +260,7 @@ describe 'Runners' do
   context 'group runners in group settings' do
     let(:group) { create(:group) }
     before do
-      group.add_master(user)
+      group.add_maintainer(user)
     end
 
     context 'group with no runners' do

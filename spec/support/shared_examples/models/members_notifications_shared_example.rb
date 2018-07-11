@@ -21,7 +21,7 @@ RSpec.shared_examples 'members notifications' do |entity_type|
     it "calls NotificationService.update_#{entity_type}_member" do
       expect(notification_service).to receive(:"update_#{entity_type}_member").with(member)
 
-      member.update_attribute(:access_level, Member::MASTER)
+      member.update_attribute(:access_level, Member::MAINTAINER)
     end
 
     it "does not send an email when the access level has not changed" do

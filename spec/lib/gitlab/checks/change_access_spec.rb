@@ -54,7 +54,7 @@ describe Gitlab::Checks::ChangeAccess do
 
         context 'as maintainer' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           context 'deletion' do
@@ -144,7 +144,7 @@ describe Gitlab::Checks::ChangeAccess do
 
           context 'if the user is allowed to delete protected branches' do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context 'through the web interface' do

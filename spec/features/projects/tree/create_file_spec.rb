@@ -5,7 +5,7 @@ describe 'Multi-file editor new file', :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_path(project)

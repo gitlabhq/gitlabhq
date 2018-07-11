@@ -16,7 +16,7 @@ describe 'Projects > Snippets > Create Snippet', :js do
 
   context 'when a user is authenticated' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
 
       visit project_snippets_path(project)

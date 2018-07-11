@@ -44,6 +44,9 @@ module QA
             click_allow(:push, 'Developers + Maintainers')
           end
 
+          # @deprecated
+          alias_method :allow_devs_and_masters_to_push, :allow_devs_and_maintainers_to_push
+
           def allow_no_one_to_merge
             click_allow(:merge, 'No one')
           end
@@ -51,6 +54,9 @@ module QA
           def allow_devs_and_maintainers_to_merge
             click_allow(:merge, 'Developers + Maintainers')
           end
+
+          # @deprecated
+          alias_method :allow_devs_and_masters_to_merge, :allow_devs_and_maintainers_to_merge
 
           def protect_branch
             click_on 'Protect'

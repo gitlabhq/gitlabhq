@@ -24,7 +24,7 @@ describe Issues::ReopenService do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'invalidates counter cache for assignees' do

@@ -595,7 +595,7 @@ describe 'Pipelines', :js do
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.add_master(user)
+        project.add_maintainer(user)
         visit project_pipelines_path(project)
       end
 

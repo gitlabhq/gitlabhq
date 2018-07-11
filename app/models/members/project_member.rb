@@ -17,19 +17,19 @@ class ProjectMember < Member
     # Add users to projects with passed access option
     #
     # access can be an integer representing a access code
-    # or symbol like :master representing role
+    # or symbol like :maintainer representing role
     #
     # Ex.
     #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
-    #     ProjectMember::MASTER
+    #     ProjectMember::MAINTAINER
     #   )
     #
     #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
-    #     :master
+    #     :maintainer
     #   )
     #
     def add_users_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)

@@ -7,7 +7,7 @@ describe 'Merge request > User cherry-picks', :js do
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
