@@ -122,7 +122,7 @@
             = render_if_exists 'projects/sidebar/issues_service_desk'
 
             = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones' do
+              = link_to project_milestones_path(@project), title: 'Milestones', class: 'qa-milestones-link' do
                 %span
                   = _('Milestones')
       - if project_nav_tab? :external_issue_tracker
