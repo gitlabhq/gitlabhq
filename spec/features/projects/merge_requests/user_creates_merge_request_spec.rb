@@ -17,7 +17,10 @@ describe "User creates a merge request", :js do
 
   before do
     project.add_maintainer(user)
+<<<<<<< HEAD
     project.add_maintainer(approver)
+=======
+>>>>>>> upstream/master
     sign_in(user)
 
     project.approvers.create(user_id: approver.id)

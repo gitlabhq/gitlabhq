@@ -16,6 +16,7 @@ module QA
           element :operations_section, "class: 'shortcuts-operations'"
           element :activity_link, "title: 'Activity'"
           element :wiki_link_text, "Wiki"
+          element :milestones_link
         end
 
         view 'app/assets/javascripts/fly_out_nav.js' do
@@ -67,6 +68,12 @@ module QA
         def click_merge_requests
           within_sidebar do
             click_link('Merge Requests')
+          end
+        end
+
+        def click_milestones
+          within_sidebar do
+            click_element :milestones_link
           end
         end
 

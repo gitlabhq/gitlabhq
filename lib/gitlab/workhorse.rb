@@ -98,16 +98,12 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawPatchRequest' => Gitaly::RawPatchRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawPatchRequest' => Gitaly::RawPatchRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
@@ -217,14 +213,6 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.project.repository_storage),
           token: Gitlab::GitalyClient.token(repository.project.repository_storage)
-        }
-      end
-
-      def workhorse_diff_or_patch_hash(repository, diff_refs)
-        {
-          'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => diff_refs.base_sha,
-          'ShaTo'     => diff_refs.head_sha
         }
       end
 

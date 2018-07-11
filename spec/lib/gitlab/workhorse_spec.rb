@@ -68,34 +68,22 @@ describe Gitlab::Workhorse do
     let(:diff_refs) { double(base_sha: "base", head_sha: "head") }
     subject { described_class.send_git_patch(repository, diff_refs) }
 
-    context 'when Gitaly workhorse_send_git_patch feature is enabled' do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
+    it 'sets the header correctly' do
+      key, command, params = decode_workhorse_header(subject)
 
-        expect(key).to eq("Gitlab-Workhorse-Send-Data")
-        expect(command).to eq("git-format-patch")
-        expect(params).to eq({
-          'GitalyServer' => {
-            address: Gitlab::GitalyClient.address(project.repository_storage),
-            token: Gitlab::GitalyClient.token(project.repository_storage)
-          },
-          'RawPatchRequest' => Gitaly::RawPatchRequest.new(
-            repository: repository.gitaly_repository,
-            left_commit_id: 'base',
-            right_commit_id: 'head'
-          ).to_json
-        }.deep_stringify_keys)
-      end
-    end
-
-    context 'when Gitaly workhorse_send_git_patch feature is disabled', :disable_gitaly do
-      it 'sets the header correctly' do
-        key, command, params = decode_workhorse_header(subject)
-
-        expect(key).to eq("Gitlab-Workhorse-Send-Data")
-        expect(command).to eq("git-format-patch")
-        expect(params).to eq("RepoPath" => repository.path_to_repo, "ShaFrom" => "base", "ShaTo" => "head")
-      end
+      expect(key).to eq("Gitlab-Workhorse-Send-Data")
+      expect(command).to eq("git-format-patch")
+      expect(params).to eq({
+        'GitalyServer' => {
+          address: Gitlab::GitalyClient.address(project.repository_storage),
+          token: Gitlab::GitalyClient.token(project.repository_storage)
+        },
+        'RawPatchRequest' => Gitaly::RawPatchRequest.new(
+          repository: repository.gitaly_repository,
+          left_commit_id: 'base',
+          right_commit_id: 'head'
+        ).to_json
+      }.deep_stringify_keys)
     end
   end
 

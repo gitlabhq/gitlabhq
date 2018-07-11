@@ -22,7 +22,10 @@ describe 'Issue Boards', :js do
   end
 
   before do
+<<<<<<< HEAD
     stub_licensed_features(multiple_issue_assignees: false)
+=======
+>>>>>>> upstream/master
     project.add_maintainer(user)
 
     sign_in(user)
