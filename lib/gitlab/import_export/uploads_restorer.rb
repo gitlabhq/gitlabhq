@@ -9,6 +9,8 @@ module Gitlab
           ).restore
         elsif File.directory?(uploads_export_path)
           copy_files(uploads_export_path, uploads_path)
+
+          true
         else
           true
         end

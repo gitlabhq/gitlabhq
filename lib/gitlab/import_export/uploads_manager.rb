@@ -29,21 +29,27 @@ module Gitlab
         Dir["#{uploads_export_path}/**/*"].each do |upload|
           next if File.directory?(upload)
 
-          secret, identifier = upload.split('/').last(2)
-
-          uploader_context = {
-            secret: secret,
-            identifier: identifier
-          }
-
-          UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
+          add_upload(upload)
         end
+
+        true
       rescue => e
         @shared.error(e)
         false
       end
 
       private
+
+      def add_upload(upload)
+        secret, identifier = upload.split('/').last(2)
+
+        uploader_context = {
+          secret: secret,
+          identifier: identifier
+        }
+
+        UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
+      end
 
       def copy_from_object_storage
         return unless Gitlab::ImportExport.object_storage?
