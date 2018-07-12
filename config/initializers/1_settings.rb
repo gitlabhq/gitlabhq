@@ -374,10 +374,6 @@ Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
 Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
 
-Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
-Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
-
 Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['job_class'] = 'ClearSharedRunnersMinutesWorker'
