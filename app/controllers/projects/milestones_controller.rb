@@ -1,4 +1,5 @@
 class Projects::MilestonesController < Projects::ApplicationController
+  include ActionView::Helpers::SanitizeHelper
   include Gitlab::Utils::StrongMemoize
   include MilestoneActions
 
@@ -76,8 +77,8 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-
-    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\"><u>group milestone</u></a>.".html_safe
+    milestone_title = sanitize(milestone.title)
+    flash[:notice] = "#{milestone_title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\"><u>group milestone</u></a>.".html_safe
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)
