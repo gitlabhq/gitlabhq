@@ -86,9 +86,6 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      # Rugged repo object
-      attr_reader :rugged
-
       attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
@@ -112,8 +109,9 @@ module Gitlab
         [storage, relative_path] == [other.storage, other.relative_path]
       end
 
+      # This method will be removed when Gitaly reaches v1.1.
       def path
-        @path ||= File.join(
+        File.join(
           Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
         )
       end
@@ -127,8 +125,9 @@ module Gitlab
         raise Gitlab::Git::CommandError.new(e.message)
       end
 
+      # This method will be removed when Gitaly reaches v1.1.
       def rugged
-        @rugged ||= circuit_breaker.perform do
+        circuit_breaker.perform do
           Rugged::Repository.new(path, alternates: alternate_object_directories)
         end
       rescue Rugged::RepositoryError, Rugged::OSError
@@ -711,12 +710,6 @@ module Gitlab
 
       def user_to_committer(user)
         Gitlab::Git.committer_hash(email: user.email, name: user.name)
-      end
-
-      def create_commit(params = {})
-        params[:message].delete!("\r")
-
-        Rugged::Commit.create(rugged, params)
       end
 
       # Delete the specified branch from the repository
@@ -1757,6 +1750,12 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
+      end
+
+      def create_commit(params = {})
+        params[:message].delete!("\r")
+
+        Rugged::Commit.create(rugged, params)
       end
     end
   end

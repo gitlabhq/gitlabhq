@@ -23,7 +23,6 @@ class ProjectWiki
     @user = user
   end
 
-  delegate :empty?, to: :pages
   delegate :repository_storage, :hashed_storage?, to: :project
 
   def path
@@ -80,6 +79,10 @@ class ProjectWiki
 
   def has_home_page?
     !!find_page('home')
+  end
+
+  def empty?
+    pages(limit: 1).empty?
   end
 
   # Returns an Array of Gitlab WikiPage instances or an

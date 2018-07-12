@@ -24,6 +24,11 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/buttons/_fork.html.haml' do
+          element :fork_label, "%span= s_('GoToYourFork|Fork')"
+          element :fork_link, "link_to new_project_fork_path(@project)"
+        end
+
         view 'app/views/projects/_files.html.haml' do
           element :tree_holder, '.tree-holder'
         end
@@ -62,6 +67,10 @@ module QA
           click_element :new_menu_toggle
 
           click_link 'New issue'
+        end
+
+        def fork_project
+          click_on 'Fork'
         end
       end
     end
