@@ -557,11 +557,10 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Any Label"
-=======
 msgid "Any"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Any Label"
 msgstr ""
 
 msgid "Appearance"
@@ -807,7 +806,9 @@ msgstr ""
 msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Below you will find all the groups that are public."
+msgstr ""
+
 msgid "Billing"
 msgstr ""
 
@@ -872,9 +873,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
-msgid "Below you will find all the groups that are public."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Boards"
@@ -1197,15 +1195,12 @@ msgstr ""
 msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr ""
 
 msgid "Choose which repositories you want to connect and run CI/CD pipelines."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Choose which repositories you want to import."
 msgstr ""
 
@@ -2304,14 +2299,13 @@ msgstr ""
 msgid "Discard draft"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Discover GitLab Geo."
-=======
+msgstr ""
+
 msgid "Discover projects, groups and snippets. Share your projects with others"
 msgstr ""
 
 msgid "Dismiss"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Dismiss Cycle Analytics introduction box"
@@ -3612,12 +3606,9 @@ msgstr ""
 msgid "Manage project labels"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Manage your group’s membership while adding another level of security with SAML."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Manifest"
 msgstr ""
 
@@ -4007,11 +3998,10 @@ msgstr ""
 msgid "No messages were logged"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "No pushes for the selected time period."
-=======
 msgid "No public groups"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "No pushes for the selected time period."
 msgstr ""
 
 msgid "No repository"
@@ -4887,12 +4877,9 @@ msgstr ""
 msgid "Repository URL"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Repository has no locks."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Repository maintenance"
 msgstr ""
 
