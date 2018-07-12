@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 
 import * as types from './mutation_types';
+import Vue from "vue";
 import {
   parseSastIssues,
   parseDependencyScanningIssues,
@@ -258,34 +259,38 @@ export default {
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     const { issue, status } = payload;
 
-    state.modal.title = issue.title;
-    state.modal.data.description.value = issue.description;
-    state.modal.data.file.value = issue.location && issue.location.file;
-    state.modal.data.file.url = issue.urlPath;
-    state.modal.data.className.value = issue.location && issue.location.class;
-    state.modal.data.methodName.value = issue.location && issue.location.method;
-    state.modal.data.namespace.value = issue.namespace;
+    Vue.set(state.modal, "title", issue.title);
+    Vue.set(state.modal.data.description, "value", issue.description);
+    Vue.set(state.modal.data.file, "value", issue.location && issue.location.file);
+    Vue.set(state.modal.data.file, "url", issue.urlPath);
+    Vue.set(state.modal.data.className, "value", issue.location && issue.location.class);
+    Vue.set(state.modal.data.methodName, "value", issue.location && issue.location.method);
+    Vue.set(state.modal.data.namespace, "value", issue.namespace);
+
     if (issue.identifiers && issue.identifiers.length > 0) {
-      state.modal.data.identifiers.value = issue.identifiers;
+      Vue.set(state.modal.data.identifiers, "value", issue.identifiers);
     } else {
       // Force a null value for identifiers to avoid showing an empty array
-      state.modal.data.identifiers.value = null;
+      Vue.set(state.modal.data.identifiers, "value", null);
     }
-    state.modal.data.severity.value = issue.severity;
-    state.modal.data.confidence.value = issue.confidence;
-    state.modal.data.solution.value = issue.solution;
+    
+    Vue.set(state.modal.data.severity, "value", issue.severity);
+    Vue.set(state.modal.data.confidence, "value", issue.confidence);
+    Vue.set(state.modal.data.solution, "value", issue.solution);
+
     if (issue.links && issue.links.length > 0) {
-      state.modal.data.links.value = issue.links;
+      Vue.set(state.modal.data.links, "value", issue.links);
     } else {
       // Force a null value for links to avoid showing an empty array
-      state.modal.data.links.value = null;
+      Vue.set(state.modal.data.links, "value", null);
     }
-    state.modal.data.instances.value = issue.instances;
-    state.modal.vulnerability = issue;
-    state.modal.isResolved = status === 'success';
+
+    Vue.set(state.modal.data.instances, "value", issue.instances);
+    Vue.set(state.modal, "vulnerability", issue);
+    Vue.set(state.modal, 'isResolved', status === 'success');
 
     // clear previous state
-    state.modal.error = null;
+    Vue.set(state.modal, "error", null);
   },
 
   [types.REQUEST_DISMISS_ISSUE](state) {
