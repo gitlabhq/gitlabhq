@@ -36,6 +36,7 @@
   .code-text {
     @include media-breakpoint-up(lg) {
       align-self: center;
+      flex: 1;
     }
   }
 }
@@ -99,6 +100,14 @@
 
     &:first-of-type {
       border-radius: $border-radius-default $border-radius-default 0 0;
+    }
+  }
+
+  .grouped-security-reports {
+    padding: 0;
+
+    > .media {
+      padding: $gl-padding;
     }
   }
 }

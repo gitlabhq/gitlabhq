@@ -210,7 +210,7 @@ export default {
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="true"
-    class="mr-widget-border-top"
+    class="mr-widget-border-top grouped-security-reports"
   >
     <div
       slot="body"
