@@ -114,7 +114,7 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_url(only_path: false)
+  def blob_raw_url(only_path: false, inline: nil)
     if @build && @entry
       raw_project_job_artifacts_url(@project, @build, path: @entry.path, only_path: only_path)
     elsif @snippet
@@ -124,7 +124,7 @@ module BlobHelper
         raw_snippet_url(@snippet, only_path: only_path)
       end
     elsif @blob
-      project_raw_url(@project, @id, only_path: only_path)
+      project_raw_url(@project, @id, only_path: only_path, inline: inline)
     end
   end
 
@@ -226,16 +226,16 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
-    icon = icon('file-code-o')
-    title = 'Open raw'
-    link_to icon, blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    unless blob.raw_binary? || blob.stored_externally?
+      title = 'Open raw'
+      link_to icon('file-code-o'), blob_raw_url(:inline => true), class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    end 
   end
 
-  def download_button(blob)
+  def download_blob_button(blob)
     return if blob.empty?
-    icon = sprite_icon('download')
     title = 'Download'
-    link_to icon, blob_raw_path, download: '', class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    link_to sprite_icon('download'), blob_raw_url, download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)

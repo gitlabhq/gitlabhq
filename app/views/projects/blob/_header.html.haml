@@ -7,9 +7,8 @@
 
     .btn-group{ role: "group" }<
       = copy_blob_source_button(blob) unless blame
-      - if !(blob.raw_binary? || blob.stored_externally?)
-        = open_raw_blob_button(blob)
-      = download_button(blob)
+      = open_raw_blob_button(blob)
+      = download_blob_button(blob)
       = view_on_environment_button(@commit.sha, @path, @environment) if @environment
     .btn-group{ role: "group" }<
       = render_if_exists 'projects/blob/header_file_locks_link'
