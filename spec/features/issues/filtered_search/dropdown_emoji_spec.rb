@@ -28,7 +28,7 @@ describe 'Dropdown emoji', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     create_list(:award_emoji, 2, user: user, name: 'thumbsup')
     create_list(:award_emoji, 1, user: user, name: 'thumbsdown')
     create_list(:award_emoji, 3, user: user, name: 'star')

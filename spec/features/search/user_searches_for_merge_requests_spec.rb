@@ -7,7 +7,7 @@ describe 'User searches for merge requests', :js do
   let!(:merge_request2) { create(:merge_request, :simple, title: 'Bar', source_project: project, target_project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(search_path)

@@ -10,6 +10,10 @@ describe 'Environments page', :js do
     sign_in(user)
   end
 
+  def stop_button_selector
+    %q{button[data-original-title="Stop environment"]}
+  end
+
   describe 'page tabs' do
     it 'shows "Available" and "Stopped" tab with links' do
       visit_environments(project)
@@ -120,7 +124,7 @@ describe 'Environments page', :js do
       end
 
       it 'does not show stip button when environment is not stoppable' do
-        expect(page).not_to have_selector('.stop-env-link')
+        expect(page).not_to have_selector(stop_button_selector)
       end
     end
 
@@ -178,7 +182,7 @@ describe 'Environments page', :js do
         end
 
         it 'shows a stop button' do
-          expect(page).not_to have_selector('.stop-env-link')
+          expect(page).not_to have_selector(stop_button_selector)
         end
 
         it 'does not show external link button' do
@@ -211,22 +215,22 @@ describe 'Environments page', :js do
           end
 
           it 'shows a stop button' do
-            expect(page).to have_selector('.stop-env-link')
+            expect(page).to have_selector(stop_button_selector)
           end
 
           context 'when user is a reporter' do
             let(:role) { :reporter }
 
             it 'does not show stop button' do
-              expect(page).not_to have_selector('.stop-env-link')
+              expect(page).not_to have_selector(stop_button_selector)
             end
           end
         end
 
         context 'when kubernetes terminal is available' do
           shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-            context 'for project master' do
-              let(:role) { :master }
+            context 'for project maintainer' do
+              let(:role) { :maintainer }
 
               it 'shows the terminal button' do
                 expect(page).to have_terminal_button

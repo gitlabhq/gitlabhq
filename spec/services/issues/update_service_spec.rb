@@ -18,7 +18,7 @@ describe Issues::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -596,7 +596,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'calls the move service with the proper issue and project' do

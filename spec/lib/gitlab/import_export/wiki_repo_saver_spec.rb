@@ -10,7 +10,7 @@ describe Gitlab::ImportExport::WikiRepoSaver do
     let!(:project_wiki) { ProjectWiki.new(project, user) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       project_wiki.wiki
       project_wiki.create_page("index", "test content")

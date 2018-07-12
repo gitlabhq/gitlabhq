@@ -5,7 +5,7 @@ describe 'Merge request > User sees empty state' do
   let(:user)    { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

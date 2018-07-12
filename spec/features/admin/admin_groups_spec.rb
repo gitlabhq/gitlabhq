@@ -168,7 +168,7 @@ describe 'Admin Groups' do
     it 'renders shared project' do
       empty_project = create(:project)
       empty_project.project_group_links.create!(
-        group_access: Gitlab::Access::MASTER,
+        group_access: Gitlab::Access::MAINTAINER,
         group: group
       )
 

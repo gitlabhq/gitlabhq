@@ -348,7 +348,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
   end
 
-  context 'delete authorized as master' do
+  context 'delete authorized as maintainer' do
     let(:current_project) { create(:project) }
     let(:current_user) { create(:user) }
 
@@ -357,7 +357,7 @@ describe Auth::ContainerRegistryAuthenticationService do
     end
 
     before do
-      current_project.add_master(current_user)
+      current_project.add_maintainer(current_user)
     end
 
     it_behaves_like 'a valid token'

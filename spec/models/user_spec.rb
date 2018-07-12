@@ -700,7 +700,7 @@ describe User do
 
       @project = create(:project, namespace: @user.namespace)
       @project_2 = create(:project, group: create(:group)) do |project|
-        project.add_master(@user)
+        project.add_maintainer(@user)
       end
       @project_3 = create(:project, group: create(:group)) do |project|
         project.add_developer(@user)
@@ -836,7 +836,7 @@ describe User do
 
     before do
       # add user to project
-      project.add_master(user)
+      project.add_maintainer(user)
 
       # create invite to projet
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
@@ -1581,8 +1581,8 @@ describe User do
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
-      project1.add_master(subject)
-      project2.add_master(subject)
+      project1.add_maintainer(subject)
+      project2.add_maintainer(subject)
     end
 
     it "includes IDs for projects the user has pushed to" do
@@ -1663,8 +1663,8 @@ describe User do
     let!(:project) { create(:project, group: project_group) }
 
     before do
-      private_group.add_user(user, Gitlab::Access::MASTER)
-      project.add_master(user)
+      private_group.add_user(user, Gitlab::Access::MAINTAINER)
+      project.add_maintainer(user)
     end
 
     subject { user.authorized_groups }
@@ -1678,7 +1678,7 @@ describe User do
     let!(:child_group) { create(:group, parent: parent_group) }
 
     before do
-      parent_group.add_user(user, Gitlab::Access::MASTER)
+      parent_group.add_user(user, Gitlab::Access::MAINTAINER)
     end
 
     subject { user.membership_groups }
@@ -1696,7 +1696,7 @@ describe User do
 
     it 'includes projects that belong to a user, but no other projects' do
       owned = create(:project, :private, namespace: user.namespace)
-      member = create(:project, :private).tap { |p| p.add_master(user) }
+      member = create(:project, :private).tap { |p| p.add_maintainer(user) }
       other = create(:project)
 
       expect(subject).to include(owned)
@@ -1726,11 +1726,11 @@ describe User do
           .to contain_exactly(project)
       end
 
-      it 'includes projects for which the user is a master' do
+      it 'includes projects for which the user is a maintainer' do
         user = create(:user)
         project = create(:project, :private)
 
-        project.add_master(user)
+        project.add_maintainer(user)
 
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
@@ -1824,10 +1824,10 @@ describe User do
     it 'includes projects for which the user access level is above or equal to reporter' do
       reporter_project  = create(:project) { |p| p.add_reporter(user) }
       developer_project = create(:project) { |p| p.add_developer(user) }
-      master_project    = create(:project) { |p| p.add_master(user) }
+      maintainer_project = create(:project) { |p| p.add_maintainer(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to match_array([master_project, developer_project, reporter_project])
-      expect(user.can?(:admin_issue, master_project)).to eq(true)
+      expect(user.projects_where_can_admin_issues.to_a).to match_array([maintainer_project, developer_project, reporter_project])
+      expect(user.can?(:admin_issue, maintainer_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)
     end
@@ -1907,9 +1907,9 @@ describe User do
     end
 
     shared_examples :member do
-      context 'when the user is a master' do
+      context 'when the user is a maintainer' do
         before do
-          add_user(:master)
+          add_user(:maintainer)
         end
 
         it 'loads' do
@@ -2668,20 +2668,20 @@ describe User do
       let(:user) { create(:user) }
       let(:group) { create(:group) }
       let(:owner_project) { create(:project, group: group) }
-      let(:master_project) { create(:project) }
+      let(:maintainer_project) { create(:project) }
       let(:reporter_project) { create(:project) }
       let(:developer_project) { create(:project) }
       let(:guest_project) { create(:project) }
       let(:no_access_project) { create(:project) }
 
       let(:projects) do
-        [owner_project, master_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
+        [owner_project, maintainer_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
       end
 
       let(:expected) do
         {
           owner_project.id => Gitlab::Access::OWNER,
-          master_project.id => Gitlab::Access::MASTER,
+          maintainer_project.id => Gitlab::Access::MAINTAINER,
           reporter_project.id => Gitlab::Access::REPORTER,
           developer_project.id => Gitlab::Access::DEVELOPER,
           guest_project.id => Gitlab::Access::GUEST,
@@ -2691,7 +2691,7 @@ describe User do
 
       before do
         create(:group_member, user: user, group: group)
-        master_project.add_master(user)
+        maintainer_project.add_maintainer(user)
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
         guest_project.add_guest(user)
@@ -2718,14 +2718,14 @@ describe User do
       end
 
       it 'only requests the extra projects when uncached projects are passed' do
-        second_master_project = create(:project)
+        second_maintainer_project = create(:project)
         second_developer_project = create(:project)
-        second_master_project.add_master(user)
+        second_maintainer_project.add_maintainer(user)
         second_developer_project.add_developer(user)
 
-        all_projects = projects + [second_master_project.id, second_developer_project.id]
+        all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
 
-        expected_all = expected.merge(second_master_project.id => Gitlab::Access::MASTER,
+        expected_all = expected.merge(second_maintainer_project.id => Gitlab::Access::MAINTAINER,
                                       second_developer_project.id => Gitlab::Access::DEVELOPER)
 
         access_levels(projects)
@@ -2733,7 +2733,7 @@ describe User do
         queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
 
         expect(queries.count).to eq(1)
-        expect(queries.log_message).to match(/\W(#{second_master_project.id}, #{second_developer_project.id})\W/)
+        expect(queries.log_message).to match(/\W(#{second_maintainer_project.id}, #{second_developer_project.id})\W/)
         expect(access_levels(all_projects)).to eq(expected_all)
       end
     end
@@ -2747,20 +2747,20 @@ describe User do
     shared_examples 'max member access for groups' do
       let(:user) { create(:user) }
       let(:owner_group) { create(:group) }
-      let(:master_group) { create(:group) }
+      let(:maintainer_group) { create(:group) }
       let(:reporter_group) { create(:group) }
       let(:developer_group) { create(:group) }
       let(:guest_group) { create(:group) }
       let(:no_access_group) { create(:group) }
 
       let(:groups) do
-        [owner_group, master_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
+        [owner_group, maintainer_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
       end
 
       let(:expected) do
         {
           owner_group.id => Gitlab::Access::OWNER,
-          master_group.id => Gitlab::Access::MASTER,
+          maintainer_group.id => Gitlab::Access::MAINTAINER,
           reporter_group.id => Gitlab::Access::REPORTER,
           developer_group.id => Gitlab::Access::DEVELOPER,
           guest_group.id => Gitlab::Access::GUEST,
@@ -2770,7 +2770,7 @@ describe User do
 
       before do
         owner_group.add_owner(user)
-        master_group.add_master(user)
+        maintainer_group.add_maintainer(user)
         reporter_group.add_reporter(user)
         developer_group.add_developer(user)
         guest_group.add_guest(user)
@@ -2797,14 +2797,14 @@ describe User do
       end
 
       it 'only requests the extra groups when uncached groups are passed' do
-        second_master_group = create(:group)
+        second_maintainer_group = create(:group)
         second_developer_group = create(:group)
-        second_master_group.add_master(user)
+        second_maintainer_group.add_maintainer(user)
         second_developer_group.add_developer(user)
 
-        all_groups = groups + [second_master_group.id, second_developer_group.id]
+        all_groups = groups + [second_maintainer_group.id, second_developer_group.id]
 
-        expected_all = expected.merge(second_master_group.id => Gitlab::Access::MASTER,
+        expected_all = expected.merge(second_maintainer_group.id => Gitlab::Access::MAINTAINER,
                                       second_developer_group.id => Gitlab::Access::DEVELOPER)
 
         access_levels(groups)
@@ -2812,7 +2812,7 @@ describe User do
         queries = ActiveRecord::QueryRecorder.new { access_levels(all_groups) }
 
         expect(queries.count).to eq(1)
-        expect(queries.log_message).to match(/\W(#{second_master_group.id}, #{second_developer_group.id})\W/)
+        expect(queries.log_message).to match(/\W(#{second_maintainer_group.id}, #{second_developer_group.id})\W/)
         expect(access_levels(all_groups)).to eq(expected_all)
       end
     end

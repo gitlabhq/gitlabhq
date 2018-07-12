@@ -425,7 +425,7 @@ There is a helper in `spec/javascripts/helpers/vue_mount_component_helper.js` th
 
 ```javascript
 import Vue from 'vue';
-import mountComponent from 'helpers/vue_mount_component_helper.js'
+import mountComponent from 'spec/helpers/vue_mount_component_helper'
 import component from 'component.vue'
 
 const Component = Vue.extend(component);

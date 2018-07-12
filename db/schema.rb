@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702120647) do
+ActiveRecord::Schema.define(version: 20180704204006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20180702120647) do
     t.boolean "allow_local_requests_from_hooks_and_services", default: false, null: false
     t.boolean "enforce_terms", default: false
     t.boolean "mirror_available", default: true, null: false
+    t.boolean "hide_third_party_offers", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1949,7 +1950,7 @@ ActiveRecord::Schema.define(version: 20180702120647) do
 
   create_table "todos", force: :cascade do |t|
     t.integer "user_id", null: false
-    t.integer "project_id"
+    t.integer "project_id", null: false
     t.integer "target_id"
     t.string "target_type", null: false
     t.integer "author_id", null: false
@@ -1959,12 +1960,10 @@ ActiveRecord::Schema.define(version: 20180702120647) do
     t.datetime "updated_at"
     t.integer "note_id"
     t.string "commit_id"
-    t.integer "group_id"
   end
 
   add_index "todos", ["author_id"], name: "index_todos_on_author_id", using: :btree
   add_index "todos", ["commit_id"], name: "index_todos_on_commit_id", using: :btree
-  add_index "todos", ["group_id"], name: "index_todos_on_group_id", using: :btree
   add_index "todos", ["note_id"], name: "index_todos_on_note_id", using: :btree
   add_index "todos", ["project_id"], name: "index_todos_on_project_id", using: :btree
   add_index "todos", ["target_type", "target_id"], name: "index_todos_on_target_type_and_target_id", using: :btree
@@ -2338,7 +2337,6 @@ ActiveRecord::Schema.define(version: 20180702120647) do
   add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
-  add_foreign_key "todos", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade

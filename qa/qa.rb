@@ -49,6 +49,7 @@ module QA
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
       autoload :User, 'qa/factory/resource/user'
+      autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
       autoload :Wiki, 'qa/factory/resource/wiki'
       autoload :Fork, 'qa/factory/resource/fork'
     end
@@ -172,6 +173,11 @@ module QA
 
       module Fork
         autoload :New, 'qa/page/project/fork/new'
+      end
+
+      module Milestone
+        autoload :New, 'qa/page/project/milestone/new'
+        autoload :Index, 'qa/page/project/milestone/index'
       end
 
       module Operations

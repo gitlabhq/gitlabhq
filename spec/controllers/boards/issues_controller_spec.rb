@@ -13,7 +13,7 @@ describe Boards::IssuesController do
   let!(:list2) { create(:list, board: board, label: development, position: 1) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(guest)
   end
 

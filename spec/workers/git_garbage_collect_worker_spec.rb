@@ -27,6 +27,12 @@ describe GitGarbageCollectWorker do
 
         subject.perform(project.id, :gc, lease_key, lease_uuid)
       end
+
+      it 'handles gRPC errors' do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect).and_raise(GRPC::NotFound)
+
+        expect { subject.perform(project.id, :gc, lease_key, lease_uuid) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+      end
     end
 
     context 'with different lease than the active one' do

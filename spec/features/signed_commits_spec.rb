@@ -5,7 +5,7 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
     user = create :user, email: 'unrelated.user@example.org'
-    project.add_master(user)
+    project.add_maintainer(user)
 
     Sidekiq::Testing.inline! do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
@@ -36,7 +36,7 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
     user = create :user, email: GpgHelpers::User1.emails.first
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -86,7 +86,7 @@ describe 'GPG signed commits', :js do
 
     before do
       user = create :user
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end
