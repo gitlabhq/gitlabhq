@@ -11,10 +11,7 @@
 1. [From SVN](svn.md)
 1. [From TFS](tfs.md)
 1. [From repo by URL](repo_by_url.md)
-<<<<<<< HEAD
 1. [From Gemnasium](gemnasium.md)
-=======
->>>>>>> upstream/master
 1. [By uploading a manifest file](manifest.md)
 
 In addition to the specific migration documentation above, you can import any
