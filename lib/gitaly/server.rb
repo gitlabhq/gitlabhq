@@ -50,7 +50,7 @@ module Gitaly
       @info ||=
         begin
           Gitlab::GitalyClient::ServerService.new(@storage).info
-        rescue GRPC::Unavailable, GRPC::GRPC::DeadlineExceeded
+        rescue GRPC::Unavailable, GRPC::DeadlineExceeded
           # This will show the server as being out of date
           Gitaly::ServerInfoResponse.new(git_version: '', server_version: '', storage_statuses: [])
         end
