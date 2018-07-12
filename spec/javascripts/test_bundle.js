@@ -173,8 +173,8 @@ if (process.env.BABEL_ENV === 'coverage') {
 
   describe('Uncovered files', function() {
     const sourceFilesContexts = [
-      require.context('~', true, /\.js$/),
-      require.context('ee', true, /\.js$/),
+      require.context('~', true, /\.(js|vue)$/),
+      require.context('ee', true, /\.(js|vue)$/),
     ];
     const allTestFiles = testContexts.reduce((accumulator, context) =>
       accumulator.concat(context.keys()), []);
@@ -184,7 +184,7 @@ if (process.env.BABEL_ENV === 'coverage') {
     sourceFilesContexts.forEach(context => {
       context.keys().forEach(path => {
         // ignore if there is a matching spec file
-        if (allTestFiles.indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
+        if (allTestFiles.indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
           return;
         }
 
