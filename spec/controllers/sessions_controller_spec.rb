@@ -50,8 +50,6 @@ describe SessionsController do
       end
 
       context 'when using valid password', :clean_gitlab_redis_shared_state do
-        include UserActivitiesHelpers
-
         let(:user) { create(:user) }
         let(:user_params) { { login: user.username, password: user.password } }
 
@@ -77,7 +75,7 @@ describe SessionsController do
         it 'updates the user activity' do
           expect do
             post(:create, user: user_params)
-          end.to change { user_activity(user) }
+          end.to change { user.reload.last_activity_on }.to(Date.today)
         end
       end
 

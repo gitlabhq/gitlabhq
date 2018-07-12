@@ -5,7 +5,6 @@ describe 'Git HTTP requests' do
   include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
-  include UserActivitiesHelpers
 
   shared_examples 'pulls require Basic HTTP Authentication' do
     context "when no credentials are provided" do
@@ -440,10 +439,10 @@ describe 'Git HTTP requests' do
                 end
 
                 it 'updates the user last activity', :clean_gitlab_redis_shared_state do
-                  expect(user_activity(user)).to be_nil
+                  expect(user.last_activity_on).to be_nil
 
                   download(path, env) do |response|
-                    expect(user_activity(user)).to be_present
+                    expect(user.reload.last_activity_on).to eql(Date.today)
                   end
                 end
               end
