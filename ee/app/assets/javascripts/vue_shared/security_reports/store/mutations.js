@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 
-import * as types from './mutation_types';
 import Vue from 'vue';
+import * as types from './mutation_types';
 import {
   parseSastIssues,
   parseDependencyScanningIssues,
