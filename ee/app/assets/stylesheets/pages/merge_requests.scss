@@ -36,6 +36,7 @@
   .code-text {
     @include media-breakpoint-up(lg) {
       align-self: center;
+      flex: 1;
     }
   }
 }
