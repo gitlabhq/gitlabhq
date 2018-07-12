@@ -364,7 +364,7 @@ danger-review:
       - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
   script:
     - git version
-    - danger --fail-on-errors=true
+    - danger --fail-on-errors=true --verbose
 
 update-tests-metadata:
   <<: *tests-metadata-state
