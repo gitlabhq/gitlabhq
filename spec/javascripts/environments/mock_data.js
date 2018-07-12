@@ -80,7 +80,7 @@ export const serverData = [
       external_url: null,
       environment_type: 'build',
       last_deployment: null,
-      'stop_action?': false,
+      has_stop_action: false,
       environment_path: '/root/review-app/environments/12',
       stop_path: '/root/review-app/environments/12/stop',
       created_at: '2017-02-01T19:42:18.400Z',
