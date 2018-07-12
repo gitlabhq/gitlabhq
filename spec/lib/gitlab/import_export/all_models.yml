@@ -7,6 +7,7 @@ issues:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
@@ -79,6 +80,7 @@ merge_requests:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
