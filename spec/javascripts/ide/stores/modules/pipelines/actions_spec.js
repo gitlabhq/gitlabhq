@@ -315,7 +315,7 @@ describe('IDE pipelines actions', () => {
         'job',
         mockedState,
         [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
-        [{ type: 'setRightPane' }],
+        [{ type: 'setRightPane', payload: 'jobs-detail' }],
         done,
       );
     });
@@ -325,7 +325,7 @@ describe('IDE pipelines actions', () => {
         setDetailJob,
         null,
         mockedState,
-        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: types.SET_DETAIL_JOB, payload: null }],
         [{ type: 'setRightPane', payload: rightSidebarViews.pipelines }],
         done,
       );
@@ -336,7 +336,7 @@ describe('IDE pipelines actions', () => {
         setDetailJob,
         'job',
         mockedState,
-        [{ type: types.SET_DETAIL_JOB }],
+        [{ type: types.SET_DETAIL_JOB, payload: 'job' }],
         [{ type: 'setRightPane', payload: rightSidebarViews.jobsDetail }],
         done,
       );
