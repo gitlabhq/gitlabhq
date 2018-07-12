@@ -45,6 +45,11 @@ export default {
     emitSubmit(event) {
       this.$emit('submit', event);
     },
+    opened({ propertyName }) {
+      if (propertyName === 'opacity') {
+        this.$emit('open');
+      }
+    },
   },
 };
 </script>
@@ -55,6 +60,7 @@ export default {
     class="modal fade"
     tabindex="-1"
     role="dialog"
+    @transitionend="opened"
   >
     <div
       :class="modalSizeClass"

@@ -1720,6 +1720,9 @@ msgstr ""
 msgid "Create new file"
 msgstr ""
 
+msgid "Create new file or directory"
+msgstr ""
+
 msgid "Create new label"
 msgstr ""
 
