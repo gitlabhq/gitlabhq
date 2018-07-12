@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 
+import Vue from 'vue';
 import * as types from './mutation_types';
 import {
   parseSastIssues,
@@ -13,11 +14,11 @@ import {
 
 export default {
   [types.SET_HEAD_BLOB_PATH](state, path) {
-    state.blobPath.head = path;
+    Vue.set(state.blobPath, 'head', path);
   },
 
   [types.SET_BASE_BLOB_PATH](state, path) {
-    state.blobPath.base = path;
+    Vue.set(state.blobPath, 'base', path);
   },
 
   [types.SET_VULNERABILITY_FEEDBACK_PATH](state, path) {
@@ -42,15 +43,15 @@ export default {
 
   // SAST
   [types.SET_SAST_HEAD_PATH](state, path) {
-    state.sast.paths.head = path;
+    Vue.set(state.sast.paths, 'head', path);
   },
 
   [types.SET_SAST_BASE_PATH](state, path) {
-    state.sast.paths.base = path;
+    Vue.set(state.sast.paths, 'base', path);
   },
 
   [types.REQUEST_SAST_REPORTS](state) {
-    state.sast.isLoading = true;
+    Vue.set(state.sast, 'isLoading', true);
   },
 
   /**
@@ -78,37 +79,39 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      state.sast.newIssues = newIssues;
-      state.sast.resolvedIssues = resolvedIssues;
-      state.sast.allIssues = allIssues;
-      state.sast.isLoading = false;
+      Vue.set(state.sast, 'newIssues', newIssues);
+      Vue.set(state.sast, 'resolvedIssues', resolvedIssues);
+      Vue.set(state.sast, 'allIssues', allIssues);
+      Vue.set(state.sast, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
       const newIssues = parseSastIssues(reports.head, reports.enrichData, state.blobPath.head);
 
-      state.sast.newIssues = newIssues;
-      state.sast.isLoading = false;
+      Vue.set(state.sast, 'newIssues', newIssues);
+      Vue.set(state.sast, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_REPORTS_ERROR](state) {
-    state.sast.isLoading = false;
-    state.sast.hasError = true;
+    Vue.set(state.sast, 'isLoading', false);
+    Vue.set(state.sast, 'hasError', true);
   },
 
   // SAST CONTAINER
   [types.SET_SAST_CONTAINER_HEAD_PATH](state, path) {
-    state.sastContainer.paths.head = path;
+    Vue.set(state.sastContainer.paths, 'head', path);
   },
 
   [types.SET_SAST_CONTAINER_BASE_PATH](state, path) {
-    state.sastContainer.paths.base = path;
+    Vue.set(state.sastContainer.paths, 'base', path);
   },
 
   [types.REQUEST_SAST_CONTAINER_REPORTS](state) {
-    state.sastContainer.isLoading = true;
+    Vue.set(state.sastContainer, 'isLoading', true);
   },
 
   /**
@@ -129,9 +132,10 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      state.sastContainer.newIssues = newIssues;
-      state.sastContainer.resolvedIssues = resolvedIssues;
-      state.sastContainer.isLoading = false;
+      Vue.set(state.sastContainer, 'newIssues', newIssues);
+      Vue.set(state.sastContainer, 'resolvedIssues', resolvedIssues);
+      Vue.set(state.sastContainer, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
@@ -140,29 +144,30 @@ export default {
         reports.head.unapproved,
       );
 
-      state.sastContainer.newIssues = newIssues;
-      state.sastContainer.isLoading = false;
+      Vue.set(state.sastContainer, 'newIssues', newIssues);
+      Vue.set(state.sastContainer, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_CONTAINER_ERROR](state) {
-    state.sastContainer.isLoading = false;
-    state.sastContainer.hasError = true;
+    Vue.set(state.sastContainer, 'isLoading', false);
+    Vue.set(state.sastContainer, 'hasError', true);
   },
 
   // DAST
 
   [types.SET_DAST_HEAD_PATH](state, path) {
-    state.dast.paths.head = path;
+    Vue.set(state.dast.paths, 'head', path);
   },
 
   [types.SET_DAST_BASE_PATH](state, path) {
-    state.dast.paths.base = path;
+    Vue.set(state.dast.paths, 'base', path);
   },
 
   [types.REQUEST_DAST_REPORTS](state) {
-    state.dast.isLoading = true;
+    Vue.set(state.dast, 'isLoading', true);
   },
 
   [types.RECEIVE_DAST_REPORTS](state, reports) {
@@ -173,37 +178,39 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      state.dast.newIssues = newIssues;
-      state.dast.resolvedIssues = resolvedIssues;
-      state.dast.isLoading = false;
+      Vue.set(state.dast, 'newIssues', newIssues);
+      Vue.set(state.dast, 'resolvedIssues', resolvedIssues);
+      Vue.set(state.dast, 'isLoading', false);
       state.summaryCounts.added += newIssues.length;
+
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && reports.head.site && !reports.base) {
       const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
 
-      state.dast.newIssues = newIssues;
-      state.dast.isLoading = false;
+      Vue.set(state.dast, 'newIssues', newIssues);
+      Vue.set(state.dast, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DAST_ERROR](state) {
-    state.dast.isLoading = false;
-    state.dast.hasError = true;
+    Vue.set(state.dast, 'isLoading', false);
+    Vue.set(state.dast, 'hasError', true);
   },
 
   // DEPENDECY SCANNING
 
   [types.SET_DEPENDENCY_SCANNING_HEAD_PATH](state, path) {
-    state.dependencyScanning.paths.head = path;
+    Vue.set(state.dependencyScanning.paths, 'head', path);
   },
 
   [types.SET_DEPENDENCY_SCANNING_BASE_PATH](state, path) {
-    state.dependencyScanning.paths.base = path;
+    Vue.set(state.dependencyScanning.paths, 'base', path);
   },
 
   [types.REQUEST_DEPENDENCY_SCANNING_REPORTS](state) {
-    state.dependencyScanning.isLoading = true;
+    Vue.set(state.dependencyScanning, 'isLoading', true);
   },
 
   /**
@@ -233,10 +240,11 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      state.dependencyScanning.newIssues = newIssues;
-      state.dependencyScanning.resolvedIssues = resolvedIssues;
-      state.dependencyScanning.allIssues = allIssues;
-      state.dependencyScanning.isLoading = false;
+      Vue.set(state.dependencyScanning, 'newIssues', newIssues);
+      Vue.set(state.dependencyScanning, 'resolvedIssues', resolvedIssues);
+      Vue.set(state.dependencyScanning, 'allIssues', allIssues);
+      Vue.set(state.dependencyScanning, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     }
@@ -244,58 +252,63 @@ export default {
     if (reports.head && !reports.base) {
       const newIssues = parseDependencyScanningIssues(reports.head, reports.enrichData,
         state.blobPath.head);
-      state.dependencyScanning.newIssues = newIssues;
-      state.dependencyScanning.isLoading = false;
+      Vue.set(state.dependencyScanning, 'newIssues', newIssues);
+      Vue.set(state.dependencyScanning, 'isLoading', false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DEPENDENCY_SCANNING_ERROR](state) {
-    state.dependencyScanning.isLoading = false;
-    state.dependencyScanning.hasError = true;
+    Vue.set(state.dependencyScanning, 'isLoading', false);
+    Vue.set(state.dependencyScanning, 'hasError', true);
   },
 
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     const { issue, status } = payload;
 
-    state.modal.title = issue.title;
-    state.modal.data.description.value = issue.description;
-    state.modal.data.file.value = issue.location && issue.location.file;
-    state.modal.data.file.url = issue.urlPath;
-    state.modal.data.className.value = issue.location && issue.location.class;
-    state.modal.data.methodName.value = issue.location && issue.location.method;
-    state.modal.data.namespace.value = issue.namespace;
+    Vue.set(state.modal, 'title', issue.title);
+    Vue.set(state.modal.data.description, 'value', issue.description);
+    Vue.set(state.modal.data.file, 'value', issue.location && issue.location.file);
+    Vue.set(state.modal.data.file, 'url', issue.urlPath);
+    Vue.set(state.modal.data.className, 'value', issue.location && issue.location.class);
+    Vue.set(state.modal.data.methodName, 'value', issue.location && issue.location.method);
+    Vue.set(state.modal.data.namespace, 'value', issue.namespace);
+
     if (issue.identifiers && issue.identifiers.length > 0) {
-      state.modal.data.identifiers.value = issue.identifiers;
+      Vue.set(state.modal.data.identifiers, 'value', issue.identifiers);
     } else {
       // Force a null value for identifiers to avoid showing an empty array
-      state.modal.data.identifiers.value = null;
+      Vue.set(state.modal.data.identifiers, 'value', null);
     }
-    state.modal.data.severity.value = issue.severity;
-    state.modal.data.confidence.value = issue.confidence;
-    state.modal.data.solution.value = issue.solution;
+
+    Vue.set(state.modal.data.severity, 'value', issue.severity);
+    Vue.set(state.modal.data.confidence, 'value', issue.confidence);
+    Vue.set(state.modal.data.solution, 'value', issue.solution);
+
     if (issue.links && issue.links.length > 0) {
-      state.modal.data.links.value = issue.links;
+      Vue.set(state.modal.data.links, 'value', issue.links);
     } else {
       // Force a null value for links to avoid showing an empty array
-      state.modal.data.links.value = null;
+      Vue.set(state.modal.data.links, 'value', null);
     }
-    state.modal.data.instances.value = issue.instances;
-    state.modal.vulnerability = issue;
-    state.modal.isResolved = status === 'success';
+
+    Vue.set(state.modal.data.instances, 'value', issue.instances);
+    Vue.set(state.modal, 'vulnerability', issue);
+    Vue.set(state.modal, 'isResolved', status === 'success');
 
     // clear previous state
-    state.modal.error = null;
+    Vue.set(state.modal, 'error', null);
   },
 
   [types.REQUEST_DISMISS_ISSUE](state) {
-    state.modal.isDismissingIssue = true;
+    Vue.set(state.modal, 'isDismissingIssue', true);
     // reset error in case previous state was error
-    state.modal.error = null;
+    Vue.set(state.modal, 'error', null);
   },
 
   [types.RECEIVE_DISMISS_ISSUE_SUCCESS](state) {
-    state.modal.isDismissingIssue = false;
+    Vue.set(state.modal, 'isDismissingIssue', false);
   },
 
   [types.UPDATE_SAST_ISSUE](state, issue) {
@@ -371,22 +384,22 @@ export default {
   },
 
   [types.RECEIVE_DISMISS_ISSUE_ERROR](state, error) {
-    state.modal.error = error;
-    state.modal.isDismissingIssue = false;
+    Vue.set(state.modal, 'error', error);
+    Vue.set(state.modal, 'isDismissingIssue', false);
   },
 
   [types.REQUEST_CREATE_ISSUE](state) {
-    state.modal.isCreatingNewIssue = true;
+    Vue.set(state.modal, 'isCreatingNewIssue', true);
     // reset error in case previous state was error
-    state.modal.error = null;
+    Vue.set(state.modal, 'error', null);
   },
 
   [types.RECEIVE_CREATE_ISSUE_SUCCESS](state) {
-    state.modal.isCreatingNewIssue = false;
+    Vue.set(state.modal, 'isCreatingNewIssue', false);
   },
 
   [types.RECEIVE_CREATE_ISSUE_ERROR](state, error) {
-    state.modal.error = error;
-    state.modal.isCreatingNewIssue = false;
+    Vue.set(state.modal, 'error', error);
+    Vue.set(state.modal, 'isCreatingNewIssue', false);
   },
 };
