@@ -481,6 +481,24 @@ ee-specific-lines-check:
   script:
     - scripts/ee-specific-lines-check
 
+danger-review:
+  image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
+  stage: prepare
+  before_script:
+    - source scripts/utils.sh
+    - retry gem install danger --no-ri --no-rdoc
+  cache: {}
+  only:
+    refs:
+      - branches@gitlab-org/gitlab-ce
+      - branches@gitlab-org/gitlab-ee
+  except:
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
+  script:
+    - git version
+    - danger --fail-on-errors=true
+
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters
