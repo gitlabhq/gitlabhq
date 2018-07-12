@@ -1114,7 +1114,7 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        if target_sha = find_branch(target_branch, true)&.target
+        if target_sha = find_branch(target_branch)&.target
           !gitaly_conflicts_client(source_sha, target_sha).conflicts?
         else
           false

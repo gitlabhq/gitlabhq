@@ -174,8 +174,8 @@ class Repository
     CommitCollection.new(project, commits, ref)
   end
 
-  def find_branch(name, fresh_repo: true)
-    raw_repository.find_branch(name, fresh_repo)
+  def find_branch(name)
+    raw_repository.find_branch(name)
   end
 
   def find_tag(name)
