@@ -3,6 +3,8 @@ module Gitlab
     class UploadsManager
       include Gitlab::ImportExport::CommandLineUtil
 
+      UPLOADS_BATCH_SIZE = 100
+
       def initialize(project:, shared:, relative_export_path: 'uploads', from: nil)
         @project = project
         @shared = shared
@@ -54,7 +56,7 @@ module Gitlab
       def copy_from_object_storage
         return unless Gitlab::ImportExport.object_storage?
 
-        uploads.each do |upload_model|
+        uploads do |upload_model|
           next unless upload_model.file
           next if upload_model.upload.local? # Already copied, using  the old  method
 
@@ -71,13 +73,21 @@ module Gitlab
       end
 
       def uploads
-        @uploads ||= begin
-          if @relative_export_path == 'avatar'
-            [@project.avatar].compact
-          else
-            (@project.uploads - [@project.avatar&.upload]).map(&:build_uploader)
+        avatar_path = @project.avatar&.upload&.path
+
+        if @relative_export_path == 'avatar'
+          yield(@project.avatar)
+        else
+          project_uploads(avatar_path).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
+            yield(upload.build_uploader)
           end
         end
+      end
+
+      def project_uploads(avatar_path)
+        return @project.uploads unless avatar_path
+
+        @project.uploads.where("path != ?", avatar_path)
       end
 
       def download_and_copy(upload)
