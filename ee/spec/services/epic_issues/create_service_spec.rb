@@ -268,6 +268,13 @@ describe EpicIssues::CreateService do
 
         include_examples 'returns an error'
       end
+
+      context 'refresh epic dates' do
+        it 'calls epic#update_dates' do
+          expect(epic).to receive(:update_dates)
+          assign_issue([valid_reference])
+        end
+      end
     end
   end
 end

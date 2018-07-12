@@ -1,5 +1,11 @@
 module EpicIssues
   class DestroyService < IssuableLinks::DestroyService
+    def execute
+      result = super
+      link.epic.update_dates
+      result
+    end
+
     private
 
     def source

@@ -75,6 +75,13 @@ describe EpicIssues::DestroyService do
           is_expected.to eq(message: 'No Issue Link found', status: :error, http_status: 404)
         end
       end
+
+      context 'refresh epic dates' do
+        it 'calls epic#update_dates' do
+          expect(epic).to receive(:update_dates)
+          subject
+        end
+      end
     end
   end
 end

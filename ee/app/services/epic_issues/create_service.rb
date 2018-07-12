@@ -1,5 +1,11 @@
 module EpicIssues
   class CreateService < IssuableLinks::CreateService
+    def execute
+      result = super
+      issuable.update_dates
+      result
+    end
+
     private
 
     def relate_issues(referenced_issue)

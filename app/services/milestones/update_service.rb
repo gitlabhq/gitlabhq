@@ -2,6 +2,8 @@
 
 module Milestones
   class UpdateService < Milestones::BaseService
+    prepend EE::Milestones::UpdateService
+
     def execute(milestone)
       state = params[:state_event]
 
