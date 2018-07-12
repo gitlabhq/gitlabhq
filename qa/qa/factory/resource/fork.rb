@@ -11,12 +11,12 @@ module QA
         def fabricate!
           push.project.visit!
           Page::Project::Show.act { fork_project }
-          Page::Project::Fork::New.perform do |page|
-            page.choose_namespace(user.name)
-            page.wait do
-              page.has_content?('The project was successfully forked.')
-            end
+
+          Page::Project::Fork::New.perform do |fork_new|
+            fork_new.choose_namespace(user.name)
           end
+
+          Page::Layout::Banner.act { has_notice?('The project was successfully forked.') }
         end
       end
     end

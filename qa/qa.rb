@@ -202,6 +202,10 @@ module QA
       autoload :Sidebar, 'qa/page/issuable/sidebar'
     end
 
+    module Layout
+      autoload :Banner, 'qa/page/layout/banner'
+    end
+
     module MergeRequest
       autoload :New, 'qa/page/merge_request/new'
       autoload :Show, 'qa/page/merge_request/show'
