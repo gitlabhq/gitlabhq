@@ -79,12 +79,6 @@ module QA
 
           click_element :squash_checkbox
         end
-
-        def has_milestone?(milestone_title)
-          page.within('.issuable-sidebar') do
-            !!find("[href*='/milestones/']", text: milestone_title, wait: 1)
-          end
-        end
       end
     end
   end
