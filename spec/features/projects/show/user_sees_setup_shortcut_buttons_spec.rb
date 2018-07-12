@@ -5,6 +5,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
   # see spec/features/projects/files/project_owner_creates_license_file_spec.rb
   # see spec/features/projects/files/project_owner_sees_link_to_create_license_file_in_empty_project_spec.rb
 
+  include FakeBlobHelpers
+
   let(:user) { create(:user) }
 
   describe 'empty project' do
@@ -36,9 +38,9 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
     end
 
-    describe 'as a master' do
+    describe 'as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
 
         visit project_path(project)
@@ -136,16 +138,62 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
     end
 
-    describe 'as a master' do
+    describe 'as a maintainer' do
       before do
         allow_any_instance_of(AutoDevopsHelper).to receive(:show_auto_devops_callout?).and_return(false)
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
+      end
 
-        visit project_path(project)
+      context 'Readme button' do
+        before do
+          allow(Project).to receive(:find_by_full_path)
+                              .with(project.full_path, follow_redirects: true)
+                              .and_return(project)
+        end
+
+        context 'when the project has a populated Readme' do
+          it 'show the "Readme" anchor' do
+            visit project_path(project)
+
+            expect(project.repository.readme).not_to be_nil
+
+            page.within('.project-stats') do
+              expect(page).not_to have_link('Add Readme', href: presenter.add_readme_path)
+              expect(page).to have_link('Readme', href: presenter.readme_path)
+            end
+          end
+
+          context 'when the project has an empty Readme' do
+            it 'show the "Readme" anchor' do
+              allow(project.repository).to receive(:readme).and_return(fake_blob(path: 'README.md', data: '', size: 0))
+
+              visit project_path(project)
+
+              page.within('.project-stats') do
+                expect(page).not_to have_link('Add Readme', href: presenter.add_readme_path)
+                expect(page).to have_link('Readme', href: presenter.readme_path)
+              end
+            end
+          end
+        end
+
+        context 'when the project does not have a Readme' do
+          it 'shows the "Add Readme" button' do
+            allow(project.repository).to receive(:readme).and_return(nil)
+
+            visit project_path(project)
+
+            page.within('.project-stats') do
+              expect(page).to have_link('Add Readme', href: presenter.add_readme_path)
+            end
+          end
+        end
       end
 
       it 'no "Add Changelog" button if the project already has a changelog' do
+        visit project_path(project)
+
         expect(project.repository.changelog).not_to be_nil
 
         page.within('.project-stats') do
@@ -154,6 +202,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
 
       it 'no "Add License" button if the project already has a license' do
+        visit project_path(project)
+
         expect(project.repository.license_blob).not_to be_nil
 
         page.within('.project-stats') do
@@ -162,6 +212,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
       end
 
       it 'no "Add Contribution guide" button if the project already has a contribution guide' do
+        visit project_path(project)
+
         expect(project.repository.contribution_guide).not_to be_nil
 
         page.within('.project-stats') do
@@ -171,6 +223,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
       describe 'GitLab CI configuration button' do
         it '"Set up CI/CD" button linked to new file populated for a .gitlab-ci.yml' do
+          visit project_path(project)
+
           expect(project.repository.gitlab_ci_yml).to be_nil
 
           page.within('.project-stats') do
@@ -211,6 +265,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
       describe 'Auto DevOps button' do
         it '"Enable Auto DevOps" button linked to settings page' do
+          visit project_path(project)
+
           page.within('.project-stats') do
             expect(page).to have_link('Enable Auto DevOps', href: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
           end
@@ -263,6 +319,8 @@ describe 'Projects > Show > User sees setup shortcut buttons' do
 
       describe 'Kubernetes cluster button' do
         it '"Add Kubernetes cluster" button linked to clusters page' do
+          visit project_path(project)
+
           page.within('.project-stats') do
             expect(page).to have_link('Add Kubernetes cluster', href: new_project_cluster_path(project))
           end

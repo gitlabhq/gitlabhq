@@ -47,7 +47,7 @@ export default {
   methods: {
     ...mapActions(['toggleDiscussion']),
     getTooltipText(noteData) {
-      let note = noteData.note;
+      let { note } = noteData;
 
       if (note.length > LENGTH_OF_AVATAR_TOOLTIP) {
         note = truncate(note, LENGTH_OF_AVATAR_TOOLTIP);

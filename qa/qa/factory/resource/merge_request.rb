@@ -7,7 +7,10 @@ module QA
         attr_accessor :title,
                       :description,
                       :source_branch,
-                      :target_branch
+                      :target_branch,
+                      :assignee,
+                      :milestone,
+                      :labels
 
         product :project do |factory|
           factory.project
@@ -41,16 +44,18 @@ module QA
           @description = 'This is a test merge request'
           @source_branch = "qa-test-feature-#{SecureRandom.hex(8)}"
           @target_branch = "master"
+          @assignee = nil
+          @milestone = nil
+          @labels = []
         end
 
         def fabricate!
           project.visit!
-
           Page::Project::Show.act { new_merge_request }
-
           Page::MergeRequest::New.perform do |page|
             page.fill_title(@title)
             page.fill_description(@description)
+            page.choose_milestone(@milestone) if @milestone
             page.create_merge_request
           end
         end

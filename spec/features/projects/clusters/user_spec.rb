@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'User Cluster', :js do
+describe 'User Cluster', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     gitlab_sign_in(user)
     allow(Projects::ClustersController).to receive(:STATUS_POLLING_INTERVAL) { 100 }
   end
@@ -17,7 +17,7 @@ feature 'User Cluster', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Add an existing Kubernetes cluster'
+      click_link 'Add existing cluster'
     end
 
     context 'when user filled form with valid parameters' do

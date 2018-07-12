@@ -74,6 +74,20 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('COLLAPSE_DISCUSSION', () => {
+    it('should collpase an expanded discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: true });
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.COLLAPSE_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.discussions[0].expanded).toEqual(false);
+    });
+  });
+
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
     it('should remove all placeholder notes in indivudal notes and discussion', () => {
       const placeholderNote = Object.assign({}, individualNote, { isPlaceholderNote: true });
@@ -316,6 +330,17 @@ describe('Notes Store mutations', () => {
 
       mutations.TOGGLE_STATE_BUTTON_LOADING(state, false);
       expect(state.isToggleStateButtonLoading).toEqual(false);
+    });
+  });
+
+  describe('SET_NOTES_FETCHING_STATE', () => {
+    it('should set the given state', () => {
+      const state = {
+        isNotesFetched: false,
+      };
+
+      mutations.SET_NOTES_FETCHED_STATE(state, true);
+      expect(state.isNotesFetched).toEqual(true);
     });
   });
 });

@@ -56,6 +56,8 @@ module API
       def find_group_projects(params)
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = reorder_projects(projects)
         paginate(projects)
       end
@@ -148,12 +150,13 @@ module API
       end
       params do
         use :with_custom_attributes
+        optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
       get ":id" do
         group = find_group!(params[:id])
 
         options = {
-          with: Entities::GroupDetail,
+          with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
           current_user: current_user
         }
 
@@ -191,6 +194,8 @@ module API
                           desc: 'Return only the ID, URL, name, and path of each project'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
 
         use :pagination
         use :with_custom_attributes

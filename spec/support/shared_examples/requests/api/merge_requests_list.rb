@@ -29,7 +29,7 @@ shared_examples 'merge requests list' do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(3)
+      expect(json_response.length).to eq(4)
       expect(json_response.last['title']).to eq(merge_request.title)
       expect(json_response.last).to have_key('web_url')
       expect(json_response.last['sha']).to eq(merge_request.diff_head_sha)
@@ -53,7 +53,7 @@ shared_examples 'merge requests list' do
       expect(response).to include_pagination_headers
       expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(3)
+      expect(json_response.length).to eq(4)
       expect(json_response.last['iid']).to eq(merge_request.iid)
       expect(json_response.last['title']).to eq(merge_request.title)
       expect(json_response.last).to have_key('web_url')
@@ -70,7 +70,7 @@ shared_examples 'merge requests list' do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
-      expect(json_response.length).to eq(3)
+      expect(json_response.length).to eq(4)
       expect(json_response.last['title']).to eq(merge_request.title)
     end
 
@@ -136,8 +136,9 @@ shared_examples 'merge requests list' do
     it 'returns an array of merge requests in given milestone' do
       get api(endpoint_path, user), milestone: '0.9'
 
-      expect(json_response.first['title']).to eq merge_request_closed.title
-      expect(json_response.first['id']).to eq merge_request_closed.id
+      closed_issues = json_response.select { |mr| mr['id'] == merge_request_closed.id }
+      expect(closed_issues.length).to eq(1)
+      expect(closed_issues.first['title']).to eq merge_request_closed.title
     end
 
     it 'returns an array of merge requests matching state in milestone' do
@@ -216,7 +217,7 @@ shared_examples 'merge requests list' do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         response_dates = json_response.map { |merge_request| merge_request['created_at'] }
         expect(response_dates).to eq(response_dates.sort)
       end
@@ -229,7 +230,7 @@ shared_examples 'merge requests list' do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         response_dates = json_response.map { |merge_request| merge_request['created_at'] }
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
@@ -242,7 +243,7 @@ shared_examples 'merge requests list' do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         response_dates = json_response.map { |merge_request| merge_request['updated_at'] }
         expect(response_dates).to eq(response_dates.sort.reverse)
       end
@@ -255,7 +256,7 @@ shared_examples 'merge requests list' do
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
+        expect(json_response.length).to eq(4)
         response_dates = json_response.map { |merge_request| merge_request['created_at'] }
         expect(response_dates).to eq(response_dates.sort)
       end
@@ -265,7 +266,7 @@ shared_examples 'merge requests list' do
       it 'returns merge requests with the given source branch' do
         get api(endpoint_path, user), source_branch: merge_request_closed.source_branch, state: 'all'
 
-        expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+        expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
       end
     end
 
@@ -273,7 +274,7 @@ shared_examples 'merge requests list' do
       it 'returns merge requests with the given target branch' do
         get api(endpoint_path, user), target_branch: merge_request_closed.target_branch, state: 'all'
 
-        expect_response_contain_exactly(merge_request_closed, merge_request_merged)
+        expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
       end
     end
   end

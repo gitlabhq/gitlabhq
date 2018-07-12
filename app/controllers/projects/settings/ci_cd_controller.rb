@@ -74,7 +74,7 @@ module Projects
           .ordered
           .page(params[:page]).per(20)
 
-        @shared_runners = ::Ci::Runner.shared.active
+        @shared_runners = ::Ci::Runner.instance_type.active
 
         @shared_runners_count = @shared_runners.count(:all)
 

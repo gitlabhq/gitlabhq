@@ -111,7 +111,7 @@ const DiffNoteAvatars = Vue.extend({
       });
     },
     addNoCommentClass() {
-      const notesCount = this.notesCount;
+      const { notesCount } = this;
 
       $(this.$el).closest('.js-avatar-container')
         .toggleClass('no-comment-btn', notesCount > 0)

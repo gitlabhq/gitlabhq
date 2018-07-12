@@ -147,6 +147,8 @@ Parameters:
 | `simple` | boolean | no | Return only the ID, URL, name, and path of each project |
 | `owned` | boolean | no | Limit by projects owned by the current user |
 | `starred` | boolean | no | Limit by projects starred by the current user |
+| `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
+| `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 Example response:
@@ -208,6 +210,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_projects` | boolean | no | Include details from projects that belong to the specified group (defaults to `true`). |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
@@ -356,6 +359,30 @@ Example response:
       ]
     }
   ]
+}
+```
+
+When adding the parameter `with_projects=false`, projects will not be returned.
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4?with_projects=false
+```
+
+Example response:
+
+```json
+{
+  "id": 4,
+  "name": "Twitter",
+  "path": "twitter",
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
+  "visibility": "public",
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/twitter",
+  "request_access_enabled": false,
+  "full_name": "Twitter",
+  "full_path": "twitter",
+  "parent_id": null
 }
 ```
 

@@ -233,7 +233,7 @@ $md-area-border: #ddd;
 /*
  * Code
  */
-$code_font_size: 12px;
+$code_font_size: 90%;
 $code_line_height: 1.6;
 
 /*
@@ -743,6 +743,7 @@ Pipeline Graph
 */
 $stage-hover-bg: $gray-darker;
 $ci-action-icon-size: 22px;
+$ci-action-icon-size-lg: 24px;
 $pipeline-dropdown-line-height: 20px;
 $pipeline-dropdown-status-icon-size: 18px;
 $ci-action-dropdown-button-size: 24px;

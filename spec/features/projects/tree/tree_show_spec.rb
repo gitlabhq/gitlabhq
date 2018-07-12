@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Projects tree' do
+describe 'Projects tree' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_tree_path(project, 'master')

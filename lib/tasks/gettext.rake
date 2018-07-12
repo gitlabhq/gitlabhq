@@ -19,6 +19,29 @@ namespace :gettext do
     Rake::Task['gettext:po_to_json'].invoke
   end
 
+  task :regenerate do
+    pot_file = 'locale/gitlab.pot'
+    # Remove all translated files, this speeds up finding
+    FileUtils.rm Dir['locale/**/gitlab.*']
+    # remove the `pot` file to ensure it's completely regenerated
+    FileUtils.rm_f pot_file
+
+    Rake::Task['gettext:find'].invoke
+
+    # leave only the required changes.
+    `git checkout -- locale/*/gitlab.po`
+
+    # Remove timestamps from the pot file
+    pot_content = File.read pot_file
+    pot_content.gsub!(/^"POT?\-(?:Creation|Revision)\-Date\:.*\n/, '')
+    File.write pot_file, pot_content
+
+    puts <<~MSG
+    All done. Please commit the changes to `locale/gitlab.pot`.
+
+    MSG
+  end
+
   desc 'Lint all po files in `locale/'
   task lint: :environment do
     require 'simple_po_parser'
@@ -50,13 +73,12 @@ namespace :gettext do
   end
 
   task :updated_check do
+    pot_file = 'locale/gitlab.pot'
     # Removing all pre-translated files speeds up `gettext:find` as the
     # files don't need to be merged.
     # Having `LC_MESSAGES/gitlab.mo files present also confuses the output.
     FileUtils.rm Dir['locale/**/gitlab.*']
-
-    # Make sure we start out with a clean pot.file
-    `git checkout -- locale/gitlab.pot`
+    FileUtils.rm_f pot_file
 
     # `gettext:find` writes touches to temp files to `stderr` which would cause
     # `static-analysis` to report failures. We can ignore these.
@@ -64,18 +86,18 @@ namespace :gettext do
       Rake::Task['gettext:find'].invoke
     end
 
-    pot_diff = `git diff -- locale/gitlab.pot`.strip
+    pot_diff = `git diff -- #{pot_file} | grep -E '^(\\+|-)msgid'`.strip
 
     # reset the locale folder for potential next tasks
     `git checkout -- locale`
 
     if pot_diff.present?
       raise <<~MSG
-        Newly translated strings found, please add them to `gitlab.pot` by running:
+        Newly translated strings found, please add them to `#{pot_file}` by running:
 
-          rm locale/**/gitlab.*; bin/rake gettext:find; git checkout -- locale/*/gitlab.po
+          bin/rake gettext:regenerate
 
-        Then commit and push the resulting changes to `locale/gitlab.pot`.
+        Then commit and push the resulting changes to `#{pot_file}`.
 
         The diff was:
 

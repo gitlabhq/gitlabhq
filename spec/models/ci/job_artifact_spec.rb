@@ -25,7 +25,7 @@ describe Ci::JobArtifact do
         end
 
         it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+          expect(ObjectStorage::BackgroundMoveWorker).not_to receive(:perform_async)
 
           subject
         end
@@ -163,7 +163,7 @@ describe Ci::JobArtifact do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        project.update_attributes(pending_delete: true)
+        project.update(pending_delete: true)
         project.destroy!
       end
     end

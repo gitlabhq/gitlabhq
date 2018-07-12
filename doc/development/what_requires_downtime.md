@@ -195,22 +195,22 @@ end
 
 And that's it, we're done!
 
-## Changing Column Types For Large Tables
+## Changing The Schema For Large Tables
 
-While `change_column_type_concurrently` can be used for changing the type of a
-column without downtime it doesn't work very well for large tables. Because all
-of the work happens in sequence the migration can take a very long time to
-complete, preventing a deployment from proceeding.
-`change_column_type_concurrently` can also produce a lot of pressure on the
-database due to it rapidly updating many rows in sequence.
+While `change_column_type_concurrently` and `rename_column_concurrently` can be
+used for changing the schema of a table without downtime, it doesn't work very
+well for large tables. Because all of the work happens in sequence the migration
+can take a very long time to complete, preventing a deployment from proceeding.
+They can also produce a lot of pressure on the database due to it rapidly
+updating many rows in sequence.
 
 To reduce database pressure you should instead use
-`change_column_type_using_background_migration` when migrating a column in a
-large table (e.g. `issues`). This method works similar to
-`change_column_type_concurrently` but uses background migration to spread the
-work / load over a longer time period, without slowing down deployments.
+`change_column_type_using_background_migration` or `rename_column_using_background_migration`
+when migrating a column in a large table (e.g. `issues`). These methods work
+similarly to the concurrent counterparts but uses background migration to spread
+the work / load over a longer time period, without slowing down deployments.
 
-Usage of this method is fairly simple:
+For example, to change the column type using a background migration:
 
 ```ruby
 class ExampleMigration < ActiveRecord::Migration
@@ -295,6 +295,15 @@ class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration
   end
 end
 ```
+
+The same applies to `rename_column_using_background_migration`:
+
+1. Create a migration using the helper, which will schedule background
+   migrations to spread the writes over a longer period of time.
+2. In the next monthly release, create a clean-up migration to steal from the
+   Sidekiq queues, migrate any missing rows, and cleanup the rename. This
+   migration should skip the steps after stealing from the Sidekiq queues if the
+   column has already been renamed.
 
 For more information, see [the documentation on cleaning up background
 migrations](background_migrations.md#cleaning-up).

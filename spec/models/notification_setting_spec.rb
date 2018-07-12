@@ -58,7 +58,7 @@ RSpec.describe NotificationSetting do
       1.upto(4) do |i|
         setting = create(:notification_setting, user: user)
 
-        setting.project.update_attributes(pending_delete: true) if i.even?
+        setting.project.update(pending_delete: true) if i.even?
       end
     end
 

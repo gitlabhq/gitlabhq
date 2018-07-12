@@ -44,15 +44,15 @@ project in a simple and automatic way:
 
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
-1. [Auto Code Quality](#auto-code-quality)
-1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto Dependency Scanning](#auto-dependency-scanning)
-1. [Auto License Management](#auto-license-management)
+1. [Auto Code Quality](#auto-code-quality) **[STARTER]**
+1. [Auto SAST (Static Application Security Testing)](#auto-sast) **[ULTIMATE]**
+1. [Auto Dependency Scanning](#auto-dependency-scanning) **[ULTIMATE]**
+1. [Auto License Management](#auto-license-management) **[ULTIMATE]**
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast) **[ULTIMATE]**
 1. [Auto Deploy](#auto-deploy)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing) **[PREMIUM]**
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -91,7 +91,7 @@ To make full use of Auto DevOps, you will need:
    for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
    that are assigned to specific projects.
 1. **Base domain** (needed for Auto Review Apps and Auto Deploy) - You will need
-   a domain configured with wildcard DNS which is gonna be used by all of your
+   a domain configured with wildcard DNS which is going to be used by all of your
    Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
 1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
    To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
@@ -297,7 +297,7 @@ out.
 
 In GitLab Starter, differences between the source and
 target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
 
 ### Auto SAST **[ULTIMATE]**
 
@@ -840,5 +840,5 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

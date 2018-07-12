@@ -6,6 +6,7 @@ import actions, {
   setEmptyStateSvgs,
   updateActivityBarView,
   updateTempFlagForEntry,
+  setErrorMessage,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
@@ -438,6 +439,19 @@ describe('Multi-file store actions', () => {
         true,
         null,
         [{ type: 'TOGGLE_FILE_FINDER', payload: true }],
+        [],
+        done,
+      );
+    });
+  });
+
+  describe('setErrorMessage', () => {
+    it('commis error messsage', done => {
+      testAction(
+        setErrorMessage,
+        'error',
+        null,
+        [{ type: types.SET_ERROR_MESSAGE, payload: 'error' }],
         [],
         done,
       );

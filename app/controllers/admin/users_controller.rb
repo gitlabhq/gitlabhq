@@ -163,7 +163,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.json { head :ok }
       else
         format.html { redirect_back_or_admin_user(alert: 'There was an error removing the e-mail.') }
-        format.json { render json: 'There was an error removing the e-mail.', status: 400 }
+        format.json { render json: 'There was an error removing the e-mail.', status: :bad_request }
       end
     end
   end
@@ -187,10 +187,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(user_params_ce)
+    params.require(:user).permit(allowed_user_params)
   end
 
-  def user_params_ce
+  def allowed_user_params
     [
       :access_level,
       :avatar,

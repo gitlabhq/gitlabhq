@@ -1,0 +1,5 @@
+---
+title: Don't show events from internal projects for anonymous users in public feed
+merge_request:
+author:
+type: security

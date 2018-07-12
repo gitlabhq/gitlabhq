@@ -293,6 +293,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- import_export_upload
 award_emoji:
 - awardable
 - user

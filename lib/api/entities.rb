@@ -532,6 +532,12 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :title)
+      end
+      expose :description_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :description)
+      end
       expose :target_branch, :source_branch
       expose :upvotes do |merge_request, options|
         if options[:issuable_metadata]
@@ -1010,7 +1016,7 @@ module API
       expose :description
       expose :ip_address
       expose :active
-      expose :is_shared
+      expose :instance_type?, as: :is_shared
       expose :name
       expose :online?, as: :online
       expose :status
@@ -1024,7 +1030,7 @@ module API
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
-      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects
@@ -1198,6 +1204,7 @@ module API
 
       class RunnerInfo < Grape::Entity
         expose :metadata_timeout, as: :timeout
+        expose :runner_session_url
       end
 
       class Step < Grape::Entity

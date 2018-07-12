@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UploadsController do
+  include WorkhorseHelpers
+
   let(:model) { create(:project, :public) }
   let(:params) do
     { namespace_id: model.namespace.to_param, project_id: model }
@@ -14,5 +16,11 @@ describe Projects::UploadsController do
 
       expect(response).to redirect_to(new_user_session_path)
     end
+  end
+
+  def post_authorize(verified: true)
+    request.headers.merge!(workhorse_internal_api_request_header) if verified
+
+    post :authorize, namespace_id: model.namespace, project_id: model.path, format: :json
   end
 end

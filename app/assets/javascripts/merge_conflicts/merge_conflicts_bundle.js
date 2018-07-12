@@ -12,7 +12,7 @@ import syntaxHighlight from '../syntax_highlight';
 export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const conflictsEl = document.querySelector('#conflicts');
-  const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
+  const { mergeConflictsStore } = gl.mergeConflicts;
   const mergeConflictsService = new MergeConflictsService({
     conflictsPath: conflictsEl.dataset.conflictsPath,
     resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath,

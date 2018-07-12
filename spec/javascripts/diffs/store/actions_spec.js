@@ -5,38 +5,22 @@ import {
   INLINE_DIFF_VIEW_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
 } from '~/diffs/constants';
-import store from '~/diffs/store';
 import * as actions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import axios from '~/lib/utils/axios_utils';
 import testAction from '../../helpers/vuex_action_helper';
 
 describe('DiffsStoreActions', () => {
-  describe('setEndpoint', () => {
-    it('should set given endpoint', done => {
+  describe('setBaseConfig', () => {
+    it('should set given endpoint and project path', done => {
       const endpoint = '/diffs/set/endpoint';
+      const projectPath = '/root/project';
 
       testAction(
-        actions.setEndpoint,
-        endpoint,
-        { endpoint: '' },
-        [{ type: types.SET_ENDPOINT, payload: endpoint }],
-        [],
-        done,
-      );
-    });
-  });
-
-  describe('setLoadingState', () => {
-    it('should set loading state', done => {
-      expect(store.state.diffs.isLoading).toEqual(true);
-      const loadingState = false;
-
-      testAction(
-        actions.setLoadingState,
-        loadingState,
-        {},
-        [{ type: types.SET_LOADING, payload: loadingState }],
+        actions.setBaseConfig,
+        { endpoint, projectPath },
+        { endpoint: '', projectPath: '' },
+        [{ type: types.SET_BASE_CONFIG, payload: { endpoint, projectPath } }],
         [],
         done,
       );
@@ -205,6 +189,50 @@ describe('DiffsStoreActions', () => {
         [],
         done,
       );
+    });
+  });
+
+  describe('toggleFileDiscussions', () => {
+    it('should dispatch collapseDiscussion when all discussions are expanded', () => {
+      const getters = {
+        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
+        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(true),
+        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+      };
+
+      const dispatch = jasmine.createSpy('dispatch');
+
+      actions.toggleFileDiscussions({ getters, dispatch });
+
+      expect(dispatch).toHaveBeenCalledWith('collapseDiscussion', { discussionId: 1 }, { root: true });
+    });
+
+    it('should dispatch expandDiscussion when all discussions are collapsed', () => {
+      const getters = {
+        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ id: 1 }]),
+        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(true),
+      };
+
+      const dispatch = jasmine.createSpy();
+
+      actions.toggleFileDiscussions({ getters, dispatch });
+
+      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
+    });
+
+    it('should dispatch expandDiscussion when some discussions are collapsed and others are expanded for the collapsed discussion', () => {
+      const getters = {
+        getDiffFileDiscussions: jasmine.createSpy().and.returnValue([{ expanded: false, id: 1 }]),
+        diffHasAllExpandedDiscussions: jasmine.createSpy().and.returnValue(false),
+        diffHasAllCollpasedDiscussions: jasmine.createSpy().and.returnValue(false),
+      };
+
+      const dispatch = jasmine.createSpy();
+
+      actions.toggleFileDiscussions({ getters, dispatch });
+
+      expect(dispatch).toHaveBeenCalledWith('expandDiscussion', { discussionId: 1 }, { root: true });
     });
   });
 });

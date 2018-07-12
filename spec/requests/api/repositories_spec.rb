@@ -8,7 +8,7 @@ describe API::Repositories do
   let(:user) { create(:user) }
   let(:guest) { create(:user).tap { |u| create(:project_member, :guest, user: u, project: project) } }
   let!(:project) { create(:project, :repository, creator: user) }
-  let!(:master) { create(:project_member, :master, user: user, project: project) }
+  let!(:maintainer) { create(:project_member, :maintainer, user: user, project: project) }
 
   describe "GET /projects/:id/repository/tree" do
     let(:route) { "/projects/#{project.id}/repository/tree" }
@@ -288,7 +288,32 @@ describe API::Repositories do
 
     shared_examples_for 'repository compare' do
       it "compares branches" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: false
+        }).and_call_original
         get api(route, current_user), from: 'master', to: 'feature'
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['commits']).to be_present
+        expect(json_response['diffs']).to be_present
+      end
+
+      it "compares branches with explicit merge-base mode" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: false
+        }).and_call_original
+        get api(route, current_user), from: 'master', to: 'feature', straight: false
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['commits']).to be_present
+        expect(json_response['diffs']).to be_present
+      end
+
+      it "compares branches with explicit straight mode" do
+        expect(::Gitlab::Git::Compare).to receive(:new).with(anything, anything, anything, {
+          straight: true
+        }).and_call_original
+        get api(route, current_user), from: 'master', to: 'feature', straight: true
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['commits']).to be_present

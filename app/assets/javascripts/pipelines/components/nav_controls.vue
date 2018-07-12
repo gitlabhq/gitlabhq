@@ -1,42 +1,42 @@
 <script>
-  import LoadingButton from '../../vue_shared/components/loading_button.vue';
+import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
-  export default {
-    name: 'PipelineNavControls',
-    components: {
-      LoadingButton,
+export default {
+  name: 'PipelineNavControls',
+  components: {
+    LoadingButton,
+  },
+  props: {
+    newPipelinePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    props: {
-      newPipelinePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
 
-      resetCachePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      ciLintPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      isResetCacheButtonLoading: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
+    resetCachePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-    methods: {
-      onClickResetCache() {
-        this.$emit('resetRunnersCache', this.resetCachePath);
-      },
+
+    ciLintPath: {
+      type: String,
+      required: false,
+      default: null,
     },
-  };
+
+    isResetCacheButtonLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    onClickResetCache() {
+      this.$emit('resetRunnersCache', this.resetCachePath);
+    },
+  },
+};
 </script>
 <template>
   <div class="nav-controls">

@@ -44,9 +44,9 @@ describe DeployKeyEntity do
     it { expect(entity.as_json).to eq(expected_result) }
   end
 
-  describe 'returns can_edit true if user is a master of project' do
+  describe 'returns can_edit true if user is a maintainer of project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it { expect(entity.as_json).to include(can_edit: true) }

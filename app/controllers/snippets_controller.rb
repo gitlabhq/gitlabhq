@@ -89,7 +89,7 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path, status: 302
+    redirect_to snippets_path, status: :found
   end
 
   protected

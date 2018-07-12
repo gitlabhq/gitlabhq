@@ -96,7 +96,7 @@
         this.enteredUsername = '';
       },
       onSecondaryAction() {
-        const form = this.$refs.form;
+        const { form } = this.$refs;
 
         form.action = this.blockUserUrl;
         this.$refs.method.value = 'put';

@@ -3,6 +3,7 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import { __ } from '~/locale';
 import createFlash from '~/flash';
+import eventHub from '../../notes/event_hub';
 import LoadingIcon from '../../vue_shared/components/loading_icon.vue';
 import CompareVersions from './compare_versions.vue';
 import ChangedFiles from './changed_files.vue';
@@ -23,6 +24,10 @@ export default {
   },
   props: {
     endpoint: {
+      type: String,
+      required: true,
+    },
+    projectPath: {
       type: String,
       required: true,
     },
@@ -58,7 +63,8 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapGetters(['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters(['isNotesFetched']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -90,22 +96,36 @@ export default {
       this.adjustView();
     },
     shouldShow() {
+      // When the shouldShow property changed to true, the route is rendered for the first time
+      // and if we have the isLoading as true this means we didn't fetch the data
+      if (this.isLoading) {
+        this.fetchData();
+      }
+
       this.adjustView();
     },
   },
   mounted() {
-    this.setEndpoint(this.endpoint);
-    this
-      .fetchDiffFiles()
-      .catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+    this.setBaseConfig({ endpoint: this.endpoint, projectPath: this.projectPath });
+
+    if (this.shouldShow) {
+      this.fetchData();
+    }
   },
   created() {
     this.adjustView();
   },
   methods: {
-    ...mapActions(['setEndpoint', 'fetchDiffFiles']),
+    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
+    fetchData() {
+      this.fetchDiffFiles().catch(() => {
+        createFlash(__('Something went wrong on our end. Please try again!'));
+      });
+
+      if (!this.isNotesFetched) {
+        eventHub.$emit('fetchNotesData');
+      }
+    },
     setActive(filePath) {
       this.activeFile = filePath;
     },
@@ -126,7 +146,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="shouldShow">
+  <div v-show="shouldShow">
     <div
       v-if="isLoading"
       class="loading"

@@ -26,6 +26,21 @@ describe Gitlab::Diff::File do
     end
   end
 
+  describe '#diff_lines_for_serializer' do
+    it 'includes bottom match line if not in the end' do
+      expect(diff_file.diff_lines_for_serializer.last.type).to eq('match')
+    end
+
+    context 'when deleted' do
+      let(:commit) { project.commit('d59c60028b053793cecfb4022de34602e1a9218e') }
+      let(:diff_file) { commit.diffs.diff_file_with_old_path('files/js/commit.js.coffee') }
+
+      it 'does not include bottom match line' do
+        expect(diff_file.diff_lines_for_serializer.last.type).not_to eq('match')
+      end
+    end
+  end
+
   describe '#mode_changed?' do
     it { expect(diff_file.mode_changed?).to be_falsey }
   end

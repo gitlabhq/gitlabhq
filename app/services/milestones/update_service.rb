@@ -11,7 +11,7 @@ module Milestones
       end
 
       if params.present?
-        milestone.update_attributes(params.except(:state_event))
+        milestone.update(params.except(:state_event))
       end
 
       milestone

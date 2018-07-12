@@ -175,6 +175,9 @@ export const setRightPane = ({ commit }, view) => {
 
 export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
 
+export const setErrorMessage = ({ commit }, errorMessage) =>
+  commit(types.SET_ERROR_MESSAGE, errorMessage);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';

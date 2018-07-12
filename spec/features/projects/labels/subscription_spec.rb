@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Labels subscription' do
+describe 'Labels subscription' do
   let(:user)     { create(:user) }
   let(:group)    { create(:group) }
   let(:project)  { create(:project, :public, namespace: group) }
@@ -13,7 +13,7 @@ feature 'Labels subscription' do
       sign_in user
     end
 
-    scenario 'users can subscribe/unsubscribe to labels', :js do
+    it 'users can subscribe/unsubscribe to labels', :js do
       visit project_labels_path(project)
 
       expect(page).to have_content('bug')

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User RSS' do
+describe 'User RSS' do
   let(:user) { create(:user) }
   let(:path) { user_path(create(:user)) }
 

@@ -31,9 +31,6 @@ export default {
     };
   },
   computed: {
-    isDiscussionsExpanded() {
-      return true; // TODO: @fatihacet - Fix this.
-    },
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -47,6 +44,9 @@ export default {
         false,
       );
     },
+    showExpandMessage() {
+      return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
+    },
   },
   mounted() {
     document.addEventListener('scroll', this.handleScroll);
@@ -55,7 +55,7 @@ export default {
     document.removeEventListener('scroll', this.handleScroll);
   },
   methods: {
-    ...mapActions(['loadCollapsedDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff']),
     handleToggle() {
       const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
 
@@ -128,7 +128,6 @@ export default {
       :diff-file="file"
       :collapsible="true"
       :expanded="!isCollapsed"
-      :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
       class="js-file-title file-title"
       @toggleFile="handleToggle"
@@ -159,7 +158,7 @@ export default {
     </div>
 
     <diff-content
-      v-show="!isCollapsed"
+      v-if="!isCollapsed"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
@@ -168,7 +167,7 @@ export default {
       class="diff-content loading"
     />
     <div
-      v-show="isCollapsed && !isLoadingCollapsedDiff && !file.tooLarge"
+      v-if="showExpandMessage"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}

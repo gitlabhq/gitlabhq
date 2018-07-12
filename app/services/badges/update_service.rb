@@ -3,7 +3,7 @@ module Badges
     # returns the updated badge
     def execute(badge)
       if params.present?
-        badge.update_attributes(params)
+        badge.update(params)
       end
 
       badge

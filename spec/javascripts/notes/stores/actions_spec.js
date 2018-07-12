@@ -128,6 +128,19 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('collapseDiscussion', () => {
+    it('should commit collapse discussion', done => {
+      testAction(
+        actions.collapseDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'COLLAPSE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('async methods', () => {
     const interceptor = (request, next) => {
       next(
@@ -289,6 +302,19 @@ describe('Actions Notes Store', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('setNotesFetchedState', () => {
+    it('should set notes fetched state', done => {
+      testAction(
+        actions.setNotesFetchedState,
+        true,
+        {},
+        [{ type: 'SET_NOTES_FETCHED_STATE', payload: true }],
+        [],
+        done,
+      );
     });
   });
 });

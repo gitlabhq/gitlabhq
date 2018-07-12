@@ -8,7 +8,7 @@
         .sidebar-context-title
           = @project.name
     %ul.sidebar-top-level-items
-      = nav_link(path: ['projects#show', 'projects#activity', 'cycle_analytics#show'], html_options: { class: 'home' }) do
+      = nav_link(path: sidebar_projects_paths, html_options: { class: 'home' }) do
         = link_to project_path(@project), class: 'shortcuts-project' do
           .nav-icon-container
             = sprite_icon('project')
@@ -29,12 +29,12 @@
             = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
               %span= _('Activity')
 
+          = render_if_exists 'projects/sidebar/security_dashboard'
+
           - if can?(current_user, :read_cycle_analytics, @project)
             = nav_link(path: 'cycle_analytics#show') do
               = link_to project_cycle_analytics_path(@project), title: _('Cycle Analytics'), class: 'shortcuts-project-cycle-analytics' do
                 %span= _('Cycle Analytics')
-
-      = render_if_exists 'projects/sidebar/security_dashboard'
 
       - if project_nav_tab? :files
         = nav_link(controller: sidebar_repository_paths) do
@@ -122,7 +122,7 @@
             = render_if_exists 'projects/sidebar/issues_service_desk'
 
             = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones' do
+              = link_to project_milestones_path(@project), title: 'Milestones', class: 'qa-milestones-link' do
                 %span
                   = _('Milestones')
       - if project_nav_tab? :external_issue_tracker
@@ -196,7 +196,7 @@
 
       - if project_nav_tab? :operations
         = nav_link(controller: [:environments, :clusters, :user, :gcp]) do
-          = link_to project_environments_path(@project), class: 'shortcuts-operations' do
+          = link_to metrics_project_environments_path(@project), class: 'shortcuts-operations' do
             .nav-icon-container
               = sprite_icon('cloud-gear')
             %span.nav-item-name
@@ -204,14 +204,19 @@
 
           %ul.sidebar-sub-level-items
             = nav_link(controller: [:environments, :clusters, :user, :gcp], html_options: { class: "fly-out-top-item" } ) do
-              = link_to project_environments_path(@project) do
+              = link_to metrics_project_environments_path(@project) do
                 %strong.fly-out-top-item-name
                   =  _('Operations')
             %li.divider.fly-out-top-item
 
             - if project_nav_tab? :environments
-              = nav_link(controller: :environments) do
-                = link_to project_environments_path(@project), title: 'Environments', class: 'shortcuts-environments' do
+              = nav_link(controller: :environments, action: [:metrics, :metrics_redirect]) do
+                = link_to metrics_project_environments_path(@project), title: _('Metrics'), class: 'shortcuts-metrics' do
+                  %span
+                    = _('Metrics')
+
+              = nav_link(controller: :environments, action: [:index, :folder, :show, :new, :edit, :create, :update, :stop, :terminal]) do
+                = link_to project_environments_path(@project), title: _('Environments'), class: 'shortcuts-environments' do
                   %span
                     = _('Environments')
 

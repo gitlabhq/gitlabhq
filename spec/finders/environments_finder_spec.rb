@@ -7,7 +7,7 @@ describe EnvironmentsFinder do
     let(:environment) { create(:environment, project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'tagged deployment' do

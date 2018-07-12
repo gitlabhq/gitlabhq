@@ -58,7 +58,7 @@ module Gitlab
       if raw_credentials.present?
         url.sub!("#{raw_credentials}@", '')
 
-        user, password = raw_credentials.split(':')
+        user, _, password = raw_credentials.partition(':')
         @credentials ||= { user: user.presence, password: password.presence }
       end
 

@@ -1,6 +1,10 @@
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
+      - if can?(current_user, :create_build_terminal, @build)
+        .block
+          = link_to terminal_project_job_path(@project, @build), class: 'terminal-button pull-right btn visible-md-block visible-lg-block', title: 'Terminal' do
+            Terminal
 
       #js-details-block-vue{ data: { can_user_retry: can?(current_user, :update_build, @build) && @build.retryable? } }
 
@@ -14,8 +18,8 @@
               #{time_ago_with_tooltip(@build.artifacts_expire_at)}
           - elsif @build.has_expiring_artifacts?
             %p.build-detail-row
-              The artifacts will be removed in
-              %span= time_ago_with_tooltip @build.artifacts_expire_at
+              The artifacts will be removed
+              #{time_ago_with_tooltip(@build.artifacts_expire_at)}
 
           - if @build.artifacts?
             .btn-group.d-flex{ role: :group }

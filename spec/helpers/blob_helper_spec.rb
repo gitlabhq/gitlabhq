@@ -65,9 +65,9 @@ describe BlobHelper do
 
   describe "#sanitize_svg_data" do
     let(:input_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'unsanitized.svg') }
-    let(:data) { open(input_svg_path).read }
+    let(:data) { File.read(input_svg_path) }
     let(:expected_svg_path) { File.join(Rails.root, 'spec', 'fixtures', 'sanitized.svg') }
-    let(:expected) { open(expected_svg_path).read }
+    let(:expected) { File.read(expected_svg_path) }
 
     it 'retains essential elements' do
       expect(sanitize_svg_data(data)).to eq(expected)

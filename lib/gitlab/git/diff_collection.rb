@@ -42,12 +42,10 @@ module Gitlab
         return if @overflow
         return if @iterator.nil?
 
-        Gitlab::GitalyClient.migrate(:commit_raw_diffs) do |is_enabled|
-          if is_enabled && @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
-            each_gitaly_patch(&block)
-          else
-            each_rugged_patch(&block)
-          end
+        if @iterator.is_a?(Gitlab::GitalyClient::DiffStitcher)
+          each_gitaly_patch(&block)
+        else
+          each_serialized_patch(&block)
         end
 
         @populated = true
@@ -118,7 +116,7 @@ module Gitlab
         end
       end
 
-      def each_rugged_patch
+      def each_serialized_patch
         i = @array.length
 
         @iterator.each do |raw|

@@ -16,7 +16,7 @@ describe('Pipelines table in Commits and Merge requests', function () {
   beforeEach(() => {
     mock = new MockAdapter(axios);
 
-    const pipelines = getJSONFixture(jsonFixtureName).pipelines;
+    const { pipelines } = getJSONFixture(jsonFixtureName);
 
     PipelinesTable = Vue.extend(pipelinesTable);
     pipeline = pipelines.find(p => p.user !== null && p.commit !== null);

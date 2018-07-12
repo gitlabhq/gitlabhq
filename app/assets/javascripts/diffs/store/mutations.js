@@ -5,8 +5,9 @@ import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } fro
 import * as types from './mutation_types';
 
 export default {
-  [types.SET_ENDPOINT](state, endpoint) {
-    Object.assign(state, { endpoint });
+  [types.SET_BASE_CONFIG](state, options) {
+    const { endpoint, projectPath } = options;
+    Object.assign(state, { endpoint, projectPath });
   },
 
   [types.SET_LOADING](state, isLoading) {
@@ -16,12 +17,6 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     Object.assign(state, {
       ...convertObjectPropsToCamelCase(data, { deep: true }),
-    });
-  },
-
-  [types.SET_DIFF_FILES](state, diffFiles) {
-    Object.assign(state, {
-      diffFiles: convertObjectPropsToCamelCase(diffFiles, { deep: true }),
     });
   },
 
@@ -71,15 +66,10 @@ export default {
   },
 
   [types.EXPAND_ALL_FILES](state) {
-    const diffFiles = [];
-
-    state.diffFiles.forEach((file) => {
-      diffFiles.push({
-        ...file,
-        collapsed: false,
-      });
-    });
-
-    Object.assign(state, { diffFiles });
+    // eslint-disable-next-line no-param-reassign
+    state.diffFiles = state.diffFiles.map(file => ({
+      ...file,
+      collapsed: false,
+    }));
   },
 };

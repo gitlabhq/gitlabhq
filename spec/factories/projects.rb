@@ -47,7 +47,7 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects
@@ -103,6 +103,22 @@ FactoryBot.define do
     end
 
     trait :with_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { false }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { false }
+      end
+
+      after(:create) do |project, _evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
+    end
+
+    trait :with_object_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { true }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { true }
+      end
+
       after(:create) do |project, evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end

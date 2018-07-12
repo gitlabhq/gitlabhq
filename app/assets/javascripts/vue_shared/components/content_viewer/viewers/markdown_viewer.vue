@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import $ from 'jquery';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 
-const CancelToken = axios.CancelToken;
+const { CancelToken } = axios;
 let axiosSource;
 
 export default {

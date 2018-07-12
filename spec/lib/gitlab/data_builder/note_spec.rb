@@ -52,7 +52,7 @@ describe Gitlab::DataBuilder::Note do
       expect(data[:issue].except('updated_at'))
         .to eq(issue.reload.hook_attrs.except('updated_at'))
       expect(data[:issue]['updated_at'])
-        .to be > issue.hook_attrs['updated_at']
+        .to be >= issue.hook_attrs['updated_at']
     end
 
     context 'with confidential issue' do
@@ -84,7 +84,7 @@ describe Gitlab::DataBuilder::Note do
       expect(data[:merge_request].except('updated_at'))
         .to eq(merge_request.reload.hook_attrs.except('updated_at'))
       expect(data[:merge_request]['updated_at'])
-        .to be > merge_request.hook_attrs['updated_at']
+        .to be >= merge_request.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'
@@ -107,7 +107,7 @@ describe Gitlab::DataBuilder::Note do
       expect(data[:merge_request].except('updated_at'))
         .to eq(merge_request.reload.hook_attrs.except('updated_at'))
       expect(data[:merge_request]['updated_at'])
-        .to be > merge_request.hook_attrs['updated_at']
+        .to be >= merge_request.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'
@@ -130,7 +130,7 @@ describe Gitlab::DataBuilder::Note do
       expect(data[:snippet].except('updated_at'))
         .to eq(snippet.reload.hook_attrs.except('updated_at'))
       expect(data[:snippet]['updated_at'])
-        .to be > snippet.hook_attrs['updated_at']
+        .to be >= snippet.hook_attrs['updated_at']
     end
 
     include_examples 'project hook data'

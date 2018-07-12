@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard > User sorts todos' do
+describe 'Dashboard > User sorts todos' do
   let(:user)    { create(:user) }
   let(:project) { create(:project) }
 

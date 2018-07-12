@@ -13,7 +13,7 @@ describe API::Branches do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "GET /projects/:id/repository/branches" do
@@ -75,7 +75,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository branches'
@@ -155,6 +155,12 @@ describe API::Branches do
       end
 
       it_behaves_like 'repository branch'
+
+      it 'returns that the current user cannot push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(false)
+      end
     end
 
     context 'when unauthenticated', 'and project is private' do
@@ -164,10 +170,16 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository branch'
+
+      it 'returns that the current user can push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(true)
+      end
 
       context 'when branch contains a dot' do
         let(:branch_name) { branch_with_dot.name }
@@ -199,6 +211,23 @@ describe API::Branches do
 
           it_behaves_like 'repository branch'
         end
+      end
+    end
+
+    context 'when authenticated', 'as a developer and branch is protected' do
+      let(:current_user) { create(:user) }
+      let!(:protected_branch) { create(:protected_branch, project: project, name: branch_name) }
+
+      before do
+        project.add_developer(current_user)
+      end
+
+      it_behaves_like 'repository branch'
+
+      it 'returns that the current user cannot push' do
+        get api(route, current_user)
+
+        expect(json_response['can_push']).to eq(false)
       end
     end
 
@@ -295,7 +324,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -352,8 +381,8 @@ describe API::Branches do
             expect(json_response['protected']).to eq(true)
             expect(json_response['developers_can_push']).to eq(false)
             expect(json_response['developers_can_merge']).to eq(false)
-            expect(protected_branch.reload.push_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
-            expect(protected_branch.reload.merge_access_levels.first.access_level).to eq(Gitlab::Access::MASTER)
+            expect(protected_branch.reload.push_access_levels.first.access_level).to eq(Gitlab::Access::MAINTAINER)
+            expect(protected_branch.reload.merge_access_levels.first.access_level).to eq(Gitlab::Access::MAINTAINER)
           end
         end
 
@@ -429,7 +458,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -505,7 +534,7 @@ describe API::Branches do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do

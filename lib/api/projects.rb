@@ -260,7 +260,8 @@ module API
             :snippets_enabled,
             :tag_list,
             :visibility,
-            :wiki_enabled
+            :wiki_enabled,
+            :avatar
           ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
@@ -457,6 +458,23 @@ module API
           ::Projects::HousekeepingService.new(user_project).execute
         rescue ::Projects::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
+        end
+      end
+
+      desc 'Transfer a project to a new namespace'
+      params do
+        requires :namespace, type: String, desc: 'The ID or path of the new namespace'
+      end
+      put ":id/transfer" do
+        authorize! :change_namespace, user_project
+
+        namespace = find_namespace!(params[:namespace])
+        result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)
+
+        if result
+          present user_project, with: Entities::Project
+        else
+          render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
         end
       end
     end

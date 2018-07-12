@@ -30,7 +30,7 @@ In Google's side:
 
         ```
         https://gitlab.example.com/users/auth/google_oauth2/callback
-        https://gitlab.exampl.com/-/google_api/auth/callback
+        https://gitlab.example.com/-/google_api/auth/callback
         ```
 
 1. You should now be able to see a Client ID and Client secret. Note them down
@@ -77,7 +77,7 @@ On your GitLab server:
 
     For installations from source:
 
-    ```
+    ```yaml
     - { name: 'google_oauth2', app_id: 'YOUR_APP_ID',
       app_secret: 'YOUR_APP_SECRET',
       args: { access_type: 'offline', approval_prompt: '' } }

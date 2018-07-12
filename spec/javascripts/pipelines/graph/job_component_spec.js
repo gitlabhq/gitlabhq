@@ -135,4 +135,34 @@ describe('pipeline graph job component', () => {
       expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
     });
   });
+
+  describe('tooltip placement', () => {
+    const tooltipBoundary = 'a[data-boundary="viewport"]';
+
+    it('does not set tooltip boundary by default', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+    });
+
+    it('sets tooltip boundary to viewport for small dropdowns', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+        dropdownLength: 1,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).not.toBeNull();
+    });
+
+    it('does not set tooltip boundary for large lists', () => {
+      component = mountComponent(JobComponent, {
+        job: mockJob,
+        dropdownLength: 7,
+      });
+
+      expect(component.$el.querySelector(tooltipBoundary)).toBeNull();
+    });
+  });
 });

@@ -45,7 +45,7 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     it 'adds a metric containing garbage collection time statistics' do
       expect(GC::Profiler).to receive(:total_time).and_return(0.24)
 
-      expect(sampler.metrics[:total_time]).to receive(:set).with({}, 240)
+      expect(sampler.metrics[:total_time]).to receive(:increment).with({}, 0.24)
 
       sampler.sample
     end
