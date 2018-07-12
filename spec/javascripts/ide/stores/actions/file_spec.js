@@ -601,10 +601,7 @@ describe('IDE store file actions', () => {
         actions.unstageChange,
         'path',
         store.state,
-        [
-          { type: types.UNSTAGE_CHANGE, payload: 'path' },
-          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
-        ],
+        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
         [],
         done,
       );
