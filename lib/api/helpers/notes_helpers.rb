@@ -97,6 +97,8 @@ module API
             current_user.admin? || parent.owned_by?(current_user)
         end
 
+        opts[:updated_at] = opts[:created_at] if opts[:created_at]
+
         project = parent if parent.is_a?(Project)
         ::Notes::CreateService.new(project, current_user, opts).execute
       end

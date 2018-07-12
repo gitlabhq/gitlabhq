@@ -259,6 +259,24 @@ verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
 
+## Activate verbose logging for daemon
+
+Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Omnibus GitLab 11.1.
+
+Follow the steps below to configure verbose logging of GitLab Pages daemon.
+
+1. By default the daemon only logs with `INFO` level.
+
+   If you wish to make it log events with level `DEBUG` you must configure this in
+   `/etc/gitlab/gitlab.rb`:
+
+     ```shell
+     gitlab_pages['log_verbose'] = true
+     ```
+
+1. [Reconfigure GitLab][reconfigure]
+
 ## Change storage path
 
 Follow the steps below to change the default path where GitLab Pages' contents

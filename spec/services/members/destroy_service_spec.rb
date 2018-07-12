@@ -114,7 +114,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given member' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 
@@ -170,7 +170,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given access requester' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 
@@ -210,7 +210,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given invited user' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 

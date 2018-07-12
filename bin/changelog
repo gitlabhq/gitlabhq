@@ -23,6 +23,8 @@ module ChangelogHelpers
   Abort = Class.new(StandardError)
   Done = Class.new(StandardError)
 
+  MAX_FILENAME_LENGTH = 140 # ecryptfs has a limit of 140 characters
+
   def capture_stdout(cmd)
     output = IO.popen(cmd, &:read)
     fail_with "command failed: #{cmd.join(' ')}" unless $?.success?
@@ -142,7 +144,9 @@ class ChangelogEntry
 
   def initialize(options)
     @options = options
+  end
 
+  def execute
     assert_feature_branch!
     assert_title!
     assert_new_file!
@@ -221,10 +225,12 @@ class ChangelogEntry
   end
 
   def file_path
-    File.join(
+    base_path = File.join(
       unreleased_path,
-      branch_name.gsub(/[^\w-]/, '-') << '.yml'
-    )
+      branch_name.gsub(/[^\w-]/, '-'))
+
+    # Add padding for .yml extension
+    base_path[0..MAX_FILENAME_LENGTH - 5] + '.yml'
   end
 
   def unreleased_path
@@ -250,7 +256,7 @@ end
 if $0 == __FILE__
   begin
     options = ChangelogOptionParser.parse(ARGV)
-    ChangelogEntry.new(options)
+    ChangelogEntry.new(options).execute
   rescue ChangelogHelpers::Abort => ex
     $stderr.puts ex.message
     exit 1

@@ -312,7 +312,7 @@ describe 'Git HTTP requests' do
               let(:project) { fork_project(canonical_project, nil, repository: true) }
 
               before do
-                canonical_project.add_master(user)
+                canonical_project.add_maintainer(user)
                 create(:merge_request,
                        source_project: project,
                        target_project:  canonical_project,
@@ -398,13 +398,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               context "when the user is blocked" do
                 it "rejects pulls with 401 Unauthorized" do
                   user.block
-                  project.add_master(user)
+                  project.add_maintainer(user)
 
                   download(path, env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -467,7 +467,7 @@ describe 'Git HTTP requests' do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_master(user)
+                  project.add_maintainer(user)
                 end
 
                 context 'when username and password are provided' do
@@ -827,7 +827,7 @@ describe 'Git HTTP requests' do
 
         context 'and the user is on the team' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it "responds with status 200" do
@@ -850,7 +850,7 @@ describe 'Git HTTP requests' do
     let(:env) { { user: user.username, password: user.password } }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       enforce_terms
     end
 

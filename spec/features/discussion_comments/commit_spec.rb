@@ -8,7 +8,7 @@ describe 'Discussion Comments Commit', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_commit_path(project, sample_commit.id)

@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-09 08:28+0200\n"
-"PO-Revision-Date: 2018-07-09 08:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -128,7 +126,7 @@ msgstr ""
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
-msgid "(checkout the %{link} for information on how to install it)."
+msgid "(check out the %{link} for information on how to install it)."
 msgstr ""
 
 msgid "+ %{moreCount} more"
@@ -465,6 +463,9 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "Any"
+msgstr ""
+
 msgid "Appearance"
 msgstr ""
 
@@ -685,6 +686,9 @@ msgid "Begin with the selected commit"
 msgstr ""
 
 msgid "Below are examples of regex for existing tools:"
+msgstr ""
+
+msgid "Below you will find all the groups that are public."
 msgstr ""
 
 msgid "Boards"
@@ -975,6 +979,9 @@ msgid "Choose between <code>clone</code> or <code>fetch</code> to get the recent
 msgstr ""
 
 msgid "Choose file..."
+msgstr ""
+
+msgid "Choose the top-level group for your repository imports."
 msgstr ""
 
 msgid "Choose which repositories you want to import."
@@ -1644,6 +1651,9 @@ msgstr ""
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
+msgid "Control the display of third party offers."
+msgstr ""
+
 msgid "Copy URL to clipboard"
 msgstr ""
 
@@ -1717,6 +1727,9 @@ msgid "Create new directory"
 msgstr ""
 
 msgid "Create new file"
+msgstr ""
+
+msgid "Create new file or directory"
 msgstr ""
 
 msgid "Create new label"
@@ -1976,6 +1989,12 @@ msgstr ""
 msgid "Discard draft"
 msgstr ""
 
+msgid "Discover projects, groups and snippets. Share your projects with others"
+msgstr ""
+
+msgid "Dismiss"
+msgstr ""
+
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
@@ -2099,7 +2118,16 @@ msgstr ""
 msgid "Environments|An error occurred while making the request."
 msgstr ""
 
+msgid "Environments|An error occurred while stopping the environment, please try again"
+msgstr ""
+
+msgid "Environments|Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Environments|Commit"
+msgstr ""
+
+msgid "Environments|Deploy to..."
 msgstr ""
 
 msgid "Environments|Deployment"
@@ -2114,25 +2142,37 @@ msgstr ""
 msgid "Environments|Job"
 msgstr ""
 
+msgid "Environments|Learn more about stopping environments"
+msgstr ""
+
 msgid "Environments|New environment"
 msgstr ""
 
 msgid "Environments|No deployments yet"
 msgstr ""
 
-msgid "Environments|Open"
+msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
 msgstr ""
 
-msgid "Environments|Re-deploy"
+msgid "Environments|Open live environment"
+msgstr ""
+
+msgid "Environments|Re-deploy to environment"
 msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr ""
 
-msgid "Environments|Rollback"
+msgid "Environments|Rollback environment"
 msgstr ""
 
 msgid "Environments|Show all"
+msgstr ""
+
+msgid "Environments|Stop"
+msgstr ""
+
+msgid "Environments|Stop environment"
 msgstr ""
 
 msgid "Environments|Updated"
@@ -2223,6 +2263,12 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Explore GitLab"
+msgstr ""
+
+msgid "Explore Groups"
 msgstr ""
 
 msgid "Explore groups"
@@ -2404,6 +2450,9 @@ msgstr ""
 msgid "Graph"
 msgstr ""
 
+msgid "Group"
+msgstr ""
+
 msgid "Group CI/CD settings"
 msgstr ""
 
@@ -2438,6 +2487,9 @@ msgid "GroupSettings|cannot be disabled when the parent group \"Share with group
 msgstr ""
 
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
+msgstr ""
+
+msgid "Groups"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
@@ -2602,6 +2654,9 @@ msgid "Import all repositories"
 msgstr ""
 
 msgid "Import in progress"
+msgstr ""
+
+msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import repositories from GitHub"
@@ -2813,6 +2868,9 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+msgid "List available repositories"
+msgstr ""
+
 msgid "List your GitHub repositories"
 msgstr ""
 
@@ -2850,6 +2908,12 @@ msgid "Manage labels"
 msgstr ""
 
 msgid "Manage project labels"
+msgstr ""
+
+msgid "Manifest"
+msgstr ""
+
+msgid "Manifest file import"
 msgstr ""
 
 msgid "Mar"
@@ -3002,6 +3066,9 @@ msgstr ""
 msgid "More information is available|here"
 msgstr ""
 
+msgid "Most stars"
+msgstr ""
+
 msgid "Move"
 msgstr ""
 
@@ -3128,6 +3195,9 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No public groups"
 msgstr ""
 
 msgid "No repository"
@@ -3799,9 +3869,6 @@ msgstr ""
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
-msgid "Re-deploy"
-msgstr ""
-
 msgid "Read more"
 msgstr ""
 
@@ -3871,6 +3938,9 @@ msgstr ""
 msgid "Repository Settings"
 msgstr ""
 
+msgid "Repository URL"
+msgstr ""
+
 msgid "Repository maintenance"
 msgstr ""
 
@@ -3934,9 +4004,6 @@ msgid "Reviewing"
 msgstr ""
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
-msgstr ""
-
-msgid "Rollback"
 msgstr ""
 
 msgid "Runner token"
@@ -4600,6 +4667,9 @@ msgstr ""
 msgid "They can be managed using the %{link}."
 msgstr ""
 
+msgid "Third party offers"
+msgstr ""
+
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
@@ -4916,6 +4986,9 @@ msgstr ""
 msgid "Track time with quick actions"
 msgstr ""
 
+msgid "Trending"
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -5054,6 +5127,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "Visibility and access controls"
+msgstr ""
+
+msgid "Visibility:"
 msgstr ""
 
 msgid "VisibilityLevel|Internal"
@@ -5258,6 +5334,9 @@ msgid "You can also star a label to make it a priority label."
 msgstr ""
 
 msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
+msgstr ""
+
+msgid "You can easily contribute to them by requesting to join these groups."
 msgstr ""
 
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"

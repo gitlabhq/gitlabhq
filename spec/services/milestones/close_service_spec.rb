@@ -6,7 +6,7 @@ describe Milestones::CloseService do
   let(:milestone) { create(:milestone, title: "Milestone v1.2", project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do

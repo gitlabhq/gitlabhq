@@ -13,7 +13,7 @@ describe 'Dropdown hint', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     create(:issue, project: project)
   end
 

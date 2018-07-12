@@ -12,7 +12,7 @@ describe API::Commits do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/repository/commits' do
@@ -55,7 +55,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'project commits'
@@ -667,7 +667,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref commit'
@@ -785,7 +785,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref diff'
@@ -884,7 +884,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref comments'

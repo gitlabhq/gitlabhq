@@ -4,7 +4,7 @@ describe 'Git LFS File Locking API' do
   include WorkhorseHelpers
 
   let(:project)   { create(:project) }
-  let(:master)    { create(:user) }
+  let(:maintainer) { create(:user) }
   let(:developer) { create(:user) }
   let(:guest)     { create(:user) }
   let(:path)      { 'README.md' }
@@ -29,7 +29,7 @@ describe 'Git LFS File Locking API' do
   before do
     allow(Gitlab.config.lfs).to receive(:enabled).and_return(true)
 
-    project.add_developer(master)
+    project.add_developer(maintainer)
     project.add_developer(developer)
     project.add_guest(guest)
   end
@@ -99,7 +99,7 @@ describe 'Git LFS File Locking API' do
     include_examples 'unauthorized request'
 
     it 'returns the list of locked files grouped by owner' do
-      lock_file('README.md', master)
+      lock_file('README.md', maintainer)
       lock_file('README', developer)
 
       post_lfs_json url, nil, headers

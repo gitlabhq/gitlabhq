@@ -8,7 +8,7 @@ describe 'issuable templates', :js do
   let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
   end
 

@@ -182,10 +182,10 @@ describe 'Branches' do
     end
   end
 
-  context 'logged in as master' do
+  context 'logged in as maintainer' do
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     describe 'Initial branches page' do

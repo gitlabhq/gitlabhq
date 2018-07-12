@@ -58,7 +58,7 @@ module API
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
       end
       put ':id' do
         runner = get_runner(params.delete(:id))

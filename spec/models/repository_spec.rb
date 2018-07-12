@@ -151,7 +151,9 @@ describe Repository do
         it { is_expected.to eq(['v1.1.0', 'v1.0.0', annotated_tag_name]) }
 
         after do
-          repository.rugged.tags.delete(annotated_tag_name)
+          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+            repository.rugged.tags.delete(annotated_tag_name)
+          end
         end
       end
     end
@@ -431,6 +433,18 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'non merged branch' do
+      subject { repository.merged_to_root_ref?('fix') }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'non existent branch' do
+      subject { repository.merged_to_root_ref?('non_existent_branch') }
+
+      it { is_expected.to be_nil }
+    end
   end
 
   describe '#can_be_merged?' do
@@ -452,16 +466,10 @@ describe Repository do
       it { is_expected.to be_falsey }
     end
 
-    context 'non merged branch' do
-      subject { repository.merged_to_root_ref?('fix') }
+    context 'submodule changes that confuse rugged' do
+      subject { repository.can_be_merged?('update-gitlab-shell-v-6-0-1', 'update-gitlab-shell-v-6-0-3') }
 
       it { is_expected.to be_falsey }
-    end
-
-    context 'non existent branch' do
-      subject { repository.merged_to_root_ref?('non_existent_branch') }
-
-      it { is_expected.to be_nil }
     end
   end
 
@@ -2225,8 +2233,11 @@ describe Repository do
       create_remote_branch('joe', 'remote_branch', masterrev)
       repository.add_branch(user, 'local_branch', masterrev.id)
 
-      expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
-      expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
+      # TODO: move this test to gitaly https://gitlab.com/gitlab-org/gitaly/issues/1243
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
+        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
+      end
     end
   end
 

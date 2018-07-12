@@ -23,7 +23,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_valid
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to include(user)
+      expect(project.team.maintainers).to include(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end
@@ -47,7 +47,7 @@ describe Projects::CreateService, '#execute' do
 
       expect(project).to be_persisted
       expect(project.owner).to eq(user)
-      expect(project.team.masters).to contain_exactly(user)
+      expect(project.team.maintainers).to contain_exactly(user)
       expect(project.namespace).to eq(user.namespace)
     end
   end

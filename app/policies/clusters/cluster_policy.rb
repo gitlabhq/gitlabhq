@@ -4,7 +4,7 @@ module Clusters
 
     delegate { cluster.project }
 
-    rule { can?(:master_access) }.policy do
+    rule { can?(:maintainer_access) }.policy do
       enable :update_cluster
       enable :admin_cluster
     end
