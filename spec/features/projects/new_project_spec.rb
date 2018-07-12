@@ -25,6 +25,22 @@ describe 'New project' do
     expect(page).to have_link('GitLab export')
   end
 
+  describe 'manifest import option' do
+    before do
+      visit new_project_path
+
+      find('#import-project-tab').click
+    end
+
+    context 'when using postgres', :postgresql do
+      it { expect(page).to have_link('Manifest file') }
+    end
+
+    context 'when using mysql', :mysql do
+      it { expect(page).not_to have_link('Manifest file') }
+    end
+  end
+
   context 'Visibility level selector', :js do
     Gitlab::VisibilityLevel.options.each do |key, level|
       it "sets selector to #{key}" do
@@ -199,6 +215,17 @@ describe 'New project' do
       it 'shows import instructions' do
         expect(page).to have_content('Import projects from Google Code')
         expect(current_path).to eq new_import_google_code_path
+      end
+    end
+
+    context 'from manifest file', :postgresql do
+      before do
+        first('.import_manifest').click
+      end
+
+      it 'shows import instructions' do
+        expect(page).to have_content('Manifest file import')
+        expect(current_path).to eq new_import_manifest_path
       end
     end
   end

@@ -981,6 +981,9 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
+msgid "Choose the top-level group for your repository imports."
+msgstr ""
+
 msgid "Choose which repositories you want to import."
 msgstr ""
 
@@ -2447,6 +2450,9 @@ msgstr ""
 msgid "Graph"
 msgstr ""
 
+msgid "Group"
+msgstr ""
+
 msgid "Group CI/CD settings"
 msgstr ""
 
@@ -2648,6 +2654,9 @@ msgid "Import all repositories"
 msgstr ""
 
 msgid "Import in progress"
+msgstr ""
+
+msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import repositories from GitHub"
@@ -2859,6 +2868,9 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+msgid "List available repositories"
+msgstr ""
+
 msgid "List your GitHub repositories"
 msgstr ""
 
@@ -2896,6 +2908,12 @@ msgid "Manage labels"
 msgstr ""
 
 msgid "Manage project labels"
+msgstr ""
+
+msgid "Manifest"
+msgstr ""
+
+msgid "Manifest file import"
 msgstr ""
 
 msgid "Mar"
@@ -3918,6 +3936,9 @@ msgid "Repository"
 msgstr ""
 
 msgid "Repository Settings"
+msgstr ""
+
+msgid "Repository URL"
 msgstr ""
 
 msgid "Repository maintenance"
