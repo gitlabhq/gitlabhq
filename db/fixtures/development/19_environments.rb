@@ -30,7 +30,7 @@ class Gitlab::Seeder::Environments
   def create_merge_request_review_deployments!
     @project
       .merge_requests
-      .select { |mr| mr.source_branch.match(/[^a-zA-Z0-9]+/) }
+      .select { |mr| mr.source_branch.match?(/[a-zA-Z0-9]+/) }
       .sample(4)
       .each do |merge_request|
       next unless merge_request.diff_head_sha
