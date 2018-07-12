@@ -3,6 +3,7 @@ require 'spec_helper'
 describe "Admin Runners", :js do
   include StubENV
   include FilteredSearchHelpers
+  include SortingHelper
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -90,6 +91,35 @@ describe "Admin Runners", :js do
         expect(page).to have_content 'runner-a-1'
         expect(page).not_to have_content 'runner-b-1'
         expect(page).not_to have_content 'runner-a-2'
+      end
+
+      it 'sorts by last contact date' do
+        FactoryBot.create :ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37'
+        FactoryBot.create :ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37'
+
+        visit admin_runners_path
+
+        within '.runners-content tbody' do
+          within('tr:nth-child(1)') do
+            expect(page).to have_content 'runner-2'
+          end
+
+          within('tr:nth-child(2)') do
+            expect(page).to have_content 'runner-1'
+          end
+        end
+
+        sorting_by 'Last Contact'
+
+        within '.runners-content tbody' do
+          within('tr:nth-child(1)') do
+            expect(page).to have_content 'runner-1'
+          end
+
+          within('tr:nth-child(2)') do
+            expect(page).to have_content 'runner-2'
+          end
+        end
       end
     end
 

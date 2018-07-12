@@ -14,6 +14,14 @@ class Admin::RunnersFinder < UnionFinder
     @runners
   end
 
+  def sort_key
+    if @params[:sort] == 'contacted_asc'
+      'contacted_asc'
+    else
+      'created_date'
+    end
+  end
+
   private
 
   def search!
@@ -33,7 +41,7 @@ class Admin::RunnersFinder < UnionFinder
   end
 
   def sort!
-    sort = @params[:sort] == 'contacted_asc' ? { contacted_at: :asc } : { id: :desc }
+    sort = sort_key == 'contacted_asc' ? { contacted_at: :asc } : { created_at: :desc }
     @runners = @runners.order(sort)
   end
 

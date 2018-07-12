@@ -29,10 +29,10 @@ describe Admin::RunnersFinder do
 
     context 'sort' do
       context 'without sort param' do
-        it 'sorts by id' do
-          runner1 = create :ci_runner
-          runner2 = create :ci_runner
-          runner3 = create :ci_runner
+        it 'sorts by created_at' do
+          runner1 = create :ci_runner, created_at: '2018-07-12 07:00'
+          runner2 = create :ci_runner, created_at: '2018-07-12 08:00'
+          runner3 = create :ci_runner, created_at: '2018-07-12 09:00'
 
           expect(described_class.new(params: {}).execute).to eq [runner3, runner2, runner1]
         end
@@ -52,8 +52,8 @@ describe Admin::RunnersFinder do
     context 'paginate' do
       it 'returns the runners for the specified page' do
         stub_const('Admin::RunnersFinder::NUMBER_OF_RUNNERS_PER_PAGE', 1)
-        runner1 = create :ci_runner
-        runner2 = create :ci_runner
+        runner1 = create :ci_runner, created_at: '2018-07-12 07:00'
+        runner2 = create :ci_runner, created_at: '2018-07-12 08:00'
 
         expect(described_class.new(params: { page: 1 }).execute).to eq [runner2]
         expect(described_class.new(params: { page: 2 }).execute).to eq [runner1]
