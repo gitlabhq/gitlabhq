@@ -41,11 +41,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      activeFile: '',
-    };
-  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -126,14 +121,6 @@ export default {
         eventHub.$emit('fetchNotesData');
       }
     },
-    setActive(filePath) {
-      this.activeFile = filePath;
-    },
-    unsetActive(filePath) {
-      if (this.activeFile === filePath) {
-        this.activeFile = '';
-      }
-    },
     adjustView() {
       if (this.shouldShow && this.isParallelView) {
         window.mrTabs.expandViewContainer();
@@ -195,7 +182,6 @@ export default {
 
       <changed-files
         :diff-files="diffFiles"
-        :active-file="activeFile"
       />
 
       <div
@@ -207,8 +193,6 @@ export default {
           :key="file.newPath"
           :file="file"
           :current-user="currentUser"
-          @setActive="setActive(file.filePath)"
-          @unsetActive="unsetActive(file.filePath)"
         />
       </div>
       <no-changes v-else />

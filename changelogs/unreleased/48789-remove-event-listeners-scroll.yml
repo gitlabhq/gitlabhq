@@ -1,0 +1,6 @@
+---
+title: Improves performance on Merge Request diff tab by removing the scroll event
+  listeners being added to every file
+merge_request:
+author:
+type: performance

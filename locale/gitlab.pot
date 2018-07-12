@@ -1952,9 +1952,6 @@ msgstr ""
 msgid "Copy commit SHA to clipboard"
 msgstr ""
 
-msgid "Copy file name to clipboard"
-msgstr ""
-
 msgid "Copy file path to clipboard"
 msgstr ""
 

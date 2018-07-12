@@ -518,6 +518,12 @@
     outline: none;
     color: $gl-link-hover-color;
   }
+
+  .caret-icon {
+    position: relative;
+    top: 2px;
+    left: -1px;
+  }
 }
 
 // Mobile
