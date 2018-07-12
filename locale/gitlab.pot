@@ -236,17 +236,16 @@ msgstr ""
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
 msgstr ""
 
 msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
 msgstr ""
 
-msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
-=======
 msgid "<strong>%{group_name}</strong> group members"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
@@ -348,14 +347,13 @@ msgstr ""
 msgid "Add todo"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Additional text"
-=======
 msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Additional text"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -2065,11 +2063,10 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Creating epic"
-=======
 msgid "Created on:"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Creating epic"
 msgstr ""
 
 msgid "Cron Timezone"
@@ -2290,11 +2287,10 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-=======
+msgstr ""
+
 msgid "Description:"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Details"
@@ -3100,7 +3096,9 @@ msgstr ""
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Group: %{group_name}"
+msgstr ""
+
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr ""
 
@@ -3135,9 +3133,6 @@ msgid "GroupRoadmap|To widen your search, change or remove filters. In the weeks
 msgstr ""
 
 msgid "GroupRoadmap|Until %{dateWord}"
-=======
-msgid "Group: %{group_name}"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -3629,14 +3624,13 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-=======
+msgstr ""
+
 msgid "Manage access"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Manage all notifications"
