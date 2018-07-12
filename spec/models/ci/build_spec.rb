@@ -1613,6 +1613,7 @@ describe Ci::Build do
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
+        { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
