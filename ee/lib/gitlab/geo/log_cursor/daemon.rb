@@ -45,7 +45,10 @@ module Gitlab
 
         def handle_events(batch)
           batch.each do |event_log|
-            next unless can_replay?(event_log)
+            unless can_replay?(event_log)
+              logger.event_info(event_log.created_at, 'Skipped event', event_data(event_log))
+              next
+            end
 
             begin
               event = event_log.event
@@ -104,6 +107,15 @@ module Gitlab
 
         def log_level
           options[:debug] ? :debug : Rails.logger.level
+        end
+
+        def event_data(event_log)
+          {
+            event_log_id: event_log.id,
+            event_id: event_log.event.id,
+            event_type: event_log.event.class.name,
+            project_id: event_log.project_id
+          }
         end
       end
     end
