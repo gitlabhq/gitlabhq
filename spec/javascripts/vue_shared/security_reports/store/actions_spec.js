@@ -275,13 +275,16 @@ describe('security reports actions', () => {
 
   describe('receiveSastError', () => {
     it('should commit sast error mutation', done => {
+      const error = new Error('test');
+
       testAction(
         receiveSastError,
-        null,
+        error,
         mockedState,
         [
           {
             type: types.RECEIVE_SAST_REPORTS_ERROR,
+            payload: error,
           },
         ],
         [],
@@ -475,13 +478,16 @@ describe('security reports actions', () => {
 
   describe('receiveSastContainerError', () => {
     it('should commit sast error mutation', done => {
+      const error = new Error('test');
+
       testAction(
         receiveSastContainerError,
-        null,
+        error,
         mockedState,
         [
           {
             type: types.RECEIVE_SAST_CONTAINER_ERROR,
+            payload: error,
           },
         ],
         [],
@@ -681,13 +687,16 @@ describe('security reports actions', () => {
 
   describe('receiveDastError', () => {
     it('should commit sast error mutation', done => {
+      const error = new Error('test');
+
       testAction(
         receiveDastError,
-        null,
+        error,
         mockedState,
         [
           {
             type: types.RECEIVE_DAST_ERROR,
+            payload: error,
           },
         ],
         [],
@@ -883,13 +892,16 @@ describe('security reports actions', () => {
 
   describe('receiveDependencyScanningError', () => {
     it('should commit sast error mutation', done => {
+      const error = new Error('test');
+
       testAction(
         receiveDependencyScanningError,
-        null,
+        error,
         mockedState,
         [
           {
             type: types.RECEIVE_DEPENDENCY_SCANNING_ERROR,
+            payload: error,
           },
         ],
         [],
@@ -1260,6 +1272,7 @@ describe('security reports actions', () => {
           },
           {
             type: 'receiveDismissIssueError',
+            payload: 'There was an error dismissing the vulnerability. Please try again.',
           },
         ],
         done,
@@ -1426,6 +1439,7 @@ describe('security reports actions', () => {
           },
           {
             type: 'receiveDismissIssueError',
+            payload: 'There was an error reverting the dismissal. Please try again.',
           },
         ],
         done,
@@ -1526,6 +1540,7 @@ describe('security reports actions', () => {
           },
           {
             type: 'receiveCreateIssueError',
+            payload: 'There was an error creating the issue. Please try again.',
           },
         ],
         done,
@@ -1535,13 +1550,16 @@ describe('security reports actions', () => {
 
   describe('updateSastIssue', () => {
     it('commits update sast issue', done => {
+      const payload = { foo: 'bar' };
+
       testAction(
         updateSastIssue,
-        null,
+        payload,
         mockedState,
         [
           {
             type: types.UPDATE_SAST_ISSUE,
+            payload,
           },
         ],
         [],
@@ -1552,13 +1570,16 @@ describe('security reports actions', () => {
 
   describe('updateDependencyScanningIssue', () => {
     it('commits update dependency scanning issue', done => {
+      const payload = { foo: 'bar' };
+
       testAction(
         updateDependencyScanningIssue,
-        null,
+        payload,
         mockedState,
         [
           {
             type: types.UPDATE_DEPENDENCY_SCANNING_ISSUE,
+            payload,
           },
         ],
         [],
@@ -1569,13 +1590,16 @@ describe('security reports actions', () => {
 
   describe('updateContainerScanningIssue', () => {
     it('commits update container scanning issue', done => {
+      const payload = { foo: 'bar' };
+
       testAction(
         updateContainerScanningIssue,
-        null,
+        payload,
         mockedState,
         [
           {
             type: types.UPDATE_CONTAINER_SCANNING_ISSUE,
+            payload,
           },
         ],
         [],
@@ -1586,13 +1610,16 @@ describe('security reports actions', () => {
 
   describe('updateDastIssue', () => {
     it('commits update dast issue', done => {
+      const payload = { foo: 'bar' };
+
       testAction(
         updateDastIssue,
-        null,
+        payload,
         mockedState,
         [
           {
             type: types.UPDATE_DAST_ISSUE,
+            payload,
           },
         ],
         [],
