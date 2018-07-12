@@ -1,5 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__))
 
+Encoding.default_external = 'UTF-8'
+
 module QA
   ##
   # GitLab QA runtime classes, mostly singletons.
