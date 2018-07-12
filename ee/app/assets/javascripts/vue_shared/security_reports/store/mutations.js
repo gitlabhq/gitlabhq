@@ -14,11 +14,11 @@ import {
 
 export default {
   [types.SET_HEAD_BLOB_PATH](state, path) {
-    state.blobPath.head = path;
+    Vue.set(state.blobPath, "head", path);
   },
 
   [types.SET_BASE_BLOB_PATH](state, path) {
-    state.blobPath.base = path;
+    Vue.set(state.blobPath, "base", path);
   },
 
   [types.SET_VULNERABILITY_FEEDBACK_PATH](state, path) {
@@ -43,15 +43,15 @@ export default {
 
   // SAST
   [types.SET_SAST_HEAD_PATH](state, path) {
-    state.sast.paths.head = path;
+    Vue.set(state.sast.paths, "head", path);
   },
 
   [types.SET_SAST_BASE_PATH](state, path) {
-    state.sast.paths.base = path;
+    Vue.set(state.sast.paths, "base", path);
   },
 
   [types.REQUEST_SAST_REPORTS](state) {
-    state.sast.isLoading = true;
+    Vue.set(state.sast, "isLoading", true);
   },
 
   /**
@@ -79,37 +79,39 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      state.sast.newIssues = newIssues;
-      state.sast.resolvedIssues = resolvedIssues;
-      state.sast.allIssues = allIssues;
-      state.sast.isLoading = false;
+      Vue.set(state.sast, "newIssues", newIssues);
+      Vue.set(state.sast, "resolvedIssues", resolvedIssues);
+      Vue.set(state.sast, "allIssues", allIssues);
+      Vue.set(state.sast, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
       const newIssues = parseSastIssues(reports.head, reports.enrichData, state.blobPath.head);
 
-      state.sast.newIssues = newIssues;
-      state.sast.isLoading = false;
+      Vue.set(state.sast, "newIssues", newIssues);
+      Vue.set(state.sast, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_REPORTS_ERROR](state) {
-    state.sast.isLoading = false;
-    state.sast.hasError = true;
+    Vue.set(state.sast, "isLoading", false);
+    Vue.set(state.sast, "hasError", true);
   },
 
   // SAST CONTAINER
   [types.SET_SAST_CONTAINER_HEAD_PATH](state, path) {
-    state.sastContainer.paths.head = path;
+    Vue.set(state.sastContainer.paths, "head", path);
   },
 
   [types.SET_SAST_CONTAINER_BASE_PATH](state, path) {
-    state.sastContainer.paths.base = path;
+    Vue.set(state.sastContainer.paths, "base", path);
   },
 
   [types.REQUEST_SAST_CONTAINER_REPORTS](state) {
-    state.sastContainer.isLoading = true;
+    Vue.set(state.sastContainer, "isLoading", true);
   },
 
   /**
@@ -130,9 +132,10 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      state.sastContainer.newIssues = newIssues;
-      state.sastContainer.resolvedIssues = resolvedIssues;
-      state.sastContainer.isLoading = false;
+      Vue.set(state.sastContainer, "newIssues", newIssues);
+      Vue.set(state.sastContainer, "resolvedIssues", resolvedIssues);
+      Vue.set(state.sastContainer, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && !reports.base) {
@@ -141,29 +144,30 @@ export default {
         reports.head.unapproved,
       );
 
-      state.sastContainer.newIssues = newIssues;
-      state.sastContainer.isLoading = false;
+      Vue.set(state.sastContainer, "newIssues", newIssues);
+      Vue.set(state.sastContainer, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_SAST_CONTAINER_ERROR](state) {
-    state.sastContainer.isLoading = false;
-    state.sastContainer.hasError = true;
+    Vue.set(state.sastContainer, "isLoading", false);
+    Vue.set(state.sastContainer, "hasError", true);
   },
 
   // DAST
 
   [types.SET_DAST_HEAD_PATH](state, path) {
-    state.dast.paths.head = path;
+    Vue.set(state.dast.paths, "head", path);
   },
 
   [types.SET_DAST_BASE_PATH](state, path) {
-    state.dast.paths.base = path;
+    Vue.set(state.dast.paths, "base", path);
   },
 
   [types.REQUEST_DAST_REPORTS](state) {
-    state.dast.isLoading = true;
+    Vue.set(state.dast, "isLoading", true);
   },
 
   [types.RECEIVE_DAST_REPORTS](state, reports) {
@@ -174,37 +178,39 @@ export default {
       const newIssues = filterByKey(headIssues, baseIssues, filterKey);
       const resolvedIssues = filterByKey(baseIssues, headIssues, filterKey);
 
-      state.dast.newIssues = newIssues;
-      state.dast.resolvedIssues = resolvedIssues;
-      state.dast.isLoading = false;
+      Vue.set(state.dast, "newIssues", newIssues);
+      Vue.set(state.dast, "resolvedIssues", resolvedIssues);
+      Vue.set(state.dast, "isLoading", false);
       state.summaryCounts.added += newIssues.length;
+
       state.summaryCounts.fixed += resolvedIssues.length;
     } else if (reports.head && reports.head.site && !reports.base) {
       const newIssues = parseDastIssues(reports.head.site.alerts, reports.enrichData);
 
-      state.dast.newIssues = newIssues;
-      state.dast.isLoading = false;
+      Vue.set(state.dast, "newIssues", newIssues);
+      Vue.set(state.dast, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DAST_ERROR](state) {
-    state.dast.isLoading = false;
-    state.dast.hasError = true;
+    Vue.set(state.dast, "isLoading", false);
+    Vue.set(state.dast, "hasError", true);
   },
 
   // DEPENDECY SCANNING
 
   [types.SET_DEPENDENCY_SCANNING_HEAD_PATH](state, path) {
-    state.dependencyScanning.paths.head = path;
+    Vue.set(state.dependencyScanning.paths, "head", path);
   },
 
   [types.SET_DEPENDENCY_SCANNING_BASE_PATH](state, path) {
-    state.dependencyScanning.paths.base = path;
+    Vue.set(state.dependencyScanning.paths, "base", path);
   },
 
   [types.REQUEST_DEPENDENCY_SCANNING_REPORTS](state) {
-    state.dependencyScanning.isLoading = true;
+    Vue.set(state.dependencyScanning, "isLoading", true);
   },
 
   /**
@@ -234,10 +240,11 @@ export default {
       const resolvedIssues = filterByKey(parsedBase, parsedHead, filterKey);
       const allIssues = filterByKey(parsedHead, newIssues.concat(resolvedIssues), filterKey);
 
-      state.dependencyScanning.newIssues = newIssues;
-      state.dependencyScanning.resolvedIssues = resolvedIssues;
-      state.dependencyScanning.allIssues = allIssues;
-      state.dependencyScanning.isLoading = false;
+      Vue.set(state.dependencyScanning, "newIssues", newIssues);
+      Vue.set(state.dependencyScanning, "resolvedIssues", resolvedIssues);
+      Vue.set(state.dependencyScanning, "allIssues", allIssues);
+      Vue.set(state.dependencyScanning, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
       state.summaryCounts.fixed += resolvedIssues.length;
     }
@@ -245,15 +252,16 @@ export default {
     if (reports.head && !reports.base) {
       const newIssues = parseDependencyScanningIssues(reports.head, reports.enrichData,
         state.blobPath.head);
-      state.dependencyScanning.newIssues = newIssues;
-      state.dependencyScanning.isLoading = false;
+      Vue.set(state.dependencyScanning, "newIssues", newIssues);
+      Vue.set(state.dependencyScanning, "isLoading", false);
+
       state.summaryCounts.added += newIssues.length;
     }
   },
 
   [types.RECEIVE_DEPENDENCY_SCANNING_ERROR](state) {
-    state.dependencyScanning.isLoading = false;
-    state.dependencyScanning.hasError = true;
+    Vue.set(state.dependencyScanning, "isLoading", false);
+    Vue.set(state.dependencyScanning, "hasError", true);
   },
 
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
@@ -294,13 +302,13 @@ export default {
   },
 
   [types.REQUEST_DISMISS_ISSUE](state) {
-    state.modal.isDismissingIssue = true;
+    Vue.set(state.modal, "isDismissingIssue", true);
     // reset error in case previous state was error
-    state.modal.error = null;
+    Vue.set(state.modal, "error", null);
   },
 
   [types.RECEIVE_DISMISS_ISSUE_SUCCESS](state) {
-    state.modal.isDismissingIssue = false;
+    Vue.set(state.modal, "isDismissingIssue", false);
   },
 
   [types.UPDATE_SAST_ISSUE](state, issue) {
@@ -376,22 +384,22 @@ export default {
   },
 
   [types.RECEIVE_DISMISS_ISSUE_ERROR](state, error) {
-    state.modal.error = error;
-    state.modal.isDismissingIssue = false;
+    Vue.set(state.modal, "error", error);
+    Vue.set(state.modal, "isDismissingIssue", false);
   },
 
   [types.REQUEST_CREATE_ISSUE](state) {
-    state.modal.isCreatingNewIssue = true;
+    Vue.set(state.modal, "isCreatingNewIssue", true);
     // reset error in case previous state was error
-    state.modal.error = null;
+    Vue.set(state.modal, "error", null);
   },
 
   [types.RECEIVE_CREATE_ISSUE_SUCCESS](state) {
-    state.modal.isCreatingNewIssue = false;
+    Vue.set(state.modal, "isCreatingNewIssue", false);
   },
 
   [types.RECEIVE_CREATE_ISSUE_ERROR](state, error) {
-    state.modal.error = error;
-    state.modal.isCreatingNewIssue = false;
+    Vue.set(state.modal, "error", error);
+    Vue.set(state.modal, "isCreatingNewIssue", false);
   },
 };
