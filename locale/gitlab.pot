@@ -1186,6 +1186,9 @@ msgstr ""
 msgid "Choose file..."
 msgstr ""
 
+msgid "Choose the top-level group for your repository imports."
+msgstr ""
+
 msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr ""
 
@@ -3027,6 +3030,9 @@ msgstr ""
 msgid "Graph"
 msgstr ""
 
+msgid "Group"
+msgstr ""
+
 msgid "Group CI/CD settings"
 msgstr ""
 
@@ -3278,6 +3284,9 @@ msgstr ""
 msgid "Import in progress"
 msgstr ""
 
+msgid "Import multiple repositories by uploading a manifest file."
+msgstr ""
+
 msgid "Import repositories from GitHub"
 msgstr ""
 
@@ -3522,6 +3531,9 @@ msgstr ""
 msgid "List"
 msgstr ""
 
+msgid "List available repositories"
+msgstr ""
+
 msgid "List your GitHub repositories"
 msgstr ""
 
@@ -3574,6 +3586,12 @@ msgid "Manage project labels"
 msgstr ""
 
 msgid "Manage your group’s membership while adding another level of security with SAML."
+msgstr ""
+
+msgid "Manifest"
+msgstr ""
+
+msgid "Manifest file import"
 msgstr ""
 
 msgid "Mar"
@@ -4827,6 +4845,9 @@ msgid "Repository"
 msgstr ""
 
 msgid "Repository Settings"
+msgstr ""
+
+msgid "Repository URL"
 msgstr ""
 
 msgid "Repository has no locks."
