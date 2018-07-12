@@ -11,24 +11,6 @@ module EE
       noteable.is_a?(Epic)
     end
 
-    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6793
-    def note
-      raw_note = super
-
-      return raw_note unless system? && system_note_metadata&.action == 'weight'
-
-      raw_note.delete(',')
-    end
-
-    # Remove with https://gitlab.com/gitlab-org/gitlab-ee/issues/6783
-    def note_html
-      raw_note_html = super
-
-      return raw_note_html unless system? && system_note_metadata&.action == 'weight'
-
-      raw_note_html.delete(',')
-    end
-
     override :for_project_noteable?
     def for_project_noteable?
       !for_epic? && super
