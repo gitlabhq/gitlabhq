@@ -166,13 +166,13 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-    const sourceFiles = require.context('~', true, /\.js$/);
+    const sourceFiles = require.context('~', true, /\.(js|vue)$/);
 
     $.holdReady(true);
 
     sourceFiles.keys().forEach(function(path) {
       // ignore if there is a matching spec file
-      if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
+      if (testsContext.keys().indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
         return;
       }
 
