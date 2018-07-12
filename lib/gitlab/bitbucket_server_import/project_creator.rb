@@ -22,7 +22,7 @@ module Gitlab
           namespace_id: namespace.id,
           visibility_level: repo.visibility_level,
           import_type: 'bitbucket_server',
-          import_source: repo.full_name,
+          import_source: repo.browse_url,
           import_url: repo.clone_url,
           import_data: {
             credentials: session_data,

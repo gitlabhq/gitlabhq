@@ -35,7 +35,7 @@
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
           %td
-            = link_to project.import_source, "https://bitbucket.org/#{project.import_source}", target: '_blank', rel: 'noopener noreferrer'
+            = link_to project.import_source, project.import_source, target: '_blank', rel: 'noopener noreferrer'
           %td
             = link_to project.full_path, [project.namespace.becomes(Namespace), project]
           %td.job-status
@@ -73,14 +73,14 @@
       - @incompatible_repos.each do |repo|
         %tr{ id: "repo_#{repo.owner}___#{repo.slug}" }
           %td
-            = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: '_blank', rel: 'noopener noreferrer'
+            = link_to repo.full_name, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
           %td.import-actions-job-status
             = label_tag 'Incompatible Project', nil, class: 'label badge-danger'
 
 - if @incompatible_repos.any?
   %p
-    One or more of your Bitbucket projects cannot be imported into GitLab
+    One or more of your Bitbucket Server projects cannot be imported into GitLab
     directly because they use Subversion or Mercurial for version control,
     rather than Git. Please convert
     = link_to 'them to Git,', 'https://www.atlassian.com/git/tutorials/migrating-overview'
