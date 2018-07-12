@@ -100,6 +100,9 @@ msgstr ""
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
+msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
+msgstr ""
+
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
 msgstr[0] ""
@@ -233,6 +236,7 @@ msgstr ""
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
 msgstr ""
 
@@ -240,6 +244,9 @@ msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</stron
 msgstr ""
 
 msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
+=======
+msgid "<strong>%{group_name}</strong> group members"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "<strong>Removes</strong> source branch"
@@ -341,7 +348,14 @@ msgstr ""
 msgid "Add todo"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Additional text"
+=======
+msgid "Add user(s) to the group:"
+msgstr ""
+
+msgid "Add users to group"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -579,6 +593,9 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
 msgid "Are you sure you want to remove this identity?"
@@ -1994,6 +2011,9 @@ msgstr ""
 msgid "Create file"
 msgstr ""
 
+msgid "Create group"
+msgstr ""
+
 msgid "Create group label"
 msgstr ""
 
@@ -2045,7 +2065,11 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Creating epic"
+=======
+msgid "Created on:"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Cron Timezone"
@@ -2266,7 +2290,11 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+=======
+msgid "Description:"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Details"
@@ -2375,6 +2403,9 @@ msgid "Edit Snippet"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
+msgstr ""
+
+msgid "Edit group: %{group_name}"
 msgstr ""
 
 msgid "Edit identity for %{user_name}"
@@ -3051,15 +3082,25 @@ msgstr ""
 msgid "Group CI/CD settings"
 msgstr ""
 
+msgid "Group Git LFS status:"
+msgstr ""
+
 msgid "Group ID"
 msgstr ""
 
 msgid "Group Runners"
 msgstr ""
 
+msgid "Group avatar"
+msgstr ""
+
+msgid "Group info:"
+msgstr ""
+
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr ""
 
@@ -3094,6 +3135,9 @@ msgid "GroupRoadmap|To widen your search, change or remove filters. In the weeks
 msgstr ""
 
 msgid "GroupRoadmap|Until %{dateWord}"
+=======
+msgid "Group: %{group_name}"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -3585,10 +3629,14 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+=======
+msgid "Manage access"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Manage all notifications"
@@ -3870,6 +3918,9 @@ msgstr ""
 msgid "Name your individual key via a title"
 msgstr ""
 
+msgid "Name:"
+msgstr ""
+
 msgid "Nav|Help"
 msgstr ""
 
@@ -3883,6 +3934,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "New"
+msgstr ""
+
+msgid "New Group"
 msgstr ""
 
 msgid "New Identity"
@@ -4212,6 +4266,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
+msgstr ""
+
+msgid "Path:"
 msgstr ""
 
 msgid "Pause"
@@ -4628,6 +4685,9 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
+msgid "Projects shared with %{group_name}"
+msgstr ""
+
 msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
@@ -4794,6 +4854,9 @@ msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
 msgid "Readme"
@@ -5476,6 +5539,9 @@ msgid "Stopped"
 msgstr ""
 
 msgid "Storage"
+msgstr ""
+
+msgid "Storage:"
 msgstr ""
 
 msgid "Subgroups"
@@ -6291,6 +6357,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "Visibility and access controls"
+msgstr ""
+
+msgid "Visibility level:"
 msgstr ""
 
 msgid "Visibility:"
