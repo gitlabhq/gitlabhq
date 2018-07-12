@@ -59,7 +59,7 @@ end
 
 if changelog_needed
   if changelog_found
-    check_changelog(path)
+    check_changelog(changelog_found)
   else
     warn format(MISSING_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], labels: presented_no_changelog_labels)
   end
