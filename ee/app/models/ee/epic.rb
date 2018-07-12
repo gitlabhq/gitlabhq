@@ -109,6 +109,12 @@ module EE
     # Needed to use EntityDateHelper#remaining_days_in_words
     alias_attribute(:due_date, :end_date)
 
+    def update_dates
+      self.start_date = compute_start_date
+      self.due_date = compute_due_date
+      save if changed?
+    end
+
     # Earliest start date from issues' milestones
     def start_date_from_milestones
       epic_issues.joins(issue: :milestone).minimum('milestones.start_date')
@@ -154,6 +160,16 @@ module EE
 
     def banzai_render_context(field)
       super.merge(label_url_method: :group_epics_url)
+    end
+
+    private
+
+    def compute_start_date
+      start_date_is_fixed? ? start_date_fixed : start_date_from_milestones
+    end
+
+    def compute_due_date
+      due_date_is_fixed? ? due_date_fixed : due_date_from_milestones
     end
   end
 end

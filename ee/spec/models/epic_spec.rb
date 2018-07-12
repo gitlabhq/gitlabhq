@@ -85,6 +85,18 @@ describe Epic do
     end
   end
 
+  describe '#start_date' do
+    let(:date) { Date.new(2000, 1, 1) }
+
+    context 'is set' do
+      subject { build(:epic, :use_fixed_dates, start_date: date) }
+
+      it 'returns as is' do
+        expect(subject.start_date).to eq(date)
+      end
+    end
+  end
+
   describe '#start_date_from_milestones' do
     subject { create(:epic) }
     let(:date) { Date.new(2017, 3, 4) }
@@ -136,6 +148,35 @@ describe Epic do
 
     it 'returns latest due date from issue milestones' do
       expect(subject.due_date_from_milestones).to eq(date)
+    end
+  end
+
+  describe '#update_dates' do
+    context 'fixed date is set' do
+      subject { create(:epic, :use_fixed_dates, start_date: nil, end_date: nil) }
+
+      it 'updates to fixed date' do
+        subject.update_dates
+
+        expect(subject.start_date).to eq(subject.start_date_fixed)
+        expect(subject.due_date).to eq(subject.due_date_fixed)
+      end
+    end
+
+    context 'fixed date is not set' do
+      subject { create(:epic, start_date: nil, end_date: nil) }
+      let(:start_date) { Date.new(2001, 1, 1) }
+      let(:due_date) { Date.new(2002, 1, 1) }
+
+      it 'updates to milestone dates' do
+        expect(subject).to receive(:start_date_from_milestones).and_return(start_date)
+        expect(subject).to receive(:due_date_from_milestones).and_return(due_date)
+
+        subject.update_dates
+
+        expect(subject.start_date).to eq(start_date)
+        expect(subject.due_date).to eq(due_date)
+      end
     end
   end
 
