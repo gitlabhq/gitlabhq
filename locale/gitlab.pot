@@ -6591,6 +6591,9 @@ msgstr ""
 msgid "SortOptions|Largest repository"
 msgstr ""
 
+msgid "SortOptions|Last Contact"
+msgstr ""
+
 msgid "SortOptions|Last created"
 msgstr ""
 

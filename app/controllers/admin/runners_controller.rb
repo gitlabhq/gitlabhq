@@ -2,8 +2,10 @@ class Admin::RunnersController < Admin::ApplicationController
   before_action :runner, except: :index
 
   def index
-    @runners = Admin::RunnersFinder.new(params: params).execute
+    finder = Admin::RunnersFinder.new(params: params)
+    @runners = finder.execute
     @active_runners_cnt = Ci::Runner.online.count
+    @sort = finder.sort_key
   end
 
   def show
