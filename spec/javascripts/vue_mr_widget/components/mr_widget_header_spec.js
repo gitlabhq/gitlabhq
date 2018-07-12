@@ -119,6 +119,7 @@ describe('MRWidgetHeader', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
           mr: {
+            iid: 1,
             divergedCommitsCount: 12,
             sourceBranch: 'mr-widget-refactor',
             sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
@@ -130,6 +131,8 @@ describe('MRWidgetHeader', () => {
             emailPatchesPath: '/mr/email-patches',
             plainDiffPath: '/mr/plainDiffPath',
             statusPath: 'abc',
+            sourceProjectFullPath: 'root/gitlab-ce',
+            targetProjectFullPath: 'gitlab-org/gitlab-ce',
           },
         });
       });
@@ -146,7 +149,9 @@ describe('MRWidgetHeader', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
         expect(button.textContent.trim()).toEqual('Open in Web IDE');
-        expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
+        expect(button.getAttribute('href')).toEqual(
+          '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org/gitlab-ce',
+        );
       });
 
       it('renders web ide button with relative URL', () => {
@@ -155,7 +160,9 @@ describe('MRWidgetHeader', () => {
         const button = vm.$el.querySelector('.js-web-ide');
 
         expect(button.textContent.trim()).toEqual('Open in Web IDE');
-        expect(button.getAttribute('href')).toEqual('/-/ide/projectabc');
+        expect(button.getAttribute('href')).toEqual(
+          '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org/gitlab-ce',
+        );
       });
 
       it('renders download dropdown with links', () => {
