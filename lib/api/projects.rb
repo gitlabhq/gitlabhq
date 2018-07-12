@@ -140,6 +140,8 @@ module API
       post do
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs[:mirror_user_id] = current_user.id if attrs[:import_url].present?
+
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -172,6 +174,8 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+        attrs[:mirror_user_id] = user.id if attrs[:import_url].present?
+
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -284,13 +288,17 @@ module API
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
+        optional :import_url, type: String, desc: 'URL from which the project is imported'
 
         # EE
         at_least_one_of_ee = [
           :approvals_before_merge,
           :repository_storage,
-          :external_authorization_classification_label
+          :external_authorization_classification_label,
+          :import_url
         ]
+        optional :only_mirror_protected_branches, type: Boolean, desc: 'Only mirror protected branches'
+        optional :mirror_overwrites_diverged_branches, type: Boolean, desc: 'Pull mirror overwrites diverged branches'
 
         use :optional_project_params
         at_least_one_of(*(at_least_one_of_ce + at_least_one_of_ee))
@@ -302,6 +310,7 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
+        attrs[:mirror_user_id] = current_user.id unless valid_mirror_user?(attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

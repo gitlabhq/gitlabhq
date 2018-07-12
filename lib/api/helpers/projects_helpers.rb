@@ -32,6 +32,9 @@ module API
             optional :repository_storage, type: String, desc: 'Which storage shard the repository is on. Available only to admins'
             optional :approvals_before_merge, type: Integer, desc: 'How many approvers should approve merge request by default'
             optional :external_authorization_classification_label, type: String, desc: 'The classification label for the project'
+            optional :mirror, type: Boolean, desc: 'Enables pull mirroring in a project'
+            optional :mirror_user_id, type: Integer, desc: 'User responsible for all the activity surrounding a pull mirror event'
+            optional :mirror_trigger_builds, type: Boolean, desc: 'Pull mirroring triggers builds'
           end
 
           params :optional_project_params do
