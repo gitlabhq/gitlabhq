@@ -7,20 +7,20 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(100).for(:mirror_max_delay) }
     it { is_expected.not_to allow_value(nil).for(:mirror_max_delay) }
     it { is_expected.not_to allow_value(0).for(:mirror_max_delay) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_delay) }
+    it { is_expected.not_to allow_value(1.1).for(:mirror_max_delay) }
     it { is_expected.not_to allow_value(-1).for(:mirror_max_delay) }
     it { is_expected.not_to allow_value((Gitlab::Mirror::MIN_DELAY - 1.minute) / 60).for(:mirror_max_delay) }
 
     it { is_expected.to allow_value(10).for(:mirror_max_capacity) }
     it { is_expected.not_to allow_value(nil).for(:mirror_max_capacity) }
     it { is_expected.not_to allow_value(0).for(:mirror_max_capacity) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_max_capacity) }
+    it { is_expected.not_to allow_value(1.1).for(:mirror_max_capacity) }
     it { is_expected.not_to allow_value(-1).for(:mirror_max_capacity) }
 
     it { is_expected.to allow_value(10).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(nil).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(0).for(:mirror_capacity_threshold) }
-    it { is_expected.not_to allow_value(1.0).for(:mirror_capacity_threshold) }
+    it { is_expected.not_to allow_value(1.1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
 
