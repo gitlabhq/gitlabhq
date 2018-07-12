@@ -102,6 +102,14 @@
       border-radius: $border-radius-default $border-radius-default 0 0;
     }
   }
+
+  .grouped-security-reports {
+    padding: 0;
+
+    > .media {
+      padding: $gl-padding;
+    }
+  }
 }
 
 .mr-widget-section {
