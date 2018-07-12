@@ -16,13 +16,6 @@ export default {
     ClipboardButton,
   },
   mixins: [changedFilesMixin],
-  props: {
-    activeFile: {
-      type: String,
-      required: false,
-      default: '',
-    },
-  },
   data() {
     return {
       isStuck: false,
@@ -70,7 +63,7 @@ export default {
     pluralize,
     handleScroll() {
       if (!this.updating) {
-        requestAnimationFrame(this.updateIsStuck);
+        this.$nextTick(this.updateIsStuck);
         this.updating = true;
       }
     },
@@ -148,25 +141,8 @@ export default {
           />
 
           <span
-            v-show="activeFile"
-            class="prepend-left-5"
-          >
-            <strong class="prepend-right-5">
-              {{ truncatedDiffPath(activeFile) }}
-            </strong>
-            <clipboard-button
-              :text="activeFile"
-              :title="s__('Copy file name to clipboard')"
-              tooltip-placement="bottom"
-              tooltip-container="body"
-              class="btn btn-default btn-transparent btn-clipboard"
-            />
-          </span>
-
-          <span
-            v-show="!isStuck"
-            id="diff-stats"
-            class="diff-stats-additions-deletions-expanded"
+            class="js-diff-stats-additions-deletions-expanded
+            diff-stats-additions-deletions-expanded"
           >
             with
             <strong class="cgreen">
@@ -177,6 +153,17 @@ export default {
               {{ pluralize(`${sumRemovedLines} deletion`, sumRemovedLines) }}
             </strong>
           </span>
+          <div
+            class="js-diff-stats-additions-deletions-collapsed
+            diff-stats-additions-deletions-collapsed float-right d-sm-none"
+          >
+            <strong class="cgreen">
+              +{{ sumAddedLines }}
+            </strong>
+            <strong class="cred">
+              -{{ sumRemovedLines }}
+            </strong>
+          </div>
         </div>
       </div>
     </div>
