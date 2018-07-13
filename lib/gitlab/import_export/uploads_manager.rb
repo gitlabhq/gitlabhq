@@ -56,11 +56,11 @@ module Gitlab
       def copy_from_object_storage
         return unless Gitlab::ImportExport.object_storage?
 
-        uploads do |upload_model|
-          next unless upload_model.file
-          next if upload_model.upload.local? # Already copied, using  the old  method
+        uploaders do |uploader|
+          next unless uploader.file
+          next if uploader.upload.local? # Already copied, using  the old  method
 
-          download_and_copy(upload_model)
+          download_and_copy(uploader)
         end
       end
 
@@ -72,19 +72,19 @@ module Gitlab
         @uploads_export_path ||= File.join(@shared.export_path, @relative_export_path)
       end
 
-      def uploads
+      def uploader
         avatar_path = @project.avatar&.upload&.path
 
         if @relative_export_path == 'avatar'
           yield(@project.avatar)
         else
-          project_uploads(avatar_path).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
+          project_uploads_or_avatar(avatar_path).find_each(batch_size: UPLOADS_BATCH_SIZE) do |upload|
             yield(upload.build_uploader)
           end
         end
       end
 
-      def project_uploads(avatar_path)
+      def project_uploads_or_avatar(avatar_path)
         return @project.uploads unless avatar_path
 
         @project.uploads.where("path != ?", avatar_path)
