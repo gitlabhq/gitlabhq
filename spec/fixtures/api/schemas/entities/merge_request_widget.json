@@ -29,8 +29,10 @@
     "merge_when_pipeline_succeeds": { "type": "boolean" },
     "source_branch": { "type": "string" },
     "source_project_id": { "type": "integer" },
+    "source_project_full_path": { "type": ["string", "null"]},
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
+    "target_project_full_path": { "type": ["string", "null"]},
     "allow_collaboration": { "type": "boolean"},
     "metrics": {
       "oneOf": [
