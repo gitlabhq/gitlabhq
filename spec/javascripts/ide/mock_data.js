@@ -9,6 +9,9 @@ export const projectData = {
     master: {
       treeId: 'abcproject/master',
       can_push: true,
+      commit: {
+        id: '123',
+      },
     },
   },
   mergeRequests: {},

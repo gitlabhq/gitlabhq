@@ -167,24 +167,9 @@ module Gitlab
 
       # Directly find a branch with a simple name (e.g. master)
       #
-      # force_reload causes a new Rugged repository to be instantiated
-      #
-      # This is to work around a bug in libgit2 that causes in-memory refs to
-      # be stale/invalid when packed-refs is changed.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
-      def find_branch(name, force_reload = false)
-        gitaly_migrate(:find_branch) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_branch(name)
-          else
-            reload_rugged if force_reload
-
-            rugged_ref = rugged.branches[name]
-            if rugged_ref
-              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-            end
-          end
+      def find_branch(name)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.find_branch(name)
         end
       end
 
@@ -196,20 +181,8 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        gitaly_migrate(:branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.count_branch_names
-          else
-            rugged.branches.each(:local).count do |ref|
-              begin
-                ref.name && ref.target # ensures the branch is valid
-
-                true
-              rescue Rugged::ReferenceError
-                false
-              end
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.count_branch_names
         end
       end
 
@@ -232,12 +205,8 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        gitaly_migrate(:tag_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.count_tag_names
-          else
-            rugged.tags.count
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.count_tag_names
         end
       end
 
@@ -260,13 +229,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?(ref_name)
-          else
-            rugged_ref_exists?(ref_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?(ref_name)
         end
       end
 
@@ -274,12 +238,8 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        gitaly_migrate(:ref_exists_tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?("refs/tags/#{name}")
-          else
-            rugged_tag_exists?(name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?("refs/tags/#{name}")
         end
       end
 
@@ -287,12 +247,8 @@ module Gitlab
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        gitaly_migrate(:ref_exists_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?("refs/heads/#{name}")
-          else
-            rugged_branch_exists?(name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?("refs/heads/#{name}")
         end
       end
 
@@ -310,12 +266,8 @@ module Gitlab
       end
 
       def delete_all_refs_except(prefixes)
-        gitaly_migrate(:ref_delete_refs) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
-          else
-            delete_refs(*all_ref_names_except(prefixes))
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
         end
       end
 
@@ -714,25 +666,16 @@ module Gitlab
 
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.delete_branch(branch_name)
-          else
-            rugged.branches.delete(branch_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.delete_branch(branch_name)
         end
-      rescue Rugged::ReferenceError, CommandError => e
+      rescue CommandError => e
         raise DeleteBranchError, e
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_delete_refs(*ref_names)
-          else
-            git_delete_refs(*ref_names)
-          end
+        wrapped_gitaly_errors do
+          gitaly_delete_refs(*ref_names)
         end
       end
 
@@ -742,12 +685,8 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.create_branch(ref, start_point)
-          else
-            rugged_create_branch(ref, start_point)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.create_branch(ref, start_point)
         end
       end
 
@@ -1175,7 +1114,7 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        if target_sha = find_branch(target_branch, true)&.target
+        if target_sha = find_branch(target_branch)&.target
           !gitaly_conflicts_client(source_sha, target_sha).conflicts?
         else
           false
@@ -1549,50 +1488,8 @@ module Gitlab
       # Returns true if the given ref name exists
       #
       # Ref names must start with `refs/`.
-      def rugged_ref_exists?(ref_name)
-        raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
-
-        rugged.references.exist?(ref_name)
-      rescue Rugged::ReferenceError
-        false
-      end
-
-      # Returns true if the given ref name exists
-      #
-      # Ref names must start with `refs/`.
       def gitaly_ref_exists?(ref_name)
         gitaly_ref_client.ref_exists?(ref_name)
-      end
-
-      # Returns true if the given tag exists
-      #
-      # name - The name of the tag as a String.
-      def rugged_tag_exists?(name)
-        !!rugged.tags[name]
-      end
-
-      # Returns true if the given branch exists
-      #
-      # name - The name of the branch as a String.
-      def rugged_branch_exists?(name)
-        rugged.branches.exists?(name)
-
-      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
-      # Whatever code calls this method shouldn't have to deal with that so
-      # instead we just return `false` (which is true since a branch doesn't
-      # exist when it has an invalid name).
-      rescue Rugged::ReferenceError
-        false
-      end
-
-      def rugged_create_branch(ref, start_point)
-        rugged_ref = rugged.branches.create(ref, start_point)
-        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-      rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
-
-        raise InvalidRef.new("Invalid reference #{start_point}")
       end
 
       def gitaly_copy_gitattributes(revision)
@@ -1685,20 +1582,6 @@ module Gitlab
         set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
-      end
-
-      def git_delete_refs(*ref_names)
-        instructions = ref_names.map do |ref|
-          "delete #{ref}\x00\x00"
-        end
-
-        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
-          stdin.write(instructions.join)
-        end
-
-        unless status.zero?
-          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
-        end
       end
 
       def gitaly_delete_refs(*ref_names)
