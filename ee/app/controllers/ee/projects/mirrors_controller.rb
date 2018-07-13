@@ -39,6 +39,7 @@ module EE
         else
           flash[:alert] = project.errors.full_messages.join(', ').html_safe
         end
+
         respond_to do |format|
           format.html { redirect_to_repository_settings(project) }
           format.json do
