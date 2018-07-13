@@ -275,6 +275,8 @@ Example response:
 
 ## Update a board
 
+> [Introduced][ee-5954] in GitLab 11.1.
+
 Updates a board.
 
 ```
@@ -548,3 +550,5 @@ DELETE /groups/:id/boards/:board_id/lists/:list_id
 ```bash
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/5/boards/1/lists/1
 ```
+
+[ee-5954]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5954
