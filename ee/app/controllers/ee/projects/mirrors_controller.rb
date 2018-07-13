@@ -26,26 +26,19 @@ module EE
 
       override :update
       def update
-        p 'EE LUKE UPDATE 1'
         if project.update_attributes(safe_mirror_params)
-          p 'LUKE UPDATE 2'
           if project.mirror?
-            p 'LUKE UPDATE 3'
             project.force_import_job!
 
             flash[:notice] = "Mirroring settings were successfully updated. The project is being updated."
           elsif project.previous_changes.key?('mirror')
-            p 'LUKE UPDATE 4'
             flash[:notice] = "Mirroring was successfully disabled."
           else
-            p 'LUKE UPDATE 5'
             flash[:notice] = "Mirroring settings were successfully updated."
           end
         else
-          p 'LUKE UPDATE 6'
           flash[:alert] = project.errors.full_messages.join(', ').html_safe
         end
-        p 'LUKE UPDATE 7'
         respond_to do |format|
           format.html { redirect_to_repository_settings(project) }
           format.json do

@@ -7,7 +7,6 @@ module Projects
       prepend ::EE::Projects::Settings::RepositoryController
 
       def show
-        p 'LUKE RENDER'
         render_show
       end
 
