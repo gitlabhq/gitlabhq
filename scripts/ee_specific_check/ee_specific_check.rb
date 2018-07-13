@@ -77,10 +77,12 @@ module EESpecificCheck
   end
 
   def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
-    if ce_fetch_head.start_with?('canonical-ce') || # No specific CE branch
-        ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
-      say("CE is up-to-date, using merge-base directly")
+    if ce_fetch_head.start_with?('canonical-ce') # No specific CE branch
+      say("No CE branch found, using merge base directly")
       run_git_command("merge-base #{ce_merge_base} HEAD")
+    elsif ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
+      say("EE is up-to-date with CE, using #{ce_fetch_head} directly")
+      ce_fetch_head
     else
       say("Performing rebase to remove commits in CE haven't merged into EE")
       checkout_and_rebase(ce_merge_base, ce_fetch_base, ce_fetch_head)
