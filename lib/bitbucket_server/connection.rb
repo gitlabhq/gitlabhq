@@ -33,22 +33,22 @@ module BitbucketServer
 
       check_errors!(response)
 
-      response
+      response.parsed_response
     end
 
     private
 
     def check_errors!(response)
-      if response.code != 200
-        error =
-          if response.parsed_response && response.parsed_response.is_a?(Hash)
-            sanitize(response.parsed_response.dig('errors', 0, 'message'))
-          end
+      return if response.code == 200
 
-        message = "Error #{response.code}"
-        message += ": #{error}" if error
-        raise ConnectionError, message
-      end
+      details =
+        if response.parsed_response && response.parsed_response.is_a?(Hash)
+          sanitize(response.parsed_response.dig('errors', 0, 'message'))
+        end
+
+      message = "Error #{response.code}"
+      message += ": #{details}" if details
+      raise ConnectionError, message
     end
 
     def auth

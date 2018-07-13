@@ -90,12 +90,11 @@ module Gitlab
           shas.each do |branch_name, sha|
             next if sha_exists?(sha)
 
-            response = client.create_branch(project_key, repository_slug, branch_name, sha)
-
-            if response.success?
+            begin
+              client.create_branch(project_key, repository_slug, branch_name, sha)
               branches_created << branch_name
-            else
-              Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{response.code}")
+            rescue BitbucketServer::Connection::ConnectionError => e
+              Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{e}")
             end
           end
         end
