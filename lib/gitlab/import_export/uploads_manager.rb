@@ -72,7 +72,7 @@ module Gitlab
         @uploads_export_path ||= File.join(@shared.export_path, @relative_export_path)
       end
 
-      def uploader
+      def uploaders
         avatar_path = @project.avatar&.upload&.path
 
         if @relative_export_path == 'avatar'
