@@ -91,10 +91,10 @@
               %span.light.float-right
                 = boolean_to_icon gravatar_enabled?
             - omniauth = "OmniAuth"
-            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
+            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab::Auth.omniauth_enabled? ? "on" : "off") }
               = omniauth
               %span.light.float-right
-                = boolean_to_icon Gitlab.config.omniauth.enabled
+                = boolean_to_icon Gitlab::Auth.omniauth_enabled?
             - reply_email = "Reply by email"
             %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
               = reply_email
