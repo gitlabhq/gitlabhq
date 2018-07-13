@@ -100,6 +100,9 @@ msgstr ""
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr ""
 
+msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
+msgstr ""
+
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
 msgstr[0] ""
@@ -239,6 +242,9 @@ msgstr ""
 msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
 msgstr ""
 
+msgid "<strong>%{group_name}</strong> group members"
+msgstr ""
+
 msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr ""
 
@@ -339,6 +345,12 @@ msgid "Add reaction"
 msgstr ""
 
 msgid "Add todo"
+msgstr ""
+
+msgid "Add user(s) to the group:"
+msgstr ""
+
+msgid "Add users to group"
 msgstr ""
 
 msgid "Additional text"
@@ -579,6 +591,9 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
 msgid "Are you sure you want to remove this identity?"
@@ -1994,6 +2009,9 @@ msgstr ""
 msgid "Create file"
 msgstr ""
 
+msgid "Create group"
+msgstr ""
+
 msgid "Create group label"
 msgstr ""
 
@@ -2043,6 +2061,9 @@ msgid "Created"
 msgstr ""
 
 msgid "Created by me"
+msgstr ""
+
+msgid "Created on:"
 msgstr ""
 
 msgid "Creating epic"
@@ -2269,6 +2290,9 @@ msgstr ""
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
 msgstr ""
 
+msgid "Description:"
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -2375,6 +2399,9 @@ msgid "Edit Snippet"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
+msgstr ""
+
+msgid "Edit group: %{group_name}"
 msgstr ""
 
 msgid "Edit identity for %{user_name}"
@@ -3051,13 +3078,25 @@ msgstr ""
 msgid "Group CI/CD settings"
 msgstr ""
 
+msgid "Group Git LFS status:"
+msgstr ""
+
 msgid "Group ID"
 msgstr ""
 
 msgid "Group Runners"
 msgstr ""
 
+msgid "Group avatar"
+msgstr ""
+
+msgid "Group info:"
+msgstr ""
+
 msgid "Group maintainers can register group runners in the %{link}"
+msgstr ""
+
+msgid "Group: %{group_name}"
 msgstr ""
 
 msgid "GroupRoadmap|From %{dateWord}"
@@ -3591,6 +3630,9 @@ msgstr ""
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
+msgid "Manage access"
+msgstr ""
+
 msgid "Manage all notifications"
 msgstr ""
 
@@ -3870,6 +3912,9 @@ msgstr ""
 msgid "Name your individual key via a title"
 msgstr ""
 
+msgid "Name:"
+msgstr ""
+
 msgid "Nav|Help"
 msgstr ""
 
@@ -3883,6 +3928,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "New"
+msgstr ""
+
+msgid "New Group"
 msgstr ""
 
 msgid "New Identity"
@@ -4212,6 +4260,9 @@ msgid "Password"
 msgstr ""
 
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
+msgstr ""
+
+msgid "Path:"
 msgstr ""
 
 msgid "Pause"
@@ -4628,6 +4679,9 @@ msgstr ""
 msgid "Projects"
 msgstr ""
 
+msgid "Projects shared with %{group_name}"
+msgstr ""
+
 msgid "ProjectsDropdown|Frequently visited"
 msgstr ""
 
@@ -4794,6 +4848,9 @@ msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr ""
 
 msgid "Read more"
+msgstr ""
+
+msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
 msgstr ""
 
 msgid "Readme"
@@ -5476,6 +5533,9 @@ msgid "Stopped"
 msgstr ""
 
 msgid "Storage"
+msgstr ""
+
+msgid "Storage:"
 msgstr ""
 
 msgid "Subgroups"
@@ -6291,6 +6351,9 @@ msgid "View replaced file @ "
 msgstr ""
 
 msgid "Visibility and access controls"
+msgstr ""
+
+msgid "Visibility level:"
 msgstr ""
 
 msgid "Visibility:"
