@@ -36,6 +36,15 @@ module BitbucketServer
       connection.post("/projects/#{project_key}/repos/#{repo}/branches", payload.to_json)
     end
 
+    def delete_branch(project_key, repo, branch_name, sha)
+      payload = {
+        name: Gitlab::Git::BRANCH_REF_PREFIX + branch_name,
+        dryRun: false
+      }
+
+      connection.delete(:branches, "/projects/#{project_key}/repos/#{repo}/branches", payload.to_json)
+    end
+
     private
 
     def get_collection(path, type)

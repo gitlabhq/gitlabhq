@@ -36,10 +36,27 @@ module BitbucketServer
       response.parsed_response
     end
 
+    # We need to support two different APIs for deletion:
+    #
+    # /rest/api/1.0/projects/{projectKey}/repos/{repositorySlug}/branches/default
+    # /rest/branch-utils/1.0/projects/{projectKey}/repos/{repositorySlug}/branches
+    def delete(resource, path, body)
+      url = delete_url(resource, path)
+
+      response = Gitlab::HTTP.delete(url,
+                        basic_auth: auth,
+                        headers: post_headers,
+                        body: body)
+
+      check_errors!(response)
+
+      response.parsed_response
+    end
+
     private
 
     def check_errors!(response)
-      return if response.code == 200
+      return if response.code >= 200 && response.code < 300
 
       details =
         if response.parsed_response && response.parsed_response.is_a?(Hash)
@@ -67,6 +84,14 @@ module BitbucketServer
 
     def root_url
       "#{base_uri}/rest/api/#{api_version}"
+    end
+
+    def delete_url(resource, path)
+      if resource == :branches
+        "#{base_uri}/branch-utils/#{api_version}#{path}"
+      else
+        build_url(path)
+      end
     end
   end
 end

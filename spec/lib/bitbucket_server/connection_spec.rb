@@ -35,4 +35,24 @@ describe BitbucketServer::Connection do
       expect { subject.post(url, payload) }.to raise_error(described_class::ConnectionError)
     end
   end
+
+  describe '#delete' do
+    context 'branch API' do
+      let(:branch_path) { '/projects/foo/repos/bar/branches' }
+      let(:branch_url) { 'https://test:7990/branch-utils/1.0/projects/foo/repos/bar/branches' }
+      let(:path) { }
+
+      it 'returns JSON body' do
+        WebMock.stub_request(:delete, branch_url).to_return(body: payload.to_json, status: 200, headers: headers)
+
+        expect(subject.delete(:branches, branch_path, payload)).to eq(payload)
+      end
+
+      it 'throws an exception if the response is not 200' do
+        WebMock.stub_request(:delete, branch_url).to_return(body: payload.to_json, status: 500, headers: headers)
+
+        expect { subject.delete(:branches, branch_path, payload) }.to raise_error(described_class::ConnectionError)
+      end
+    end
+  end
 end
