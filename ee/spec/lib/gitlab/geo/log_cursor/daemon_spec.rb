@@ -115,6 +115,20 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         daemon.run_once!
       end
 
+      it "logs a message if an associated event can't be found" do
+        new_event = create(:geo_event_log)
+
+        expect(Gitlab::Geo::Logger).to receive(:warn)
+                                        .with(hash_including(
+                                                class: 'Gitlab::Geo::LogCursor::Daemon',
+                                                message: 'Unknown event',
+                                                event_log_id: new_event.id))
+
+        daemon.run_once!
+
+        expect(::Geo::EventLogState.last_processed.id).to eq(new_event.id)
+      end
+
       it 'logs a message for skipped events' do
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [group_2])
 
