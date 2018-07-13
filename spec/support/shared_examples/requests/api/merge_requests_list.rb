@@ -136,8 +136,9 @@ shared_examples 'merge requests list' do
     it 'returns an array of merge requests in given milestone' do
       get api(endpoint_path, user), milestone: '0.9'
 
-      expect(json_response.first['title']).to eq merge_request_closed.title
-      expect(json_response.first['id']).to eq merge_request_closed.id
+      closed_issues = json_response.select { |mr| mr['id'] == merge_request_closed.id }
+      expect(closed_issues.length).to eq(1)
+      expect(closed_issues.first['title']).to eq merge_request_closed.title
     end
 
     it 'returns an array of merge requests matching state in milestone' do

@@ -7,7 +7,7 @@ describe 'View on environment', :js do
   let(:user) { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'when the branch has a route map' do

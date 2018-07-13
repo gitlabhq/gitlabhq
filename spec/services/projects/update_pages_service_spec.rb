@@ -24,8 +24,8 @@ describe Projects::UpdatePagesService do
     let(:extension) { 'zip' }
 
     before do
-      build.update_attributes(legacy_artifacts_file: file)
-      build.update_attributes(legacy_artifacts_metadata: metadata)
+      build.update(legacy_artifacts_file: file)
+      build.update(legacy_artifacts_metadata: metadata)
     end
 
     describe 'pages artifacts' do
@@ -62,13 +62,13 @@ describe Projects::UpdatePagesService do
     end
 
     it 'fails if sha on branch is not latest' do
-      build.update_attributes(ref: 'feature')
+      build.update(ref: 'feature')
 
       expect(execute).not_to eq(:success)
     end
 
     it 'fails for empty file fails' do
-      build.update_attributes(legacy_artifacts_file: empty_file)
+      build.update(legacy_artifacts_file: empty_file)
 
       expect { execute }
         .to raise_error(Projects::UpdatePagesService::FailedToExtractError)
@@ -118,7 +118,7 @@ describe Projects::UpdatePagesService do
       end
 
       it 'fails if sha on branch is not latest' do
-        build.update_attributes(ref: 'feature')
+        build.update(ref: 'feature')
 
         expect(execute).not_to eq(:success)
       end
@@ -188,7 +188,7 @@ describe Projects::UpdatePagesService do
   end
 
   it 'fails for invalid archive' do
-    build.update_attributes(legacy_artifacts_file: invalid_file)
+    build.update(legacy_artifacts_file: invalid_file)
     expect(execute).not_to eq(:success)
   end
 
@@ -199,8 +199,8 @@ describe Projects::UpdatePagesService do
       file = fixture_file_upload('spec/fixtures/pages.zip')
       metafile = fixture_file_upload('spec/fixtures/pages.zip.meta')
 
-      build.update_attributes(legacy_artifacts_file: file)
-      build.update_attributes(legacy_artifacts_metadata: metafile)
+      build.update(legacy_artifacts_file: file)
+      build.update(legacy_artifacts_metadata: metafile)
 
       allow(build).to receive(:artifacts_metadata_entry)
         .and_return(metadata)

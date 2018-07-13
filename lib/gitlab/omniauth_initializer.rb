@@ -1,5 +1,10 @@
 module Gitlab
   class OmniauthInitializer
+    def self.enabled?
+      Gitlab.config.omniauth.enabled ||
+        Gitlab.config.omniauth.auto_sign_in_with_provider.present?
+    end
+
     def initialize(devise_config)
       @devise_config = devise_config
     end

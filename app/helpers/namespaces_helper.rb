@@ -3,7 +3,7 @@ module NamespacesHelper
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end
 
-  def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
+  def namespaces_options(selected = :current_user, display_path: false, extra_group: nil, groups_only: false)
     groups = current_user.manageable_groups
                .joins(:route)
                .includes(:route)
@@ -20,10 +20,13 @@ module NamespacesHelper
 
     options = []
     options << options_for_group(groups, display_path: display_path, type: 'group')
-    options << options_for_group(users, display_path: display_path, type: 'user')
 
-    if selected == :current_user && current_user.namespace
-      selected = current_user.namespace.id
+    unless groups_only
+      options << options_for_group(users, display_path: display_path, type: 'user')
+
+      if selected == :current_user && current_user.namespace
+        selected = current_user.namespace.id
+      end
     end
 
     grouped_options_for_select(options, selected)

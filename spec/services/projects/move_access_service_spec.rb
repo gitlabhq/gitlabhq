@@ -4,18 +4,18 @@ describe Projects::MoveAccessService do
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:project_with_access) { create(:project, namespace: user.namespace) }
-  let(:master_user) { create(:user) }
+  let(:maintainer_user) { create(:user) }
   let(:reporter_user) { create(:user) }
   let(:developer_user) { create(:user) }
-  let(:master_group) { create(:group) }
+  let(:maintainer_group) { create(:group) }
   let(:reporter_group) { create(:group) }
   let(:developer_group) { create(:group) }
 
   before do
-    project_with_access.add_master(master_user)
+    project_with_access.add_maintainer(maintainer_user)
     project_with_access.add_developer(developer_user)
     project_with_access.add_reporter(reporter_user)
-    project_with_access.project_group_links.create(group: master_group, group_access: Gitlab::Access::MASTER)
+    project_with_access.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
     project_with_access.project_group_links.create(group: developer_group, group_access: Gitlab::Access::DEVELOPER)
     project_with_access.project_group_links.create(group: reporter_group, group_access: Gitlab::Access::REPORTER)
   end
@@ -87,7 +87,7 @@ describe Projects::MoveAccessService do
       let(:options) { { remove_remaining_elements: false } }
 
       it 'does not remove remaining memberships' do
-        target_project.add_master(master_user)
+        target_project.add_maintainer(maintainer_user)
 
         subject.execute(project_with_access, options)
 
@@ -95,7 +95,7 @@ describe Projects::MoveAccessService do
       end
 
       it 'does not remove remaining group links' do
-        target_project.project_group_links.create(group: master_group, group_access: Gitlab::Access::MASTER)
+        target_project.project_group_links.create(group: maintainer_group, group_access: Gitlab::Access::MAINTAINER)
 
         subject.execute(project_with_access, options)
 

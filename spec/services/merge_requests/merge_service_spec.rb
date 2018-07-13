@@ -7,7 +7,7 @@ describe MergeRequests::MergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
   end
 
@@ -63,7 +63,7 @@ describe MergeRequests::MergeService do
         let(:commit)       { double('commit', safe_message: "Fixes #{jira_issue.to_reference}") }
 
         before do
-          project.update_attributes!(has_external_issue_tracker: true)
+          project.update!(has_external_issue_tracker: true)
           jira_service_settings
           stub_jira_urls(jira_issue.id)
           allow(merge_request).to receive(:commits).and_return([commit])

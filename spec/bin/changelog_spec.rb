@@ -3,6 +3,20 @@ require 'spec_helper'
 load File.expand_path('../../bin/changelog', __dir__)
 
 describe 'bin/changelog' do
+  let(:options) { OpenStruct.new(title: 'Test title', type: 'fixed', dry_run: true) }
+
+  describe ChangelogEntry do
+    it 'truncates the file path' do
+      entry = described_class.new(options)
+
+      allow(entry).to receive(:ee?).and_return(false)
+      allow(entry).to receive(:branch_name).and_return('long-branch-' * 100)
+
+      file_path = entry.send(:file_path)
+      expect(file_path.length).to eq(140)
+    end
+  end
+
   describe ChangelogOptionParser do
     describe '.parse' do
       it 'parses --amend' do

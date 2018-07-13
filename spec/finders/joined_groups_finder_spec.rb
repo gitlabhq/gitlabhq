@@ -15,7 +15,7 @@ describe JoinedGroupsFinder do
 
     context 'without a user' do
       before do
-        public_group.add_master(profile_owner)
+        public_group.add_maintainer(profile_owner)
       end
 
       it 'only shows public groups from profile owner' do
@@ -25,9 +25,9 @@ describe JoinedGroupsFinder do
 
     context "with a user" do
       before do
-        private_group.add_master(profile_owner)
-        internal_group.add_master(profile_owner)
-        public_group.add_master(profile_owner)
+        private_group.add_maintainer(profile_owner)
+        internal_group.add_maintainer(profile_owner)
+        public_group.add_maintainer(profile_owner)
       end
 
       context "when the profile visitor is in the private group" do
@@ -53,7 +53,7 @@ describe JoinedGroupsFinder do
 
       context 'external users' do
         before do
-          profile_visitor.update_attributes(external: true)
+          profile_visitor.update(external: true)
         end
 
         context 'if not a member' do
@@ -64,7 +64,7 @@ describe JoinedGroupsFinder do
 
         context "if authorized" do
           before do
-            internal_group.add_master(profile_visitor)
+            internal_group.add_maintainer(profile_visitor)
           end
 
           it "shows internal groups if authorized" do

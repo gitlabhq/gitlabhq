@@ -23,7 +23,6 @@ class ProjectWiki
     @user = user
   end
 
-  delegate :empty?, to: :pages
   delegate :repository_storage, :hashed_storage?, to: :project
 
   def path
@@ -77,6 +76,10 @@ class ProjectWiki
     !!find_page('home')
   end
 
+  def empty?
+    pages(limit: 1).empty?
+  end
+
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
   def pages(limit: nil)
@@ -114,7 +117,7 @@ class ProjectWiki
     update_project_activity
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
-    return false
+    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)

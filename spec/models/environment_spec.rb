@@ -562,7 +562,7 @@ describe Environment do
 
     it "is not regenerated if name changes" do
       original_slug = environment.slug
-      environment.update_attributes!(name: environment.name.reverse)
+      environment.update!(name: environment.name.reverse)
 
       expect(environment.slug).to eq(original_slug)
     end

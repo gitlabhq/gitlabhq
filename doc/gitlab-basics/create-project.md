@@ -30,6 +30,9 @@
       idea to fill this in.
     - Changing the **Visibility Level** modifies the project's
       [viewing and access rights](../public_access/public_access.md) for users.
+    - Selecting the **Initialize repository with a README** option creates a
+      README so that the Git repository is initialized, has a default branch and
+      can be cloned.
 
 1. Click **Create project**.
 

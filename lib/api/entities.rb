@@ -135,10 +135,13 @@ module API
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state)
-                         .preload(namespace: [:route, :owner],
-                                  tags: :taggings)
+                         .preload(:import_state, :tags)
+                         .preload(namespace: [:route, :owner])
       end
     end
 
@@ -212,11 +215,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
                                          forked_project_link: :forked_from_project,
-                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
 
       def self.forks_counting_projects(projects_relation)
@@ -532,6 +539,12 @@ module API
     end
 
     class MergeRequestBasic < ProjectEntity
+      expose :title_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :title)
+      end
+      expose :description_html, if: -> (_, options) { options[:render_html] } do |entity|
+        MarkupHelper.markdown_field(entity, :description)
+      end
       expose :target_branch, :source_branch
       expose :upvotes do |merge_request, options|
         if options[:issuable_metadata]
@@ -1010,7 +1023,7 @@ module API
       expose :description
       expose :ip_address
       expose :active
-      expose :is_shared
+      expose :instance_type?, as: :is_shared
       expose :name
       expose :online?, as: :online
       expose :status
@@ -1024,7 +1037,7 @@ module API
       expose :access_level
       expose :version, :revision, :platform, :architecture
       expose :contacted_at
-      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.is_shared? }
+      expose :token, if: lambda { |runner, options| options[:current_user].admin? || !runner.instance_type? }
       expose :projects, with: Entities::BasicProjectDetails do |runner, options|
         if options[:current_user].admin?
           runner.projects
@@ -1198,6 +1211,7 @@ module API
 
       class RunnerInfo < Grape::Entity
         expose :metadata_timeout, as: :timeout
+        expose :runner_session_url
       end
 
       class Step < Grape::Entity

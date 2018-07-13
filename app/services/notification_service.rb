@@ -135,6 +135,8 @@ class NotificationService
   #  * watchers of the mr's labels
   #  * users with custom level checked with "new merge request"
   #
+  # In EE, approvers of the merge request are also included
+  #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, :new_merge_request_email)
   end
@@ -256,6 +258,10 @@ class NotificationService
     # ignore gitlab service messages
     return true if note.cross_reference? && note.system?
 
+    send_new_note_notifications(note)
+  end
+
+  def send_new_note_notifications(note)
     notify_method = "note_#{note.to_ability_name}_email".to_sym
 
     recipients = NotificationRecipientService.build_new_note_recipients(note)
@@ -268,9 +274,9 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    recipients = member.source.members.active_without_invites_and_requests.owners_and_masters
-    if fallback_to_group_owners_masters?(recipients, member)
-      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_masters
+    recipients = member.source.members.active_without_invites_and_requests.owners_and_maintainers
+    if fallback_to_group_owners_maintainers?(recipients, member)
+      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_maintainers
     end
 
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
@@ -513,7 +519,7 @@ class NotificationService
 
     return [] unless project
 
-    notifiable_users(project.team.masters, :watch, target: project)
+    notifiable_users(project.team.maintainers, :watch, target: project)
   end
 
   def notifiable?(*args)
@@ -528,7 +534,7 @@ class NotificationService
     mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.notification_email).deliver_later
   end
 
-  def fallback_to_group_owners_masters?(recipients, member)
+  def fallback_to_group_owners_maintainers?(recipients, member)
     return false if recipients.present?
 
     member.source.respond_to?(:group) && member.source.group

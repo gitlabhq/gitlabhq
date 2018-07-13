@@ -171,6 +171,7 @@ class Project < ActiveRecord::Base
   has_one :fork_network, through: :fork_network_member
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
+  has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
   # Merge Requests for target project should be removed with it
   has_many :merge_requests, foreign_key: 'target_project_id'
@@ -268,7 +269,8 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
+  delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
@@ -1422,7 +1424,7 @@ class Project < ActiveRecord::Base
   end
 
   def shared_runners
-    @shared_runners ||= shared_runners_available? ? Ci::Runner.shared : Ci::Runner.none
+    @shared_runners ||= shared_runners_available? ? Ci::Runner.instance_type : Ci::Runner.none
   end
 
   def group_runners
@@ -1646,10 +1648,10 @@ class Project < ActiveRecord::Base
       params = {
         name: default_branch,
         push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }],
         merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }]
       }
 
@@ -1712,7 +1714,7 @@ class Project < ActiveRecord::Base
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path
+    elsif export_project_path || export_project_object_exists?
       :finished
     else
       :none
@@ -1727,16 +1729,21 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports
-    return nil unless export_path.present?
-
-    FileUtils.rm_rf(export_path)
+  def remove_exports(path = export_path)
+    if path.present?
+      FileUtils.rm_rf(path)
+    elsif export_project_object_exists?
+      import_export_upload.remove_export_file!
+      import_export_upload.save
+    end
   end
 
   def remove_exported_project_file
-    return unless export_project_path.present?
+    remove_exports(export_project_path)
+  end
 
-    FileUtils.rm_f(export_project_path)
+  def export_project_object_exists?
+    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
   end
 
   def full_path_slug
@@ -1772,6 +1779,15 @@ class Project < ActiveRecord::Base
         variables.append(key: 'CI_REGISTRY_IMAGE', value: container_registry_url)
       end
     end
+  end
+
+  def default_environment
+    production_first = "(CASE WHEN name = 'production' THEN 0 ELSE 1 END), id ASC"
+
+    environments
+      .with_state(:available)
+      .reorder(production_first)
+      .first
   end
 
   def secret_variables_for(ref:, environment: nil)

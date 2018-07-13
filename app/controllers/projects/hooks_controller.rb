@@ -29,7 +29,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def update
-    if hook.update_attributes(hook_params)
+    if hook.update(hook_params)
       flash[:notice] = 'Hook was successfully updated.'
       redirect_to project_settings_integrations_path(@project)
     else
@@ -48,7 +48,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to project_settings_integrations_path(@project), status: 302
+    redirect_to project_settings_integrations_path(@project), status: :found
   end
 
   private
@@ -58,8 +58,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def hook_logs
-    @hook_logs ||=
-      Kaminari.paginate_array(hook.web_hook_logs.order(created_at: :desc)).page(params[:page])
+    @hook_logs ||= hook.web_hook_logs.recent.page(params[:page])
   end
 
   def hook_params

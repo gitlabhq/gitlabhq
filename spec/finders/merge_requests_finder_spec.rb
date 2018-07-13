@@ -24,7 +24,7 @@ describe MergeRequestsFinder do
   let!(:merge_request5) { create(:merge_request, :simple, author: user, source_project: project4, target_project: project4) }
 
   before do
-    project1.add_master(user)
+    project1.add_maintainer(user)
     project2.add_developer(user)
     project3.add_developer(user)
     project2.add_developer(user2)
@@ -142,7 +142,7 @@ describe MergeRequestsFinder do
       end
 
       before do
-        new_project.add_master(user)
+        new_project.add_maintainer(user)
       end
 
       it 'filters by created_after' do

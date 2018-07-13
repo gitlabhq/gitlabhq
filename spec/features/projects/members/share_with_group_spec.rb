@@ -1,21 +1,21 @@
 require 'spec_helper'
 
-feature 'Project > Members > Share with Group', :js do
+describe 'Project > Members > Share with Group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
 
   describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
-      scenario 'the "Share with group" tab exists' do
+      it 'the "Share with group" tab exists' do
         visit project_settings_members_path(project)
         expect(page).to have_selector('#share-with-group-tab')
       end
     end
 
     shared_examples 'the project cannot be shared with groups' do
-      scenario 'the "Share with group" tab does not exist' do
+      it 'the "Share with group" tab does not exist' do
         visit project_settings_members_path(project)
         expect(page).to have_selector('#add-member-tab')
         expect(page).not_to have_selector('#share-with-group-tab')
@@ -26,15 +26,15 @@ feature 'Project > Members > Share with Group', :js do
       let!(:group_to_share_with) { create(:group) }
       let(:project) { create(:project, namespace: create(:group)) }
 
-      background do
-        project.add_master(master)
-        sign_in(master)
+      before do
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
       end
 
       context 'when the group has "Share with group lock" disabled' do
         it_behaves_like 'the project can be shared with groups'
 
-        scenario 'the project can be shared with another group' do
+        it 'the project can be shared with another group' do
           visit project_settings_members_path(project)
 
           click_on 'share-with-group-tab'
@@ -64,9 +64,9 @@ feature 'Project > Members > Share with Group', :js do
       let(:subgroup) { create(:group, parent: root_group) }
       let(:project) { create(:project, namespace: subgroup) }
 
-      background do
-        project.add_master(master)
-        sign_in(master)
+      before do
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
       end
 
       context 'when the root_group has "Share with group lock" disabled' do
@@ -112,8 +112,8 @@ feature 'Project > Members > Share with Group', :js do
     end
 
     before do
-      project.add_master(master)
-      sign_in(master)
+      project.add_maintainer(maintainer)
+      sign_in(maintainer)
 
       visit project_settings_members_path(project)
 
@@ -126,7 +126,7 @@ feature 'Project > Members > Share with Group', :js do
       find('.btn-create').click
     end
 
-    scenario 'the group link shows the expiration time with a warning class' do
+    it 'the group link shows the expiration time with a warning class' do
       page.within('.project-members-groups') do
         # Using distance_of_time_in_words_to_now because it is not the same as
         # subtraction, and this way avoids time zone issues as well
@@ -141,12 +141,12 @@ feature 'Project > Members > Share with Group', :js do
     context 'with multiple groups to choose from' do
       let(:project) { create(:project) }
 
-      background do
-        project.add_master(master)
-        sign_in(master)
+      before do
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
 
-        create(:group).add_owner(master)
-        create(:group).add_owner(master)
+        create(:group).add_owner(maintainer)
+        create(:group).add_owner(maintainer)
 
         visit project_settings_members_path(project)
 
@@ -173,14 +173,14 @@ feature 'Project > Members > Share with Group', :js do
       let!(:group_to_share_with) { create(:group) }
       let!(:project) { create(:project, namespace: nested_group) }
 
-      background do
-        project.add_master(master)
-        sign_in(master)
-        group.add_master(master)
-        group_to_share_with.add_master(master)
+      before do
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
+        group.add_maintainer(maintainer)
+        group_to_share_with.add_maintainer(maintainer)
       end
 
-      scenario 'the groups dropdown does not show ancestors', :nested_groups do
+      it 'the groups dropdown does not show ancestors', :nested_groups do
         visit project_settings_members_path(project)
 
         click_on 'share-with-group-tab'

@@ -12,7 +12,7 @@ module JiraServiceHelper
       jira_issue_transition_id: '1'
     }
 
-    jira_tracker.update_attributes(properties: properties, active: true)
+    jira_tracker.update(properties: properties, active: true)
   end
 
   def jira_issue_comments

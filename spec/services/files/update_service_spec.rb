@@ -24,7 +24,7 @@ describe Files::UpdateService do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "#execute" do
@@ -69,18 +69,6 @@ describe Files::UpdateService do
         results = project.repository.blob_at_branch(project.default_branch, file_path)
 
         expect(results.data).to eq(new_contents)
-      end
-    end
-
-    context 'with gitaly disabled', :skip_gitaly_mock do
-      context 'when target branch is different than source branch' do
-        let(:branch_name) { "#{project.default_branch}-new" }
-
-        it 'fires hooks only once' do
-          expect(Gitlab::Git::HooksService).to receive(:new).once.and_call_original
-
-          subject.execute
-        end
       end
     end
   end

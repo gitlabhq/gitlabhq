@@ -15,7 +15,7 @@
     }
 
     svg {
-      vertical-align: text-bottom;
+      vertical-align: middle;
     }
   }
 
@@ -517,6 +517,12 @@
   &:focus {
     outline: none;
     color: $gl-link-hover-color;
+  }
+
+  .caret-icon {
+    position: relative;
+    top: 2px;
+    left: -1px;
   }
 }
 

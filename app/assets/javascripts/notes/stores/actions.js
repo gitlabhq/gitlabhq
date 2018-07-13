@@ -15,6 +15,8 @@ let eTagPoll;
 
 export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
 
+export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
+
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
 
 export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
@@ -39,6 +41,15 @@ export const fetchDiscussions = ({ commit }, path) =>
     .then(res => res.json())
     .then(discussions => {
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+    });
+
+export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+  service
+    .fetchDiscussions(path)
+    .then(res => res.json())
+    .then(discussions => {
+      const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
+      if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
     });
 
 export const deleteNote = ({ commit }, note) =>

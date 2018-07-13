@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Member autocomplete', :js do
+describe 'Member autocomplete', :js do
   let(:project) { create(:project, :public) }
   let(:user) { create(:user) }
   let(:author) { create(:user) }

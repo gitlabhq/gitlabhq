@@ -9,10 +9,6 @@ module Gitlab
     Settings
   end
 
-  def self.migrations_hash
-    @_migrations_hash ||= Digest::MD5.hexdigest(ActiveRecord::Migrator.get_all_versions.to_s)
-  end
-
   def self.revision
     @_revision ||= begin
       if File.exist?(root.join("REVISION"))

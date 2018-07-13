@@ -150,12 +150,13 @@ module API
       end
       params do
         use :with_custom_attributes
+        optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
       get ":id" do
         group = find_group!(params[:id])
 
         options = {
-          with: Entities::GroupDetail,
+          with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
           current_user: current_user
         }
 

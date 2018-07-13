@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Projects' do
+describe 'Dashboard Projects' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, name: 'awesome stuff') }
   let(:project2) { create(:project, :public, name: 'Community project') }
@@ -29,9 +29,37 @@ feature 'Dashboard Projects' do
     end
   end
 
+  context 'when user has access to the project' do
+    it 'shows role badge' do
+      visit dashboard_projects_path
+
+      page.within '.user-access-role' do
+        expect(page).to have_content('Developer')
+      end
+    end
+
+    context 'when role changes', :use_clean_rails_memory_store_fragment_caching do
+      it 'displays the right role' do
+        visit dashboard_projects_path
+
+        page.within '.user-access-role' do
+          expect(page).to have_content('Developer')
+        end
+
+        project.members.last.update(access_level: 40)
+
+        visit dashboard_projects_path
+
+        page.within '.user-access-role' do
+          expect(page).to have_content('Maintainer')
+        end
+      end
+    end
+  end
+
   context 'when last_repository_updated_at, last_activity_at and update_at are present' do
     it 'shows the last_repository_updated_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
+      project.update!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
 
       visit dashboard_projects_path
 
@@ -39,7 +67,7 @@ feature 'Dashboard Projects' do
     end
 
     it 'shows the last_activity_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+      project.update!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
 
       visit dashboard_projects_path
 
@@ -49,7 +77,7 @@ feature 'Dashboard Projects' do
 
   context 'when last_repository_updated_at and last_activity_at are missing' do
     it 'shows the updated_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: nil, last_activity_at: nil)
+      project.update!(last_repository_updated_at: nil, last_activity_at: nil)
       project.touch
 
       visit dashboard_projects_path
@@ -121,7 +149,7 @@ feature 'Dashboard Projects' do
       visit dashboard_projects_path
     end
 
-    scenario 'shows "Create merge request" button' do
+    it 'shows "Create merge request" button' do
       expect(page).to have_content 'You pushed to feature'
 
       within('#content-body') do

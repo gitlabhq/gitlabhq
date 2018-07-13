@@ -20,12 +20,6 @@ export default {
     });
   },
 
-  [types.SET_DIFF_FILES](state, diffFiles) {
-    Object.assign(state, {
-      diffFiles: convertObjectPropsToCamelCase(diffFiles, { deep: true }),
-    });
-  },
-
   [types.SET_MERGE_REQUEST_DIFFS](state, mergeRequestDiffs) {
     Object.assign(state, {
       mergeRequestDiffs: convertObjectPropsToCamelCase(mergeRequestDiffs, { deep: true }),
@@ -72,15 +66,10 @@ export default {
   },
 
   [types.EXPAND_ALL_FILES](state) {
-    const diffFiles = [];
-
-    state.diffFiles.forEach(file => {
-      diffFiles.push({
-        ...file,
-        collapsed: false,
-      });
-    });
-
-    Object.assign(state, { diffFiles });
+    // eslint-disable-next-line no-param-reassign
+    state.diffFiles = state.diffFiles.map(file => ({
+      ...file,
+      collapsed: false,
+    }));
   },
 };

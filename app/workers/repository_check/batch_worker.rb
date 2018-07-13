@@ -4,9 +4,11 @@ module RepositoryCheck
   class BatchWorker
     include ApplicationWorker
     include RepositoryCheckQueue
+    include ExclusiveLeaseGuard
 
     RUN_TIME = 3600
     BATCH_SIZE = 10_000
+    LEASE_TIMEOUT = 1.hour
 
     attr_reader :shard_name
 
@@ -16,6 +18,20 @@ module RepositoryCheck
       return unless Gitlab::CurrentSettings.repository_checks_enabled
       return unless Gitlab::ShardHealthCache.healthy_shard?(shard_name)
 
+      try_obtain_lease do
+        perform_repository_checks
+      end
+    end
+
+    def lease_timeout
+      LEASE_TIMEOUT
+    end
+
+    def lease_key
+      "repository_check_batch_worker:#{shard_name}"
+    end
+
+    def perform_repository_checks
       start = Time.now
 
       # This loop will break after a little more than one hour ('a little
@@ -26,7 +42,7 @@ module RepositoryCheck
       project_ids.each do |project_id|
         break if Time.now - start >= RUN_TIME
 
-        next unless try_obtain_lease(project_id)
+        next unless try_obtain_lease_for_project(project_id)
 
         SingleRepositoryWorker.new.perform(project_id)
       end
@@ -60,7 +76,7 @@ module RepositoryCheck
       Project.where(repository_storage: shard_name)
     end
 
-    def try_obtain_lease(id)
+    def try_obtain_lease_for_project(id)
       # Use a 24-hour timeout because on servers/projects where 'git fsck' is
       # super slow we definitely do not want to run it twice in parallel.
       Gitlab::ExclusiveLease.new(

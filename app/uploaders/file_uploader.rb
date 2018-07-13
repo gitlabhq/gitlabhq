@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class breaks the actual CarrierWave concept.
 # Every uploader should use a base_dir that is model agnostic so we can build
 # back URLs from base_dir-relative paths saved in the `Upload` model.
@@ -81,6 +83,13 @@ class FileUploader < GitlabUploader
     apply_context!(uploader_context)
   end
 
+  def initialize_copy(from)
+    super
+
+    @secret = self.class.generate_secret
+    @upload = nil # calling record_upload would delete the old upload if set
+  end
+
   # enforce the usage of Hashed storage when storing to
   # remote store as the FileMover doesn't support OS
   def base_dir(store = nil)
@@ -110,7 +119,7 @@ class FileUploader < GitlabUploader
   end
 
   def markdown_link
-    markdown = "[#{markdown_name}](#{secure_url})"
+    markdown = +"[#{markdown_name}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?
     markdown
   end
@@ -142,6 +151,27 @@ class FileUploader < GitlabUploader
 
   def secret
     @secret ||= self.class.generate_secret
+  end
+
+  # return a new uploader with a file copy on another project
+  def self.copy_to(uploader, to_project)
+    moved = uploader.dup.tap do |u|
+      u.model = to_project
+    end
+
+    moved.copy_file(uploader.file)
+    moved
+  end
+
+  def copy_file(file)
+    to_path = if file_storage?
+                File.join(self.class.root, store_path)
+              else
+                store_path
+              end
+
+    self.file = file.copy_to(to_path)
+    record_upload # after_store is not triggered
   end
 
   private

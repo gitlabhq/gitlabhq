@@ -21,7 +21,7 @@
           - if current_user
             = render 'layouts/header/new_dropdown'
           - if header_link?(:search)
-            %li.nav-item.d-none.d-sm-none.d-md-block
+            %li.nav-item.d-none.d-sm-none.d-md-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-sm-none.d-md-none
               = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -61,7 +61,9 @@
           - if header_link?(:sign_in)
             %li.nav-item
               %div
-                = link_to "Sign in / Register", new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
+                - sign_in_text = allow_signup? ? 'Sign in / Register' : 'Sign in'
+                = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
+
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
         %span.sr-only Toggle navigation

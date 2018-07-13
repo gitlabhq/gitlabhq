@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User deletes wiki page', :js do
+describe 'User deletes wiki page', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_page) { create(:wiki_page, wiki: project.wiki) }

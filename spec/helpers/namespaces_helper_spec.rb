@@ -28,6 +28,16 @@ describe NamespacesHelper do
 
       expect(options).not_to include(admin_group.name)
       expect(options).to include(user_group.name)
+      expect(options).to include(user.name)
+    end
+
+    it 'returns only groups if groups_only option is true' do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      options = helper.namespaces_options(nil, groups_only: true)
+
+      expect(options).not_to include(user.name)
+      expect(options).to include(user_group.name)
     end
 
     context 'when nested groups are available', :nested_groups do

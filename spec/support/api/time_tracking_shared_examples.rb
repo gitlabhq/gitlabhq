@@ -85,7 +85,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
       it 'subtracts time of the total spent time' do
         Timecop.travel(1.minute.from_now) do
           expect do
-            issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+            issuable.update!(spend_time: { duration: 7200, user_id: user.id })
           end.to change { issuable.reload.updated_at }
         end
 
@@ -99,7 +99,7 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
     context 'when time to subtract is greater than the total spent time' do
       it 'does not modify the total time spent' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+        issuable.update!(spend_time: { duration: 7200, user_id: user.id })
 
         Timecop.travel(1.minute.from_now) do
           expect do
@@ -135,8 +135,8 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
     it "returns the time stats for #{issuable_name}" do
-      issuable.update_attributes!(spend_time: { duration: 1800, user_id: user.id },
-                                  time_estimate: 3600)
+      issuable.update!(spend_time: { duration: 1800, user_id: user.id },
+                       time_estimate: 3600)
 
       get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", user)
 

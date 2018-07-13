@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'issuable templates', :js do
+describe 'issuable templates', :js do
   include ProjectForksHelper
 
   let(:user) { create(:user) }
@@ -8,7 +8,7 @@ feature 'issuable templates', :js do
   let(:issue_form_location) { '#content-body .issuable-details .detail-page-description' }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
   end
 
@@ -18,7 +18,7 @@ feature 'issuable templates', :js do
     let(:issue) { create(:issue, author: user, assignees: [user], project: project) }
     let(:description_addition) { ' appending to description' }
 
-    background do
+    before do
       project.repository.create_file(
         user,
         '.gitlab/issue_templates/bug.md',
@@ -36,14 +36,14 @@ feature 'issuable templates', :js do
       fill_in :'issuable-title', with: 'test issue title'
     end
 
-    scenario 'user selects "bug" template' do
+    it 'user selects "bug" template' do
       select_template 'bug'
       wait_for_requests
       assert_template(page_part: issue_form_location)
       save_changes
     end
 
-    scenario 'user selects "bug" template and then "no template"' do
+    it 'user selects "bug" template and then "no template"' do
       select_template 'bug'
       wait_for_requests
       select_option 'No template'
@@ -51,7 +51,7 @@ feature 'issuable templates', :js do
       save_changes('')
     end
 
-    scenario 'user selects "bug" template, edits description and then selects "reset template"' do
+    it 'user selects "bug" template, edits description and then selects "reset template"' do
       select_template 'bug'
       wait_for_requests
       find_field('issue-description').send_keys(description_addition)
@@ -67,7 +67,7 @@ feature 'issuable templates', :js do
     let(:template_content) { 'this is a test "bug" template' }
     let(:issue) { create(:issue, author: user, assignees: [user], project: project) }
 
-    background do
+    before do
       project.repository.create_file(
         user,
         '.gitlab/issue_templates/bug.md',
@@ -80,7 +80,7 @@ feature 'issuable templates', :js do
       fill_in :'issue-description', with: prior_description
     end
 
-    scenario 'user selects "bug" template' do
+    it 'user selects "bug" template' do
       select_template 'bug'
       wait_for_requests
       assert_template(page_part: issue_form_location)
@@ -92,7 +92,7 @@ feature 'issuable templates', :js do
     let(:template_content) { 'this is a test "feature-proposal" template' }
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: project) }
 
-    background do
+    before do
       project.repository.create_file(
         user,
         '.gitlab/merge_request_templates/feature-proposal.md',
@@ -103,7 +103,7 @@ feature 'issuable templates', :js do
       fill_in :'merge_request[title]', with: 'test merge request title'
     end
 
-    scenario 'user selects "feature-proposal" template' do
+    it 'user selects "feature-proposal" template' do
       select_template 'feature-proposal'
       wait_for_requests
       assert_template
@@ -117,7 +117,7 @@ feature 'issuable templates', :js do
     let(:forked_project) { fork_project(project, fork_user, repository: true) }
     let(:merge_request) { create(:merge_request, :with_diffs, source_project: forked_project, target_project: project) }
 
-    background do
+    before do
       sign_out(:user)
 
       project.add_developer(fork_user)
@@ -136,7 +136,7 @@ feature 'issuable templates', :js do
 
     context 'feature proposal template' do
       context 'template exists in target project' do
-        scenario 'user selects template' do
+        it 'user selects template' do
           select_template 'feature-proposal'
           wait_for_requests
           assert_template

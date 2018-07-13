@@ -19,7 +19,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
   context 'no discussions' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       note.destroy
       visit_merge_request
@@ -33,7 +33,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
   context 'as authorized user' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit_merge_request
     end

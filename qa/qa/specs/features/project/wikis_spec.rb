@@ -1,5 +1,5 @@
 module QA
-  feature 'Wiki Functionality', :core do
+  describe 'Wiki Functionality', :core do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
@@ -14,7 +14,7 @@ module QA
       login
     end
 
-    scenario 'User creates, edits, clones, and pushes to the wiki' do
+    it 'User creates, edits, clones, and pushes to the wiki' do
       wiki = Factory::Resource::Wiki.fabricate! do |resource|
         resource.title = 'Home'
         resource.content = '# My First Wiki Content'

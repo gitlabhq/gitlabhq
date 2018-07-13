@@ -63,12 +63,8 @@ module Gitlab
           # This saves us an RPC round trip.
           return nil if commit_id.include?(':')
 
-          commit = repo.gitaly_migrate(:find_commit) do |is_enabled|
-            if is_enabled
-              repo.gitaly_commit_client.find_commit(commit_id)
-            else
-              rugged_find(repo, commit_id)
-            end
+          commit = repo.wrapped_gitaly_errors do
+            repo.gitaly_commit_client.find_commit(commit_id)
           end
 
           decorate(repo, commit) if commit
@@ -76,12 +72,6 @@ module Gitlab
                Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
                Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
-        end
-
-        def rugged_find(repo, commit_id)
-          obj = repo.rev_parse_target(commit_id)
-
-          obj.is_a?(Rugged::Commit) ? obj : nil
         end
 
         # Get last commit for HEAD
@@ -174,13 +164,8 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid,
-                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-            if is_enabled
-              repo.gitaly_commit_client.list_commits_by_oid(oids)
-            else
-              oids.map { |oid| find(repo, oid) }.compact
-            end
+          repo.wrapped_gitaly_errors do
+            repo.gitaly_commit_client.list_commits_by_oid(oids)
           end
         end
 
@@ -299,14 +284,7 @@ module Gitlab
 
       def deltas
         @deltas ||= begin
-          deltas = Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
-            if is_enabled
-              @repository.gitaly_commit_client.commit_deltas(self)
-            else
-              rugged_diff_from_parent.each_delta
-            end
-          end
-
+          deltas = @repository.gitaly_commit_client.commit_deltas(self)
           deltas.map { |delta| Gitlab::Git::Diff.new(delta) }
         end
       end

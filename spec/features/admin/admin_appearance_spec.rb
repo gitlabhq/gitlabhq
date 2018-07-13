@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-feature 'Admin Appearance' do
+describe 'Admin Appearance' do
   let!(:appearance) { create(:appearance) }
 
-  scenario 'Create new appearance' do
+  it 'Create new appearance' do
     sign_in(create(:admin))
     visit admin_appearances_path
 
@@ -21,7 +21,7 @@ feature 'Admin Appearance' do
     expect(page).to have_content 'Last edit'
   end
 
-  scenario 'Preview sign-in page appearance' do
+  it 'Preview sign-in page appearance' do
     sign_in(create(:admin))
 
     visit admin_appearances_path
@@ -30,7 +30,7 @@ feature 'Admin Appearance' do
     expect_custom_sign_in_appearance(appearance)
   end
 
-  scenario 'Preview new project page appearance' do
+  it 'Preview new project page appearance' do
     sign_in(create(:admin))
 
     visit admin_appearances_path
@@ -39,20 +39,20 @@ feature 'Admin Appearance' do
     expect_custom_new_project_appearance(appearance)
   end
 
-  scenario 'Custom sign-in page' do
+  it 'Custom sign-in page' do
     visit new_user_session_path
 
     expect_custom_sign_in_appearance(appearance)
   end
 
-  scenario 'Custom new project page' do
+  it 'Custom new project page' do
     sign_in create(:user)
     visit new_project_path
 
     expect_custom_new_project_appearance(appearance)
   end
 
-  scenario 'Appearance logo' do
+  it 'Appearance logo' do
     sign_in(create(:admin))
     visit admin_appearances_path
 
@@ -64,7 +64,7 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(logo_selector)
   end
 
-  scenario 'Header logos' do
+  it 'Header logos' do
     sign_in(create(:admin))
     visit admin_appearances_path
 
@@ -76,7 +76,7 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
-  scenario 'Favicon' do
+  it 'Favicon' do
     sign_in(create(:admin))
     visit admin_appearances_path
 

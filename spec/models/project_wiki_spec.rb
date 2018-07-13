@@ -1,3 +1,4 @@
+# coding: utf-8
 require "spec_helper"
 
 describe ProjectWiki do
@@ -10,7 +11,6 @@ describe ProjectWiki do
 
   subject { project_wiki }
 
-  it { is_expected.to delegate_method(:empty?).to :pages }
   it { is_expected.to delegate_method(:repository_storage).to :project }
   it { is_expected.to delegate_method(:hashed_storage?).to :project }
 
@@ -92,11 +92,19 @@ describe ProjectWiki do
     context "when the wiki has pages" do
       before do
         project_wiki.create_page("index", "This is an awesome new Gollum Wiki")
+        project_wiki.create_page("another-page", "This is another page")
       end
 
       describe '#empty?' do
         subject { super().empty? }
         it { is_expected.to be_falsey }
+
+        # Re-enable this when https://gitlab.com/gitlab-org/gitaly/issues/1204 is fixed
+        xit 'only instantiates a Wiki page once' do
+          expect(WikiPage).to receive(:new).once.and_call_original
+
+          subject
+        end
       end
     end
   end
