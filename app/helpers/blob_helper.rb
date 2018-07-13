@@ -114,22 +114,22 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_url(only_path: false, inline: nil)
+  def blob_raw_url(**kwargs)
     if @build && @entry
-      raw_project_job_artifacts_url(@project, @build, path: @entry.path, only_path: only_path)
+      raw_project_job_artifacts_url(@project, @build, path: @entry.path, **kwargs)
     elsif @snippet
       if @snippet.project_id
-        raw_project_snippet_url(@project, @snippet, only_path: only_path)
+        raw_project_snippet_url(@project, @snippet, **kwargs)
       else
-        raw_snippet_url(@snippet, only_path: only_path)
+        raw_snippet_url(@snippet, **kwargs)
       end
     elsif @blob
-      project_raw_url(@project, @id, only_path: only_path, inline: inline)
+      project_raw_url(@project, @id, **kwargs)
     end
   end
 
-  def blob_raw_path
-    blob_raw_url(only_path: true)
+  def blob_raw_path(**kwargs)
+    blob_raw_url(**kwargs, only_path: true)
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -226,16 +226,15 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
-    unless blob.raw_binary? || blob.stored_externally?
-      title = 'Open raw'
-      link_to icon('file-code-o'), blob_raw_url(:inline => true), class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
-    end 
+    return if blob.raw_binary? || blob.stored_externally?
+    title = 'Open raw'
+    link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def download_blob_button(blob)
     return if blob.empty?
     title = 'Download'
-    link_to sprite_icon('download'), blob_raw_url, download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+    link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)
