@@ -172,7 +172,6 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-<<<<<<< HEAD
     const sourceFilesContexts = [
       require.context('~', true, /\.(js|vue)$/),
       require.context('ee', true, /\.(js|vue)$/),
@@ -187,25 +186,6 @@ if (process.env.BABEL_ENV === 'coverage') {
         // ignore if there is a matching spec file
         if (allTestFiles.indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
           return;
-=======
-    const sourceFiles = require.context('~', true, /\.(js|vue)$/);
-
-    $.holdReady(true);
-
-    sourceFiles.keys().forEach(function(path) {
-      // ignore if there is a matching spec file
-      if (testsContext.keys().indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
-        return;
-      }
-
-      it(`includes '${path}'`, function() {
-        try {
-          sourceFiles(path);
-        } catch (err) {
-          if (troubleMakers.indexOf(path) === -1) {
-            expect(err).toBeNull();
-          }
->>>>>>> upstream/master
         }
 
         it(`includes '${path}'`, function() {
