@@ -18,7 +18,6 @@ module BitbucketServer
 
     def repo(project, repo_name)
       parsed_response = connection.get("/projects/#{project}/repos/#{repo_name}")
-      # XXXX TODO Handle failure
       BitbucketServer::Representation::Repo.new(parsed_response)
     end
 

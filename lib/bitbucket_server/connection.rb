@@ -6,6 +6,8 @@ module BitbucketServer
 
     attr_reader :api_version, :base_uri, :username, :token
 
+    ConnectionError = Class.new(StandardError)
+
     def initialize(options = {})
       @api_version   = options.fetch(:api_version, DEFAULT_API_VERSION)
       @base_uri      = options[:base_uri]
@@ -19,6 +21,7 @@ module BitbucketServer
                                   query: extra_query)
 
       check_errors!(response)
+
       response.parsed_response
     end
 
@@ -29,6 +32,7 @@ module BitbucketServer
                         body: body)
 
       check_errors!(response)
+
       response
     end
 
@@ -37,13 +41,13 @@ module BitbucketServer
     def check_errors!(response)
       if response.code != 200
         error =
-          if response.parsed_response
+          if response.parsed_response && response.parsed_response.is_a?(Hash)
             sanitize(response.parsed_response.dig('errors', 0, 'message'))
           end
 
         message = "Error #{response.code}"
         message += ": #{error}" if error
-        raise ::BitbucketServer::Error::Unauthorized, message
+        raise ConnectionError, message
       end
     end
 

@@ -21,7 +21,7 @@ class Import::BitbucketServerController < Import::BaseController
                    Net::OpenTimeout,
                    Net::ReadTimeout,
                    Gitlab::HTTP::BlockedUrlError,
-                   BitbucketServer::Error::Unauthorized].freeze
+                   BitbucketServer::Connection::ConnectionError].freeze
 
   def new
   end
