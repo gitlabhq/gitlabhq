@@ -54,10 +54,12 @@ export default {
   methods: {
     ...mapActions('diffs', ['cancelCommentForm']),
     ...mapActions(['saveNote', 'refetchDiscussionById']),
-    handleCancelCommentForm() {
-      // eslint-disable-next-line no-alert
-      if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
-        return;
+    handleCancelCommentForm(shouldConfirm, isDirty) {
+      if (shouldConfirm && isDirty) {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+          return;
+        }
       }
 
       this.cancelCommentForm({
