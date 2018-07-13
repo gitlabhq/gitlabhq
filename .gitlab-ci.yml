@@ -86,7 +86,9 @@ stages:
 .rails5: &rails5
   allow_failure: true
   only:
-    - /rails5/
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /rails5/
+      - $RAILS5_ENABLED
   variables:
     BUNDLE_GEMFILE: "Gemfile.rails5"
     RAILS5: "true"
