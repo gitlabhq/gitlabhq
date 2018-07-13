@@ -24,12 +24,12 @@ module EE
         end
 
         def find_user(board)
-          user_ids = user_finder(board).select(:user_id)
-          ::User.where(id: user_ids).find(params[:assignee_id])
+          user_ids = user_finder(board).execute.select(:user_id)
+          ::User.where(id: user_ids).find(params['assignee_id'])
         end
 
         def user_finder(board)
-          @user_finder ||= Boards::UsersFinder.new(board, current_user)
+          @user_finder ||= ::Boards::UsersFinder.new(board, current_user)
         end
       end
     end
