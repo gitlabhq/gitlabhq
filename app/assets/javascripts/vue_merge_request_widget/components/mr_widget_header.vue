@@ -1,7 +1,7 @@
 <script>
 import tooltip from '~/vue_shared/directives/tooltip';
 import { n__ } from '~/locale';
-import { webIDEUrl } from '~/lib/utils/url_utility';
+import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
@@ -43,7 +43,10 @@ export default {
       return this.isBranchTitleLong(this.mr.targetBranch);
     },
     webIdePath() {
-      return webIDEUrl(this.mr.statusPath.replace('.json', ''));
+      return mergeUrlParams({
+        target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
+          this.mr.targetProjectFullPath : '',
+      }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
     },
   },
   methods: {
