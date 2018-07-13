@@ -18,8 +18,10 @@ describe Epics::UpdateService do
         {
           title: 'New title',
           description: 'New description',
-          start_date: '2017-01-09',
-          end_date: '2017-10-21'
+          start_date_fixed: '2017-01-09',
+          start_date_is_fixed: true,
+          due_date_fixed: '2017-10-21',
+          due_date_is_fixed: true
         }
       end
 
@@ -29,8 +31,10 @@ describe Epics::UpdateService do
         expect(epic).to be_valid
         expect(epic.title).to eq(opts[:title])
         expect(epic.description).to eq(opts[:description])
-        expect(epic.start_date).to eq(Date.strptime(opts[:start_date]))
-        expect(epic.end_date).to eq(Date.strptime(opts[:end_date]))
+        expect(epic.start_date_fixed).to eq(Date.strptime(opts[:start_date_fixed]))
+        expect(epic.start_date_is_fixed).to eq(opts[:start_date_is_fixed])
+        expect(epic.due_date_fixed).to eq(Date.strptime(opts[:due_date_fixed]))
+        expect(epic.due_date_is_fixed).to eq(opts[:due_date_is_fixed])
       end
 
       it 'updates the last_edited_at value' do
@@ -113,6 +117,16 @@ describe Epics::UpdateService do
         it 'does not mark todos as done for other users' do
           expect(todo2.reload.state).to eq('pending')
         end
+      end
+    end
+
+    context 'filter out start_date and end_date' do
+      it 'ignores start_date and end_date' do
+        expect { update_epic(start_date: Date.today, end_date: Date.today) }.not_to change { Note.count }
+
+        expect(epic).to be_valid
+        expect(epic.start_date).to eq(nil)
+        expect(epic.due_date).to eq(nil)
       end
     end
   end

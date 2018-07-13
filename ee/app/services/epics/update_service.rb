@@ -1,6 +1,10 @@
 module Epics
   class UpdateService < Epics::BaseService
     def execute(epic)
+      # start_date and end_date columns are no longer writable by users because those
+      # are composite fields managed by the system.
+      params.except!(:start_date, :end_date)
+
       update(epic)
 
       epic
