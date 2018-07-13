@@ -43,12 +43,7 @@ module Gitlab
       private
 
       def add_upload(upload)
-        secret, identifier = upload.split('/').last(2)
-
-        uploader_context = {
-          secret: secret,
-          identifier: identifier
-        }
+        uploader_context = FileUploader.extract_dynamic_path(upload).named_captures.symbolize_keys
 
         UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
       end

@@ -64,8 +64,8 @@ describe Gitlab::ImportExport::UploadsManager do
           stub_feature_flags(import_export_object_storage: true)
           stub_uploads_object_storage(FileUploader)
 
-          FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/random'))
-          FileUtils.touch(File.join(shared.export_path, 'uploads/random', "dummy.txt"))
+          FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038'))
+          FileUtils.touch(File.join(shared.export_path, 'uploads/72a497a02fe3ee09edae2ed06d390038', "dummy.txt"))
         end
 
         it 'restores the file' do
