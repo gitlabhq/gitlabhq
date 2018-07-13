@@ -1,6 +1,8 @@
 module Banzai
   module Pipeline
     class SingleLinePipeline < GfmPipeline
+      prepend EE::Banzai::Pipeline::SingleLinePipeline
+
       def self.filters
         @filters ||= FilterArray[
           Filter::HtmlEntityFilter,
@@ -10,7 +12,12 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
-          Filter::EpicReferenceFilter,
+          *reference_filters
+        ]
+      end
+
+      def self.reference_filters
+        [
           Filter::UserReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
