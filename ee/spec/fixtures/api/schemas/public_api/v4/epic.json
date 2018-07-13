@@ -25,7 +25,14 @@
       }
     },
     "start_date": { "type": ["string", "null"] },
+    "start_date_fixed": { "type": ["string", "null"] },
+    "start_date_from_milestones": { "type": ["string", "null"] },
+    "start_date_is_fixed": { "type": ["boolean"] },
     "end_date": { "type": ["string", "null"] },
+    "due_date": { "type": ["string", "null"] },
+    "due_date_fixed": { "type": ["string", "null"] },
+    "due_date_from_milestones": { "type": ["string", "null"] },
+    "due_date_is_fixed": { "type": ["boolean"] },
     "created_at": { "type": ["string", "null"] },
     "updated_at": { "type": ["string", "null"] }
   },

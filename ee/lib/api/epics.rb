@@ -79,8 +79,10 @@ module API
       params do
         requires :title, type: String, desc: 'The title of an epic'
         optional :description, type: String, desc: 'The description of an epic'
-        optional :start_date, type: String, desc: 'The start date of an epic'
-        optional :end_date, type: String, desc: 'The end date of an epic'
+        optional :start_date, as: :start_date_fixed, type: String, desc: 'The start date of an epic'
+        optional :start_date_is_fixed, type: Boolean, desc: 'Indicates start date should be sourced from start_date_fixed field not the issue milestones'
+        optional :end_date, as: :due_date_fixed, type: String, desc: 'The due date of an epic'
+        optional :due_date_is_fixed, type: Boolean, desc: 'Indicates due date should be sourced from due_date_fixed field not the issue milestones'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       post ':id/(-/)epics' do
@@ -101,10 +103,12 @@ module API
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
         optional :title, type: String, desc: 'The title of an epic'
         optional :description, type: String, desc: 'The description of an epic'
-        optional :start_date, type: String, desc: 'The start date of an epic'
-        optional :end_date, type: String, desc: 'The end date of an epic'
+        optional :start_date, as: :start_date_fixed, type: String, desc: 'The start date of an epic'
+        optional :start_date_is_fixed, type: Boolean, desc: 'Indicates start date should be sourced from start_date_fixed field not the issue milestones'
+        optional :end_date, as: :due_date_fixed, type: String, desc: 'The due date of an epic'
+        optional :due_date_is_fixed, type: Boolean, desc: 'Indicates due date should be sourced from due_date_fixed field not the issue milestones'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
-        at_least_one_of :title, :description, :start_date, :end_date, :labels
+        at_least_one_of :title, :description, :start_date_fixed, :due_date_fixed, :labels
       end
       put ':id/(-/)epics/:epic_iid' do
         authorize_can_admin!

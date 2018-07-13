@@ -206,6 +206,19 @@ describe API::Epics do
           expect(epic.description).to eq('epic description')
           expect(epic.labels.first.title).to eq('label1')
         end
+
+        context 'when deprecated start_date and end_date params are present' do
+          let(:start_date) { Date.new(2001, 1, 1) }
+          let(:due_date) { Date.new(2001, 1, 2) }
+          let(:params) { { title: 'new epic', start_date: start_date, end_date: due_date } }
+
+          it 'updates start_date_fixed and due_date_fixed' do
+            result = Epic.last
+
+            expect(result.start_date_fixed).to eq(start_date)
+            expect(result.due_date_fixed).to eq(due_date)
+          end
+        end
       end
     end
   end
@@ -260,6 +273,20 @@ describe API::Epics do
           expect(result.title).to eq('new title')
           expect(result.description).to eq('new description')
           expect(result.labels.first.title).to eq('label2')
+        end
+
+        context 'when deprecated start_date and end_date params are present' do
+          let(:epic) { create(:epic, :use_fixed_dates, group: group) }
+          let(:new_start_date) { epic.start_date + 1.day }
+          let(:new_due_date) { epic.end_date + 1.day }
+          let!(:params) { { start_date: new_start_date, end_date: new_due_date } }
+
+          it 'updates start_date_fixed and due_date_fixed' do
+            result = epic.reload
+
+            expect(result.start_date_fixed).to eq(new_start_date)
+            expect(result.due_date_fixed).to eq(new_due_date)
+          end
         end
       end
     end

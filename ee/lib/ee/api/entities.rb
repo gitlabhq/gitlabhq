@@ -162,7 +162,14 @@ module EE
         expose :description
         expose :author, using: ::API::Entities::UserBasic
         expose :start_date
-        expose :end_date
+        expose :start_date_is_fixed?, as: :start_date_is_fixed
+        expose :start_date_fixed
+        expose :start_date_from_milestones
+        expose :end_date # @deprecated
+        expose :end_date, as: :due_date
+        expose :due_date_is_fixed?, as: :due_date_is_fixed
+        expose :due_date_fixed
+        expose :due_date_from_milestones
         expose :created_at
         expose :updated_at
         expose :labels do |epic, options|
