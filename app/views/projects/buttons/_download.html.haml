@@ -8,8 +8,14 @@
       %span.sr-only=  _('Select Archive Format')
       = sprite_icon("arrow-down")
     %ul.dropdown-menu.dropdown-menu-right{ role: 'menu' }
+      - if is_directory
+        %li.dropdown-header
+          #{ _('Directory') }
+        %li
+          = link_to project_archive_path(project, subdirectory: get_directory_path, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
+            %span=  _('Download zip')
       %li.dropdown-header
-        #{ _('Source code') }
+        #{ _('Repository') }
       %li
         = link_to project_archive_path(project, id: tree_join(ref, archive_prefix), format: 'zip'), rel: 'nofollow', download: '' do
           %span=  _('Download zip')

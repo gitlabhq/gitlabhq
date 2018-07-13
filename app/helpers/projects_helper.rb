@@ -26,6 +26,14 @@ module ProjectsHelper
 
     image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
   end
+  
+  def is_directory
+    @path.empty? ? false : true
+  end
+
+  def get_directory_path
+    @path ? "#{@path}/" : ''
+  end
 
   def author_content_tag(author, opts = {})
     default_opts = { author_class: 'author', tooltip: false, by_username: false }
