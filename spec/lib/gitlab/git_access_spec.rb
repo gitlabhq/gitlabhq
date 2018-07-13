@@ -943,6 +943,26 @@ describe Gitlab::GitAccess do
         # There is still an N+1 query with protected branches
         expect { access.check('git-receive-pack', changes) }.not_to exceed_query_limit(control_count).with_threshold(1)
       end
+
+      context 'with multiple changes' do
+        let(:changes) do
+          [
+            "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/first",
+            "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/second"
+          ]
+        end
+
+        it 'caches commit lookups across changes' do
+          stub_lfs_setting(enabled: true)
+          create(:lfs_file_lock, user: create(:user), project: project, path: 'README')
+          allow(project.repository).to receive(:new_commit_shas) { ["b83d6e391c22777fca1ed3012fce84f633d7fed0"] }
+          #, "498214de67004b1da3d820901307bed2a68a8ef6"] }
+
+          expect(Gitlab::Git::Commit).to receive(:find).once.and_call_original
+
+          access.check('git-receive-pack', changes)
+        end
+      end
     end
   end
 

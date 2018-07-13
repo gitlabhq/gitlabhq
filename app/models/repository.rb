@@ -153,13 +153,17 @@ class Repository
   end
 
   # Returns a list of commits that are not present in any reference
+  # Uses commit_by to memoize commits between method calls
   def new_commits(newrev)
+    new_commit_shas(newrev).map { |sha| commit_by(oid: sha.strip) }
+  end
+
+  # Returns a list of commit shas that are not present in any reference
+  def new_commit_shas(newrev)
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
-    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
       ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
     end
-
-    refs.map { |sha| commit(sha.strip) }
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
