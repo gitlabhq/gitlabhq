@@ -29,6 +29,7 @@ module Gitlab
       def execute
         import_repository
         import_pull_requests
+        delete_temp_branches
         handle_errors
 
         true
@@ -138,6 +139,17 @@ module Gitlab
             rescue StandardError => e
               errors << { type: :pull_request, iid: pull_request.iid, errors: e.message, trace: e.backtrace.join("\n"), raw_response: pull_request.raw }
             end
+          end
+        end
+      end
+
+      def delete_temp_branches
+        @temp_branches.each do |branch_name|
+          begin
+            client.delete_branch(project_key, repository_slug, branch_name)
+            project.repository.delete_branch(branch_name)
+          rescue BitbucketServer::Connection::ConnectionError => e
+            @errors << { type: :delete_temp_branches, branch_name: branch_name, errors: e.message }
           end
         end
       end
