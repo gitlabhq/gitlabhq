@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 16:02-0700\n"
-"PO-Revision-Date: 2018-07-10 16:02-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -5149,6 +5147,9 @@ msgstr ""
 msgid "This directory"
 msgstr ""
 
+msgid "This emoji and message will appear on your profile and throughout the interface."
+msgstr ""
+
 msgid "This group"
 msgstr ""
 
@@ -5591,6 +5592,9 @@ msgid "User map"
 msgstr ""
 
 msgid "Users"
+msgstr ""
+
+msgid "User|Current Status"
 msgstr ""
 
 msgid "Variables"

@@ -9,5 +9,5 @@ class UserStatus < ActiveRecord::Base
   validates :emoji, inclusion: { in: Gitlab::Emoji.emojis_names }
   validates :message, length: { maximum: 100 }, allow_blank: true
 
-  cache_markdown_field :message, pipeline: :single_line
+  cache_markdown_field :message, pipeline: :emoji
 end

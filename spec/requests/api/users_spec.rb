@@ -13,6 +13,26 @@ describe API::Users do
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
   let(:private_user) { create(:user, private_profile: true) }
 
+  shared_examples 'rendering user status' do
+    it 'returns the status if there was one' do
+      create(:user_status, user: user)
+
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['message']).to be_present
+      expect(json_response['emoji']).to be_present
+    end
+
+    it 'returns an empty response if there was no status' do
+      get api(path, user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['message']).to be_nil
+      expect(json_response['emoji']).to be_nil
+    end
+  end
+
   describe 'GET /users' do
     context "when unauthenticated" do
       it "returns authorization error when the `username` parameter is not passed" do
@@ -307,6 +327,20 @@ describe API::Users do
       get api("/users/1ASDF", user)
 
       expect(response).to have_gitlab_http_status(404)
+    end
+  end
+
+  describe 'GET /users/:id_or_username/status' do
+    context 'when finding the user by id' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.id}/status" }
+      end
+    end
+
+    context 'when finding the user by username' do
+      it_behaves_like 'rendering user status' do
+        let(:path) { "/users/#{user.username}/status" }
+      end
     end
   end
 
@@ -1771,6 +1805,34 @@ describe API::Users do
           expect(activity['last_activity_at']).to eq(Time.utc(2000, 1, 1).to_date.to_s)
         end
       end
+    end
+  end
+
+  describe 'GET /user/status' do
+    let(:path) { '/user/status' }
+    it_behaves_like 'rendering user status'
+  end
+
+  describe 'PUT /user/status' do
+    it 'saves the status' do
+      put api('/user/status', user), { emoji: 'smirk', message: 'hello world' }
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(json_response['emoji']).to eq('smirk')
+    end
+
+    it 'renders errors when the status was invalid' do
+      put api('/user/status', user), { emoji: 'does not exist', message: 'hello world' }
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['message']['emoji']).to be_present
+    end
+
+    it 'deletes the status when passing empty values' do
+      put api('/user/status', user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(user.reload.status).to be_nil
     end
   end
 

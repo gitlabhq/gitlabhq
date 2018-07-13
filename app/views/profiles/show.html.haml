@@ -33,6 +33,16 @@
   %hr
   .row
     .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0= s_("User|Current Status")
+      %p= _("This emoji and message will appear on your profile and throughout the interface.")
+    .col-lg-8
+      .row
+        = f.fields_for :status, @user.status do |status_form|
+          = status_form.text_field :emoji
+          = status_form.text_field :message, maxlength: 100
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
       %h4.prepend-top-0
         Main settings
       %p

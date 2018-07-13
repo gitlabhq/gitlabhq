@@ -20,6 +20,7 @@ describe User do
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
+    it { is_expected.to have_one(:status) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }

@@ -62,6 +62,11 @@ module API
       expose :admin?, as: :is_admin
     end
 
+    class UserStatus < Grape::Entity
+      expose :emoji
+      expose :message
+    end
+
     class Email < Grape::Entity
       expose :id, :email
     end

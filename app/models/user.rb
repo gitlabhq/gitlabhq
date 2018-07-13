@@ -141,6 +141,8 @@ class User < ActiveRecord::Base
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
 
+  has_one :status, class_name: 'UserStatus'
+
   #
   # Validations
   #
