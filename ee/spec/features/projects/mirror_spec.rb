@@ -65,11 +65,15 @@ feature 'Project mirror', :js do
       it 'can be set up' do
         visit project_settings_repository_path(project)
 
+        page.execute_script("document.querySelector('html').scrollTop += 1000")
+
         page.within('.project-mirror-settings') do
           fill_in 'Git repository URL', with: 'http://user@example.com'
-          select('Pull', from: 'Mirror direction')
+          select 'Pull', from: 'Mirror direction'
           fill_in 'Password', with: 'foo'
+          sleep 10
           click_without_sidekiq 'Mirror repository'
+          sleep 10
         end
 
         expect(page).to have_content('Mirroring settings were successfully updated')

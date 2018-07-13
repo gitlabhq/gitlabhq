@@ -15,6 +15,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
+    p 'CE LUKE 1'
     if project.update_attributes(mirror_params)
       flash[:notice] = 'Mirroring settings were successfully updated.'
     else
