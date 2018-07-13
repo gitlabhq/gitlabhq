@@ -29,8 +29,10 @@ export default {
   source_branch: 'daaaa',
   source_branch_link: 'daaaa',
   source_project_id: 19,
+  source_project_full_path: '/group1/project1',
   target_branch: 'master',
   target_project_id: 19,
+  target_project_full_path: '/group2/project2',
   metrics: {
     merged_by: {
       name: 'Administrator',

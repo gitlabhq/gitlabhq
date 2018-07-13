@@ -375,8 +375,10 @@ class Project < ActiveRecord::Base
   chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
 
   validates :build_timeout, allow_nil: true,
-                            numericality: { greater_than_or_equal_to: 600,
-                                            message: 'needs to be at least 10 minutes' }
+                            numericality: { greater_than_or_equal_to: 10.minutes,
+                                            less_than: 1.month,
+                                            only_integer: true,
+                                            message: 'needs to be beetween 10 minutes and 1 month' }
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
