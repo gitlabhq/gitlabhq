@@ -149,22 +149,24 @@ describe Project do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
-
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
-
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
-
     it { is_expected.to validate_presence_of(:creator) }
-
     it { is_expected.to validate_presence_of(:namespace) }
-
     it { is_expected.to validate_presence_of(:repository_storage) }
+
+    it 'validates build timeout constraints' do
+      is_expected.to validate_numericality_of(:build_timeout)
+        .only_integer
+        .is_greater_than_or_equal_to(10.minutes)
+        .is_less_than(1.month)
+        .with_message('needs to be beetween 10 minutes and 1 month')
+    end
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
