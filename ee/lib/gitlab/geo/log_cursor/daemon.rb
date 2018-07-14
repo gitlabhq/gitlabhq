@@ -45,13 +45,21 @@ module Gitlab
 
         def handle_events(batch)
           batch.each do |event_log|
+            event = event_log.event
+
+            # If a project is deleted, the event log and its associated event data
+            # could be purged from the log. We ignore this and move along.
+            unless event
+              logger.warn("Unknown event", event_log_id: event_log.id)
+              next
+            end
+
             unless can_replay?(event_log)
               logger.event_info(event_log.created_at, 'Skipped event', event_data(event_log))
               next
             end
 
             begin
-              event = event_log.event
               event_klass_for(event).new(event, event_log.created_at, logger).process
             rescue NoMethodError => e
               logger.error(e.message)
