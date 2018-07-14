@@ -80,7 +80,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
 
       it 'handles events' do
-        expect(daemon).to receive(:handle_events).with(batch)
+        expect(daemon).to receive(:handle_events).with(batch, anything)
 
         daemon.run_once!
       end
@@ -97,6 +97,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
       before do
         allow(Gitlab::ShardHealthCache).to receive(:healthy_shard?).with('default').and_return(true)
+        allow(Gitlab::Geo::Logger).to receive(:info).and_call_original
       end
 
       it 'replays events for projects that belong to selected namespaces to replicate' do
@@ -111,6 +112,34 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         secondary.update!(selective_sync_type: 'namespaces', namespaces: [group_2])
 
         expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(project.id, anything)
+
+        daemon.run_once!
+      end
+
+      it "logs a message if an event was skipped" do
+        updated_event = create(:geo_repository_updated_event, project: project)
+        new_event = create(:geo_event_log, id: event_log.id + 2, repository_updated_event: updated_event)
+
+        expect(Gitlab::Geo::Logger).to receive(:info)
+                                        .with(hash_including(
+                                                class: 'Gitlab::Geo::LogCursor::Daemon',
+                                                message: 'Event log gap',
+                                                previous_event_log_id: event_log.id,
+                                                event_log_id: new_event.id))
+
+        daemon.run_once!
+
+        expect(::Geo::EventLogState.last_processed.id).to eq(new_event.id)
+
+        # Test that the cursor picks up from the last stored ID
+        third_event = create(:geo_event_log, id: new_event.id + 3, repository_updated_event: updated_event)
+
+        expect(Gitlab::Geo::Logger).to receive(:info)
+                                        .with(hash_including(
+                                                class: 'Gitlab::Geo::LogCursor::Daemon',
+                                                message: 'Event log gap',
+                                                previous_event_log_id: new_event.id,
+                                                event_log_id: third_event.id))
 
         daemon.run_once!
       end
