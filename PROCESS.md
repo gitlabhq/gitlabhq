@@ -15,8 +15,11 @@
   - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
   - [On the 7th](#on-the-7th)
   - [After the 7th](#after-the-7th)
-- [Regressions](#regressions)
-  - [How to manage a regression](#how-to-manage-a-regression)
+- [Defects](#defects)
+  - [Bugs](#bugs)
+     - [Managing a bug](#managing-a-bug)
+  - [Regressions](#regressions)
+     - [Managing a regression](#managing-a-regression)
 - [Release retrospective and kickoff](#release-retrospective-and-kickoff)
   - [Retrospective](#retrospective)
   - [Kickoff](#kickoff)
@@ -168,7 +171,7 @@ information, see
 Once the stable branch is frozen, the only MRs that can be cherry-picked into
 the stable branch are:
 
-* Fixes for [regressions](#regressions)
+* Fixes for [regressions](#regressions), where `regression:xx.x` is the last recent monthly release or the current release.
 * Fixes for security issues
 * Fixes or improvements to automated QA scenarios
 * Documentation updates for changes in the same release
@@ -242,13 +245,11 @@ A regression should always have the `regression:xx.x` label on it to designate w
 
 #### Managing a Regression
 
-**Prioritization**
-
 A ~regression label tells us that something worked before and it needs extra attention from Engineering and Product Managers to schedule/reschedule. 
 
 Regressions should be considered high priority issues that should be solved as soon as possible, especially if they have severe impact on users. 
 
-We give higher priority to regressions that affected the last recent monthly release and the current release candidates. 
+**Prioritization** We give higher priority to regressions that affected the last recent monthly release and the current release candidates. 
 The two scenarios below can [by pass the exception request in the release process](LINK_HERE_TO_RM_DOC)
 * A regression in the **Last recent monthly release**
    * **Example:** In 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works this is regression for 11.0. The issue should have the `regression:11.0` label.
