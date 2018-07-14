@@ -6,6 +6,7 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
+import jasmineDiff from 'jasmine-diff';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
@@ -35,7 +36,15 @@ Vue.use(Translate);
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
 jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 
-beforeAll(() => jasmine.addMatchers(customMatchers));
+beforeAll(() => {
+  jasmine.addMatchers(
+    jasmineDiff(jasmine, {
+      colors: true,
+      inline: true,
+    }),
+  );
+  jasmine.addMatchers(customMatchers);
+});
 
 // globalize common libraries
 window.$ = $;
