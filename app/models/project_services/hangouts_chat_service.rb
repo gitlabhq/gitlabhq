@@ -44,20 +44,22 @@ class HangoutsChatService < ChatNotificationService
   private
 
   def notify(message, opts)
-    simple_text = compose_simple_message(message)
+    simple_text = parse_simple_text_message(message)
     HangoutsChat::Sender.new(webhook).simple(simple_text)
   end
 
-  def compose_simple_message(message)
+  def parse_simple_text_message(message)
     header = message.pretext
     return header if message.attachments.empty?
 
-    title = fetch_attachment_title(message.attachments.first)
-    body = message.attachments.first[:text]
+    attachment = message.attachments.first
+    title      = format_attachment_title(attachment)
+    body       = attachment[:text]
+
     [header, title, body].compact.join("\n")
   end
 
-  def fetch_attachment_title(attachment)
+  def format_attachment_title(attachment)
     return attachment[:title] unless attachment[:title_link]
 
     "<#{attachment[:title_link]}|#{attachment[:title]}>"

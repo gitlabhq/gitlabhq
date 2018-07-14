@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe HangoutsChatService do
-  let(:chat_service) { described_class.new }
-  let(:webhook_url) { 'https://example.gitlab.com/' }
-
   describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
@@ -31,9 +28,10 @@ describe HangoutsChatService do
   describe '#execute' do
     let(:user)    { create(:user) }
     let(:project) { create(:project, :repository) }
+    let(:webhook_url) { 'https://example.gitlab.com/' }
 
     before do
-      allow(chat_service).to receive_messages(
+      allow(subject).to receive_messages(
         project: project,
         project_id: project.id,
         service_hook: true,
@@ -45,7 +43,7 @@ describe HangoutsChatService do
 
     shared_examples 'Hangouts Chat service' do
       it 'calls Hangouts Chat API' do
-        chat_service.execute(sample_data)
+        subject.execute(sample_data)
 
         expect(WebMock).to have_requested(:post, webhook_url).once
       end
@@ -61,22 +59,28 @@ describe HangoutsChatService do
       it 'specifies the webhook when it is configured' do
         expect(HangoutsChat::Sender).to receive(:new).with(webhook_url).and_return(double(:hangouts_chat_service).as_null_object)
 
-        chat_service.execute(sample_data)
+        subject.execute(sample_data)
+      end
+
+      it 'sends the simple text message to the Hangouts Chat API' do
+        subject.execute(sample_data)
+
+        expect(WebMock).to have_requested(:post, webhook_url).once
+          .with { |req| req.body =~ /\A{"text":.+}\Z/ }
       end
 
       context 'with not default branch' do
         let(:sample_data) do
-          ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}test"
-          Gitlab::DataBuilder::Push.build(project, user, nil, nil, ref, [])
+          Gitlab::DataBuilder::Push.build(project, user, nil, nil, 'not-the-default-branch')
         end
 
         context 'when notify_only_default_branch enabled' do
           before do
-            chat_service.notify_only_default_branch = true
+            subject.notify_only_default_branch = true
           end
 
           it 'does not call the Hangouts Chat API' do
-            result = chat_service.execute(sample_data)
+            result = subject.execute(sample_data)
 
             expect(result).to be_falsy
           end
@@ -84,7 +88,7 @@ describe HangoutsChatService do
 
         context 'when notify_only_default_branch disabled' do
           before do
-            chat_service.notify_only_default_branch = false
+            subject.notify_only_default_branch = false
           end
 
           it_behaves_like 'Hangouts Chat service'
@@ -172,7 +176,7 @@ describe HangoutsChatService do
         it_behaves_like 'Hangouts Chat service'
       end
 
-      context 'wiht snippet comment' do
+      context 'with snippet comment' do
         let(:note) do
           create(:note_on_project_snippet, project: project,
                                            note: 'snippet note')
@@ -201,7 +205,7 @@ describe HangoutsChatService do
 
         context 'with default notify_only_broken_pipelines' do
           it 'does not call Hangouts Chat API' do
-            result = chat_service.execute(sample_data)
+            result = subject.execute(sample_data)
 
             expect(result).to be_falsy
           end
@@ -209,7 +213,7 @@ describe HangoutsChatService do
 
         context 'when notify_only_broken_pipelines is false' do
           before do
-            chat_service.notify_only_broken_pipelines = false
+            subject.notify_only_broken_pipelines = false
           end
 
           it_behaves_like 'Hangouts Chat service'
@@ -223,11 +227,11 @@ describe HangoutsChatService do
 
         context 'when notify_only_default_branch enabled' do
           before do
-            chat_service.notify_only_default_branch = true
+            subject.notify_only_default_branch = true
           end
 
           it 'does not call the Hangouts Chat API' do
-            result = chat_service.execute(sample_data)
+            result = subject.execute(sample_data)
 
             expect(result).to be_falsy
           end
@@ -235,7 +239,7 @@ describe HangoutsChatService do
 
         context 'when notify_only_default_branch disabled' do
           before do
-            chat_service.notify_only_default_branch = false
+            subject.notify_only_default_branch = false
           end
 
           it_behaves_like 'Hangouts Chat service'
