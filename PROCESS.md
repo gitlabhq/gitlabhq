@@ -201,15 +201,23 @@ you can ask for an exception to be made.
 
 Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md) about how to open an exception request before opening one.
 
-## Bugs
+## Defects
+
+We categorize defects into 2 main categories, a ~bug and a ~regression.
+
+Whether the defect is a bug or a regression, the triage process should start as soon as possible. 
+You can ping the Engineering Manager or the Product Manager for the relative area to make them aware of the issue earlier. 
+They will analyze and prioritize the work as needed.
+
+### Bugs
 
 A ~bug ia a defect, error, failure which causes the system to behave incorrectly or preventing it from fulfill the product requirements.
 
-The level of impact of a ~bug can vary from blocking a whole functionality or a feature usability bug.
+The level of impact of a ~bug can vary from blocking a whole functionality 
+or a feature usability bug. A bug should always be linked to a severity level. 
+Refer to our [severity levels](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#severity-labels)
 
-A bug should always be linked to a severity level. Refer to our [severity levels](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#severity-labels)
-
-### Managing a Bug
+#### Managing a Bug
 
 When a regression is created:
 1. Create an issue describing the problem in the most detailed way possible.
@@ -221,18 +229,18 @@ When a regression is created:
 1. Notify the respective Engineering Manager to evaluate the Severity of the regression and add a [Severity label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-severity-labels). The counterpart Product Manager is included to weigh-in on prioritization as needed to set the [Priority label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-priority-labels).
 1. From the Severity and Priority level the Engineering Manager then decides which milestone to set on the bug.
 
-## Regressions
+### Regressions
 
 A ~regression implies that a previously **verified working functionality** no longer works.
 Regressions are a subset of bugs. We use the ~regression label to imply that the defect caused the functionality to regress.
 
-The regression label does not apply to ~bugs for new features which functionality was **never verified as working**. 
+The regression label does not apply to ~bugs for new features to which functionality was **never verified as working**. 
 That by definition are not regressions. The ~regression label is not removed as part of any rescheduling process. 
 If an issue is indeed a regression, it should carry such context forward until it's fully resolved.
 
 A regression should always have the `regression:xx.x` label on it to designate when it was introduced.
 
-### Managing a Regression
+#### Managing a Regression
 
 **Prioritization**
 
@@ -243,11 +251,11 @@ Regressions should be considered high priority issues that should be solved as s
 We give higher priority to regressions that affected the last recent monthly release and the current release candidates. 
 The two scenarios below can [by pass the exception request in the release process](LINK_HERE_TO_RM_DOC)
 * A regression in the **Last recent monthly release**
-   * If in 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works this is regression for 11.0. The issue should have the `regression:11.0` label.
-   * **Note:** When we say `the last recent monthly release`, this can refer to either the version currently running on GitLab.com, or the most recent version available in the package repositories.
+   * **Example:** In 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works this is regression for 11.0. The issue should have the `regression:11.0` label.
+   * *Note:* When we say `the last recent monthly release`, this can refer to either the version currently running on GitLab.com, or the most recent version available in the package repositories.
 * A regression in the **Current release candidates**
-   * If in 11.1-RC3 w
-   * **NOte:** Because GitLab.com runs release candidates of new releases, a regression can be reported in a release before its 'official' release date on the 22nd of the month. 
+   * **Example:** In 11.1-RC3 we shipped a new feature which has been verified as working. Then in 11.1-RC5 the feature no longer works this is regression for 11.1. The issue should have the `regression:11.1` label.
+   * *Note:* Because GitLab.com runs release candidates of new releases, a regression can be reported in a release before its 'official' release date on the 22nd of the month. 
 
 When a regression is found:
 1. Create an issue describing the problem in the most detailed way possible
@@ -257,14 +265,12 @@ When a regression is found:
    and any other label that may apply in the specific case
 1. Add the ~bug and ~regression labels
 1. Notify the respective Engineering Manager to evaluate the Severity of the regression and add a [Severity label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-severity-labels). The counterpart Product Manager is included to weigh-in on prioritization as needed to set the [Priority label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-priority-labels).
-1. If the regression is either an ~S1, ~S2 or ~S3 severity, label the regression with the current milestone as it should be fixed in the current milestone.
-  1. If the regression was introduced in an RC of the current release, label with ~Deliverable
-  1. If the regression was introduced in the previous release, label with ~"Next Patch Release"
-1. If the regression is an ~S4 severity, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
-
-When a new issue is found, the fix should start as soon as possible. You can ping the Engineering Manager or the Product Manager for the relative area to make them aware of the issue earlier. They will analyze the priority and change it if needed.
-
-
+1. Determine the release that the regression affects. Add the `regression:xx.x` label.
+1. If the `regression:xx.x` is the **Current release**, schedule it for the current milestone as it should be fixed in the current milestone. Scope it with ~Deliverable.
+1. If the `regression:xx.x` is the **Last monthly release**,  schedule it for the current milestone as it should be fixed in the current milestone. Scope it with ~"Next Patch Release".
+1. If the `regression:xx.x` is older than the **Current release** and **Last monthly release**:
+  1. If the regression is an ~S1 severity, label the regression with the current milestone as it should be fixed in the current milestone. Scope it with ~Stretch.
+  1. If the regression is an ~S2, ~S3 or ~S4 severity, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
 
 ## Release retrospective and kickoff
 
