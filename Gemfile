@@ -5,8 +5,8 @@ end
 
 gem_versions = {}
 gem_versions['activerecord_sane_schema_dumper'] = rails5? ? '1.0'      : '0.2'
-gem_versions['default_value_for']               = rails5? ? '~> 3.0.5' : '~> 3.0.0'
-gem_versions['rails']                           = rails5? ? '5.0.7'    : '4.2.10'
+gem_versions['default_value_for']               = rails5? ? '~> 3.1.0' : '~> 3.0.0'
+gem_versions['rails']                           = rails5? ? '5.2.0'    : '4.2.10'
 gem_versions['rails-i18n']                      = rails5? ? '~> 5.1'   : '~> 4.0.9'
 # --- The end of special code for migrating to Rails 5.0 ---
 
