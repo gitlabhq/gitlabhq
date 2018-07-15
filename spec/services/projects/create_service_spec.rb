@@ -114,6 +114,17 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'import data' do
+    it 'stores import data and URL' do
+      import_data = { data: { 'test' => 'some data' } }
+      project = create_project(user, { name: 'test', import_url: 'http://import-url', import_data: import_data })
+
+      expect(project.import_data).to be_persisted
+      expect(project.import_data.data).to eq(import_data[:data])
+      expect(project.import_url).to eq('http://import-url')
+    end
+  end
+
   context 'builds_enabled global setting' do
     let(:project) { create_project(user, opts) }
 
