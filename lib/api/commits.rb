@@ -6,6 +6,18 @@ module API
 
     before { authorize! :download_code, user_project }
 
+    helpers do
+      def user_access
+        @user_access ||= Gitlab::UserAccess.new(current_user, project: user_project)
+      end
+
+      def authorize_push_to_branch!(branch)
+        unless user_access.can_push_to_branch?(branch)
+          forbidden!("You are not allowed to push into this branch")
+        end
+      end
+    end
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -67,7 +79,7 @@ module API
         optional :author_name, type: String, desc: 'Author name for commit'
       end
       post ':id/repository/commits' do
-        authorize! :push_code, user_project
+        authorize_push_to_branch!(params[:branch])
 
         attrs = declared_params
         attrs[:branch_name] = attrs.delete(:branch)
@@ -142,7 +154,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch'
       end
       post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
-        authorize! :push_code, user_project
+        authorize_push_to_branch!(params[:branch])
 
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit

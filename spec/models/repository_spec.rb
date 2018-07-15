@@ -1022,24 +1022,6 @@ describe Repository do
     end
   end
 
-  describe '#find_branch' do
-    context 'fresh_repo is true' do
-      it 'delegates the call to raw_repository' do
-        expect(repository.raw_repository).to receive(:find_branch).with('master', true)
-
-        repository.find_branch('master', fresh_repo: true)
-      end
-    end
-
-    context 'fresh_repo is false' do
-      it 'delegates the call to raw_repository' do
-        expect(repository.raw_repository).to receive(:find_branch).with('master', false)
-
-        repository.find_branch('master', fresh_repo: false)
-      end
-    end
-  end
-
   describe '#update_branch_with_hooks' do
     let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
     let(:new_rev) { 'a74ae73c1ccde9b974a70e82b901588071dc142a' } # commit whose parent is old_rev
