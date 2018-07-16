@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-16 12:42+0000\n"
+"PO-Revision-Date: 2018-07-16 12:42+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -335,11 +337,10 @@ msgstr ""
 msgid "Add Readme"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
-=======
+msgstr ""
+
 msgid "Add new application"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Add new directory"
@@ -1382,7 +1383,6 @@ msgstr ""
 msgid "Click to expand text"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Client authentication certificate"
 msgstr ""
 
@@ -1390,9 +1390,9 @@ msgid "Client authentication key"
 msgstr ""
 
 msgid "Client authentication key password"
-=======
+msgstr ""
+
 msgid "Clients"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Clone repository"
@@ -5082,14 +5082,13 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Revoke"
+msgstr ""
+
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
-=======
-msgid "Revoke"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Runner token"
@@ -5155,11 +5154,10 @@ msgstr ""
 msgid "Scheduling Pipelines"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Scoped issue boards"
-=======
 msgid "Scope"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Scoped issue boards"
 msgstr ""
 
 msgid "Scroll to bottom"
@@ -5201,7 +5199,9 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Secret:"
+msgstr ""
+
 msgid "Security Dashboard"
 msgstr ""
 
@@ -5212,9 +5212,6 @@ msgid "SecurityDashboard|Monitor vulnerabilities in your code"
 msgstr ""
 
 msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
-=======
-msgid "Secret:"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Select"
@@ -5902,14 +5899,13 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
-<<<<<<< HEAD
-msgid "This board\\'s scope is reduced"
-=======
 msgid "This application was created by %{link_to_owner}."
 msgstr ""
 
 msgid "This application will be able to:"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "This board\\'s scope is reduced"
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -6374,11 +6370,10 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
-=======
 msgid "Use <code>%{native_redirect_uri}</code> for local tests"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
@@ -6717,14 +6712,13 @@ msgstr ""
 msgid "You do not have any assigned merge requests"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
-=======
+msgstr ""
+
 msgid "You don't have any applications"
 msgstr ""
 
 msgid "You don't have any authorized applications"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "You have no permissions"
