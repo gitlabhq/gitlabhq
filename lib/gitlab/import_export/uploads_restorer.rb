@@ -12,7 +12,7 @@ module Gitlab
 
           true
         else
-          true
+          true # Proceed without uploads
         end
       rescue => e
         @shared.error(e)
