@@ -310,6 +310,7 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
+        attrs[:mirror] = user_project.mirror? unless attrs[:mirror].present?
         attrs[:mirror_user_id] = current_user.id unless valid_mirror_user?(attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute

@@ -26,16 +26,17 @@ module EE
 
       override :update
       def update
-        if project.update(safe_mirror_params)
-          if project.mirror?
-            project.force_import_job!
+        result = ::Projects::UpdateService.new(project, current_user, safe_mirror_params).execute
 
-            flash[:notice] = "Mirroring settings were successfully updated. The project is being updated."
-          elsif project.previous_changes.key?('mirror')
-            flash[:notice] = "Mirroring was successfully disabled."
-          else
-            flash[:notice] = "Mirroring settings were successfully updated."
-          end
+        if result[:status] == :success
+          flash[:notice] =
+            if project.mirror?
+              "Mirroring settings were successfully updated. The project is being updated."
+            elsif project.previous_changes.key?('mirror')
+              "Mirroring was successfully disabled."
+            else
+              "Mirroring settings were successfully updated."
+            end
         else
           flash[:alert] = project.errors.full_messages.join(', ').html_safe
         end

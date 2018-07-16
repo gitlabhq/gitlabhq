@@ -15,8 +15,6 @@ describe Projects::MirrorsController do
       end
 
       it 'allows to create a remote mirror' do
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
         expect do
           do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
         end.to change { RemoteMirror.count }.to(1)

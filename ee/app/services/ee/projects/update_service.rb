@@ -11,6 +11,9 @@ module EE
           params.delete(:mirror)
           params.delete(:mirror_user_id)
           params.delete(:mirror_trigger_builds)
+          params.delete(:only_mirror_protected_branches)
+          params.delete(:mirror_overwrites_diverged_branches)
+          params.delete(:import_data_attributes)
         end
 
         should_remove_old_approvers = params.delete(:remove_old_approvers)
@@ -34,6 +37,7 @@ module EE
           log_audit_events
 
           sync_wiki_on_enable if !wiki_was_enabled && project.wiki_enabled?
+          project.force_import_job! if ::Gitlab::Utils.to_boolean(params[:mirror]) && project.mirror?
         end
 
         result
