@@ -68,11 +68,12 @@ export default {
   },
 
   updateUrl() {
-    $('.js-mirror-url-hidden', this.$form).value = this.$urlInput.value;
+    $('.js-mirror-url-hidden', this.$form).val(this.$urlInput.val());
   },
 
   updateProtectedBranches() {
-    $('.js-mirror-protected-hidden', this.$form).value = this.$protectedBranchesInput.get(0).checked ? this.$protectedBranchesInput.val() : '0';
+    const val = this.$protectedBranchesInput.get(0).checked ? this.$protectedBranchesInput.val() : '0';
+    $('.js-mirror-protected-hidden', this.$form).val(val);
   },
 
   initMirrorPull() {
@@ -80,7 +81,7 @@ export default {
 
     if (!mirrorPull) return;
 
-    if (this.$urlInput.value !== '') mirrorPull.handleRepositoryUrlInput();
+    if (this.$urlInput.val() !== '') mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
 
     this.initSelect2();
