@@ -124,6 +124,15 @@ describe FileUploader do
     end
   end
 
+  describe '.extract_dynamic_path' do
+    it 'works with hashed storage' do
+      path = 'export/4b227777d4dd1fc61c6f884f48641d02b4d121d3fd328cb08b5531fcacdabf8a/test/uploads/72a497a02fe3ee09edae2ed06d390038/dummy.txt'
+
+      expect(described_class.extract_dynamic_path(path)[:identifier]).to eq('dummy.txt')
+      expect(described_class.extract_dynamic_path(path)[:secret]).to eq('72a497a02fe3ee09edae2ed06d390038')
+    end
+  end
+
   describe '#secret' do
     it 'generates a secret if none is provided' do
       expect(described_class).to receive(:generate_secret).and_return('secret')
