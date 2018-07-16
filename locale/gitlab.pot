@@ -5858,6 +5858,9 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
+msgid "ciReport|Show complete code vulnerabilities report"
+msgstr ""
+
 msgid "command line instructions"
 msgstr ""
 
