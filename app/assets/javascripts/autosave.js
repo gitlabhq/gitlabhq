@@ -14,7 +14,7 @@ export default class Autosave {
     this.key = 'autosave/' + key;
     this.field.data('autosave', this);
     this.restore();
-    this.field.on('input', this.debounceInputHandler());
+    this.field.on('keyup', this.debounceInputHandler());
   }
 
   debounceInputHandler() {
