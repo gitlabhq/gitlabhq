@@ -22,7 +22,7 @@ export default {
       projectPath: state => state.diffs.projectPath,
       endpoint: state => state.diffs.endpoint,
     }),
-    ...mapGetters(['isInlineView', 'isParallelView']),
+    ...mapGetters('diffs', ['isInlineView', 'isParallelView']),
     diffMode() {
       const diffModeKey = Object.keys(diffModes).find(key => this.diffFile[`${key}File`]);
       return diffModes[diffModeKey] || diffModes.replaced;

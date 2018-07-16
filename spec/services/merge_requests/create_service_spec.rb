@@ -23,7 +23,7 @@ describe MergeRequests::CreateService do
       let(:merge_request) { service.execute }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         project.add_developer(assignee)
         allow(service).to receive(:execute_hooks)
       end
@@ -185,8 +185,8 @@ describe MergeRequests::CreateService do
         end
 
         before do
-          project.add_master(user)
-          project.add_master(assignee)
+          project.add_maintainer(user)
+          project.add_maintainer(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -202,7 +202,7 @@ describe MergeRequests::CreateService do
         let(:assignee) { create(:user) }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'removes assignee_id when user id is invalid' do
@@ -222,7 +222,7 @@ describe MergeRequests::CreateService do
         end
 
         it 'saves assignee when user id is valid' do
-          project.add_master(assignee)
+          project.add_maintainer(assignee)
           opts = { title: 'Title', description: 'Description', assignee_id: assignee.id }
 
           merge_request = described_class.new(project, user, opts).execute
@@ -242,7 +242,7 @@ describe MergeRequests::CreateService do
           end
 
           it 'invalidates open merge request counter for assignees when merge request is assigned' do
-            project.add_master(assignee)
+            project.add_maintainer(assignee)
 
             described_class.new(project, user, opts).execute
 
@@ -286,7 +286,7 @@ describe MergeRequests::CreateService do
       end
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         project.add_developer(assignee)
       end
 
@@ -316,7 +316,7 @@ describe MergeRequests::CreateService do
       context 'when user can not access source project' do
         before do
           target_project.add_developer(assignee)
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'raises an error' do
@@ -328,7 +328,7 @@ describe MergeRequests::CreateService do
       context 'when user can not access target project' do
         before do
           target_project.add_developer(assignee)
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'raises an error' do
@@ -372,7 +372,7 @@ describe MergeRequests::CreateService do
 
       before do
         project.add_developer(assignee)
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'ignores source_project_id' do

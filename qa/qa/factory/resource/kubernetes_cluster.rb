@@ -36,6 +36,9 @@ module QA
 
           if @install_helm_tiller
             Page::Project::Operations::Kubernetes::Show.perform do |page|
+              # We must wait a few seconds for permissions to be setup correctly for new cluster
+              sleep 10
+
               # Helm must be installed before everything else
               page.install!(:helm)
               page.await_installed(:helm)

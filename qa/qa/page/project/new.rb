@@ -14,6 +14,7 @@ module QA
           element :project_path, 'text_field :path'
           element :project_description, 'text_area :description'
           element :project_create_button, "submit 'Create project'"
+          element :visibility_radios, 'visibility_level:'
         end
 
         view 'app/views/projects/_import_project_pane.html.haml' do
@@ -40,6 +41,10 @@ module QA
 
         def create_new_project
           click_on 'Create project'
+        end
+
+        def set_visibility(visibility)
+          choose visibility
         end
 
         def go_to_github_import

@@ -14,7 +14,7 @@ describe 'Resolve an open discussion in a merge request by creating an issue', :
 
   describe 'As a user with access to the project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end

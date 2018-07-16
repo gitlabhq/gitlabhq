@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitTagPushService < BaseService
   attr_accessor :push_data
 

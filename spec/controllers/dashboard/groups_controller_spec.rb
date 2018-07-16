@@ -28,8 +28,8 @@ describe Dashboard::GroupsController do
     let!(:other_group) { create(:group, name: 'other') }
 
     before do
-      top_level_result.add_master(user)
-      top_level_a.add_master(user)
+      top_level_result.add_maintainer(user)
+      top_level_a.add_maintainer(user)
     end
 
     it 'renders only groups the user is a member of when searching hierarchy correctly' do

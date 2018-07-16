@@ -121,6 +121,7 @@ shared_examples 'noteable API' do |parent_type, noteable_type, id_name|
         expect(json_response['body']).to eq('hi!')
         expect(json_response['author']['username']).to eq(user.username)
         expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
+        expect(Time.parse(json_response['updated_at'])).to be_like_time(creation_time)
       end
     end
 

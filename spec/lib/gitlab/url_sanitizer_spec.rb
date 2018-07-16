@@ -92,6 +92,7 @@ describe Gitlab::UrlSanitizer do
     context 'credentials in URL' do
       where(:url, :credentials) do
         'http://foo:bar@example.com' | { user: 'foo', password: 'bar' }
+        'http://foo:bar:baz@example.com' | { user: 'foo', password: 'bar:baz' }
         'http://:bar@example.com'    | { user: nil,   password: 'bar' }
         'http://foo:@example.com'    | { user: 'foo', password: nil }
         'http://foo@example.com'     | { user: 'foo', password: nil }

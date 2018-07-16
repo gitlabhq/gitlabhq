@@ -10,7 +10,7 @@ describe API::Tags do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/repository/tags' do
@@ -86,7 +86,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tags'
@@ -109,7 +109,7 @@ describe API::Tags do
 
       before do
         release = project.releases.find_or_initialize_by(tag: tag_name)
-        release.update_attributes(description: description)
+        release.update(description: description)
       end
 
       it 'returns an array of project tags with release info' do
@@ -168,7 +168,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tag'
@@ -222,7 +222,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -341,7 +341,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository delete tag'
@@ -386,7 +386,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository new release'
@@ -400,7 +400,7 @@ describe API::Tags do
       context 'on tag with existing release' do
         before do
           release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
+          release.update(description: description)
         end
 
         it 'returns 409 if there is already a release' do
@@ -422,7 +422,7 @@ describe API::Tags do
       context 'on tag with existing release' do
         before do
           release = project.releases.find_or_initialize_by(tag: tag_name)
-          release.update_attributes(description: description)
+          release.update(description: description)
         end
 
         it 'updates the release description' do
@@ -452,7 +452,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository update release'

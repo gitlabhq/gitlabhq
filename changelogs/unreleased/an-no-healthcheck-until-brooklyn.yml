@@ -1,0 +1,5 @@
+---
+title: Remove healthchecks from prometheus endpoint
+merge_request: 20565
+author:
+type: fixed

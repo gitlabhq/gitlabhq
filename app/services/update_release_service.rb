@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateReleaseService < BaseService
   def execute(tag_name, release_description)
     repository = project.repository
@@ -7,7 +9,7 @@ class UpdateReleaseService < BaseService
       release = project.releases.find_by(tag: tag_name)
 
       if release
-        release.update_attributes(description: release_description)
+        release.update(description: release_description)
 
         success(release)
       else

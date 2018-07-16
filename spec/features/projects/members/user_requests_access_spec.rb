@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Projects > Members > User requests access', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :access_requestable, :repository) }
-  let(:master) { project.owner }
+  let(:maintainer) { project.owner }
 
   before do
     sign_in(user)
@@ -11,7 +11,7 @@ describe 'Projects > Members > User requests access', :js do
   end
 
   it 'request access feature is disabled' do
-    project.update_attributes(request_access_enabled: false)
+    project.update(request_access_enabled: false)
     visit project_path(project)
 
     expect(page).not_to have_content 'Request Access'
@@ -20,7 +20,7 @@ describe 'Projects > Members > User requests access', :js do
   it 'user can request access to a project' do
     perform_enqueued_jobs { click_link 'Request Access' }
 
-    expect(ActionMailer::Base.deliveries.last.to).to eq [master.notification_email]
+    expect(ActionMailer::Base.deliveries.last.to).to eq [maintainer.notification_email]
     expect(ActionMailer::Base.deliveries.last.subject).to eq "Request to join the #{project.full_name} project"
 
     expect(project.requesters.exists?(user_id: user)).to be_truthy

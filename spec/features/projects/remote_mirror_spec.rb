@@ -7,13 +7,13 @@ describe 'Project remote mirror', :feature do
 
   describe 'On a project', :js do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
     end
 
     context 'when last_error is present but last_update_at is not' do
       it 'renders error message without timstamp' do
-        remote_mirror.update_attributes(last_error: 'Some new error', last_update_at: nil)
+        remote_mirror.update(last_error: 'Some new error', last_update_at: nil)
 
         visit project_mirror_path(project)
 
@@ -23,7 +23,7 @@ describe 'Project remote mirror', :feature do
 
     context 'when last_error and last_update_at are present' do
       it 'renders error message with timestamp' do
-        remote_mirror.update_attributes(last_error: 'Some new error', last_update_at: Time.now - 5.minutes)
+        remote_mirror.update(last_error: 'Some new error', last_update_at: Time.now - 5.minutes)
 
         visit project_mirror_path(project)
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GravatarService
   def execute(email, size = nil, scale = 2, username: nil)
     return unless Gitlab::CurrentSettings.gravatar_enabled?

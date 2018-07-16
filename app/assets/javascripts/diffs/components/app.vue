@@ -41,11 +41,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      activeFile: '',
-    };
-  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -63,7 +58,8 @@ export default {
       plainDiffPath: state => state.diffs.plainDiffPath,
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
-    ...mapGetters(['isParallelView', 'isNotesFetched']),
+    ...mapGetters('diffs', ['isParallelView']),
+    ...mapGetters(['isNotesFetched']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -115,7 +111,7 @@ export default {
     this.adjustView();
   },
   methods: {
-    ...mapActions(['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
     fetchData() {
       this.fetchDiffFiles().catch(() => {
         createFlash(__('Something went wrong on our end. Please try again!'));
@@ -123,14 +119,6 @@ export default {
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
-      }
-    },
-    setActive(filePath) {
-      this.activeFile = filePath;
-    },
-    unsetActive(filePath) {
-      if (this.activeFile === filePath) {
-        this.activeFile = '';
       }
     },
     adjustView() {
@@ -194,7 +182,6 @@ export default {
 
       <changed-files
         :diff-files="diffFiles"
-        :active-file="activeFile"
       />
 
       <div
@@ -206,8 +193,6 @@ export default {
           :key="file.newPath"
           :file="file"
           :current-user="currentUser"
-          @setActive="setActive(file.filePath)"
-          @unsetActive="unsetActive(file.filePath)"
         />
       </div>
       <no-changes v-else />

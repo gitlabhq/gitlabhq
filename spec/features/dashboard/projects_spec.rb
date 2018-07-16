@@ -59,7 +59,7 @@ describe 'Dashboard Projects' do
 
   context 'when last_repository_updated_at, last_activity_at and update_at are present' do
     it 'shows the last_repository_updated_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
+      project.update!(last_repository_updated_at: Time.now, last_activity_at: 1.hour.ago)
 
       visit dashboard_projects_path
 
@@ -67,7 +67,7 @@ describe 'Dashboard Projects' do
     end
 
     it 'shows the last_activity_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
+      project.update!(last_repository_updated_at: 1.hour.ago, last_activity_at: Time.now)
 
       visit dashboard_projects_path
 
@@ -77,7 +77,7 @@ describe 'Dashboard Projects' do
 
   context 'when last_repository_updated_at and last_activity_at are missing' do
     it 'shows the updated_at attribute as the update date' do
-      project.update_attributes!(last_repository_updated_at: nil, last_activity_at: nil)
+      project.update!(last_repository_updated_at: nil, last_activity_at: nil)
       project.touch
 
       visit dashboard_projects_path

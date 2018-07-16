@@ -14,6 +14,6 @@ class Projects::TemplatesController < Projects::ApplicationController
   def get_template_class
     template_types = { issue: Gitlab::Template::IssueTemplate, merge_request: Gitlab::Template::MergeRequestTemplate }.with_indifferent_access
     @template_type = template_types[params[:template_type]]
-    render json: [], status: 404 unless @template_type
+    render json: [], status: :not_found unless @template_type
   end
 end

@@ -8,7 +8,7 @@ describe 'Setup Mattermost slash commands', :js do
 
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit edit_project_service_path(project, service)
   end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
     create_master_branch if project.empty_repo?
