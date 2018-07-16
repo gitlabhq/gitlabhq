@@ -116,7 +116,9 @@ stages:
 .rails5: &rails5
   allow_failure: true
   only:
-    - /rails5/
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /rails5/
+      - $RAILS5_ENABLED
   variables:
     BUNDLE_GEMFILE: "Gemfile.rails5"
     RAILS5: "true"
@@ -433,7 +435,7 @@ cloud-native-image:
   cache: {}
   script:
     - gem install gitlab --no-ri --no-rdoc
-    - ./scripts/trigger-build cng
+    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -484,6 +486,7 @@ ee-specific-lines-check:
 danger-review:
   image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
   stage: prepare
+  allow_failure: true
   before_script:
     - source scripts/utils.sh
     - retry gem install danger --no-ri --no-rdoc
