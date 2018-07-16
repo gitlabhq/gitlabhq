@@ -14,7 +14,6 @@ module QA
                 end
 
                 view 'ee/app/views/projects/protected_branches/ee/_protected_branch_access_summary.html.haml' do
-                  element :allowed_to_push
                   element :allowed_to_merge
                 end
               end
