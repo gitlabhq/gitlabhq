@@ -64,6 +64,7 @@ export const serverData = [
       environment_type: 'build',
       last_deployment: null,
       has_stop_action: false,
+<<<<<<< HEAD
       environment_path: '/root/review-app/environments/12',
       stop_path: '/root/review-app/environments/12/stop',
       created_at: '2017-02-01T19:42:18.400Z',
@@ -81,6 +82,8 @@ export const serverData = [
       environment_type: 'build',
       last_deployment: null,
       has_stop_action: false,
+=======
+>>>>>>> upstream/master
       environment_path: '/root/review-app/environments/12',
       stop_path: '/root/review-app/environments/12/stop',
       created_at: '2017-02-01T19:42:18.400Z',
