@@ -1,0 +1,5 @@
+---
+title: Create wrapper to use Gitaly DiffNumStat RPC
+merge_request:
+author:
+type: added

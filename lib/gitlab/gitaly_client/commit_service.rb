@@ -268,6 +268,20 @@ module Gitlab
         GitalyClient.call(@repository.storage, :commit_service, :commit_stats, request, timeout: GitalyClient.medium_timeout)
       end
 
+      def diff_num_stats(left_commit_id, right_commit_id)
+        request = Gitaly::DiffNumStatRequest.new(repository: @gitaly_repo,
+                                                 left_commit_id: left_commit_id,
+                                                 right_commit_id: right_commit_id)
+
+        response = GitalyClient.call(@repository.storage,
+                                     :diff_service,
+                                     :diff_num_stat,
+                                     request,
+                                     timeout: GitalyClient.medium_timeout)
+
+        response.flat_map { |message| message.num_stats }
+      end
+
       def find_commits(options)
         request = Gitaly::FindCommitsRequest.new(
           repository:   @gitaly_repo,

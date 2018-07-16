@@ -104,6 +104,22 @@ describe Gitlab::GitalyClient::CommitService do
     end
   end
 
+  describe '#diff_num_stats' do
+    let(:left_commit_id) { 'master' }
+    let(:right_commit_id) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+
+    it 'sends a RPC request' do
+      request = Gitaly::DiffNumStatRequest.new(repository: repository_message,
+                                               left_commit_id: left_commit_id,
+                                               right_commit_id: right_commit_id)
+
+      expect_any_instance_of(Gitaly::DiffService::Stub).to receive(:diff_num_stat)
+        .with(request, kind_of(Hash)).and_return([])
+
+      described_class.new(repository).diff_num_stats(left_commit_id, right_commit_id)
+    end
+  end
+
   describe '#tree_entries' do
     let(:path) { '/' }
 
