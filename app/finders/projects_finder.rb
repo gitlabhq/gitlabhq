@@ -16,6 +16,7 @@
 #     personal: boolean
 #     search: string
 #     non_archived: boolean
+#     archived: 'only' or boolean
 #
 class ProjectsFinder < UnionFinder
   include CustomAttributesFilter
@@ -130,7 +131,7 @@ class ProjectsFinder < UnionFinder
   def by_archived(projects)
     if params[:non_archived]
       projects.non_archived
-    elsif params.key?(:archived) # Back-compatibility with the places where `params[:archived]` can be set explicitly to `false`
+    elsif params.key?(:archived)
       if params[:archived] == 'only'
         projects.archived
       elsif Gitlab::Utils.to_boolean(params[:archived])
