@@ -47,6 +47,7 @@ future GitLab releases.**
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_BEFORE_SHA**        | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_COMMIT_MESSAGE**           | 10.8   | all    | The full commit message. |
 | **CI_COMMIT_TITLE**             | 10.8   | all    | The title of the commit - the full first line of the message |
@@ -118,6 +119,7 @@ future GitLab releases.**
 | `CI_BUILD_ID`         | `CI_JOB_ID`             |
 | `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
 | `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
+| `CI_BUILD_BEFORE_SHA` | `CI_COMMIT_BEFORE_SHA`  |
 | `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
 | `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
 | `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
