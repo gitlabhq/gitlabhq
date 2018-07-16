@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UploadService
   def initialize(model, file, uploader_class = FileUploader, **uploader_context)
     @model, @file, @uploader_class, @uploader_context = model, file, uploader_class, uploader_context

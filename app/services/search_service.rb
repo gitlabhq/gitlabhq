@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SearchService
   include Gitlab::Allowable
 
