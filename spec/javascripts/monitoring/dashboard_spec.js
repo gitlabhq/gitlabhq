@@ -22,6 +22,7 @@ describe('Dashboard', () => {
     emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
     environmentsEndpoint: '/root/hello-prometheus/environments/35',
     currentEnvironmentName: 'production',
+    showEnvironmentDropdown: true,
   };
 
   beforeEach(() => {
@@ -123,6 +124,24 @@ describe('Dashboard', () => {
         expect(dropdownIsActiveElement[0].textContent.trim()).toEqual(
           component.currentEnvironmentName,
         );
+        done();
+      });
+    });
+
+    it('hides the dropdown', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: {
+          ...propsData,
+          hasMetrics: true,
+          showPanels: false,
+          showEnvironmentDropdown: false,
+        },
+      });
+
+      setTimeout(() => {
+        const dropdownIsActiveElement = component.$el.querySelectorAll('.environments');
+        expect(dropdownIsActiveElement.length).toEqual(0);
         done();
       });
     });
