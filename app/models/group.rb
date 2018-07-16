@@ -39,6 +39,8 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :todos
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects
@@ -80,6 +82,12 @@ class Group < Namespace
 
     def visible_to_user(user)
       where(id: user.authorized_groups.select(:id).reorder(nil))
+    end
+
+    def public_or_visible_to_user(user)
+      where('id IN (?) OR namespaces.visibility_level IN (?)',
+        user.authorized_groups.select(:id),
+        Gitlab::VisibilityLevel.levels_for_user(user))
     end
 
     def select_for_project_authorization

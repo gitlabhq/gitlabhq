@@ -229,6 +229,10 @@ class Note < ActiveRecord::Base
     !for_personal_snippet?
   end
 
+  def for_issuable?
+    for_issue? || for_merge_request?
+  end
+
   def skip_project_check?
     !for_project_noteable?
   end
