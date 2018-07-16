@@ -24,7 +24,7 @@ describe('Store', () => {
       external_url: null,
       environment_type: null,
       last_deployment: null,
-      'stop_action?': false,
+      has_stop_action: false,
       environment_path: '/root/review-app/environments/7',
       stop_path: '/root/review-app/environments/7/stop',
       created_at: '2017-01-31T10:53:46.894Z',
