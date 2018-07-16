@@ -55,7 +55,10 @@ module Gitlab
 
         return users[email] if users.key?(email)
 
-        users[email] = User.find_by_any_email(email)
+        user = User.find_by_any_email(email)
+        users[email] = user&.id if user
+
+        user&.id
       end
 
       def repo
@@ -163,7 +166,7 @@ module Gitlab
         target_branch_sha = pull_request.target_branch_sha
         source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
         target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
-        author = gitlab_user_id(project, pull_request.author_email) || User.ghost
+        author_id = gitlab_user_id(project, pull_request.author_email) || User.ghost.id
 
         project.merge_requests.find_by(iid: pull_request.iid)&.destroy
 
@@ -178,7 +181,7 @@ module Gitlab
           target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
           target_branch_sha: target_branch_sha,
           state: pull_request.state,
-          author_id: author.id,
+          author_id: author_id,
           assignee_id: nil,
           created_at: pull_request.created_at,
           updated_at: pull_request.updated_at
@@ -204,11 +207,11 @@ module Gitlab
       def import_merge_event(merge_request, merge_event)
         committer = merge_event.committer_email
 
-        user = find_user_id(committer) if committer
-        user ||= User.ghost
+        user_id = find_user_id(committer) if committer
+        user_id ||= User.ghost.id
         timestamp = merge_event.merge_timestamp
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
-        metric.update_attributes(merged_by: user, merged_at: timestamp)
+        metric.update(merged_by_id: user_id, merged_at: timestamp)
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)

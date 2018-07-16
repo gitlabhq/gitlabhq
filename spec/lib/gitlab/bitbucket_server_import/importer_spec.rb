@@ -56,25 +56,36 @@ describe Gitlab::BitbucketServerImport::Importer do
         updated_at: Time.now,
         merged?: true)
 
-      expect(subject.client).to receive(:pull_requests).and_return([pull_request])
+      allow(subject.client).to receive(:pull_requests).and_return([pull_request])
 
       @merge_event = instance_double(
         BitbucketServer::Representation::Activity,
         comment?: false,
         merge_event?: true,
         committer_email: project.owner.email,
-        merge_timestamp: Time.now)
+        merge_timestamp: Time.now.utc.change(usec: 0))
       @inline_comment = instance_double(
         BitbucketServer::Representation::Activity,
         comment?: true,
+        inline_comment?: true,
         merge_event?: false)
+
+      @pr_note = instance_double(
+        BitbucketServer::Representation::Comment,
+        note: 'Hello world',
+        author_email: 'unknown@gmail.com',
+        comments: [],
+        created_at: Time.now.utc.change(usec: 0),
+        updated_at: Time.now.utc.change(usec: 0))
       @pr_comment = instance_double(
         BitbucketServer::Representation::Activity,
         comment?: true,
-        merge_event?: false)
+        inline_comment?: false,
+        merge_event?: false,
+        comment: @pr_note)
     end
 
-    it 'handles merge event' do
+    it 'imports merge event' do
       expect(subject.client).to receive(:activities).and_return([@merge_event])
 
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
@@ -84,19 +95,32 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(merge_request.metrics.merged_at).to eq(@merge_event.merge_timestamp)
     end
 
-    context 'handles comments' do
+    it 'imports comments' do
+      expect(subject.client).to receive(:activities).and_return([@pr_comment])
+
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+      merge_request = MergeRequest.first
+      expect(merge_request.notes.count).to eq(1)
+      note = merge_request.notes.first
+      expect(note.note).to eq(@pr_note.note)
+      expect(note.author).to eq(project.owner)
+      expect(note.created_at).to eq(@pr_note.created_at)
+      expect(note.updated_at).to eq(@pr_note.created_at)
     end
 
-    context 'handles diff comments' do
+    it 'handles diff comments' do
     end
 
-    context 'falls back to comments if diff comments' do
+    it 'falls back to comments if diff comments' do
     end
 
-    context 'restores branches of inaccessible SHAs' do
+    it 'restores branches of inaccessible SHAs' do
     end
   end
 
   describe '#delete_temp_branches' do
+    it 'deletes branches' do
+    end
   end
 end
