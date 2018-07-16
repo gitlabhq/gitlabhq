@@ -152,7 +152,7 @@ export default {
           this.initAutoSave(this.transformedDiscussion, ['Reply']);
         });
       } else {
-        this.autosave.dispose();
+        this.disposeAutoSave();
       }
     },
   },

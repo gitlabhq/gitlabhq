@@ -23,5 +23,8 @@ export default {
     setAutoSave() {
       this.autosave.save();
     },
+    disposeAutoSave() {
+      this.autosave.dispose();
+    },
   },
 };
