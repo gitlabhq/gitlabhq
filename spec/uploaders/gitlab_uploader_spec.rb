@@ -68,4 +68,66 @@ describe GitlabUploader do
       expect(subject.file.path).to match(/#{subject.cache_dir}/)
     end
   end
+
+  describe '#open' do
+    context 'when trace is stored in File storage' do
+      context 'when file exists' do
+        let(:file) do
+          fixture_file_upload('spec/fixtures/trace/sample_trace', 'text/plain')
+        end
+
+        before do
+          subject.store!(file)
+        end
+
+        it 'returns io stream' do
+          expect(subject.open).to be_a(IO)
+        end
+
+        it 'when passing block it yields' do
+          expect { |b| subject.open(&b) }.to yield_control
+        end
+      end
+
+      context 'when file does not exist' do
+        it 'returns nil' do
+          expect(subject.open).to be_nil
+        end
+
+        it 'when passing block it does not yield' do
+          expect { |b| subject.open(&b) }.not_to yield_control
+        end
+      end
+    end
+
+    context 'when trace is stored in Object storage' do
+      before do
+        allow(subject).to receive(:file_storage?) { false }
+      end
+
+      context 'when file exists' do
+        before do
+          allow(subject).to receive(:url) { 'http://object_storage.com/trace' }
+        end
+
+        it 'returns http io stream' do
+          expect(subject.open).to be_a(Gitlab::HttpIO)
+        end
+
+        it 'when passing block it yields' do
+          expect { |b| subject.open(&b) }.to yield_control.once
+        end
+      end
+
+      context 'when file does not exist' do
+        it 'returns nil' do
+          expect(subject.open).to be_nil
+        end
+
+        it 'when passing block it does not yield' do
+          expect { |b| subject.open(&b) }.not_to yield_control
+        end
+      end
+    end
+  end
 end

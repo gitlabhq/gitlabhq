@@ -58,6 +58,11 @@ export default {
     discussion.expanded = true;
   },
 
+  [types.COLLAPSE_DISCUSSION](state, { discussionId }) {
+    const discussion = utils.findNoteObjectById(state.discussions, discussionId);
+    discussion.expanded = false;
+  },
+
   [types.REMOVE_PLACEHOLDER_NOTES](state) {
     const { discussions } = state;
 
@@ -114,7 +119,6 @@ export default {
 
     Object.assign(state, { discussions });
   },
-
   [types.SET_LAST_FETCHED_AT](state, fetchedAt) {
     Object.assign(state, { lastFetchedAt: fetchedAt });
   },

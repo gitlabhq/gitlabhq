@@ -69,9 +69,11 @@ class Member < ActiveRecord::Base
   scope :guests, -> { active.where(access_level: GUEST) }
   scope :reporters, -> { active.where(access_level: REPORTER) }
   scope :developers, -> { active.where(access_level: DEVELOPER) }
-  scope :masters,  -> { active.where(access_level: MASTER) }
+  scope :maintainers, -> { active.where(access_level: MAINTAINER) }
+  scope :masters, -> { maintainers } # @deprecated
   scope :owners,  -> { active.where(access_level: OWNER) }
-  scope :owners_and_masters,  -> { active.where(access_level: [OWNER, MASTER]) }
+  scope :owners_and_maintainers,  -> { active.where(access_level: [OWNER, MAINTAINER]) }
+  scope :owners_and_masters,  -> { owners_and_maintainers } # @deprecated
 
   scope :order_name_asc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'ASC')) }
   scope :order_name_desc, -> { left_join_users.reorder(Gitlab::Database.nulls_last_order('users.name', 'DESC')) }

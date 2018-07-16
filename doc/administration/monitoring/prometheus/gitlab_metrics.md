@@ -48,6 +48,8 @@ The following metrics are available:
 | filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
+| failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
+| successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
 
 ### Ruby metrics
 

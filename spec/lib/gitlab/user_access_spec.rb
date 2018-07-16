@@ -9,8 +9,8 @@ describe Gitlab::UserAccess do
 
   describe '#can_push_to_branch?' do
     describe 'push to none protected branch' do
-      it 'returns true if user is a master' do
-        project.add_master(user)
+      it 'returns true if user is a maintainer' do
+        project.add_maintainer(user)
 
         expect(access.can_push_to_branch?('random_branch')).to be_truthy
       end
@@ -38,8 +38,8 @@ describe Gitlab::UserAccess do
         expect(access.can_push_to_branch?('master')).to be_truthy
       end
 
-      it 'returns true if user is master' do
-        empty_project.add_master(user)
+      it 'returns true if user is maintainer' do
+        empty_project.add_maintainer(user)
 
         expect(project_access.can_push_to_branch?('master')).to be_truthy
       end
@@ -83,8 +83,8 @@ describe Gitlab::UserAccess do
         expect(access.can_push_to_branch?(branch.name)).to be_truthy
       end
 
-      it 'returns true if user is a master' do
-        project.add_master(user)
+      it 'returns true if user is a maintainer' do
+        project.add_maintainer(user)
 
         expect(access.can_push_to_branch?(branch.name)).to be_truthy
       end
@@ -113,8 +113,8 @@ describe Gitlab::UserAccess do
         @branch = create :protected_branch, :developers_can_push, project: project
       end
 
-      it 'returns true if user is a master' do
-        project.add_master(user)
+      it 'returns true if user is a maintainer' do
+        project.add_maintainer(user)
 
         expect(access.can_push_to_branch?(@branch.name)).to be_truthy
       end
@@ -170,8 +170,8 @@ describe Gitlab::UserAccess do
         @branch = create :protected_branch, :developers_can_merge, project: project
       end
 
-      it 'returns true if user is a master' do
-        project.add_master(user)
+      it 'returns true if user is a maintainer' do
+        project.add_maintainer(user)
 
         expect(access.can_merge_to_branch?(@branch.name)).to be_truthy
       end
@@ -192,8 +192,8 @@ describe Gitlab::UserAccess do
 
   describe '#can_create_tag?' do
     describe 'push to none protected tag' do
-      it 'returns true if user is a master' do
-        project.add_user(user, :master)
+      it 'returns true if user is a maintainer' do
+        project.add_user(user, :maintainer)
 
         expect(access.can_create_tag?('random_tag')).to be_truthy
       end
@@ -215,8 +215,8 @@ describe Gitlab::UserAccess do
       let(:tag) { create(:protected_tag, project: project, name: "test") }
       let(:not_existing_tag) { create :protected_tag, project: project }
 
-      it 'returns true if user is a master' do
-        project.add_user(user, :master)
+      it 'returns true if user is a maintainer' do
+        project.add_user(user, :maintainer)
 
         expect(access.can_create_tag?(tag.name)).to be_truthy
       end
@@ -239,8 +239,8 @@ describe Gitlab::UserAccess do
         @tag = create(:protected_tag, :developers_can_create, project: project)
       end
 
-      it 'returns true if user is a master' do
-        project.add_user(user, :master)
+      it 'returns true if user is a maintainer' do
+        project.add_user(user, :maintainer)
 
         expect(access.can_create_tag?(@tag.name)).to be_truthy
       end
@@ -261,8 +261,8 @@ describe Gitlab::UserAccess do
 
   describe '#can_delete_branch?' do
     describe 'delete unprotected branch' do
-      it 'returns true if user is a master' do
-        project.add_user(user, :master)
+      it 'returns true if user is a maintainer' do
+        project.add_user(user, :maintainer)
 
         expect(access.can_delete_branch?('random_branch')).to be_truthy
       end
@@ -283,8 +283,8 @@ describe Gitlab::UserAccess do
     describe 'delete protected branch' do
       let(:branch) { create(:protected_branch, project: project, name: "test") }
 
-      it 'returns true if user is a master' do
-        project.add_user(user, :master)
+      it 'returns true if user is a maintainer' do
+        project.add_user(user, :maintainer)
 
         expect(access.can_delete_branch?(branch.name)).to be_truthy
       end

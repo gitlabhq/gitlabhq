@@ -17,7 +17,7 @@ module Gitlab
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request, timeout: GitalyClient.medium_timeout)
 
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
@@ -33,7 +33,7 @@ module Gitlab
           message: encode_binary(message.to_s)
         )
 
-        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request)
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_create_tag, request, timeout: GitalyClient.medium_timeout)
         if pre_receive_error = response.pre_receive_error.presence
           raise Gitlab::Git::PreReceiveError, pre_receive_error
         elsif response.exists
@@ -66,6 +66,22 @@ module Gitlab
         Gitlab::Git::Branch.new(@repository, branch.name, target_commit.id, target_commit)
       rescue GRPC::FailedPrecondition => ex
         raise Gitlab::Git::Repository::InvalidRef, ex
+      end
+
+      def user_update_branch(branch_name, user, newrev, oldrev)
+        request = Gitaly::UserUpdateBranchRequest.new(
+          repository: @gitaly_repo,
+          branch_name: encode_binary(branch_name),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          newrev: encode_binary(newrev),
+          oldrev: encode_binary(oldrev)
+        )
+
+        response = GitalyClient.call(@repository.storage, :operation_service, :user_update_branch, request)
+
+        if pre_receive_error = response.pre_receive_error.presence
+          raise Gitlab::Git::PreReceiveError, pre_receive_error
+        end
       end
 
       def user_delete_branch(branch_name, user)
@@ -276,7 +292,8 @@ module Gitlab
           :operation_service,
           :"user_#{rpc}",
           request,
-          remote_storage: start_repository.storage
+          remote_storage: start_repository.storage,
+          timeout: GitalyClient.medium_timeout
         )
 
         handle_cherry_pick_or_revert_response(response)

@@ -7,7 +7,7 @@ describe 'User browses jobs' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.enable_ci
     project.update_attribute(:build_coverage_regex, /Coverage (\d+)%/)
 

@@ -7,7 +7,7 @@ describe Projects::GroupLinksController do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -23,7 +23,7 @@ describe Projects::GroupLinksController do
 
     context 'when project is not allowed to be shared with a group' do
       before do
-        group.update_attributes(share_with_group_lock: false)
+        group.update(share_with_group_lock: false)
       end
 
       include_context 'link project to group'

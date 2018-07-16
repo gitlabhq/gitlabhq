@@ -326,7 +326,7 @@ describe ProjectPresenter do
 
       context 'when user can admin pipeline and CI yml does not exists' do
         it 'returns anchor data' do
-          project.add_master(user)
+          project.add_maintainer(user)
           allow(project).to receive(:auto_devops_enabled?).and_return(false)
           allow(project.repository).to receive(:gitlab_ci_yml).and_return(nil)
 
@@ -340,7 +340,7 @@ describe ProjectPresenter do
     describe '#kubernetes_cluster_anchor_data' do
       context 'when user can create Kubernetes cluster' do
         it 'returns link to cluster if only one exists' do
-          project.add_master(user)
+          project.add_maintainer(user)
           cluster = create(:cluster, projects: [project])
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: true,
@@ -349,7 +349,7 @@ describe ProjectPresenter do
         end
 
         it 'returns link to clusters page if more than one exists' do
-          project.add_master(user)
+          project.add_maintainer(user)
           create(:cluster, :production_environment, projects: [project])
           create(:cluster, projects: [project])
 
@@ -359,7 +359,7 @@ describe ProjectPresenter do
         end
 
         it 'returns link to create a cluster if no cluster exists' do
-          project.add_master(user)
+          project.add_maintainer(user)
 
           expect(presenter.kubernetes_cluster_anchor_data).to eq(OpenStruct.new(enabled: false,
                                                                                 label: 'Add Kubernetes cluster',

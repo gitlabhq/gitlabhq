@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AttachmentUploader < GitlabUploader
   include RecordsUploads::Concern
   include ObjectStorage::Concern

@@ -86,9 +86,6 @@ module Gitlab
       # Relative path of repo
       attr_reader :relative_path
 
-      # Rugged repo object
-      attr_reader :rugged
-
       attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
@@ -112,8 +109,9 @@ module Gitlab
         [storage, relative_path] == [other.storage, other.relative_path]
       end
 
+      # This method will be removed when Gitaly reaches v1.1.
       def path
-        @path ||= File.join(
+        File.join(
           Gitlab.config.repositories.storages[@storage].legacy_disk_path, @relative_path
         )
       end
@@ -127,8 +125,9 @@ module Gitlab
         raise Gitlab::Git::CommandError.new(e.message)
       end
 
+      # This method will be removed when Gitaly reaches v1.1.
       def rugged
-        @rugged ||= circuit_breaker.perform do
+        circuit_breaker.perform do
           Rugged::Repository.new(path, alternates: alternate_object_directories)
         end
       rescue Rugged::RepositoryError, Rugged::OSError
@@ -168,24 +167,9 @@ module Gitlab
 
       # Directly find a branch with a simple name (e.g. master)
       #
-      # force_reload causes a new Rugged repository to be instantiated
-      #
-      # This is to work around a bug in libgit2 that causes in-memory refs to
-      # be stale/invalid when packed-refs is changed.
-      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/15392#note_14538333
-      def find_branch(name, force_reload = false)
-        gitaly_migrate(:find_branch) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.find_branch(name)
-          else
-            reload_rugged if force_reload
-
-            rugged_ref = rugged.branches[name]
-            if rugged_ref
-              target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-              Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-            end
-          end
+      def find_branch(name)
+        wrapped_gitaly_errors do
+          gitaly_ref_client.find_branch(name)
         end
       end
 
@@ -197,20 +181,8 @@ module Gitlab
 
       # Returns the number of valid branches
       def branch_count
-        gitaly_migrate(:branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.count_branch_names
-          else
-            rugged.branches.each(:local).count do |ref|
-              begin
-                ref.name && ref.target # ensures the branch is valid
-
-                true
-              rescue Rugged::ReferenceError
-                false
-              end
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.count_branch_names
         end
       end
 
@@ -233,12 +205,8 @@ module Gitlab
 
       # Returns the number of valid tags
       def tag_count
-        gitaly_migrate(:tag_names) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.count_tag_names
-          else
-            rugged.tags.count
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.count_tag_names
         end
       end
 
@@ -251,7 +219,6 @@ module Gitlab
 
       # Returns an Array of Tags
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/390
       def tags
         wrapped_gitaly_errors do
           gitaly_ref_client.tags
@@ -262,13 +229,8 @@ module Gitlab
       #
       # Ref names must start with `refs/`.
       def ref_exists?(ref_name)
-        gitaly_migrate(:ref_exists,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?(ref_name)
-          else
-            rugged_ref_exists?(ref_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?(ref_name)
         end
       end
 
@@ -276,12 +238,8 @@ module Gitlab
       #
       # name - The name of the tag as a String.
       def tag_exists?(name)
-        gitaly_migrate(:ref_exists_tags, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?("refs/tags/#{name}")
-          else
-            rugged_tag_exists?(name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?("refs/tags/#{name}")
         end
       end
 
@@ -289,12 +247,8 @@ module Gitlab
       #
       # name - The name of the branch as a String.
       def branch_exists?(name)
-        gitaly_migrate(:ref_exists_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_exists?("refs/heads/#{name}")
-          else
-            rugged_branch_exists?(name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_exists?("refs/heads/#{name}")
         end
       end
 
@@ -312,12 +266,8 @@ module Gitlab
       end
 
       def delete_all_refs_except(prefixes)
-        gitaly_migrate(:ref_delete_refs) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
-          else
-            delete_refs(*all_ref_names_except(prefixes))
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
         end
       end
 
@@ -328,12 +278,6 @@ module Gitlab
         rugged.references.reject do |ref|
           prefixes.any? { |p| ref.name.start_with?(p) }
         end.map(&:name)
-      end
-
-      def rugged_head
-        rugged.head
-      rescue Rugged::ReferenceError
-        nil
       end
 
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:)
@@ -440,29 +384,9 @@ module Gitlab
           raise ArgumentError.new("invalid Repository#log limit: #{limit.inspect}")
         end
 
-        gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.find_commits(options)
-          else
-            raw_log(options).map { |c| Commit.decorate(self, c) }
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.find_commits(options)
         end
-      end
-
-      # Used in gitaly-ruby
-      def raw_log(options)
-        sha =
-          unless options[:all]
-            actual_ref = options[:ref] || root_ref
-            begin
-              sha_from_ref(actual_ref)
-            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-              # Return an empty array if the ref wasn't found
-              return []
-            end
-          end
-
-        log_by_shell(sha, options)
       end
 
       def count_commits(options)
@@ -556,13 +480,7 @@ module Gitlab
       # diff options.  The +options+ hash can also include :break_rewrites to
       # split larger rewrites into delete/add pairs.
       def diff(from, to, options = {}, *paths)
-        iterator = gitaly_migrate(:diff_between) do |is_enabled|
-          if is_enabled
-            gitaly_commit_client.diff(from, to, options.merge(paths: paths))
-          else
-            diff_patches(from, to, options, *paths)
-          end
-        end
+        iterator = gitaly_commit_client.diff(from, to, options.merge(paths: paths))
 
         Gitlab::Git::DiffCollection.new(iterator, options)
       end
@@ -591,28 +509,15 @@ module Gitlab
         @refs_hash
       end
 
-      # Lookup for rugged object by oid or ref name
-      def lookup(oid_or_ref_name)
-        rugged.rev_parse(oid_or_ref_name)
-      end
-
       # Returns url for submodule
       #
       # Ex.
       #   @repository.submodule_url_for('master', 'rack')
       #   # => git@localhost:rack.git
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/329
       def submodule_url_for(ref, path)
-        Gitlab::GitalyClient.migrate(:submodule_url_for) do |is_enabled|
-          if is_enabled
-            gitaly_submodule_url_for(ref, path)
-          else
-            if submodules(ref).any?
-              submodule = submodules(ref)[path]
-              submodule['url'] if submodule
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_submodule_url_for(ref, path)
         end
       end
 
@@ -660,7 +565,13 @@ module Gitlab
       end
 
       def update_branch(branch_name, user:, newrev:, oldrev:)
-        OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+        gitaly_migrate(:operation_user_update_branch) do |is_enabled|
+          if is_enabled
+            gitaly_operation_client.user_update_branch(branch_name, user, newrev, oldrev)
+          else
+            OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+          end
+        end
       end
 
       def rm_branch(branch_name, user:)
@@ -742,33 +653,18 @@ module Gitlab
         Gitlab::Git.committer_hash(email: user.email, name: user.name)
       end
 
-      def create_commit(params = {})
-        params[:message].delete!("\r")
-
-        Rugged::Commit.create(rugged, params)
-      end
-
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
-        gitaly_migrate(:delete_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.delete_branch(branch_name)
-          else
-            rugged.branches.delete(branch_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.delete_branch(branch_name)
         end
-      rescue Rugged::ReferenceError, CommandError => e
+      rescue CommandError => e
         raise DeleteBranchError, e
       end
 
       def delete_refs(*ref_names)
-        gitaly_migrate(:delete_refs,
-                      status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_delete_refs(*ref_names)
-          else
-            git_delete_refs(*ref_names)
-          end
+        wrapped_gitaly_errors do
+          gitaly_delete_refs(*ref_names)
         end
       end
 
@@ -778,12 +674,8 @@ module Gitlab
       #   create_branch("feature")
       #   create_branch("other-feature", "master")
       def create_branch(ref, start_point = "HEAD")
-        gitaly_migrate(:create_branch, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.create_branch(ref, start_point)
-          else
-            rugged_create_branch(ref, start_point)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.create_branch(ref, start_point)
         end
       end
 
@@ -837,22 +729,14 @@ module Gitlab
       # Ex.
       #   repo.ls_files('master')
       #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/327
       def ls_files(ref)
         gitaly_commit_client.ls_files(ref)
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/328
       def copy_gitattributes(ref)
-        Gitlab::GitalyClient.migrate(:apply_gitattributes) do |is_enabled|
-          if is_enabled
-            gitaly_copy_gitattributes(ref)
-          else
-            rugged_copy_gitattributes(ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.apply_gitattributes(ref)
         end
-      rescue GRPC::InvalidArgument
-        raise InvalidRef
       end
 
       def info_attributes
@@ -941,12 +825,8 @@ module Gitlab
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
-        Gitlab::GitalyClient.migrate(:fetch_source_branch) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
-          else
-            rugged_fetch_source_branch(source_repository, source_branch, local_ref)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
         end
       end
 
@@ -1025,20 +905,6 @@ module Gitlab
         Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
       end
 
-      def commit_index(user, branch_name, index, options)
-        committer = user_to_committer(user)
-
-        OperationService.new(user, self).with_branch(branch_name) do
-          commit_params = options.merge(
-            tree: index.write_tree(rugged),
-            author: committer,
-            committer: committer
-          )
-
-          create_commit(commit_params)
-        end
-      end
-
       def fsck
         msg, status = gitaly_repository_client.fsck
 
@@ -1101,18 +967,13 @@ module Gitlab
       end
 
       def bundle_to_disk(save_path)
-        gitaly_migrate(:bundle_to_disk) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.create_bundle(save_path)
-          else
-            run_git!(%W(bundle create #{save_path} --all))
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.create_bundle(save_path)
         end
 
         true
       end
 
-      # rubocop:disable Metrics/ParameterLists
       def multi_action(
         user, branch_name:, message:, actions:,
         author_email: nil, author_name: nil,
@@ -1124,7 +985,6 @@ module Gitlab
               start_branch_name, start_repository)
         end
       end
-      # rubocop:enable Metrics/ParameterLists
 
       def write_config(full_path:)
         return unless full_path.present?
@@ -1132,8 +992,18 @@ module Gitlab
         # This guard avoids Gitaly log/error spam
         raise NoRepository, 'repository does not exist' unless exists?
 
+        set_config('gitlab.fullpath' => full_path)
+      end
+
+      def set_config(entries)
         wrapped_gitaly_errors do
-          gitaly_repository_client.write_config(full_path: full_path)
+          gitaly_repository_client.set_config(entries)
+        end
+      end
+
+      def delete_config(*keys)
+        wrapped_gitaly_errors do
+          gitaly_repository_client.delete_config(keys)
         end
       end
 
@@ -1219,7 +1089,7 @@ module Gitlab
       end
 
       def can_be_merged?(source_sha, target_branch)
-        if target_sha = find_branch(target_branch, true)&.target
+        if target_sha = find_branch(target_branch)&.target
           !gitaly_conflicts_client(source_sha, target_sha).conflicts?
         else
           false
@@ -1236,12 +1106,10 @@ module Gitlab
       end
 
       def find_commits_by_message(query, ref, path, limit, offset)
-        gitaly_migrate(:commits_by_message) do |is_enabled|
-          if is_enabled
-            find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-          else
-            find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client
+            .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
+            .map { |c| commit(c) }
         end
       end
 
@@ -1251,12 +1119,8 @@ module Gitlab
       end
 
       def last_commit_for_path(sha, path)
-        gitaly_migrate(:last_commit_for_path) do |is_enabled|
-          if is_enabled
-            last_commit_for_path_by_gitaly(sha, path)
-          else
-            last_commit_for_path_by_rugged(sha, path)
-          end
+        wrapped_gitaly_errors do
+          gitaly_commit_client.last_commit_for_path(sha, path)
         end
       end
 
@@ -1467,63 +1331,6 @@ module Gitlab
         end
       end
 
-      # Gitaly note: JV: although #log_by_shell shells out to Git I think the
-      # complexity is such that we should migrate it as Ruby before trying to
-      # do it in Go.
-      def log_by_shell(sha, options)
-        limit = options[:limit].to_i
-        offset = options[:offset].to_i
-        use_follow_flag = options[:follow] && options[:path].present?
-
-        # We will perform the offset in Ruby because --follow doesn't play well with --skip.
-        # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
-        offset_in_ruby = use_follow_flag && options[:offset].present?
-        limit += offset if offset_in_ruby
-
-        cmd = %w[log]
-        cmd << "--max-count=#{limit}"
-        cmd << '--format=%H'
-        cmd << "--skip=#{offset}" unless offset_in_ruby
-        cmd << '--follow' if use_follow_flag
-        cmd << '--no-merges' if options[:skip_merges]
-        cmd << "--after=#{options[:after].iso8601}" if options[:after]
-        cmd << "--before=#{options[:before].iso8601}" if options[:before]
-
-        if options[:all]
-          cmd += %w[--all --reverse]
-        else
-          cmd << sha
-        end
-
-        # :path can be a string or an array of strings
-        if options[:path].present?
-          cmd << '--'
-          cmd += Array(options[:path])
-        end
-
-        raw_output, _status = run_git(cmd)
-        lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
-
-        lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
-      end
-
-      # We are trying to deprecate this method because it does a lot of work
-      # but it seems to be used only to look up submodule URL's.
-      # https://gitlab.com/gitlab-org/gitaly/issues/329
-      def submodules(ref)
-        commit = rev_parse_target(ref)
-        return {} unless commit
-
-        begin
-          content = blob_content(commit, ".gitmodules")
-        rescue InvalidBlobName
-          return {}
-        end
-
-        parser = GitmodulesParser.new(content)
-        fill_submodule_ids(commit, parser.parse)
-      end
-
       def gitaly_submodule_url_for(ref, path)
         # We don't care about the contents so 1 byte is enough. Can't request 0 bytes, 0 means unlimited.
         commit_object = gitaly_commit_client.tree_entry(ref, path, 1)
@@ -1544,68 +1351,6 @@ module Gitlab
 
       def relative_object_directories
         Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      # Get the content of a blob for a given commit.  If the blob is a commit
-      # (for submodules) then return the blob's OID.
-      def blob_content(commit, blob_name)
-        blob_entry = tree_entry(commit, blob_name)
-
-        unless blob_entry
-          raise InvalidBlobName.new("Invalid blob name: #{blob_name}")
-        end
-
-        case blob_entry[:type]
-        when :commit
-          blob_entry[:oid]
-        when :tree
-          raise InvalidBlobName.new("#{blob_name} is a tree, not a blob")
-        when :blob
-          rugged.lookup(blob_entry[:oid]).content
-        end
-      end
-
-      # Fill in the 'id' field of a submodule hash from its values
-      # as-of +commit+. Return a Hash consisting only of entries
-      # from the submodule hash for which the 'id' field is filled.
-      def fill_submodule_ids(commit, submodule_data)
-        submodule_data.each do |path, data|
-          id = begin
-            blob_content(commit, path)
-          rescue InvalidBlobName
-            nil
-          end
-          data['id'] = id
-        end
-        submodule_data.select { |path, data| data['id'] }
-      end
-
-      # Find the entry for +path+ in the tree for +commit+
-      def tree_entry(commit, path)
-        pathname = Pathname.new(path)
-        first = true
-        tmp_entry = nil
-
-        pathname.each_filename do |dir|
-          if first
-            tmp_entry = commit.tree[dir]
-            first = false
-          elsif tmp_entry.nil?
-            return nil
-          else
-            begin
-              tmp_entry = rugged.lookup(tmp_entry[:oid])
-            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-              return nil
-            end
-
-            return nil unless tmp_entry.type == :tree
-
-            tmp_entry = tmp_entry[dir]
-          end
-        end
-
-        tmp_entry
       end
 
       # Return the Rugged patches for the diff between +from+ and +to+.
@@ -1636,22 +1381,6 @@ module Gitlab
         end
       end
 
-      def last_commit_for_path_by_rugged(sha, path)
-        sha = last_commit_id_for_path_by_shelling_out(sha, path)
-        commit(sha)
-      end
-
-      # Returns true if the given ref name exists
-      #
-      # Ref names must start with `refs/`.
-      def rugged_ref_exists?(ref_name)
-        raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
-
-        rugged.references.exist?(ref_name)
-      rescue Rugged::ReferenceError
-        false
-      end
-
       # Returns true if the given ref name exists
       #
       # Ref names must start with `refs/`.
@@ -1659,108 +1388,8 @@ module Gitlab
         gitaly_ref_client.ref_exists?(ref_name)
       end
 
-      # Returns true if the given tag exists
-      #
-      # name - The name of the tag as a String.
-      def rugged_tag_exists?(name)
-        !!rugged.tags[name]
-      end
-
-      # Returns true if the given branch exists
-      #
-      # name - The name of the branch as a String.
-      def rugged_branch_exists?(name)
-        rugged.branches.exists?(name)
-
-      # If the branch name is invalid (e.g. ".foo") Rugged will raise an error.
-      # Whatever code calls this method shouldn't have to deal with that so
-      # instead we just return `false` (which is true since a branch doesn't
-      # exist when it has an invalid name).
-      rescue Rugged::ReferenceError
-        false
-      end
-
-      def rugged_create_branch(ref, start_point)
-        rugged_ref = rugged.branches.create(ref, start_point)
-        target_commit = Gitlab::Git::Commit.find(self, rugged_ref.target)
-        Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
-      rescue Rugged::ReferenceError => e
-        raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ %r{'refs/heads/#{ref}'}
-
-        raise InvalidRef.new("Invalid reference #{start_point}")
-      end
-
       def gitaly_copy_gitattributes(revision)
         gitaly_repository_client.apply_gitattributes(revision)
-      end
-
-      def rugged_copy_gitattributes(ref)
-        begin
-          commit = lookup(ref)
-        rescue Rugged::ReferenceError
-          raise InvalidRef.new("Ref #{ref} is invalid")
-        end
-
-        # Create the paths
-        info_dir_path = File.join(path, 'info')
-        info_attributes_path = File.join(info_dir_path, 'attributes')
-
-        begin
-          # Retrieve the contents of the blob
-          gitattributes_content = blob_content(commit, '.gitattributes')
-        rescue InvalidBlobName
-          # No .gitattributes found. Should now remove any info/attributes and return
-          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
-          return
-        end
-
-        # Create the info directory if needed
-        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
-
-        # Write the contents of the .gitattributes file to info/attributes
-        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
-        File.open(info_attributes_path, "wb") do |file|
-          file.write(gitattributes_content)
-        end
-      end
-
-      def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
-
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-          raise CreateTreeError unless cherry_pick_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: {
-                            email: commit.author_email,
-                            name: commit.author_name,
-                            time: commit.authored_date
-                        },
-                        committer: committer,
-                        tree: cherry_pick_tree_id,
-                        parents: [start_commit.sha])
-        end
-      end
-
-      def check_cherry_pick_content(target_commit, source_sha)
-        args = [target_commit.sha, source_sha]
-        args << 1 if target_commit.merge_commit?
-
-        cherry_pick_index = rugged.cherrypick_commit(*args)
-        return false if cherry_pick_index.conflicts?
-
-        tree_id = cherry_pick_index.write_tree(rugged)
-        return false unless diff_exists?(source_sha, tree_id)
-
-        tree_id
       end
 
       def local_fetch_ref(source_path, source_ref:, target_ref:)
@@ -1780,20 +1409,6 @@ module Gitlab
         set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
-      end
-
-      def git_delete_refs(*ref_names)
-        instructions = ref_names.map do |ref|
-          "delete #{ref}\x00\x00"
-        end
-
-        message, status = run_git(%w[update-ref --stdin -z]) do |stdin|
-          stdin.write(instructions.join)
-        end
-
-        unless status.zero?
-          raise GitError.new("Could not delete refs #{ref_names}: #{message}")
-        end
       end
 
       def gitaly_delete_refs(*ref_names)
@@ -1833,35 +1448,6 @@ module Gitlab
         raise CommandError, @gitlab_projects.output
       end
 
-      def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-        ref ||= root_ref
-
-        args = %W(
-          log #{ref} --pretty=%H --skip #{offset}
-          --max-count #{limit} --grep=#{query} --regexp-ignore-case
-        )
-        args = args.concat(%W(-- #{path})) if path.present?
-
-        git_log_results = run_git(args).first.lines
-
-        git_log_results.map { |c| commit(c.chomp) }.compact
-      end
-
-      def find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-        gitaly_commit_client
-          .commits_by_message(query, revision: ref, path: path, limit: limit, offset: offset)
-          .map { |c| commit(c) }
-      end
-
-      def last_commit_for_path_by_gitaly(sha, path)
-        gitaly_commit_client.last_commit_for_path(sha, path)
-      end
-
-      def last_commit_id_for_path_by_shelling_out(sha, path)
-        args = %W(rev-list --max-count=1 #{sha} -- #{path})
-        run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
-      end
-
       def rugged_merge_base(from, to)
         rugged.merge_base(from, to)
       rescue Rugged::ReferenceError
@@ -1874,35 +1460,6 @@ module Gitlab
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def build_git_cmd(*args)
-        object_directories = alternate_object_directories.join(File::PATH_SEPARATOR)
-
-        env = { 'PWD' => self.path }
-        env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = object_directories if object_directories.present?
-
-        [
-          env,
-          ::Gitlab.config.git.bin_path,
-          *args,
-          { chdir: self.path }
-        ]
-      end
-
-      def git_diff_cmd(old_rev, new_rev)
-        old_rev = old_rev == ::Gitlab::Git::BLANK_SHA ? ::Gitlab::Git::EMPTY_TREE_ID : old_rev
-
-        build_git_cmd('diff', old_rev, new_rev, '--raw')
-      end
-
-      def git_cat_file_cmd
-        format = '%(objectname) %(objectsize) %(rest)'
-        build_git_cmd('cat-file', "--batch-check=#{format}")
-      end
-
-      def format_git_cat_file_script
-        File.expand_path('../support/format-git-cat-file-input', __FILE__)
       end
     end
   end

@@ -6,7 +6,7 @@ describe 'Projects > Snippets > Project snippet', :js do
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

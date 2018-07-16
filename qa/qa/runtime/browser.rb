@@ -32,6 +32,12 @@ module QA
       end
 
       def self.configure!
+        RSpec.configure do |config|
+          config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
+            metadata[:type] = :feature
+          end
+        end
+
         return if Capybara.drivers.include?(:chrome)
 
         Capybara.register_driver :chrome do |app|
@@ -77,6 +83,10 @@ module QA
         # From https://github.com/mattheworiordan/capybara-screenshot/issues/84#issuecomment-41219326
         Capybara::Screenshot.register_driver(:chrome) do |driver, path|
           driver.browser.save_screenshot(path)
+        end
+
+        Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+          File.join(QA::Runtime::Namespace.name, example.file_path.sub('./qa/specs/features/', ''))
         end
 
         Capybara.configure do |config|

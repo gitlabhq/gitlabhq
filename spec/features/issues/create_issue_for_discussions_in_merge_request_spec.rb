@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Resolving all open discussions in a merge request from an issue', :js do
+describe 'Resolving all open discussions in a merge request from an issue', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -14,7 +14,7 @@ feature 'Resolving all open discussions in a merge request from an issue', :js d
 
   describe 'as a user with access to the project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_merge_request_path(project, merge_request)
     end

@@ -178,9 +178,12 @@ class Group < Namespace
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user = nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user = nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
@@ -198,11 +201,14 @@ class Group < Namespace
     members_with_parents.owners.where(user_id: user).any?
   end
 
-  def has_master?(user)
+  def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.masters.where(user_id: user).any?
+    members_with_parents.maintainers.where(user_id: user).any?
   end
+
+  # @deprecated
+  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   # Parent owners are ignored for nested groups.

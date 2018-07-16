@@ -166,7 +166,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end
@@ -188,7 +188,7 @@ describe ProjectsController do
       User.project_views.keys.each do |project_view|
         context "with #{project_view} view set" do
           before do
-            user.update_attributes(project_view: project_view)
+            user.update(project_view: project_view)
 
             get :show, namespace_id: empty_project.namespace, id: empty_project
           end
@@ -616,12 +616,39 @@ describe ProjectsController do
   end
 
   describe 'POST #preview_markdown' do
-    it 'renders json in a correct format' do
+    before do
       sign_in(user)
+    end
 
+    it 'renders json in a correct format' do
       post :preview_markdown, namespace_id: public_project.namespace, id: public_project, text: '*Markdown* text'
 
       expect(JSON.parse(response.body).keys).to match_array(%w(body references))
+    end
+
+    context 'state filter on references' do
+      let(:issue) { create(:issue, :closed, project: public_project) }
+      let(:merge_request) { create(:merge_request, :closed, target_project: public_project) }
+
+      it 'renders JSON body with state filter for issues' do
+        post :preview_markdown, namespace_id: public_project.namespace,
+                                id: public_project,
+                                text: issue.to_reference
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['body']).to match(/\##{issue.iid} \(closed\)/)
+      end
+
+      it 'renders JSON body with state filter for MRs' do
+        post :preview_markdown, namespace_id: public_project.namespace,
+                                id: public_project,
+                                text: merge_request.to_reference
+
+        json_response = JSON.parse(response.body)
+
+        expect(json_response['body']).to match(/\!#{merge_request.iid} \(closed\)/)
+      end
     end
   end
 
@@ -732,7 +759,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -760,26 +787,58 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
-    context 'when project export is enabled' do
-      it 'returns 302' do
-        get :download_export, namespace_id: project.namespace, id: project
-
-        expect(response).to have_gitlab_http_status(302)
-      end
-    end
-
-    context 'when project export is disabled' do
+    context 'object storage disabled' do
       before do
-        stub_application_setting(project_export_enabled?: false)
+        stub_feature_flags(import_export_object_storage: false)
       end
 
-      it 'returns 404' do
-        get :download_export, namespace_id: project.namespace, id: project
+      context 'when project export is enabled' do
+        it 'returns 302' do
+          get :download_export, namespace_id: project.namespace, id: project
 
-        expect(response).to have_gitlab_http_status(404)
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when project export is disabled' do
+        before do
+          stub_application_setting(project_export_enabled?: false)
+        end
+
+        it 'returns 404' do
+          get :download_export, namespace_id: project.namespace, id: project
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context 'object storage enabled' do
+      before do
+        stub_feature_flags(import_export_object_storage: true)
+      end
+
+      context 'when project export is enabled' do
+        it 'returns 302' do
+          get :download_export, namespace_id: project.namespace, id: project
+
+          expect(response).to have_gitlab_http_status(302)
+        end
+      end
+
+      context 'when project export is disabled' do
+        before do
+          stub_application_setting(project_export_enabled?: false)
+        end
+
+        it 'returns 404' do
+          get :download_export, namespace_id: project.namespace, id: project
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
     end
   end
@@ -788,7 +847,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do
@@ -816,7 +875,7 @@ describe ProjectsController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when project export is enabled' do

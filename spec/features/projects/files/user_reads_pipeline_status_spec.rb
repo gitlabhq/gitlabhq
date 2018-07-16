@@ -7,7 +7,7 @@ describe 'user reads pipeline status', :js do
   let(:x110_pipeline) { create_pipeline('x1.1.0', 'failed') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     project.repository.add_tag(user, 'x1.1.0', 'v1.1.0')
     v110_pipeline
@@ -17,7 +17,7 @@ describe 'user reads pipeline status', :js do
   end
 
   shared_examples 'visiting project tree' do
-    scenario 'sees the correct pipeline status' do
+    it 'sees the correct pipeline status' do
       visit project_tree_path(project, expected_pipeline.ref)
       wait_for_requests
 

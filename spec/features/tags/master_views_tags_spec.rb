@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-feature 'Master views tags' do
+describe 'Maintainer views tags' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -19,7 +19,7 @@ feature 'Master views tags' do
       visit project_tags_path(project)
     end
 
-    scenario 'displays a specific message' do
+    it 'displays a specific message' do
       expect(page).to have_content 'Repository has no tags yet.'
     end
   end
@@ -32,7 +32,7 @@ feature 'Master views tags' do
       visit project_tags_path(project)
     end
 
-    scenario 'avoids a N+1 query in branches index' do
+    it 'avoids a N+1 query in branches index' do
       control_count = ActiveRecord::QueryRecorder.new { visit project_tags_path(project) }.count
 
       %w(one two three four five).each { |tag| repository.add_tag(user, tag, 'master', 'foo') }
@@ -40,11 +40,11 @@ feature 'Master views tags' do
       expect { visit project_tags_path(project) }.not_to exceed_query_limit(control_count)
     end
 
-    scenario 'views the tags list page' do
+    it 'views the tags list page' do
       expect(page).to have_content 'v1.0.0'
     end
 
-    scenario 'views a specific tag page' do
+    it 'views a specific tag page' do
       click_on 'v1.0.0'
 
       expect(current_path).to eq(
@@ -54,7 +54,7 @@ feature 'Master views tags' do
     end
 
     describe 'links on the tag page' do
-      scenario 'has a button to browse files' do
+      it 'has a button to browse files' do
         click_on 'v1.0.0'
 
         expect(current_path).to eq(
@@ -66,7 +66,7 @@ feature 'Master views tags' do
           project_tree_path(project, 'v1.0.0'))
       end
 
-      scenario 'has a button to browse commits' do
+      it 'has a button to browse commits' do
         click_on 'v1.0.0'
 
         expect(current_path).to eq(

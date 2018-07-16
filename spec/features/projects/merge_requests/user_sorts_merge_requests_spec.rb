@@ -9,7 +9,7 @@ describe 'User sorts merge requests' do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(project_merge_requests_path(project))

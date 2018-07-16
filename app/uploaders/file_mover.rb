@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class FileMover
   attr_reader :secret, :file_name, :model, :update_field
 

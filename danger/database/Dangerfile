@@ -1,0 +1,83 @@
+# frozen_string_literal: true
+
+# All the files/directories that should be reviewed by the DB team.
+DB_FILES = [
+  'db/',
+  'app/models/project_authorization.rb',
+  'app/services/users/refresh_authorized_projects_service.rb',
+  'lib/gitlab/background_migration.rb',
+  'lib/gitlab/background_migration/',
+  'lib/gitlab/database.rb',
+  'lib/gitlab/database/',
+  'lib/gitlab/github_import.rb',
+  'lib/gitlab/github_import/',
+  'lib/gitlab/sql/',
+  'rubocop/cop/migration',
+  'ee/db/',
+  'ee/lib/gitlab/database/'
+].freeze
+
+SCHEMA_NOT_UPDATED_MESSAGE = <<~MSG
+**New %<migrations>s added but %<schema>s wasn't updated.**
+
+Usually, when adding new %<migrations>s, %<schema>s should be
+updated too (unless the migration isn't changing the DB schema
+and isn't the most recent one).
+MSG
+
+def database_paths_requiring_review(files)
+  to_review = []
+
+  files.each do |file|
+    review = DB_FILES.any? do |pattern|
+      file.start_with?(pattern)
+    end
+
+    to_review << file if review
+  end
+
+  to_review
+end
+
+all_files = git.added_files + git.modified_files
+
+non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb/}).empty?
+geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb/}).empty?
+
+non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
+geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).empty?
+
+if non_geo_migration_created && !non_geo_db_schema_updated
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'migrations', schema: gitlab.html_link("db/schema.rb"))
+end
+
+if geo_migration_created && !geo_db_schema_updated
+  warn format(SCHEMA_NOT_UPDATED_MESSAGE, migrations: 'Geo migrations', schema: gitlab.html_link("ee/db/geo/schema.rb"))
+end
+
+db_paths_to_review = database_paths_requiring_review(all_files)
+
+unless db_paths_to_review.empty?
+  message 'This merge request adds or changes files that require a ' \
+    'review from the Database team.'
+
+  markdown(<<~MARKDOWN.strip)
+## Database Review
+
+The following files require a review from the Database team:
+
+* #{db_paths_to_review.map { |path| "`#{path}`" }.join("\n* ")}
+
+To make sure these changes are reviewed, take the following steps:
+
+1. Edit your merge request, and add `gl-database` to the list of Group
+   approvers.
+1. Mention `@gl-database` in a separate comment, and explain what needs to be
+   reviewed by the team. Please don't mention the team until your changes are
+   ready for review.
+  MARKDOWN
+
+  unless gitlab.mr_labels.include?('database')
+    warn 'This merge request is missing the ~database label.'
+  end
+end
