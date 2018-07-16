@@ -1481,4 +1481,40 @@ describe Project do
       expect(project.latest_pipeline_with_security_reports).to eq(pipeline_2)
     end
   end
+
+  describe '#after_import' do
+    let(:project) { create(:project) }
+    let(:repository_updated_service) { instance_double('::Geo::RepositoryUpdatedService') }
+    let(:wiki_updated_service) { instance_double('::Geo::RepositoryUpdatedService') }
+
+    before do
+      allow(::Geo::RepositoryUpdatedService)
+        .to receive(:new)
+        .with(project, source: Geo::RepositoryUpdatedEvent::REPOSITORY)
+        .and_return(repository_updated_service)
+
+      allow(::Geo::RepositoryUpdatedService)
+        .to receive(:new)
+        .with(project, source: Geo::RepositoryUpdatedEvent::WIKI)
+        .and_return(wiki_updated_service)
+    end
+
+    it 'calls Geo::RepositoryUpdatedService when running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
+
+      expect(repository_updated_service).to receive(:execute).once
+      expect(wiki_updated_service).to receive(:execute).once
+
+      project.after_import
+    end
+
+    it 'does not call Geo::RepositoryUpdatedService when not running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?).and_return(false)
+
+      expect(repository_updated_service).not_to receive(:execute)
+      expect(wiki_updated_service).not_to receive(:execute)
+
+      project.after_import
+    end
+  end
 end
