@@ -322,8 +322,8 @@ describe "User creates wiki page" do
           visit(project_wikis_path(project))
 
           expect(page).to have_content('My customized sidebar')
+          expect(page).to have_content('More Pages')
           expect(page).not_to have_content('Another')
-          expect(page).not_to have_content('More Pages')
         end
       end
     end
