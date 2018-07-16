@@ -251,6 +251,7 @@ module ApplicationSettingsHelper
       :user_oauth_applications,
       :version_check_enabled,
       :allow_local_requests_from_hooks_and_services,
+      :hide_third_party_offers,
       :enforce_terms,
       :terms,
       :mirror_available

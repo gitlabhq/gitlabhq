@@ -149,22 +149,24 @@ describe Project do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
-
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
-
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
-
     it { is_expected.to validate_presence_of(:creator) }
-
     it { is_expected.to validate_presence_of(:namespace) }
-
     it { is_expected.to validate_presence_of(:repository_storage) }
+
+    it 'validates build timeout constraints' do
+      is_expected.to validate_numericality_of(:build_timeout)
+        .only_integer
+        .is_greater_than_or_equal_to(10.minutes)
+        .is_less_than(1.month)
+        .with_message('needs to be beetween 10 minutes and 1 month')
+    end
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
@@ -336,7 +338,7 @@ describe Project do
   end
 
   describe 'delegation' do
-    [:add_guest, :add_reporter, :add_developer, :add_master, :add_user, :add_users].each do |method|
+    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_user, :add_users].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
@@ -1130,7 +1132,7 @@ describe Project do
 
     describe 'when a user has access to a project' do
       before do
-        project.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MAINTAINER)
       end
 
       it { is_expected.to eq([project]) }
@@ -3496,8 +3498,8 @@ describe Project do
 
         expect(project.protected_branches).not_to be_empty
         expect(project.default_branch).to eq(project.protected_branches.first.name)
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
     end
   end
@@ -3733,7 +3735,7 @@ describe Project do
       end
 
       it 'does not allow access if the user cannot merge the merge request' do
-        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+        create(:protected_branch, :maintainers_can_push, project: target_project, name: 'target-branch')
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy

@@ -11,7 +11,7 @@ describe API::Pipelines do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/pipelines ' do

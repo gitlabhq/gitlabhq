@@ -5,7 +5,7 @@ describe NotesFinder do
   let(:project) { create(:project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do

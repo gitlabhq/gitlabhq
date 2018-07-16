@@ -73,6 +73,7 @@ describe('IDE store project actions', () => {
           branchId: store.state.currentBranchId,
         },
         store.state,
+        // mutations
         [
           {
             type: 'SET_BRANCH_COMMIT',
@@ -82,17 +83,9 @@ describe('IDE store project actions', () => {
               commit: { id: '123' },
             },
           },
-        ], // mutations
-        [
-          {
-            type: 'getLastCommitPipeline',
-            payload: {
-              projectId: 'abc/def',
-              projectIdNumber: store.state.projects['abc/def'].id,
-              branchId: 'master',
-            },
-          },
-        ], // action
+        ],
+        // action
+        [],
         done,
       );
     });

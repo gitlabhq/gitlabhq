@@ -27,6 +27,12 @@ describe GitGarbageCollectWorker do
 
         subject.perform(project.id, :gc, lease_key, lease_uuid)
       end
+
+      it 'handles gRPC errors' do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect).and_raise(GRPC::NotFound)
+
+        expect { subject.perform(project.id, :gc, lease_key, lease_uuid) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+      end
     end
 
     context 'with different lease than the active one' do
@@ -203,12 +209,7 @@ describe GitGarbageCollectWorker do
       tree: old_commit.tree,
       parents: [old_commit]
     )
-    Gitlab::Git::OperationService.new(nil, project.repository.raw_repository).send(
-      :update_ref,
-      "refs/heads/#{SecureRandom.hex(6)}",
-      new_commit_sha,
-      Gitlab::Git::BLANK_SHA
-    )
+    rugged.references.create("refs/heads/#{SecureRandom.hex(6)}", new_commit_sha)
   end
 
   def packs(project)

@@ -14,7 +14,7 @@ describe "Public Project Snippets Access"  do
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
-    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
     it { is_expected.to be_allowed_for(:reporter).of(project) }
     it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -28,7 +28,7 @@ describe "Public Project Snippets Access"  do
 
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:owner).of(project) }
-    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:maintainer).of(project) }
     it { is_expected.to be_allowed_for(:developer).of(project) }
     it { is_expected.to be_allowed_for(:reporter).of(project) }
     it { is_expected.to be_denied_for(:guest).of(project) }
@@ -43,7 +43,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -57,7 +57,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -71,7 +71,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -87,7 +87,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -101,7 +101,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }
@@ -115,7 +115,7 @@ describe "Public Project Snippets Access"  do
 
       it { is_expected.to be_allowed_for(:admin) }
       it { is_expected.to be_allowed_for(:owner).of(project) }
-      it { is_expected.to be_allowed_for(:master).of(project) }
+      it { is_expected.to be_allowed_for(:maintainer).of(project) }
       it { is_expected.to be_allowed_for(:developer).of(project) }
       it { is_expected.to be_allowed_for(:reporter).of(project) }
       it { is_expected.to be_allowed_for(:guest).of(project) }

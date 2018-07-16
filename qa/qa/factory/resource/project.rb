@@ -37,6 +37,7 @@ module QA
             page.choose_test_namespace
             page.choose_name(@name)
             page.add_description(@description)
+            page.set_visibility('Public')
             page.create_new_project
           end
         end

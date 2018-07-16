@@ -385,7 +385,7 @@ describe Gitlab::ProjectSearchResults do
       let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
-        private_project.add_master(user)
+        private_project.add_maintainer(user)
         user
       end
       let(:team_reporter) do

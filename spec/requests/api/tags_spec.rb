@@ -10,7 +10,7 @@ describe API::Tags do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/repository/tags' do
@@ -86,7 +86,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tags'
@@ -168,7 +168,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository tag'
@@ -222,7 +222,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       context "when a protected branch doesn't already exist" do
@@ -341,7 +341,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository delete tag'
@@ -386,7 +386,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository new release'
@@ -452,7 +452,7 @@ describe API::Tags do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'repository update release'

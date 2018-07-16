@@ -15,7 +15,6 @@
 class TodosFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
-  include Gitlab::Utils::StrongMemoize
 
   requires_cross_project_access unless: -> { project? }
 
@@ -35,11 +34,9 @@ class TodosFinder
     items = by_author(items)
     items = by_state(items)
     items = by_type(items)
-    items = by_group(items)
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
-    items = visible_to_user(items)
 
     sort(items)
   end
@@ -85,10 +82,6 @@ class TodosFinder
     params[:project_id].present?
   end
 
-  def group?
-    params[:group_id].present?
-  end
-
   def project
     return @project if defined?(@project)
 
@@ -107,14 +100,18 @@ class TodosFinder
     @project
   end
 
-  def group
-    strong_memoize(:group) do
-      Group.find(params[:group_id])
+  def project_ids(items)
+    ids = items.except(:order).select(:project_id)
+    if Gitlab::Database.mysql?
+      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
+      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
     end
+
+    ids
   end
 
   def type?
-    type.present? && %w(Issue MergeRequest Epic).include?(type)
+    type.present? && %w(Issue MergeRequest).include?(type)
   end
 
   def type
@@ -151,37 +148,12 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items = items.where(project: project)
+      items.where(project: project)
+    else
+      projects = Project.public_or_visible_to_user(current_user)
+
+      items.joins(:project).merge(projects)
     end
-
-    items
-  end
-
-  def by_group(items)
-    if group?
-      groups = group.self_and_descendants
-      items = items.where(
-        'project_id IN (?) OR group_id IN (?)',
-        Project.where(group: groups).select(:id),
-        groups.select(:id)
-      )
-    end
-
-    items
-  end
-
-  def visible_to_user(items)
-    projects = Project.public_or_visible_to_user(current_user)
-    groups = Group.public_or_visible_to_user(current_user)
-
-    items
-      .joins('LEFT JOIN namespaces ON namespaces.id = todos.group_id')
-      .joins('LEFT JOIN projects ON projects.id = todos.project_id')
-      .where(
-        'project_id IN (?) OR group_id IN (?)',
-        projects.select(:id),
-        groups.select(:id)
-      )
   end
 
   def by_state(items)

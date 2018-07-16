@@ -12,7 +12,7 @@ describe 'Issues > User uses quick actions', :js do
     let(:project) { create(:project, :public) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
@@ -196,7 +196,7 @@ describe 'Issues > User uses quick actions', :js do
         let(:target_project) { create(:project, :public) }
 
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
@@ -258,7 +258,7 @@ describe 'Issues > User uses quick actions', :js do
         let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
 
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)

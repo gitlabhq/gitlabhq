@@ -26,4 +26,8 @@ export default () => ({
   rightPane: null,
   links: {},
   errorMessage: null,
+  newEntryModal: {
+    type: '',
+    path: '',
+  },
 });

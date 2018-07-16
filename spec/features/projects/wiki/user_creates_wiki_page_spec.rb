@@ -4,7 +4,7 @@ describe "User creates wiki page" do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(project_wikis_path(project))

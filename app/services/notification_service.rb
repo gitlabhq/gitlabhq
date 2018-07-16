@@ -274,9 +274,9 @@ class NotificationService
   def new_access_request(member)
     return true unless member.notifiable?(:subscription)
 
-    recipients = member.source.members.active_without_invites_and_requests.owners_and_masters
-    if fallback_to_group_owners_masters?(recipients, member)
-      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_masters
+    recipients = member.source.members.active_without_invites_and_requests.owners_and_maintainers
+    if fallback_to_group_owners_maintainers?(recipients, member)
+      recipients = member.source.group.members.active_without_invites_and_requests.owners_and_maintainers
     end
 
     recipients.each { |recipient| deliver_access_request_email(recipient, member) }
@@ -519,7 +519,7 @@ class NotificationService
 
     return [] unless project
 
-    notifiable_users(project.team.masters, :watch, target: project)
+    notifiable_users(project.team.maintainers, :watch, target: project)
   end
 
   def notifiable?(*args)
@@ -534,7 +534,7 @@ class NotificationService
     mailer.member_access_requested_email(member.real_source_type, member.id, recipient.user.notification_email).deliver_later
   end
 
-  def fallback_to_group_owners_masters?(recipients, member)
+  def fallback_to_group_owners_maintainers?(recipients, member)
     return false if recipients.present?
 
     member.source.respond_to?(:group) && member.source.group

@@ -135,10 +135,13 @@ module API
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state)
-                         .preload(namespace: [:route, :owner],
-                                  tags: :taggings)
+                         .preload(:import_state, :tags)
+                         .preload(namespace: [:route, :owner])
       end
     end
 
@@ -212,11 +215,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
                                          forked_project_link: :forked_from_project,
-                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
 
       def self.forks_counting_projects(projects_relation)
@@ -775,33 +782,28 @@ module API
 
     class Todo < Grape::Entity
       expose :id
-      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project_id }
-      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group_id }
+      expose :project, using: Entities::BasicProjectDetails
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type
 
       expose :target do |todo, options|
-        todo_target_class(todo.target_type).represent(todo.target, options)
+        Entities.const_get(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
         target_type   = todo.target_type.underscore
-        target_url    = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
+        target_url    = "namespace_project_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
         Gitlab::Routing
           .url_helpers
-          .public_send(target_url, todo.parent, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
+          .public_send(target_url, todo.project.namespace, todo.project, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       expose :body
       expose :state
       expose :created_at
-
-      def todo_target_class(target_type)
-        ::API::Entities.const_get(target_type)
-      end
     end
 
     class NamespaceBasic < Grape::Entity

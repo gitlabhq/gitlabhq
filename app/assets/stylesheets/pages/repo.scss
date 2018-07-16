@@ -44,6 +44,7 @@
   padding-bottom: $grid-size;
 
   .file {
+    height: 32px;
     cursor: pointer;
 
     &.file-active {
@@ -716,32 +717,6 @@
   justify-content: center;
 }
 
-.ide-new-btn {
-  .btn {
-    padding-top: 3px;
-    padding-bottom: 3px;
-  }
-
-  .dropdown {
-    display: flex;
-  }
-
-  .dropdown-toggle svg {
-    top: 0;
-  }
-
-  .dropdown-menu {
-    left: auto;
-    right: 0;
-
-    label {
-      font-weight: $gl-font-weight-normal;
-      padding: 5px 8px;
-      margin-bottom: 0;
-    }
-  }
-}
-
 .ide {
   overflow: hidden;
 
@@ -1339,4 +1314,25 @@
   .issuable-details {
     overflow: auto;
   }
+}
+
+.ide-entry-dropdown-toggle {
+  padding: $gl-padding-4;
+  background-color: $theme-gray-100;
+
+  &:hover {
+    background-color: $theme-gray-200;
+  }
+
+  &:active,
+  &:focus {
+    color: $white-normal;
+    background-color: $blue-500;
+    outline: 0;
+  }
+}
+
+.ide-new-btn .dropdown.show .ide-entry-dropdown-toggle {
+  color: $white-normal;
+  background-color: $blue-500;
 }

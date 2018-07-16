@@ -41,7 +41,7 @@ From https://gitlab.com/gitlab-org/gitlab-ce
 section_end:1522927113:get_sources
 [0Ksection_start:1522927113:restore_cache
 [0K[32;1mChecking cache for ruby-2.3.6-with-yarn...[0;m
-Downloading cache.zip from http://runners-cache-5-internal.gitlab.com:444/runner/project/13083/ruby-2.3.6-with-yarn[0;m 
+Downloading cache.zip from http://runners-cache-5-internal.gitlab.com:444/runner/project/13083/ruby-2.3.6-with-yarn[0;m
 [32;1mSuccessfully extracted cache[0;m
 section_end:1522927128:restore_cache
 [0Ksection_start:1522927128:download_artifacts
@@ -51,7 +51,7 @@ Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303215 respon
 Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303216 responseStatus[0;m=200 OK token[0;m=iy2yYbq8
 [32;1mDownloading artifacts for setup-test-env (61303217)...[0;m
 Downloading artifacts from coordinator... ok      [0;m  id[0;m=61303217 responseStatus[0;m=200 OK token[0;m=ur1g79-4
-[0;33mWARNING: tmp/tests/gitlab-shell/.gitlab_shell_secret: chmod tmp/tests/gitlab-shell/.gitlab_shell_secret: no such file or directory (suppressing repeats)[0;m 
+[0;33mWARNING: tmp/tests/gitlab-shell/.gitlab_shell_secret: chmod tmp/tests/gitlab-shell/.gitlab_shell_secret: no such file or directory (suppressing repeats)[0;m
 section_end:1522927141:download_artifacts
 [0Ksection_start:1522927141:build_script
 [0K[32;1m$ bundle --version[0;m
@@ -1486,7 +1486,7 @@ Gitlab::ImportExport::ProjectTreeSaver
         overrides the project description
       group members
         does not export group members if it has no permission
-        does not export group members as master
+        does not export group members as maintainer
         exports group members as group owner
         as admin
           exports group members as admin
@@ -1690,7 +1690,7 @@ GroupsController
         and logged in as Developer
           behaves like member without ability to create subgroups
             renders the 404 page (PENDING: around hook at ./spec/spec_helper.rb:186 did not execute the example)
-        and logged in as Master
+        and logged in as Maintainer
           behaves like member without ability to create subgroups
             renders the 404 page (PENDING: around hook at ./spec/spec_helper.rb:186 did not execute the example)
       and can_create_group is false
@@ -1706,7 +1706,7 @@ GroupsController
         and logged in as Developer
           behaves like member without ability to create subgroups
             renders the 404 page (PENDING: around hook at ./spec/spec_helper.rb:186 did not execute the example)
-        and logged in as Master
+        and logged in as Maintainer
           behaves like member without ability to create subgroups
             renders the 404 page (PENDING: around hook at ./spec/spec_helper.rb:186 did not execute the example)
   GET #activity
@@ -2324,7 +2324,7 @@ Editing file blob
         shows blob editor with same branch
       with protected branch
         shows blob editor with patch branch
-    as master
+    as maintainer
       shows blob editor with same branch
 
 Boards::Lists::MoveService
@@ -2880,7 +2880,7 @@ API::V3::Environments
     won't update the external_url if only the name is passed
     returns a 404 if the environment does not exist
   DELETE /projects/:id/environments/:environment_id
-    as a master
+    as a maintainer
       returns a 200 for an existing environment
       returns a 404 for non existing id
     a non member
@@ -3001,11 +3001,11 @@ LfsFileLock
   #can_be_unlocked_by?
     when it's forced
       can be unlocked by the author
-      can be unlocked by a master
+      can be unlocked by a maintainer
       can't be unlocked by other user
     when it isn't forced
       can be unlocked by the author
-      can't be unlocked by a master
+      can't be unlocked by a maintainer
       can't be unlocked by other user
 
 Gitlab::Ci::Config::Entry::Boolean
@@ -3069,7 +3069,7 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
      # around hook at ./spec/spec_helper.rb:186 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:25
 
-  5) GroupsController GET #new when creating subgroups and can_create_group is true and logged in as Master behaves like member without ability to create subgroups renders the 404 page
+  5) GroupsController GET #new when creating subgroups and can_create_group is true and logged in as Maintainer behaves like member without ability to create subgroups renders the 404 page
      # around hook at ./spec/spec_helper.rb:186 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:25
 
@@ -3089,7 +3089,7 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
      # around hook at ./spec/spec_helper.rb:186 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:25
 
-  10) GroupsController GET #new when creating subgroups and can_create_group is false and logged in as Master behaves like member without ability to create subgroups renders the 404 page
+  10) GroupsController GET #new when creating subgroups and can_create_group is false and logged in as Maintainer behaves like member without ability to create subgroups renders the 404 page
      # around hook at ./spec/spec_helper.rb:186 did not execute the example
      # ./spec/controllers/groups_controller_spec.rb:25
 
@@ -3237,7 +3237,7 @@ Pending: (Failures listed here are expected and do not affect your suite's statu
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:212
 
-  47) Groups::TransferService#execute when transferring a subgroup into another group when the group is allowed to be transferred should update parent group to the new parent 
+  47) Groups::TransferService#execute when transferring a subgroup into another group when the group is allowed to be transferred should update parent group to the new parent
      # around hook at ./spec/spec_helper.rb:190 did not execute the example
      # ./spec/services/groups/transfer_service_spec.rb:216
 
@@ -3435,10 +3435,10 @@ section_end:1522927515:after_script
 section_end:1522927516:archive_cache
 [0Ksection_start:1522927516:upload_artifacts
 [0K[32;1mUploading artifacts...[0;m
-coverage/: found 5 matching files                 [0;m 
-knapsack/: found 5 matching files                 [0;m 
-rspec_flaky/: found 4 matching files              [0;m 
-[0;33mWARNING: tmp/capybara/: no matching files         [0;m 
+coverage/: found 5 matching files                 [0;m
+knapsack/: found 5 matching files                 [0;m
+rspec_flaky/: found 4 matching files              [0;m
+[0;33mWARNING: tmp/capybara/: no matching files         [0;m
 Uploading artifacts to coordinator... ok          [0;m  id[0;m=61303283 responseStatus[0;m=201 Created token[0;m=rusBKvxM
 section_end:1522927520:upload_artifacts
 [0K[32;1mJob succeeded

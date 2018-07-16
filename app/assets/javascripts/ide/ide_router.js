@@ -101,6 +101,7 @@ router.beforeEach((to, from, next) => {
           store
             .dispatch('getMergeRequestData', {
               projectId: fullProjectId,
+              targetProjectId: to.query.target_project,
               mergeRequestId: to.params.mrid,
             })
             .then(mr => {
@@ -119,12 +120,14 @@ router.beforeEach((to, from, next) => {
             .then(() =>
               store.dispatch('getMergeRequestVersions', {
                 projectId: fullProjectId,
+                targetProjectId: to.query.target_project,
                 mergeRequestId: to.params.mrid,
               }),
             )
             .then(() =>
               store.dispatch('getMergeRequestChanges', {
                 projectId: fullProjectId,
+                targetProjectId: to.query.target_project,
                 mergeRequestId: to.params.mrid,
               }),
             )

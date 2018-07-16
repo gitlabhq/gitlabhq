@@ -11,7 +11,7 @@ describe 'User views a wiki page' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

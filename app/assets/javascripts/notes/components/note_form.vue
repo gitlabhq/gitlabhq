@@ -200,7 +200,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
           @click="cancelHandler()">
-          {{ __('Discard draft') }}
+          Cancel
         </button>
       </div>
     </form>

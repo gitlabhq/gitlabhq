@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import { mapActions, mapGetters } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -38,11 +39,6 @@ export default {
       required: false,
       default: true,
     },
-    discussionsExpanded: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     currentUser: {
       type: Object,
       required: true,
@@ -54,6 +50,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('diffs', ['diffHasExpandedDiscussions']),
+    hasExpandedDiscussions() {
+      return this.diffHasExpandedDiscussions(this.diffFile);
+    },
     icon() {
       if (this.diffFile.submodule) {
         return 'archive';
@@ -88,9 +88,6 @@ export default {
     collapseIcon() {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
-    isDiscussionsExpanded() {
-      return this.discussionsExpanded && this.expanded;
-    },
     viewFileButtonText() {
       const truncatedContentSha = _.escape(truncateSha(this.diffFile.contentSha));
       return sprintf(
@@ -113,7 +110,8 @@ export default {
     },
   },
   methods: {
-    handleToggle(e, checkTarget) {
+    ...mapActions('diffs', ['toggleFileDiscussions']),
+    handleToggleFile(e, checkTarget) {
       if (
         !checkTarget ||
         e.target === this.$refs.header ||
@@ -125,6 +123,9 @@ export default {
     showForkMessage() {
       this.$emit('showForkMessage');
     },
+    handleToggleDiscussions() {
+      this.toggleFileDiscussions(this.diffFile);
+    },
   },
 };
 </script>
@@ -133,7 +134,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggle($event, true)"
+    @click="handleToggleFile($event, true)"
   >
     <div class="file-header-content">
       <icon
@@ -216,10 +217,11 @@ export default {
         v-if="diffFile.blob && diffFile.blob.readableText"
       >
         <button
-          :class="{ active: isDiscussionsExpanded }"
+          :class="{ active: hasExpandedDiscussions }"
           :title="s__('MergeRequests|Toggle comments for this file')"
-          class="btn js-toggle-diff-comments"
+          class="js-btn-vue-toggle-comments btn"
           type="button"
+          @click="handleToggleDiscussions"
         >
           <icon name="comment" />
         </button>
