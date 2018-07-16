@@ -10,7 +10,6 @@ class EnvironmentEntity < Grape::Entity
   expose :environment_type
   expose :last_deployment, using: DeploymentEntity
   expose :stop_action_available?, as: :has_stop_action
-
   expose :rollout_status, if: -> (*) { can_read_deploy_board? }, using: RolloutStatusEntity
 
   expose :metrics_path, if: -> (*) { environment.has_metrics? } do |environment|

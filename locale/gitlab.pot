@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-16 12:42+0000\n"
+"PO-Revision-Date: 2018-07-16 12:42+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -338,6 +340,9 @@ msgstr ""
 msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
 msgstr ""
 
+msgid "Add new application"
+msgstr ""
+
 msgid "Add new directory"
 msgstr ""
 
@@ -449,7 +454,13 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "An application called %{link_to_client} is requesting access to your GitLab account."
+msgstr ""
+
 msgid "An error accured whilst committing your changes."
+msgstr ""
+
+msgid "An error has occurred"
 msgstr ""
 
 msgid "An error occured creating the new branch."
@@ -569,6 +580,9 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "Anonymous"
+msgstr ""
+
 msgid "Any"
 msgstr ""
 
@@ -576,6 +590,15 @@ msgid "Any Label"
 msgstr ""
 
 msgid "Appearance"
+msgstr ""
+
+msgid "Application"
+msgstr ""
+
+msgid "Application Id"
+msgstr ""
+
+msgid "Application: %{name}"
 msgstr ""
 
 msgid "Applications"
@@ -675,6 +698,24 @@ msgid "Authentication Log"
 msgstr ""
 
 msgid "Author"
+msgstr ""
+
+msgid "Authorization code:"
+msgstr ""
+
+msgid "Authorization was granted by entering your username and password in the application."
+msgstr ""
+
+msgid "Authorize"
+msgstr ""
+
+msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorized At"
+msgstr ""
+
+msgid "Authorized applications (%{size})"
 msgstr ""
 
 msgid "Authors: %{authors}"
@@ -1126,6 +1167,12 @@ msgstr ""
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
+msgid "Callback URL"
+msgstr ""
+
+msgid "Callback url"
+msgstr ""
+
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
 
@@ -1343,6 +1390,9 @@ msgid "Client authentication key"
 msgstr ""
 
 msgid "Client authentication key password"
+msgstr ""
+
+msgid "Clients"
 msgstr ""
 
 msgid "Clone repository"
@@ -2060,6 +2110,9 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
+msgid "Created At"
+msgstr ""
+
 msgid "Created by me"
 msgstr ""
 
@@ -2148,6 +2201,9 @@ msgid "Delete Snippet"
 msgstr ""
 
 msgid "Delete list"
+msgstr ""
+
+msgid "Deny"
 msgstr ""
 
 msgid "Deploy"
@@ -2293,6 +2349,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Destroy"
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -2396,6 +2455,9 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Edit Snippet"
+msgstr ""
+
+msgid "Edit application"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
@@ -3636,6 +3698,12 @@ msgstr ""
 msgid "Manage all notifications"
 msgstr ""
 
+msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
+msgstr ""
+
+msgid "Manage applications that you've authorized to use your account."
+msgstr ""
+
 msgid "Manage group labels"
 msgstr ""
 
@@ -3928,6 +3996,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "New"
+msgstr ""
+
+msgid "New Application"
 msgstr ""
 
 msgid "New Group"
@@ -4458,6 +4529,9 @@ msgid "Play"
 msgstr ""
 
 msgid "Please accept the Terms of Service before continuing."
+msgstr ""
+
+msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
 msgstr ""
 
 msgid "Please select at least one filter to see results"
@@ -5008,6 +5082,9 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
+msgid "Revoke"
+msgstr ""
+
 msgid "Roadmap"
 msgstr ""
 
@@ -5053,6 +5130,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save application"
+msgstr ""
+
 msgid "Save changes"
 msgstr ""
 
@@ -5072,6 +5152,9 @@ msgid "Schedules"
 msgstr ""
 
 msgid "Scheduling Pipelines"
+msgstr ""
+
+msgid "Scope"
 msgstr ""
 
 msgid "Scoped issue boards"
@@ -5114,6 +5197,9 @@ msgid "Seconds before reseting failure information"
 msgstr ""
 
 msgid "Seconds to wait for a storage access attempt"
+msgstr ""
+
+msgid "Secret:"
 msgstr ""
 
 msgid "Security Dashboard"
@@ -5813,6 +5899,12 @@ msgstr ""
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr ""
 
+msgid "This application was created by %{link_to_owner}."
+msgstr ""
+
+msgid "This application will be able to:"
+msgstr ""
+
 msgid "This board\\'s scope is reduced"
 msgstr ""
 
@@ -6278,10 +6370,16 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
+msgid "Use <code>%{native_redirect_uri}</code> for local tests"
+msgstr ""
+
 msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
 msgstr ""
 
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
+msgstr ""
+
+msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use the following registration token during setup:"
@@ -6554,6 +6652,9 @@ msgstr ""
 msgid "Yes, add it"
 msgstr ""
 
+msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -6612,6 +6713,12 @@ msgid "You do not have any assigned merge requests"
 msgstr ""
 
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
+msgstr ""
+
+msgid "You don't have any applications"
+msgstr ""
+
+msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
@@ -6684,6 +6791,12 @@ msgid "Your Projects' Activity"
 msgstr ""
 
 msgid "Your Todos"
+msgstr ""
+
+msgid "Your applications (%{size})"
+msgstr ""
+
+msgid "Your authorized applications"
 msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
