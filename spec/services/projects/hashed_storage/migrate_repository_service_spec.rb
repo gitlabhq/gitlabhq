@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Projects::HashedStorage::MigrateRepositoryService do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :legacy_storage, :repository, :wiki_repo) }
-  let(:service) { described_class.new(project, {}) }
+  let(:service) { described_class.new(project, project.full_path) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 
@@ -79,20 +79,20 @@ describe Projects::HashedStorage::MigrateRepositoryService do
       end
     end
 
-    context 'when old_path is explicitly passed' do
-      let(:path_before_rename) { 'old-path' }
+    context 'when old_path does not match full_path' do
+      let(:old_path) { 'old-path' }
       let(:logger) { double }
-      let(:service) { described_class.new(project, path_before_rename: path_before_rename, logger: logger) }
+      let(:service) { described_class.new(project, old_path, logger: logger) }
 
       it 'uses passed old_path parameter' do
-        expect(service).to receive(:move_repository).with(path_before_rename, /\@hashed/)
+        expect(service).to receive(:move_repository).with(old_path, /\@hashed/)
 
         allow(service).to receive(:rollback_folder_move).and_return(nil)
 
         service.execute
 
-        expect(service.old_disk_path).to eq path_before_rename
-        expect(service.old_wiki_disk_path).to eq "#{path_before_rename}.wiki"
+        expect(service.old_disk_path).to eq old_path
+        expect(service.old_wiki_disk_path).to eq "#{old_path}.wiki"
       end
     end
 

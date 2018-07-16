@@ -1940,7 +1940,7 @@ class Project < ActiveRecord::Base
   end
 
   def rename_using_hashed_storage!
-    ProjectMigrateHashedStorageWorker.new.perform(id, path_before_rename: full_path_was)
+    ProjectMigrateHashedStorageWorker.new.perform(id, full_path_was)
   end
 
   def storage_version=(value)

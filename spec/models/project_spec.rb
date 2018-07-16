@@ -3842,13 +3842,13 @@ describe Project do
 
   describe '#rename_using_hashed_storage!' do
     let(:project) { create(:project) }
-    let!(:path_before_rename) { project.full_path }
+    let!(:old_path) { project.full_path }
 
     it 'calls ProjectMigrateHashedStorageWorker with correct options' do
       project.update!(path: 'some-new-path')
 
       expect_any_instance_of(ProjectMigrateHashedStorageWorker)
-        .to receive(:perform).with(project.id, path_before_rename: path_before_rename)
+        .to receive(:perform).with(project.id, old_path)
 
       project.rename_using_hashed_storage!
     end

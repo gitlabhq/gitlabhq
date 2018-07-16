@@ -6,10 +6,10 @@ module Projects
       attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version,
                   :logger
 
-      def initialize(project, logger: nil, path_before_rename: nil)
+      def initialize(project, old_path, logger: nil)
         @project = project
         @logger = logger || Rails.logger
-        @old_disk_path = path_before_rename || project.disk_path
+        @old_disk_path = old_path
         @old_wiki_disk_path = "#{@old_disk_path}.wiki"
       end
 

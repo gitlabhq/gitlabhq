@@ -3,25 +3,20 @@ module Projects
     AttachmentMigrationError = Class.new(StandardError)
 
     class MigrateAttachmentsService < BaseService
-      attr_reader :logger, :path_before_rename, :new_path
+      attr_reader :logger, :old_path, :new_path
 
-      def initialize(project, logger: nil, path_before_rename: nil)
+      def initialize(project, old_path, logger: nil)
         @project = project
         @logger = logger || Rails.logger
-        @path_before_rename = path_before_rename
+        @old_path = old_path
       end
 
       def execute
-        # These two variables are used in EE.
-        # Don't remove it without checking EE part first.
-        @old_path = @path_before_rename || project.full_path
         @new_path = project.disk_path
 
         origin = FileUploader.absolute_base_dir(project)
-
-        if renamed?
-          origin.sub!(/#{Regexp.escape(project.full_path)}\z/, path_before_rename)
-        end
+        # It's possible that old_path does not match project.full_path
+        origin.sub!(/#{Regexp.escape(project.full_path)}\z/, old_path)
 
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
         target = FileUploader.absolute_base_dir(project)
@@ -37,10 +32,6 @@ module Projects
       end
 
       private
-
-      def renamed?
-        path_before_rename
-      end
 
       def move_folder!(old_path, new_path)
         unless File.directory?(old_path)
