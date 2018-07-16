@@ -269,7 +269,7 @@ EOT
     before do
       # TODO use a Gitaly diff object instead
       rugged_commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        repository.lookup('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+        repository.rugged.rev_parse('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
       end
 
       @diffs = rugged_commit.parents[0].diff(rugged_commit).patches

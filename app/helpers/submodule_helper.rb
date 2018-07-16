@@ -8,7 +8,7 @@ module SubmoduleHelper
     url = repository.submodule_url_for(ref, submodule_item.path)
 
     if url == '.' || url == './'
-      url = File.join(Gitlab.config.gitlab.url, @project.full_path)
+      url = File.join(Gitlab.config.gitlab.url, repository.project.full_path)
     end
 
     if url =~ %r{([^/:]+)/([^/]+(?:\.git)?)\Z}
@@ -31,7 +31,7 @@ module SubmoduleHelper
         [namespace_project_path(namespace, project),
          namespace_project_tree_path(namespace, project, submodule_item.id)]
       elsif relative_self_url?(url)
-        relative_self_links(url, submodule_item.id)
+        relative_self_links(url, submodule_item.id, repository.project)
       elsif github_dot_com_url?(url)
         standard_links('github.com', namespace, project, submodule_item.id)
       elsif gitlab_dot_com_url?(url)
@@ -73,7 +73,7 @@ module SubmoduleHelper
     [base, [base, '/tree/', commit].join('')]
   end
 
-  def relative_self_links(url, commit)
+  def relative_self_links(url, commit, project)
     url.rstrip!
     # Map relative links to a namespace and project
     # For example:
@@ -85,7 +85,7 @@ module SubmoduleHelper
     namespace = components.pop.gsub(/^\.\.$/, '')
 
     if namespace.empty?
-      namespace = @project.namespace.full_path
+      namespace = project.namespace.full_path
     end
 
     begin

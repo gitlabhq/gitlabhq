@@ -16,10 +16,11 @@ export default class MergeRequestStore {
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
     this.squash = data.squash;
-    this.squashBeforeMergeHelpPath = this.squashBeforeMergeHelpPath ||
-      data.squash_before_merge_help_path;
+    this.squashBeforeMergeHelpPath =
+      this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
     this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
 
+    this.iid = data.iid;
     this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
@@ -85,6 +86,8 @@ export default class MergeRequestStore {
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
     this.allowCollaboration = data.allow_collaboration;
+    this.targetProjectFullPath = data.target_project_full_path;
+    this.sourceProjectFullPath = data.source_project_full_path;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -97,7 +100,8 @@ export default class MergeRequestStore {
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
-    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelinePassing =
+      this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;

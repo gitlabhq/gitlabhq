@@ -21,11 +21,8 @@ module QA
     end
 
     context 'when developers and maintainers are allowed to push to a protected branch' do
-      let!(:protected_branch) { create_protected_branch(allow_to_push: true) }
-
       it 'user with push rights successfully pushes to the protected branch' do
-        expect(protected_branch.name).to have_content(branch_name)
-        expect(protected_branch.push_allowance).to have_content('Developers + Maintainers')
+        create_protected_branch(allow_to_push: true)
 
         push = push_new_file(branch_name)
 

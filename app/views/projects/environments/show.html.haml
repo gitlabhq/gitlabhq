@@ -16,7 +16,7 @@
               ?
           .modal-body
             %p= s_('Environments|Are you sure you want to stop this environment?')
-            - unless @environment.stop_action?
+            - unless @environment.stop_action_available?
               .warning_message
                 %p= s_('Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file.').html_safe % { emphasis_start: '<strong>'.html_safe,
                   emphasis_end: '</strong>'.html_safe,

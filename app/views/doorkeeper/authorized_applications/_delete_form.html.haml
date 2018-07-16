@@ -6,4 +6,4 @@
 
 = form_tag path do
   %input{ :name => "_method", :type => "hidden", :value => "delete" }/
-  = submit_tag 'Revoke', onclick: "return confirm('Are you sure?')", class: 'btn btn-remove btn-sm'
+  = submit_tag _('Revoke'), onclick: "return confirm('#{_('Are you sure?')}')", class: 'btn btn-remove btn-sm'

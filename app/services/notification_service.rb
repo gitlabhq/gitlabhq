@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable GitlabSecurity/PublicSend
 
 # NotificationService class
