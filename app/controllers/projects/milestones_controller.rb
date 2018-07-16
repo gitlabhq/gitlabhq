@@ -1,5 +1,4 @@
 class Projects::MilestonesController < Projects::ApplicationController
-  include ActionView::Helpers::SanitizeHelper
   include Gitlab::Utils::StrongMemoize
   include MilestoneActions
 
@@ -77,8 +76,8 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
-    milestone_title = sanitize(milestone.title)
-    flash[:notice] = "#{milestone_title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\"><u>group milestone</u></a>.".html_safe
+    flash[:notice] = flash_notice_for(promoted_milestone, project.group)
+
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)
@@ -89,6 +88,15 @@ class Projects::MilestonesController < Projects::ApplicationController
     end
   rescue Milestones::PromoteService::PromoteMilestoneError => error
     redirect_to milestone, alert: error.message
+  end
+
+  def flash_notice_for(milestone, group)
+    notice = ''.html_safe
+    notice << milestone.title
+    notice << ' promoted to '
+    notice << view_context.link_to('<u>group milestone</u>'.html_safe, group_milestone_path(group, milestone.iid))
+    notice << '.'
+    notice
   end
 
   def destroy

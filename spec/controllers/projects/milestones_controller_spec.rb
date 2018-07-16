@@ -133,7 +133,7 @@ describe Projects::MilestonesController do
 
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        expect(flash[:notice]).to eq("CCC<img src=\"x\"> promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
+        expect(flash[:notice]).to eq("CCC promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\"><u>group milestone</u></a>.")
       end
     end
 

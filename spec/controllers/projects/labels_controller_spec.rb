@@ -143,6 +143,14 @@ describe Projects::LabelsController do
         expect(GroupLabel.find_by(title: promoted_label_name)).not_to be_nil
       end
 
+      it 'renders label name without parsing it as HTML' do
+        label_1.update!(name: 'CCC&lt;img src=x onerror=alert(document.domain)&gt;')
+
+        post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
+
+        expect(flash[:notice]).to eq("CCC&lt;img src=x onerror=alert(document.domain)&gt; promoted to <a href=\"#{group_labels_path(project.group)}\"><u>group label</u></a>.")
+      end
+
       context 'service raising InvalidRecord' do
         before do
           expect_any_instance_of(Labels::PromoteService).to receive(:execute) do |label|
