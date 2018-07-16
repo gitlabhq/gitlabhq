@@ -1,2 +1,1 @@
-# Interceptor in lib/email_template_interceptor.rb
-ActionMailer::Base.register_interceptor(EmailTemplateInterceptor)
+ActionMailer::Base.register_interceptor(::Gitlab::Email::Hook::EmailTemplateInterceptor)

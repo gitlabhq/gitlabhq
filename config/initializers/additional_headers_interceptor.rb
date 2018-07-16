@@ -1,1 +1,2 @@
-ActionMailer::Base.register_interceptor(AdditionalEmailHeadersInterceptor)
+ActionMailer::Base
+  .register_interceptor(::Gitlab::Email::Hook::AdditionalHeadersInterceptor)
