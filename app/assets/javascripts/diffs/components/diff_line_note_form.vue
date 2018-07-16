@@ -56,8 +56,10 @@ export default {
     ...mapActions(['saveNote', 'refetchDiscussionById']),
     handleCancelCommentForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
+        const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
+
         // eslint-disable-next-line no-alert
-        if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+        if (!window.confirm(msg)) {
           return;
         }
       }

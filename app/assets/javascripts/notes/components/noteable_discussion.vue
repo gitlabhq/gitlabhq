@@ -6,6 +6,7 @@ import nextDiscussionsSvg from 'icons/_next_discussion.svg';
 import { convertObjectPropsToCamelCase, scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
+import { s__ } from '~/locale';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -194,8 +195,10 @@ export default {
     },
     cancelReplyForm(shouldConfirm, isDirty) {
       if (shouldConfirm && isDirty) {
+        const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
+
         // eslint-disable-next-line no-alert
-        if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+        if (!window.confirm(msg)) {
           return;
         }
       }
