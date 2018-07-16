@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Badges
   class BuildService < Badges::BaseService
     # returns the created badge

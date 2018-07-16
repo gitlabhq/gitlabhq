@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Badges
   class UpdateService < Badges::BaseService
     # returns the updated badge

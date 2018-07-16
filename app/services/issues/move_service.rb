@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class MoveService < Issues::BaseService
     MoveError = Class.new(StandardError)
