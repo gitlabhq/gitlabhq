@@ -189,7 +189,6 @@ export default {
       </button>
       <a
         v-if="lineNumber"
-        v-once
         :data-linenumber="lineNumber"
         :href="lineHref"
       >
