@@ -24,6 +24,7 @@ module Users
     private
 
     def set_status
+      params[:emoji] = UserStatus::DEFAULT_EMOJI if params[:emoji].blank?
       user_status.update(params)
     end
 

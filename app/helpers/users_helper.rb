@@ -39,6 +39,24 @@ module UsersHelper
     "access:#{max_project_member_access(project)}"
   end
 
+  def user_status(user)
+    return unless user
+
+    unless user.association(:status).loaded?
+      exception = RuntimeError.new("Status was not preloaded")
+      Gitlab::Sentry.track_exception(exception, extra: { user: user.inspect })
+    end
+
+    return unless user.status
+
+    content_tag :span,
+                class: 'user-status-emoji has-tooltip',
+                title: user.status.message_html,
+                data: { html: true, placement: 'top' } do
+      emoji_icon user.status.emoji
+    end
+  end
+
   private
 
   def get_profile_tabs
