@@ -551,6 +551,7 @@
     @include media-breakpoint-up(lg) {
       .branch-actions {
         align-self: center;
+        margin-left: $gl-padding;
       }
     }
   }
