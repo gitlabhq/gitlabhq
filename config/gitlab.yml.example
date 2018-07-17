@@ -745,14 +745,18 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: us-east-1
   uploads:
-    storage_path: tmp/tests/public
     object_store:
-      enabled: false
+      enabled: true
+      remote_directory: uploads
+      direct_upload: true # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
       connection:
-        provider: AWS # Only AWS supported at the moment
-        aws_access_key_id: AWS_ACCESS_KEY_ID
-        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
-        region: us-east-1
+        provider: AWS
+        aws_access_key_id: minio
+        aws_secret_access_key: gdk-minio
+        aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        region: gdk
+        endpoint: 'https://60c5d141.ngrok.io'
+        path_style: true
   gitlab:
     host: localhost
     port: 80

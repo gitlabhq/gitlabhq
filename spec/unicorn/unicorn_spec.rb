@@ -77,7 +77,7 @@ describe 'Unicorn' do
   end
 
   after(:all) do
-    WebMock.disable_net_connect!(allow_localhost: true)
+    WebMock.disable_net_connect!(allow_localhost: true, allow: %r{https://\w+.ngrok.io/})
     Process.kill('TERM', @unicorn_master_pid)
   end
 
