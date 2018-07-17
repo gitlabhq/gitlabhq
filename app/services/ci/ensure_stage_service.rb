@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   ##
   # We call this service everytime we persist a CI/CD job.

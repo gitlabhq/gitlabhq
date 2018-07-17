@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issuable
   class CommonSystemNotesService < ::BaseService
     attr_reader :issuable

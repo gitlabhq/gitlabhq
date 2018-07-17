@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatNames
   class FindUserService
     def initialize(service, params)

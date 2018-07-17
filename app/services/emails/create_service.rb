@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   class CreateService < ::Emails::BaseService
     def execute(extra_params = {})

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class CreateService < Groups::BaseService
     def initialize(user, params = {})
