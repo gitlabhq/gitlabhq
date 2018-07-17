@@ -14,10 +14,14 @@ module EE
     end
 
     def show_header?
+      return unless ::License.feature_available?(:system_header_footer)
+
       header_message.present?
     end
 
     def show_footer?
+      return unless ::License.feature_available?(:system_header_footer)
+
       footer_message.present?
     end
   end
