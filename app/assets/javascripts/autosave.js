@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign, prefer-template, no-void, consistent-return */
 
-import _ from 'underscore';
 import AccessorUtilities from './lib/utils/accessor';
 
 export default class Autosave {
@@ -14,13 +13,7 @@ export default class Autosave {
     this.key = 'autosave/' + key;
     this.field.data('autosave', this);
     this.restore();
-    this.field.on('keyup', this.debounceInputHandler());
-  }
-
-  debounceInputHandler() {
-    return _.debounce(() => {
-      this.save();
-    }, Autosave.DEBOUNCE_TIMER);
+    this.field.on('input', () => this.save());
   }
 
   restore() {
@@ -64,6 +57,4 @@ export default class Autosave {
   dispose() {
     this.field.off('input');
   }
-
-  static DEBOUNCE_TIMER = 300;
 }

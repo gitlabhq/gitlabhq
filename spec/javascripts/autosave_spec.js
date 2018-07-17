@@ -1,5 +1,4 @@
 import $ from 'jquery';
-import _ from 'underscore';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
 
@@ -11,24 +10,12 @@ describe('Autosave', () => {
   describe('class constructor', () => {
     beforeEach(() => {
       spyOn(AccessorUtilities, 'isLocalStorageAccessSafe').and.returnValue(true);
-      spyOn(_, 'debounce');
-      spyOn(Autosave.prototype, 'save');
       spyOn(Autosave.prototype, 'restore');
-      autosave = new Autosave(field, key);
-    });
-
-    it('should debounce the input handler', () => {
-      expect(_.debounce).toHaveBeenCalled();
-      expect(autosave.save).not.toHaveBeenCalled();
-
-      const [cb, timer] = _.debounce.calls.argsFor(0);
-      cb(); // execute debounced callback
-
-      expect(timer).toEqual(Autosave.DEBOUNCE_TIMER);
-      expect(autosave.save).toHaveBeenCalled();
     });
 
     it('should set .isLocalStorageAvailable', () => {
+      autosave = new Autosave(field, key);
+
       expect(AccessorUtilities.isLocalStorageAccessSafe).toHaveBeenCalled();
       expect(autosave.isLocalStorageAvailable).toBe(true);
     });
