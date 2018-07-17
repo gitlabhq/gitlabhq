@@ -2,6 +2,14 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.8.6 (2018-07-17)
+
+### Security (2 changes)
+
+- Fix symlink vulnerability in project import.
+- Merge branch 'fix-mr-widget-border' into 'master'.
+
+
 ## 10.8.5 (2018-06-21)
 
 ### Security (5 changes)
