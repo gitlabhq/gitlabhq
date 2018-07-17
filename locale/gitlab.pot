@@ -129,9 +129,6 @@ msgstr ""
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
-msgid "(check out the %{link} for information on how to install it)."
-msgstr ""
-
 msgid "+ %{moreCount} more"
 msgstr ""
 
@@ -1774,6 +1771,9 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
+msgid "Copy token to clipboard"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -2594,9 +2594,6 @@ msgstr ""
 msgid "GitLab Import"
 msgstr ""
 
-msgid "GitLab Runner section"
-msgstr ""
-
 msgid "GitLab User"
 msgstr ""
 
@@ -2917,10 +2914,10 @@ msgstr ""
 msgid "Inline"
 msgstr ""
 
-msgid "Install Runner on Kubernetes"
+msgid "Install GitLab Runner"
 msgstr ""
 
-msgid "Install a Runner compatible with GitLab CI"
+msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
