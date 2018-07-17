@@ -1139,14 +1139,14 @@ in webhooks. So if an image, merge request, comment, or wiki page has this in
 its description:
 
 ```markdown
-![image](/uploads/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/image.png)
+![image](/uploads/$sha/image.png)
 ```
 
 It will appear in the webhook body as the below (assuming that GitLab is
 installed at gitlab.example.com):
 
 ```markdown
-![image](https://gitlab.example.com/uploads/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa/image.png)
+![image](https://gitlab.example.com/uploads/$sha/image.png)
 ```
 
 This will not rewrite URLs that already are pointing to HTTP, HTTPS, or
