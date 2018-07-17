@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
     AUDIENCE = 'container_registry'.freeze

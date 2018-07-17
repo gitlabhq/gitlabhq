@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationSettings
   class UpdateService < ApplicationSettings::BaseService
     attr_reader :params, :application_setting

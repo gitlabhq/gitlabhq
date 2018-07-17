@@ -129,9 +129,6 @@ msgstr ""
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr ""
 
-msgid "(check out the %{link} for information on how to install it)."
-msgstr ""
-
 msgid "+ %{moreCount} more"
 msgstr ""
 
@@ -205,6 +202,18 @@ msgstr ""
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
 
+msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"John Smith\"</code> will add \"By John Smith\" to all issues and comments originally created by johnsmith@example.com."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"johnsm...@example.com\"</code> will add \"By johnsm...@example.com\" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user's privacy."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will add \"By <a href=\"#\">johnsmith@example.com</a>\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
+msgstr ""
+
 msgid "<strong>%{group_name}</strong> group members"
 msgstr ""
 
@@ -244,6 +253,9 @@ msgstr ""
 msgid "Access Tokens"
 msgstr ""
 
+msgid "Access denied! Please verify you can add deploy keys to this repository."
+msgstr ""
+
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr ""
 
@@ -278,6 +290,9 @@ msgid "Add License"
 msgstr ""
 
 msgid "Add Readme"
+msgstr ""
+
+msgid "Add new application"
 msgstr ""
 
 msgid "Add new directory"
@@ -379,7 +394,16 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "An application called %{link_to_client} is requesting access to your GitLab account."
+msgstr ""
+
+msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
+msgstr ""
+
 msgid "An error accured whilst committing your changes."
+msgstr ""
+
+msgid "An error has occurred"
 msgstr ""
 
 msgid "An error occured creating the new branch."
@@ -475,10 +499,22 @@ msgstr ""
 msgid "An error occurred. Please try again."
 msgstr ""
 
+msgid "Anonymous"
+msgstr ""
+
 msgid "Any"
 msgstr ""
 
 msgid "Appearance"
+msgstr ""
+
+msgid "Application"
+msgstr ""
+
+msgid "Application Id"
+msgstr ""
+
+msgid "Application: %{name}"
 msgstr ""
 
 msgid "Applications"
@@ -560,6 +596,24 @@ msgid "Authentication Log"
 msgstr ""
 
 msgid "Author"
+msgstr ""
+
+msgid "Authorization code:"
+msgstr ""
+
+msgid "Authorization was granted by entering your username and password in the application."
+msgstr ""
+
+msgid "Authorize"
+msgstr ""
+
+msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorized At"
+msgstr ""
+
+msgid "Authorized applications (%{size})"
 msgstr ""
 
 msgid "Authors: %{authors}"
@@ -704,6 +758,9 @@ msgid "Below are examples of regex for existing tools:"
 msgstr ""
 
 msgid "Below you will find all the groups that are public."
+msgstr ""
+
+msgid "Bitbucket import"
 msgstr ""
 
 msgid "Boards"
@@ -921,6 +978,12 @@ msgstr ""
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr ""
 
+msgid "Callback URL"
+msgstr ""
+
+msgid "Callback url"
+msgstr ""
+
 msgid "Can't find HEAD commit for this branch"
 msgstr ""
 
@@ -979,6 +1042,12 @@ msgid "Cherry-pick this commit"
 msgstr ""
 
 msgid "Cherry-pick this merge request"
+msgstr ""
+
+msgid "Choose <strong>Create archive</strong> and wait for archiving to complete."
+msgstr ""
+
+msgid "Choose <strong>Next</strong> at the bottom of the page."
 msgstr ""
 
 msgid "Choose File ..."
@@ -1092,7 +1161,13 @@ msgstr ""
 msgid "Click any <strong>project name</strong> in the project list below to navigate to the project milestone."
 msgstr ""
 
+msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
+msgstr ""
+
 msgid "Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone."
+msgstr ""
+
+msgid "Click the <strong>Select none</strong> button on the right, since we only need \"Google Code Project Hosting\"."
 msgstr ""
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
@@ -1102,6 +1177,9 @@ msgid "Click to expand it."
 msgstr ""
 
 msgid "Click to expand text"
+msgstr ""
+
+msgid "Clients"
 msgstr ""
 
 msgid "Clone repository"
@@ -1639,6 +1717,9 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+msgid "Continue to the next step"
+msgstr ""
+
 msgid "Continuous Integration and Deployment"
 msgstr ""
 
@@ -1688,6 +1769,9 @@ msgid "Copy reference to clipboard"
 msgstr ""
 
 msgid "Copy to clipboard"
+msgstr ""
+
+msgid "Copy token to clipboard"
 msgstr ""
 
 msgid "Create"
@@ -1768,6 +1852,9 @@ msgstr ""
 msgid "Created"
 msgstr ""
 
+msgid "Created At"
+msgstr ""
+
 msgid "Created by me"
 msgstr ""
 
@@ -1793,6 +1880,12 @@ msgid "Custom notification events"
 msgstr ""
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr ""
+
+msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
+msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
 msgid "Cycle Analytics"
@@ -1834,6 +1927,12 @@ msgstr ""
 msgid "Decline and sign out"
 msgstr ""
 
+msgid "Default: Directly import the Google Code email address or username"
+msgstr ""
+
+msgid "Default: Map a FogBugz account ID to a full name"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -1844,6 +1943,9 @@ msgid "Delete Snippet"
 msgstr ""
 
 msgid "Delete list"
+msgstr ""
+
+msgid "Deny"
 msgstr ""
 
 msgid "Deploy"
@@ -1983,6 +2085,9 @@ msgstr ""
 msgid "Description:"
 msgstr ""
 
+msgid "Destroy"
+msgstr ""
+
 msgid "Details"
 msgstr ""
 
@@ -2017,6 +2122,9 @@ msgid "Dismiss"
 msgstr ""
 
 msgid "Dismiss Cycle Analytics introduction box"
+msgstr ""
+
+msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
 msgstr ""
 
 msgid "Domain"
@@ -2074,6 +2182,9 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Edit Snippet"
+msgstr ""
+
+msgid "Edit application"
 msgstr ""
 
 msgid "Edit files in the editor and commit changes here"
@@ -2355,6 +2466,12 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
+msgid "Find the downloaded ZIP file and decompress it."
+msgstr ""
+
+msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
+msgstr ""
+
 msgid "Finished"
 msgstr ""
 
@@ -2362,6 +2479,24 @@ msgid "FirstPushedBy|First"
 msgstr ""
 
 msgid "FirstPushedBy|pushed by"
+msgstr ""
+
+msgid "FogBugz Email"
+msgstr ""
+
+msgid "FogBugz Import"
+msgstr ""
+
+msgid "FogBugz Password"
+msgstr ""
+
+msgid "FogBugz URL"
+msgstr ""
+
+msgid "FogBugz import"
+msgstr ""
+
+msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
 
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
@@ -2396,6 +2531,18 @@ msgstr ""
 msgid "From %{provider_title}"
 msgstr ""
 
+msgid "From Bitbucket"
+msgstr ""
+
+msgid "From FogBugz"
+msgstr ""
+
+msgid "From GitLab.com"
+msgstr ""
+
+msgid "From Google Code"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr ""
 
@@ -2415,6 +2562,9 @@ msgid "General pipelines"
 msgstr ""
 
 msgid "Generate a default set of labels"
+msgstr ""
+
+msgid "Git"
 msgstr ""
 
 msgid "Git repository URL"
@@ -2441,7 +2591,16 @@ msgstr ""
 msgid "GitLab Group Runners can execute code for all the projects in this group."
 msgstr ""
 
-msgid "GitLab Runner section"
+msgid "GitLab Import"
+msgstr ""
+
+msgid "GitLab User"
+msgstr ""
+
+msgid "GitLab project export"
+msgstr ""
+
+msgid "GitLab.com import"
 msgstr ""
 
 msgid "Gitaly"
@@ -2453,16 +2612,31 @@ msgstr ""
 msgid "Gitaly|Address"
 msgstr ""
 
+msgid "Gitea Host URL"
+msgstr ""
+
+msgid "Gitea Import"
+msgstr ""
+
 msgid "Go Back"
 msgstr ""
 
 msgid "Go back"
 msgstr ""
 
+msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
 msgid "Go to your fork"
 msgstr ""
 
 msgid "GoToYourFork|Fork"
+msgstr ""
+
+msgid "Google Code import"
+msgstr ""
+
+msgid "Google Takeout"
 msgstr ""
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
@@ -2686,7 +2860,19 @@ msgstr ""
 msgid "Import"
 msgstr ""
 
+msgid "Import Projects from Gitea"
+msgstr ""
+
+msgid "Import all compatible projects"
+msgstr ""
+
+msgid "Import all projects"
+msgstr ""
+
 msgid "Import all repositories"
+msgstr ""
+
+msgid "Import an exported GitLab project"
 msgstr ""
 
 msgid "Import in progress"
@@ -2695,22 +2881,43 @@ msgstr ""
 msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
+msgid "Import project"
+msgstr ""
+
+msgid "Import projects from Bitbucket"
+msgstr ""
+
+msgid "Import projects from FogBugz"
+msgstr ""
+
+msgid "Import projects from GitLab.com"
+msgstr ""
+
+msgid "Import projects from Google Code"
+msgstr ""
+
 msgid "Import repositories from GitHub"
 msgstr ""
 
 msgid "Import repository"
 msgstr ""
 
+msgid "In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
+msgstr ""
+
+msgid "Incompatible Project"
 msgstr ""
 
 msgid "Inline"
 msgstr ""
 
-msgid "Install Runner on Kubernetes"
+msgid "Install GitLab Runner"
 msgstr ""
 
-msgid "Install a Runner compatible with GitLab CI"
+msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
@@ -2901,7 +3108,13 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
+msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
+msgstr ""
+
 msgid "List"
+msgstr ""
+
+msgid "List Your Gitea Repositories"
 msgstr ""
 
 msgid "List available repositories"
@@ -2934,10 +3147,19 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
+msgid "Make sure you're logged into the account that owns the projects you'd like to import."
+msgstr ""
+
 msgid "Manage access"
 msgstr ""
 
 msgid "Manage all notifications"
+msgstr ""
+
+msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
+msgstr ""
+
+msgid "Manage applications that you've authorized to use your account."
 msgstr ""
 
 msgid "Manage group labels"
@@ -2953,6 +3175,18 @@ msgid "Manifest"
 msgstr ""
 
 msgid "Manifest file import"
+msgstr ""
+
+msgid "Map a FogBugz account ID to a GitLab user"
+msgstr ""
+
+msgid "Map a Google Code user to a GitLab user"
+msgstr ""
+
+msgid "Map a Google Code user to a full email address"
+msgstr ""
+
+msgid "Map a Google Code user to a full name"
 msgstr ""
 
 msgid "Mar"
@@ -3141,6 +3375,9 @@ msgstr ""
 msgid "New"
 msgstr ""
 
+msgid "New Application"
+msgstr ""
+
 msgid "New Group"
 msgstr ""
 
@@ -3249,6 +3486,9 @@ msgid "No repository"
 msgstr ""
 
 msgid "No schedules"
+msgstr ""
+
+msgid "No, directly import the existing email addresses and usernames."
 msgstr ""
 
 msgid "None"
@@ -3362,6 +3602,12 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
+msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
+msgstr ""
+
+msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
+msgstr ""
+
 msgid "Online IDE integration settings."
 msgstr ""
 
@@ -3384,6 +3630,12 @@ msgid "Opens in a new window"
 msgstr ""
 
 msgid "Operations"
+msgstr ""
+
+msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
+msgstr ""
+
+msgid "Optionally, you can %{link_to_customize} how Google Code email addresses and usernames are imported into GitLab."
 msgstr ""
 
 msgid "Options"
@@ -3620,6 +3872,15 @@ msgstr ""
 msgid "Please accept the Terms of Service before continuing."
 msgstr ""
 
+msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
+msgstr ""
+
 msgid "Please select at least one filter to see results"
 msgstr ""
 
@@ -3777,6 +4038,9 @@ msgid "Project export link has expired. Please generate a new export from your p
 msgstr ""
 
 msgid "Project export started. A download link will be sent by email."
+msgstr ""
+
+msgid "Project name"
 msgstr ""
 
 msgid "ProjectActivityRSS|Subscribe"
@@ -4060,6 +4324,9 @@ msgstr ""
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
+msgid "Revoke"
+msgstr ""
+
 msgid "Runner token"
 msgstr ""
 
@@ -4084,6 +4351,9 @@ msgstr ""
 msgid "Save"
 msgstr ""
 
+msgid "Save application"
+msgstr ""
+
 msgid "Save changes"
 msgstr ""
 
@@ -4103,6 +4373,12 @@ msgid "Schedules"
 msgstr ""
 
 msgid "Scheduling Pipelines"
+msgstr ""
+
+msgid "Scope"
+msgstr ""
+
+msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
 msgstr ""
 
 msgid "Scroll to bottom"
@@ -4144,6 +4420,9 @@ msgstr ""
 msgid "Seconds to wait for a storage access attempt"
 msgstr ""
 
+msgid "Secret:"
+msgstr ""
+
 msgid "Select"
 msgstr ""
 
@@ -4174,10 +4453,16 @@ msgstr ""
 msgid "Select project to choose zone"
 msgstr ""
 
+msgid "Select projects you want to import."
+msgstr ""
+
 msgid "Select source branch"
 msgstr ""
 
 msgid "Select target branch"
+msgstr ""
+
+msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
 msgid "Send email"
@@ -4688,6 +4973,12 @@ msgstr ""
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
+msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
+msgstr ""
+
+msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
+msgstr ""
+
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr ""
 
@@ -4728,6 +5019,12 @@ msgid "Third party offers"
 msgstr ""
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
+msgstr ""
+
+msgid "This application was created by %{link_to_owner}."
+msgstr ""
+
+msgid "This application will be able to:"
 msgstr ""
 
 msgid "This diff is collapsed."
@@ -4995,6 +5292,12 @@ msgstr ""
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
 msgstr ""
 
+msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
+msgstr ""
+
+msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
+msgstr ""
+
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
@@ -5004,7 +5307,13 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
+msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
+msgstr ""
+
 msgid "To start serving your jobs you can add Runners to your group"
+msgstr ""
+
+msgid "To this GitLab instance"
 msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
@@ -5108,6 +5417,9 @@ msgstr[1] ""
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
+msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
+msgstr ""
+
 msgid "Upload New File"
 msgstr ""
 
@@ -5126,7 +5438,13 @@ msgstr ""
 msgid "Usage statistics"
 msgstr ""
 
+msgid "Use <code>%{native_redirect_uri}</code> for local tests"
+msgstr ""
+
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
+msgstr ""
+
+msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use the following registration token during setup:"
@@ -5136,6 +5454,9 @@ msgid "Use your global notification setting"
 msgstr ""
 
 msgid "User and IP Rate Limits"
+msgstr ""
+
+msgid "User map"
 msgstr ""
 
 msgid "Users"
@@ -5369,6 +5690,12 @@ msgstr ""
 msgid "Yes, add it"
 msgstr ""
 
+msgid "Yes, let me map Google Code users to full names or GitLab users."
+msgstr ""
+
+msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
+msgstr ""
+
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr ""
 
@@ -5418,6 +5745,12 @@ msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
 msgid "You do not have any assigned merge requests"
+msgstr ""
+
+msgid "You don't have any applications"
+msgstr ""
+
+msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
@@ -5486,6 +5819,12 @@ msgstr ""
 msgid "Your Todos"
 msgstr ""
 
+msgid "Your applications (%{size})"
+msgstr ""
+
+msgid "Your authorized applications"
+msgstr ""
+
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
 msgstr ""
 
@@ -5522,6 +5861,9 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
+msgid "customize"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
 msgstr[0] ""
@@ -5531,6 +5873,9 @@ msgid "deploy token"
 msgstr ""
 
 msgid "disabled"
+msgstr ""
+
+msgid "done"
 msgstr ""
 
 msgid "enabled"
@@ -5543,6 +5888,9 @@ msgid "for this project"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "import flow"
 msgstr ""
 
 msgid "importing"
@@ -5754,6 +6102,9 @@ msgid "source"
 msgstr ""
 
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
+msgstr ""
+
+msgid "started"
 msgstr ""
 
 msgid "this document"

@@ -280,12 +280,6 @@ module Gitlab
         end.map(&:name)
       end
 
-      def rugged_head
-        rugged.head
-      rescue Rugged::ReferenceError
-        nil
-      end
-
       def archive_metadata(ref, storage_path, project_path, format = "tar.gz", append_sha:)
         ref ||= root_ref
         commit = Gitlab::Git::Commit.find(self, ref)
@@ -449,12 +443,8 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base(from, to)
-        gitaly_migrate(:merge_base) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.find_merge_base(from, to)
-          else
-            rugged_merge_base(from, to)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.find_merge_base(from, to)
         end
       end
 
@@ -470,12 +460,8 @@ module Gitlab
 
         return [] unless root_sha
 
-        branches = gitaly_migrate(:merged_branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_merged_branch_names(branch_names, root_sha)
-          else
-            git_merged_branch_names(branch_names, root_sha)
-          end
+        branches = wrapped_gitaly_errors do
+          gitaly_merged_branch_names(branch_names, root_sha)
         end
 
         Set.new(branches)
@@ -513,11 +499,6 @@ module Gitlab
         end
 
         @refs_hash
-      end
-
-      # Lookup for rugged object by oid or ref name
-      def lookup(oid_or_ref_name)
-        rugged.rev_parse(oid_or_ref_name)
       end
 
       # Returns url for submodule
@@ -859,12 +840,8 @@ module Gitlab
       def write_ref(ref_path, ref, old_ref: nil, shell: true)
         ref_path = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref_path}" unless ref_path.start_with?("refs/") || ref_path == "HEAD"
 
-        gitaly_migrate(:write_ref) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
-          else
-            local_write_ref(ref_path, ref, old_ref: old_ref, shell: shell)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
         end
       end
 
@@ -914,20 +891,6 @@ module Gitlab
       # Items should be of format [[commit_id, path], [commit_id1, path1]]
       def batch_blobs(items, blob_size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
         Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
-      end
-
-      def commit_index(user, branch_name, index, options)
-        committer = user_to_committer(user)
-
-        OperationService.new(user, self).with_branch(branch_name) do
-          commit_params = options.merge(
-            tree: index.write_tree(rugged),
-            author: committer,
-            committer: committer
-          )
-
-          create_commit(commit_params)
-        end
       end
 
       def fsck
@@ -1213,37 +1176,6 @@ module Gitlab
         end
       end
 
-      def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
-        if shell
-          shell_write_ref(ref_path, ref, old_ref)
-        else
-          rugged_write_ref(ref_path, ref)
-        end
-      end
-
-      def rugged_write_config(full_path:)
-        rugged.config['gitlab.fullpath'] = full_path
-      end
-
-      def shell_write_ref(ref_path, ref, old_ref)
-        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
-        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
-
-        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
-        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
-      end
-
-      def rugged_write_ref(ref_path, ref)
-        rugged.references.create(ref_path, ref, force: true)
-      rescue Rugged::ReferenceError => ex
-        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
-      rescue Rugged::OSError => ex
-        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-
-        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
-      end
-
       def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
@@ -1314,20 +1246,6 @@ module Gitlab
         }
       end
 
-      def git_merged_branch_names(branch_names, root_sha)
-        git_arguments =
-          %W[branch --merged #{root_sha}
-             --format=%(refname:short)\ %(objectname)] + branch_names
-
-        lines = run_git(git_arguments).first.lines
-
-        lines.each_with_object([]) do |line, branches|
-          name, sha = line.strip.split(' ', 2)
-
-          branches << name if sha != root_sha
-        end
-      end
-
       def gitaly_merged_branch_names(branch_names, root_sha)
         qualified_branch_names = branch_names.map { |b| "refs/heads/#{b}" }
 
@@ -1356,23 +1274,6 @@ module Gitlab
         end
       end
 
-      # We are trying to deprecate this method because it does a lot of work
-      # but it seems to be used only to look up submodule URL's.
-      # https://gitlab.com/gitlab-org/gitaly/issues/329
-      def submodules(ref)
-        commit = rev_parse_target(ref)
-        return {} unless commit
-
-        begin
-          content = blob_content(commit, ".gitmodules")
-        rescue InvalidBlobName
-          return {}
-        end
-
-        parser = GitmodulesParser.new(content)
-        fill_submodule_ids(commit, parser.parse)
-      end
-
       def gitaly_submodule_url_for(ref, path)
         # We don't care about the contents so 1 byte is enough. Can't request 0 bytes, 0 means unlimited.
         commit_object = gitaly_commit_client.tree_entry(ref, path, 1)
@@ -1393,68 +1294,6 @@ module Gitlab
 
       def relative_object_directories
         Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      # Get the content of a blob for a given commit.  If the blob is a commit
-      # (for submodules) then return the blob's OID.
-      def blob_content(commit, blob_name)
-        blob_entry = tree_entry(commit, blob_name)
-
-        unless blob_entry
-          raise InvalidBlobName.new("Invalid blob name: #{blob_name}")
-        end
-
-        case blob_entry[:type]
-        when :commit
-          blob_entry[:oid]
-        when :tree
-          raise InvalidBlobName.new("#{blob_name} is a tree, not a blob")
-        when :blob
-          rugged.lookup(blob_entry[:oid]).content
-        end
-      end
-
-      # Fill in the 'id' field of a submodule hash from its values
-      # as-of +commit+. Return a Hash consisting only of entries
-      # from the submodule hash for which the 'id' field is filled.
-      def fill_submodule_ids(commit, submodule_data)
-        submodule_data.each do |path, data|
-          id = begin
-            blob_content(commit, path)
-          rescue InvalidBlobName
-            nil
-          end
-          data['id'] = id
-        end
-        submodule_data.select { |path, data| data['id'] }
-      end
-
-      # Find the entry for +path+ in the tree for +commit+
-      def tree_entry(commit, path)
-        pathname = Pathname.new(path)
-        first = true
-        tmp_entry = nil
-
-        pathname.each_filename do |dir|
-          if first
-            tmp_entry = commit.tree[dir]
-            first = false
-          elsif tmp_entry.nil?
-            return nil
-          else
-            begin
-              tmp_entry = rugged.lookup(tmp_entry[:oid])
-            rescue Rugged::OdbError, Rugged::InvalidError, Rugged::ReferenceError
-              return nil
-            end
-
-            return nil unless tmp_entry.type == :tree
-
-            tmp_entry = tmp_entry[dir]
-          end
-        end
-
-        tmp_entry
       end
 
       # Return the Rugged patches for the diff between +from+ and +to+.
@@ -1494,75 +1333,6 @@ module Gitlab
 
       def gitaly_copy_gitattributes(revision)
         gitaly_repository_client.apply_gitattributes(revision)
-      end
-
-      def rugged_copy_gitattributes(ref)
-        begin
-          commit = lookup(ref)
-        rescue Rugged::ReferenceError
-          raise InvalidRef.new("Ref #{ref} is invalid")
-        end
-
-        # Create the paths
-        info_dir_path = File.join(path, 'info')
-        info_attributes_path = File.join(info_dir_path, 'attributes')
-
-        begin
-          # Retrieve the contents of the blob
-          gitattributes_content = blob_content(commit, '.gitattributes')
-        rescue InvalidBlobName
-          # No .gitattributes found. Should now remove any info/attributes and return
-          File.delete(info_attributes_path) if File.exist?(info_attributes_path)
-          return
-        end
-
-        # Create the info directory if needed
-        Dir.mkdir(info_dir_path) unless File.directory?(info_dir_path)
-
-        # Write the contents of the .gitattributes file to info/attributes
-        # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
-        File.open(info_attributes_path, "wb") do |file|
-          file.write(gitattributes_content)
-        end
-      end
-
-      def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
-
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-          raise CreateTreeError unless cherry_pick_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: {
-                            email: commit.author_email,
-                            name: commit.author_name,
-                            time: commit.authored_date
-                        },
-                        committer: committer,
-                        tree: cherry_pick_tree_id,
-                        parents: [start_commit.sha])
-        end
-      end
-
-      def check_cherry_pick_content(target_commit, source_sha)
-        args = [target_commit.sha, source_sha]
-        args << 1 if target_commit.merge_commit?
-
-        cherry_pick_index = rugged.cherrypick_commit(*args)
-        return false if cherry_pick_index.conflicts?
-
-        tree_id = cherry_pick_index.write_tree(rugged)
-        return false unless diff_exists?(source_sha, tree_id)
-
-        tree_id
       end
 
       def local_fetch_ref(source_path, source_ref:, target_ref:)
@@ -1621,24 +1391,12 @@ module Gitlab
         raise CommandError, @gitlab_projects.output
       end
 
-      def rugged_merge_base(from, to)
-        rugged.merge_base(from, to)
-      rescue Rugged::ReferenceError
-        nil
-      end
-
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
       end
 
       def sha_from_ref(ref)
         rev_parse_target(ref).oid
-      end
-
-      def create_commit(params = {})
-        params[:message].delete!("\r")
-
-        Rugged::Commit.create(rugged, params)
       end
     end
   end

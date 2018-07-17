@@ -30,7 +30,7 @@ module API
       end
 
       params :filter_params do
-        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of projects matching the search criteria'

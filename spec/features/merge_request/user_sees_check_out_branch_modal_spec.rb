@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Merge request > User sees Check out branch modal', :js do
+describe 'Merge request > User sees check out branch modal', :js do
   let(:project) { create(:project, :public, :repository) }
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project) }
@@ -16,7 +16,7 @@ describe 'Merge request > User sees Check out branch modal', :js do
     expect(page).to have_content('Check out, review, and merge locally')
   end
 
-  it 'closes the check out branch model with Escape keypress' do
+  it 'closes the check out branch modal with escape keypress' do
     find('#modal_merge_info').send_keys(:escape)
 
     expect(page).not_to have_content('Check out, review, and merge locally')

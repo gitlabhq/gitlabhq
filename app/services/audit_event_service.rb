@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuditEventService
   def initialize(author, entity, details = {})
     @author, @entity, @details = author, entity, details

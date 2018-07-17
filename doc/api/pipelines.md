@@ -151,7 +151,7 @@ POST /projects/:id/pipelines/:pipeline_id/retry
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/retry"
 ```
 
 Response:
@@ -197,7 +197,7 @@ POST /projects/:id/pipelines/:pipeline_id/cancel
 | `pipeline_id` | integer | yes   | The ID of a pipeline |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46/cancel"
 ```
 
 Response:

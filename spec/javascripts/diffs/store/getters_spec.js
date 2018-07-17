@@ -184,4 +184,23 @@ describe('Diffs Module Getters', () => {
       ).toEqual(0);
     });
   });
+
+  describe('getDiffFileByHash', () => {
+    it('returns file by hash', () => {
+      const fileA = {
+        fileHash: '123',
+      };
+      const fileB = {
+        fileHash: '456',
+      };
+      localState.diffFiles = [fileA, fileB];
+
+      expect(getters.getDiffFileByHash(localState)('456')).toEqual(fileB);
+    });
+
+    it('returns null if no matching file is found', () => {
+      localState.diffFiles = [];
+      expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
+    });
+  });
 });

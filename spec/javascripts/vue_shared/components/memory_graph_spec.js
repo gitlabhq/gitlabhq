@@ -113,7 +113,7 @@ describe('MemoryGraph', () => {
         const circleEl = el.querySelector('circle');
         expect(circleEl).toBeDefined();
         expect(circleEl.getAttribute('r')).toBe('1.5');
-        expect(circleEl.getAttribute('tranform')).toBe('translate(0 -1)');
+        expect(circleEl.getAttribute('transform')).toBe('translate(0 -1)');
         expect(circleEl.getAttribute('cx')).toBe(`${dotX}`);
         expect(circleEl.getAttribute('cy')).toBe(`${dotY}`);
         done();
