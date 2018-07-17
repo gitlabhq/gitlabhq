@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AuditEventService
   prepend EE::AuditEventService
 

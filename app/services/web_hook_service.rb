@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WebHookService
   class InternalErrorResponse
     attr_reader :body, :headers, :code
