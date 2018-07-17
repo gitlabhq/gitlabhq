@@ -6561,6 +6561,9 @@ export const environmentData = [
       folder_path: '/root/hello-prometheus/environments/folders/production',
       created_at: '2018-06-29T16:53:38.301Z',
       updated_at: '2018-06-29T16:57:09.825Z',
+      last_deployment: {
+        id: 127,
+      },
     },
   },
   {
@@ -6580,6 +6583,20 @@ export const environmentData = [
       folder_path: '/root/hello-prometheus/environments/folders/review',
       created_at: '2018-07-03T18:39:41.702Z',
       updated_at: '2018-07-03T18:44:54.010Z',
+      last_deployment: {
+        id: 128,
+      },
+    },
+  },
+  {
+    name: 'no-deployment',
+    size: 1,
+    latest: {
+      id: 36,
+      name: 'no-deployment/noop-branch',
+      state: 'available',
+      created_at: '2018-07-04T18:39:41.702Z',
+      updated_at: '2018-07-04T18:44:54.010Z',
     },
   },
 ];
