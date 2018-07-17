@@ -216,29 +216,47 @@ module Gitlab
       def import_inline_comments(inline_comments, merge_request)
         inline_comments.each do |comment|
           position = build_position(merge_request, comment)
-          parent = build_diff_note(merge_request, comment, position)
+          parent = create_diff_note(merge_request, comment, position)
 
           next unless parent&.persisted?
 
           discussion_id = parent.discussion_id
 
           comment.comments.each do |reply|
-            build_diff_note(merge_request, reply, position, discussion_id)
+            create_diff_note(merge_request, reply, position, discussion_id)
           end
         end
       end
 
-      def build_diff_note(merge_request, comment, position, discussion_id = nil)
+      def create_diff_note(merge_request, comment, position, discussion_id = nil)
         attributes = pull_request_comment_attributes(comment)
         attributes.merge!(
           position: position,
           type: 'DiffNote')
         attributes[:discussion_id] = discussion_id if discussion_id
 
-        merge_request.notes.create!(attributes)
+        note = merge_request.notes.build(attributes)
+
+        if note.valid?
+          note.save
+          return note
+        end
+
+        # Fallback to a regular comment
+        create_fallback_diff_note(merge_request, comment)
       rescue StandardError => e
         errors << { type: :pull_request, id: comment.id, errors: e.message }
         nil
+      end
+
+      # Bitbucket Server supports the ability to comment on any line, not just the
+      # line in the diff. If we can't add the note as a DiffNote, fallback to creating
+      # a regular note.
+      def create_fallback_diff_note(merge_request, comment)
+        attributes = pull_request_comment_attributes(comment)
+        attributes[:note] = "Comment on file: #{comment.file_path}, old position: #{comment.old_pos}, new_position: #{comment.new_pos}\n\n" + attributes[:note]
+
+        merge_request.notes.create!(attributes)
       end
 
       def build_position(merge_request, pr_comment)

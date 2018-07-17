@@ -168,6 +168,40 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(reply_note.position.new_line).to eq(inline_note.new_pos)
     end
 
+    it 'falls back to comments if diff comments fail to validate' do
+      # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
+      inline_note = instance_double(
+        BitbucketServer::Representation::PullRequestComment,
+        file_type: 'REMOVED',
+        from_sha: sample.commits.first,
+        to_sha: sample.commits.last,
+        file_path: '.gitmodules',
+        old_pos: 8,
+        new_pos: 9,
+        note: 'This is a note with an invalid line position.',
+        author_email: project.owner.email,
+        comments: [],
+        created_at: now,
+        updated_at: now)
+
+      inline_comment = instance_double(
+        BitbucketServer::Representation::Activity,
+        comment?: true,
+        inline_comment?: true,
+        merge_event?: false,
+        comment: inline_note)
+
+      expect(subject.client).to receive(:activities).and_return([inline_comment])
+
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+      merge_request = MergeRequest.first
+      expect(merge_request.notes.count).to eq(1)
+      note = merge_request.notes.first
+
+      expect(note.note).to start_with('Comment on file:')
+    end
+
     it 'restores branches of inaccessible SHAs' do
     end
   end
