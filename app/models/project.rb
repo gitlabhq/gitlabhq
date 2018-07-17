@@ -2171,6 +2171,7 @@ class Project < ActiveRecord::Base
       merge_requests = source_of_merge_requests.opened
                          .where(allow_collaboration: true)
 
+      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
       Gitlab::GitalyClient.allow_n_plus_1_calls do
         if branch_name
           merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
