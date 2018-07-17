@@ -16,7 +16,7 @@ describe 'Merge request > User sees check out branch modal', :js do
     expect(page).to have_content('Check out, review, and merge locally')
   end
 
-  it 'closes the check out branch modal with Escape keypress' do
+  it 'closes the check out branch modal with escape keypress' do
     find('#modal_merge_info').send_keys(:escape)
 
     expect(page).not_to have_content('Check out, review, and merge locally')
