@@ -2,7 +2,8 @@ require 'spec_helper'
 
 describe Projects::HashedStorageMigrationService do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
-  let(:logger) { Rails.logger }
+  let(:logger) { double }
+
   subject(:service) { described_class.new(project, project.full_path, logger: logger) }
 
   describe '#execute' do

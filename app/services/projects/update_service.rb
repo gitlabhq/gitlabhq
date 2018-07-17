@@ -2,26 +2,26 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
-    UpdateError = Class.new(StandardError)
+    ValidationError = Class.new(StandardError)
 
     def execute
-      pre_checks
+      validate!
 
       ensure_wiki_exists if enabling_wiki?
 
       yield if block_given?
 
       # If the block added errors, don't try to save the project
-      return validation_failed! if project.errors.any?
+      return update_failed! if project.errors.any?
 
       if project.update(params.except(:default_branch))
         after_update
 
         success
       else
-        validation_failed!
+        update_failed!
       end
-    rescue UpdateError => e
+    rescue ValidationError => e
       error(e.message)
     end
 
@@ -33,27 +33,23 @@ module Projects
 
     private
 
-    def pre_checks
+    def validate!
       unless valid_visibility_level_change?(project, params[:visibility_level])
-        raise UpdateError.new('New visibility level not allowed!')
+        raise ValidationError.new('New visibility level not allowed!')
       end
 
       if renaming_project_with_container_registry_tags?
-        raise UpdateError.new('Cannot rename project because it contains container registry tags!')
+        raise ValidationError.new('Cannot rename project because it contains container registry tags!')
       end
 
       if changing_default_branch?
-        raise UpdateError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
+        raise ValidationError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
       end
     end
 
     def after_update
       if project.previous_changes.include?('path')
-        if migrate_to_hashed_storage?
-          project.rename_using_hashed_storage!
-        else
-          project.rename_repo
-        end
+        project.rename_repo
       else
         system_hook_service.execute_hooks_for(project, :update)
       end
@@ -61,11 +57,7 @@ module Projects
       update_pages_config if changing_pages_https_only?
     end
 
-    def migrate_to_hashed_storage?
-      Gitlab::CurrentSettings.hashed_storage_enabled && !project.latest_storage_version?
-    end
-
-    def validation_failed!
+    def update_failed!
       model_errors = project.errors.full_messages.to_sentence
       error_message = model_errors.presence || 'Project could not be updated!'
 
@@ -87,7 +79,7 @@ module Projects
     end
 
     def enabling_wiki?
-      return false if @project.wiki_enabled?
+      return false if project.wiki_enabled?
 
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end

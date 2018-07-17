@@ -3,9 +3,10 @@ require 'spec_helper'
 describe Projects::HashedStorage::MigrateRepositoryService do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :legacy_storage, :repository, :wiki_repo) }
-  let(:service) { described_class.new(project, project.full_path) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
+
+  subject(:service) { described_class.new(project, project.full_path) }
 
   describe '#execute' do
     before do
@@ -76,23 +77,6 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
           service.execute
         end
-      end
-    end
-
-    context 'when old_path does not match full_path' do
-      let(:old_path) { 'old-path' }
-      let(:logger) { double }
-      let(:service) { described_class.new(project, old_path, logger: logger) }
-
-      it 'uses passed old_path parameter' do
-        expect(service).to receive(:move_repository).with(old_path, /\@hashed/)
-
-        allow(service).to receive(:rollback_folder_move).and_return(nil)
-
-        service.execute
-
-        expect(service.old_disk_path).to eq old_path
-        expect(service.old_wiki_disk_path).to eq "#{old_path}.wiki"
       end
     end
 

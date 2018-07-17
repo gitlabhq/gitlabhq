@@ -5,13 +5,13 @@ class ProjectMigrateHashedStorageWorker
 
   LEASE_TIMEOUT = 30.seconds.to_i
 
-  def perform(project_id, old_path = nil)
+  def perform(project_id, old_disk_path = nil)
     project = Project.find_by(id: project_id)
     return if project.nil? || project.pending_delete?
 
     uuid = lease_for(project_id).try_obtain
     if uuid
-      ::Projects::HashedStorageMigrationService.new(project, old_path || project.full_path, logger: logger).execute
+      ::Projects::HashedStorageMigrationService.new(project, old_disk_path || project.full_path, logger: logger).execute
     else
       false
     end

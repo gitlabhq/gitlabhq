@@ -1556,9 +1556,11 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo
-    new_full_path = build_full_path
+    path_before_change = previous_changes['path'].first
+    full_path_before_change = full_path_was
+    full_path_after_change  = build_full_path
 
-    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+    Rails.logger.error "Attempting to rename #{full_path_was} -> #{full_path_after_change}"
 
     if has_container_registry_tags?
       Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
@@ -1569,12 +1571,12 @@ class Project < ActiveRecord::Base
 
     expire_caches_before_rename(full_path_was)
 
-    if storage.rename_repo
-      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
-      rename_repo_notify!
-      after_rename_repo
+    if rename_or_migrate_repository!
+      Gitlab::AppLogger.info "Project was renamed: #{full_path_before_change} -> #{full_path_after_change}"
+      rename_repo_notify!(full_path_before_change)
+      after_rename_repo(path_before_change)
     else
-      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+      Rails.logger.error "Repository could not be renamed: #{full_path_before_change} -> #{full_path_after_change}"
 
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
@@ -1582,14 +1584,11 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def after_rename_repo
+  def after_rename_repo(path_before_change)
     write_repository_config
-
-    path_before_change = previous_changes['path'].first
 
     # We need to check if project had been rolled out to move resource to hashed storage or not and decide
     # if we need execute any take action or no-op.
-
     unless hashed_storage?(:attachments)
       Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
     end
@@ -1607,13 +1606,13 @@ class Project < ActiveRecord::Base
     nil
   end
 
-  def rename_repo_notify!
+  def rename_repo_notify!(full_path_before_change)
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_was) unless import_started?
+    send_move_instructions(full_path_before_change) unless import_started?
     expires_full_path_cache
 
-    self.old_path_with_namespace = full_path_was
+    self.old_path_with_namespace = full_path_before_change
     SystemHooksService.new.execute_hooks_for(self, :rename)
 
     reload_repository!
@@ -1957,10 +1956,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def rename_using_hashed_storage!
-    ProjectMigrateHashedStorageWorker.new.perform(id, full_path_was)
-  end
-
   def storage_version=(value)
     super
 
@@ -2045,11 +2040,15 @@ class Project < ActiveRecord::Base
     auto_cancel_pending_pipelines == 'enabled'
   end
 
-  def latest_storage_version?
-    storage_version == LATEST_STORAGE_VERSION
-  end
-
   private
+
+  def rename_or_migrate_repository!
+    if Gitlab::CurrentSettings.hashed_storage_enabled? && storage_version != LATEST_STORAGE_VERSION
+      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
+    else
+      storage.rename_repo
+    end
+  end
 
   def storage
     @storage ||=
