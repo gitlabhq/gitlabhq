@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe AdditionalEmailHeadersInterceptor do
+describe Gitlab::Email::Hook::AdditionalHeadersInterceptor do
   let(:mail) do
     ActionMailer::Base.mail(to: 'test@mail.com', from: 'info@mail.com', body: 'hello')
   end

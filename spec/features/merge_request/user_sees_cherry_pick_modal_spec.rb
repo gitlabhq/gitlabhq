@@ -21,7 +21,7 @@ describe 'Merge request > User cherry-picks', :js do
     end
 
     # Fast-forward merge, or merged before GitLab 8.5.
-    context 'Without a merge commit' do
+    context 'without a merge commit' do
       before do
         merge_request.merge_commit_sha = nil
         merge_request.save
@@ -34,7 +34,7 @@ describe 'Merge request > User cherry-picks', :js do
       end
     end
 
-    context 'With a merge commit' do
+    context 'with a merge commit' do
       it 'shows a Cherry-pick button' do
         visit project_merge_request_path(project, merge_request)
 
@@ -47,6 +47,24 @@ describe 'Merge request > User cherry-picks', :js do
         visit project_merge_request_path(project, merge_request)
 
         expect(page).not_to have_link 'Cherry-pick'
+      end
+    end
+
+    context 'and seeing the cherry-pick modal' do
+      before do
+        visit project_merge_request_path(project, merge_request)
+
+        click_link('Cherry-pick')
+      end
+
+      it 'shows the cherry-pick modal' do
+        expect(page).to have_content('Cherry-pick this merge request')
+      end
+
+      it 'closes the cherry-pick modal with escape keypress' do
+        find('#modal-cherry-pick-commit').send_keys(:escape)
+
+        expect(page).not_to have_content('Start a new merge request with these changes')
       end
     end
   end

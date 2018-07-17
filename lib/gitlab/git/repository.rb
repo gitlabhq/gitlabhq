@@ -443,12 +443,8 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base(from, to)
-        gitaly_migrate(:merge_base) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.find_merge_base(from, to)
-          else
-            rugged_merge_base(from, to)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.find_merge_base(from, to)
         end
       end
 
@@ -464,12 +460,8 @@ module Gitlab
 
         return [] unless root_sha
 
-        branches = gitaly_migrate(:merged_branch_names) do |is_enabled|
-          if is_enabled
-            gitaly_merged_branch_names(branch_names, root_sha)
-          else
-            git_merged_branch_names(branch_names, root_sha)
-          end
+        branches = wrapped_gitaly_errors do
+          gitaly_merged_branch_names(branch_names, root_sha)
         end
 
         Set.new(branches)
@@ -848,12 +840,8 @@ module Gitlab
       def write_ref(ref_path, ref, old_ref: nil, shell: true)
         ref_path = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{ref_path}" unless ref_path.start_with?("refs/") || ref_path == "HEAD"
 
-        gitaly_migrate(:write_ref) do |is_enabled|
-          if is_enabled
-            gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
-          else
-            local_write_ref(ref_path, ref, old_ref: old_ref, shell: shell)
-          end
+        wrapped_gitaly_errors do
+          gitaly_repository_client.write_ref(ref_path, ref, old_ref, shell)
         end
       end
 
@@ -1188,37 +1176,6 @@ module Gitlab
         end
       end
 
-      def local_write_ref(ref_path, ref, old_ref: nil, shell: true)
-        if shell
-          shell_write_ref(ref_path, ref, old_ref)
-        else
-          rugged_write_ref(ref_path, ref)
-        end
-      end
-
-      def rugged_write_config(full_path:)
-        rugged.config['gitlab.fullpath'] = full_path
-      end
-
-      def shell_write_ref(ref_path, ref, old_ref)
-        raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
-        raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if !old_ref.nil? && old_ref.include?("\x00")
-
-        input = "update #{ref_path}\x00#{ref}\x00#{old_ref}\x00"
-        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
-      end
-
-      def rugged_write_ref(ref_path, ref)
-        rugged.references.create(ref_path, ref, force: true)
-      rescue Rugged::ReferenceError => ex
-        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
-      rescue Rugged::OSError => ex
-        raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
-
-        Rails.logger.error "Unable to create #{ref_path} reference for repository #{path}: #{ex}"
-      end
-
       def run_git(args, chdir: path, env: {}, nice: false, lazy_block: nil, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
@@ -1287,20 +1244,6 @@ module Gitlab
           'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
           'GL_REPOSITORY' => gl_repository
         }
-      end
-
-      def git_merged_branch_names(branch_names, root_sha)
-        git_arguments =
-          %W[branch --merged #{root_sha}
-             --format=%(refname:short)\ %(objectname)] + branch_names
-
-        lines = run_git(git_arguments).first.lines
-
-        lines.each_with_object([]) do |line, branches|
-          name, sha = line.strip.split(' ', 2)
-
-          branches << name if sha != root_sha
-        end
       end
 
       def gitaly_merged_branch_names(branch_names, root_sha)
@@ -1446,12 +1389,6 @@ module Gitlab
 
       def gitlab_projects_error
         raise CommandError, @gitlab_projects.output
-      end
-
-      def rugged_merge_base(from, to)
-        rugged.merge_base(from, to)
-      rescue Rugged::ReferenceError
-        nil
       end
 
       def rev_list_param(spec)

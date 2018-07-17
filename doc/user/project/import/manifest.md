@@ -1,7 +1,8 @@
 # Import multiple repositories by uploading a manifest file
 
 GitLab allows you to import all the required git repositories 
-based a manifest file like the one used by the Android repository.
+based a manifest file like the one used by the [Android repository](https://android.googlesource.com/platform/manifest/+/2d6f081a3b05d8ef7a2b1b52b0d536b2b74feab4/default.xml).
+This feature can be very handy when you need to import a project with many repositories like Android Open Source Project (AOSP).
 
 
 >**Note:** 
