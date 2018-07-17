@@ -19,22 +19,6 @@ describe Projects::MirrorsController do
           do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
         end.to change { RemoteMirror.count }.to(1)
       end
-
-      context 'when remote mirror has the same URL' do
-        it 'does not allow to create the remote mirror' do
-          expect do
-            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => project.import_url } })
-          end.not_to change { RemoteMirror.count }
-        end
-
-        context 'with disabled local mirror' do
-          it 'allows to create a remote mirror' do
-            expect do
-              do_put(project, mirror: 0, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => project.import_url } })
-            end.to change { RemoteMirror.count }.to(1)
-          end
-        end
-      end
     end
 
     context 'when the current project has a remote mirror' do
@@ -55,8 +39,6 @@ describe Projects::MirrorsController do
 
       context 'when trying to create a mirror with a different URL' do
         it 'should setup the mirror' do
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
           do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: 'http://local.dev')
 
           expect(project.reload.mirror).to eq(true)
@@ -65,8 +47,6 @@ describe Projects::MirrorsController do
 
         context 'mirror user is not the current user' do
           it 'should only assign the current user' do
-            expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
             new_user = create(:user)
             project.add_maintainer(new_user)
 
@@ -94,7 +74,6 @@ describe Projects::MirrorsController do
 
         it 'creates a new mirror' do
           sign_in(admin)
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
           expect do
             do_put(project, mirror: true, mirror_user_id: admin.id, import_url: url)
@@ -120,8 +99,6 @@ describe Projects::MirrorsController do
 
       context 'when project does not have a mirror' do
         it 'allows to create a mirror' do
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
           expect do
             do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: url)
           end.to change { Project.mirror.count }.to(1)

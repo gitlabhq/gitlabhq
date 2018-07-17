@@ -144,8 +144,6 @@ describe ProjectsController do
         end
 
         it 'updates repository mirror attributes' do
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
           put :update,
             namespace_id: project.namespace,
             id: project,

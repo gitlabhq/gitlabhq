@@ -140,7 +140,7 @@ module API
       post do
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
-        attrs[:mirror_user_id] = current_user.id if attrs[:import_url].present?
+        attrs[:mirror_user_id] = current_user.id if attrs[:mirror]
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -174,7 +174,7 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
-        attrs[:mirror_user_id] = user.id if attrs[:import_url].present?
+        attrs[:mirror_user_id] = user.id if attrs[:mirror]
 
         project = ::Projects::CreateService.new(user, attrs).execute
 

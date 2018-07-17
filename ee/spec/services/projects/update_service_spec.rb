@@ -31,6 +31,12 @@ describe Projects::UpdateService, '#execute' do
         expect(updated_project.mirror_user_id).to eq(user.id)
         expect(updated_project.mirror_trigger_builds).to be true
       end
+
+      it 'forces an import job' do
+        expect(project).to receive(:force_import_job!).once
+
+        update_project(project, user, opts)
+      end
     end
 
     context 'when unlicensed' do
@@ -46,6 +52,12 @@ describe Projects::UpdateService, '#execute' do
         expect(updated_project.mirror).to be false
         expect(updated_project.mirror_user_id).to be_nil
         expect(updated_project.mirror_trigger_builds).to be false
+      end
+
+      it 'does not force an import job' do
+        expect(project).not_to receive(:force_import_job!)
+
+        update_project(project, user, opts)
       end
     end
   end

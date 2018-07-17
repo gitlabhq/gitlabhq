@@ -63,7 +63,8 @@ module EE
       end
 
       def valid_mirror_user?(mirror_params)
-        return true unless mirror_params[:mirror_user_id].present?
+        return true unless mirror_params[:mirror]
+        return false unless mirror_params[:mirror_user_id].present?
 
         default_mirror_users.map(&:id).include?(mirror_params[:mirror_user_id].to_i)
       end
