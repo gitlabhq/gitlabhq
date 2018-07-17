@@ -22,7 +22,7 @@ module Projects
         validation_failed!
       end
     rescue UpdateError => e
-      return error(e.message)
+      error(e.message)
     end
 
     def run_auto_devops_pipeline?
