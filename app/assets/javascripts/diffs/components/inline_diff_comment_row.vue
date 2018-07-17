@@ -13,12 +13,8 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     lineIndex: {
@@ -58,10 +54,9 @@ export default {
         />
         <diff-line-note-form
           v-if="diffLineCommentForms[line.lineCode]"
-          :diff-file="diffFile"
-          :diff-lines="diffLines"
+          :diff-file-hash="diffFileHash"
           :line="line"
-          :note-target-line="diffLines[lineIndex]"
+          :note-target-line="line"
         />
       </div>
     </td>

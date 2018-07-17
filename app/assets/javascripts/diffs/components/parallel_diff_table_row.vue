@@ -19,8 +19,12 @@ export default {
     DiffTableCell,
   },
   props: {
-    diffFile: {
-      type: Object,
+    fileHash: {
+      type: String,
+      required: true,
+    },
+    contextLinesPath: {
+      type: String,
       required: true,
     },
     line: {
@@ -103,7 +107,8 @@ export default {
     @mouseout="handleMouseMove"
   >
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="oldLineType"
       :line-position="linePositionLeft"
@@ -123,7 +128,8 @@ export default {
     >
     </td>
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="newLineType"
       :line-position="linePositionRight"
