@@ -458,7 +458,6 @@ retrieve-tests-metadata:
     - wget -O $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH || rm $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH}'
 
-<<<<<<< HEAD
 .ee-specific-check: &ee-specific-check
   <<: *dedicated-runner
   stage: test
@@ -484,8 +483,6 @@ ee-specific-lines-check:
   script:
     - scripts/ee-specific-lines-check
 
-=======
->>>>>>> upstream/master
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters
