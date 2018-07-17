@@ -4,6 +4,7 @@ describe Gitlab::BitbucketServerImport::Importer do
   include ImportSpecHelper
 
   let(:project) { create(:project, :repository, import_url: 'http://my-bitbucket') }
+  let(:now) { Time.now.utc.change(usec: 0) }
 
   subject { described_class.new(project) }
 
@@ -63,15 +64,15 @@ describe Gitlab::BitbucketServerImport::Importer do
         comment?: false,
         merge_event?: true,
         committer_email: project.owner.email,
-        merge_timestamp: Time.now.utc.change(usec: 0))
+        merge_timestamp: now)
 
       @pr_note = instance_double(
         BitbucketServer::Representation::Comment,
         note: 'Hello world',
         author_email: 'unknown@gmail.com',
         comments: [],
-        created_at: Time.now.utc.change(usec: 0),
-        updated_at: Time.now.utc.change(usec: 0))
+        created_at: now,
+        updated_at: now)
       @pr_comment = instance_double(
         BitbucketServer::Representation::Activity,
         comment?: true,
@@ -104,10 +105,15 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(note.updated_at).to eq(@pr_note.created_at)
     end
 
-    it 'imports threaded comments' do
-    end
+    it 'imports threaded discussions' do
+      reply = instance_double(
+        BitbucketServer::Representation::PullRequestComment,
+        author_email: 'someuser@gitlab.com',
+        note: 'I agree',
+        created_at: now,
+        updated_at: now
+      )
 
-    it 'imports diff comments' do
       # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
       inline_note = instance_double(
         BitbucketServer::Representation::PullRequestComment,
@@ -119,9 +125,9 @@ describe Gitlab::BitbucketServerImport::Importer do
         new_pos: 4,
         note: 'Hello world',
         author_email: 'unknown@gmail.com',
-        comments: [],
-        created_at: Time.now.utc.change(usec: 0),
-        updated_at: Time.now.utc.change(usec: 0))
+        comments: [reply],
+        created_at: now,
+        updated_at: now)
 
       inline_comment = instance_double(
         BitbucketServer::Representation::Activity,
@@ -135,22 +141,31 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
       merge_request = MergeRequest.first
-      expect(merge_request.notes.count).to eq(1)
-      note = merge_request.notes.first
+      expect(merge_request.notes.count).to eq(2)
+      expect(merge_request.notes.map(&:discussion_id).uniq.count).to eq(1)
 
-      expect(note.type).to eq('DiffNote')
-      expect(note.note).to eq(inline_note.note)
-      expect(note.created_at).to eq(inline_note.created_at)
-      expect(note.updated_at).to eq(inline_note.updated_at)
+      notes = merge_request.notes.order(:id).to_a
+      start_note = notes.first
+      expect(start_note.type).to eq('DiffNote')
+      expect(start_note.note).to eq(inline_note.note)
+      expect(start_note.created_at).to eq(inline_note.created_at)
+      expect(start_note.updated_at).to eq(inline_note.updated_at)
+      expect(start_note.position.base_sha).to eq(inline_note.from_sha)
+      expect(start_note.position.start_sha).to eq(inline_note.from_sha)
+      expect(start_note.position.head_sha).to eq(inline_note.to_sha)
+      expect(start_note.position.old_line).to be_nil
+      expect(start_note.position.new_line).to eq(inline_note.new_pos)
 
-      expect(note.position.base_sha).to eq(inline_note.from_sha)
-      expect(note.position.start_sha).to eq(inline_note.from_sha)
-      expect(note.position.head_sha).to eq(inline_note.to_sha)
-      expect(note.position.old_line).to be_nil
-      expect(note.position.new_line).to eq(inline_note.new_pos)
-    end
-
-    it 'falls back to comments if diff comments' do
+      reply_note = notes.last
+      expect(reply_note.note).to eq(reply.note)
+      expect(reply_note.author).to eq(project.owner)
+      expect(reply_note.created_at).to eq(reply.created_at)
+      expect(reply_note.updated_at).to eq(reply.created_at)
+      expect(reply_note.position.base_sha).to eq(inline_note.from_sha)
+      expect(reply_note.position.start_sha).to eq(inline_note.from_sha)
+      expect(reply_note.position.head_sha).to eq(inline_note.to_sha)
+      expect(reply_note.position.old_line).to be_nil
+      expect(reply_note.position.new_line).to eq(inline_note.new_pos)
     end
 
     it 'restores branches of inaccessible SHAs' do

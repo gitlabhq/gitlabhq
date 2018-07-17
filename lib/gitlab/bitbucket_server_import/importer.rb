@@ -83,7 +83,7 @@ module Gitlab
         end
 
         created_branches = restore_branch_shas(shas_to_restore)
-        @temp_branches << created_branches
+        @temp_branches += created_branches
         import_repository unless created_branches.empty?
       end
 
@@ -200,7 +200,7 @@ module Gitlab
 
         inline_comments, pr_comments = comments.partition(&:inline_comment?)
 
-        import_inline_comments(inline_comments.map(&:comment), pull_request, merge_request)
+        import_inline_comments(inline_comments.map(&:comment), merge_request)
         import_standalone_pr_comments(pr_comments.map(&:comment), merge_request)
       end
 
@@ -213,32 +213,27 @@ module Gitlab
         metric.update(merged_by_id: user_id, merged_at: timestamp)
       end
 
-      def import_inline_comments(inline_comments, pull_request, merge_request)
+      def import_inline_comments(inline_comments, merge_request)
         inline_comments.each do |comment|
-          parent = build_diff_note(merge_request, comment)
+          position = build_position(merge_request, comment)
+          parent = build_diff_note(merge_request, comment, position)
 
           next unless parent&.persisted?
 
+          discussion_id = parent.discussion_id
+
           comment.comments.each do |reply|
-            begin
-              attributes = pull_request_comment_attributes(reply)
-              attributes.merge!(
-                position: build_position(merge_request, comment),
-                discussion_id: parent.discussion_id,
-                type: 'DiffNote')
-              merge_request.notes.create!(attributes)
-            rescue StandardError => e
-              errors << { type: :pull_request, id: comment.id, errors: e.message }
-            end
+            build_diff_note(merge_request, reply, position, discussion_id)
           end
         end
       end
 
-      def build_diff_note(merge_request, comment)
+      def build_diff_note(merge_request, comment, position, discussion_id = nil)
         attributes = pull_request_comment_attributes(comment)
         attributes.merge!(
-          position: build_position(merge_request, comment),
+          position: position,
           type: 'DiffNote')
+        attributes[:discussion_id] = discussion_id if discussion_id
 
         merge_request.notes.create!(attributes)
       rescue StandardError => e
