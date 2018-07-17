@@ -117,9 +117,9 @@ module AvatarsHelper
       alt:   "#{user_name}'s avatar",
       src:   avatar_url,
       data:  data_attributes,
-      class: css_class,
-      title: user_name
+      class: css_class
     }
+    image_options[:title] = user_name if has_tooltip
 
     tag(:img, image_options)
   end
