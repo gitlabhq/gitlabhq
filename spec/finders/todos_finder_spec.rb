@@ -14,32 +14,6 @@ describe TodosFinder do
     end
 
     describe '#execute' do
-      context 'visibility' do
-        let(:private_group_access) { create(:group, :private) }
-        let(:private_group_hidden) { create(:group, :private) }
-        let(:public_project) { create(:project, :public) }
-        let(:private_project_hidden) { create(:project) }
-        let(:public_group) { create(:group) }
-
-        let!(:todo1) { create(:todo, user: user, project: project, group: nil) }
-        let!(:todo2) { create(:todo, user: user, project: public_project, group: nil) }
-        let!(:todo3) { create(:todo, user: user, project: private_project_hidden, group: nil) }
-        let!(:todo4) { create(:todo, user: user, project: nil, group: group) }
-        let!(:todo5) { create(:todo, user: user, project: nil, group: private_group_access) }
-        let!(:todo6) { create(:todo, user: user, project: nil, group: private_group_hidden) }
-        let!(:todo7) { create(:todo, user: user, project: nil, group: public_group) }
-
-        before do
-          private_group_access.add_developer(user)
-        end
-
-        it 'returns only todos with a target a user has access to' do
-          todos = finder.new(user).execute
-
-          expect(todos).to match_array([todo1, todo2, todo4, todo5, todo7])
-        end
-      end
-
       context 'filtering' do
         let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
         let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }

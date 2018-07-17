@@ -39,7 +39,6 @@ class TodosFinder
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
-    items = visible_to_user(items)
 
     sort(items)
   end
@@ -96,10 +95,6 @@ class TodosFinder
       @project = Project.find(params[:project_id])
 
       @project = nil if @project.pending_delete?
-
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
     else
       @project = nil
     end
@@ -168,20 +163,6 @@ class TodosFinder
     end
 
     items
-  end
-
-  def visible_to_user(items)
-    projects = Project.public_or_visible_to_user(current_user)
-    groups = Group.public_or_visible_to_user(current_user)
-
-    items
-      .joins('LEFT JOIN namespaces ON namespaces.id = todos.group_id')
-      .joins('LEFT JOIN projects ON projects.id = todos.project_id')
-      .where(
-        'project_id IN (?) OR group_id IN (?)',
-        projects.select(:id),
-        groups.select(:id)
-      )
   end
 
   def by_state(items)
