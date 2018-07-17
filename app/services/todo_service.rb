@@ -264,15 +264,15 @@ class TodoService
     end
   end
 
-  def create_mention_todos(project, target, author, note = nil, skip_users = [])
+  def create_mention_todos(parent, target, author, note = nil, skip_users = [])
     # Create Todos for directly addressed users
-    directly_addressed_users = filter_directly_addressed_users(project, note || target, author, skip_users)
-    attributes = attributes_for_todo(project, target, author, Todo::DIRECTLY_ADDRESSED, note)
+    directly_addressed_users = filter_directly_addressed_users(parent, note || target, author, skip_users)
+    attributes = attributes_for_todo(parent, target, author, Todo::DIRECTLY_ADDRESSED, note)
     create_todos(directly_addressed_users, attributes)
 
     # Create Todos for mentioned users
-    mentioned_users = filter_mentioned_users(project, note || target, author, skip_users)
-    attributes = attributes_for_todo(project, target, author, Todo::MENTIONED, note)
+    mentioned_users = filter_mentioned_users(parent, note || target, author, skip_users)
+    attributes = attributes_for_todo(parent, target, author, Todo::MENTIONED, note)
     create_todos(mentioned_users, attributes)
   end
 
@@ -303,36 +303,36 @@ class TodoService
 
   def attributes_for_todo(project, target, author, action, note = nil)
     attributes_for_target(target).merge!(
-      project_id: project.id,
+      project_id: project&.id,
       author_id: author.id,
       action: action,
       note: note
     )
   end
 
-  def filter_todo_users(users, project, target)
-    reject_users_without_access(users, project, target).uniq
+  def filter_todo_users(users, parent, target)
+    reject_users_without_access(users, parent, target).uniq
   end
 
-  def filter_mentioned_users(project, target, author, skip_users = [])
+  def filter_mentioned_users(parent, target, author, skip_users = [])
     mentioned_users = target.mentioned_users(author) - skip_users
-    filter_todo_users(mentioned_users, project, target)
+    filter_todo_users(mentioned_users, parent, target)
   end
 
-  def filter_directly_addressed_users(project, target, author, skip_users = [])
+  def filter_directly_addressed_users(parent, target, author, skip_users = [])
     directly_addressed_users = target.directly_addressed_users(author) - skip_users
-    filter_todo_users(directly_addressed_users, project, target)
+    filter_todo_users(directly_addressed_users, parent, target)
   end
 
-  def reject_users_without_access(users, project, target)
-    if target.is_a?(Note) && (target.for_issue? || target.for_merge_request?)
+  def reject_users_without_access(users, parent, target)
+    if target.is_a?(Note) && target.for_issuable?
       target = target.noteable
     end
 
     if target.is_a?(Issuable)
       select_users(users, :"read_#{target.to_ability_name}", target)
     else
-      select_users(users, :read_project, project)
+      select_users(users, :read_project, parent)
     end
   end
 

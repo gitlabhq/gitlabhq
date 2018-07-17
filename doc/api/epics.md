@@ -210,3 +210,71 @@ DELETE /groups/:id/epics/:epic_iid
 ```bash
 curl --header DELETE "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
 ```
+
+## Create a todo
+
+Manually creates a todo for the current user on an epic. If
+there already exists a todo for the user on that epic, status code `304` is
+returned.
+
+```
+POST /groups/:id/epics/:epic_iid/todo
+```
+
+| Attribute   | Type    | Required | Description                          |
+|-------------|---------|----------|--------------------------------------|
+| `id`        | integer/string | yes   | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user  |
+| `epic_iid ` | integer | yes          | The internal ID of a group's epic |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5/todo
+```
+
+Example response:
+
+```json
+{
+  "id": 112,
+  "group": {
+    "id": 1,
+    "name": "Gitlab",
+    "path": "gitlab",
+    "kind": "group",
+    "full_path": "base/gitlab",
+    "parent_id": null
+  },
+  "author": {
+    "name": "Administrator",
+    "username": "root",
+    "id": 1,
+    "state": "active",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "https://gitlab.example.com/root"
+  },
+  "action_name": "marked",
+  "target_type": "epic",
+  "target": {
+    "id": 30,
+    "iid": 5,
+    "group_id": 1,
+    "title": "Ea cupiditate dolores ut vero consequatur quasi veniam voluptatem et non.",
+    "description": "Molestias dolorem eos vitae expedita impedit necessitatibus quo voluptatum.",
+    "author":{
+      "id": 7,
+      "name": "Pamella Huel",
+      "username": "arnita",
+      "state": "active",
+      "avatar_url": "http://www.gravatar.com/avatar/a2f5c6fcef64c9c69cb8779cb292be1b?s=80&d=identicon",
+      "web_url": "http://localhost:3001/arnita"
+    },
+    "start_date": null,
+    "end_date": null,
+    "created_at": "2018-01-21T06:21:13.165Z",
+    "updated_at": "2018-01-22T12:41:41.166Z"
+  },
+  "target_url": "https://gitlab.example.com/groups/epics/5",
+  "body": "Vel voluptas atque dicta mollitia adipisci qui at.",
+  "state": "pending",
+  "created_at": "2016-07-01T11:09:13.992Z"
+}
+```

@@ -12,6 +12,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    cssClasses: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     tooltipLabel() {
@@ -30,10 +35,12 @@ export default {
   <button
     v-tooltip
     :title="tooltipLabel"
+    :class="cssClasses"
     type="button"
     class="btn btn-blank gutter-toggle btn-sidebar-action"
     data-container="body"
     data-placement="left"
+    data-boundary="viewport"
     @click="toggle"
   >
     <i

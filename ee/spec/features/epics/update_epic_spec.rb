@@ -57,6 +57,32 @@ describe 'Update Epic', :js do
         expect(find('.issuable-details .description')).to have_content('New epic description')
       end
 
+      it 'creates a todo only for mentioned users' do
+        mentioned = create(:user)
+
+        fill_in 'issue-description', with: "FYI #{mentioned.to_reference}"
+
+        click_button 'Save changes'
+
+        expect(find('.issuable-details h2.title')).to have_content('title')
+
+        visit dashboard_todos_path
+
+        expect(page).to have_selector('.todos-list .todo', count: 0)
+
+        sign_in(mentioned)
+
+        visit dashboard_todos_path
+
+        page.within '.header-content .todos-count' do
+          expect(page).to have_content '1'
+        end
+        expect(page).to have_selector('.todos-list .todo', count: 1)
+        within first('.todo') do
+          expect(page).to have_content "epic #{epic.to_reference(full: true)}"
+        end
+      end
+
       it 'edits full screen' do
         page.within('.detail-page-description') { find('.js-zen-enter').click }
 

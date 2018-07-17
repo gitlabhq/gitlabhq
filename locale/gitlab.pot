@@ -6305,6 +6305,12 @@ msgstr ""
 msgid "There are problems accessing Git storage: "
 msgstr ""
 
+msgid "There was an error adding a todo."
+msgstr ""
+
+msgid "There was an error deleting the todo."
+msgstr ""
+
 msgid "There was an error loading users activity calendar."
 msgstr ""
 
