@@ -57,7 +57,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 ---
 
 ## Contributing Documentation has been moved 
-As of July 2018, all the documentation for contributing to the Gitlab project has been moved to a new location. 
+As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location. 
 [view the new documentation](doc/development/contributing/index.md) to find the latest information. 
 
 
