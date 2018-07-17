@@ -160,7 +160,6 @@ stages:
 
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
-  before_script: []
   stage: build
   cache: {}
   dependencies: []
@@ -426,16 +425,15 @@ review-docs-cleanup:
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
 #
 cloud-native-image:
-  image: ruby:2.4-alpine
-  before_script: []
+  <<: *single-script-job
   stage: build
   allow_failure: true
   variables:
-    GIT_DEPTH: "1"
-  cache: {}
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build
   script:
-    - gem install gitlab --no-ri --no-rdoc
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN scripts/trigger-build cng
+    - gem install gitlab --no-document
+    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./$SCRIPT_NAME cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
@@ -1087,13 +1085,15 @@ no_ee_check:
 
 # GitLab EE Review apps
 review-app-image:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
-  image: ruby:2.4-alpine
-  before_script: []
+  <<: *single-script-job
+  stage: test
   allow_failure: true
-  cache: {}
+  variables:
+    <<: *single-script-job-variables
+    SCRIPT_NAME: trigger-build
   script:
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN scripts/trigger-build cng
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./$SCRIPT_NAME cng
+  when: manual
   only:
     refs:
       - branches
@@ -1102,172 +1102,19 @@ review-app-image:
       - master
       - /(^docs[\/-].*|.*-docs$)/
 
-.reviewapps_deploy: &reviewapps_deploy |
-  [[ "$TRACE" ]] && set -x
-  export TILLER_NAMESPACE=$KUBE_NAMESPACE
-
-  function check_kube_domain() {
-    if [ -z ${REVIEW_APPS_DOMAIN+x} ]; then
-      echo "In order to deploy or use Review Apps, REVIEW_APPS_DOMAIN variable must be set"
-      echo "You can do it in Auto DevOps project settings or defining a variable at group or project level"
-      echo "You can also manually add it in .gitlab-ci.yml"
-      false
-    else
-      true
-    fi
-  }
-
-  function download_gitlab_chart() {
-    curl -o gitlab.tar.bz2 https://gitlab.com/charts/gitlab/-/archive/$GITLAB_HELM_CHART_REF/gitlab-$GITLAB_HELM_CHART_REF.tar.bz2
-    tar -xjf gitlab.tar.bz2
-    cd gitlab-$GITLAB_HELM_CHART_REF
-
-    helm init --client-only
-    helm repo add gitlab https://charts.gitlab.io
-    helm dependency update
-    helm dependency build
-  }
-
-  function ensure_namespace() {
-    kubectl describe namespace "$KUBE_NAMESPACE" || kubectl create namespace "$KUBE_NAMESPACE"
-  }
-
-  function install_tiller() {
-    echo "Checking Tiller..."
-    helm init --upgrade
-    kubectl rollout status -n "$TILLER_NAMESPACE" -w "deployment/tiller-deploy"
-    if ! helm version --debug; then
-      echo "Failed to init Tiller."
-      return 1
-    fi
-    echo ""
-  }
-
-  function create_secret() {
-    echo "Create secret..."
-
-    kubectl create secret generic -n "$KUBE_NAMESPACE" \
-      $CI_ENVIRONMENT_SLUG-gitlab-initial-root-password \
-      --from-literal=password=$REVIEW_APPS_ROOT_PASSWORD \
-      --dry-run -o json | kubectl apply -f -
-  }
-
-  function previousDeployFailed() {
-    set +e
-    echo "Checking for previous deployment of $CI_ENVIRONMENT_SLUG"
-    deployment_status=$(helm status $CI_ENVIRONMENT_SLUG >/dev/null 2>&1)
-    status=$?
-    # if `status` is `0`, deployment exists, has a status
-    if [ $status -eq 0 ]; then
-      echo "Previous deployment found, checking status"
-      deployment_status=$(helm status $CI_ENVIRONMENT_SLUG | grep ^STATUS | cut -d' ' -f2)
-      echo "Previous deployment state: $deployment_status"
-      if [[ "$deployment_status" == "FAILED" || "$deployment_status" == "PENDING_UPGRADE" || "$deployment_status" == "PENDING_INSTALL" ]]; then
-        status=0;
-      else
-        status=1;
-      fi
-    else
-      echo "Previous deployment NOT found."
-    fi
-    set -e
-    return $status
-  }
-
-  function deploy() {
-    track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-
-    replicas="1"
-    service_enabled="false"
-    postgres_enabled="$POSTGRES_ENABLED"
-    # canary uses stable db
-    [[ "$track" == "canary" ]] && postgres_enabled="false"
-
-    env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
-    env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
-
-    if [[ "$track" == "stable" ]]; then
-      # for stable track get number of replicas from `PRODUCTION_REPLICAS`
-      eval new_replicas=\$${env_slug}_REPLICAS
-      service_enabled="true"
-    else
-      # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
-      eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
-    fi
-    if [[ -n "$new_replicas" ]]; then
-      replicas="$new_replicas"
-    fi
-
-    # Cleanup and previous installs, as FAILED and PENDING_UPGRADE will cause errors with `upgrade`
-    if [ "$CI_ENVIRONMENT_SLUG" != "production" ] && previousDeployFailed ; then
-      echo "Deployment in bad state, cleaning up $CI_ENVIRONMENT_SLUG"
-      delete
-      cleanup
-    fi
-    helm repo add gitlab https://charts.gitlab.io/
-    helm dep update .
-
-    helm upgrade --install \
-      --wait \
-      --timeout 600 \
-      --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
-      --set global.hosts.hostSuffix="$HOST_SUFFIX" \
-      --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
-      --set global.hosts.externalIP="$REVIEW_APPS_DOMAIN_IP" \
-      --set certmanager.install=false \
-      --set global.ingress.configureCertmanager=false \
-      --set global.ingress.tls.secretName=tls-cert \
-      --set gitlab.unicorn.resources.requests.cpu=200m \
-      --set gitlab.sidekiq.resources.requests.cpu=100m \
-      --set gitlab.gitlab-shell.resources.requests.cpu=100m \
-      --set redis.resources.requests.cpu=100m \
-      --set minio.resources.requests.cpu=100m \
-      --set gitlab.migrations.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ee \
-      --set gitlab.migrations.image.tag=$CI_COMMIT_REF_NAME \
-      --set gitlab.sidekiq.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ee \
-      --set gitlab.sidekiq.image.tag=$CI_COMMIT_REF_NAME \
-      --set gitlab.unicorn.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ee \
-      --set gitlab.unicorn.image.tag=$CI_COMMIT_REF_NAME \
-      --set gitlab.gitaly.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitaly \
-      --set gitlab.gitaly.image.tag=v$GITALY_VERSION \
-      --set gitlab.gitlab-shell.image.repository=registry.gitlab.com/gitlab-org/build/cng/gitlab-shell \
-      --set gitlab.gitlab-shell.image.tag=v$GITLAB_SHELL_VERSION \
-      --namespace="$KUBE_NAMESPACE" \
-      --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
-      "$name" \
-      .
-  }
-
-  function delete() {
-    track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
-
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-    helm delete --purge "$name" || true
-  }
-
-  function cleanup() {
-    kubectl get ingress,configmap,all -n "$KUBE_NAMESPACE" \
-      -o jsonpath='{range .items[*]}{.kind}{" "}{.metadata.name}{"\n"}{end}' \
-      | grep "CI_ENVIRONMENT_SLUG" \
-      | xargs -n2 kubectl delete -n "$KUBE_NAMESPACE" \
-      || true
-  }
-
 review:
-  <<: *dedicated-no-docs-no-db-pull-cache-job
+  <<: *single-script-job
   image: registry.gitlab.com/charts/gitlab:latest
   stage: post-test
-  before_script:
-    - *reviewapps_deploy
+  allow_failure: true
+  variables:
+    <<: *single-script-job-variables
+    SCRIPT_NAME: review-apps.sh
+    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
+    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
+    GITLAB_HELM_CHART_REF: "master"
   script:
+    - source ./$SCRIPT_NAME
     - export GITLAB_SHELL_VERSION=$(< GITLAB_SHELL_VERSION)
     - export GITALY_VERSION=$(< GITALY_SERVER_VERSION)
     - check_kube_domain
@@ -1280,35 +1127,32 @@ review:
     name: review/$CI_COMMIT_REF_NAME
     url: https://gitlab-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN
     on_stop: stop_review
-  variables:
-    HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
-    DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
-    GITLAB_HELM_CHART_REF: "master"
+  when: manual
   only:
     refs:
       - branches
     kubernetes: active
-  allow_failure: true
   except:
     refs:
       - master
       - /(^docs[\/-].*|.*-docs$)/
 
 stop_review:
+  <<: *single-script-job
   image: registry.gitlab.com/charts/gitlab:latest
   stage: post-cleanup
-  before_script:
-    - *reviewapps_deploy
+  allow_failure: true
   variables:
-    GIT_STRATEGY: none
+    <<: *single-script-job-variables
+    SCRIPT_NAME: review-apps.sh
   script:
+    - source ./$SCRIPT_NAME
     - delete
     - cleanup
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
   when: manual
-  allow_failure: true
   only:
     refs:
       - branches
