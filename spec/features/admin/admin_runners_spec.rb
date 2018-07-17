@@ -99,26 +99,22 @@ describe "Admin Runners", :js do
 
         visit admin_runners_path
 
-        within '.runners-content tbody' do
-          within('tr:nth-child(1)') do
-            expect(page).to have_content 'runner-2'
-          end
+        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+          expect(page).to have_content 'runner-2'
+        end
 
-          within('tr:nth-child(2)') do
-            expect(page).to have_content 'runner-1'
-          end
+        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+          expect(page).to have_content 'runner-1'
         end
 
         sorting_by 'Last Contact'
 
-        within '.runners-content tbody' do
-          within('tr:nth-child(1)') do
-            expect(page).to have_content 'runner-1'
-          end
+        within '.runners-content .gl-responsive-table-row:nth-child(2)' do
+          expect(page).to have_content 'runner-1'
+        end
 
-          within('tr:nth-child(2)') do
-            expect(page).to have_content 'runner-2'
-          end
+        within '.runners-content .gl-responsive-table-row:nth-child(3)' do
+          expect(page).to have_content 'runner-2'
         end
       end
     end

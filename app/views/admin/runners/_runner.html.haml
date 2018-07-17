@@ -1,51 +1,78 @@
-%tr{ id: dom_id(runner) }
-  %td
-    - if runner.instance_type?
-      %span.badge.badge-success shared
-    - elsif runner.group_type?
-      %span.badge.badge-success group
-    - else
-      %span.badge.badge-info specific
-    - if runner.locked?
-      %span.badge.badge-warning locked
-    - unless runner.active?
-      %span.badge.badge-danger paused
-
-  %td
-    = link_to admin_runner_path(runner) do
-      = runner.short_sha
-  %td
-    = runner.description
-  %td
-    = runner.version
-  %td
-    = runner.ip_address
-  %td
-    - if runner.instance_type? || runner.group_type?
-      n/a
-    - else
-      = runner.projects.count(:all)
-  %td
-    #{runner.builds.count(:all)}
-  %td
-    - runner.tag_list.sort.each do |tag|
-      %span.badge.badge-primary
-        = tag
-  %td
-    - if runner.contacted_at
-      = time_ago_with_tooltip runner.contacted_at
-    - else
-      Never
-  %td.admin-runner-btn-group-cell
-    .float-right.btn-group
-      = link_to admin_runner_path(runner), class: 'btn btn-sm btn-default has-tooltip', title: 'Edit', ref: 'tooltip', aria: { label: 'Edit' }, data: { placement: 'top', container: 'body'} do
-        = icon('pencil')
-      &nbsp;
-      - if runner.active?
-        = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-sm btn-default has-tooltip', title: 'Pause', ref: 'tooltip', aria: { label: 'Pause' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
-          = icon('pause')
+.gl-responsive-table-row{ id: dom_id(runner) }
+  .table-section.section-10
+    .table-mobile-header{ role: "rowheader" } Type
+    .table-mobile-content
+      - if runner.instance_type?
+        %span.badge.badge-success shared
+      - elsif runner.group_type?
+        %span.badge.badge-success group
       - else
-        = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-default btn-sm has-tooltip', title: 'Resume', ref: 'tooltip', aria: { label: 'Resume' }, data: { placement: 'top', container: 'body'} do
-          = icon('play')
-      = link_to [:admin, runner], method: :delete, class: 'btn btn-danger btn-sm has-tooltip', title: 'Remove', ref: 'tooltip', aria: { label: 'Remove' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
-        = icon('remove')
+        %span.badge.badge-info specific
+      - if runner.locked?
+        %span.badge.badge-warning locked
+      - unless runner.active?
+        %span.badge.badge-danger paused
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Runner token
+    .table-mobile-content
+      = link_to runner.short_sha, admin_runner_path(runner)
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Description
+    .table-mobile-content
+      = runner.description
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Version
+    .table-mobile-content
+      = runner.version
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } IP Address
+    .table-mobile-content
+      = runner.ip_address
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Projects
+    .table-mobile-content
+      - if runner.instance_type? || runner.group_type?
+        n/a
+      - else
+        = runner.projects.count(:all)
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Jobs
+    .table-mobile-content
+      = runner.builds.count(:all)
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Tags
+    .table-mobile-content
+      - runner.tag_list.sort.each do |tag|
+        %span.badge.badge-primary
+          = tag
+
+  .table-section.section-10
+    .table-mobile-header{ role: 'rowheader' } Last contact
+    .table-mobile-content
+      - if runner.contacted_at
+        = time_ago_with_tooltip runner.contacted_at
+      - else
+        Never
+
+  .table-section.table-button-footer.section-10
+    .btn-group.table-action-buttons
+      .btn-group
+        = link_to admin_runner_path(runner), class: 'btn btn-default has-tooltip', title: 'Edit', ref: 'tooltip', aria: { label: 'Edit' }, data: { placement: 'top', container: 'body'} do
+          = icon('pencil')
+      .btn-group
+        - if runner.active?
+          = link_to [:pause, :admin, runner], method: :get, class: 'btn btn-default has-tooltip', title: 'Pause', ref: 'tooltip', aria: { label: 'Pause' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
+            = icon('pause')
+        - else
+          = link_to [:resume, :admin, runner], method: :get, class: 'btn btn-default has-tooltip', title: 'Resume', ref: 'tooltip', aria: { label: 'Resume' }, data: { placement: 'top', container: 'body'} do
+            = icon('play')
+      .btn-group
+        = link_to [:admin, runner], method: :delete, class: 'btn btn-danger has-tooltip', title: 'Remove', ref: 'tooltip', aria: { label: 'Remove' }, data: { placement: 'top', container: 'body', confirm: "Are you sure?" } do
+          = icon('remove')
