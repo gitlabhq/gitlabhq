@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe DisableEmailInterceptor do
+describe Gitlab::Email::Hook::DisableEmailInterceptor do
   before do
     Mail.register_interceptor(described_class)
   end
