@@ -555,14 +555,12 @@ describe WikiPage do
   end
 
   describe '#hook_attrs' do
-    before do
-      create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")
-      @page = wiki.wiki.page(title: "test page")
-      @wiki_page = described_class.new(wiki, @page, true)
-    end
-
     it 'adds absolute urls for images in the content' do
-      expect(@wiki_page.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
+      create_page("test page", "test![WikiPage_Image](/uploads/abc/WikiPage_Image.png)")
+      page = wiki.wiki.page(title: "test page")
+      wiki_page = described_class.new(wiki, page, true)
+
+      expect(wiki_page.hook_attrs['content']).to eq("test![WikiPage_Image](#{Settings.gitlab.url}/uploads/abc/WikiPage_Image.png)")
     end
   end
 
