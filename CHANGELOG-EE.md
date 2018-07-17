@@ -87,6 +87,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Allow viewing only one when multiple issue boards is not enabled.
 
 
+## 10.8.6 (2018-07-17)
+
+- No changes.
+
 ## 10.8.5 (2018-06-21)
 
 - No changes.
