@@ -273,10 +273,6 @@ module Gitlab
         end
       end
 
-      def generate_line_code(pr_comment)
-        Gitlab::Git.diff_line_code(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
-      end
-
       def pull_request_comment_attributes(comment)
         {
           project: project,
