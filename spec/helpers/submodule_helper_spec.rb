@@ -92,11 +92,10 @@ describe SubmoduleHelper do
     context 'in-repository submodule' do
       let(:group) { create(:group, name: "Master Project", path: "master-project") }
       let(:project) { create(:project, group: group) }
-      before do
-        self.instance_variable_set(:@project, project)
-      end
 
       it 'in-repository' do
+        allow(repo).to receive(:project).and_return(project)
+
         stub_url('./')
         expect(submodule_links(submodule_item)).to eq(["/master-project/#{project.path}", "/master-project/#{project.path}/tree/hash"])
       end
@@ -167,32 +166,28 @@ describe SubmoduleHelper do
       let(:project) { create(:project, group: group) }
       let(:commit_id) { sample_commit[:id] }
 
-      before do
-        self.instance_variable_set(:@project, project)
-      end
-
       it 'one level down' do
-        result = relative_self_links('../test.git', commit_id)
+        result = relative_self_links('../test.git', commit_id, project)
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
       end
 
       it 'with trailing whitespace' do
-        result = relative_self_links('../test.git ', commit_id)
+        result = relative_self_links('../test.git ', commit_id, project)
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
       end
 
       it 'two levels down' do
-        result = relative_self_links('../../test.git', commit_id)
+        result = relative_self_links('../../test.git', commit_id, project)
         expect(result).to eq(["/#{group.path}/test", "/#{group.path}/test/tree/#{commit_id}"])
       end
 
       it 'one level down with namespace and repo' do
-        result = relative_self_links('../foobar/test.git', commit_id)
+        result = relative_self_links('../foobar/test.git', commit_id, project)
         expect(result).to eq(["/foobar/test", "/foobar/test/tree/#{commit_id}"])
       end
 
       it 'two levels down with namespace and repo' do
-        result = relative_self_links('../foobar/baz/test.git', commit_id)
+        result = relative_self_links('../foobar/baz/test.git', commit_id, project)
         expect(result).to eq(["/baz/test", "/baz/test/tree/#{commit_id}"])
       end
 
@@ -201,7 +196,7 @@ describe SubmoduleHelper do
         let(:project) { create(:project, namespace: user.namespace) }
 
         it 'one level down with personal project' do
-          result = relative_self_links('../test.git', commit_id)
+          result = relative_self_links('../test.git', commit_id, project)
           expect(result).to eq(["/#{user.username}/test", "/#{user.username}/test/tree/#{commit_id}"])
         end
       end

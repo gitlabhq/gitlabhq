@@ -35,6 +35,20 @@ GET /users
 ]
 ```
 
+You can also search for users by email or username with: `/users?search=John`
+
+In addition, you can lookup users by username:
+
+```
+GET /users?username=:username
+```
+
+For example:
+
+```
+GET /users?username=jack_smith
+```
+
 In addition, you can filter users based on states eg. `blocked`, `active`
 This works only to filter users who are `blocked` or `active`.
 It does not support `active=false` or `blocked=false`.
@@ -128,21 +142,7 @@ GET /users
 ]
 ```
 
-You can search for users by email or username with: `/users?search=John`
-
-In addition, you can lookup users by username:
-
-```
-GET /users?username=:username
-```
-
-For example:
-
-```
-GET /users?username=jack_smith
-```
-
-You can also lookup users by external UID and provider:
+You can lookup users by external UID and provider:
 
 ```
 GET /users?extern_uid=:extern_uid&provider=:provider
