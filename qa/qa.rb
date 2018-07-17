@@ -53,6 +53,7 @@ module QA
       autoload :User, 'qa/factory/resource/user'
       autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
       autoload :Wiki, 'qa/factory/resource/wiki'
+      autoload :File, 'qa/factory/resource/file'
       autoload :Fork, 'qa/factory/resource/fork'
     end
 
@@ -134,6 +135,15 @@ module QA
     module Group
       autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
+    end
+
+    module File
+      autoload :Form, 'qa/page/file/form'
+      autoload :Show, 'qa/page/file/show'
+
+      module Shared
+        autoload :CommitMessage, 'qa/page/file/shared/commit_message'
+      end
     end
 
     module Project
