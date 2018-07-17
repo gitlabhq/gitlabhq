@@ -10,6 +10,13 @@ Starting from GitLab 8.5:
 Starting from GitLab 11.1, the logs of web hooks are automatically removed after
 one month.
 
+>**Note**
+Starting from GitLab 11.2:
+- The `description` field for issues, merge requests, comments, and wiki pages
+  is rewritten so that simple Markdown image references (like
+  `![](/uploads/...)`) have their target URL changed to an absolute URL. See
+  [image URL rewriting](#image-url-rewriting) for more details.
+
 Project webhooks allow you to trigger a URL if for example new code is pushed or
 a new issue is created. You can configure webhooks to listen for specific events
 like pushes, issues or merge requests. GitLab will send a POST request with data
@@ -1124,6 +1131,27 @@ X-Gitlab-Event: Build Hook
   }
 }
 ```
+
+## Image URL rewriting
+
+From GitLab 11.2, simple image references are rewritten to use an absolute URL
+in webhooks. So if an image, merge request, comment, or wiki page has this in
+its description:
+
+```markdown
+![image](/uploads/$sha/image.png)
+```
+
+It will appear in the webhook body as the below (assuming that GitLab is
+installed at gitlab.example.com):
+
+```markdown
+![image](https://gitlab.example.com/uploads/$sha/image.png)
+```
+
+This will not rewrite URLs that already are pointing to HTTP, HTTPS, or
+protocol-relative URLs. It will also not rewrite image URLs using advanced
+Markdown features, like link labels.
 
 ## Testing webhooks
 
