@@ -539,6 +539,13 @@ entry.
 - Gitaly handles repository forks by default.
 
 
+## 10.7.7 (2018-07-17)
+
+### Security (1 change)
+
+- Fix symlink vulnerability in project import.
+
+
 ## 10.7.6 (2018-06-21)
 
 ### Security (6 changes)
