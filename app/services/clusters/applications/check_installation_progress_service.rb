@@ -35,7 +35,7 @@ module Clusters
       def check_timeout
         if timeouted?
           begin
-            app.make_errored!('Installation timeouted')
+            app.make_errored!('Installation timed out')
           ensure
             remove_installation_pod
           end
