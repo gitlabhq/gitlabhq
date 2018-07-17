@@ -237,6 +237,39 @@ describe API::Projects do
         end
       end
 
+      context 'and using archived' do
+        let!(:archived_project) { create(:project, creator_id: user.id, namespace: user.namespace, archived: true) }
+
+        it 'returns archived projects' do
+          get api('/projects?archived=true', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user).where(archived: true).size)
+          expect(json_response.map { |project| project['id'] }).to include(archived_project.id)
+        end
+
+        it 'returns non-archived projects' do
+          get api('/projects?archived=false', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(Project.public_or_visible_to_user(user).where(archived: false).size)
+          expect(json_response.map { |project| project['id'] }).not_to include(archived_project.id)
+        end
+
+        it 'returns every project' do
+          get api('/projects', user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(*Project.public_or_visible_to_user(user).pluck(:id))
+        end
+      end
+
       context 'and using search' do
         it_behaves_like 'projects response' do
           let(:filter) { { search: project.name } }
