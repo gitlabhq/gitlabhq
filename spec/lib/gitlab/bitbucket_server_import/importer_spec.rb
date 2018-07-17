@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::BitbucketServerImport::Importer do
   include ImportSpecHelper
 
-  set(:project) { create(:project, :repository, import_url: 'http://my-bitbucket') }
+  let(:project) { create(:project, :repository, import_url: 'http://my-bitbucket') }
 
   subject { described_class.new(project) }
 
@@ -32,14 +32,14 @@ describe Gitlab::BitbucketServerImport::Importer do
     end
   end
 
-  # XXX We don't handle pull requests across forks
   describe '#import_pull_requests' do
+    let(:sample) { RepoHelpers.sample_compare }
+
     before do
       allow(subject).to receive(:import_repository)
       allow(subject).to receive(:delete_temp_branches)
       allow(subject).to receive(:restore_branches)
 
-      sample = RepoHelpers.sample_compare
       pull_request = instance_double(
         BitbucketServer::Representation::PullRequest,
         iid: 10,
@@ -64,11 +64,6 @@ describe Gitlab::BitbucketServerImport::Importer do
         merge_event?: true,
         committer_email: project.owner.email,
         merge_timestamp: Time.now.utc.change(usec: 0))
-      @inline_comment = instance_double(
-        BitbucketServer::Representation::Activity,
-        comment?: true,
-        inline_comment?: true,
-        merge_event?: false)
 
       @pr_note = instance_double(
         BitbucketServer::Representation::Comment,
@@ -109,7 +104,50 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(note.updated_at).to eq(@pr_note.created_at)
     end
 
-    it 'handles diff comments' do
+    it 'imports threaded comments' do
+    end
+
+    it 'imports diff comments' do
+      # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
+      inline_note = instance_double(
+        BitbucketServer::Representation::PullRequestComment,
+        file_type: 'ADDED',
+        from_sha: sample.commits.first,
+        to_sha: sample.commits.last,
+        file_path: '.gitmodules',
+        old_pos: nil,
+        new_pos: 4,
+        note: 'Hello world',
+        author_email: 'unknown@gmail.com',
+        comments: [],
+        created_at: Time.now.utc.change(usec: 0),
+        updated_at: Time.now.utc.change(usec: 0))
+
+      inline_comment = instance_double(
+        BitbucketServer::Representation::Activity,
+        comment?: true,
+        inline_comment?: true,
+        merge_event?: false,
+        comment: inline_note)
+
+      expect(subject.client).to receive(:activities).and_return([inline_comment])
+
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+
+      merge_request = MergeRequest.first
+      expect(merge_request.notes.count).to eq(1)
+      note = merge_request.notes.first
+
+      expect(note.type).to eq('DiffNote')
+      expect(note.note).to eq(inline_note.note)
+      expect(note.created_at).to eq(inline_note.created_at)
+      expect(note.updated_at).to eq(inline_note.updated_at)
+
+      expect(note.position.base_sha).to eq(inline_note.from_sha)
+      expect(note.position.start_sha).to eq(inline_note.from_sha)
+      expect(note.position.head_sha).to eq(inline_note.to_sha)
+      expect(note.position.old_line).to be_nil
+      expect(note.position.new_line).to eq(inline_note.new_pos)
     end
 
     it 'falls back to comments if diff comments' do
