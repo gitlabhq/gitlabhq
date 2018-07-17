@@ -594,7 +594,6 @@ danger-review:
     - git version
     - danger --fail-on-errors=true
 
-<<<<<<< HEAD
 # EE jobs
 rspec-pg-ee 0 2: *rspec-ee-pg
 rspec-pg-ee 1 2: *rspec-ee-pg
@@ -611,8 +610,6 @@ rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
 rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
-=======
->>>>>>> upstream/master
 rspec-pg 0 30: *rspec-metadata-pg
 rspec-pg 1 30: *rspec-metadata-pg
 rspec-pg 2 30: *rspec-metadata-pg
