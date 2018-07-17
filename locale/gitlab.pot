@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-16 12:42+0000\n"
-"PO-Revision-Date: 2018-07-16 12:42+0000\n"
+"POT-Creation-Date: 2018-07-17 07:12+0000\n"
+"PO-Revision-Date: 2018-07-17 07:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -238,12 +238,6 @@ msgstr ""
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr ""
 
-<<<<<<< HEAD
-msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
-msgstr ""
-
-msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
-=======
 msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
 msgstr ""
 
@@ -254,7 +248,12 @@ msgid "<code>\"johnsmith@example.com\": \"johnsm...@example.com\"</code> will ad
 msgstr ""
 
 msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will add \"By <a href=\"#\">johnsmith@example.com</a>\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
+msgstr ""
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
 msgstr ""
 
 msgid "<strong>%{group_name}</strong> group members"
@@ -305,11 +304,10 @@ msgstr ""
 msgid "Access Tokens"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Access to '%{classification_label}' not allowed"
-=======
 msgid "Access denied! Please verify you can add deploy keys to this repository."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
@@ -885,7 +883,6 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -950,9 +947,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
+msgstr ""
+
 msgid "Bitbucket import"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Boards"
@@ -2185,14 +2182,13 @@ msgstr ""
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Customize colors"
-=======
+msgstr ""
+
 msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
 msgstr ""
 
 msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Cycle Analytics"
@@ -2234,14 +2230,13 @@ msgstr ""
 msgid "Decline and sign out"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Default classification label"
-=======
+msgstr ""
+
 msgid "Default: Directly import the Google Code email address or username"
 msgstr ""
 
 msgid "Default: Map a FogBugz account ID to a full name"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Define a custom pattern with cron syntax"
@@ -2444,14 +2439,13 @@ msgstr ""
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Dismiss Merge Request promotion"
 msgstr ""
 
-msgid "Documentation for popular identity providers"
-=======
 msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Documentation for popular identity providers"
 msgstr ""
 
 msgid "Domain"
@@ -2880,12 +2874,6 @@ msgstr ""
 msgid "FirstPushedBy|pushed by"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Font Color"
-msgstr ""
-
-msgid "Footer message"
-=======
 msgid "FogBugz Email"
 msgstr ""
 
@@ -2902,7 +2890,12 @@ msgid "FogBugz import"
 msgstr ""
 
 msgid "Follow the steps below to export your Google Code project data."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Font Color"
+msgstr ""
+
+msgid "Footer message"
 msgstr ""
 
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
@@ -2970,7 +2963,6 @@ msgstr ""
 msgid "Generate a default set of labels"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Geo Nodes"
 msgstr ""
 
@@ -3161,9 +3153,9 @@ msgid "Geo|Shards to synchronize"
 msgstr ""
 
 msgid "Geo|Verification capacity"
-=======
+msgstr ""
+
 msgid "Git"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Git repository URL"
@@ -3199,20 +3191,19 @@ msgstr ""
 msgid "GitLab Runner section"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "GitLab single sign on URL"
-msgstr ""
-
-msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
-=======
 msgid "GitLab User"
 msgstr ""
 
 msgid "GitLab project export"
 msgstr ""
 
+msgid "GitLab single sign on URL"
+msgstr ""
+
+msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
+msgstr ""
+
 msgid "GitLab.com import"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Gitaly"
@@ -3565,7 +3556,6 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ImportButtons|Connect repositories from"
 msgstr ""
 
@@ -3576,9 +3566,9 @@ msgid "Improve issues management with Issue weight and GitLab Enterprise Edition
 msgstr ""
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
-=======
+msgstr ""
+
 msgid "In the next step, you'll be able to select the projects you want to import."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
@@ -3804,11 +3794,10 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "License"
-=======
 msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "License"
 msgstr ""
 
 msgid "List"
@@ -3853,14 +3842,13 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-=======
+msgstr ""
+
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Manage access"
@@ -4432,14 +4420,13 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
-=======
+msgstr ""
+
 msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
 msgstr ""
 
 msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Online IDE integration settings."
@@ -5365,11 +5352,10 @@ msgstr ""
 msgid "Scope"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Scoped issue boards"
-=======
+msgstr ""
+
 msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Scroll to bottom"
@@ -5465,11 +5451,10 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Selective synchronization"
-=======
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Selective synchronization"
 msgstr ""
 
 msgid "Send email"
@@ -6410,7 +6395,6 @@ msgstr ""
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr ""
 
@@ -6418,12 +6402,12 @@ msgid "To connect GitHub repositories, you first need to authorize GitLab to acc
 msgstr ""
 
 msgid "To connect an SVN repository, check out %{svn_link}."
-=======
+msgstr ""
+
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
 msgstr ""
 
 msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
@@ -6435,14 +6419,13 @@ msgstr ""
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr ""
 
-<<<<<<< HEAD
+msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
+msgstr ""
+
 msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
 msgstr ""
 
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
-=======
-msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "To start serving your jobs you can add Runners to your group"
@@ -6576,7 +6559,6 @@ msgstr[1] ""
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
@@ -6590,9 +6572,9 @@ msgid "Upgrade your plan to activate Issue weight."
 msgstr ""
 
 msgid "Upgrade your plan to improve Issue boards."
-=======
+msgstr ""
+
 msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Upload New File"
@@ -7299,11 +7281,10 @@ msgstr ""
 msgid "connecting"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "could not read private key, is the passphrase correct?"
-=======
+msgstr ""
+
 msgid "customize"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "day"
