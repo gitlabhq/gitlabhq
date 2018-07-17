@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This service downloads and links lfs objects from a remote URL
 module Projects
   module LfsPointers

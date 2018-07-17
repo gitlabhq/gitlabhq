@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BuildService < MergeRequests::BaseService
     include Gitlab::Utils::StrongMemoize
@@ -140,7 +142,8 @@ module MergeRequests
       closes_issue = "Closes #{issue.to_reference}"
 
       if description.present?
-        merge_request.description += closes_issue.prepend("\n\n")
+        descr_parts = [merge_request.description, closes_issue]
+        merge_request.description = descr_parts.join("\n\n")
       else
         merge_request.description = closes_issue
       end
@@ -164,9 +167,11 @@ module MergeRequests
       return if merge_request.title.present?
 
       if issue_iid.present?
-        merge_request.title = "Resolve #{issue.to_reference}"
+        title_parts = ["Resolve #{issue.to_reference}"]
         branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
-        merge_request.title += " \"#{branch_title}\"" if branch_title.present?
+
+        title_parts << "\"#{branch_title}\"" if branch_title.present?
+        merge_request.title = title_parts.join(' ')
       end
     end
 

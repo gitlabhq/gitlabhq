@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class DestroyService < Members::BaseService
     def execute(member, skip_authorization: false)

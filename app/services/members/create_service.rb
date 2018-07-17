@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class CreateService < Members::BaseService
     DEFAULT_LIMIT = 100
