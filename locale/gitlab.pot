@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-10 16:02-0700\n"
+"PO-Revision-Date: 2018-07-10 16:02-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1245,6 +1247,9 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1405,9 +1410,6 @@ msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
-msgstr ""
-
-msgid "ClusterIntegration|Redeem up to $500 in free credit for Google Cloud Platform"
 msgstr ""
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
