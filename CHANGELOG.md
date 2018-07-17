@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.0.4 (2018-07-17)
+
+### Security (1 change)
+
+- Fix symlink vulnerability in project import.
+
+
 ## 11.0.3 (2018-07-05)
 
 ### Fixed (14 changes, 1 of them is from the community)
