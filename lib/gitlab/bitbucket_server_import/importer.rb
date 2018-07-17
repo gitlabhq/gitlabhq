@@ -230,9 +230,7 @@ module Gitlab
 
       def create_diff_note(merge_request, comment, position, discussion_id = nil)
         attributes = pull_request_comment_attributes(comment)
-        attributes.merge!(
-          position: position,
-          type: 'DiffNote')
+        attributes.merge!(position: position, type: 'DiffNote')
         attributes[:discussion_id] = discussion_id if discussion_id
 
         note = merge_request.notes.build(attributes)
@@ -242,16 +240,15 @@ module Gitlab
           return note
         end
 
-        # Fallback to a regular comment
+        # Bitbucket Server supports the ability to comment on any line, not just the
+        # line in the diff. If we can't add the note as a DiffNote, fallback to creating
+        # a regular note.
         create_fallback_diff_note(merge_request, comment)
       rescue StandardError => e
         errors << { type: :pull_request, id: comment.id, errors: e.message }
         nil
       end
 
-      # Bitbucket Server supports the ability to comment on any line, not just the
-      # line in the diff. If we can't add the note as a DiffNote, fallback to creating
-      # a regular note.
       def create_fallback_diff_note(merge_request, comment)
         attributes = pull_request_comment_attributes(comment)
         attributes[:note] = "Comment on file: #{comment.file_path}, old position: #{comment.old_pos}, new_position: #{comment.new_pos}\n\n" + attributes[:note]

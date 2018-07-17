@@ -26,8 +26,7 @@ module Gitlab
           import_url: repo.clone_url,
           import_data: {
             credentials: session_data,
-            data: { project_key: project_key,
-                    repo_slug: repo_slug }
+            data: { project_key: project_key, repo_slug: repo_slug }
           },
           skip_wiki: true
         ).execute
