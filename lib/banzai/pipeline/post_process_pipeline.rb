@@ -1,13 +1,20 @@
 module Banzai
   module Pipeline
     class PostProcessPipeline < BasePipeline
+      prepend EE::Banzai::Pipeline::PostProcessPipeline
+
       def self.filters
-        FilterArray[
+        @filters ||= FilterArray[
+          *internal_link_filters,
+          Filter::AbsoluteLinkFilter
+        ]
+      end
+
+      def self.internal_link_filters
+        [
           Filter::RedactorFilter,
           Filter::RelativeLinkFilter,
-          Filter::IssuableStateFilter,
-          Filter::CrossProjectIssuableInformationFilter,
-          Filter::AbsoluteLinkFilter
+          Filter::IssuableStateFilter
         ]
       end
 
