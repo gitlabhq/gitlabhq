@@ -46,7 +46,7 @@ module Gitlab
         }.to_json)
       end
 
-      def gitlab_user_id(project, email)
+      def gitlab_user_id(email)
         find_user_id(email) || project.creator_id
       end
 
@@ -166,7 +166,7 @@ module Gitlab
         target_branch_sha = pull_request.target_branch_sha
         source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
         target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
-        author_id = gitlab_user_id(project, pull_request.author_email) || User.ghost.id
+        author_id = gitlab_user_id(pull_request.author_email)
 
         project.merge_requests.find_by(iid: pull_request.iid)&.destroy
 
@@ -207,8 +207,7 @@ module Gitlab
       def import_merge_event(merge_request, merge_event)
         committer = merge_event.committer_email
 
-        user_id = find_user_id(committer) if committer
-        user_id ||= User.ghost.id
+        user_id = gitlab_user_id(committer)
         timestamp = merge_event.merge_timestamp
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
         metric.update(merged_by_id: user_id, merged_at: timestamp)
@@ -277,7 +276,7 @@ module Gitlab
         {
           project: project,
           note: comment.note,
-          author_id: gitlab_user_id(project, comment.author_email),
+          author_id: gitlab_user_id(comment.author_email),
           created_at: comment.created_at,
           updated_at: comment.updated_at
         }
