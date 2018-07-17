@@ -1366,7 +1366,8 @@ describe Notify do
       it 'only sends the text template' do
         stub_application_setting(html_emails_enabled: false)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).not_to have_part_with('text/html')
@@ -1377,7 +1378,8 @@ describe Notify do
       it 'sends a multipart message' do
         stub_application_setting(html_emails_enabled: true)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).to have_part_with('text/html')

@@ -11,7 +11,7 @@
   - branch_label = s_('ChangeTypeActionLabel|Pick into branch')
   - title = commit.merged_merge_request(current_user) ? _('Cherry-pick this merge request') : _('Cherry-pick this commit')
 
-.modal{ id: "modal-#{type}-commit" }
+.modal{ id: "modal-#{type}-commit", tabindex: -1 }
   .modal-dialog
     .modal-content
       .modal-header
