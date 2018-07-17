@@ -83,7 +83,7 @@ module Ci
       end
 
       build.run!
-      return true
+      true
     end
 
     def builds_for_shared_runner

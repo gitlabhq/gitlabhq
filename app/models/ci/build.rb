@@ -344,7 +344,7 @@ module Ci
     end
 
     def runner_required_features
-      %w(variables)
+      []
     end
 
     def merge_request
@@ -602,7 +602,7 @@ module Ci
 
     def supported_runner?(features)
       runner_required_features.all? do |feature_name|
-        features[feature_name]
+        features&.dig(feature_name)
       end
     end
 
