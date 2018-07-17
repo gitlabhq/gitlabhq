@@ -1,7 +1,15 @@
 require 'spec_helper'
 
 describe Gitlab::HookData::BaseBuilder do
-  describe '.absolute_image_urls' do
+  describe '#absolute_image_urls' do
+    let(:subclass) do
+      Class.new(described_class) do
+        public :absolute_image_urls
+      end
+    end
+
+    subject { subclass.new(nil) }
+
     using RSpec::Parameterized::TableSyntax
 
     where do
@@ -50,7 +58,7 @@ describe Gitlab::HookData::BaseBuilder do
     end
 
     with_them do
-      it { expect(described_class.absolute_image_urls(input)).to eq(output) }
+      it { expect(subject.absolute_image_urls(input)).to eq(output) }
     end
   end
 end

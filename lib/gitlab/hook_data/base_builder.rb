@@ -17,7 +17,9 @@ module Gitlab
         @object = object
       end
 
-      def self.absolute_image_urls(markdown_text)
+      private
+
+      def absolute_image_urls(markdown_text)
         return markdown_text unless markdown_text.present?
 
         markdown_text.gsub(MARKDOWN_SIMPLE_IMAGE) do
@@ -30,12 +32,6 @@ module Gitlab
             $~[0]
           end
         end
-      end
-
-      private
-
-      def absolute_image_urls(markdown_text)
-        self.class.absolute_image_urls(markdown_text)
       end
     end
   end
