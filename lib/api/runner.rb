@@ -80,7 +80,15 @@ module API
       params do
         requires :token, type: String, desc: %q(Runner's authentication token)
         optional :last_update, type: String, desc: %q(Runner's queue last_update token)
-        optional :info, type: Hash, desc: %q(Runner's metadata)
+        optional :info, type: Hash, desc: %q(Runner's metadata) do
+          optional :name, type: String, desc: %q(Runner's name)
+          optional :version, type: String, desc: %q(Runner's version)
+          optional :revision, type: String, desc: %q(Runner's revision)
+          optional :platform, type: String, desc: %q(Runner's platform)
+          optional :architecture, type: String, desc: %q(Runner's architecture)
+          optional :executor, type: String, desc: %q(Runner's executor)
+          optional :features, type: Hash, desc: %q(Runner's features)
+        end
         optional :session, type: Hash, desc: %q(Runner's session data) do
           optional :url, type: String, desc: %q(Session's url)
           optional :certificate, type: String, desc: %q(Session's certificate)

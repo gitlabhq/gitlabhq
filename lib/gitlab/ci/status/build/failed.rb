@@ -9,7 +9,8 @@ module Gitlab
             'api_failure' => 'API failure',
             'stuck_or_timeout_failure' => 'stuck or timeout failure',
             'runner_system_failure' => 'runner system failure',
-            'missing_dependency_failure' => 'missing dependency failure'
+            'missing_dependency_failure' => 'missing dependency failure',
+            # COMMENTED to check if CI fails: 'runner_unsupported' => 'unsuported runner',
           }.freeze
 
           def status_tooltip

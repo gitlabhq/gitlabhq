@@ -178,10 +178,6 @@ module Ci
         end
       end
 
-      before_transition any => [:running] do |build|
-        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
-      end
-
       after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
       end
@@ -345,6 +341,10 @@ module Ci
 
     def features
       { trace_sections: true }
+    end
+
+    def runner_required_features
+      %w(variables)
     end
 
     def merge_request
@@ -585,7 +585,9 @@ module Ci
       options[:dependencies]&.empty?
     end
 
-    def validates_dependencies!
+    def valid_build_dependencies?
+      return unless Feature.enabled?('ci_disable_validates_dependencies')
+
       dependencies.each do |dependency|
         raise MissingDependenciesError unless dependency.valid_dependency?
       end
@@ -596,6 +598,12 @@ module Ci
       return false if erased?
 
       true
+    end
+
+    def supported_runner?(features)
+      runner_required_features.all? do |feature_name|
+        features[feature_name]
+      end
     end
 
     def hide_secrets(trace)
