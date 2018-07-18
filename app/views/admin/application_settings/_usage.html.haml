@@ -30,6 +30,9 @@
             form. For more information, see the documentation on
             = succeed '.' do
               = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
+    .form-group
+      = f.label :instance_statistics_visibility_private, 'Instance Statistics visibility'
+      = f.select :instance_statistics_visibility_private, options_for_select({'All users' => false, 'Only admins' => true}, Gitlab::CurrentSettings.instance_statistics_visibility_private?), {}, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"
 

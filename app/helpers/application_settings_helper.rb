@@ -15,6 +15,10 @@ module ApplicationSettingsHelper
   def allowed_protocols_present?
     Gitlab::CurrentSettings.enabled_git_access_protocol.present?
   end
+  
+  def hide_instance_statistics?(user = current_user)
+    Gitlab::CurrentSettings.instance_statistics_visibility_private? && !user.admin?
+  end
 
   def enabled_protocol
     case Gitlab::CurrentSettings.enabled_git_access_protocol
@@ -247,6 +251,7 @@ module ApplicationSettingsHelper
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
+      :instance_statistics_visibility_private,
       :user_default_external,
       :user_oauth_applications,
       :version_check_enabled,
