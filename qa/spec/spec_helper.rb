@@ -1,6 +1,6 @@
 require_relative '../qa'
 
-Dir[File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
+Dir[::File.join(__dir__, 'support', '**', '*.rb')].each { |f| require f }
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
