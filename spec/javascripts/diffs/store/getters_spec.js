@@ -186,7 +186,6 @@ describe('Diffs Module Getters', () => {
     });
   });
 
-<<<<<<< HEAD
   describe('getDiffFileByHash', () => {
     it('returns file by hash', () => {
       const fileA = {
@@ -203,7 +202,9 @@ describe('Diffs Module Getters', () => {
     it('returns null if no matching file is found', () => {
       localState.diffFiles = [];
       expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
-=======
+    });
+  });
+
   describe('discussionsByLineCode', () => {
     let mockState;
 
@@ -235,7 +236,6 @@ describe('Diffs Module Getters', () => {
 
       const map = getters.discussionsByLineCode(mockState, {}, {}, mockGetters);
       expect(Object.keys(map).length).toEqual(0);
->>>>>>> origin/master
     });
   });
 });
