@@ -21,7 +21,7 @@ class UploadedFile
     raise InvalidPathError, "#{path} file does not exist" unless ::File.exist?(path)
 
     @content_type = content_type
-    @original_filename = filename || ::File.basename(path)
+    @original_filename = sanitize_filename(filename || path)
     @content_type = content_type
     @sha256 = sha256
     @remote_id = remote_id
@@ -53,6 +53,16 @@ class UploadedFile
     paths.any? do |path|
       File.exist?(path) && file_path.start_with?(File.realpath(path))
     end
+  end
+
+  # copy-pasted from CarrierWave::SanitizedFile
+  def sanitize_filename(name)
+    name = name.tr("\\", "/") # work-around for IE
+    name = ::File.basename(name)
+    name = name.gsub(CarrierWave::SanitizedFile.sanitize_regexp, "_")
+    name = "_#{name}" if name =~ /\A\.+\z/
+    name = "unnamed" if name.empty?
+    name.mb_chars.to_s
   end
 
   def path
