@@ -8,13 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2018-07-17 07:12+0000\n"
-"PO-Revision-Date: 2018-07-17 07:12+0000\n"
-=======
-"POT-Creation-Date: 2018-07-10 16:02-0700\n"
-"PO-Revision-Date: 2018-07-10 16:02-0700\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
