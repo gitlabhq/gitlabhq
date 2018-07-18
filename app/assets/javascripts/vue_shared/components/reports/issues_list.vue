@@ -1,12 +1,8 @@
 <script>
-<<<<<<< HEAD
 import IssuesBlock from '~/vue_shared/components/reports/report_issues.vue';
 
 import SastContainerInfo from 'ee/vue_shared/security_reports/components/sast_container_info.vue';
 import { SAST_CONTAINER } from 'ee/vue_shared/security_reports//store/constants';
-=======
-import IssuesBlock from './report_issues.vue';
->>>>>>> upstream/master
 
 /**
  * Renders block of issues
@@ -15,13 +11,9 @@ import IssuesBlock from './report_issues.vue';
 export default {
   components: {
     IssuesBlock,
-<<<<<<< HEAD
     SastContainerInfo,
   },
   sastContainer: SAST_CONTAINER,
-=======
-  },
->>>>>>> upstream/master
   props: {
     unresolvedIssues: {
       type: Array,
@@ -67,10 +59,7 @@ export default {
 </script>
 <template>
   <div class="report-block-container">
-<<<<<<< HEAD
     <sast-container-info v-if="type === $options.sastContainer" />
-=======
->>>>>>> upstream/master
 
     <issues-block
       v-if="unresolvedIssues.length"
