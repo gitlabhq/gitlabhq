@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Applications
   class CreateService
     prepend ::EE::Applications::CreateService

@@ -11,7 +11,7 @@ describe('DiffFile', () => {
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
       file: getDiffFileMock(),
-      currentUser: {},
+      canCurrentUserFork: false,
     }).$mount();
   });
 

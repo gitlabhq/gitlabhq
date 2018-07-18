@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Files
   class BaseService < Commits::CreateService
     FileChangedError = Class.new(StandardError)
