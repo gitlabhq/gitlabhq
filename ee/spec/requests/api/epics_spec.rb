@@ -40,6 +40,32 @@ describe API::Epics do
     end
   end
 
+  shared_examples 'admin_epic permission' do
+    let(:extra_date_fields) { %w[start_date_is_fixed start_date_fixed due_date_is_fixed due_date_fixed] }
+
+    context 'when permission is absent' do
+      RSpec::Matchers.define_negated_matcher :exclude, :include
+
+      it 'returns epic with extra date fields' do
+        get api(url, user), params
+
+        expect(Array.wrap(JSON.parse(response.body))).to all(exclude(*extra_date_fields))
+      end
+    end
+
+    context 'when permission is present' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it 'returns epic with extra date fields' do
+        get api(url, user), params
+
+        expect(Array.wrap(JSON.parse(response.body))).to all(include(*extra_date_fields))
+      end
+    end
+  end
+
   describe 'GET /groups/:id/epics' do
     let(:url) { "/groups/#{group.path}/epics" }
 
@@ -138,6 +164,8 @@ describe API::Epics do
 
         expect_array_response([epic2.id])
       end
+
+      it_behaves_like 'admin_epic permission'
     end
   end
 
@@ -149,17 +177,21 @@ describe API::Epics do
     context 'when the request is correct' do
       before do
         stub_licensed_features(epics: true)
-
-        get api(url, user)
       end
 
       it 'returns 200 status' do
+        get api(url, user)
+
         expect(response).to have_gitlab_http_status(200)
       end
 
       it 'matches the response schema' do
+        get api(url, user)
+
         expect(response).to match_response_schema('public_api/v4/epic', dir: 'ee')
       end
+
+      it_behaves_like 'admin_epic permission'
     end
   end
 

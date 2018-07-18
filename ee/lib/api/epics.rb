@@ -58,7 +58,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       get ':id/(-/)epics' do
-        present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic
+        present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic, user: current_user
       end
 
       desc 'Get details of an epic' do
@@ -70,7 +70,7 @@ module API
       get ':id/(-/)epics/:epic_iid' do
         authorize_can_read!
 
-        present epic, with: EE::API::Entities::Epic
+        present epic, with: EE::API::Entities::Epic, user: current_user
       end
 
       desc 'Create a new epic' do
@@ -90,7 +90,7 @@ module API
 
         epic = ::Epics::CreateService.new(user_group, current_user, declared_params(include_missing: false)).execute
         if epic.valid?
-          present epic, with: EE::API::Entities::Epic
+          present epic, with: EE::API::Entities::Epic, user: current_user
         else
           render_validation_error!(epic)
         end
@@ -118,7 +118,7 @@ module API
         result = ::Epics::UpdateService.new(user_group, current_user, update_params).execute(epic)
 
         if result.valid?
-          present result, with: EE::API::Entities::Epic
+          present result, with: EE::API::Entities::Epic, user: current_user
         else
           render_validation_error!(result)
         end
