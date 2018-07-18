@@ -46,10 +46,15 @@ describe('noteable_discussion component', () => {
 
     it('should toggle reply form', done => {
       vm.$el.querySelector('.js-vue-discussion-reply').click();
+
       Vue.nextTick(() => {
-        expect(vm.$refs.noteForm).not.toBeNull();
         expect(vm.isReplying).toEqual(true);
-        done();
+
+        // There is a watcher for `isReplying` which will init autosave in the next tick
+        Vue.nextTick(() => {
+          expect(vm.$refs.noteForm).not.toBeNull();
+          done();
+        });
       });
     });
 
