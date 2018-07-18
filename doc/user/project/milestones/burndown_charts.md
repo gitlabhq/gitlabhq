@@ -3,6 +3,7 @@
 >**Notes:**
 - [Introduced][ee-1540] in [GitLab Starter 9.1][ee-9.1] for project milestones.
 - [Introduced][ee-5354] in [GitLab Premium 10.8][ee-10.8] for group milestones.
+- [Added][ee-6495] to [GitLab Starter 11.2][ee-11.2] for group milestones. 
 - Closed or reopened issues prior to GitLab 9.1 won't have a `closed_at`
   value, so the burndown chart considers them as closed on the milestone
   `start_date`. In that case, a warning will be displayed.
