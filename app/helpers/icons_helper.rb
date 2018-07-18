@@ -1,3 +1,5 @@
+require 'json'
+
 module IconsHelper
   extend self
   include FontAwesome::Rails::IconHelper
@@ -38,6 +40,13 @@ module IconsHelper
   end
 
   def sprite_icon(icon_name, size: nil, css_class: nil)
+    if Gitlab::Sentry.should_raise?
+      unless known_sprites.include?(icon_name)
+        exception = ArgumentError.new("#{icon_name} is not a known icon in @gitlab-org/gitlab-svg")
+        raise exception
+      end
+    end
+
     css_classes = size ? "s#{size}" : ""
     css_classes << " #{css_class}" unless css_class.blank?
     content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
@@ -133,5 +142,11 @@ module IconsHelper
     end
 
     icon_class
+  end
+
+  private
+
+  def known_sprites
+    @known_sprites ||= JSON.parse(File.read(Rails.root.join('node_modules/@gitlab-org/gitlab-svgs/dist/icons.json')))['icons']
   end
 end

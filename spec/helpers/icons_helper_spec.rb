@@ -55,6 +55,29 @@ describe IconsHelper do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
         .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
+
+    describe 'non existing icon' do
+      non_existing = 'non_existing_icon_sprite'
+
+      it 'should raise in development mode' do
+        allow(Rails.env).to receive(:development?).and_return(true)
+
+        expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+      end
+
+      it 'should raise in test mode' do
+        allow(Rails.env).to receive(:test?).and_return(true)
+
+        expect { sprite_icon(non_existing) }.to raise_error(ArgumentError, /is not a known icon/)
+      end
+
+      it 'should not raise in production mode' do
+        allow(Rails.env).to receive(:test?).and_return(false)
+        allow(Rails.env).to receive(:development?).and_return(false)
+
+        expect { sprite_icon(non_existing) }.not_to raise_error
+      end
+    end
   end
 
   describe 'file_type_icon_class' do
