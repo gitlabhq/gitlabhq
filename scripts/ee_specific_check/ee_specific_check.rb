@@ -166,27 +166,16 @@ module EESpecificCheck
         run_git_command("rebase --abort")
 
         say <<~MESSAGE
-          💥 Git status not clean! This shouldn't happen, but there are two
-          💥 known issues. One can be worked around, and the other can't.
+          💥 Git status is not clean! This means the CE branch has or had a
+          💥 conflict with CE master, and we cannot resolve this in an
+          💥 automatic way.
           💥
-          💥 First please try to update your CE branch with CE master, and
-          💥 retry this job. You could find more information in this issue:
+          💥 Please rebase #{target_head} with CE master.
           💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
+          💥 For more details, please read:
+          💥   https://gitlab.com/gitlab-org/gitlab-ee/issues/6038#note_86862115
           💥
-          💥 It's possible, however, that that doesn't work out. In this case,
-          💥 please just disregard this job. You could find other information at:
-          💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
-          💥
-          💥 There's a work-in-progress fix at:
-          💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
-          💥
-          💥 If you would like to help, or have any questions, please
-          💥 contact @godfat
-
-          ⚠️ Git diff:
+          💥 Git diff:
 
           #{diff}
         MESSAGE
