@@ -167,16 +167,14 @@ module EESpecificCheck
         say <<~MESSAGE
           💥 Git status is not clean! This means the CE branch has or had a
           💥 conflict with CE master, and we cannot resolve this in an
-          💥 automatical way. Please rebase #{target_head} with CE master.
+          💥 automatic way.
+          💥
+          💥 Please rebase #{target_head} with CE master.
+          💥
           💥 For more details, please read:
+          💥   https://gitlab.com/gitlab-org/gitlab-ee/issues/6038#note_86862115
           💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038#note_86862115
-          💥
-          💥 Before Git could provide a way to resolve conflicts upon rebasing,
-          💥 we can only ask the authors to rebase and resolve the conflicts
-          💥 for this script.
-
-          ⚠️ Git diff:
+          💥 Git diff:
 
           #{diff}
         MESSAGE
