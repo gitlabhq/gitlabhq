@@ -56,14 +56,8 @@ export default {
           :discussions="discussions"
         />
         <diff-line-note-form
-<<<<<<< HEAD
-          v-if="diffLineCommentForms[line.lineCode]"
-          :diff-file-hash="diffFileHash"
-=======
           v-if="hasCommentForm"
-          :diff-file="diffFile"
-          :diff-lines="diffLines"
->>>>>>> origin/master
+          :diff-file-hash="diffFileHash"
           :line="line"
           :note-target-line="line"
         />
