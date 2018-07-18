@@ -50,7 +50,7 @@ module Gitlab
           name = ref.name.sub(%r{\Arefs/remotes/#{remote_name}/}, '')
 
           begin
-            target_commit = Gitlab::Git::Commit.find(self, ref.target)
+            target_commit = Gitlab::Git::Commit.find(self, ref.target.oid)
             branches << Gitlab::Git::Branch.new(self, name, ref.target, target_commit)
           rescue Rugged::ReferenceError
             # Omit invalid branch
