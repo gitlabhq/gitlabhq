@@ -19,6 +19,6 @@
       %p Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches")} and #{link_to "project permissions", help_page_path("user/permissions")}.
 
     - if can? current_user, :admin_project, @project
-      = content_for :create_protected_branch
+      = render 'projects/protected_branches/create_protected_branch'
 
-    = content_for :branches_list
+    = render 'projects/protected_branches/branches_list'

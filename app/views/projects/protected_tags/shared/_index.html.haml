@@ -19,6 +19,6 @@
     %p Read more about #{link_to "protected tags", help_page_path("user/project/protected_tags")}.
 
     - if can? current_user, :admin_project, @project
-      = yield :create_protected_tag
+      = render 'projects/protected_tags/create_protected_tag'
 
-    = yield :tag_list
+    = render 'projects/protected_tags/tags_list'

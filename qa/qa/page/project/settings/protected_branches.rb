@@ -19,7 +19,7 @@ module QA
             element :allowed_to_merge
           end
 
-          view 'app/views/projects/protected_branches/shared/_branches_list.html.haml' do
+          view 'app/views/projects/protected_branches/_branches_list.html.haml' do
             element :protected_branches_list
           end
 

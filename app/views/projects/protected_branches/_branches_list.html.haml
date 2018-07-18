@@ -1,4 +1,32 @@
 - can_admin_project = can?(current_user, :admin_project, @project)
 
-= render layout: 'projects/protected_branches/shared/branches_list', locals: { can_admin_project: can_admin_project } do
-  = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches
+.protected-branches-list.js-protected-branches-list.qa-protected-branches-list
+  - if @protected_branches.empty?
+    .card-header.bg-white
+      %h3.card-title.mb-0
+        Protected branch (#{@protected_branches_count})
+    %p.settings-message.text-center
+      There are currently no protected branches, protect a branch with the form above.
+  - else
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        %col{ width: "20%" }
+        - if can_admin_project
+          %col
+      %thead
+        %tr
+          %th Protected branch (#{@protected_branches_count})
+          %th Last commit
+          %th Allowed to merge
+          %th Allowed to push
+          - if can_admin_project
+            %th
+      %tbody
+        %tr
+          %td.flash-container{ colspan: 5 }
+        = render partial: 'projects/protected_branches/protected_branch', collection: @protected_branches
+
+    = paginate @protected_branches, theme: 'gitlab'
