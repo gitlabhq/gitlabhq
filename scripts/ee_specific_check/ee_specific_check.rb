@@ -99,6 +99,7 @@ module EESpecificCheck
       if status.porcelain == ''
         status.head
       else
+        diff = run_git_command("diff")
         run_git_command("merge --abort")
 
         say <<~MESSAGE
@@ -106,9 +107,9 @@ module EESpecificCheck
           💥 #{ce_fetch_head} with canonical-ce/master. Please resolve
           💥 the conflict from CE master and retry this job.
 
-          ⚠️ Git status:
+          ⚠️ Git diff:
 
-          #{status.porcelain}
+          #{diff}
         MESSAGE
 
         exit(254)
