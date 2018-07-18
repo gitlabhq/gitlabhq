@@ -33,10 +33,14 @@ module AutoDevopsHelper
       .first
   end
 
+  def cluster_ingress_domain(project)
+    project.cluster_ingress_domain
+  end
+
   private
 
   def missing_auto_devops_domain?(project)
-    !(project.auto_devops || project.build_auto_devops)&.has_domain?
+    !project.cluster_ingress_domain && !(project.auto_devops || project.build_auto_devops)&.has_domain?
   end
 
   def missing_auto_devops_service?(project)

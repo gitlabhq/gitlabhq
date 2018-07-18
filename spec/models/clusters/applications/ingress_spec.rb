@@ -79,6 +79,18 @@ describe Clusters::Applications::Ingress do
     end
   end
 
+  describe '#derived_domain' do
+    subject { ingress.derived_domain }
+
+    it { is_expected.to be_nil }
+
+    context 'when there is an external_ip' do
+      let(:ingress) { create(:clusters_applications_ingress, external_ip: '127.0.0.1') }
+
+      it { is_expected.to eq('127.0.0.1.nip.io') }
+    end
+  end
+
   describe '#install_command' do
     subject { ingress.install_command }
 

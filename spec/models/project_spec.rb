@@ -3471,6 +3471,24 @@ describe Project do
 
     subject { project.auto_devops_variables }
 
+    shared_examples 'zero-config domain' do |expected_user_provided_domain|
+      context 'when ingress is installed with external_ip' do
+        let(:clusters_applications_ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
+
+        before do
+          clusters_applications_ingress.cluster.projects << project
+        end
+
+        it 'variables includes AUTO_DEVOPS_DOMAIN' do
+          if expected_user_provided_domain
+            is_expected.to include(domain_variable(value: expected_user_provided_domain))
+          else
+            is_expected.to include(domain_variable(value: '127.0.0.1.nip.io'))
+          end
+        end
+      end
+    end
+
     context 'when enabled in instance settings' do
       before do
         stub_application_setting(auto_devops_enabled: true)
@@ -3484,6 +3502,8 @@ describe Project do
         it 'variables does not include AUTO_DEVOPS_DOMAIN' do
           is_expected.not_to include(domain_variable)
         end
+
+        include_examples 'zero-config domain'
       end
 
       context 'when domain is configured' do
@@ -3494,6 +3514,8 @@ describe Project do
         it 'variables includes AUTO_DEVOPS_DOMAIN' do
           is_expected.to include(domain_variable)
         end
+
+        include_examples 'zero-config domain', 'example.com'
       end
     end
 
@@ -3506,6 +3528,8 @@ describe Project do
         it 'variables does not include AUTO_DEVOPS_DOMAIN' do
           is_expected.not_to include(domain_variable)
         end
+
+        include_examples 'zero-config domain'
       end
 
       context 'when domain is configured' do
@@ -3516,11 +3540,49 @@ describe Project do
         it 'variables includes AUTO_DEVOPS_DOMAIN' do
           is_expected.to include(domain_variable)
         end
+
+        include_examples 'zero-config domain', 'example.com'
       end
     end
 
-    def domain_variable
-      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
+    def domain_variable(value: 'example.com')
+      { key: 'AUTO_DEVOPS_DOMAIN', value: value, public: true }
+    end
+  end
+
+  describe '#cluster_ingress_domain' do
+    subject { project.cluster_ingress_domain }
+
+    context 'for a deprecated kubernetes project service' do
+      let(:service) { create(:kubernetes_service) }
+      let(:project) { service.project }
+
+      it { is_expected.to be_nil }
+    end
+
+    context 'for a kubernetes cluster' do
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
+
+      context 'when no application_ingress' do
+        it { is_expected.to be_nil }
+      end
+
+      context 'when application_ingress has no external_ip' do
+        before do
+          create(:clusters_applications_ingress, cluster: cluster)
+        end
+
+        it { is_expected.to be_nil }
+      end
+
+      context 'when application_ingress has external_ip' do
+        before do
+          create(:clusters_applications_ingress, cluster: cluster, external_ip: '127.0.0.1')
+        end
+
+        it { is_expected.to eq '127.0.0.1.nip.io' }
+      end
     end
   end
 

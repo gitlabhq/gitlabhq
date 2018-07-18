@@ -1844,7 +1844,15 @@ class Project < ActiveRecord::Base
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    (auto_devops || build_auto_devops)&.predefined_variables
+    ingress_default_domain_variable + (auto_devops || build_auto_devops)&.predefined_variables
+  end
+
+  def cluster_ingress_domain(environment: nil)
+    # Kubernetes service template (deprecated) would not have a cluster
+    platform = deployment_platform(environment: environment)
+    return unless platform.respond_to?(:cluster)
+
+    platform&.cluster&.application_ingress&.derived_domain
   end
 
   def append_or_update_attribute(name, value)
@@ -2211,6 +2219,14 @@ class Project < ActiveRecord::Base
     return false unless Gitlab.config.registry.enabled
 
     ContainerRepository.build_root_repository(self).has_tags?
+  end
+
+  def ingress_default_domain_variable
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
+      if domain = cluster_ingress_domain
+        variables.append(key: 'AUTO_DEVOPS_DOMAIN', value: domain)
+      end
+    end
   end
 
   def handle_update_attribute_error(ex, value)

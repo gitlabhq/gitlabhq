@@ -7,6 +7,8 @@ module Clusters
 
       self.table_name = 'clusters_applications_ingress'
 
+      WILDCARD_DNS_DOMAIN = 'nip.io'.freeze
+
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
       include ::Clusters::Concerns::ApplicationVersion
@@ -29,6 +31,10 @@ module Clusters
               FETCH_IP_ADDRESS_DELAY, application.name, application.id)
           end
         end
+      end
+
+      def derived_domain
+        "#{external_ip}.#{WILDCARD_DNS_DOMAIN}" if external_ip
       end
 
       def chart
