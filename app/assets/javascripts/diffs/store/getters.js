@@ -97,4 +97,8 @@ export const discussionsByLineCode = (state, getters, rootState, rootGetters) =>
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
+export const getDiffFileByHash = state => fileHash =>
+  state.diffFiles.find(file => file.fileHash === fileHash);
+
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

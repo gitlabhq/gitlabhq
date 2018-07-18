@@ -303,9 +303,11 @@ $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
 
+// EE-only CSS variables START
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
 $ldap-members-override-bg: $orange-50;
+// EE-only CSS variables END
 
 /*
 * Common component specific colors

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issuable
   class DestroyService < IssuableBaseService
     def execute(issuable)

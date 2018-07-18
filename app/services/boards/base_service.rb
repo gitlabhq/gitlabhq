@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   class BaseService < ::BaseService
     prepend EE::Boards::BaseService

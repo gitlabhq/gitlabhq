@@ -16,8 +16,12 @@ export default {
     DiffTableCell,
   },
   props: {
-    diffFile: {
-      type: Object,
+    fileHash: {
+      type: String,
+      required: true,
+    },
+    contextLinesPath: {
+      type: String,
       required: true,
     },
     line: {
@@ -50,7 +54,7 @@ export default {
     inlineRowId() {
       const { lineCode, oldLine, newLine } = this.line;
 
-      return lineCode || `${this.diffFile.fileHash}_${oldLine}_${newLine}`;
+      return lineCode || `${this.fileHash}_${oldLine}_${newLine}`;
     },
   },
   created() {
@@ -78,7 +82,8 @@ export default {
     @mouseout="handleMouseMove"
   >
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="oldLineType"
       :is-bottom="isBottom"
@@ -87,7 +92,8 @@ export default {
       class="diff-line-num old_line"
     />
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="newLineType"
       :is-bottom="isBottom"

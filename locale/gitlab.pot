@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 07:12+0000\n"
-"PO-Revision-Date: 2018-07-17 07:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -160,9 +158,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "%{unstaged} unstaged and %{staged} staged changes"
-msgstr ""
-
-msgid "(check out the %{link} for information on how to install it)."
 msgstr ""
 
 msgid "+ %{moreCount} more"
@@ -2062,6 +2057,9 @@ msgstr ""
 msgid "Copy to clipboard"
 msgstr ""
 
+msgid "Copy token to clipboard"
+msgstr ""
+
 msgid "Create"
 msgstr ""
 
@@ -3188,9 +3186,6 @@ msgstr ""
 msgid "GitLab Import"
 msgstr ""
 
-msgid "GitLab Runner section"
-msgstr ""
-
 msgid "GitLab User"
 msgstr ""
 
@@ -3580,10 +3575,10 @@ msgstr ""
 msgid "Inline"
 msgstr ""
 
-msgid "Install Runner on Kubernetes"
+msgid "Install GitLab Runner"
 msgstr ""
 
-msgid "Install a Runner compatible with GitLab CI"
+msgid "Install Runner on Kubernetes"
 msgstr ""
 
 msgid "Instance"

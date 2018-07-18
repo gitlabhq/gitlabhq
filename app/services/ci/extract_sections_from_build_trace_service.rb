@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class ExtractSectionsFromBuildTraceService < BaseService
     def execute(build)

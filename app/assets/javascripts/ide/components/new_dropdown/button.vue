@@ -38,6 +38,7 @@ export default {
   <button
     :aria-label="label"
     type="button"
+    class="btn-blank"
     @click.stop.prevent="clicked"
   >
     <icon
