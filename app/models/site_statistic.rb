@@ -3,9 +3,7 @@ class SiteStatistic < ActiveRecord::Base
   default_value_for :id, 1
 
   COUNTER_ATTRIBUTES = %w(repositories_count wikis_count).freeze
-
-  # https://dev.mysql.com/doc/refman/5.5/en/error-messages-server.html
-  MYSQL_NO_SUCH_TABLE = 1146
+  REQUIRED_SCHEMA_VERSION = 20180629153018
 
   def self.track(raw_attribute)
     with_statistics_available(raw_attribute) do |attribute|
@@ -25,22 +23,28 @@ class SiteStatistic < ActiveRecord::Base
                            "Valid attributes are: #{COUNTER_ATTRIBUTES.join(', ')}"
     end
 
+    return unless available?
+
     # we have quite a lot of specs testing migrations, we need this and the rescue to not break them
     SiteStatistic.transaction(requires_new: true) do
-      SiteStatistic.first_or_create if Rails.env.test? # make sure SiteStatistic exists during tests
+      SiteStatistic.first_or_create
       attribute = self.connection.quote_column_name(raw_attribute)
 
       yield(attribute)
-    end
-  rescue ActiveRecord::StatementInvalid => ex
-    # we want to ignore this so we don't break the migration specs
-    unless ex.original_exception.is_a?(PG::UndefinedTable) ||
-        (ex.original_exception.is_a?(Mysql2::Error) && ex.original_exception.error_number == MYSQL_NO_SUCH_TABLE)
-      raise ex
     end
   end
 
   def self.fetch
     SiteStatistic.first_or_create!
+  end
+
+  def self.available?
+    @available_flag ||= ActiveRecord::Migrator.current_version >= REQUIRED_SCHEMA_VERSION
+  end
+
+  def self.reset_column_information
+    @available_flag = nil
+
+    super
   end
 end
