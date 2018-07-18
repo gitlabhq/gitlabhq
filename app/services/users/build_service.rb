@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class BuildService < BaseService
     def initialize(current_user, params = {})
