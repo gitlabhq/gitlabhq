@@ -9,12 +9,8 @@
 
 .gfm-project_member {
   padding: 0 2px;
-  border-radius: #{$border-radius-default / 2};
-  background-color: $user-mention-bg;
-
-  &:hover {
-    background-color: $user-mention-bg-hover;
-  }
+  background-color: $blue-100;
+  border-radius: $border-radius-default;
 }
 
 .gfm-color_chip {
