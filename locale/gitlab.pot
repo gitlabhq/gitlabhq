@@ -1286,6 +1286,9 @@ msgstr ""
 msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
+msgid "ClusterIntegration|Hide"
+msgstr ""
+
 msgid "ClusterIntegration|Ingress"
 msgstr ""
 
