@@ -17,33 +17,19 @@ module Gitlab
         rugged.config["remote.#{remote_name}.prune"] = true
       end
 
-      def remote_tags(remote)
-        # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
-        # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
-        list_remote_tags(remote).map do |line|
-          target, path = line.strip.split("\t")
-
-          # When the remote repo does not have tags.
-          if target.nil? || path.nil?
-            Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
-            break []
+      def remote_branches(remote_name)
+        gitaly_migrate(:ref_find_all_remote_branches) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.remote_branches(remote_name)
+          else
+            rugged_remote_branches(remote_name)
           end
-
-          name = path.split('/', 3).last
-          # We're only interested in tag references
-          # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
-          next if name =~ /\^\{\}\Z/
-
-          target_commit = Gitlab::Git::Commit.find(self, target)
-          Gitlab::Git::Tag.new(self, {
-            name: name,
-            target: target,
-            target_commit: target_commit
-          })
-        end.compact
+        end
       end
 
-      def remote_branches(remote_name)
+      private
+
+      def rugged_remote_branches(remote_name)
         branches = []
 
         rugged.references.each("refs/remotes/#{remote_name}/*").map do |ref|
@@ -60,8 +46,6 @@ module Gitlab
         branches
       end
 
-      private
-
       def set_remote_refmap(remote_name, refmap)
         Array(refmap).each_with_index do |refspec, i|
           refspec = REFMAPS[refspec] || refspec
@@ -74,21 +58,6 @@ module Gitlab
             run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
           end
         end
-      end
-
-      def list_remote_tags(remote)
-        tag_list, exit_code, error = nil
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-remote --tags #{remote})
-
-        Open3.popen3(*cmd) do |stdin, stdout, stderr, wait_thr|
-          tag_list  = stdout.read
-          error     = stderr.read
-          exit_code = wait_thr.value.exitstatus
-        end
-
-        raise RemoteError, error unless exit_code.zero?
-
-        tag_list.split("\n")
       end
     end
   end

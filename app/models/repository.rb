@@ -30,8 +30,6 @@ class Repository
 
   CreateTreeError = Class.new(StandardError)
 
-  MIRROR_REMOTE = "upstream".freeze
-
   # Methods that cache data from the Git repository.
   #
   # Each entry in this Array should have a corresponding method with the exact
@@ -851,48 +849,6 @@ class Repository
       !same_head && merged
     else
       nil
-    end
-  end
-
-  def fetch_upstream(url)
-    add_remote(Repository::MIRROR_REMOTE, url)
-    fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
-  end
-
-  def upstream_branches
-    @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
-  end
-
-  def diverged_from_upstream?(branch_name)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
-
-    if upstream_commit
-      !raw_repository.ancestor?(branch_commit.id, upstream_commit.id)
-    else
-      false
-    end
-  end
-
-  def upstream_has_diverged?(branch_name, remote_ref)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
-
-    if upstream_commit
-      !raw_repository.ancestor?(upstream_commit.id, branch_commit.id)
-    else
-      false
-    end
-  end
-
-  def up_to_date_with_upstream?(branch_name)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
-
-    if upstream_commit
-      ancestor?(branch_commit.id, upstream_commit.id)
-    else
-      false
     end
   end
 
