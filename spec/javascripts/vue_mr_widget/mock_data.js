@@ -76,7 +76,7 @@ export default {
     path: '/root/acets-app/pipelines/172',
     details: {
       status: {
-        icon: 'icon_status_success',
+        icon: 'status_success',
         favicon: 'favicon_status_success',
         text: 'passed',
         label: 'passed',
@@ -91,7 +91,7 @@ export default {
           name: 'build',
           title: 'build: failed',
           status: {
-            icon: 'icon_status_failed',
+            icon: 'status_failed',
             favicon: 'favicon_status_failed',
             text: 'failed',
             label: 'failed',
@@ -106,7 +106,7 @@ export default {
           name: 'review',
           title: 'review: skipped',
           status: {
-            icon: 'icon_status_skipped',
+            icon: 'status_skipped',
             favicon: 'favicon_status_skipped',
             text: 'skipped',
             label: 'skipped',
