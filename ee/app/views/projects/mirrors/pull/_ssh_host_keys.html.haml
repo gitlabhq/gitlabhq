@@ -7,7 +7,7 @@
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
     = _('Detect host keys')
   .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('collapse' unless import_data.ssh_import?) }
-    %label.label-light-but-actually-light-i-promise
+    %label.label-light
       = _('Fingerprints')
     .fingerprints-list.js-fingerprints-list
       - import_data.ssh_known_hosts_fingerprints.each do |fp|
@@ -29,5 +29,5 @@
       %span.label-hide
         = _('Hide host keys manual input')
   .js-ssh-known-hosts.collapse.prepend-top-default
-    = f.label :ssh_known_hosts, _('SSH host keys'), class: 'label-light-but-actually-light-i-promise'
+    = f.label :ssh_known_hosts, _('SSH host keys'), class: 'label-light'
     = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'

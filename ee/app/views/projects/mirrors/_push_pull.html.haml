@@ -26,13 +26,13 @@
           %div= form_errors(@project)
 
           .form-group.has-feedback
-            = label_tag :url, _('Git repository URL'), class: 'label-light-but-actually-light-i-promise'
+            = label_tag :url, _('Git repository URL'), class: 'label-light'
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
 
           = render 'projects/mirrors/instructions'
 
           .form-group
-            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light-but-actually-light-i-promise'
+            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
             = select_tag :mirror_direction, options_for_select([[_('Push'), 'push'], [_('Pull'), 'pull']]), class: 'form-control js-mirror-direction'
 
           .js-form-insertion-point
@@ -55,7 +55,7 @@
                 = render partial: 'projects/mirrors/pull/authentication_method', locals: { f: import_form }
 
               .form-group
-                = f.label :mirror_user_id, _('Mirror user'), class: 'label-light-but-actually-light-i-promise'
+                = f.label :mirror_user_id, _('Mirror user'), class: 'label-light'
                 - if is_one_user_option
                   = select_tag(:mirror_user_id_select, options_for_mirror_user, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: true)
                   = f.hidden_field :mirror_user_id, value: default_mirror_users.first.id if is_one_user_option
@@ -68,7 +68,7 @@
               .form-group
                 = f.check_box :mirror_overwrites_diverged_branches, class: 'pull-left', checked: false
                 .prepend-left-20
-                  = f.label :mirror_overwrites_diverged_branches, _('Overwrite diverged branches'), class: 'label-light-but-actually-light-i-promise'
+                  = f.label :mirror_overwrites_diverged_branches, _('Overwrite diverged branches'), class: 'label-light'
                   .help-block
                     = _("If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored.") % { default_branch: @project.default_branch }
 
@@ -78,7 +78,7 @@
           .form-group
             = check_box_tag :only_protected_branches, '1', false, class: 'pull-left js-mirror-protected'
             .prepend-left-20
-              = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'label-light-but-actually-light-i-promise'
+              = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'label-light'
               = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         .panel-footer
