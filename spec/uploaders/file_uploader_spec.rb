@@ -166,4 +166,50 @@ describe FileUploader do
       uploader.upload = upload
     end
   end
+
+  describe '#cache!' do
+    subject do
+      uploader.store!(uploaded_file)
+    end
+
+    context 'when remote file is used' do
+      let(:temp_file) { Tempfile.new("test") }
+
+      let!(:fog_connection) do
+        stub_uploads_object_storage(described_class)
+      end
+
+      let(:uploaded_file) do
+        UploadedFile.new(temp_file.path, filename: "my file.txt", remote_id: "test/123123")
+      end
+
+      let!(:fog_file) do
+        fog_connection.directories.get('uploads').files.create(
+          key: 'tmp/uploads/test/123123',
+          body: 'content'
+        )
+      end
+
+      before do
+        FileUtils.touch(temp_file)
+      end
+
+      after do
+        FileUtils.rm_f(temp_file)
+      end
+
+      it 'file is stored remotely in permament location with sanitized name' do
+        subject
+
+        expect(uploader).to be_exists
+        expect(uploader).not_to be_cached
+        expect(uploader).not_to be_file_storage
+        expect(uploader.path).not_to be_nil
+        expect(uploader.path).not_to include('tmp/upload')
+        expect(uploader.path).not_to include('tmp/cache')
+        expect(uploader.url).to include('/my_file.txt')
+        expect(uploader.object_store).to eq(described_class::Store::REMOTE)
+      end
+    end
+  end
 end
