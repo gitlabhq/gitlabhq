@@ -27,9 +27,9 @@ module BitbucketServer
 
     def post(path, body)
       response = Gitlab::HTTP.post(build_url(path),
-                        basic_auth: auth,
-                        headers: post_headers,
-                        body: body)
+                                   basic_auth: auth,
+                                   headers: post_headers,
+                                   body: body)
 
       check_errors!(response)
 
@@ -44,9 +44,9 @@ module BitbucketServer
       url = delete_url(resource, path)
 
       response = Gitlab::HTTP.delete(url,
-                        basic_auth: auth,
-                        headers: post_headers,
-                        body: body)
+                                     basic_auth: auth,
+                                     headers: post_headers,
+                                     body: body)
 
       check_errors!(response)
 
