@@ -38,7 +38,7 @@ module API
         builds = user_project.builds.order('id DESC')
         builds = filter_builds(builds, params[:scope])
 
-        builds = builds.preload(:user, :job_artifacts_archive, :runner, pipeline: :project)
+        builds = builds.preload(:user, :job_artifacts_archive, :job_artifacts, :runner, pipeline: :project)
         present paginate(builds), with: Entities::Job
       end
 
@@ -54,7 +54,7 @@ module API
         pipeline = user_project.pipelines.find(params[:pipeline_id])
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
-        builds = builds.preload(:job_artifacts_archive, project: [:namespace])
+        builds = builds.preload(:job_artifacts_archive, :job_artifacts, project: [:namespace])
 
         present paginate(builds), with: Entities::Job
       end

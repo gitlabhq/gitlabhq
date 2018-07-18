@@ -44,6 +44,7 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -81,6 +82,12 @@ Example of response
       "filename": "artifacts.zip",
       "size": 1000
     },
+    "artifacts": [
+      {"file_type": "archive", "size": 1000, "filename": "artifacts.zip", "file_format": "zip"},
+      {"file_type": "metadata", "size": 186, "filename": "metadata.gz", "file_format": "gzip"},
+      {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
+      {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
+    ],
     "finished_at": "2015-12-24T17:54:27.895Z",
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
@@ -92,6 +99,7 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -161,6 +169,7 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
     "started_at": "2015-12-24T17:54:24.729Z",
@@ -198,6 +207,12 @@ Example of response
       "filename": "artifacts.zip",
       "size": 1000
     },
+    "artifacts": [
+      {"file_type": "archive", "size": 1000, "filename": "artifacts.zip", "file_format": "zip"},
+      {"file_type": "metadata", "size": 186, "filename": "metadata.gz", "file_format": "gzip"},
+      {"file_type": "trace", "size": 1500, "filename": "job.log", "file_format": "raw"},
+      {"file_type": "junit", "size": 750, "filename": "junit.xml.gz", "file_format": "gzip"}
+    ],
     "finished_at": "2015-12-24T17:54:27.895Z",
     "artifacts_expire_at": "2016-01-23T17:54:27.895Z",
     "id": 7,
@@ -209,6 +224,7 @@ Example of response
       "status": "pending"
     },
     "ref": "master",
+    "artifacts": [],
     "runner": null,
     "stage": "test",
     "started_at": "2015-12-24T17:54:27.722Z",
@@ -276,6 +292,7 @@ Example of response
     "status": "pending"
   },
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "started_at": "2015-12-24T17:54:30.733Z",
@@ -459,6 +476,7 @@ Example of response
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "started_at": null,
@@ -505,6 +523,7 @@ Example of response
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "started_at": null,
@@ -554,6 +573,7 @@ Example of response
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "created_at": "2016-01-11T10:13:33.506Z",
@@ -605,6 +625,7 @@ Example response:
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "created_at": "2016-01-11T10:13:33.506Z",
@@ -653,6 +674,7 @@ Example of response
   "id": 42,
   "name": "rubocop",
   "ref": "master",
+  "artifacts": [],
   "runner": null,
   "stage": "test",
   "started_at": null,

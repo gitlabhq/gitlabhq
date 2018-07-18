@@ -33,7 +33,7 @@ module Ci
       where(file_type: types)
     end
 
-    delegate :exists?, :open, to: :file
+    delegate :filename, :exists?, :open, to: :file
 
     enum file_type: {
       archive: 1,
