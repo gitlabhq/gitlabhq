@@ -29,13 +29,13 @@ describe 'Issues csv' do
   end
 
   it 'triggers an email export' do
-    expect(ExportCsvWorker).to receive(:perform_async).with(user.id, project.id, hash_including(project_id: project.id))
+    expect(ExportCsvWorker).to receive(:perform_async).with(user.id, project.id, hash_including("project_id" => project.id))
 
     request_csv
   end
 
   it "doesn't send request params to ExportCsvWorker" do
-    expect(ExportCsvWorker).to receive(:perform_async).with(anything, anything, hash_excluding(controller: anything, action: anything))
+    expect(ExportCsvWorker).to receive(:perform_async).with(anything, anything, hash_excluding("controller" => anything, "action" => anything))
 
     request_csv
   end
