@@ -1,4 +1,4 @@
-class Admin::CohortsController < Admin::ApplicationController
+class InstanceStatistics::CohortsController < InstanceStatistics::ApplicationController
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled
       cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do

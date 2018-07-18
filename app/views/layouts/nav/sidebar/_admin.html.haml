@@ -48,11 +48,11 @@
               %span
                 = _('Gitaly Servers')
           = nav_link path: 'cohorts#index' do
-            = link_to admin_cohorts_path, title: _('Cohorts') do
+            = link_to instance_statistics_cohorts_path, title: _('Cohorts') do
               %span
                 = _('Cohorts')
           = nav_link(controller: :conversational_development_index) do
-            = link_to admin_conversational_development_index_path, title: _('ConvDev Index') do
+            = link_to instance_statistics_conversational_development_index_index_path, title: _('ConvDev Index') do
               %span
                 = _('ConvDev Index')
 

@@ -110,6 +110,7 @@ Rails.application.routes.draw do
   draw :group
   draw :user
   draw :project
+  draw :instance_statistics
 
   root to: "root#index"
 
