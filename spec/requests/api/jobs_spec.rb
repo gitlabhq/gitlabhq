@@ -220,6 +220,7 @@ describe API::Jobs do
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
         expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
         expect(json_response['duration']).to eq(job.duration)
+        expect(json_response['web_url']).to be_present
       end
 
       it 'returns pipeline data' do
