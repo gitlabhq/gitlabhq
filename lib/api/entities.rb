@@ -729,7 +729,7 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
 
-      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
         note.position.to_h
       end
 

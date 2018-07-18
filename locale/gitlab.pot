@@ -1531,6 +1531,9 @@ msgstr ""
 msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
+msgid "ClusterIntegration|Hide"
+msgstr ""
+
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr ""
 

@@ -136,10 +136,6 @@ class FileUploader < GitlabUploader
     }
   end
 
-  def filename
-    self.file.filename
-  end
-
   def upload=(value)
     super
 

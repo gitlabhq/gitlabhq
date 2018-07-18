@@ -13,7 +13,7 @@ module QA
       end
 
       def version
-        @version ||= File.directory?("#{__dir__}/../ee") ? :EE : :CE
+        @version ||= ::File.directory?("#{__dir__}/../ee") ? :EE : :CE
       end
 
       def strategy
