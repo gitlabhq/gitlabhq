@@ -15,17 +15,6 @@ module QA
         p.description = 'Project with Auto Devops'
       end
 
-      # Create Auto Devops compatible repo
-      Factory::Repository::ProjectPush.fabricate! do |push|
-        push.project = project
-        push.directory = Pathname
-          .new(__dir__)
-          .join('../../../fixtures/auto_devops_rack')
-        push.commit_message = 'Create Auto DevOps compatible rack application'
-      end
-
-      Page::Project::Show.act { wait_for_push }
-
       # Create and connect K8s cluster
       @cluster = Service::KubernetesCluster.new.create!
       kubernetes_cluster = Factory::Resource::KubernetesCluster.fabricate! do |cluster|
@@ -36,6 +25,17 @@ module QA
         cluster.install_prometheus = true
         cluster.install_runner = true
       end
+
+      # Create Auto Devops compatible repo
+      Factory::Repository::ProjectPush.fabricate! do |push|
+        push.project = project
+        push.directory = Pathname
+          .new(__dir__)
+          .join('../../../fixtures/auto_devops_rack')
+        push.commit_message = 'Create Auto DevOps compatible rack application'
+      end
+
+      Page::Project::Show.act { wait_for_push }
 
       project.visit!
       Page::Menu::Side.act { click_ci_cd_settings }

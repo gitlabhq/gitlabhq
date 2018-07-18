@@ -24,7 +24,7 @@ module Gitlab
         private
 
         def configure_certs_command
-          return "" unless extra_env.present?
+          return "" unless ca_cert.present?
           <<~CMD
           echo "$CA_CERT" > $(helm home)/ca.pem
           echo "$HELM_CERT" > $(helm home)/cert.pem
@@ -41,7 +41,7 @@ module Gitlab
         end
 
         def script_command
-          tls_flag = " --tls" if extra_env.present?
+          tls_flag = " --tls" if ca_cert.present?
           <<~HEREDOC
           helm install#{tls_flag} #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
           HEREDOC

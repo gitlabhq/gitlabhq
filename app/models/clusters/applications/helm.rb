@@ -23,9 +23,14 @@ module Clusters
         self.ca_cert = ca_cert.cert_string
       end
 
-      def issue_cert
+      def ca_cert_obj
+        return unless has_ssl?
         Gitlab::Kubernetes::Helm::Certificate
           .from_strings(ca_key, ca_cert)
+      end
+
+      def issue_cert
+        ca_cert_obj
           .issue
       end
 
@@ -35,19 +40,10 @@ module Clusters
         self.status = 'installable' if cluster&.platform_kubernetes_active?
       end
 
-      def extra_env
-        server_cert = issue_cert
-        {
-          CA_CERT: ca_cert,
-          TILLER_CERT: server_cert.cert_string,
-          TILLER_KEY: server_cert.key_string
-        }
-      end
-
       def install_command
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name,
-          extra_env: extra_env
+          ca_cert: ca_cert_obj
         )
       end
 

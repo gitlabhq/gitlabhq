@@ -18,15 +18,8 @@ module Clusters
           "#{Rails.root}/vendor/#{name}/values.yaml"
         end
 
-        def extra_env
-          return {} unless cluster.application_helm.has_ssl?
-          client_cert = cluster.application_helm.issue_cert
-
-          {
-            CA_CERT: cluster.application_helm.ca_cert,
-            HELM_CERT: client_cert.cert_string,
-            HELM_KEY: client_cert.key_string
-          }
+        def ca_cert
+          cluster.application_helm.ca_cert_obj
         end
       end
     end

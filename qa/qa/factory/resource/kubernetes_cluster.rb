@@ -40,6 +40,7 @@ module QA
               page.install!(:helm)
               page.await_installed(:helm)
 
+              require 'pry'; binding.pry
               page.install!(:ingress) if @install_ingress
               page.await_installed(:ingress) if @install_ingress
               page.install!(:prometheus) if @install_prometheus

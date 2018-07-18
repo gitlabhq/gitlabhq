@@ -51,8 +51,8 @@ module Gitlab
           {
             HELM_VERSION: Gitlab::Kubernetes::Helm::HELM_VERSION,
             TILLER_NAMESPACE: namespace_name,
-            COMMAND_SCRIPT: command.generate_script
-          }.merge(command.extra_env)
+            COMMAND_SCRIPT: command.generate_script,
+          }
             .map { |key, value| { name: key, value: value } }
         end
 
@@ -65,6 +65,18 @@ module Gitlab
                 items: [{ key: 'values', path: 'values.yaml' }]
               }
             }
+          ] + tls_volumes
+        end
+
+        def tls_volumes
+          return [] unless command.ca_cert
+          [
+            {
+              name: 'tls_certs',
+              secret: {
+                secretName: "tls-certs-#{command.name}"
+              }
+            }
           ]
         end
 
@@ -74,6 +86,12 @@ module Gitlab
               name: 'configuration-volume',
               mountPath: "/data/helm/#{command.name}/config"
             }
+          ] + tls_mounts
+        end
+
+        def tls_mounts
+          return [] unless command.ca_cert
+          [
           ]
         end
       end

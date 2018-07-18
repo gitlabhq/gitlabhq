@@ -29,7 +29,7 @@ module Gitlab
         end
 
         def delete_installation_pod!(pod_name)
-          @kubeclient.delete_pod(pod_name, @namespace.name)
+          #@kubeclient.delete_pod(pod_name, @namespace.name)
         end
 
         private

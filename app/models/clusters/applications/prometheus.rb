@@ -39,7 +39,7 @@ module Clusters
           chart: chart,
           version: version,
           values: values,
-          extra_env: extra_env
+          ca_cert: ca_cert
         )
       end
 
