@@ -23,11 +23,7 @@ export default {
       pull: $('.js-pull-mirrors-form', this.$form).html(),
     };
 
-    this.boundUpdateForm = this.handleUpdate.bind(this);
-    this.boundUpdateUrl = this.updateUrl.bind(this);
-    this.boundUpdateProtectedBranches = this.updateProtectedBranches.bind(this);
-
-    this.boundUpdateForm();
+    this.handleUpdate();
     this.registerUpdateListeners();
 
     this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
@@ -95,9 +91,9 @@ export default {
   },
 
   registerUpdateListeners() {
-    this.$mirrorDirectionSelect.on('change', this.boundUpdateForm);
-    this.$urlInput.on('change', this.boundUpdateUrl);
-    this.$protectedBranchesInput.on('change', this.boundUpdateProtectedBranches);
+    this.$mirrorDirectionSelect.on('change', () => this.handleUpdate());
+    this.$urlInput.on('change', () => this.updateUrl());
+    this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
   },
 
   deleteMirror(event) {
