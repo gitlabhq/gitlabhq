@@ -3,7 +3,7 @@
  * Renders Code quality body text
  * Fixed: [name] in [link]:[line]
  */
-import ReportLink from 'ee/vue_shared/security_reports/components/report_link.vue';
+import ReportLink from '~/vue_shared/components/reports/report_link.vue';
 
 export default {
   name: 'CodequalityIssueBody',

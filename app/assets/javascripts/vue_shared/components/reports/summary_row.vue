@@ -4,11 +4,15 @@ import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Popover from './help_popover.vue';
 
 /**
- * Renders the summary row for each security report
+ * Renders the summary row for each report
+ *
+ * Used both in MR widget and Pipeline's view for:
+ * - Unit tests reports
+ * - Security reports
  */
 
 export default {
-  name: 'SecuritySummaryRow',
+  name: 'ReportSummaryRow',
   components: {
     CiIcon,
     LoadingIcon,

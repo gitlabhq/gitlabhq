@@ -1,7 +1,8 @@
 <script>
-import IssuesBlock from './report_issues.vue';
-import SastContainerInfo from './sast_container_info.vue';
-import { SAST_CONTAINER } from '../store/constants';
+import IssuesBlock from '~/vue_shared/components/reports/report_issues.vue';
+
+import SastContainerInfo from 'ee/vue_shared/security_reports/components/sast_container_info.vue';
+import { SAST_CONTAINER } from 'ee/vue_shared/security_reports//store/constants';
 
 /**
  * Renders block of issues

@@ -1,18 +1,27 @@
 import Vue from 'vue';
-import component from 'ee/vue_shared/security_reports/components/modal_open_name.vue';
-import store from 'ee/vue_shared/security_reports/store';
+import Vuex from 'vuex';
+import component from '~/vue_shared/components/reports/modal_open_name.vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { parsedDast } from '../mock_data';
 
 describe('Modal open name', () => {
   const Component = Vue.extend(component);
   let vm;
 
+  const store = new Vuex.Store({
+    actions: {
+      openModal: () => {},
+    },
+    state: {},
+    mutations: {},
+  });
+
   beforeEach(() => {
     vm = mountComponentWithStore(Component, {
       store,
       props: {
-        issue: parsedDast[0],
+        issue: {
+          title: 'Issue',
+        },
         status: 'failed',
       },
     });
@@ -23,7 +32,7 @@ describe('Modal open name', () => {
   });
 
   it('renders the issue name', () => {
-    expect(vm.$el.textContent.trim()).toEqual(parsedDast[0].name);
+    expect(vm.$el.textContent.trim()).toEqual('Issue');
   });
 
   it('calls openModal actions when button is clicked', () => {

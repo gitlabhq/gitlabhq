@@ -1,11 +1,20 @@
 import Vue from 'vue';
-import reportSection from 'ee/vue_shared/security_reports/components/report_section.vue';
+import reportSection from '~/vue_shared/components/reports/report_section.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { codequalityParsedIssues } from 'spec/vue_mr_widget/mock_data';
 
 describe('Report section', () => {
   let vm;
   const ReportSection = Vue.extend(reportSection);
+
+  const resolvedIssues = [
+    {
+      name: 'Insecure Dependency',
+      fingerprint: 'ca2e59451e98ae60ba2f54e3857c50e5',
+      path: 'Gemfile.lock',
+      line: 12,
+      urlPath: 'foo/Gemfile.lock',
+    },
+  ];
 
   afterEach(() => {
     vm.$destroy();
@@ -19,7 +28,7 @@ describe('Report section', () => {
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
-        resolvedIssues: codequalityParsedIssues,
+        resolvedIssues,
         hasIssues: false,
         alwaysOpen: false,
       });
@@ -77,6 +86,7 @@ describe('Report section', () => {
       });
     });
   });
+
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
@@ -99,7 +109,7 @@ describe('Report section', () => {
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
-        resolvedIssues: codequalityParsedIssues,
+        resolvedIssues,
         hasIssues: true,
       });
     });
@@ -110,7 +120,7 @@ describe('Report section', () => {
       );
 
       expect(vm.$el.querySelectorAll('.js-mr-code-resolved-issues li').length).toEqual(
-        codequalityParsedIssues.length,
+        resolvedIssues.length,
       );
     });
 

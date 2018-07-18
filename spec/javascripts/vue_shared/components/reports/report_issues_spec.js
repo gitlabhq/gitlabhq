@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import reportIssues from 'ee/vue_shared/security_reports/components/report_issues.vue';
+import reportIssues from '~/vue_shared/components/reports/report_issues.vue';
 import store from 'ee/vue_shared/security_reports/store';
 import mountComponent, { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import {
@@ -9,7 +9,7 @@ import {
   sastParsedIssues,
   dockerReportParsed,
   parsedDast,
-} from '../mock_data';
+} from 'spec/vue_shared/security_reports/mock_data';
 
 describe('Report issues', () => {
   let vm;
