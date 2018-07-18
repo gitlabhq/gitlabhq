@@ -1,7 +1,7 @@
 - if @project.pages_deployed?
   - if can?(current_user, :remove_pages, @project)
-    .card.bg-danger
-      .card-header Remove pages
+    .card.border-danger
+      .card-header.bg-danger.text-white Remove pages
       .errors-holder
       .card-body
         %p
