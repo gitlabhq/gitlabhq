@@ -252,14 +252,6 @@ module Gitlab
         end
       end
 
-      def batch_existence(object_ids, existing: true)
-        filter_method = existing ? :select : :reject
-
-        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
-          rugged.exists?(oid)
-        end
-      end
-
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
@@ -407,13 +399,6 @@ module Gitlab
             gitaly_commit_client.commit_count(options[:ref], options)
           end
         end
-      end
-
-      # Return the object that +revspec+ points to.  If +revspec+ is an
-      # annotated tag, then return the tag's target instead.
-      def rev_parse_target(revspec)
-        obj = rugged.rev_parse(revspec)
-        Ref.dereference_object(obj)
       end
 
       # Counts the amount of commits between `from` and `to`.
@@ -1132,33 +1117,6 @@ module Gitlab
         run_git!(args, lazy_block: block)
       end
 
-      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
-        base_args = %w(worktree add --detach)
-
-        # Note that we _don't_ want to test for `.present?` here: If the caller
-        # passes an non nil empty value it means it still wants sparse checkout
-        # but just isn't interested in any file, perhaps because it wants to
-        # checkout files in by a changeset but that changeset only adds files.
-        if sparse_checkout_files
-          # Create worktree without checking out
-          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
-
-          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
-
-          # After sparse checkout configuration, checkout `branch` in worktree
-          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
-        else
-          # Create worktree and checkout `branch` in it
-          run_git!(base_args + [worktree_path, branch], env: env)
-        end
-
-        yield
-      ensure
-        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
-        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
-      end
-
       def checksum
         # The exists? RPC is much cheaper, so we perform this request first
         raise NoRepository, "Repository does not exists" unless exists?
@@ -1202,38 +1160,6 @@ module Gitlab
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
         end
-      end
-
-      # Adding a worktree means checking out the repository. For large repos,
-      # this can be very expensive, so set up sparse checkout for the worktree
-      # to only check out the files we're interested in.
-      def configure_sparse_checkout(worktree_git_path, files)
-        run_git!(%w(config core.sparseCheckout true))
-
-        return if files.empty?
-
-        worktree_info_path = File.join(worktree_git_path, 'info')
-        FileUtils.mkdir_p(worktree_info_path)
-        File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
-      end
-
-      def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
-        with_repo_branch_commit(source_repository, source_branch) do |commit|
-          if commit
-            write_ref(local_ref, commit.sha)
-            true
-          else
-            false
-          end
-        end
-      end
-
-      def worktree_path(prefix, id)
-        id = id.to_s
-        raise ArgumentError, "worktree id can't be empty" unless id.present?
-        raise ArgumentError, "worktree id can't contain slashes " if id.include?("/")
-
-        File.join(path, 'gitlab-worktree', "#{prefix}-#{id}")
       end
 
       def git_env_for_user(user)
@@ -1294,17 +1220,6 @@ module Gitlab
 
       def relative_object_directories
         Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
-      end
-
-      # Return the Rugged patches for the diff between +from+ and +to+.
-      def diff_patches(from, to, options = {}, *paths)
-        options ||= {}
-        break_rewrites = options[:break_rewrites]
-        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
-
-        diff = rugged.diff(from, to, actual_options)
-        diff.find_similar!(break_rewrites: break_rewrites)
-        diff.each_patch
       end
 
       def sort_branches(branches, sort_by)
@@ -1393,10 +1308,6 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
-      end
-
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
       end
     end
   end

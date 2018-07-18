@@ -639,21 +639,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
   describe "#log" do
     shared_examples 'repository log' do
       let(:commit_with_old_name) do
-        Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
+        Gitlab::Git::Commit.find(repository, @commit_with_old_name_id)
       end
       let(:commit_with_new_name) do
-        Gitlab::Git::Commit.decorate(repository, @commit_with_new_name_id)
+        Gitlab::Git::Commit.find(repository, @commit_with_new_name_id)
       end
       let(:rename_commit) do
-        Gitlab::Git::Commit.decorate(repository, @rename_commit_id)
+        Gitlab::Git::Commit.find(repository, @rename_commit_id)
       end
 
       before(:context) do
         # Add new commits so that there's a renamed file in the commit history
         repo = Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '').rugged
-        @commit_with_old_name_id = new_commit_edit_old_file(repo)
-        @rename_commit_id = new_commit_move_file(repo)
-        @commit_with_new_name_id = new_commit_edit_new_file(repo)
+        @commit_with_old_name_id = new_commit_edit_old_file(repo).oid
+        @rename_commit_id = new_commit_move_file(repo).oid
+        @commit_with_new_name_id = new_commit_edit_new_file(repo).oid
       end
 
       after(:context) do
@@ -855,8 +855,8 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
         def commit_files(commit)
           Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            commit.rugged_diff_from_parent.deltas.flat_map do |delta|
-              [delta.old_file[:path], delta.new_file[:path]].uniq.compact
+            commit.deltas.flat_map do |delta|
+              [delta.old_path, delta.new_path].uniq.compact
             end
           end
         end
@@ -891,10 +891,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'when Gitaly find_commits feature is enabled' do
-      it_behaves_like 'repository log'
-    end
-
-    context 'when Gitaly find_commits feature is disabled', :disable_gitaly do
       it_behaves_like 'repository log'
     end
   end
@@ -1438,31 +1434,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of branches'
-    end
-  end
-
-  describe '#batch_existence' do
-    let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
-
-    around do |example|
-      # TODO #batch_existence isn't used anywhere, can we remove it?
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    it 'returns existing refs back' do
-      result = repository.batch_existence(refs)
-
-      expect(result).to eq([SeedRepo::RubyBlob::ID])
-    end
-
-    context 'existing: true' do
-      it 'inverts meaning and returns non-existing refs' do
-        result = repository.batch_existence(refs, existing: false)
-
-        expect(result).to eq(%w(deadbeef 909e6157199))
-      end
     end
   end
 
