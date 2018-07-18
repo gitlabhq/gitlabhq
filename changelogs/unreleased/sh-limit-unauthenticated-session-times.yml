@@ -1,0 +1,5 @@
+---
+title: Limit the TTL for anonymous sessions to 1 hour
+merge_request: 20700
+author:
+type: performance
