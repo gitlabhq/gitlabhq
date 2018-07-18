@@ -33,6 +33,7 @@ describe('InlineDiffView', () => {
     it('should render discussions', done => {
       const el = component.$el;
       component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
+      component.$store.commit('diffs/SET_DIFF_DATA', { diffFiles: [getDiffFileMock()] });
 
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.notes_holder').length).toEqual(1);
