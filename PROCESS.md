@@ -204,7 +204,7 @@ Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/genera
 
 ## Bugs
 
-A ~bug is a defect, error, failure which causes the system to behave incorrectly or prevents it from fulfilling from fulfill the product requirements.
+A ~bug is a defect, error, failure which causes the system to behave incorrectly or prevents it from fulfilling the product requirements.
 
 The level of impact of a ~bug can vary from blocking a whole functionality 
 or a feature usability bug. A bug should always be linked to a severity level. 
