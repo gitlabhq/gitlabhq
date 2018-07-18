@@ -7,6 +7,6 @@ class InstanceStatistics::ApplicationController < ApplicationController
   end
 
   def authenticate_user!
-    render_404 unless current_user.admin?
+    render_404 if ApplicationSettingsHelper.hide_instance_statistics?(current_user)
   end
 end
