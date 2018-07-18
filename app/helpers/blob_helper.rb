@@ -227,12 +227,14 @@ module BlobHelper
   def open_raw_blob_button(blob)
     return if blob.empty?
     return if blob.raw_binary? || blob.stored_externally?
+
     title = 'Open raw'
     link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def download_blob_button(blob)
     return if blob.empty?
+    
     title = 'Download'
     link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
