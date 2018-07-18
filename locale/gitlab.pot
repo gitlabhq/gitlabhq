@@ -4057,6 +4057,9 @@ msgstr ""
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
+msgid "ProjectPage|Project ID: %{project_id}"
+msgstr ""
+
 msgid "Projects"
 msgstr ""
 
