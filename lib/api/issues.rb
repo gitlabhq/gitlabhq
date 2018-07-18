@@ -170,7 +170,7 @@ module API
         authorize! :create_issue, user_project
 
         # Setting created_at time only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user
+        unless current_user.admin? || current_user.owned_projects.include?(user_project)
           params.delete(:created_at)
         end
 
