@@ -251,7 +251,7 @@ module Gitlab
 
       def create_fallback_diff_note(merge_request, comment)
         attributes = pull_request_comment_attributes(comment)
-        attributes[:note] = "Comment on file: #{comment.file_path}, old position: #{comment.old_pos}, new_position: #{comment.new_pos}\n\n" + attributes[:note]
+        attributes[:note] = "*Comment on file: #{comment.file_path}, old line: #{comment.old_pos}, new line: #{comment.new_pos}*\n\n" + attributes[:note]
 
         merge_request.notes.create!(attributes)
       end

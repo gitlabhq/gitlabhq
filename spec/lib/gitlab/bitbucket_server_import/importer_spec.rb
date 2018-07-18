@@ -199,7 +199,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(merge_request.notes.count).to eq(1)
       note = merge_request.notes.first
 
-      expect(note.note).to start_with('Comment on file:')
+      expect(note.note).to start_with('*Comment on file:')
     end
 
     it 'restores branches of inaccessible SHAs' do
