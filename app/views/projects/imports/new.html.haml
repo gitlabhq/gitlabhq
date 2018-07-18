@@ -5,8 +5,8 @@
 %hr
 
 - if @project.import_failed?
-  .card.bg-danger
-    .card-header The repository could not be imported.
+  .card.border-danger
+    .card-header.bg-danger.text-white The repository could not be imported.
     .card-body
       %pre
         :preserve
