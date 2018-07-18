@@ -77,7 +77,8 @@ export default {
       diffViewType: state => state.diffs.diffViewType,
       diffFiles: state => state.diffs.diffFiles,
     }),
-    ...mapGetters(['isLoggedIn', 'discussionsByLineCode']),
+    ...mapGetters(['isLoggedIn']),
+    ...mapGetters('diffs', ['discussionsByLineCode']),
     lineHref() {
       return this.lineCode ? `#${this.lineCode}` : '#';
     },

@@ -1,12 +1,12 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { SAST, DAST, SAST_CONTAINER } from './store/constants';
-import createStore from './store';
-import ReportSection from './components/report_section.vue';
-import SummaryRow from './components/summary_row.vue';
-import IssuesList from './components/issues_list.vue';
+import ReportSection from '~/vue_shared/components/reports/report_section.vue';
+import SummaryRow from '~/vue_shared/components/reports/summary_row.vue';
+import IssuesList from '~/vue_shared/components/reports/issues_list.vue';
 import IssueModal from './components/modal.vue';
+import { SAST, DAST, SAST_CONTAINER } from './store/constants';
 import securityReportsMixin from './mixins/security_report_mixin';
+import createStore from './store';
 
 export default {
   store: createStore(),

@@ -3,7 +3,7 @@
  * Renders Perfomance issue body text
  *  [name] :[score] [symbol] [delta] in [link]
  */
-import ReportLink from 'ee/vue_shared/security_reports/components/report_link.vue';
+import ReportLink from '~/vue_shared/components/reports/report_link.vue';
 
 export default {
   name: 'PerformanceIssueBody',
