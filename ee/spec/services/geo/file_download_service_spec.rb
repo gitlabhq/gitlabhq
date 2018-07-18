@@ -309,9 +309,9 @@ describe Geo::FileDownloadService do
       end
     end
 
-    context 'import_export' do
+    context 'Import/Export' do
       it_behaves_like "a service that downloads the file and registers the sync result", 'import_export' do
-        let(:file) { create(:import_export_upload) }
+        let(:file) { create(:upload, model: build(:import_export_upload)) }
       end
     end
 
