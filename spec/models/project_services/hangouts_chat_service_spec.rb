@@ -45,7 +45,10 @@ describe HangoutsChatService do
       it 'calls Hangouts Chat API' do
         subject.execute(sample_data)
 
-        expect(WebMock).to have_requested(:post, webhook_url).once
+        expect(WebMock)
+          .to have_requested(:post, webhook_url)
+          .with { |req| req.body =~ /\A{"text":.+}\Z/ }
+          .once
       end
     end
 
@@ -60,13 +63,6 @@ describe HangoutsChatService do
         expect(HangoutsChat::Sender).to receive(:new).with(webhook_url).and_return(double(:hangouts_chat_service).as_null_object)
 
         subject.execute(sample_data)
-      end
-
-      it 'sends the simple text message to the Hangouts Chat API' do
-        subject.execute(sample_data)
-
-        expect(WebMock).to have_requested(:post, webhook_url).once
-          .with { |req| req.body =~ /\A{"text":.+}\Z/ }
       end
 
       context 'with not default branch' do
