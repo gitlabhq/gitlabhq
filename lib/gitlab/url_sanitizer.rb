@@ -71,12 +71,10 @@ module Gitlab
     def generate_full_url
       return @url unless valid_credentials?
 
-      generated = @url.dup
-
-      generated.password = encode_percent(credentials[:password]) if credentials[:password].present?
-      generated.user = encode_percent(credentials[:user]) if credentials[:user].present?
-
-      generated
+      @url.dup.tap do |generated|
+        generated.password = encode_percent(credentials[:password]) if credentials[:password].present?
+        generated.user = encode_percent(credentials[:user]) if credentials[:user].present?
+      end
     end
 
     def safe_url

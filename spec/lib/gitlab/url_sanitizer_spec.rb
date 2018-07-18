@@ -147,6 +147,8 @@ describe Gitlab::UrlSanitizer do
         'http://foo:bar@example.com' | :same
         'http://foo:g p@example.com' | 'http://foo:g%20p@example.com'
         'http://foo:s/h@example.com' | 'http://foo:s%2Fh@example.com'
+        'http://t u:a#b@example.com' | 'http://t%20u:a%23b@example.com'
+        'http://t+u:a#b@example.com' | 'http://t%2Bu:a%23b@example.com'
       end
 
       with_them do
