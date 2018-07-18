@@ -288,7 +288,6 @@ describe ProjectsHelper do
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end
     end
-<<<<<<< HEAD
 
     context 'when gitlab.config.kerberos is enabled and user is logged in' do
       it 'returns krb5 as default protocol' do
@@ -298,8 +297,6 @@ describe ProjectsHelper do
         expect(helper.send(:default_clone_protocol)).to eq('krb5')
       end
     end
-=======
->>>>>>> upstream/master
   end
 
   describe '#last_push_event' do
