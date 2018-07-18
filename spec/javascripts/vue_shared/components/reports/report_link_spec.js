@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import component from 'ee/vue_shared/security_reports/components/report_link.vue';
+import component from '~/vue_shared/components/reports/report_link.vue';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 
 describe('report link', () => {

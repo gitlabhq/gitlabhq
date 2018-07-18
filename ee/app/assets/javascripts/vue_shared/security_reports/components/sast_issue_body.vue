@@ -3,8 +3,8 @@
  * Renders SAST body text
  * [severity] ([confidence]): [name] in [link] : [line]
  */
-import ReportLink from './report_link.vue';
-import ModalOpenName from './modal_open_name.vue';
+import ReportLink from '~/vue_shared/components/reports/report_link.vue';
+import ModalOpenName from '~/vue_shared/components/reports/modal_open_name.vue';
 
 export default {
   name: 'SastIssueBody',

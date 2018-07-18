@@ -1,13 +1,13 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+
 import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
 import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
 import LicenseIssue from 'ee/vue_merge_request_widget/components/license_issue_body.vue';
-import SastIssue from './sast_issue_body.vue';
-import SastContainerIssue from './sast_container_issue_body.vue';
-import DastIssue from './dast_issue_body.vue';
-
-import { SAST, DAST, SAST_CONTAINER } from '../store/constants';
+import SastIssue from 'ee/vue_shared/security_reports/components/sast_issue_body.vue';
+import SastContainerIssue from 'ee/vue_shared/security_reports/components/sast_container_issue_body.vue';
+import DastIssue from 'ee/vue_shared/security_reports/components/dast_issue_body.vue';
+import { SAST, DAST, SAST_CONTAINER } from 'ee/vue_shared/security_reports/store/constants';
 
 export default {
   name: 'ReportIssues',

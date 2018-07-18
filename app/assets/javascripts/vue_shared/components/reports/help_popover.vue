@@ -5,7 +5,7 @@ import { inserted } from '~/feature_highlight/feature_highlight_helper';
 import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
 
 export default {
-  name: 'SecurityReportsHelpPopover',
+  name: 'ReportsHelpPopover',
   components: {
     Icon,
   },
