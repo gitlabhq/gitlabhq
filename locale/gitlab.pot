@@ -4916,6 +4916,7 @@ msgstr ""
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -4938,6 +4939,9 @@ msgid "ProjectSettings|This setting will be applied to all projects unless overr
 msgstr ""
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
+=======
+msgid "ProjectPage|Project ID: %{project_id}"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Projects"
@@ -7060,6 +7064,7 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "by"
 msgstr ""
 
@@ -7270,6 +7275,11 @@ msgstr ""
 msgid "ciReport|on pipeline"
 msgstr ""
 
+=======
+msgid "ciReport|Show complete code vulnerabilities report"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "command line instructions"
 msgstr ""
 

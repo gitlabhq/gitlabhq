@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lfs
   class LocksFinderService < BaseService
     def execute

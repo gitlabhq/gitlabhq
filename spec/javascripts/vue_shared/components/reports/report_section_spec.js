@@ -86,7 +86,10 @@ describe('Report section', () => {
       });
     });
   });
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
@@ -172,6 +175,7 @@ describe('Report section', () => {
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
     });
   });
+<<<<<<< HEAD
 
   describe('With full report', () => {
     beforeEach(() => {
@@ -255,4 +259,6 @@ describe('Report section', () => {
       });
     });
   });
+=======
+>>>>>>> upstream/master
 });

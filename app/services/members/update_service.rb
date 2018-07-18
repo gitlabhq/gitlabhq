@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class UpdateService < Members::BaseService
     prepend EE::Members::UpdateService

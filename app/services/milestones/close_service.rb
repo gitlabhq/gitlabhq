@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Milestones
   class CloseService < Milestones::BaseService
     def execute(milestone)

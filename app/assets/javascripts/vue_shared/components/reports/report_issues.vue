@@ -1,6 +1,7 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
 
+<<<<<<< HEAD
 import PerformanceIssue from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
 import CodequalityIssue from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
 import LicenseIssue from 'ee/vue_merge_request_widget/components/license_issue_body.vue';
@@ -9,23 +10,31 @@ import SastContainerIssue from 'ee/vue_shared/security_reports/components/sast_c
 import DastIssue from 'ee/vue_shared/security_reports/components/dast_issue_body.vue';
 import { SAST, DAST, SAST_CONTAINER } from 'ee/vue_shared/security_reports/store/constants';
 
+=======
+>>>>>>> upstream/master
 export default {
   name: 'ReportIssues',
   components: {
     Icon,
+<<<<<<< HEAD
     SastIssue,
     SastContainerIssue,
     DastIssue,
     PerformanceIssue,
     CodequalityIssue,
     LicenseIssue,
+=======
+>>>>>>> upstream/master
   },
   props: {
     issues: {
       type: Array,
       required: true,
     },
+<<<<<<< HEAD
     // security || codequality || performance || docker || dast || license
+=======
+>>>>>>> upstream/master
     type: {
       type: String,
       required: true,
@@ -55,6 +64,7 @@ export default {
     isStatusNeutral() {
       return this.status === 'neutral';
     },
+<<<<<<< HEAD
     isTypeCodequality() {
       return this.type === 'codequality';
     },
@@ -73,6 +83,8 @@ export default {
     isTypeDast() {
       return this.type === DAST;
     },
+=======
+>>>>>>> upstream/master
   },
 };
 </script>
@@ -94,6 +106,7 @@ export default {
           class="report-block-list-icon append-right-5"
         >
           <icon
+<<<<<<< HEAD
             v-if="isTypeLicense"
             :size="24"
             name="status_created_borderless"
@@ -101,11 +114,14 @@ export default {
           />
           <icon
             v-else
+=======
+>>>>>>> upstream/master
             :name="iconName"
             :size="32"
           />
         </div>
 
+<<<<<<< HEAD
         <sast-issue
           v-if="isTypeSast"
           :issue="issue"
@@ -140,6 +156,8 @@ export default {
           v-else-if="isTypeLicense"
           :issue="issue"
         />
+=======
+>>>>>>> upstream/master
       </li>
     </ul>
   </div>

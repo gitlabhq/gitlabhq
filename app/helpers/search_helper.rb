@@ -107,7 +107,8 @@ module SearchHelper
         category: "Groups",
         id: group.id,
         label: "#{search_result_sanitize(group.full_name)}",
-        url: group_path(group)
+        url: group_path(group),
+        avatar_url: group.avatar_url || ''
       }
     end
   end
@@ -121,7 +122,8 @@ module SearchHelper
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
         label: "#{search_result_sanitize(p.full_name)}",
-        url: project_path(p)
+        url: project_path(p),
+        avatar_url: p.avatar_url || ''
       }
     end
   end
