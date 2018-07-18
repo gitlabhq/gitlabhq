@@ -70,7 +70,7 @@ class Import::BitbucketServerController < Import::BaseController
     @already_added_projects = find_already_added_projects('bitbucket_server')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
-    @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
+    @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
   rescue *SERVER_ERRORS => e
     flash[:alert] = "Unable to connect to server: #{e}"
     clear_session_data
