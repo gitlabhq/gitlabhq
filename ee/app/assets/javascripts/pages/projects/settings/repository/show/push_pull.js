@@ -75,8 +75,6 @@ export default {
   initMirrorPull() {
     const mirrorPull = new MirrorPull('.js-mirror-form');
 
-    if (!mirrorPull) return;
-
     if (this.$urlInput.val() !== '') mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
 
