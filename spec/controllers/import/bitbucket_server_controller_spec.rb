@@ -120,7 +120,7 @@ describe Import::BitbucketServerController do
       allow(controller).to receive(:bitbucket_client).and_return(client)
 
       @repo = double(slug: 'vim', owner: 'asd', full_name: 'asd/vim', "valid?" => true, project_name: 'asd', browse_url: 'http://test', name: 'vim')
-      @invalid_repo = double(slug: 'invalid', owner: 'foobar', full_name: 'asd/foobar', "valid?" => false)
+      @invalid_repo = double(slug: 'invalid', owner: 'foobar', full_name: 'asd/foobar', "valid?" => false, browse_url: 'http://bad-repo')
       assign_session_tokens
     end
 
