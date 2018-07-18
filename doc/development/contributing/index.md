@@ -113,38 +113,6 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-[core team]: https://about.gitlab.com/core-team/
-[team]: https://about.gitlab.com/team/
-[getting-help]: https://about.gitlab.com/getting-help/
-[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
-[ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
-[ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
-[google-group]: https://groups.google.com/forum/#!forum/gitlabhq
-[stackoverflow]: https://stackoverflow.com/questions/tagged/gitlab
-[fpl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature+proposal
-[accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests
-[accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Accepting+Merge+Requests
-[gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
-[gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
-[git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
-[closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
-[definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
-[contributor-covenant]: http://contributor-covenant.org
-[rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
-[rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
-[changelog]: doc/development/changelog.md "Generate a changelog entry"
-[doc-guidelines]: doc/development/documentation/index.md "Documentation guidelines"
-[js-styleguide]: doc/development/fe_guide/style_guide_js.md "JavaScript styleguide"
-[scss-styleguide]: doc/development/fe_guide/style_guide_scss.md "SCSS styleguide"
-[newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
-[license-finder-doc]: doc/development/licensing.md
-[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
-[polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing_guide/index.md
-[us-english]: https://en.wikipedia.org/wiki/American_English
-
 
 ## Workflow labels
 This [documentation](issue-worflow.md) outlines the current workflow labels. 
