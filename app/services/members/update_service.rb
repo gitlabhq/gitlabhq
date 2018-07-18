@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class UpdateService < Members::BaseService
     # returns the updated member

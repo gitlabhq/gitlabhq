@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class ReopenService < MergeRequests::BaseService
     def execute(merge_request)
