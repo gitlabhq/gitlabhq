@@ -406,7 +406,7 @@ describe Gitlab::Checks::ChangeAccess do
 
       context 'for an ff merge request' do
         # the signed-commits branch fast-forwards onto master
-        let(:newrev) { '2d1096e3' }
+        let(:newrev) { "2d1096e3a0ecf1d2baf6dee036cc80775d4940ba" }
 
         it 'does not raise errors for a fast forward' do
           expect(change_access).not_to receive(:committer_check)
@@ -441,6 +441,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'does not raise errors for a merge commit' do
           expect(change_access).to receive(:committer_check).once
                                      .and_call_original
+
           expect { subject.exec }.not_to raise_error
         end
       end

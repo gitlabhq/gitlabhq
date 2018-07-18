@@ -191,7 +191,7 @@ describe Gitlab::Checks::ChangeAccess do
           let(:changes) { { oldrev: oldrev, ref: ref } }
 
           it 'skips integrity check' do
-            expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+            expect(project.repository).not_to receive(:new_objects)
 
             subject.exec
           end
