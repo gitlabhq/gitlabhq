@@ -1,3 +1,4 @@
+require 'digest'
 # This is an in-memory structure only. The repository storage configuration is
 # in gitlab.yml and not in the database. This model makes it easier to work
 # with the configuration.
@@ -24,5 +25,10 @@ class StorageShard
 
   def self.allowed_params
     %i(name).freeze
+  end
+
+  def self.build_digest
+    names = Settings.repositories.storages.keys.sort
+    Digest::SHA1.hexdigest(names.join)
   end
 end

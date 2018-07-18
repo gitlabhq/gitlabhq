@@ -367,9 +367,7 @@ module EE
           status.storage_shards.present?
         end
 
-        expose :storage_shards_match?, as: :storage_shards_match, if: ->(status, options) do
-          ::Gitlab::Geo.primary? && status.storage_shards.present?
-        end
+        expose :storage_shards_match?, as: :storage_shards_match
 
         expose :_links do
           expose :self do |geo_node_status|

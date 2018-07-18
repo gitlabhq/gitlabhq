@@ -874,30 +874,32 @@ describe GeoNodeStatus, :geo do
   end
 
   describe '#storage_shards_match?' do
-    before do
+    it 'returns false if no shard data is available for secondary' do
       stub_primary_node
+      stub_current_geo_node(secondary)
+
+      status = create(:geo_node_status, geo_node: secondary, storage_configuration_digest: 'bc11119c101846c20367fff34ce9fffa9b05aab8')
+
+      expect(status.storage_shards_match?).to be false
     end
 
-    set(:status) { create(:geo_node_status) }
-    let(:data) { GeoNodeStatusSerializer.new.represent(status).as_json }
-    let(:result) { described_class.from_json(data) }
+    it 'returns true even if no shard data is available for secondary' do
+      stub_secondary_node
+      stub_current_geo_node(primary)
 
-    it 'returns nil if no shard data is available' do
-      data.delete('storage_shards')
+      status = create(:geo_node_status, geo_node: primary, storage_configuration_digest: 'bc11119c101846c20367fff34ce9fffa9b05aab8')
 
-      expect(result.storage_shards_match?).to be nil
+      expect(status.storage_shards_match?).to be true
     end
 
     it 'returns false if the storage shards do not match' do
-      data['storage_shards'].first['name'] = 'broken-shard'
+      stub_primary_node
+      stub_current_geo_node(secondary)
+      create(:geo_node_status, geo_node: primary, storage_configuration_digest: 'aea7849c10b886c202676ff34ce9fdf0940567b8')
 
-      expect(result.storage_shards_match?).to be false
-    end
+      status = create(:geo_node_status, geo_node: secondary, storage_configuration_digest: 'bc11119c101846c20367fff34ce9fffa9b05aab8')
 
-    it 'returns true if the storage shards match in different order' do
-      status.storage_shards.shuffle!
-
-      expect(result.storage_shards_match?).to be true
+      expect(status.storage_shards_match?).to be false
     end
   end
 

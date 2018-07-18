@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180704204006) do
+ActiveRecord::Schema.define(version: 20180719161844) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1154,6 +1154,7 @@ ActiveRecord::Schema.define(version: 20180704204006) do
     t.integer "wikis_checksummed_count"
     t.integer "wikis_checksum_failed_count"
     t.integer "wikis_checksum_mismatch_count"
+    t.binary "storage_configuration_digest"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree

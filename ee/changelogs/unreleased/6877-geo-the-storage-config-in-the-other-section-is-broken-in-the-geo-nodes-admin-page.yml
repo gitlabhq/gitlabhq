@@ -1,0 +1,5 @@
+---
+title: "[Geo] Fix the Storage config parameter in Geo nodes admin page"
+merge_request:
+author:
+type: fixed
