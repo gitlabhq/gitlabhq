@@ -23,7 +23,7 @@
             periodically collect usage information.
             = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
             about what information is shared with GitLab Inc. Visit
-            = link_to 'Cohorts', admin_cohorts_path(anchor: 'usage-ping')
+            = link_to 'Cohorts', instance_statistics_cohorts_path(anchor: 'usage-ping')
             to see the JSON payload sent.
           - else
             The usage ping is disabled, and cannot be configured through this

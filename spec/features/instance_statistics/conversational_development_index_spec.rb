@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Admin Conversational Development Index' do
+describe 'Conversational Development Index' do
   before do
     sign_in(create(:admin))
   end
@@ -9,7 +9,7 @@ describe 'Admin Conversational Development Index' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: false)
 
-      visit admin_conversational_development_index_path
+      visit instance_statistics_conversational_development_index_index_path
 
       expect(page).to have_content('Usage ping is not enabled')
     end
@@ -19,7 +19,7 @@ describe 'Admin Conversational Development Index' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: true)
 
-      visit admin_conversational_development_index_path
+      visit instance_statistics_conversational_development_index_index_path
 
       expect(page).to have_content('Data is still calculating')
     end
@@ -30,7 +30,7 @@ describe 'Admin Conversational Development Index' do
       stub_application_setting(usage_ping_enabled: true)
       create(:conversational_development_index_metric)
 
-      visit admin_conversational_development_index_path
+      visit instance_statistics_conversational_development_index_index_path
 
       expect(page).to have_content(
         'Issues created per active user 1.2 You 9.3 Lead 13.3%'
