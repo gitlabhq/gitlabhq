@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BaseService < ::IssuableBaseService
     prepend EE::MergeRequests::BaseService

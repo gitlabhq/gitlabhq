@@ -4919,6 +4919,9 @@ msgstr ""
 msgid "ProjectLifecycle|Stage"
 msgstr ""
 
+msgid "ProjectPage|Project ID: %{project_id}"
+msgstr ""
+
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 

@@ -86,7 +86,6 @@ describe('Report section', () => {
       });
     });
   });
-
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
