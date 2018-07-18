@@ -26,7 +26,7 @@ export default {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters(['discussionsByLineCode']),
+    ...mapGetters('diffs', ['discussionsByLineCode']),
     leftLineCode() {
       return this.line.left.lineCode;
     },

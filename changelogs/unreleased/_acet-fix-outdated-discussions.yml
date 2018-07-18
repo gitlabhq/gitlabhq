@@ -1,0 +1,5 @@
+---
+title: Fix showing outdated discussions on Changes tab
+merge_request: 20445
+author:
+type: fixed
