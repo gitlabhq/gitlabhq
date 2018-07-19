@@ -8,6 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-10 16:02-0700\n"
+"PO-Revision-Date: 2018-07-10 16:02-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1248,6 +1250,9 @@ msgstr ""
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr ""
 
+msgid "ClusterIntegration|Did you know?"
+msgstr ""
+
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr ""
 
@@ -1282,6 +1287,9 @@ msgid "ClusterIntegration|Google Kubernetes Engine project"
 msgstr ""
 
 msgid "ClusterIntegration|Helm Tiller"
+msgstr ""
+
+msgid "ClusterIntegration|Hide"
 msgstr ""
 
 msgid "ClusterIntegration|Ingress"
@@ -1408,9 +1416,6 @@ msgid "ClusterIntegration|Prometheus"
 msgstr ""
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
-msgstr ""
-
-msgid "ClusterIntegration|Redeem up to $500 in free credit for Google Cloud Platform"
 msgstr ""
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
@@ -3533,6 +3538,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
+msgid "Notes|Are you sure you want to cancel creating this comment?"
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
@@ -4065,6 +4073,9 @@ msgid "ProjectLastActivity|Never"
 msgstr ""
 
 msgid "ProjectLifecycle|Stage"
+msgstr ""
+
+msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
 msgid "Projects"
@@ -5868,6 +5879,9 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "branch name"
+msgstr ""
+
+msgid "ciReport|Show complete code vulnerabilities report"
 msgstr ""
 
 msgid "command line instructions"

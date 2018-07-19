@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class WorkingCopyBaseService < MergeRequests::BaseService
     attr_reader :merge_request

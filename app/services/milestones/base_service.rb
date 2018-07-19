@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Milestones
   class BaseService < ::BaseService
     # Parent can either a group or a project

@@ -20,8 +20,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['commitId']),
-    ...mapGetters(['discussionsByLineCode']),
+    ...mapGetters('diffs', ['commitId', 'discussionsByLineCode']),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),

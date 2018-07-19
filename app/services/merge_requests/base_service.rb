@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class BaseService < ::IssuableBaseService
     def create_note(merge_request, state = merge_request.state)

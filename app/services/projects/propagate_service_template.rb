@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class PropagateServiceTemplate
     BATCH_SIZE = 100

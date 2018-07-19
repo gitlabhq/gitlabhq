@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class ApproveAccessRequestService < Members::BaseService
     def execute(access_requester, skip_authorization: false, skip_log_audit_event: false)
