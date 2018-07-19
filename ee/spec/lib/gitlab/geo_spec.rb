@@ -182,22 +182,18 @@ describe Gitlab::Geo, :geo do
       end
     end
 
-    context "when the feature flag has been set" do
-      before do
-        allow(Feature).to receive(:persisted?).and_return(true)
-      end
-
-      context "when the feature flag is set to enabled" do
+    context 'when the feature flag has been set' do
+      context 'when the feature flag is set to enabled' do
         it 'returns true' do
-          Feature.enable(:geo_repository_verification)
+          Feature.enable('geo_repository_verification')
 
           expect(described_class.repository_verification_enabled?).to eq true
         end
       end
 
-      context "when the feature flag is set to disabled" do
+      context 'when the feature flag is set to disabled' do
         it 'returns false' do
-          Feature.disable(:geo_repository_verification)
+          Feature.disable('geo_repository_verification')
 
           expect(described_class.repository_verification_enabled?).to eq false
         end
