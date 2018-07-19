@@ -14,7 +14,6 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
-  include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
   include WithUploads
