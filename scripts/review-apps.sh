@@ -159,9 +159,9 @@ function delete() {
 }
 
 function cleanup() {
-  kubectl get ingress,configmap,all -n "$KUBE_NAMESPACE" \
-    -o jsonpath='{range .items[*]}{.kind}{" "}{.metadata.name}{"\n"}{end}' \
-    | grep "CI_ENVIRONMENT_SLUG" \
-    | xargs -n2 kubectl delete -n "$KUBE_NAMESPACE" \
+  kubectl -n "$KUBE_NAMESPACE" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa 2>&1 \
+    | grep "$CI_ENVIRONMENT_SLUG" \
+    | awk '{print $1}' \
+    | xargs kubectl -n "$KUBE_NAMESPACE" delete \
     || true
 }
