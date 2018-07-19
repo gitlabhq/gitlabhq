@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class BuildService < BaseService
     prepend ::EE::Users::BuildService

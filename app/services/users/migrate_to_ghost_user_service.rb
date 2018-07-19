@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # When a user is destroyed, some of their associated records are
 # moved to a "Ghost User", to prevent these associated records from
 # being destroyed.
