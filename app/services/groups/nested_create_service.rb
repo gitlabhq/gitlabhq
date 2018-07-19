@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class NestedCreateService < Groups::BaseService
     attr_reader :group_path, :visibility_level

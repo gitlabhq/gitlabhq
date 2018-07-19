@@ -56,6 +56,25 @@ module Gitlab
         encode!(response.name.dup)
       end
 
+      def list_new_commits(newrev)
+        request = Gitaly::ListNewCommitsRequest.new(
+          repository: @gitaly_repo,
+          commit_id: newrev
+        )
+
+        response = GitalyClient
+          .call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
+
+        commits = []
+        response.each do |msg|
+          msg.commits.each do |c|
+            commits << Gitlab::Git::Commit.new(@repository, c)
+          end
+        end
+
+        commits
+      end
+
       def count_tag_names
         tag_names.count
       end

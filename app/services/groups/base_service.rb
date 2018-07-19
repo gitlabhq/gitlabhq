@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Groups
   class BaseService < ::BaseService
     attr_accessor :group, :current_user, :params

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Commits
   class CreateService < ::BaseService
     ValidationError = Class.new(StandardError)

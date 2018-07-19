@@ -182,7 +182,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
-    if without_files? && comparison = diff_refs.compare_in(project)
+    if without_files? && comparison = diff_refs&.compare_in(project)
       # It should fetch the repository when diffs are cleaned by the system.
       # We don't keep these for storage overload purposes.
       # See https://gitlab.com/gitlab-org/gitlab-ce/issues/37639

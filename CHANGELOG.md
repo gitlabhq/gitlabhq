@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.0.4 (2018-07-17)
+
+### Security (1 change)
+
+- Fix symlink vulnerability in project import.
+
+
 ## 11.0.3 (2018-07-05)
 
 ### Fixed (14 changes, 1 of them is from the community)
@@ -295,6 +302,14 @@ entry.
 - Workhorse to send raw diff and patch for commits.
 
 
+## 10.8.6 (2018-07-17)
+
+### Security (2 changes)
+
+- Fix symlink vulnerability in project import.
+- Merge branch 'fix-mr-widget-border' into 'master'.
+
+
 ## 10.8.5 (2018-06-21)
 
 ### Security (5 changes)
@@ -522,6 +537,13 @@ entry.
 - Bump lograge to 0.10.0 and remove monkey patch.
 - Improves wording in new pipeline page.
 - Gitaly handles repository forks by default.
+
+
+## 10.7.7 (2018-07-17)
+
+### Security (1 change)
+
+- Fix symlink vulnerability in project import.
 
 
 ## 10.7.6 (2018-06-21)

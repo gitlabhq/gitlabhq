@@ -296,24 +296,40 @@ describe Repository do
   end
 
   describe '#new_commits' do
-    let(:new_refs) do
-      double(:git_rev_list, new_refs: %w[
-        c1acaa58bbcbc3eafe538cb8274ba387047b69f8
-        5937ac0a7beb003549fc5fd26fc247adbce4a52e
-      ])
+    shared_examples 'finding unreferenced commits' do
+      set(:project) { create(:project, :repository) }
+      let(:repository) { project.repository }
+
+      subject { repository.new_commits(rev) }
+
+      context 'when there are no new commits' do
+        let(:rev) { repository.commit.id }
+
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when new commits are found' do
+        let(:branch) { 'orphaned-branch' }
+        let!(:rev) { repository.commit(branch).id }
+
+        it 'returns the commits' do
+          repository.delete_branch(branch)
+
+          expect(subject).not_to be_empty
+          expect(subject).to all( be_a(::Commit) )
+          expect(subject.size).to eq(1)
+        end
+      end
     end
 
-    it 'delegates to Gitlab::Git::RevList' do
-      expect(Gitlab::Git::RevList).to receive(:new).with(
-        repository.raw,
-        newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
+    context 'when Gitaly handles the request' do
+      it_behaves_like 'finding unreferenced commits'
+    end
 
-      commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')
-
-      expect(commits).to eq([
-        repository.commit('c1acaa58bbcbc3eafe538cb8274ba387047b69f8'),
-        repository.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      ])
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'finding unreferenced commits'
     end
   end
 

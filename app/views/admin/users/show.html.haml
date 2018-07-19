@@ -149,8 +149,8 @@
             %br
             = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - else
-        .card.bg-warning
-          .card-header
+        .card.border-warning
+          .card-header.bg-warning.text-white
             Block this user
           .card-body
             %p Blocking user has the following effects:
@@ -170,8 +170,8 @@
             %br
             = link_to 'Unlock user', unlock_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
 
-      .card.bg-danger
-        .card-header
+      .card.border-danger
+        .card-header.bg-danger.text-white
           = s_('AdminUsers|Delete user')
         .card-body
           - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
@@ -196,8 +196,8 @@
               %p
                 You don't have access to delete this user.
 
-      .card.bg-danger
-        .card-header
+      .card.border-danger
+        .card-header.bg-danger.text-white
           = s_('AdminUsers|Delete user and contributions')
         .card-body
           - if can?(current_user, :destroy_user, @user)

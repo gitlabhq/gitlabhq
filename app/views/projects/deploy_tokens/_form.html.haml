@@ -14,16 +14,16 @@
 
   .form-group
     = f.label :scopes, class: 'label-light'
-    %fieldset
-      = f.check_box :read_repository
-      = label_tag ("deploy_token_read_repository"), 'read_repository'
-      %span= s_('DeployTokens|Allows read-only access to the repository')
+    %fieldset.form-group.form-check
+      = f.check_box :read_repository, class: 'form-check-input'
+      = label_tag ("deploy_token_read_repository"), 'read_repository', class: 'label-light form-check-label'
+      .text-secondary= s_('DeployTokens|Allows read-only access to the repository')
 
     - if container_registry_enabled?(project)
-      %fieldset
-        = f.check_box :read_registry
-        = label_tag ("deploy_token_read_registry"), 'read_registry'
-        %span= s_('DeployTokens|Allows read-only access to the registry images')
+      %fieldset.form-group.form-check
+        = f.check_box :read_registry, class: 'form-check-input'
+        = label_tag ("deploy_token_read_registry"), 'read_registry', class: 'label-light form-check-label'
+        .text-secondary= s_('DeployTokens|Allows read-only access to the registry images')
 
   .prepend-top-default
     = f.submit s_('DeployTokens|Create deploy token'), class: 'btn btn-success'

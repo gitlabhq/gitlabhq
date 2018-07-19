@@ -15,7 +15,7 @@ module QA
         # instantiated on one page because there is no distinguishing
         # attribute per dropzone file field.
         def attach_file(attachment)
-          filename = File.basename(attachment)
+          filename = ::File.basename(attachment)
 
           field_style = { visibility: 'visible', height: '', width: '' }
           page.attach_file(attachment, class: 'dz-hidden-input', make_visible: field_style)

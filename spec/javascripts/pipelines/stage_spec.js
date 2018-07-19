@@ -20,7 +20,7 @@ describe('Pipelines stage component', () => {
       stage: {
         status: {
           group: 'success',
-          icon: 'icon_status_success',
+          icon: 'status_success',
           title: 'success',
         },
         dropdown_path: 'path.json',
@@ -84,7 +84,7 @@ describe('Pipelines stage component', () => {
       component.stage = {
         status: {
           group: 'running',
-          icon: 'running',
+          icon: 'status_running',
           title: 'running',
         },
         dropdown_path: 'bar.json',

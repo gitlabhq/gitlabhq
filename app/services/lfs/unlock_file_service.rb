@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Lfs
   class UnlockFileService < BaseService
     def execute
