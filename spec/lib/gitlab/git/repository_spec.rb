@@ -602,40 +602,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#remote_tags' do
-    let(:remote_name) { 'upstream' }
-    let(:target_commit_id) { SeedRepo::Commit::ID }
-    let(:tag_name) { 'v0.0.1' }
-    let(:tag_message) { 'My tag' }
-    let(:remote_repository) do
-      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-    end
-
-    around do |example|
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        example.run
-      end
-    end
-
-    subject { repository.remote_tags(remote_name) }
-
-    before do
-      remote_repository_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { remote_repository.path }
-      repository.add_remote(remote_name, remote_repository_path)
-      remote_repository.add_tag(tag_name, user: user, target: target_commit_id)
-    end
-
-    after do
-      ensure_seeds
-    end
-
-    it 'gets the remote tags' do
-      expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
-      expect(subject.first.name).to eq(tag_name)
-      expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
-    end
-  end
-
   describe "#log" do
     shared_examples 'repository log' do
       let(:commit_with_old_name) do
