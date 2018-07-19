@@ -1,0 +1,20 @@
+- verb = local_assigns.fetch(:verb)
+- protected_ref = local_assigns.fetch(:protected_ref)
+- access_level = local_assigns.fetch(:access_level)
+- disabled = local_assigns.fetch(:disabled, false)
+- filter = local_assigns.fetch(:filter, false)
+- extra_toggle_classes = local_assigns.fetch(:extra_toggle_classes, [])
+- extra_dropdown_classes = local_assigns.fetch(:extra_dropdown_classes, [])
+- preselected_items = local_assigns.fetch(:preselected_items, nil)
+- default_label = s_('RepositorySettingsAccessLevel|Select')
+
+= hidden_field_tag "allowed_to_#{verb}_#{protected_ref.id}", access_level
+= dropdown_tag((access_level&.humanize || default_label),
+                options: { toggle_class: %W[js-allowed-to-#{verb}].concat(extra_toggle_classes).join(' '),
+                  disabled: disabled,
+                  dropdown_class: %W[dropdown-menu-selectable js-allowed-to-#{verb}-container capitalize-header].concat(extra_dropdown_classes).join(' '),
+                  filter: filter,
+                  data: { field_name: "allowed_to_#{verb}_#{protected_ref.id}",
+                    default_label: default_label,
+                    access_level_id: access_level&.id,
+                    preselected_items: preselected_items } })

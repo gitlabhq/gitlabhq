@@ -9,7 +9,7 @@ module QA
             element :deploy_keys_settings
           end
 
-          view 'app/views/projects/protected_branches/shared/_index.html.haml' do
+          view 'app/views/projects/protected_branches/_index.html.haml' do
             element :protected_branches_settings
           end
 
