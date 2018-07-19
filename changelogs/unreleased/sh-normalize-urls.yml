@@ -1,5 +1,0 @@
----
-title: Escape username and password in UrlSanitizer#full_url
-merge_request: 20684
-author:
-type: fixed
