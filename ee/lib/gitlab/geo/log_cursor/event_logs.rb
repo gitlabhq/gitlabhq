@@ -7,9 +7,14 @@ module Gitlab
 
         # fetches up to BATCH_SIZE next events and keep track of batches
         def fetch_in_batches(batch_size: BATCH_SIZE)
-          ::Geo::EventLog.where('id > ?', last_processed).find_in_batches(batch_size: batch_size) do |batch|
-            yield batch
-            save_processed(batch.last.id)
+          last_id = last_processed_id
+
+          ::Geo::EventLog.where('id > ?', last_id).find_in_batches(batch_size: batch_size) do |batch|
+            yield(batch, last_id)
+
+            last_id = batch.last.id
+            save_processed(last_id)
+
             break unless Lease.renew!
           end
         end
@@ -23,7 +28,7 @@ module Gitlab
         end
 
         # @return [Integer] id of last replicated event
-        def last_processed
+        def last_processed_id
           last = ::Geo::EventLogState.last_processed&.id
           return last if last
 
