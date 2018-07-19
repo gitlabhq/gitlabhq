@@ -149,7 +149,7 @@ export default {
         :status="statusIconName"
       />
       <div
-        class="media-body space-children d-flex"
+        class="media-body space-children d-flex flex-align-self-center"
       >
         <span
           class="js-code-text code-text"
