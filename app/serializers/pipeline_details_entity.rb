@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelineDetailsEntity < PipelineEntity
   expose :details do
     expose :ordered_stages, as: :stages, using: StageEntity

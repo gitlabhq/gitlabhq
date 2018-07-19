@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContainerTagsSerializer < BaseSerializer
   entity ContainerTagEntity
 

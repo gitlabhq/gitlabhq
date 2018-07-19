@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssueSerializer < BaseSerializer
   # This overrided method takes care of which entity should be used
   # to serialize the `issue` based on `basic` key in `opts` param.

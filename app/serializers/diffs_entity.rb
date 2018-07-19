@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DiffsEntity < Grape::Entity
   include DiffHelper
   include RequestAwareEntity
