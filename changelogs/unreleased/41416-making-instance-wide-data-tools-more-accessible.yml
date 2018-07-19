@@ -1,0 +1,6 @@
+---
+title: Add instance_statistics namespace, containing convdev index and cohorts instance
+  stats
+merge_request: 20679
+author:
+type: changed
