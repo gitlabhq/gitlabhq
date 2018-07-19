@@ -1,0 +1,5 @@
+---
+title: Emails on push recipients now accepts formats like John Doe <johndoe@example.com>
+merge_request:
+author: George Thomas
+type: added
