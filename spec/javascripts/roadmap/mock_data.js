@@ -168,5 +168,16 @@ export const rawEpics = [
     end_date: '2018-06-02',
     web_url: '/groups/gitlab-org/-/epics/1',
   },
+  {
+    id: 22,
+    iid: 2,
+    description: null,
+    title: 'Epic with invalid dates',
+    group_id: 56,
+    group_name: 'Marketing',
+    group_full_name: 'Gitlab Org / Marketing',
+    start_date: '2018-12-26',
+    end_date: '2018-03-10',
+    web_url: '/groups/gitlab-org/marketing/-/epics/22',
+  },
 ];
-

@@ -82,13 +82,51 @@
         type: String,
         required: true,
       },
+      startDateIsFixed: {
+        type: Boolean,
+        required: true,
+      },
+      startDateFixed: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      startDateFromMilestones: {
+        type: String,
+        required: false,
+        default: '',
+      },
       startDate: {
         type: String,
         required: false,
       },
+      dueDateIsFixed: {
+        type: Boolean,
+        required: true,
+      },
+      dueDateFixed: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      dueDateFromMilestones: {
+        type: String,
+        required: false,
+        default: '',
+      },
       endDate: {
         type: String,
         required: false,
+      },
+      startDateSourcingMilestoneTitle: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      dueDateSourcingMilestoneTitle: {
+        type: String,
+        required: false,
+        default: '',
       },
       labels: {
         type: Array,
@@ -190,8 +228,16 @@
         :epic-id="epicId"
         :endpoint="endpoint"
         :editable="canUpdate"
+        :initial-start-date-is-fixed="startDateIsFixed"
+        :initial-start-date-fixed="startDateFixed"
+        :start-date-from-milestones="startDateFromMilestones"
         :initial-start-date="startDate"
+        :initial-due-date-is-fixed="dueDateIsFixed"
+        :initial-due-date-fixed="dueDateFixed"
+        :due-date-from-milestones="dueDateFromMilestones"
         :initial-end-date="endDate"
+        :start-date-sourcing-milestone-title="startDateSourcingMilestoneTitle"
+        :due-date-sourcing-milestone-title="dueDateSourcingMilestoneTitle"
         :initial-labels="labels"
         :initial-participants="participants"
         :initial-subscribed="subscribed"

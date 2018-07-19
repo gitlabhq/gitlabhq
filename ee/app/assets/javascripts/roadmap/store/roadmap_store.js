@@ -33,9 +33,18 @@ export default class RoadmapStore {
   }
 
   setEpics(epics) {
-    this.state.epics = epics.map(
-      epic => RoadmapStore.formatEpicDetails(epic, this.timeframeStartDate, this.timeframeEndDate),
-    );
+    this.state.epics = epics.reduce((filteredEpics, epic) => {
+      const formattedEpic = RoadmapStore.formatEpicDetails(
+        epic,
+        this.timeframeStartDate,
+        this.timeframeEndDate,
+      );
+      // Exclude any Epic that has invalid dates
+      if (formattedEpic.startDate <= formattedEpic.endDate) {
+        filteredEpics.push(formattedEpic);
+      }
+      return filteredEpics;
+    }, []);
   }
 
   getEpics() {

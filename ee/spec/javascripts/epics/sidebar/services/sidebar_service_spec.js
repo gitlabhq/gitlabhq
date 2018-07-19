@@ -14,23 +14,25 @@ describe('Sidebar Service', () => {
   });
 
   describe('updateStartDate', () => {
-    it('returns axios instance with PUT for `endpoint` and `start_date` as request body', () => {
+    it('returns axios instance with PUT for `endpoint` with `start_date_is_fixed` and `start_date_fixed` as request body', () => {
       spyOn(axios, 'put').and.stub();
-      const startDate = '2018-06-21';
-      service.updateStartDate(startDate);
+      const dateValue = '2018-06-21';
+      service.updateStartDate({ dateValue, isFixed: true });
       expect(axios.put).toHaveBeenCalledWith(service.endpoint, {
-        start_date: startDate,
+        start_date_is_fixed: true,
+        start_date_fixed: dateValue,
       });
     });
   });
 
   describe('updateEndDate', () => {
-    it('returns axios instance with PUT for `endpoint` and `end_date` as request body', () => {
+    it('returns axios instance with PUT for `endpoint` with `due_date_is_fixed` and `due_date_fixed` as request body', () => {
       spyOn(axios, 'put').and.stub();
-      const endDate = '2018-06-21';
-      service.updateEndDate(endDate);
+      const dateValue = '2018-06-21';
+      service.updateEndDate({ dateValue, isFixed: true });
       expect(axios.put).toHaveBeenCalledWith(service.endpoint, {
-        end_date: endDate,
+        due_date_is_fixed: true,
+        due_date_fixed: dateValue,
       });
     });
   });

@@ -1,0 +1,39 @@
+.epic-sidebar {
+  .block.date {
+    .help-icon,
+    .date-warning-icon {
+      &:hover {
+        cursor: pointer;
+      }
+    }
+
+    .help-icon {
+      color: $gl-text-color-secondary;
+    }
+
+    .date-warning-icon {
+      color: $gl-warning;
+      margin-top: -1px;
+    }
+
+    .value-type-fixed,
+    .value-type-dynamic {
+      color: $gl-text-color-secondary;
+
+      .value-content {
+        margin-left: 2px;
+      }
+
+      &.is-option-selected {
+        > span {
+          color: $gl-text-color;
+          font-weight: $gl-font-weight-bold;
+        }
+      }
+    }
+  }
+}
+
+.tooltip .tooltip-inner .milestone-date-range {
+  color: $gl-text-color-tertiary;
+}

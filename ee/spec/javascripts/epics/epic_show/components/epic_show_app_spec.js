@@ -3,7 +3,6 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import epicShowApp from 'ee/epics/epic_show/components/epic_show_app.vue';
 import epicHeader from 'ee/epics/epic_show/components/epic_header.vue';
-import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
 import issuableApp from '~/issue_show/components/app.vue';
 import issuableAppEventHub from '~/issue_show/event_hub';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
@@ -15,7 +14,6 @@ describe('EpicShowApp', () => {
   let vm;
   let headerVm;
   let issuableAppVm;
-  let sidebarVm;
 
   beforeEach((done) => {
     mock = new MockAdapter(axios);
@@ -23,30 +21,17 @@ describe('EpicShowApp', () => {
     mock.onAny().reply(404, null);
 
     const {
-      epicId,
       canUpdate,
       canDestroy,
       endpoint,
       updateEndpoint,
       initialTitleHtml,
       initialTitleText,
-      startDate,
-      endDate,
       markdownPreviewPath,
       markdownDocsPath,
       author,
       created,
-      namespace,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-      labels,
-      participants,
-      subscribed,
       toggleSubscriptionPath,
-      todoExists,
-      todoPath,
-      todoDeletePath,
     } = props;
 
     const EpicShowApp = Vue.extend(epicShowApp);
@@ -78,27 +63,6 @@ describe('EpicShowApp', () => {
       toggleSubscriptionPath,
     });
 
-    const EpicSidebar = Vue.extend(epicSidebar);
-    sidebarVm = mountComponent(EpicSidebar, {
-      epicId,
-      endpoint,
-      editable: canUpdate,
-      initialStartDate: startDate,
-      initialEndDate: endDate,
-      initialLabels: labels,
-      initialParticipants: participants,
-      initialSubscribed: subscribed,
-      initialTodoExists: todoExists,
-      updatePath: updateEndpoint,
-      toggleSubscriptionPath,
-      labelsPath,
-      labelsWebUrl,
-      epicsWebUrl,
-      namespace,
-      todoPath,
-      todoDeletePath,
-    });
-
     setTimeout(done);
   });
 
@@ -115,7 +79,7 @@ describe('EpicShowApp', () => {
   });
 
   it('should render epic-sidebar', () => {
-    expect(vm.$el.innerHTML.indexOf(sidebarVm.$el.innerHTML) !== -1).toEqual(true);
+    expect(vm.$el.querySelector('aside.right-sidebar.epic-sidebar')).not.toBe(null);
   });
 
   it('should emit delete.issuable when epic is deleted', () => {

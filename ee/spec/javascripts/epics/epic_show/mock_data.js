@@ -49,6 +49,15 @@ export const contentProps = {
   initialTitleText: '',
   startDate: '2017-01-01',
   endDate: '2017-10-10',
+  dueDate: '2017-10-10',
+  startDateFixed: '2017-01-01',
+  startDateIsFixed: true,
+  startDateFromMilestones: '',
+  dueDateFixed: '2017-10-10',
+  dueDateIsFixed: true,
+  dueDateFromMilestones: '',
+  startDateSourcingMilestoneTitle: 'Milestone for Start Date',
+  dueDateSourcingMilestoneTitle: 'Milestone for End Date',
   labels: mockLabels,
   participants: mockParticipants,
   subscribed: true,
@@ -63,6 +72,22 @@ export const headerProps = {
     name: 'Administrator',
   },
   created: (new Date()).toISOString(),
+};
+
+export const mockDatePickerProps = {
+  blockClass: 'epic-date',
+  collapsed: false,
+  showToggleSidebar: false,
+  isLoading: false,
+  editable: true,
+  label: 'Date',
+  datePickerLabel: 'Fixed date',
+  selectedDate: null,
+  selectedDateIsFixed: true,
+  dateFromMilestones: null,
+  dateFromMilestonesTooltip: 'Select an issue with milestone to set date',
+  isDateInvalid: false,
+  dateInvalidTooltip: 'Selected date is invalid',
 };
 
 export const props = Object.assign({}, contentProps, headerProps);

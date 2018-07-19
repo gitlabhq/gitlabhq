@@ -3,19 +3,24 @@
 import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import Flash from '~/flash';
-import { __ } from '~/locale';
+import flash from '~/flash';
+import { __, s__, sprintf } from '~/locale';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import ListLabel from '~/vue_shared/models/label';
 import SidebarTodo from '~/sidebar/components/todo_toggle/todo.vue';
-import SidebarDatePicker from '~/vue_shared/components/sidebar/date_picker.vue';
 import SidebarCollapsedGroupedDatePicker from '~/vue_shared/components/sidebar/collapsed_grouped_date_picker.vue';
 import ToggleSidebar from '~/vue_shared/components/sidebar/toggle_sidebar.vue';
 import SidebarLabelsSelect from '~/vue_shared/components/sidebar/labels_select/base.vue';
+import SidebarDatePicker from './sidebar_date_picker.vue';
 import SidebarParticipants from './sidebar_participants.vue';
 import SidebarSubscriptions from './sidebar_subscriptions.vue';
 import SidebarService from '../services/sidebar_service';
 import Store from '../stores/sidebar_store';
+
+const DateTypes = {
+  start: 'start',
+  end: 'end',
+};
 
 export default {
   name: 'EpicSidebar',
@@ -42,13 +47,47 @@ export default {
       required: false,
       default: false,
     },
+    initialStartDateIsFixed: {
+      type: Boolean,
+      required: true,
+    },
+    initialStartDateFixed: {
+      type: String,
+      required: false,
+    },
+    startDateFromMilestones: {
+      type: String,
+      required: false,
+    },
     initialStartDate: {
+      type: String,
+      required: false,
+    },
+    initialDueDateIsFixed: {
+      type: Boolean,
+      required: true,
+    },
+    initialDueDateFixed: {
+      type: String,
+      required: false,
+    },
+    dueDateFromMilestones: {
       type: String,
       required: false,
     },
     initialEndDate: {
       type: String,
       required: false,
+    },
+    startDateSourcingMilestoneTitle: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    dueDateSourcingMilestoneTitle: {
+      type: String,
+      required: false,
+      default: '',
     },
     initialLabels: {
       type: Array,
@@ -102,7 +141,11 @@ export default {
   },
   data() {
     const store = new Store({
+      startDateIsFixed: this.initialStartDateIsFixed,
+      startDateFromMilestones: this.startDateFromMilestones,
       startDate: this.initialStartDate,
+      dueDateIsFixed: this.initialDueDateIsFixed,
+      dueDateFromMilestones: this.dueDateFromMilestones,
       endDate: this.initialEndDate,
       subscribed: this.initialSubscribed,
       todoExists: this.initialTodoExists,
@@ -129,7 +172,70 @@ export default {
       },
     };
   },
+  computed: {
+    /**
+     * This prop determines if epic dates
+     * are valid (i.e. given start date is less than given end date)
+     */
+    isDateValid() {
+      const {
+        startDateTime,
+        startDateTimeFromMilestones,
+        startDateIsFixed,
+        endDateTime,
+        dueDateTimeFromMilestones,
+        dueDateIsFixed,
+      } = this.store;
+
+      if (startDateIsFixed && dueDateIsFixed) {
+        // When Epic start and finish dates are of type fixed.
+        return this.getDateValidity(startDateTime, endDateTime);
+      } else if (!startDateIsFixed && dueDateIsFixed) {
+        // When Epic start date is from milestone and finish date is of type fixed.
+        return this.getDateValidity(startDateTimeFromMilestones, endDateTime);
+      } else if (startDateIsFixed && !dueDateIsFixed) {
+        // When Epic start date is fixed and finish date is from milestone.
+        return this.getDateValidity(startDateTime, dueDateTimeFromMilestones);
+      }
+
+      // When both Epic start date and finish date are from milestone.
+      return this.getDateValidity(startDateTimeFromMilestones, dueDateTimeFromMilestones);
+    },
+    collapsedSidebarStartDate() {
+      return this.store.startDateIsFixed
+        ? this.store.startDateTime
+        : this.store.startDateTimeFromMilestones;
+    },
+    collapsedSidebarEndDate() {
+      return this.store.dueDateIsFixed
+        ? this.store.endDateTime
+        : this.store.dueDateTimeFromMilestones;
+    },
+  },
   methods: {
+    getDateValidity(startDate, endDate) {
+      // If both dates are defined
+      // only then compare, return true otherwise
+      if (startDate && endDate) {
+        return startDate < endDate;
+      }
+      return true;
+    },
+    getDateTypeString(dateType) {
+      return dateType === DateTypes.start ? s__('Epics|start') : s__('Epics|finish');
+    },
+    getDateFromMilestonesTooltip(dateType = 'start') {
+      const { startDateTimeFromMilestones, dueDateTimeFromMilestones } = this.store;
+      const dateSourcingMilestoneTitle = this[`${dateType}DateSourcingMilestoneTitle`];
+
+      if (startDateTimeFromMilestones && dueDateTimeFromMilestones) {
+        return dateSourcingMilestoneTitle;
+      }
+
+      return sprintf(s__('Epics|To schedule your epic\'s %{epicDateType} date based on milestones, assign a milestone with a due date to any issue in the epic.'), {
+        epicDateType: this.getDateTypeString(dateType),
+      });
+    },
     toggleSidebar() {
       this.collapsed = !this.collapsed;
 
@@ -154,29 +260,54 @@ export default {
           .dispatchEvent(new Event('click', { bubbles: true, cancelable: false }));
       }, 100)();
     },
-    saveDate(dateType = 'start', newDate) {
-      const type = dateType === 'start' ? dateType : 'end';
+    saveDate(dateType, newDate, isFixed = true) {
+      const type = dateType === DateTypes.start ? dateType : 'end';
       const capitalizedType = capitalizeFirstCharacter(type);
       const serviceMethod = `update${capitalizedType}Date`;
       const savingBoolean = `saving${capitalizedType}Date`;
 
       this[savingBoolean] = true;
 
-      return this.service[serviceMethod](newDate)
+      return this.service[serviceMethod]({
+        dateValue: newDate,
+        isFixed,
+      })
         .then(() => {
           this[savingBoolean] = false;
           this.store[`${type}Date`] = newDate;
         })
         .catch(() => {
           this[savingBoolean] = false;
-          Flash(`An error occurred while saving ${type} date`);
+          flash(sprintf(s__('Epics|An error occurred while saving %{epicDateType} date'), {
+            epicDateType: this.getDateTypeString(dateType),
+          }));
         });
     },
+    changeStartDateType(dateTypeIsFixed, typeChangeOnEdit) {
+      this.store.startDateIsFixed = dateTypeIsFixed;
+      if (!typeChangeOnEdit) {
+        this.saveDate(
+          DateTypes.start,
+          dateTypeIsFixed ? this.store.startDate : this.store.startDateFromMilestones,
+          dateTypeIsFixed,
+        );
+      }
+    },
     saveStartDate(date) {
-      return this.saveDate('start', date);
+      return this.saveDate(DateTypes.start, date);
+    },
+    changeEndDateType(dateTypeIsFixed, typeChangeOnEdit) {
+      this.store.dueDateIsFixed = dateTypeIsFixed;
+      if (!typeChangeOnEdit) {
+        this.saveDate(
+          DateTypes.end,
+          dateTypeIsFixed ? this.store.endDate : this.store.dueDateFromMilestones,
+          dateTypeIsFixed,
+        );
+      }
     },
     saveEndDate(date) {
-      return this.saveDate('end', date);
+      return this.saveDate(DateTypes.end, date);
     },
     saveTodoState({ count, deletePath }) {
       this.savingTodoAction = false;
@@ -220,9 +351,9 @@ export default {
         })
         .catch(() => {
           if (this.store.subscribed) {
-            Flash(__('An error occurred while unsubscribing to notifications.'));
+            flash(__('An error occurred while unsubscribing to notifications.'));
           } else {
-            Flash(__('An error occurred while subscribing to notifications.'));
+            flash(__('An error occurred while subscribing to notifications.'));
           }
         });
     },
@@ -239,7 +370,7 @@ export default {
           })
           .catch(() => {
             this.savingTodoAction = false;
-            Flash(__('There was an error adding a todo.'));
+            flash(__('There was an error adding a todo.'));
           });
       } else {
         this.service
@@ -251,7 +382,7 @@ export default {
           })
           .catch(() => {
             this.savingTodoAction = false;
-            Flash(__('There was an error deleting the todo.'));
+            flash(__('There was an error deleting the todo.'));
           });
       }
     },
@@ -263,7 +394,7 @@ export default {
   <aside
     :class="{ 'right-sidebar-expanded' : !collapsed, 'right-sidebar-collapsed': collapsed }"
     v-bind="isUserSignedIn ? { 'data-signed-in': true } : {}"
-    class="right-sidebar"
+    class="right-sidebar epic-sidebar"
   >
     <div class="issuable-sidebar js-issuable-update">
       <div class="block issuable-sidebar-header">
@@ -302,32 +433,44 @@ export default {
         v-if="!collapsed"
         :collapsed="collapsed"
         :is-loading="savingStartDate"
+        :is-date-invalid="!isDateValid"
         :editable="editable"
+        :selected-date-is-fixed="store.startDateIsFixed"
         :selected-date="store.startDateTime"
-        :max-date="store.endDateTime"
+        :date-from-milestones="store.startDateTimeFromMilestones"
+        :date-from-milestones-tooltip="getDateFromMilestonesTooltip('start')"
         :show-toggle-sidebar="!isUserSignedIn"
+        :date-picker-label="__('Fixed start date')"
+        :label="__('Planned start date')"
+        :date-invalid-tooltip="__(`This date is after the planned finish date,
+          so this epic won't appear in the roadmap.`)"
         block-class="start-date"
-        label="Planned start date"
         @saveDate="saveStartDate"
-        @toggleCollapse="toggleSidebar"
+        @toggleDateType="changeStartDateType"
       />
       <sidebar-date-picker
         v-if="!collapsed"
         :collapsed="collapsed"
         :is-loading="savingEndDate"
+        :is-date-invalid="!isDateValid"
         :editable="editable"
+        :selected-date-is-fixed="store.dueDateIsFixed"
         :selected-date="store.endDateTime"
-        :min-date="store.startDateTime"
+        :date-from-milestones="store.dueDateTimeFromMilestones"
+        :date-from-milestones-tooltip="getDateFromMilestonesTooltip('due')"
+        :date-picker-label="__('Fixed finish date')"
+        :label="__('Planned finish date')"
+        :date-invalid-tooltip="__(`This date is before the planned start date,
+          so this epic won't appear in the roadmap.`)"
         block-class="end-date"
-        label="Planned finish date"
         @saveDate="saveEndDate"
-        @toggleCollapse="toggleSidebar"
+        @toggleDateType="changeEndDateType"
       />
       <sidebar-collapsed-grouped-date-picker
         v-if="collapsed"
         :collapsed="collapsed"
-        :min-date="store.startDateTime"
-        :max-date="store.endDateTime"
+        :min-date="collapsedSidebarStartDate"
+        :max-date="collapsedSidebarEndDate"
         @toggleCollapse="toggleSidebar"
       />
       <sidebar-labels-select
