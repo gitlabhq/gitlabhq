@@ -1,0 +1,6 @@
+---
+title: 'Rails 5 fix NoMethodError: undefined method ''message'' for nil:NilClass in
+  host_spec.rb'
+merge_request: 6589
+author: Jasper Maes
+type: fixed
