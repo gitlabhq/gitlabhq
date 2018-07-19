@@ -1,0 +1,5 @@
+---
+title: Geo - Allow repository verification to be disabled on a secondary node
+merge_request: 6599
+author:
+type: fixed
