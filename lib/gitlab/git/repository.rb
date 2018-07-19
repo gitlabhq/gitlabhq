@@ -1,4 +1,3 @@
-# Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
