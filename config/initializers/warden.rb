@@ -22,12 +22,12 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.after_set_user(scope: :user, only: :set_user) do |user, auth, opts|
-    Gitlab::Auth::Activity.new(opts).user_set_manually!
+    Gitlab::Auth::Activity.new(opts).user_session_override!
   end
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
     ActiveSession.destroy(user || auth.user, auth.request.session.id)
 
-    Gitlab::Auth::Activity.new(opts).user_logout!
+    Gitlab::Auth::Activity.new(opts).user_signed_out!
   end
 end

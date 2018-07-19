@@ -29,6 +29,7 @@ describe 'Login' do
       User.delete_all
 
       user = create(:admin, password_automatically_set: true)
+      expect(Gitlab::Auth::Activity).to increment(:user_authenticated_counter)
 
       visit root_path
       expect(current_path).to eq edit_user_password_path

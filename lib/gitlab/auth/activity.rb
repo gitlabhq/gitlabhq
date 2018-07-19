@@ -39,28 +39,18 @@ module Gitlab
         self.class.user_session_fetched_counter.increment
       end
 
-      def user_set_manually!
+      def user_session_override!
         self.class.user_session_override_counter.increment
       end
 
-      def user_logout!
+      def user_signed_out!
         self.class.user_signed_out_counter.increment
-      end
-
-      class StubCounter
-        def initialize(metric)
-          Rails.logger.warn("METRIC #{metric}")
-        end
-
-        def increment
-        end
       end
 
       COUNTERS.each_pair do |metric, description|
         define_singleton_method("#{metric}_counter") do
           strong_memoize(metric) do
-            StubCounter.new(metric)
-            # Gitlab::Metrics.counter("gitlab_auth_#{metric}_total", description)
+            Gitlab::Metrics.counter("gitlab_auth_#{metric}_total".to_sym, description)
           end
         end
       end
