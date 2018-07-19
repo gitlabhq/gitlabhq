@@ -237,14 +237,14 @@ describe Gitlab::BitbucketServerImport::Importer do
     it '#restore_branches' do
       expect(subject).to receive(:restore_branches).and_call_original
       expect(subject).to receive(:delete_temp_branches)
-      expect(subject.client).to receive(:create_branch).with(
-                                  project_key, repo_slug,
-                                  temp_branch_from,
-                                  '12345678')
-      expect(subject.client).to receive(:create_branch).with(
-                                  project_key, repo_slug,
-                                  temp_branch_to,
-                                  '98765432')
+      expect(subject.client).to receive(:create_branch)
+                                 .with(project_key, repo_slug,
+                                       temp_branch_from,
+                                       '12345678')
+      expect(subject.client).to receive(:create_branch)
+                                 .with(project_key, repo_slug,
+                                       temp_branch_to,
+                                       '98765432')
 
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
     end
@@ -252,14 +252,14 @@ describe Gitlab::BitbucketServerImport::Importer do
     it '#delete_temp_branches' do
       expect(subject.client).to receive(:create_branch).twice
       expect(subject).to receive(:delete_temp_branches).and_call_original
-      expect(subject.client).to receive(:delete_branch).with(
-                                  project_key, repo_slug,
-                                  temp_branch_from,
-                                  '12345678')
-      expect(subject.client).to receive(:delete_branch).with(
-                                  project_key, repo_slug,
-                                  temp_branch_to,
-                                  '98765432')
+      expect(subject.client).to receive(:delete_branch)
+                                 .with(project_key, repo_slug,
+                                       temp_branch_from,
+                                       '12345678')
+      expect(subject.client).to receive(:delete_branch)
+                                 .with(project_key, repo_slug,
+                                       temp_branch_to,
+                                       '98765432')
       expect(project.repository).to receive(:delete_branch).with(temp_branch_from)
       expect(project.repository).to receive(:delete_branch).with(temp_branch_to)
 
