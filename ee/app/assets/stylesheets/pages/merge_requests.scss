@@ -50,6 +50,13 @@
   .approve-btn {
    vertical-align: baseline;
   }
+
+  .approvals-required-text {
+    svg {
+      position: relative;
+      top: 3px;
+    }
+  }
 }
 
 .approvals-footer {

@@ -39,7 +39,6 @@
 }
 
 .mr-widget-grouped-section {
-
   .report-block-container {
     max-height: 170px;
     overflow: auto;
@@ -108,7 +107,6 @@
     svg {
       width: 16px;
       height: 16px;
-      top: 3px;
       left: -2px;
     }
   }
@@ -141,10 +139,6 @@
   .break-link {
     word-wrap: break-word;
     word-break: break-all;
-  }
-
-  .btn-help svg {
-    top: 5px;
   }
 }
 
