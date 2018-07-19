@@ -8,17 +8,30 @@ class DropDuplicateProtectedTags < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  BATCH_SIZE = 1000
+
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+
+    include ::EachBatch
+  end
+
+  class ProtectedTag < ActiveRecord::Base
+    self.table_name = 'protected_tags'
+  end
+
   def up
-    execute <<~SQL
-      DELETE FROM protected_tags
-      WHERE id IN (
-        SELECT * FROM (
-          SELECT MAX(id) FROM protected_tags
-              GROUP BY name, project_id
-              HAVING COUNT(*) > 1
-          ) t
-        )
-    SQL
+    Project.each_batch(of: BATCH_SIZE) do |projects|
+      ids = ProtectedTag
+        .where(project_id: projects.select(:id))
+        .group(:name, :project_id)
+        .select('max(id)')
+
+      ProtectedTag
+        .where(project_id: projects)
+        .where.not(id: ids)
+        .delete_all
+    end
   end
 
   def down
