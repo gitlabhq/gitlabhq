@@ -27,7 +27,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     describe '#repository' do
-      it 'returns a Rugged::Repository' do
+      it 'returns a mock implemention of ::Repository' do
         migration_project = described_class::Project
           .find_including_path(project.id)
 
@@ -83,11 +83,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'encodes data to UTF-8' do
-      allow_any_instance_of(Rugged::Repository).to receive(:lookup)
-        .with(commit.id)
-        .and_return(commit)
-
-      allow(commit).to receive(:message)
+      allow(commit).to receive(:body)
         .and_return('김치'.force_encoding('BINARY'))
 
       migration.up
