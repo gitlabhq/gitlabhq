@@ -8,6 +8,8 @@ module Gitlab
         alias_method :branch_created?, :branch_created
 
         def self.from_gitaly(branch_update)
+          return if branch_update.nil?
+
           new(
             branch_update.commit_id,
             branch_update.repo_created,
