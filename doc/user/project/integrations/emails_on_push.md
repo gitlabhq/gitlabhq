@@ -6,7 +6,7 @@ every change that is pushed to your project.
 Navigate to the [Integrations page](project_services.md#accessing-the-project-services)
 and select the **Emails on push** service to configure it.
 
-In the _Recipients_ area, provide a list of emails separated by commas.
+In the _Recipients_ area, provide a list of emails separated by spaces or newlines.
 
 You can configure any of the following settings depending on your preference.
 
