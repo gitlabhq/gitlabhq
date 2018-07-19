@@ -152,6 +152,24 @@ describe Project do
     end
   end
 
+  describe '#environments_for_scope' do
+    set(:project) { create(:project) }
+
+    before do
+      create_list(:environment, 2, project: project)
+    end
+
+    it 'retrieves all project environments when using the * wildcard' do
+      expect(project.environments_for_scope("*")).to eq(project.environments)
+    end
+
+    it 'retrieves a specific project environment when using the name of that environment' do
+      environment = project.environments.first
+
+      expect(project.environments_for_scope(environment.name)).to eq([environment])
+    end
+  end
+
   describe '#ensure_external_webhook_token' do
     let(:project) { create(:project, :repository) }
 

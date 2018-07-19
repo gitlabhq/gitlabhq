@@ -3,6 +3,7 @@ module PrometheusAdapter
 
   included do
     include ReactiveCaching
+    prepend EE::PrometheusAdapter
 
     self.reactive_cache_key = ->(adapter) { [adapter.class.model_name.singular, adapter.id] }
     self.reactive_cache_lease_timeout = 30.seconds
@@ -24,17 +25,10 @@ module PrometheusAdapter
     def query(query_name, *args)
       return unless can_query?
 
-      query_class = Gitlab::Prometheus::Queries.const_get("#{query_name.to_s.classify}Query")
+      query_class = query_klass_for(query_name)
+      query_args = build_query_args(*args)
 
-      args.map! do |arg|
-        if arg.respond_to?(:id)
-          arg.id
-        else
-          arg
-        end
-      end
-
-      with_reactive_cache(query_class.name, *args, &query_class.method(:transform_reactive_result))
+      with_reactive_cache(query_class.name, *query_args, &query_class.method(:transform_reactive_result))
     end
 
     # Cache metrics for specific environment
@@ -49,6 +43,14 @@ module PrometheusAdapter
       }
     rescue Gitlab::PrometheusClient::Error => err
       { success: false, result: err.message }
+    end
+
+    def query_klass_for(query_name)
+      Gitlab::Prometheus::Queries.const_get("#{query_name.to_s.classify}Query")
+    end
+
+    def build_query_args(*args)
+      args.map(&:id)
     end
   end
 end

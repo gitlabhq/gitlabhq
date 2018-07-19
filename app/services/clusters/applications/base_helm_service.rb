@@ -3,6 +3,8 @@ module Clusters
     class BaseHelmService
       attr_accessor :app
 
+      prepend EE::Clusters::Applications::BaseHelmService
+
       def initialize(app)
         @app = app
       end

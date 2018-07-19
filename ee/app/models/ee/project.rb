@@ -39,6 +39,8 @@ module EE
 
       has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
 
+      has_many :prometheus_alerts, inverse_of: :project
+
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirror, -> { where(mirror: true) }
@@ -97,6 +99,12 @@ module EE
 
     def latest_pipeline_with_security_reports
       pipelines.newest_first(default_branch).with_security_reports.first
+    end
+
+    def environments_for_scope(scope)
+      quoted_scope = ::Gitlab::SQL::Glob.q(scope)
+
+      environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def ensure_external_webhook_token

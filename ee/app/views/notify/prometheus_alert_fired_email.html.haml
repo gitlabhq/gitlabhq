@@ -1,0 +1,14 @@
+%p
+  An alert has been triggered in #{@project.full_path}.
+
+%p
+  Environment: #{@environment.name}
+
+%p
+  Metric:
+
+  %pre
+    = @alert.full_query
+
+%p
+  = link_to("View #{@environment.name} performance dashboard.", metrics_project_environment_url(@environment.project, @environment))

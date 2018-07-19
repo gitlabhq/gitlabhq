@@ -3,7 +3,7 @@ module Gitlab
     class Metric
       include ActiveModel::Model
 
-      attr_accessor :title, :required_metrics, :weight, :y_label, :queries
+      attr_accessor :id, :title, :required_metrics, :weight, :y_label, :queries
 
       validates :title, :required_metrics, :weight, :y_label, :queries, presence: true
 

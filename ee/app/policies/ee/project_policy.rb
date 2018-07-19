@@ -49,6 +49,11 @@ module EE
         @subject.feature_available?(:pod_logs, @user)
       end
 
+      with_scope :subject
+      condition(:prometheus_alerts_enabled) do
+        @subject.feature_available?(:prometheus_alerts, @user)
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -97,6 +102,7 @@ module EE
       end
 
       rule { pod_logs_enabled & can?(:maintainer_access) }.enable :read_pod_logs
+      rule { prometheus_alerts_enabled & can?(:maintainer_access) }.enable :read_prometheus_alerts
 
       rule { auditor }.policy do
         enable :public_user_access
