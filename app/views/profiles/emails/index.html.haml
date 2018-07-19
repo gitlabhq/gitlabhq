@@ -12,7 +12,7 @@
       Add email address
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
-        = f.label :email, class: 'label-light'
+        = f.label :email, class: 'label-bold'
         = f.text_field :email, class: 'form-control'
       .prepend-top-default
         = f.submit 'Add email address', class: 'btn btn-create'
