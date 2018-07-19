@@ -6,10 +6,22 @@ class BackgroundMigrationWorker
   # The minimum amount of time between processing two jobs of the same migration
   # class.
   #
-  # This interval is set to 5 minutes so autovacuuming and other maintenance
-  # related tasks have plenty of time to clean up after a migration has been
-  # performed.
-  MIN_INTERVAL = 5.minutes.to_i
+  # This interval is set to 2 or 5 minutes so autovacuuming and other
+  # maintenance related tasks have plenty of time to clean up after a migration
+  # has been performed.
+  def self.minimum_interval
+    if enable_health_check?
+      2.minutes.to_i
+    else
+      5.minutes.to_i
+    end
+  end
+
+  def self.enable_health_check?
+    Rails.env.development? ||
+      Rails.env.test? ||
+      Feature.enabled?('background_migration_health_check')
+  end
 
   # Performs the background migration.
   #
@@ -27,7 +39,8 @@ class BackgroundMigrationWorker
       # running a migration of this class or we ran one recently. In this case
       # we'll reschedule the job in such a way that it is picked up again around
       # the time the lease expires.
-      self.class.perform_in(ttl || MIN_INTERVAL, class_name, arguments)
+      self.class
+        .perform_in(ttl || self.class.minimum_interval, class_name, arguments)
     end
   end
 
@@ -39,17 +52,51 @@ class BackgroundMigrationWorker
       [true, nil]
     else
       lease = lease_for(class_name)
+      perform = !!lease.try_obtain
 
-      [lease.try_obtain, lease.ttl]
+      # If we managed to acquire the lease but the DB is not healthy, then we
+      # want to simply reschedule our job and try again _after_ the lease
+      # expires.
+      if perform && !healthy_database?
+        database_unhealthy_counter.increment
+
+        perform = false
+      end
+
+      [perform, lease.ttl]
     end
   end
 
   def lease_for(class_name)
     Gitlab::ExclusiveLease
-      .new("#{self.class.name}:#{class_name}", timeout: MIN_INTERVAL)
+      .new(lease_key_for(class_name), timeout: self.class.minimum_interval)
+  end
+
+  def lease_key_for(class_name)
+    "#{self.class.name}:#{class_name}"
   end
 
   def always_perform?
     Rails.env.test?
+  end
+
+  # Returns true if the database is healthy enough to allow the migration to be
+  # performed.
+  #
+  # class_name - The name of the background migration that we might want to
+  #              run.
+  def healthy_database?
+    return true unless self.class.enable_health_check?
+
+    return true unless Gitlab::Database.postgresql?
+
+    !Postgresql::ReplicationSlot.lag_too_great?
+  end
+
+  def database_unhealthy_counter
+    Gitlab::Metrics.counter(
+      :background_migration_database_health_reschedules,
+      'The number of times a background migration is rescheduled because the database is unhealthy.'
+    )
   end
 end
