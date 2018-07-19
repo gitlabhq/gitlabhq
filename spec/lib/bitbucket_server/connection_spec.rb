@@ -39,7 +39,7 @@ describe BitbucketServer::Connection do
   describe '#delete' do
     context 'branch API' do
       let(:branch_path) { '/projects/foo/repos/bar/branches' }
-      let(:branch_url) { 'https://test:7990/branch-utils/1.0/projects/foo/repos/bar/branches' }
+      let(:branch_url) { 'https://test:7990/rest/branch-utils/1.0/projects/foo/repos/bar/branches' }
       let(:path) { }
 
       it 'returns JSON body' do

@@ -88,7 +88,7 @@ module BitbucketServer
 
     def delete_url(resource, path)
       if resource == :branches
-        "#{base_uri}/branch-utils/#{api_version}#{path}"
+        "#{base_uri}/rest/branch-utils/#{api_version}#{path}"
       else
         build_url(path)
       end
