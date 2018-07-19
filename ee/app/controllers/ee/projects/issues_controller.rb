@@ -16,7 +16,7 @@ module EE
       end
 
       def export_csv
-        ExportCsvWorker.perform_async(current_user.id, project.id, filter_params)
+        ExportCsvWorker.perform_async(current_user.id, project.id, filter_params.to_h)
 
         index_path = project_issues_path(project)
         redirect_to(index_path, notice: "Your CSV export has started. It will be emailed to #{current_user.notification_email} when complete.")
