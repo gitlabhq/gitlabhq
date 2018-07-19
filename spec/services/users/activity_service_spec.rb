@@ -1,60 +1,61 @@
 require 'spec_helper'
 
 describe Users::ActivityService do
-  include UserActivitiesHelpers
+  include ExclusiveLeaseHelpers
 
-  let(:user) { create(:user) }
+  let(:user) { create(:user, last_activity_on: last_activity_on) }
 
-  subject(:service) { described_class.new(user, 'type') }
+  subject { described_class.new(user, 'type') }
 
   describe '#execute', :clean_gitlab_redis_shared_state do
     context 'when last activity is nil' do
-      before do
-        service.execute
+      let(:last_activity_on) { nil }
+
+      it 'updates last_activity_on for the user' do
+        expect { subject.execute }
+          .to change(user, :last_activity_on).from(last_activity_on).to(Date.today)
       end
+    end
 
-      it 'sets the last activity timestamp for the user' do
-        expect(last_hour_user_ids).to eq([user.id])
+    context 'when last activity is in the past' do
+      let(:last_activity_on) { Date.today - 1.week }
+
+      it 'updates last_activity_on for the user' do
+        expect { subject.execute }
+          .to change(user, :last_activity_on)
+                .from(last_activity_on)
+                .to(Date.today)
       end
+    end
 
-      it 'updates the same user' do
-        service.execute
+    context 'when last activity is today' do
+      let(:last_activity_on) { Date.today }
 
-        expect(last_hour_user_ids).to eq([user.id])
-      end
-
-      it 'updates the timestamp of an existing user' do
-        Timecop.freeze(Date.tomorrow) do
-          expect { service.execute }.to change { user_activity(user) }.to(Time.now.to_i.to_s)
-        end
-      end
-
-      describe 'other user' do
-        it 'updates other user' do
-          other_user = create(:user)
-          described_class.new(other_user, 'type').execute
-
-          expect(last_hour_user_ids).to match_array([user.id, other_user.id])
-        end
+      it 'does not update last_activity_on' do
+        expect { subject.execute }.not_to change(user, :last_activity_on)
       end
     end
 
     context 'when in GitLab read-only instance' do
+      let(:last_activity_on) { nil }
+
       before do
         allow(Gitlab::Database).to receive(:read_only?).and_return(true)
       end
 
-      it 'does not update last_activity_at' do
-        service.execute
-
-        expect(last_hour_user_ids).to eq([])
+      it 'does not update last_activity_on' do
+        expect { subject.execute }.not_to change(user, :last_activity_on)
       end
     end
-  end
 
-  def last_hour_user_ids
-    Gitlab::UserActivities.new
-      .select { |k, v| v >= 1.hour.ago.to_i.to_s }
-      .map { |k, _| k.to_i }
+    context 'when a lease could not be obtained' do
+      let(:last_activity_on) { nil }
+
+      it 'does not update last_activity_on' do
+        stub_exclusive_lease_taken("acitvity_service:#{user.id}", timeout: 1.minute.to_i)
+
+        expect { subject.execute }.not_to change(user, :last_activity_on)
+      end
+    end
   end
 end
