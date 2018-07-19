@@ -79,7 +79,7 @@ module EESpecificCheck
   def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
     if ce_fetch_head.start_with?('canonical-ce') # No specific CE branch
       say("No CE branch found, using merge base directly")
-      run_git_command("merge-base #{ce_merge_base} HEAD")
+      ce_merge_base
     elsif ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
       say("EE is up-to-date with CE, using #{ce_fetch_head} directly")
       ce_fetch_head
