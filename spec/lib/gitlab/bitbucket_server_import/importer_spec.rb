@@ -5,12 +5,15 @@ describe Gitlab::BitbucketServerImport::Importer do
 
   let(:project) { create(:project, :repository, import_url: 'http://my-bitbucket') }
   let(:now) { Time.now.utc.change(usec: 0) }
+  let(:project_key) { 'TEST' }
+  let(:repo_slug) { 'rouge' }
+  let(:sample) { RepoHelpers.sample_compare }
 
   subject { described_class.new(project) }
 
   before do
     data = project.create_or_update_import_data(
-      data: { project_key: 'TEST', repo_slug: 'rouge' },
+      data: { project_key: project_key, repo_slug: repo_slug },
       credentials: { base_uri: 'http://my-bitbucket', user: 'bitbucket', password: 'test' }
     )
     data.save
@@ -34,8 +37,6 @@ describe Gitlab::BitbucketServerImport::Importer do
   end
 
   describe '#import_pull_requests' do
-    let(:sample) { RepoHelpers.sample_compare }
-
     before do
       allow(subject).to receive(:import_repository)
       allow(subject).to receive(:delete_temp_branches)
@@ -206,8 +207,63 @@ describe Gitlab::BitbucketServerImport::Importer do
     end
   end
 
-  describe '#delete_temp_branches' do
-    it 'deletes branches' do
+  describe 'inaccessible branches' do
+    let(:id) { 10 }
+    let(:temp_branch_from) { "gitlab/import/pull-request/#{id}/from" }
+    let(:temp_branch_to) { "gitlab/import/pull-request/#{id}/to" }
+
+    before do
+      pull_request = instance_double(
+        BitbucketServer::Representation::PullRequest,
+        iid: id,
+        source_branch_sha: '12345678',
+        source_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.source_branch,
+        target_branch_sha: '98765432',
+        target_branch_name: Gitlab::Git::BRANCH_REF_PREFIX + sample.target_branch,
+        title: 'This is a title',
+        description: 'This is a test pull request',
+        state: 'merged',
+        author: 'Test Author',
+        author_email: project.owner.email,
+        created_at: Time.now,
+        updated_at: Time.now,
+        merged?: true)
+
+      expect(subject.client).to receive(:pull_requests).and_return([pull_request])
+      expect(subject.client).to receive(:activities).and_return([])
+      expect(subject).to receive(:import_repository).twice
+    end
+
+    it '#restore_branches' do
+      expect(subject).to receive(:restore_branches).and_call_original
+      expect(subject).to receive(:delete_temp_branches)
+      expect(subject.client).to receive(:create_branch).with(
+                                  project_key, repo_slug,
+                                  temp_branch_from,
+                                  '12345678')
+      expect(subject.client).to receive(:create_branch).with(
+                                  project_key, repo_slug,
+                                  temp_branch_to,
+                                  '98765432')
+
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
+    end
+
+    it '#delete_temp_branches' do
+      expect(subject.client).to receive(:create_branch).twice
+      expect(subject).to receive(:delete_temp_branches).and_call_original
+      expect(subject.client).to receive(:delete_branch).with(
+                                  project_key, repo_slug,
+                                  temp_branch_from,
+                                  '12345678')
+      expect(subject.client).to receive(:delete_branch).with(
+                                  project_key, repo_slug,
+                                  temp_branch_to,
+                                  '98765432')
+      expect(project.repository).to receive(:delete_branch).with(temp_branch_from)
+      expect(project.repository).to receive(:delete_branch).with(temp_branch_to)
+
+      expect { subject.execute }.to change { MergeRequest.count }.by(1)
     end
   end
 end
