@@ -7,6 +7,8 @@ module Gitlab
       REMOTE_NAME = 'bitbucket_server'.freeze
       BATCH_SIZE = 100
 
+      TempBranch = Struct.new(:name, :sha)
+
       def self.imports_repository?
         true
       end
@@ -73,37 +75,42 @@ module Gitlab
         "gitlab/import/pull-request/#{pull_request.iid}/#{suffix}"
       end
 
+      # This method restores required SHAs that GitLab needs to create diffs
+      # into branch names as the following:
+      #
+      # gitlab/import/pull-request/N/{to,from}
       def restore_branches(pull_requests)
         shas_to_restore = []
+
         pull_requests.each do |pull_request|
-          shas_to_restore << {
-            temp_branch_name(pull_request, :from) => pull_request.source_branch_sha,
-            temp_branch_name(pull_request, :to) => pull_request.target_branch_sha
-          }
+          shas_to_restore << TempBranch.new(temp_branch_name(pull_request, :from),
+                                            pull_request.source_branch_sha)
+          shas_to_restore << TempBranch.new(temp_branch_name(pull_request, :to),
+                                            pull_request.target_branch_sha)
         end
 
+        # Create the branches on the Bitbucket Server first
         created_branches = restore_branch_shas(shas_to_restore)
+
         @temp_branches += created_branches
+        # Now sync the repository so we get the new branches
         import_repository unless created_branches.empty?
       end
 
       def restore_branch_shas(shas_to_restore)
-        branches_created = []
+        shas_to_restore.each_with_object([]) do |temp_branch, branches_created|
+          branch_name = temp_branch.name
+          sha = temp_branch.sha
 
-        shas_to_restore.each_with_index do |shas, index|
-          shas.each do |branch_name, sha|
-            next if sha_exists?(sha)
+          next if sha_exists?(sha)
 
-            begin
-              client.create_branch(project_key, repository_slug, branch_name, sha)
-              branches_created << branch_name
-            rescue BitbucketServer::Connection::ConnectionError => e
-              Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{e}")
-            end
+          begin
+            client.create_branch(project_key, repository_slug, branch_name, sha)
+            branches_created << temp_branch
+          rescue BitbucketServer::Connection::ConnectionError => e
+            Rails.logger.warn("BitbucketServerImporter: Unable to recreate branch for SHA #{sha}: #{e}")
           end
         end
-
-        branches_created
       end
 
       def import_repository
@@ -147,12 +154,12 @@ module Gitlab
       end
 
       def delete_temp_branches
-        @temp_branches.each do |branch_name|
+        @temp_branches.each do |branch|
           begin
-            client.delete_branch(project_key, repository_slug, branch_name)
-            project.repository.delete_branch(branch_name)
+            client.delete_branch(project_key, repository_slug, branch.name, branch.sha)
+            project.repository.delete_branch(branch.name)
           rescue BitbucketServer::Connection::ConnectionError => e
-            @errors << { type: :delete_temp_branches, branch_name: branch_name, errors: e.message }
+            @errors << { type: :delete_temp_branches, branch_name: branch.name, errors: e.message }
           end
         end
       end
