@@ -339,6 +339,7 @@ project:
 - prometheus_alerts
 - software_license_policies
 - repository_languages
+- project_registry
 award_emoji:
 - awardable
 - user

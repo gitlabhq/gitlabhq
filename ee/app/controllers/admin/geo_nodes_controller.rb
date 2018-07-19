@@ -14,7 +14,19 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def projects
-    @nodes = GeoNode.all.order(:id)
+    finder = Geo::ProjectRegistryStatusFinder.new
+    case params[:sync_status]
+    when 'never'
+      @projects = finder.never_synced_projects.page(params[:page])
+    when 'failed'
+      @registries = finder.failed_projects.page(params[:page])
+    when 'pending'
+      @registries = finder.pending_projects.page(params[:page])
+    else
+      @registries = finder.synced_projects.page(params[:page])
+    end
+
+    # Gitlab::Geo.current_node.projects.includes(:project_registry).page(params[:page])
   end
 
   def create
