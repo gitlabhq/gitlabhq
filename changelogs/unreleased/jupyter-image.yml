@@ -1,5 +1,5 @@
 ---
 title: Specify Jupyter Image to use with JupyterHub Installation
-merge_request:
-author:
+merge_request: 20714
+author: Amit Rathi
 type: changed
