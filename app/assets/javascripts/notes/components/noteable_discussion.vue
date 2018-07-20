@@ -1,9 +1,8 @@
 <script>
-import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
-import { convertObjectPropsToCamelCase, scrollToElement } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
 import { s__ } from '~/locale';
@@ -21,6 +20,7 @@ import placeholderSystemNote from '../../vue_shared/components/notes/placeholder
 import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
+import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
@@ -40,7 +40,7 @@ export default {
   directives: {
     tooltip,
   },
-  mixins: [autosave, noteable, resolvable],
+  mixins: [autosave, noteable, resolvable, discussionNavigation],
   props: {
     discussion: {
       type: Object,
@@ -61,6 +61,11 @@ export default {
       required: false,
       default: false,
     },
+    discussionsByDiffOrder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -75,7 +80,12 @@ export default {
       'discussionCount',
       'resolvedDiscussionCount',
       'allDiscussions',
+      'unresolvedDiscussionsIdsByDiff',
+      'unresolvedDiscussionsIdsByDate',
       'unresolvedDiscussions',
+      'unresolvedDiscussionsIdsOrdered',
+      'nextUnresolvedDiscussionId',
+      'isLastUnresolvedDiscussion',
     ]),
     transformedDiscussion() {
       return {
@@ -125,6 +135,10 @@ export default {
     },
     hasMultipleUnresolvedDiscussions() {
       return this.unresolvedDiscussions.length > 1;
+    },
+    showJumpToNextDiscussion() {
+      return this.hasMultipleUnresolvedDiscussions &&
+        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder);
     },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.transformedDiscussion;
@@ -242,21 +256,10 @@ Please check your network connection and try again.`;
         });
     },
     jumpToNextDiscussion() {
-      const discussionIds = this.allDiscussions.map(d => d.id);
-      const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
-      const currentIndex = discussionIds.indexOf(this.discussion.id);
-      const remainingAfterCurrent = discussionIds.slice(currentIndex + 1);
-      const nextIndex = _.findIndex(remainingAfterCurrent, id => unresolvedIds.indexOf(id) > -1);
+      const nextId =
+        this.nextUnresolvedDiscussionId(this.discussion.id, this.discussionsByDiffOrder);
 
-      if (nextIndex > -1) {
-        const nextId = remainingAfterCurrent[nextIndex];
-        const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
-
-        if (el) {
-          this.expandDiscussion({ discussionId: nextId });
-          scrollToElement(el);
-        }
-      }
+      this.jumpToDiscussion(nextId);
     },
   },
 };
@@ -398,7 +401,7 @@ Please check your network connection and try again.`;
                           </a>
                         </div>
                         <div
-                          v-if="hasMultipleUnresolvedDiscussions"
+                          v-if="showJumpToNextDiscussion"
                           class="btn-group"
                           role="group">
                           <button
