@@ -23,6 +23,8 @@ module API
       end
     end
 
+    prepend EE::API::Projects
+
     helpers do
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'

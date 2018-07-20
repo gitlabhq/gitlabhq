@@ -46,6 +46,12 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     where(repository_verification_failed.or(wiki_verification_failed))
   end
 
+  def self.checksum_mismatch
+    repository_checksum_mismatch = arel_table[:repository_checksum_mismatch].eq(true)
+    wiki_checksum_mismatch = arel_table[:wiki_checksum_mismatch].eq(true)
+    where(repository_checksum_mismatch.or(wiki_checksum_mismatch))
+  end
+
   def self.retry_due
     where(
       arel_table[:repository_retry_at].lt(Time.now)
