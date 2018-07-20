@@ -3,7 +3,7 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
 
   def change
     create_table :packages_package_files do |t|
-      t.references :package, index: true, foreign_key: true, null: false
+      t.references :package, index: true, foreign_key: { on_delete: :cascade }, null: false
       t.string :file
       t.integer :file_type
       t.integer :size
