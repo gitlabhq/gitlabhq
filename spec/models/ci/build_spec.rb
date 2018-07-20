@@ -2269,6 +2269,34 @@ describe Ci::Build do
     end
   end
 
+  describe '#yaml_variables' do
+    before do
+      build.update_attribute(:yaml_variables, variables)
+    end
+
+    context 'when serialized valu is a symbolized hash' do
+      let(:variables) do
+        [{ key: :VARIABLE, value: 'my value 1' }]
+      end
+
+      it 'keeps symbolizes keys and stringifies variables names' do
+        expect(build.yaml_variables)
+          .to eq [{ key: 'VARIABLE', value: 'my value 1' }]
+      end
+    end
+
+    context 'when serialized value is a hash with string keys' do
+      let(:variables) do
+        [{ 'key' => :VARIABLE, 'value' => 'my value 2' }]
+      end
+
+      it 'symblizes variables hash' do
+        expect(build.yaml_variables)
+          .to eq [{ key: 'VARIABLE', value: 'my value 2' }]
+      end
+    end
+  end
+
   describe 'state transition: any => [:pending]' do
     let(:build) { create(:ci_build, :created) }
 

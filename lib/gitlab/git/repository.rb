@@ -1,4 +1,3 @@
-# Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -673,33 +672,15 @@ module Gitlab
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
       def add_remote(remote_name, url, mirror_refmap: nil)
-        gitaly_migrate(:remote_add_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
-          else
-            rugged_add_remote(remote_name, url, mirror_refmap)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
         end
       end
 
       def remove_remote(remote_name)
-        gitaly_migrate(:remote_remove_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.remove_remote(remote_name)
-          else
-            rugged_remove_remote(remote_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.remove_remote(remote_name)
         end
-      end
-
-      # Update the specified remote using the values in the +options+ hash
-      #
-      # Example
-      # repo.update_remote("origin", url: "path/to/repo")
-      def remote_update(remote_name, url:)
-        # TODO: Implement other remote options
-        rugged.remotes.set_url(remote_name, url)
-        nil
       end
 
       AUTOCRLF_VALUES = {
@@ -875,12 +856,8 @@ module Gitlab
       end
 
       def fetch_repository_as_mirror(repository)
-        gitaly_migrate(:remote_fetch_internal_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.fetch_internal_remote(repository)
-          else
-            rugged_fetch_repository_as_mirror(repository)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.fetch_internal_remote(repository)
         end
       end
 
@@ -1286,35 +1263,6 @@ module Gitlab
 
       def gitaly_delete_refs(*ref_names)
         gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
-      end
-
-      def rugged_remove_remote(remote_name)
-        # When a remote is deleted all its remote refs are deleted too, but in
-        # the case of mirrors we map its refs (that would usualy go under
-        # [remote_name]/) to the top level namespace. We clean the mapping so
-        # those don't get deleted.
-        if rugged.config["remote.#{remote_name}.mirror"]
-          rugged.config.delete("remote.#{remote_name}.fetch")
-        end
-
-        rugged.remotes.delete(remote_name)
-        true
-      rescue Rugged::ConfigError
-        false
-      end
-
-      def rugged_fetch_repository_as_mirror(repository)
-        remote_name = "tmp-#{SecureRandom.hex}"
-        repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
-
-        add_remote(remote_name, GITALY_INTERNAL_URL, mirror_refmap: :all_refs)
-        fetch_remote(remote_name, env: repository.fetch_env)
-      ensure
-        remove_remote(remote_name)
-      end
-
-      def fetch_remote(remote_name = 'origin', env: nil)
-        run_git(['fetch', remote_name], env: env).last.zero?
       end
 
       def gitlab_projects_error

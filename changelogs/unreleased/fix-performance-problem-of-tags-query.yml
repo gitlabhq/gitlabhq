@@ -1,5 +1,0 @@
----
-title: Fix performance problem of accessing tag list for projects api endpoints
-merge_request:
-author:
-type: performance

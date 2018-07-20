@@ -1,11 +1,7 @@
-# See http://doc.gitlab.com/ce/development/migration_style_guide.html
-# for more information on how to write migrations for GitLab.
-
 class RemoveDotGitFromUsernames < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   include Gitlab::ShellAdapter
 
-  # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
   def up
@@ -64,16 +60,14 @@ class RemoveDotGitFromUsernames < ActiveRecord::Migration
     # we rename suffix instead of removing it
     path = path.sub(/\.git\z/, '_git')
 
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      check_routes(path.dup, 0, path)
-    end
+    check_routes(path.dup, 0, path)
   end
 
   def check_routes(base, counter, path)
     route_exists = route_exists?(path)
 
-    Gitlab.config.repositories.storages.each do |shard, storage|
-      if route_exists || path_exists?(shard, storage.legacy_disk_path)
+    Gitlab.config.repositories.storages.each do |shard, _storage|
+      if route_exists || path_exists?(shard, path)
         counter += 1
         path = "#{base}#{counter}"
 

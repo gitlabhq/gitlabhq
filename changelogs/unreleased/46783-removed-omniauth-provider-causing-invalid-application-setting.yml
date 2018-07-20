@@ -1,5 +1,0 @@
----
-title: Ignore unknown OAuth sources in ApplicationSetting
-merge_request: 20129
-author:
-type: fixed

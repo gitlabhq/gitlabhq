@@ -10,10 +10,10 @@
         %span.form-text.text-muted
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
-      = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'label-light'
+      = f.label :throttle_unauthenticated_requests_per_period, 'Max requests per period per IP', class: 'label-bold'
       = f.number_field :throttle_unauthenticated_requests_per_period, class: 'form-control'
     .form-group
-      = f.label :throttle_unauthenticated_period_in_seconds, 'Rate limit period in seconds', class: 'label-light'
+      = f.label :throttle_unauthenticated_period_in_seconds, 'Rate limit period in seconds', class: 'label-bold'
       = f.number_field :throttle_unauthenticated_period_in_seconds, class: 'form-control'
     .form-group
       .form-check
@@ -23,10 +23,10 @@
         %span.form-text.text-muted
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
-      = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'label-light'
+      = f.label :throttle_authenticated_api_requests_per_period, 'Max requests per period per user', class: 'label-bold'
       = f.number_field :throttle_authenticated_api_requests_per_period, class: 'form-control'
     .form-group
-      = f.label :throttle_authenticated_api_period_in_seconds, 'Rate limit period in seconds', class: 'label-light'
+      = f.label :throttle_authenticated_api_period_in_seconds, 'Rate limit period in seconds', class: 'label-bold'
       = f.number_field :throttle_authenticated_api_period_in_seconds, class: 'form-control'
     .form-group
       .form-check
@@ -36,10 +36,10 @@
         %span.form-text.text-muted
           Helps reduce request volume (e.g. from crawlers or abusive bots)
     .form-group
-      = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'label-light'
+      = f.label :throttle_authenticated_web_requests_per_period, 'Max requests per period per user', class: 'label-bold'
       = f.number_field :throttle_authenticated_web_requests_per_period, class: 'form-control'
     .form-group
-      = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'label-light'
+      = f.label :throttle_authenticated_web_period_in_seconds, 'Rate limit period in seconds', class: 'label-bold'
       = f.number_field :throttle_authenticated_web_period_in_seconds, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

@@ -1,5 +1,0 @@
----
-title: Rails5 fix update_attribute usage not causing a save
-merge_request: 19881
-author: Jasper Maes
-type: fixed

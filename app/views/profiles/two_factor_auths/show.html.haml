@@ -49,7 +49,7 @@
             .alert.alert-danger
               = @error
           .form-group
-            = label_tag :pin_code, nil, class: "label-light"
+            = label_tag :pin_code, nil, class: "label-bold"
             = text_field_tag :pin_code, nil, class: "form-control", required: true
           .prepend-top-default
             = submit_tag 'Register with two-factor app', class: 'btn btn-success'
