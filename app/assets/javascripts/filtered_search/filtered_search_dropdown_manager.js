@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import DropLab from '~/droplab/drop_lab';
+import DropdownWeight from 'ee/filtered_search/dropdown_weight';
 import FilteredSearchContainer from './container';
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 import DropdownUtils from './dropdown_utils';
@@ -7,7 +8,6 @@ import DropdownHint from './dropdown_hint';
 import DropdownEmoji from './dropdown_emoji';
 import DropdownNonUser from './dropdown_non_user';
 import DropdownUser from './dropdown_user';
-import DropdownWeight from './dropdown_weight';
 import FilteredSearchVisualTokens from './filtered_search_visual_tokens';
 
 export default class FilteredSearchDropdownManager {
