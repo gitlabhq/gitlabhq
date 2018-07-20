@@ -192,9 +192,9 @@ The current team labels are:
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Manage
 - ~Monitoring
 - ~Plan
-- ~Manage
 - ~Quality
 - ~Release
 - ~"Security Products"
