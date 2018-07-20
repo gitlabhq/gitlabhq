@@ -34,7 +34,7 @@ module Gitlab
           def self.fabricate(resource)
             case resource
             when Hash
-              self.new(resource)
+              self.new(resource.symbolize_keys)
             when ::HasVariable
               self.new(resource.to_runner_variable)
             when self
