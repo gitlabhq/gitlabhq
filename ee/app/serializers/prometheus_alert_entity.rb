@@ -2,7 +2,7 @@ class PrometheusAlertEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id
-  expose :name
+  expose :title
   expose :query
   expose :threshold
 

@@ -2188,8 +2188,6 @@ ActiveRecord::Schema.define(version: 20180704204006) do
     t.integer "environment_id", null: false
     t.integer "project_id", null: false
     t.integer "prometheus_metric_id", null: false
-    t.text "name", null: false
-    t.string "query", null: false
   end
 
   add_index "prometheus_alerts", ["environment_id"], name: "index_prometheus_alerts_on_environment_id", using: :btree

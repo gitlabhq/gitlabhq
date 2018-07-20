@@ -60,7 +60,7 @@ module Projects
       private
 
       def alerts_params
-        alerts_params = params.permit(:query, :operator, :threshold, :name, :environment_id, :prometheus_metric_id)
+        alerts_params = params.permit(:operator, :threshold, :environment_id, :prometheus_metric_id)
 
         if alerts_params[:operator].present?
           alerts_params[:operator] = PrometheusAlert.operator_to_enum(alerts_params[:operator])

@@ -10,8 +10,6 @@ class CreatePrometheusAlerts < ActiveRecord::Migration
       t.references :environment, index: true, null: false, foreign_key: { on_delete: :cascade }
       t.references :project, null: false, foreign_key: { on_delete: :cascade }
       t.references :prometheus_metric, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
-      t.text :name, null: false
-      t.string :query, null: false
     end
   end
 

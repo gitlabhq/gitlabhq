@@ -47,7 +47,7 @@ module EE
 
         def update
           @metric = project.prometheus_metrics.find(params[:id]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-          @metric.update(metrics_params) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          @metric = update_metrics_service(@metric).execute # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
           if @metric.persisted? # rubocop:disable Gitlab/ModuleWithInstanceVariables
             redirect_to edit_project_service_path(project, ::PrometheusService),
@@ -63,7 +63,7 @@ module EE
 
         def destroy
           metric = project.prometheus_metrics.find(params[:id])
-          metric.destroy
+          destroy_metrics_service(metric).execute
 
           respond_to do |format|
             format.html do
@@ -76,6 +76,14 @@ module EE
         end
 
         private
+
+        def update_metrics_service(metric)
+          ::Projects::Prometheus::Metrics::UpdateService.new(metric, metrics_params)
+        end
+
+        def destroy_metrics_service(metric)
+          ::Projects::Prometheus::Metrics::DestroyService.new(metric)
+        end
 
         def metrics_params
           params.require(:prometheus_metric).permit(:title, :query, :y_label, :unit, :legend, :group)

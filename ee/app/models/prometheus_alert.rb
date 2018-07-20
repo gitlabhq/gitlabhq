@@ -1,6 +1,4 @@
 class PrometheusAlert < ActiveRecord::Base
-  include AtomicInternalId
-
   OPERATORS_MAP = {
     lt: "<",
     eq: "=",
@@ -11,12 +9,12 @@ class PrometheusAlert < ActiveRecord::Base
   belongs_to :project, required: true, validate: true, inverse_of: :prometheus_alerts
   belongs_to :prometheus_metric, required: true, validate: true
 
-  validates :name, presence: true
-
   after_save :clear_prometheus_adapter_cache!
   after_destroy :clear_prometheus_adapter_cache!
 
   enum operator: [:lt, :eq, :gt]
+
+  delegate :title, :query, to: :prometheus_metric
 
   def self.operator_to_enum(op)
     OPERATORS_MAP.invert.fetch(op)
@@ -32,7 +30,7 @@ class PrometheusAlert < ActiveRecord::Base
 
   def to_param
     {
-      "alert" => name,
+      "alert" => title,
       "expr" => full_query,
       "for" => "5m",
       "labels" => {

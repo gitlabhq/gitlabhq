@@ -111,10 +111,8 @@ describe Projects::Prometheus::AlertsController do
       stub_licensed_features(prometheus_alerts: false)
 
       post :create, project_params(
-        query: "foo",
         operator: ">",
         threshold: "1",
-        name: "bar",
         environment_id: environment.id,
         prometheus_metric_id: metric.id
       )
@@ -125,8 +123,8 @@ describe Projects::Prometheus::AlertsController do
     it 'creates a new prometheus alert' do
       schedule_update_service = spy
       alert_params = {
-        "name" => "bar",
-        "query" => "foo",
+        "name" => metric.title,
+        "query" => metric.query,
         "operator" => ">",
         "threshold" => 1.0
       }
@@ -134,10 +132,8 @@ describe Projects::Prometheus::AlertsController do
       allow(::Clusters::Applications::ScheduleUpdateService).to receive(:new).and_return(schedule_update_service)
 
       post :create, project_params(
-        query: "foo",
         operator: ">",
         threshold: "1",
-        name: "bar",
         environment_id: environment.id,
         prometheus_metric_id: metric.id
       )
@@ -175,8 +171,8 @@ describe Projects::Prometheus::AlertsController do
       }
 
       expect do
-        put :update, project_params(id: alert.prometheus_metric_id, name: "bar")
-      end.to change { alert.reload.name }.to("bar")
+        put :update, project_params(id: alert.prometheus_metric_id, operator: "<")
+      end.to change { alert.reload.operator }.to("lt")
 
       expect(schedule_update_service).to have_received(:execute)
       expect(response).to have_gitlab_http_status(200)
