@@ -146,8 +146,9 @@ module CommitsHelper
       end
 
     link_options = {
-      class: "commit-#{options[:source]}-link",
+      class: "commit-#{options[:source]}-link"
     }
+
     unless options[:has_tooltip] == false
       link_options[:class] << ' has-tooltip'
       link_options[:title] = source_email
