@@ -8,7 +8,7 @@
     .nav-controls
       = link_to _('New label'), new_project_label_path(@project), class: "btn btn-new"
 
-- if @labels.exists? || @prioritized_labels.exists?
+- if @labels.exists? || @prioritized_labels.exists? || params[:search].present?
   #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
@@ -17,7 +17,10 @@
         - if can_admin_label
           = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
 
-    .labels-container.prepend-top-5
+    = form_tag project_labels_path(@project), method: :get do
+      = search_field_tag :search, params[:search], { placeholder: _('Filter labels by name or description'), class: 'form-control', spellcheck: false }
+
+    .labels-container.prepend-top-10
       - if can_admin_label
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
