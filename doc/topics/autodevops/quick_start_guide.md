@@ -109,8 +109,8 @@ the scenes. Prometheus is an open-source monitoring and alerting system that we'
 use to supervise the deployed application. We will not install GitLab Runner as
 we'll use the shared Runners that GitLab.com provides.
 
-After the Ingress is installed, wait a few seconds and copy the IP address that
-is displayed, which we'll use in the next step when enabling Auto DevOps.
+After the Ingress is installed, wait a few seconds for the IP address to
+be fetched by GitLab, which we'll use in the next step when enabling Auto DevOps.
 
 ## Enabling Auto DevOps
 
@@ -118,19 +118,18 @@ Now that the Kubernetes cluster is set up and ready, let's enable Auto DevOps.
 
 1. First, navigate to **Settings > CI/CD > Auto DevOps**.
 1. Select **Enable Auto DevOps**.
-1. Add in your base **Domain** by using the one GitLab suggests. Note that
-   generally, you would associate the IP address with a domain name on your
-   registrar's settings. In this case, for the sake of the guide, we will use
-   an alternative DNS that will map any domain name of the scheme
-   `anything.ip_address.nip.io` to the corresponding `ip_address`. For example,
-   if the IP address of the Ingress is `1.2.3.4`, the domain name to fill in
-   would be `1.2.3.4.nip.io`.
 1. Lastly, let's select the [continuous deployment strategy](index.md#deployment-strategy)
    which will automatically deploy the application to production once the pipeline
    successfully runs on the `master` branch.
 1. Click **Save changes**.
 
     ![Auto DevOps settings](img/guide_enable_autodevops.png)
+
+The base domain should default to using the IP address of the ingress
+set up in the previous section and [nip.io](http://nip.io). For example,
+if the IP address of the Ingress is `1.2.3.4`, then your base domain
+default would be `1.2.3.4.nip.io`. See [Base domain](index.md#auto-devops-base-domain)
+for details and how to configure a custom domain.
 
 Once you complete all the above and save your changes, a new pipeline is
 automatically created. To view the pipeline, go to **CI/CD > Pipelines**.
