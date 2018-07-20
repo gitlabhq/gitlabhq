@@ -1,5 +1,0 @@
----
-title: 'Rails5 fix ArgumentError: wrong number of arguments (given 1, expected 2)'
-merge_request: 6272
-author: Jasper Maes
-type: fixed

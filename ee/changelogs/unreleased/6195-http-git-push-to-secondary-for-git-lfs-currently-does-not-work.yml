@@ -1,5 +1,0 @@
----
-title: 'Geo: HTTP git-lfs push (upload) and locks (verify, lock and unlock) to secondary now redirects to the primary'
-merge_request: 6109
-author:
-type: added

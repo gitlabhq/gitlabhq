@@ -1,5 +1,0 @@
----
-title: Drop ignored Geo repository_storage_path columns
-merge_request: 5468
-author:
-type: removed

@@ -1,6 +1,0 @@
----
-title: 'Geo: Fix repository/wiki sync race condition with multiple updates, especially
-  in quick succession.'
-merge_request: 6161
-author:
-type: fixed
