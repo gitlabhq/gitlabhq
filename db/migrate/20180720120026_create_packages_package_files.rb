@@ -6,6 +6,7 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
       t.references :package, index: true, foreign_key: { on_delete: :cascade }, null: false
       t.string :file
       t.integer :file_type
+      t.integer :file_store
       t.integer :size
       t.binary :file_md5
       t.binary :file_sha1
