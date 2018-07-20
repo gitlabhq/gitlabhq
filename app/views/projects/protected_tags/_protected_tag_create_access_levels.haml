@@ -1,0 +1,8 @@
+- protected_tag = local_assigns.fetch(:protected_tag)
+- create_access_level = local_assigns.fetch(:create_access_level)
+- dropdown_label = create_access_level&.humanize || 'Select'
+
+= hidden_field_tag "allowed_to_create_#{protected_tag.id}", create_access_level&.access_level
+= dropdown_tag(dropdown_label,
+               options: { toggle_class: 'js-allowed-to-create', dropdown_class: 'dropdown-menu-selectable capitalize-header js-allowed-to-create-container',
+               data: { field_name: "allowed_to_create_#{protected_tag.id}", access_level_id: create_access_level&.id }})
