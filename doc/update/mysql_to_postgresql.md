@@ -194,12 +194,12 @@ sudo apt-get install pgloader
 
 1. Switch database from MySQL to PostgreSQL
 
-   ``` bash
-   cd /home/git/gitlab
-   sudo -u git mv config/database.yml config/database.yml.bak
-   sudo -u git cp config/database.yml.postgresql config/database.yml
-   sudo -u git -H chmod o-rwx config/database.yml
-   ```
+    ``` bash
+    cd /home/git/gitlab
+    sudo -u git mv config/database.yml config/database.yml.bak
+    sudo -u git cp config/database.yml.postgresql config/database.yml
+    sudo -u git -H chmod o-rwx config/database.yml
+    ```
 
 1. Run the following commands to prepare the schema:
 
