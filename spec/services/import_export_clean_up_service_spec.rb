@@ -46,6 +46,14 @@ describe ImportExportCleanUpService do
         expect { service.execute }.to change { upload.reload.export_file.file.nil? }.to(true)
       end
 
+      it 'removes uploads' do
+        upload = create(:import_export_upload,
+                        updated_at: 2.days.ago,
+                        export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+
+        expect { service.execute }.to change { upload.reload.export_file.upload }.to be_nil
+      end
+
       it 'does not remove new files' do
         upload = create(:import_export_upload,
                         updated_at: 1.hour.ago,

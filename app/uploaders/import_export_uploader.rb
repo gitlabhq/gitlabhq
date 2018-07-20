@@ -1,6 +1,8 @@
 class ImportExportUploader < AttachmentUploader
   EXTENSION_WHITELIST = %w[tar.gz].freeze
 
+  after :delete, :destroy_upload
+
   def extension_whitelist
     EXTENSION_WHITELIST
   end
@@ -11,5 +13,11 @@ class ImportExportUploader < AttachmentUploader
 
   def move_to_cache
     false
+  end
+
+  private
+
+  def remove_upload
+    upload&.destroy
   end
 end
