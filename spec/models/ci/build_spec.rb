@@ -2287,7 +2287,7 @@ describe Ci::Build do
 
     context 'when serialized value is a hash with string keys' do
       let(:variables) do
-        [{'key' => :VARIABLE, 'value' => 'my value 2' }]
+        [{ 'key' => :VARIABLE, 'value' => 'my value 2' }]
       end
 
       it 'symblizes variables hash' do
