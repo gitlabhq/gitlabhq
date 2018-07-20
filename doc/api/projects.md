@@ -55,6 +55,8 @@ GET /projects
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `wiki_checksum_failed` | boolean | no | Limit projects where the wiki checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
+| `repository_checksum_failed` | boolean | no | Limit projects where the repository checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
@@ -1509,3 +1511,6 @@ GET /projects/:id/snapshot
 | --------- | ---- | -------- | ----------- |
 | `id`      | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `wiki`    | boolean | no | Whether to download the wiki, rather than project, repository |
+
+[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
+[ee-6137]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6137
