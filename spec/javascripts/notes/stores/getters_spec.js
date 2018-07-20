@@ -5,6 +5,11 @@ import {
   noteableDataMock,
   individualNote,
   collapseNotesMock,
+  discussion1,
+  discussion2,
+  discussion3,
+  resolvedDiscussion1,
+  unresolvableDiscussion,
 } from '../mock_data';
 
 const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
@@ -107,6 +112,156 @@ describe('Getters Notes Store', () => {
   describe('isNotesFetched', () => {
     it('should return the state for the fetching notes', () => {
       expect(getters.isNotesFetched(state)).toBeFalsy();
+    });
+  });
+
+  describe('allResolvableDiscussions', () => {
+    it('should return only resolvable discussions in same order', () => {
+      const localGetters = {
+        allDiscussions: [
+          discussion3,
+          unresolvableDiscussion,
+          discussion1,
+          unresolvableDiscussion,
+          discussion2,
+        ],
+      };
+
+      expect(getters.allResolvableDiscussions(state, localGetters)).toEqual([
+        discussion3,
+        discussion1,
+        discussion2,
+      ]);
+    });
+
+    it('should return empty array if there are no resolvable discussions', () => {
+      const localGetters = {
+        allDiscussions: [unresolvableDiscussion, unresolvableDiscussion],
+      };
+
+      expect(getters.allResolvableDiscussions(state, localGetters)).toEqual([]);
+    });
+  });
+
+  describe('unresolvedDiscussionsIdsByDiff', () => {
+    it('should return all discussions IDs in diff order', () => {
+      const localGetters = {
+        allResolvableDiscussions: [discussion3, discussion1, discussion2],
+      };
+
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters)).toEqual([
+        'abc1',
+        'abc2',
+        'abc3',
+      ]);
+    });
+
+    it('should return empty array if all discussions have been resolved', () => {
+      const localGetters = {
+        allResolvableDiscussions: [resolvedDiscussion1],
+      };
+
+      expect(getters.unresolvedDiscussionsIdsByDiff(state, localGetters)).toEqual([]);
+    });
+  });
+
+  describe('unresolvedDiscussionsIdsByDate', () => {
+    it('should return all discussions in date ascending order', () => {
+      const localGetters = {
+        allResolvableDiscussions: [discussion3, discussion1, discussion2],
+      };
+
+      expect(getters.unresolvedDiscussionsIdsByDate(state, localGetters)).toEqual([
+        'abc2',
+        'abc1',
+        'abc3',
+      ]);
+    });
+
+    it('should return empty array if all discussions have been resolved', () => {
+      const localGetters = {
+        allResolvableDiscussions: [resolvedDiscussion1],
+      };
+
+      expect(getters.unresolvedDiscussionsIdsByDate(state, localGetters)).toEqual([]);
+    });
+  });
+
+  describe('unresolvedDiscussionsIdsOrdered', () => {
+    const localGetters = {
+      unresolvedDiscussionsIdsByDate: ['123', '456'],
+      unresolvedDiscussionsIdsByDiff: ['abc', 'def'],
+    };
+
+    it('should return IDs ordered by diff when diffOrder param is true', () => {
+      expect(getters.unresolvedDiscussionsIdsOrdered(state, localGetters)(true)).toEqual([
+        'abc',
+        'def',
+      ]);
+    });
+
+    it('should return IDs ordered by date when diffOrder param is not true', () => {
+      expect(getters.unresolvedDiscussionsIdsOrdered(state, localGetters)(false)).toEqual([
+        '123',
+        '456',
+      ]);
+      expect(getters.unresolvedDiscussionsIdsOrdered(state, localGetters)(undefined)).toEqual([
+        '123',
+        '456',
+      ]);
+    });
+  });
+
+  describe('isLastUnresolvedDiscussion', () => {
+    const localGetters = {
+      unresolvedDiscussionsIdsOrdered: () => ['123', '456', '789'],
+    };
+
+    it('should return true if the discussion id provided is the last', () => {
+      expect(getters.isLastUnresolvedDiscussion(state, localGetters)('789')).toBe(true);
+    });
+
+    it('should return false if the discussion id provided is not the last', () => {
+      expect(getters.isLastUnresolvedDiscussion(state, localGetters)('123')).toBe(false);
+      expect(getters.isLastUnresolvedDiscussion(state, localGetters)('456')).toBe(false);
+    });
+  });
+
+  describe('nextUnresolvedDiscussionId', () => {
+    const localGetters = {
+      unresolvedDiscussionsIdsOrdered: () => ['123', '456', '789'],
+    };
+
+    it('should return the ID of the discussion after the ID provided', () => {
+      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('123')).toBe('456');
+      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('456')).toBe('789');
+      expect(getters.nextUnresolvedDiscussionId(state, localGetters)('789')).toBe(undefined);
+    });
+  });
+
+  describe('firstUnresolvedDiscussionId', () => {
+    const localGetters = {
+      unresolvedDiscussionsIdsByDate: ['123', '456'],
+      unresolvedDiscussionsIdsByDiff: ['abc', 'def'],
+    };
+
+    it('should return the first discussion id by diff when diffOrder param is true', () => {
+      expect(getters.firstUnresolvedDiscussionId(state, localGetters)(true)).toBe('abc');
+    });
+
+    it('should return the first discussion id by date when diffOrder param is not true', () => {
+      expect(getters.firstUnresolvedDiscussionId(state, localGetters)(false)).toBe('123');
+      expect(getters.firstUnresolvedDiscussionId(state, localGetters)(undefined)).toBe('123');
+    });
+
+    it('should be falsy if all discussions are resolved', () => {
+      const localGettersFalsy = {
+        unresolvedDiscussionsIdsByDiff: [],
+        unresolvedDiscussionsIdsByDate: [],
+      };
+
+      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(true)).toBeFalsy();
+      expect(getters.firstUnresolvedDiscussionId(state, localGettersFalsy)(false)).toBeFalsy();
     });
   });
 });
