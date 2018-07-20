@@ -1,5 +1,0 @@
----
-title: Fix double "in" in time to artifact deletion message
-merge_request: 20357
-author: "@bbodenmiller"
-type: fixed

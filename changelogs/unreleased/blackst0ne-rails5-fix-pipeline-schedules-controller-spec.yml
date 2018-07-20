@@ -1,5 +1,0 @@
----
-title: "[Rails5] Fix pipeline_schedules_controller_spec"
-merge_request: 19919
-author: "@blackst0ne"
-type: fixed

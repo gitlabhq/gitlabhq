@@ -1,5 +1,0 @@
----
-title: Don't hash user ID in OIDC subject claim
-merge_request: 19784
-author: Markus Koller
-type: changed

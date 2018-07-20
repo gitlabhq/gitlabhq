@@ -1,6 +1,0 @@
----
-title: 'Rails5 ActionController::ParameterMissing: param is missing or the value is
-  empty: application_setting'
-merge_request: 19763
-author: Jasper Maes
-type: fixed

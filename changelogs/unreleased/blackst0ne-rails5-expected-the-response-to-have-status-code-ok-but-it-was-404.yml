@@ -1,5 +1,0 @@
----
-title: "[Rails5] Set request.format for artifacts_controller"
-merge_request: 19937
-author: "@blackst0ne"
-type: fixed

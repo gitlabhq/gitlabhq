@@ -1,5 +1,0 @@
----
-title: Rails5 fix Mysql comparison failure caused by milliseconds problem
-merge_request: 20222
-author: Jasper Maes
-type: fixed

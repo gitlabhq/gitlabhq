@@ -1,6 +1,0 @@
----
-title: Use object storage as the first class persistable store for new live trace
-  architecture
-merge_request: 19515
-author:
-type: changed

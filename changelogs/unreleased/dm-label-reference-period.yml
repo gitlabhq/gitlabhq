@@ -1,5 +1,0 @@
----
-title: Properly detect label reference if followed by period or question mark
-merge_request:
-author:
-type: fixed
