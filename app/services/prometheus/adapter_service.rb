@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Prometheus
   class AdapterService
     def initialize(project, deployment_platform = nil)

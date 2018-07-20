@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class ActivityService
     LEASE_TIMEOUT = 1.minute.to_i

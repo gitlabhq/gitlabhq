@@ -84,14 +84,12 @@ export default (
     done();
   };
 
-  return new Promise((resolve, reject) => {
-    try {
-      const result = action({ commit, state, dispatch, rootState: state }, payload);
-      resolve(result);
-    } catch (e) {
-      reject(e);
-    }
+  const result = action({ commit, state, dispatch, rootState: state }, payload);
+
+  return new Promise(resolve => {
+    setImmediate(resolve);
   })
+    .then(() => result)
     .catch(error => {
       validateResults();
       throw error;
