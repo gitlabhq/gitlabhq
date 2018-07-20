@@ -105,7 +105,7 @@ export default {
         </div>
         <label
           :for="list.id + '-title'"
-          class="label-light"
+          class="label-bold"
         >
           Title
         </label>

@@ -1,17 +1,17 @@
 .form-group
-  = f.label :mirror_max_delay, class: 'label-light' do
+  = f.label :mirror_max_delay, class: 'label-bold' do
     Maximum delay (Minutes)
   = f.number_field :mirror_max_delay, class: 'form-control', min: 0
   %span.form-text.text-muted#mirror_max_delay_help_block
   Maximum time between updates that a mirror can have when scheduled to synchronize.
 .form-group
-  = f.label :mirror_max_capacity, class: 'label-light' do
+  = f.label :mirror_max_capacity, class: 'label-bold' do
     Maximum capacity
   = f.number_field :mirror_max_capacity, class: 'form-control', min: 0
   %span.form-text.text-muted#mirror_max_capacity_help_block
   Maximum number of mirrors that can be synchronizing at the same time.
 .form-group
-  = f.label :mirror_capacity_threshold, class: 'label-light' do
+  = f.label :mirror_capacity_threshold, class: 'label-bold' do
     Capacity threshold
   = f.number_field :mirror_capacity_threshold, class: 'form-control', min: 0
   %span.form-text.text-muted#mirror_capacity_threshold

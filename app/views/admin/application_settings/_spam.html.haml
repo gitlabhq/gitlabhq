@@ -10,14 +10,14 @@
         %span.form-text.text-muted#recaptcha_help_block Helps prevent bots from creating accounts
 
     .form-group
-      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'label-light'
+      = f.label :recaptcha_site_key, 'reCAPTCHA Site Key', class: 'label-bold'
       = f.text_field :recaptcha_site_key, class: 'form-control'
       .form-text.text-muted
         Generate site and private keys at
         %a{ href: 'http://www.google.com/recaptcha', target: 'blank' } http://www.google.com/recaptcha
 
     .form-group
-      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'label-light'
+      = f.label :recaptcha_private_key, 'reCAPTCHA Private Key', class: 'label-bold'
       = f.text_field :recaptcha_private_key, class: 'form-control'
 
     .form-group
@@ -28,7 +28,7 @@
         %span.form-text.text-muted#akismet_help_block Helps prevent bots from creating issues
 
     .form-group
-      = f.label :akismet_api_key, 'Akismet API Key', class: 'label-light'
+      = f.label :akismet_api_key, 'Akismet API Key', class: 'label-bold'
       = f.text_field :akismet_api_key, class: 'form-control'
       .form-text.text-muted
         Generate API key at
@@ -43,13 +43,13 @@
           Helps prevent malicious users hide their activity
 
     .form-group
-      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'label-light'
+      = f.label :unique_ips_limit_per_user, 'IPs per user', class: 'label-bold'
       = f.number_field :unique_ips_limit_per_user, class: 'form-control'
       .form-text.text-muted
         Maximum number of unique IPs per user
 
     .form-group
-      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'label-light'
+      = f.label :unique_ips_limit_time_window, 'IP expiration time', class: 'label-bold'
       = f.number_field :unique_ips_limit_time_window, class: 'form-control'
       .form-text.text-muted
         How many seconds an IP will be counted towards the limit

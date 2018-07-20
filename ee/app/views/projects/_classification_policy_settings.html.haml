@@ -1,6 +1,6 @@
 - if ::EE::Gitlab::ExternalAuthorization.enabled?
   .form-group
-    = f.label :external_authorization_classification_label, class: 'label-light' do
+    = f.label :external_authorization_classification_label, class: 'label-bold' do
       = s_('ExternalAuthorizationService|Classification Label')
       %span.light (optional)
     = f.text_field :external_authorization_classification_label, class: "form-control"
