@@ -527,25 +527,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#remote_update" do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_update("expendable", url: TEST_NORMAL_REPO_PATH)
-    end
-
-    it "should add the remote" do
-      rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access { @repo.rugged }
-
-      expect(rugged.remotes["expendable"].url).to(
-        eq(TEST_NORMAL_REPO_PATH)
-      )
-    end
-
-    after(:all) do
-      ensure_seeds
-    end
-  end
-
   describe '#fetch_repository_as_mirror' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
