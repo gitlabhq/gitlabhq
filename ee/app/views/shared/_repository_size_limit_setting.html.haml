@@ -2,7 +2,7 @@
 
 - form = local_assigns.fetch(:form)
 - type = local_assigns.fetch(:type)
-- label_class = (type == :project) ? 'label-light' : 'col-form-label col-sm-2'
+- label_class = (type == :project) ? 'label-bold' : 'col-form-label col-sm-2'
 
 .form-group.row
   = form.label :repository_size_limit, class: label_class do

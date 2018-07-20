@@ -11,31 +11,31 @@
         = external_authorization_description
         = link_to icon('question-circle'), help_page_path('user/admin_area/settings/external_authorization')
     .form-group
-      = f.label :external_authorization_service_url, _('Service URL'), class: 'label-light'
+      = f.label :external_authorization_service_url, _('Service URL'), class: 'label-bold'
       = f.text_field :external_authorization_service_url, class: 'form-control'
       %span.form-text.text-muted
         = external_authorization_url_help_text
     .form-group
-      = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'label-light'
+      = f.label :external_authorization_service_timeout, _('External authorization request timeout'), class: 'label-bold'
       = f.number_field :external_authorization_service_timeout, class: 'form-control', min: 0.001, max: 10, step: 0.001
       %span.form-text.text-muted
         = external_authorization_timeout_help_text
-      = f.label :external_auth_client_cert, _('Client authentication certificate'), class: 'label-light'
+      = f.label :external_auth_client_cert, _('Client authentication certificate'), class: 'label-bold'
       = f.text_area :external_auth_client_cert, class: 'form-control'
       %span.form-text.text-muted
         = external_authorization_client_certificate_help_text
     .form-group
-      = f.label :external_auth_client_key, _('Client authentication key'), class: 'label-light'
+      = f.label :external_auth_client_key, _('Client authentication key'), class: 'label-bold'
       = f.text_area :external_auth_client_key, class: 'form-control'
       %span.form-text.text-muted
         = external_authorization_client_key_help_text
     .form-group
-      = f.label :external_auth_client_key_pass, _('Client authentication key password'), class: 'label-light'
+      = f.label :external_auth_client_key_pass, _('Client authentication key password'), class: 'label-bold'
       = f.password_field :external_auth_client_key_pass, class: 'form-control'
       %span.form-text.text-muted
         = external_authorization_client_pass_help_text
     .form-group
-      = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'label-light'
+      = f.label :external_authorization_service_default_label, _('Default classification label'), class: 'label-bold'
       = f.text_field :external_authorization_service_default_label, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

@@ -3,7 +3,7 @@
 - form = local_assigns.fetch(:form)
 
 .form-group
-  = form.label :repository_size_limit, class: 'label-light' do
+  = form.label :repository_size_limit, class: 'label-bold' do
     Size limit per repository (MB)
   = form.number_field :repository_size_limit, value: form.object.repository_size_limit.try(:to_mb), class: 'form-control', min: 0
   %span.form-text.text-muted#repository_size_limit_help_block

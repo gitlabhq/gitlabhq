@@ -13,7 +13,7 @@
           = _('If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}').html_safe % { more_info_link: more_info_link }
 
         .form-group.import-btn-container.prepend-top-20.clearfix
-          = f.label :visibility_level, class: 'label-light' do
+          = f.label :visibility_level, class: 'label-bold' do
             = s_('ImportButtons|Connect repositories from')
           .import-buttons
             %div

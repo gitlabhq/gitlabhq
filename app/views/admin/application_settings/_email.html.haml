@@ -23,7 +23,7 @@
     -# EE-specific start
     - if License.feature_available?(:email_additional_text)
       .form-group
-        = f.label :email_additional_text, _('Additional text'), class: 'label-light'
+        = f.label :email_additional_text, _('Additional text'), class: 'label-bold'
         = f.text_area :email_additional_text, class: 'form-control', maxlength: Gitlab::CurrentSettings.email_additional_text_character_limit, rows: 4
         .form-text.text-muted
           = _('Add additional text to appear in all email communications. %{character_limit} character limit') % { character_limit: number_with_delimiter(Gitlab::CurrentSettings.email_additional_text_character_limit) }

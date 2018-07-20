@@ -24,7 +24,7 @@
   <div class="project-feature-row">
     <label
       v-if="label"
-      class="label-light"
+      class="label-bold"
     >
       {{ label }}
       <a

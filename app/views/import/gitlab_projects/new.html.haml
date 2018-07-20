@@ -9,7 +9,7 @@
 = form_tag import_gitlab_project_path, class: 'new_project', multipart: true do
   .row
     .form-group.col-12.col-sm-6
-      = label_tag :namespace_id, 'Project path', class: 'label-light'
+      = label_tag :namespace_id, 'Project path', class: 'label-bold'
       .form-group
         .input-group
           - if current_user.can_select_namespace?
@@ -24,7 +24,7 @@
                 #{user_url(current_user.username)}/
             = hidden_field_tag :namespace_id, value: current_user.namespace_id
     .form-group.col-12.col-sm-6.project-path
-      = label_tag :path, _('Project name'), class: 'label-light'
+      = label_tag :path, _('Project name'), class: 'label-bold'
       = text_field_tag :path, @path, placeholder: "my-awesome-project", class: "js-path-name form-control", tabindex: 2, autofocus: true, required: true
 
   .row
@@ -33,7 +33,7 @@
   .row
     .form-group.col-sm-12
       = hidden_field_tag :namespace_id, @namespace.id
-      = label_tag :file, _('GitLab project export'), class: 'label-light'
+      = label_tag :file, _('GitLab project export'), class: 'label-bold'
       .form-group
         = file_field_tag :file, class: ''
   .row
