@@ -2,6 +2,7 @@ module Gitlab
   module BitbucketServerImport
     class Importer
       include Gitlab::ShellAdapter
+      attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
       REMOTE_NAME = 'bitbucket_server'.freeze
@@ -17,8 +18,14 @@ module Gitlab
         [:heads, :tags, '+refs/pull-requests/*/to:refs/merge-requests/*/head']
       end
 
-      def initialize(project)
+      # Unlike GitHub, you can't grab the commit SHAs for pull requests that
+      # have been closed but not merged even though Bitbucket has these
+      # commits internally. We can recover these pull requests by creating a
+      # branch with the Bitbucket REST API, but by default we turn this
+      # behavior off.
+      def initialize(project, recover_missing_commits: false)
         @project = project
+        @recover_missing_commits = recover_missing_commits
         @project_key = project.import_data.data['project_key']
         @repository_slug = project.import_data.data['repo_slug']
         @client = BitbucketServer::Client.new(project.import_data.credentials)
@@ -141,7 +148,7 @@ module Gitlab
         # may take a number of network round-trips. Do this in batches so that we can
         # avoid doing a git fetch for every new branch.
         pull_requests.each_slice(BATCH_SIZE) do |batch|
-          restore_branches(batch)
+          restore_branches(batch) if recover_missing_commits
 
           batch.each do |pull_request|
             begin

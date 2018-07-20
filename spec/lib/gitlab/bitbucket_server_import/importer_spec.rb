@@ -9,7 +9,7 @@ describe Gitlab::BitbucketServerImport::Importer do
   let(:repo_slug) { 'rouge' }
   let(:sample) { RepoHelpers.sample_compare }
 
-  subject { described_class.new(project) }
+  subject { described_class.new(project, recover_missing_commits: true) }
 
   before do
     data = project.create_or_update_import_data(
