@@ -111,8 +111,36 @@ workers 3
 #   puts 'On worker boot...'
 # end
 
+before_fork do
+  if Rails.env.production? or Rails.env.staging?
+    require 'puma_worker_killer'
+
+    PumaWorkerKiller.config do |config|
+      # For now we use the same environment variable as Unicorn, making it
+      # easier to replace Unicorn with Puma.
+      config.ram = (ENV['GITLAB_UNICORN_MEMORY_MAX'] || 650 * 1 << 20).to_i
+
+      config.frequency = 5
+
+      # We just wan't to limit to a fixed maximum, unrelated to the total amount
+      # of available RAM.
+      config.percent_usage = 100.0
+
+      # Ideally we'll never hit the maximum amount of memory. If so the worker
+      # is restarted already, thus periodically restarting workers shouldn't be
+      # needed.
+      config.rolling_restart_frequency = false
+    end
+
+    PumaWorkerKiller.start
+  end
+end
+
 on_worker_boot do
   ActiveRecord::Base.establish_connection if defined?(ActiveRecord::Base)
+
+  defined?(::Prometheus::Client.reinitialize_on_pid_change) &&
+    Prometheus::Client.reinitialize_on_pid_change
 end
 
 # Code to run when a worker boots to setup the process after booting
