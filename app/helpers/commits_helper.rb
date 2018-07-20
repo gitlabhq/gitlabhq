@@ -149,11 +149,6 @@ module CommitsHelper
       class: "commit-#{options[:source]}-link"
     }
 
-    unless options[:has_tooltip] == false
-      link_options[:class] << ' has-tooltip'
-      link_options[:title] = source_email
-    end
-
     if user.nil?
       mail_to(source_email, text, link_options)
     else
