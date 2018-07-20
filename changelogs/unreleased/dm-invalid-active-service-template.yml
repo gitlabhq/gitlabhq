@@ -1,5 +1,0 @@
----
-title: Deactivate new KubernetesService created from active template to prevent project creation from failing
-merge_request:
-author:
-type: fixed

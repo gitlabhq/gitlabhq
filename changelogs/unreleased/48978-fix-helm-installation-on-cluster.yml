@@ -1,5 +1,0 @@
----
-title: Fixes base command used in Helm installations
-merge_request: 20471
-author:
-type: fixed

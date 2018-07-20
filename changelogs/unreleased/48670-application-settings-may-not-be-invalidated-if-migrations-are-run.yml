@@ -1,6 +1,0 @@
----
-title: Stop relying on migrations in the CacheableAttributes cache key and cache attributes
-  for 1 minute instead
-merge_request: 20389
-author:
-type: fixed

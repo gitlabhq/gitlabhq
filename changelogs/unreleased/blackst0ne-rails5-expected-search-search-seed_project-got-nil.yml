@@ -1,5 +1,0 @@
----
-title: "[Rails5] Fix sessions_controller_spec"
-merge_request: 19936
-author: "@blackst0ne"
-type: fixed
