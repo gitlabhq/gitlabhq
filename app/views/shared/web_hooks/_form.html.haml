@@ -1,15 +1,15 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, 'URL', class: 'label-light'
+  = form.label :url, 'URL', class: 'label-bold'
   = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
 .form-group
-  = form.label :token, 'Secret Token', class: 'label-light'
+  = form.label :token, 'Secret Token', class: 'label-bold'
   = form.text_field :token, class: 'form-control', placeholder: ''
   %p.form-text.text-muted
     Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.
 .form-group
-  = form.label :url, 'Trigger', class: 'label-light'
+  = form.label :url, 'Trigger', class: 'label-bold'
   %ul.list-unstyled.prepend-left-20
     %li
       = form.check_box :push_events, class: 'form-check-input'
@@ -72,7 +72,7 @@
       %p.light.ml-1
         This URL will be triggered when a wiki page is created/updated
 .form-group
-  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
+  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-bold checkbox'
   .form-check
     = form.check_box :enable_ssl_verification, class: 'form-check-input'
     = form.label :enable_ssl_verification, class: 'form-check-label ml-1' do
