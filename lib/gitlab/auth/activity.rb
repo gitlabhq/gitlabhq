@@ -47,8 +47,14 @@ module Gitlab
         self.class.user_signed_out_counter.increment
       end
 
-      COUNTERS.each_pair do |metric, description|
-        define_singleton_method("#{metric}_counter") do
+      def self.each_counter
+        COUNTERS.each_pair do |metric, description|
+          yield "#{metric}_counter", metric, description
+        end
+      end
+
+      each_counter do |counter, metric, description|
+        define_singleton_method(counter) do
           strong_memoize(metric) do
             Gitlab::Metrics.counter("gitlab_auth_#{metric}_total".to_sym, description)
           end

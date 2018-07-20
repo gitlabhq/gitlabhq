@@ -68,6 +68,17 @@ module StubConfiguration
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))
   end
 
+  def authentication_metrics
+    Gitlab::Auth::Activity
+  end
+
+  def stub_authentication_activity_metrics
+    authentication_metrics.each_counter do |counter, metric, description|
+      allow(authentication_metrics).to receive(counter)
+        .and_return(spy("#{metric} - #{description}"))
+    end
+  end
+
   private
 
   # Modifies stubbed messages to also stub possible predicate versions

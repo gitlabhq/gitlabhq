@@ -3,6 +3,10 @@ require 'spec_helper'
 describe 'Login' do
   include TermsHelper
 
+  before do
+    stub_authentication_activity_metrics
+  end
+
   it 'Successful user signin invalidates password reset token' do
     user = create(:user)
 
@@ -29,7 +33,6 @@ describe 'Login' do
       User.delete_all
 
       user = create(:admin, password_automatically_set: true)
-      expect(Gitlab::Auth::Activity).to increment(:user_authenticated_counter)
 
       visit root_path
       expect(current_path).to eq edit_user_password_path
@@ -47,6 +50,7 @@ describe 'Login' do
       click_button 'Sign in'
 
       expect(current_path).to eq root_path
+      expect(authentication_metrics).to have_incremented(:user_authenticated_counter)
     end
 
     it 'does not show flash messages when login page' do
