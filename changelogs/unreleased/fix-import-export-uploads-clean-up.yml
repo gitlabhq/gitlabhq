@@ -1,0 +1,5 @@
+---
+title: Clean up uploads table after Import/Export upload removal
+merge_request: 20737
+author:
+type: fixed
