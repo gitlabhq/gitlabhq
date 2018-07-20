@@ -121,6 +121,16 @@ describe Geo::ProjectRegistry do
     end
   end
 
+  describe '.checksum_mismatch' do
+    it 'returns projects where there is a checksum mismatch' do
+      registry_repository_checksum_mismatch = create(:geo_project_registry, :repository_checksum_mismatch)
+      regisry_wiki_checksum_mismatch = create(:geo_project_registry, :wiki_checksum_mismatch)
+      create(:geo_project_registry)
+
+      expect(described_class.checksum_mismatch).to match_array([regisry_wiki_checksum_mismatch, registry_repository_checksum_mismatch])
+    end
+  end
+
   describe '.retry_due' do
     it 'returns projects that should be synced' do
       create(:geo_project_registry, repository_retry_at: Date.yesterday, wiki_retry_at: Date.yesterday)

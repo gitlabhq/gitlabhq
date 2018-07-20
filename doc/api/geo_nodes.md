@@ -338,8 +338,9 @@ Example response:
 
 Please note that the `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
 
-## Retrieve project sync failures that occurred on the current node
+## Retrieve project sync or verification failures that occurred on the current node
 
+This only works on a secondary node.
 
 ```
 GET /geo_nodes/current/failures
@@ -347,7 +348,8 @@ GET /geo_nodes/current/failures
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `type` | string | no | Type of failure (`repository`/`wiki`) |
+| `type`         | string  | no | Type of failed objects (`repository`/`wiki`) |
+| `failure_type` | string | no | Type of failures (`sync`/`checksum_mismatch`/`verification`) |
 
 This endpoint uses [Pagination](README.md#pagination).
 
@@ -368,7 +370,13 @@ Example response:
     "repository_retry_count": null,
     "wiki_retry_count": 1,
     "last_repository_sync_failure": null,
-    "last_wiki_sync_failure": "Error syncing Wiki repository"
+    "last_wiki_sync_failure": "Error syncing Wiki repository",
+    "last_repository_verification_failure": "",
+    "last_wiki_verification_failure": "",
+    "repository_verification_checksum_sha": "da39a3ee5e6b4b0d32e5bfef9a601890afd80709",
+    "wiki_verification_checksum_sha": "da39a3ee5e6b4b0d3255bfef9ef0189aafd80709",
+    "repository_checksum_mismatch": false,
+    "wiki_checksum_mismatch": false
   }
 ]
 ```
