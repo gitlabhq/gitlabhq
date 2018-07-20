@@ -144,13 +144,14 @@ module Gitlab
           branch: encode_binary(target_branch)
         )
 
-        branch_update = GitalyClient.call(
+        response = GitalyClient.call(
           @repository.storage,
           :operation_service,
           :user_ff_branch,
           request
-        ).branch_update
-        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
+        )
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       rescue GRPC::FailedPrecondition => e
         raise Gitlab::Git::CommitError, e
       end
@@ -306,9 +307,9 @@ module Gitlab
           raise Gitlab::Git::CommitError, response.commit_error
         elsif response.create_tree_error.presence
           raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error
-        else
-          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
         end
+
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
       end
 
       def user_commit_files_request_header(
