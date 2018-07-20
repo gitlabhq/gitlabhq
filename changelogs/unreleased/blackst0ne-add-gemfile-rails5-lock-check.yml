@@ -1,5 +1,0 @@
----
-title: Add CI job to check Gemfile.rails5.lock
-merge_request: 19605
-author: "@blackst0ne"
-type: other

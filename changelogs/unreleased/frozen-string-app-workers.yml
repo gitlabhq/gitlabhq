@@ -1,5 +1,0 @@
----
-title: Enable frozen string in app/workers/*.rb
-merge_request: 19944
-author: gfyoung
-type: other

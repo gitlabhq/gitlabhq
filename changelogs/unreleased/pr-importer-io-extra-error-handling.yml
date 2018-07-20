@@ -1,5 +1,0 @@
----
-title: Ensure MR diffs always exist in the PR importer
-merge_request:
-author:
-type: fixed

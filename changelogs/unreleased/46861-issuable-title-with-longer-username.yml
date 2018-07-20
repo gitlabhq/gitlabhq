@@ -1,5 +1,0 @@
----
-title: Fix CSS for buttons not to be hidden on issues/MR title
-merge_request: 19176
-author: Takuya Noguchi
-type: fixed
