@@ -5,7 +5,7 @@ import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import IssuableContext from '~/issuable_context';
 import AssigneeSelect from 'ee/boards/components/assignee_select.vue';
-import { boardObj, mockBoardService } from '../mock_data';
+import { boardObj, mockBoardService } from 'spec/boards/mock_data';
 
 let vm;
 
