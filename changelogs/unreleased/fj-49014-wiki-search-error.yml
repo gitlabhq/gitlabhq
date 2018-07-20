@@ -1,0 +1,5 @@
+---
+title: Fixed bug with invalid repository reference using the wiki search
+merge_request: 20722
+author:
+type: fixed

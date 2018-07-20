@@ -134,28 +134,5 @@ namespace :gitlab do
         puts "To block these users run this command with BLOCK=true".color(:yellow)
       end
     end
-
-    # This is a rake task which removes faulty refs. These refs where only
-    # created in the 8.13.RC cycle, and fixed in the stable builds which were
-    # released. So likely this should only be run once on gitlab.com
-    # Faulty refs are moved so they are kept around, else some features break.
-    desc 'GitLab | Cleanup | Remove faulty deployment refs'
-    task move_faulty_deployment_refs: :gitlab_environment do
-      projects = Project.where(id: Deployment.select(:project_id).distinct)
-
-      projects.find_each do |project|
-        rugged = project.repository.rugged
-
-        max_iid = project.deployments.maximum(:iid)
-
-        rugged.references.each('refs/environments/**/*') do |ref|
-          id = ref.name.split('/').last.to_i
-          next unless id > max_iid
-
-          project.deployments.find(id).create_ref
-          project.repository.delete_refs(ref)
-        end
-      end
-    end
   end
 end

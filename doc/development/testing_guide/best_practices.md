@@ -101,7 +101,7 @@ CHROME_HEADLESS=0 bundle exec rspec some_spec.rb
 
 The test will go by quickly, but this will give you an idea of what's happening.
 
-You can also add `byebug` or `binding.pry` to pause execution and step through
+You can also add `byebug` or `binding.pry` to pause execution and [step through](../pry_debugging.md#stepping)
 the test.
 
 #### Screenshots
