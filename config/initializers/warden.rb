@@ -4,30 +4,31 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.before_failure(scope: :user) do |env, opts|
-    Gitlab::Auth::BlockedUserTracker.log_if_user_blocked(env)
+    Gitlab::Auth::BlockedUserTracker.new(env).tap do |tracker|
+      tracker.log_blocked_user_activity! if tracker.user_blocked?
 
-    Gitlab::Auth::Activity.new(opts).user_authentication_failed!
+      Gitlab::Auth::Activity.new(tracker.user, opts).user_authentication_failed!
+    end
   end
 
   Warden::Manager.after_authentication(scope: :user) do |user, auth, opts|
     ActiveSession.cleanup(user)
-
-    Gitlab::Auth::Activity.new(opts).user_authenticated!
+    Gitlab::Auth::Activity.new(user, opts).user_authenticated!
   end
 
   Warden::Manager.after_set_user(scope: :user, only: :fetch) do |user, auth, opts|
     ActiveSession.set(user, auth.request)
-
-    Gitlab::Auth::Activity.new(opts).user_session_fetched!
+    Gitlab::Auth::Activity.new(user, opts).user_session_fetched!
   end
 
   Warden::Manager.after_set_user(scope: :user, only: :set_user) do |user, auth, opts|
-    Gitlab::Auth::Activity.new(opts).user_session_override!
+    Gitlab::Auth::Activity.new(user, opts).user_session_override!
   end
 
-  Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
-    ActiveSession.destroy(user || auth.user, auth.request.session.id)
-
-    Gitlab::Auth::Activity.new(opts).user_signed_out!
+  Warden::Manager.before_logout(scope: :user) do |warden_user, auth, opts|
+    (warden_user || auth.user).tap do |user|
+      ActiveSession.destroy(user, auth.request.session.id)
+      Gitlab::Auth::Activity.new(user, opts).user_signed_out!
+    end
   end
 end

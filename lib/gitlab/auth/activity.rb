@@ -16,7 +16,8 @@ module Gitlab
         user_signed_out: 'Counter of total user sign out events'
       }.freeze
 
-      def initialize(opts)
+      def initialize(user, opts)
+        @user = user
         @opts = opts
       end
 
@@ -29,6 +30,8 @@ module Gitlab
         when :invalid
           self.class.user_password_invalid_counter.increment
         end
+
+        # case blocked user
       end
 
       def user_authenticated!

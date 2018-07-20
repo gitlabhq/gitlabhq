@@ -3,24 +3,26 @@ require 'spec_helper'
 describe Gitlab::Auth::BlockedUserTracker do
   set(:user) { create(:user) }
 
-  describe '.log_if_user_blocked' do
+  # TODO, add more specs
+
+  describe '#log_blocked_user_activity!' do
     it 'does not log if user failed to login due to undefined reason' do
       expect_any_instance_of(SystemHooksService).not_to receive(:execute_hooks_for)
 
-      expect(described_class.log_if_user_blocked({})).to be_nil
+      expect(described_class.new({}).log_blocked_user_activity!).to be_nil
     end
 
     it 'gracefully handles malformed environment variables' do
       env = { 'warden.options' => 'test' }
 
-      expect(described_class.log_if_user_blocked(env)).to be_nil
+      expect(described_class.new(env).log_blocked_user_activity!).to be_nil
     end
 
     context 'failed login due to blocked user' do
       let(:base_env) { { 'warden.options' => { message: User::BLOCKED_MESSAGE } } }
       let(:env) { base_env.merge(request_env) }
 
-      subject { described_class.log_if_user_blocked(env) }
+      subject { described_class.new(env).log_blocked_user_activity! }
 
       before do
         expect_any_instance_of(SystemHooksService).to receive(:execute_hooks_for).with(user, :failed_login)
