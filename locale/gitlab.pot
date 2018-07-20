@@ -4114,6 +4114,9 @@ msgstr ""
 msgid "PrometheusService|Common metrics"
 msgstr ""
 
+msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
+msgstr ""
+
 msgid "PrometheusService|Finding and configuring metrics..."
 msgstr ""
 
@@ -4127,9 +4130,6 @@ msgid "PrometheusService|Manual configuration"
 msgstr ""
 
 msgid "PrometheusService|Metrics"
-msgstr ""
-
-msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
 msgstr ""
 
 msgid "PrometheusService|Missing environment variable"
