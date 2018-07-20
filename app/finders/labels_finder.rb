@@ -14,6 +14,7 @@ class LabelsFinder < UnionFinder
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
+    items = by_search(items)
     sort(items)
   end
 
@@ -61,6 +62,12 @@ class LabelsFinder < UnionFinder
     return items.none if title.blank?
 
     items.where(title: title)
+  end
+
+  def by_search(labels)
+    return labels unless params[:search].present?
+
+    labels.search(params[:search])
   end
 
   # Gets redacted array of group ids
