@@ -35,10 +35,10 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
           chart: chart,
           version: version,
-          values: values
+          config_files: config_files
         )
       end
 

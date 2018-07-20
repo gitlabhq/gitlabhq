@@ -15,7 +15,10 @@ module Clusters
       end
 
       def install_command
-        Gitlab::Kubernetes::Helm::InitCommand.new(name)
+        Gitlab::Kubernetes::Helm::InitCommand.new(
+          name: name,
+          config_files: {},
+        )
       end
     end
   end

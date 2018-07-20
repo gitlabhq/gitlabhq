@@ -28,9 +28,9 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
           chart: chart,
-          values: values,
+          config_files: config_files,
           repository: repository
         )
       end
