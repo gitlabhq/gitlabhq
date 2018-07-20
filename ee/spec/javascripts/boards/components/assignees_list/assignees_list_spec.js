@@ -6,7 +6,7 @@ import AssigneesListComponent from 'ee/boards/components/assignees_list/';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-import { mockAssigneesList } from '../../mock_data';
+import { mockAssigneesList } from 'spec/boards/mock_data';
 
 const createComponent = () => mountComponent(AssigneesListComponent, {
   listAssigneesPath: `${gl.TEST_HOST}/users.json`,
