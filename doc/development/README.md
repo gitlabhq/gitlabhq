@@ -40,6 +40,7 @@ description: 'Learn how to contribute to GitLab.'
 - [View sent emails or preview mailers](emails.md)
 - [Shell commands](shell_commands.md) in the GitLab codebase
 - [`Gemfile` guidelines](gemfile.md)
+- [Pry debugging](pry_debugging.md)
 - [Sidekiq debugging](sidekiq_debugging.md)
 - [Gotchas](gotchas.md) to avoid
 - [Avoid modules with instance variables](module_with_instance_variables.md) if possible
