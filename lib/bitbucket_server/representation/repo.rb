@@ -9,10 +9,6 @@ module BitbucketServer
         raw.dig('project', 'name')
       end
 
-      def owner
-        project['name']
-      end
-
       def slug
         raw['slug']
       end
@@ -30,7 +26,7 @@ module BitbucketServer
       end
 
       def full_name
-        "#{owner}/#{name}"
+        "#{project_name}/#{name}"
       end
 
       def issues_enabled?
@@ -43,10 +39,6 @@ module BitbucketServer
 
       def valid?
         raw['scmId'] == 'git'
-      end
-
-      def has_wiki?
-        false
       end
 
       def visibility_level
