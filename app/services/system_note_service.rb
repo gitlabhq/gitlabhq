@@ -33,6 +33,20 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
   end
 
+  # Called when a commit was tagged
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the tag
+  # tag_name  - The created tag name
+  #
+  # Returns the created Note object
+  def tag_commit(noteable, project, author, tag_name)
+    body = "tagged commit #{noteable.sha} to `#{tag_name}`"
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
+  end
+
   # Called when the assignee of a Noteable is changed or removed
   #
   # noteable - Noteable object
