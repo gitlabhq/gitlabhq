@@ -2,11 +2,11 @@ module BitbucketServer
   module Representation
     class PullRequest < Representation::Base
       def author
-        raw.fetch('author', {}).fetch('user', {}).fetch('name')
+        raw.dig('author', 'user', 'name')
       end
 
       def author_email
-        raw.fetch('author', {}).fetch('user', {}).fetch('emailAddress')
+        raw.dig('author', 'user', 'emailAddress')
       end
 
       def description
@@ -32,11 +32,11 @@ module BitbucketServer
       end
 
       def created_at
-        raw['createdDate']
+        Time.at(created_date / 1000) if created_date.is_a?(Integer)
       end
 
       def updated_at
-        raw['updatedDate']
+        Time.at(updated_date / 1000) if created_date.is_a?(Integer)
       end
 
       def title
@@ -44,29 +44,29 @@ module BitbucketServer
       end
 
       def source_branch_name
-        source_branch['id']
+        dig('fromRef', 'id')
       end
 
       def source_branch_sha
-        source_branch['latestCommit']
+        dig('fromRef', 'latestCommit')
       end
 
       def target_branch_name
-        target_branch['id']
+        dig('toRef', 'id')
       end
 
       def target_branch_sha
-        target_branch['latestCommit']
+        dig('toRef', 'latestCommit')
       end
 
       private
 
-      def source_branch
-        raw['fromRef'] || {}
+      def created_date
+        raw['createdDate']
       end
 
-      def target_branch
-        raw['toRef'] || {}
+      def updated_date
+        raw['updatedDate']
       end
     end
   end
