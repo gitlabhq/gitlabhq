@@ -182,8 +182,6 @@ module Gitlab
         target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
         author_id = gitlab_user_id(pull_request.author_email)
 
-        project.merge_requests.find_by(iid: pull_request.iid)&.destroy
-
         attributes = {
           iid: pull_request.iid,
           title: pull_request.title,
