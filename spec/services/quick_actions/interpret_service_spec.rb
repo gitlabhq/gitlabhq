@@ -6,6 +6,7 @@ describe QuickActions::InterpretService do
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
+  let(:commit) { create(:commit, project: project) }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
@@ -344,6 +345,14 @@ describe QuickActions::InterpretService do
         new_content, _ = service.execute(content, issuable)
 
         expect(new_content).to end_with(described_class::TABLEFLIP)
+      end
+    end
+
+    shared_examples 'tag command' do
+      it 'tags a commit' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(tag_name: tag_name, tag_message: tag_message)
       end
     end
 
@@ -1102,6 +1111,32 @@ describe QuickActions::InterpretService do
         it_behaves_like 'empty command'
       end
     end
+
+    context '/tag command' do
+      let(:issuable) { commit }
+
+      context 'ignores command with no argument' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/tag' }
+        end
+      end
+
+      context 'tags a commit with a tag name' do
+        it_behaves_like 'tag command' do
+          let(:tag_name) { 'v1.2.3' }
+          let(:tag_message) { nil }
+          let(:content) { "/tag #{tag_name}" }
+        end
+      end
+
+      context 'tags a commit with a tag name and message' do
+        it_behaves_like 'tag command' do
+          let(:tag_name) { 'v1.2.3' }
+          let(:tag_message) { 'Stable release' }
+          let(:content) { "/tag #{tag_name} #{tag_message}" }
+        end
+      end
+    end
   end
 
   describe '#explain' do
@@ -1317,6 +1352,16 @@ describe QuickActions::InterpretService do
         _, explanations = service.explain(content, issue)
 
         expect(explanations).to eq(["Moves this issue to test/project."])
+      end
+    end
+
+    describe 'tag a commit' do
+      let(:content) { '/tag 1.2.3 some message' }
+
+      it 'includes the tag name' do
+        _, explanations = service.explain(content, commit)
+
+        expect(explanations).to eq(["Tags this commit to 1.2.3."])
       end
     end
   end
