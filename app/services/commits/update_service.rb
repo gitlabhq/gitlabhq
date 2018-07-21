@@ -20,7 +20,8 @@ module Commits
         .new(commit.project, current_user)
         .execute(tag_name, commit.sha, message, release_description)
 
-      if result[:status]
+      if result[:status] == :success && (tag = result[:tag])
+        SystemNoteService.tag_commit(commit, commit.project, current_user, tag.name)
         commit
       end
     end
