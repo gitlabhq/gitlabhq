@@ -34,9 +34,9 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   def target
     case params[:type]&.downcase
     when 'issue'
-      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
+      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id]) || @project.issues.build
     when 'mergerequest'
-      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
+      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id]) || @project.merge_requests.build
     when 'commit'
       @project.commit(params[:type_id])
     end
