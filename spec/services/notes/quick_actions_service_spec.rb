@@ -11,40 +11,6 @@ describe Notes::QuickActionsService do
     end
   end
 
-  shared_examples 'note on noteable that does not support quick actions' do
-    include_context 'note on noteable'
-
-    before do
-      note.note = note_text
-    end
-
-    describe 'note with only command' do
-      describe '/close, /label, /assign & /milestone' do
-        let(:note_text) { %(/close\n/assign @#{assignee.username}") }
-
-        it 'saves the note and does not alter the note text' do
-          content, command_params = service.extract_commands(note)
-
-          expect(content).to eq note_text
-          expect(command_params).to be_empty
-        end
-      end
-    end
-
-    describe 'note with command & text' do
-      describe '/close, /label, /assign & /milestone' do
-        let(:note_text) { %(HELLO\n/close\n/assign @#{assignee.username}\nWORLD) }
-
-        it 'saves the note and does not alter the note text' do
-          content, command_params = service.extract_commands(note)
-
-          expect(content).to eq note_text
-          expect(command_params).to be_empty
-        end
-      end
-    end
-  end
-
   shared_examples 'note on noteable that supports quick actions' do
     include_context 'note on noteable'
 
@@ -147,16 +113,16 @@ describe Notes::QuickActionsService do
       expect(described_class.noteable_update_service(note)).to eq(Issues::UpdateService)
     end
 
-    it 'returns Issues::UpdateService for a note on a merge request' do
+    it 'returns MergeRequests::UpdateService for a note on a merge request' do
       note = create(:note_on_merge_request, project: project)
 
       expect(described_class.noteable_update_service(note)).to eq(MergeRequests::UpdateService)
     end
 
-    it 'returns nil for a note on a commit' do
+    it 'returns Commits::UpdateService for a note on a commit' do
       note = create(:note_on_commit, project: project)
 
-      expect(described_class.noteable_update_service(note)).to be_nil
+      expect(described_class.noteable_update_service(note)).to eq(Commits::UpdateService)
     end
   end
 
@@ -175,7 +141,7 @@ describe Notes::QuickActionsService do
       let(:note) { create(:note_on_commit, project: project) }
 
       it 'returns false' do
-        expect(described_class.supported?(note)).to be_falsy
+        expect(described_class.supported?(note)).to be_truthy
       end
     end
   end
@@ -202,10 +168,6 @@ describe Notes::QuickActionsService do
 
     it_behaves_like 'note on noteable that supports quick actions' do
       let(:note) { build(:note_on_merge_request, project: project) }
-    end
-
-    it_behaves_like 'note on noteable that does not support quick actions' do
-      let(:note) { build(:note_on_commit, project: project) }
     end
   end
 
