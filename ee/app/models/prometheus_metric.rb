@@ -1,7 +1,7 @@
 class PrometheusMetric < ActiveRecord::Base
   belongs_to :project, required: true, validate: true, inverse_of: :prometheus_metrics
 
-  has_one :prometheus_alert
+  has_one :prometheus_alert, inverse_of: :prometheus_metric
 
   enum group: [:business, :response, :system]
 

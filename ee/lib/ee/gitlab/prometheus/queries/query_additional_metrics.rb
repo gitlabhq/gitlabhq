@@ -16,11 +16,11 @@ module EE
               end
 
             proc do |group|
-              group[:metrics]&.map! do |metric|
+              group[:metrics] = group[:metrics]&.map do |metric|
                 key = metric[:id]
 
                 if key && alerts_map[key]
-                  metric[:queries]&.map! do |item|
+                  metric[:queries] = metric[:queries]&.map do |item|
                     item[:alert_path] = alert_path(alerts_map, key, project, environment)
 
                     item

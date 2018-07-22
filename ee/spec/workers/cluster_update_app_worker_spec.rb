@@ -26,12 +26,10 @@ describe ClusterUpdateAppWorker do
     end
 
     context 'when another worker is already running' do
-      it 'raises UpdateAlreadyInProgressError' do
+      it 'returns nil' do
         application = create(:clusters_applications_prometheus, :updating)
 
-        expect do
-          subject.perform(application.name, application.id, project.id, Time.now)
-        end.to raise_error(described_class::UpdateAlreadyInProgressError)
+        expect(subject.perform(application.name, application.id, project.id, Time.now)).to be_nil
       end
     end
 

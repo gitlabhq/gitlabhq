@@ -15,7 +15,7 @@ describe PrometheusAlertEntity do
     end
 
     it 'exposes prometheus_alert attributes' do
-      expect(subject).to include(:id, :name, :query, :operator, :threshold)
+      expect(subject).to include(:id, :title, :query, :operator, :threshold)
     end
 
     it 'exposes alert_path' do

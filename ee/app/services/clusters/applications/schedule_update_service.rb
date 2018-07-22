@@ -29,7 +29,7 @@ module Clusters
       def recently_scheduled?
         return false unless application.last_update_started_at
 
-        application.last_update_started_at >= Time.now - BACKOFF_DELAY
+        application.last_update_started_at.utc >= Time.now.utc - BACKOFF_DELAY
       end
     end
   end

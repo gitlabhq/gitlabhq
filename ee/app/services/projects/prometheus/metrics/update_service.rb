@@ -1,9 +1,9 @@
 module Projects
   module Prometheus
     module Metrics
-      class UpdateService < BaseService
+      class UpdateService < Metrics::BaseService
         def execute
-          metric.update(params)
+          metric.update!(params)
           schedule_alert_update if requires_alert_update?
           metric
         end

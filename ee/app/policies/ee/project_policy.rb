@@ -49,7 +49,6 @@ module EE
         @subject.feature_available?(:pod_logs, @user)
       end
 
-      with_scope :subject
       condition(:prometheus_alerts_enabled) do
         @subject.feature_available?(:prometheus_alerts, @user)
       end
