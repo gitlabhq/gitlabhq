@@ -5,9 +5,11 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by clicking **Groups** on the menu bar.
+Find your groups by clicking **Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
+
+> The groups dropdown in the top navigation was [introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
 The Groups page displays all groups you are a member of, how many projects it holds,
 how many members it has, the group visibility, and, if you have enough permissions,
