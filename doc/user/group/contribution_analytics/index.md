@@ -8,14 +8,14 @@ Track your team members' activity across your organization.
 ## Overview
 
 With Contribution Analytics you can get an overview of the activity of
-issues, merge requests and push events of your organization and its members.
+issues, merge requests, and push events of your organization and its members.
 
 The analytics page is located at **Group > Contribution Analytics**
 under the URL `/groups/<groupname>/analytics`.
 
 ## Use cases
 
-- Analyze your team's contributions along a period of time and offer a bonus for the top contributors
+- Analyze your team's contributions throughout a period of time and offer a bonu for the top contributors
 - Identify opportunities for improvement with group members who may benefit from additional support 
 
 ## Using Contribution Analytics
