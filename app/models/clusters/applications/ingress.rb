@@ -1,15 +1,18 @@
 module Clusters
   module Applications
     class Ingress < ActiveRecord::Base
+      VERSION = '0.23.0'.freeze
+
       self.table_name = 'clusters_applications_ingress'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
       include AfterCommitQueue
 
       default_value_for :ingress_type, :nginx
-      default_value_for :version, :nginx
+      default_value_for :version, VERSION
 
       enum ingress_type: {
         nginx: 1
@@ -33,6 +36,7 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
+          version: VERSION,
           chart: chart,
           values: values
         )
