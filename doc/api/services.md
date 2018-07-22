@@ -447,6 +447,8 @@ GET /projects/:id/services/gemnasium
 
 Google GSuite team collaboration tool.
 
+>**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20290)
+
 ### Create/Edit Hangouts Chat service
 
 Set Hangouts Chat service for a project.

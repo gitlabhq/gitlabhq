@@ -9,11 +9,11 @@ The Hangouts Chat service sends notifications from GitLab to the room for which 
 1. Click on **ADD WEBHOOK** and fill in the name of the bot that will post the messages. Optionally define avatar.
 1. Click **SAVE** and copy the **Webhook URL** of your webhook.
 
-Details: https://developers.google.com/hangouts/chat/how-tos/webhooks
+See also [the Hangouts Chat documentation for configuring incoming webhooks](https://developers.google.com/hangouts/chat/how-tos/webhooks)
 
 ## On GitLab
 
-When you have **Webhook URL** for your Hangouts Chat room webhook, you can setup the GitLab service.
+When you have the **Webhook URL** for your Hangouts Chat room webhook, you can setup the GitLab service.
 
 1. Navigate to the [Integrations page](project_services.md#accessing-the-project-services) in your project's settings, i.e. **Project > Settings > Integrations**.
 1. Select the **Hangouts Chat** project service to configure it.
