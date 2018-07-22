@@ -15,8 +15,8 @@ under the URL `/groups/<groupname>/analytics`.
 
 ## Use cases
 
-- Analyze your team's contributions throughout a period of time and offer a bonu for the top contributors
-- Identify opportunities for improvement with group members who may benefit from additional support 
+- Analyze your team's contributions over a period of time and offer a bonus for the top contributors
+- Identify opportunities for improveent with group members who may benefit from additional support 
 
 ## Using Contribution Analytics
 
