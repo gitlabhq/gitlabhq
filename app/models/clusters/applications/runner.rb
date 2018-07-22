@@ -1,12 +1,13 @@
 module Clusters
   module Applications
     class Runner < ActiveRecord::Base
-      VERSION = '0.1.13'.freeze
+      VERSION = '0.1.31'.freeze
 
       self.table_name = 'clusters_applications_runners'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       belongs_to :runner, class_name: 'Ci::Runner', foreign_key: :runner_id
@@ -29,6 +30,7 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
+          version: VERSION,
           chart: chart,
           values: values,
           repository: repository
