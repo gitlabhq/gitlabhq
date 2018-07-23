@@ -8,6 +8,7 @@
 #     owned: boolean
 #     parent: Group
 #     all_available: boolean (defaults to true)
+#     min_access_level: integer
 #
 # Users with full private access can see all groups. The `owned` and `parent`
 # params can be used to restrict the groups that are returned.
@@ -39,6 +40,7 @@ class GroupsFinder < UnionFinder
 
   def all_groups
     return [owned_groups] if params[:owned]
+    return [groups_with_min_access_level] if min_access_level?
     return [Group.all] if current_user&.full_private_access? && all_available?
 
     groups = []
@@ -54,6 +56,16 @@ class GroupsFinder < UnionFinder
 
   def groups_for_descendants
     current_user.groups
+  end
+
+  def groups_with_min_access_level
+    groups = current_user
+      .groups
+      .where('members.access_level >= ?', params[:min_access_level])
+
+    Gitlab::GroupHierarchy
+      .new(groups)
+      .base_and_descendants
   end
 
   def by_parent(groups)
@@ -72,5 +84,9 @@ class GroupsFinder < UnionFinder
 
   def all_available?
     params.fetch(:all_available, true)
+  end
+
+  def min_access_level?
+    current_user && params[:min_access_level].present?
   end
 end
