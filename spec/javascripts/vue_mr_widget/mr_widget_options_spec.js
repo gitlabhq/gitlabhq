@@ -1,8 +1,10 @@
+import MockAdapter from 'axios-mock-adapter';
 import Vue from 'vue';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import axios from '~/lib/utils/axios_utils';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import mockData from './mock_data';
 import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from '../lib/utils/mock_data';
@@ -14,10 +16,13 @@ const returnPromise = data => new Promise((resolve) => {
 });
 
 describe('mrWidgetOptions', () => {
+  let axiosMock;
   let vm;
   let MrWidgetOptions;
 
   beforeEach(() => {
+    axiosMock = new MockAdapter(axios);
+
     // Prevent component mounting
     delete mrWidgetOptions.el;
 
@@ -25,6 +30,10 @@ describe('mrWidgetOptions', () => {
     vm = mountComponent(MrWidgetOptions, {
       mrData: { ...mockData },
     });
+  });
+
+  afterEach(() => {
+    axiosMock.restore();
   });
 
   describe('data', () => {
