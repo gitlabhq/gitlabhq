@@ -573,7 +573,15 @@ If the project is a fork, and you provide a valid token to authenticate, the
       "avatar_url":"https://assets.gitlab-static.net/uploads/-/system/project/avatar/13083/logo-extra-whitespace.png",
       "star_count":3812,
       "forks_count":3561,
-      "last_activity_at":"2018-01-02T11:40:26.570Z"
+      "last_activity_at":"2018-01-02T11:40:26.570Z",
+      "namespace": {
+            "id": 72,
+            "name": "GitLab.org",
+            "path": "gitlab-org",
+            "kind": "group",
+            "full_path": "gitlab-org",
+            "parent_id": null
+      }
    }
 
    ...
