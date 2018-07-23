@@ -1,4 +1,5 @@
 <script>
+import { roundOffFloat } from '~/lib/utils/common_utils';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -70,7 +71,7 @@ export default {
   },
   methods: {
     getPercent(count) {
-      return Math.ceil((count / this.totalCount) * 100);
+      return roundOffFloat((count / this.totalCount) * 100, 1);
     },
     barStyle(percent) {
       return `width: ${percent}%;`;
