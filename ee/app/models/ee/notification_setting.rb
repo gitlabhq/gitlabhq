@@ -4,6 +4,11 @@ module EE
   module NotificationSetting
     extend ActiveSupport::Concern
 
+    EMAIL_EVENTS_MAPPING = {
+      ::Group => [:new_epic]
+    }.freeze
+    FULL_EMAIL_EVENTS = EMAIL_EVENTS_MAPPING.values.flatten.freeze
+
     class_methods do
       extend ::Gitlab::Utils::Override
 
@@ -11,9 +16,14 @@ module EE
       def email_events(source = nil)
         result = super.dup
 
-        case target
-        when Group, :group
-          result << :new_epic
+        if source.nil?
+          # Global setting
+          result.concat(FULL_EMAIL_EVENTS)
+        else
+          source_class = source.is_a?(Class) ? source : source.class
+          EMAIL_EVENTS_MAPPING[source_class]&.tap do |events|
+            result.concat(events)
+          end
         end
 
         result

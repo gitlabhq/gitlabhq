@@ -50,7 +50,9 @@ module API
       end
     end
 
-    %w[group project].each do |source_type|
+    [Group, Project].each do |source_class|
+      source_type = source_class.name.underscore
+
       params do
         requires :id, type: String, desc: "The #{source_type} ID"
       end
@@ -73,7 +75,7 @@ module API
         end
         params do
           optional :level, type: String, desc: "The #{source_type} notification level"
-          NotificationSetting.email_events(source_type.to_sym).each do |event|
+          NotificationSetting.email_events(source_class).each do |event|
             optional event, type: Boolean, desc: 'Enable/disable this notification'
           end
         end
