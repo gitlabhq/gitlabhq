@@ -63,7 +63,7 @@ describe 'Multiple issue updating from issues#index', :js do
 
       click_link 'Unassigned'
       click_update_issues_button
-      expect(find('.issue:first-child .controls')).not_to have_css('.author_link')
+      expect(find('.issue:first-child .controls')).not_to have_css('.author-link')
     end
   end
 
