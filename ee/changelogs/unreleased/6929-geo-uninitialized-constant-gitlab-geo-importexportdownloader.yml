@@ -1,5 +1,0 @@
----
-title: Fix geo download service ImportExportDownloader unitialized constant
-merge_request: 6567
-author:
-type: fixed

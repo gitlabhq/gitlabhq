@@ -1,5 +1,13 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.1.1 (2018-07-23)
+
+### Fixed (2 changes)
+
+- Fix geo download service ImportExportDownloader unitialized constant. !6567
+- Geo - Allow repository verification to be disabled on a secondary node. !6599
+
+
 ## 11.1.0 (2018-07-22)
 
 ### Removed (1 change)
