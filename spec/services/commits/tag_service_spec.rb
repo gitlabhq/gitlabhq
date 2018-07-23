@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Commits::UpdateService do
+describe Commits::TagService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 

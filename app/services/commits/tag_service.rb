@@ -1,14 +1,8 @@
 # frozen_string_literal: true
 
 module Commits
-  class UpdateService < BaseService
+  class TagService < BaseService
     def execute(commit)
-      tag_commit(commit)
-    end
-
-    private
-
-    def tag_commit(commit)
       # TODO authorize
       return unless params[:tag_name]
 

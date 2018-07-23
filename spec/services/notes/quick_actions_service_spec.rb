@@ -119,10 +119,10 @@ describe Notes::QuickActionsService do
       expect(described_class.noteable_update_service(note)).to eq(MergeRequests::UpdateService)
     end
 
-    it 'returns Commits::UpdateService for a note on a commit' do
+    it 'returns Commits::TagService for a note on a commit' do
       note = create(:note_on_commit, project: project)
 
-      expect(described_class.noteable_update_service(note)).to eq(Commits::UpdateService)
+      expect(described_class.noteable_update_service(note)).to eq(Commits::TagService)
     end
   end
 
