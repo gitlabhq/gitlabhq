@@ -253,6 +253,24 @@ Settings.uploads['object_store'] = ObjectStoreSettings.parse(Settings.uploads['o
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 
 #
+# Packages
+#
+Settings['packages'] ||= Settingslogic.new({})
+Settings.packages['enabled']      = true if Settings.packages['enabled'].nil?
+Settings.packages['storage_path'] = Settings.absolute(Settings.packages['storage_path'] || File.join(Settings.shared['path'], "packages"))
+# Settings.artifact['path'] is deprecated, use `storage_path` instead
+Settings.packages['path']         = Settings.packages['storage_path']
+Settings.packages['max_size'] ||= 100 # in megabytes
+Settings.packages['object_store'] ||= Settingslogic.new({})
+Settings.packages['object_store']['enabled'] = false if Settings.packages['object_store']['enabled'].nil?
+Settings.packages['object_store']['remote_directory'] ||= nil
+Settings.packages['object_store']['direct_upload'] = false if Settings.packages['object_store']['direct_upload'].nil?
+Settings.packages['object_store']['background_upload'] = true if Settings.packages['object_store']['background_upload'].nil?
+Settings.packages['object_store']['proxy_download'] = false if Settings.packages['object_store']['proxy_download'].nil?
+# Convert upload connection settings to use string keys, to make Fog happy
+Settings.packages['object_store']['connection']&.deep_stringify_keys!
+
+#
 # Mattermost
 #
 Settings['mattermost'] ||= Settingslogic.new({})
