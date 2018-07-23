@@ -120,7 +120,7 @@
       >
         <a
           :href="participant.web_url"
-          class="author_link"
+          class="author-link"
         >
           <user-avatar-image
             :lazy="true"
