@@ -387,6 +387,7 @@ GEM
       temple (>= 0.8.0)
       thor
       tilt
+    hangouts-chat (0.0.5)
     hashdiff (0.3.4)
     hashie (3.5.7)
     hashie-forbidden_attributes (0.1.1)
@@ -1062,6 +1063,7 @@ DEPENDENCIES
   grpc (~> 1.11.0)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.8.8)
+  hangouts-chat (~> 0.0.5)
   hashie-forbidden_attributes
   health_check (~> 2.6.0)
   hipchat (~> 1.5.0)

@@ -220,6 +220,9 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
 
+# Hangouts Chat integration
+gem 'hangouts-chat', '~> 0.0.5'
+
 # Asana integration
 gem 'asana', '~> 0.6.0'
 
