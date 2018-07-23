@@ -27,7 +27,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def active?
-    !revoked
+    !revoked && expires_at > Date.today
   end
 
   def scopes
@@ -56,6 +56,10 @@ class DeployToken < ActiveRecord::Base
 
   def expires_at=(value)
     write_attribute(:expires_at, value.presence || Forever.date)
+  end
+
+  def admin?
+    false
   end
 
   private

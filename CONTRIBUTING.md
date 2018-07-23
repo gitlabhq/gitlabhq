@@ -133,7 +133,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Plan, ~Quality, ~Platform, etc.
+- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -192,9 +192,9 @@ The current team labels are:
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Manage
 - ~Monitoring
 - ~Plan
-- ~Platform
 - ~Quality
 - ~Release
 - ~"Security Products"

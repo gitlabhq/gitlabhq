@@ -1,7 +1,10 @@
 module Gitlab
   class OmniauthInitializer
+<<<<<<< HEAD
     prepend ::EE::Gitlab::OmniauthInitializer
 
+=======
+>>>>>>> upstream/master
     def initialize(devise_config)
       @devise_config = devise_config
     end

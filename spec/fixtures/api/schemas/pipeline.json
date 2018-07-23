@@ -319,6 +319,10 @@
             "id": "/properties/updated_at",
             "type": "string"
         },
+        "web_url": {
+            "id": "/properties/web_url",
+            "type": "string"
+        },
         "user": {
             "id": "/properties/user",
             "properties": {

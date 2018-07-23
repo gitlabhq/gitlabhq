@@ -5000,9 +5000,12 @@ msgstr ""
 msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "PrometheusService|Custom metrics"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "PrometheusService|Finding and configuring metrics..."
 msgstr ""
 

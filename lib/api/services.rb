@@ -368,6 +368,14 @@ module API
           desc: "The project's slug on gemnasium.com"
         }
       ],
+      'hangouts-chat' => [
+        {
+          required: true,
+          name: :webhook,
+          type: String,
+          desc: 'The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces…'
+        }
+      ],
       'hipchat' => [
         {
           required: true,
@@ -748,7 +756,11 @@ module API
       ExternalWikiService,
       FlowdockService,
       GemnasiumService,
+<<<<<<< HEAD
       GithubService,
+=======
+      HangoutsChatService,
+>>>>>>> upstream/master
       HipchatService,
       IrkerService,
       JiraService,

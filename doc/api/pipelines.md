@@ -33,13 +33,15 @@ Example of response
     "id": 47,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a"
+    "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+    "web_url": "https://example.com/foo/bar/pipelines/47"
   },
   {
     "id": 48,
     "status": "pending",
     "ref": "new-pipeline",
-    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a"
+    "sha": "eb94b618fb5865b26e80fdd8ae531b7a63ad851a",
+    "web_url": "https://example.com/foo/bar/pipelines/48"
   }
 ]
 ```
@@ -86,7 +88,8 @@ Example of response
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": "30.0"
+  "coverage": "30.0",
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -133,7 +136,8 @@ Example of response
   "finished_at": null,
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/61"
 }
 ```
 
@@ -179,7 +183,8 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
@@ -225,7 +230,8 @@ Response:
   "finished_at": "2016-08-11T11:32:35.145Z",
   "committed_at": null,
   "duration": null,
-  "coverage": null
+  "coverage": null,
+  "web_url": "https://example.com/foo/bar/pipelines/46"
 }
 ```
 
