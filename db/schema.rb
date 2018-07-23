@@ -2789,6 +2789,7 @@ ActiveRecord::Schema.define(version: 20180803001726) do
     t.integer "accepted_term_id"
     t.string "feed_token"
     t.boolean "private_profile"
+    t.integer "roadmap_layout", limit: 2
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

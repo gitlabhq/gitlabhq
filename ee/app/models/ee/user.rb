@@ -7,6 +7,8 @@ module EE
     extend ActiveSupport::Concern
     include AuditorUserHelper
 
+    DEFAULT_ROADMAP_LAYOUT = 'MONTHS'.freeze
+
     included do
       EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM = 1
 
@@ -35,6 +37,8 @@ module EE
       has_many :protected_branch_unprotect_access_levels, dependent: :destroy, class_name: ::ProtectedBranch::UnprotectAccessLevel # rubocop:disable Cop/ActiveRecordDependent
 
       scope :excluding_guests, -> { joins(:members).where('members.access_level > ?', ::Gitlab::Access::GUEST).distinct }
+
+      enum roadmap_layout: { WEEKS: 1, MONTHS: 4, QUARTERS: 12 }
     end
 
     module ClassMethods
@@ -101,6 +105,10 @@ module EE
                          project_ids_relation: templates,
                          params: { search: search, sort: 'name_asc' })
                     .execute
+    end
+
+    def roadmap_layout
+      super || DEFAULT_ROADMAP_LAYOUT
     end
   end
 end
