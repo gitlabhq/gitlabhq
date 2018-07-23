@@ -590,9 +590,5 @@ Below you can find supported syntax reference:
 [trigger-job-token]: ../triggers/README.md#ci-job-token
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
 [registry]: ../../user/project/container_registry.md
-<<<<<<< HEAD
 [dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
 [get-job-artifacts]:  ../../api/jobs.html#get-job-artifacts
-=======
-[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories
->>>>>>> upstream/master
