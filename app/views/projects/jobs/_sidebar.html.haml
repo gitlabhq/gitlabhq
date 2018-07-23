@@ -18,7 +18,7 @@
               %span= time_ago_with_tooltip @build.artifacts_expire_at
 
           - if @build.artifacts?
-            .btn-group.btn-group-justified{ role: :group }
+            .btn-group.d-flex{ role: :group }
               - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
                 = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
                   Keep
@@ -42,7 +42,7 @@
 
           - if @build.trigger_variables.any?
             %p
-              %button.btn.group.btn-group-justified.js-reveal-variables Reveal Variables
+              %button.btn.group.js-reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|
@@ -82,8 +82,8 @@
       - HasStatus::ORDERED_STATUSES.each do |build_status|
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
-            - tooltip = build.tooltip_message
-            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: true, title: tooltip, container: 'body' }) do
+            - tooltip = sanitize(build.tooltip_message)
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: 'true', title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)

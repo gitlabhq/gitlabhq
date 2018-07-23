@@ -3,7 +3,7 @@ import jobComponent from '~/pipelines/components/graph/job_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('pipeline graph job component', () => {
-  let JobComponent;
+  const JobComponent = Vue.extend(jobComponent);
   let component;
 
   const mockJob = {
@@ -25,10 +25,6 @@ describe('pipeline graph job component', () => {
       },
     },
   };
-
-  beforeEach(() => {
-    JobComponent = Vue.extend(jobComponent);
-  });
 
   afterEach(() => {
     component.$destroy();
@@ -133,6 +129,26 @@ describe('pipeline graph job component', () => {
       });
 
       expect(component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title')).toEqual('test - success');
+    });
+  });
+
+  describe('tooltipText', () => {
+    it('escapes job name', () => {
+      component = mountComponent(JobComponent, {
+        job: {
+          id: 4259,
+          name: '<img src=x onerror=alert(document.domain)>',
+          status: {
+            icon: 'icon_status_success',
+            label: 'success',
+            tooltip: 'failed',
+          },
+        },
+      });
+
+      expect(
+        component.$el.querySelector('.js-job-component-tooltip').getAttribute('data-original-title'),
+      ).toEqual('&lt;img src=x onerror=alert(document.domain)&gt; - failed');
     });
   });
 });
