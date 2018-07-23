@@ -15,7 +15,7 @@ mention
 custom
 ```
 
-If the `custom` level is used, specific email events can be controlled. Notification email events are defined in the `NotificationSetting::EMAIL_EVENTS` model variable. Currently, these events are recognized:
+If the `custom` level is used, specific email events can be controlled. Available events are returned by `NotificationSetting.email_events`. Currently, these events are recognized:
 
 ```
 new_note
@@ -32,6 +32,7 @@ reassign_merge_request
 merge_merge_request
 failed_pipeline
 success_pipeline
+new_epic
 ```
 
 ## Global notification settings
@@ -85,6 +86,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.2) |
 
 Example response:
 
@@ -153,6 +155,7 @@ curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab
 | `merge_merge_request` | boolean | no | Enable/disable this notification |
 | `failed_pipeline` | boolean | no | Enable/disable this notification |
 | `success_pipeline` | boolean | no | Enable/disable this notification |
+| `new_epic` | boolean | no | Enable/disable this notification ([Introduced][ee-6626] in 11.2) |
 
 Example responses:
 
@@ -177,9 +180,11 @@ Example responses:
     "reassign_merge_request": false,
     "merge_merge_request": false,
     "failed_pipeline": false,
-    "success_pipeline": false
+    "success_pipeline": false,
+    "new_epic": false
   }
 }
 ```
 
 [ce-5632]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5632
+[ee-6626]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6626

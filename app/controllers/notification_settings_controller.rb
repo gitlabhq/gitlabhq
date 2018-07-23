@@ -5,14 +5,14 @@ class NotificationSettingsController < ApplicationController
     return render_404 unless can_read?(resource)
 
     @notification_setting = current_user.notification_settings_for(resource)
-    @saved = @notification_setting.update(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params_for(resource))
 
     render_response
   end
 
   def update
     @notification_setting = current_user.notification_settings.find(params[:id])
-    @saved = @notification_setting.update(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params_for(@notification_setting.source))
 
     render_response
   end
@@ -42,8 +42,8 @@ class NotificationSettingsController < ApplicationController
     }
   end
 
-  def notification_setting_params
-    allowed_fields = NotificationSetting::EMAIL_EVENTS.dup
+  def notification_setting_params_for(source)
+    allowed_fields = NotificationSetting.email_events(source).dup
     allowed_fields << :level
     params.require(:notification_setting).permit(allowed_fields)
   end

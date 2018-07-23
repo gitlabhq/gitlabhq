@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class NotificationSetting < ActiveRecord::Base
+  prepend EE::NotificationSetting
   include IgnorableColumn
 
   ignore_column :events
@@ -44,6 +45,14 @@ class NotificationSetting < ActiveRecord::Base
     :failed_pipeline,
     :success_pipeline
   ].freeze
+
+  def self.email_events(source = nil)
+    EMAIL_EVENTS
+  end
+
+  def email_events
+    self.class.email_events(source)
+  end
 
   EXCLUDED_PARTICIPATING_EVENTS = [
     :success_pipeline
