@@ -49,7 +49,7 @@ describe Groups::DestroyService do
       context 'Sidekiq inline' do
         before do
           # Run sidekiq immediately to check that renamed dir will be removed
-          Sidekiq::Testing.inline! { destroy_group(group, user, async) }
+          perform_enqueued_jobs { destroy_group(group, user, async) }
         end
 
         it 'verifies that paths have been deleted' do

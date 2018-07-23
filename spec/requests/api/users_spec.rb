@@ -1067,7 +1067,7 @@ describe API::Users do
     end
 
     it "deletes user" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+      perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
       expect(response).to have_gitlab_http_status(204)
       expect { User.find(user.id) }.to raise_error ActiveRecord::RecordNotFound
@@ -1079,30 +1079,30 @@ describe API::Users do
     end
 
     it "does not delete for unauthenticated user" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}") }
+      perform_enqueued_jobs { delete api("/users/#{user.id}") }
       expect(response).to have_gitlab_http_status(401)
     end
 
     it "is not available for non admin users" do
-      Sidekiq::Testing.inline! { delete api("/users/#{user.id}", user) }
+      perform_enqueued_jobs { delete api("/users/#{user.id}", user) }
       expect(response).to have_gitlab_http_status(403)
     end
 
     it "returns 404 for non-existing user" do
-      Sidekiq::Testing.inline! { delete api("/users/999999", admin) }
+      perform_enqueued_jobs { delete api("/users/999999", admin) }
       expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
 
     it "returns a 404 for invalid ID" do
-      Sidekiq::Testing.inline! { delete api("/users/ASDF", admin) }
+      perform_enqueued_jobs { delete api("/users/ASDF", admin) }
 
       expect(response).to have_gitlab_http_status(404)
     end
 
     context "hard delete disabled" do
       it "moves contributions to the ghost user" do
-        Sidekiq::Testing.inline! { delete api("/users/#{user.id}", admin) }
+        perform_enqueued_jobs { delete api("/users/#{user.id}", admin) }
 
         expect(response).to have_gitlab_http_status(204)
         expect(issue.reload).to be_persisted
@@ -1112,7 +1112,7 @@ describe API::Users do
 
     context "hard delete enabled" do
       it "removes contributions" do
-        Sidekiq::Testing.inline! { delete api("/users/#{user.id}?hard_delete=true", admin) }
+        perform_enqueued_jobs { delete api("/users/#{user.id}?hard_delete=true", admin) }
 
         expect(response).to have_gitlab_http_status(204)
         expect(Issue.exists?(issue.id)).to be_falsy

@@ -1,6 +1,6 @@
 require './spec/support/sidekiq'
 
-Sidekiq::Testing.inline! do
+perform_enqueued_jobs do
   Gitlab::Seeder.quiet do
     flag = 'SEED_NESTED_GROUPS'
 
