@@ -592,8 +592,7 @@ module QuickActions
       tag_name_and_message.split(' ', 2)
     end
     condition do
-      issuable.is_a?(Commit)
-      # TODO authorize
+      issuable.is_a?(Commit) && current_user.can?(:push_code, project)
     end
     command :tag do |(tag_name, message)|
       @updates[:tag_name] = tag_name
