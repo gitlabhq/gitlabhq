@@ -68,7 +68,7 @@
     %li.line-separator.d-none.d-sm-block
   - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: [:conversational_development_index, :cohorts]) do
-      = link_to instance_statistics_root_path, title: 'Instance statistics', aria: { label: 'Instance statistics' }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+      = link_to instance_statistics_root_path, title: 'Instance Statistics', aria: { label: 'Instance statistics' }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('chart', size: 18)
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
