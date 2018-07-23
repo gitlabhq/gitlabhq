@@ -219,7 +219,7 @@ Devise.setup do |config|
     end
   end
 
-  if Gitlab::OmniauthInitializer.enabled?
+  if Gitlab::Auth.omniauth_enabled?
     Gitlab::OmniauthInitializer.new(config).execute(Gitlab.config.omniauth.providers)
   end
 end
