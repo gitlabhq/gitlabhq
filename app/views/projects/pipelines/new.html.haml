@@ -10,7 +10,7 @@
   = form_errors(@pipeline)
   .form-group.row
     .col-sm-12
-      = f.label :ref, s_('Pipeline|Create for')
+      = f.label :ref, s_('Pipeline|Create for'), class: 'col-form-label'
       = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
       = dropdown_tag(params[:ref] || @project.default_branch,
                      options: { toggle_class: 'js-branch-select wide git-revision-dropdown-toggle',

@@ -12,6 +12,7 @@
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _("Failed Jobs")
           %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
+    = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -75,4 +76,4 @@
                 %pre.build-trace.build-trace-rounded
                   %code.bash.js-build-output
                     = build_summary(build)
-
+  = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project
