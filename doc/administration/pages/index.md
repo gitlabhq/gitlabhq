@@ -267,7 +267,6 @@ Omnibus GitLab 11.1.
 Follow the steps below to configure verbose logging of GitLab Pages daemon.
 
 1. By default the daemon only logs with `INFO` level.
-
    If you wish to make it log events with level `DEBUG` you must configure this in
    `/etc/gitlab/gitlab.rb`:
 
