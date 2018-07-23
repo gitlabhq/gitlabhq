@@ -279,7 +279,7 @@ module NotificationRecipientService
       end
 
       # Build event key to search on custom notification level
-      # Check NotificationSetting::EMAIL_EVENTS
+      # Check NotificationSetting.email_events
       def custom_action
         @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
       end

@@ -23,7 +23,7 @@ module API
       params do
         optional :level, type: String, desc: 'The global notification level'
         optional :notification_email, type: String, desc: 'The email address to send notifications'
-        NotificationSetting::EMAIL_EVENTS.each do |event|
+        NotificationSetting.email_events.each do |event|
           optional event, type: Boolean, desc: 'Enable/disable this notification'
         end
       end
@@ -73,7 +73,7 @@ module API
         end
         params do
           optional :level, type: String, desc: "The #{source_type} notification level"
-          NotificationSetting::EMAIL_EVENTS.each do |event|
+          NotificationSetting.email_events(source_type.to_sym).each do |event|
             optional event, type: Boolean, desc: 'Enable/disable this notification'
           end
         end

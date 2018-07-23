@@ -83,7 +83,7 @@ module NotificationsHelper
   end
 
   def notification_event_name(event)
-    # All values from NotificationSetting::EMAIL_EVENTS
+    # All values from NotificationSetting.email_events
     case event
     when :success_pipeline
       s_('NotificationEvent|Successful pipeline')
