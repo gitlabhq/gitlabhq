@@ -18,17 +18,16 @@ Rails.application.configure do |config|
 
   Warden::Manager.after_set_user(scope: :user, only: :fetch) do |user, auth, opts|
     ActiveSession.set(user, auth.request)
-    Gitlab::Auth::Activity.new(user, opts).user_session_fetched!
   end
 
   Warden::Manager.after_set_user(scope: :user, only: :set_user) do |user, auth, opts|
     Gitlab::Auth::Activity.new(user, opts).user_session_override!
   end
 
-  Warden::Manager.before_logout(scope: :user) do |warden_user, auth, opts|
-    (warden_user || auth.user).tap do |user|
-      ActiveSession.destroy(user, auth.request.session.id)
-      Gitlab::Auth::Activity.new(user, opts).user_signed_out!
-    end
+  Warden::Manager.before_logout(scope: :user) do |user_warden, auth, opts|
+    user = user_warden || auth.user
+
+    ActiveSession.destroy(user, auth.request.session.id)
+    Gitlab::Auth::Activity.new(user, opts).user_signed_out!
   end
 end

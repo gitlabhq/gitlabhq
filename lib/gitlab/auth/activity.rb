@@ -11,8 +11,9 @@ module Gitlab
         user_unauthenticated: 'Counter of total authentication failures',
         user_not_found: 'Counter of total failed log-ins when user is unknown',
         user_password_invalid: 'Counter of failed log-ins with invalid password',
-        user_session_fetched: 'Counter of total sessions fetched',
         user_session_override: 'Counter of manual log-ins and sessions overrides',
+        user_two_factor_authenticated: 'Counter of two factor authentications',
+        user_blocked: 'Counter of total sign in attempts when user is blocked',
         user_signed_out: 'Counter of total user sign out events'
       }.freeze
 
@@ -31,19 +32,22 @@ module Gitlab
           self.class.user_password_invalid_counter.increment
         end
 
-        # case blocked user
+        if @user.present? && @user.blocked?
+          self.class.user_blocked_counter.increment
+        end
       end
 
       def user_authenticated!
         self.class.user_authenticated_counter.increment
       end
 
-      def user_session_fetched!
-        self.class.user_session_fetched_counter.increment
-      end
-
       def user_session_override!
+        self.class.user_authenticated_counter.increment
         self.class.user_session_override_counter.increment
+
+        if @opts[:message] == :two_factor_authenticated
+          self.class.user_two_factor_authenticated_counter.increment
+        end
       end
 
       def user_signed_out!

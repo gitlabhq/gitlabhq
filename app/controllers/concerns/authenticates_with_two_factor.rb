@@ -60,7 +60,7 @@ module AuthenticatesWithTwoFactor
 
       remember_me(user) if user_params[:remember_me] == '1'
       user.save!
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
@@ -77,7 +77,7 @@ module AuthenticatesWithTwoFactor
       session.delete(:challenge)
 
       remember_me(user) if user_params[:remember_me] == '1'
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")

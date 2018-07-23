@@ -1,7 +1,5 @@
-RSpec::Matchers.define :have_incremented do |counter|
+RSpec::Matchers.define :increment do |counter|
   match do |adapter|
-    matcher = RSpec::Mocks::Matchers::HaveReceived.new(:increment)
-
-    matcher.matches?(adapter.send(counter))
+    expect(adapter.send(counter)).to receive(:increment)
   end
 end

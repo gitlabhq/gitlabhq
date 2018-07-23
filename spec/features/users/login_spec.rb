@@ -4,31 +4,39 @@ describe 'Login' do
   include TermsHelper
 
   before do
-    stub_authentication_activity_metrics
+    stub_authentication_activity_metrics(debug: true)
   end
 
-  it 'Successful user signin invalidates password reset token' do
-    user = create(:user)
+  describe 'password reset token after successful sign in' do
+    it 'invalidates password reset token' do
+      expect(authentication_metrics)
+        .to increment(:user_authenticated_counter)
 
-    expect(user.reset_password_token).to be_nil
+      user = create(:user)
 
-    visit new_user_password_path
-    fill_in 'user_email', with: user.email
-    click_button 'Reset password'
+      expect(user.reset_password_token).to be_nil
 
-    user.reload
-    expect(user.reset_password_token).not_to be_nil
+      visit new_user_password_path
+      fill_in 'user_email', with: user.email
+      click_button 'Reset password'
 
-    find('a[href="#login-pane"]').click
-    gitlab_sign_in(user)
-    expect(current_path).to eq root_path
+      user.reload
+      expect(user.reset_password_token).not_to be_nil
 
-    user.reload
-    expect(user.reset_password_token).to be_nil
+      find('a[href="#login-pane"]').click
+      gitlab_sign_in(user)
+      expect(current_path).to eq root_path
+
+      user.reload
+      expect(user.reset_password_token).to be_nil
+    end
   end
 
   describe 'initial login after setup' do
     it 'allows the initial admin to create a password' do
+      expect(authentication_metrics)
+        .to increment(:user_authenticated_counter)
+
       # This behavior is dependent on there only being one user
       User.delete_all
 
@@ -50,7 +58,6 @@ describe 'Login' do
       click_button 'Sign in'
 
       expect(current_path).to eq root_path
-      expect(authentication_metrics).to have_incremented(:user_authenticated_counter)
     end
 
     it 'does not show flash messages when login page' do
@@ -61,6 +68,8 @@ describe 'Login' do
 
   describe 'with a blocked account' do
     it 'prevents the user from logging in' do
+      expect(authentication_metrics).to increment(:user_blocked_counter)
+
       user = create(:user, :blocked)
 
       gitlab_sign_in(user)
@@ -77,6 +86,9 @@ describe 'Login' do
 
   describe 'with the ghost user' do
     it 'disallows login' do
+      expect(authentication_metrics)
+        .to increment(:user_unauthenticated_counter)
+
       gitlab_sign_in(User.ghost)
 
       expect(page).to have_content('Invalid Login or password.')
@@ -108,7 +120,13 @@ describe 'Login' do
 
       context 'using one-time code' do
         it 'allows login with valid code' do
+          expect(authentication_metrics)
+            .to increment(:user_authenticated_counter)
+            .and increment(:user_session_override_counter)
+            .and increment(:user_two_factor_authenticated_counter)
+
           enter_code(user.current_otp)
+
           expect(current_path).to eq root_path
         end
 
