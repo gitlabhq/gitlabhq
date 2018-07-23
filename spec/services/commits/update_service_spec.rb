@@ -4,46 +4,75 @@ describe Commits::UpdateService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
-  let(:commit) { create(:commit, project: project) }
+  let(:commit) { project.commit }
 
   before do
     project.add_maintainer(user)
   end
 
-  describe 'execute' do
+  describe '#execute' do
     let(:service) { described_class.new(project, user, opts) }
+
+    shared_examples 'tagging fails' do
+      it 'returns nil' do
+        tagged_commit = service.execute(commit)
+
+        expect(tagged_commit).to be_nil
+      end
+
+      it 'does not add a system note' do
+        service.execute(commit)
+
+        description_notes = find_notes('tag')
+        expect(description_notes).to be_empty
+      end
+    end
+
+    def find_notes(action)
+      commit
+        .notes
+        .joins(:system_note_metadata)
+        .where(system_note_metadata: { action: action })
+    end
 
     context 'valid params' do
       let(:opts) do
         {
-          tag_name: '1.2.3',
+          tag_name: 'v1.2.3',
           tag_message: 'Release'
         }
       end
 
-      it 'tags a commit' do
-        tag_double = double(name: opts[:tag_name])
-        tag_stub = instance_double(Tags::CreateService)
-        allow(Tags::CreateService).to receive(:new).and_return(tag_stub)
-        allow(tag_stub).to receive(:execute)
-          .with(opts[:tag_name], commit.sha, opts[:tag_message], nil)
-          .and_return({ status: :success, tag: tag_double })
-
-        expect(SystemNoteService).to receive(:tag_commit).with(commit, project, user, opts[:tag_name])
-
-        service.execute(commit)
+      def find_notes(action)
+        commit
+          .notes
+          .joins(:system_note_metadata)
+          .where(system_note_metadata: { action: action })
       end
 
-      it 'fails to tag the commit' do
-        tag_stub = instance_double(Tags::CreateService)
-        allow(Tags::CreateService).to receive(:new).and_return(tag_stub)
-        allow(tag_stub).to receive(:execute)
-          .with(opts[:tag_name], commit.sha, opts[:tag_message], nil)
-          .and_return({ status: :error })
+      context 'when tagging succeeds' do
+        it 'returns the commit' do
+          tagged_commit = service.execute(commit)
 
-        expect(SystemNoteService).not_to receive(:tag_commit)
+          expect(tagged_commit).to eq(commit)
+        end
 
-        service.execute(commit)
+        it 'adds a system note' do
+          service.execute(commit)
+
+          description_notes = find_notes('tag')
+          expect(description_notes.length).to eq(1)
+        end
+      end
+
+      context 'when tagging fails' do
+        before do
+          tag_stub = instance_double(Tags::CreateService)
+          allow(Tags::CreateService).to receive(:new).and_return(tag_stub)
+          allow(tag_stub).to receive(:execute).and_return({ status: :error })
+        end
+
+        include_examples 'tagging fails'
       end
     end
 
@@ -52,12 +81,7 @@ describe Commits::UpdateService do
         {}
       end
 
-      it 'does not call the tag create service' do
-        expect(Tags::CreateService).not_to receive(:new)
-        expect(SystemNoteService).not_to receive(:tag_commit)
-
-        service.execute(commit)
-      end
+      include_examples 'tagging fails'
     end
   end
 end
