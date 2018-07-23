@@ -226,6 +226,25 @@ describe API::Groups do
         expect(json_response.first['name']).to eq(group2.name)
       end
     end
+
+    context 'when using min_access_level in the request' do
+      let!(:group3) { create(:group, :private) }
+      let(:response_groups) { json_response.map { |group| group['id'] } }
+
+      before do
+        group1.add_developer(user2)
+        group3.add_master(user2)
+      end
+
+      it 'returns an array of groups the user has at least master access' do
+        get api('/groups', user2), min_access_level: 40
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(response_groups).to eq([group2.id, group3.id])
+      end
+    end
   end
 
   describe "GET /groups/:id" do

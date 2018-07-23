@@ -54,6 +54,7 @@ module API
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
 
         use :optional_filter_params_ee
       end
