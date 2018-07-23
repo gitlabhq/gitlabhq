@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     class InlineDiffFilter < HTML::Pipeline::Filter

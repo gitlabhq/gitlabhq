@@ -238,6 +238,5 @@ def check_author_link(email, author)
   author_link = find('.commit-author-link')
 
   expect(author_link['href']).to eq(user_path(author))
-  expect(author_link['title']).to eq(email)
   expect(find('.commit-author-name').text).to eq(author.name)
 end

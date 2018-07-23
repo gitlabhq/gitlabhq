@@ -545,7 +545,7 @@ msgstr ""
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
-msgid "An error occurred while loading commits"
+msgid "An error occurred while loading commit signatures"
 msgstr ""
 
 msgid "An error occurred while loading diff"
