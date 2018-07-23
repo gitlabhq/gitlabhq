@@ -23,35 +23,35 @@ module Gitlab
       end
 
       def user_authentication_failed!
-        self.class.user_unauthenticated_counter.increment
+        self.class.user_unauthenticated_counter_increment!
 
         case @opts[:message]
         when :not_found_in_database
-          self.class.user_not_found_counter.increment
+          self.class.user_not_found_counter_increment!
         when :invalid
-          self.class.user_password_invalid_counter.increment
+          self.class.user_password_invalid_counter_increment!
         end
 
         if @user.present? && @user.blocked?
-          self.class.user_blocked_counter.increment
+          self.class.user_blocked_counter_increment!
         end
       end
 
       def user_authenticated!
-        self.class.user_authenticated_counter.increment
+        self.class.user_authenticated_counter_increment!
       end
 
       def user_session_override!
-        self.class.user_authenticated_counter.increment
-        self.class.user_session_override_counter.increment
+        self.class.user_authenticated_counter_increment!
+        self.class.user_session_override_counter_increment!
 
         if @opts[:message] == :two_factor_authenticated
-          self.class.user_two_factor_authenticated_counter.increment
+          self.class.user_two_factor_authenticated_counter_increment!
         end
       end
 
       def user_signed_out!
-        self.class.user_signed_out_counter.increment
+        self.class.user_signed_out_counter_increment!
       end
 
       def self.each_counter
@@ -62,9 +62,13 @@ module Gitlab
 
       each_counter do |counter, metric, description|
         define_singleton_method(counter) do
-          strong_memoize(metric) do
-            Gitlab::Metrics.counter("gitlab_auth_#{metric}_total".to_sym, description)
+          strong_memoize(counter) do
+            Gitlab::Metrics.counter("gitlab_auth_#{metric}_total", description)
           end
+        end
+
+        define_singleton_method("#{counter}_increment!") do
+          public_send(counter).increment # rubocop:disable GitlabSecurity/PublicSend
         end
       end
     end
