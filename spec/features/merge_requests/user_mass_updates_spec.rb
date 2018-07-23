@@ -47,7 +47,7 @@ describe 'Merge requests > User mass updates', :js do
         change_assignee(user.name)
 
         page.within('.merge-request .controls') do
-          expect(find('.author_link')["title"]).to have_content(user.name)
+          expect(find('.author-link')["title"]).to have_content(user.name)
         end
       end
     end

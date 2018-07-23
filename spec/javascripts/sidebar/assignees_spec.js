@@ -102,13 +102,13 @@ describe('Assignee component', () => {
         },
       }).$mount();
 
-      expect(component.$el.querySelector('.author_link')).not.toBeNull();
+      expect(component.$el.querySelector('.author-link')).not.toBeNull();
       // The image
-      expect(component.$el.querySelector('.author_link img').getAttribute('src')).toEqual(UsersMock.user.avatar);
+      expect(component.$el.querySelector('.author-link img').getAttribute('src')).toEqual(UsersMock.user.avatar);
       // Author name
-      expect(component.$el.querySelector('.author_link .author').innerText.trim()).toEqual(UsersMock.user.name);
+      expect(component.$el.querySelector('.author-link .author').innerText.trim()).toEqual(UsersMock.user.name);
       // Username
-      expect(component.$el.querySelector('.author_link .username').innerText.trim()).toEqual(`@${UsersMock.user.username}`);
+      expect(component.$el.querySelector('.author-link .username').innerText.trim()).toEqual(`@${UsersMock.user.username}`);
     });
 
     it('has the root url present in the assigneeUrl method', () => {
