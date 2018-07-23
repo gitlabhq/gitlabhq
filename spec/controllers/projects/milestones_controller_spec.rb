@@ -107,8 +107,16 @@ describe Projects::MilestonesController do
       it 'shows group milestone' do
         post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
 
-        expect(flash[:notice]).to eq("#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\">group milestone</a>.")
         expect(response).to redirect_to(project_milestones_path(project))
+        expect(flash[:notice]).to eq("#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\">group milestone</a>.")
+      end
+
+      it 'renders milestone name without parsing it as HTML' do
+        milestone.update!(name: 'CCC&lt;img src=x onerror=alert(document.domain)&gt;')
+
+        post :promote, namespace_id: project.namespace.id, project_id: project.id, id: milestone.iid
+
+        expect(flash[:notice]).to eq("CCC promoted to <a href=\"#{group_milestone_path(project.group, milestone.iid)}\">group milestone</a>.")
       end
     end
 

@@ -112,7 +112,7 @@ class Projects::LabelsController < Projects::ApplicationController
     begin
       return render_404 unless promote_service.execute(@label)
 
-      flash[:notice] = "#{@label.title} promoted to <a href=\"#{group_labels_path(@project.group)}\">group label</a>.".html_safe
+      flash[:notice] = flash_notice_for(@label, @project.group)
       respond_to do |format|
         format.html do
           redirect_to(project_labels_path(@project), status: 303)
@@ -133,6 +133,15 @@ class Projects::LabelsController < Projects::ApplicationController
         format.js
       end
     end
+  end
+
+  def flash_notice_for(label, group)
+    notice = ''.html_safe
+    notice << label.title
+    notice << ' promoted to '
+    notice << view_context.link_to('<u>group label</u>'.html_safe, group_labels_path(group))
+    notice << '.'
+    notice
   end
 
   protected
