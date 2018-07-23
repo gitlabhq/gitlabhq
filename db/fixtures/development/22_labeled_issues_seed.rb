@@ -11,7 +11,7 @@ class Gitlab::Seeder::LabeledIssues
   end
 
   def seed!
-    perform_enqueued_jobs do
+    Sidekiq::Testing.inline! do
       group = create_group
 
       create_projects(group)

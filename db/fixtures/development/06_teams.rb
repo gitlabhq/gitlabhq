@@ -1,6 +1,6 @@
 require './spec/support/sidekiq'
 
-perform_enqueued_jobs do
+Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     Group.all.each do |group|
       User.all.sample(4).each do |user|

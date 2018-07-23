@@ -78,7 +78,7 @@ class Gitlab::Seeder::CycleAnalytics
 
   def seed!
     Sidekiq::Worker.skipping_transaction_check do
-      perform_enqueued_jobs do
+      Sidekiq::Testing.inline! do
         issues = create_issues
         puts '.'
 

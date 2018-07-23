@@ -1,6 +1,6 @@
 require './spec/support/sidekiq'
 
-perform_enqueued_jobs do
+Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     project_urls = [
       'https://gitlab.com/gitlab-org/gitlab-test.git',
