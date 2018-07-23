@@ -62,7 +62,7 @@ describe 'Merge requests > User mass updates', :js do
       it 'removes assignee from the merge request' do
         change_assignee('Unassigned')
 
-        expect(find('.merge-request .controls')).not_to have_css('.author_link')
+        expect(find('.merge-request .controls')).not_to have_css('.author-link')
       end
     end
   end
