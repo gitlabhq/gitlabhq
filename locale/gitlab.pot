@@ -2525,6 +2525,9 @@ msgstr ""
 msgid "Filter by commit message"
 msgstr ""
 
+msgid "Filter labels by name or description"
+msgstr ""
+
 msgid "Find by path"
 msgstr ""
 
