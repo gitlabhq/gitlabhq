@@ -21,7 +21,7 @@ describe('clipboard button', () => {
   it('renders a button for clipboard', () => {
     expect(vm.$el.tagName).toEqual('BUTTON');
     expect(vm.$el.getAttribute('data-clipboard-text')).toEqual('copy me');
-    expect(vm.$el.querySelector('i').className).toEqual('fa fa-clipboard');
+    expect(vm.$el).toHaveSpriteIcon('duplicate');
   });
 
   it('should have a tooltip with default values', () => {

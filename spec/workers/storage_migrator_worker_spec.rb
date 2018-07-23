@@ -13,7 +13,7 @@ describe StorageMigratorWorker do
     end
 
     it 'migrates projects in the specified range' do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         worker.perform(ids.min, ids.max)
       end
 

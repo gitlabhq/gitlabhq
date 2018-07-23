@@ -28,7 +28,7 @@ describe Projects::CreateFromTemplateService do
 
   context 'the result project' do
     before do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         @project = subject.execute
       end
 

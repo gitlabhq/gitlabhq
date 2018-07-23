@@ -542,10 +542,14 @@ msgstr ""
 msgid "An error occurred while importing project: ${details}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
 msgid "An error occurred while loading commits"
+=======
+msgid "An error occurred while loading commit signatures"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "An error occurred while loading diff"

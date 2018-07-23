@@ -1,10 +1,13 @@
 - @no_container = true
 - breadcrumb_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
+- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.path, project_id: @project.path, id: @ref)
 
 - page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
+
+.js-signature-container{ data: { 'signatures-path': signatures_path } }
 
 %div{ class: [(container_class), ("limit-container-width" unless fluid_layout)] }
   = render 'projects/last_push'

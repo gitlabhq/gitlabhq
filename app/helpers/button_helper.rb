@@ -51,7 +51,7 @@ module ButtonHelper
     }
 
     content_tag :button, button_attributes do
-      concat(icon('clipboard', 'aria-hidden': 'true')) unless hide_button_icon
+      concat(sprite_icon('duplicate')) unless hide_button_icon
       concat(button_text)
     end
   end
