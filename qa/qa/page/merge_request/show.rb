@@ -22,7 +22,7 @@ module QA
 
         def rebase!
           # The rebase button is disabled on load
-          wait.sleep do
+          wait.until do
             has_css?(element_selector_css(:mr_rebase_button))
           end
 
@@ -50,7 +50,7 @@ module QA
 
         def merge!
           # The merge button is disabled on load
-          wait.sleep do
+          wait.until do
             has_css?(element_selector_css(:merge_button))
           end
 
@@ -68,7 +68,7 @@ module QA
 
         def mark_to_squash
           # The squash checkbox is disabled on load
-          wait.sleep do
+          wait.until do
             has_css?(element_selector_css(:squash_checkbox))
           end
 
