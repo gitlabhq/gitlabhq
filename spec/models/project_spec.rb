@@ -3471,7 +3471,7 @@ describe Project do
 
     subject { project.auto_devops_variables }
 
-    shared_examples 'zero-config domain' do |expected_user_provided_domain|
+    shared_examples 'user provided domain is used' do |expected_user_provided_domain|
       context 'when ingress is installed with external_ip' do
         let(:clusters_applications_ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
 
@@ -3479,12 +3479,26 @@ describe Project do
           clusters_applications_ingress.cluster.projects << project
         end
 
+        subject { project.auto_devops_variables.to_hash }
+
         it 'variables includes AUTO_DEVOPS_DOMAIN' do
-          if expected_user_provided_domain
-            is_expected.to include(domain_variable(value: expected_user_provided_domain))
-          else
-            is_expected.to include(domain_variable(value: '127.0.0.1.nip.io'))
-          end
+          is_expected.to include(AUTO_DEVOPS_DOMAIN: expected_user_provided_domain)
+        end
+      end
+    end
+
+    shared_examples 'zero-config domain' do
+      context 'when ingress is installed with external_ip' do
+        let(:clusters_applications_ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
+
+        before do
+          clusters_applications_ingress.cluster.projects << project
+        end
+
+        subject { project.auto_devops_variables.to_hash }
+
+        it 'variables includes default AUTO_DEVOPS_DOMAIN' do
+          is_expected.to include(AUTO_DEVOPS_DOMAIN: '127.0.0.1.nip.io')
         end
       end
     end
@@ -3515,7 +3529,7 @@ describe Project do
           is_expected.to include(domain_variable)
         end
 
-        include_examples 'zero-config domain', 'example.com'
+        include_examples 'user provided domain is used', 'example.com'
       end
     end
 
@@ -3541,7 +3555,7 @@ describe Project do
           is_expected.to include(domain_variable)
         end
 
-        include_examples 'zero-config domain', 'example.com'
+        include_examples 'user provided domain is used', 'example.com'
       end
     end
 
