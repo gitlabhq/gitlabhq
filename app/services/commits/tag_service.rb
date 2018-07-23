@@ -3,7 +3,6 @@
 module Commits
   class TagService < BaseService
     def execute(commit)
-      # TODO authorize
       return unless params[:tag_name]
 
       tag_name = params[:tag_name]
