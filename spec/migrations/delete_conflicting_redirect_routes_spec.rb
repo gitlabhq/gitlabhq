@@ -31,12 +31,10 @@ describe DeleteConflictingRedirectRoutes, :migration, :sidekiq do
 
   # No-op. See https://gitlab.com/gitlab-com/infrastructure/issues/3460#note_53223252
   it 'NO-OP: does not schedule any background migrations' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(BackgroundMigrationWorker.jobs.size).to eq 0
-      end
+      expect(BackgroundMigrationWorker.jobs.size).to eq 0
     end
   end
 end

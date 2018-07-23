@@ -1,4 +1,4 @@
-require 'sidekiq/testing/inline'
+require 'sidekiq/testing'
 
 Sidekiq::Testing.server_middleware do |chain|
   chain.add Gitlab::SidekiqStatus::ServerMiddleware

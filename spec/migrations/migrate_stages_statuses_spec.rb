@@ -46,15 +46,13 @@ describe MigrateStagesStatuses, :sidekiq, :migration do
   end
 
   it 'correctly schedules background migrations' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 2, 2)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 3, 3)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 2, 2)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 3, 3)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 

@@ -18,15 +18,13 @@ describe ScheduleSetConfidentialNoteEventsOnServices, :migration, :sidekiq do
   end
 
   it 'schedules background migrations at correct time' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(migration_name).to be_scheduled_delayed_migration(20.minutes, service_1.id, service_1.id)
-        expect(migration_name).to be_scheduled_delayed_migration(40.minutes, service_2.id, service_2.id)
-        expect(migration_name).to be_scheduled_delayed_migration(60.minutes, service_4.id, service_4.id)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(migration_name).to be_scheduled_delayed_migration(20.minutes, service_1.id, service_1.id)
+      expect(migration_name).to be_scheduled_delayed_migration(40.minutes, service_2.id, service_2.id)
+      expect(migration_name).to be_scheduled_delayed_migration(60.minutes, service_4.id, service_4.id)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 

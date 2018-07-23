@@ -19,17 +19,15 @@ describe ScheduleStagesIndexMigration, :sidekiq, :migration do
   end
 
   it 'schedules delayed background migrations in batches' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        expect(stages.all).to all(have_attributes(position: be_nil))
+    Timecop.freeze do
+      expect(stages.all).to all(have_attributes(position: be_nil))
 
-        migrate!
+      migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 121, 121)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 122, 122)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(15.minutes, 123, 123)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 121, 121)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 122, 122)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(15.minutes, 123, 123)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 end

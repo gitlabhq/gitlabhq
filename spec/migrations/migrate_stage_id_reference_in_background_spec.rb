@@ -31,15 +31,13 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
   end
 
   it 'correctly schedules background migrations' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 1, 2)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 3, 3)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, 4, 5)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 1, 2)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(2.minutes, 3, 3)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(4.minutes, 4, 5)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 

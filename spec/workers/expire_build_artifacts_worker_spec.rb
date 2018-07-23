@@ -15,7 +15,7 @@ describe ExpireBuildArtifactsWorker do
     end
 
     subject! do
-      Sidekiq::Testing.fake! { worker.perform }
+      worker.perform
     end
 
     context 'with expired artifacts' do

@@ -66,7 +66,7 @@ describe Groups::DestroyService do
     context 'Sidekiq fake' do
       before do
         # Don't run Sidekiq to verify that group and projects are not actually destroyed
-        Sidekiq::Testing.fake! { destroy_group(group, user, true) }
+        destroy_group(group, user, true)
       end
 
       after do

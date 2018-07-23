@@ -19,9 +19,7 @@ describe Projects::HousekeepingService do
       expect(subject).to receive(:task).and_return(:incremental_repack)
       expect(GitGarbageCollectWorker).to receive(:perform_async).with(project.id, :incremental_repack, :the_lease_key, :the_uuid).and_call_original
 
-      Sidekiq::Testing.fake! do
-        expect { subject.execute }.to change(GitGarbageCollectWorker.jobs, :size).by(1)
-      end
+      expect { subject.execute }.to change(GitGarbageCollectWorker.jobs, :size).by(1)
     end
 
     it 'yields the block if given' do

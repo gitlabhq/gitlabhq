@@ -5,11 +5,9 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
   include MigrationsHelpers::TrackUntrackedUploadsHelpers
 
   it 'correctly schedules the follow-up background migration' do
-    Sidekiq::Testing.fake! do
-      migrate!
+    migrate!
 
-      expect(described_class::MIGRATION).to be_scheduled_migration
-      expect(BackgroundMigrationWorker.jobs.size).to eq(1)
-    end
+    expect(described_class::MIGRATION).to be_scheduled_migration
+    expect(BackgroundMigrationWorker.jobs.size).to eq(1)
   end
 end

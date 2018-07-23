@@ -20,16 +20,14 @@ describe MigrateImportAttributesDataFromProjectsToProjectMirrorData, :sidekiq, :
   end
 
   it 'schedules delayed background migrations in batches in bulk' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        expect(projects.where.not(import_status: :none).count).to eq(2)
+    Timecop.freeze do
+      expect(projects.where.not(import_status: :none).count).to eq(2)
 
-        subject.up
+      subject.up
 
-        expect(BackgroundMigrationWorker.jobs.size).to eq 2
-        expect(described_class::UP_MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
-        expect(described_class::UP_MIGRATION).to be_scheduled_delayed_migration(10.minutes, 2, 2)
-      end
+      expect(BackgroundMigrationWorker.jobs.size).to eq 2
+      expect(described_class::UP_MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
+      expect(described_class::UP_MIGRATION).to be_scheduled_delayed_migration(10.minutes, 2, 2)
     end
   end
 
@@ -40,16 +38,14 @@ describe MigrateImportAttributesDataFromProjectsToProjectMirrorData, :sidekiq, :
     end
 
     it 'schedules delayed background migrations in batches in bulk for rollback' do
-      Sidekiq::Testing.fake! do
-        Timecop.freeze do
-          expect(import_state.where.not(status: :none).count).to eq(2)
+      Timecop.freeze do
+        expect(import_state.where.not(status: :none).count).to eq(2)
 
-          subject.down
+        subject.down
 
-          expect(BackgroundMigrationWorker.jobs.size).to eq 2
-          expect(described_class::DOWN_MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
-          expect(described_class::DOWN_MIGRATION).to be_scheduled_delayed_migration(10.minutes, 2, 2)
-        end
+        expect(BackgroundMigrationWorker.jobs.size).to eq 2
+        expect(described_class::DOWN_MIGRATION).to be_scheduled_delayed_migration(5.minutes, 1, 1)
+        expect(described_class::DOWN_MIGRATION).to be_scheduled_delayed_migration(10.minutes, 2, 2)
       end
     end
   end

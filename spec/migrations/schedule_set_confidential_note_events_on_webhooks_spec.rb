@@ -18,15 +18,13 @@ describe ScheduleSetConfidentialNoteEventsOnWebhooks, :migration, :sidekiq do
   end
 
   it 'schedules background migrations at correct time' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(migration_name).to be_scheduled_delayed_migration(5.minutes, web_hook_1.id, web_hook_1.id)
-        expect(migration_name).to be_scheduled_delayed_migration(10.minutes, web_hook_2.id, web_hook_2.id)
-        expect(migration_name).to be_scheduled_delayed_migration(15.minutes, web_hook_4.id, web_hook_4.id)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(migration_name).to be_scheduled_delayed_migration(5.minutes, web_hook_1.id, web_hook_1.id)
+      expect(migration_name).to be_scheduled_delayed_migration(10.minutes, web_hook_2.id, web_hook_2.id)
+      expect(migration_name).to be_scheduled_delayed_migration(15.minutes, web_hook_4.id, web_hook_4.id)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 

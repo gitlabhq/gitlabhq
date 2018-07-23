@@ -28,13 +28,11 @@ describe 'Merge requests > User merges immediately', :js do
       page.within '.mr-widget-body' do
         find('.dropdown-toggle').click
 
-        Sidekiq::Testing.fake! do
-          click_link 'Merge immediately'
+        click_link 'Merge immediately'
 
-          expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
+        expect(find('.accept-merge-request.btn-info')).to have_content('Merge in progress')
 
-          wait_for_requests
-        end
+        wait_for_requests
       end
     end
   end

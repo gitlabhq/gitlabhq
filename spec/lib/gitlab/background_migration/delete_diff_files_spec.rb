@@ -43,16 +43,14 @@ describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180
       merge_request = create(:merge_request, :merged)
       first_diff = merge_request.merge_request_diff
       second_diff = merge_request.create_merge_request_diff
+      worker = described_class.new
 
-      Sidekiq::Testing.fake! do
-        worker = described_class.new
-        allow(worker).to receive(:should_wait_deadtuple_vacuum?) { true }
+      allow(worker).to receive(:should_wait_deadtuple_vacuum?) { true }
 
-        worker.perform([first_diff.id, second_diff.id])
+      worker.perform([first_diff.id, second_diff.id])
 
-        expect(described_class.name.demodulize).to be_scheduled_delayed_migration(5.minutes, [first_diff.id, second_diff.id])
-        expect(BackgroundMigrationWorker.jobs.size).to eq(1)
-      end
+      expect(described_class.name.demodulize).to be_scheduled_delayed_migration(5.minutes, [first_diff.id, second_diff.id])
+      expect(BackgroundMigrationWorker.jobs.size).to eq(1)
     end
   end
 

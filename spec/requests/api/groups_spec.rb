@@ -817,9 +817,7 @@ describe API::Groups do
   describe "DELETE /groups/:id" do
     context "when authenticated as user" do
       it "removes group" do
-        Sidekiq::Testing.fake! do
-          expect { delete api("/groups/#{group1.id}", user1) }.to change(GroupDestroyWorker.jobs, :size).by(1)
-        end
+        expect { delete api("/groups/#{group1.id}", user1) }.to change(GroupDestroyWorker.jobs, :size).by(1)
 
         expect(response).to have_gitlab_http_status(202)
       end

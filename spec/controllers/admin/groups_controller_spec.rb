@@ -11,9 +11,7 @@ describe Admin::GroupsController do
 
   describe 'DELETE #destroy' do
     it 'schedules a group destroy' do
-      Sidekiq::Testing.fake! do
-        expect { delete :destroy, id: project.group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
-      end
+      expect { delete :destroy, id: project.group.path }.to change(GroupDestroyWorker.jobs, :size).by(1)
     end
 
     it 'redirects to the admin group path' do

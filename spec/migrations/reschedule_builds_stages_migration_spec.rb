@@ -23,15 +23,13 @@ describe RescheduleBuildsStagesMigration, :sidekiq, :migration do
   end
 
   it 'schedules delayed background migrations in batches in bulk' do
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 11, 11)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 206, 206)
-        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(15.minutes, 3413, 3413)
-        expect(BackgroundMigrationWorker.jobs.size).to eq 3
-      end
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, 11, 11)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, 206, 206)
+      expect(described_class::MIGRATION).to be_scheduled_delayed_migration(15.minutes, 3413, 3413)
+      expect(BackgroundMigrationWorker.jobs.size).to eq 3
     end
   end
 end

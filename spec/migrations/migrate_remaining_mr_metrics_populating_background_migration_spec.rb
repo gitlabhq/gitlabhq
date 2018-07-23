@@ -19,18 +19,16 @@ describe MigrateRemainingMrMetricsPopulatingBackgroundMigration, :migration, :si
   it 'correctly schedules background migrations' do
     stub_const("#{described_class.name}::BATCH_SIZE", 2)
 
-    Sidekiq::Testing.fake! do
-      Timecop.freeze do
-        migrate!
+    Timecop.freeze do
+      migrate!
 
-        expect(described_class::MIGRATION)
-          .to be_scheduled_delayed_migration(10.minutes, mrs.first.id, mrs.second.id)
+      expect(described_class::MIGRATION)
+        .to be_scheduled_delayed_migration(10.minutes, mrs.first.id, mrs.second.id)
 
-        expect(described_class::MIGRATION)
-          .to be_scheduled_delayed_migration(20.minutes, mrs.third.id, mrs.third.id)
+      expect(described_class::MIGRATION)
+        .to be_scheduled_delayed_migration(20.minutes, mrs.third.id, mrs.third.id)
 
-        expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-      end
+      expect(BackgroundMigrationWorker.jobs.size).to eq(2)
     end
   end
 end

@@ -27,16 +27,14 @@ describe Gitlab::BackgroundMigration::ScheduleDiffFilesDeletion, :migration, sch
     end
 
     it 'correctly schedules diff file deletion workers' do
-      Sidekiq::Testing.fake! do
-        Timecop.freeze do
-          described_class.new.perform
+      Timecop.freeze do
+        described_class.new.perform
 
-          expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, [1, 4, 5])
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(5.minutes, [1, 4, 5])
 
-          expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, [6])
+        expect(described_class::MIGRATION).to be_scheduled_delayed_migration(10.minutes, [6])
 
-          expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-        end
+        expect(BackgroundMigrationWorker.jobs.size).to eq(2)
       end
     end
   end

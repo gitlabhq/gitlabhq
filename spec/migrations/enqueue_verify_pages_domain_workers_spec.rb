@@ -3,9 +3,7 @@ require Rails.root.join('db', 'post_migrate', '20180216121030_enqueue_verify_pag
 
 describe EnqueueVerifyPagesDomainWorkers, :sidekiq, :migration do
   around do |example|
-    Sidekiq::Testing.fake! do
-      example.run
-    end
+    example.run
   end
 
   describe '#up' do

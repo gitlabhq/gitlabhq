@@ -33,12 +33,10 @@ describe MailScheduler::NotificationServiceWorker do
 
   describe '.perform_async' do
     it 'serializes arguments as global IDs when scheduling' do
-      Sidekiq::Testing.fake! do
-        described_class.perform_async(method, key)
+      described_class.perform_async(method, key)
 
-        expect(described_class.jobs.count).to eq(1)
-        expect(described_class.jobs.first).to include('args' => [method, *serialize(key)])
-      end
+      expect(described_class.jobs.count).to eq(1)
+      expect(described_class.jobs.first).to include('args' => [method, *serialize(key)])
     end
   end
 end

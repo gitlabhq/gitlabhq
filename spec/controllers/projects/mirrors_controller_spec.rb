@@ -25,7 +25,7 @@ describe Projects::MirrorsController do
     end
 
     around do |example|
-      Sidekiq::Testing.fake! { example.run }
+      example.run
     end
 
     context 'With valid URL for a push' do

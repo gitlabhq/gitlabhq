@@ -10,13 +10,11 @@ describe ScheduleCreateGpgKeySubkeysFromGpgKeys, :migration, :sidekiq do
   end
 
   it 'correctly schedules background migrations' do
-    Sidekiq::Testing.fake! do
-      migrate!
+    migrate!
 
-      expect(described_class::MIGRATION).to be_scheduled_migration(1)
-      expect(described_class::MIGRATION).to be_scheduled_migration(2)
-      expect(BackgroundMigrationWorker.jobs.size).to eq(2)
-    end
+    expect(described_class::MIGRATION).to be_scheduled_migration(1)
+    expect(described_class::MIGRATION).to be_scheduled_migration(2)
+    expect(BackgroundMigrationWorker.jobs.size).to eq(2)
   end
 
   it 'schedules background migrations' do

@@ -14,9 +14,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq, :migrat
 
   around do |example|
     # Especially important so the follow-up migration does not get run
-    Sidekiq::Testing.fake! do
-      example.run
-    end
+    example.run
   end
 
   shared_examples 'prepares the untracked_files_for_uploads table' do

@@ -1019,12 +1019,10 @@ describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'queues jobs correctly' do
-          Sidekiq::Testing.fake! do
-            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
 
-            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
-            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
-          end
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
         end
 
         it 'queues jobs in groups of buffer size 1' do
@@ -1037,12 +1035,10 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'with not enough rows to bulk queue jobs more than once' do
         it 'queues jobs correctly' do
-          Sidekiq::Testing.fake! do
-            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
 
-            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
-            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
-          end
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
         end
 
         it 'queues jobs in bulk all at once (big buffer size)' do
@@ -1055,11 +1051,9 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'without specifying batch_size' do
         it 'queues jobs correctly' do
-          Sidekiq::Testing.fake! do
-            model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob')
+          model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob')
 
-            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
-          end
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
         end
       end
     end
@@ -1091,25 +1085,21 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'with batch_size option' do
         it 'queues jobs correctly' do
-          Sidekiq::Testing.fake! do
-            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
+          model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes, batch_size: 2)
 
-            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
-            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
-            expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
-            expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
-          end
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id2]])
+          expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
+          expect(BackgroundMigrationWorker.jobs[1]['args']).to eq(['FooJob', [id3, id3]])
+          expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(20.minutes.from_now.to_f)
         end
       end
 
       context 'without batch_size option' do
         it 'queues jobs correctly' do
-          Sidekiq::Testing.fake! do
-            model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes)
+          model.queue_background_migration_jobs_by_range_at_intervals(User, 'FooJob', 10.minutes)
 
-            expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
-            expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
-          end
+          expect(BackgroundMigrationWorker.jobs[0]['args']).to eq(['FooJob', [id1, id3]])
+          expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(10.minutes.from_now.to_f)
         end
       end
     end

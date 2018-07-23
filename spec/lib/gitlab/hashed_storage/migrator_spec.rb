@@ -3,9 +3,7 @@ require 'spec_helper'
 describe Gitlab::HashedStorage::Migrator do
   describe '#bulk_schedule' do
     it 'schedules job to StorageMigratorWorker' do
-      Sidekiq::Testing.fake! do
-        expect { subject.bulk_schedule(1, 5) }.to change(StorageMigratorWorker.jobs, :size).by(1)
-      end
+      expect { subject.bulk_schedule(1, 5) }.to change(StorageMigratorWorker.jobs, :size).by(1)
     end
   end
 
@@ -14,9 +12,7 @@ describe Gitlab::HashedStorage::Migrator do
     let(:ids) { projects.map(&:id) }
 
     it 'enqueue jobs to ProjectMigrateHashedStorageWorker' do
-      Sidekiq::Testing.fake! do
-        expect { subject.bulk_migrate(ids.min, ids.max) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(2)
-      end
+      expect { subject.bulk_migrate(ids.min, ids.max) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(2)
     end
 
     it 'sets projects as read only' do
@@ -46,9 +42,7 @@ describe Gitlab::HashedStorage::Migrator do
     let(:project) { create(:project, :legacy_storage, :empty_repo) }
 
     it 'enqueues job to ProjectMigrateHashedStorageWorker' do
-      Sidekiq::Testing.fake! do
-        expect { subject.migrate(project) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
-      end
+      expect { subject.migrate(project) }.to change(ProjectMigrateHashedStorageWorker.jobs, :size).by(1)
     end
 
     it 'rescues and log exceptions' do

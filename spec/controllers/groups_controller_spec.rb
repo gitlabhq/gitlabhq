@@ -266,9 +266,7 @@ describe GroupsController do
       end
 
       it 'schedules a group destroy' do
-        Sidekiq::Testing.fake! do
-          expect { delete :destroy, id: group.to_param }.to change(GroupDestroyWorker.jobs, :size).by(1)
-        end
+        expect { delete :destroy, id: group.to_param }.to change(GroupDestroyWorker.jobs, :size).by(1)
       end
 
       it 'redirects to the root path' do
