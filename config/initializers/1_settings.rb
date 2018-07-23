@@ -1,4 +1,5 @@
 require_relative '../settings'
+require_relative '../object_store_settings'
 
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
@@ -170,8 +171,6 @@ Settings.gitlab_ci['url']                 ||= Settings.__send__(:build_gitlab_ci
 Settings['incoming_email'] ||= Settingslogic.new({})
 Settings.incoming_email['enabled'] = false if Settings.incoming_email['enabled'].nil?
 
-
-
 #
 # Build Artifacts
 #
@@ -181,8 +180,7 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
-ObjectStoreSettings.new(Settings.artifacts['object_store'])
-
+Settings.artifacts['object_store'] = ObjectStoreSettings.parse(Settings.artifacts['object_store'])
 
 #
 # Registry
@@ -221,7 +219,7 @@ Settings.pages.admin['certificate'] ||= ''
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
-ObjectStoreSettings.new(Settings.lfs['object_store'])
+Settings.lfs['object_store'] = ObjectStoreSettings.parse(Settings.lfs['object_store'])
 
 #
 # Uploads
@@ -229,7 +227,8 @@ ObjectStoreSettings.new(Settings.lfs['object_store'])
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
-ObjectStoreSettings.new(Settings.uploads['object_store'])
+Settings.uploads['object_store'] = ObjectStoreSettings.parse(Settings.uploads['object_store'])
+Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
 
 #
 # Mattermost
