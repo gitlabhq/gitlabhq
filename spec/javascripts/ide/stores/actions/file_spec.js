@@ -7,6 +7,7 @@ import * as types from '~/ide/stores/mutation_types';
 import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import eventHub from '~/ide/eventhub';
+import { TEST_HOST } from 'spec/test_constants';
 import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
@@ -319,6 +320,7 @@ describe('IDE store file actions', () => {
       spyOn(service, 'getRawFileData').and.callThrough();
 
       tmpFile = file('tmpFile');
+      tmpFile.rawPath = `${TEST_HOST}/raw/path`;
       store.state.entries[tmpFile.path] = tmpFile;
     });
 
