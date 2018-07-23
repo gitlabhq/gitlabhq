@@ -77,7 +77,7 @@ describe('Commit pipeline status component', () => {
       mock = new MockAdapter(axios);
       mock.onGet('/dummy/endpoint').reply(502, {});
       vm = new Component({
-        props: {
+        propsData: {
           endpoint: '/dummy/endpoint',
         },
       });
