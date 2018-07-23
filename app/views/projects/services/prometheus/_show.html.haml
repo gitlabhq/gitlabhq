@@ -7,4 +7,4 @@
       = link_to s_('PrometheusService|More information'), help_page_path('user/project/integrations/prometheus_library/metrics'), target: '_blank', rel: "noopener noreferrer"
 
   .col-lg-9
-    = render_if_exists 'projects/services/prometheus/metrics', project: @project
+    = render 'projects/services/prometheus/metrics', project: @project
