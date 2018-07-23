@@ -14,11 +14,8 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
-<<<<<<< HEAD
       prepend EE::Gitlab::Auth
 
-=======
->>>>>>> upstream/master
       def omniauth_enabled?
         Gitlab.config.omniauth.enabled
       end
