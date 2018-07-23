@@ -25,17 +25,20 @@ class SiteStatistic < ActiveRecord::Base
 
     return unless available?
 
-    # we have quite a lot of specs testing migrations, we need this and the rescue to not break them
-    SiteStatistic.transaction(requires_new: true) do
-      SiteStatistic.first_or_create
-      attribute = self.connection.quote_column_name(raw_attribute)
+    self.fetch # make sure record exists
 
-      yield(attribute)
-    end
+    attribute = self.connection.quote_column_name(raw_attribute)
+
+    # will be running on its own transaction context
+    yield(attribute)
   end
 
   def self.fetch
-    SiteStatistic.first_or_create!
+    SiteStatistic.transaction(requires_new: true) do
+      SiteStatistic.first_or_create!
+    end
+  rescue ActiveRecord::RecordNotUnique
+    retry
   end
 
   def self.available?
