@@ -6,8 +6,6 @@ class RepositoryImportWorker
   include ProjectStartImport
   include ProjectImportOptions
 
-  attr_reader :project
-
   def perform(project_id)
     @project = Project.find(project_id)
 
@@ -34,6 +32,8 @@ class RepositoryImportWorker
   end
 
   private
+
+  attr_reader :project
 
   def start_import
     return true if start(project)
