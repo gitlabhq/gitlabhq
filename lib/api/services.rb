@@ -756,11 +756,8 @@ module API
       ExternalWikiService,
       FlowdockService,
       GemnasiumService,
-<<<<<<< HEAD
       GithubService,
-=======
       HangoutsChatService,
->>>>>>> upstream/master
       HipchatService,
       IrkerService,
       JiraService,
