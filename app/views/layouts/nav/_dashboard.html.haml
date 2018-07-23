@@ -70,7 +70,7 @@
     = nav_link(controller: 'admin/dashboard') do
       = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin area'), aria: { label: _("Admin area") }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('admin', size: 18)
-  - unless hide_instance_statistics?
+  - if can?(current_user, :read_instance_statistics)
     = nav_link(controller: :instance_statistics) do
       = link_to instance_statistics_root_path, title: 'Instance statistics', aria: { label: 'Instance statistics' }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('chart', size: 18)

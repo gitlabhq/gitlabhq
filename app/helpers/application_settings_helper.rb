@@ -15,10 +15,6 @@ module ApplicationSettingsHelper
   def allowed_protocols_present?
     Gitlab::CurrentSettings.enabled_git_access_protocol.present?
   end
-  
-  def hide_instance_statistics?(user = current_user)
-    Gitlab::CurrentSettings.instance_statistics_visibility_private? && !user.admin?
-  end
 
   def enabled_protocol
     case Gitlab::CurrentSettings.enabled_git_access_protocol
