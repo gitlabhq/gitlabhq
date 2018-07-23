@@ -1,13 +1,7 @@
 module Gitlab
   module Kubernetes
     module Helm
-      class BaseCommand
-        attr_reader :name
-
-        def initialize(name)
-          @name = name
-        end
-
+      module BaseCommand
         def pod_resource
           Gitlab::Kubernetes::Helm::Pod.new(self, namespace).generate
         end
@@ -24,12 +18,20 @@ module Gitlab
           HEREDOC
         end
 
-        def config_map?
-          false
-        end
-
         def pod_name
           "install-#{name}"
+        end
+
+        def config_map_resource
+          Gitlab::Kubernetes::ConfigMap.new(name, files).generate
+        end
+
+        def name
+          raise "Not implemented"
+        end
+
+        def files
+          raise "Not implemented"
         end
 
         private

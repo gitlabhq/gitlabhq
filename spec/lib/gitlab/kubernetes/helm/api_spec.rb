@@ -39,7 +39,7 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
 
     context 'with a ConfigMap' do
-      let(:resource) { Gitlab::Kubernetes::ConfigMap.new(application.name, application.values).generate }
+      let(:resource) { Gitlab::Kubernetes::ConfigMap.new(application.name, application.files).generate }
 
       it 'creates a ConfigMap on kubeclient' do
         expect(client).to receive(:create_config_map).with(resource).once

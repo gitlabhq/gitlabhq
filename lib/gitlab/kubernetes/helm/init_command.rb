@@ -1,7 +1,16 @@
 module Gitlab
   module Kubernetes
     module Helm
-      class InitCommand < BaseCommand
+      class InitCommand
+        include BaseCommand
+
+        attr_reader :name, :config_files
+
+        def initialize(name:, config_files:)
+          @name = name
+          @config_files = config_files
+        end
+
         def generate_script
           super + [
             init_helm_command
