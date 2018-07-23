@@ -8,7 +8,7 @@ import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 
-import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+import axios, { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 import customMatchers from './matchers';
@@ -103,6 +103,20 @@ beforeEach((done) => {
 afterEach(() => {
   clearTimeout(longRunningTestTimeoutHandle);
 });
+
+let failForMissingUrlInterceptor;
+
+beforeEach(done => {
+  failForMissingUrlInterceptor = axios.interceptors.request.use(config => {
+    if (!config.url) {
+      done.fail(`Missing url for axios request: ${JSON.stringify(config)}`);
+    }
+    return config;
+  });
+  done();
+});
+
+afterEach(() => axios.interceptors.request.eject(failForMissingUrlInterceptor));
 
 const axiosDefaultAdapter = getDefaultAdapter();
 
