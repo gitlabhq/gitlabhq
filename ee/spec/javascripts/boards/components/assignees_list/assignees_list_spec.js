@@ -7,33 +7,30 @@ import AssigneesListComponent from 'ee/boards/components/assignees_list/';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { mockAssigneesList } from 'spec/boards/mock_data';
-
-const createComponent = () => mountComponent(AssigneesListComponent, {
-  listAssigneesPath: `${gl.TEST_HOST}/users.json`,
-});
+import { TEST_HOST } from 'spec/test_constants';
 
 describe('AssigneesListComponent', () => {
+  const dummyEndpoint = `${TEST_HOST}/users.json`;
+
+  const createComponent = () =>
+    mountComponent(AssigneesListComponent, {
+      listAssigneesPath: dummyEndpoint,
+    });
+
   let vm;
   let mock;
-  let statusCode;
-  let response;
 
   gl.issueBoards.BoardsStore.create();
   gl.issueBoards.BoardsStore.state.assignees = [];
 
   beforeEach(() => {
-    statusCode = 200;
-    response = mockAssigneesList;
-
     mock = new MockAdapter(axios);
 
-    document.body.innerHTML += '<div class="flash-container"></div>';
-    mock.onGet(`${gl.TEST_HOST}/users.json`).reply(() => [statusCode, response]);
+    setFixtures('<div class="flash-container"></div>');
     vm = createComponent();
   });
 
   afterEach(() => {
-    document.querySelector('.flash-container').remove();
     vm.$destroy();
     mock.restore();
   });
@@ -47,35 +44,47 @@ describe('AssigneesListComponent', () => {
 
   describe('methods', () => {
     describe('loadAssignees', () => {
-      it('calls axios.get and sets response to store.state.assignees', (done) => {
-        mock.onGet(`${gl.TEST_HOST}/users.json`).reply(200, mockAssigneesList);
+      it('calls axios.get and sets response to store.state.assignees', done => {
+        mock.onGet(dummyEndpoint).reply(200, mockAssigneesList);
         gl.issueBoards.BoardsStore.state.assignees = [];
 
-        vm.loadAssignees();
-        setTimeout(() => {
-          expect(vm.loading).toBe(false);
-          expect(vm.store.state.assignees.length).toBe(mockAssigneesList.length);
-          done();
-        }, 0);
+        vm
+          .loadAssignees()
+          .then(() => {
+            expect(vm.loading).toBe(false);
+            expect(vm.store.state.assignees.length).toBe(mockAssigneesList.length);
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('does not call axios.get when store.state.assignees is not empty', () => {
+      it('does not call axios.get when store.state.assignees is not empty', done => {
         spyOn(axios, 'get');
         gl.issueBoards.BoardsStore.state.assignees = mockAssigneesList;
-        vm.loadAssignees();
-        expect(axios.get).not.toHaveBeenCalled();
+
+        vm
+          .loadAssignees()
+          .then(() => {
+            expect(axios.get).not.toHaveBeenCalled();
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('calls axios.get and shows Flash error when request fails', (done) => {
-        mock.onGet(`${gl.TEST_HOST}/users.json`).reply(500, {});
+      it('calls axios.get and shows Flash error when request fails', done => {
+        mock.onGet(dummyEndpoint).replyOnce(500, {});
         gl.issueBoards.BoardsStore.state.assignees = [];
 
-        vm.loadAssignees();
-        setTimeout(() => {
-          expect(vm.loading).toBe(false);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while fetching assignees list');
-          done();
-        }, 0);
+        vm
+          .loadAssignees()
+          .then(() => {
+            expect(vm.loading).toBe(false);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Something went wrong while fetching assignees list',
+            );
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
