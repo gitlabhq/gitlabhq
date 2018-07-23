@@ -25,6 +25,7 @@ describe('CreateMergeRequestDropdown', () => {
     `);
 
     const dummyElement = document.getElementById('dummy-wrapper-element');
+    dummyElement.dataset.canCreatePath = `${TEST_HOST}/can/create`;
     dropdown = new CreateMergeRequestDropdown(dummyElement);
     dropdown.refsPath = `${TEST_HOST}/dummy/refs?search=`;
   });
