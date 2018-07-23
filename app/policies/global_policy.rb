@@ -19,6 +19,9 @@ class GlobalPolicy < BasePolicy
     @user&.required_terms_not_accepted?
   end
 
+  condition(:private_instance_statistics, score: 0) { Gitlab::CurrentSettings.instance_statistics_visibility_private? }
+  rule { admin | ~private_instance_statistics }.enable :read_instance_statistics
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :receive_notifications
