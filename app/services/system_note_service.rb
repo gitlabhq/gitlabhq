@@ -42,7 +42,8 @@ module SystemNoteService
   #
   # Returns the created Note object
   def tag_commit(noteable, project, author, tag_name)
-    body = "tagged commit #{noteable.sha} to `#{tag_name}`"
+    link = url_helpers.project_tag_url(project, id: tag_name)
+    body = "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
   end
