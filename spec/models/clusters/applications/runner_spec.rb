@@ -33,25 +33,26 @@ describe Clusters::Applications::Runner do
       expect(subject.chart).to eq('runner/gitlab-runner')
       expect(subject.version).to be_nil
       expect(subject.repository).to eq('https://charts.gitlab.io')
-      expect(subject.values).to eq(gitlab_runner.values)
+      expect(subject.files).to eq(gitlab_runner.files)
     end
   end
 
-  describe '#values' do
+  describe '#files' do
     let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
 
-    subject { gitlab_runner.values }
+    subject { gitlab_runner.files }
+    let(:values) { subject[:'values.yaml'] }
 
     it 'should include runner valid values' do
-      is_expected.to include('concurrent')
-      is_expected.to include('checkInterval')
-      is_expected.to include('rbac')
-      is_expected.to include('runners')
-      is_expected.to include('privileged: true')
-      is_expected.to include('image: ubuntu:16.04')
-      is_expected.to include('resources')
-      is_expected.to include("runnerToken: #{ci_runner.token}")
-      is_expected.to include("gitlabUrl: #{Gitlab::Routing.url_helpers.root_url}")
+      expect(values).to include('concurrent')
+      expect(values).to include('checkInterval')
+      expect(values).to include('rbac')
+      expect(values).to include('runners')
+      expect(values).to include('privileged: true')
+      expect(values).to include('image: ubuntu:16.04')
+      expect(values).to include('resources')
+      expect(values).to match(/runnerToken: '?#{ci_runner.token}/)
+      expect(values).to match(/gitlabUrl: '?#{Gitlab::Routing.url_helpers.root_url}/)
     end
 
     context 'without a runner' do
@@ -66,7 +67,7 @@ describe Clusters::Applications::Runner do
       end
 
       it 'uses the new runner token' do
-        expect(subject).to include("runnerToken: #{gitlab_runner.reload.runner.token}")
+        expect(values).to match(/runnerToken: '?#{gitlab_runner.reload.runner.token}/)
       end
 
       it 'assigns the new runner to runner' do
@@ -77,7 +78,7 @@ describe Clusters::Applications::Runner do
     end
 
     context 'with duplicated values on vendor/runner/values.yaml' do
-      let(:values) do
+      let(:stub_values) do
         {
           "concurrent" => 4,
           "checkInterval" => 3,
@@ -96,11 +97,11 @@ describe Clusters::Applications::Runner do
       end
 
       before do
-        allow(gitlab_runner).to receive(:chart_values).and_return(values)
+        allow(gitlab_runner).to receive(:chart_values).and_return(stub_values)
       end
 
       it 'should overwrite values.yaml' do
-        is_expected.to include("privileged: #{gitlab_runner.privileged}")
+        expect(values).to match(/privileged: '?#{gitlab_runner.privileged}/)
       end
     end
   end

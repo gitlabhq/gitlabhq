@@ -62,12 +62,6 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
     end
   end
 
-  describe '#config_map?' do
-    subject { install_command.config_map? }
-
-    it { is_expected.to be_truthy }
-  end
-
   describe '#config_map_resource' do
     let(:metadata) do
       {
@@ -77,7 +71,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       }
     end
 
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: { values: application.values }) }
+    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: application.files) }
 
     subject { install_command.config_map_resource }
 

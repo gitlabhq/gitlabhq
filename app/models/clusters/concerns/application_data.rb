@@ -12,6 +12,12 @@ module Clusters
           File.read(chart_values_file)
         end
 
+        def files
+          {
+            'values.yaml': values
+          }
+        end
+
         private
 
         def chart_values_file

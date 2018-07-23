@@ -74,18 +74,18 @@ describe Clusters::Applications::Ingress do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
       expect(subject.version).to be_nil
-      expect(subject.values).to eq(ingress.values)
+      expect(subject.files).to eq(ingress.files)
     end
   end
 
-  describe '#values' do
-    subject { ingress.values }
+  describe '#files' do
+    let(:values) { ingress.files[:'values.yaml'] }
 
-    it 'should include ingress valid keys' do
-      is_expected.to include('image')
-      is_expected.to include('repository')
-      is_expected.to include('stats')
-      is_expected.to include('podAnnotations')
+    it 'should include ingress valid keys in values' do
+      expect(values).to include('image')
+      expect(values).to include('repository')
+      expect(values).to include('stats')
+      expect(values).to include('podAnnotations')
     end
   end
 end

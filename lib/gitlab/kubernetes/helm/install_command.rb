@@ -1,14 +1,17 @@
 module Gitlab
   module Kubernetes
     module Helm
-      class InstallCommand < BaseCommand
-        attr_reader :name, :chart, :version, :repository, :values
+      class InstallCommand
+        include BaseCommand
 
-        def initialize(name, chart:, values:, version: nil, repository: nil)
+        attr_reader :name, :files
+        attr_reader :chart, :version, :repository
+
+        def initialize(name:, chart:, files:, version: nil, repository: nil)
           @name = name
           @chart = chart
           @version = version
-          @values = values
+          @files = files
           @repository = repository
         end
 
@@ -18,14 +21,6 @@ module Gitlab
             repository_command,
             script_command
           ].compact.join("\n")
-        end
-
-        def config_map?
-          true
-        end
-
-        def config_map_resource
-          Gitlab::Kubernetes::ConfigMap.new(name, values).generate
         end
 
         private

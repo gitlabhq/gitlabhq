@@ -153,21 +153,21 @@ describe Clusters::Applications::Prometheus do
       expect(command.name).to eq('prometheus')
       expect(command.chart).to eq('stable/prometheus')
       expect(command.version).to eq('6.7.3')
-      expect(command.values).to eq(prometheus.values)
+      expect(command.files).to eq(prometheus.files)
     end
   end
 
-  describe '#values' do
+  describe '#files' do
     let(:prometheus) { create(:clusters_applications_prometheus) }
 
-    subject { prometheus.values }
+    let(:values) { prometheus.files[:'values.yaml'] }
 
     it 'should include prometheus valid values' do
-      is_expected.to include('alertmanager')
-      is_expected.to include('kubeStateMetrics')
-      is_expected.to include('nodeExporter')
-      is_expected.to include('pushgateway')
-      is_expected.to include('serverFiles')
+      expect(values).to include('alertmanager')
+      expect(values).to include('kubeStateMetrics')
+      expect(values).to include('nodeExporter')
+      expect(values).to include('pushgateway')
+      expect(values).to include('serverFiles')
     end
   end
 end
