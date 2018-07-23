@@ -173,7 +173,7 @@ describe Users::DestroyService do
 
     describe "user personal's repository removal" do
       before do
-        Sidekiq::Testing.inline! { service.execute(user) }
+        perform_enqueued_jobs { service.execute(user) }
       end
 
       context 'legacy storage' do
