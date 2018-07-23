@@ -48,7 +48,7 @@ GET /projects
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned` | boolean | no | Limit by projects owned by the current user |
+| `owned` | boolean | no | Limit by projects explicitly owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
@@ -57,6 +57,7 @@ GET /projects
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 | `wiki_checksum_failed` | boolean | no | Limit projects where the wiki checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
 | `repository_checksum_failed` | boolean | no | Limit projects where the repository checksum calculation has failed _([Introduced][ee-6137] in [GitLab Premium][eep] 11.2)_ |
+| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 When `simple=true` or the user is unauthenticated this returns something like:
 
@@ -275,13 +276,14 @@ GET /users/:user_id/projects
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned` | boolean | no | Limit by projects owned by the current user |
+| `owned` | boolean | no | Limit by projects explicitly owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 ```json
 [
@@ -781,13 +783,14 @@ GET /projects/:id/forks
 | `sort` | string | no | Return projects sorted in `asc` or `desc` order. Default is `desc` |
 | `search` | string | no | Return list of projects matching the search criteria |
 | `simple` | boolean | no | Return only limited fields for each project. This is a no-op without authentication as then _only_ simple fields are returned. |
-| `owned` | boolean | no | Limit by projects owned by the current user |
+| `owned` | boolean | no | Limit by projects explicitly owned by the current user |
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
+| `min_access_level` | integer | no | Limit by current user minimal [access level](members.md) |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/5/forks"

@@ -400,6 +400,22 @@ describe API::Projects do
           end
         end
       end
+
+      context 'and with min_access_level' do
+        before do
+          project2.add_master(user2)
+          project3.add_developer(user2)
+          project4.add_reporter(user2)
+        end
+
+        it 'returns an array of groups the user has at least developer access' do
+          get api('/projects', user2), { min_access_level: 30 }
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |project| project['id'] }).to contain_exactly(project2.id, project3.id)
+        end
+      end
     end
 
     context 'when authenticated as a different user' do
@@ -680,6 +696,20 @@ describe API::Projects do
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
+    end
+
+    it 'returns projects filetered by minimal access level' do
+      private_project1 = create(:project, :private, name: 'private_project1', creator_id: user4.id, namespace: user4.namespace)
+      private_project2 = create(:project, :private, name: 'private_project2', creator_id: user4.id, namespace: user4.namespace)
+      private_project1.add_developer(user2)
+      private_project2.add_reporter(user2)
+
+      get api("/users/#{user4.id}/projects/", user2), { min_access_level: 30 }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |project| project['id'] }).to contain_exactly(private_project1.id)
     end
   end
 
