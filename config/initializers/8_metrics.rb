@@ -80,8 +80,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(RepositoryCheck::SingleRepositoryWorker)
 
-  instrumentation.instrument_instance_methods(Rouge::Plugins::CommonMark)
-  instrumentation.instrument_instance_methods(Rouge::Plugins::Redcarpet)
   instrumentation.instrument_instance_methods(Rouge::Formatters::HTMLGitlab)
 
   [:XML, :HTML].each do |namespace|
