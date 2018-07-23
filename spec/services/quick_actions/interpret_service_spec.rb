@@ -1356,12 +1356,36 @@ describe QuickActions::InterpretService do
     end
 
     describe 'tag a commit' do
-      let(:content) { '/tag 1.2.3 some message' }
+      describe 'with a tag name' do
+        context 'without a message' do
+          let(:content) { '/tag v1.2.3' }
 
-      it 'includes the tag name' do
-        _, explanations = service.explain(content, commit)
+          it 'includes the tag name only' do
+            _, explanations = service.explain(content, commit)
 
-        expect(explanations).to eq(["Tags this commit to 1.2.3."])
+            expect(explanations).to eq(["Tags this commit to v1.2.3."])
+          end
+        end
+
+        context 'with an empty message' do
+          let(:content) { '/tag v1.2.3 ' }
+
+          it 'includes the tag name only' do
+            _, explanations = service.explain(content, commit)
+
+            expect(explanations).to eq(["Tags this commit to v1.2.3."])
+          end
+        end
+      end
+
+      describe 'with a tag name and message' do
+        let(:content) { '/tag v1.2.3 Stable release' }
+
+        it 'includes the tag name and message' do
+          _, explanations = service.explain(content, commit)
+
+          expect(explanations).to eq(["Tags this commit to v1.2.3 with \"Stable release\"."])
+        end
       end
     end
   end

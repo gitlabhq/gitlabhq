@@ -583,8 +583,9 @@ module QuickActions
     end
 
     desc 'Tag this commit.'
-    explanation do |(tag_name), _|
-      "Tags this commit to #{tag_name}."
+    explanation do |(tag_name, message)|
+      with_message = %{ with "#{message}"} if message.present?
+      "Tags this commit to #{tag_name}#{with_message}."
     end
     params 'v1.2.3 <message>'
     parse_params do |tag_name_and_message|
