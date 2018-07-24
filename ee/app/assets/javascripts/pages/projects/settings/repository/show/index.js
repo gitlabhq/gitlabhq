@@ -13,7 +13,7 @@ import CEProtectedBranchEditList from '~/protected_branches/protected_branch_edi
 import CEProtectedTagCreate from '~/protected_tags/protected_tag_create';
 import CEProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
 import DueDateSelectors from '~/due_date_select';
-import PushPull from './push_pull';
+import EEPushPull from './ee_push_pull';
 
 document.addEventListener('DOMContentLoaded', () => {
   new UsersSelect();
@@ -37,8 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   const pushPullContainer = document.querySelector('.js-mirror-settings');
-
-  if (pushPullContainer) PushPull.init(pushPullContainer);
+  if (pushPullContainer) new EEPushPull(pushPullContainer).init();
 
   new DueDateSelectors();
 });
