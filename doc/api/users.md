@@ -291,7 +291,7 @@ Parameters:
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
 - `external` (optional)          - Flags the user as external - true or false(default)
 - `avatar` (optional)            - Image file for user's avatar
-- `private_profile (optional)    - User's profile is private - true or false
+- `private_profile` (optional)   - User's profile is private - true or false
 
 ## User modification
 
@@ -322,7 +322,7 @@ Parameters:
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `avatar` (optional)           - Image file for user's avatar
-- `private_profile (optional)   - User's profile is private - true or false
+- `private_profile` (optional)  - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
