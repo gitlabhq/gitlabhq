@@ -1,4 +1,6 @@
 class PersonalProjectsFinder < UnionFinder
+  include Gitlab::Allowable
+
   def initialize(user, params = {})
     @user = user
     @params = params
@@ -14,6 +16,8 @@ class PersonalProjectsFinder < UnionFinder
   #
   # Returns an ActiveRecord::Relation.
   def execute(current_user = nil)
+    return Project.none unless can?(current_user, :read_user_profile, @user)
+
     segments = all_projects(current_user)
 
     find_union(segments, Project).includes(:namespace).order_updated_desc
