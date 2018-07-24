@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 module EE
-  module DeployToken
+  module PolicyCheckable
     def auditor?
       false
     end

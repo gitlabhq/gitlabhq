@@ -45,6 +45,7 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
+                                     #{config.root}/app/policies/concerns
                                      #{config.root}/app/services/concerns
                                      #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns
