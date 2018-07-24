@@ -94,8 +94,7 @@ module API
 
         if result.valid?
           if result.build
-            Gitlab::Metrics.add_event(:build_found,
-                                      project: result.build.project.full_path)
+            Gitlab::Metrics.add_event(:build_found)
             present result.build, with: Entities::JobRequest::Response
           else
             Gitlab::Metrics.add_event(:build_not_found)
@@ -125,8 +124,7 @@ module API
 
         job.trace.set(params[:trace]) if params[:trace]
 
-        Gitlab::Metrics.add_event(:update_build,
-                                  project: job.project.full_path)
+        Gitlab::Metrics.add_event(:update_build)
 
         case params[:state].to_s
         when 'success'
