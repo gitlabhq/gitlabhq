@@ -1,9 +1,13 @@
 class CreatePackagesPackageFiles < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
   DOWNTIME = false
+
+  disable_ddl_transaction!
 
   def change
     create_table :packages_package_files do |t|
-      t.references :package, index: true, foreign_key: { on_delete: :cascade }, null: false
+      t.references :package, index: true, null: false
       t.string :file
       t.integer :file_type
       t.integer :file_store
@@ -13,5 +17,9 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
 
       t.timestamps null: false
     end
+
+    add_concurrent_foreign_key :packages_package_files, :packages_packages,
+      column: :package_id,
+      on_delete: :cascade
   end
 end
