@@ -638,7 +638,6 @@ describe API::Users do
       expect(user.reload.private_profile).to eq(true)
     end
 
-<<<<<<< HEAD
     # EE
     it "updates shared_runners_minutes_limit" do
       expect do
@@ -650,8 +649,6 @@ describe API::Users do
       expect(json_response['shared_runners_minutes_limit']).to eq(133)
     end
 
-=======
->>>>>>> upstream/master
     it "does not update admin status" do
       put api("/users/#{admin_user.id}", admin), { can_create_group: false }
 
