@@ -2,7 +2,6 @@ module QA
   module Runtime
     module Wait
       class Timer
-
         TimeoutError = Class.new(StandardError)
 
         def initialize(timeout: nil)
