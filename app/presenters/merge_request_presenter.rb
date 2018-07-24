@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
