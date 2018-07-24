@@ -11,6 +11,7 @@ describe API::Users do
   let(:ldap_blocked_user) { create(:omniauth_user, provider: 'ldapmain', state: 'ldap_blocked') }
   let(:not_existing_user_id) { (User.maximum('id') || 0 ) + 10 }
   let(:not_existing_pat_id) { (PersonalAccessToken.maximum('id') || 0 ) + 10 }
+  let(:private_user) { create(:user, private_profile: true) }
 
   describe 'GET /users' do
     context "when unauthenticated" do
@@ -265,6 +266,13 @@ describe API::Users do
         expect(response).to match_response_schema('public_api/v4/user/admin')
         expect(json_response['is_admin']).to be(false)
       end
+
+      it "includes the `created_at` field for private users" do
+        get api("/users/#{private_user.id}", admin)
+
+        expect(response).to match_response_schema('public_api/v4/user/admin')
+        expect(json_response.keys).to include 'created_at'
+      end
     end
 
     context 'for an anonymous user' do
@@ -282,6 +290,20 @@ describe API::Users do
         get api("/users/#{user.id}")
 
         expect(response).to have_gitlab_http_status(404)
+      end
+
+      it "returns the `created_at` field for public users" do
+        get api("/users/#{user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).to include 'created_at'
+      end
+
+      it "does not return the `created_at` field for private users" do
+        get api("/users/#{private_user.id}")
+
+        expect(response).to match_response_schema('public_api/v4/user/basic')
+        expect(json_response.keys).not_to include 'created_at'
       end
     end
 
@@ -383,6 +405,18 @@ describe API::Users do
 
       expect(new_user).not_to eq(nil)
       expect(new_user.recently_sent_password_reset?).to eq(true)
+    end
+
+    it "creates user with private profile" do
+      post api('/users', admin), attributes_for(:user, private_profile: true)
+
+      expect(response).to have_gitlab_http_status(201)
+
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+
+      expect(new_user).not_to eq(nil)
+      expect(new_user.private_profile?).to eq(true)
     end
 
     it "does not create user with invalid email" do
@@ -595,6 +629,13 @@ describe API::Users do
       expect(response.status).to eq 200
       expect(json_response['external']).to eq(true)
       expect(user.reload.external?).to be_truthy
+    end
+
+    it "updates private profile" do
+      put api("/users/#{user.id}", admin), { private_profile: true }
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(user.reload.private_profile).to eq(true)
     end
 
     # EE
