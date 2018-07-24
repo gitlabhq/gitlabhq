@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, schema: 20180619121030 do
+describe Gitlab::BackgroundMigration::DeleteDiffFiles, :migration, :sidekiq, schema: 20180619121030 do
   describe '#perform' do
     context 'when diff files can be deleted' do
       let(:merge_request) { create(:merge_request, :merged) }
