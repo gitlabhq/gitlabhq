@@ -29,7 +29,7 @@ describe('Panel Resizer component', () => {
     });
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe('drag-handle dragleft');
+    expect(vm.$el.getAttribute('class')).toBe('drag-handle drag-left');
     expect(vm.$el.getAttribute('style')).toBe('cursor: ew-resize;');
   });
 
@@ -40,7 +40,7 @@ describe('Panel Resizer component', () => {
     });
 
     expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.getAttribute('class')).toBe('drag-handle dragright');
+    expect(vm.$el.getAttribute('class')).toBe('drag-handle drag-right');
   });
 
   it('drag the resizer', () => {

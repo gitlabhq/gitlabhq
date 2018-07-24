@@ -32,7 +32,7 @@
     },
     computed: {
       className() {
-        return `drag${this.side}`;
+        return `drag-${this.side}`;
       },
       cursorStyle() {
         if (this.enabled) {
