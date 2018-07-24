@@ -38,10 +38,30 @@ describe Clusters::Applications::Runner do
   end
 
   describe '#files' do
-    let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
+    let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
 
-    subject { gitlab_runner.files }
+    subject { application.files }
     let(:values) { subject[:'values.yaml'] }
+
+    it 'should include cert files' do
+      expect(subject[:'ca.pem']).to be_present
+      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+      expect(subject[:'cert.pem']).to be_present
+      expect(subject[:'key.pem']).to be_present
+    end
+
+    context 'when the helm application does not have a ca_cert' do
+      before do
+        application.cluster.application_helm.ca_cert = nil
+      end
+
+      it 'should not include cert files' do
+        expect(subject[:'ca.pem']).not_to be_present
+        expect(subject[:'cert.pem']).not_to be_present
+        expect(subject[:'key.pem']).not_to be_present
+      end
+    end
 
     it 'should include runner valid values' do
       expect(values).to include('concurrent')
@@ -57,8 +77,8 @@ describe Clusters::Applications::Runner do
 
     context 'without a runner' do
       let(:project) { create(:project) }
-      let(:cluster) { create(:cluster, projects: [project]) }
-      let(:gitlab_runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
+      let(:application) { create(:clusters_applications_runner, cluster: cluster) }
 
       it 'creates a runner' do
         expect do
@@ -67,13 +87,13 @@ describe Clusters::Applications::Runner do
       end
 
       it 'uses the new runner token' do
-        expect(values).to match(/runnerToken: '?#{gitlab_runner.reload.runner.token}/)
+        expect(values).to match(/runnerToken: '?#{application.reload.runner.token}/)
       end
 
       it 'assigns the new runner to runner' do
         subject
 
-        expect(gitlab_runner.reload.runner).to be_project_type
+        expect(application.reload.runner).to be_project_type
       end
     end
 
@@ -97,11 +117,11 @@ describe Clusters::Applications::Runner do
       end
 
       before do
-        allow(gitlab_runner).to receive(:chart_values).and_return(stub_values)
+        allow(application).to receive(:chart_values).and_return(stub_values)
       end
 
       it 'should overwrite values.yaml' do
-        expect(values).to match(/privileged: '?#{gitlab_runner.privileged}/)
+        expect(values).to match(/privileged: '?#{application.privileged}/)
       end
     end
   end

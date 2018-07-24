@@ -158,9 +158,29 @@ describe Clusters::Applications::Prometheus do
   end
 
   describe '#files' do
-    let(:prometheus) { create(:clusters_applications_prometheus) }
+    let(:application) { create(:clusters_applications_prometheus) }
+    subject { application.files }
+    let(:values) { subject[:'values.yaml'] }
 
-    let(:values) { prometheus.files[:'values.yaml'] }
+    it 'should include cert files' do
+      expect(subject[:'ca.pem']).to be_present
+      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+      expect(subject[:'cert.pem']).to be_present
+      expect(subject[:'key.pem']).to be_present
+    end
+
+    context 'when the helm application does not have a ca_cert' do
+      before do
+        application.cluster.application_helm.ca_cert = nil
+      end
+
+      it 'should not include cert files' do
+        expect(subject[:'ca.pem']).not_to be_present
+        expect(subject[:'cert.pem']).not_to be_present
+        expect(subject[:'key.pem']).not_to be_present
+      end
+    end
 
     it 'should include prometheus valid values' do
       expect(values).to include('alertmanager')

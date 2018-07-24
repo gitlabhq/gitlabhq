@@ -36,6 +36,10 @@ module Gitlab
 
         private
 
+        def files_dir
+          "/data/helm/#{name}/config"
+        end
+
         def namespace
           Gitlab::Kubernetes::Helm::NAMESPACE
         end

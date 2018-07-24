@@ -79,13 +79,35 @@ describe Clusters::Applications::Ingress do
   end
 
   describe '#files' do
-    let(:values) { ingress.files[:'values.yaml'] }
+    let(:application) { ingress }
+    subject { application.files }
+    let(:values) { subject[:'values.yaml'] }
 
     it 'should include ingress valid keys in values' do
       expect(values).to include('image')
       expect(values).to include('repository')
       expect(values).to include('stats')
       expect(values).to include('podAnnotations')
+    end
+
+    context 'when the helm application does not have a ca_cert' do
+      before do
+        application.cluster.application_helm.ca_cert = nil
+      end
+
+      it 'should not include cert files' do
+        expect(subject[:'ca.pem']).not_to be_present
+        expect(subject[:'cert.pem']).not_to be_present
+        expect(subject[:'key.pem']).not_to be_present
+      end
+    end
+
+    it 'should include cert files' do
+      expect(subject[:'ca.pem']).to be_present
+      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+      expect(subject[:'cert.pem']).to be_present
+      expect(subject[:'key.pem']).to be_present
     end
   end
 end

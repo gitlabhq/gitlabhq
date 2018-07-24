@@ -43,9 +43,29 @@ describe Clusters::Applications::Jupyter do
   end
 
   describe '#files' do
-    let(:jupyter) { create(:clusters_applications_jupyter) }
+    let(:application) { create(:clusters_applications_jupyter) }
+    subject { application.files }
+    let(:values) { subject[:'values.yaml'] }
 
-    let(:values) { jupyter.files[:'values.yaml'] }
+    it 'should include cert files' do
+      expect(subject[:'ca.pem']).to be_present
+      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
+
+      expect(subject[:'cert.pem']).to be_present
+      expect(subject[:'key.pem']).to be_present
+    end
+
+    context 'when the helm application does not have a ca_cert' do
+      before do
+        application.cluster.application_helm.ca_cert = nil
+      end
+
+      it 'should not include cert files' do
+        expect(subject[:'ca.pem']).not_to be_present
+        expect(subject[:'cert.pem']).not_to be_present
+        expect(subject[:'key.pem']).not_to be_present
+      end
+    end
 
     it 'should include valid values' do
       expect(values).to include('ingress')
@@ -53,8 +73,8 @@ describe Clusters::Applications::Jupyter do
       expect(values).to include('rbac')
       expect(values).to include('proxy')
       expect(values).to include('auth')
-      expect(values).to match(/clientId: '?#{jupyter.oauth_application.uid}/)
-      expect(values).to match(/callbackUrl: '?#{jupyter.callback_url}/)
+      expect(values).to match(/clientId: '?#{application.oauth_application.uid}/)
+      expect(values).to match(/callbackUrl: '?#{application.callback_url}/)
     end
   end
 end
