@@ -63,10 +63,6 @@ class ApplicationController < ActionController::Base
     render_503
   end
 
-  def redirect_commits_root
-    redirect_to controller: 'commits', action: 'show', id: @repository.root_ref
-  end
-
   def redirect_back_or_default(default: root_path, options: {})
     redirect_to request.referer.present? ? :back : default, options
   end

@@ -83,7 +83,7 @@ scope format: false do
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
 
-    get '/commits/', to: 'application#redirect_commits_root', as: :commits_root
+    get '/commits', to: 'commits#commits_root', as: :commits_root
     get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 

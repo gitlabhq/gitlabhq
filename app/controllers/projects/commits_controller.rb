@@ -4,12 +4,16 @@ class Projects::CommitsController < Projects::ApplicationController
   include ExtractsPath
   include RendersCommits
 
-  before_action :whitelist_query_limiting
+  before_action :whitelist_query_limiting, except: :commits_root
   before_action :require_non_empty_project
-  before_action :assign_ref_vars
+  before_action :assign_ref_vars, except: :commits_root
   before_action :authorize_download_code!
-  before_action :set_commits
+  before_action :set_commits, except: :commits_root
   before_action :set_request_format, only: :show
+
+  def commits_root
+    redirect_to project_commits_path(@project, @project.default_branch)
+  end
 
   def show
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
