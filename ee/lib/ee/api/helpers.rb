@@ -62,15 +62,18 @@ module EE
               .allow_group_owners_to_manage_ldap
       end
 
-      def valid_mirror_user?(mirror_params)
-        return true unless mirror_params[:mirror]
-        return false unless mirror_params[:mirror_user_id].present?
-
-        default_mirror_users.map(&:id).include?(mirror_params[:mirror_user_id].to_i)
+      def mirroring_available?
+        ::Gitlab::CurrentSettings.current_application_settings.mirror_available ||
+          current_user&.admin?
       end
 
-      def default_mirror_users
-        [current_user, user_project.mirror_user].compact.uniq
+      def valid_mirror_user?(mirror_params)
+        return true unless mirror_params[:mirror_user_id].present?
+
+        mirror_user_id = mirror_params[:mirror_user_id].to_i
+
+        mirror_user_id == current_user.id ||
+          mirror_user_id == user_project.mirror_user&.id
       end
     end
   end

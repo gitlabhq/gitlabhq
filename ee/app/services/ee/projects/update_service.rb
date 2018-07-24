@@ -37,7 +37,7 @@ module EE
           log_audit_events
 
           sync_wiki_on_enable if !wiki_was_enabled && project.wiki_enabled?
-          project.force_import_job! if ::Gitlab::Utils.to_boolean(params[:mirror]) && project.mirror?
+          project.force_import_job! if params[:mirror].present? && project.mirror?
         end
 
         result

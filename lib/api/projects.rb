@@ -140,6 +140,9 @@ module API
       post do
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+
+        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
+
         attrs[:mirror_user_id] = current_user.id if attrs[:mirror]
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
@@ -174,6 +177,9 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
+
+        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
+
         attrs[:mirror_user_id] = user.id if attrs[:mirror]
 
         project = ::Projects::CreateService.new(user, attrs).execute
@@ -297,6 +303,7 @@ module API
           :external_authorization_classification_label,
           :import_url
         ]
+        optional :mirror_user_id, type: Integer, desc: 'User responsible for all the activity surrounding a pull mirror event'
         optional :only_mirror_protected_branches, type: Boolean, desc: 'Only mirror protected branches'
         optional :mirror_overwrites_diverged_branches, type: Boolean, desc: 'Pull mirror overwrites diverged branches'
 
@@ -310,8 +317,9 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
-        attrs[:mirror] = user_project.mirror? unless attrs[:mirror].present?
-        attrs[:mirror_user_id] = current_user.id unless valid_mirror_user?(attrs)
+
+        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
+        break render_api_error!("Invalid mirror user", 400) unless valid_mirror_user?(attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
