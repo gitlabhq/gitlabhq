@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestBasicEntity < IssuableSidebarEntity
   expose :assignee_id
   expose :merge_status

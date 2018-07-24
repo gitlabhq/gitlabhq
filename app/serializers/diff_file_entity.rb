@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DiffFileEntity < Grape::Entity
   include RequestAwareEntity
   include BlobHelper
