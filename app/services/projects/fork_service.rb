@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class ForkService < BaseService
     def execute(fork_to_project = nil)
@@ -37,7 +39,7 @@ module Projects
       return new_project unless new_project.persisted?
 
       builds_access_level = @project.project_feature.builds_access_level
-      new_project.project_feature.update_attributes(builds_access_level: builds_access_level)
+      new_project.project_feature.update(builds_access_level: builds_access_level)
 
       link_fork_network(new_project)
 

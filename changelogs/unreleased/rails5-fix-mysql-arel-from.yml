@@ -1,5 +1,0 @@
----
-title: Rails5 fix arel from in mysql_median_datetime_sql
-merge_request: 20167
-author: Jasper Maes
-type: fixed

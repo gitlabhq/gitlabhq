@@ -135,8 +135,7 @@ js-project-select form-control prepend-top-10 append-bottom-10"
           <option
             v-for="project in projects"
             :key="project.id"
-            :value="project.id
-            ">
+            :value="project.id">
             {{ project.name }}
           </option>
         </select>

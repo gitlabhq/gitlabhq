@@ -7,7 +7,7 @@ describe('stage column component', () => {
     id: 4250,
     name: 'test',
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       group: 'success',

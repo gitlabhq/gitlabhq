@@ -105,11 +105,14 @@ code_quality:
     - code_quality
   artifacts:
     paths: [gl-code-quality-report.json]
+  only:
+    - branches
   except:
     variables:
       - $CODE_QUALITY_DISABLED
 
 license_management:
+  stage: test
   image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
@@ -121,6 +124,8 @@ license_management:
     - license_management
   artifacts:
     paths: [gl-license-management-report.json]
+  only:
+    - branches
   except:
     variables:
       - $LICENSE_MANAGEMENT_DISABLED
@@ -161,6 +166,8 @@ sast:
     - sast
   artifacts:
     paths: [gl-sast-report.json]
+  only:
+    - branches
   except:
     variables:
       - $SAST_DISABLED
@@ -178,6 +185,8 @@ dependency_scanning:
     - dependency_scanning
   artifacts:
     paths: [gl-dependency-scanning-report.json]
+  only:
+    - branches
   except:
     variables:
       - $DEPENDENCY_SCANNING_DISABLED
@@ -195,6 +204,8 @@ container_scanning:
     - container_scanning
   artifacts:
     paths: [gl-container-scanning-report.json]
+  only:
+    - branches
   except:
     variables:
       - $CONTAINER_SCANNING_DISABLED
@@ -365,6 +376,7 @@ production_manual:
     kubernetes: active
     variables:
       - $STAGING_ENABLED
+      - $CANARY_ENABLED
   except:
     variables:
       - $INCREMENTAL_ROLLOUT_ENABLED
@@ -665,6 +677,7 @@ rollout 100%:
       auto_chart=${AUTO_DEVOPS_CHART:-gitlab/auto-deploy-app}
       auto_chart_name=$(basename $auto_chart)
       auto_chart_name=${auto_chart_name%.tgz}
+      auto_chart_name=${auto_chart_name%.tar.gz}
     else
       auto_chart="chart"
       auto_chart_name="chart"

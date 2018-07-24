@@ -1,6 +1,6 @@
 %tr{ id: dom_id(runner) }
   %td
-    - if runner.shared?
+    - if runner.instance_type?
       %span.badge.badge-success shared
     - elsif runner.group_type?
       %span.badge.badge-success group
@@ -21,7 +21,7 @@
   %td
     = runner.ip_address
   %td
-    - if runner.shared? || runner.group_type?
+    - if runner.instance_type? || runner.group_type?
       n/a
     - else
       = runner.projects.count(:all)

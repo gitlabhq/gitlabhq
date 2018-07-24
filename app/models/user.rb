@@ -14,7 +14,6 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
-  include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
   include WithUploads
@@ -101,7 +100,8 @@ class User < ActiveRecord::Base
   has_many :group_members, -> { where(requested_at: nil) }, source: 'GroupMember'
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
-  has_many :masters_groups, -> { where(members: { access_level: Gitlab::Access::MASTER }) }, through: :group_members, source: :group
+  has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
+  alias_attribute :masters_groups, :maintainers_groups
 
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
@@ -514,7 +514,7 @@ class User < ActiveRecord::Base
 
   def disable_two_factor!
     transaction do
-      update_attributes(
+      update(
         otp_required_for_login:      false,
         encrypted_otp_secret:        nil,
         encrypted_otp_secret_iv:     nil,
@@ -746,7 +746,7 @@ class User < ActiveRecord::Base
   end
 
   def several_namespaces?
-    owned_groups.any? || masters_groups.any?
+    owned_groups.any? || maintainers_groups.any?
   end
 
   def namespace_id
@@ -996,15 +996,15 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    union_sql = Gitlab::SQL::Union.new([owned_groups.select(:id), masters_groups.select(:id)]).to_sql
+    union_sql = Gitlab::SQL::Union.new([owned_groups.select(:id), maintainers_groups.select(:id)]).to_sql
 
     # Update this line to not use raw SQL when migrated to Rails 5.2.
     # Either ActiveRecord or Arel constructions are fine.
     # This was replaced with the raw SQL construction because of bugs in the arel gem.
     # Bugs were fixed in arel 9.0.0 (Rails 5.2).
-    owned_and_master_groups = Group.where("namespaces.id IN (#{union_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+    owned_and_maintainer_groups = Group.where("namespaces.id IN (#{union_sql})") # rubocop:disable GitlabSecurity/SqlInjection
 
-    Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
+    Gitlab::GroupHierarchy.new(owned_and_maintainer_groups).base_and_descendants
   end
 
   def namespaces
@@ -1045,16 +1045,16 @@ class User < ActiveRecord::Base
   def ci_owned_runners
     @ci_owned_runners ||= begin
       project_runner_ids = Ci::RunnerProject
-        .where(project: authorized_projects(Gitlab::Access::MASTER))
+        .where(project: authorized_projects(Gitlab::Access::MAINTAINER))
         .select(:runner_id)
 
       group_runner_ids = Ci::RunnerNamespace
-        .where(namespace_id: owned_or_masters_groups.select(:id))
+        .where(namespace_id: owned_or_maintainers_groups.select(:id))
         .select(:runner_id)
 
       union = Gitlab::SQL::Union.new([project_runner_ids, group_runner_ids])
 
-      Ci::Runner.specific.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+      Ci::Runner.where("ci_runners.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
   end
 
@@ -1075,7 +1075,7 @@ class User < ActiveRecord::Base
     return @global_notification_setting if defined?(@global_notification_setting)
 
     @global_notification_setting = notification_settings.find_or_initialize_by(source: nil)
-    @global_notification_setting.update_attributes(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
+    @global_notification_setting.update(level: NotificationSetting.levels[DEFAULT_NOTIFICATION_LEVEL]) unless @global_notification_setting.persisted?
 
     @global_notification_setting
   end
@@ -1258,10 +1258,13 @@ class User < ActiveRecord::Base
       !terms_accepted?
   end
 
-  def owned_or_masters_groups
-    union = Gitlab::SQL::Union.new([owned_groups, masters_groups])
+  def owned_or_maintainers_groups
+    union = Gitlab::SQL::Union.new([owned_groups, maintainers_groups])
     Group.from("(#{union.to_sql}) namespaces")
   end
+
+  # @deprecated
+  alias_method :owned_or_masters_groups, :owned_or_maintainers_groups
 
   protected
 
@@ -1355,8 +1358,8 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.unique_internal(scope, username, email_pattern, &b)
-    scope.first || create_unique_internal(scope, username, email_pattern, &b)
+  def self.unique_internal(scope, username, email_pattern, &block)
+    scope.first || create_unique_internal(scope, username, email_pattern, &block)
   end
 
   def self.create_unique_internal(scope, username, email_pattern, &creation_block)

@@ -93,7 +93,7 @@ describe Projects::ApproverGroupsController do
 
       context 'when the user can update approvers' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
           project.update!(disable_overriding_approvers_per_merge_request: true)
         end
 

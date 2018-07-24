@@ -1,0 +1,21 @@
+- project = local_assigns.fetch(:project)
+
+.card.custom-monitored-metrics.js-panel-custom-monitored-metrics{ data: { active_custom_metrics: project_prometheus_metrics_path(project), environments_data: environments_list_data } }
+  .card-header
+    %h3.card-title
+      = s_('PrometheusService|Custom metrics')
+      %span.badge.badge-pill.js-custom-monitored-count 0
+      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn btn-success js-new-metric-button hidden'
+  .card-body
+    .flash-container.hidden
+      .flash-warning
+        .flash-text
+    .loading-metrics.js-loading-custom-metrics
+      %p.prepend-top-10.prepend-left-10
+        = icon('spinner spin', class: 'metrics-load-spinner')
+        = s_('PrometheusService|Finding custom metrics...')
+    .empty-metrics.hidden.js-empty-custom-metrics
+      = link_to s_('PrometheusService|New metric'), new_project_prometheus_metric_path(project), class: 'btn btn-success prepend-top-10 prepend-left-10 append-bottom-10'
+    %ul.list-unstyled.metrics-list.hidden.js-custom-metrics-list
+
+= render_ce 'projects/services/prometheus/metrics', project: project

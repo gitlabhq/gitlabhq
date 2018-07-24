@@ -21,59 +21,43 @@
       Contribution analytics for issues, merge requests and push events since #{@start_date}
 
   %h3 Push
+  - code_push_count = @events.code_push.count
+  - commits_count = @events.code_push.map(&:commits_count).sum
+  - person_count = @events.code_push.pluck(:author_id).uniq.count
+  - person_count_string = pluralize person_count, 'person'
+  - pushes_string = _('<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors.').html_safe % { pushes: code_push_count, commits: commits_count , people: person_count_string }
+  - if code_push_count > 0 || commits_count > 0 || person_count > 0
+    = pushes_string
+  - else
+    = _('No pushes for the selected time period.')
 
   .row
-    .col-md-4
-      %ul
-        %li
-          = @events.code_push.count
-          times
-        %li
-          more than
-          = @events.code_push.map(&:commits_count).sum
-          commits
-        %li
-          by
-          = pluralize @events.code_push.pluck(:author_id).uniq.count, 'person'
-
-    .col-md-8
-      %div
-        %p.light Push events per group member
-        %canvas#push{ height: 250 }
+    .col-md-12
+      #js_pushes_chart_vue
 
   %h3 Merge Requests
+  - mr_created_count = @events.merge_requests.created.count
+  - mr_merged_count = @events.merge_requests.merged.count
+  - if mr_created_count > 0 || mr_merged_count > 0
+    = _('<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted.').html_safe % { created_count: mr_created_count, accepted_count: mr_merged_count  }
+  - else
+    = _('No merge requests for the selected time period.')
 
   .row
-    .col-md-4
-      %ul
-        %li
-          = @events.merge_requests.created.count
-          created
-        %li
-          = @events.merge_requests.merged.count
-          accepted
-
-    .col-md-8
-      %div
-        %p.light Merge requests created per group member
-        %canvas#merge_requests_created{ height: 250 }
+    .col-md-12
+      #js_merge_requests_chart_vue
 
   %h3 Issues
+  - issues_created_count = @events.issues.created.count
+  - issues_closed_count = @events.issues.closed.pluck(:target_id).uniq.count
+  - if issues_created_count > 0 && issues_closed_count > 0
+    = _('<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed.').html_safe % { created_count: issues_created_count, closed_count: issues_closed_count }
+  - else
+    = _('No issues for the selected time period.')
 
   .row
-    .col-md-4
-      %ul
-        %li
-          = @events.issues.created.count
-          created
-        %li
-          = @events.issues.closed.pluck(:target_id).uniq.count
-          closed
-
-    .col-md-8
-      %div
-        %p.light Issues closed per group member
-        %canvas#issues_closed{ height: 250 }
+    .col-md-12
+      #js_issues_chart_vue
 
   #js-group-member-contributions{ data: { member_contributions_path: group_analytics_path(@group, { start_date: @start_date, format: :json }) } }
   -# haml-lint:disable InlineJavaScript

@@ -9,7 +9,7 @@
 
   - if @project.mirror_hard_failed?
     %br
-    Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project master.
+    Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project maintainer.
 
   - if @project.mirror_ever_updated_successfully?
     %br

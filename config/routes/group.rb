@@ -57,6 +57,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :uploads, only: [:create] do
       collection do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
+        post :authorize
       end
     end
 
@@ -89,6 +90,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
     resources :autocomplete_sources, only: [] do
       collection do
         get 'members'
+        get 'labels'
+        get 'epics'
       end
     end
 

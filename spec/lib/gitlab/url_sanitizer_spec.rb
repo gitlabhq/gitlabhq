@@ -92,6 +92,7 @@ describe Gitlab::UrlSanitizer do
     context 'credentials in URL' do
       where(:url, :credentials) do
         'http://foo:bar@example.com' | { user: 'foo', password: 'bar' }
+        'http://foo:bar:baz@example.com' | { user: 'foo', password: 'bar:baz' }
         'http://:bar@example.com'    | { user: nil,   password: 'bar' }
         'http://foo:@example.com'    | { user: 'foo', password: nil }
         'http://foo@example.com'     | { user: 'foo', password: nil }
@@ -144,6 +145,10 @@ describe Gitlab::UrlSanitizer do
         'http://foo:@example.com'    | 'http://foo@example.com'
         'http://:bar@example.com'    | :same
         'http://foo:bar@example.com' | :same
+        'http://foo:g p@example.com' | 'http://foo:g%20p@example.com'
+        'http://foo:s/h@example.com' | 'http://foo:s%2Fh@example.com'
+        'http://t u:a#b@example.com' | 'http://t%20u:a%23b@example.com'
+        'http://t+u:a#b@example.com' | 'http://t%2Bu:a%23b@example.com'
       end
 
       with_them do
@@ -159,7 +164,7 @@ describe Gitlab::UrlSanitizer do
       url_sanitizer = described_class.new("https://foo:b?r@github.com/me/project.git")
 
       expect(url_sanitizer.sanitized_url).to eq("https://github.com/me/project.git")
-      expect(url_sanitizer.full_url).to eq("https://foo:b?r@github.com/me/project.git")
+      expect(url_sanitizer.full_url).to eq("https://foo:b%3Fr@github.com/me/project.git")
     end
   end
 end

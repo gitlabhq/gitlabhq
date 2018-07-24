@@ -9,7 +9,7 @@ describe 'Merge request > User uses quick actions', :js do
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     describe 'adding a weight from a note' do

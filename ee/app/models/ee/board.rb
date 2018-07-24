@@ -1,6 +1,7 @@
 module EE
   module Board
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     # Empty state for milestones and weights.
     EMPTY_SCOPE_STATE = [nil, -1].freeze
@@ -21,6 +22,16 @@ module EE
       validates :name, presence: true
     end
 
+    override :scoped?
+    def scoped?
+      return super unless parent.feature_available?(:scoped_issue_board)
+
+      EMPTY_SCOPE_STATE.exclude?(milestone_id) ||
+        EMPTY_SCOPE_STATE.exclude?(weight) ||
+        labels.any? ||
+        assignee.present?
+    end
+
     def milestone
       return nil unless parent.feature_available?(:scoped_issue_board)
 
@@ -32,15 +43,6 @@ module EE
       else
         super
       end
-    end
-
-    def scoped?
-      return false unless parent.feature_available?(:scoped_issue_board)
-
-      EMPTY_SCOPE_STATE.exclude?(milestone_id) ||
-        EMPTY_SCOPE_STATE.exclude?(weight) ||
-        labels.any? ||
-        assignee.present?
     end
 
     def as_json(options = {})

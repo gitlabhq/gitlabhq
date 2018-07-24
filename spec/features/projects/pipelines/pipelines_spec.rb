@@ -595,7 +595,7 @@ describe 'Pipelines', :js do
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.add_master(user)
+        project.add_maintainer(user)
         visit project_pipelines_path(project)
       end
 
@@ -606,7 +606,7 @@ describe 'Pipelines', :js do
       describe 'user clicks the button' do
         context 'when project already has jobs_cache_index' do
           before do
-            project.update_attributes(jobs_cache_index: 1)
+            project.update(jobs_cache_index: 1)
           end
 
           it 'increments jobs_cache_index' do

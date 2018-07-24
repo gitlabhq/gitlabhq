@@ -33,8 +33,8 @@ class SessionsController < Devise::SessionsController
     super do |resource|
       # User has successfully signed in, so clear any unused reset token
       if resource.reset_password_token.present?
-        resource.update_attributes(reset_password_token: nil,
-                                   reset_password_sent_at: nil)
+        resource.update(reset_password_token: nil,
+                        reset_password_sent_at: nil)
       end
 
       # hide the signed-in notification
@@ -158,6 +158,8 @@ class SessionsController < Devise::SessionsController
   end
 
   def auto_sign_in_with_provider
+    return unless Gitlab::Auth.omniauth_enabled?
+
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 

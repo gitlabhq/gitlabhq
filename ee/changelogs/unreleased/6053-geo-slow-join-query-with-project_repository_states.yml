@@ -1,5 +1,0 @@
----
-title: Geo - Optimize query to return outdated projects that need to be reverified
-merge_request: 5879
-author:
-type: performance

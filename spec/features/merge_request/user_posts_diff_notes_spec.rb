@@ -185,11 +185,11 @@ describe 'Merge request > User posts diff notes', :js do
     end
 
     describe 'posting a note' do
-      xit 'adds as discussion' do
+      it 'adds as discussion' do
         expect(page).to have_css('.js-temp-notes-holder', count: 2)
 
         should_allow_commenting(find('[id="6eb14e00385d2fb284765eb1cd8d420d33d63fc9_22_22"]'), asset_form_reset: false)
-        expect(page).to have_css('.notes_holder .note', count: 1)
+        expect(page).to have_css('.notes_holder .note.note-discussion', count: 1)
         expect(page).to have_css('.js-temp-notes-holder', count: 1)
         expect(page).to have_button('Reply...')
       end
@@ -198,7 +198,7 @@ describe 'Merge request > User posts diff notes', :js do
 
   context 'when the MR only supports legacy diff notes' do
     before do
-      merge_request.merge_request_diff.update_attributes(start_commit_sha: nil)
+      merge_request.merge_request_diff.update(start_commit_sha: nil)
       visit diffs_project_merge_request_path(project, merge_request, view: 'inline')
     end
 

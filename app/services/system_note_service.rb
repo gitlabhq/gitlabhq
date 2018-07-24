@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # SystemNoteService
 #
 # Used for creating system notes (e.g., when a user references a merge request
@@ -22,9 +24,11 @@ module SystemNoteService
     total_count  = new_commits.length + existing_commits.length
     commits_text = "#{total_count} commit".pluralize(total_count)
 
-    body = "added #{commits_text}\n\n"
-    body << commits_list(noteable, new_commits, existing_commits, oldrev)
-    body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+    text_parts = ["added #{commits_text}"]
+    text_parts << commits_list(noteable, new_commits, existing_commits, oldrev)
+    text_parts << "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+
+    body = text_parts.join("\n\n")
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
   end
@@ -104,18 +108,19 @@ module SystemNoteService
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 
-    body = ''
+    text_parts = []
 
     if added_labels.present?
-      body << "added #{added_labels}"
-      body << ' and ' if removed_labels.present?
+      text_parts << "added #{added_labels}"
+      text_parts << 'and' if removed_labels.present?
     end
 
     if removed_labels.present?
-      body << "removed #{removed_labels}"
+      text_parts << "removed #{removed_labels}"
     end
 
-    body << ' ' << 'label'.pluralize(labels_count)
+    text_parts << 'label'.pluralize(labels_count)
+    body = text_parts.join(' ')
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'label'))
   end
@@ -189,8 +194,10 @@ module SystemNoteService
       spent_at = noteable.spent_at
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
-      body = "#{action} #{parsed_time} of time spent"
-      body << " at #{spent_at}" if spent_at
+
+      text_parts = ["#{action} #{parsed_time} of time spent"]
+      text_parts << "at #{spent_at}" if spent_at
+      body = text_parts.join(' ')
     end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
@@ -269,17 +276,19 @@ module SystemNoteService
     diff_refs = change_position.diff_refs
     version_index = merge_request.merge_request_diffs.viewable.count
 
-    body = "changed this line in"
+    text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
       url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
 
-      body << " [version #{version_index} of the diff](#{url})"
+      text_parts << "[version #{version_index} of the diff](#{url})"
     else
-      body << " version #{version_index} of the diff"
+      text_parts << "version #{version_index} of the diff"
     end
 
+    body = text_parts.join(' ')
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
+
     note = Note.create(note_attributes.merge(system: true))
     note.system_note_metadata = SystemNoteMetadata.new(action: 'outdated')
 
@@ -525,111 +534,6 @@ module SystemNoteService
     body = "moved #{direction} #{cross_reference}"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'moved'))
-  end
-
-  #
-  # noteable     - Noteable object
-  # noteable_ref - Referenced noteable object
-  # user         - User performing reference
-  #
-  # Example Note text:
-  #
-  #   "marked this issue as related to gitlab-ce#9001"
-  #
-  # Returns the created Note object
-  def relate_issue(noteable, noteable_ref, user)
-    body = "marked this issue as related to #{noteable_ref.to_reference(noteable.project)}"
-
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'relate'))
-  end
-
-  #
-  # noteable     - Noteable object
-  # noteable_ref - Referenced noteable object
-  # user         - User performing reference
-  #
-  # Example Note text:
-  #
-  #   "removed the relation with gitlab-ce#9001"
-  #
-  # Returns the created Note object
-  def unrelate_issue(noteable, noteable_ref, user)
-    body = "removed the relation with #{noteable_ref.to_reference(noteable.project)}"
-
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unrelate'))
-  end
-
-  def epic_issue(epic, issue, user, type)
-    return unless validate_epic_issue_action_type(type)
-
-    action = type == :added ? 'epic_issue_added' : 'epic_issue_removed'
-
-    body = "#{type} issue #{issue.to_reference(epic.group)}"
-
-    create_note(NoteSummary.new(epic, nil, user, body, action: action))
-  end
-
-  def epic_issue_moved(from_epic, issue, to_epic, user)
-    epic_issue_moved_act(from_epic, issue, to_epic, user, verb: 'added', direction: 'from')
-    epic_issue_moved_act(to_epic, issue, from_epic, user, verb: 'moved', direction: 'to')
-  end
-
-  def epic_issue_moved_act(subject_epic, issue, object_epic, user, verb:, direction:)
-    action = 'epic_issue_moved'
-
-    body = "#{verb} issue #{issue.to_reference(subject_epic.group)} #{direction}" \
-      " epic #{subject_epic.to_reference(object_epic.group)}"
-
-    create_note(NoteSummary.new(object_epic, nil, user, body, action: action))
-  end
-
-  def issue_on_epic(issue, epic, user, type)
-    return unless validate_epic_issue_action_type(type)
-
-    if type == :added
-      direction = 'to'
-      action = 'issue_added_to_epic'
-    else
-      direction = 'from'
-      action = 'issue_removed_from_epic'
-    end
-
-    body = "#{type} #{direction} epic #{epic.to_reference(issue.project)}"
-
-    create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
-  end
-
-  def issue_epic_change(issue, epic, user)
-    body = "changed epic to #{epic.to_reference(issue.project)}"
-    action = 'issue_changed_epic'
-
-    create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
-  end
-
-  def validate_epic_issue_action_type(type)
-    [:added, :removed].include?(type)
-  end
-
-  # Called when the merge request is approved by user
-  #
-  # noteable - Noteable object
-  # user     - User performing approve
-  #
-  # Example Note text:
-  #
-  #   "approved this merge request"
-  #
-  # Returns the created Note object
-  def approve_mr(noteable, user)
-    body = "approved this merge request"
-
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'approved'))
-  end
-
-  def unapprove_mr(noteable, user)
-    body = "unapproved this merge request"
-
-    create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unapproved'))
   end
 
   # Called when a Noteable has been marked as a duplicate of another Issue

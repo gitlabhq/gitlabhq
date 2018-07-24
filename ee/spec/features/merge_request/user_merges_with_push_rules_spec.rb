@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Merge request > User merges with Push Rules', :js do
+describe 'Merge request > User merges with Push Rules', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository, push_rule: push_rule) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: 'Bug NS-04') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'commit message is invalid' do

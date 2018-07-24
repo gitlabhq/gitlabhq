@@ -4,7 +4,7 @@ SimpleCovEnv.start!
 ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
-require File.expand_path("../../config/environment", __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rspec/rails'
 require 'shoulda/matchers'
 require 'rspec/retry'
@@ -170,6 +170,17 @@ RSpec.configure do |config|
     example.run
 
     redis_queues_cleanup!
+  end
+
+  config.around(:each, :use_clean_rails_memory_store_fragment_caching) do |example|
+    caching_store = ActionController::Base.cache_store
+    ActionController::Base.cache_store = ActiveSupport::Cache::MemoryStore.new
+    ActionController::Base.perform_caching = true
+
+    example.run
+
+    ActionController::Base.perform_caching = false
+    ActionController::Base.cache_store = caching_store
   end
 
   # The :each scope runs "inside" the example, so this hook ensures the DB is in the

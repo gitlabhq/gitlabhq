@@ -7,9 +7,9 @@ describe 'Project show page', :feature do
     describe 'populated project' do
       let(:project) { create(:project, :public, :repository) }
 
-      describe 'as a master' do
+      describe 'as a maintainer' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
           sign_in(user)
 
           visit project_path(project)

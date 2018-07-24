@@ -88,6 +88,17 @@ module EE
       end
     end
 
+    def security_reports_feature_available?
+      feature_available?(:sast) ||
+        feature_available?(:dependency_scanning) ||
+        feature_available?(:sast_container) ||
+        feature_available?(:dast)
+    end
+
+    def latest_pipeline_with_security_reports
+      pipelines.newest_first(default_branch).with_security_reports.first
+    end
+
     def ensure_external_webhook_token
       return if external_webhook_token.present?
 
@@ -492,6 +503,12 @@ module EE
     end
     request_cache(:any_path_locks?) { self.id }
 
+    override :after_import
+    def after_import
+      super
+      log_geo_events
+    end
+
     private
 
     def set_override_pull_mirror_available
@@ -526,6 +543,13 @@ module EE
 
     def validate_board_limit(board)
       # Board limits are disabled in EE, so this method is just a no-op.
+    end
+
+    def log_geo_events
+      return unless ::Gitlab::Geo.primary?
+
+      ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::REPOSITORY).execute
+      ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
     end
   end
 end

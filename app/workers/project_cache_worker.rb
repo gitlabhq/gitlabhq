@@ -3,7 +3,6 @@
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
   include ApplicationWorker
-  include ExclusiveLeaseGuard
   prepend EE::Workers::ProjectCacheWorker
 
   LEASE_TIMEOUT = 15.minutes.to_i
@@ -15,30 +14,30 @@ class ProjectCacheWorker
   # statistics - An Array containing columns from ProjectStatistics to
   #              refresh, if empty all columns will be refreshed
   def perform(project_id, files = [], statistics = [])
-    @project = Project.find_by(id: project_id)
-    return unless @project&.repository&.exists?
+    project = Project.find_by(id: project_id)
 
-    update_statistics(statistics)
+    return unless project && project.repository.exists?
 
-    @project.repository.refresh_method_caches(files.map(&:to_sym))
+    update_statistics(project, statistics.map(&:to_sym))
 
-    @project.cleanup
+    project.repository.refresh_method_caches(files.map(&:to_sym))
+
+    project.cleanup
+  end
+
+  def update_statistics(project, statistics = [])
+    return unless try_obtain_lease_for(project.id, :update_statistics)
+
+    Rails.logger.info("Updating statistics for project #{project.id}")
+
+    project.statistics.refresh!(only: statistics)
   end
 
   private
 
-  def update_statistics(statistics = [])
-    try_obtain_lease do
-      Rails.logger.info("Updating statistics for project #{@project.id}")
-      @project.statistics.refresh!(only: statistics.to_a.map(&:to_sym))
-    end
-  end
-
-  def lease_timeout
-    LEASE_TIMEOUT
-  end
-
-  def lease_key
-    "project_cache_worker:#{@project.id}:update_statistics"
+  def try_obtain_lease_for(project_id, section)
+    Gitlab::ExclusiveLease
+      .new("project_cache_worker:#{project_id}:#{section}", timeout: LEASE_TIMEOUT)
+      .try_obtain
   end
 end

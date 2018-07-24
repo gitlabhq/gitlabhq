@@ -11,7 +11,7 @@ module EE
           # If we don't `protected_branch` or `protected_tag` would be empty and
           # `project` cannot be delegated to it, which in turn would cause validations
           # to fail.
-          has_many :"#{type}_access_levels", inverse_of: self.model_name.singular # rubocop:disable Cop/ActiveRecordDependent
+          has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
 
           accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
 
@@ -19,7 +19,7 @@ module EE
           #
           # EE Needs to allow more access levels in the relation:
           # - 1 for each user/group
-          # - 1 with the `access_level` (Master, Developer)
+          # - 1 with the `access_level` (Maintainer, Developer)
           validates :"#{type}_access_levels", length: { is: 1 }, if: -> { false }
 
           # Returns access levels that grant the specified access type to the given user / group.

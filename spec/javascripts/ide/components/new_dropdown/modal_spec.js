@@ -1,6 +1,7 @@
 import Vue from 'vue';
+import { createStore } from '~/ide/stores';
 import modal from '~/ide/components/new_dropdown/modal.vue';
-import createComponent from 'spec/helpers/vue_mount_component_helper';
+import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('new file modal component', () => {
   const Component = Vue.extend(modal);
@@ -13,13 +14,15 @@ describe('new file modal component', () => {
   ['tree', 'blob'].forEach(type => {
     describe(type, () => {
       beforeEach(() => {
-        vm = createComponent(Component, {
+        const store = createStore();
+        store.state.newEntryModal = {
           type,
-          branchId: 'master',
           path: '',
-        });
+        };
 
-        vm.entryName = 'testing';
+        vm = createComponentWithStore(Component, store).$mount();
+
+        vm.name = 'testing';
       });
 
       it(`sets modal title as ${type}`, () => {
@@ -35,40 +38,21 @@ describe('new file modal component', () => {
       });
 
       it(`sets form label as ${type}`, () => {
-        expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe('Name');
+        expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
       });
 
       describe('createEntryInStore', () => {
         it('$emits create', () => {
-          spyOn(vm, '$emit');
+          spyOn(vm, 'createTempEntry');
 
           vm.createEntryInStore();
 
-          expect(vm.$emit).toHaveBeenCalledWith('create', {
-            branchId: 'master',
+          expect(vm.createTempEntry).toHaveBeenCalledWith({
             name: 'testing',
             type,
           });
         });
       });
     });
-  });
-
-  it('focuses field on mount', () => {
-    document.body.innerHTML += '<div class="js-test"></div>';
-
-    vm = createComponent(
-      Component,
-      {
-        type: 'tree',
-        branchId: 'master',
-        path: '',
-      },
-      '.js-test',
-    );
-
-    expect(document.activeElement).toBe(vm.$refs.fieldName);
-
-    vm.$el.remove();
   });
 });

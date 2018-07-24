@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project milestone' do
+describe 'Project milestone' do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
   let(:milestone) { create(:milestone, project: project) }

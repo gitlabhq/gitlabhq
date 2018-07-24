@@ -13,7 +13,7 @@ describe EnvironmentEntity do
   subject { entity.as_json }
 
   before do
-    environment.project.add_master(user)
+    environment.project.add_maintainer(user)
   end
 
   it 'exposes latest deployment' do

@@ -1,5 +1,0 @@
----
-title: Do not pre-select previous user(s) when creating protected branches
-merge_request: 6112
-author:
-type: fixed

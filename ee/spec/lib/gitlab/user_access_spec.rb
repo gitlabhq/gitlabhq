@@ -11,7 +11,7 @@ describe Gitlab::UserAccess do
       let(:project) { create(:project_empty_repo) }
 
       it 'returns false when the external service denies access' do
-        project.add_master(user)
+        project.add_maintainer(user)
         external_service_deny_access(user, project)
 
         expect(access.can_push_to_branch?('master')).to be_falsey

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Activity > User sees activity' do
+describe 'Projects > Activity > User sees activity' do
   let(:project) { create(:project, :repository, :public) }
   let(:user) { project.creator }
 

@@ -11,7 +11,7 @@ describe('DiffFile', () => {
   beforeEach(() => {
     vm = createComponentWithStore(Vue.extend(DiffFileComponent), store, {
       file: getDiffFileMock(),
-      currentUser: {},
+      canCurrentUserFork: false,
     }).$mount();
   });
 
@@ -31,12 +31,12 @@ describe('DiffFile', () => {
 
     describe('collapsed', () => {
       it('should not have file content', done => {
-        expect(vm.$el.querySelectorAll('.diff-content.hidden').length).toEqual(0);
+        expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(1);
         expect(vm.file.collapsed).toEqual(false);
         vm.file.collapsed = true;
 
         vm.$nextTick(() => {
-          expect(vm.$el.querySelectorAll('.diff-content.hidden').length).toEqual(1);
+          expect(vm.$el.querySelectorAll('.diff-content').length).toEqual(0);
 
           done();
         });

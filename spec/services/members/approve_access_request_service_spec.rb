@@ -34,9 +34,9 @@ describe Members::ApproveAccessRequestService do
 
     context 'with a custom access level' do
       it 'returns a ProjectMember with the custom access level' do
-        member = described_class.new(current_user, access_level: Gitlab::Access::MASTER).execute(access_requester, opts)
+        member = described_class.new(current_user, access_level: Gitlab::Access::MAINTAINER).execute(access_requester, opts)
 
-        expect(member.access_level).to eq(Gitlab::Access::MASTER)
+        expect(member.access_level).to eq(Gitlab::Access::MAINTAINER)
       end
     end
   end
@@ -97,7 +97,7 @@ describe Members::ApproveAccessRequestService do
 
     context 'when current user can approve access request to the project' do
       before do
-        project.add_master(current_user)
+        project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 

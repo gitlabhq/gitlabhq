@@ -1,11 +1,11 @@
 <script>
-import _ from 'underscore';
 import { mapActions, mapGetters } from 'vuex';
 import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionsSvg from 'icons/_next_discussion.svg';
-import { convertObjectPropsToCamelCase, scrollToElement } from '~/lib/utils/common_utils';
+import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
 import systemNote from '~/vue_shared/components/notes/system_note.vue';
+import { s__ } from '~/locale';
 import Flash from '../../flash';
 import { SYSTEM_NOTE } from '../constants';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -20,6 +20,7 @@ import placeholderSystemNote from '../../vue_shared/components/notes/placeholder
 import autosave from '../mixins/autosave';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
+import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
@@ -39,7 +40,7 @@ export default {
   directives: {
     tooltip,
   },
-  mixins: [autosave, noteable, resolvable],
+  mixins: [autosave, noteable, resolvable, discussionNavigation],
   props: {
     discussion: {
       type: Object,
@@ -60,6 +61,11 @@ export default {
       required: false,
       default: false,
     },
+    discussionsByDiffOrder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -74,7 +80,12 @@ export default {
       'discussionCount',
       'resolvedDiscussionCount',
       'allDiscussions',
+      'unresolvedDiscussionsIdsByDiff',
+      'unresolvedDiscussionsIdsByDate',
       'unresolvedDiscussions',
+      'unresolvedDiscussionsIdsOrdered',
+      'nextUnresolvedDiscussionId',
+      'isLastUnresolvedDiscussion',
     ]),
     transformedDiscussion() {
       return {
@@ -125,6 +136,10 @@ export default {
     hasMultipleUnresolvedDiscussions() {
       return this.unresolvedDiscussions.length > 1;
     },
+    showJumpToNextDiscussion() {
+      return this.hasMultipleUnresolvedDiscussions &&
+        !this.isLastUnresolvedDiscussion(this.discussion.id, this.discussionsByDiffOrder);
+    },
     shouldRenderDiffs() {
       const { diffDiscussion, diffFile } = this.transformedDiscussion;
 
@@ -144,19 +159,17 @@ export default {
       return this.isDiffDiscussion ? '' : 'card discussion-wrapper';
     },
   },
-  mounted() {
-    if (this.isReplying) {
-      this.initAutoSave(this.transformedDiscussion);
-    }
-  },
-  updated() {
-    if (this.isReplying) {
-      if (!this.autosave) {
-        this.initAutoSave(this.transformedDiscussion);
+  watch: {
+    isReplying() {
+      if (this.isReplying) {
+        this.$nextTick(() => {
+          // Pass an extra key to separate reply and note edit forms
+          this.initAutoSave(this.transformedDiscussion, ['Reply']);
+        });
       } else {
-        this.setAutoSave();
+        this.disposeAutoSave();
       }
-    }
+    },
   },
   created() {
     this.resolveDiscussionsSvg = resolveDiscussionsSvg;
@@ -194,16 +207,18 @@ export default {
     showReplyForm() {
       this.isReplying = true;
     },
-    cancelReplyForm(shouldConfirm) {
-      if (shouldConfirm && this.$refs.noteForm.isDirty) {
+    cancelReplyForm(shouldConfirm, isDirty) {
+      if (shouldConfirm && isDirty) {
+        const msg = s__('Notes|Are you sure you want to cancel creating this comment?');
+
         // eslint-disable-next-line no-alert
-        if (!window.confirm('Are you sure you want to cancel creating this comment?')) {
+        if (!window.confirm(msg)) {
           return;
         }
       }
 
-      this.resetAutoSave();
       this.isReplying = false;
+      this.resetAutoSave();
     },
     saveReply(noteText, form, callback) {
       const postData = {
@@ -241,21 +256,10 @@ Please check your network connection and try again.`;
         });
     },
     jumpToNextDiscussion() {
-      const discussionIds = this.allDiscussions.map(d => d.id);
-      const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
-      const currentIndex = discussionIds.indexOf(this.discussion.id);
-      const remainingAfterCurrent = discussionIds.slice(currentIndex + 1);
-      const nextIndex = _.findIndex(remainingAfterCurrent, id => unresolvedIds.indexOf(id) > -1);
+      const nextId =
+        this.nextUnresolvedDiscussionId(this.discussion.id, this.discussionsByDiffOrder);
 
-      if (nextIndex > -1) {
-        const nextId = remainingAfterCurrent[nextIndex];
-        const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
-
-        if (el) {
-          this.expandDiscussion({ discussionId: nextId });
-          scrollToElement(el);
-        }
-      }
+      this.jumpToDiscussion(nextId);
     },
   },
 };
@@ -397,7 +401,7 @@ Please check your network connection and try again.`;
                           </a>
                         </div>
                         <div
-                          v-if="hasMultipleUnresolvedDiscussions"
+                          v-if="showJumpToNextDiscussion"
                           class="btn-group"
                           role="group">
                           <button
@@ -420,7 +424,8 @@ Please check your network connection and try again.`;
                     :is-editing="false"
                     save-button-title="Comment"
                     @handleFormUpdate="saveReply"
-                    @cancelForm="cancelReplyForm" />
+                    @cancelForm="cancelReplyForm"
+                  />
                   <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>

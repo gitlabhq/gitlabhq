@@ -10,7 +10,7 @@ describe 'Project variables EE', :js do
     stub_licensed_features(variable_environment_scope: variable_environment_scope)
 
     login_as(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     project.variables << variable
 
     visit page_path

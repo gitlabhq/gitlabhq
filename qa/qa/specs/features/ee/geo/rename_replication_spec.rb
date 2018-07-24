@@ -1,6 +1,6 @@
 module QA
-  feature 'GitLab Geo project rename replication', :geo do
-    scenario 'user renames project' do
+  describe 'GitLab Geo project rename replication', :geo do
+    it 'user renames project' do
       # create the project and push code
       Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }

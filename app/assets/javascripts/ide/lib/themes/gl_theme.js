@@ -9,6 +9,7 @@ export default {
       'diffEditor.insertedTextBackground': '#ddfbe6',
       'diffEditor.removedTextBackground': '#f9d7dc',
       'editor.selectionBackground': '#aad6f8',
+      'editorIndentGuide.activeBackground': '#cccccc',
     },
   },
 };

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Notes
   class PostProcessService
     attr_accessor :note

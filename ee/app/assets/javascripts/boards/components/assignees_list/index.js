@@ -27,20 +27,20 @@ export default Vue.extend({
   },
   methods: {
     loadAssignees() {
-      if (!this.store.state.assignees.length) {
-        axios
-          .get(this.listAssigneesPath)
-          .then(({ data }) => {
-            this.loading = false;
-            this.store.state.assignees = data;
-          })
-          .catch(() => {
-            this.loading = false;
-            Flash(
-              __('Something went wrong while fetching assignees list'),
-            );
-          });
+      if (this.store.state.assignees.length) {
+        return Promise.resolve();
       }
+
+      return axios
+        .get(this.listAssigneesPath)
+        .then(({ data }) => {
+          this.loading = false;
+          this.store.state.assignees = data;
+        })
+        .catch(() => {
+          this.loading = false;
+          Flash(__('Something went wrong while fetching assignees list'));
+        });
     },
     handleItemClick(assignee) {
       if (!this.store.findList('title', assignee.name)) {

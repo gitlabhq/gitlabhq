@@ -24,7 +24,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
-    it { is_expected.to be_allowed_for(:master).of(group) }
+    it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
@@ -40,7 +40,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
-    it { is_expected.to be_allowed_for(:master).of(group) }
+    it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
@@ -57,7 +57,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
-    it { is_expected.to be_allowed_for(:master).of(group) }
+    it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
@@ -73,7 +73,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_allowed_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
-    it { is_expected.to be_allowed_for(:master).of(group) }
+    it { is_expected.to be_allowed_for(:maintainer).of(group) }
     it { is_expected.to be_allowed_for(:developer).of(group) }
     it { is_expected.to be_allowed_for(:reporter).of(group) }
     it { is_expected.to be_allowed_for(:guest).of(group) }
@@ -89,7 +89,7 @@ describe 'Private Group access' do
     it { is_expected.to be_allowed_for(:admin) }
     it { is_expected.to be_denied_for(:auditor) }
     it { is_expected.to be_allowed_for(:owner).of(group) }
-    it { is_expected.to be_denied_for(:master).of(group) }
+    it { is_expected.to be_denied_for(:maintainer).of(group) }
     it { is_expected.to be_denied_for(:developer).of(group) }
     it { is_expected.to be_denied_for(:reporter).of(group) }
     it { is_expected.to be_denied_for(:guest).of(group) }

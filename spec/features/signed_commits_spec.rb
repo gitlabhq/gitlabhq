@@ -5,9 +5,9 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
     user = create :user, email: 'unrelated.user@example.org'
-    project.add_master(user)
+    project.add_maintainer(user)
 
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
@@ -21,9 +21,9 @@ describe 'GPG signed commits', :js do
     end
 
     # user changes his email which makes the gpg key verified
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       user.skip_reconfirmation!
-      user.update_attributes!(email: GpgHelpers::User1.emails.first)
+      user.update!(email: GpgHelpers::User1.emails.first)
     end
 
     visit project_commits_path(project, :'signed-commits')
@@ -36,7 +36,7 @@ describe 'GPG signed commits', :js do
 
   it 'changes from unverified to verified when the user adds the missing gpg key' do
     user = create :user, email: GpgHelpers::User1.emails.first
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 
@@ -48,7 +48,7 @@ describe 'GPG signed commits', :js do
     end
 
     # user adds the gpg key which makes the signature valid
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
@@ -66,7 +66,7 @@ describe 'GPG signed commits', :js do
     end
 
     let(:user_1_key) do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         create :gpg_key, key: GpgHelpers::User1.public_key, user: user_1
       end
     end
@@ -79,14 +79,14 @@ describe 'GPG signed commits', :js do
     end
 
     let(:user_2_key) do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         create :gpg_key, key: GpgHelpers::User2.public_key, user: user_2
       end
     end
 
     before do
       user = create :user
-      project.add_master(user)
+      project.add_maintainer(user)
 
       sign_in(user)
     end

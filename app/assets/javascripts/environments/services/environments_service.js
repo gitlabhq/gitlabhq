@@ -13,7 +13,7 @@ export default class EnvironmentsService {
 
   // eslint-disable-next-line class-methods-use-this
   postAction(endpoint) {
-    return axios.post(endpoint, {}, { emulateJSON: true });
+    return axios.post(endpoint, {});
   }
 
   getFolderContent(folderUrl) {

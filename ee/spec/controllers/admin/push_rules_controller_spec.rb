@@ -17,7 +17,7 @@ describe Admin::PushRulesController do
     end
 
     it 'updates sample push rule' do
-      expect_any_instance_of(PushRule).to receive(:update_attributes).with(ActionController::Parameters.new(params).permit!)
+      expect_any_instance_of(PushRule).to receive(:update).with(ActionController::Parameters.new(params).permit!)
 
       patch :update, push_rule: params
 

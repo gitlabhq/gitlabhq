@@ -6,6 +6,7 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
+import jasmineDiff from 'jasmine-diff';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
@@ -35,7 +36,15 @@ Vue.use(Translate);
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
 jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 
-beforeAll(() => jasmine.addMatchers(customMatchers));
+beforeAll(() => {
+  jasmine.addMatchers(
+    jasmineDiff(jasmine, {
+      colors: true,
+      inline: true,
+    }),
+  );
+  jasmine.addMatchers(customMatchers);
+});
 
 // globalize common libraries
 window.$ = $;
@@ -85,19 +94,25 @@ beforeEach(() => {
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
-const testsContext = require.context('.', true, /_spec$/);
-testsContext.keys().forEach(function(path) {
-  try {
-    testsContext(path);
-  } catch (err) {
-    console.log(err);
-    console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
-    describe('Test bundle', function() {
-      it(`includes '${path}'`, function() {
-        expect(err).toBeNull();
+const testContexts = [
+  require.context('spec', true, /_spec$/),
+  require.context('ee_spec', true, /_spec$/),
+];
+
+testContexts.forEach(context => {
+  context.keys().forEach(path => {
+    try {
+      context(path);
+    } catch (err) {
+      console.log(err);
+      console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
+      describe('Test bundle', function() {
+        it(`includes '${path}'`, function() {
+          expect(err).toBeNull();
+        });
       });
-    });
-  }
+    }
+  });
 });
 
 describe('test errors', () => {
@@ -166,24 +181,31 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-    const sourceFiles = require.context('~', true, /\.js$/);
+    const sourceFilesContexts = [
+      require.context('~', true, /\.(js|vue)$/),
+      require.context('ee', true, /\.(js|vue)$/),
+    ];
+    const allTestFiles = testContexts.reduce((accumulator, context) =>
+      accumulator.concat(context.keys()), []);
 
     $.holdReady(true);
 
-    sourceFiles.keys().forEach(function(path) {
-      // ignore if there is a matching spec file
-      if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
-        return;
-      }
-
-      it(`includes '${path}'`, function() {
-        try {
-          sourceFiles(path);
-        } catch (err) {
-          if (troubleMakers.indexOf(path) === -1) {
-            expect(err).toBeNull();
-          }
+    sourceFilesContexts.forEach(context => {
+      context.keys().forEach(path => {
+        // ignore if there is a matching spec file
+        if (allTestFiles.indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
+          return;
         }
+
+        it(`includes '${path}'`, function() {
+          try {
+            context(path);
+          } catch (err) {
+            if (troubleMakers.indexOf(path) === -1) {
+              expect(err).toBeNull();
+            }
+          }
+        });
       });
     });
   });

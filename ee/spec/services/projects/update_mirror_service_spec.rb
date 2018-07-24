@@ -25,6 +25,14 @@ describe Projects::UpdateMirrorService do
       described_class.new(project, project.owner).execute
     end
 
+    it 'rescues exceptions from Repository#ff_merge' do
+      stub_fetch_mirror(project)
+
+      expect(project.repository).to receive(:ff_merge).and_raise(Gitlab::Git::PreReceiveError)
+
+      expect { described_class.new(project, project.owner).execute }.not_to raise_error
+    end
+
     it "succeeds" do
       stub_fetch_mirror(project)
 
@@ -60,7 +68,7 @@ describe Projects::UpdateMirrorService do
         let(:protected_branch_name) { 'existing-branch' }
 
         before do
-          project.update_attributes(only_mirror_protected_branches: true)
+          project.update(only_mirror_protected_branches: true)
         end
 
         it 'creates a new protected branch' do

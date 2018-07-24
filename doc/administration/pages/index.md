@@ -49,8 +49,8 @@ supporting custom domains a secondary IP is not needed.
 
 Before proceeding with the Pages configuration, you will need to:
 
-1. Have a separate domain under which the GitLab Pages will be served. In this
-   document we assume that to be `example.io`.
+1. Have an exclusive root domain for serving GitLab Pages. Note that you cannot
+   use a subdomain of your GitLab's instance domain.
 1. Configure a **wildcard DNS record**.
 1. (Optional) Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
@@ -258,6 +258,23 @@ If your userbase is private or otherwise trusted, you can disable the
 verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
+
+## Activate verbose logging for daemon
+
+Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Omnibus GitLab 11.1.
+
+Follow the steps below to configure verbose logging of GitLab Pages daemon.
+
+1. By default the daemon only logs with `INFO` level.
+   If you wish to make it log events with level `DEBUG` you must configure this in
+   `/etc/gitlab/gitlab.rb`:
+
+     ```shell
+     gitlab_pages['log_verbose'] = true
+     ```
+
+1. [Reconfigure GitLab][reconfigure]
 
 ## Change storage path
 

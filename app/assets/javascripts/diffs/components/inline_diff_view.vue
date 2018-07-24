@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import inlineDiffTableRow from './inline_diff_table_row.vue';
 import inlineDiffCommentRow from './inline_diff_comment_row.vue';
 import { trimFirstCharOfLineContent } from '../store/utils';
@@ -20,20 +20,25 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['commit']),
+    ...mapGetters('diffs', [
+      'commitId',
+      'shouldRenderInlineCommentRow',
+      'singleDiscussionByLineCode',
+    ]),
+    ...mapState({
+      diffLineCommentForms: state => state.diffs.diffLineCommentForms,
+    }),
     normalizedDiffLines() {
       return this.diffLines.map(line => (line.richText ? trimFirstCharOfLineContent(line) : line));
     },
     diffLinesLength() {
       return this.normalizedDiffLines.length;
     },
-    commitId() {
-      return this.commit && this.commit.id;
-    },
     userColorScheme() {
       return window.gon.user_color_scheme;
     },
   },
+  methods: {},
 };
 </script>
 
@@ -47,17 +52,20 @@ export default {
         v-for="(line, index) in normalizedDiffLines"
       >
         <inline-diff-table-row
-          :diff-file="diffFile"
+          :file-hash="diffFile.fileHash"
+          :context-lines-path="diffFile.contextLinesPath"
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"
           :key="line.lineCode"
+          :discussions="singleDiscussionByLineCode(line.lineCode)"
         />
         <inline-diff-comment-row
-          :diff-file="diffFile"
-          :diff-lines="normalizedDiffLines"
+          v-if="shouldRenderInlineCommentRow(line)"
+          :diff-file-hash="diffFile.fileHash"
           :line="line"
           :line-index="index"
           :key="index"
+          :discussions="singleDiscussionByLineCode(line.lineCode)"
         />
       </template>
     </tbody>

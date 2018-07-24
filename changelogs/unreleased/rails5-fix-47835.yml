@@ -1,6 +1,0 @@
----
-title: Rails5 fix no implicit conversion of Hash into String. ActionController::Parameters
-  no longer returns an hash in Rails 5
-merge_request: 19792
-author: Jasper Maes
-type: fixed

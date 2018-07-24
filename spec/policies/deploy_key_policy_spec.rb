@@ -12,7 +12,7 @@ describe DeployKeyPolicy do
         let(:project) { create(:project_empty_repo) }
 
         before do
-          project.add_master(current_user)
+          project.add_maintainer(current_user)
           project.deploy_keys << deploy_key
         end
 

@@ -102,7 +102,7 @@ describe API::ProjectImport do
     it 'correctly overrides params during the import' do
       override_params = { 'description' => 'Hello world' }
 
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         post api('/projects/import', user),
              path: 'test-import',
              file: fixture_file_upload(file),
@@ -146,7 +146,7 @@ describe API::ProjectImport do
   describe 'GET /projects/:id/import' do
     it 'returns the import status' do
       project = create(:project, :import_started)
-      project.add_master(user)
+      project.add_maintainer(user)
 
       get api("/projects/#{project.id}/import", user)
 
@@ -156,8 +156,8 @@ describe API::ProjectImport do
 
     it 'returns the import status and the error if failed' do
       project = create(:project, :import_failed)
-      project.add_master(user)
-      project.import_state.update_attributes(last_error: 'error')
+      project.add_maintainer(user)
+      project.import_state.update(last_error: 'error')
 
       get api("/projects/#{project.id}/import", user)
 

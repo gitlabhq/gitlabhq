@@ -19,7 +19,7 @@ module Projects
       update_branches
 
       success
-    rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError, UpdateError => e
+    rescue Gitlab::Shell::Error, UpdateError => e
       error(e.message)
     end
 
@@ -49,7 +49,7 @@ module Projects
         else
           begin
             repository.ff_merge(current_user, upstream_branch.dereferenced_target, name)
-          rescue Gitlab::Git::HooksService::PreReceiveError, Gitlab::Git::CommitError => e
+          rescue Gitlab::Git::PreReceiveError, Gitlab::Git::CommitError => e
             errors << e.message
           end
         end

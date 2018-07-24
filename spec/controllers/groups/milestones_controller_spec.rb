@@ -28,7 +28,7 @@ describe Groups::MilestonesController do
   before do
     sign_in(user)
     group.add_owner(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#index' do

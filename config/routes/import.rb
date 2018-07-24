@@ -45,4 +45,10 @@ namespace :import do
   resource :gitlab_project, only: [:create, :new] do
     post :create
   end
+
+  resource :manifest, only: [:create, :new], controller: :manifest do
+    get :status
+    get :jobs
+    post :upload
+  end
 end

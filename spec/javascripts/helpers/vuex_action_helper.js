@@ -1,71 +1,101 @@
+const noop = () => {};
+
 /**
- * helper for testing action with expected mutations inspired in
+ * Helper for testing action with expected mutations inspired in
  * https://vuex.vuejs.org/en/testing.html
+ *
+ * @param {Function} action to be tested
+ * @param {Object} payload will be provided to the action
+ * @param {Object} state will be provided to the action
+ * @param {Array} [expectedMutations=[]] mutations expected to be committed
+ * @param {Array} [expectedActions=[]] actions expected to be dispatched
+ * @param {Function} [done=noop] to be executed after the tests
+ * @return {Promise}
  *
  * @example
  * testAction(
  *   actions.actionName, // action
- *   { }, // mocked response
- *   state, // state
+ *   { }, // mocked payload
+ *   state, //state
+ *   // expected mutations
  *   [
  *    { type: types.MUTATION}
- *    { type: types.MUTATION_1, payload: {}}
- *   ], // mutations
+ *    { type: types.MUTATION_1, payload: jasmine.any(Number)}
+ *   ],
+ *   // expected actions
  *   [
- *    { type: 'actionName', payload: {}},
- *    { type: 'actionName1', payload: {}}
- *   ] //actions
+ *    { type: 'actionName', payload: {param: 'foobar'}},
+ *    { type: 'actionName1'}
+ *   ]
  *   done,
  * );
+ *
+ * @example
+ * testAction(
+ *   actions.actionName, // action
+ *   { }, // mocked payload
+ *   state, //state
+ *   [ { type: types.MUTATION} ], // expected mutations
+ *   [], // expected actions
+ * ).then(done)
+ * .catch(done.fail);
  */
-export default (action, payload, state, expectedMutations, expectedActions, done) => {
-  let mutationsCount = 0;
-  let actionsCount = 0;
+export default (
+  action,
+  payload,
+  state,
+  expectedMutations = [],
+  expectedActions = [],
+  done = noop,
+) => {
+  const mutations = [];
+  const actions = [];
 
   // mock commit
   const commit = (type, mutationPayload) => {
-    const mutation = expectedMutations[mutationsCount];
+    const mutation = { type };
 
-    expect(mutation.type).toEqual(type);
-
-    if (mutation.payload) {
-      expect(mutation.payload).toEqual(mutationPayload);
+    if (typeof mutationPayload !== 'undefined') {
+      mutation.payload = mutationPayload;
     }
 
-    mutationsCount += 1;
-    if (mutationsCount >= expectedMutations.length) {
-      done();
-    }
+    mutations.push(mutation);
   };
 
   // mock dispatch
   const dispatch = (type, actionPayload) => {
-    const actionExpected = expectedActions[actionsCount];
+    const dispatchedAction = { type };
 
-    expect(actionExpected.type).toEqual(type);
-
-    if (actionExpected.payload) {
-      expect(actionExpected.payload).toEqual(actionPayload);
+    if (typeof actionPayload !== 'undefined') {
+      dispatchedAction.payload = actionPayload;
     }
 
-    actionsCount += 1;
-    if (actionsCount >= expectedActions.length) {
-      done();
-    }
+    actions.push(dispatchedAction);
   };
 
-  // call the action with mocked store and arguments
-  action({ commit, state, dispatch, rootState: state }, payload);
-
-  // check if no mutations should have been dispatched
-  if (expectedMutations.length === 0) {
-    expect(mutationsCount).toEqual(0);
+  const validateResults = () => {
+    expect({
+      mutations,
+      actions,
+    }).toEqual({
+      mutations: expectedMutations,
+      actions: expectedActions,
+    });
     done();
-  }
+  };
 
-  // check if no mutations should have been dispatched
-  if (expectedActions.length === 0) {
-    expect(actionsCount).toEqual(0);
-    done();
-  }
+  const result = action({ commit, state, dispatch, rootState: state }, payload);
+
+  return new Promise(resolve => {
+    setImmediate(resolve);
+  })
+    .then(() => result)
+    .catch(error => {
+      validateResults();
+      throw error;
+    })
+    .then(data => {
+      validateResults();
+      return data;
+    });
 };

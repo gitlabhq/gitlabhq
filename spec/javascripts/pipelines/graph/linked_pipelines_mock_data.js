@@ -8,7 +8,7 @@ export default {
     },
     details: {
       status: {
-        icon: 'icon_status_running',
+        icon: 'status_running',
         text: 'running',
         label: 'running',
         group: 'running',
@@ -66,7 +66,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',
@@ -124,7 +124,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',
@@ -182,7 +182,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',
@@ -239,7 +239,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',
@@ -297,7 +297,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',
@@ -355,7 +355,7 @@ export default {
       },
       details: {
         status: {
-          icon: 'icon_status_running',
+          icon: 'status_running',
           text: 'running',
           label: 'running',
           group: 'running',

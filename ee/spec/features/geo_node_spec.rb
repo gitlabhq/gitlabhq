@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'GEO Nodes' do
+describe 'GEO Nodes' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:geo_url) { 'http://geo.example.com' }
@@ -10,7 +10,7 @@ feature 'GEO Nodes' do
       allow(Gitlab::Geo).to receive(:secondary?) { true }
       allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
 
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

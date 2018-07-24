@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Labels
   class FindOrCreateService
     def initialize(current_user, parent, params = {})
@@ -20,6 +22,7 @@ module Labels
       @available_labels ||= LabelsFinder.new(
         current_user,
         "#{parent_type}_id".to_sym => parent.id,
+        include_ancestor_groups: include_ancestor_groups?,
         only_group_labels: parent_is_group?
       ).execute(skip_authorization: skip_authorization)
     end
@@ -30,7 +33,8 @@ module Labels
       new_label = available_labels.find_by(title: title)
 
       if new_label.nil? && (skip_authorization || Ability.allowed?(current_user, :admin_label, parent))
-        new_label = Labels::CreateService.new(params).execute(parent_type.to_sym => parent)
+        create_params = params.except(:include_ancestor_groups)
+        new_label = Labels::CreateService.new(create_params).execute(parent_type.to_sym => parent)
       end
 
       new_label
@@ -46,6 +50,10 @@ module Labels
 
     def parent_is_group?
       parent_type == "group"
+    end
+
+    def include_ancestor_groups?
+      params[:include_ancestor_groups] == true
     end
   end
 end

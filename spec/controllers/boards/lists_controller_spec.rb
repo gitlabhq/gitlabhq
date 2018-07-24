@@ -7,7 +7,7 @@ describe Boards::ListsController do
   let(:guest)   { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(guest)
   end
 

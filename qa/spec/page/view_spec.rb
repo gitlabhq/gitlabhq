@@ -32,7 +32,7 @@ describe QA::Page::View do
 
       context 'when pattern is found' do
         before do
-          allow(File).to receive(:foreach)
+          allow(::File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(true)
@@ -45,7 +45,7 @@ describe QA::Page::View do
 
       context 'when pattern has not been found' do
         before do
-          allow(File).to receive(:foreach)
+          allow(::File).to receive(:foreach)
             .and_yield('some element').once
           allow(element).to receive(:matches?)
             .with('some element').and_return(false)

@@ -6,7 +6,7 @@ describe Projects::ImportsController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'POST #create' do
@@ -15,7 +15,7 @@ describe Projects::ImportsController do
         allow_any_instance_of(EE::Project).to receive(:add_import_job)
 
         new_user = create(:user)
-        project.add_master(new_user)
+        project.add_maintainer(new_user)
 
         post :create, namespace_id: project.namespace.to_param,
                       project_id: project,

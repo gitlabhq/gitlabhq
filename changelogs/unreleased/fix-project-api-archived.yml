@@ -1,0 +1,5 @@
+---
+title: Fix archived parameter for projects API
+merge_request: 20566
+author: Peter Marko
+type: fixed

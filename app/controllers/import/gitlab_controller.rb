@@ -1,4 +1,7 @@
 class Import::GitlabController < Import::BaseController
+  MAX_PROJECT_PAGES = 15
+  PER_PAGE_PROJECTS = 100
+
   before_action :verify_gitlab_import_enabled
   before_action :gitlab_auth, except: :callback
 
@@ -10,7 +13,7 @@ class Import::GitlabController < Import::BaseController
   end
 
   def status
-    @repos = client.projects
+    @repos = client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
 
     @already_added_projects = find_already_added_projects('gitlab')
     already_added_projects_names = @already_added_projects.pluck(:import_source)

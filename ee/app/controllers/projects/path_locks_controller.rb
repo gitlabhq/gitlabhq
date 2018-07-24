@@ -25,7 +25,7 @@ class Projects::PathLocksController < Projects::ApplicationController
 
     head :ok
   rescue PathLocks::UnlockService::AccessDenied, PathLocks::LockService::AccessDenied
-    return access_denied!
+    access_denied!
   end
 
   def destroy
@@ -39,7 +39,7 @@ class Projects::PathLocksController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        redirect_to project_locks_path(@project), status: 302
+        redirect_to project_locks_path(@project), status: :found
       end
       format.js
     end

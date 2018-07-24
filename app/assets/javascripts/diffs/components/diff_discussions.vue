@@ -15,9 +15,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="discussions.length"
-  >
+  <div>
     <div
       v-for="discussion in discussions"
       :key="discussion.id"
@@ -32,6 +30,7 @@ export default {
           :render-header="false"
           :render-diff-file="false"
           :always-expanded="true"
+          :discussions-by-diff-order="true"
         />
       </ul>
     </div>

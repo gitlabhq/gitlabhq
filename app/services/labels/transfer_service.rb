@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Labels::TransferService class
 #
 # User for recreate the missing group labels at project level

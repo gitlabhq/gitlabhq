@@ -146,5 +146,11 @@ module Gitlab
         logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
       end
     end
+
+    def self.print_by_total_time(result, options = {})
+      default_options = { sort_method: :total_time }
+
+      Gitlab::Profiler::TotalTimeFlatPrinter.new(result).print(STDOUT, default_options.merge(options))
+    end
   end
 end

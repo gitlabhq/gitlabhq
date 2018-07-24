@@ -31,7 +31,13 @@ module Ci
     has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+
+    accepts_nested_attributes_for :runner_session
+
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
+    delegate :url, to: :runner_session, prefix: true, allow_nil: true
+    delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
 
     ##
@@ -177,6 +183,10 @@ module Ci
 
       after_transition pending: :running do |build|
         build.ensure_metadata.update_timeout_state
+      end
+
+      after_transition running: any do |build|
+        Ci::BuildRunnerSession.where(build: build).delete_all
       end
     end
 
@@ -365,7 +375,7 @@ module Ci
 
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
-      update_attributes(coverage: coverage) if coverage.present?
+      update(coverage: coverage) if coverage.present?
     end
 
     def parse_trace_sections!
@@ -380,6 +390,10 @@ module Ci
       trace.exist?
     end
 
+    def has_old_trace?
+      old_trace.present?
+    end
+
     def trace=(data)
       raise NotImplementedError
     end
@@ -389,6 +403,8 @@ module Ci
     end
 
     def erase_old_trace!
+      return unless has_old_trace?
+
       update_column(:trace, nil)
     end
 
@@ -425,9 +441,9 @@ module Ci
     end
 
     def artifacts_metadata_entry(path, **options)
-      artifacts_metadata.use_file do |metadata_path|
+      artifacts_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
-          metadata_path,
+          metadata_stream,
           path,
           **options)
 
@@ -588,6 +604,10 @@ module Ci
       super(options).merge(when: read_attribute(:when))
     end
 
+    def has_terminal?
+      running? && runner_session_url.present?
+    end
+
     private
 
     def update_artifacts_size
@@ -637,6 +657,7 @@ module Ci
         variables.append(key: 'CI_JOB_NAME', value: name)
         variables.append(key: 'CI_JOB_STAGE', value: stage)
         variables.append(key: 'CI_COMMIT_SHA', value: sha)
+        variables.append(key: 'CI_COMMIT_BEFORE_SHA', value: before_sha)
         variables.append(key: 'CI_COMMIT_REF_NAME', value: ref)
         variables.append(key: 'CI_COMMIT_REF_SLUG', value: ref_slug)
         variables.append(key: "CI_COMMIT_TAG", value: ref) if tag?

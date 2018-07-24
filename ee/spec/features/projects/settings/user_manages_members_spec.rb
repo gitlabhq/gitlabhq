@@ -11,7 +11,7 @@ describe "User manages members" do
 
   shared_examples "when group membership is unlocked" do
     before do
-      group.update_attributes(membership_lock: false)
+      group.update(membership_lock: false)
 
       visit(project_project_members_path(project))
     end
@@ -21,7 +21,7 @@ describe "User manages members" do
 
   shared_examples "when group membership is locked" do
     before do
-      group.update_attributes(membership_lock: true)
+      group.update(membership_lock: true)
 
       visit(project_project_members_path(project))
     end
@@ -29,9 +29,9 @@ describe "User manages members" do
     it { expect(page).to have_no_button("Add members").and have_no_link("Import members") }
   end
 
-  context "as project master" do
+  context "as project maintainer" do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it_behaves_like "when group membership is unlocked"

@@ -6,7 +6,7 @@ describe Projects::VariablesController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET #show' do

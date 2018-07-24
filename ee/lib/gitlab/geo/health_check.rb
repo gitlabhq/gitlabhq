@@ -25,7 +25,7 @@ module Gitlab
           end
         end
 
-        return ''
+        ''
       rescue => e
         e.message
       end
@@ -68,9 +68,7 @@ module Gitlab
       end
 
       def self.database_secondary?
-        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
-          .first
-          .fetch('pg_is_in_recovery') == 't'
+        Gitlab::Database.db_read_only?
       end
 
       def self.db_replication_lag_seconds

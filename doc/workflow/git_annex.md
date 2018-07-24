@@ -179,7 +179,7 @@ git annex sync --content  # sync Git branches and download all the large files
 
 By using `git-annex` without GitLab, anyone that can access the server can also
 access the files of all projects, but GitLab Annex ensures that you can only
-access files of projects you have access to (developer, master, or owner role).
+access files of projects you have access to (developer, maintainer, or owner role).
 
 ## How it works
 

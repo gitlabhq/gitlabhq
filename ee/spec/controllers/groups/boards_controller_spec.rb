@@ -6,7 +6,7 @@ describe Groups::BoardsController do
 
   before do
     allow(Ability).to receive(:allowed?).and_call_original
-    group.add_master(user)
+    group.add_maintainer(user)
     sign_in(user)
     stub_licensed_features(multiple_group_issue_boards: true)
   end

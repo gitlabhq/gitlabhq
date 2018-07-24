@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Update Epic', :js do
+describe 'Update Epic', :js do
   include DropzoneHelper
 
   let(:user) { create(:user) }

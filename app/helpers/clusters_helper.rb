@@ -4,6 +4,7 @@ module ClustersHelper
   end
 
   def render_gcp_signup_offer
+    return if Gitlab::CurrentSettings.current_application_settings.hide_third_party_offers?
     return unless show_gcp_signup_offer?
 
     content_tag :section, class: 'no-animate expanded' do

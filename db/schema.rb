@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180702114215) do
+ActiveRecord::Schema.define(version: 20180718100455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -207,6 +207,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
     t.string "email_additional_text"
     t.boolean "enforce_terms", default: false
     t.boolean "pseudonymizer_enabled", default: false, null: false
+    t.boolean "hide_third_party_offers", default: false, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -446,6 +447,15 @@ ActiveRecord::Schema.define(version: 20180702114215) do
 
   add_index "ci_builds_metadata", ["build_id"], name: "index_ci_builds_metadata_on_build_id", unique: true, using: :btree
   add_index "ci_builds_metadata", ["project_id"], name: "index_ci_builds_metadata_on_project_id", using: :btree
+
+  create_table "ci_builds_runner_session", id: :bigserial, force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.string "url", null: false
+    t.string "certificate"
+    t.string "authorization"
+  end
+
+  add_index "ci_builds_runner_session", ["build_id"], name: "index_ci_builds_runner_session_on_build_id", unique: true, using: :btree
 
   create_table "ci_group_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -1303,6 +1313,16 @@ ActiveRecord::Schema.define(version: 20180702114215) do
   add_index "identities", ["saml_provider_id"], name: "index_identities_on_saml_provider_id", where: "(saml_provider_id IS NOT NULL)", using: :btree
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
+  create_table "import_export_uploads", force: :cascade do |t|
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "project_id"
+    t.text "import_file"
+    t.text "export_file"
+  end
+
+  add_index "import_export_uploads", ["project_id"], name: "index_import_export_uploads_on_project_id", using: :btree
+  add_index "import_export_uploads", ["updated_at"], name: "index_import_export_uploads_on_updated_at", using: :btree
+
   create_table "index_statuses", force: :cascade do |t|
     t.integer "project_id", null: false
     t.datetime "indexed_at"
@@ -1733,6 +1753,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
     t.integer "plan_id"
     t.integer "project_creation_level"
     t.string "runners_token"
+    t.datetime_with_timezone "trial_ends_on"
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
@@ -2039,6 +2060,10 @@ ActiveRecord::Schema.define(version: 20180702114215) do
     t.binary "wiki_verification_checksum"
     t.string "last_repository_verification_failure"
     t.string "last_wiki_verification_failure"
+    t.datetime_with_timezone "repository_retry_at"
+    t.datetime_with_timezone "wiki_retry_at"
+    t.integer "repository_retry_count"
+    t.integer "wiki_retry_count"
   end
 
   add_index "project_repository_states", ["last_repository_verification_failure"], name: "idx_repository_states_on_repository_failure_partial", where: "(last_repository_verification_failure IS NOT NULL)", using: :btree
@@ -2149,6 +2174,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
   add_index "projects", ["path"], name: "index_projects_on_path", using: :btree
   add_index "projects", ["path"], name: "index_projects_on_path_trigram", using: :gin, opclasses: {"path"=>"gin_trgm_ops"}
   add_index "projects", ["pending_delete"], name: "index_projects_on_pending_delete", using: :btree
+  add_index "projects", ["repository_storage", "created_at"], name: "idx_project_repository_check_partial", where: "(last_repository_check_at IS NULL)", using: :btree
   add_index "projects", ["repository_storage"], name: "index_projects_on_repository_storage", using: :btree
   add_index "projects", ["runners_token"], name: "index_projects_on_runners_token", using: :btree
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
@@ -2796,6 +2822,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
+  add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
   add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
@@ -2880,6 +2907,7 @@ ActiveRecord::Schema.define(version: 20180702114215) do
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "identities", "saml_providers", name: "fk_aade90f0fc", on_delete: :cascade
+  add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
   add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade

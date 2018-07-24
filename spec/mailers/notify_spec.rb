@@ -552,7 +552,7 @@ describe Notify do
     describe 'project access requested' do
       let(:project) do
         create(:project, :public, :access_requestable) do |project|
-          project.add_master(project.owner)
+          project.add_maintainer(project.owner)
         end
       end
 
@@ -627,8 +627,8 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
-      let(:project_member) { invite_to_project(project, inviter: master) }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
+      let(:project_member) { invite_to_project(project, inviter: maintainer) }
 
       subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
 
@@ -647,9 +647,9 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: master)
+        invitee = invite_to_project(project, inviter: maintainer)
         invitee.accept_invite!(invited_user)
         invitee
       end
@@ -670,14 +670,14 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:master) { create(:user).tap { |u| project.add_master(u) } }
+      let(:maintainer) { create(:user).tap { |u| project.add_maintainer(u) } }
       let(:project_member) do
-        invitee = invite_to_project(project, inviter: master)
+        invitee = invite_to_project(project, inviter: maintainer)
         invitee.decline_invite!
         invitee
       end
 
-      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, master.id) }
+      subject { described_class.member_invite_declined_email('project', project.id, project_member.invite_email, maintainer.id) }
 
       it_behaves_like 'an email sent from GitLab'
       it_behaves_like 'it should not have Gmail Actions links'
@@ -1359,65 +1359,6 @@ describe Notify do
     end
   end
 
-  describe 'mirror was hard failed' do
-    let(:project) { create(:project, :mirror, :import_hard_failed) }
-
-    subject { described_class.mirror_was_hard_failed_email(project.id, user.id) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
-
-    it 'has the correct subject and body' do
-      is_expected.to have_subject("#{project.name} | Repository mirroring paused")
-      is_expected.to have_body_text(project.full_path)
-      is_expected.to have_body_text(project_settings_repository_url(project))
-    end
-  end
-
-  describe 'mirror user changed' do
-    let(:mirror_user) { create(:user) }
-    let(:project) { create(:project, :mirror, mirror_user_id: mirror_user.id) }
-    let(:new_mirror_user) { project.team.owners.first }
-
-    subject { described_class.project_mirror_user_changed_email(new_mirror_user.id, mirror_user.name, project.id) }
-
-    it_behaves_like 'an email sent from GitLab'
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like "a user cannot unsubscribe through footer link"
-
-    it 'has the correct subject and body' do
-      is_expected.to have_subject("#{project.name} | Mirror user changed")
-      is_expected.to have_body_text(project.full_path)
-    end
-  end
-
-  describe 'admin notification' do
-    let(:example_site_path) { root_path }
-    let(:user) { create(:user) }
-
-    subject { @email = described_class.send_admin_notification(user.id, 'Admin announcement', 'Text') }
-
-    it 'is sent as the author' do
-      sender = subject.header[:from].addrs[0]
-      expect(sender.display_name).to eq("GitLab")
-      expect(sender.address).to eq(gitlab_sender)
-    end
-
-    it 'is sent to recipient' do
-      is_expected.to deliver_to user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject 'Admin announcement'
-    end
-
-    it 'includes unsubscribe link' do
-      unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
-      is_expected.to have_body_text(unsubscribe_link)
-    end
-  end
-
   describe 'HTML emails setting' do
     let(:multipart_mail) { described_class.project_was_moved_email(project.id, user.id, "gitlab/gitlab") }
 
@@ -1425,7 +1366,8 @@ describe Notify do
       it 'only sends the text template' do
         stub_application_setting(html_emails_enabled: false)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).not_to have_part_with('text/html')
@@ -1436,7 +1378,8 @@ describe Notify do
       it 'sends a multipart message' do
         stub_application_setting(html_emails_enabled: true)
 
-        EmailTemplateInterceptor.delivering_email(multipart_mail)
+        Gitlab::Email::Hook::EmailTemplateInterceptor
+          .delivering_email(multipart_mail)
 
         expect(multipart_mail).to have_part_with('text/plain')
         expect(multipart_mail).to have_part_with('text/html')

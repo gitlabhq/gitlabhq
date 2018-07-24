@@ -4,22 +4,24 @@ import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
 import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
+const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
+
 describe('noteable_discussion component', () => {
+  const Component = Vue.extend(noteableDiscussion);
   let store;
   let vm;
 
-  beforeEach(() => {
-    const Component = Vue.extend(noteableDiscussion);
+  preloadFixtures(discussionWithTwoUnresolvedNotes);
 
+  beforeEach(() => {
+    window.mrTabs = {};
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({
       store,
-      propsData: {
-        discussion: discussionMock,
-      },
+      propsData: { discussion: discussionMock },
     }).$mount();
   });
 
@@ -45,10 +47,15 @@ describe('noteable_discussion component', () => {
 
     it('should toggle reply form', done => {
       vm.$el.querySelector('.js-vue-discussion-reply').click();
+
       Vue.nextTick(() => {
-        expect(vm.$refs.noteForm).not.toBeNull();
         expect(vm.isReplying).toEqual(true);
-        done();
+
+        // There is a watcher for `isReplying` which will init autosave in the next tick
+        Vue.nextTick(() => {
+          expect(vm.$refs.noteForm).not.toBeNull();
+          done();
+        });
       });
     });
 
@@ -84,7 +91,9 @@ describe('noteable_discussion component', () => {
       });
 
       it('is true if there are two unresolved discussions', done => {
-        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([{}, {}]);
+        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+        discussion.notes[0].resolved = false;
+        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
 
         Vue.nextTick()
           .then(() => {
@@ -98,33 +107,29 @@ describe('noteable_discussion component', () => {
 
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
-      it('expands next unresolved discussion', () => {
-        spyOn(vm, 'expandDiscussion').and.stub();
-        const discussions = [
-          discussionMock,
-          {
-            ...discussionMock,
-            id: discussionMock.id + 1,
-            notes: [{ ...discussionMock.notes[0], resolved: true }],
-          },
-          {
-            ...discussionMock,
-            id: discussionMock.id + 2,
-            notes: [{ ...discussionMock.notes[0], resolved: false }],
-          },
-        ];
-        const nextDiscussionId = discussionMock.id + 2;
-        store.replaceState({
-          ...store.state,
-          discussions,
-        });
-        setFixtures(`
-          <div data-discussion-id="${nextDiscussionId}"></div>
-        `);
+      it('expands next unresolved discussion', done => {
+        const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+        discussion2.resolved = false;
+        discussion2.id = 'next'; // prepare this for being identified as next one (to be jumped to)
+        vm.$store.dispatch('setInitialNotes', [discussionMock, discussion2]);
+        window.mrTabs.currentAction = 'show';
 
-        vm.jumpToNextDiscussion();
+        Vue.nextTick()
+          .then(() => {
+            spyOn(vm, 'expandDiscussion').and.stub();
 
-        expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+            const nextDiscussionId = discussion2.id;
+
+            setFixtures(`
+              <div class="discussion" data-discussion-id="${nextDiscussionId}"></div>
+            `);
+
+            vm.jumpToNextDiscussion();
+
+            expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
   });

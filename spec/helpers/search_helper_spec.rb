@@ -55,6 +55,20 @@ describe SearchHelper do
         expect(search_autocomplete_opts(project.name).size).to eq(1)
       end
 
+      it "includes the required project attrs" do
+        project = create(:project, namespace: create(:namespace, owner: user))
+        result = search_autocomplete_opts(project.name).first
+
+        expect(result.keys).to match_array(%i[category id value label url avatar_url])
+      end
+
+      it "includes the required group attrs" do
+        create(:group).add_owner(user)
+        result = search_autocomplete_opts("gro").first
+
+        expect(result.keys).to match_array(%i[category id label url avatar_url])
+      end
+
       it "does not include the public group" do
         group = create(:group)
         expect(search_autocomplete_opts(group.name).size).to eq(0)

@@ -91,6 +91,8 @@ for each GitLab application server in your environment.
     certificates are not present, Nginx will fail to start. See
     [Nginx documentation](http://docs.gitlab.com/omnibus/settings/nginx.html#enable-https)
     for more information.
+    
+    > **Note:** It is best to set the `uid` and `gid`s prior to the initial reconfigure of GitLab. Omnibus will not recursively `chown` directories if set after the initial reconfigure.
 
 ## First GitLab application server
 
@@ -125,7 +127,7 @@ need some extra configuration.
    handle migrations.
 
 1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on
-   the primary application server to `/ets/ssh` on all secondary servers. This
+   the primary application server to `/etc/ssh` on all secondary servers. This
    prevents false man-in-the-middle-attack alerts when accessing servers in your
    High Availability cluster behind a load balancer.
 

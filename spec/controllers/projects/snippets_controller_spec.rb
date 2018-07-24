@@ -6,8 +6,8 @@ describe Projects::SnippetsController do
   let(:user2)   { create(:user) }
 
   before do
-    project.add_master(user)
-    project.add_master(user2)
+    project.add_maintainer(user)
+    project.add_maintainer(user2)
   end
 
   describe 'GET #index' do
@@ -291,7 +291,7 @@ describe Projects::SnippetsController do
     def mark_as_spam
       admin = create(:admin)
       create(:user_agent_detail, subject: snippet)
-      project.add_master(admin)
+      project.add_maintainer(admin)
       sign_in(admin)
 
       post :mark_as_spam,

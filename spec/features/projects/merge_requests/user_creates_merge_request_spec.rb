@@ -16,8 +16,8 @@ describe "User creates a merge request", :js do
   let(:user2) { create(:user) }
 
   before do
-    project.add_master(user)
-    project.add_master(approver)
+    project.add_maintainer(user)
+    project.add_maintainer(approver)
     sign_in(user)
 
     project.approvers.create(user_id: approver.id)

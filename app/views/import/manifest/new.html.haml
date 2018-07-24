@@ -1,0 +1,12 @@
+- page_title "Manifest file import"
+- header_title "Projects", root_path
+
+%h3.page-title
+  = _('Manifest file import')
+
+- if @errors.present?
+  .alert.alert-danger
+    - @errors.each do |error|
+      = error
+
+= render 'form'

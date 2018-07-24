@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestMetricsService
   delegate :update!, to: :@merge_request_metrics
 

@@ -1,0 +1,9 @@
+- pipeline = local_assigns.fetch(:pipeline)
+- project = local_assigns.fetch(:project)
+
+- return unless pipeline.expose_security_dashboard?
+
+%li.js-security-tab-link
+  = link_to security_project_pipeline_path(project, pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
+    = _("Security report")
+    %span.badge.badge-pill.js-sast-counter.hidden

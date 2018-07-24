@@ -71,7 +71,7 @@ describe Project do
 
           Timecop.freeze do
             expect do
-              project.update_attributes(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
+              project.update(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
             end.to change { ProjectImportState.count }.by(1)
 
             expect(project.import_state.next_execution_timestamp).to eq(Time.now)
@@ -85,7 +85,7 @@ describe Project do
 
           Timecop.freeze do
             expect do
-              project.update_attributes(mirror: true, mirror_user_id: project.creator.id)
+              project.update(mirror: true, mirror_user_id: project.creator.id)
             end.not_to change { ProjectImportState.count }
 
             expect(project.import_state.next_execution_timestamp).to eq(Time.now)
@@ -123,7 +123,7 @@ describe Project do
       end
 
       it 'returns empty if next_execution_timestamp is in the future' do
-        import_state.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+        import_state.update(next_execution_timestamp: timestamp + 2.minutes)
 
         expect(described_class.mirrors_to_sync(timestamp)).to be_empty
       end
@@ -137,7 +137,7 @@ describe Project do
       end
 
       it 'returns empty if next_execution_timestamp is in the future' do
-        project.import_state.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+        project.import_state.update(next_execution_timestamp: timestamp + 2.minutes)
 
         expect(described_class.mirrors_to_sync(timestamp)).to be_empty
       end
@@ -167,7 +167,7 @@ describe Project do
   describe 'hard failing a mirror' do
     it 'sends a notification' do
       project = create(:project, :mirror, :import_started)
-      project.import_state.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
+      project.import_state.update(retry_count: Gitlab::Mirror::MAX_RETRY)
 
       expect_any_instance_of(EE::NotificationService).to receive(:mirror_was_hard_failed).with(project)
 
@@ -407,7 +407,7 @@ describe Project do
 
       expect(RepositoryRemoveRemoteWorker).to receive(:perform_async).with(project.id, ::Repository::MIRROR_REMOTE).and_call_original
 
-      project.update_attributes(import_url: "http://test.com")
+      project.update(import_url: "http://test.com")
     end
   end
 
@@ -416,7 +416,7 @@ describe Project do
       project = create(:project, :mirror, :import_scheduled)
       import_state = project.import_state
 
-      import_state.update_attributes(last_update_started_at: import_state.last_update_scheduled_at + 5.minutes)
+      import_state.update(last_update_started_at: import_state.last_update_scheduled_at + 5.minutes)
 
       expect(project.mirror_waiting_duration).to eq(300)
     end
@@ -426,7 +426,7 @@ describe Project do
     it 'returns in seconds the time spent updating' do
       project = create(:project, :mirror, :import_started)
 
-      project.update_attributes(mirror_last_update_at: project.import_state.last_update_started_at + 5.minutes)
+      project.update(mirror_last_update_at: project.import_state.last_update_started_at + 5.minutes)
 
       expect(project.mirror_update_duration).to eq(300)
     end
@@ -734,7 +734,7 @@ describe Project do
 
     context 'when repository_size_limit is configured' do
       before do
-        project.update_attributes(repository_size_limit: 1024)
+        project.update(repository_size_limit: 1024)
       end
 
       context 'with an EES license' do
@@ -1418,6 +1418,103 @@ describe Project do
       expect(project.path_locks).to receive(:any?).once.and_call_original
 
       2.times { expect(project.any_path_locks?).to be_truthy }
+    end
+  end
+
+  describe '#security_reports_feature_available?' do
+    security_features = %i[sast dependency_scanning sast_container dast]
+
+    let(:project) { create(:project) }
+
+    security_features.each do |feature|
+      it "returns true when at least #{feature} is enabled" do
+        allow(project).to receive(:feature_available?) { false }
+        allow(project).to receive(:feature_available?).with(feature) { true }
+
+        expect(project.security_reports_feature_available?).to eq(true)
+      end
+    end
+
+    it "returns false when all security features are disabled" do
+      security_features.each do |feature|
+        allow(project).to receive(:feature_available?).with(feature) { false }
+      end
+
+      expect(project.security_reports_feature_available?).to eq(false)
+    end
+  end
+
+  describe '#latest_pipeline_with_security_reports' do
+    let(:project) { create(:project) }
+    let(:pipeline_1) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_2) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_3) { create(:ci_pipeline_without_jobs, project: project) }
+
+    before do
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'sast',
+        pipeline: pipeline_1,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::SAST_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'sast',
+        pipeline: pipeline_2,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::SAST_FILE]
+          }
+        }
+      )
+    end
+
+    it "returns the latest pipeline with security reports" do
+      expect(project.latest_pipeline_with_security_reports).to eq(pipeline_2)
+    end
+  end
+
+  describe '#after_import' do
+    let(:project) { create(:project) }
+    let(:repository_updated_service) { instance_double('::Geo::RepositoryUpdatedService') }
+    let(:wiki_updated_service) { instance_double('::Geo::RepositoryUpdatedService') }
+
+    before do
+      allow(::Geo::RepositoryUpdatedService)
+        .to receive(:new)
+        .with(project, source: Geo::RepositoryUpdatedEvent::REPOSITORY)
+        .and_return(repository_updated_service)
+
+      allow(::Geo::RepositoryUpdatedService)
+        .to receive(:new)
+        .with(project, source: Geo::RepositoryUpdatedEvent::WIKI)
+        .and_return(wiki_updated_service)
+    end
+
+    it 'calls Geo::RepositoryUpdatedService when running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
+
+      expect(repository_updated_service).to receive(:execute).once
+      expect(wiki_updated_service).to receive(:execute).once
+
+      project.after_import
+    end
+
+    it 'does not call Geo::RepositoryUpdatedService when not running on a Geo primary node' do
+      allow(Gitlab::Geo).to receive(:primary?).and_return(false)
+
+      expect(repository_updated_service).not_to receive(:execute)
+      expect(wiki_updated_service).not_to receive(:execute)
+
+      project.after_import
     end
   end
 end

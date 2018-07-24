@@ -32,12 +32,12 @@ describe('DiscussionCounter component', () => {
           {
             ...discussionMock,
             id: discussionMock.id,
-            notes: [{ ...discussionMock.notes[0], resolved: true }],
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
           },
           {
             ...discussionMock,
             id: discussionMock.id + 1,
-            notes: [{ ...discussionMock.notes[0], resolved: false }],
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: false }],
           },
         ];
         const firstDiscussionId = discussionMock.id + 1;
@@ -46,7 +46,7 @@ describe('DiscussionCounter component', () => {
           discussions,
         });
         setFixtures(`
-          <div data-discussion-id="${firstDiscussionId}"></div>
+          <div class="discussion" data-discussion-id="${firstDiscussionId}"></div>
         `);
 
         vm.jumpToFirstUnresolvedDiscussion();

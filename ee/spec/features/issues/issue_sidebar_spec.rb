@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue Sidebar' do
+describe 'Issue Sidebar' do
   include MobileHelpers
 
   let(:group) { create(:group, :nested) }
@@ -15,7 +15,7 @@ feature 'Issue Sidebar' do
 
   context 'updating weight', :js do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       visit_issue(project, issue)
     end
 

@@ -2,8 +2,8 @@
 import { mapActions, mapState } from 'vuex';
 import { s__, sprintf, n__ } from '~/locale';
 import createFlash from '~/flash';
+import ReportSection from '~/vue_shared/components/reports/report_section.vue';
 import { SAST, DAST, SAST_CONTAINER } from './store/constants';
-import ReportSection from './components/report_section.vue';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
 import reportsMixin from './mixins/reports_mixin';
@@ -15,6 +15,11 @@ export default {
   },
   mixins: [mixin, reportsMixin],
   props: {
+    alwaysOpen: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     headBlobPath: {
       type: String,
       required: true,
@@ -210,6 +215,7 @@ export default {
   <div>
     <report-section
       v-if="sastHeadPath"
+      :always-open="alwaysOpen"
       :type="$options.sast"
       :status="checkReportStatus(sast.isLoading, sast.hasError)"
       :loading-text="translateText('SAST').loading"
@@ -223,6 +229,7 @@ export default {
 
     <report-section
       v-if="dependencyScanningHeadPath"
+      :always-open="alwaysOpen"
       :type="$options.sast"
       :status="checkReportStatus(dependencyScanning.isLoading, dependencyScanning.hasError)"
       :loading-text="translateText('Dependency scanning').loading"
@@ -236,6 +243,7 @@ export default {
 
     <report-section
       v-if="sastContainerHeadPath"
+      :always-open="alwaysOpen"
       :type="$options.sastContainer"
       :status="checkReportStatus(sastContainer.isLoading, sastContainer.hasError)"
       :loading-text="translateText('Container scanning').loading"
@@ -249,6 +257,7 @@ export default {
 
     <report-section
       v-if="dastHeadPath"
+      :always-open="alwaysOpen"
       :type="$options.dast"
       :status="checkReportStatus(dast.isLoading, dast.hasError)"
       :loading-text="translateText('DAST').loading"

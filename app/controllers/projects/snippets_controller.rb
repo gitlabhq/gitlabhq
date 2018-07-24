@@ -82,7 +82,7 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project), status: 302
+    redirect_to project_snippets_path(@project), status: :found
   end
 
   protected

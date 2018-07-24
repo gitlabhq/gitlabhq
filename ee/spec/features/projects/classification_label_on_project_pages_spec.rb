@@ -8,7 +8,7 @@ describe 'Classification label on project pages' do
 
   before do
     stub_ee_application_setting(external_authorization_service_enabled: true)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

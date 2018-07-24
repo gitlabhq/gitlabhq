@@ -44,7 +44,7 @@ module EE
       end
 
       def render_bad_geo_auth(message)
-        render plain: "Geo JWT authentication failed: #{message}", status: 401
+        render plain: "Geo JWT authentication failed: #{message}", status: :unauthorized
       end
     end
   end

@@ -112,3 +112,31 @@
     border-left: none;
   }
 }
+
+.security-dashboard {
+  .card-header {
+    padding: $gl-padding;
+    background-color: $gray-light;
+
+    .user-avatar-link {
+      color: $gl-text-color;
+      font-weight: $gl-font-weight-bold;
+
+      .avatar {
+        margin-right: $gl-padding-4;
+      }
+    }
+
+    svg {
+      vertical-align: sub;
+    }
+
+    .avatar {
+      float: none;
+    }
+  }
+
+  .split-report-section:last-of-type {
+    border-bottom: none;
+  }
+}

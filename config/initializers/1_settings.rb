@@ -113,7 +113,7 @@ Settings['issues_tracker'] ||= {}
 # GitLab
 #
 Settings['gitlab'] ||= Settingslogic.new({})
-Settings.gitlab['default_project_creation'] ||= ::EE::Gitlab::Access::DEVELOPER_MASTER_PROJECT_ACCESS
+Settings.gitlab['default_project_creation'] ||= ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
@@ -142,11 +142,12 @@ Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *, *)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?: *,? +and +| *,? *)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
+Settings.gitlab['unauthenticated_session_expire_delay'] ||= 1.hour.to_i
 Settings.gitlab['mirror_max_delay'] ||= 300
 Settings.gitlab['mirror_max_capacity'] ||= 30
 Settings.gitlab['mirror_capacity_threshold'] ||= 15
@@ -373,10 +374,6 @@ Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWo
 Settings.cron_jobs['pseudonymizer_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['pseudonymizer_worker']['cron'] ||= '0 23 * * *'
 Settings.cron_jobs['pseudonymizer_worker']['job_class'] ||= 'PseudonymizerWorker'
-
-Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
-Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
 
 Settings.cron_jobs['clear_shared_runners_minutes_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['clear_shared_runners_minutes_worker']['cron'] ||= '0 0 1 * *'

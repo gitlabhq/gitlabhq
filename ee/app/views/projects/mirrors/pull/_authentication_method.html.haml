@@ -4,7 +4,7 @@
 - ssh_public_key_present = import_data.ssh_public_key.present?
 
 .form-group
-  = f.label :auth_method, _('Authentication method'), class: 'label-light'
+  = f.label :auth_method, _('Authentication method'), class: 'label-bold'
   = f.select :auth_method,
       options_for_select([[_('Password'), 'password'], [_('SSH public key'), 'ssh_public_key']], import_data.auth_method),
       {}, { class: "form-control js-pull-mirror-auth-type" }
@@ -13,7 +13,7 @@
   .collapse.js-well-changing-auth
     .changing-auth-method= icon('spinner spin lg')
   .well-password-auth.collapse.js-well-password-auth
-    = f.label :password, _("Password"), class: "label-light"
+    = f.label :password, _("Password"), class: "label-bold"
     = f.password_field :password, value: import_data.password, class: 'form-control'
   .well-ssh-auth.collapse.js-well-ssh-auth
     %p.js-ssh-public-key-present{ class: ('collapse' unless ssh_public_key_present) }

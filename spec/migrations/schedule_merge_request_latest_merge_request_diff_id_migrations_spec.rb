@@ -53,7 +53,7 @@ describe ScheduleMergeRequestLatestMergeRequestDiffIdMigrations, :migration, :si
   end
 
   it 'schedules background migrations' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       expect(merge_requests_table.where(latest_merge_request_diff_id: nil).count).to eq 3
 
       migrate!

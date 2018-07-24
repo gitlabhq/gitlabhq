@@ -19,8 +19,12 @@ export default {
     DiffTableCell,
   },
   props: {
-    diffFile: {
-      type: Object,
+    fileHash: {
+      type: String,
+      required: true,
+    },
+    contextLinesPath: {
+      type: String,
       required: true,
     },
     line: {
@@ -32,6 +36,16 @@ export default {
       required: false,
       default: false,
     },
+    leftDiscussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    rightDiscussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -40,7 +54,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['isParallelView']),
+    ...mapGetters('diffs', ['isParallelView']),
     isContextLine() {
       return this.line.left.type === CONTEXT_LINE_TYPE;
     },
@@ -103,7 +117,8 @@ export default {
     @mouseout="handleMouseMove"
   >
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="oldLineType"
       :line-position="linePositionLeft"
@@ -111,21 +126,20 @@ export default {
       :is-hover="isLeftHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
+      :discussions="leftDiscussions"
       class="diff-line-num old_line"
     />
-    <diff-table-cell
+    <td
       :id="line.left.lineCode"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-      :line-position="linePositionLeft"
-      :line-type="parallelViewLeftLineType"
-      :diff-view-type="parallelDiffViewType"
+      :class="parallelViewLeftLineType"
       class="line_content parallel left-side"
       @mousedown.native="handleParallelLineMouseDown"
-    />
+      v-html="line.left.richText"
+    >
+    </td>
     <diff-table-cell
-      :diff-file="diffFile"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line="line"
       :line-type="newLineType"
       :line-position="linePositionRight"
@@ -133,18 +147,16 @@ export default {
       :is-hover="isRightHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
+      :discussions="rightDiscussions"
       class="diff-line-num new_line"
     />
-    <diff-table-cell
+    <td
       :id="line.right.lineCode"
-      :diff-file="diffFile"
-      :line="line"
-      :is-content-line="true"
-      :line-position="linePositionRight"
-      :line-type="line.right.type"
-      :diff-view-type="parallelDiffViewType"
+      :class="line.right.type"
       class="line_content parallel right-side"
       @mousedown.native="handleParallelLineMouseDown"
-    />
+      v-html="line.right.richText"
+    >
+    </td>
   </tr>
 </template>

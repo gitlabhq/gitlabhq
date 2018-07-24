@@ -19,7 +19,7 @@ describe('system note component', () => {
           path: '/root',
         },
         note_html: '<p dir="auto">closed</p>',
-        system_note_icon_name: 'icon_status_closed',
+        system_note_icon_name: 'status_closed',
         created_at: '2017-08-02T10:51:58.559Z',
       },
     };

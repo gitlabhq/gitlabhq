@@ -306,6 +306,14 @@ describe API::MergeRequests do
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
     end
 
+    it 'exposes description and title html when render_html is true' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), render_html: true
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response).to include('title_html', 'description_html')
+    end
+
     context 'merge_request_metrics' do
       before do
         merge_request.metrics.update!(merged_by: user,
@@ -788,7 +796,7 @@ describe API::MergeRequests do
 
     it 'returns 405 if merge request was not approved' do
       project.add_developer(create(:user))
-      project.update_attributes(approvals_before_merge: 1)
+      project.update(approvals_before_merge: 1)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)
 
@@ -799,7 +807,7 @@ describe API::MergeRequests do
     it 'returns 200 if merge request was approved' do
       approver = create(:user)
       project.add_developer(approver)
-      project.update_attributes(approvals_before_merge: 1)
+      project.update(approvals_before_merge: 1)
       merge_request.approvals.create(user: approver)
 
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user)

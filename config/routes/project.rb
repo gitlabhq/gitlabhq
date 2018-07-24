@@ -238,14 +238,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :clusters, except: [:edit, :create] do
         collection do
-          scope :providers do
-            get '/user/new', to: 'clusters/user#new'
-            post '/user', to: 'clusters/user#create'
-
-            get '/gcp/new', to: 'clusters/gcp#new'
-            get '/gcp/login', to: 'clusters/gcp#login'
-            post '/gcp', to: 'clusters/gcp#create'
-          end
+          post :create_gcp
+          post :create_user
         end
 
         member do
@@ -271,6 +265,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
 
         collection do
+          get :metrics, action: :metrics_redirect
           get :folder, path: 'folders/*id', constraints: { format: /(html|json)/ }
         end
 
@@ -320,6 +315,8 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
             post :erase
             get :trace, defaults: { format: 'json' }
             get :raw
+            get :terminal
+            get '/terminal.ws/authorize', to: 'jobs#terminal_websocket_authorize', constraints: { format: nil }
           end
 
           resource :artifacts, only: [] do
@@ -364,6 +361,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           end
         end
       end
+
+      # EE-specific start
+      namespace :security do
+        resource :dashboard, only: [:show], controller: :dashboard
+      end
+      # EE-specific end
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
@@ -450,6 +453,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       resources :uploads, only: [:create] do
         collection do
           get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }
+          post :authorize
         end
       end
 
@@ -533,17 +537,36 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       end
     end
   end
+end
 
-  # EE-specific
-  scope path: '/-/jira', as: :jira do
-    scope path: '*namespace_id', namespace_id: Gitlab::PathRegex.full_namespace_route_regex do
-      resources :projects, path: '/', constraints: { id: Gitlab::PathRegex.project_route_regex }, only: :show
+# EE-specific
+scope path: '/-/jira', as: :jira do
+  scope path: '*namespace_id/:project_id',
+        namespace_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX,
+        project_id: Gitlab::Jira::Dvcs::ENCODED_ROUTE_REGEX do
+    get '/', to: redirect { |params, req|
+      ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+    }
 
-      scope path: ':project_id', constraints: { project_id: Gitlab::PathRegex.project_route_regex }, module: :projects do
-        resources :commit, only: :show, constraints: { id: /\h{7,40}/ }
+    get 'commit/:id', constraints: { id: /\h{7,40}/ }, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
 
-        get 'tree/*id', to: 'tree#show', as: nil
-      end
-    end
+      "/#{project_full_path}/commit/#{params[:id]}"
+    }
+
+    get 'tree/*id', as: nil, to: redirect { |params, req|
+      project_full_path = ::Gitlab::Jira::Dvcs.restore_full_path(
+        namespace: params[:namespace_id],
+        project: params[:project_id]
+      )
+
+      "/#{project_full_path}/tree/#{params[:id]}"
+    }
   end
 end

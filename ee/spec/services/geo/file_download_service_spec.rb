@@ -309,6 +309,12 @@ describe Geo::FileDownloadService do
       end
     end
 
+    context 'Import/Export' do
+      it_behaves_like "a service that downloads the file and registers the sync result", 'import_export' do
+        let(:file) { create(:upload, model: build(:import_export_upload)) }
+      end
+    end
+
     context 'bad object type' do
       it 'raises an error' do
         expect { described_class.new(:bad, 1).execute }.to raise_error(NameError)

@@ -11,13 +11,13 @@ describe 'Merge request > User selects branches for new MR', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
   context 'when approvals are zero for the target project' do
     before do
-      project.update_attributes(approvals_before_merge: 0)
+      project.update(approvals_before_merge: 0)
 
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
     end

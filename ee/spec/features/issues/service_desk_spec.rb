@@ -10,7 +10,7 @@ describe 'Service Desk Issue Tracker', :js do
     allow(Gitlab::IncomingEmail).to receive(:enabled?) { true }
     allow(Gitlab::IncomingEmail).to receive(:supports_wildcard?) { true }
 
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -33,7 +33,7 @@ describe 'Service Desk Issue Tracker', :js do
       describe 'service desk info content' do
         context 'when user has permissions to edit project settings' do
           before do
-            project_without_service_desk.add_master(user)
+            project_without_service_desk.add_maintainer(user)
             visit service_desk_project_issues_path(project_without_service_desk)
           end
 

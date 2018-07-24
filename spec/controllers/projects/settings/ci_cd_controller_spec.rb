@@ -6,7 +6,7 @@ describe Projects::Settings::CiCdController do
   let(:project) { project_auto_devops.project }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -27,7 +27,7 @@ describe Projects::Settings::CiCdController do
       let!(:shared_runner) { create(:ci_runner, :instance) }
 
       it 'sets assignable project runners only' do
-        group.add_master(user)
+        group.add_maintainer(user)
 
         get :show, namespace_id: project.namespace, project_id: project
 
@@ -40,7 +40,7 @@ describe Projects::Settings::CiCdController do
     before do
       sign_in(user)
 
-      project.add_master(user)
+      project.add_maintainer(user)
 
       allow(ResetProjectCacheService).to receive_message_chain(:new, :execute).and_return(true)
     end

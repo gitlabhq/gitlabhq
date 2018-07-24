@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PreviewMarkdownService < BaseService
   def execute
     text, commands = explain_quick_actions(params[:text])
@@ -6,7 +8,8 @@ class PreviewMarkdownService < BaseService
     success(
       text: text,
       users: users,
-      commands: commands.join(' ')
+      commands: commands.join(' '),
+      markdown_engine: markdown_engine
     )
   end
 
@@ -41,5 +44,9 @@ class PreviewMarkdownService < BaseService
 
   def commands_target_id
     params[:quick_actions_target_id]
+  end
+
+  def markdown_engine
+    CacheMarkdownField::MarkdownEngine.from_version(params[:markdown_version].to_i)
   end
 end

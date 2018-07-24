@@ -96,4 +96,79 @@ describe Ci::Pipeline do
       it { expect(pipeline.send(method.to_sym)).to be_truthy }
     end
   end
+
+  describe '#with_security_reports scope' do
+    let(:pipeline_1) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_2) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_3) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_4) { create(:ci_pipeline_without_jobs, project: project) }
+    let(:pipeline_5) { create(:ci_pipeline_without_jobs, project: project) }
+
+    before do
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'sast',
+        pipeline: pipeline_1,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::SAST_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'dependency_scanning',
+        pipeline: pipeline_2,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::DEPENDENCY_SCANNING_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'container_scanning',
+        pipeline: pipeline_3,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::CONTAINER_SCANNING_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'dast',
+        pipeline: pipeline_4,
+        options: {
+          artifacts: {
+            paths: [Ci::Build::DAST_FILE]
+          }
+        }
+      )
+      create(
+        :ci_build,
+        :success,
+        :artifacts,
+        name: 'foobar',
+        pipeline: pipeline_5,
+        options: {
+          artifacts: {
+            paths: ['foobar-report.json']
+          }
+        }
+      )
+    end
+
+    it "returns pipeline with security reports" do
+      expect(described_class.with_security_reports).to eq([pipeline_1, pipeline_2, pipeline_3, pipeline_4])
+    end
+  end
 end

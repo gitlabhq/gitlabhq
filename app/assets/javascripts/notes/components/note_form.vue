@@ -7,7 +7,7 @@ import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 
 export default {
-  name: 'IssueNoteForm',
+  name: 'NoteForm',
   components: {
     issueWarning,
     markdownField,
@@ -20,6 +20,11 @@ export default {
       default: '',
     },
     noteId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
+    markdownVersion: {
       type: Number,
       required: false,
       default: 0,
@@ -156,6 +161,7 @@ export default {
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"
+        :markdown-version="markdownVersion"
         :quick-actions-docs-path="quickActionsDocsPath"
         :add-spacing-classes="false">
         <textarea
@@ -194,7 +200,7 @@ js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           class="btn btn-cancel note-edit-cancel js-close-discussion-note-form"
           type="button"
           @click="cancelHandler()">
-          {{ __('Discard draft') }}
+          Cancel
         </button>
       </div>
     </form>

@@ -228,12 +228,12 @@ describe AutocompleteController do
 
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'authorized projects' do
       before do
-        authorized_project.add_master(user)
+        authorized_project.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID' do
@@ -253,8 +253,8 @@ describe AutocompleteController do
 
     context 'authorized projects and search' do
       before do
-        authorized_project.add_master(user)
-        authorized_search_project.add_master(user)
+        authorized_project.add_maintainer(user)
+        authorized_search_project.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID and search' do
@@ -277,9 +277,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.add_master(user)
-        authorized_project2.add_master(user)
-        authorized_project3.add_master(user)
+        authorized_project.add_maintainer(user)
+        authorized_project2.add_maintainer(user)
+        authorized_project3.add_maintainer(user)
 
         stub_const 'MoveToProjectFinder::PAGE_SIZE', 2
       end
@@ -301,9 +301,9 @@ describe AutocompleteController do
         authorized_project2 = create(:project)
         authorized_project3 = create(:project)
 
-        authorized_project.add_master(user)
-        authorized_project2.add_master(user)
-        authorized_project3.add_master(user)
+        authorized_project.add_maintainer(user)
+        authorized_project2.add_maintainer(user)
+        authorized_project3.add_maintainer(user)
       end
 
       describe 'GET #projects with project ID and offset_id' do

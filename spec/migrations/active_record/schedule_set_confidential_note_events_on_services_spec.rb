@@ -31,7 +31,7 @@ describe ScheduleSetConfidentialNoteEventsOnServices, :migration, :sidekiq do
   end
 
   it 'correctly processes services' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       expect(services_table.where(confidential_note_events: nil).count).to eq 4
       expect(services_table.where(confidential_note_events: true).count).to eq 1
 

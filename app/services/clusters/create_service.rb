@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class CreateService < BaseService
     prepend EE::Clusters::CreateService

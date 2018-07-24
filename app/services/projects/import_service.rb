@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class ImportService < BaseService
     include Gitlab::ShellAdapter
@@ -23,7 +25,7 @@ module Projects
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
+      error("Error importing repository #{project.safe_import_url} into #{project.full_path} - #{e.message}")
     end
 
     private
@@ -65,7 +67,7 @@ module Projects
         else
           gitlab_shell.import_repository(project.repository_storage, project.disk_path, project.import_url)
         end
-      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
+      rescue Gitlab::Shell::Error => e
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true

@@ -11,12 +11,12 @@ describe 'Project settings > [EE] Merge Requests', :js do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     group.add_developer(user)
     group.add_developer(group_member)
   end
 
-  scenario 'adds approver' do
+  it 'adds approver' do
     visit edit_project_path(project)
 
     find('#s2id_approver_user_and_group_ids .select2-input').click
@@ -34,7 +34,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
     expect(find('.select2-results')).not_to have_content(user.name)
   end
 
-  scenario 'filter approvers' do
+  it 'filter approvers' do
     visit edit_project_path(project)
     find('.js-select-user-and-group').click
 
@@ -42,7 +42,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
     expect(find('.select2-results')).not_to have_content(non_member.name)
   end
 
-  scenario 'adds approver group' do
+  it 'adds approver group' do
     visit edit_project_path(project)
 
     find('#s2id_approver_user_and_group_ids .select2-input').click
@@ -71,7 +71,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
       create(:approver_group, group: group, target: project)
     end
 
-    scenario 'removes approver group' do
+    it 'removes approver group' do
       visit edit_project_path(project)
 
       expect(find('.js-current-approvers')).to have_content(group.name)
@@ -89,7 +89,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
       stub_licensed_features(issuable_default_templates: false)
     end
 
-    scenario 'input to configure merge request template is not shown' do
+    it 'input to configure merge request template is not shown' do
       visit edit_project_path(project)
 
       expect(page).not_to have_selector('#project_merge_requests_template')
@@ -101,7 +101,7 @@ describe 'Project settings > [EE] Merge Requests', :js do
       stub_licensed_features(issuable_default_templates: true)
     end
 
-    scenario 'input to configure merge request template is not shown' do
+    it 'input to configure merge request template is not shown' do
       visit edit_project_path(project)
 
       expect(page).to have_selector('#project_merge_requests_template')

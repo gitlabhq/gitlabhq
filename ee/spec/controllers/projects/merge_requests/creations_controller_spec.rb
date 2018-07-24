@@ -30,7 +30,7 @@ describe Projects::MergeRequests::CreationsController do
       let(:created_merge_request) { assigns(:merge_request) }
 
       before do
-        project.update_attributes(approvals_before_merge: 2)
+        project.update(approvals_before_merge: 2)
       end
 
       context 'when it is less than the one in the target project' do
@@ -81,8 +81,8 @@ describe Projects::MergeRequests::CreationsController do
       context 'when the target project is a fork of a deleted project' do
         before do
           original_project = create(:project)
-          project.update_attributes(forked_from_project: original_project, approvals_before_merge: 4)
-          original_project.update_attributes(pending_delete: true)
+          project.update(forked_from_project: original_project, approvals_before_merge: 4)
+          original_project.update(pending_delete: true)
 
           create_merge_request(approvals_before_merge: 3)
         end

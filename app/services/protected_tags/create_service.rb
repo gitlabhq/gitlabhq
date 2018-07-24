@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedTags
   class CreateService < BaseService
     attr_reader :protected_tag

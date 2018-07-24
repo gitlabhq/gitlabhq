@@ -1,5 +1,5 @@
 module Groups
-  class ParticipantsService < BaseService
+  class ParticipantsService < Groups::BaseService
     include Users::ParticipableService
 
     def execute(noteable)

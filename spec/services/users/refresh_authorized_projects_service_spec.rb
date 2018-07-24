@@ -30,10 +30,10 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'updates the authorized projects of the user' do
       project2 = create(:project)
       to_remove = user.project_authorizations
-        .create!(project: project2, access_level: Gitlab::Access::MASTER)
+        .create!(project: project2, access_level: Gitlab::Access::MAINTAINER)
 
       expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
 
       service.execute_without_lease
     end
@@ -45,7 +45,7 @@ describe Users::RefreshAuthorizedProjectsService do
         .create!(project: project, access_level: Gitlab::Access::DEVELOPER)
 
       expect(service).to receive(:update_authorizations)
-        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MASTER]])
+        .with([to_remove.project_id], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
 
       service.execute_without_lease
     end
@@ -76,14 +76,14 @@ describe Users::RefreshAuthorizedProjectsService do
     it 'inserts authorizations that should be added' do
       user.project_authorizations.delete_all
 
-      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MASTER]])
+      service.update_authorizations([], [[user.id, project.id, Gitlab::Access::MAINTAINER]])
 
       authorizations = user.project_authorizations
 
       expect(authorizations.length).to eq(1)
       expect(authorizations[0].user_id).to eq(user.id)
       expect(authorizations[0].project_id).to eq(project.id)
-      expect(authorizations[0].access_level).to eq(Gitlab::Access::MASTER)
+      expect(authorizations[0].access_level).to eq(Gitlab::Access::MAINTAINER)
     end
   end
 
@@ -99,12 +99,12 @@ describe Users::RefreshAuthorizedProjectsService do
     end
 
     it 'sets the values to the access levels' do
-      expect(hash.values).to eq([Gitlab::Access::MASTER])
+      expect(hash.values).to eq([Gitlab::Access::MAINTAINER])
     end
 
     context 'personal projects' do
       it 'includes the project with the right access level' do
-        expect(hash[project.id]).to eq(Gitlab::Access::MASTER)
+        expect(hash[project.id]).to eq(Gitlab::Access::MAINTAINER)
       end
     end
 
@@ -139,11 +139,11 @@ describe Users::RefreshAuthorizedProjectsService do
       let!(:other_project) { create(:project, group: nested_group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'includes the project with the right access level' do
-        expect(hash[other_project.id]).to eq(Gitlab::Access::MASTER)
+        expect(hash[other_project.id]).to eq(Gitlab::Access::MAINTAINER)
       end
     end
 
@@ -153,7 +153,7 @@ describe Users::RefreshAuthorizedProjectsService do
       let!(:project_group_link) { create(:project_group_link, project: other_project, group: group, group_access: Gitlab::Access::GUEST) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'includes the project with the right access level' do
@@ -168,7 +168,7 @@ describe Users::RefreshAuthorizedProjectsService do
       let!(:project_group_link) { create(:project_group_link, project: other_project, group: nested_group, group_access: Gitlab::Access::DEVELOPER) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
       end
 
       it 'includes the project with the right access level' do
@@ -194,7 +194,7 @@ describe Users::RefreshAuthorizedProjectsService do
       value = hash.values[0]
 
       expect(value.project_id).to eq(project.id)
-      expect(value.access_level).to eq(Gitlab::Access::MASTER)
+      expect(value.access_level).to eq(Gitlab::Access::MAINTAINER)
     end
   end
 
@@ -219,7 +219,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
 
       it 'includes the access level for every row' do
-        expect(row.access_level).to eq(Gitlab::Access::MASTER)
+        expect(row.access_level).to eq(Gitlab::Access::MAINTAINER)
       end
     end
   end
@@ -235,7 +235,7 @@ describe Users::RefreshAuthorizedProjectsService do
       rows = service.fresh_authorizations.to_a
 
       expect(rows.length).to eq(1)
-      expect(rows.first.access_level).to eq(Gitlab::Access::MASTER)
+      expect(rows.first.access_level).to eq(Gitlab::Access::MAINTAINER)
     end
 
     context 'every returned row' do
@@ -246,7 +246,7 @@ describe Users::RefreshAuthorizedProjectsService do
       end
 
       it 'includes the access level' do
-        expect(row.access_level).to eq(Gitlab::Access::MASTER)
+        expect(row.access_level).to eq(Gitlab::Access::MAINTAINER)
       end
     end
   end

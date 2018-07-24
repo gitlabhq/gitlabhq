@@ -7,7 +7,7 @@ describe Boards::UsersController do
   let(:user)  { create(:user) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     group.add_guest(guest)
 
     sign_in(user)

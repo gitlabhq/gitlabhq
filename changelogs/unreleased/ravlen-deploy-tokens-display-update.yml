@@ -1,0 +1,5 @@
+---
+title: "Cleans up display of Deploy Tokens to match Personal Access Tokens"
+merge_request: 20578
+author: Marcel Amirault
+type: added

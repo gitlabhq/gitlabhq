@@ -65,10 +65,10 @@ class GitGarbageCollectWorker
       client.repack_incremental
     end
   rescue GRPC::NotFound => e
-    Gitlab::GitLogger.error("#{method} failed:\nRepository not found")
+    Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")
     raise Gitlab::Git::Repository::NoRepository.new(e)
   rescue GRPC::BadStatus => e
-    Gitlab::GitLogger.error("#{method} failed:\n#{e}")
+    Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
     raise Gitlab::Git::CommandError.new(e)
   end
 

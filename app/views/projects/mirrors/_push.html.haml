@@ -32,11 +32,11 @@
         .form-group
           = rm_form.check_box :enabled, class: "float-left"
           .prepend-left-20
-            = rm_form.label :enabled, "Remote mirror repository", class: "label-light append-bottom-0"
+            = rm_form.label :enabled, "Remote mirror repository", class: "label-bold append-bottom-0"
             %p.light.append-bottom-0
               Automatically update the remote mirror's branches, tags, and commits from this repository every time someone pushes to it.
         .form-group.has-feedback
-          = rm_form.label :url, "Git repository URL", class: "label-light"
+          = rm_form.label :url, "Git repository URL", class: "label-bold"
           = rm_form.text_field :url, class: "form-control", placeholder: 'https://username:password@gitlab.company.com/group/project.git'
 
           = render "projects/mirrors/instructions"
@@ -44,7 +44,7 @@
         .form-group
           = rm_form.check_box :only_protected_branches, class: 'float-left'
           .prepend-left-20
-            = rm_form.label :only_protected_branches, class: 'label-light'
+            = rm_form.label :only_protected_branches, class: 'label-bold'
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
         = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'

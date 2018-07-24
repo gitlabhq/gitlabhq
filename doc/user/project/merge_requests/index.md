@@ -35,7 +35,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 
 - View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md#multi-project-pipeline-graphs) **[PREMIUM]**
 - Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
-- Analyze the impact of your changes with [Code Quality reports](code_quality_diff.md) **[STARTER]**
+- Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
 - Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
 - Analyze your source code for vulnerabilities with [Static Application Security Testing](sast.md) **[ULTIMATE]**
 - Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](dast.md) **[ULTIMATE]**
@@ -49,7 +49,7 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](code_quality_diff.md) **[STARTER]**
+1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **[STARTER]**
 1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **[ULTIMATE]**
 1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
@@ -237,7 +237,7 @@ If you are using [GitLab CI][ci], you can analyze your source code quality using
 the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
 can show the Code Climate report right in the merge request widget area.
 
-[Read more about Code Quality reports.](code_quality_diff.md)
+[Read more about Code Quality reports.](code_quality.md)
 
 ## Browser Performance Testing **[PREMIUM]**
 
@@ -253,7 +253,7 @@ GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the d
 
 > Introduced in [GitLab Ultimate][products] 11.0.
 
-If you are using [GitLab CI/CD][ci], you can search your dependencies for their 
+If you are using [GitLab CI/CD][ci], you can search your dependencies for their
 licenses using License Management.
 Going a step further, GitLab can show the licenses report right in the
 merge request widget area.

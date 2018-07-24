@@ -155,18 +155,42 @@ export function addContextLines(options) {
   }
 }
 
-export function trimFirstCharOfLineContent(line) {
-  if (!line.richText) {
-    return line;
+/**
+ * Trims the first char of the `richText` property when it's either a space or a diff symbol.
+ * @param {Object} line
+ * @returns {Object}
+ */
+export function trimFirstCharOfLineContent(line = {}) {
+  const parsedLine = Object.assign({}, line);
+
+  if (line.richText) {
+    const firstChar = parsedLine.richText.charAt(0);
+
+    if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
+      parsedLine.richText = line.richText.substring(1);
+    }
   }
 
-  const firstChar = line.richText.charAt(0);
+  return parsedLine;
+}
 
-  if (firstChar === ' ' || firstChar === '+' || firstChar === '-') {
-    Object.assign(line, {
-      richText: line.richText.substring(1),
-    });
-  }
+export function getDiffRefsByLineCode(diffFiles) {
+  return diffFiles.reduce((acc, diffFile) => {
+    const { baseSha, headSha, startSha } = diffFile.diffRefs;
+    const { newPath, oldPath } = diffFile;
 
-  return line;
+    // We can only use highlightedDiffLines to create the map of diff lines because
+    // highlightedDiffLines will also include every parallel diff line in it.
+    if (diffFile.highlightedDiffLines) {
+      diffFile.highlightedDiffLines.forEach(line => {
+        const { lineCode, oldLine, newLine } = line;
+
+        if (lineCode) {
+          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine };
+        }
+      });
+    }
+
+    return acc;
+  }, {});
 }

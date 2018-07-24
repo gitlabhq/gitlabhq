@@ -39,7 +39,7 @@ push their changes back to the repository where the locked objects are located.
 
 Locks can be created by any person who has [push access] to the repository; i.e.,
 Developer and higher level, and can be removed solely by their author and any
-user with Master permissions and above.
+user with Maintainer permissions and above.
 
 If a file is locked and you are not the author of its locked state, a
 pre-receive hook will reject your changes when you try to push. In the

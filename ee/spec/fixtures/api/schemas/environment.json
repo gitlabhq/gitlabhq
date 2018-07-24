@@ -39,7 +39,7 @@
                 }
             ]
         },
-        "stop_action?": {
+        "has_stop_action": {
             "type": "boolean"
         },
         "rollout_status": {
@@ -65,6 +65,9 @@
         },
         "updated_at": {
             "type": "date"
+        },
+        "can_stop": {
+            "type": "boolean"
         }
     }
 }

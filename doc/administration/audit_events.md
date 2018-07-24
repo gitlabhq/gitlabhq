@@ -55,7 +55,7 @@ From there, you can see the following actions:
 ### Project events
 
 NOTE: **Note:**
-You need Master [permissions] or higher to view the project Audit Events page.
+You need Maintainer [permissions] or higher to view the project Audit Events page.
 
 To view a project's audit events, navigate to **Project > Settings > Audit Events**.
 From there, you can see the following actions:

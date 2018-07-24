@@ -26,7 +26,7 @@ describe API::ProjectMirror do
         def project_in_state(state)
           project = create(:project, :repository, namespace: user.namespace)
           import_state = create(:import_state, :mirror, state, project: project)
-          import_state.update_attributes(next_execution_timestamp: 10.minutes.from_now)
+          import_state.update(next_execution_timestamp: 10.minutes.from_now)
 
           project
         end
@@ -127,9 +127,9 @@ describe API::ProjectMirror do
           end
         end
 
-        context 'is authenticated as master' do
+        context 'is authenticated as maintainer' do
           it 'triggers the pull mirroring operation' do
-            project_member(:master, user2)
+            project_member(:maintainer, user2)
 
             post api("/projects/#{project_mirrored.id}/mirror/pull", user2)
 

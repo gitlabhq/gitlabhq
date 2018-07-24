@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   # Service class for getting and caching the number of forks of a project.
   class ForksCountService < Projects::CountService

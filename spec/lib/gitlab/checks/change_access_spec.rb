@@ -54,7 +54,7 @@ describe Gitlab::Checks::ChangeAccess do
 
         context 'as maintainer' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           context 'deletion' do
@@ -132,6 +132,16 @@ describe Gitlab::Checks::ChangeAccess do
           expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
         end
 
+        context 'when project repository is empty' do
+          let(:project) { create(:project) }
+
+          it 'raises an error if the user is not allowed to push to protected branches' do
+            expect(user_access).to receive(:can_push_to_branch?).and_return(false)
+
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /Ask a project Owner or Maintainer to create a default branch/)
+          end
+        end
+
         context 'branch deletion' do
           let(:newrev) { '0000000000000000000000000000000000000000' }
           let(:ref) { 'refs/heads/feature' }
@@ -144,7 +154,7 @@ describe Gitlab::Checks::ChangeAccess do
 
           context 'if the user is allowed to delete protected branches' do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context 'through the web interface' do
@@ -191,7 +201,7 @@ describe Gitlab::Checks::ChangeAccess do
           let(:changes) { { oldrev: oldrev, ref: ref } }
 
           it 'skips integrity check' do
-            expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
+            expect(project.repository).not_to receive(:new_objects)
 
             subject.exec
           end

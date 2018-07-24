@@ -19,7 +19,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
   context 'no discussions' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       note.destroy
       visit_merge_request
@@ -33,7 +33,7 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
 
   context 'as authorized user' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit_merge_request
     end
@@ -342,8 +342,9 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      it 'shows jump to next discussion button' do
-        expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
+      it 'shows jump to next discussion button, apart from the last one' do
+        expect(page).to have_selector('.discussion-reply-holder', count: 2)
+        expect(page).to have_selector('.discussion-reply-holder .discussion-next-btn', count: 1)
       end
 
       it 'displays next discussion even if hidden' do

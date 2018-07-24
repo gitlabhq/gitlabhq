@@ -125,7 +125,8 @@ module CycleAnalyticsHelpers
         _, opts = args
 
         commit = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          raw_repository.commit(branch_update.newrev).rugged_commit
+          rugged = raw_repository.rugged
+          rugged.rev_parse(branch_update.newrev)
         end
 
         branch_update.newrev = commit.amend(

@@ -30,8 +30,6 @@ class Repository
 
   CreateTreeError = Class.new(StandardError)
 
-  MIRROR_REMOTE = "upstream".freeze
-
   # Methods that cache data from the Git repository.
   #
   # Each entry in this Array should have a corresponding method with the exact
@@ -90,7 +88,7 @@ class Repository
     @raw_repository&.cleanup
   end
 
-  # Return absolute path to repository
+  # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
       begin
@@ -161,12 +159,9 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
-    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
-    end
+    commits = raw.new_commits(newrev)
 
-    refs.map { |sha| commit(sha.strip) }
+    ::Commit.decorate(commits, project)
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
@@ -181,8 +176,8 @@ class Repository
     CommitCollection.new(project, commits, ref)
   end
 
-  def find_branch(name, fresh_repo: true)
-    raw_repository.find_branch(name, fresh_repo)
+  def find_branch(name)
+    raw_repository.find_branch(name)
   end
 
   def find_tag(name)
@@ -257,7 +252,7 @@ class Repository
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
   rescue Gitlab::Git::CommandError => ex
-    Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
   end
 
   def kept_around?(sha)
@@ -469,12 +464,12 @@ class Repository
     expire_branches_cache
   end
 
-  def method_missing(m, *args, &block)
-    if m == :lookup && !block_given?
-      lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(msg, *args, &block)
+    if msg == :lookup && !block_given?
+      lookup_cache[msg] ||= {}
+      lookup_cache[msg][args.join(":")] ||= raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -571,7 +566,7 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project, markdown_engine: :redcarpet) if readme
   end
   cache_method :rendered_readme
 
@@ -854,48 +849,6 @@ class Repository
       !same_head && merged
     else
       nil
-    end
-  end
-
-  def fetch_upstream(url)
-    add_remote(Repository::MIRROR_REMOTE, url)
-    fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
-  end
-
-  def upstream_branches
-    @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
-  end
-
-  def diverged_from_upstream?(branch_name)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
-
-    if upstream_commit
-      !raw_repository.ancestor?(branch_commit.id, upstream_commit.id)
-    else
-      false
-    end
-  end
-
-  def upstream_has_diverged?(branch_name, remote_ref)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{remote_ref}/#{branch_name}")
-
-    if upstream_commit
-      !raw_repository.ancestor?(upstream_commit.id, branch_commit.id)
-    else
-      false
-    end
-  end
-
-  def up_to_date_with_upstream?(branch_name)
-    branch_commit = commit("refs/heads/#{branch_name}")
-    upstream_commit = commit("refs/remotes/#{MIRROR_REMOTE}/#{branch_name}")
-
-    if upstream_commit
-      ancestor?(branch_commit.id, upstream_commit.id)
-    else
-      false
     end
   end
 

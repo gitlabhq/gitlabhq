@@ -133,7 +133,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
+- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -187,13 +187,14 @@ The current team labels are:
 
 - ~Configuration
 - ~"CI/CD"
-- ~Discussion
+- ~Create
 - ~Distribution
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Manage
 - ~Monitoring
-- ~Platform
+- ~Plan
 - ~Quality
 - ~Release
 - ~"Security Products"
@@ -226,24 +227,24 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Bug Priority labels
+### Priority labels
 
-Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
+Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                             | Guidance |
-|-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
-| ~P2   | High Priority   | The next release                                                 |  |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+| Label | Meaning         | Estimate time to fix                                             |
+|-------|-----------------|------------------------------------------------------------------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |
+| ~P2   | High Priority   | The next release                                                 |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
 
-### Bug Severity labels
+### Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning           | Impact of the defect                                  | Example |
+| Label | Meaning           | Impact on Functionality                               | Example |
 |-------|-------------------|-------------------------------------------------------|---------|
 | ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
 | ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
@@ -252,12 +253,14 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 
 #### Severity impact guidance
 
-| Label | Security Impact                                                     | Availability / Performance Impact                            |
-|-------|---------------------------------------------------------------------|--------------------------------------------------------------|
-| ~S1   | >50% users impacted (possible company extinction level event)       |                                                              |
-| ~S2   | Many users or multiple paid customers impacted (but not apocalyptic)| The issue is (almost) guaranteed to occur in the near future |
-| ~S3   | A few users or a single paid customer impacted                      | The issue is likely to occur in the near future              |
-| ~S4   | No paid users/customer impacted, or expected impact within 30 days  | The issue _may_ occur but it's not likely                    |
+Severity levels can be applied further depending on the facet of the impact; e.g. Affected customers, GitLab.com availability, performance and etc. The below is a guideline.
+
+| Severity | Affected Customers/Users                                            | GitLab.com Availability                            |  Performance Degradation     |
+|----------|---------------------------------------------------------------------|----------------------------------------------------|------------------------------|
+| ~S1      | >50% users affected (possible company extinction level event)       | Significant impact on all of GitLab.com            |                              |
+| ~S2      | Many users or multiple paid customers affected (but not apocalyptic)| Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
+| ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
+| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on on GitLab.com                      | Degradation _may_ occur but it's not likely           |
 
 ### Label for community contributors
 
@@ -373,8 +376,14 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
+We also use [GitLab Triage] to automate some triaging policies. This is
+currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
+
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
+[GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
+[scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
+[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
 
 ### Feature proposals
 

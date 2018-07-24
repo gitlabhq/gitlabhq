@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class breaks the actual CarrierWave concept.
 # Every uploader should use a base_dir that is model agnostic so we can build
 # back URLs from base_dir-relative paths saved in the `Upload` model.
@@ -13,7 +15,7 @@ class FileUploader < GitlabUploader
   prepend ObjectStorage::Extension::RecordsUploads
 
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
-  DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}
 
   after :remove, :prune_store_dir
 
@@ -63,6 +65,10 @@ class FileUploader < GitlabUploader
 
   def self.generate_secret
     SecureRandom.hex
+  end
+
+  def self.extract_dynamic_path(path)
+    DYNAMIC_PATH_PATTERN.match(path)
   end
 
   def upload_paths(identifier)
@@ -117,7 +123,7 @@ class FileUploader < GitlabUploader
   end
 
   def markdown_link
-    markdown = "[#{markdown_name}](#{secure_url})"
+    markdown = +"[#{markdown_name}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?
     markdown
   end
@@ -130,10 +136,6 @@ class FileUploader < GitlabUploader
     }
   end
 
-  def filename
-    self.file.filename
-  end
-
   def upload=(value)
     super
 
@@ -141,7 +143,7 @@ class FileUploader < GitlabUploader
     return if apply_context!(value.uploader_context)
 
     # fallback to the regex based extraction
-    if matches = DYNAMIC_PATH_PATTERN.match(value.path)
+    if matches = self.class.extract_dynamic_path(value.path)
       @secret = matches[:secret]
       @identifier = matches[:identifier]
     end

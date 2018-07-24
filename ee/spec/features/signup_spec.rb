@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Signup on EE' do
+describe 'Signup on EE' do
   let(:user_attrs) { attributes_for(:user) }
 
   context 'for Gitlab.com' do

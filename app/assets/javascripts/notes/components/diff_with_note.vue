@@ -48,16 +48,17 @@ export default {
     imageDiffHtml() {
       return this.discussion.imageDiffHtml;
     },
-    currentUser() {
-      return this.noteableData.current_user;
-    },
     userColorScheme() {
       return window.gon.user_color_scheme;
     },
     normalizedDiffLines() {
-      const lines = this.discussion.truncatedDiffLines || [];
+      if (this.discussion.truncatedDiffLines) {
+        return this.discussion.truncatedDiffLines.map(line =>
+          trimFirstCharOfLineContent(convertObjectPropsToCamelCase(line)),
+        );
+      }
 
-      return lines.map(line => trimFirstCharOfLineContent(convertObjectPropsToCamelCase(line)));
+      return [];
     },
   },
   mounted() {
@@ -94,7 +95,7 @@ export default {
   >
     <diff-file-header
       :diff-file="diffFile"
-      :current-user="currentUser"
+      :can-current-user-fork="false"
       :discussions-expanded="isDiscussionsExpanded"
       :expanded="!isCollapsed"
     />

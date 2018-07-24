@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -13,42 +13,29 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     lineIndex: {
       type: Number,
       required: true,
     },
+    discussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters(['discussionsByLineCode']),
-    isDiscussionExpanded() {
-      if (!this.discussions.length) {
-        return false;
-      }
-
-      return this.discussions.every(discussion => discussion.expanded);
+    className() {
+      return this.discussions.length ? '' : 'js-temp-notes-holder';
     },
     hasCommentForm() {
       return this.diffLineCommentForms[this.line.lineCode];
-    },
-    discussions() {
-      return this.discussionsByLineCode[this.line.lineCode] || [];
-    },
-    shouldRender() {
-      return this.isDiscussionExpanded || this.hasCommentForm;
-    },
-    className() {
-      return this.discussions.length ? '' : 'js-temp-notes-holder';
     },
   },
 };
@@ -56,7 +43,6 @@ export default {
 
 <template>
   <tr
-    v-if="shouldRender"
     :class="className"
     class="notes_holder"
   >
@@ -67,14 +53,14 @@ export default {
     <td class="notes_content">
       <div class="content">
         <diff-discussions
+          v-if="discussions.length"
           :discussions="discussions"
         />
         <diff-line-note-form
-          v-if="diffLineCommentForms[line.lineCode]"
-          :diff-file="diffFile"
-          :diff-lines="diffLines"
+          v-if="hasCommentForm"
+          :diff-file-hash="diffFileHash"
           :line="line"
-          :note-target-line="diffLines[lineIndex]"
+          :note-target-line="line"
         />
       </div>
     </td>

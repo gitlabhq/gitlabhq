@@ -5,7 +5,7 @@ describe 'Issues sub nav EE' do
   let(:project) { create(:project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_issues_path(project)

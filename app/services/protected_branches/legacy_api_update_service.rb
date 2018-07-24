@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The branches#protect API still uses the `developers_can_push` and `developers_can_merge`
 # flags for backward compatibility, and so performs translation between that format and the
 # internal data model (separate access levels). The translation code is non-trivial, and so
@@ -17,14 +19,14 @@ module ProtectedBranches
         when true
           params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
+          params[:push_access_levels_attributes] = [{ access_level: Gitlab::Access::MAINTAINER }]
         end
 
         case @developers_can_merge
         when true
           params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::DEVELOPER }]
         when false
-          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MASTER }]
+          params[:merge_access_levels_attributes] = [{ access_level: Gitlab::Access::MAINTAINER }]
         end
 
         service = ProtectedBranches::UpdateService.new(@project, @current_user, @params)
@@ -53,7 +55,7 @@ module ProtectedBranches
         @protected_branch.merge_access_levels.developer.destroy_all
       when false
         @protected_branch.merge_access_levels.developer.destroy_all
-        @protected_branch.merge_access_levels.master.destroy_all
+        @protected_branch.merge_access_levels.maintainer.destroy_all
       end
 
       case @developers_can_push
@@ -61,7 +63,7 @@ module ProtectedBranches
         @protected_branch.push_access_levels.developer.destroy_all
       when false
         @protected_branch.push_access_levels.developer.destroy_all
-        @protected_branch.push_access_levels.master.destroy_all
+        @protected_branch.push_access_levels.maintainer.destroy_all
       end
     end
   end

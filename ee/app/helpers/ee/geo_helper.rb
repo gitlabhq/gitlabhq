@@ -13,7 +13,7 @@ module EE
       {
         primary_version: version.to_s,
         primary_revision: revision.to_s,
-        node_actions_allowed: ::Gitlab::Database.read_write?.to_s,
+        node_actions_allowed: ::Gitlab::Database.db_read_write?.to_s,
         node_edit_allowed: ::Gitlab::Geo.license_allows?.to_s
       }
     end

@@ -3,13 +3,12 @@
   - if actions.present?
     .btn-group
       .dropdown
-        %button.dropdown.dropdown-new.btn.btn-default{ type: 'button', 'data-toggle' => 'dropdown' }
-          = custom_icon('icon_play')
+        %button.dropdown.dropdown-new.btn.btn-default.has-tooltip{ type: 'button', 'data-toggle' => 'dropdown', title: s_('Environments|Deploy to...') }
+          = sprite_icon('play')
           = icon('caret-down')
         %ul.dropdown-menu.dropdown-menu-right
           - actions.each do |action|
             - next unless can?(current_user, :update_build, action)
             %li
-              = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow' do
-                = custom_icon('icon_play')
+              = link_to [:play, @project.namespace.becomes(Namespace), @project, action], method: :post, rel: 'nofollow', class: 'btn' do
                 %span= action.name.humanize

@@ -1,5 +1,0 @@
----
-title: "[Rails5] fix Projects::VulnerabilityFeedbackController didn't match the schema"
-merge_request: 6320
-author: Jasper Maes
-type: fixed

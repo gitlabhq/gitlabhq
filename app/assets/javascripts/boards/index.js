@@ -12,13 +12,10 @@ import '~/vue_shared/models/assignee';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import sidebarEventHub from '~/sidebar/event_hub'; // eslint-disable-line import/first
-import './models/issue';
-import './models/list';
 import './models/milestone';
 import './models/project';
 import './stores/boards_store';
 import ModalStore from './stores/modal_store';
-import BoardService from './services/board_service';
 import modalMixin from './mixins/modal_mixins';
 import './mixins/sortable_default_options';
 import './filters/due_date_filters';
@@ -28,7 +25,12 @@ import './components/new_list_dropdown';
 import BoardAddIssuesModal from './components/modal/index.vue';
 import '~/vue_shared/vue_resource_interceptor'; // eslint-disable-line import/first
 
+import 'ee/boards/models/list'; // eslint-disable-line import/first
+import 'ee/boards/models/issue'; // eslint-disable-line import/first
 import 'ee/boards/models/project'; // eslint-disable-line import/first
+import BoardService from 'ee/boards/services/board_service'; // eslint-disable-line import/first
+import 'ee/boards/components/board_sidebar'; // eslint-disable-line import/first
+import 'ee/boards/components/modal/index'; // eslint-disable-line import/first
 import 'ee/boards/components/boards_selector'; // eslint-disable-line import/first
 import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg'; // eslint-disable-line import/first
 import expandIcon from 'ee/boards/icons/fullscreen_expand.svg'; // eslint-disable-line import/first

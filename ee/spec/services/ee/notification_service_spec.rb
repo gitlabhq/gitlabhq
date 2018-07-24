@@ -12,7 +12,7 @@ describe EE::NotificationService, :mailer do
     let(:member) { create(:user) }
 
     before do
-      project.add_master(member)
+      project.add_maintainer(member)
       member.global_notification_setting.update!(level: :watch)
     end
 
@@ -62,7 +62,7 @@ describe EE::NotificationService, :mailer do
     end
 
     def execute!
-      subject.send_service_desk_notification(note)
+      subject.new_note(note)
     end
 
     def self.it_should_email!
@@ -105,7 +105,7 @@ describe EE::NotificationService, :mailer do
 
       context 'when the license doesn\'t allow service desk' do
         before do
-          expect(EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
+          allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).and_return(false)
         end
 
         it_should_not_email!
@@ -173,10 +173,10 @@ describe EE::NotificationService, :mailer do
       end
     end
 
-    context 'when user is master' do
+    context 'when user is maintainer' do
       it 'sends email' do
         project = create(:project, :mirror, :import_hard_failed)
-        project.add_master(user)
+        project.add_maintainer(user)
 
         expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, project.owner.id).and_call_original
         expect(Notify).to receive(:mirror_was_hard_failed_email).with(project.id, user.id).and_call_original
@@ -185,7 +185,7 @@ describe EE::NotificationService, :mailer do
       end
     end
 
-    context 'when user is not owner nor master' do
+    context 'when user is not owner nor maintainer' do
       it 'does not send email' do
         project = create(:project, :mirror, :import_hard_failed)
         project.add_developer(user)
@@ -210,10 +210,10 @@ describe EE::NotificationService, :mailer do
         end
       end
 
-      context 'when user is group master' do
+      context 'when user is group maintainer' do
         it 'sends email' do
           group = create(:group, :public) do |group|
-            group.add_master(user)
+            group.add_maintainer(user)
           end
 
           project = create(:project, :mirror, :import_hard_failed, namespace: group)

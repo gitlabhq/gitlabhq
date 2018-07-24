@@ -102,12 +102,12 @@ const Api = {
   },
 
   // Return Merge Request for project
-  mergeRequest(projectPath, mergeRequestId) {
+  mergeRequest(projectPath, mergeRequestId, params = {}) {
     const url = Api.buildUrl(Api.mergeRequestPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':mrid', mergeRequestId);
 
-    return axios.get(url);
+    return axios.get(url, { params });
   },
 
   mergeRequests(params = {}) {

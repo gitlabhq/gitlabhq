@@ -1,5 +1,5 @@
 import CEMergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
-import { filterByKey } from '../../vue_shared/security_reports/store/utils';
+import { filterByKey } from 'ee/vue_shared/security_reports/store/utils';
 
 export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {

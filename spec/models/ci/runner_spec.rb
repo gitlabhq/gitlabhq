@@ -105,7 +105,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.shared' do
+  describe '.instance_type' do
     let(:group) { create(:group) }
     let(:project) { create(:project) }
     let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
@@ -113,7 +113,7 @@ describe Ci::Runner do
     let!(:shared_runner) { create(:ci_runner, :instance) }
 
     it 'returns only shared runners' do
-      expect(described_class.shared).to contain_exactly(shared_runner)
+      expect(described_class.instance_type).to contain_exactly(shared_runner)
     end
   end
 
@@ -155,7 +155,7 @@ describe Ci::Runner do
     end
   end
 
-  describe '.owned_or_shared' do
+  describe '.owned_or_instance_wide' do
     it 'returns a globally shared, a project specific and a group specific runner' do
       # group specific
       group = create(:group)
@@ -168,7 +168,7 @@ describe Ci::Runner do
       # globally shared
       shared_runner = create(:ci_runner, :instance)
 
-      expect(described_class.owned_or_shared(project.id)).to contain_exactly(
+      expect(described_class.owned_or_instance_wide(project.id)).to contain_exactly(
         group_runner, project_runner, shared_runner
       )
     end
@@ -202,7 +202,6 @@ describe Ci::Runner do
       it 'transitions shared runner to project runner and assigns project' do
         expect(subject).to be_truthy
 
-        expect(runner).to be_specific
         expect(runner).to be_project_type
         expect(runner.projects).to eq([project])
         expect(runner.only_for?(project)).to be_truthy

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
-feature 'Projects > Push Rules', :js do
+describe 'Projects > Push Rules', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:foo) {{ reject_unsigned_commits: 'Reject unsigned commits' }}
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

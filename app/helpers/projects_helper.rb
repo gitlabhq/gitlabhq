@@ -179,6 +179,7 @@ module ProjectsHelper
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
+      max_project_member_access_cache_key(project),
       'v2.6'
     ]
 
@@ -412,20 +413,6 @@ module ProjectsHelper
 
   def current_ref
     @ref || @repository.try(:root_ref)
-  end
-
-  # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1235
-  def sanitize_repo_path(project, message)
-    return '' unless message.present?
-
-    exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
-    filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
-
-    disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
-    end
-
-    filtered_message.gsub(disk_path.chomp('/'), "[REPOS PATH]")
   end
 
   def project_child_container_class(view_path)

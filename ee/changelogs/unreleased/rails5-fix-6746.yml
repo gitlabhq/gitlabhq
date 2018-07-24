@@ -1,6 +1,0 @@
----
-title: "[Rails5] fix Boards::ListsController expected the response to have status
-  code 200 but it was 403"
-merge_request: 6318
-author: Jasper Maes
-type: fixed

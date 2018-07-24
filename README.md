@@ -1,11 +1,5 @@
 # GitLab
 
-[![Build status](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/build.svg)](https://gitlab.com/gitlab-org/gitlab-ee/commits/master)
-[![Overall test coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg)](https://gitlab.com/gitlab-org/gitlab-ee/pipelines)
-[![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-[![Core Infrastructure Initiative Best Practices](https://bestpractices.coreinfrastructure.org/projects/42/badge)](https://bestpractices.coreinfrastructure.org/projects/42)
-[![Gitter](https://badges.gitter.im/gitlabhq/gitlabhq.svg)](https://gitter.im/gitlabhq/gitlabhq?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
 ## Test coverage
 
 - [![Ruby coverage](https://gitlab.com/gitlab-org/gitlab-ee/badges/master/coverage.svg?job=coverage)](https://gitlab-org.gitlab.io/gitlab-ee/coverage-ruby) Ruby
@@ -149,6 +143,10 @@ All documentation can be found on [doc.gitlab.com/ee/](http://doc.gitlab.com/ee/
 ## Getting help
 
 Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
+
+## Why?
+
+[Read here](https://about.gitlab.com/why/)
 
 ## Is it any good?
 

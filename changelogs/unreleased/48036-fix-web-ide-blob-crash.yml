@@ -1,0 +1,5 @@
+---
+title: Fix Web IDE crashing on directories named 'blob'
+merge_request: 20712
+author:
+type: fixed

@@ -31,7 +31,7 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
 }
@@ -254,4 +254,9 @@ label {
     transform: translateY(-50%);
     color: $theme-gray-600;
   }
+}
+
+.input-lg {
+  max-width: 320px;
+  width: 100%;
 }

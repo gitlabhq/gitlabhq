@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Admin updates EE-only settings' do
+describe 'Admin updates EE-only settings' do
   include StubENV
 
   before do
@@ -10,7 +10,7 @@ feature 'Admin updates EE-only settings' do
     visit admin_application_settings_path
   end
 
-  scenario 'Modify GitLab Geo settings' do
+  it 'Modify GitLab Geo settings' do
     page.within('.as-geo') do
       fill_in 'Connection timeout', with: 15
       click_button 'Save changes'
@@ -20,7 +20,7 @@ feature 'Admin updates EE-only settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Enable external authentication' do
+  it 'Enable external authentication' do
     page.within('.as-external-auth') do
       check 'Enable classification control using an external service'
       fill_in 'Default classification label', with: 'default'
@@ -30,7 +30,7 @@ feature 'Admin updates EE-only settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Enable elastic search indexing' do
+  it 'Enable elastic search indexing' do
     page.within('.as-elasticsearch') do
       check 'Elasticsearch indexing'
       click_button 'Save changes'
@@ -40,7 +40,7 @@ feature 'Admin updates EE-only settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
-  scenario 'Enable Slack application' do
+  it 'Enable Slack application' do
     allow(Gitlab).to receive(:com?).and_return(true)
     visit admin_application_settings_path
 

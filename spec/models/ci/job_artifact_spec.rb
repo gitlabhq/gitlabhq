@@ -163,7 +163,7 @@ describe Ci::JobArtifact do
         expect(ProjectStatistics)
           .not_to receive(:increment_statistic)
 
-        project.update_attributes(pending_delete: true)
+        project.update(pending_delete: true)
         project.destroy!
       end
     end

@@ -65,7 +65,7 @@ For an existing project, you can set up mirror pulling by visiting your project'
 section. Check the "Mirror repository" box and hit **Save changes** at the bottom.
 You have a few options to choose from one being the user who will be the author
 of all events in the activity feed that are the result of an update. This user
-needs to have at least [master access][perms] to the project. Another option is
+needs to have at least [maintainer access][perms] to the project. Another option is
 whether you want to trigger builds for mirror updates.
 
 ![Pull settings](repository_mirroring/repository_mirroring_pull_settings.png)

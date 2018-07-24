@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issuable
   class CommonSystemNotesService < ::BaseService
     prepend EE::Issuable::CommonSystemNotesService

@@ -1,5 +1,0 @@
----
-title: Invalidate cache with project details when repository is updated
-merge_request: 19774
-author:
-type: fixed

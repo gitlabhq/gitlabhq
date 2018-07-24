@@ -176,4 +176,55 @@ describe('DiffsStoreUtils', () => {
       expect(linesWithReferences[1].metaData.newPos).toEqual(3);
     });
   });
+
+  describe('trimFirstCharOfLineContent', () => {
+    it('trims the line when it starts with a space', () => {
+      expect(utils.trimFirstCharOfLineContent({ richText: ' diff' })).toEqual({ richText: 'diff' });
+    });
+
+    it('trims the line when it starts with a +', () => {
+      expect(utils.trimFirstCharOfLineContent({ richText: '+diff' })).toEqual({ richText: 'diff' });
+    });
+
+    it('trims the line when it starts with a -', () => {
+      expect(utils.trimFirstCharOfLineContent({ richText: '-diff' })).toEqual({ richText: 'diff' });
+    });
+
+    it('does not trims the line when it starts with a letter', () => {
+      expect(utils.trimFirstCharOfLineContent({ richText: 'diff' })).toEqual({ richText: 'diff' });
+    });
+
+    it('does not modify the provided object', () => {
+      const lineObj = {
+        richText: ' diff',
+      };
+
+      utils.trimFirstCharOfLineContent(lineObj);
+      expect(lineObj).toEqual({ richText: ' diff' });
+    });
+
+    it('handles a undefined or null parameter', () => {
+      expect(utils.trimFirstCharOfLineContent()).toEqual({});
+    });
+  });
+
+  describe('getDiffRefsByLineCode', () => {
+    it('should return diffRefs for all highlightedDiffLines', () => {
+      const diffFile = getDiffFileMock();
+      const map = utils.getDiffRefsByLineCode([diffFile]);
+      const { highlightedDiffLines } = diffFile;
+      const lineCodeCount = highlightedDiffLines.reduce(
+        (acc, line) => (line.lineCode ? acc + 1 : acc),
+        0,
+      );
+
+      const { baseSha, headSha, startSha } = diffFile.diffRefs;
+      const targetLine = map[highlightedDiffLines[4].lineCode];
+
+      expect(Object.keys(map).length).toEqual(lineCodeCount);
+      expect(targetLine.baseSha).toEqual(baseSha);
+      expect(targetLine.headSha).toEqual(headSha);
+      expect(targetLine.startSha).toEqual(startSha);
+    });
+  });
 });

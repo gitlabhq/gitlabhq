@@ -10,7 +10,7 @@ describe 'Multiple Issue Boards', :js do
   context 'with multiple issue boards enabled' do
     context 'authorized user' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
 
         login_as(user)
 
@@ -147,7 +147,7 @@ describe 'Multiple Issue Boards', :js do
   context 'with multiple issue boards disabled' do
     before do
       stub_licensed_features(multiple_project_issue_boards: false)
-      project.add_master(user)
+      project.add_maintainer(user)
 
       login_as(user)
     end
