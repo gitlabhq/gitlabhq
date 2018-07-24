@@ -10,9 +10,9 @@ const createComponent = (config) => {
     successLabel: 'Synced',
     failureLabel: 'Failed',
     neutralLabel: 'Out of sync',
-    successCount: 10,
-    failureCount: 5,
-    totalCount: 20,
+    successCount: 25,
+    failureCount: 10,
+    totalCount: 5000,
   }, config);
 
   return mountComponent(Component, defaultConfig);
@@ -32,7 +32,7 @@ describe('StackedProgressBarComponent', () => {
   describe('computed', () => {
     describe('neutralCount', () => {
       it('returns neutralCount based on totalCount, successCount and failureCount', () => {
-        expect(vm.neutralCount).toBe(5); // 20 - 10 - 5
+        expect(vm.neutralCount).toBe(4965); // 5000 - 25 - 10
       });
     });
   });
@@ -40,7 +40,11 @@ describe('StackedProgressBarComponent', () => {
   describe('methods', () => {
     describe('getPercent', () => {
       it('returns percentage from provided count based on `totalCount`', () => {
-        expect(vm.getPercent(10)).toBe(50);
+        expect(vm.getPercent(500)).toBe(10);
+      });
+
+      it('returns percentage with decimal place from provided count based on `totalCount`', () => {
+        expect(vm.getPercent(10)).toBe(0.2);
       });
     });
 
