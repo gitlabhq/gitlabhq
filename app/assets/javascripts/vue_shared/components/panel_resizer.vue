@@ -84,7 +84,7 @@
   <div
     :class="className"
     :style="cursorStyle"
-    class="dragHandle"
+    class="drag-handle"
     @mousedown="startDrag"
     @dblclick="resetSize"
   ></div>
