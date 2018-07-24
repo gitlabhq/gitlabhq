@@ -66,7 +66,8 @@ module Users
         :theme_id,
         :twitter,
         :username,
-        :website_url
+        :website_url,
+        :private_profile
       ]
     end
 

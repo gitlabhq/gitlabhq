@@ -2710,6 +2710,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
     t.string "feed_token"
+    t.boolean "private_profile"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe UsersController do
   let(:user) { create(:user) }
+  let(:private_user) { create(:user, private_profile: true) }
+  let(:public_user) { create(:user) }
 
   describe 'GET #show' do
     context 'with rendered views' do
@@ -98,16 +100,47 @@ describe UsersController do
 
         expect(assigns(:events)).to be_empty
       end
+
+      it 'hides events if the user has a private profile' do
+        Gitlab::DataBuilder::Push.build_sample(project, private_user)
+
+        get :show, username: private_user.username, format: :json
+
+        expect(assigns(:events)).to be_empty
+      end
     end
   end
 
   describe 'GET #calendar' do
-    it 'renders calendar' do
-      sign_in(user)
+    context 'for user' do
+      let(:project) { create(:project) }
 
-      get :calendar, username: user.username, format: :json
+      before do
+        sign_in(user)
+        project.add_developer(user)
+      end
 
-      expect(response).to have_gitlab_http_status(200)
+      context 'with public profile' do
+        it 'renders calendar' do
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
+          EventCreateService.new.push(project, public_user, push_data)
+
+          get :calendar, username: public_user.username, format: :json
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'with private profile' do
+        it 'does not render calendar' do
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
+          EventCreateService.new.push(project, private_user, push_data)
+
+          get :calendar, username: private_user.username, format: :json
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
 
     context 'forked project' do
@@ -150,9 +183,26 @@ describe UsersController do
       expect(assigns(:calendar_date)).to eq(Date.parse('2014-07-31'))
     end
 
-    it 'renders calendar_activities' do
-      get :calendar_activities, username: user.username
-      expect(response).to render_template('calendar_activities')
+    context 'for user' do
+      context 'with public profile' do
+        it 'renders calendar_activities' do
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, public_user)
+          EventCreateService.new.push(project, public_user, push_data)
+
+          get :calendar_activities, username: public_user.username
+          expect(assigns[:events]).not_to be_empty
+        end
+      end
+
+      context 'with private profile' do
+        it 'does not render calendar_activities' do
+          push_data = Gitlab::DataBuilder::Push.build_sample(project, private_user)
+          EventCreateService.new.push(project, private_user, push_data)
+
+          get :calendar_activities, username: private_user.username
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
     end
   end
 

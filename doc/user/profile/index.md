@@ -68,6 +68,28 @@ Alternatively, you can follow [this detailed procedure from the GitLab Team Hand
 which also covers the case where you have projects hosted with
 [GitLab Pages](../project/pages/index.md).
 
+## Private profile
+
+The following information will be hidden from the user profile page (https://gitlab.example.com/username) if this feature is enabled:
+
+- Atom feed
+- Date when account is created
+- Activity tab
+- Groups tab
+- Contributed projects tab
+- Personal projects tab
+- Snippets tab
+
+To enable private profile:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. Check the "Private profile" option.
+1. Hit **Update profile settings**.
+
+
+NOTE: **Note:**
+You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
 ## Troubleshooting
 
 ### Why do I keep getting signed out?
