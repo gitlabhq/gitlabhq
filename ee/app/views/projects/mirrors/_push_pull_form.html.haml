@@ -1,0 +1,42 @@
+- import_data = @project.import_data || @project.build_import_data
+- is_one_user_option = default_mirror_users.count == 1
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
+
+.js-form-insertion-point
+
+- if can_push
+  %template.js-push-mirrors-form
+    = f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
+      = rm_f.hidden_field :enabled, value: '1'
+      = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
+      = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
+
+- if can_pull
+  %template.js-pull-mirrors-form
+    = f.hidden_field :mirror, value: '1'
+    = f.hidden_field :username_only_import_url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
+    = f.hidden_field :only_mirror_protected_branches, class: 'js-mirror-protected-hidden'
+
+    = f.fields_for :import_data, import_data do |import_form|
+      = render partial: 'projects/mirrors/pull/ssh_host_keys', locals: { f: import_form }
+      = render partial: 'projects/mirrors/pull/authentication_method', locals: { f: import_form }
+
+    .form-group
+      = f.label :mirror_user_id, _('Mirror user'), class: 'label-light'
+      - if is_one_user_option
+        = select_tag(:mirror_user_id_select, options_for_mirror_user, class: 'js-mirror-user select2 lg append-bottom-5', required: true, disabled: true)
+        = f.hidden_field :mirror_user_id, value: default_mirror_users.first.id if is_one_user_option
+      - else
+        = f.select(:mirror_user_id, options_for_mirror_user, {}, class: 'js-mirror-user select2 lg append-bottom-5', required: true)
+
+      .help-block
+        = _('This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user.')
+
+    .form-check.append-bottom-10
+      = f.check_box :mirror_overwrites_diverged_branches, class: 'form-check-input', checked: false
+      = f.label :mirror_overwrites_diverged_branches, _('Overwrite diverged branches'), class: 'form-check-label'
+      .form-text.text-muted
+        = _("If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored.") % { default_branch: @project.default_branch }
+
+    - if @project.builds_enabled?
+      = render 'shared/mirror_trigger_builds_setting', f: f, checked: false
