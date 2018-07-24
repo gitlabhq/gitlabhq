@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::ScheduleDiffFilesDeletion, :migration, schema: 20180619121030 do
+describe Gitlab::BackgroundMigration::ScheduleDiffFilesDeletion, :migration, :sidekiq, schema: 20180619121030 do
   describe '#perform' do
     let(:merge_request_diffs) { table(:merge_request_diffs) }
     let(:merge_requests) { table(:merge_requests) }
