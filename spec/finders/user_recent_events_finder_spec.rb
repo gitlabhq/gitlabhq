@@ -29,11 +29,22 @@ describe UserRecentEventsFinder do
         public_project.add_developer(current_user)
       end
 
-      it 'returns all the events' do
-        expect(finder.execute).to include(private_event, internal_event, public_event)
+      context 'when profile is public' do
+        it 'returns all the events' do
+          expect(finder.execute).to include(private_event, internal_event, public_event)
+        end
+      end
+
+      context 'when profile is private' do
+        it 'returns no event' do
+          allow(Ability).to receive(:allowed?).and_call_original
+          allow(Ability).to receive(:allowed?).with(current_user, :read_user_profile, project_owner).and_return(false)
+          expect(finder.execute).to be_empty
+        end
       end
 
       it 'does not include the events if the user cannot read cross project' do
+        expect(Ability).to receive(:allowed?).and_call_original
         expect(Ability).to receive(:allowed?).with(current_user, :read_cross_project) { false }
         expect(finder.execute).to be_empty
       end

@@ -42,6 +42,7 @@ module API
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
+          optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
           all_or_none_of :extern_uid, :provider
         end
@@ -97,7 +98,7 @@ module API
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
-        users, options = with_custom_attributes(users, with: entity)
+        users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
 
         present paginate(users), options
       end
@@ -114,7 +115,7 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
+        opts = { with: current_user&.admin? ? Entities::UserWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
@@ -140,7 +141,7 @@ module API
         user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
-          present user, with: Entities::UserPublic
+          present user, with: Entities::UserPublic, current_user: current_user
         else
           conflict!('Email has already been taken') if User
               .where(email: user.email)
@@ -199,7 +200,7 @@ module API
         result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
-          present user, with: Entities::UserPublic
+          present user, with: Entities::UserPublic, current_user: current_user
         else
           render_validation_error!(user)
         end
@@ -546,7 +547,7 @@ module API
               Entities::UserPublic
             end
 
-          present current_user, with: entity
+          present current_user, with: entity, current_user: current_user
         end
       end
 
