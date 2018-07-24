@@ -100,7 +100,7 @@
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter_width});
+      width: calc(100% - #{$gutter-width});
     }
   }
 }
