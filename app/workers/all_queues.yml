@@ -98,6 +98,7 @@
 - pages_domain_verification
 - plugin
 - post_receive
+- post_receive:post_receive_push
 - process_commit
 - project_cache
 - project_destroy

@@ -29,25 +29,36 @@ class PostReceive
   def process_project_changes(post_received)
     changes = []
     refs = Set.new
+    post_receive_jobs = []
+    benchmark = Benchmark.measure do
+      post_received.changes_refs do |oldrev, newrev, ref|
+        @user ||= post_received.identify(newrev)
 
-    post_received.changes_refs do |oldrev, newrev, ref|
-      @user ||= post_received.identify(newrev)
+        unless @user
+          log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
+          return false # rubocop:disable Cop/AvoidReturnFromBlocks
+        end
 
-      unless @user
-        log("Triggered hook for non-existing user \"#{post_received.identifier}\"")
-        return false # rubocop:disable Cop/AvoidReturnFromBlocks
+        # if Gitlab::Git.tag_ref?(ref)
+        #   GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+        # elsif Gitlab::Git.branch_ref?(ref)
+        #   GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+        # end
+
+        if post_receive_job = post_receive_job_kind(ref)
+          post_receive_jobs << [post_receive_job, post_received.project.id, @user.id, oldrev, newrev, ref]
+        end
+
+        changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
+        refs << ref
       end
 
-      if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
-      elsif Gitlab::Git.branch_ref?(ref)
-        GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
-      end
 
-      changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
-      refs << ref
+      PostReceivePushWorker.bulk_perform_and_wait(post_receive_jobs, timeout: refs.count * 10) if post_receive_jobs.any?
     end
-
+    Rails.logger.error("* FRAN: #{benchmark.inspect}")
+    Rails.logger.error("* FRAN: Numero de cambios: #{refs.count}")
+    # binding.pry
     after_project_changes_hooks(post_received, @user, refs.to_a, changes)
   end
 
@@ -62,5 +73,13 @@ class PostReceive
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  end
+
+  def post_receive_job_kind(ref)
+    if Gitlab::Git.tag_ref?(ref)
+      'GitTagPushService'
+    elsif Gitlab::Git.branch_ref?(ref)
+      'GitPushService'
+    end
   end
 end

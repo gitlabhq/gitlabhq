@@ -66,7 +66,9 @@ describe PostReceive do
     end
 
     context "gitlab-ci.yml" do
-      let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
+      # let(:changes) { "123456 789012 refs/heads/feature\n654321 210987 refs/tags/tag" }
+      let(:heavy_changes) { File.read('spec/fixtures/heavy_post_receive_changes.txt') }
+      let(:changes) { heavy_changes }
 
       subject { described_class.new.perform(gl_repository, key_id, base64_changes) }
 
