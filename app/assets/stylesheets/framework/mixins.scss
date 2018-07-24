@@ -255,7 +255,7 @@
   }
 }
 
-@mixin build-trace-top-bar($height, $top_position) {
+@mixin build-trace-top-bar($height, $top-position) {
   height: $height;
   min-height: $height;
   background: $gray-light;
@@ -263,21 +263,21 @@
   color: $gl-text-color;
   position: sticky;
   position: -webkit-sticky;
-  top: $top_position;
+  top: $top-position;
   padding: $grid-size;
 }
 
 /*
 * Mixin that handles the position of the controls placed on the top bar
 */
-@mixin build-controllers($control_font_size, $flex_direction, $with_grow, $flex_grow_size) {
+@mixin build-controllers($control-font-size, $flex-direction, $with-grow, $flex-grow-size) {
   display: flex;
-  font-size: $control_font_size;
-  justify-content: $flex_direction;
+  font-size: $control-font-size;
+  justify-content: $flex-direction;
   align-items: center;
   align-self: baseline;
-  @if $with_grow {
-    flex-grow: $flex_grow_size;
+  @if $with-grow {
+    flex-grow: $flex-grow-size;
   }
 
   svg {
