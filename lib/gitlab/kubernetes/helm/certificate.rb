@@ -2,6 +2,9 @@ module Gitlab
   module Kubernetes
     module Helm
       class Certificate
+        INFINITE_EXPIRY = 1000.years
+        SHORT_EXPIRY = 30.minutes
+
         attr_reader :key, :cert
 
         def key_string
@@ -27,7 +30,7 @@ module Gitlab
           cert = OpenSSL::X509::Certificate.new
           cert.subject = cert.issuer = OpenSSL::X509::Name.parse(subject)
           cert.not_before = Time.now
-          cert.not_after = Time.now + 365 * 24 * 60 * 60
+          cert.not_after = INFINITE_EXPIRY.from_now
           cert.public_key = public_key
           cert.serial = 0x0
           cert.version = 2
@@ -44,7 +47,7 @@ module Gitlab
           new(key, cert)
         end
 
-        def issue
+        def issue(expires_in: SHORT_EXPIRY)
           key = OpenSSL::PKey::RSA.new(4096)
           public_key = key.public_key
 
@@ -54,7 +57,7 @@ module Gitlab
           cert.subject = OpenSSL::X509::Name.parse(subject)
           cert.issuer = self.cert.subject
           cert.not_before = Time.now
-          cert.not_after = Time.now + 365 * 24 * 60 * 60
+          cert.not_after = expires_in.from_now
           cert.public_key = public_key
           cert.serial = 0x0
           cert.version = 2

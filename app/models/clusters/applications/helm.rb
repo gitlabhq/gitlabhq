@@ -31,8 +31,7 @@ module Clusters
       end
 
       def issue_cert
-        ca_cert_obj
-          .issue
+        ca_cert_obj.issue
       end
 
       def set_initial_status
@@ -42,7 +41,8 @@ module Clusters
       end
 
       def install_command
-        tiller_cert = issue_cert
+        tiller_cert = ca_cert_obj.issue(expires_in: Gitlab::Kubernetes::Helm::Certificate::INFINITE_EXPIRY)
+
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name: name,
           files: {

@@ -43,6 +43,9 @@ describe Clusters::Applications::Helm do
 
       expect(subject.files[:'cert.pem']).to be_present
       expect(subject.files[:'key.pem']).to be_present
+
+      cert = OpenSSL::X509::Certificate.new(subject.files[:'cert.pem'])
+      expect(cert.not_after).to be > 999.years.from_now
     end
   end
 end

@@ -108,6 +108,9 @@ describe Clusters::Applications::Ingress do
 
       expect(subject[:'cert.pem']).to be_present
       expect(subject[:'key.pem']).to be_present
+
+      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
+      expect(cert.not_after).to be < 60.minutes.from_now
     end
   end
 end

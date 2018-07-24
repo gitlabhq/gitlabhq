@@ -53,6 +53,9 @@ describe Clusters::Applications::Jupyter do
 
       expect(subject[:'cert.pem']).to be_present
       expect(subject[:'key.pem']).to be_present
+
+      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
+      expect(cert.not_after).to be < 60.minutes.from_now
     end
 
     context 'when the helm application does not have a ca_cert' do
