@@ -116,13 +116,13 @@ describe "Projects > Settings > Pipelines settings" do
 
       context 'when there is a cluster with ingress and external_ip' do
         before do
-          cluster = create(:cluster, projects: [project])
-          cluster.create_application_ingress!(external_ip: '192.168.1.100')
+          ingress = create(:clusters_applications_ingress, :installed, external_ip: '192.168.1.100')
+          ingress.cluster.projects << project
         end
 
-        it 'shows the help text with the nip.io domain as an alternative to custom domain' do
+        it 'shows the help text with the nip.io domain as the default' do
           visit project_settings_ci_cd_path(project)
-          expect(page).to have_content('192.168.1.100.nip.io can be used as an alternative to a custom domain')
+          expect(page).to have_content('we will use 192.168.1.100.nip.io by default')
         end
       end
 
@@ -131,9 +131,9 @@ describe "Projects > Settings > Pipelines settings" do
           create(:cluster, projects: [project])
         end
 
-        it 'alternative to custom domain is not shown' do
+        it 'help text with nip.io default is not shown' do
           visit project_settings_ci_cd_path(project)
-          expect(page).not_to have_content('can be used as an alternative to a custom domain')
+          expect(page).not_to have_content('we will use 192.168.1.100.nip.io by default')
         end
       end
     end
