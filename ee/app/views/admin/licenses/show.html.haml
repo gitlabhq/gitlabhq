@@ -52,8 +52,8 @@
               %strong Expired
 
   .col-md-6
-    .card.bg-info
-      .card-header
+    .card.border-info
+      .card-header.bg-info.text-white
         Download license
       .card-body
         %p Your license will be included in your GitLab backup and will survive upgrades, so in normal usage you should never need to re-upload your <code>.gitlab-license</code> file.
@@ -62,8 +62,8 @@
         = link_to 'Download license', download_admin_license_path, class: "btn btn-info"
 
 
-    .card.bg-danger
-      .card-header
+    .card.border-danger
+      .card-header.bg-danger.text-white
         Remove license
       .card-body
         %p If you remove this license, GitLab will fall back on the previous license, if any.
