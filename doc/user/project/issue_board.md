@@ -27,7 +27,7 @@ You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
-With [Multiple Issue Boards](#multiple-issue-boards), available
+With [Multiple Issue Boards](#use-cases-for-multiple-issue-boards), available
 only in [GitLab Enterprise Edition](#features-per-tier),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
@@ -75,7 +75,7 @@ each team can have their own board to organize their workflow individually.
 
 #### Scrum team
 
-With multiple Issue Boards, each team has one board. Now you can move issues through each
+With Multiple Issue Boards, each team has one board. Now you can move issues through each
 part of the process. For instance: **To Do**, **Doing**, and **Done**.
 
 #### Organization of topics
