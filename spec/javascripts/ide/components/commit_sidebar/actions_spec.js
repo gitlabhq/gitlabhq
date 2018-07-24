@@ -32,4 +32,12 @@ describe('IDE commit sidebar actions', () => {
   it('renders current branch text', () => {
     expect(vm.$el.textContent).toContain('Commit to master branch');
   });
+
+  describe('commitToCurrentBranchText', () => {
+    it('escapes current branch', () => {
+      vm.$store.state.currentBranchId = '<img src="x" />';
+
+      expect(vm.commitToCurrentBranchText).not.toContain('<img src="x" />');
+    });
+  });
 });
