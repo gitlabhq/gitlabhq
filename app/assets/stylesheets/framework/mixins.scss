@@ -3,13 +3,13 @@
  * Mixins with fixed values
  */
 
-@mixin str-truncated($max_width: 82%) {
+@mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
   white-space: nowrap;
-  max-width: $max_width;
+  max-width: $max-width;
 }
 
 /*
