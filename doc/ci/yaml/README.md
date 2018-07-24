@@ -1590,43 +1590,6 @@ variables:
 
 You can set it globally or per-job in the [`variables`](#variables) section.
 
-### Custom build directories
-
-> [Introduced][gitlab-runner-876] in Gitlab Runner 11.1
-
-NOTE: **Note:**
-This can only be used when `custom_build_dir` is set to true in the [Runner's
-configuration](https://docs.gitlab.com/runner/configuration/advanced-configuration.html).
-
-By default, GitLab Runner clones the repository in the `/builds` directory,
-but sometimes your project might require to have the code in a specific
-directory, like the GO projects for example. In that case, you can specify
-the `CI_PROJECT_DIR` variable to tell the Runner in which directory to clone
-the repository:
-
-```yml
-image: golang:1.10-alpine3.7
-
-variables:
-  CI_PROJECT_DIR: /go/src/gitlab.com/namespace/project-name
-
-stages:
-    - test
-
-dir:
-    stage: test
-    script:
-      - pwd # /go/src/gitlab.com/namespace/project-name
-```
-
-The following executors may use this feature only when
-[concurrent](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
-is set to `1`:
-
-- `shell`
-- `ssh`
-- `docker`, `docker+machine` when the job's working directory is mounted as a host volume.
-
 ## Special YAML features
 
 It's possible to use special YAML features like anchors (`&`), aliases (`*`)
@@ -1820,7 +1783,6 @@ CI with various languages.
 [ce-7983]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7983
 [ce-7447]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7447
 [ce-12909]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/12909
-[gitlab-runner-876]: https://gitlab.com/gitlab-org/gitlab-runner/merge_requests/876
 [schedules]: ../../user/project/pipelines/schedules.md
 [variables-expressions]: ../variables/README.md#variables-expressions
 [ee]: https://about.gitlab.com/gitlab-ee/
