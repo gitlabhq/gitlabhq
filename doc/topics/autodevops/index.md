@@ -122,8 +122,15 @@ Auto Deploy, and Auto Monitoring will be silently skipped.
 ## Auto DevOps base domain
 
 The Auto DevOps base domain is required if you want to make use of [Auto
-Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy). It can be defined
-in three places:
+Review Apps](#auto-review-apps) and [Auto Deploy](#auto-deploy).
+
+For projects where you have set up a Kubernetes cluster,
+and where GitLab is able to read the IP of the cluster's ingress, the
+base domain will default to using [nip.io](http://nip.io). For example,
+if the ingress IP is `1.2.3.4`, then the base domain will be
+`1.2.3.4.nip.io`.
+
+Alternatively, the base domain can be defined in three places:
 
 - either under the project's CI/CD settings while [enabling Auto DevOps](#enabling-auto-devops)
 - or in instance-wide settings in the **admin area > Settings** under the "Continuous Integration and Delivery" section
@@ -140,10 +147,6 @@ In this case, `example.com` is the domain name under which the deployed apps wil
 and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see requirements](#requirements)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
-
-Alternatively you can use free public services like [nip.io](http://nip.io)
-which provide automatic wildcard DNS without any configuration. Just set the
-Auto DevOps base domain to `1.2.3.4.nip.io`.
 
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
