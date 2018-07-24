@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TimeTrackableEntity
   extend ActiveSupport::Concern
   extend Grape

@@ -327,7 +327,7 @@ Parameters:
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 - `avatar` (optional)           - Image file for user's avatar
-- `private_profile` (optional)   - User's profile is private - true or false
+- `private_profile` (optional)  - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
