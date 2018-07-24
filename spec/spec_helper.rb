@@ -188,7 +188,7 @@ RSpec.configure do |config|
   # altering Sidekiq behavior in an unrelated spec like so:
   #
   # around do |example|
-#     example.run
+  #   example.run
   # end
   config.before(:context, :migration) do
     schema_migrate_down!
