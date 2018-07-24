@@ -32,7 +32,7 @@ module Emails
         user = User.find_by(id: user_id)
         return unless user
 
-        subject_text = "Alert: #{@environment.name} - #{@alert.name} #{@alert.computed_operator} #{@alert.threshold} for 5 minutes"
+        subject_text = "Alert: #{@environment.name} - #{@alert.title} #{@alert.computed_operator} #{@alert.threshold} for 5 minutes"
 
         mail(to: user.notification_email, subject: subject(subject_text))
       end
