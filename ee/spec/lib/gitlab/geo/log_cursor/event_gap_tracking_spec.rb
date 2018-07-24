@@ -14,7 +14,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
     it 'does nothing when previous id not valid' do
       gap_tracking.previous_id = 0
 
-      expect(gap_tracking).to_not receive(:gap?)
+      expect(gap_tracking).not_to receive(:gap?)
 
       gap_tracking.check!(event_id_with_gap)
 
@@ -22,7 +22,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
     end
 
     it 'does nothing when there is no gap' do
-      expect(gap_tracking).to_not receive(:track_gap)
+      expect(gap_tracking).not_to receive(:track_gap)
 
       gap_tracking.check!(previous_event_id + 1)
 
@@ -88,7 +88,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
       Timecop.freeze do
         gap_tracking.track_gap(event_id_with_gap + 3)
 
-        expected_gaps = (previous_event_id+1..event_id_with_gap+2).collect { |id| [id.to_s, Time.now.to_i] }
+        expected_gaps = ((previous_event_id + 1)..(event_id_with_gap + 2)).collect { |id| [id.to_s, Time.now.to_i] }
 
         expect(read_gaps).to match_array(expected_gaps)
       end

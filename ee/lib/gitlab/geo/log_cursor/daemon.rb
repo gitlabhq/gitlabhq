@@ -34,38 +34,25 @@ module Gitlab
         end
 
         def run_once!
-          gap_tracking.fill_gaps.each { |event_id| handle_gap_event(event_id) }
+          gap_tracking.fill_gaps { |event_id| handle_gap_event(event_id) }
 
           # Wrap this with the connection to make it possible to reconnect if
           # PGbouncer dies: https://github.com/rails/rails/issues/29189
           ActiveRecord::Base.connection_pool.with_connection do
             LogCursor::EventLogs.new.fetch_in_batches { |batch, last_id| handle_events(batch, last_id) }
           end
-
-          gap_tracking.fill!
         end
-
-        private
 
         def handle_events(batch, previous_batch_last_id)
           logger.info("Handling events", first_id: batch.first.id, last_id: batch.last.id)
 
           gap_tracking.previous_id = previous_batch_last_id
 
-          batch.each_with_index do |event_log, index|
+          batch.each do |event_log|
             gap_tracking.check!(event_log.id)
 
-            handle_signle_event(event_log)
+            handle_single_event(event_log)
           end
-        end
-
-        def handle_gap_event(event_id)
-          event_log = ::Geo::EventLog.find_by(id: event_id)
-
-          return false unless event_log
-
-          handle_single_event(event_log)
-          true
         end
 
         def handle_single_event(event_log)
@@ -91,6 +78,15 @@ module Gitlab
         rescue NoMethodError => e
           logger.error(e.message)
           raise e
+        end
+
+        def handle_gap_event(event_id)
+          event_log = ::Geo::EventLog.find_by(id: event_id)
+
+          return false unless event_log
+
+          handle_single_event(event_log)
+          true
         end
 
         def event_klass_for(event)

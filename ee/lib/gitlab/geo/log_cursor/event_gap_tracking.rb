@@ -47,7 +47,7 @@ module Gitlab
           with_redis do |redis|
             expire_time = Time.now.to_i
 
-            (previous_id+1 .. current_id-1).each do |gap_id|
+            ((previous_id + 1)..(current_id - 1)).each do |gap_id|
               redis.zadd(GEO_LOG_CURSOR_GAPS, expire_time, gap_id)
             end
           end
