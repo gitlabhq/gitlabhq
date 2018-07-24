@@ -48,6 +48,7 @@ the following table.
 | `api` | Grants complete access to the API (read/write) ([introduced][ce-5951] in GitLab 8.15). Required for accessing Git repositories over HTTP when 2FA is enabled. |
 | `read_registry` | Allows to read [container registry] images if a project is private and authorization is required ([introduced][ce-11845] in GitLab 9.3). |
 | `sudo` | Allows performing API actions as any user in the system (if the authenticated user is an admin) ([introduced][ce-14838] in GitLab 10.2). |
+| `read_repository` | Allows read-access to the repository through git clone). |
 
 [2fa]: ../account/two_factor_authentication.md
 [api]: ../../api/README.md

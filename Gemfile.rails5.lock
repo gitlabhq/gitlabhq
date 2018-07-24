@@ -1205,7 +1205,7 @@ DEPENDENCIES
   ruby_parser (~> 3.8)
   rufus-scheduler (~> 3.4)
   rugged (~> 0.27)
-  sanitize (~> 4.6.5)
+  sanitize (~> 4.6)
   sass-rails (~> 5.0.6)
   scss_lint (~> 0.56.0)
   seed-fu (~> 2.3.7)
