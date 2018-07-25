@@ -1,4 +1,3 @@
-# rubocop:disable all
 class RemoveDuplicatedNotificationSettings < ActiveRecord::Migration
   def up
     duplicates = exec_query(%Q{

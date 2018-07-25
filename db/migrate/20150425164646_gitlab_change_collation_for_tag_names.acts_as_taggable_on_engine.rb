@@ -1,4 +1,3 @@
-# rubocop:disable all
 # This migration is a duplicate of 20150425164651_change_collation_for_tag_names.acts_as_taggable_on_engine.rb
 # It shold be applied before the index additions to ensure that `name` is case sensitive.
 

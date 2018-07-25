@@ -13,6 +13,7 @@ class CleanupAddTimezoneToIssuesClosedAt < ActiveRecord::Migration
   end
 
   # rubocop:disable Migration/Datetime
+  # rubocop:disable Migration/UpdateLargeTable
   def down
     change_column_type_concurrently(:issues, :closed_at, :datetime)
   end
