@@ -9,6 +9,7 @@ class AddSquashToMergeRequests < ActiveRecord::Migration
 
   def up
     unless column_exists?(:merge_requests, :squash)
+      # rubocop:disable Migration/UpdateLargeTable
       add_column_with_default :merge_requests, :squash, :boolean, default: false, allow_null: false
     end
   end

@@ -1,4 +1,3 @@
-# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
 # rubocop:disable Migration/UpdateLargeTable
 class AddSquashToMergeRequestsEE < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers

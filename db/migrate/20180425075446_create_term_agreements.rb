@@ -21,6 +21,7 @@ class CreateTermAgreements < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/RemoveIndex
     remove_index :term_agreements, name: 'term_agreements_unique_index'
 
     drop_table :term_agreements

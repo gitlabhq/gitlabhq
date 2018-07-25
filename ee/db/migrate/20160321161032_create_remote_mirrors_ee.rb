@@ -1,4 +1,3 @@
-# rubocop:disable Migration/Datetime
 # rubocop:disable Migration/Timestamps
 class CreateRemoteMirrorsEE < ActiveRecord::Migration
   def up

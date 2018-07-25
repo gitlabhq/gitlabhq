@@ -8,6 +8,7 @@ class CleanupUsersRssTokenRename < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/UpdateLargeTable
     rename_column_concurrently :users, :feed_token, :rss_token
   end
 end

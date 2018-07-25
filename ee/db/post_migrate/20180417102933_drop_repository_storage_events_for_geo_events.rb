@@ -29,6 +29,7 @@ class DropRepositoryStorageEventsForGeoEvents < ActiveRecord::Migration
   private
 
   def update_repository_storage_path(table)
+    # rubocop:disable Migration/UpdateColumnInBatches
     update_column_in_batches(table, :repository_storage_path, update_statement) do |t, q|
       q.where(t[:repository_storage_path].eq(nil))
     end

@@ -1,7 +1,5 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
-
-# rubocop:disable Migration/Datetime
 class DropUserActivitiesTable < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
