@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class InstanceStatistics::CohortsController < InstanceStatistics::ApplicationController
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled
