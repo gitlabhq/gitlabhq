@@ -1,5 +1,7 @@
 module Gitlab
   module TemplateHelper
+    include Gitlab::Utils::StrongMemoize
+
     def prepare_template_environment(file_path)
       return unless file_path.present?
 

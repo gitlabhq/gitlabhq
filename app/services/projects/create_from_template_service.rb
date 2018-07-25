@@ -21,7 +21,7 @@ module Projects
 
     def template_name
       strong_memoize(:template_name) do
-        params.delete(:template_name)
+        params.delete(:template_name).presence
       end
     end
   end
