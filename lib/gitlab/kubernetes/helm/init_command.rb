@@ -20,12 +20,12 @@ module Gitlab
         private
 
         def init_helm_command
-          tls_opts = "--tiller-tls" \
+          tls_flags = "--tiller-tls" \
             " --tiller-tls-verify --tls-ca-cert #{files_dir}/ca.pem" \
             " --tiller-tls-cert #{files_dir}/cert.pem" \
             " --tiller-tls-key #{files_dir}/key.pem"
 
-          "helm init #{tls_opts} >/dev/null"
+          "helm init #{tls_flags} >/dev/null"
         end
       end
     end

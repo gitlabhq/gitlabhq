@@ -34,20 +34,22 @@ module Gitlab
         end
 
         def script_command
-          if files.key?(:'ca.pem')
-            tls_opts = " --tls" \
-              " --tls-ca-cert #{files_dir}/ca.pem" \
-              " --tls-cert #{files_dir}/cert.pem" \
-              " --tls-key #{files_dir}/key.pem"
-          end
-
           <<~HEREDOC
-          helm install#{tls_opts} #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
+          helm install#{optional_tls_flags} #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
           HEREDOC
         end
 
         def optional_version_flag
           " --version #{version}" if version
+        end
+
+        def optional_tls_flags
+          if files.key?(:'ca.pem')
+            " --tls" \
+              " --tls-ca-cert #{files_dir}/ca.pem" \
+              " --tls-cert #{files_dir}/cert.pem" \
+              " --tls-key #{files_dir}/key.pem"
+          end
         end
       end
     end
