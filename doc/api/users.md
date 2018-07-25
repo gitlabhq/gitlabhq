@@ -295,10 +295,7 @@ Parameters:
 - `external` (optional)          - Flags the user as external - true or false(default)
 - `avatar` (optional)            - Image file for user's avatar
 - `private_profile` (optional)   - User's profile is private - true or false
-<<<<<<< HEAD
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
-=======
->>>>>>> upstream/master
 
 ## User modification
 
