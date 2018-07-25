@@ -245,11 +245,11 @@ When a bug is found:
    and any other label that may apply in the specific case
 1. Notify the respective Engineering Manager to evaluate and apply the [Severity label](../CONTRIBUTING.md#bug-severity-labels) and [Priority label](../CONTRIBUTING.md#bug-priority-labels).
 The counterpart Product Manager is included to weigh-in on prioritization as needed.
-1. If the ~bug is a **regression**, determine the release that the regression affects and add the corresponding `regression:xx.x` label.
-   1. If the affected release version can't be determined, add the generic ~regression label for the time being.
 1. If the ~bug is **NOT** a regression:
-   1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied.
+   1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied
 1. If the bug is a ~regression: 
+   1. Determine the release that the regression affects and add the corresponding `regression:xx.x` label.
+      1. If the affected release version can't be determined, add the generic ~regression label for the time being.
    1. If the affected version `xx.x` in `regression:xx.x` is the **current release**, schedule it for the current milestone as it should be fixed immediately.
       1. This falls under regressions which worked in the last release and the current RCs. More detailed explanations in the **Prioritization** section above. 
    1. If the affected version `xx.x` in `regression:xx.x` is older than the **current release**
