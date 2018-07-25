@@ -22,52 +22,45 @@ module Gitlab
         end
 
         def self.generate_root
-          key = OpenSSL::PKey::RSA.new(4096)
-          public_key = key.public_key
-
-          subject = "/C=US"
-
-          cert = OpenSSL::X509::Certificate.new
-          cert.subject = cert.issuer = OpenSSL::X509::Name.parse(subject)
-          cert.not_before = Time.now
-          cert.not_after = INFINITE_EXPIRY.from_now
-          cert.public_key = public_key
-          cert.serial = 0x0
-          cert.version = 2
-
-          extension_factory = OpenSSL::X509::ExtensionFactory.new
-          extension_factory.subject_certificate = cert
-          extension_factory.issuer_certificate = cert
-          cert.add_extension(extension_factory.create_extension('subjectKeyIdentifier', 'hash'))
-          cert.add_extension(extension_factory.create_extension('basicConstraints', 'CA:TRUE', true))
-          cert.add_extension(extension_factory.create_extension('keyUsage', 'cRLSign,keyCertSign', true))
-
-          cert.sign key, OpenSSL::Digest::SHA256.new
-
-          new(key, cert)
+          _issue(signed_by: nil, expires_in: INFINITE_EXPIRY, ca: true)
         end
 
         def issue(expires_in: SHORT_EXPIRY)
+          self.class._issue(signed_by: self, expires_in: expires_in, ca: false)
+        end
+
+        private
+
+        def self._issue(signed_by:, expires_in:, ca:)
           key = OpenSSL::PKey::RSA.new(4096)
           public_key = key.public_key
 
-          subject = "/C=US"
+          subject = OpenSSL::X509::Name.parse("/C=US")
 
           cert = OpenSSL::X509::Certificate.new
-          cert.subject = OpenSSL::X509::Name.parse(subject)
-          cert.issuer = self.cert.subject
+          cert.subject = subject
+
+          cert.issuer = signed_by&.cert&.subject || subject
+
           cert.not_before = Time.now
           cert.not_after = expires_in.from_now
           cert.public_key = public_key
           cert.serial = 0x0
           cert.version = 2
 
-          cert.sign self.key, OpenSSL::Digest::SHA256.new
+          if ca
+            extension_factory = OpenSSL::X509::ExtensionFactory.new
+            extension_factory.subject_certificate = cert
+            extension_factory.issuer_certificate = cert
+            cert.add_extension(extension_factory.create_extension('subjectKeyIdentifier', 'hash'))
+            cert.add_extension(extension_factory.create_extension('basicConstraints', 'CA:TRUE', true))
+            cert.add_extension(extension_factory.create_extension('keyUsage', 'cRLSign,keyCertSign', true))
+          end
 
-          self.class.new(key, cert)
+          cert.sign(signed_by&.key || key, OpenSSL::Digest::SHA256.new)
+
+          new(key, cert)
         end
-
-        private
 
         def initialize(key, cert)
           @key = key
