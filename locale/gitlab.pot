@@ -2054,6 +2054,9 @@ msgstr ""
 msgid "Copy file path to clipboard"
 msgstr ""
 
+msgid "Copy incoming email address to clipboard"
+msgstr ""
+
 msgid "Copy reference to clipboard"
 msgstr ""
 

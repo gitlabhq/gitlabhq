@@ -44,19 +44,27 @@ describe('ServiceDeskSetting', () => {
     });
 
     describe('with incomingEmail', () => {
+      const incomingEmail = 'foo@bar.com';
+
       beforeEach(() => {
         vm = new ServiceDeskSetting({
           propsData: {
             isEnabled: true,
-            incomingEmail: 'foo@bar.com',
+            incomingEmail,
           },
         }).$mount();
       });
 
       it('should see email', () => {
-        expect(vm.$refs['service-desk-incoming-email'].textContent.trim()).toEqual('foo@bar.com');
+        expect(vm.$refs['service-desk-incoming-email'].textContent.trim()).toEqual(incomingEmail);
         expect(vm.$el.querySelector('.fa-spinner')).toBeNull();
         expect(vm.$el.querySelector('.fa-exclamation-circle')).toBeNull();
+      });
+
+      it('renders a copy to clipboard button', () => {
+        const button = vm.$el.querySelector('.btn-clipboard');
+        expect(button).not.toBe(null);
+        expect(button.dataset.clipboardText).toBe(incomingEmail);
       });
     });
   });
