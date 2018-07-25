@@ -7,8 +7,9 @@
           = sprite_icon('chevron-up', size: 18, css_class: 'card-collapse-icon')
           %strong.header-text
             = project_registry.project.name
-          %button.btn.btn-outline-primary.btn-sm{ type: 'button' }
-            Resync
+          = link_to(resync_project_admin_geo_nodes_path(project_registry), method: :post) do
+            %button.btn.btn-outline-primary.btn-sm{ type: 'button' }
+              Resync
 
     .collapse.show{id: "project-#{project_registry.project.id}", 'aria-labelledby' => "project-#{project_registry.project.id}-header" }
       .card-body

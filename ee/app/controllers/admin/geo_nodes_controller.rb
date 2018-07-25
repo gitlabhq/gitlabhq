@@ -15,6 +15,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def projects
     finder = Geo::ProjectRegistryStatusFinder.new
+
     case params[:sync_status]
     when 'never'
       @projects = finder.never_synced_projects.page(params[:page])
@@ -25,8 +26,30 @@ class Admin::GeoNodesController < Admin::ApplicationController
     else
       @registries = finder.synced_projects.page(params[:page])
     end
+  end
 
-    # Gitlab::Geo.current_node.projects.includes(:project_registry).page(params[:page])
+  def recheck
+    @registry = Geo::ProjectRegistry.find_by_id(params[:id])
+    @registry.flag_repository_for_recheck
+    flash[:notice] = "#{@registry.project.full_name} is scheduled for recheck"
+
+    redirect_to projects_admin_geo_nodes_path
+  end
+
+  def resync
+    @registry = Geo::ProjectRegistry.find_by_id(params[:id])
+    @registry.flag_repository_for_resync
+    flash[:notice] = "#{@registry.project.full_name} is scheduled for resync"
+
+    redirect_to projects_admin_geo_nodes_path
+  end
+
+  def force_redownload
+    @registry = Geo::ProjectRegistry.find_by_id(params[:id])
+    @registry.flag_repository_for_redownload
+    flash[:notice] = "#{@registry.project.full_name} is scheduled for forced redownload"
+
+    redirect_to projects_admin_geo_nodes_path
   end
 
   def create

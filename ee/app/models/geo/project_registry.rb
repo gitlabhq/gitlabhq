@@ -201,6 +201,21 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     public_send("#{type}_verification_retry_count").to_i # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  # Flag the repository to be rechecked
+  def flag_repository_for_recheck
+    self.update(repository_verification_checksum_sha: nil)
+  end
+
+  # Flag the repository to be resynced
+  def flag_repository_for_resync
+    self.update(resync_repository: true)
+  end
+
+  # Flag the repository to perform a full redownload
+  def flag_repository_for_redownload
+    self.update(resync_repository: true, force_to_redownload_repository: true)
+  end
+
   private
 
   def fetches_since_gc_redis_key

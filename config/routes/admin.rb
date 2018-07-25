@@ -138,6 +138,11 @@ namespace :admin do
     end
     collection do
       get :projects
+      scope(path: 'projects/:id') do
+        post :recheck_project, action: :recheck
+        post :resync_project, action: :resync
+        post :force_redownload_project, action: :force_redownload
+      end
     end
   end
 
