@@ -88,12 +88,8 @@
           = nav_link(controller: :requests_profiles) do
             = link_to admin_requests_profiles_path, title: _('Requests Profiles') do
               %span
-<<<<<<< HEAD
-                Requests Profiles
-          = render 'layouts/nav/ee/new_admin_monitoring_sidebar'
-=======
                 = _('Requests Profiles')
->>>>>>> upstream/master
+          = render 'layouts/nav/ee/new_admin_monitoring_sidebar'
 
       = nav_link(controller: :broadcast_messages) do
         = link_to admin_broadcast_messages_path do

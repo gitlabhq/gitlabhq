@@ -27,8 +27,7 @@
           = nav_link(controller: [:accounts, :two_factor_auths], html_options: { class: "fly-out-top-item" } ) do
             = link_to profile_account_path do
               %strong.fly-out-top-item-name
-<<<<<<< HEAD
-                #{ _('Account') }
+                = _('Account')
       - if Gitlab::CurrentSettings.should_check_namespace_plan?
         = nav_link(controller: :billings) do
           = link_to profile_billings_path do
@@ -41,9 +40,6 @@
               = link_to profile_billings_path do
                 %strong.fly-out-top-item-name
                   #{ _('Billing') }
-=======
-                = _('Account')
->>>>>>> upstream/master
       - if Gitlab::CurrentSettings.user_oauth_applications?
         = nav_link(controller: 'oauth/applications') do
           = link_to applications_profile_path do
@@ -166,8 +162,7 @@
           = nav_link(path: 'profiles#audit_log', html_options: { class: "fly-out-top-item" } ) do
             = link_to audit_log_profile_path do
               %strong.fly-out-top-item-name
-<<<<<<< HEAD
-                #{ _('Authentication Log') }
+                = _('Authentication Log')
       = nav_link(path: 'profiles#pipeline_quota') do
         = link_to profile_pipeline_quota_path do
           .nav-icon-container
@@ -179,8 +174,5 @@
             = link_to profile_pipeline_quota_path do
               %strong.fly-out-top-item-name
                 #{ _('Pipeline quota') }
-=======
-                = _('Authentication Log')
->>>>>>> upstream/master
 
     = render 'shared/sidebar_toggle_button'
