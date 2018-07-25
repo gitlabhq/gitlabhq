@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import SidebarParticipants from 'ee/epics/sidebar/components/sidebar_participants.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockParticipants } from '../../epic_show/mock_data';
+import { mockParticipants } from 'ee_spec/epics/epic_show/mock_data';
 
 const createComponent = () => {
   const Component = Vue.extend(SidebarParticipants);
