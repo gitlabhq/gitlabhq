@@ -66,7 +66,7 @@ class RenameMoreReservedProjectNames < ActiveRecord::Migration
 
   def rename_project_row(project, path)
     project.respond_to?(:update_attributes) &&
-      project.update_attributes(path: path) &&
+      project.update(path: path) &&
       project.respond_to?(:rename_repo)
   end
 end

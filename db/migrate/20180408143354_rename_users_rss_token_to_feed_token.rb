@@ -6,6 +6,7 @@ class RenameUsersRssTokenToFeedToken < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
+    # rubocop:disable Migration/UpdateLargeTable
     rename_column_concurrently :users, :rss_token, :feed_token
   end
 
