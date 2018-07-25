@@ -22,6 +22,8 @@ class PostReceivePushWorker
     project = Project.find_by(id: project_id)
     user = User.find_by(id: user_id)
 
+    return unless project && user
+
     job_kind.constantize.new(project, user, oldrev: oldrev, newrev: newrev, ref: ref).execute
   end
 end
