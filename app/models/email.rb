@@ -25,6 +25,10 @@ class Email < ActiveRecord::Base
     self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
   end
 
+  def accept_pending_invitations!
+    user.accept_pending_invitations!
+  end
+
   # once email is confirmed, update the gpg signatures
   def update_invalid_gpg_signatures
     user.update_invalid_gpg_signatures if confirmed?
