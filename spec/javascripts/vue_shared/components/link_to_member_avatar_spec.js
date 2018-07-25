@@ -69,7 +69,7 @@ describe('Link To Members Components', () => {
       avatarHtmlClass: 's32 avatar avatar-inline avatar-placeholder',
       avatarClass: 'avatar avatar-inline s32 myextraavatarclass',
       tooltipClass: 'has-tooltip',
-      linkClass: 'author_link has-tooltip myextralinkclass ',
+      linkClass: 'author-link has-tooltip myextralinkclass ',
     };
 
     Object.keys(correctVals).forEach(computedKey => {
