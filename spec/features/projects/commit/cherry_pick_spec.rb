@@ -21,7 +21,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
     end
   end
 
@@ -32,7 +32,7 @@ describe 'Cherry-pick Commits' do
         uncheck 'create_merge_request'
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
     end
   end
 
@@ -59,7 +59,7 @@ describe 'Cherry-pick Commits' do
       page.within('#modal-cherry-pick-commit') do
         click_button 'Cherry-pick'
       end
-      expect(page).to have_content('The commit has been successfully cherry-picked. You can now submit a merge request to get this change into the original branch.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master. You can now submit a merge request to get this change into the original branch.')
       expect(page).to have_content("From cherry-pick-#{master_pickable_commit.short_id} into master")
     end
   end
@@ -86,7 +86,7 @@ describe 'Cherry-pick Commits' do
         click_button 'Cherry-pick'
       end
 
-      expect(page).to have_content('The commit has been successfully cherry-picked.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
     end
   end
 
