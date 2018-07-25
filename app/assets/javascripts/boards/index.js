@@ -1,5 +1,3 @@
-/* eslint-disable quote-props, comma-dangle */
-
 import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
