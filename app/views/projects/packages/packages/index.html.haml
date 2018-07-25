@@ -1,0 +1,30 @@
+- @no_container = true
+- page_title "Packages"
+
+
+%div{ class: container_class }
+  %table.table
+    %thead
+      %tr
+        %th ID
+        %th Name
+        %th Version
+        %th Files
+        %th Created at
+
+    %tbody
+      - @packages.each do |package|
+        %tr
+          %td
+            = package.id
+          %td
+            = package.name
+          %td
+            = package.version
+          %td
+            %ul.content-list
+              - package.package_files.each do |package_file|
+                %li
+                  = package_file.file.identifier
+          %td
+            = package.created_at
