@@ -3,7 +3,7 @@ author: Vincent Tunru
 author_gitlab: Vinnl
 level: advanced
 article_type: user guide
-date: 2018-06-14
+date: 2018-07-26
 description: 'Confidence checking your entire app every time a new feature is added can quickly become repetitive. Learn how to automate it with GitLab CI/CD.'
 ---
 
@@ -71,7 +71,7 @@ describe('A visitor without account', function(){
 The functions `describe`, `it`, and `browser` are provided by WebdriverIO. Let's break them down one by one.
 
 The function `describe` allows you to group related tests. This can be useful if, for example, you want to
-run the same initialisation commands (using [`beforeEach`](https://jasmine.github.io/api/2.9/global.html#beforeEach)) for
+run the same initialization commands (using [`beforeEach`](https://jasmine.github.io/api/2.9/global.html#beforeEach)) for
 multiple tests, such as making sure you are logged in.
 
 The function `it` defines an individual test.
@@ -89,7 +89,7 @@ page and to interact with them - for example, to click on the link back to the h
 The simple test shown above
 can already give us a lot of confidence if it passes: we know our deployment has succeeded, that the
 elements are visible on the page and that actual browsers can interact with it, and that routing
-works as expected. And all that in just ten lines with gratituous whitespace! Add to that succeeding
+works as expected. And all that in just 10 lines with gratituous whitespace! Add to that succeeding
 unit tests and a successfully completed pipeline, and you can be fairly confident that the
 dependency upgrade did not break anything without even having to look at your website.
 
@@ -146,7 +146,7 @@ For the scope of this article, we've defined an additional [CI/CD stage](../../y
 `confidence-check` that is executed _after_ the stage that deploys the review app. It uses the `node:latest` [Docker
 image](../../docker/using_docker_images.html). However, WebdriverIO fires up actual browsers
 to interact with your application, so we need to install and run them.
-Furthermore, WebdriverIO uses the Selenium as a common interface to control different browsers,
+Furthermore, WebdriverIO uses Selenium as a common interface to control different browsers,
 so we need to install and run Selenium as well. Luckily, the Selenium project provides the Docker images
 [standalone-firefox](https://hub.docker.com/r/selenium/standalone-firefox/) and
 [standalone-chrome](https://hub.docker.com/r/selenium/standalone-chrome/) that provide just that for
