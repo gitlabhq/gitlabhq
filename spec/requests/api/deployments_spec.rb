@@ -5,7 +5,7 @@ describe API::Deployments do
   let(:non_member)  { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/deployments' do

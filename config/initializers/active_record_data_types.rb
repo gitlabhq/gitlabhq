@@ -65,7 +65,7 @@ elsif Gitlab::Database.mysql?
     prepend RegisterDateTimeWithTimeZone
 
     # Add the class `DateTimeWithTimeZone` so we can map `timestamp` to it.
-    class MysqlDateTimeWithTimeZone < MysqlDateTime
+    class MysqlDateTimeWithTimeZone < (Gitlab.rails5? ? ActiveRecord::Type::DateTime : MysqlDateTime)
       def type
         :datetime_with_timezone
       end

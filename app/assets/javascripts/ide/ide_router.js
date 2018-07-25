@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
+import { join as joinPath } from 'path';
 import flash from '~/flash';
 import store from './stores';
 import { activityBarViews } from './constants';
@@ -37,16 +38,28 @@ const router = new VueRouter({
   base: `${gon.relative_url_root}/-/ide/`,
   routes: [
     {
-      path: '/project/:namespace/:project+',
+      path: '/project/:namespace+/:project',
       component: EmptyRouterComponent,
       children: [
         {
-          path: ':targetmode(edit|tree|blob)/*',
+          path: ':targetmode(edit|tree|blob)/:branchid+/-/*',
           component: EmptyRouterComponent,
+        },
+        {
+          path: ':targetmode(edit|tree|blob)/:branchid+/',
+          redirect: to => joinPath(to.path, '/-/'),
+        },
+        {
+          path: ':targetmode(edit|tree|blob)',
+          redirect: to => joinPath(to.path, '/master/-/'),
         },
         {
           path: 'merge_requests/:mrid',
           component: EmptyRouterComponent,
+        },
+        {
+          path: '',
+          redirect: to => joinPath(to.path, '/edit/master/-/'),
         },
       ],
     },
@@ -63,11 +76,10 @@ router.beforeEach((to, from, next) => {
       .then(() => {
         const fullProjectId = `${to.params.namespace}/${to.params.project}`;
 
-        const baseSplit = (to.params[0] && to.params[0].split('/-/')) || [''];
-        const branchId = baseSplit[0].slice(-1) === '/' ? baseSplit[0].slice(0, -1) : baseSplit[0];
+        const branchId = to.params.branchid;
 
         if (branchId) {
-          const basePath = baseSplit.length > 1 ? baseSplit[1] : '';
+          const basePath = to.params[0] || '';
 
           store.dispatch('setCurrentBranchId', branchId);
 
@@ -95,20 +107,13 @@ router.beforeEach((to, from, next) => {
               }
             })
             .catch(e => {
-              flash(
-                'Error while loading the branch files. Please try again.',
-                'alert',
-                document,
-                null,
-                false,
-                true,
-              );
               throw e;
             });
         } else if (to.params.mrid) {
           store
             .dispatch('getMergeRequestData', {
               projectId: fullProjectId,
+              targetProjectId: to.query.target_project,
               mergeRequestId: to.params.mrid,
             })
             .then(mr => {
@@ -127,12 +132,14 @@ router.beforeEach((to, from, next) => {
             .then(() =>
               store.dispatch('getMergeRequestVersions', {
                 projectId: fullProjectId,
+                targetProjectId: to.query.target_project,
                 mergeRequestId: to.params.mrid,
               }),
             )
             .then(() =>
               store.dispatch('getMergeRequestChanges', {
                 projectId: fullProjectId,
+                targetProjectId: to.query.target_project,
                 mergeRequestId: to.params.mrid,
               }),
             )

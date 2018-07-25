@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, camelcase, guard-for-in, no-restricted-syntax, no-unused-vars, max-len */
+/* eslint-disable camelcase, guard-for-in, no-restricted-syntax */
 /* global NoteModel */
 
 import $ from 'jquery';

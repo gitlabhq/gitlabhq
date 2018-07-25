@@ -1,5 +1,0 @@
----
-title: Fix filename matching when processing file or blob search results
-merge_request:
-author:
-type: fixed

@@ -12,7 +12,7 @@ RSpec.describe 'Dashboard Issues' do
   let!(:other_issue) { create :issue, project: project }
 
   before do
-    [project, project_with_issues_disabled].each { |project| project.add_master(current_user) }
+    [project, project_with_issues_disabled].each { |project| project.add_maintainer(current_user) }
     sign_in(current_user)
     visit issues_dashboard_path(assignee_id: current_user.id)
   end

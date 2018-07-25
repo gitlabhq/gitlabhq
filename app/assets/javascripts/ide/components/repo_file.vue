@@ -40,6 +40,11 @@ export default {
       default: false,
     },
   },
+  data() {
+    return {
+      mouseOver: false,
+    };
+  },
   computed: {
     ...mapGetters([
       'getChangesInFolder',
@@ -95,23 +100,55 @@ export default {
       return this.file.changed || this.file.tempFile || this.file.staged;
     },
   },
+  mounted() {
+    if (this.hasPathAtCurrentRoute()) {
+      this.scrollIntoView(true);
+    }
+  },
   updated() {
     if (this.file.type === 'blob' && this.file.active) {
-      this.$el.scrollIntoView({
-        behavior: 'smooth',
-        block: 'nearest',
-      });
+      this.scrollIntoView();
     }
   },
   methods: {
     ...mapActions(['toggleTreeOpen']),
     clickFile() {
       // Manual Action if a tree is selected/opened
-      if (this.isTree && this.$router.currentRoute.path === `/project${this.file.url}`) {
+      if (this.isTree && this.hasUrlAtCurrentRoute()) {
         this.toggleTreeOpen(this.file.path);
       }
 
       router.push(`/project${this.file.url}`);
+    },
+    scrollIntoView(isInit = false) {
+      const block = isInit && this.isTree ? 'center' : 'nearest';
+
+      this.$el.scrollIntoView({
+        behavior: 'smooth',
+        block,
+      });
+    },
+    hasPathAtCurrentRoute() {
+      if (!this.$router || !this.$router.currentRoute) {
+        return false;
+      }
+
+      // - strip route up to "/-/" and ending "/"
+      const routePath = this.$router.currentRoute.path
+        .replace(/^.*?[/]-[/]/g, '')
+        .replace(/[/]$/g, '');
+
+      // - strip ending "/"
+      const filePath = this.file.path
+        .replace(/[/]$/g, '');
+
+      return filePath === routePath;
+    },
+    hasUrlAtCurrentRoute() {
+      return this.$router.currentRoute.path === `/project${this.file.url}`;
+    },
+    toggleHover(over) {
+      this.mouseOver = over;
     },
   },
 };
@@ -124,6 +161,8 @@ export default {
       class="file"
       role="button"
       @click="clickFile"
+      @mouseover="toggleHover(true)"
+      @mouseout="toggleHover(false)"
     >
       <div
         class="file-name"
@@ -177,6 +216,7 @@ export default {
           :project-id="file.projectId"
           :branch="file.branchId"
           :path="file.path"
+          :mouse-over="mouseOver"
           class="float-right prepend-left-8"
         />
       </div>

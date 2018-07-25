@@ -117,7 +117,7 @@ class Environment < ActiveRecord::Base
     external_url.gsub(%r{\A.*?://}, '')
   end
 
-  def stop_action?
+  def stop_action_available?
     available? && stop_action.present?
   end
 

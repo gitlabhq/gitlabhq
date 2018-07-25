@@ -13,6 +13,7 @@ describe "User deletes milestone", :js do
   end
 
   it "deletes milestone" do
+    click_link(milestone.title)
     click_button("Delete")
     click_button("Delete milestone")
 

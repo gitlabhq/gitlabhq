@@ -1,5 +1,0 @@
----
-title: Improve performance of GroupsController#show
-merge_request:
-author:
-type: performance

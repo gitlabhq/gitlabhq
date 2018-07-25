@@ -21,7 +21,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
-  delegate :bundle_to_disk, :create_from_bundle, to: :raw_repository
+  delegate :bundle_to_disk, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -83,7 +83,7 @@ class Repository
     @raw_repository&.cleanup
   end
 
-  # Return absolute path to repository
+  # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=
       begin
@@ -99,11 +99,11 @@ class Repository
     "#<#{self.class.name}:#{@disk_path}>"
   end
 
-  def commit(ref = 'HEAD')
+  def commit(ref = nil)
     return nil unless exists?
     return ref if ref.is_a?(::Commit)
 
-    find_commit(ref)
+    find_commit(ref || root_ref)
   end
 
   # Finding a commit by the passed SHA
@@ -154,9 +154,9 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    refs = ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
+    commits = raw.new_commits(newrev)
 
-    refs.map { |sha| commit(sha.strip) }
+    ::Commit.decorate(commits, project)
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
@@ -171,8 +171,8 @@ class Repository
     CommitCollection.new(project, commits, ref)
   end
 
-  def find_branch(name, fresh_repo: true)
-    raw_repository.find_branch(name, fresh_repo)
+  def find_branch(name)
+    raw_repository.find_branch(name)
   end
 
   def find_tag(name)
@@ -247,7 +247,7 @@ class Repository
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     raw_repository.write_ref(keep_around_ref_name(sha), sha, shell: false)
   rescue Gitlab::Git::CommandError => ex
-    Rails.logger.error "Unable to create keep-around reference for repository #{path}: #{ex}"
+    Rails.logger.error "Unable to create keep-around reference for repository #{disk_path}: #{ex}"
   end
 
   def kept_around?(sha)
@@ -278,6 +278,10 @@ class Repository
       format,
       append_sha: append_sha
     )
+  end
+
+  def cached_methods
+    CACHED_METHODS
   end
 
   def expire_tags_cache
@@ -420,7 +424,7 @@ class Repository
 
   # Runs code after the HEAD of a repository is changed.
   def after_change_head
-    expire_method_caches(METHOD_CACHES_FOR_FILE_TYPES.keys)
+    expire_all_method_caches
   end
 
   # Runs code after a repository has been forked/imported.
@@ -455,12 +459,12 @@ class Repository
     expire_branches_cache
   end
 
-  def method_missing(m, *args, &block)
-    if m == :lookup && !block_given?
-      lookup_cache[m] ||= {}
-      lookup_cache[m][args.join(":")] ||= raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(msg, *args, &block)
+    if msg == :lookup && !block_given?
+      lookup_cache[msg] ||= {}
+      lookup_cache[msg][args.join(":")] ||= raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     else
-      raw_repository.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+      raw_repository.__send__(msg, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
     end
   end
 
@@ -557,7 +561,7 @@ class Repository
   end
 
   def rendered_readme
-    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project) if readme
+    MarkupHelper.markup_unsafe(readme.name, readme.data, project: project, markdown_engine: :redcarpet) if readme
   end
   cache_method :rendered_readme
 
@@ -847,7 +851,7 @@ class Repository
     @root_ref_sha ||= commit(root_ref).sha
   end
 
-  delegate :merged_branch_names, :can_be_merged?, to: :raw_repository
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id

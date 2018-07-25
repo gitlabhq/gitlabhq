@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   # Base class for the various service classes that count project data (e.g.
   # issues or forks).
@@ -22,8 +24,10 @@ module Projects
       )
     end
 
-    def cache_key
-      ['projects', 'count_service', VERSION, @project.id, cache_key_name]
+    def cache_key(key = nil)
+      cache_key = key || cache_key_name
+
+      ['projects', 'count_service', VERSION, @project.id, cache_key]
     end
 
     def self.query(project_ids)

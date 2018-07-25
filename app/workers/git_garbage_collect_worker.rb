@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GitGarbageCollectWorker
   include ApplicationWorker
 
@@ -5,12 +7,6 @@ class GitGarbageCollectWorker
 
   # Timeout set to 24h
   LEASE_TIMEOUT = 86400
-
-  GITALY_MIGRATED_TASKS = {
-    gc: :garbage_collect,
-    full_repack: :repack_full,
-    incremental_repack: :repack_incremental
-  }.freeze
 
   def perform(project_id, task = :gc, lease_key = nil, lease_uuid = nil)
     project = Project.find(project_id)
@@ -27,21 +23,7 @@ class GitGarbageCollectWorker
     end
 
     task = task.to_sym
-    cmd = command(task)
-
-    gitaly_migrate(GITALY_MIGRATED_TASKS[task], status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-      if is_enabled
-        gitaly_call(task, project.repository.raw_repository)
-      else
-        repo_path = project.repository.path_to_repo
-        description = "'#{cmd.join(' ')}' in #{repo_path}"
-        Gitlab::GitLogger.info(description)
-
-        output, status = Gitlab::Popen.popen(cmd, repo_path)
-
-        Gitlab::GitLogger.error("#{description} failed:\n#{output}") unless status.zero?
-      end
-    end
+    gitaly_call(task, project.repository.raw_repository)
 
     # Refresh the branch cache in case garbage collection caused a ref lookup to fail
     flush_ref_caches(project) if task == :gc
@@ -82,21 +64,12 @@ class GitGarbageCollectWorker
     when :incremental_repack
       client.repack_incremental
     end
-  end
-
-  def command(task)
-    case task
-    when :gc
-      git(write_bitmaps: bitmaps_enabled?) + %w[gc]
-    when :full_repack
-      git(write_bitmaps: bitmaps_enabled?) + %w[repack -A -d --pack-kept-objects]
-    when :incremental_repack
-      # Normal git repack fails when bitmaps are enabled. It is impossible to
-      # create a bitmap here anyway.
-      git(write_bitmaps: false) + %w[repack -d]
-    else
-      raise "Invalid gc task: #{task.inspect}"
-    end
+  rescue GRPC::NotFound => e
+    Gitlab::GitLogger.error("#{__method__} failed:\nRepository not found")
+    raise Gitlab::Git::Repository::NoRepository.new(e)
+  rescue GRPC::BadStatus => e
+    Gitlab::GitLogger.error("#{__method__} failed:\n#{e}")
+    raise Gitlab::Git::CommandError.new(e)
   end
 
   def flush_ref_caches(project)
@@ -107,20 +80,5 @@ class GitGarbageCollectWorker
 
   def bitmaps_enabled?
     Gitlab::CurrentSettings.housekeeping_bitmaps_enabled
-  end
-
-  def git(write_bitmaps:)
-    config_value = write_bitmaps ? 'true' : 'false'
-    %W[git -c repack.writeBitmaps=#{config_value}]
-  end
-
-  def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
-    Gitlab::GitalyClient.migrate(method, status: status, &block)
-  rescue GRPC::NotFound => e
-    Gitlab::GitLogger.error("#{method} failed:\nRepository not found")
-    raise Gitlab::Git::Repository::NoRepository.new(e)
-  rescue GRPC::BadStatus => e
-    Gitlab::GitLogger.error("#{method} failed:\n#{e}")
-    raise Gitlab::Git::CommandError.new(e)
   end
 end

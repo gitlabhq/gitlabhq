@@ -70,12 +70,19 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout)
 
         response.flat_map { |msg| msg.deltas }
       end
 
       def tree_entry(ref, path, limit = nil)
+        if Pathname.new(path).cleanpath.to_s.start_with?('../')
+          # The TreeEntry RPC should return an empty reponse in this case but in
+          # Gitaly 0.107.0 and earlier we get an exception instead. This early return
+          # saves us a Gitaly roundtrip while also avoiding the exception.
+          return
+        end
+
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
           revision: encode_binary(ref),
@@ -295,7 +302,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum)
+        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout)
 
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
@@ -317,11 +324,13 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_signatures(commit_ids)
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
         signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
         current_commit_id = nil
@@ -334,11 +343,13 @@ module Gitlab
         end
 
         signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_messages(commit_ids)
         request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request, timeout: GitalyClient.fast_timeout)
 
         messages = Hash.new { |h, k| h[k] = ''.b }
         current_commit_id = nil
@@ -357,7 +368,7 @@ module Gitlab
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
-        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
+        request_params[:collapse_diffs] = !options.fetch(:expanded, true)
         request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
@@ -388,8 +399,8 @@ module Gitlab
         end
       end
 
-      def encode_repeated(a)
-        Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
+      def encode_repeated(array)
+        Google::Protobuf::RepeatedField.new(:bytes, array.map { |s| encode_binary(s) } )
       end
 
       def call_find_commit(revision)

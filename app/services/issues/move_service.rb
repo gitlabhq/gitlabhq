@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class MoveService < Issues::BaseService
     MoveError = Class.new(StandardError)
@@ -58,7 +60,8 @@ module Issues
     def cloneable_label_ids
       params = {
         project_id: @new_project.id,
-        title: @old_issue.labels.pluck(:title)
+        title: @old_issue.labels.pluck(:title),
+        include_ancestor_groups: true
       }
 
       LabelsFinder.new(current_user, params).execute.pluck(:id)

@@ -322,14 +322,17 @@ span.idiff {
 }
 
 .file-title-flex-parent {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: $gray-light;
-  border-bottom: 1px solid $border-color;
-  padding: 5px $gl-padding;
-  margin: 0;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  &,
+  .file-holder & {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: $gray-light;
+    border-bottom: 1px solid $border-color;
+    padding: 5px $gl-padding;
+    margin: 0;
+    border-radius: $border-radius-default $border-radius-default 0 0;
+  }
 
   .file-header-content {
     white-space: nowrap;
@@ -337,6 +340,17 @@ span.idiff {
     text-overflow: ellipsis;
     padding-right: 30px;
     position: relative;
+    width: auto;
+
+    @media (max-width: map-get($grid-breakpoints, sm)-1) {
+      width: 100%;
+    }
+  }
+
+  .file-holder & {
+    .file-actions {
+      position: static;
+    }
   }
 
   .btn-clipboard {

@@ -247,7 +247,7 @@ describe Projects::TransferService do
     let(:group_member) { create(:user) }
 
     before do
-      group.add_user(owner, GroupMember::MASTER)
+      group.add_user(owner, GroupMember::MAINTAINER)
       group.add_user(group_member, GroupMember::DEVELOPER)
     end
 

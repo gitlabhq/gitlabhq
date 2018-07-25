@@ -1,4 +1,3 @@
-/* eslint-disable no-new */
 import Vue from 'vue';
 import pdfLab from '../../pdf/index.vue';
 

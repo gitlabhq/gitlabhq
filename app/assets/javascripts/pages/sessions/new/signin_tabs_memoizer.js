@@ -37,6 +37,11 @@ export default class SigninTabsMemoizer {
       const tab = document.querySelector(`${this.tabSelector} a[href="${anchorName}"]`);
       if (tab) {
         tab.click();
+      } else {
+        const firstTab = document.querySelector(`${this.tabSelector} a`);
+        if (firstTab) {
+          firstTab.click();
+        }
       }
     }
   }

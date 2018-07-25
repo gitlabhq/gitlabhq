@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len */
+/* eslint-disable consistent-return, no-else-return */
 
 import $ from 'jquery';
 

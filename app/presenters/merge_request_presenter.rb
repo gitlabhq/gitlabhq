@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
@@ -17,17 +19,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     else
       ci_service = source_project.try(:ci_service)
       ci_service&.commit_status(diff_head_sha, source_branch)
-    end
-  end
-
-  def unmergeable_reasons
-    strong_memoize(:unmergeable_reasons) do
-      reasons = []
-      reasons << "no commits" if merge_request.has_no_commits?
-      reasons << "source branch is missing" unless merge_request.source_branch_exists?
-      reasons << "target branch is missing" unless merge_request.target_branch_exists?
-      reasons << "has merge conflicts" unless merge_request.project.repository.can_be_merged?(merge_request.diff_head_sha, merge_request.target_branch)
-      reasons
     end
   end
 
@@ -177,6 +168,10 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     !!::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)
+  end
+
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
   end
 
   def mergeable_discussions_state

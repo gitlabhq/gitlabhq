@@ -6,7 +6,6 @@ FactoryBot.define do
     active    true
     access_level :not_protected
 
-    is_shared true
     runner_type :instance_type
 
     trait :online do
@@ -14,12 +13,10 @@ FactoryBot.define do
     end
 
     trait :instance do
-      is_shared true
       runner_type :instance_type
     end
 
     trait :group do
-      is_shared false
       runner_type :group_type
 
       after(:build) do |runner, evaluator|
@@ -28,7 +25,6 @@ FactoryBot.define do
     end
 
     trait :project do
-      is_shared false
       runner_type :project_type
 
       after(:build) do |runner, evaluator|

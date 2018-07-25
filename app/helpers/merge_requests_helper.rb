@@ -86,6 +86,8 @@ module MergeRequestsHelper
   end
 
   def version_index(merge_request_diff)
+    return nil if @merge_request_diffs.empty?
+
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
   end
 
@@ -106,7 +108,7 @@ module MergeRequestsHelper
     data_attrs = {
       action: tab.to_s,
       target: "##{tab}",
-      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+      toggle: options.fetch(:force_link, false) ? '' : 'tabvue'
     }
 
     url = case tab

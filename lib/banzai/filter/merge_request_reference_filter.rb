@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces merge request references with links. References
@@ -25,7 +27,10 @@ module Banzai
         extras = super
 
         if commit_ref = object_link_commit_ref(object, matches)
-          return extras.unshift(commit_ref)
+          klass = reference_class(:commit, tooltip: false)
+          commit_ref_tag = %(<span class="#{klass}">#{commit_ref}</span>)
+
+          return extras.unshift(commit_ref_tag)
         end
 
         path = matches[:path] if matches.names.include?("path")

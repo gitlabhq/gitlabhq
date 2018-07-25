@@ -228,6 +228,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def root_ancestor
+    ancestors.reorder(nil).find_by(parent_id: nil)
+  end
+
   def subgroup?
     has_parent?
   end

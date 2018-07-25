@@ -1,5 +1,12 @@
 import mutations from '~/notes/stores/mutations';
-import { note, discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
+import {
+  note,
+  discussionMock,
+  notesDataMock,
+  userDataMock,
+  noteableDataMock,
+  individualNote,
+} from '../mock_data';
 
 describe('Notes Store mutations', () => {
   describe('ADD_NEW_NOTE', () => {
@@ -7,7 +14,7 @@ describe('Notes Store mutations', () => {
     let noteData;
 
     beforeEach(() => {
-      state = { notes: [] };
+      state = { discussions: [] };
       noteData = {
         expanded: true,
         id: note.discussion_id,
@@ -20,46 +27,74 @@ describe('Notes Store mutations', () => {
 
     it('should add a new note to an array of notes', () => {
       expect(state).toEqual({
-        notes: [noteData],
+        discussions: [noteData],
       });
-      expect(state.notes.length).toBe(1);
+      expect(state.discussions.length).toBe(1);
     });
 
     it('should not add the same note to the notes array', () => {
       mutations.ADD_NEW_NOTE(state, note);
-      expect(state.notes.length).toBe(1);
+      expect(state.discussions.length).toBe(1);
     });
   });
 
   describe('ADD_NEW_REPLY_TO_DISCUSSION', () => {
     it('should add a reply to a specific discussion', () => {
-      const state = { notes: [discussionMock] };
+      const state = { discussions: [discussionMock] };
       const newReply = Object.assign({}, note, { discussion_id: discussionMock.id });
       mutations.ADD_NEW_REPLY_TO_DISCUSSION(state, newReply);
 
-      expect(state.notes[0].notes.length).toEqual(4);
+      expect(state.discussions[0].notes.length).toEqual(4);
     });
   });
 
   describe('DELETE_NOTE', () => {
     it('should delete a note ', () => {
-      const state = { notes: [discussionMock] };
+      const state = { discussions: [discussionMock] };
       const toDelete = discussionMock.notes[0];
       const lengthBefore = discussionMock.notes.length;
 
       mutations.DELETE_NOTE(state, toDelete);
 
-      expect(state.notes[0].notes.length).toEqual(lengthBefore - 1);
+      expect(state.discussions[0].notes.length).toEqual(lengthBefore - 1);
+    });
+  });
+
+  describe('EXPAND_DISCUSSION', () => {
+    it('should expand a collapsed discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: false });
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.EXPAND_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.discussions[0].expanded).toEqual(true);
+    });
+  });
+
+  describe('COLLAPSE_DISCUSSION', () => {
+    it('should collpase an expanded discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: true });
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.COLLAPSE_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.discussions[0].expanded).toEqual(false);
     });
   });
 
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
     it('should remove all placeholder notes in indivudal notes and discussion', () => {
       const placeholderNote = Object.assign({}, individualNote, { isPlaceholderNote: true });
-      const state = { notes: [placeholderNote] };
+      const state = { discussions: [placeholderNote] };
       mutations.REMOVE_PLACEHOLDER_NOTES(state);
 
-      expect(state.notes).toEqual([]);
+      expect(state.discussions).toEqual([]);
     });
   });
 
@@ -96,26 +131,29 @@ describe('Notes Store mutations', () => {
     });
   });
 
-  describe('SET_INITIAL_NOTES', () => {
+  describe('SET_INITIAL_DISCUSSIONS', () => {
     it('should set the initial notes received', () => {
       const state = {
-        notes: [],
+        discussions: [],
       };
       const legacyNote = {
         id: 2,
         individual_note: true,
-        notes: [{
-          note: '1',
-        }, {
-          note: '2',
-        }],
+        notes: [
+          {
+            note: '1',
+          },
+          {
+            note: '2',
+          },
+        ],
       };
 
-      mutations.SET_INITIAL_NOTES(state, [note, legacyNote]);
-      expect(state.notes[0].id).toEqual(note.id);
-      expect(state.notes[1].notes[0].note).toBe(legacyNote.notes[0].note);
-      expect(state.notes[2].notes[0].note).toBe(legacyNote.notes[1].note);
-      expect(state.notes.length).toEqual(3);
+      mutations.SET_INITIAL_DISCUSSIONS(state, [note, legacyNote]);
+      expect(state.discussions[0].id).toEqual(note.id);
+      expect(state.discussions[1].notes[0].note).toBe(legacyNote.notes[0].note);
+      expect(state.discussions[2].notes[0].note).toBe(legacyNote.notes[1].note);
+      expect(state.discussions.length).toEqual(3);
     });
   });
 
@@ -144,17 +182,17 @@ describe('Notes Store mutations', () => {
   describe('SHOW_PLACEHOLDER_NOTE', () => {
     it('should set a placeholder note', () => {
       const state = {
-        notes: [],
+        discussions: [],
       };
       mutations.SHOW_PLACEHOLDER_NOTE(state, note);
-      expect(state.notes[0].isPlaceholderNote).toEqual(true);
+      expect(state.discussions[0].isPlaceholderNote).toEqual(true);
     });
   });
 
   describe('TOGGLE_AWARD', () => {
     it('should add award if user has not reacted yet', () => {
       const state = {
-        notes: [note],
+        discussions: [note],
         userData: userDataMock,
       };
 
@@ -164,9 +202,9 @@ describe('Notes Store mutations', () => {
       };
 
       mutations.TOGGLE_AWARD(state, data);
-      const lastIndex = state.notes[0].award_emoji.length - 1;
+      const lastIndex = state.discussions[0].award_emoji.length - 1;
 
-      expect(state.notes[0].award_emoji[lastIndex]).toEqual({
+      expect(state.discussions[0].award_emoji[lastIndex]).toEqual({
         name: 'cartwheel',
         user: { id: userDataMock.id, name: userDataMock.name, username: userDataMock.username },
       });
@@ -174,7 +212,7 @@ describe('Notes Store mutations', () => {
 
     it('should remove award if user already reacted', () => {
       const state = {
-        notes: [note],
+        discussions: [note],
         userData: {
           id: 1,
           name: 'Administrator',
@@ -187,7 +225,7 @@ describe('Notes Store mutations', () => {
         awardName: 'bath_tone3',
       };
       mutations.TOGGLE_AWARD(state, data);
-      expect(state.notes[0].award_emoji.length).toEqual(2);
+      expect(state.discussions[0].award_emoji.length).toEqual(2);
     });
   });
 
@@ -196,43 +234,43 @@ describe('Notes Store mutations', () => {
       const discussion = Object.assign({}, discussionMock, { expanded: false });
 
       const state = {
-        notes: [discussion],
+        discussions: [discussion],
       };
 
       mutations.TOGGLE_DISCUSSION(state, { discussionId: discussion.id });
 
-      expect(state.notes[0].expanded).toEqual(true);
+      expect(state.discussions[0].expanded).toEqual(true);
     });
 
     it('should close a opened discussion', () => {
       const state = {
-        notes: [discussionMock],
+        discussions: [discussionMock],
       };
 
       mutations.TOGGLE_DISCUSSION(state, { discussionId: discussionMock.id });
 
-      expect(state.notes[0].expanded).toEqual(false);
+      expect(state.discussions[0].expanded).toEqual(false);
     });
   });
 
   describe('UPDATE_NOTE', () => {
     it('should update a note', () => {
       const state = {
-        notes: [individualNote],
+        discussions: [individualNote],
       };
 
       const updated = Object.assign({}, individualNote.notes[0], { note: 'Foo' });
 
       mutations.UPDATE_NOTE(state, updated);
 
-      expect(state.notes[0].notes[0].note).toEqual('Foo');
+      expect(state.discussions[0].notes[0].note).toEqual('Foo');
     });
   });
 
   describe('CLOSE_ISSUE', () => {
     it('should set issue as closed', () => {
       const state = {
-        notes: [],
+        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -249,7 +287,7 @@ describe('Notes Store mutations', () => {
   describe('REOPEN_ISSUE', () => {
     it('should set issue as closed', () => {
       const state = {
-        notes: [],
+        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -266,7 +304,7 @@ describe('Notes Store mutations', () => {
   describe('TOGGLE_STATE_BUTTON_LOADING', () => {
     it('should set isToggleStateButtonLoading as true', () => {
       const state = {
-        notes: [],
+        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: false,
@@ -281,7 +319,7 @@ describe('Notes Store mutations', () => {
 
     it('should set isToggleStateButtonLoading as false', () => {
       const state = {
-        notes: [],
+        discussions: [],
         targetNoteHash: null,
         lastFetchedAt: null,
         isToggleStateButtonLoading: true,
@@ -292,6 +330,17 @@ describe('Notes Store mutations', () => {
 
       mutations.TOGGLE_STATE_BUTTON_LOADING(state, false);
       expect(state.isToggleStateButtonLoading).toEqual(false);
+    });
+  });
+
+  describe('SET_NOTES_FETCHING_STATE', () => {
+    it('should set the given state', () => {
+      const state = {
+        isNotesFetched: false,
+      };
+
+      mutations.SET_NOTES_FETCHED_STATE(state, true);
+      expect(state.isNotesFetched).toEqual(true);
     });
   });
 });

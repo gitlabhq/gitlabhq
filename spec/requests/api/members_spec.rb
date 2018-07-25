@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe API::Members do
-  let(:master) { create(:user, username: 'master_user') }
+  let(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
 
   let(:project) do
-    create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
+    create(:project, :public, :access_requestable, creator_id: maintainer.id, namespace: maintainer.namespace) do |project|
       project.add_developer(developer)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.request_access(access_requester)
     end
   end
@@ -17,7 +17,7 @@ describe API::Members do
   let!(:group) do
     create(:group, :public, :access_requestable) do |group|
       group.add_developer(developer)
-      group.add_owner(master)
+      group.add_owner(maintainer)
       group.request_access(access_requester)
     end
   end
@@ -28,7 +28,7 @@ describe API::Members do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
       end
 
-      %i[master developer access_requester stranger].each do |type|
+      %i[maintainer developer access_requester stranger].each do |type|
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
@@ -39,23 +39,23 @@ describe API::Members do
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.size).to eq(2)
-            expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
+            expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id]
           end
         end
       end
 
       it 'avoids N+1 queries' do
         # Establish baseline
-        get api("/#{source_type.pluralize}/#{source.id}/members", master)
+        get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+          get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
         end
 
         project.add_developer(create(:user))
 
         expect do
-          get api("/#{source_type.pluralize}/#{source.id}/members", master)
+          get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
         end.not_to exceed_query_limit(control)
       end
 
@@ -68,17 +68,17 @@ describe API::Members do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(2)
-        expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
+        expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id]
       end
 
       it 'finds members with query string' do
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: master.username
+        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: maintainer.username
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(1)
-        expect(json_response.first['username']).to eq(master.username)
+        expect(json_response.first['username']).to eq(maintainer.username)
       end
 
       it 'finds all members with no query specified' do
@@ -88,7 +88,7 @@ describe API::Members do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.count).to eq(2)
-        expect(json_response.map { |u| u['id'] }).to match_array [master.id, developer.id]
+        expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id]
       end
     end
   end
@@ -129,7 +129,7 @@ describe API::Members do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
-               user_id: access_requester.id, access_level: Member::MASTER
+               user_id: access_requester.id, access_level: Member::MAINTAINER
         end
       end
 
@@ -139,7 +139,7 @@ describe API::Members do
             it 'returns 403' do
               user = public_send(type)
               post api("/#{source_type.pluralize}/#{source.id}/members", user),
-                   user_id: access_requester.id, access_level: Member::MASTER
+                   user_id: access_requester.id, access_level: Member::MAINTAINER
 
               expect(response).to have_gitlab_http_status(403)
             end
@@ -147,24 +147,24 @@ describe API::Members do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         context 'and new member is already a requester' do
           it 'transforms the requester into a proper member' do
             expect do
-              post api("/#{source_type.pluralize}/#{source.id}/members", master),
-                   user_id: access_requester.id, access_level: Member::MASTER
+              post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+                   user_id: access_requester.id, access_level: Member::MAINTAINER
 
               expect(response).to have_gitlab_http_status(201)
             end.to change { source.members.count }.by(1)
             expect(source.requesters.count).to eq(0)
             expect(json_response['id']).to eq(access_requester.id)
-            expect(json_response['access_level']).to eq(Member::MASTER)
+            expect(json_response['access_level']).to eq(Member::MAINTAINER)
           end
         end
 
         it 'creates a new member' do
           expect do
-            post api("/#{source_type.pluralize}/#{source.id}/members", master),
+            post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
                  user_id: stranger.id, access_level: Member::DEVELOPER, expires_at: '2016-08-05'
 
             expect(response).to have_gitlab_http_status(201)
@@ -176,28 +176,28 @@ describe API::Members do
       end
 
       it "returns 409 if member already exists" do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
-             user_id: master.id, access_level: Member::MASTER
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+             user_id: maintainer.id, access_level: Member::MAINTAINER
 
         expect(response).to have_gitlab_http_status(409)
       end
 
       it 'returns 400 when user_id is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
-             access_level: Member::MASTER
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+             access_level: Member::MAINTAINER
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when access_level is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              user_id: stranger.id
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400  when access_level is not valid' do
-        post api("/#{source_type.pluralize}/#{source.id}/members", master),
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              user_id: stranger.id, access_level: 1234
 
         expect(response).to have_gitlab_http_status(400)
@@ -210,7 +210,7 @@ describe API::Members do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
-              access_level: Member::MASTER
+              access_level: Member::MAINTAINER
         end
       end
 
@@ -220,7 +220,7 @@ describe API::Members do
             it 'returns 403' do
               user = public_send(type)
               put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", user),
-                  access_level: Member::MASTER
+                  access_level: Member::MAINTAINER
 
               expect(response).to have_gitlab_http_status(403)
             end
@@ -228,33 +228,33 @@ describe API::Members do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         it 'updates the member' do
-          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
-              access_level: Member::MASTER, expires_at: '2016-08-05'
+          put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
+              access_level: Member::MAINTAINER, expires_at: '2016-08-05'
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['id']).to eq(developer.id)
-          expect(json_response['access_level']).to eq(Member::MASTER)
+          expect(json_response['access_level']).to eq(Member::MAINTAINER)
           expect(json_response['expires_at']).to eq('2016-08-05')
         end
       end
 
       it 'returns 409 if member does not exist' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/123", master),
-            access_level: Member::MASTER
+        put api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer),
+            access_level: Member::MAINTAINER
 
         expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 400 when access_level is not given' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
+        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400  when access level is not valid' do
-        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master),
+        put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer),
             access_level: 1234
 
         expect(response).to have_gitlab_http_status(400)
@@ -291,11 +291,11 @@ describe API::Members do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         context 'and member is a requester' do
           it 'returns 404' do
             expect do
-              delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", master)
+              delete api("/#{source_type.pluralize}/#{source.id}/members/#{access_requester.id}", maintainer)
 
               expect(response).to have_gitlab_http_status(404)
             end.not_to change { source.requesters.count }
@@ -304,19 +304,19 @@ describe API::Members do
 
         it 'deletes the member' do
           expect do
-            delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master)
+            delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { source.members.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", master) }
+          let(:request) { api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", maintainer) }
         end
       end
 
       it 'returns 404 if member does not exist' do
-        delete api("/#{source_type.pluralize}/#{source.id}/members/123", master)
+        delete api("/#{source_type.pluralize}/#{source.id}/members/123", maintainer)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -366,7 +366,7 @@ describe API::Members do
   context 'Adding owner to project' do
     it 'returns 403' do
       expect do
-        post api("/projects/#{project.id}/members", master),
+        post api("/projects/#{project.id}/members", maintainer),
              user_id: stranger.id, access_level: Member::OWNER
 
         expect(response).to have_gitlab_http_status(400)

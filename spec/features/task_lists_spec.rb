@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Task Lists' do
+describe 'Task Lists' do
   include Warden::Test::Helpers
 
   let(:project) { create(:project, :repository) }
@@ -65,7 +65,7 @@ feature 'Task Lists' do
   before do
     Warden.test_mode!
 
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_guest(user2)
 
     login_as(user)

@@ -108,77 +108,6 @@ describe('IDE commit module actions', () => {
     });
   });
 
-  describe('checkCommitStatus', () => {
-    beforeEach(() => {
-      store.state.currentProjectId = 'abcproject';
-      store.state.currentBranchId = 'master';
-      store.state.projects.abcproject = {
-        branches: {
-          master: {
-            workingReference: '1',
-          },
-        },
-      };
-    });
-
-    it('calls service', done => {
-      spyOn(service, 'getBranchData').and.returnValue(
-        Promise.resolve({
-          data: {
-            commit: { id: '123' },
-          },
-        }),
-      );
-
-      store
-        .dispatch('commit/checkCommitStatus')
-        .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith('abcproject', 'master');
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('returns true if current ref does not equal returned ID', done => {
-      spyOn(service, 'getBranchData').and.returnValue(
-        Promise.resolve({
-          data: {
-            commit: { id: '123' },
-          },
-        }),
-      );
-
-      store
-        .dispatch('commit/checkCommitStatus')
-        .then(val => {
-          expect(val).toBeTruthy();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('returns false if current ref equals returned ID', done => {
-      spyOn(service, 'getBranchData').and.returnValue(
-        Promise.resolve({
-          data: {
-            commit: { id: '1' },
-          },
-        }),
-      );
-
-      store
-        .dispatch('commit/checkCommitStatus')
-        .then(val => {
-          expect(val).toBeFalsy();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
   describe('updateFilesAfterCommit', () => {
     const data = {
       id: '123',
@@ -314,6 +243,7 @@ describe('IDE commit module actions', () => {
         ...file('changed'),
         type: 'blob',
         active: true,
+        lastCommitSha: '123456789',
       };
       store.state.stagedFiles.push(f);
       store.state.changedFiles = [
@@ -366,9 +296,36 @@ describe('IDE commit module actions', () => {
                   file_path: jasmine.anything(),
                   content: jasmine.anything(),
                   encoding: jasmine.anything(),
+                  last_commit_id: undefined,
                 },
               ],
               start_branch: 'master',
+            });
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sends lastCommit ID when not creating new branch', done => {
+        store.state.commit.commitAction = '1';
+
+        store
+          .dispatch('commit/commitChanges')
+          .then(() => {
+            expect(service.commit).toHaveBeenCalledWith('abcproject', {
+              branch: jasmine.anything(),
+              commit_message: 'testing 123',
+              actions: [
+                {
+                  action: 'update',
+                  file_path: jasmine.anything(),
+                  content: jasmine.anything(),
+                  encoding: jasmine.anything(),
+                  last_commit_id: '123456789',
+                },
+              ],
+              start_branch: undefined,
             });
 
             done();

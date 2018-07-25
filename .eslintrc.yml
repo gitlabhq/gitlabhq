@@ -69,9 +69,3 @@ rules:
       FunctionExpression:
         parameters: 1
         body: 1
-  ## Destructuring: https://eslint.org/docs/rules/prefer-destructuring
-  prefer-destructuring: off
-  ## no-restricted-globals: https://eslint.org/docs/rules/no-restricted-globals
-  no-restricted-globals: off
-  ## no-multi-assign: https://eslint.org/docs/rules/no-multi-assign
-  no-multi-assign: off

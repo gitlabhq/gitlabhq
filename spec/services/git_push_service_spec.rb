@@ -11,7 +11,7 @@ describe GitPushService, services: true do
   let(:ref)      { 'refs/heads/master' }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'with remote mirrors' do
@@ -267,8 +267,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, blankrev, 'newrev', ref)
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -290,7 +290,7 @@ describe GitPushService, services: true do
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
-        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
 
       it "when pushing a branch for the first time with an existing branch permission configured" do
@@ -315,7 +315,7 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, blankrev, 'newrev', ref)
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
       end
 
@@ -442,7 +442,7 @@ describe GitPushService, services: true do
       allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
         .and_return(closing_commit)
 
-      project.add_master(commit_author)
+      project.add_maintainer(commit_author)
     end
 
     context "to default branches" do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JobArtifactUploader < GitlabUploader
   extend Workhorse::UploadPath
   include ObjectStorage::Concern
@@ -14,14 +16,6 @@ class JobArtifactUploader < GitlabUploader
 
   def store_dir
     dynamic_segment
-  end
-
-  def open
-    if file_storage?
-      File.open(path, "rb") if path
-    else
-      ::Gitlab::Ci::Trace::HttpIO.new(url, cached_size) if url
-    end
   end
 
   private

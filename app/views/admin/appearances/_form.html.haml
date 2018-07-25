@@ -25,7 +25,7 @@
     = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label'
     .col-sm-10
       - if @appearance.favicon?
-        = image_tag @appearance.favicon.favicon_main.url, class: 'appearance-light-logo-preview'
+        = image_tag @appearance.favicon_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
           = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
@@ -33,9 +33,9 @@
       = f.hidden_field :favicon_cache
       = f.file_field :favicon, class: ''
       .hint
-        Maximum file size is 1MB. Allowed image formats are #{favicon_extension_whitelist}.
+        Maximum file size is 1MB. Image size must be 32x32px. Allowed image formats are #{favicon_extension_whitelist}.
         %br
-        The resulting favicons will be cropped to be square and scaled down to a size of 32x32 px.
+        Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.
 
   %fieldset.sign-in
     %legend

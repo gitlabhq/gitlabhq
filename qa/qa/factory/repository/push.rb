@@ -5,25 +5,18 @@ module QA
     module Repository
       class Push < Factory::Base
         attr_accessor :file_name, :file_content, :commit_message,
-                      :branch_name, :new_branch, :output
+                      :branch_name, :new_branch, :output, :repository_uri,
+                      :user
 
         attr_writer :remote_branch
 
-        dependency Factory::Resource::Project, as: :project do |project|
-          project.name = 'project-with-code'
-          project.description = 'Project with repository'
-        end
-
-        product :output do |factory|
-          factory.output
-        end
-
         def initialize
           @file_name = 'file.txt'
-          @file_content = '# This is test project'
+          @file_content = '# This is test file'
           @commit_message = "This is a test commit"
           @branch_name = 'master'
           @new_branch = true
+          @repository_uri = ""
         end
 
         def remote_branch
@@ -37,17 +30,22 @@ module QA
         end
 
         def fabricate!
-          project.visit!
-
           Git::Repository.perform do |repository|
-            repository.uri = Page::Project::Show.act do
-              choose_repository_clone_http
-              repository_location.uri
-            end
+            repository.uri = repository_uri
 
             repository.use_default_credentials
+            username = 'GitLab QA'
+            email = 'root@gitlab.com'
+
+            if user
+              repository.username = user.username
+              repository.password = user.password
+              username = user.name
+              email = user.email
+            end
+
             repository.clone
-            repository.configure_identity('GitLab QA', 'root@gitlab.com')
+            repository.configure_identity(username, email)
 
             if new_branch
               repository.checkout_new_branch(branch_name)

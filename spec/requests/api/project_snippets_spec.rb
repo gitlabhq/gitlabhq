@@ -25,7 +25,7 @@ describe API::ProjectSnippets do
       expect(response).to have_gitlab_http_status(404)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/projects/#{snippet.project.id}/snippets/#{snippet.id}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

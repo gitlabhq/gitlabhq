@@ -16,7 +16,7 @@
 
 .application-theme {
   label {
-    margin: 0 $gl-padding $gl-padding 0;
+    margin: 0 $gl-padding-32 $gl-padding 0;
     text-align: center;
   }
 
@@ -24,7 +24,7 @@
     font-size: 0;
     height: 48px;
     border-radius: 4px;
-    min-width: 135px;
+    min-width: 112px;
     margin-bottom: $gl-padding-8;
 
     &.ui-indigo {
@@ -75,7 +75,8 @@
 
 .syntax-theme {
   label {
-    margin-right: 20px;
+    margin-right: $gl-padding-32;
+    margin-bottom: $gl-padding;
     text-align: center;
 
     .preview {
@@ -84,7 +85,6 @@
 
       img {
         border-radius: 4px;
-
         max-width: 100%;
       }
     }

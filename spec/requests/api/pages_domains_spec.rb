@@ -80,7 +80,7 @@ describe API::PagesDomains do
     context 'when pages is disabled' do
       before do
         allow(Gitlab.config.pages).to receive(:enabled).and_return(false)
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like '404 response' do
@@ -88,9 +88,9 @@ describe API::PagesDomains do
       end
     end
 
-    context 'when user is a master' do
+    context 'when user is a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'get pages domains'
@@ -177,7 +177,7 @@ describe API::PagesDomains do
 
     context 'when domain is vacant' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like '404 response' do
@@ -185,9 +185,9 @@ describe API::PagesDomains do
       end
     end
 
-    context 'when user is a master' do
+    context 'when user is a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'get pages domain'
@@ -270,9 +270,9 @@ describe API::PagesDomains do
       end
     end
 
-    context 'when user is a master' do
+    context 'when user is a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'post pages domains'
@@ -380,7 +380,7 @@ describe API::PagesDomains do
 
     context 'when domain is vacant' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like '404 response' do
@@ -388,9 +388,9 @@ describe API::PagesDomains do
       end
     end
 
-    context 'when user is a master' do
+    context 'when user is a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'put pages domain'
@@ -444,7 +444,7 @@ describe API::PagesDomains do
 
     context 'when domain is vacant' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like '404 response' do
@@ -452,9 +452,9 @@ describe API::PagesDomains do
       end
     end
 
-    context 'when user is a master' do
+    context 'when user is a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'delete pages domain'

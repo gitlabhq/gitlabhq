@@ -1,15 +1,17 @@
-- page_title "Identities", @user.name, "Users"
+- add_to_breadcrumbs "Users", admin_users_path
+- breadcrumb_title @user.name
+- page_title _("Identities"), @user.name, _("Users")
 = render 'admin/users/head'
 
-= link_to 'New identity', new_admin_user_identity_path, class: 'float-right btn btn-new'
+= link_to _('New identity'), new_admin_user_identity_path, class: 'float-right btn btn-new'
 - if @identities.present?
   .table-holder
     %table.table
       %thead
         %tr
-          %th Provider
-          %th Identifier
+          %th= _('Provider')
+          %th= _('Identifier')
           %th
       = render @identities
 - else
-  %h4 This user has no identities
+  %h4= _('This user has no identities')

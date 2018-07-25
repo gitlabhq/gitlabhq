@@ -1,6 +1,6 @@
 # Auto DevOps
 
-> [Introduced][ce-37115] in GitLab 10.0.
+> [Introduced][ce-37115] in GitLab 10.0. Generally available on GitLab 11.0.
 
 Auto DevOps automatically detects, builds, tests, deploys, and monitors your
 applications.
@@ -12,6 +12,12 @@ as every project can have a complete workflow from verification to monitoring
 without needing to configure anything. Just push your code and GitLab takes
 care of everything else. This makes it easier to start new projects and brings
 consistency to how applications are set up throughout a company.
+
+## Quick start
+
+If you are using GitLab.com, see the [quick start guide](quick_start_guide.md)
+for using Auto DevOps with GitLab.com and a Kubernetes cluster on Google Kubernetes
+Engine.
 
 ## Comparison to application platforms and PaaS
 
@@ -34,19 +40,19 @@ in a couple of ways:
 ## Features
 
 Comprised of a set of stages, Auto DevOps brings these best practices to your
-project in an easy and automatic way:
+project in a simple and automatic way:
 
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
-1. [Auto Code Quality](#auto-code-quality)
-1. [Auto SAST (Static Application Security Testing)](#auto-sast)
-1. [Auto Dependency Scanning](#auto-dependency-scanning)
-1. [Auto License Management](#auto-license-management)
+1. [Auto Code Quality](#auto-code-quality) **[STARTER]**
+1. [Auto SAST (Static Application Security Testing)](#auto-sast) **[ULTIMATE]**
+1. [Auto Dependency Scanning](#auto-dependency-scanning) **[ULTIMATE]**
+1. [Auto License Management](#auto-license-management) **[ULTIMATE]**
 1. [Auto Container Scanning](#auto-container-scanning)
 1. [Auto Review Apps](#auto-review-apps)
-1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast)
+1. [Auto DAST (Dynamic Application Security Testing)](#auto-dast) **[ULTIMATE]**
 1. [Auto Deploy](#auto-deploy)
-1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing) **[PREMIUM]**
 1. [Auto Monitoring](#auto-monitoring)
 
 As Auto DevOps relies on many different components, it's good to have a basic
@@ -85,7 +91,7 @@ To make full use of Auto DevOps, you will need:
    for the entire GitLab instance, or [specific Runners](../../ci/runners/README.md#registering-a-specific-runner)
    that are assigned to specific projects.
 1. **Base domain** (needed for Auto Review Apps and Auto Deploy) - You will need
-   a domain configured with wildcard DNS which is gonna be used by all of your
+   a domain configured with wildcard DNS which is going to be used by all of your
    Auto DevOps applications. [Read the specifics](#auto-devops-base-domain).
 1. **Kubernetes** (needed for Auto Review Apps, Auto Deploy, and Auto Monitoring) -
    To enable deployments, you will need Kubernetes 1.5+. You need a [Kubernetes cluster][kubernetes-clusters]
@@ -135,10 +141,9 @@ and `1.2.3.4` is the IP address of your load balancer; generally NGINX
 ([see requirements](#requirements)). How to set up the DNS record is beyond
 the scope of this document; you should check with your DNS provider.
 
-Alternatively you can use free public services like [nip.io](http://nip.io) or
-[nip.io](http://nip.io) which provide automatic wildcard DNS without any
-configuration. Just set the Auto DevOps base domain to `1.2.3.4.nip.io` or
-`1.2.3.4.nip.io`.
+Alternatively you can use free public services like [nip.io](http://nip.io)
+which provide automatic wildcard DNS without any configuration. Just set the
+Auto DevOps base domain to `1.2.3.4.nip.io`.
 
 Once set up, all requests will hit the load balancer, which in turn will route
 them to the Kubernetes pods that run your application(s).
@@ -197,12 +202,6 @@ Now that all is configured, you can test your setup by creating a merge request
 and verifying that your app is deployed as a review app in the Kubernetes
 cluster with the `review/*` environment scope. Similarly, you can check the
 other environments.
-
-## Quick start
-
-If you are using GitLab.com, see our [quick start guide](quick_start_guide.md)
-for using Auto DevOps with GitLab.com and an external Kubernetes cluster on
-Google Cloud.
 
 ## Enabling Auto DevOps
 
@@ -288,7 +287,7 @@ NOTE: **Note:**
 Auto Test uses tests you already have in your application. If there are no
 tests, it's up to you to add them.
 
-### Auto Code Quality
+### Auto Code Quality **[STARTER]**
 
 Auto Code Quality uses the
 [Code Quality image](https://gitlab.com/gitlab-org/security-products/codequality) to run
@@ -298,7 +297,7 @@ out.
 
 In GitLab Starter, differences between the source and
 target branches are also
-[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality_diff.html).
+[shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
 
 ### Auto SAST **[ULTIMATE]**
 
@@ -323,7 +322,7 @@ to run analysis on the project dependencies and checks for potential security is
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any security warnings are also
+Any security warnings are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/dependency_scanning.html).
 
 ### Auto License Management **[ULTIMATE]**
@@ -331,12 +330,12 @@ In GitLab Ultimate, any security warnings are also
 > Introduced in [GitLab Ultimate][ee] 11.0.
 
 License Management uses the
-[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license_management)
+[License Management Docker image](https://gitlab.com/gitlab-org/security-products/license-management)
 to search the project dependencies for their license. Once the
 report is created, it's uploaded as an artifact which you can later download and
 check out.
 
-In GitLab Ultimate, any licenses are also
+Any licenses are also
 [shown in the merge request widget](https://docs.gitlab.com/ee//user/project/merge_requests/license_management.html).
 
 ### Auto Container Scanning
@@ -528,7 +527,7 @@ repo or by specifying a project variable:
 
 - **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps will detect the chart and use it instead of the [default
-  one](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).
+  one](https://gitlab.com/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
 - **Project variable** - Create a [project variable](../../ci/variables/README.md#secret-variables)
   `AUTO_DEVOPS_CHART` with the URL of a custom chart to use.
@@ -592,7 +591,7 @@ also be customized, and you can easily use a [custom buildpack](#custom-buildpac
 | `CANARY_ENABLED`             | From GitLab 11.0, this variable can be used to define a [deploy policy for canary environments](#deploy-policy-for-canary-environments). |
 | `INCREMENTAL_ROLLOUT_ENABLED`| From GitLab 10.8, this variable can be used to enable an [incremental rollout](#incremental-rollout-to-production) of your application for the production environment. |
 | `TEST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `test` job. If the variable is present, the job will not be created. |
-| `CODEQUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
+| `CODE_QUALITY_DISABLED`       | From GitLab 11.0, this variable can be used to disable the `codequality` job. If the variable is present, the job will not be created. |
 | `SAST_DISABLED`              | From GitLab 11.0, this variable can be used to disable the `sast` job. If the variable is present, the job will not be created. |
 | `DEPENDENCY_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `dependency_scanning` job. If the variable is present, the job will not be created. |
 | `CONTAINER_SCANNING_DISABLED` | From GitLab 11.0, this variable can be used to disable the `sast:container` job. If the variable is present, the job will not be created. |
@@ -841,5 +840,5 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
-[ee]: https://about.gitlab.com/products/
+[ee]: https://about.gitlab.com/pricing/
 [ce-19507]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19507

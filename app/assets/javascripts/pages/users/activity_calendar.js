@@ -2,6 +2,7 @@ import $ from 'jquery';
 import _ from 'underscore';
 import { scaleLinear, scaleThreshold } from 'd3-scale';
 import { select } from 'd3-selection';
+import dateFormat from 'dateformat';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
@@ -26,7 +27,7 @@ function getSystemDate(systemUtcOffsetSeconds) {
 function formatTooltipText({ date, count }) {
   const dateObject = new Date(date);
   const dateDayName = getDayName(dateObject);
-  const dateText = dateObject.format('mmm d, yyyy');
+  const dateText = dateFormat(dateObject, 'mmm d, yyyy');
 
   let contribText = 'No contributions';
   if (count > 0) {
@@ -84,7 +85,7 @@ export default class ActivityCalendar {
       date.setDate(date.getDate() + i);
 
       const day = date.getDay();
-      const count = timestamps[date.format('yyyy-mm-dd')] || 0;
+      const count = timestamps[dateFormat(date, 'yyyy-mm-dd')] || 0;
 
       // Create a new group array if this is the first day of the week
       // or if is first object

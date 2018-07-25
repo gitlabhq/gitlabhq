@@ -63,4 +63,4 @@
                   .form-text.text-muted
                     = s_('CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery.').html_safe % { ci_file: ci_file_formatted }
 
-          = f.submit 'Save changes', class: "btn btn-success prepend-top-15"
+          = f.submit _('Save changes'), class: "btn btn-success prepend-top-15"

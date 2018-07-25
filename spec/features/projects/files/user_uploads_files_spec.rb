@@ -14,7 +14,7 @@ describe 'Projects > Files > User uploads files' do
   let(:project2_tree_path_root_ref) { project_tree_path(project2, project2.repository.root_ref) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class RequestAccessService < Members::BaseService
     def execute(source)

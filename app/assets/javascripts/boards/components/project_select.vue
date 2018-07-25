@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div>
-    <label class="label-light prepend-top-10">
+    <label class="label-bold prepend-top-10">
       Project
     </label>
     <div

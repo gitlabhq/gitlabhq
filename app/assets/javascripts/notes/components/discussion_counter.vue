@@ -1,23 +1,24 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import resolveSvg from 'icons/_icon_resolve_discussion.svg';
 import resolvedSvg from 'icons/_icon_status_success_solid.svg';
 import mrIssueSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionSvg from 'icons/_next_discussion.svg';
 import { pluralize } from '../../lib/utils/text_utility';
-import { scrollToElement } from '../../lib/utils/common_utils';
+import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   directives: {
     tooltip,
   },
+  mixins: [discussionNavigation],
   computed: {
     ...mapGetters([
       'getUserData',
       'getNoteableData',
       'discussionCount',
-      'unresolvedDiscussions',
+      'firstUnresolvedDiscussionId',
       'resolvedDiscussionCount',
     ]),
     isLoggedIn() {
@@ -35,11 +36,6 @@ export default {
     resolveAllDiscussionsIssuePath() {
       return this.getNoteableData.create_issue_to_resolve_discussions_path;
     },
-    firstUnresolvedDiscussionId() {
-      const item = this.unresolvedDiscussions[0] || {};
-
-      return item.id;
-    },
   },
   created() {
     this.resolveSvg = resolveSvg;
@@ -48,19 +44,12 @@ export default {
     this.nextDiscussionSvg = nextDiscussionSvg;
   },
   methods: {
-    jumpToFirstDiscussion() {
-      const el = document.querySelector(
-        `[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`,
-      );
-      const activeTab = window.mrTabs.currentAction;
+    ...mapActions(['expandDiscussion']),
+    jumpToFirstUnresolvedDiscussion() {
+      const diffTab = window.mrTabs.currentAction === 'diffs';
+      const discussionId = this.firstUnresolvedDiscussionId(diffTab);
 
-      if (activeTab === 'commits' || activeTab === 'pipelines') {
-        window.mrTabs.activateTab('show');
-      }
-
-      if (el) {
-        scrollToElement(el);
-      }
+      this.jumpToDiscussion(discussionId);
     },
   },
 };
@@ -97,7 +86,7 @@ export default {
         <a
           v-tooltip
           :href="resolveAllDiscussionsIssuePath"
-          title="Resolve all discussions in new issue"
+          :title="s__('Resolve all discussions in new issue')"
           data-container="body"
           class="new-issue-for-discussion btn btn-default discussion-create-issue-btn">
           <span v-html="mrIssueSvg"></span>
@@ -112,7 +101,7 @@ export default {
           title="Jump to first unresolved discussion"
           data-container="body"
           class="btn btn-default discussion-next-btn"
-          @click="jumpToFirstDiscussion">
+          @click="jumpToFirstUnresolvedDiscussion">
           <span v-html="nextDiscussionSvg"></span>
         </button>
       </div>

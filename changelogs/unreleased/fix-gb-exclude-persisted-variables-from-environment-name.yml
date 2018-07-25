@@ -1,5 +1,0 @@
----
-title: Exclude CI_PIPELINE_ID from variables supported in dynamic environment name
-merge_request: 19032
-author:
-type: fixed

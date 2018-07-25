@@ -24,15 +24,7 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
-          Filter::UserReferenceFilter,
-          Filter::IssueReferenceFilter,
-          Filter::ExternalIssueReferenceFilter,
-          Filter::MergeRequestReferenceFilter,
-          Filter::SnippetReferenceFilter,
-          Filter::CommitRangeReferenceFilter,
-          Filter::CommitReferenceFilter,
-          Filter::LabelReferenceFilter,
-          Filter::MilestoneReferenceFilter,
+          *reference_filters,
 
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
@@ -41,14 +33,24 @@ module Banzai
         ]
       end
 
+      def self.reference_filters
+        [
+          Filter::UserReferenceFilter,
+          Filter::IssueReferenceFilter,
+          Filter::ExternalIssueReferenceFilter,
+          Filter::MergeRequestReferenceFilter,
+          Filter::SnippetReferenceFilter,
+          Filter::CommitRangeReferenceFilter,
+          Filter::CommitReferenceFilter,
+          Filter::LabelReferenceFilter,
+          Filter::MilestoneReferenceFilter
+        ]
+      end
+
       def self.transform_context(context)
         context[:only_path] = true unless context.key?(:only_path)
 
-        context.merge(
-          # EmojiFilter
-          asset_host: Gitlab::Application.config.asset_host,
-          asset_root: Gitlab.config.gitlab.base_url
-        )
+        context
       end
     end
   end

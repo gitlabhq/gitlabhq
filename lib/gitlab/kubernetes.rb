@@ -1,6 +1,10 @@
 module Gitlab
   # Helper methods to do with Kubernetes network services & resources
   module Kubernetes
+    def self.build_header_hash
+      Hash.new { |h, k| h[k] = [] }
+    end
+
     # This is the comand that is run to start a terminal session. Kubernetes
     # expects `command=foo&command=bar, not `command[]=foo&command[]=bar`
     EXEC_COMMAND = URI.encode_www_form(
@@ -37,13 +41,14 @@ module Gitlab
           selectors:    { pod: pod_name, container: container["name"] },
           url:          container_exec_url(api_url, namespace, pod_name, container["name"]),
           subprotocols: ['channel.k8s.io'],
-          headers:      Hash.new { |h, k| h[k] = [] },
+          headers:      ::Gitlab::Kubernetes.build_header_hash,
           created_at:   created_at
         }
       end
     end
 
     def add_terminal_auth(terminal, token:, max_session_time:, ca_pem: nil)
+      terminal[:headers] ||= ::Gitlab::Kubernetes.build_header_hash
       terminal[:headers]['Authorization'] << "Bearer #{token}"
       terminal[:max_session_time] = max_session_time
       terminal[:ca_pem] = ca_pem if ca_pem.present?

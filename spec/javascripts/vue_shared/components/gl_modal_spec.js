@@ -208,6 +208,14 @@ describe('GlModal', () => {
       expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-lg')).toEqual(true);
     });
 
+    it('should render modal-xl', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'xl',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-xl')).toEqual(true);
+    });
+
     it('should not add modal size classes when md size is passed', () => {
       vm = mountComponent(modalComponent, {
         modalSize: 'md',

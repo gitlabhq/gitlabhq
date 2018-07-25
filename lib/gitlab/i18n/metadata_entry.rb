@@ -3,14 +3,23 @@ module Gitlab
     class MetadataEntry
       attr_reader :entry_data
 
+      # Avoid testing too many plurals if `nplurals` was incorrectly set.
+      # Based on info on https://www.gnu.org/software/gettext/manual/html_node/Plural-forms.html
+      # which mentions special cases for numbers ending in 2 digits
+      MAX_FORMS_TO_TEST = 101
+
       def initialize(entry_data)
         @entry_data = entry_data
       end
 
-      def expected_plurals
+      def expected_forms
         return nil unless plural_information
 
         plural_information['nplurals'].to_i
+      end
+
+      def forms_to_test
+        @forms_to_test ||= [expected_forms, MAX_FORMS_TO_TEST].compact.min
       end
 
       private

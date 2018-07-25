@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class AfterImportService
     RESERVED_REF_PREFIXES = Repository::RESERVED_REFS_NAMES.map { |n| File.join('refs', n, '/') }

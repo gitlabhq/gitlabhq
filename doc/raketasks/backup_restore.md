@@ -195,6 +195,12 @@ This example can be used for a bucket in Amsterdam (AMS3).
 
 1. [Reconfigure GitLab] for the changes to take effect
 
+CAUTION: **Warning:**
+If you see `400 Bad Request` by using Digital Ocean Spaces, the cause may be the
+usage of backup encryption. Remove or comment the line that
+contains `gitlab_rails['backup_encryption']` since Digital Ocean Spaces
+doesn't support encryption.
+
 #### Other S3 Providers
 
 Not all S3 providers are fully-compatible with the Fog library. For example,
@@ -326,6 +332,16 @@ For installations from source:
 
 1. [Restart GitLab] for the changes to take effect
 
+#### Specifying a custom directory for backups
+
+Note: This option only works for remote storage. If you want to group your backups
+you can pass a `DIRECTORY` environment variable:
+
+```
+sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
+sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
+```
+
 ### Uploading to locally mounted shares
 
 You may also send backups to a mounted share (`NFS` / `CIFS` / `SMB` / etc.) by
@@ -367,15 +383,6 @@ For installations from source:
       # The directory inside the mounted folder to copy backups to
       # Use '.' to store them in the root directory
       remote_directory: 'gitlab_backups'
-```
-
-### Specifying a custom directory for backups
-
-If you want to group your backups you can pass a `DIRECTORY` environment variable:
-
-```
-sudo gitlab-rake gitlab:backup:create DIRECTORY=daily
-sudo gitlab-rake gitlab:backup:create DIRECTORY=weekly
 ```
 
 ### Backup archive permissions

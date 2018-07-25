@@ -65,12 +65,12 @@ describe GlobalPolicy do
       it { is_expected.not_to be_allowed(:create_fork) }
     end
 
-    context "when user is a master in a group" do
+    context "when user is a maintainer in a group" do
       let(:group) { create(:group) }
       let(:current_user) { create(:user, projects_limit: 0) }
 
       before do
-        group.add_master(current_user)
+        group.add_maintainer(current_user)
       end
 
       it { is_expected.to be_allowed(:create_fork) }

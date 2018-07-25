@@ -40,13 +40,13 @@ describe('common_utils', () => {
     });
 
     it('should decode params', () => {
-      history.pushState('', '', '?label_name%5B%5D=test');
+      window.history.pushState('', '', '?label_name%5B%5D=test');
 
       expect(
         commonUtils.getUrlParamsArray()[0],
       ).toBe('label_name[]=test');
 
-      history.pushState('', '', '?');
+      window.history.pushState('', '', '?');
     });
   });
 
@@ -555,6 +555,95 @@ describe('common_utils', () => {
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase(null)).length).toBe(0);
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase()).length).toBe(0);
       expect(Object.keys(commonUtils.convertObjectPropsToCamelCase({})).length).toBe(0);
+    });
+
+    it('does not deep-convert by default', () => {
+      const obj = {
+        snake_key: {
+          child_snake_key: 'value',
+        },
+      };
+
+      expect(
+        commonUtils.convertObjectPropsToCamelCase(obj),
+      ).toEqual({
+        snakeKey: {
+          child_snake_key: 'value',
+        },
+      });
+    });
+
+    describe('deep: true', () => {
+      it('converts object with child objects', () => {
+        const obj = {
+          snake_key: {
+            child_snake_key: 'value',
+          },
+        };
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(obj, { deep: true }),
+        ).toEqual({
+          snakeKey: {
+            childSnakeKey: 'value',
+          },
+        });
+      });
+
+      it('converts array with child objects', () => {
+        const arr = [
+          {
+            child_snake_key: 'value',
+          },
+        ];
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
+        ).toEqual([
+          {
+            childSnakeKey: 'value',
+          },
+        ]);
+      });
+
+      it('converts array with child arrays', () => {
+        const arr = [
+          [
+            {
+              child_snake_key: 'value',
+            },
+          ],
+        ];
+
+        expect(
+          commonUtils.convertObjectPropsToCamelCase(arr, { deep: true }),
+        ).toEqual([
+          [
+            {
+              childSnakeKey: 'value',
+            },
+          ],
+        ]);
+      });
+    });
+  });
+
+  describe('roundOffFloat', () => {
+    it('Rounds off decimal places of a float number with provided precision', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 3)).toBe(3.142);
+    });
+
+    it('Rounds off a float number to a whole number when provided precision is zero', () => {
+      expect(commonUtils.roundOffFloat(3.141592, 0)).toBe(3);
+      expect(commonUtils.roundOffFloat(3.5, 0)).toBe(4);
+    });
+
+    it('Rounds off float number to nearest 0, 10, 100, 1000 and so on when provided precision is below 0', () => {
+      expect(commonUtils.roundOffFloat(34567.14159, -1)).toBe(34570);
+      expect(commonUtils.roundOffFloat(34567.14159, -2)).toBe(34600);
+      expect(commonUtils.roundOffFloat(34567.14159, -3)).toBe(35000);
+      expect(commonUtils.roundOffFloat(34567.14159, -4)).toBe(30000);
+      expect(commonUtils.roundOffFloat(34567.14159, -5)).toBe(0);
     });
   });
 });

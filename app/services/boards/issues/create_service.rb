@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Boards
   module Issues
     class CreateService < Boards::BaseService

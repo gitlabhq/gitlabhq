@@ -105,7 +105,7 @@ export default class Search {
   getProjectsData(term) {
     return new Promise((resolve) => {
       if (this.groupId) {
-        Api.groupProjects(this.groupId, term, resolve);
+        Api.groupProjects(this.groupId, term, {}, resolve);
       } else {
         Api.projects(term, {
           order_by: 'id',

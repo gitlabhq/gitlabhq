@@ -10,7 +10,7 @@ import eventHub from './event_hub';
 Vue.use(Translate);
 
 export default () => {
-  const dataset = document.querySelector('.js-pipeline-details-vue').dataset;
+  const { dataset } = document.querySelector('.js-pipeline-details-vue');
 
   const mediator = new PipelinesMediator({ endpoint: dataset.endpoint });
 
@@ -31,7 +31,8 @@ export default () => {
       requestRefreshPipelineGraph() {
         // When an action is clicked
         // (wether in the dropdown or in the main nodes, we refresh the big graph)
-        this.mediator.refreshPipeline()
+        this.mediator
+          .refreshPipeline()
           .catch(() => Flash(__('An error occurred while making the request.')));
       },
     },

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BuildDetailsEntity < JobEntity
   expose :coverage, :erased_at, :duration
   expose :tag_list, as: :tags
@@ -35,7 +37,7 @@ class BuildDetailsEntity < JobEntity
 
   def build_failed_issue_options
     { title: "Job Failed ##{build.id}",
-      description: "Job [##{build.id}](#{project_job_path(project, build)}) failed for #{build.sha}:\n" }
+      description: "Job [##{build.id}](#{project_job_url(project, build)}) failed for #{build.sha}:\n" }
   end
 
   def current_user

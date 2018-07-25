@@ -29,7 +29,9 @@
       = link_to @commit.short_id, project_commit_path(@project, @pipeline.sha), class: "commit-sha js-details-short"
       = link_to("#", class: "js-details-expand d-none d-sm-none d-md-inline") do
         %span.text-expander
-          \...
+          = sprite_icon('ellipsis_h', size: 12)
       %span.js-details-content.hide
         = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
       = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
+
+    = render_if_exists "projects/pipelines/info_extension", pipeline: @pipeline

@@ -1,10 +1,24 @@
 require 'spec_helper'
 
-describe Banzai::Filter::ImageLazyLoadFilter, lib: true do
+describe Banzai::Filter::ImageLazyLoadFilter do
   include FilterSpecHelper
 
   def image(path)
     %(<img src="#{path}" />)
+  end
+
+  def image_with_class(path, class_attr = nil)
+    %(<img src="#{path}" class="#{class_attr}"/>)
+  end
+
+  it 'adds a class attribute' do
+    doc = filter(image('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
+    expect(doc.at_css('img')['class']).to eq 'lazy'
+  end
+
+  it 'appends to the current class attribute' do
+    doc = filter(image_with_class('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg', 'test'))
+    expect(doc.at_css('img')['class']).to eq 'test lazy'
   end
 
   it 'transforms the image src to a data-src' do

@@ -1,0 +1,5 @@
+---
+title: Add support for daylight savings time to pipleline schedules
+merge_request: 20145
+author:
+type: fixed

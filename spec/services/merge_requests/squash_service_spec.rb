@@ -124,51 +124,6 @@ describe MergeRequests::SquashService do
                                                           message: a_string_including('squash'))
         end
       end
-
-      context 'with Gitaly disabled', :skip_gitaly_mock do
-        stages = {
-          'add worktree for squash' => 'worktree',
-          'configure sparse checkout' => 'config',
-          'get files in diff' => 'diff --name-only',
-          'check out target branch' => 'checkout',
-          'apply patch' => 'diff --binary',
-          'commit squashed changes' => 'commit',
-          'get SHA of squashed commit' => 'rev-parse'
-        }
-
-        stages.each do |stage, command|
-          context "when the #{stage} stage fails" do
-            before do
-              git_command = a_collection_containing_exactly(
-                a_string_starting_with("#{Gitlab.config.git.bin_path} #{command}")
-              ).or(
-                a_collection_starting_with([Gitlab.config.git.bin_path] + command.split)
-              )
-
-              allow(repository).to receive(:popen).and_return(['', 0])
-              allow(repository).to receive(:popen).with(git_command, anything, anything, anything).and_return([error, 1])
-            end
-
-            it 'logs the stage and output' do
-              expect(service).to receive(:log_error).with(log_error)
-              expect(service).to receive(:log_error).with(error)
-
-              service.execute(merge_request)
-            end
-
-            it 'returns an error' do
-              expect(service.execute(merge_request)).to match(status: :error,
-                                                              message: a_string_including('squash'))
-            end
-
-            it 'cleans up the temporary directory' do
-              expect(File.exist?(squash_dir_path)).to be(false)
-
-              service.execute(merge_request)
-            end
-          end
-        end
-      end
     end
 
     context 'when any other exception is thrown' do

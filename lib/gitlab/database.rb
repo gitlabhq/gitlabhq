@@ -42,8 +42,27 @@ module Gitlab
       !self.read_only?
     end
 
+    # check whether the underlying database is in read-only mode
+    def self.db_read_only?
+      if postgresql?
+        ActiveRecord::Base.connection.execute('SELECT pg_is_in_recovery()')
+          .first
+          .fetch('pg_is_in_recovery') == 't'
+      else
+        false
+      end
+    end
+
+    def self.db_read_write?
+      !self.db_read_only?
+    end
+
     def self.version
       @version ||= database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
+    end
+
+    def self.postgresql_9_or_less?
+      postgresql? && version.to_f < 10
     end
 
     def self.join_lateral_supported?
@@ -52,6 +71,28 @@ module Gitlab
 
     def self.replication_slots_supported?
       postgresql? && version.to_f >= 9.4
+    end
+
+    def self.pg_stat_wal_receiver_supported?
+      postgresql? && version.to_f >= 9.6
+    end
+
+    # map some of the function names that changed between PostgreSQL 9 and 10
+    # https://wiki.postgresql.org/wiki/New_in_postgres_10
+    def self.pg_wal_lsn_diff
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_xlog_location_diff' : 'pg_wal_lsn_diff'
+    end
+
+    def self.pg_current_wal_insert_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_current_xlog_insert_location' : 'pg_current_wal_insert_lsn'
+    end
+
+    def self.pg_last_wal_receive_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_receive_location' : 'pg_last_wal_receive_lsn'
+    end
+
+    def self.pg_last_wal_replay_lsn
+      Gitlab::Database.postgresql_9_or_less? ? 'pg_last_xlog_replay_location' : 'pg_last_wal_replay_lsn'
     end
 
     def self.nulls_last_order(field, direction = 'ASC')
@@ -188,8 +229,11 @@ module Gitlab
     end
 
     def self.cached_table_exists?(table_name)
-      # Rails 5 uses data_source_exists? instead of table_exists?
-      connection.schema_cache.table_exists?(table_name)
+      if Gitlab.rails5?
+        connection.schema_cache.data_source_exists?(table_name)
+      else
+        connection.schema_cache.table_exists?(table_name)
+      end
     end
 
     private_class_method :connection

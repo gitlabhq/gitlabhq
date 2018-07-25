@@ -29,8 +29,10 @@
     "merge_when_pipeline_succeeds": { "type": "boolean" },
     "source_branch": { "type": "string" },
     "source_project_id": { "type": "integer" },
+    "source_project_full_path": { "type": ["string", "null"]},
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
+    "target_project_full_path": { "type": ["string", "null"]},
     "allow_collaboration": { "type": "boolean"},
     "metrics": {
       "oneOf": [
@@ -109,6 +111,7 @@
     "ff_only_enabled": { "type": ["boolean", false] },
     "should_be_rebased": { "type": "boolean" },
     "create_note_path": { "type": ["string", "null"] },
+    "preview_note_path": { "type": ["string", "null"] },
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },

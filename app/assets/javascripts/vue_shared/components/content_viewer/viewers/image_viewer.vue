@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     onImgLoad() {
-      const contentImg = this.$refs.contentImg;
+      const { contentImg } = this.$refs;
 
       if (contentImg) {
         this.isZoomable =

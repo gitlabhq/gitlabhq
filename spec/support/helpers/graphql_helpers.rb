@@ -34,14 +34,20 @@ module GraphqlHelpers
   end
 
   def graphql_query_for(name, attributes = {}, fields = nil)
+    <<~QUERY
+    {
+      #{query_graphql_field(name, attributes, fields)}
+    }
+    QUERY
+  end
+
+  def query_graphql_field(name, attributes = {}, fields = nil)
     fields ||= all_graphql_fields_for(name.classify)
     attributes = attributes_to_graphql(attributes)
     <<~QUERY
-    {
       #{name}(#{attributes}) {
         #{fields}
       }
-    }
     QUERY
   end
 
@@ -50,12 +56,15 @@ module GraphqlHelpers
     return "" unless type
 
     type.fields.map do |name, field|
-      if scalar?(field)
-        name
-      else
+      # We can't guess arguments, so skip fields that require them
+      next if required_arguments?(field)
+
+      if nested_fields?(field)
         "#{name} { #{all_graphql_fields_for(field_type(field))} }"
+      else
+        name
       end
-    end.join("\n")
+    end.compact.join("\n")
   end
 
   def attributes_to_graphql(attributes)
@@ -76,8 +85,20 @@ module GraphqlHelpers
     json_response['data']
   end
 
+  def nested_fields?(field)
+    !scalar?(field) && !enum?(field)
+  end
+
   def scalar?(field)
     field_type(field).kind.scalar?
+  end
+
+  def enum?(field)
+    field_type(field).kind.enum?
+  end
+
+  def required_arguments?(field)
+    field.arguments.values.any? { |argument| argument.type.non_null? }
   end
 
   def field_type(field)

@@ -31,6 +31,7 @@ export const diffModes = {
 export const rightSidebarViews = {
   pipelines: 'pipelines-list',
   jobsDetail: 'jobs-detail',
+  mergeRequestInfo: 'merge-request-info',
 };
 
 export const stageKeys = {

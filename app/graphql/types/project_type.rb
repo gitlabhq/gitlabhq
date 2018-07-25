@@ -1,5 +1,7 @@
 module Types
   class ProjectType < BaseObject
+    expose_permissions Types::PermissionTypes::Project
+
     graphql_name 'Project'
 
     field :id, GraphQL::ID_TYPE, null: false
@@ -61,5 +63,17 @@ module Types
     field :request_access_enabled, GraphQL::BOOLEAN_TYPE, null: true
     field :only_allow_merge_if_all_discussions_are_resolved, GraphQL::BOOLEAN_TYPE, null: true
     field :printing_merge_request_link_enabled, GraphQL::BOOLEAN_TYPE, null: true
+
+    field :merge_request,
+          Types::MergeRequestType,
+          null: true,
+          resolver: Resolvers::MergeRequestResolver do
+      authorize :read_merge_request
+    end
+
+    field :pipelines,
+          Types::Ci::PipelineType.connection_type,
+          null: false,
+          resolver: Resolvers::ProjectPipelinesResolver
   end
 end

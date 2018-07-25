@@ -40,7 +40,8 @@ module ProjectsHelper
       name_tag_options[:class] << 'has-tooltip'
     end
 
-    content_tag(:span, sanitize(username), name_tag_options)
+    # NOTE: ActionView::Helpers::TagHelper#content_tag HTML escapes username
+    content_tag(:span, username, name_tag_options)
   end
 
   def link_to_member(project, author, opts = {}, &block)
@@ -62,10 +63,10 @@ module ProjectsHelper
     author_html = author_html.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author_link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
+      link_to(author_html, user_path(author), class: "author-link #{"#{opts[:extra_class]}" if opts[:extra_class]} #{"#{opts[:mobile_classes]}" if opts[:mobile_classes]}").html_safe
     else
       title = opts[:title].sub(":name", sanitize(author.name))
-      link_to(author_html, user_path(author), class: "author_link has-tooltip", title: title, data: { container: 'body' }).html_safe
+      link_to(author_html, user_path(author), class: "author-link has-tooltip", title: title, data: { container: 'body' }).html_safe
     end
   end
 
@@ -176,7 +177,8 @@ module ProjectsHelper
       controller.action_name,
       Gitlab::CurrentSettings.cache_key,
       "cross-project:#{can?(current_user, :read_cross_project)}",
-      'v2.5'
+      max_project_member_access_cache_key(project),
+      'v2.6'
     ]
 
     key << pipeline_status_cache_key(project.pipeline_status) if project.pipeline_status.has_status?
@@ -350,11 +352,15 @@ module ProjectsHelper
     if allowed_protocols_present?
       enabled_protocol
     else
-      if !current_user || current_user.require_ssh_key?
-        gitlab_config.protocol
-      else
-        'ssh'
-      end
+      extra_default_clone_protocol
+    end
+  end
+
+  def extra_default_clone_protocol
+    if !current_user || current_user.require_ssh_key?
+      gitlab_config.protocol
+    else
+      'ssh'
     end
   end
 
@@ -405,19 +411,6 @@ module ProjectsHelper
 
   def current_ref
     @ref || @repository.try(:root_ref)
-  end
-
-  def sanitize_repo_path(project, message)
-    return '' unless message.present?
-
-    exports_path = File.join(Settings.shared['path'], 'tmp/project_exports')
-    filtered_message = message.strip.gsub(exports_path, "[REPO EXPORT PATH]")
-
-    disk_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      Gitlab.config.repositories.storages[project.repository_storage].legacy_disk_path
-    end
-
-    filtered_message.gsub(disk_path.chomp('/'), "[REPOS PATH]")
   end
 
   def project_child_container_class(view_path)
@@ -499,5 +492,46 @@ module ProjectsHelper
     else
       "list-label"
     end
+  end
+
+  def sidebar_projects_paths
+    %w[
+      projects#show
+      projects#activity
+      cycle_analytics#show
+    ]
+  end
+
+  def sidebar_settings_paths
+    %w[
+      projects#edit
+      project_members#index
+      integrations#show
+      services#edit
+      repository#show
+      ci_cd#show
+      badges#index
+      pages#show
+    ]
+  end
+
+  def sidebar_repository_paths
+    %w[
+      tree
+      blob
+      blame
+      edit_tree
+      new_tree
+      find_file
+      commit
+      commits
+      compare
+      projects/repositories
+      tags
+      branches
+      releases
+      graphs
+      network
+    ]
   end
 end

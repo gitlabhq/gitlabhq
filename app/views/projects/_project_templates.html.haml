@@ -10,16 +10,18 @@
       %a.btn.btn-default{ href: template.preview, rel: 'noopener noreferrer', target: '_blank' } Preview
 
   .project-fields-form
-    .form-group
-      %label.label-light
-        Template
-      .input-group.template-input-group
-        .input-group-prepend
-          .input-group-text
-            .selected-icon
-              - Gitlab::ProjectTemplate.all.each do |template|
-                = custom_icon(template.logo)
-            .selected-template
-        %button.btn.btn-default.change-template{ type: "button" } Change template
+    .row
+      .form-group.col-sm-12
+        %label.label-bold
+          Template
+        .input-group.template-input-group
+          .input-group-prepend
+            .input-group-text
+              .selected-icon
+                - Gitlab::ProjectTemplate.all.each do |template|
+                  = custom_icon(template.logo)
+              .selected-template
+          .input-group-append
+            %button.btn.btn-default.change-template{ type: "button" } Change template
 
     = render 'new_project_fields', f: f, project_name_id: "template-project-name"

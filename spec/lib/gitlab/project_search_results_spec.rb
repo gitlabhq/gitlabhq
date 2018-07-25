@@ -64,6 +64,49 @@ describe Gitlab::ProjectSearchResults do
     end
   end
 
+  shared_examples 'blob search repository ref' do |entity_type|
+    let(:query) { 'files' }
+    let(:file_finder) { double }
+    let(:project_branch) { 'project_branch' }
+
+    subject(:results) { described_class.new(user, project, query, repository_ref).objects(blob_type) }
+
+    before do
+      allow(entity).to receive(:default_branch).and_return(project_branch)
+      allow(file_finder).to receive(:find).and_return([])
+    end
+
+    context 'when repository_ref exists' do
+      let(:repository_ref) { 'ref_branch' }
+
+      it 'uses it' do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, repository_ref).and_return(file_finder)
+
+        results
+      end
+    end
+
+    context 'when repository_ref is not present' do
+      let(:repository_ref) { nil }
+
+      it "uses #{entity_type} repository default reference" do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, project_branch).and_return(file_finder)
+
+        results
+      end
+    end
+
+    context 'when repository_ref is blank' do
+      let(:repository_ref) { '' }
+
+      it "uses #{entity_type} repository default reference" do
+        expect(Gitlab::FileFinder).to receive(:new).with(project, project_branch).and_return(file_finder)
+
+        results
+      end
+    end
+  end
+
   describe 'blob search' do
     let(:project) { create(:project, :public, :repository) }
 
@@ -73,6 +116,11 @@ describe Gitlab::ProjectSearchResults do
       let(:private_project) { create(:project, :public, :repository, :repository_private) }
       let(:expected_file_by_name) { 'files/images/wm.svg' }
       let(:expected_file_by_content) { 'CHANGELOG' }
+    end
+
+    it_behaves_like 'blob search repository ref', 'project' do
+      let(:blob_type) { 'blobs' }
+      let(:entity) { project }
     end
 
     describe 'parsing results' do
@@ -211,6 +259,11 @@ describe Gitlab::ProjectSearchResults do
       let(:private_project) { create(:project, :public, :wiki_repo, :wiki_private) }
       let(:expected_file_by_name) { 'Files/Title.md' }
       let(:expected_file_by_content) { 'CHANGELOG.md' }
+    end
+
+    it_behaves_like 'blob search repository ref', 'wiki' do
+      let(:blob_type) { 'wiki_blobs' }
+      let(:entity) { project.wiki }
     end
   end
 
@@ -385,7 +438,7 @@ describe Gitlab::ProjectSearchResults do
       let!(:private_project) { create(:project, :private, :repository, creator: creator, namespace: creator.namespace) }
       let(:team_master) do
         user = create(:user, username: 'private-project-master')
-        private_project.add_master(user)
+        private_project.add_maintainer(user)
         user
       end
       let(:team_reporter) do

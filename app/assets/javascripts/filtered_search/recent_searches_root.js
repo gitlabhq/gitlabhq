@@ -29,7 +29,7 @@ class RecentSearchesRoot {
   }
 
   render() {
-    const state = this.store.state;
+    const { state } = this.store;
     this.vm = new Vue({
       el: this.wrapperElement,
       components: {

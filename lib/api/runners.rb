@@ -58,7 +58,7 @@ module API
         optional :access_level, type: String, values: Ci::Runner.access_levels.keys,
                                 desc: 'The access_level of the runner'
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
-        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level
+        at_least_one_of :description, :active, :tag_list, :run_untagged, :locked, :access_level, :maximum_timeout
       end
       put ':id' do
         runner = get_runner(params.delete(:id))
@@ -119,7 +119,7 @@ module API
         use :pagination
       end
       get ':id/runners' do
-        runners = filter_runners(Ci::Runner.owned_or_shared(user_project.id), params[:scope])
+        runners = filter_runners(Ci::Runner.owned_or_instance_wide(user_project.id), params[:scope])
         present paginate(runners), with: Entities::Runner
       end
 
@@ -170,6 +170,11 @@ module API
           render_api_error!('Scope contains invalid value', 400)
         end
 
+        # Support deprecated scopes
+        if runners.respond_to?("deprecated_#{scope}")
+          scope = "deprecated_#{scope}"
+        end
+
         runners.public_send(scope) # rubocop:disable GitlabSecurity/PublicSend
       end
 
@@ -180,7 +185,7 @@ module API
       end
 
       def authenticate_show_runner!(runner)
-        return if runner.is_shared || current_user.admin?
+        return if runner.instance_type? || current_user.admin?
 
         forbidden!("No access granted") unless can?(current_user, :read_runner, runner)
       end

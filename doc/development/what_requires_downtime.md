@@ -195,22 +195,22 @@ end
 
 And that's it, we're done!
 
-## Changing Column Types For Large Tables
+## Changing The Schema For Large Tables
 
-While `change_column_type_concurrently` can be used for changing the type of a
-column without downtime it doesn't work very well for large tables. Because all
-of the work happens in sequence the migration can take a very long time to
-complete, preventing a deployment from proceeding.
-`change_column_type_concurrently` can also produce a lot of pressure on the
-database due to it rapidly updating many rows in sequence.
+While `change_column_type_concurrently` and `rename_column_concurrently` can be
+used for changing the schema of a table without downtime, it doesn't work very
+well for large tables. Because all of the work happens in sequence the migration
+can take a very long time to complete, preventing a deployment from proceeding.
+They can also produce a lot of pressure on the database due to it rapidly
+updating many rows in sequence.
 
 To reduce database pressure you should instead use
-`change_column_type_using_background_migration` when migrating a column in a
-large table (e.g. `issues`). This method works similar to
-`change_column_type_concurrently` but uses background migration to spread the
-work / load over a longer time period, without slowing down deployments.
+`change_column_type_using_background_migration` or `rename_column_using_background_migration`
+when migrating a column in a large table (e.g. `issues`). These methods work
+similarly to the concurrent counterparts but uses background migration to spread
+the work / load over a longer time period, without slowing down deployments.
 
-Usage of this method is fairly simple:
+For example, to change the column type using a background migration:
 
 ```ruby
 class ExampleMigration < ActiveRecord::Migration
@@ -251,6 +251,62 @@ This would change the type of `issues.closed_at` to `timestamp with time zone`.
 Keep in mind that the relation passed to
 `change_column_type_using_background_migration` _must_ include `EachBatch`,
 otherwise it will raise a `TypeError`.
+
+This migration then needs to be followed in a separate release (_not_ a patch
+release) by a cleanup migration, which should steal from the queue and handle
+any remaining rows. For example:
+
+```ruby
+class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration
+  include Gitlab::Database::MigrationHelpers
+
+  DOWNTIME = false
+
+  disable_ddl_transaction!
+
+  class Issue < ActiveRecord::Base
+    self.table_name = 'issues'
+    include EachBatch
+  end
+
+  def up
+    Gitlab::BackgroundMigration.steal('CopyColumn')
+    Gitlab::BackgroundMigration.steal('CleanupConcurrentTypeChange')
+
+    migrate_remaining_rows if migrate_column_type?
+  end
+
+  def down
+    # Previous migrations already revert the changes made here.
+  end
+
+  def migrate_remaining_rows
+    Issue.where('closed_at_for_type_change IS NULL AND closed_at IS NOT NULL').each_batch do |batch|
+      batch.update_all('closed_at_for_type_change = closed_at')
+    end
+
+    cleanup_concurrent_column_type_change(:issues, :closed_at)
+  end
+
+  def migrate_column_type?
+    # Some environments may have already executed the previous version of this
+    # migration, thus we don't need to migrate those environments again.
+    column_for('issues', 'closed_at').type == :datetime # rubocop:disable Migration/Datetime
+  end
+end
+```
+
+The same applies to `rename_column_using_background_migration`:
+
+1. Create a migration using the helper, which will schedule background
+   migrations to spread the writes over a longer period of time.
+2. In the next monthly release, create a clean-up migration to steal from the
+   Sidekiq queues, migrate any missing rows, and cleanup the rename. This
+   migration should skip the steps after stealing from the Sidekiq queues if the
+   column has already been renamed.
+
+For more information, see [the documentation on cleaning up background
+migrations](background_migrations.md#cleaning-up).
 
 ## Adding Indexes
 

@@ -1,5 +1,6 @@
 <script>
   import $ from 'jquery';
+  import { s__ } from '~/locale';
   import Flash from '../../../flash';
   import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
@@ -21,6 +22,11 @@
       markdownDocsPath: {
         type: String,
         required: true,
+      },
+      markdownVersion: {
+        type: Number,
+        required: false,
+        default: 0,
       },
       addSpacingClasses: {
         type: Boolean,
@@ -62,7 +68,15 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
+      return new GLForm($(this.$refs['gl-form']), {
+        emojis: this.enableAutocomplete,
+        members: this.enableAutocomplete,
+        issues: this.enableAutocomplete,
+        mergeRequests: this.enableAutocomplete,
+        epics: this.enableAutocomplete,
+        milestones: this.enableAutocomplete,
+        labels: this.enableAutocomplete,
+      });
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('glForm');
@@ -84,10 +98,11 @@
 
         if (text) {
           this.markdownPreviewLoading = true;
-          this.$http.post(this.markdownPreviewPath, { text })
-            .then(resp => resp.json())
-            .then(data => this.renderMarkdown(data))
-            .catch(() => new Flash('Error loading markdown preview'));
+          this.$http
+            .post(this.versionedPreviewPath(), { text })
+              .then(resp => resp.json())
+              .then(data => this.renderMarkdown(data))
+              .catch(() => new Flash(s__('Error loading markdown preview')));
         } else {
           this.renderMarkdown();
         }
@@ -110,6 +125,13 @@
         this.$nextTick(() => {
           $(this.$refs['markdown-preview']).renderGFM();
         });
+      },
+
+      versionedPreviewPath() {
+        const { markdownPreviewPath, markdownVersion } = this;
+        return `${markdownPreviewPath}${
+          markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'
+          }markdown_version=${markdownVersion}`;
       },
     },
   };
@@ -150,7 +172,7 @@
     </div>
     <div
       v-show="previewMarkdown"
-      class="md md-preview-holder md-preview"
+      class="md md-preview-holder md-preview js-vue-md-preview"
     >
       <div
         ref="markdown-preview"

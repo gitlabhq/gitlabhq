@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TODO: Inherit from TreeEntity, when `Tree` implements `id` and `name` like `Gitlab::Git::Tree`.
 class TreeRootEntity < Grape::Entity
   include RequestAwareEntity

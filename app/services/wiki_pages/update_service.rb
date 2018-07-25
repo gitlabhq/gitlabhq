@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiPages
   class UpdateService < WikiPages::BaseService
     def execute(page)

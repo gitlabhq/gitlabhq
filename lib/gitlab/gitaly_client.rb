@@ -33,11 +33,6 @@ module Gitlab
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
-    # We have a mechanism to let GitLab automatically opt in to all Gitaly
-    # features. We want to be able to exclude some features from automatic
-    # opt-in. That is what EXPLICIT_OPT_IN_REQUIRED is for.
-    EXPLICIT_OPT_IN_REQUIRED = [Gitlab::GitalyClient::StorageSettings::DISK_ACCESS_DENIED_FLAG].freeze
-
     MUTEX = Mutex.new
 
     class << self
@@ -249,7 +244,7 @@ module Gitlab
       when MigrationStatus::OPT_OUT
         true
       when MigrationStatus::OPT_IN
-        opt_into_all_features? && !EXPLICIT_OPT_IN_REQUIRED.include?(feature_name)
+        opt_into_all_features? && !explicit_opt_in_required.include?(feature_name)
       else
         false
       end
@@ -257,6 +252,13 @@ module Gitlab
       # During application startup feature lookups in SQL can fail
       Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
       false
+    end
+
+    # We have a mechanism to let GitLab automatically opt in to all Gitaly
+    # features. We want to be able to exclude some features from automatic
+    # opt-in. This function has an override in EE.
+    def self.explicit_opt_in_required
+      []
     end
 
     # opt_into_all_features? returns true when the current environment
@@ -399,13 +401,13 @@ module Gitlab
       path.read.chomp
     end
 
-    def self.timestamp(t)
-      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    def self.timestamp(time)
+      Google::Protobuf::Timestamp.new(seconds: time.to_i)
     end
 
     # The default timeout on all Gitaly calls
     def self.default_timeout
-      return 0 if Sidekiq.server?
+      return no_timeout if Sidekiq.server?
 
       timeout(:gitaly_timeout_default)
     end
@@ -418,6 +420,10 @@ module Gitlab
       timeout(:gitaly_timeout_medium)
     end
 
+    def self.no_timeout
+      0
+    end
+
     def self.timeout(timeout_name)
       Gitlab::CurrentSettings.current_application_settings[timeout_name]
     end
@@ -427,7 +433,7 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      stack_string = caller.drop(1).join("\n")
+      stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
 
       RequestStore.store[:stack_counter] ||= Hash.new
 

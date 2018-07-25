@@ -5,6 +5,12 @@ shared_examples "protected branches > access control > CE" do
 
       set_protected_branch_name('master')
 
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
       within('.js-new-protected-branch') do
         allowed_to_push_button = find(".js-allowed-to-push")
 
@@ -24,6 +30,18 @@ shared_examples "protected branches > access control > CE" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
+
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
 
       click_on "Protect"
 
@@ -59,6 +77,12 @@ shared_examples "protected branches > access control > CE" do
         end
       end
 
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
       click_on "Protect"
 
       expect(ProtectedBranch.count).to eq(1)
@@ -69,6 +93,18 @@ shared_examples "protected branches > access control > CE" do
       visit project_protected_branches_path(project)
 
       set_protected_branch_name('master')
+
+      find(".js-allowed-to-merge").click
+      within('.qa-allowed-to-merge-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
+
+      find(".js-allowed-to-push").click
+      within('.qa-allowed-to-push-dropdown') do
+        expect(first("li")).to have_content("Roles")
+        find(:link, 'No one').click
+      end
 
       click_on "Protect"
 

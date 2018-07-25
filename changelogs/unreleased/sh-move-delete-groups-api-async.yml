@@ -1,5 +1,0 @@
----
-title: Move API group deletion to Sidekiq
-merge_request:
-author:
-type: changed

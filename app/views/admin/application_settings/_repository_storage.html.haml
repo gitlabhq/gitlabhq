@@ -13,7 +13,7 @@
             repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
             %em (EXPERIMENTAL)
       .form-group
-        = f.label :repository_storages, 'Storage paths for new projects', class: 'label-light'
+        = f.label :repository_storages, 'Storage paths for new projects', class: 'label-bold'
         = f.select :repository_storages, repository_storages_options_for_select(@application_setting.repository_storages),
           {include_hidden: false}, multiple: true, class: 'form-control'
         .form-text.text-muted
@@ -23,27 +23,27 @@
     .sub-section
       %h4 Circuit breaker
       .form-group
-        = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'label-light'
+        = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'label-bold'
         = f.number_field :circuitbreaker_check_interval, class: 'form-control'
         .form-text.text-muted
           = circuitbreaker_check_interval_help_text
       .form-group
-        = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'label-light'
+        = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'label-bold'
         = f.number_field :circuitbreaker_access_retries, class: 'form-control'
         .form-text.text-muted
           = circuitbreaker_access_retries_help_text
       .form-group
-        = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'label-light'
+        = f.label :circuitbreaker_storage_timeout, _('Seconds to wait for a storage access attempt'), class: 'label-bold'
         = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
         .form-text.text-muted
           = circuitbreaker_storage_timeout_help_text
       .form-group
-        = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'label-light'
+        = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'label-bold'
         = f.number_field :circuitbreaker_failure_count_threshold, class: 'form-control'
         .form-text.text-muted
           = circuitbreaker_failure_count_help_text
       .form-group
-        = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'label-light'
+        = f.label :circuitbreaker_failure_reset_time, _('Seconds before reseting failure information'), class: 'label-bold'
         = f.number_field :circuitbreaker_failure_reset_time, class: 'form-control'
         .form-text.text-muted
           = circuitbreaker_failure_reset_time_help_text

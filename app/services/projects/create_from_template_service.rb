@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class CreateFromTemplateService < BaseService
     def initialize(user, params)

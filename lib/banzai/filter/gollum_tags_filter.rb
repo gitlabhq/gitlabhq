@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML Filter for parsing Gollum's tags in HTML. It's only parses the
@@ -56,10 +58,12 @@ module Banzai
       # Pattern to match allowed image extensions
       ALLOWED_IMAGE_EXTENSIONS = /.+(jpg|png|gif|svg|bmp)\z/i.freeze
 
+      # Do not perform linking inside these tags.
+      IGNORED_ANCESTOR_TAGS = %w(pre code tt).to_set
+
       def call
         doc.search(".//text()").each do |node|
-          # Do not perform linking inside <code> blocks
-          next unless node.ancestors('code').empty?
+          next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
 
           # A Gollum ToC tag is `[[_TOC_]]`, but due to MarkdownFilter running
           # before this one, it will be converted into `[[<em>TOC</em>]]`, so it

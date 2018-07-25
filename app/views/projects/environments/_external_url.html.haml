@@ -1,4 +1,4 @@
 - if environment.external_url && can?(current_user, :read_environment, environment)
-  = link_to environment.external_url, target: '_blank', rel: 'noopener noreferrer', class: 'btn external-url' do
-    = icon('external-link')
+  = link_to environment.external_url, target: '_blank', rel: 'noopener noreferrer', class: 'btn external-url has-tooltip', title: s_('Environments|Open live environment') do
+    = sprite_icon('external-link')
     View deployment

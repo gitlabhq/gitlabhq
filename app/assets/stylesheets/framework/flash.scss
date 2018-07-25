@@ -10,6 +10,20 @@
     @extend .alert;
     background-color: $blue-500;
     margin: 0;
+
+    &.flash-notice-persistent {
+      background-color: $blue-100;
+      color: $gl-text-color;
+
+      a {
+        color: $gl-link-color;
+
+        &:hover {
+          color: $gl-link-hover-color;
+          text-decoration: none;
+        }
+      }
+    }
   }
 
   .flash-warning {
@@ -28,7 +42,7 @@
       display: inline-block;
     }
 
-    a.flash-action {
+    .flash-action {
       margin-left: 5px;
       text-decoration: none;
       font-weight: $gl-font-weight-normal;

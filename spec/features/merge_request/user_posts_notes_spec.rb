@@ -14,7 +14,7 @@ describe 'Merge request > User posts notes', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit project_merge_request_path(project, merge_request)
   end
@@ -24,10 +24,9 @@ describe 'Merge request > User posts notes', :js do
   describe 'the note form' do
     it 'is valid' do
       is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
-      expect(find('.js-main-target-form .js-comment-button').value)
-        .to eq('Comment')
+      expect(find('.js-main-target-form')).to have_selector('button', text: 'Comment')
       page.within('.js-main-target-form') do
-        expect(page).not_to have_link('Cancel')
+        expect(page).not_to have_button('Cancel')
       end
     end
 
@@ -60,8 +59,9 @@ describe 'Merge request > User posts notes', :js do
       is_expected.to have_content('This is awesome!')
       page.within('.js-main-target-form') do
         expect(page).to have_no_field('note[note]', with: 'This is awesome!')
-        expect(page).to have_css('.js-md-preview', visible: :hidden)
+        expect(page).to have_css('.js-vue-md-preview', visible: :hidden)
       end
+      wait_for_requests
       page.within('.js-main-target-form') do
         is_expected.to have_css('.js-note-text', visible: true)
       end
@@ -76,6 +76,7 @@ describe 'Merge request > User posts notes', :js do
     end
 
     it 'hides the toolbar buttons when previewing a note' do
+      wait_for_requests
       find('.js-md-preview-button').click
       page.within('.js-main-target-form') do
         expect(page).not_to have_css('.md-header-toolbar.active')
@@ -84,11 +85,6 @@ describe 'Merge request > User posts notes', :js do
   end
 
   describe 'when editing a note' do
-    it 'there should be a hidden edit form' do
-      is_expected.to have_css('.note-edit-form:not(.mr-note-edit-form)', visible: false, count: 1)
-      is_expected.to have_css('.note-edit-form.mr-note-edit-form', visible: false, count: 1)
-    end
-
     describe 'editing the note' do
       before do
         find('.note').hover
@@ -108,8 +104,8 @@ describe 'Merge request > User posts notes', :js do
         within('.current-note-edit-form') do
           fill_in 'note[note]', with: 'Some new content'
           find('.btn-cancel').click
-          expect(find('.js-note-text', visible: false).text).to eq ''
         end
+        expect(find('.js-note-text').text).to eq ''
       end
 
       it 'allows using markdown buttons after saving a note and then trying to edit it again' do
@@ -118,8 +114,8 @@ describe 'Merge request > User posts notes', :js do
           find('.btn-save').click
         end
 
-        wait_for_requests
         find('.note').hover
+        wait_for_requests
 
         find('.js-note-edit').click
 
@@ -151,13 +147,15 @@ describe 'Merge request > User posts notes', :js do
         find('.js-note-edit').click
       end
 
-      it 'shows the delete link' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+      xit 'shows the delete link' do
         page.within('.note-attachment') do
           is_expected.to have_css('.js-note-attachment-delete')
         end
       end
 
-      it 'removes the attachment div and resets the edit form' do
+      # TODO: https://gitlab.com/gitlab-org/gitlab-ce/issues/48034
+      xit 'removes the attachment div and resets the edit form' do
         accept_confirm { find('.js-note-attachment-delete').click }
         is_expected.not_to have_css('.note-attachment')
         is_expected.not_to have_css('.current-note-edit-form')

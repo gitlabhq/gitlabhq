@@ -17,16 +17,16 @@ describe GroupProjectsFinder do
   let!(:subgroup_private_project) { create(:project, :private, path: '7', group: subgroup) }
 
   before do
-    shared_project_1.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
-    shared_project_2.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
-    shared_project_3.project_group_links.create(group_access: Gitlab::Access::MASTER, group: group)
+    shared_project_1.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
+    shared_project_2.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
+    shared_project_3.project_group_links.create(group_access: Gitlab::Access::MAINTAINER, group: group)
   end
 
   subject { finder.execute }
 
   describe 'with a group member current user' do
     before do
-      group.add_master(current_user)
+      group.add_maintainer(current_user)
     end
 
     context "only shared" do
@@ -68,7 +68,7 @@ describe GroupProjectsFinder do
 
   describe 'without group member current_user' do
     before do
-      shared_project_2.add_master(current_user)
+      shared_project_2.add_maintainer(current_user)
       current_user.reload
     end
 
@@ -81,7 +81,7 @@ describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update_attributes(external: true)
+          current_user.update(external: true)
         end
 
         it { is_expected.to match_array([shared_project_2, shared_project_1]) }
@@ -93,8 +93,8 @@ describe GroupProjectsFinder do
 
       context "without external user" do
         before do
-          private_project.add_master(current_user)
-          subgroup_private_project.add_master(current_user)
+          private_project.add_maintainer(current_user)
+          subgroup_private_project.add_maintainer(current_user)
         end
 
         context 'with subgroups projects', :nested_groups do
@@ -112,7 +112,7 @@ describe GroupProjectsFinder do
 
       context "with external user" do
         before do
-          current_user.update_attributes(external: true)
+          current_user.update(external: true)
         end
 
         context 'with subgroups projects', :nested_groups do

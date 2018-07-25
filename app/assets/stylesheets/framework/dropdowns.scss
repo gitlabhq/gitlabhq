@@ -36,7 +36,7 @@
       width: 100%;
     }
 
-    &.projects-dropdown-menu {
+    &.frequent-items-dropdown-menu {
       padding: 0;
       overflow-y: initial;
       max-height: initial;
@@ -790,6 +790,7 @@
 @include media-breakpoint-down(xs) {
   .navbar-gitlab {
     li.header-projects,
+    li.header-groups,
     li.header-more,
     li.header-new,
     li.header-user {
@@ -813,18 +814,18 @@
   }
 }
 
-header.header-content .dropdown-menu.projects-dropdown-menu {
+header.header-content .dropdown-menu.frequent-items-dropdown-menu {
   padding: 0;
 }
 
-.projects-dropdown-container {
+.frequent-items-dropdown-container {
   display: flex;
   flex-direction: row;
   width: 500px;
-  height: 334px;
+  height: 354px;
 
-  .project-dropdown-sidebar,
-  .project-dropdown-content {
+  .frequent-items-dropdown-sidebar,
+  .frequent-items-dropdown-content {
     padding: 8px 0;
   }
 
@@ -832,12 +833,12 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     color: $almost-black;
   }
 
-  .project-dropdown-sidebar {
+  .frequent-items-dropdown-sidebar {
     width: 30%;
     border-right: 1px solid $border-color;
   }
 
-  .project-dropdown-content {
+  .frequent-items-dropdown-content {
     position: relative;
     width: 70%;
   }
@@ -848,33 +849,36 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     height: auto;
     flex: 1;
 
-    .project-dropdown-sidebar,
-    .project-dropdown-content {
+    .frequent-items-dropdown-sidebar,
+    .frequent-items-dropdown-content {
       width: 100%;
     }
 
-    .project-dropdown-sidebar {
+    .frequent-items-dropdown-sidebar {
       border-bottom: 1px solid $border-color;
       border-right: 0;
     }
   }
 
-  .projects-list-frequent-container,
-  .projects-list-search-container {
+  .section-header,
+  .frequent-items-list-container li.section-empty {
+    padding: 0 $gl-padding;
+    color: $gl-text-color-secondary;
+    font-size: $gl-font-size;
+  }
+
+  .frequent-items-list-container {
+    height: 304px;
     padding: 8px 0;
     overflow-y: auto;
 
     li.section-empty.section-failure {
       color: $callout-danger-color;
     }
-  }
 
-  .section-header,
-  .projects-list-frequent-container li.section-empty,
-  .projects-list-search-container li.section-empty {
-    padding: 0 15px;
-    color: $gl-text-color-secondary;
-    font-size: $gl-font-size;
+    .frequent-items-list-item-container a {
+      display: flex;
+    }
   }
 
   .search-input-container {
@@ -894,12 +898,8 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     margin-top: 8px;
   }
 
-  .projects-list-search-container {
-    height: 284px;
-  }
-
   @include media-breakpoint-down(xs) {
-    .projects-list-frequent-container {
+    .frequent-items-list-container {
       width: auto;
       height: auto;
       padding-bottom: 0;
@@ -907,32 +907,38 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   }
 }
 
-.projects-list-item-container {
-  .project-item-avatar-container .project-item-metadata-container {
+.frequent-items-list-item-container {
+  .frequent-items-item-avatar-container,
+  .frequent-items-item-metadata-container {
     float: left;
   }
 
-  .project-title,
-  .project-namespace {
+  .frequent-items-item-metadata-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .frequent-items-item-title,
+  .frequent-items-item-namespace {
     max-width: 250px;
-    overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
   &:hover {
-    .project-item-avatar-container .avatar {
+    .frequent-items-item-avatar-container .avatar {
       border-color: $md-area-border;
     }
   }
 
-  .project-title {
+  .frequent-items-item-title {
     font-size: $gl-font-size;
     font-weight: 400;
     line-height: 16px;
   }
 
-  .project-namespace {
+  .frequent-items-item-namespace {
     margin-top: 4px;
     font-size: 12px;
     line-height: 12px;
@@ -940,7 +946,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   }
 
   @include media-breakpoint-down(xs) {
-    .project-item-metadata-container {
+    .frequent-items-item-metadata-container {
       float: none;
     }
   }

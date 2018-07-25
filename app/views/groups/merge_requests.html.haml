@@ -7,7 +7,7 @@
     = render 'shared/issuable/nav', type: :merge_requests
     - if current_user
       .nav-controls
-        = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
+        = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests, with_feature_enabled: 'merge_requests'
 
   = render 'shared/issuable/search_bar', type: :merge_requests
 

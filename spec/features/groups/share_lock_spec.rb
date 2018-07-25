@@ -1,19 +1,19 @@
 require 'spec_helper'
 
-feature 'Group share with group lock' do
-  given(:root_owner) { create(:user) }
-  given(:root_group) { create(:group) }
+describe 'Group share with group lock' do
+  let(:root_owner) { create(:user) }
+  let(:root_group) { create(:group) }
 
-  background do
+  before do
     root_group.add_owner(root_owner)
     sign_in(root_owner)
   end
 
   context 'with a subgroup', :nested_groups do
-    given!(:subgroup) { create(:group, parent: root_group) }
+    let!(:subgroup) { create(:group, parent: root_group) }
 
     context 'when enabling the parent group share with group lock' do
-      scenario 'the subgroup share with group lock becomes enabled' do
+      it 'the subgroup share with group lock becomes enabled' do
         visit edit_group_path(root_group)
 
         enable_group_lock
@@ -23,14 +23,14 @@ feature 'Group share with group lock' do
     end
 
     context 'when disabling the parent group share with group lock (which was already enabled)' do
-      background do
+      before do
         visit edit_group_path(root_group)
 
         enable_group_lock
       end
 
       context 'and the subgroup share with group lock is enabled' do
-        scenario 'the subgroup share with group lock does not change' do
+        it 'the subgroup share with group lock does not change' do
           visit edit_group_path(root_group)
 
           disable_group_lock
@@ -40,13 +40,13 @@ feature 'Group share with group lock' do
       end
 
       context 'but the subgroup share with group lock is disabled' do
-        background do
+        before do
           visit edit_group_path(subgroup)
 
           disable_group_lock
         end
 
-        scenario 'the subgroup share with group lock does not change' do
+        it 'the subgroup share with group lock does not change' do
           visit edit_group_path(root_group)
 
           disable_group_lock

@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Template selector menu', :js do
+describe 'Template selector menu', :js do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
   end
 
@@ -14,7 +14,7 @@ feature 'Template selector menu', :js do
       create_and_edit_file('README.md')
     end
 
-    scenario 'is not displayed' do
+    it 'is not displayed' do
       check_template_selector_menu_display(false)
     end
 
@@ -23,7 +23,7 @@ feature 'Template selector menu', :js do
         click_link 'Preview'
       end
 
-      scenario 'template selector menu is not displayed' do
+      it 'template selector menu is not displayed' do
         check_template_selector_menu_display(false)
         click_link 'Write'
         check_template_selector_menu_display(false)
@@ -36,7 +36,7 @@ feature 'Template selector menu', :js do
       visit project_edit_blob_path(project, File.join(project.default_branch, 'LICENSE'))
     end
 
-    scenario 'is displayed' do
+    it 'is displayed' do
       check_template_selector_menu_display(true)
     end
 
@@ -45,7 +45,7 @@ feature 'Template selector menu', :js do
         click_link 'Preview'
       end
 
-      scenario 'template selector menu is hidden and shown correctly' do
+      it 'template selector menu is hidden and shown correctly' do
         check_template_selector_menu_display(false)
         click_link 'Write'
         check_template_selector_menu_display(true)

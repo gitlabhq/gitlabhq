@@ -1,41 +1,6 @@
 module Gitlab
   module Cache
-    # This module provides a simple way to cache values in RequestStore,
-    # and the cache key would be based on the class name, method name,
-    # optionally customized instance level values, optionally customized
-    # method level values, and optional method arguments.
-    #
-    # A simple example:
-    #
-    # class UserAccess
-    #   extend Gitlab::Cache::RequestCache
-    #
-    #   request_cache_key do
-    #     [user&.id, project&.id]
-    #   end
-    #
-    #   request_cache def can_push_to_branch?(ref)
-    #     # ...
-    #   end
-    # end
-    #
-    # This way, the result of `can_push_to_branch?` would be cached in
-    # `RequestStore.store` based on the cache key. If RequestStore is not
-    # currently active, then it would be stored in a hash saved in an
-    # instance variable, so the cache logic would be the same.
-    # Here's another example using customized method level values:
-    #
-    # class Commit
-    #   extend Gitlab::Cache::RequestCache
-    #
-    #   def author
-    #     User.find_by_any_email(author_email.downcase)
-    #   end
-    #   request_cache(:author) { author_email.downcase }
-    # end
-    #
-    # So that we could have different strategies for different methods
-    #
+    # See https://docs.gitlab.com/ee/development/utilities.html#requestcache
     module RequestCache
       def self.extended(klass)
         return if klass < self

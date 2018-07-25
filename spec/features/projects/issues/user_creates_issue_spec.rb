@@ -17,6 +17,9 @@ describe "User creates issue" do
         expect(page).to have_no_content("Assign to")
         .and have_no_content("Labels")
         .and have_no_content("Milestone")
+
+        expect(page.find('#issue_title')['placeholder']).to eq 'Title'
+        expect(page.find('#issue_description')['placeholder']).to eq 'Write a comment or drag your files here…'
       end
 
       issue_title = "500 error on profile"

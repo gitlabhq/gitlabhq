@@ -254,6 +254,7 @@ class Service < ActiveRecord::Base
       emails_on_push
       external_wiki
       flowdock
+      hangouts_chat
       hipchat
       irker
       jira
@@ -281,9 +282,9 @@ class Service < ActiveRecord::Base
 
   def self.build_from_template(project_id, template)
     service = template.dup
-    service.active = false unless service.valid?
     service.template = false
     service.project_id = project_id
+    service.active = false if service.active? && !service.valid?
     service
   end
 

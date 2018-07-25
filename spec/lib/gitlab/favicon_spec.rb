@@ -19,7 +19,22 @@ RSpec.describe Gitlab::Favicon, :request_store do
 
     it 'uses the custom favicon if a favicon appearance is present' do
       create :appearance, favicon: fixture_file_upload('spec/fixtures/dk.png')
-      expect(described_class.main).to match %r{/uploads/-/system/appearance/favicon/\d+/favicon_main_dk.png}
+      expect(described_class.main).to match %r{/uploads/-/system/appearance/favicon/\d+/dk.png}
+    end
+
+    context 'asset host' do
+      before do
+        allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
+      end
+
+      it 'returns a relative url when the asset host is not configured' do
+        expect(described_class.main).to match %r{^/assets/favicon-(?:\h+).png$}
+      end
+
+      it 'returns a full url when the asset host is configured' do
+        allow(ActionController::Base).to receive(:asset_host).and_return('http://assets.local')
+        expect(described_class.main).to match %r{^http://localhost/assets/favicon-(?:\h+).png$}
+      end
     end
   end
 

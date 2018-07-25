@@ -9,11 +9,11 @@ describe('Settings Panels', () => {
 
   describe('initSettingsPane', () => {
     afterEach(() => {
-      location.hash = '';
+      window.location.hash = '';
     });
 
     it('should expand linked hash fragment panel', () => {
-      location.hash = '#autodevops-settings';
+      window.location.hash = '#autodevops-settings';
 
       const pipelineSettingsPanel = document.querySelector('#autodevops-settings');
       // Our test environment automatically expands everything so we need to clear that out first

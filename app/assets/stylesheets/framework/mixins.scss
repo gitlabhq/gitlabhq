@@ -3,13 +3,13 @@
  * Mixins with fixed values
  */
 
-@mixin str-truncated($max_width: 82%) {
+@mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
   white-space: nowrap;
-  max-width: $max_width;
+  max-width: $max-width;
 }
 
 /*
@@ -231,4 +231,11 @@
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
+}
+
+@mixin borderless-status-icon($color) {
+  svg {
+    border: 1px solid $color;
+    border-radius: 50%;
+  }
 }

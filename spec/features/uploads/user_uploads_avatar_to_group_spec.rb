@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-feature 'User uploads avatar to group' do
-  scenario 'they see the new avatar' do
+describe 'User uploads avatar to group' do
+  it 'they see the new avatar' do
     user = create(:user)
     group = create(:group)
     group.add_owner(user)

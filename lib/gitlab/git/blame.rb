@@ -22,24 +22,9 @@ module Gitlab
       private
 
       def load_blame
-        raw_output = @repo.gitaly_migrate(:blame, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          if is_enabled
-            load_blame_by_gitaly
-          else
-            load_blame_by_shelling_out
-          end
-        end
+        output = encode_utf8(@repo.gitaly_commit_client.raw_blame(@sha, @path))
 
-        output = encode_utf8(raw_output)
-        process_raw_blame output
-      end
-
-      def load_blame_by_gitaly
-        @repo.gitaly_commit_client.raw_blame(@sha, @path)
-      end
-
-      def load_blame_by_shelling_out
-        @repo.shell_blame(@sha, @path)
+        process_raw_blame(output)
       end
 
       def process_raw_blame(output)

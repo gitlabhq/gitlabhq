@@ -16,7 +16,7 @@ describe 'User views diffs', :js do
     it 'unfolds diffs' do
       first('.js-unfold').click
 
-      expect(first('.text-file')).to have_content('.bundle')
+      expect(find('.file-holder[id="a5cc2925ca8258af241be7e5b0381edf30266302"] .text-file')).to have_content('.bundle')
     end
   end
 
@@ -36,13 +36,21 @@ describe 'User views diffs', :js do
 
   context 'when in the side-by-side view' do
     before do
-      click_link('Side-by-side')
+      click_button 'Side-by-side'
 
       wait_for_requests
     end
 
     it 'shows diffs in parallel' do
       expect(page).to have_css('.parallel')
+    end
+
+    it 'toggles container class' do
+      expect(page).not_to have_css('.content-wrapper > .container-fluid.container-limited')
+
+      click_link 'Commits'
+
+      expect(page).to have_css('.content-wrapper > .container-fluid.container-limited')
     end
 
     include_examples 'unfold diffs'

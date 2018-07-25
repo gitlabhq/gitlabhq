@@ -37,7 +37,7 @@ module Gitlab
 
       def validate_lfs_file_locks?
         strong_memoize(:validate_lfs_file_locks) do
-          project.lfs_enabled? && project.lfs_file_locks.any? && newrev && oldrev
+          project.lfs_enabled? && newrev && oldrev && project.any_lfs_file_locks?
         end
       end
 

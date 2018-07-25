@@ -21,17 +21,25 @@ describe 'Merge request > User uses quick actions', :js do
     let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
     before do
-      project.add_master(user)
-      sign_in(user)
-      visit project_merge_request_path(project, merge_request)
+      project.add_maintainer(user)
     end
 
     describe 'time tracking' do
+      before do
+        sign_in(user)
+        visit project_merge_request_path(project, merge_request)
+      end
+
       it_behaves_like 'issuable time tracker'
     end
 
     describe 'toggling the WIP prefix in the title from note' do
       context 'when the current user can toggle the WIP prefix' do
+        before do
+          sign_in(user)
+          visit project_merge_request_path(project, merge_request)
+        end
+
         it 'adds the WIP: prefix to the title' do
           add_note("/wip")
 
@@ -56,7 +64,6 @@ describe 'Merge request > User uses quick actions', :js do
       context 'when the current user cannot toggle the WIP prefix' do
         before do
           project.add_guest(guest)
-          sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end
@@ -74,6 +81,11 @@ describe 'Merge request > User uses quick actions', :js do
 
     describe 'merging the MR from the note' do
       context 'when the current user can merge the MR' do
+        before do
+          sign_in(user)
+          visit project_merge_request_path(project, merge_request)
+        end
+
         it 'merges the MR' do
           add_note("/merge")
 
@@ -87,6 +99,8 @@ describe 'Merge request > User uses quick actions', :js do
         before do
           merge_request.source_branch = 'another_branch'
           merge_request.save
+          sign_in(user)
+          visit project_merge_request_path(project, merge_request)
         end
 
         it 'does not merge the MR' do
@@ -101,7 +115,6 @@ describe 'Merge request > User uses quick actions', :js do
       context 'when the current user cannot merge the MR' do
         before do
           project.add_guest(guest)
-          sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end
@@ -117,6 +130,11 @@ describe 'Merge request > User uses quick actions', :js do
     end
 
     describe 'adding a due date from note' do
+      before do
+        sign_in(user)
+        visit project_merge_request_path(project, merge_request)
+      end
+
       it 'does not recognize the command nor create a note' do
         add_note('/due 2016-08-28')
 
@@ -129,8 +147,7 @@ describe 'Merge request > User uses quick actions', :js do
       let(:new_url_opts) { { merge_request: { source_branch: 'feature' } } }
 
       before do
-        sign_out(:user)
-        another_project.add_master(user)
+        another_project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -161,6 +178,11 @@ describe 'Merge request > User uses quick actions', :js do
 
     describe '/target_branch command from note' do
       context 'when the current user can change target branch' do
+        before do
+          sign_in(user)
+          visit project_merge_request_path(project, merge_request)
+        end
+
         it 'changes target branch from a note' do
           add_note("message start \n/target_branch merge-test\n message end.")
 
@@ -184,7 +206,6 @@ describe 'Merge request > User uses quick actions', :js do
       context 'when current user can not change target branch' do
         before do
           project.add_guest(guest)
-          sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)
         end

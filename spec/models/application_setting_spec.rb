@@ -25,15 +25,6 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
 
-    describe 'disabled_oauth_sign_in_sources validations' do
-      before do
-        allow(Devise).to receive(:omniauth_providers).and_return([:github])
-      end
-
-      it { is_expected.to allow_value(['github']).for(:disabled_oauth_sign_in_sources) }
-      it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
-    end
-
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
         setting.update(default_artifacts_expire_in: 'a')
@@ -311,6 +302,33 @@ describe ApplicationSetting do
 
     it 'raises an record creation violation if already created' do
       expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
+  describe '#disabled_oauth_sign_in_sources=' do
+    before do
+      allow(Devise).to receive(:omniauth_providers).and_return([:github])
+    end
+
+    it 'removes unknown sources (as strings) from the array' do
+      subject.disabled_oauth_sign_in_sources = %w[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'removes unknown sources (as symbols) from the array' do
+      subject.disabled_oauth_sign_in_sources = %i[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'ignores nil' do
+      subject.disabled_oauth_sign_in_sources = nil
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to be_empty
     end
   end
 

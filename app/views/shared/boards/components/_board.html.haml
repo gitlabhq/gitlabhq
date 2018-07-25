@@ -30,21 +30,20 @@
           %board-delete{ "inline-template" => true,
             ":list" => "list",
             "v-if" => "!list.preset && list.id" }
-            %button.board-delete.has-tooltip.float-right{ type: "button", title: "Delete list", "aria-label" => "Delete list", data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
+            %button.board-delete.has-tooltip.float-right{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
-        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank"' }
+        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"' }
           %span.issue-count-badge-count.float-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
             {{ list.issuesSize }}
           - if can?(current_user, :admin_list, current_board_parent)
             %button.issue-count-badge-add-button.btn.btn-sm.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",
               "@click" => "showNewIssueForm",
               "v-if" => 'list.type !== "closed"',
-              "aria-label" => "New issue",
-              "title" => "New issue",
+              "aria-label" => _("New issue"),
+              "title" => _("New issue"),
               data: { placement: "top", container: "body" } }
               = icon("plus", class: "js-no-trigger-collapse")
-
-    %board-list{ "v-if" => 'list.type !== "blank"',
+    %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
       ":list" => "list",
       ":issues" => "list.issues",
       ":loading" => "list.loading",
@@ -55,3 +54,4 @@
       "ref" => "board-list" }
     - if can?(current_user, :admin_list, current_board_parent)
       %board-blank-state{ "v-if" => 'list.id == "blank"' }
+    = render_if_exists 'shared/boards/board_promotion_state'

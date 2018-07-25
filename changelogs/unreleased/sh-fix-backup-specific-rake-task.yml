@@ -1,5 +1,0 @@
----
-title: Fix backup creation and restore for specific Rake tasks
-merge_request:
-author:
-type: fixed

@@ -14,7 +14,7 @@ class Projects::ReleasesController < Projects::ApplicationController
     # it exists only to save a description to each Tag.
     # If description is empty we should destroy the existing record.
     if release_params[:description].present?
-      release.update_attributes(release_params)
+      release.update(release_params)
     else
       release.destroy
     end

@@ -114,4 +114,18 @@ describe('ide component', () => {
       expect(vm.mousetrapStopCallback(null, document.querySelector('.inputarea'), 't')).toBe(true);
     });
   });
+
+  it('shows error message when set', done => {
+    expect(vm.$el.querySelector('.flash-container')).toBe(null);
+
+    vm.$store.state.errorMessage = {
+      text: 'error',
+    };
+
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.flash-container')).not.toBe(null);
+
+      done();
+    });
+  });
 });

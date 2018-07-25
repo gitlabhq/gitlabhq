@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-
 import Vue from 'vue';
 import pdfjsLib from 'vendor/pdf';
 import workerSrc from 'vendor/pdf.worker.min';

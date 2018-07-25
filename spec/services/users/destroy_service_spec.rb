@@ -19,7 +19,9 @@ describe Users::DestroyService do
       end
 
       it 'will delete the project' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_next_instance_of(Projects::DestroyService) do |destroy_service|
+          expect(destroy_service).to receive(:execute).once
+        end
 
         service.execute(user)
       end
@@ -32,7 +34,9 @@ describe Users::DestroyService do
       end
 
       it 'destroys a project in pending_delete' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_next_instance_of(Projects::DestroyService) do |destroy_service|
+          expect(destroy_service).to receive(:execute).once
+        end
 
         service.execute(user)
 
@@ -169,7 +173,7 @@ describe Users::DestroyService do
 
     describe "user personal's repository removal" do
       before do
-        Sidekiq::Testing.inline! { service.execute(user) }
+        perform_enqueued_jobs { service.execute(user) }
       end
 
       context 'legacy storage' do

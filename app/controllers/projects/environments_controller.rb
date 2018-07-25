@@ -2,7 +2,7 @@ class Projects::EnvironmentsController < Projects::ApplicationController
   layout 'project'
   before_action :authorize_read_environment!
   before_action :authorize_create_environment!, only: [:new, :create]
-  before_action :authorize_create_deployment!, only: [:stop]
+  before_action :authorize_stop_environment!, only: [:stop]
   before_action :authorize_update_environment!, only: [:edit, :update]
   before_action :authorize_admin_environment!, only: [:terminal, :terminal_websocket_authorize]
   before_action :environment, only: [:show, :edit, :update, :stop, :terminal, :terminal_websocket_authorize, :metrics]
@@ -116,7 +116,17 @@ class Projects::EnvironmentsController < Projects::ApplicationController
       set_workhorse_internal_api_content_type
       render json: Gitlab::Workhorse.terminal_websocket(terminal)
     else
-      render text: 'Not found', status: 404
+      render text: 'Not found', status: :not_found
+    end
+  end
+
+  def metrics_redirect
+    environment = project.default_environment
+
+    if environment
+      redirect_to environment_metrics_path(environment)
+    else
+      render :empty
     end
   end
 
@@ -164,5 +174,9 @@ class Projects::EnvironmentsController < Projects::ApplicationController
 
   def environment
     @environment ||= project.environments.find(params[:id])
+  end
+
+  def authorize_stop_environment!
+    access_denied! unless can?(current_user, :stop_environment, environment)
   end
 end

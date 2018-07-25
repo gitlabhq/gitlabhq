@@ -96,4 +96,20 @@ describe('text_utility', () => {
       expect(textUtils.convertToSentenceCase('Hello World')).toBe('Hello world');
     });
   });
+
+  describe('truncateSha', () => {
+    it('shortens SHAs to 8 characters', () => {
+      expect(textUtils.truncateSha('verylongsha')).toBe('verylong');
+    });
+
+    it('leaves short SHAs as is', () => {
+      expect(textUtils.truncateSha('shortsha')).toBe('shortsha');
+    });
+  });
+
+  describe('splitCamelCase', () => {
+    it('separates a PascalCase word to two', () => {
+      expect(textUtils.splitCamelCase('HelloWorld')).toBe('Hello World');
+    });
+  });
 });

@@ -1,25 +1,25 @@
 require 'rails_helper'
 
-feature 'Profile > Account', :js do
-  given(:user) { create(:user, username: 'foo') }
+describe 'Profile > Account', :js do
+  let(:user) { create(:user, username: 'foo') }
 
   before do
     sign_in(user)
   end
 
   describe 'Change username' do
-    given(:new_username) { 'bar' }
-    given(:new_user_path) { "/#{new_username}" }
-    given(:old_user_path) { "/#{user.username}" }
+    let(:new_username) { 'bar' }
+    let(:new_user_path) { "/#{new_username}" }
+    let(:old_user_path) { "/#{user.username}" }
 
-    scenario 'the user is accessible via the new path' do
+    it 'the user is accessible via the new path' do
       update_username(new_username)
       visit new_user_path
       expect(current_path).to eq(new_user_path)
       expect(find('.user-info')).to have_content(new_username)
     end
 
-    scenario 'the old user path redirects to the new path' do
+    it 'the old user path redirects to the new path' do
       update_username(new_username)
       visit old_user_path
       expect(current_path).to eq(new_user_path)
@@ -27,9 +27,9 @@ feature 'Profile > Account', :js do
     end
 
     context 'with a project' do
-      given!(:project) { create(:project, namespace: user.namespace) }
-      given(:new_project_path) { "/#{new_username}/#{project.path}" }
-      given(:old_project_path) { "/#{user.username}/#{project.path}" }
+      let!(:project) { create(:project, namespace: user.namespace) }
+      let(:new_project_path) { "/#{new_username}/#{project.path}" }
+      let(:old_project_path) { "/#{user.username}/#{project.path}" }
 
       before(:context) do
         TestEnv.clean_test_path
@@ -39,14 +39,14 @@ feature 'Profile > Account', :js do
         TestEnv.clean_test_path
       end
 
-      scenario 'the project is accessible via the new path' do
+      it 'the project is accessible via the new path' do
         update_username(new_username)
         visit new_project_path
         expect(current_path).to eq(new_project_path)
         expect(find('.breadcrumbs-sub-title')).to have_content('Details')
       end
 
-      scenario 'the old project path redirects to the new path' do
+      it 'the old project path redirects to the new path' do
         update_username(new_username)
         visit old_project_path
         expect(current_path).to eq(new_project_path)
@@ -67,4 +67,6 @@ def update_username(new_username)
   page.within('.modal') do
     find('.js-modal-primary-action').click
   end
+
+  wait_for_requests
 end

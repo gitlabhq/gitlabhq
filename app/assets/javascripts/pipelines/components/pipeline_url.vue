@@ -1,49 +1,49 @@
 <script>
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import popover from '../../vue_shared/directives/popover';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import popover from '../../vue_shared/directives/popover';
 
-  export default {
-    components: {
-      userAvatarLink,
+export default {
+  components: {
+    userAvatarLink,
+  },
+  directives: {
+    tooltip,
+    popover,
+  },
+  props: {
+    pipeline: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
-      popover,
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
     },
-    props: {
-      pipeline: {
-        type: Object,
-        required: true,
-      },
-      autoDevopsHelpPath: {
-        type: String,
-        required: true,
-      },
+  },
+  computed: {
+    user() {
+      return this.pipeline.user;
     },
-    computed: {
-      user() {
-        return this.pipeline.user;
-      },
-      popoverOptions() {
-        return {
-          html: true,
-          trigger: 'focus',
-          placement: 'top',
-          title: `<div class="autodevops-title">
+    popoverOptions() {
+      return {
+        html: true,
+        trigger: 'focus',
+        placement: 'top',
+        title: `<div class="autodevops-title">
             This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
           </div>`,
-          content: `<a
+        content: `<a
             class="autodevops-link"
             href="${this.autoDevopsHelpPath}"
             target="_blank"
             rel="noopener noreferrer nofollow">
             Learn more about Auto DevOps
           </a>`,
-        };
-      },
+      };
     },
-  };
+  },
+};
 </script>
 <template>
   <div class="table-section section-15 d-none d-sm-none d-md-block pipeline-tags">

@@ -200,7 +200,7 @@ describe Namespace do
       end
 
       it "moves dir if path changed" do
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
         expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
@@ -279,7 +279,7 @@ describe Namespace do
 
       it "repository directory remains unchanged if path changed" do
         before_disk_path = project.disk_path
-        namespace.update_attributes(path: namespace.full_path + '_new')
+        namespace.update(path: namespace.full_path + '_new')
 
         expect(before_disk_path).to eq(project.disk_path)
         expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
@@ -652,6 +652,19 @@ describe Namespace do
 
         2.times { namespace.find_fork_of(project) }
       end
+    end
+  end
+
+  describe '#root_ancestor' do
+    it 'returns the top most ancestor', :nested_groups do
+      root_group = create(:group)
+      nested_group = create(:group, parent: root_group)
+      deep_nested_group = create(:group, parent: nested_group)
+      very_deep_nested_group = create(:group, parent: deep_nested_group)
+
+      expect(nested_group.root_ancestor).to eq(root_group)
+      expect(deep_nested_group.root_ancestor).to eq(root_group)
+      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 

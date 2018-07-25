@@ -31,11 +31,14 @@ describe "User comments on issue", :js do
     end
 
     it "adds comment with code block" do
-      comment = "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
+      code_block_content = "Command [1]: /usr/local/bin/git , see [text](doc/text)"
+      comment = "```\n#{code_block_content}\n```"
 
       add_note(comment)
 
-      expect(page).to have_content(comment)
+      wait_for_requests
+
+      expect(page.find('pre code').text).to eq code_block_content
     end
   end
 
@@ -60,6 +63,14 @@ describe "User comments on issue", :js do
 
       page.within(".current-note-edit-form") do
         fill_in("note[note]", with: comment)
+        find('textarea').send_keys [:control, :shift, 'p']
+        expect(page).to have_selector('.current-note-edit-form .md-preview-holder')
+        expect(page.find('.current-note-edit-form .md-preview-holder p')).to have_content(comment)
+      end
+
+      expect(page).to have_selector('.new-note .note-textarea')
+
+      page.within(".current-note-edit-form") do
         click_button("Save comment")
       end
 

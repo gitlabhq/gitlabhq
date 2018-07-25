@@ -1,5 +1,0 @@
----
-title: Use strings as properties key in kubernetes service spec.
-merge_request: 19265
-author: Jasper Maes
-type: fixed

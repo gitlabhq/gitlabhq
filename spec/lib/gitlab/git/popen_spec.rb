@@ -2,6 +2,9 @@ require 'spec_helper'
 
 describe 'Gitlab::Git::Popen' do
   let(:path) { Rails.root.join('tmp').to_s }
+  let(:test_string) { 'The quick brown fox jumped over the lazy dog' }
+  # The pipe buffer is typically 64K. This string is about 440K.
+  let(:spew_command) { ['bash', '-c', "for i in {1..10000}; do echo '#{test_string}' 1>&2; done"] }
 
   let(:klass) do
     Class.new(Object) do
@@ -70,6 +73,15 @@ describe 'Gitlab::Git::Popen' do
         end
       end
     end
+
+    context 'with a process that writes a lot of data to stderr' do
+      it 'returns zero' do
+        output, status = klass.new.popen(spew_command, path)
+
+        expect(output).to include(test_string)
+        expect(status).to eq(0)
+      end
+    end
   end
 
   context 'popen_with_timeout' do
@@ -83,6 +95,17 @@ describe 'Gitlab::Git::Popen' do
 
         it { expect(status).to be_zero }
         it { expect(output).to include('tests') }
+      end
+
+      context 'multi-line string' do
+        let(:test_string) { "this is 1 line\n2nd line\n3rd line\n" }
+        let(:result) { klass.new.popen_with_timeout(['echo', test_string], timeout, path) }
+        let(:output) { result.first }
+        let(:status) { result.last }
+
+        it { expect(status).to be_zero }
+        # echo adds its own line
+        it { expect(output).to eq(test_string + "\n") }
       end
 
       context 'non-zero status' do
@@ -109,6 +132,13 @@ describe 'Gitlab::Git::Popen' do
 
         it "handles processes that do not shutdown correctly" do
           expect { klass.new.popen_with_timeout(['bash', '-c', "trap -- '' SIGTERM; sleep 1000"], timeout, path) }.to raise_error(Timeout::Error)
+        end
+
+        it 'handles process that writes a lot of data to stderr' do
+          output, status = klass.new.popen_with_timeout(spew_command, timeout, path)
+
+          expect(output).to include(test_string)
+          expect(status).to eq(0)
         end
       end
 

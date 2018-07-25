@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
@@ -22,7 +24,7 @@ module Projects
       # If the block added errors, don't try to save the project
       return validation_failed! if project.errors.any?
 
-      if project.update_attributes(params.except(:default_branch))
+      if project.update(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
         else

@@ -6,6 +6,11 @@ export default {
       opened: !state.entries[path].opened,
     });
   },
+  [types.SET_TREE_OPEN](state, path) {
+    Object.assign(state.entries[path], {
+      opened: true,
+    });
+  },
   [types.CREATE_TREE](state, { treePath }) {
     Object.assign(state, {
       trees: Object.assign({}, state.trees, {

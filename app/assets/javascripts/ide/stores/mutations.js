@@ -163,6 +163,14 @@ export default {
   [types.RESET_OPEN_FILES](state) {
     Object.assign(state, { openFiles: [] });
   },
+  [types.SET_ERROR_MESSAGE](state, errorMessage) {
+    Object.assign(state, { errorMessage });
+  },
+  [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
+    Object.assign(state, {
+      newEntryModal: { type, path },
+    });
+  },
   ...projectMutations,
   ...mergeRequestMutation,
   ...fileMutations,

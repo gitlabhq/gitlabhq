@@ -29,46 +29,6 @@ describe('IDE commit module getters', () => {
     });
   });
 
-  describe('commitButtonDisabled', () => {
-    const localGetters = {
-      discardDraftButtonDisabled: false,
-    };
-    const rootState = {
-      stagedFiles: ['a'],
-    };
-
-    it('returns false when discardDraftButtonDisabled is false & stagedFiles is not empty', () => {
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeFalsy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is false & stagedFiles is empty', () => {
-      rootState.stagedFiles.length = 0;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is true', () => {
-      localGetters.discardDraftButtonDisabled = true;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-
-    it('returns true when discardDraftButtonDisabled is false & changedFiles is not empty', () => {
-      localGetters.discardDraftButtonDisabled = false;
-      rootState.stagedFiles.length = 0;
-
-      expect(
-        getters.commitButtonDisabled(state, localGetters, rootState),
-      ).toBeTruthy();
-    });
-  });
-
   describe('newBranchName', () => {
     it('includes username, currentBranchId, patch & random number', () => {
       gon.current_username = 'username';
@@ -108,9 +68,7 @@ describe('IDE commit module getters', () => {
         });
 
         it('uses newBranchName when not empty', () => {
-          expect(getters.branchName(state, localGetters, rootState)).toBe(
-            'state-newBranchName',
-          );
+          expect(getters.branchName(state, localGetters, rootState)).toBe('state-newBranchName');
         });
 
         it('uses getters newBranchName when state newBranchName is empty', () => {
@@ -118,10 +76,52 @@ describe('IDE commit module getters', () => {
             newBranchName: '',
           });
 
-          expect(getters.branchName(state, localGetters, rootState)).toBe(
-            'newBranchName',
-          );
+          expect(getters.branchName(state, localGetters, rootState)).toBe('newBranchName');
         });
+      });
+    });
+  });
+
+  describe('preBuiltCommitMessage', () => {
+    let rootState = {};
+
+    beforeEach(() => {
+      rootState.changedFiles = [];
+      rootState.stagedFiles = [];
+    });
+
+    afterEach(() => {
+      rootState = {};
+    });
+
+    it('returns commitMessage when set', () => {
+      state.commitMessage = 'test commit message';
+
+      expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe('test commit message');
+    });
+
+    ['changedFiles', 'stagedFiles'].forEach(key => {
+      it('returns commitMessage with updated file', () => {
+        rootState[key].push({
+          path: 'test-file',
+        });
+
+        expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe('Update test-file');
+      });
+
+      it('returns commitMessage with updated files', () => {
+        rootState[key].push(
+          {
+            path: 'test-file',
+          },
+          {
+            path: 'index.js',
+          },
+        );
+
+        expect(getters.preBuiltCommitMessage(state, null, rootState)).toBe(
+          'Update test-file, index.js files',
+        );
       });
     });
   });

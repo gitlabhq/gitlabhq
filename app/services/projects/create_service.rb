@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 module Projects
   class CreateService < BaseService
     def initialize(user, params)
       @current_user, @params = user, params.dup
+      @skip_wiki = @params.delete(:skip_wiki)
+      @initialize_with_readme = Gitlab::Utils.to_boolean(@params.delete(:initialize_with_readme))
     end
 
     def execute
@@ -11,7 +15,6 @@ module Projects
 
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
-      @skip_wiki = params.delete(:skip_wiki)
 
       @project = Project.new(params)
 
@@ -102,6 +105,8 @@ module Projects
       setup_authorizations
 
       current_user.invalidate_personal_projects_count
+
+      create_readme if @initialize_with_readme
     end
 
     # Refresh the current user's authorizations inline (so they can access the
@@ -112,8 +117,19 @@ module Projects
         @project.group.refresh_members_authorized_projects(blocking: false)
         current_user.refresh_authorized_projects
       else
-        @project.add_master(@project.namespace.owner, current_user: current_user)
+        @project.add_maintainer(@project.namespace.owner, current_user: current_user)
       end
+    end
+
+    def create_readme
+      commit_attrs = {
+        branch_name: 'master',
+        commit_message: 'Initial commit',
+        file_path: 'README.md',
+        file_content: "# #{@project.name}\n\n#{@project.description}"
+      }
+
+      Files::CreateService.new(@project, current_user, commit_attrs).execute
     end
 
     def skip_wiki?

@@ -172,7 +172,7 @@ export default {
           }
         })
         .catch(() => {
-          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.'); // eslint-disable-line
+          createFlash('Something went wrong while fetching the environments for this merge request. Please try again.');
         });
     },
     fetchActionsContent() {
@@ -191,7 +191,7 @@ export default {
       if (data.ci_status === this.mr.ciStatus) return;
       if (!data.pipeline) return;
 
-      const label = data.pipeline.details.status.label;
+      const { label } = data.pipeline.details.status;
       const title = `Pipeline ${label}`;
       const message = `Pipeline ${label} for "${data.title}"`;
 
@@ -211,7 +211,7 @@ export default {
       // `params` should be an Array contains a Boolean, like `[true]`
       // Passing parameter as Boolean didn't work.
       eventHub.$on('SetBranchRemoveFlag', (params) => {
-        this.mr.isRemovingSourceBranch = params[0];
+        [this.mr.isRemovingSourceBranch] = params;
       });
 
       eventHub.$on('FailedToMerge', (mergeError) => {
@@ -252,41 +252,44 @@ export default {
       :pipeline="mr.pipeline"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :source-branch-link="mr.sourceBranchLink"
     />
     <deployment
       v-for="deployment in mr.deployments"
       :key="deployment.id"
       :deployment="deployment"
     />
-    <div class="mr-widget-section">
-      <component
-        :is="componentName"
-        :mr="mr"
-        :service="service"
-      />
+    <div class="mr-section-container">
+      <div class="mr-widget-section">
+        <component
+          :is="componentName"
+          :mr="mr"
+          :service="service"
+        />
 
-      <section
-        v-if="mr.allowCollaboration"
-        class="mr-info-list mr-links"
+        <section
+          v-if="mr.allowCollaboration"
+          class="mr-info-list mr-links"
+        >
+          {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
+        </section>
+
+        <mr-widget-related-links
+          v-if="shouldRenderRelatedLinks"
+          :state="mr.state"
+          :related-links="mr.relatedLinks"
+        />
+
+        <source-branch-removal-status
+          v-if="shouldRenderSourceBranchRemovalStatus"
+        />
+      </div>
+      <div
+        v-if="shouldRenderMergeHelp"
+        class="mr-widget-footer"
       >
-        {{ s__("mrWidget|Allows commits from members who can merge to the target branch") }}
-      </section>
-
-      <mr-widget-related-links
-        v-if="shouldRenderRelatedLinks"
-        :state="mr.state"
-        :related-links="mr.relatedLinks"
-      />
-
-      <source-branch-removal-status
-        v-if="shouldRenderSourceBranchRemovalStatus"
-      />
-    </div>
-    <div
-      v-if="shouldRenderMergeHelp"
-      class="mr-widget-footer"
-    >
-      <mr-widget-merge-help />
+        <mr-widget-merge-help />
+      </div>
     </div>
   </div>
 </template>

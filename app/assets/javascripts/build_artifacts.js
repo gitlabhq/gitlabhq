@@ -1,4 +1,4 @@
-/* eslint-disable func-names, prefer-arrow-callback, no-return-assign */
+/* eslint-disable func-names, prefer-arrow-callback */
 
 import $ from 'jquery';
 import { visitUrl } from './lib/utils/url_utility';

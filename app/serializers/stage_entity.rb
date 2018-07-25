@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StageEntity < Grape::Entity
   include RequestAwareEntity
 

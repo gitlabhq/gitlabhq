@@ -3,7 +3,7 @@ module Clusters
     class Prometheus < ActiveRecord::Base
       include PrometheusAdapter
 
-      VERSION = "2.0.0".freeze
+      VERSION = '6.7.3'.freeze
 
       self.table_name = 'clusters_applications_prometheus'
 
@@ -37,6 +37,7 @@ module Clusters
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
           chart: chart,
+          version: version,
           values: values
         )
       end

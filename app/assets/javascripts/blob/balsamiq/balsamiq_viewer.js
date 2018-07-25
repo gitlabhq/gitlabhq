@@ -84,7 +84,7 @@ class BalsamiqViewer {
   renderTemplate(preview) {
     const resource = this.getResource(preview.resourceID);
     const name = BalsamiqViewer.parseTitle(resource);
-    const image = preview.image;
+    const { image } = preview;
 
     const template = PREVIEW_TEMPLATE({
       name,

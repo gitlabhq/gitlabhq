@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe PipelinesFinder do
-  let(:project) { create(:project, :repository) }
-
-  subject { described_class.new(project, params).execute }
+  let(:project) { create(:project, :public, :repository) }
+  let(:current_user) { nil }
+  let(:params) { {} }
+  subject { described_class.new(project, current_user, params).execute }
 
   describe "#execute" do
     context 'when params is empty' do
@@ -218,6 +219,28 @@ describe PipelinesFinder do
       context 'when sha does not exist' do
         let(:params) { { sha: 'invalid-sha' } }
 
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'when the project has limited access to piplines' do
+      let(:project) { create(:project, :private, :repository) }
+      let(:current_user) { create(:user) }
+      let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
+
+      context 'when the user has access' do
+        before do
+          project.add_developer(current_user)
+        end
+
+        it 'is expected to return pipelines' do
+          is_expected.to contain_exactly(*pipelines)
+        end
+      end
+
+      context 'the user is not allowed to read pipelines' do
         it 'returns empty' do
           is_expected.to be_empty
         end

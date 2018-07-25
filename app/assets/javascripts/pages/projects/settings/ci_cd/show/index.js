@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const autoDevOpsExtraSettings = document.querySelector('.js-extra-settings');
 
   autoDevOpsSettings.addEventListener('click', event => {
-    const target = event.target;
+    const { target } = event;
     if (target.classList.contains('js-toggle-extra-settings')) {
       autoDevOpsExtraSettings.classList.toggle(
         'hidden',

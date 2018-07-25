@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # TodoService class
 #
 # Used for creating/updating todos after certain user actions

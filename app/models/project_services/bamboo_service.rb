@@ -67,11 +67,11 @@ class BambooService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    get_path("updateAndBuild.action?buildKey=#{build_key}")
+    get_path("updateAndBuild.action", { buildKey: build_key })
   end
 
   def calculate_reactive_cache(sha, ref)
-    response = get_path("rest/api/latest/result?label=#{sha}")
+    response = get_path("rest/api/latest/result/byChangeset/#{sha}")
 
     { build_page: read_build_page(response), commit_status: read_commit_status(response) }
   end
@@ -113,18 +113,20 @@ class BambooService < CiService
     URI.join("#{bamboo_url}/", path).to_s
   end
 
-  def get_path(path)
+  def get_path(path, query_params = {})
     url = build_url(path)
 
     if username.blank? && password.blank?
-      Gitlab::HTTP.get(url, verify: false)
+      Gitlab::HTTP.get(url, verify: false, query: query_params)
     else
-      url << '&os_authType=basic'
-      Gitlab::HTTP.get(url, verify: false,
-                            basic_auth: {
-                              username: username,
-                              password: password
-                            })
+      query_params[:os_authType] = 'basic'
+      Gitlab::HTTP.get(url,
+                       verify: false,
+                       query: query_params,
+                       basic_auth: {
+                         username: username,
+                         password: password
+                       })
     end
   end
 end

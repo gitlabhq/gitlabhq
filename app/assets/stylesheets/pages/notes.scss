@@ -3,9 +3,17 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: $note-targe3-outside; }
-  50% { background: $note-targe3-inside; }
-  to { background: $note-targe3-outside; }
+  from {
+    background: $note-targe3-outside;
+  }
+
+  50% {
+    background: $note-targe3-inside;
+  }
+
+  to {
+    background: $note-targe3-outside;
+  }
 }
 
 ul.notes {
@@ -33,10 +41,12 @@ ul.notes {
 
     .diff-content {
       overflow: visible;
+      padding: 0;
     }
   }
 
-  > li { // .timeline-entry
+  > li {
+    // .timeline-entry
     padding: 0;
     display: block;
     position: relative;
@@ -153,7 +163,6 @@ ul.notes {
     }
 
     .note-header {
-
       @include notes-media('max', map-get($grid-breakpoints, xs)) {
         .inline {
           display: block;
@@ -245,7 +254,6 @@ ul.notes {
 
       .system-note-commit-list-toggler {
         color: $gl-link-color;
-        display: none;
         padding: 10px 0 0;
         cursor: pointer;
         position: relative;
@@ -320,7 +328,7 @@ ul.notes {
   }
 
   .notes_holder {
-    font-family: $regular_font;
+    font-family: $regular-font;
 
     td {
       border: 1px solid $white-normal;
@@ -395,7 +403,7 @@ ul.notes {
     }
   }
 
-  .author_link {
+  .author-link {
     color: $gl-text-color;
   }
 }
@@ -624,20 +632,18 @@ ul.notes {
 .line_holder .is-over:not(.no-comment-btn) {
   .add-diff-note {
     opacity: 1;
+    z-index: 101;
   }
 }
 
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-top: -2px;
   margin-left: -55px;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 10;
-
-  .new & {
-    margin-top: -10px;
-  }
 }
 
 .discussion-body,
@@ -664,7 +670,6 @@ ul.notes {
     border: 0;
     background-color: $white-light;
   }
-
 
   a {
     color: $gl-link-color;
@@ -716,7 +721,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -769,5 +774,46 @@ ul.notes {
   .loading {
     margin: 0;
     height: auto;
+  }
+}
+
+// Vue refactored diff discussion adjustments
+.files {
+  .diff-discussions {
+    .note-discussion.timeline-entry {
+      padding-left: 0;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      > .timeline-entry-inner {
+        padding: 0;
+
+        > .timeline-content {
+          margin-left: 0;
+        }
+
+        > .timeline-icon {
+          display: none;
+        }
+      }
+
+      .discussion-body {
+        padding-top: 0;
+
+        .discussion-wrapper {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+
+  .diff-comment-form {
+    display: block;
+  }
+
+  .add-diff-note svg {
+    margin-top: 4px;
   }
 }

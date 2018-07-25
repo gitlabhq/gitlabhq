@@ -268,17 +268,9 @@
 
 .navbar-sub-nav,
 .navbar-nav {
-  align-items: center;
-
   > li {
-    > a:hover,
-    > a:focus {
-      text-decoration: none;
-      outline: 0;
-      color: $white-light;
-    }
-
-    > a {
+    > a,
+    > button {
       display: -webkit-flex;
       display: flex;
       align-items: center;
@@ -290,6 +282,18 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        outline: 0;
+        color: $white-light;
+      }
+    }
+
+    > button {
+      background: transparent;
+      border: 0;
     }
 
     &.line-separator {
@@ -313,7 +317,7 @@
     font-size: 10px;
   }
 
-  .project-item-select-holder {
+  .frequent-items-item-select-holder {
     display: inline;
   }
 
@@ -527,7 +531,7 @@
 .header-user {
   .dropdown-menu {
     width: auto;
-    min-width: 160px;
+    min-width: unset;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -538,6 +542,10 @@
       .user-name {
         display: block;
       }
+    }
+
+    svg {
+      vertical-align: text-top;
     }
   }
 }
@@ -558,7 +566,7 @@
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .center-logo {
+  .mx-auto {
     margin: 8px 0;
     text-align: center;
 

@@ -28,7 +28,7 @@ class Projects::LfsStorageController < Projects::GitHttpClientController
     if store_file!(oid, size)
       head 200
     else
-      render plain: 'Unprocessable entity', status: 422
+      render plain: 'Unprocessable entity', status: :unprocessable_entity
     end
   rescue ActiveRecord::RecordInvalid
     render_lfs_forbidden

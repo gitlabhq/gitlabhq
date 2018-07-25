@@ -27,6 +27,10 @@ export default {
       type: Number,
       required: true,
     },
+    noteUrl: {
+      type: String,
+      required: true,
+    },
     accessLevel: {
       type: String,
       required: false,
@@ -47,6 +51,11 @@ export default {
     canDelete: {
       type: Boolean,
       required: true,
+    },
+    canResolve: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     resolvable: {
       type: Boolean,
@@ -125,7 +134,7 @@ export default {
       {{ accessLevel }}
     </span>
     <div
-      v-if="resolvable"
+      v-if="canResolve"
       class="note-actions-item">
       <button
         v-tooltip
@@ -215,6 +224,15 @@ export default {
           <a :href="reportAbusePath">
             Report as abuse
           </a>
+        </li>
+        <li>
+          <button
+            :data-clipboard-text="noteUrl"
+            type="button"
+            css-class="btn-default btn-transparent"
+          >
+            Copy link
+          </button>
         </li>
         <li v-if="canEdit">
           <button

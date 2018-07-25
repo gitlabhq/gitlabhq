@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Password reset' do
+describe 'Password reset' do
   describe 'throttling' do
     it 'sends reset instructions when not previously sent' do
       user = create(:user)

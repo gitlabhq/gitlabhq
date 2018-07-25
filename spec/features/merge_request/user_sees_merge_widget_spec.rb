@@ -10,8 +10,8 @@ describe 'Merge request > User sees merge widget', :js do
   let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
   before do
-    project.add_master(user)
-    project_only_mwps.add_master(user)
+    project.add_maintainer(user)
+    project_only_mwps.add_maintainer(user)
     sign_in(user)
   end
 
@@ -275,7 +275,7 @@ describe 'Merge request > User sees merge widget', :js do
     let(:user2) { create(:user) }
 
     before do
-      project.add_master(user2)
+      project.add_maintainer(user2)
       sign_out(:user)
       sign_in(user2)
       merge_request.update(target_project: fork_project)

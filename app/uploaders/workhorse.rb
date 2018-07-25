@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Workhorse
   module UploadPath
     def workhorse_upload_path

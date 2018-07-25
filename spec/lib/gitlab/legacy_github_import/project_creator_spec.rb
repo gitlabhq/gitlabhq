@@ -17,7 +17,10 @@ describe Gitlab::LegacyGithubImport::ProjectCreator do
 
   before do
     namespace.add_owner(user)
-    allow_any_instance_of(Project).to receive(:add_import_job)
+
+    expect_next_instance_of(Project) do |project|
+      expect(project).to receive(:add_import_job)
+    end
   end
 
   describe '#execute' do

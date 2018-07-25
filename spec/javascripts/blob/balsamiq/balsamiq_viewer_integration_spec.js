@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-
 import BalsamiqViewer from '~/blob/balsamiq/balsamiq_viewer';
 import bmprPath from '../../fixtures/blob/balsamiq/test.bmpr';
 

@@ -42,7 +42,7 @@
   display: block;
   padding: 10px 0;
   color: $gl-text-color;
-  font-family: $regular_font;
+  font-family: $regular-font;
   border: 0;
 
   &:focus {
@@ -247,22 +247,6 @@
 }
 
 .discussion-with-resolve-btn {
-  display: table;
-  width: 100%;
-  border-collapse: separate;
-  table-layout: auto;
-
-  .btn-group {
-    display: table-cell;
-    float: none;
-    width: 1%;
-
-    &:first-child {
-      width: 100%;
-      padding-right: 5px;
-    }
-  }
-
   .discussion-actions {
     display: table;
 

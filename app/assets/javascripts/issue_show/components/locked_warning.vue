@@ -2,7 +2,7 @@
   export default {
     computed: {
       currentPath() {
-        return location.pathname;
+        return window.location.pathname;
       },
     },
   };

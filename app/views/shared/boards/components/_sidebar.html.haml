@@ -8,6 +8,7 @@
               {{ issue.title }}
             %br/
             %span
+              = render_if_exists "shared/boards/components/sidebar/issue_project_path"
               = precede "#" do
                 {{ issue.iid }}
           %a.gutter-toggle.float-right{ role: "button",
@@ -17,9 +18,11 @@
             = custom_icon("icon_close", size: 15)
         .js-issuable-update
           = render "shared/boards/components/sidebar/assignee"
+          = render_if_exists "shared/boards/components/sidebar/epic"
           = render "shared/boards/components/sidebar/milestone"
           = render "shared/boards/components/sidebar/due_date"
           = render "shared/boards/components/sidebar/labels"
+          = render_if_exists "shared/boards/components/sidebar/weight"
           = render "shared/boards/components/sidebar/notifications"
           %remove-btn{ ":issue" => "issue",
             ":issue-update" => "issue.sidebarInfoEndpoint",

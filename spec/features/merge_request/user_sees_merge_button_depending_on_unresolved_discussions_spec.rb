@@ -6,7 +6,7 @@ describe 'Merge request > User sees merge button depending on unresolved discuss
   let!(:merge_request) { create(:merge_request_with_diff_notes, source_project: project, author: user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

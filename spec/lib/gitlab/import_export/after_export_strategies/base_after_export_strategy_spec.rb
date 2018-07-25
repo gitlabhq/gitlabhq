@@ -9,6 +9,7 @@ describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy do
   describe '#execute' do
     before do
       allow(service).to receive(:strategy_execute)
+      stub_feature_flags(import_export_object_storage: false)
     end
 
     it 'returns if project exported file is not found' do

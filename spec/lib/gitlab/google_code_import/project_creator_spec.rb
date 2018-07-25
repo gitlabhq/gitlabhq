@@ -16,7 +16,9 @@ describe Gitlab::GoogleCodeImport::ProjectCreator do
   end
 
   it 'creates project' do
-    allow_any_instance_of(Project).to receive(:add_import_job)
+    expect_next_instance_of(Project) do |project|
+      expect(project).to receive(:add_import_job)
+    end
 
     project_creator = described_class.new(repo, namespace, user)
     project = project_creator.execute

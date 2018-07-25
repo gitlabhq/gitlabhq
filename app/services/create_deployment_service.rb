@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateDeploymentService
   attr_reader :job
 

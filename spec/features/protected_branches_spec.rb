@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Protected Branches', :js do
+describe 'Protected Branches', :js do
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository) }
@@ -28,9 +28,9 @@ feature 'Protected Branches', :js do
     end
   end
 
-  context 'logged in as master' do
+  context 'logged in as maintainer' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -60,33 +60,6 @@ feature 'Protected Branches', :js do
         expect(page).to have_content('No branches to show')
       end
     end
-
-    describe "Saved defaults" do
-      it "keeps the allowed to merge and push dropdowns defaults based on the previous selection" do
-        visit project_protected_branches_path(project)
-        form = '.js-new-protected-branch'
-
-        within form do
-          find(".js-allowed-to-merge").click
-          wait_for_requests
-          click_link 'No one'
-          find(".js-allowed-to-push").click
-          wait_for_requests
-          click_link 'Developers + Maintainers'
-        end
-
-        visit project_protected_branches_path(project)
-
-        within form do
-          page.within(".js-allowed-to-merge") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("No one")
-          end
-          page.within(".js-allowed-to-push") do
-            expect(page.find(".dropdown-toggle-text")).to have_content("Developers + Maintainers")
-          end
-        end
-      end
-    end
   end
 
   context 'logged in as admin' do
@@ -97,6 +70,7 @@ feature 'Protected Branches', :js do
     describe "explicit protected branches" do
       it "allows creating explicit protected branches" do
         visit project_protected_branches_path(project)
+        set_defaults
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
@@ -110,6 +84,7 @@ feature 'Protected Branches', :js do
         project.repository.add_branch(admin, 'some-branch', commit.id)
 
         visit project_protected_branches_path(project)
+        set_defaults
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
@@ -118,6 +93,7 @@ feature 'Protected Branches', :js do
 
       it "displays an error message if the named branch does not exist" do
         visit project_protected_branches_path(project)
+        set_defaults
         set_protected_branch_name('some-branch')
         click_on "Protect"
 
@@ -128,6 +104,7 @@ feature 'Protected Branches', :js do
     describe "wildcard protected branches" do
       it "allows creating protected branches with a wildcard" do
         visit project_protected_branches_path(project)
+        set_defaults
         set_protected_branch_name('*-stable')
         click_on "Protect"
 
@@ -141,6 +118,7 @@ feature 'Protected Branches', :js do
         project.repository.add_branch(admin, 'staging-stable', 'master')
 
         visit project_protected_branches_path(project)
+        set_defaults
         set_protected_branch_name('*-stable')
         click_on "Protect"
 
@@ -157,6 +135,7 @@ feature 'Protected Branches', :js do
 
         visit project_protected_branches_path(project)
         set_protected_branch_name('*-stable')
+        set_defaults
         click_on "Protect"
 
         visit project_protected_branches_path(project)
@@ -179,5 +158,19 @@ feature 'Protected Branches', :js do
     find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
+  end
+
+  def set_defaults
+    find(".js-allowed-to-merge").click
+    within('.qa-allowed-to-merge-dropdown') do
+      expect(first("li")).to have_content("Roles")
+      find(:link, 'No one').click
+    end
+
+    find(".js-allowed-to-push").click
+    within('.qa-allowed-to-push-dropdown') do
+      expect(first("li")).to have_content("Roles")
+      find(:link, 'No one').click
+    end
   end
 end

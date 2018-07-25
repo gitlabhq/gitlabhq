@@ -88,7 +88,7 @@ describe('Deploy keys key', () => {
     });
 
     it('expands all project labels after click', done => {
-      const length = vm.deployKey.deploy_keys_projects.length;
+      const { length } = vm.deployKey.deploy_keys_projects;
       vm.$el.querySelectorAll('.deploy-project-label')[1].click();
 
       Vue.nextTick(() => {

@@ -103,7 +103,7 @@ describe('RecentSearchesDropdownContent', () => {
     describe('processedItems', () => {
       it('with items', () => {
         vm = createComponent(propsDataWithItems);
-        const processedItems = vm.processedItems;
+        const { processedItems } = vm;
 
         expect(processedItems.length).toEqual(2);
 
@@ -122,7 +122,7 @@ describe('RecentSearchesDropdownContent', () => {
 
       it('with no items', () => {
         vm = createComponent(propsDataWithoutItems);
-        const processedItems = vm.processedItems;
+        const { processedItems } = vm;
 
         expect(processedItems.length).toEqual(0);
       });
@@ -131,13 +131,13 @@ describe('RecentSearchesDropdownContent', () => {
     describe('hasItems', () => {
       it('with items', () => {
         vm = createComponent(propsDataWithItems);
-        const hasItems = vm.hasItems;
+        const { hasItems } = vm;
         expect(hasItems).toEqual(true);
       });
 
       it('with no items', () => {
         vm = createComponent(propsDataWithoutItems);
-        const hasItems = vm.hasItems;
+        const { hasItems } = vm;
         expect(hasItems).toEqual(false);
       });
     });

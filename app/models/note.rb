@@ -202,7 +202,7 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::NoteBuilder.new(self).build
   end
 
   def for_commit?
@@ -384,6 +384,7 @@ class Note < ActiveRecord::Base
 
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
+    return unless noteable&.etag_caching_enabled?
 
     Gitlab::EtagCaching::Store.new.touch(etag_key)
   end

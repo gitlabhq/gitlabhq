@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for services that count a single resource such as the number of
 # issues for a project.
 class BaseCountService
@@ -17,7 +19,7 @@ class BaseCountService
   end
 
   def refresh_cache(&block)
-    Rails.cache.write(cache_key, block_given? ? yield : uncached_count, raw: raw?)
+    update_cache_for_key(cache_key, &block)
   end
 
   def uncached_count
@@ -40,5 +42,9 @@ class BaseCountService
   #   super.merge({ expires_in: 5.minutes })
   def cache_options
     { raw: raw? }
+  end
+
+  def update_cache_for_key(key, &block)
+    Rails.cache.write(key, block_given? ? yield : uncached_count, raw: raw?)
   end
 end

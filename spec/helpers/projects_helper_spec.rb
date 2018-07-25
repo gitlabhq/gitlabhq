@@ -80,6 +80,7 @@ describe ProjectsHelper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
+      allow(user).to receive(:max_member_access_for_project).and_return(40)
     end
 
     it "includes the route" do
@@ -124,6 +125,10 @@ describe ProjectsHelper do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+
+    it "includes the user max member access" do
+      expect(helper.project_list_cache_key(project)).to include('access:40')
     end
   end
 
@@ -248,13 +253,20 @@ describe ProjectsHelper do
   describe '#link_to_member' do
     let(:group)   { build_stubbed(:group) }
     let(:project) { build_stubbed(:project, group: group) }
-    let(:user)    { build_stubbed(:user) }
+    let(:user)    { build_stubbed(:user, name: '<h1>Administrator</h1>') }
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
         link = helper.link_to_member(project, user)
 
         expect(link).to match(%r{/#{user.username}})
+      end
+
+      it 'HTML escapes the name of the user' do
+        link = helper.link_to_member(project, user)
+
+        expect(link).to include(ERB::Util.html_escape(user.name))
+        expect(link).not_to include(user.name)
       end
     end
   end
@@ -275,29 +287,6 @@ describe ProjectsHelper do
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end
-    end
-  end
-
-  describe '#sanitizerepo_repo_path' do
-    let(:project) { create(:project, :repository) }
-    let(:storage_path) { Gitlab.config.repositories.storages.default.legacy_disk_path }
-
-    before do
-      allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
-    end
-
-    it 'removes the repo path' do
-      repo = File.join(storage_path, 'namespace/test.git')
-      import_error = "Could not clone #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
-    end
-
-    it 'removes the temporary repo path used for uploads/exports' do
-      repo = '/base/repo/export/path/tmp/project_exports/uploads/test.tar.gz'
-      import_error = "Unable to decompress #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Unable to decompress [REPO EXPORT PATH]/uploads/test.tar.gz')
     end
   end
 

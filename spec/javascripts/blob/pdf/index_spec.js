@@ -1,5 +1,3 @@
-/* eslint-disable import/no-unresolved */
-
 import renderPDF from '~/blob/pdf';
 import testPDF from '../../fixtures/blob/pdf/test.pdf';
 

@@ -10,7 +10,7 @@
   }
 
   .issue_created_ago,
-  .author_link {
+  .author-link {
     white-space: nowrap;
   }
 
@@ -23,7 +23,8 @@
   position: relative;
   line-height: 35px;
   display: flex;
-  flex-grow: 1;
+  flex: 1 1;
+  min-width: 0;
 
   @include media-breakpoint-up(sm) {
     padding-left: 0;

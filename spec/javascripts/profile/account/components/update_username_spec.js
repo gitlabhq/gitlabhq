@@ -90,7 +90,8 @@ describe('UpdateUsername component', () => {
   it('confirmation modal should escape usernames properly', done => {
     const { modalBody } = findElements();
 
-    vm.username = vm.newUsername = '<i>Italic</i>';
+    vm.username = '<i>Italic</i>';
+    vm.newUsername = vm.username;
 
     Vue.nextTick()
       .then(() => {

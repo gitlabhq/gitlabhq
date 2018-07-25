@@ -315,6 +315,17 @@ describe('RepoEditor', () => {
         done();
       });
     });
+
+    it('calls updateDimensions when rightPane is updated', done => {
+      vm.$store.state.rightPane = 'testing';
+
+      vm.$nextTick(() => {
+        expect(vm.editor.updateDimensions).toHaveBeenCalled();
+        expect(vm.editor.updateDiffView).toHaveBeenCalled();
+
+        done();
+      });
+    });
   });
 
   describe('show tabs', () => {

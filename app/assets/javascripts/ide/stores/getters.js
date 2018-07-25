@@ -82,10 +82,13 @@ export const getStagedFilesCountForPath = state => path =>
   getChangesCountForFiles(state.stagedFiles, path);
 
 export const lastCommit = (state, getters) => {
-  const branch = getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+  const branch = getters.currentProject && getters.currentBranch;
 
   return branch ? branch.commit : null;
 };
+
+export const currentBranch = (state, getters) =>
+  getters.currentProject && getters.currentProject.branches[state.currentBranchId];
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

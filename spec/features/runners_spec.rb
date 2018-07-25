@@ -1,20 +1,20 @@
 require 'spec_helper'
 
-feature 'Runners' do
-  given(:user) { create(:user) }
+describe 'Runners' do
+  let(:user) { create(:user) }
 
-  background do
+  before do
     sign_in(user)
   end
 
   context 'when user opens runners page' do
-    given(:project) { create(:project) }
+    let(:project) { create(:project) }
 
-    background do
-      project.add_master(user)
+    before do
+      project.add_maintainer(user)
     end
 
-    scenario 'user can see a button to install runners on kubernetes clusters' do
+    it 'user can see a button to install runners on kubernetes clusters' do
       visit project_runners_path(project)
 
       expect(page).to have_link('Install Runner on Kubernetes', href: project_clusters_path(project))
@@ -22,16 +22,16 @@ feature 'Runners' do
   end
 
   context 'when a project has enabled shared_runners' do
-    given(:project) { create(:project) }
+    let(:project) { create(:project) }
 
-    background do
-      project.add_master(user)
+    before do
+      project.add_maintainer(user)
     end
 
     context 'when a project_type runner is activated on the project' do
-      given!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
+      let!(:specific_runner) { create(:ci_runner, :project, projects: [project]) }
 
-      scenario 'user sees the specific runner' do
+      it 'user sees the specific runner' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
@@ -43,7 +43,7 @@ feature 'Runners' do
         expect(page).to have_content(specific_runner.platform)
       end
 
-      scenario 'user can pause and resume the specific runner' do
+      it 'user can pause and resume the specific runner' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
@@ -63,7 +63,7 @@ feature 'Runners' do
         end
       end
 
-      scenario 'user removes an activated specific runner if this is last project for that runners' do
+      it 'user removes an activated specific runner if this is last project for that runners' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
@@ -73,7 +73,7 @@ feature 'Runners' do
         expect(page).not_to have_content(specific_runner.display_name)
       end
 
-      scenario 'user edits the runner to be protected' do
+      it 'user edits the runner to be protected' do
         visit project_runners_path(project)
 
         within '.activated-specific-runners' do
@@ -89,11 +89,11 @@ feature 'Runners' do
       end
 
       context 'when a runner has a tag' do
-        background do
+        before do
           specific_runner.update(tag_list: ['tag'])
         end
 
-        scenario 'user edits runner not to run untagged jobs' do
+        it 'user edits runner not to run untagged jobs' do
           visit project_runners_path(project)
 
           within '.activated-specific-runners' do
@@ -110,9 +110,9 @@ feature 'Runners' do
       end
 
       context 'when a shared runner is activated on the project' do
-        given!(:shared_runner) { create(:ci_runner, :instance) }
+        let!(:shared_runner) { create(:ci_runner, :instance) }
 
-        scenario 'user sees CI/CD setting page' do
+        it 'user sees CI/CD setting page' do
           visit project_runners_path(project)
 
           expect(page.find('.available-shared-runners')).to have_content(shared_runner.display_name)
@@ -121,14 +121,14 @@ feature 'Runners' do
     end
 
     context 'when a specific runner exists in another project' do
-      given(:another_project) { create(:project) }
-      given!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
+      let(:another_project) { create(:project) }
+      let!(:specific_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
-      background do
-        another_project.add_master(user)
+      before do
+        another_project.add_maintainer(user)
       end
 
-      scenario 'user enables and disables a specific runner' do
+      it 'user enables and disables a specific runner' do
         visit project_runners_path(project)
 
         within '.available-specific-runners' do
@@ -146,14 +146,14 @@ feature 'Runners' do
     end
 
     context 'when application settings have shared_runners_text' do
-      given(:shared_runners_text) { 'custom **shared** runners description' }
-      given(:shared_runners_html) { 'custom shared runners description' }
+      let(:shared_runners_text) { 'custom **shared** runners description' }
+      let(:shared_runners_html) { 'custom shared runners description' }
 
-      background do
+      before do
         stub_application_setting(shared_runners_text: shared_runners_text)
       end
 
-      scenario 'user sees shared runners description' do
+      it 'user sees shared runners description' do
         visit project_runners_path(project)
 
         expect(page.find('.shared-runners-description')).to have_content(shared_runners_html)
@@ -162,13 +162,13 @@ feature 'Runners' do
   end
 
   context 'when a project has disabled shared_runners' do
-    given(:project) { create(:project, shared_runners_enabled: false) }
+    let(:project) { create(:project, shared_runners_enabled: false) }
 
-    background do
-      project.add_master(user)
+    before do
+      project.add_maintainer(user)
     end
 
-    scenario 'user enables shared runners' do
+    it 'user enables shared runners' do
       visit project_runners_path(project)
 
       click_on 'Enable shared Runners'
@@ -178,21 +178,21 @@ feature 'Runners' do
   end
 
   context 'group runners in project settings' do
-    background do
-      project.add_master(user)
+    before do
+      project.add_maintainer(user)
     end
 
-    given(:group) { create :group }
+    let(:group) { create :group }
 
     context 'as project and group maintainer' do
-      background do
-        group.add_master(user)
+      before do
+        group.add_maintainer(user)
       end
 
       context 'project with a group but no group runner' do
-        given(:project) { create :project, group: group }
+        let(:project) { create :project, group: group }
 
-        scenario 'group runners are not available' do
+        it 'group runners are not available' do
           visit project_runners_path(project)
 
           expect(page).to have_content 'This group does not provide any group Runners yet'
@@ -205,9 +205,9 @@ feature 'Runners' do
 
     context 'as project maintainer' do
       context 'project without a group' do
-        given(:project) { create :project }
+        let(:project) { create :project }
 
-        scenario 'group runners are not available' do
+        it 'group runners are not available' do
           visit project_runners_path(project)
 
           expect(page).to have_content 'This project does not belong to a group and can therefore not make use of group Runners.'
@@ -215,10 +215,10 @@ feature 'Runners' do
       end
 
       context 'project with a group but no group runner' do
-        given(:group) { create(:group) }
-        given(:project) { create(:project, group: group) }
+        let(:group) { create(:group) }
+        let(:project) { create(:project, group: group) }
 
-        scenario 'group runners are not available' do
+        it 'group runners are not available' do
           visit project_runners_path(project)
 
           expect(page).to have_content 'This group does not provide any group Runners yet.'
@@ -229,18 +229,18 @@ feature 'Runners' do
       end
 
       context 'project with a group and a group runner' do
-        given(:group) { create(:group) }
-        given(:project) { create(:project, group: group) }
-        given!(:ci_runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
+        let(:group) { create(:group) }
+        let(:project) { create(:project, group: group) }
+        let!(:ci_runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
 
-        scenario 'group runners are available' do
+        it 'group runners are available' do
           visit project_runners_path(project)
 
           expect(page).to have_content 'Available group Runners : 1'
           expect(page).to have_content 'group-runner'
         end
 
-        scenario 'group runners may be disabled for a project' do
+        it 'group runners may be disabled for a project' do
           visit project_runners_path(project)
 
           click_on 'Disable group Runners'
@@ -258,13 +258,13 @@ feature 'Runners' do
   end
 
   context 'group runners in group settings' do
-    given(:group) { create(:group) }
-    background do
-      group.add_master(user)
+    let(:group) { create(:group) }
+    before do
+      group.add_maintainer(user)
     end
 
     context 'group with no runners' do
-      scenario 'there are no runners displayed' do
+      it 'there are no runners displayed' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).to have_content 'This group does not provide any group Runners yet'
@@ -274,7 +274,7 @@ feature 'Runners' do
     context 'group with a runner' do
       let!(:runner) { create(:ci_runner, :group, groups: [group], description: 'group-runner') }
 
-      scenario 'the runner is visible' do
+      it 'the runner is visible' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).not_to have_content 'This group does not provide any group Runners yet'
@@ -282,7 +282,7 @@ feature 'Runners' do
         expect(page).to have_content 'group-runner'
       end
 
-      scenario 'user can pause and resume the group runner' do
+      it 'user can pause and resume the group runner' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).to have_content('Pause')
@@ -299,7 +299,7 @@ feature 'Runners' do
         expect(page).not_to have_content('Resume')
       end
 
-      scenario 'user can view runner details' do
+      it 'user can view runner details' do
         visit group_settings_ci_cd_path(group)
 
         expect(page).to have_content(runner.display_name)
@@ -309,7 +309,7 @@ feature 'Runners' do
         expect(page).to have_content(runner.platform)
       end
 
-      scenario 'user can remove a group runner' do
+      it 'user can remove a group runner' do
         visit group_settings_ci_cd_path(group)
 
         click_on 'Remove Runner'
@@ -317,7 +317,7 @@ feature 'Runners' do
         expect(page).not_to have_content(runner.display_name)
       end
 
-      scenario 'user edits the runner to be protected' do
+      it 'user edits the runner to be protected' do
         visit group_settings_ci_cd_path(group)
 
         first('.edit-runner > a').click
@@ -331,11 +331,11 @@ feature 'Runners' do
       end
 
       context 'when a runner has a tag' do
-        background do
+        before do
           runner.update(tag_list: ['tag'])
         end
 
-        scenario 'user edits runner not to run untagged jobs' do
+        it 'user edits runner not to run untagged jobs' do
           visit group_settings_ci_cd_path(group)
 
           first('.edit-runner > a').click

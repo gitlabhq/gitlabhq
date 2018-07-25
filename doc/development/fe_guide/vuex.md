@@ -78,7 +78,7 @@ In this file, we will write the actions that will call the respective mutations:
 
 ```javascript
   import * as types from './mutation_types';
-  import axios from '~/lib/utils/axios-utils';
+  import axios from '~/lib/utils/axios_utils';
   import createFlash from '~/flash';
 
   export const requestUsers = ({ commit }) => commit(types.REQUEST_USERS);
@@ -214,7 +214,7 @@ import { mapGetters } from 'vuex';
 };
 ```
 
-### `mutations_types.js`
+### `mutation_types.js`
 From [vuex mutations docs][vuex-mutations]:
 > It is a commonly seen pattern to use constants for mutation types in various Flux implementations. This allows the code to take advantage of tooling like linters, and putting all constants in a single file allows your collaborators to get an at-a-glance view of what mutations are possible in the entire application.
 

@@ -1,5 +1,0 @@
----
-title: 'Replace the `project/forked_merge_requests.feature` spinach test with an rspec analog'
-merge_request: 18867
-author: '@blackst0ne'
-type: other

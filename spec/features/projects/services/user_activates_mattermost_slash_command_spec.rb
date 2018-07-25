@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Mattermost slash commands', :js do
+describe 'Setup Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -8,7 +8,7 @@ feature 'Setup Mattermost slash commands', :js do
 
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit edit_project_service_path(project, service)
   end

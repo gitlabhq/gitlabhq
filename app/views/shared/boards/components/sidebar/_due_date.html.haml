@@ -1,20 +1,20 @@
 .block.due_date
   .title
-    Due date
+    = _("Due date")
     - if can_admin_issue?
       = icon("spinner spin", class: "block-loading")
-      = link_to "Edit", "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
+      = link_to _("Edit"), "#", class: "js-sidebar-dropdown-toggle edit-link float-right"
   .value
     .value-content
       %span.no-value{ "v-if" => "!issue.dueDate" }
-        No due date
+        = _("No due date")
       %span.bold{ "v-if" => "issue.dueDate" }
         {{ issue.dueDate | due-date }}
       - if can_admin_issue?
         %span.no-value.js-remove-due-date-holder{ "v-if" => "issue.dueDate" }
           \-
           %a.js-remove-due-date{ href: "#", role: "button" }
-            remove due date
+            = _('remove due date')
   - if can_admin_issue?
     .selectbox
       %input{ type: "hidden",
@@ -23,9 +23,9 @@
       .dropdown
         %button.dropdown-menu-toggle.js-due-date-select.js-issue-boards-due-date{ type: 'button',
           data: { toggle: 'dropdown', field_name: "issue[due_date]", ability_name: "issue" } }
-          %span.dropdown-toggle-text Due date
+          %span.dropdown-toggle-text= _("Due date")
           = icon('chevron-down')
         .dropdown-menu.dropdown-menu-due-date
-          = dropdown_title('Due date')
+          = dropdown_title(_('Due date'))
           = dropdown_content do
             .js-due-date-calendar

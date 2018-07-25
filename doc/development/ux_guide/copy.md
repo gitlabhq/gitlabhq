@@ -192,7 +192,7 @@ Portions of this page are modifications based on work created and shared by the 
 
 [material design]: https://material.io/guidelines/
 [features]: https://about.gitlab.com/features/ "GitLab features page"
-[products]: https://about.gitlab.com/products/ "GitLab products page"
+[products]: https://about.gitlab.com/pricing/ "GitLab products page"
 [serial comma]: https://en.wikipedia.org/wiki/Serial_comma "“Serial comma” in Wikipedia"
 [android project]: http://source.android.com/
 [creative commons]: http://creativecommons.org/licenses/by/2.5/

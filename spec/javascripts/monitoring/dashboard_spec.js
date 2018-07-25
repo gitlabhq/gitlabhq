@@ -2,7 +2,7 @@ import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
 import axios from '~/lib/utils/axios_utils';
-import { metricsGroupsAPIResponse, mockApiEndpoint } from './mock_data';
+import { metricsGroupsAPIResponse, mockApiEndpoint, environmentData } from './mock_data';
 
 describe('Dashboard', () => {
   let DashboardComponent;
@@ -20,6 +20,8 @@ describe('Dashboard', () => {
     emptyLoadingSvgPath: '/path/to/loading.svg',
     emptyNoDataSvgPath: '/path/to/no-data.svg',
     emptyUnableToConnectSvgPath: '/path/to/unable-to-connect.svg',
+    environmentsEndpoint: '/root/hello-prometheus/environments/35',
+    currentEnvironmentName: 'production',
   };
 
   beforeEach(() => {
@@ -50,7 +52,7 @@ describe('Dashboard', () => {
       mock.restore();
     });
 
-    it('shows up a loading state', (done) => {
+    it('shows up a loading state', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true },
@@ -62,7 +64,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('hides the legend when showLegend is false', (done) => {
+    it('hides the legend when showLegend is false', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showLegend: false },
@@ -76,7 +78,7 @@ describe('Dashboard', () => {
       });
     });
 
-    it('hides the group panels when showPanels is false', (done) => {
+    it('hides the group panels when showPanels is false', done => {
       const component = new DashboardComponent({
         el: document.querySelector('.prometheus-graphs'),
         propsData: { ...propsData, hasMetrics: true, showPanels: false },
@@ -86,6 +88,41 @@ describe('Dashboard', () => {
         expect(component.showEmptyState).toEqual(false);
         expect(component.$el.querySelector('.prometheus-panel')).toEqual(null);
         expect(component.$el.querySelector('.prometheus-graph-group')).toBeTruthy();
+        done();
+      });
+    });
+
+    it('renders the dropdown with a number of environments', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      component.store.storeEnvironmentsData(environmentData);
+
+      setTimeout(() => {
+        const dropdownMenuEnvironments = component.$el.querySelectorAll('.dropdown-menu ul li a');
+        expect(dropdownMenuEnvironments.length).toEqual(component.store.environmentsData.length);
+        done();
+      });
+    });
+
+    it('renders the dropdown with a single is-active element', done => {
+      const component = new DashboardComponent({
+        el: document.querySelector('.prometheus-graphs'),
+        propsData: { ...propsData, hasMetrics: true, showPanels: false },
+      });
+
+      component.store.storeEnvironmentsData(environmentData);
+
+      setTimeout(() => {
+        const dropdownIsActiveElement = component.$el.querySelectorAll(
+          '.dropdown-menu ul li a.is-active',
+        );
+        expect(dropdownIsActiveElement.length).toEqual(1);
+        expect(dropdownIsActiveElement[0].textContent.trim()).toEqual(
+          component.currentEnvironmentName,
+        );
         done();
       });
     });

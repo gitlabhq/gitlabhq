@@ -3,7 +3,7 @@
 - project = local_assigns.fetch(:project)
 - expanded = Rails.env.test?
 
-%section.settings.no-animate{ class: ('expanded' if expanded) }
+%section.settings.no-animate#js-export-project{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Export project
@@ -31,7 +31,7 @@
           %li Any encrypted tokens
     %p
       Once the exported file is ready, you will receive a notification email with a download link, or you can download it from this page.
-    - if project.export_project_path
+    - if project.export_status == :finished
       = link_to 'Download export',  download_export_project_path(project),
               rel: 'nofollow', download: '', method: :get, class: "btn btn-default"
       = link_to 'Generate new export',  generate_new_export_project_path(project),

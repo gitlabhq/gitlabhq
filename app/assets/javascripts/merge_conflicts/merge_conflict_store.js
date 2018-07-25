@@ -156,7 +156,7 @@ import Cookies from 'js-cookie';
         return 0;
       }
 
-      const files = this.state.conflictsData.files;
+      const { files } = this.state.conflictsData;
       let count = 0;
 
       files.forEach((file) => {
@@ -313,7 +313,7 @@ import Cookies from 'js-cookie';
     },
 
     isReadyToCommit() {
-      const files = this.state.conflictsData.files;
+      const { files } = this.state.conflictsData;
       const hasCommitMessage = $.trim(this.state.conflictsData.commitMessage).length;
       let unresolved = 0;
 

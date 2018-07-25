@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImportExportCleanUpService
   LAST_MODIFIED_TIME_IN_MINUTES = 1440
 
@@ -10,7 +12,9 @@ class ImportExportCleanUpService
 
   def execute
     Gitlab::Metrics.measure(:import_export_clean_up) do
-      next unless File.directory?(path)
+      clean_up_export_object_files
+
+      break unless File.directory?(path)
 
       clean_up_export_files
     end
@@ -20,5 +24,12 @@ class ImportExportCleanUpService
 
   def clean_up_export_files
     Gitlab::Popen.popen(%W(find #{path} -not -path #{path} -mmin +#{mmin} -delete))
+  end
+
+  def clean_up_export_object_files
+    ImportExportUpload.where('updated_at < ?', mmin.minutes.ago).each do |upload|
+      upload.remove_export_file!
+      upload.save!
+    end
   end
 end

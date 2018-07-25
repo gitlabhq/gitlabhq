@@ -4,7 +4,7 @@
 if %w[1 true].include?(ENV["RAILS5"])
   require_relative 'application'
 else
-  require File.expand_path('../application', __FILE__)
+  require File.expand_path('application', __dir__)
 end
 
 # Initialize the rails application

@@ -51,7 +51,7 @@ describe RepositoryImportWorker do
       it 'hide the credentials that were used in the import URL' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
 
-        project.update_attributes(import_jid: '123')
+        project.update(import_jid: '123')
         expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
 
         expect do
@@ -63,7 +63,7 @@ describe RepositoryImportWorker do
       it 'updates the error on Import/Export' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }
 
-        project.update_attributes(import_jid: '123', import_type: 'gitlab_project')
+        project.update(import_jid: '123', import_type: 'gitlab_project')
         expect_any_instance_of(Projects::ImportService).to receive(:execute).and_return({ status: :error, message: error })
 
         expect do

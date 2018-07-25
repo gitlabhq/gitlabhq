@@ -77,7 +77,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
 
-    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\">group milestone</a>.".html_safe
+    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\"><u>group milestone</u></a>.".html_safe
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)
@@ -96,7 +96,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path, status: 303 }
+      format.html { redirect_to namespace_project_milestones_path, status: :see_other }
       format.js { head :ok }
     end
   end
@@ -123,9 +123,9 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def search_params
     if request.format.json? && @project.group && can?(current_user, :read_group, @project.group)
-      groups = @project.group.self_and_ancestors
+      groups = @project.group.self_and_ancestors_ids
     end
 
-    params.permit(:state).merge(project_ids: @project.id, group_ids: groups&.select(:id))
+    params.permit(:state).merge(project_ids: @project.id, group_ids: groups)
   end
 end

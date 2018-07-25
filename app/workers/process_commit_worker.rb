@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Worker for processing individiual commit messages pushed to a repository.
 #
 # Jobs for this worker are scheduled for every commit that is being pushed. As a
@@ -77,9 +79,10 @@ class ProcessCommitWorker
   # Avoid reprocessing commits that already exist in the upstream
   # when project is forked. This will also prevent duplicated system notes.
   def commit_exists_in_upstream?(project, commit_hash)
-    return false unless project.forked?
+    upstream_project = project.fork_source
 
-    upstream_project = project.forked_from_project
+    return false unless upstream_project
+
     commit_id = commit_hash.with_indifferent_access[:id]
     upstream_project.commit(commit_id).present?
   end

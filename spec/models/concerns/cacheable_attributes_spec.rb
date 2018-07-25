@@ -52,7 +52,7 @@ describe CacheableAttributes do
 
   describe '.cache_key' do
     it 'excludes cache attributes' do
-      expect(minimal_test_class.cache_key).to eq("TestClass:#{Gitlab::VERSION}:#{Gitlab.migrations_hash}:#{Rails.version}")
+      expect(minimal_test_class.cache_key).to eq("TestClass:#{Gitlab::VERSION}:#{Rails.version}")
     end
   end
 

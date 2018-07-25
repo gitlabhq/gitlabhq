@@ -27,28 +27,30 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Helping others](#helping-others)
 - [I want to contribute!](#i-want-to-contribute)
 - [Workflow labels](#workflow-labels)
-  - [Type labels (~"feature proposal", ~bug, ~customer, etc.)](#type-labels-feature-proposal-bug-customer-etc)
-  - [Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)](#subject-labels-wiki-container-registry-ldap-api-etc)
-  - [Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)](#team-labels-cicd-discussion-quality-platform-etc)
-  - [Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")](#milestone-labels-deliverable-stretch-next-patch-release)
-  - [Priority labels (~P1, ~P2, ~P3 , ~P4)](#bug-priority-labels-p1-p2-p3-p4)
-  - [Severity labels (~S1, ~S2, ~S3 , ~S4)](#bug-severity-labels-s1-s2-s3-s4)
-  - [Label for community contributors (~"Accepting Merge Requests")](#label-for-community-contributors-accepting-merge-requests)
-- [Implement design & UI elements](#implement-design--ui-elements)
+    - [Type labels](#type-labels)
+    - [Subject labels](#subject-labels)
+    - [Team labels](#team-labels)
+    - [Release Scoping labels](#release-scoping-labels)
+    - [Bug Priority labels](#bug-priority-labels)
+    - [Bug Severity labels](#bug-severity-labels)
+        - [Severity impact guidance](#severity-impact-guidance)
+    - [Label for community contributors](#label-for-community-contributors)
+- [Implement design & UI elements](#implement-design-ui-elements)
 - [Issue tracker](#issue-tracker)
-  - [Issue triaging](#issue-triaging)
-  - [Feature proposals](#feature-proposals)
-  - [Issue tracker guidelines](#issue-tracker-guidelines)
-  - [Issue weight](#issue-weight)
-  - [Regression issues](#regression-issues)
-  - [Technical and UX debt](#technical-and-ux-debt)
-  - [Stewardship](#stewardship)
+    - [Issue triaging](#issue-triaging)
+    - [Feature proposals](#feature-proposals)
+    - [Issue tracker guidelines](#issue-tracker-guidelines)
+    - [Issue weight](#issue-weight)
+    - [Regression issues](#regression-issues)
+    - [Technical and UX debt](#technical-and-ux-debt)
+    - [Stewardship](#stewardship)
 - [Merge requests](#merge-requests)
-  - [Merge request guidelines](#merge-request-guidelines)
-  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+    - [Merge request guidelines](#merge-request-guidelines)
+    - [Contribution acceptance criteria](#contribution-acceptance-criteria)
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
 - [Code of conduct](#code-of-conduct)
+- [Contribution Flow](#contribution-flow)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -131,8 +133,8 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
-- Milestone: ~Deliverable, ~Stretch, ~"Next Patch Release"
+- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
+- Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
 
@@ -145,7 +147,7 @@ labels, you can _always_ add the team and type, and often also the subject.
 [milestones-page]: https://gitlab.com/gitlab-org/gitlab-ce/milestones
 [labels-page]: https://gitlab.com/gitlab-org/gitlab-ce/labels
 
-### Type labels (~"feature proposal", ~bug, ~customer, etc.)
+### Type labels
 
 Type labels are very important. They define what kind of issue this is. Every
 issue should have one or more.
@@ -161,28 +163,42 @@ already reserved for subject labels).
 
 The descriptions on the [labels page][labels-page] explain what falls under each type label.
 
-### Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)
+### Subject labels
 
 Subject labels are labels that define what area or feature of GitLab this issue
 hits. They are not always necessary, but very convenient.
+
+Examples of subject labels are ~wiki, ~ldap, ~api,
+~issues, ~"merge requests", ~labels, and ~"container registry".
 
 If you are an expert in a particular area, it makes it easier to find issues to
 work on. You can also subscribe to those labels to receive an email each time an
 issue is labeled with a subject label corresponding to your expertise.
 
-Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
-~issues, ~"merge requests", ~labels, and ~"container registry".
-
 Subject labels are always all-lowercase.
 
-### Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)
+### Team labels
 
 Team labels specify what team is responsible for this issue.
 Assigning a team label makes sure issues get the attention of the appropriate
 people.
 
-The current team labels are ~Distribution, ~"CI/CD", ~Discussion, ~Documentation, ~Quality,
-~Geo, ~Gitaly, ~Monitoring, ~Platform, ~Release, ~"Security Products", ~"Configuration", and ~"UX".
+The current team labels are:
+
+- ~Configuration
+- ~"CI/CD"
+- ~Create
+- ~Distribution
+- ~Documentation
+- ~Geo
+- ~Gitaly
+- ~Manage
+- ~Monitoring
+- ~Plan
+- ~Quality
+- ~Release
+- ~"Security Products"
+- ~UX
 
 The descriptions on the [labels page][labels-page] explain what falls under the
 responsibility of each team.
@@ -193,10 +209,10 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Release Scoping labels
 
-Milestone labels help us clearly communicate expectations of the work for the
-release. There are three levels of Milestone labels:
+Release Scoping labels help us clearly communicate expectations of the work for the
+release. There are three levels of Release Scoping labels:
 
 - ~Deliverable: Issues that are expected to be delivered in the current
   milestone.
@@ -211,24 +227,24 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Bug Priority labels (~P1, ~P2, ~P3, ~P4)
+### Priority labels
 
-Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be. 
+Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                             | Guidance |
-|-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
-| ~P2   | High Priority   | The next release                                                 |  |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+| Label | Meaning         | Estimate time to fix                                             |
+|-------|-----------------|------------------------------------------------------------------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |
+| ~P2   | High Priority   | The next release                                                 |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
 
-### Bug Severity labels (~S1, ~S2, ~S3, ~S4)
+### Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning           | Impact of the defect                                  | Example |
+| Label | Meaning           | Impact on Functionality                               | Example |
 |-------|-------------------|-------------------------------------------------------|---------|
 | ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
 | ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
@@ -237,14 +253,16 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 
 #### Severity impact guidance
 
-| Label | Security Impact                                                     | Availability / Performance Impact                            |
-|-------|---------------------------------------------------------------------|--------------------------------------------------------------|
-| ~S1   | >50% users impacted (possible company extinction level event)       |                                                              |
-| ~S2   | Many users or multiple paid customers impacted (but not apocalyptic)| The issue is (almost) guaranteed to occur in the near future |  
-| ~S3   | A few users or a single paid customer impacted                      | The issue is likely to occur in the near future              |
-| ~S4   | No paid users/customer impacted, or expected impact within 30 days  | The issue _may_ occur but it's not likely                    |
+Severity levels can be applied further depending on the facet of the impact; e.g. Affected customers, GitLab.com availability, performance and etc. The below is a guideline.
 
-### Label for community contributors (~"Accepting Merge Requests")
+| Severity | Affected Customers/Users                                            | GitLab.com Availability                            |  Performance Degradation     |
+|----------|---------------------------------------------------------------------|----------------------------------------------------|------------------------------|
+| ~S1      | >50% users affected (possible company extinction level event)       | Significant impact on all of GitLab.com            |                              |
+| ~S2      | Many users or multiple paid customers affected (but not apocalyptic)| Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
+| ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
+| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on on GitLab.com                      | Degradation _may_ occur but it's not likely           |
+
+### Label for community contributors
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
 not have the capacity for or want to give the priority to, are labeled as
@@ -300,20 +318,29 @@ For guidance on UX implementation at GitLab, please refer to our [Design System]
 
 The UX team uses labels to manage their workflow.
 
-The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention. 
+The  ~"UX" label on an issue is a signal to the UX team that it will need UX attention.
 To better understand the priority by which UX tackles issues, see the [UX section](https://about.gitlab.com/handbook/engineering/ux) of the handbook.
 
-Once an issue has been worked on and is ready for development, a UXer applies the ~"UX ready" label to that issue.
+Once an issue has been worked on and is ready for development, a UXer removes the ~"UX" label and applies the ~"UX ready" label to that issue.
 
-The UX team has a special type label called ~"design artifact". This label indicates that the final output 
-for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone. 
-Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is 
+The UX team has a special type label called ~"design artifact". This label indicates that the final output
+for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone.
+Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is
 needed until the solution has been decided.
 
 ~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
 
-Once the ~"design artifact" issue has been completed, the UXer removes the ~"design artifact" label and applies the ~"UX ready" label. The Product Manager can use the 
-existing issue or decide to create a whole new issue for the purpose of development. 
+To prevent the misunderstanding that a feature will be be delivered in the
+assigned milestone, when only UX design is planned for that milestone, the
+Product Manager should create a separate issue for the ~"design artifact",
+assign the ~UX, ~"design artifact" and ~"Deliverable" labels, add a milestone
+and use a title that makes it clear that the scheduled issue is design only
+(e.g. `Design exploration for XYZ`).
+
+When the ~"design artifact" issue has been completed, the UXer removes the ~UX
+label, adds the ~"UX ready" label and closes the issue. This indicates the
+design artifact is complete. The UXer will also copy the designs to related
+issues for implementation in an upcoming milestone.
 
 ## Issue tracker
 
@@ -349,8 +376,14 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
+We also use [GitLab Triage] to automate some triaging policies. This is
+currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
+
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
+[GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
+[scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
+[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
 
 ### Feature proposals
 
@@ -627,7 +660,7 @@ the feature you contribute through all of these steps.
 1. Working and clean code that is commented where needed
 1. [Unit, integration, and system tests][testing] that pass on the CI server
 1. Performance/scalability implications have been considered, addressed, and tested
-1. [Documented][doc-styleguide] in the `/doc` directory
+1. [Documented][doc-guidelines] in the `/doc` directory
 1. [Changelog entry added][changelog], if necessary
 1. Reviewed and any concerns are addressed
 1. Merged by a project maintainer
@@ -664,7 +697,7 @@ merge request:
     contributors to enhance security
 1.  [Database Migrations](doc/development/migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
-1.  [Documentation styleguide][doc-styleguide]
+1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
 1.  Interface text should be written subjectively instead of objectively. It
     should be the GitLab core team addressing a person. It should be written in
     present time and never use past tense (has been/was). For example instead
@@ -705,6 +738,24 @@ reported by emailing `contact@gitlab.com`.
 
 This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
+
+## Contribution Flow
+
+When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
+
+When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
+
+When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
+
+Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+
+GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+
+GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
+
+When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
+
+When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
 [core team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/

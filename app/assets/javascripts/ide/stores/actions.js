@@ -52,7 +52,7 @@ export const setResizingStatus = ({ commit }, resizing) => {
 
 export const createTempEntry = (
   { state, commit, dispatch },
-  { branchId, name, type, content = '', base64 = false },
+  { name, type, content = '', base64 = false },
 ) =>
   new Promise(resolve => {
     const worker = new FilesDecoratorWorker();
@@ -81,7 +81,7 @@ export const createTempEntry = (
       commit(types.CREATE_TMP_ENTRY, {
         data,
         projectId: state.currentProjectId,
-        branchId,
+        branchId: state.currentBranchId,
       });
 
       if (type === 'blob') {
@@ -100,7 +100,7 @@ export const createTempEntry = (
     worker.postMessage({
       data: [fullName],
       projectId: state.currentProjectId,
-      branchId,
+      branchId: state.currentBranchId,
       type,
       tempFile: true,
       base64,
@@ -174,6 +174,16 @@ export const setRightPane = ({ commit }, view) => {
 };
 
 export const setLinks = ({ commit }, links) => commit(types.SET_LINKS, links);
+
+export const setErrorMessage = ({ commit }, errorMessage) =>
+  commit(types.SET_ERROR_MESSAGE, errorMessage);
+
+export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
+  commit(types.OPEN_NEW_ENTRY_MODAL, { type, path });
+
+  // open the modal manually so we don't mess around with dropdown/rows
+  $('#ide-new-entry').modal('show');
+};
 
 export * from './actions/tree';
 export * from './actions/file';

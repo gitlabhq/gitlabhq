@@ -4,7 +4,7 @@ require 'spec_helper'
 # It looks up for any sensitive word inside the JSON, so if a sensitive word is found
 # we'll have to either include it adding the model that includes it to the +safe_list+
 # or make sure the attribute is blacklisted in the +import_export.yml+ configuration
-feature 'Import/Export - project export integration test', :js do
+describe 'Import/Export - project export integration test', :js do
   include Select2Helper
   include ExportFileHelper
 
@@ -23,8 +23,9 @@ feature 'Import/Export - project export integration test', :js do
 
   let(:project) { setup_project }
 
-  background do
+  before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    stub_feature_flags(import_export_object_storage: false)
   end
 
   after do
@@ -36,7 +37,7 @@ feature 'Import/Export - project export integration test', :js do
       sign_in(user)
     end
 
-    scenario 'exports a project successfully' do
+    it 'exports a project successfully' do
       visit edit_project_path(project)
 
       expect(page).to have_content('Export project')

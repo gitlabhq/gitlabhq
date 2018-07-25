@@ -15,16 +15,38 @@
   }
 }
 
+.mr-widget-heading {
+  position: relative;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+
+  &:not(.deploy-heading)::before {
+    content: '';
+    border-left: 1px solid $theme-gray-200;
+    position: absolute;
+    left: 32px;
+    top: -17px;
+    height: 16px;
+  }
+}
+
+.mr-section-container {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  border-top: 0;
+}
+
+.mr-widget-heading,
+.mr-widget-section,
+.mr-widget-footer {
+  padding: $gl-padding;
+}
+
 .mr-state-widget {
   color: $gl-text-color;
-  border: 1px solid $border-color;
-  border-radius: 2px;
-  line-height: 28px;
 
-  .mr-widget-heading,
   .mr-widget-section,
   .mr-widget-footer {
-    padding: $gl-padding;
     border-top: solid 1px $border-color;
   }
 
@@ -94,10 +116,8 @@
 
       .modify-merge-commit-link {
         padding: 0;
-
         background-color: transparent;
         border: 0;
-
         color: $gl-text-color;
 
         &:hover,
@@ -124,9 +144,16 @@
   .ci-widget {
     color: $gl-text-color;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 
     @include media-breakpoint-down(xs) {
       flex-wrap: wrap;
+    }
+
+    .ci-widget-content {
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -136,8 +163,6 @@
   }
 
   .ci-status-icon svg {
-    width: $status-icon-size;
-    height: $status-icon-size;
     margin: 3px 0;
     position: relative;
     overflow: visible;
@@ -145,8 +170,6 @@
   }
 
   .mr-widget-pipeline-graph {
-    padding: 0 4px;
-
     .dropdown-menu {
       z-index: 300;
     }
@@ -157,7 +180,7 @@
   }
 
   .normal {
-    line-height: 28px;
+    flex: 1;
   }
 
   .capitalize {
@@ -168,7 +191,7 @@
     @extend .ref-name;
 
     color: $gl-text-color;
-    font-weight: $gl-font-weight-bold;
+    font-weight: normal;
     overflow: hidden;
     word-break: break-all;
 
@@ -185,13 +208,19 @@
         position: absolute;
         content: '...';
         right: 0;
-        font-family: $regular_font;
+        font-family: $regular-font;
         background-color: $gray-light;
       }
     }
   }
 
+  .widget-status-icon {
+    align-self: flex-start;
+  }
+
   .mr-widget-body {
+    line-height: 28px;
+
     @include clearfix;
 
     &.media > *:first-child {
@@ -477,14 +506,59 @@
 .mr-source-target {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  background-color: $gray-light;
-  border-radius: $border-radius-default $border-radius-default 0 0;
-  padding: $gl-padding / 2 $gl-padding;
+  border-radius: $border-radius-default;
+  padding: $gl-padding;
+  border: 1px solid $border-color;
+  min-height: 69px;
+
+  @include media-breakpoint-up(md) {
+    align-items: center;
+  }
 
   .dropdown-toggle .fa {
     color: $gl-text-color;
+  }
+
+  .git-merge-icon-container {
+    border: 1px solid $theme-gray-400;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    color: $theme-gray-700;
+    line-height: 28px;
+
+    .ic-git-merge {
+      vertical-align: middle;
+      width: 31px;
+    }
+  }
+
+  .git-merge-container {
+    justify-content: space-between;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+
+    @include media-breakpoint-down(md) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .branch-actions {
+        margin-top: 16px;
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      .branch-actions {
+        align-self: center;
+        margin-left: $gl-padding;
+      }
+    }
+  }
+
+  .diverged-commits-count {
+    color: $gl-text-color-secondary;
+    font-size: 12px;
   }
 }
 
@@ -599,14 +673,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -722,13 +794,25 @@
 }
 
 .deploy-heading {
+  margin-top: -19px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: $gray-light;
+
+  @include media-breakpoint-up(md) {
+    padding: $gl-padding-8 $gl-padding;
+  }
+
   .media-body {
     min-width: 0;
+    font-size: 12px;
+    margin-left: 48px;
   }
 }
 
 .deploy-body {
   display: flex;
+  align-items: center;
   flex-wrap: wrap;
 
   @include media-breakpoint-up(xs) {
@@ -736,21 +820,38 @@
     white-space: nowrap;
   }
 
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .deployment-info {
+      margin-bottom: $gl-padding;
+    }
+  }
+
   > *:not(:last-child) {
     margin-right: .3em;
   }
-}
 
-.deploy-link {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  min-width: 100px;
-  max-width: 150px;
+  svg {
+    vertical-align: text-top;
+  }
 
-  @include media-breakpoint-up(xs) {
-    min-width: 0;
-    max-width: 100%;
+  .deployment-info {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 100px;
+
+    @include media-breakpoint-up(xs) {
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
+  .btn svg {
+    fill: $theme-gray-700;
   }
 }
 
@@ -768,5 +869,35 @@
       color: $file-mode-changed;
       text-decoration: none;
     }
+  }
+}
+
+.ci-widget-container {
+  justify-content: space-between;
+  flex: 1;
+  flex-direction: row;
+
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+
+    .stage-cell .stage-container {
+      margin-top: 16px;
+    }
+
+    .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
+      transform: initial;
+    }
+  }
+
+  .coverage {
+    font-size: 12px;
+    color: $theme-gray-700;
+    line-height: initial;
+  }
+
+  .mini-pipeline-graph-dropdown-toggle,
+  .stage-cell .mini-pipeline-graph-dropdown-toggle svg {
+    height: $ci-action-icon-size-lg;
+    width: $ci-action-icon-size-lg;
   }
 }

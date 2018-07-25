@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
 import Visibility from 'visibilityjs';
 import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
@@ -12,20 +13,43 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
+export const expandDiscussion = ({ commit }, data) => commit(types.EXPAND_DISCUSSION, data);
+
+export const collapseDiscussion = ({ commit }, data) => commit(types.COLLAPSE_DISCUSSION, data);
+
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
+
 export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
+
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
+
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
-export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);
+
+export const setInitialNotes = ({ commit }, discussions) =>
+  commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+
 export const setTargetNoteHash = ({ commit }, data) => commit(types.SET_TARGET_NOTE_HASH, data);
+
+export const setNotesFetchedState = ({ commit }, state) =>
+  commit(types.SET_NOTES_FETCHED_STATE, state);
+
 export const toggleDiscussion = ({ commit }, data) => commit(types.TOGGLE_DISCUSSION, data);
 
-export const fetchNotes = ({ commit }, path) =>
+export const fetchDiscussions = ({ commit }, path) =>
   service
-    .fetchNotes(path)
+    .fetchDiscussions(path)
     .then(res => res.json())
-    .then(res => {
-      commit(types.SET_INITIAL_NOTES, res);
+    .then(discussions => {
+      commit(types.SET_INITIAL_DISCUSSIONS, discussions);
+    });
+
+export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+  service
+    .fetchDiscussions(path)
+    .then(res => res.json())
+    .then(discussions => {
+      const selectedDiscussion = discussions.find(discussion => discussion.id === discussionId);
+      if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
     });
 
 export const deleteNote = ({ commit }, note) =>
@@ -121,7 +145,8 @@ export const toggleIssueLocalState = ({ commit }, newState) => {
 };
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
-  const { note } = noteData.data.note;
+  // For MR discussuions we need to post as `note[note]` and issue we use `note.note`.
+  const note = noteData.data['note[note]'] || noteData.data.note.note;
   let placeholderText = note;
   const hasQuickActions = utils.hasQuickActions(placeholderText);
   const replyId = noteData.data.in_reply_to_discussion_id;
@@ -192,7 +217,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
   });
 };
 
-const pollSuccessCallBack = (resp, commit, state, getters) => {
+const pollSuccessCallBack = (resp, commit, state, getters, dispatch) => {
   if (resp.notes && resp.notes.length) {
     const { notesById } = getters;
 
@@ -200,10 +225,12 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
       if (notesById[note.id]) {
         commit(types.UPDATE_NOTE, note);
       } else if (note.type === constants.DISCUSSION_NOTE || note.type === constants.DIFF_NOTE) {
-        const discussion = utils.findNoteObjectById(state.notes, note.discussion_id);
+        const discussion = utils.findNoteObjectById(state.discussions, note.discussion_id);
 
         if (discussion) {
           commit(types.ADD_NEW_REPLY_TO_DISCUSSION, note);
+        } else if (note.type === constants.DIFF_NOTE) {
+          dispatch('fetchDiscussions', state.notesData.discussionsPath);
         } else {
           commit(types.ADD_NEW_NOTE, note);
         }
@@ -218,13 +245,13 @@ const pollSuccessCallBack = (resp, commit, state, getters) => {
   return resp;
 };
 
-export const poll = ({ commit, state, getters }) => {
+export const poll = ({ commit, state, getters, dispatch }) => {
   eTagPoll = new Poll({
     resource: service,
     method: 'poll',
     data: state,
     successCallback: resp =>
-      resp.json().then(data => pollSuccessCallBack(data, commit, state, getters)),
+      resp.json().then(data => pollSuccessCallBack(data, commit, state, getters, dispatch)),
     errorCallback: () => Flash('Something went wrong while fetching latest comments.'),
   });
 
@@ -284,6 +311,14 @@ export const scrollToNoteIfNeeded = (context, el) => {
     scrollToElement(el);
   }
 };
+
+export const fetchDiscussionDiffLines = ({ commit }, discussion) =>
+  axios.get(discussion.truncatedDiffLinesPath).then(({ data }) => {
+    commit(types.SET_DISCUSSION_DIFF_LINES, {
+      discussionId: discussion.id,
+      diffLines: data.truncated_diff_lines,
+    });
+  });
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

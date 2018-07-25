@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-feature 'list of badges' do
-  background do
+describe 'list of badges' do
+  before do
     user = create(:user)
     project = create(:project, :repository)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit project_settings_ci_cd_path(project)
   end
 
-  scenario 'user wants to see build status badge' do
+  it 'user wants to see build status badge' do
     page.within('.pipeline-status') do
       expect(page).to have_content 'pipeline status'
       expect(page).to have_content 'Markdown'
@@ -24,7 +24,7 @@ feature 'list of badges' do
     end
   end
 
-  scenario 'user wants to see coverage report badge' do
+  it 'user wants to see coverage report badge' do
     page.within('.coverage-report') do
       expect(page).to have_content 'coverage report'
       expect(page).to have_content 'Markdown'
@@ -39,7 +39,7 @@ feature 'list of badges' do
     end
   end
 
-  scenario 'user changes current ref of build status badge', :js do
+  it 'user changes current ref of build status badge', :js do
     page.within('.pipeline-status') do
       first('.js-project-refs-dropdown').click
 

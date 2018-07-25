@@ -1,5 +1,7 @@
 module Types
   class MergeRequestType < BaseObject
+    expose_permissions Types::PermissionTypes::MergeRequest
+
     present_using MergeRequestPresenter
 
     graphql_name 'MergeRequest'
@@ -43,5 +45,11 @@ module Types
     field :upvotes, GraphQL::INT_TYPE, null: false
     field :downvotes, GraphQL::INT_TYPE, null: false
     field :subscribed, GraphQL::BOOLEAN_TYPE, method: :subscribed?, null: false
+
+    field :head_pipeline, Types::Ci::PipelineType, null: true, method: :actual_head_pipeline do
+      authorize :read_pipeline
+    end
+    field :pipelines, Types::Ci::PipelineType.connection_type,
+          resolver: Resolvers::MergeRequestPipelinesResolver
   end
 end

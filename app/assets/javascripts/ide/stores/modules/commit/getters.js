@@ -1,12 +1,10 @@
+import { sprintf, n__ } from '../../../../locale';
 import * as consts from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;
 
 export const discardDraftButtonDisabled = state =>
   state.commitMessage === '' || state.submitCommitLoading;
-
-export const commitButtonDisabled = (state, getters, rootState) =>
-  getters.discardDraftButtonDisabled || !rootState.stagedFiles.length;
 
 export const newBranchName = (state, _, rootState) =>
   `${gon.current_username}-${rootState.currentBranchId}-patch-${`${new Date().getTime()}`.substr(
@@ -26,6 +24,19 @@ export const branchName = (state, getters, rootState) => {
   }
 
   return rootState.currentBranchId;
+};
+
+export const preBuiltCommitMessage = (state, _, rootState) => {
+  if (state.commitMessage) return state.commitMessage;
+
+  const files = (rootState.stagedFiles.length
+    ? rootState.stagedFiles
+    : rootState.changedFiles
+  ).reduce((acc, val) => acc.concat(val.path), []);
+
+  return sprintf(n__('Update %{files}', 'Update %{files} files', files.length), {
+    files: files.join(', '),
+  });
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

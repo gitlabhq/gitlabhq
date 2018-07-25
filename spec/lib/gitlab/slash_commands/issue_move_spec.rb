@@ -27,7 +27,7 @@ describe Gitlab::SlashCommands::IssueMove, service: true do
     set(:other_project) { create(:project, namespace: project.namespace) }
 
     before do
-      [project, other_project].each { |prj| prj.add_master(user) }
+      [project, other_project].each { |prj| prj.add_maintainer(user) }
     end
 
     subject { described_class.new(project, chat_name) }

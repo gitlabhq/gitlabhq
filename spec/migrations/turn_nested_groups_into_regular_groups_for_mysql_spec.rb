@@ -49,10 +49,14 @@ describe TurnNestedGroupsIntoRegularGroupsForMysql do
     end
 
     it 'renames the repository of any projects' do
-      expect(updated_project.repository.path)
+      repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        updated_project.repository.path
+      end
+
+      expect(repo_path)
         .to end_with("#{parent_group.name}-#{child_group.name}/#{updated_project.path}.git")
 
-      expect(File.directory?(updated_project.repository.path)).to eq(true)
+      expect(File.directory?(repo_path)).to eq(true)
     end
 
     it 'creates a redirect route for renamed projects' do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Files
   class MultiService < Files::BaseService
     UPDATE_FILE_ACTIONS = %w(update move delete).freeze

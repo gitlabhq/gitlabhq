@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group' do
+describe 'Group' do
   before do
     sign_in(create(:admin))
   end
@@ -152,6 +152,12 @@ feature 'Group' do
       page.within ".breadcrumbs" do
         expect(page).to have_content new_name
       end
+    end
+
+    it 'focuses confirmation field on remove group' do
+      click_button('Remove group')
+
+      expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes group' do

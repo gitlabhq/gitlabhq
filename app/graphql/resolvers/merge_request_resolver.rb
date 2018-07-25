@@ -1,15 +1,14 @@
 module Resolvers
   class MergeRequestResolver < BaseResolver
-    prepend FullPathResolver
-
-    type Types::ProjectType, null: true
-
     argument :iid, GraphQL::ID_TYPE,
              required: true,
              description: 'The IID of the merge request, e.g., "1"'
 
-    def resolve(full_path:, iid:)
-      project = model_by_full_path(Project, full_path)
+    type Types::MergeRequestType, null: true
+
+    alias_method :project, :object
+
+    def resolve(iid:)
       return unless project.present?
 
       BatchLoader.for(iid.to_s).batch(key: project.id) do |iids, loader|

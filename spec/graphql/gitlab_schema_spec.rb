@@ -27,6 +27,12 @@ describe GitlabSchema do
     expect(described_class.query).to eq(::Types::QueryType.to_graphql)
   end
 
+  it 'paginates active record relations using `Gitlab::Graphql::Connections::KeysetConnection`' do
+    connection = GraphQL::Relay::BaseConnection::CONNECTION_IMPLEMENTATIONS[ActiveRecord::Relation.name]
+
+    expect(connection).to eq(Gitlab::Graphql::Connections::KeysetConnection)
+  end
+
   def field_instrumenters
     described_class.instrumenters[:field]
   end

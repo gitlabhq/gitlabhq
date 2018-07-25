@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project' do
+describe 'Project' do
   include ProjectForksHelper
 
   describe 'creating from template' do
@@ -151,8 +151,14 @@ feature 'Project' do
 
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
       visit edit_project_path(project)
+    end
+
+    it 'focuses on the confirmation field' do
+      click_button 'Remove project'
+
+      expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes a project' do
@@ -169,7 +175,7 @@ feature 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end
@@ -198,7 +204,7 @@ feature 'Project' do
     let(:project) { create(:project, :repository) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end

@@ -16,6 +16,6 @@
           %span.ref-name= @merge_request.target_branch
           .text-center= link_to 'Create commit', project_new_blob_path(@project, @merge_request.source_branch), class: 'btn btn-save'
 - else
-  - diff_viewable = @merge_request_diff ? @merge_request_diff.collected? || @merge_request_diff.overflow? : true
+  - diff_viewable = @merge_request_diff ? @merge_request_diff.viewable? : true
   - if diff_viewable
     = render "projects/diffs/diffs", diffs: @diffs, environment: @environment, merge_request: true

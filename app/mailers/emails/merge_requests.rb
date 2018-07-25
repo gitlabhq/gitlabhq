@@ -59,8 +59,6 @@ module Emails
     def merge_request_unmergeable_email(recipient_id, merge_request_id, reason = nil)
       setup_merge_request_mail(merge_request_id, recipient_id)
 
-      @reasons = MergeRequestPresenter.new(@merge_request, current_user: current_user).unmergeable_reasons
-
       mail_answer_thread(@merge_request, merge_request_thread_options(@merge_request.author_id, recipient_id, reason))
     end
 

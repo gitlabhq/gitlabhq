@@ -24,7 +24,6 @@ module Gitlab
           installation_type: Gitlab::INSTALLATION_TYPE,
           active_user_count: User.active.count,
           recorded_at: Time.now,
-          mattermost_enabled: Gitlab.config.mattermost.enabled,
           edition: 'CE'
         }
 
@@ -91,13 +90,14 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          signup: Gitlab::CurrentSettings.allow_signup?,
-          ldap: Gitlab.config.ldap.enabled,
-          gravatar: Gitlab::CurrentSettings.gravatar_enabled?,
-          omniauth: Gitlab.config.omniauth.enabled,
-          reply_by_email: Gitlab::IncomingEmail.enabled?,
-          container_registry: Gitlab.config.registry.enabled,
-          gitlab_shared_runners: Gitlab.config.gitlab_ci.shared_runners_enabled
+          container_registry_enabled: Gitlab.config.registry.enabled,
+          gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
+          gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
+          ldap_enabled: Gitlab.config.ldap.enabled,
+          mattermost_enabled: Gitlab.config.mattermost.enabled,
+          omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
+          reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
+          signup_enabled: Gitlab::CurrentSettings.allow_signup?
         }
       end
 

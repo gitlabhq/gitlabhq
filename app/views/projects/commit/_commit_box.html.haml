@@ -10,7 +10,7 @@
     %span.d-none.d-sm-inline authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
-    = author_avatar(@commit, size: 24)
+    = author_avatar(@commit, size: 24, has_tooltip: false)
     %strong
       = commit_author_link(@commit, avatar: true, size: 24)
     - if @commit.different_committer?

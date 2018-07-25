@@ -174,6 +174,8 @@ For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
     # => When size == 2: 'There are 2 mice.'
     ```
 
+    Avoid using `%d` or count variables in sigular strings. This allows more natural translation in some languages.
+
 - In JavaScript:
 
     ```js
@@ -279,7 +281,7 @@ Now that the new content is marked for translation, we need to update the PO
 files with the following command:
 
 ```sh
-bin/rake gettext:find
+bin/rake gettext:regenerate
 ```
 
 This command will update the `locale/gitlab.pot` file with the newly externalized
@@ -289,16 +291,6 @@ file in. Once the changes are on master, they will be picked up by
 
 If there are merge conflicts in the `gitlab.pot` file, you can delete the file
 and regenerate it using the same command. Confirm that you are not deleting any strings accidentally by looking over the diff.
-
-The command also updates the translation files for each language: `locale/*/gitlab.po`
-These changes can be discarded, the language files will be updated by Crowdin
-automatically.
-
-Discard all of them at once like this:
-
-```sh
-git checkout locale/*/gitlab.po
-```
 
 ### Validating PO files
 

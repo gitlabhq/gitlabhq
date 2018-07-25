@@ -29,6 +29,7 @@ Example response:
     "protected": true,
     "developers_can_push": false,
     "developers_can_merge": false,
+    "can_push": true,
     "commit": {
       "author_email": "john@example.com",
       "author_name": "John Smith",
@@ -76,6 +77,7 @@ Example response:
   "protected": true,
   "developers_can_push": false,
   "developers_can_merge": false,
+  "can_push": true,
   "commit": {
     "author_email": "john@example.com",
     "author_name": "John Smith",
@@ -140,7 +142,8 @@ Example response:
   "merged": false,
   "protected": true,
   "developers_can_push": true,
-  "developers_can_merge": true
+  "developers_can_merge": true,
+  "can_push": true
 }
 ```
 
@@ -188,7 +191,8 @@ Example response:
   "merged": false,
   "protected": false,
   "developers_can_push": false,
-  "developers_can_merge": false
+  "developers_can_merge": false,
+  "can_push": true
 }
 ```
 
@@ -231,7 +235,8 @@ Example response:
   "merged": false,
   "protected": false,
   "developers_can_push": false,
-  "developers_can_merge": false
+  "developers_can_merge": false,
+  "can_push": true
 }
 ```
 

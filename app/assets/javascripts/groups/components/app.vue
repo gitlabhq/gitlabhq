@@ -148,7 +148,6 @@ export default {
       if (!parentGroup.isOpen) {
         if (parentGroup.children.length === 0) {
           parentGroup.isChildrenLoading = true;
-          // eslint-disable-next-line promise/catch-or-return
           this.fetchGroups({
             parentId: parentGroup.id,
           })

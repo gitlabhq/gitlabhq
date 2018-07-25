@@ -64,7 +64,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   def destroy
     if schedule.destroy
-      redirect_to pipeline_schedules_path(@project), status: 302
+      redirect_to pipeline_schedules_path(@project), status: :found
     else
       redirect_to pipeline_schedules_path(@project),
                   status: :forbidden,

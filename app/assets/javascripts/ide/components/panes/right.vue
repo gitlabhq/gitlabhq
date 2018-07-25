@@ -5,6 +5,7 @@ import Icon from '../../../vue_shared/components/icon.vue';
 import { rightSidebarViews } from '../../constants';
 import PipelinesList from '../pipelines/list.vue';
 import JobsDetail from '../jobs/detail.vue';
+import MergeRequestInfo from '../merge_requests/info.vue';
 import ResizablePanel from '../resizable_panel.vue';
 
 export default {
@@ -16,9 +17,10 @@ export default {
     PipelinesList,
     JobsDetail,
     ResizablePanel,
+    MergeRequestInfo,
   },
   computed: {
-    ...mapState(['rightPane']),
+    ...mapState(['rightPane', 'currentMergeRequestId']),
     pipelinesActive() {
       return (
         this.rightPane === rightSidebarViews.pipelines ||
@@ -54,10 +56,33 @@ export default {
     </resizable-panel>
     <nav class="ide-activity-bar">
       <ul class="list-unstyled">
+        <li
+          v-if="currentMergeRequestId"
+        >
+          <button
+            v-tooltip
+            :title="__('Merge Request')"
+            :aria-label="__('Merge Request')"
+            :class="{
+              active: rightPane === $options.rightSidebarViews.mergeRequestInfo
+            }"
+            data-container="body"
+            data-placement="left"
+            class="ide-sidebar-link is-right"
+            type="button"
+            @click="clickTab($event, $options.rightSidebarViews.mergeRequestInfo)"
+          >
+            <icon
+              :size="16"
+              name="text-description"
+            />
+          </button>
+        </li>
         <li>
           <button
             v-tooltip
             :title="__('Pipelines')"
+            :aria-label="__('Pipelines')"
             :class="{
               active: pipelinesActive
             }"
@@ -69,7 +94,7 @@ export default {
           >
             <icon
               :size="16"
-              name="pipeline"
+              name="rocket"
             />
           </button>
         </li>

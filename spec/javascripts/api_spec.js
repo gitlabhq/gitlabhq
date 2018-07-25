@@ -242,7 +242,7 @@ describe('Api', () => {
         },
       ]);
 
-      Api.groupProjects(groupId, query, response => {
+      Api.groupProjects(groupId, query, {}, response => {
         expect(response.length).toBe(1);
         expect(response[0].name).toBe('test');
         done();
@@ -357,6 +357,31 @@ describe('Api', () => {
         .then(({ data }) => {
           expect(data.length).toBe(1);
           expect(data[0].name).toBe('test');
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+  });
+
+  describe('createBranch', () => {
+    it('creates new branch', done => {
+      const ref = 'master';
+      const branch = 'new-branch-name';
+      const dummyProjectPath = 'gitlab-org/gitlab-ce';
+      const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/${encodeURIComponent(
+        dummyProjectPath,
+      )}/repository/branches`;
+
+      spyOn(axios, 'post').and.callThrough();
+
+      mock.onPost(expectedUrl).replyOnce(200, {
+        name: branch,
+      });
+
+      Api.createBranch(dummyProjectPath, { ref, branch })
+        .then(({ data }) => {
+          expect(data.name).toBe(branch);
+          expect(axios.post).toHaveBeenCalledWith(expectedUrl, { ref, branch });
         })
         .then(done)
         .catch(done.fail);

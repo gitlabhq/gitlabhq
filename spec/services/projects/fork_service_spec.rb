@@ -135,7 +135,7 @@ describe Projects::ForkService do
       context "when project has restricted visibility level" do
         context "and only one visibility level is restricted" do
           before do
-            @from_project.update_attributes(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            @from_project.update(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
             stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::INTERNAL])
           end
 

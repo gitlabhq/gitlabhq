@@ -111,7 +111,7 @@ by yourself (except when an issue is due). You will only receive automatic
 notifications when somebody else comments or adds changes to the ones that
 you've created or mentions you.
 
-If a merge request becomes unmergeable, its author will be notified about the cause.
+If an open merge request becomes unmergeable due to conflict, its author will be notified about the cause.
 If a user has also set the merge request to automatically merge once pipeline succeeds,
 then that user will also be notified.
 

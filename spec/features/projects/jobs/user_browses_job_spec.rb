@@ -8,7 +8,7 @@ describe 'User browses a job', :js do
   let!(:build) { create(:ci_build, :success, :trace_artifact, :coverage, pipeline: pipeline) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.enable_ci
 
     sign_in(user)

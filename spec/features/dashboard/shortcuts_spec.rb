@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Dashboard shortcuts', :js do
+describe 'Dashboard shortcuts', :js do
   context 'logged in' do
     before do
       sign_in(create(:user))
       visit root_dashboard_path
     end
 
-    scenario 'Navigate to tabs' do
+    it 'Navigate to tabs' do
       find('body').send_keys([:shift, 'I'])
 
       check_page_title('Issues')
@@ -31,7 +31,7 @@ feature 'Dashboard shortcuts', :js do
       visit explore_root_path
     end
 
-    scenario 'Navigate to tabs' do
+    it 'Navigate to tabs' do
       find('body').send_keys([:shift, 'G'])
 
       find('.nothing-here-block')

@@ -5,4 +5,4 @@
   - anchors.each do |anchor|
     %li.nav-item
       = link_to_if anchor.link, anchor.label, anchor.link, class: anchor.enabled ? 'nav-link stat-link' : "nav-link btn btn-#{anchor.class_modifier || 'missing'}" do
-        %span.stat-text= anchor.label
+        .stat-text= anchor.label

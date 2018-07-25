@@ -1,5 +1,0 @@
----
-title: Don't trim incoming emails that create new issues
-merge_request:
-author: Cameron Crockett
-type: fixed

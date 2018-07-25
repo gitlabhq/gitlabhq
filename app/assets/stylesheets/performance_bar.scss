@@ -7,7 +7,6 @@
   top: 0;
   width: 100%;
   z-index: 2000;
-  overflow-x: hidden;
 
   height: $performance-bar-height;
   background: $black;
@@ -82,7 +81,7 @@
 
   .view {
     margin-right: 15px;
-    float: left;
+    flex-shrink: 0;
 
     &:last-child {
       margin-right: 0;
@@ -107,12 +106,12 @@
   }
 
   .performance-bar-modal {
-    .modal-footer {
-      display: none;
+    .modal-body {
+      padding: 0;
     }
 
-    .modal-dialog {
-      width: 860px;
+    .modal-footer {
+      display: none;
     }
   }
 }

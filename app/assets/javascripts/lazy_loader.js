@@ -44,8 +44,8 @@ export default class LazyLoader {
     requestAnimationFrame(() => this.checkElementsInView());
   }
   checkElementsInView() {
-    const scrollTop = pageYOffset;
-    const visHeight = scrollTop + innerHeight + SCROLL_THRESHOLD;
+    const scrollTop = window.pageYOffset;
+    const visHeight = scrollTop + window.innerHeight + SCROLL_THRESHOLD;
 
     // Loading Images which are in the current viewport or close to them
     this.lazyImages = this.lazyImages.filter((selectedImage) => {

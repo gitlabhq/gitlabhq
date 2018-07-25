@@ -40,6 +40,15 @@ describe 'Signup' do
 
       expect(find('.username')).to have_css '.gl-field-error-outline'
     end
+
+    it 'shows an error message on submit if the username contains special characters' do
+      fill_in 'new_user_username', with: 'new$user!username'
+      wait_for_requests
+
+      click_button "Register"
+
+      expect(page).to have_content("Please create a username with only alphanumeric characters.")
+    end
   end
 
   context 'with no errors' do

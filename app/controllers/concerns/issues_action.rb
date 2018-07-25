@@ -1,6 +1,7 @@
 module IssuesAction
   extend ActiveSupport::Concern
   include IssuableCollections
+  include IssuesCalendar
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
@@ -17,18 +18,9 @@ module IssuesAction
   end
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues_calendar
-    @issues = issuables_collection
-                  .non_archived
-                  .with_due_date
-                  .limit(100)
-
-    respond_to do |format|
-      format.ics { response.headers['Content-Disposition'] = 'inline' }
-    end
+    render_issues_calendar(issuables_collection)
   end
-  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
 

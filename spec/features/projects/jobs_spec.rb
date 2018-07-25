@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs', :clean_gitlab_redis_shared_state do
+describe 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -165,7 +165,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Job Failed ##{job.id}"
-          job_url = project_job_path(project, job)
+          job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
@@ -187,7 +187,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
     context "Download artifacts" do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file)
+        job.update(legacy_artifacts_file: artifacts_file)
         visit project_job_path(project, job)
       end
 
@@ -198,8 +198,8 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
     context 'Artifacts expire date' do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file,
-                              artifacts_expire_at: expire_at)
+        job.update(legacy_artifacts_file: artifacts_file,
+                   artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
       end
@@ -259,7 +259,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Raw trace' do
+    describe 'Raw trace' do
       before do
         job.run!
 
@@ -271,7 +271,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'HTML trace', :js do
+    describe 'HTML trace', :js do
       before do
         job.run!
 
@@ -291,7 +291,7 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
-    feature 'Variables' do
+    describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do
@@ -530,14 +530,14 @@ feature 'Jobs', :clean_gitlab_redis_shared_state do
 
   describe "GET /:project/jobs/:id/download" do
     before do
-      job.update_attributes(legacy_artifacts_file: artifacts_file)
+      job.update(legacy_artifacts_file: artifacts_file)
       visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        job2.update_attributes(legacy_artifacts_file: artifacts_file)
+        job2.update(legacy_artifacts_file: artifacts_file)
         visit download_project_job_artifacts_path(project, job2)
       end
 

@@ -90,7 +90,7 @@ const bindEvents = () => {
   function chooseTemplate() {
     $('.template-option').hide();
     $projectFieldsForm.addClass('selected');
-    $selectedIcon.removeClass('active');
+    $selectedIcon.removeClass('d-block');
     const value = $(this).val();
     const templates = {
       rails: {
@@ -109,7 +109,7 @@ const bindEvents = () => {
 
     const selectedTemplate = templates[value];
     $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon).addClass('active');
+    $(selectedTemplate.icon).addClass('d-block');
     $templateProjectNameInput.focus();
   }
 

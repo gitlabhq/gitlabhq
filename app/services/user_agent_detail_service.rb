@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserAgentDetailService
   attr_accessor :spammable, :request
 

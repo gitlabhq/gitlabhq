@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Milestones sorting', :js do
+describe 'Milestones sorting', :js do
   let(:group) { create(:group) }
   let!(:project) { create(:project_empty_repo, group: group) }
   let!(:other_project) { create(:project_empty_repo, group: group) }
@@ -9,13 +9,13 @@ feature 'Milestones sorting', :js do
   let!(:project_milestone2) { create(:milestone, project: project, title: 'v2.0', due_date: 5.days.from_now) }
   let!(:other_project_milestone2) { create(:milestone, project: other_project, title: 'v2.0', due_date: 5.days.from_now) }
   let!(:group_milestone) { create(:milestone, group: group, title: 'v3.0', due_date: 7.days.from_now) }
-  let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }
+  let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   before do
     sign_in(user)
   end
 
-  scenario 'visit group milestones and sort by due_date_asc' do
+  it 'visit group milestones and sort by due_date_asc' do
     visit group_milestones_path(group)
 
     expect(page).to have_button('Due soon')

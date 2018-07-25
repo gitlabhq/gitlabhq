@@ -2,11 +2,7 @@ module QA
   module Page
     module Project
       class Show < Page::Base
-        view 'app/views/shared/_clone_panel.html.haml' do
-          element :clone_dropdown
-          element :clone_options_dropdown, '.clone-options-dropdown'
-          element :project_repository_location, 'text_field_tag :project_clone'
-        end
+        include Page::Shared::ClonePanel
 
         view 'app/views/projects/_last_push.html.haml' do
           element :create_merge_request
@@ -18,7 +14,7 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle
-          element :new_issue_link, "link_to 'New issue', new_project_issue_path(@project)"
+          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)"
         end
 
         view 'app/views/shared/_ref_switcher.html.haml' do
@@ -26,23 +22,25 @@ module QA
           element :branches_dropdown
         end
 
-        def choose_repository_clone_http
-          choose_repository_clone('HTTP', 'http')
+        view 'app/views/projects/buttons/_fork.html.haml' do
+          element :fork_label, "%span= s_('GoToYourFork|Fork')"
+          element :fork_link, "link_to new_project_fork_path(@project)"
         end
 
-        def choose_repository_clone_ssh
-          # It's not always beginning with ssh:// so detecting with @
-          # would be more reliable because ssh would always contain it.
-          # We can't use .git because HTTP also contain that part.
-          choose_repository_clone('SSH', '@')
+        view 'app/views/projects/_files.html.haml' do
+          element :tree_holder, '.tree-holder'
         end
 
-        def repository_location
-          Git::Location.new(find('#project_clone').value)
+        view 'app/presenters/project_presenter.rb' do
+          element :new_file_button, "label: _('New file'),"
         end
 
         def project_name
           find('.qa-project-name').text
+        end
+
+        def go_to_new_file!
+          click_on 'New file'
         end
 
         def switch_to_branch(branch_name)
@@ -65,9 +63,10 @@ module QA
           click_element :create_merge_request
         end
 
-        def wait_for_push
-          sleep 5
-          refresh
+        def wait_for_import
+          wait(reload: true) do
+            has_css?('.tree-holder')
+          end
         end
 
         def go_to_new_issue
@@ -76,19 +75,8 @@ module QA
           click_link 'New issue'
         end
 
-        private
-
-        def choose_repository_clone(kind, detect_text)
-          wait(reload: false) do
-            click_element :clone_dropdown
-
-            page.within('.clone-options-dropdown') do
-              click_link(kind)
-            end
-
-            # Ensure git clone textbox was updated
-            repository_location.git_uri.include?(detect_text)
-          end
+        def fork_project
+          click_on 'Fork'
         end
       end
     end

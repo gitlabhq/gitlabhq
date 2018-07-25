@@ -497,6 +497,12 @@
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
+
+    .btn-template-icon {
+      position: absolute;
+      left: $gl-padding;
+      top: $gl-padding;
+    }
   }
 
   .template-title {
@@ -514,12 +520,6 @@
     }
   }
 
-  svg {
-    position: absolute;
-    left: $gl-padding;
-    top: $gl-padding;
-  }
-
   .project-fields-form {
     display: none;
 
@@ -530,34 +530,23 @@
   }
 
   .template-input-group {
-    position: relative;
-
-    @include media-breakpoint-up(sm) {
-      display: flex;
+    .input-group-prepend {
+      flex: 1;
     }
 
-    .input-group-prepend,
-    .input-group-append {
-      flex: 1;
-      text-align: left;
-      padding-left: ($gl-padding * 3);
+    .input-group-text {
+      width: 100%;
       background-color: $white-light;
     }
 
-    .selected-template {
-      line-height: 20px;
-    }
-
     .selected-icon {
+      padding-right: $gl-padding;
+
       svg {
         display: none;
         top: 7px;
         height: 20px;
         width: 20px;
-
-        &.active {
-          display: block;
-        }
       }
     }
   }
@@ -869,7 +858,6 @@ pre.light-well {
 
 .git-clone-holder {
   width: 380px;
-  height: 28px;
 
   .btn-clipboard {
     border: 1px solid $border-color;

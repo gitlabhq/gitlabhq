@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import state from '~/ide/stores/modules/merge_requests/state';
 import * as types from '~/ide/stores/modules/merge_requests/mutation_types';
-import actions, {
+import {
   requestMergeRequests,
   receiveMergeRequestsError,
   receiveMergeRequestsSuccess,
@@ -41,27 +41,25 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('receiveMergeRequestsError', () => {
-    let flashSpy;
-
-    beforeEach(() => {
-      flashSpy = spyOnDependency(actions, 'flash');
-    });
-
     it('should should commit error', done => {
       testAction(
         receiveMergeRequestsError,
-        'created',
+        { type: 'created', search: '' },
         mockedState,
         [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR, payload: 'created' }],
-        [],
+        [
+          {
+            type: 'setErrorMessage',
+            payload: {
+              text: 'Error loading merge requests.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: { type: 'created', search: '' },
+            },
+          },
+        ],
         done,
       );
-    });
-
-    it('creates flash message', () => {
-      receiveMergeRequestsError({ commit() {} }, 'created');
-
-      expect(flashSpy).toHaveBeenCalled();
     });
   });
 
@@ -124,21 +122,6 @@ describe('IDE merge requests actions', () => {
         });
       });
 
-      it('dispatches request', done => {
-        testAction(
-          fetchMergeRequests,
-          { type: 'created' },
-          mockedState,
-          [],
-          [
-            { type: 'requestMergeRequests' },
-            { type: 'resetMergeRequests' },
-            { type: 'receiveMergeRequestsSuccess' },
-          ],
-          done,
-        );
-      });
-
       it('dispatches success with received data', done => {
         testAction(
           fetchMergeRequests,
@@ -146,8 +129,8 @@ describe('IDE merge requests actions', () => {
           mockedState,
           [],
           [
-            { type: 'requestMergeRequests' },
-            { type: 'resetMergeRequests' },
+            { type: 'requestMergeRequests', payload: 'created' },
+            { type: 'resetMergeRequests', payload: 'created' },
             {
               type: 'receiveMergeRequestsSuccess',
               payload: { type: 'created', data: mergeRequests },
@@ -170,9 +153,9 @@ describe('IDE merge requests actions', () => {
           mockedState,
           [],
           [
-            { type: 'requestMergeRequests' },
-            { type: 'resetMergeRequests' },
-            { type: 'receiveMergeRequestsError' },
+            { type: 'requestMergeRequests', payload: 'created' },
+            { type: 'resetMergeRequests', payload: 'created' },
+            { type: 'receiveMergeRequestsError', payload: { type: 'created', search: '' } },
           ],
           done,
         );
@@ -208,18 +191,19 @@ describe('IDE merge requests actions', () => {
         expect(commit.calls.argsFor(1)).toEqual(['SET_CURRENT_MERGE_REQUEST', '1', { root: true }]);
         expect(commit.calls.argsFor(2)).toEqual(['RESET_OPEN_FILES', null, { root: true }]);
 
-        expect(dispatch.calls.argsFor(0)).toEqual([
-          'pipelines/resetLatestPipeline',
-          null,
-          { root: true },
-        ]);
-        expect(dispatch.calls.argsFor(1)).toEqual(['setCurrentBranchId', '', { root: true }]);
-        expect(dispatch.calls.argsFor(2)).toEqual([
+        expect(dispatch.calls.argsFor(0)).toEqual(['setCurrentBranchId', '', { root: true }]);
+        expect(dispatch.calls.argsFor(1)).toEqual([
           'pipelines/stopPipelinePolling',
           null,
           { root: true },
         ]);
+        expect(dispatch.calls.argsFor(2)).toEqual(['setRightPane', null, { root: true }]);
         expect(dispatch.calls.argsFor(3)).toEqual([
+          'pipelines/resetLatestPipeline',
+          null,
+          { root: true },
+        ]);
+        expect(dispatch.calls.argsFor(4)).toEqual([
           'pipelines/clearEtagPoll',
           null,
           { root: true },

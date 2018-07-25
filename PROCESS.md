@@ -15,6 +15,8 @@
   - [Between the 1st and the 7th](#between-the-1st-and-the-7th)
   - [On the 7th](#on-the-7th)
   - [After the 7th](#after-the-7th)
+- [Regressions](#regressions)
+  - [How to manage a regression](#how-to-manage-a-regression)
 - [Release retrospective and kickoff](#release-retrospective-and-kickoff)
   - [Retrospective](#retrospective)
   - [Kickoff](#kickoff)
@@ -197,26 +199,9 @@ to. For example:
 If you think a merge request should go into an RC or patch even though it does not meet these requirements,
 you can ask for an exception to be made.
 
-Go to [Release tasks issue tracker](https://gitlab.com/gitlab-org/release/tasks/issues/new) and create an issue
-using the `Exception-request` issue template.
+Check [this guide](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md) about how to open an exception request before opening one.
 
-**Do not** set the relevant `Pick into X.Y` label (see above) before request an
-exception; this should be done after the exception is approved.
-
-You can find who is who on the [team page](https://about.gitlab.com/team/).
-
-Whether an exception is made is determined by weighing the benefit and urgency of the change
-(how important it is to the company that this is released _right now_ instead of in a month)
-against the potential negative impact
-(things breaking without enough time to comfortably find and fix them before the release on the 22nd).
-When in doubt, we err on the side of _not_ cherry-picking.
-
-For example, it is likely that an exception will be made for a trivial 1-5 line performance improvement
-(e.g. adding a database index or adding `includes` to a query), but not for a new feature, no matter how relatively small or thoroughly tested.
-
-All MRs which have had exceptions granted must be merged by the 15th.
-
-### Regressions
+## Regressions
 
 A regression for a particular monthly release is a bug that exists in that
 release, but wasn't present in the release before. This includes bugs in
@@ -234,10 +219,30 @@ month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
 
-A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
-and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
-just like any other issue, to help GitLab team members focus on issues that are
-relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
+### How to manage a regression
+
+Regressions are very important, and they should be considered high priority 
+issues that should be solved as soon as possible, especially if they affect
+users. Despite that, ~regression label itself does not imply when the issue
+will be scheduled.
+
+When a regression is found:
+1. Create an issue describing the problem in the most detailed way possible
+1. If possible, provide links to real examples and how to reproduce the problem
+1. Label the issue properly, using the [team label](../CONTRIBUTING.md#team-labels),
+   the [subject label](../CONTRIBUTING.md#subject-labels)
+   and any other label that may apply in the specific case
+1. Add the ~bug and ~regression labels
+1. Notify the respective Engineering Manager to evaluate the Severity of the regression and add a [Severity label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-severity-labels). The counterpart Product Manager is included to weigh-in on prioritization as needed to set the [Priority label](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#bug-priority-labels).
+1. If the regression is either an ~S1, ~S2 or ~S3 severity, label the regression with the current milestone as it should be fixed in the current milestone.
+  1. If the regression was introduced in an RC of the current release, label with ~Deliverable
+  1. If the regression was introduced in the previous release, label with ~"Next Patch Release"
+1. If the regression is an ~S4 severity, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
+
+When a new issue is found, the fix should start as soon as possible. You can
+ping the Engineering Manager or the Product Manager for the relative area to
+make them aware of the issue earlier. They will analyze the priority and change
+it if needed.
 
 ## Release retrospective and kickoff
 

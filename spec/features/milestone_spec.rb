@@ -1,18 +1,18 @@
 require 'rails_helper'
 
-feature 'Milestone' do
+describe 'Milestone' do
   let(:group) { create(:group, :public) }
   let(:project) { create(:project, :public, namespace: group) }
   let(:user)   { create(:user) }
 
   before do
     create(:group_member, group: group, user: user)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
-  feature 'Create a milestone' do
-    scenario 'shows an informative message for a new milestone' do
+  describe 'Create a milestone' do
+    it 'shows an informative message for a new milestone' do
       visit new_project_milestone_path(project)
 
       page.within '.milestone-form' do
@@ -28,8 +28,8 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Open a milestone with closed issues' do
-    scenario 'shows an informative message' do
+  describe 'Open a milestone with closed issues' do
+    it 'shows an informative message' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       create(:issue, title: "Bugfix1", project: project, milestone: milestone, state: "closed")
@@ -39,8 +39,8 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Open a project milestone with an existing title' do
-    scenario 'displays validation message when there is a project milestone with same title' do
+  describe 'Open a project milestone with an existing title' do
+    it 'displays validation message when there is a project milestone with same title' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       visit new_project_milestone_path(project)
@@ -52,7 +52,7 @@ feature 'Milestone' do
       expect(find('.alert-danger')).to have_content('already being used for another group or project milestone.')
     end
 
-    scenario 'displays validation message when there is a group milestone with same title' do
+    it 'displays validation message when there is a group milestone with same title' do
       milestone = create(:milestone, project_id: nil, group: project.group, title: 8.7)
 
       visit new_group_milestone_path(project.group)
@@ -66,8 +66,8 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Open a milestone', :js do
-    scenario 'shows total issue time spent correctly when no time has been logged' do
+  describe 'Open a milestone', :js do
+    it 'shows total issue time spent correctly when no time has been logged' do
       milestone = create(:milestone, project: project, title: 8.7)
 
       visit project_milestone_path(project, milestone)
@@ -79,7 +79,7 @@ feature 'Milestone' do
       end
     end
 
-    scenario 'shows total issue time spent' do
+    it 'shows total issue time spent' do
       milestone = create(:milestone, project: project, title: 8.7)
       issue1 = create(:issue, project: project, milestone: milestone)
       issue2 = create(:issue, project: project, milestone: milestone)
@@ -98,8 +98,8 @@ feature 'Milestone' do
     end
   end
 
-  feature 'Deleting a milestone' do
-    scenario "The delete milestone button does not show for unauthorized users" do
+  describe 'Deleting a milestone' do
+    it "The delete milestone button does not show for unauthorized users" do
       create(:milestone, project: project, title: 8.7)
       sign_out(user)
 
@@ -109,7 +109,7 @@ feature 'Milestone' do
     end
   end
 
-  feature 'deprecation popover', :js do
+  describe 'deprecation popover', :js do
     it 'opens deprecation popover' do
       milestone = create(:milestone, project: project)
 

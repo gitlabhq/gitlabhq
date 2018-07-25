@@ -12,7 +12,7 @@ export default function loadBalsamiqFile() {
 
   if (!(viewer instanceof Element)) return;
 
-  const endpoint = viewer.dataset.endpoint;
+  const { endpoint } = viewer.dataset;
 
   const balsamiqViewer = new BalsamiqViewer(viewer);
   balsamiqViewer.loadFile(endpoint).catch(onError);

@@ -13,8 +13,8 @@ describe Issues::CreateService do
       let(:labels) { create_pair(:label, project: project) }
 
       before do
-        project.add_master(user)
-        project.add_master(assignee)
+        project.add_maintainer(user)
+        project.add_maintainer(assignee)
       end
 
       let(:opts) do
@@ -130,7 +130,7 @@ describe Issues::CreateService do
         end
 
         it 'invalidates open issues counter for assignees when issue is assigned' do
-          project.add_master(assignee)
+          project.add_maintainer(assignee)
 
           described_class.new(project, user, opts).execute
 
@@ -160,7 +160,7 @@ describe Issues::CreateService do
     context 'issue create service' do
       context 'assignees' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'removes assignee when user id is invalid' do
@@ -180,7 +180,7 @@ describe Issues::CreateService do
         end
 
         it 'saves assignee when user id is valid' do
-          project.add_master(assignee)
+          project.add_maintainer(assignee)
           opts = { title: 'Title', description: 'Description', assignee_ids: [assignee.id] }
 
           issue = described_class.new(project, user, opts).execute
@@ -224,8 +224,8 @@ describe Issues::CreateService do
         end
 
         before do
-          project.add_master(user)
-          project.add_master(assignee)
+          project.add_maintainer(user)
+          project.add_maintainer(assignee)
         end
 
         it 'assigns and sets milestone to issuable from command' do
@@ -242,7 +242,7 @@ describe Issues::CreateService do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       describe 'for a single discussion' do

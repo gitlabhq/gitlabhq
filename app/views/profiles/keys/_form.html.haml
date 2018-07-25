@@ -3,11 +3,20 @@
     = form_errors(@key)
 
     .form-group
-      = f.label :key, class: 'label-light'
-      = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: "Don't paste the private part of the SSH key. Paste the public part, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'."
+      = f.label :key, class: 'label-bold'
+      %p= _("Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key.")
+      = f.text_area :key, class: "form-control js-add-ssh-key-validation-input", rows: 8, required: true, placeholder: s_('Profiles|Typically starts with "ssh-rsa …"')
     .form-group
-      = f.label :title, class: 'label-light'
-      = f.text_field :title, class: "form-control", required: true
+      = f.label :title, class: 'label-bold'
+      = f.text_field :title, class: "form-control input-lg", required: true, placeholder: s_('Profiles|e.g. My MacBook key')
+      %p.form-text.text-muted= _('Name your individual key via a title')
+
+    .js-add-ssh-key-validation-warning.hide
+      .bs-callout.bs-callout-warning{ role: 'alert', aria_live: 'assertive' }
+        %strong= _('Oops, are you sure?')
+        %p= s_("Profiles|This doesn't look like a public SSH key, are you sure you want to add it?")
+
+      %button.btn.btn-create.js-add-ssh-key-validation-confirm-submit= _("Yes, add it")
 
     .prepend-top-default
-      = f.submit 'Add key', class: "btn btn-create"
+      = f.submit s_('Profiles|Add key'), class: "btn btn-create js-add-ssh-key-validation-original-submit"

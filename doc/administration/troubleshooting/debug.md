@@ -66,6 +66,19 @@ On CentOS:
 sudo yum install gdb
 ```
 
+### rbtrace
+
+GitLab 11.2 ships with [rbtrace](https://github.com/tmm1/rbtrace), which
+allows you to trace Ruby code, view all running threads, take memory dumps,
+and more. However, this is not enabled by default. To enable it, define the
+`ENABLE_RBTRACE` variable to the environment. For example, in Omnibus:
+
+```ruby
+gitlab_rails['env'] = {"ENABLE_RBTRACE" => "1"}
+```
+
+Then reconfigure the system and restart Unicorn and Sidekiq.
+
 ## Common Problems
 
 Many of the tips to diagnose issues below apply to many different situations. We'll use one

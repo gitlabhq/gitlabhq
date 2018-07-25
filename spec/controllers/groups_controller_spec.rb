@@ -7,7 +7,7 @@ describe GroupsController do
   let(:project) { create(:project, namespace: group) }
   let!(:group_member) { create(:group_member, group: group, user: user) }
   let!(:owner) { group.add_owner(create(:user)).user }
-  let!(:master) { group.add_master(create(:user)).user }
+  let!(:maintainer) { group.add_maintainer(create(:user)).user }
   let!(:developer) { group.add_developer(create(:user)).user }
   let!(:guest) { group.add_guest(create(:user)).user }
 
@@ -62,7 +62,7 @@ describe GroupsController do
       [true, false].each do |can_create_group_status|
         context "and can_create_group is #{can_create_group_status}" do
           before do
-            User.where(id: [admin, owner, master, developer, guest]).update_all(can_create_group: can_create_group_status)
+            User.where(id: [admin, owner, maintainer, developer, guest]).update_all(can_create_group: can_create_group_status)
           end
 
           [:admin, :owner].each do |member_type|
@@ -73,7 +73,7 @@ describe GroupsController do
             end
           end
 
-          [:guest, :developer, :master].each do |member_type|
+          [:guest, :developer, :maintainer].each do |member_type|
             context "and logged in as #{member_type.capitalize}" do
               it_behaves_like 'member without ability to create subgroups' do
                 let(:member) { send(member_type) }

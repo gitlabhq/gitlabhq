@@ -27,19 +27,19 @@ FactoryBot.define do
       end
     end
 
-    trait :masters_can_create do
+    trait :maintainers_can_create do
       transient do
         default_access_level false
       end
 
       after(:build) do |protected_tag|
-        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
       end
     end
 
     after(:build) do |protected_tag, evaluator|
       if evaluator.default_access_level
-        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MASTER)
+        protected_tag.create_access_levels.new(access_level: Gitlab::Access::MAINTAINER)
       end
     end
   end

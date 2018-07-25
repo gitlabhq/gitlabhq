@@ -58,6 +58,14 @@ export const slugify = str => str.trim().toLowerCase();
 export const truncate = (string, maxLength) => `${string.substr(0, maxLength - 3)}...`;
 
 /**
+ * Truncate SHA to 8 characters
+ *
+ * @param {String} sha
+ * @returns {String}
+ */
+export const truncateSha = sha => sha.substr(0, 8);
+
+/**
  * Capitalizes first character
  *
  * @param {String} text
@@ -98,3 +106,16 @@ export const convertToSentenceCase = string => {
 
   return splitWord.join(' ');
 };
+
+/**
+ * Splits camelCase or PascalCase words
+ * e.g. HelloWorld => Hello World
+ *
+ * @param {*} string
+*/
+export const splitCamelCase = string => (
+  string
+  .replace(/([A-Z]+)([A-Z][a-z])/g, ' $1 $2')
+  .replace(/([a-z\d])([A-Z])/g, '$1 $2')
+  .trim()
+);

@@ -1,5 +1,6 @@
 <script>
 import { mapActions } from 'vuex';
+import tooltip from '~/vue_shared/directives/tooltip';
 import Icon from '~/vue_shared/components/icon.vue';
 import StageButton from './stage_button.vue';
 import UnstageButton from './unstage_button.vue';
@@ -10,6 +11,9 @@ export default {
     Icon,
     StageButton,
     UnstageButton,
+  },
+  directives: {
+    tooltip,
   },
   props: {
     file: {
@@ -50,6 +54,9 @@ export default {
     isActive() {
       return this.activeFileKey === this.fullKey;
     },
+    tooltipTitle() {
+      return this.file.path === this.file.name ? '' : this.file.path;
+    },
   },
   methods: {
     ...mapActions([
@@ -81,29 +88,30 @@ export default {
 </script>
 
 <template>
-  <div
-    :class="{
-      'is-active': isActive
-    }"
-    class="multi-file-commit-list-item"
-  >
-    <button
-      type="button"
-      class="multi-file-commit-list-path"
+  <div class="multi-file-commit-list-item position-relative">
+    <div
+      v-tooltip
+      :title="tooltipTitle"
+      :class="{
+        'is-active': isActive
+      }"
+      class="multi-file-commit-list-path w-100 border-0 ml-0 mr-0"
+      role="button"
       @dblclick="fileAction"
       @click="openFileInEditor"
     >
-      <span class="multi-file-commit-list-file-path">
+      <span class="multi-file-commit-list-file-path d-flex align-items-center">
         <icon
           :name="iconName"
           :size="16"
           :css-classes="iconClass"
-        />{{ file.path }}
+        />{{ file.name }}
       </span>
-    </button>
+    </div>
     <component
       :is="actionComponent"
       :path="file.path"
+      class="d-flex position-absolute"
     />
   </div>
 </template>

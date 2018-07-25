@@ -211,6 +211,7 @@ project:
 - slack_service
 - microsoft_teams_service
 - mattermost_service
+- hangouts_chat_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -293,6 +294,7 @@ project:
 - deploy_tokens
 - settings
 - ci_cd_settings
+- import_export_upload
 award_emoji:
 - awardable
 - user

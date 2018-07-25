@@ -15,6 +15,7 @@ function fatalError(message) {
 // disable problematic options
 webpackConfig.entry = undefined;
 webpackConfig.mode = 'development';
+webpackConfig.optimization.nodeEnv = false;
 webpackConfig.optimization.runtimeChunk = false;
 webpackConfig.optimization.splitChunks = false;
 

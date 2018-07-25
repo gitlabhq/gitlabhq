@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     let!(:project) { setup_project }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
@@ -217,8 +217,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
           expect(member_emails).not_to include('group@member.com')
         end
 
-        it 'does not export group members as master' do
-          Group.first.add_master(user)
+        it 'does not export group members as maintainer' do
+          Group.first.add_maintainer(user)
 
           expect(member_emails).not_to include('group@member.com')
         end

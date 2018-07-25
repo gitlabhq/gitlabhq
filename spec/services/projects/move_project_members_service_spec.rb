@@ -4,7 +4,7 @@ describe Projects::MoveProjectMembersService do
   let!(:user) { create(:user) }
   let(:project_with_users) { create(:project, namespace: user.namespace) }
   let(:target_project) { create(:project, namespace: user.namespace) }
-  let(:master_user) { create(:user) }
+  let(:maintainer_user) { create(:user) }
   let(:reporter_user) { create(:user) }
   let(:developer_user) { create(:user) }
 
@@ -12,7 +12,7 @@ describe Projects::MoveProjectMembersService do
 
   describe '#execute' do
     before do
-      project_with_users.add_master(master_user)
+      project_with_users.add_maintainer(maintainer_user)
       project_with_users.add_developer(developer_user)
       project_with_users.add_reporter(reporter_user)
     end
@@ -28,7 +28,7 @@ describe Projects::MoveProjectMembersService do
     end
 
     it 'does not move existent members to the current project' do
-      target_project.add_master(developer_user)
+      target_project.add_maintainer(developer_user)
       target_project.add_developer(reporter_user)
 
       expect(project_with_users.project_members.count).to eq 4
@@ -53,7 +53,7 @@ describe Projects::MoveProjectMembersService do
       let(:options) { { remove_remaining_elements: false } }
 
       it 'does not remove remaining project members' do
-        target_project.add_master(developer_user)
+        target_project.add_maintainer(developer_user)
         target_project.add_developer(reporter_user)
 
         subject.execute(project_with_users, options)

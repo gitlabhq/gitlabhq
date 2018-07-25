@@ -1,5 +1,0 @@
----
-title: Fixes 500 error on /estimate BIG_VALUE
-merge_request: 18964
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

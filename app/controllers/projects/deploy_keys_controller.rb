@@ -35,7 +35,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def update
-    if deploy_key.update_attributes(update_params)
+    if deploy_key.update(update_params)
       flash[:notice] = 'Deploy key was successfully updated.'
       redirect_to_repository_settings(@project)
     else

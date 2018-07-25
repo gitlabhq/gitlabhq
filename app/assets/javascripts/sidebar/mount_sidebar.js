@@ -75,7 +75,6 @@ function mountLockComponent(mediator) {
 function mountParticipantsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-participants-entry-point');
 
-  // eslint-disable-next-line no-new
   if (!el) return;
 
   // eslint-disable-next-line no-new

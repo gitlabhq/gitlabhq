@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NamespacePathValidator < AbstractPathValidator
   extend Gitlab::EncodingHelper
 

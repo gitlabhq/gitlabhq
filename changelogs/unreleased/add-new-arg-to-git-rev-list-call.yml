@@ -1,5 +1,0 @@
----
-title: Improve performance of LFS integrity check
-merge_request: 19494
-author:
-type: performance

@@ -13,7 +13,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    if project.update_attributes(mirror_params)
+    if project.update(mirror_params)
       flash[:notice] = 'Mirroring settings were successfully updated.'
     else
       flash[:alert] = project.errors.full_messages.join(', ').html_safe

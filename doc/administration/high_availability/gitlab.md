@@ -122,6 +122,11 @@ need some extra configuration.
    from running on upgrade. Only the primary GitLab application server should
    handle migrations.
 
+1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on
+   the primary application server to `/etc/ssh` on all secondary servers. This
+   prevents false man-in-the-middle-attack alerts when accessing servers in your
+   High Availability cluster behind a load balancer.
+
 1. Run `sudo gitlab-ctl reconfigure` to compile the configuration.
 
 ## Troubleshooting

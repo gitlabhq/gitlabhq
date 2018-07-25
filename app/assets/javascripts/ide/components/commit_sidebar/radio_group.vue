@@ -1,6 +1,5 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
-import { __ } from '~/locale';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -32,14 +31,17 @@ export default {
       required: false,
       default: false,
     },
+    title: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     ...mapState('commit', ['commitAction']),
     ...mapGetters('commit', ['newBranchName']),
     tooltipTitle() {
-      return this.disabled
-        ? __('This option is disabled while you still have unstaged changes')
-        : '';
+      return this.disabled ? this.title : '';
     },
   },
   methods: {

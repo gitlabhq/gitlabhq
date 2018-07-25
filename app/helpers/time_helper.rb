@@ -5,9 +5,13 @@ module TimeHelper
     seconds = interval_in_seconds - minutes * 60
 
     if minutes >= 1
-      "#{pluralize(minutes, "minute")} #{pluralize(seconds, "second")}"
+      if seconds % 60 == 0
+        pluralize(minutes, "minute")
+      else
+        [pluralize(minutes, "minute"), pluralize(seconds, "second")].to_sentence
+      end
     else
-      "#{pluralize(seconds, "second")}"
+      pluralize(seconds, "second")
     end
   end
 

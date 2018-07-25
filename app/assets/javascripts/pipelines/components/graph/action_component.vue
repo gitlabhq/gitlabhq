@@ -41,7 +41,6 @@ export default {
       type: String,
       required: true,
     },
-
   },
   data() {
     return {
@@ -67,7 +66,8 @@ export default {
 
       this.isDisabled = true;
 
-      axios.post(`${this.link}.json`)
+      axios
+        .post(`${this.link}.json`)
         .then(() => {
           this.isDisabled = false;
           this.$emit('pipelineActionRequestComplete');
@@ -91,6 +91,7 @@ export default {
     class="js-ci-action btn btn-blank
 btn-transparent ci-action-icon-container ci-action-icon-wrapper"
     data-container="body"
+    data-boundary="viewport"
     @click="onClickAction"
   >
     <icon :name="actionIcon"/>

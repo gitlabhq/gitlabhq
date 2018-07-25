@@ -20,6 +20,15 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     diff_files
   end
 
+  it 'it uses a different cache key if diff line keys change' do
+    mr_diff = described_class.new(merge_request.merge_request_diff, diff_options: nil)
+    key = mr_diff.cache_key
+
+    stub_const('Gitlab::Diff::Line::SERIALIZE_KEYS', [:foo])
+
+    expect(mr_diff.cache_key).not_to eq(key)
+  end
+
   shared_examples 'initializes a DiffCollection' do
     it 'returns a valid instance of a DiffCollection' do
       expect(diff_files).to be_a(Gitlab::Git::DiffCollection)

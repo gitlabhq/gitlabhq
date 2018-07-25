@@ -45,6 +45,7 @@ module API
         present(
           paginate(::Kaminari.paginate_array(branches)),
           with: Entities::Branch,
+          current_user: current_user,
           project: user_project,
           merged_branch_names: merged_branch_names
         )
@@ -63,7 +64,7 @@ module API
         get do
           branch = find_branch!(params[:branch])
 
-          present branch, with: Entities::Branch, project: user_project
+          present branch, with: Entities::Branch, current_user: current_user, project: user_project
         end
       end
 
@@ -101,7 +102,7 @@ module API
                            end
 
         if protected_branch.valid?
-          present branch, with: Entities::Branch, project: user_project
+          present branch, with: Entities::Branch, current_user: current_user, project: user_project
         else
           render_api_error!(protected_branch.errors.full_messages, 422)
         end
@@ -121,7 +122,7 @@ module API
         protected_branch = user_project.protected_branches.find_by(name: branch.name)
         protected_branch&.destroy
 
-        present branch, with: Entities::Branch, project: user_project
+        present branch, with: Entities::Branch, current_user: current_user, project: user_project
       end
 
       desc 'Create branch' do
@@ -140,6 +141,7 @@ module API
         if result[:status] == :success
           present result[:branch],
                   with: Entities::Branch,
+                  current_user: current_user,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

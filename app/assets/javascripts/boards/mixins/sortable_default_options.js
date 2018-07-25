@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars, no-mixed-operators, comma-dangle */
 /* global DocumentTouch */
 
 import $ from 'jquery';

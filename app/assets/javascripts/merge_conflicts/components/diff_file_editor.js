@@ -1,4 +1,4 @@
-/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-new, no-param-reassign, max-len */
+/* eslint-disable comma-dangle, quote-props, no-useless-computed-key, object-shorthand, no-param-reassign, max-len */
 /* global ace */
 
 import Vue from 'vue';

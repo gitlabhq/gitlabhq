@@ -54,6 +54,139 @@ a new presenter specifically for GraphQL.
 The presenter is initialized using the object resolved by a field, and
 the context.
 
+### Connection Types
+
+GraphQL uses [cursor based
+pagination](https://graphql.org/learn/pagination/#pagination-and-edges)
+to expose collections of items. This provides the clients with a lot
+of flexibility while also allowing the backend to use different
+pagination models.
+
+To expose a collection of resources we can use a connection type. This wraps the array with default pagination fields. For example a query for project-pipelines could look like this:
+
+```
+query($project_path: ID!) {
+  project(fullPath: $project_path) {
+    pipelines(first: 2) {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          status
+        }
+      }
+    }
+  }
+}
+```
+
+This would return the first 2 pipelines of a project and related
+pagination info., ordered by descending ID. The returned data would
+look like this:
+
+```json
+{
+  "data": {
+    "project": {
+      "pipelines": {
+        "pageInfo": {
+          "hasNextPage": true,
+          "hasPreviousPage": false
+        },
+        "edges": [
+          {
+            "cursor": "Nzc=",
+            "node": {
+              "id": "77",
+              "status": "FAILED"
+            }
+          },
+          {
+            "cursor": "Njc=",
+            "node": {
+              "id": "67",
+              "status": "FAILED"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+To get the next page, the cursor of the last known element could be
+passed:
+
+```
+query($project_path: ID!) {
+  project(fullPath: $project_path) {
+    pipelines(first: 2, after: "Njc=") {
+      pageInfo {
+        hasNextPage
+        hasPreviousPage
+      }
+      edges {
+        cursor
+        node {
+          id
+          status
+        }
+      }
+    }
+  }
+}
+```
+
+### Exposing permissions for a type
+
+To expose permissions the current user has on a resource, you can call
+the `expose_permissions` passing in a separate type representing the
+permissions for the resource.
+
+For example:
+
+```ruby
+module Types
+  class MergeRequestType < BaseObject
+    expose_permissions Types::MergeRequestPermissionsType
+  end
+end
+```
+
+The permission type inherits from `BasePermissionType` which includes
+some helper methods, that allow exposing permissions as non-nullable
+booleans:
+
+```ruby
+class MergeRequestPermissionsType < BasePermissionType
+  present_using MergeRequestPresenter
+
+  graphql_name 'MergeRequestPermissions'
+
+  abilities :admin_merge_request, :update_merge_request, :create_note
+
+  ability_field :resolve_note,
+                description: 'Whether or not the user can resolve disussions on the merge request'
+  permission_field :push_to_source_branch, method: :can_push_to_source_branch?
+end
+```
+
+- **`permission_field`**: Will act the same as `graphql-ruby`'s
+  `field` method but setting a default description and type and making
+  them non-nullable. These options can still be overridden by adding
+  them as arguments.
+- **`ability_field`**: Expose an ability defined in our policies. This
+  takes behaves the same way as `permission_field` and the same
+  arguments can be overridden.
+- **`abilities`**: Allows exposing several abilities defined in our
+  policies at once. The fields for these will all have be non-nullable
+  booleans with a default description.
+
 ## Resolvers
 
 To find objects to display in a field, we can add resolvers to

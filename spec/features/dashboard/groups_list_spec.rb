@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Groups page', :js do
+describe 'Dashboard Groups page', :js do
   let(:user) { create :user }
   let(:group) { create(:group) }
   let(:nested_group) { create(:group, :nested) }
@@ -65,7 +65,11 @@ feature 'Dashboard Groups page', :js do
       fill_in 'filter', with: group.name
       wait_for_requests
 
+      expect(page).to have_content(group.name)
+      expect(page).not_to have_content(nested_group.parent.name)
+
       fill_in 'filter', with: ''
+      page.find('[name="filter"]').send_keys(:enter)
       wait_for_requests
 
       expect(page).to have_content(group.name)

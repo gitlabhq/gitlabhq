@@ -31,7 +31,7 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
 }
@@ -80,7 +80,7 @@ label {
   .form-control {
     height: 29px;
     background: $white-light;
-    font-family: $monospace_font;
+    font-family: $monospace-font;
   }
 
   .input-group-prepend .btn,
@@ -201,6 +201,10 @@ label {
 }
 
 .gl-show-field-errors {
+  .form-control {
+    height: 34px;
+  }
+
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
@@ -238,4 +242,21 @@ label {
       margin-top: 0;
     }
   }
+}
+
+.input-icon-wrapper {
+  position: relative;
+
+  .input-icon-right {
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $theme-gray-600;
+  }
+}
+
+.input-lg {
+  max-width: 320px;
+  width: 100%;
 }

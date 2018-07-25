@@ -5,7 +5,7 @@ describe 'Project deploy keys', :js do
   let(:project) { create(:project_empty_repo) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 
@@ -22,7 +22,8 @@ describe 'Project deploy keys', :js do
 
         accept_confirm { find('.ic-remove').click() }
 
-        expect(page).not_to have_selector('.fa-spinner', count: 0)
+        wait_for_requests
+
         expect(page).to have_selector('.deploy-key', count: 0)
       end
     end

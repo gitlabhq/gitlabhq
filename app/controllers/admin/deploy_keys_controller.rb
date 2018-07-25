@@ -22,7 +22,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   end
 
   def update
-    if deploy_key.update_attributes(update_params)
+    if deploy_key.update(update_params)
       flash[:notice] = 'Deploy key was successfully updated.'
       redirect_to admin_deploy_keys_path
     else
@@ -34,7 +34,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
     deploy_key.destroy
 
     respond_to do |format|
-      format.html { redirect_to admin_deploy_keys_path, status: 302 }
+      format.html { redirect_to admin_deploy_keys_path, status: :found }
       format.json { head :ok }
     end
   end

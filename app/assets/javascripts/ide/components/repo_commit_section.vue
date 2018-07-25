@@ -28,7 +28,7 @@ export default {
     ]),
     ...mapState('commit', ['commitMessage', 'submitCommitLoading']),
     ...mapGetters(['lastOpenedFile', 'hasChanges', 'someUncommitedChanges', 'activeFile']),
-    ...mapGetters('commit', ['commitButtonDisabled', 'discardDraftButtonDisabled']),
+    ...mapGetters('commit', ['discardDraftButtonDisabled']),
     showStageUnstageArea() {
       return !!(this.someUncommitedChanges || this.lastCommitMsg || !this.unusedSeal);
     },
@@ -93,23 +93,25 @@ export default {
         :title="__('Unstaged')"
         :key-prefix="$options.stageKeys.unstaged"
         :file-list="changedFiles"
-        :action-btn-text="__('Stage all')"
+        :action-btn-text="__('Stage all changes')"
         :active-file-key="activeFileKey"
+        action="stageAllChanges"
+        action-btn-icon="mobile-issue-close"
+        item-action-component="stage-button"
         class="is-first"
         icon-name="unstaged"
-        action="stageAllChanges"
-        item-action-component="stage-button"
       />
       <commit-files-list
         :title="__('Staged')"
         :key-prefix="$options.stageKeys.staged"
         :file-list="stagedFiles"
-        :action-btn-text="__('Unstage all')"
+        :action-btn-text="__('Unstage all changes')"
         :staged-list="true"
         :active-file-key="activeFileKey"
-        icon-name="staged"
         action="unstageAllChanges"
+        action-btn-icon="history"
         item-action-component="unstage-button"
+        icon-name="staged"
       />
     </template>
     <empty-state

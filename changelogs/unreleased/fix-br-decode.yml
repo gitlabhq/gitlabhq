@@ -1,5 +1,0 @@
----
-title: mergeError message has been binded using v-html directive
-merge_request: 19058
-author: Murat Dogan
-type: fixed

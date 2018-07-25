@@ -478,7 +478,7 @@ describe JiraService do
       create :appearance, favicon: fixture_file_upload('spec/fixtures/dk.png')
 
       props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
-      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/uploads/-/system/appearance/favicon/\d+/favicon_main_dk.png$}
+      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/uploads/-/system/appearance/favicon/\d+/dk.png$}
     end
   end
 end

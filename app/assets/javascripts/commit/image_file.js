@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-use-before-define, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, object-shorthand, max-len */
+/* eslint-disable func-names, wrap-iife, no-var, prefer-arrow-callback, no-else-return, consistent-return, prefer-template, quotes, one-var, one-var-declaration-per-line, no-unused-vars, no-return-assign, comma-dangle, quote-props, no-unused-expressions, no-sequences, max-len */
 
 import $ from 'jquery';
 
@@ -95,7 +95,7 @@ export default class ImageFile {
     });
     return [maxWidth, maxHeight];
   }
-  // eslint-disable-next-line
+
   views = {
     'two-up': function() {
       return $('.two-up.view .wrap', this.file).each((function(_this) {
@@ -122,7 +122,7 @@ export default class ImageFile {
       return $('.swipe.view', this.file).each((function(_this) {
         return function(index, view) {
           var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding, ref;
-          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          ref = _this.prepareFrames(view), [maxWidth, maxHeight] = ref;
           $swipeFrame = $('.swipe-frame', view);
           $swipeWrap = $('.swipe-wrap', view);
           $swipeBar = $('.swipe-bar', view);
@@ -159,7 +159,7 @@ export default class ImageFile {
       return $('.onion-skin.view', this.file).each((function(_this) {
         return function(index, view) {
           var $frame, $track, $dragger, $frameAdded, framePadding, ref, dragging = false;
-          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          ref = _this.prepareFrames(view), [maxWidth, maxHeight] = ref;
           $frame = $('.onion-skin-frame', view);
           $frameAdded = $('.frame.added', view);
           $track = $('.drag-track', view);

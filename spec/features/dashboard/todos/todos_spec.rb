@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Todos' do
+describe 'Dashboard Todos' do
   let(:user)    { create(:user) }
   let(:author)  { create(:user) }
   let(:project) { create(:project, :public) }

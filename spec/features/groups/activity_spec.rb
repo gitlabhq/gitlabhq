@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Group activity page' do
+describe 'Group activity page' do
   let(:user) { create(:group_member, :developer, user: create(:user), group: group ).user }
   let(:group) { create(:group) }
   let(:path) { activity_group_path(group) }
@@ -23,7 +23,7 @@ feature 'Group activity page' do
       let(:project) { create(:project, :public, namespace: group) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
 
         visit path
       end

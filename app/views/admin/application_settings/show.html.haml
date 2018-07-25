@@ -324,3 +324,17 @@
       = _('Configure push mirrors.')
   .settings-content
     = render partial: 'repository_mirrors_form'
+
+%section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Third party offers')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Control the display of third party offers.')
+  .settings-content
+    = render 'third_party_offers', application_setting: @application_setting
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
+

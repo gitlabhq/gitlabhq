@@ -55,7 +55,7 @@
       },
       getItems() {
         const total = this.pageInfo.totalPages;
-        const page = this.pageInfo.page;
+        const { page } = this.pageInfo;
         const items = [];
 
         if (page > 1) {

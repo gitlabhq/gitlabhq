@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issues > User uses quick actions', :js do
+describe 'Issues > User uses quick actions', :js do
   include Spec::Support::Helpers::Features::NotesHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :issue do
@@ -12,7 +12,7 @@ feature 'Issues > User uses quick actions', :js do
     let(:project) { create(:project, :public) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
@@ -196,7 +196,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:target_project) { create(:project, :public) }
 
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)
@@ -226,7 +226,9 @@ feature 'Issues > User uses quick actions', :js do
         it 'does not move the issue' do
           add_note("/move #{project_unauthorized.full_path}")
 
-          expect(page).not_to have_content 'Commands applied'
+          wait_for_requests
+
+          expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_open
         end
       end
@@ -256,7 +258,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
 
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
           gitlab_sign_out
           sign_in(user)
           visit project_issue_path(project, issue)

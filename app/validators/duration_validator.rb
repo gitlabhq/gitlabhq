@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # DurationValidator
 #
 # Validate the format conforms with ChronicDuration

@@ -1,4 +1,5 @@
 <script>
+import Icon from '~/vue_shared/components/icon.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -14,6 +15,7 @@ export default {
     LoadingButton,
     MemoryUsage,
     StatusIcon,
+    Icon,
   },
   directives: {
     tooltip,
@@ -77,67 +79,62 @@ export default {
 </script>
 
 <template>
-  <div class="mr-widget-heading deploy-heading">
+  <div class="mr-widget-heading deploy-heading append-bottom-default">
     <div class="ci-widget media">
-      <div class="ci-status-icon ci-status-icon-success">
-        <span class="js-icon-link icon-link">
-          <status-icon status="success" />
-        </span>
-      </div>
       <div class="media-body">
         <div class="deploy-body">
-          <template v-if="hasDeploymentMeta">
-            <span>
-              Deployed to
-            </span>
-            <a
-              :href="deployment.url"
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              class="deploy-link js-deploy-meta"
+          <div class="deployment-info">
+            <template v-if="hasDeploymentMeta">
+              <span>
+                Deployed to
+              </span>
+              <a
+                :href="deployment.url"
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                class="deploy-link js-deploy-meta"
+              >
+                {{ deployment.name }}
+              </a>
+            </template>
+            <span
+              v-tooltip
+              v-if="hasDeploymentTime"
+              :title="deployment.deployed_at_formatted"
+              class="js-deploy-time"
             >
-              {{ deployment.name }}
-            </a>
-          </template>
-          <template v-if="hasExternalUrls">
-            <span>
-              on
+              {{ deployTimeago }}
             </span>
+            <memory-usage
+              v-if="hasMetrics"
+              :metrics-url="deployment.metrics_url"
+              :metrics-monitoring-url="deployment.metrics_monitoring_url"
+            />
+          </div>
+          <div>
             <a
+              v-if="hasExternalUrls"
               :href="deployment.external_url"
               target="_blank"
               rel="noopener noreferrer nofollow"
-              class="deploy-link js-deploy-url"
+              class="deploy-link js-deploy-url btn btn-default btn-sm inline"
             >
-              {{ deployment.external_url_formatted }}
-              <i
-                class="fa fa-external-link"
-                aria-hidden="true"
-              >
-              </i>
+              <span>
+                View app
+                <icon name="external-link" />
+              </span>
             </a>
-          </template>
-          <span
-            v-tooltip
-            v-if="hasDeploymentTime"
-            :title="deployment.deployed_at_formatted"
-            class="js-deploy-time"
-          >
-            {{ deployTimeago }}
-          </span>
-          <loading-button
-            v-if="deployment.stop_url"
-            :loading="isStopping"
-            container-class="btn btn-default btn-sm prepend-left-default"
-            label="Stop environment"
-            @click="stopEnvironment"
-          />
+            <loading-button
+              v-if="deployment.stop_url"
+              :loading="isStopping"
+              container-class="btn btn-default btn-sm inline prepend-left-4"
+              title="Stop environment"
+              @click="stopEnvironment"
+            >
+              <icon name="stop" />
+            </loading-button>
+          </div>
         </div>
-        <memory-usage
-          v-if="hasMetrics"
-          :metrics-url="deployment.metrics_url"
-          :metrics-monitoring-url="deployment.metrics_monitoring_url"
-        />
       </div>
     </div>
   </div>

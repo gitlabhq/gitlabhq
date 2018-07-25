@@ -76,7 +76,7 @@ export default {
         .update(this.issuableType, {
           discussion_locked: locked,
         })
-        .then(() => location.reload())
+        .then(() => window.location.reload())
         .catch(() =>
           Flash(
             this.__(

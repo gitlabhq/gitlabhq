@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
+describe 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
   let(:user) do
     create(:user).tap do |user|
       user.current_sign_in_at = Time.current
@@ -13,7 +13,7 @@ feature 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  scenario 'User sees their active sessions' do
+  it 'User sees their active sessions' do
     Capybara::Session.new(:session1)
     Capybara::Session.new(:session2)
 
@@ -60,7 +60,7 @@ feature 'Profile > Active Sessions', :clean_gitlab_redis_shared_state do
     end
   end
 
-  scenario 'User can revoke a session', :js, :redis_session_store do
+  it 'User can revoke a session', :js, :redis_session_store do
     Capybara::Session.new(:session1)
     Capybara::Session.new(:session2)
 

@@ -1,17 +1,18 @@
-import flash from '~/flash';
+import { __ } from '../../../locale';
 import service from '../../services';
 import * as types from '../mutation_types';
 
 export const getMergeRequestData = (
-  { commit, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { commit, dispatch, state },
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId] || force) {
       service
-        .getProjectMergeRequestData(projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
+        .getProjectMergeRequestData(targetProjectId || projectId, mergeRequestId, {
+          render_html: true,
+        })
+        .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST, {
             projectPath: projectId,
             mergeRequestId,
@@ -21,7 +22,15 @@ export const getMergeRequestData = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request data. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request.'),
+            action: payload =>
+              dispatch('getMergeRequestData', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request not loaded ${projectId}`));
         });
     } else {
@@ -30,15 +39,14 @@ export const getMergeRequestData = (
   });
 
 export const getMergeRequestChanges = (
-  { commit, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { commit, dispatch, state },
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId].changes.length || force) {
       service
-        .getProjectMergeRequestChanges(projectId, mergeRequestId)
-        .then(res => res.data)
-        .then(data => {
+        .getProjectMergeRequestChanges(targetProjectId || projectId, mergeRequestId)
+        .then(({ data }) => {
           commit(types.SET_MERGE_REQUEST_CHANGES, {
             projectPath: projectId,
             mergeRequestId,
@@ -47,7 +55,15 @@ export const getMergeRequestChanges = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request changes. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request changes.'),
+            action: payload =>
+              dispatch('getMergeRequestChanges', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request Changes not loaded ${projectId}`));
         });
     } else {
@@ -56,13 +72,13 @@ export const getMergeRequestChanges = (
   });
 
 export const getMergeRequestVersions = (
-  { commit, state },
-  { projectId, mergeRequestId, force = false } = {},
+  { commit, dispatch, state },
+  { projectId, mergeRequestId, targetProjectId = null, force = false } = {},
 ) =>
   new Promise((resolve, reject) => {
     if (!state.projects[projectId].mergeRequests[mergeRequestId].versions.length || force) {
       service
-        .getProjectMergeRequestVersions(projectId, mergeRequestId)
+        .getProjectMergeRequestVersions(targetProjectId || projectId, mergeRequestId)
         .then(res => res.data)
         .then(data => {
           commit(types.SET_MERGE_REQUEST_VERSIONS, {
@@ -73,7 +89,15 @@ export const getMergeRequestVersions = (
           resolve(data);
         })
         .catch(() => {
-          flash('Error loading merge request versions. Please try again.');
+          dispatch('setErrorMessage', {
+            text: __('An error occured whilst loading the merge request version data.'),
+            action: payload =>
+              dispatch('getMergeRequestVersions', payload).then(() =>
+                dispatch('setErrorMessage', null),
+              ),
+            actionText: __('Please try again'),
+            actionPayload: { projectId, mergeRequestId, force },
+          });
           reject(new Error(`Merge Request Versions not loaded ${projectId}`));
         });
     } else {

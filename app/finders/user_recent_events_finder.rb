@@ -7,6 +7,7 @@
 class UserRecentEventsFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
+  include Gitlab::Allowable
 
   requires_cross_project_access
 
@@ -21,6 +22,8 @@ class UserRecentEventsFinder
   end
 
   def execute
+    return Event.none unless can?(current_user, :read_user_profile, target_user)
+
     recent_events(params[:offset] || 0)
       .joins(:project)
       .with_associations
@@ -56,7 +59,7 @@ class UserRecentEventsFinder
 
     visible = target_user
       .project_interactions
-      .where(visibility_level: [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC])
+      .where(visibility_level: Gitlab::VisibilityLevel.levels_for_user(current_user))
       .select(:id)
 
     Gitlab::SQL::Union.new([authorized, visible]).to_sql

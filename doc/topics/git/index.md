@@ -17,7 +17,7 @@ We've gathered some resources to help you to get the best from Git with GitLab.
 - [How to install Git](how_to_install_git/index.md)
 - [Start using Git on the command line](../../gitlab-basics/start-using-git.md)
 - [Command Line basic commands](../../gitlab-basics/command-line-commands.md)
-- [GitLab Git Cheat Sheet (download)](https://gitlab.com/gitlab-com/marketing/raw/master/design/print/git-cheatsheet/print-pdf/git-cheatsheet.pdf)
+- [GitLab Git Cheat Sheet (download)](https://about.gitlab.com/images/press/git-cheat-sheet.pdf)
 - Commits
   - [Revert a commit](../../user/project/merge_requests/revert_changes.md#reverting-a-commit) 
   - [Cherry-picking a commit](../../user/project/merge_requests/cherry_pick_changes.md#cherry-picking-a-commit)

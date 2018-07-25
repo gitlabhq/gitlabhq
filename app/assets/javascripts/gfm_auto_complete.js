@@ -7,6 +7,16 @@ function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
+export const defaultAutocompleteConfig = {
+  emojis: true,
+  members: true,
+  issues: true,
+  mergeRequests: true,
+  epics: true,
+  milestones: true,
+  labels: true,
+};
+
 class GfmAutoComplete {
   constructor(dataSources) {
     this.dataSources = dataSources || {};
@@ -14,14 +24,7 @@ class GfmAutoComplete {
     this.isLoadingData = {};
   }
 
-  setup(input, enableMap = {
-    emojis: true,
-    members: true,
-    issues: true,
-    milestones: true,
-    mergeRequests: true,
-    labels: true,
-  }) {
+  setup(input, enableMap = defaultAutocompleteConfig) {
     // Add GFM auto-completion to all input fields, that accept GFM input.
     this.input = input || $('.js-gfm-input');
     this.enableMap = enableMap;
@@ -77,7 +80,7 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          referencePrefix = value.params[0][0];
+          [[referencePrefix]] = value.params;
           if (/^[@%~]/.test(referencePrefix)) {
             tpl += '<%- referencePrefix %>';
           }
@@ -455,7 +458,7 @@ class GfmAutoComplete {
   static isLoading(data) {
     let dataToInspect = data;
     if (data && data.length > 0) {
-      dataToInspect = data[0];
+      [dataToInspect] = data;
     }
 
     const loadingState = GfmAutoComplete.defaultLoadingData[0];
@@ -490,6 +493,7 @@ GfmAutoComplete.atTypeMap = {
   '@': 'members',
   '#': 'issues',
   '!': 'mergeRequests',
+  '&': 'epics',
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',

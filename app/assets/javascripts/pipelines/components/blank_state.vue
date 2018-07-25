@@ -1,18 +1,18 @@
 <script>
-  export default {
-    name: 'PipelinesSvgState',
-    props: {
-      svgPath: {
-        type: String,
-        required: true,
-      },
-
-      message: {
-        type: String,
-        required: true,
-      },
+export default {
+  name: 'PipelinesSvgState',
+  props: {
+    svgPath: {
+      type: String,
+      required: true,
     },
-  };
+
+    message: {
+      type: String,
+      required: true,
+    },
+  },
+};
 </script>
 
 <template>

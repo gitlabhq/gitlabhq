@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Admin uses repository checks' do
+describe 'Admin uses repository checks' do
   include StubENV
 
   before do
@@ -8,7 +8,7 @@ feature 'Admin uses repository checks' do
     sign_in(create(:admin))
   end
 
-  scenario 'to trigger a single check' do
+  it 'to trigger a single check' do
     project = create(:project)
     visit_admin_project_page(project)
 
@@ -19,7 +19,7 @@ feature 'Admin uses repository checks' do
     expect(page).to have_content('Repository check was triggered')
   end
 
-  scenario 'to see a single failed repository check', :js do
+  it 'to see a single failed repository check', :js do
     project = create(:project)
     project.update_columns(
       last_repository_check_failed: true,
@@ -32,7 +32,7 @@ feature 'Admin uses repository checks' do
     end
   end
 
-  scenario 'to clear all repository checks', :js do
+  it 'to clear all repository checks', :js do
     visit admin_application_settings_path
 
     expect(RepositoryCheck::ClearWorker).to receive(:perform_async)

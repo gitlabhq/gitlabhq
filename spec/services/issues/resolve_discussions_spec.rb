@@ -31,10 +31,8 @@ describe Issues::ResolveDiscussions do
 
       it "only queries for the merge request once" do
         fake_finder = double
-        fake_results = double
 
-        expect(fake_finder).to receive(:execute).and_return(fake_results).exactly(1)
-        expect(fake_results).to receive(:find_by).exactly(1)
+        expect(fake_finder).to receive(:find_by).exactly(1)
         expect(MergeRequestsFinder).to receive(:new).and_return(fake_finder).exactly(1)
 
         2.times { service.merge_request_to_resolve_discussions_of }

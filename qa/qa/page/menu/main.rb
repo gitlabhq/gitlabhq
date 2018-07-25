@@ -16,7 +16,7 @@ module QA
         view 'app/views/layouts/nav/_dashboard.html.haml' do
           element :admin_area_link
           element :projects_dropdown
-          element :groups_link
+          element :groups_dropdown
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
@@ -25,7 +25,13 @@ module QA
         end
 
         def go_to_groups
-          within_top_menu { click_element :groups_link }
+          within_top_menu do
+            click_element :groups_dropdown
+          end
+
+          page.within('.qa-groups-dropdown-sidebar') do
+            click_element :your_groups_link
+          end
         end
 
         def go_to_projects
@@ -54,8 +60,9 @@ module QA
           end
         end
 
-        def has_personal_area?
-          page.has_selector?('.qa-user-avatar')
+        def has_personal_area?(wait: Capybara.default_max_wait_time)
+          # No need to wait, either we're logged-in, or not.
+          using_wait_time(wait) { page.has_selector?('.qa-user-avatar') }
         end
 
         private

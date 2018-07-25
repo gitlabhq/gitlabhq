@@ -1,5 +1,5 @@
 export default () => {
-  const { protocol, host, pathname } = location;
+  const { protocol, host, pathname } = window.location;
   const shareBtn = document.querySelector('.js-share-btn');
   const embedBtn = document.querySelector('.js-embed-btn');
   const snippetUrlArea = document.querySelector('.js-snippet-url-area');

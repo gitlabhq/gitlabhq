@@ -60,7 +60,7 @@ module Gitlab
 
       def in_memory_application_settings
         with_fallback_to_fake_application_settings do
-          @in_memory_application_settings ||= ::ApplicationSetting.build_from_defaults # rubocop:disable Gitlab/ModuleWithInstanceVariables
+          @in_memory_application_settings ||= ::ApplicationSetting.build_from_defaults
         end
       end
 

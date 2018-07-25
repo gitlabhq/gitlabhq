@@ -6,6 +6,7 @@ module Gitlab
       LEASE_TIMEOUT = 1.hour
 
       ArchiveError = Class.new(StandardError)
+      AlreadyArchivedError = Class.new(StandardError)
 
       attr_reader :job
 
@@ -81,7 +82,9 @@ module Gitlab
 
       def write(mode)
         stream = Gitlab::Ci::Trace::Stream.new do
-          if current_path
+          if trace_artifact
+            raise AlreadyArchivedError, 'Could not write to the archived trace'
+          elsif current_path
             File.open(current_path, mode)
           elsif Feature.enabled?('ci_enable_live_trace')
             Gitlab::Ci::Trace::ChunkedIO.new(job)
@@ -98,14 +101,17 @@ module Gitlab
       end
 
       def erase!
-        trace_artifact&.destroy
+        ##
+        # Erase the archived trace
+        trace_artifact&.destroy!
 
-        paths.each do |trace_path|
-          FileUtils.rm(trace_path, force: true)
-        end
-
-        job.trace_chunks.fast_destroy_all
-        job.erase_old_trace!
+        ##
+        # Erase the live trace
+        job.trace_chunks.fast_destroy_all # Destroy chunks of a live trace
+        FileUtils.rm_f(current_path) if current_path # Remove a trace file of a live trace
+        job.erase_old_trace! if job.has_old_trace? # Remove a trace in database of a live trace
+      ensure
+        @current_path = nil
       end
 
       def archive!
@@ -117,7 +123,7 @@ module Gitlab
       private
 
       def unsafe_archive!
-        raise ArchiveError, 'Already archived' if trace_artifact
+        raise AlreadyArchivedError, 'Could not archive again' if trace_artifact
         raise ArchiveError, 'Job is not finished yet' unless job.complete?
 
         if job.trace_chunks.any?

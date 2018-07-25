@@ -1,5 +1,0 @@
----
-title: Fix some sources of excessive query counts when calculating notification recipients
-merge_request:
-author:
-type: performance

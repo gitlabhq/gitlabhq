@@ -1,5 +1,0 @@
----
-title: Removes outdated `g t` shortcut for TODO in favor of `Shift+T`
-merge_request: 19002
-author:
-type: removed

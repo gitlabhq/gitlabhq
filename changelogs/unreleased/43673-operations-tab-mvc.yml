@@ -1,5 +1,0 @@
----
-title: Move project sidebar sub-entries 'Environments' and 'Kubernetes' from 'CI/CD' to a new entry 'Operations'
-merge_request: 18941
-author:
-type: changed

@@ -5,8 +5,11 @@ describe Issues::MoveService do
   let(:author) { create(:user) }
   let(:title) { 'Some issue' }
   let(:description) { 'Some issue description' }
-  let(:old_project) { create(:project) }
-  let(:new_project) { create(:project) }
+  let(:group) { create(:group, :private) }
+  let(:sub_group_1) { create(:group, :private, parent: group) }
+  let(:sub_group_2) { create(:group, :private, parent: group) }
+  let(:old_project) { create(:project, namespace: sub_group_1) }
+  let(:new_project) { create(:project, namespace: sub_group_2) }
   let(:milestone1) { create(:milestone, project_id: old_project.id, title: 'v9.0') }
 
   let(:old_issue) do
@@ -14,7 +17,7 @@ describe Issues::MoveService do
                    project: old_project, author: author, milestone: milestone1)
   end
 
-  let(:move_service) do
+  subject(:move_service) do
     described_class.new(old_project, user)
   end
 
@@ -99,6 +102,23 @@ describe Issues::MoveService do
               expect(new_issue.reload.milestone).to eq(group_milestone_2)
             end
           end
+        end
+      end
+
+      context 'issue with group labels', :nested_groups do
+        it 'assigns group labels to new issue' do
+          label = create(:group_label, group: group)
+          label_issue = create(:labeled_issue, description: description, project: old_project,
+                                               milestone: milestone1, labels: [label])
+          old_project.add_reporter(user)
+          new_project.add_reporter(user)
+
+          new_issue = move_service.execute(label_issue, new_project)
+
+          expect(new_issue).to have_attributes(
+            project: new_project,
+            labels: include(label)
+          )
         end
       end
 

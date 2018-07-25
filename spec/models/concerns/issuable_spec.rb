@@ -549,7 +549,7 @@ describe Issuable do
     let(:project) { create(:project, namespace: group) }
     let(:other_project) { create(:project) }
     let(:owner) { create(:owner) }
-    let(:master) { create(:user) }
+    let(:maintainer) { create(:user) }
     let(:reporter) { create(:user) }
     let(:guest) { create(:user) }
 
@@ -558,7 +558,7 @@ describe Issuable do
 
     before do
       group.add_owner(owner)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.add_reporter(reporter)
       project.add_guest(guest)
       project.add_guest(contributor)
@@ -570,8 +570,8 @@ describe Issuable do
     let(:merged_mr_other_project) { create(:merge_request, :merged, author: first_time_contributor, target_project: other_project, source_project: other_project) }
 
     context "for merge requests" do
-      it "is false for MASTER" do
-        mr = create(:merge_request, author: master, target_project: project, source_project: project)
+      it "is false for MAINTAINER" do
+        mr = create(:merge_request, author: maintainer, target_project: project, source_project: project)
 
         expect(mr).not_to be_first_contribution
       end

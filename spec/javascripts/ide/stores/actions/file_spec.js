@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import * as actions from '~/ide/stores/actions/file';
 import * as types from '~/ide/stores/mutation_types';
@@ -9,11 +11,16 @@ import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
 describe('IDE store file actions', () => {
+  let mock;
+
   beforeEach(() => {
+    mock = new MockAdapter(axios);
+
     spyOn(router, 'push');
   });
 
   afterEach(() => {
+    mock.restore();
     resetStore(store);
   });
 
@@ -166,12 +173,12 @@ describe('IDE store file actions', () => {
     });
 
     it('resets location.hash for line highlighting', done => {
-      location.hash = 'test';
+      window.location.hash = 'test';
 
       store
         .dispatch('setFileActive', localFile.path)
         .then(() => {
-          expect(location.hash).not.toBe('test');
+          expect(window.location.hash).not.toBe('test');
 
           done();
         })
@@ -183,94 +190,125 @@ describe('IDE store file actions', () => {
     let localFile;
 
     beforeEach(() => {
-      spyOn(service, 'getFileData').and.returnValue(
-        Promise.resolve({
-          headers: {
-            'page-title': 'testing getFileData',
-          },
-          json: () =>
-            Promise.resolve({
-              blame_path: 'blame_path',
-              commits_path: 'commits_path',
-              permalink: 'permalink',
-              raw_path: 'raw_path',
-              binary: false,
-              html: '123',
-              render_error: '',
-            }),
-        }),
-      );
+      spyOn(service, 'getFileData').and.callThrough();
 
       localFile = file(`newCreate-${Math.random()}`);
-      localFile.url = 'getFileDataURL';
+      localFile.url = `${gl.TEST_HOST}/getFileDataURL`;
       store.state.entries[localFile.path] = localFile;
     });
 
-    it('calls the service', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path })
-        .then(() => {
-          expect(service.getFileData).toHaveBeenCalledWith('getFileDataURL');
+    describe('success', () => {
+      beforeEach(() => {
+        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).replyOnce(
+          200,
+          {
+            blame_path: 'blame_path',
+            commits_path: 'commits_path',
+            permalink: 'permalink',
+            raw_path: 'raw_path',
+            binary: false,
+            html: '123',
+            render_error: '',
+          },
+          {
+            'page-title': 'testing getFileData',
+          },
+        );
+      });
 
-          done();
-        })
-        .catch(done.fail);
+      it('calls the service', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(service.getFileData).toHaveBeenCalledWith(`${gl.TEST_HOST}/getFileDataURL`);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sets the file data', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(localFile.blamePath).toBe('blame_path');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sets document title', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(document.title).toBe('testing getFileData');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sets the file as active', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(localFile.active).toBeTruthy();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('sets the file not as active if we pass makeFileActive false', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
+          .then(() => {
+            expect(localFile.active).toBeFalsy();
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('adds the file to open files', done => {
+        store
+          .dispatch('getFileData', { path: localFile.path })
+          .then(() => {
+            expect(store.state.openFiles.length).toBe(1);
+            expect(store.state.openFiles[0].name).toBe(localFile.name);
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
 
-    it('sets the file data', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path })
-        .then(() => {
-          expect(localFile.blamePath).toBe('blame_path');
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(`${gl.TEST_HOST}/getFileDataURL`).networkError();
+      });
 
-          done();
-        })
-        .catch(done.fail);
-    });
+      it('dispatches error action', done => {
+        const dispatch = jasmine.createSpy('dispatch');
 
-    it('sets document title', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path })
-        .then(() => {
-          expect(document.title).toBe('testing getFileData');
+        actions
+          .getFileData({ state: store.state, commit() {}, dispatch }, { path: localFile.path })
+          .then(() => {
+            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+              text: 'An error occured whilst loading the file.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: {
+                path: localFile.path,
+                makeFileActive: true,
+              },
+            });
 
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets the file as active', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path })
-        .then(() => {
-          expect(localFile.active).toBeTruthy();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('sets the file not as active if we pass makeFileActive false', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path, makeFileActive: false })
-        .then(() => {
-          expect(localFile.active).toBeFalsy();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-
-    it('adds the file to open files', done => {
-      store
-        .dispatch('getFileData', { path: localFile.path })
-        .then(() => {
-          expect(store.state.openFiles.length).toBe(1);
-          expect(store.state.openFiles[0].name).toBe(localFile.name);
-
-          done();
-        })
-        .catch(done.fail);
+            done();
+          })
+          .catch(done.fail);
+      });
     });
   });
 
@@ -278,48 +316,84 @@ describe('IDE store file actions', () => {
     let tmpFile;
 
     beforeEach(() => {
-      spyOn(service, 'getRawFileData').and.returnValue(Promise.resolve('raw'));
+      spyOn(service, 'getRawFileData').and.callThrough();
 
       tmpFile = file('tmpFile');
       store.state.entries[tmpFile.path] = tmpFile;
     });
 
-    it('calls getRawFileData service method', done => {
-      store
-        .dispatch('getRawFileData', { path: tmpFile.path })
-        .then(() => {
-          expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
+    describe('success', () => {
+      beforeEach(() => {
+        mock.onGet(/(.*)/).replyOnce(200, 'raw');
+      });
 
-          done();
-        })
-        .catch(done.fail);
+      it('calls getRawFileData service method', done => {
+        store
+          .dispatch('getRawFileData', { path: tmpFile.path })
+          .then(() => {
+            expect(service.getRawFileData).toHaveBeenCalledWith(tmpFile);
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('updates file raw data', done => {
+        store
+          .dispatch('getRawFileData', { path: tmpFile.path })
+          .then(() => {
+            expect(tmpFile.raw).toBe('raw');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+
+      it('calls also getBaseRawFileData service method', done => {
+        spyOn(service, 'getBaseRawFileData').and.returnValue(Promise.resolve('baseraw'));
+
+        tmpFile.mrChange = { new_file: false };
+
+        store
+          .dispatch('getRawFileData', { path: tmpFile.path, baseSha: 'SHA' })
+          .then(() => {
+            expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
+            expect(tmpFile.baseRaw).toBe('baseraw');
+
+            done();
+          })
+          .catch(done.fail);
+      });
     });
 
-    it('updates file raw data', done => {
-      store
-        .dispatch('getRawFileData', { path: tmpFile.path })
-        .then(() => {
-          expect(tmpFile.raw).toBe('raw');
+    describe('error', () => {
+      beforeEach(() => {
+        mock.onGet(/(.*)/).networkError();
+      });
 
-          done();
-        })
-        .catch(done.fail);
-    });
+      it('dispatches error action', done => {
+        const dispatch = jasmine.createSpy('dispatch');
 
-    it('calls also getBaseRawFileData service method', done => {
-      spyOn(service, 'getBaseRawFileData').and.returnValue(Promise.resolve('baseraw'));
+        actions
+          .getRawFileData(
+            { state: store.state, commit() {}, dispatch },
+            { path: tmpFile.path, baseSha: tmpFile.baseSha },
+          )
+          .then(done.fail)
+          .catch(() => {
+            expect(dispatch).toHaveBeenCalledWith('setErrorMessage', {
+              text: 'An error occured whilst loading the file content.',
+              action: jasmine.any(Function),
+              actionText: 'Please try again',
+              actionPayload: {
+                path: tmpFile.path,
+                baseSha: tmpFile.baseSha,
+              },
+            });
 
-      tmpFile.mrChange = { new_file: false };
-
-      store
-        .dispatch('getRawFileData', { path: tmpFile.path, baseSha: 'SHA' })
-        .then(() => {
-          expect(service.getBaseRawFileData).toHaveBeenCalledWith(tmpFile, 'SHA');
-          expect(tmpFile.baseRaw).toBe('baseraw');
-
-          done();
-        })
-        .catch(done.fail);
+            done();
+          });
+      });
     });
   });
 
@@ -527,10 +601,7 @@ describe('IDE store file actions', () => {
         actions.unstageChange,
         'path',
         store.state,
-        [
-          { type: types.UNSTAGE_CHANGE, payload: 'path' },
-          { type: types.SET_LAST_COMMIT_MSG, payload: '' },
-        ],
+        [{ type: types.UNSTAGE_CHANGE, payload: 'path' }],
         [],
         done,
       );

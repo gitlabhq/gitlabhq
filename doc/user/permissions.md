@@ -25,6 +25,9 @@ See our [product handbook on permissions](https://about.gitlab.com/handbook/prod
 
 ## Project members permissions
 
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
+
 The following table depicts the various user permission levels in a project.
 
 | Action                                | Guest   | Reporter   | Developer   |Maintainer| Owner  |
@@ -51,6 +54,9 @@ The following table depicts the various user permission levels in a project.
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
+| Manage related issues **[STARTER]**   |         | ✓          | ✓           | ✓        | ✓      |
+| Lock issue discussions                |         | ✓          | ✓           | ✓        | ✓      |
+| Lock merge request discussions        |         |            | ✓           | ✓        | ✓      |
 | Create new environments               |         |            | ✓           | ✓        | ✓      |
 | Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
@@ -76,11 +82,12 @@ The following table depicts the various user permission levels in a project.
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
-| Manage runners                        |         |            |             | ✓        | ✓      |
+| Manage Runners                        |         |            |             | ✓        | ✓      |
 | Manage job triggers                   |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
-| Manage pages                          |         |            |             | ✓        | ✓      |
-| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
+| Remove GitLab Pages                   |         |            |             |          | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
@@ -90,6 +97,7 @@ The following table depicts the various user permission levels in a project.
 | Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
+| View project Audit Events   |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -127,16 +135,11 @@ and drag issues around. Read though the
 [documentation on Issue Boards permissions](project/issue_board.md#permissions)
 to learn more.
 
-### File Locking permissions
-
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
+### File Locking permissions **[PREMIUM]**
 
 The user that locks a file or directory is the only one that can edit and push their changes back to the repository where the locked objects are located.
 
 Read through the documentation on [permissions for File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html#permissions-on-file-locking) to learn more.
-
-File Locking is available in
-[GitLab Premium](https://about.gitlab.com/products/) only.
 
 ### Confidential Issues permissions
 
@@ -145,6 +148,9 @@ as well as by guest users that create a confidential issue. To learn more,
 read through the documentation on [permissions and access to confidential issues](project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues).
 
 ## Group members permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 Any user can remove themselves from a group, unless they are the last Owner of
 the group. The following table depicts the various user permission levels in a
@@ -160,6 +166,12 @@ group.
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
+| View private group epic **[ULTIMATE]** |         | ✓        | ✓         | ✓      | ✓     |
+| View internal group epic **[ULTIMATE]** | ✓       | ✓        | ✓         | ✓      | ✓     |
+| View public group epic **[ULTIMATE]**   | ✓       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit group epic **[ULTIMATE]**  |         | ✓        | ✓         | ✓      | ✓     |
+| Delete group epic **[ULTIMATE]**       |         |          |           |        | ✓     |
+| View group Audit Events  |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
@@ -194,7 +206,31 @@ will find the option to flag the user as external.
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
 
+## Auditor users **[PREMIUM ONLY]**
+
+>[Introduced][ee-998] in [GitLab Premium][eep] 8.17.
+
+Auditor users are given read-only access to all projects, groups, and other
+resources on the GitLab instance.
+
+An Auditor user should be able to access all projects and groups of a GitLab instance
+with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
+
+[Read more about Auditor users.](https://docs.gitlab.com/ee/administration/auditor_users.html)
+
+## Project features
+
+Project features like wiki and issues can be hidden from users depending on
+which visibility level you select on project settings.
+
+- Disabled: disabled for everyone
+- Only team members: only team members will see even if your project is public or internal
+- Everyone with access: everyone can see depending on your project visibility level
+
 ## GitLab CI/CD permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 GitLab CI/CD permissions rely on the role the user has in GitLab. There are four
 permission levels in total:
@@ -222,6 +258,9 @@ instance and project. In addition, all admins can use the admin interface under
 | Admin interface                       |                 |             |          | ✓      |
 
 ### Job permissions
+
+NOTE: **Note:**
+In GitLab 11.0, the Master role was renamed to Maintainer.
 
 >**Note:**
 GitLab 8.12 has a completely redesigned job permissions system.
@@ -263,16 +302,6 @@ for details about the pipelines security model.
 Since GitLab 8.15, LDAP user permissions can now be manually overridden by an admin user.
 Read through the documentation on [LDAP users permissions](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/index.html#updating-user-permissions-new-feature) to learn more.
 
-## Auditor users permissions
-
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
-
-An Auditor user should be able to access all projects and groups of a GitLab instance
-with the permissions described on the documentation on [auditor users permissions](https://docs.gitlab.com/ee/administration/auditor_users.html#permissions-and-restrictions-of-an-auditor-user).
-
-Auditor users are available in [GitLab Premium](https://about.gitlab.com/products/)
-only.
-
 [^1]: On public and internal projects, all users are able to perform this action
 [^2]: Guest users can only view the confidential issues they created themselves
 [^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
@@ -283,3 +312,5 @@ only.
 
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
+[ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998
+[eep]: https://about.gitlab.com/pricing/

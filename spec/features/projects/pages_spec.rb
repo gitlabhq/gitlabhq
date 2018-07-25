@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Pages' do
-  given(:project) { create(:project) }
-  given(:user) { create(:user) }
-  given(:role) { :master }
+describe 'Pages' do
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
+  let(:role) { :maintainer }
 
-  background do
+  before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
     project.add_role(user, role)
@@ -14,7 +14,7 @@ feature 'Pages' do
   end
 
   shared_examples 'no pages deployed' do
-    scenario 'does not see anything to destroy' do
+    it 'does not see anything to destroy' do
       visit project_pages_path(project)
 
       expect(page).to have_content('Configure pages')
@@ -24,16 +24,16 @@ feature 'Pages' do
   end
 
   context 'when user is the owner' do
-    background do
+    before do
       project.namespace.update(owner: user)
     end
 
     context 'when pages deployed' do
-      background do
+      before do
         allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
       end
 
-      scenario 'renders Access pages' do
+      it 'renders Access pages' do
         visit project_pages_path(project)
 
         expect(page).to have_content('Access pages')
@@ -48,7 +48,7 @@ feature 'Pages' do
       end
 
       context 'when pages are exposed on external HTTP address', :http_pages_enabled do
-        given(:project) { create(:project, pages_https_only: false) }
+        let(:project) { create(:project, pages_https_only: false) }
 
         shared_examples 'adds new domain' do
           it 'adds new domain' do
@@ -210,11 +210,11 @@ feature 'Pages' do
 
   context 'when the user is not the owner' do
     context 'when pages deployed' do
-      background do
+      before do
         allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
       end
 
-      scenario 'sees "Only the project owner can remove pages" text' do
+      it 'sees "Only the project owner can remove pages" text' do
         visit project_pages_path(project)
 
         expect(page).to have_text('Only the project owner can remove pages')
@@ -225,13 +225,13 @@ feature 'Pages' do
   end
 
   describe 'HTTPS settings', :js, :https_pages_enabled do
-    background do
+    before do
       project.namespace.update(owner: user)
 
       allow_any_instance_of(Project).to receive(:pages_deployed?) { true }
     end
 
-    scenario 'tries to change the setting' do
+    it 'tries to change the setting' do
       visit project_pages_path(project)
       expect(page).to have_content("Force domains with SSL certificates to use HTTPS")
 
@@ -251,7 +251,7 @@ feature 'Pages' do
         allow(service).to receive(:execute).and_return(status: :error)
       end
 
-      scenario 'tries to change the setting' do
+      it 'tries to change the setting' do
         visit project_pages_path(project)
 
         uncheck :project_pages_https_only
@@ -263,13 +263,13 @@ feature 'Pages' do
     end
 
     context 'non-HTTPS domain exists' do
-      given(:project) { create(:project, pages_https_only: false) }
+      let(:project) { create(:project, pages_https_only: false) }
 
       before do
         create(:pages_domain, :without_key, :without_certificate, project: project)
       end
 
-      scenario 'the setting is disabled' do
+      it 'the setting is disabled' do
         visit project_pages_path(project)
 
         expect(page).to have_field(:project_pages_https_only, disabled: true)
@@ -278,7 +278,7 @@ feature 'Pages' do
     end
 
     context 'HTTPS pages are disabled', :https_pages_disabled do
-      scenario 'the setting is unavailable' do
+      it 'the setting is unavailable' do
         visit project_pages_path(project)
 
         expect(page).not_to have_field(:project_pages_https_only)

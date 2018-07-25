@@ -23,6 +23,10 @@ module InternalRedirect
     nil
   end
 
+  def sanitize_redirect(url_or_path)
+    safe_redirect_path(url_or_path) || safe_redirect_path_for_url(url_or_path)
+  end
+
   def host_allowed?(uri)
     uri.host == request.host &&
       uri.port == request.port

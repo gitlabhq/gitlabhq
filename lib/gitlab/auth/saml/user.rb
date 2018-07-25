@@ -34,6 +34,10 @@ module Gitlab
           gl_user.changed? || gl_user.identities.any?(&:changed?)
         end
 
+        def bypass_two_factor?
+          saml_config.upstream_two_factor_authn_contexts&.include?(auth_hash.authn_context)
+        end
+
         protected
 
         def saml_config

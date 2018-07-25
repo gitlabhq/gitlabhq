@@ -75,8 +75,7 @@ export default {
       // Stop polling
       this.poll.stop();
       // Update the table
-      return this.getPipelines()
-        .then(() => this.poll.restart());
+      return this.getPipelines().then(() => this.poll.restart());
     },
     fetchPipelines() {
       if (!this.isMakingRequest) {
@@ -86,9 +85,10 @@ export default {
       }
     },
     getPipelines() {
-      return this.service.getPipelines(this.requestData)
+      return this.service
+        .getPipelines(this.requestData)
         .then(response => this.successCallback(response))
-        .catch((error) => this.errorCallback(error));
+        .catch(error => this.errorCallback(error));
     },
     setCommonData(pipelines) {
       this.store.storePipelines(pipelines);
@@ -118,7 +118,8 @@ export default {
       }
     },
     postAction(endpoint) {
-      this.service.postAction(endpoint)
+      this.service
+        .postAction(endpoint)
         .then(() => this.fetchPipelines())
         .catch(() => Flash(__('An error occurred while making the request.')));
     },

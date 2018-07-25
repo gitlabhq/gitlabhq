@@ -45,4 +45,9 @@
   &.status-box-upcoming {
     background: $gl-text-color-secondary;
   }
+
+  &.status-box-milestone {
+    color: $gl-text-color;
+    background: $gray-darker;
+  }
 }

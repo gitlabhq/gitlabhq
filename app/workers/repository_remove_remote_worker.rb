@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RepositoryRemoveRemoteWorker
   include ApplicationWorker
   include ExclusiveLeaseGuard

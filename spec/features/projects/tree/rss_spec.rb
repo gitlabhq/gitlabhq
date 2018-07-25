@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project Tree RSS' do
+describe 'Project Tree RSS' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
   let(:path) { project_tree_path(project, :master) }

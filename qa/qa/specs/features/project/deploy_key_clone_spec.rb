@@ -1,7 +1,7 @@
 require 'digest/sha1'
 
 module QA
-  feature 'cloning code using a deploy key', :core, :docker do
+  describe 'cloning code using a deploy key', :core, :docker do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
@@ -39,7 +39,7 @@ module QA
     ]
 
     keys.each do |(key_class, bits)|
-      scenario "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
+      it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
         key = key_class.new(*bits)
 
         login
@@ -75,7 +75,7 @@ module QA
               - docker
         YAML
 
-        Factory::Repository::Push.fabricate! do |resource|
+        Factory::Repository::ProjectPush.fabricate! do |resource|
           resource.project = @project
           resource.file_name = '.gitlab-ci.yml'
           resource.commit_message = 'Add .gitlab-ci.yml'

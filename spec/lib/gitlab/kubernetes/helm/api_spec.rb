@@ -7,13 +7,7 @@ describe Gitlab::Kubernetes::Helm::Api do
   let(:namespace) { Gitlab::Kubernetes::Namespace.new(gitlab_namespace, client) }
   let(:application) { create(:clusters_applications_prometheus) }
 
-  let(:command) do
-    Gitlab::Kubernetes::Helm::InstallCommand.new(
-      application.name,
-      chart: application.chart,
-      values: application.values
-    )
-  end
+  let(:command) { application.install_command }
 
   subject { helm }
 

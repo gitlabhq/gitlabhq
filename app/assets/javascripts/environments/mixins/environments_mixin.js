@@ -40,6 +40,7 @@ export default {
       scope: getParameterByName('scope') || 'available',
       page: getParameterByName('page') || '1',
       requestData: {},
+      environmentInStopModal: {},
     };
   },
 
@@ -85,7 +86,7 @@ export default {
       Flash(s__('Environments|An error occurred while fetching the environments.'));
     },
 
-    postAction(endpoint) {
+    postAction({ endpoint, errorMessage }) {
       if (!this.isMakingRequest) {
         this.isLoading = true;
 
@@ -93,7 +94,7 @@ export default {
           .then(() => this.fetchEnvironments())
           .catch(() => {
             this.isLoading = false;
-            Flash(s__('Environments|An error occurred while making the request.'));
+            Flash(errorMessage || s__('Environments|An error occurred while making the request.'));
           });
       }
     },
@@ -106,6 +107,15 @@ export default {
         .catch(this.errorCallback);
     },
 
+    updateStopModal(environment) {
+      this.environmentInStopModal = environment;
+    },
+
+    stopEnvironment(environment) {
+      const endpoint = environment.stop_path;
+      const errorMessage = s__('Environments|An error occurred while stopping the environment, please try again');
+      this.postAction({ endpoint, errorMessage });
+    },
   },
 
   computed: {
@@ -162,9 +172,13 @@ export default {
     });
 
     eventHub.$on('postAction', this.postAction);
+    eventHub.$on('requestStopEnvironment', this.updateStopModal);
+    eventHub.$on('stopEnvironment', this.stopEnvironment);
   },
 
-  beforeDestroyed() {
-    eventHub.$off('postAction');
+  beforeDestroy() {
+    eventHub.$off('postAction', this.postAction);
+    eventHub.$off('requestStopEnvironment', this.updateStopModal);
+    eventHub.$off('stopEnvironment', this.stopEnvironment);
   },
 };

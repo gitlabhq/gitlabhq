@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectWiki
   include Gitlab::ShellAdapter
   include Storage::LegacyProjectWiki
@@ -9,6 +11,7 @@ class ProjectWiki
   }.freeze unless defined?(MARKUPS)
 
   CouldNotCreateWikiError = Class.new(StandardError)
+  SIDEBAR = '_sidebar'
 
   # Returns a string describing what went wrong after
   # an operation fails.
@@ -20,7 +23,6 @@ class ProjectWiki
     @user = user
   end
 
-  delegate :empty?, to: :pages
   delegate :repository_storage, :hashed_storage?, to: :project
 
   def path
@@ -74,9 +76,13 @@ class ProjectWiki
     !!find_page('home')
   end
 
+  def empty?
+    pages(limit: 1).empty?
+  end
+
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages(limit: nil)
+  def pages(limit: 0)
     wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
   end
 
@@ -95,6 +101,10 @@ class ProjectWiki
     end
   end
 
+  def find_sidebar(version = nil)
+    find_page(SIDEBAR, version)
+  end
+
   def find_file(name, version = nil)
     wiki.file(name, version)
   end
@@ -107,7 +117,7 @@ class ProjectWiki
     update_project_activity
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
-    return false
+    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)

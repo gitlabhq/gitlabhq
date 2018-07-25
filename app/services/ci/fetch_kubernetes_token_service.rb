@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # TODO:
 # Almost components in this class were copied from app/models/project_services/kubernetes_service.rb

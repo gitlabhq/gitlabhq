@@ -20,14 +20,6 @@ module QA
           element :squash_checkbox
         end
 
-        def rebase!
-          click_element :mr_rebase_button
-
-          wait(reload: false) do
-            has_text?('Fast-forward merge without a merge commit')
-          end
-        end
-
         def fast_forward_possible?
           !has_text?('Fast-forward merge is not possible')
         end
@@ -38,7 +30,35 @@ module QA
           has_selector?('.accept-merge-request')
         end
 
+        def rebase!
+          # The rebase button is disabled on load
+          wait do
+            has_css?(element_selector_css(:mr_rebase_button))
+          end
+
+          # The rebase button is enabled via JS
+          wait(reload: false) do
+            !first(element_selector_css(:mr_rebase_button)).disabled?
+          end
+
+          click_element :mr_rebase_button
+
+          wait(reload: false) do
+            has_text?('Fast-forward merge without a merge commit')
+          end
+        end
+
         def merge!
+          # The merge button is disabled on load
+          wait do
+            has_css?(element_selector_css(:merge_button))
+          end
+
+          # The merge button is enabled via JS
+          wait(reload: false) do
+            !first(element_selector_css(:merge_button)).disabled?
+          end
+
           click_element :merge_button
 
           wait(reload: false) do
@@ -47,8 +67,14 @@ module QA
         end
 
         def mark_to_squash
-          wait(reload: true) do
+          # The squash checkbox is disabled on load
+          wait do
             has_css?(element_selector_css(:squash_checkbox))
+          end
+
+          # The squash checkbox is enabled via JS
+          wait(reload: false) do
+            !first(element_selector_css(:squash_checkbox)).disabled?
           end
 
           click_element :squash_checkbox

@@ -5,7 +5,7 @@ export default () => {
 
   [].slice.call(document.querySelectorAll('.js-material-changer')).forEach((el) => {
     el.addEventListener('click', (e) => {
-      const target = e.target;
+      const { target } = e;
 
       e.preventDefault();
 

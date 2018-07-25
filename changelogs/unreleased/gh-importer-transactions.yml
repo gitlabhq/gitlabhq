@@ -1,5 +1,0 @@
----
-title: Move PR IO operations out of a transaction
-merge_request:
-author:
-type: performance

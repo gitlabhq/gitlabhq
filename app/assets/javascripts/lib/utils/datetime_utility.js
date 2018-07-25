@@ -1,11 +1,10 @@
 import $ from 'jquery';
 import timeago from 'timeago.js';
-import dateFormat from 'vendor/date.format';
+import dateFormat from 'dateformat';
 import { pluralize } from './text_utility';
 import { languageCode, s__ } from '../../locale';
 
 window.timeago = timeago;
-window.dateFormat = dateFormat;
 
 /**
  * Returns i18n month names array.
@@ -143,7 +142,8 @@ export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
     if (setTimeago) {
       // Recreate with custom template
       $(el).tooltip({
-        template: '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
+        template:
+          '<div class="tooltip local-timeago" role="tooltip"><div class="arrow"></div><div class="tooltip-inner"></div></div>',
       });
     }
 
@@ -275,10 +275,8 @@ export const totalDaysInMonth = date => {
  *
  * @param {Array} quarter
  */
-export const totalDaysInQuarter = quarter => quarter.reduce(
-  (acc, month) => acc + totalDaysInMonth(month),
-  0,
-);
+export const totalDaysInQuarter = quarter =>
+  quarter.reduce((acc, month) => acc + totalDaysInMonth(month), 0);
 
 /**
  * Returns list of Dates referring to Sundays of the month
@@ -333,14 +331,8 @@ export const getTimeframeWindowFrom = (startDate, length) => {
   // Iterate and set date for the size of length
   // and push date reference to timeframe list
   const timeframe = new Array(length)
-                      .fill()
-                      .map(
-                        (val, i) => new Date(
-                          startDate.getFullYear(),
-                          startDate.getMonth() + i,
-                          1,
-                        ),
-                      );
+    .fill()
+    .map((val, i) => new Date(startDate.getFullYear(), startDate.getMonth() + i, 1));
 
   // Change date of last timeframe item to last date of the month
   timeframe[length - 1].setDate(totalDaysInMonth(timeframe[length - 1]));
@@ -362,14 +354,15 @@ export const getTimeframeWindowFrom = (startDate, length) => {
  * @param {Date} date
  * @param {Array} quarter
  */
-export const dayInQuarter = (date, quarter) => quarter.reduce((acc, month) => {
-  if (date.getMonth() > month.getMonth()) {
-    return acc + totalDaysInMonth(month);
-  } else if (date.getMonth() === month.getMonth()) {
-    return acc + date.getDate();
-  }
-  return acc + 0;
-}, 0);
+export const dayInQuarter = (date, quarter) =>
+  quarter.reduce((acc, month) => {
+    if (date.getMonth() > month.getMonth()) {
+      return acc + totalDaysInMonth(month);
+    } else if (date.getMonth() === month.getMonth()) {
+      return acc + date.getDate();
+    }
+    return acc + 0;
+  }, 0);
 
 window.gl = window.gl || {};
 window.gl.utils = {

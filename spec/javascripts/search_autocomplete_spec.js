@@ -1,4 +1,4 @@
-/* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
+/* eslint-disable max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, object-shorthand, prefer-template, vars-on-top, max-len */
 
 import $ from 'jquery';
 import '~/gl_dropdown';

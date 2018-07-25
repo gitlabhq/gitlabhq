@@ -427,7 +427,7 @@ describe('Pipelines', () => {
 
   describe('methods', () => {
     beforeEach(() => {
-      spyOn(history, 'pushState').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
     });
 
     describe('updateContent', () => {

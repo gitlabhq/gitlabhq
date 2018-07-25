@@ -51,7 +51,7 @@ describe AccessRequestsFinder do
 
     context 'when current user can see access requests' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         group.add_owner(user)
       end
 
@@ -78,7 +78,7 @@ describe AccessRequestsFinder do
 
     context 'when current user can see access requests' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         group.add_owner(user)
       end
 

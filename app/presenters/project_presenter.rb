@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::UrlHelper
@@ -27,6 +29,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_buttons(show_auto_devops_callout:)
     [
+      readme_anchor_data,
       changelog_anchor_data,
       license_anchor_data,
       contribution_guide_anchor_data,
@@ -212,11 +215,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def readme_anchor_data
-    if current_user && can_current_user_push_to_default_branch? && repository.readme.blank?
+    if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
       OpenStruct.new(enabled: false,
                      label: _('Add Readme'),
                      link: add_readme_path)
-    elsif repository.readme.present?
+    elsif repository.readme
       OpenStruct.new(enabled: true,
                      label: _('Readme'),
                      link: default_view != 'readme' ? readme_path : '#readme')

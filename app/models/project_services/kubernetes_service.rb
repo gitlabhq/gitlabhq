@@ -240,7 +240,7 @@ class KubernetesService < DeploymentService
   end
 
   def deprecation_validation
-    return if active_changed?(from: true, to: false)
+    return if active_changed?(from: true, to: false) || (new_record? && !active?)
 
     if deprecated?
       errors[:base] << deprecation_message

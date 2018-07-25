@@ -4,14 +4,14 @@ describe Gitlab::ImportExport::Importer do
   let(:user) { create(:user) }
   let(:test_path) { "#{Dir.tmpdir}/importer_spec" }
   let(:shared) { project.import_export_shared }
-  let(:project) { create(:project, import_source: File.join(test_path, 'exported-project.gz')) }
+  let(:project) { create(:project, import_source: File.join(test_path, 'test_project_export.tar.gz')) }
 
   subject(:importer) { described_class.new(project) }
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(test_path)
     FileUtils.mkdir_p(shared.export_path)
-    FileUtils.cp(Rails.root.join('spec', 'fixtures', 'exported-project.gz'), test_path)
+    FileUtils.cp(Rails.root.join('spec/features/projects/import_export/test_project_export.tar.gz'), test_path)
     allow(subject).to receive(:remove_import_file)
   end
 

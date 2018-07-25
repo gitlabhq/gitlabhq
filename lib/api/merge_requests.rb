@@ -72,8 +72,8 @@ module API
       end
 
       params :merge_requests_params do
-        optional :state, type: String, values: %w[opened closed merged all], default: 'all',
-                         desc: 'Return opened, closed, merged, or all merge requests'
+        optional :state, type: String, values: %w[opened closed locked merged all], default: 'all',
+                         desc: 'Return opened, closed, locked, merged, or all merge requests'
         optional :order_by, type: String, values: %w[created_at updated_at], default: 'created_at',
                             desc: 'Return merge requests ordered by `created_at` or `updated_at` fields.'
         optional :sort, type: String, values: %w[asc desc], default: 'desc',
@@ -232,6 +232,7 @@ module API
 
       params do
         requires :merge_request_iid, type: Integer, desc: 'The IID of a merge request'
+        optional :render_html, type: Boolean, desc: 'Returns the description and title rendered HTML'
       end
       desc 'Get a single merge request' do
         success Entities::MergeRequest
@@ -239,7 +240,7 @@ module API
       get ':id/merge_requests/:merge_request_iid' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
 
-        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project
+        present merge_request, with: Entities::MergeRequest, current_user: current_user, project: user_project, render_html: params[:render_html]
       end
 
       desc 'Get the participants of a merge request' do

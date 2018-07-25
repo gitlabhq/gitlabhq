@@ -44,49 +44,6 @@ describe '6_validations' do
     end
   end
 
-  describe 'validate_storages_paths' do
-    context 'with correct settings' do
-      before do
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/d'))
-      end
-
-      it 'passes through' do
-        expect { validate_storages_paths }.not_to raise_error
-      end
-    end
-
-    context 'with nested storage paths' do
-      before do
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c/d'))
-      end
-
-      it 'throws an error' do
-        expect { validate_storages_paths }.to raise_error('bar is a nested path of foo. Nested paths are not supported for repository storages. Please fix this in your gitlab.yml before starting GitLab.')
-      end
-    end
-
-    context 'with similar but un-nested storage paths' do
-      before do
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c'), 'bar' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/paths/a/b/c2'))
-      end
-
-      it 'passes through' do
-        expect { validate_storages_paths }.not_to raise_error
-      end
-    end
-
-    describe 'inaccessible storage' do
-      before do
-        mock_storages('foo' => Gitlab::GitalyClient::StorageSettings.new('path' => 'tmp/tests/a/path/that/does/not/exist'))
-      end
-
-      it 'passes through with a warning' do
-        expect(Rails.logger).to receive(:error)
-        expect { validate_storages_paths }.not_to raise_error
-      end
-    end
-  end
-
   def mock_storages(storages)
     allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
   end

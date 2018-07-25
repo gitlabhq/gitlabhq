@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User squashes a merge request', :js do
+describe 'User squashes a merge request', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:source_branch) { 'csv' }
@@ -46,7 +46,7 @@ feature 'User squashes a merge request', :js do
     # Prevent source branch from being removed so we can use be_merged_to_root_ref
     # method to check if squash was performed or not
     allow_any_instance_of(MergeRequest).to receive(:force_remove_source_branch?).and_return(false)
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in user
   end

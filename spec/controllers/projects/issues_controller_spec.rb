@@ -695,7 +695,7 @@ describe Projects::IssuesController do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in user
       end
 
@@ -869,7 +869,7 @@ describe Projects::IssuesController do
       def post_spam
         admin = create(:admin)
         create(:user_agent_detail, subject: issue)
-        project.add_master(admin)
+        project.add_maintainer(admin)
         sign_in(admin)
         post :mark_as_spam, {
           namespace_id: project.namespace,
@@ -990,7 +990,7 @@ describe Projects::IssuesController do
       it 'returns discussion json' do
         get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
 
-        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion individual_note resolvable resolved])
+        expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
       end
 
       context 'with cross-reference system note', :request_store do

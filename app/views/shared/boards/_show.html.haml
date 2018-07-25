@@ -2,19 +2,20 @@
 - group = local_assigns.fetch(:group, false)
 - @no_breadcrumb_container = true
 - @no_container = true
-- @content_class = "issue-boards-content"
-- breadcrumb_title "Issue Board"
-- page_title "Boards"
+- @content_class = "issue-boards-content js-focus-mode-board"
+- breadcrumb_title _("Issue Boards")
+- page_title _("Boards")
 
 - content_for :page_specific_javascripts do
 
   -# haml-lint:disable InlineJavaScript
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
+  %script#js-board-promotion{ type: "text/x-template" }= render_if_exists "shared/promotions/promote_issue_board"
 
 #board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
   .d-none.d-sm-none.d-md-block
-    = render 'shared/issuable/search_bar', type: :boards
+    = render 'shared/issuable/search_bar', type: :boards, board: board
 
   .boards-list
     .boards-app-loading.text-center{ "v-if" => "loading" }

@@ -17,7 +17,6 @@ export default class OAuthRememberMe {
     $('#remember_me', this.container).on('click', this.toggleRememberMe);
   }
 
-  // eslint-disable-next-line class-methods-use-this
   toggleRememberMe(event) {
     const rememberMe = $(event.target).is(':checked');
 

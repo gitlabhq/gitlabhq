@@ -30,5 +30,12 @@ sudo gitlab-rake gitlab:import_export:data
 bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
 
+In order to enable Object Storage on the Export, you can use the [feature flag][feature-flags]:
+
+```
+import_export_object_storage
+``` 
+
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
+[feature-flags]: https://docs.gitlab.com/ee/api/features.html
 [tmp]: ../../development/shared_files.md

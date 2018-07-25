@@ -321,10 +321,17 @@
   }
 
   &.activities {
+    display: flex;
     border-bottom: 1px solid $border-color;
+    overflow: hidden;
 
     .nav-links {
       border-bottom: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      display: block;
+      overflow: visible;
     }
   }
 }
@@ -347,7 +354,7 @@
 
 .empty-state .project-item-select-holder.btn-group {
   float: none;
-  display: inline-block;
+  justify-content: center;
 
   .btn {
     // overrides styles applied to plain `.empty-state .btn`

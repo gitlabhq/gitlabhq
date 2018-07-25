@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Projects::ClustersController do
   include AccessMatchersForController
+  include GoogleApi::CloudPlatformHelpers
 
   set(:project) { create(:project) }
 
@@ -10,7 +11,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -60,7 +61,7 @@ describe Projects::ClustersController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -73,6 +74,231 @@ describe Projects::ClustersController do
     end
   end
 
+  describe 'GET new' do
+    describe 'functionality for new cluster' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context 'when omniauth has been configured' do
+        let(:key) { 'secret-key' }
+        let(:session_key_for_redirect_uri) do
+          GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
+        end
+
+        before do
+          allow(SecureRandom).to receive(:hex).and_return(key)
+        end
+
+        it 'has authorize_url' do
+          go
+
+          expect(assigns(:authorize_url)).to include(key)
+          expect(session[session_key_for_redirect_uri]).to eq(new_project_cluster_path(project))
+        end
+      end
+
+      context 'when omniauth has not configured' do
+        before do
+          stub_omniauth_setting(providers: [])
+        end
+
+        it 'does not have authorize_url' do
+          go
+
+          expect(assigns(:authorize_url)).to be_nil
+        end
+      end
+
+      context 'when access token is valid' do
+        before do
+          stub_google_api_validate_token
+        end
+
+        it 'has new object' do
+          go
+
+          expect(assigns(:gcp_cluster)).to be_an_instance_of(Clusters::Cluster)
+        end
+      end
+
+      context 'when access token is expired' do
+        before do
+          stub_google_api_expired_token
+        end
+
+        it { expect(@valid_gcp_token).to be_falsey }
+      end
+
+      context 'when access token is not stored in session' do
+        it { expect(@valid_gcp_token).to be_falsey }
+      end
+    end
+
+    describe 'functionality for existing cluster' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      it 'has new object' do
+        go
+
+        expect(assigns(:user_cluster)).to be_an_instance_of(Clusters::Cluster)
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      get :new, namespace_id: project.namespace, project_id: project
+    end
+  end
+
+  describe 'POST create for new cluster' do
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          provider_gcp_attributes: {
+            gcp_project_id: 'gcp-project-12345'
+          }
+        }
+      }
+    end
+
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context 'when access token is valid' do
+        before do
+          stub_google_api_validate_token
+        end
+
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Providers::Gcp.count }
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_gcp
+          expect(project.clusters.first).to be_kubernetes
+        end
+      end
+
+      context 'when access token is expired' do
+        before do
+          stub_google_api_expired_token
+        end
+
+        it { expect(@valid_gcp_token).to be_falsey }
+      end
+
+      context 'when access token is not stored in session' do
+        it { expect(@valid_gcp_token).to be_falsey }
+      end
+    end
+
+    describe 'security' do
+      before do
+        allow_any_instance_of(described_class)
+        .to receive(:token_in_session).and_return('token')
+        allow_any_instance_of(described_class)
+        .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+        allow_any_instance_of(GoogleApi::CloudPlatform::Client)
+          .to receive(:projects_zones_clusters_create) do
+          OpenStruct.new(
+            self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
+            status: 'RUNNING'
+          )
+        end
+
+        allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+      end
+
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      post :create_gcp, params.merge(namespace_id: project.namespace, project_id: project)
+    end
+  end
+
+  describe 'POST create for existing cluster' do
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          platform_kubernetes_attributes: {
+            api_url: 'http://my-url',
+            token: 'test',
+            namespace: 'aaa'
+          }
+        }
+      }
+    end
+
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_maintainer(user)
+        sign_in(user)
+      end
+
+      context 'when creates a cluster' do
+        it 'creates a new cluster' do
+          expect(ClusterProvisionWorker).to receive(:perform_async)
+          expect { go }.to change { Clusters::Cluster.count }
+            .and change { Clusters::Platforms::Kubernetes.count }
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_user
+          expect(project.clusters.first).to be_kubernetes
+        end
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      post :create_user, params.merge(namespace_id: project.namespace, project_id: project)
+    end
+  end
+
   describe 'GET status' do
     let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
@@ -80,7 +306,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -101,7 +327,7 @@ describe Projects::ClustersController do
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -124,7 +350,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -139,7 +365,7 @@ describe Projects::ClustersController do
     describe 'security' do
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -160,7 +386,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -211,7 +437,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -299,7 +525,7 @@ describe Projects::ClustersController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }
@@ -326,7 +552,7 @@ describe Projects::ClustersController do
       let(:user) { create(:user) }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -379,7 +605,7 @@ describe Projects::ClustersController do
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
-      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_allowed_for(:maintainer).of(project) }
       it { expect { go }.to be_denied_for(:developer).of(project) }
       it { expect { go }.to be_denied_for(:reporter).of(project) }
       it { expect { go }.to be_denied_for(:guest).of(project) }

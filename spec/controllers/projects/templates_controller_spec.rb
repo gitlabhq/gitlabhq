@@ -13,7 +13,7 @@ describe Projects::TemplatesController do
   end
 
   before do
-    project.add_user(user, Gitlab::Access::MASTER)
+    project.add_user(user, Gitlab::Access::MAINTAINER)
     project.repository.create_file(user, file_path_1, 'something valid',
       message: 'test 3', branch_name: 'master')
   end

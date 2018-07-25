@@ -41,7 +41,7 @@ class JwtController < ApplicationController
                    "You must use a personal access token with 'api' scope for Git over HTTP.\n" \
                    "You can generate one at #{profile_personal_access_tokens_url}" }
       ]
-    }, status: 401
+    }, status: :unauthorized
   end
 
   def render_unauthorized
@@ -50,7 +50,7 @@ class JwtController < ApplicationController
         { code: 'UNAUTHORIZED',
           message: 'HTTP Basic: Access denied' }
       ]
-    }, status: 401
+    }, status: :unauthorized
   end
 
   def auth_params

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ExpireJobCacheWorker
   include ApplicationWorker
   include PipelineQueue

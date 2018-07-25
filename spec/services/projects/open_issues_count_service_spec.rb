@@ -50,5 +50,40 @@ describe Projects::OpenIssuesCountService do
         end
       end
     end
+
+    context '#refresh_cache', :use_clean_rails_memory_store_caching do
+      let(:subject) { described_class.new(project) }
+
+      before do
+        create(:issue, :opened, project: project)
+        create(:issue, :opened, project: project)
+        create(:issue, :opened, confidential: true, project: project)
+      end
+
+      context 'when cache is empty' do
+        it 'refreshes cache keys correctly' do
+          subject.refresh_cache
+
+          expect(Rails.cache.read(subject.cache_key(described_class::PUBLIC_COUNT_KEY))).to eq(2)
+          expect(Rails.cache.read(subject.cache_key(described_class::TOTAL_COUNT_KEY))).to eq(3)
+        end
+      end
+
+      context 'when cache is outdated' do
+        before do
+          subject.refresh_cache
+        end
+
+        it 'refreshes cache keys correctly' do
+          create(:issue, :opened, project: project)
+          create(:issue, :opened, confidential: true, project: project)
+
+          subject.refresh_cache
+
+          expect(Rails.cache.read(subject.cache_key(described_class::PUBLIC_COUNT_KEY))).to eq(3)
+          expect(Rails.cache.read(subject.cache_key(described_class::TOTAL_COUNT_KEY))).to eq(5)
+        end
+      end
+    end
   end
 end

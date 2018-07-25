@@ -36,6 +36,7 @@
   }
 
   .table-holder {
+    overflow: unset;
     width: 100%;
   }
 
@@ -298,6 +299,21 @@
         right: -7px;
         top: 10px;
         border-bottom: 2px solid $border-color;
+      }
+    }
+
+    //delete when all pipelines are updated to new size
+    &.mr-widget-pipeline-stages {
+      + .stage-container {
+        margin-left: 4px;
+      }
+
+      &:not(:last-child) {
+        &::after {
+          width: 4px;
+          right: -4px;
+          top: 11px;
+        }
       }
     }
   }
@@ -1000,7 +1016,7 @@ button.mini-pipeline-graph-dropdown-toggle {
   /**
    * Center dropdown menu in mini graph
    */
-  &.dropdown-menu {
+  .dropdown &.dropdown-menu {
     transform: translate(-80%, 0);
 
     @media (min-width: map-get($grid-breakpoints, md)) {

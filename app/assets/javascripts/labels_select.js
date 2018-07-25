@@ -1,4 +1,4 @@
-/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
 
@@ -56,7 +56,7 @@ export default class LabelsSelect {
         .map(function () {
           return this.value;
         }).get();
-      const handleClick = options.handleClick;
+      const { handleClick } = options;
 
       $sidebarLabelTooltip.tooltip();
 
@@ -215,7 +215,7 @@ export default class LabelsSelect {
           }
           else {
             if (label.color != null) {
-              color = label.color[0];
+              [color] = label.color;
             }
           }
           if (color) {
@@ -243,7 +243,8 @@ export default class LabelsSelect {
           var $dropdownParent = $dropdown.parent();
           var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
-          var title = selected.title;
+
+          var { title } = selected;
           var selectedLabels = this.selected;
 
           if ($dropdownInputField.length && $dropdownInputField.val().length) {
@@ -382,7 +383,7 @@ export default class LabelsSelect {
               }));
             }
             else {
-              var labels = gl.issueBoards.BoardsStore.detail.issue.labels;
+              var { labels } = gl.issueBoards.BoardsStore.detail.issue;
               labels = labels.filter(function (selectedLabel) {
                 return selectedLabel.id !== label.id;
               });

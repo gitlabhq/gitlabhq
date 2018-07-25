@@ -44,6 +44,8 @@ export default {
   methods: {
     ...mapActions(['closeFile', 'updateDelayViewerUpdated', 'openPendingTab']),
     clickFile(tab) {
+      if (tab.active) return;
+
       this.updateDelayViewerUpdated(true);
 
       if (tab.pending) {

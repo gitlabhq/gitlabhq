@@ -2,7 +2,7 @@
 - breadcrumb_title "Dashboard"
 
 %div{ class: container_class }
-  = render_if_exists "admin/licenses/breakdown", license: @license
+  = render_if_exists 'admin/licenses/breakdown', license: @license
 
   .admin-dashboard.prepend-top-default
     .row
@@ -22,7 +22,7 @@
               %h3.text-center
                 Users:
                 = approximate_count_with_delimiters(@counts, User)
-            = render_if_exists 'users_statistics'
+            = render_if_exists 'admin/dashboard/users_statistics'
             %hr
             = link_to 'New user', new_admin_user_path, class: "btn btn-new"
       .col-sm-4
@@ -91,17 +91,17 @@
               %span.light.float-right
                 = boolean_to_icon gravatar_enabled?
             - omniauth = "OmniAuth"
-            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab.config.omniauth.enabled ? "on" : "off") }
+            %p{ "aria-label" => "#{omniauth}: status " + (Gitlab::Auth.omniauth_enabled? ? "on" : "off") }
               = omniauth
               %span.light.float-right
-                = boolean_to_icon Gitlab.config.omniauth.enabled
+                = boolean_to_icon Gitlab::Auth.omniauth_enabled?
             - reply_email = "Reply by email"
             %p{ "aria-label" => "#{reply_email}: status " + (Gitlab::IncomingEmail.enabled? ? "on" : "off") }
               = reply_email
               %span.light.float-right
                 = boolean_to_icon Gitlab::IncomingEmail.enabled?
 
-            = render_if_exists 'elastic_and_geo'
+            = render_if_exists 'admin/dashboard/elastic_and_geo'
 
             - container_reg = "Container Registry"
             %p{ "aria-label" => "#{container_reg}: status " + (Gitlab.config.registry.enabled ? "on" : "off") }
@@ -151,7 +151,7 @@
                 %span.float-right
                   = Gitlab::Pages::VERSION
 
-            = render_if_exists 'geo'
+            = render_if_exists 'admin/dashboard/geo'
 
             %p
               Ruby

@@ -1,22 +1,27 @@
 import Vue from 'vue';
-import store from '~/notes/stores';
-import issueDiscussion from '~/notes/components/noteable_discussion.vue';
+import createStore from '~/notes/stores';
+import noteableDiscussion from '~/notes/components/noteable_discussion.vue';
+import '~/behaviors/markdown/render_gfm';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
-describe('issue_discussion component', () => {
+const discussionWithTwoUnresolvedNotes = 'merge_requests/resolved_diff_discussion.json';
+
+describe('noteable_discussion component', () => {
+  const Component = Vue.extend(noteableDiscussion);
+  let store;
   let vm;
 
-  beforeEach(() => {
-    const Component = Vue.extend(issueDiscussion);
+  preloadFixtures(discussionWithTwoUnresolvedNotes);
 
+  beforeEach(() => {
+    window.mrTabs = {};
+    store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({
       store,
-      propsData: {
-        note: discussionMock,
-      },
+      propsData: { discussion: discussionMock },
     }).$mount();
   });
 
@@ -42,10 +47,15 @@ describe('issue_discussion component', () => {
 
     it('should toggle reply form', done => {
       vm.$el.querySelector('.js-vue-discussion-reply').click();
+
       Vue.nextTick(() => {
-        expect(vm.$refs.noteForm).not.toBeNull();
         expect(vm.isReplying).toEqual(true);
-        done();
+
+        // There is a watcher for `isReplying` which will init autosave in the next tick
+        Vue.nextTick(() => {
+          expect(vm.$refs.noteForm).not.toBeNull();
+          done();
+        });
       });
     });
 
@@ -53,6 +63,74 @@ describe('issue_discussion component', () => {
       expect(
         vm.$el.querySelector('*[data-original-title="Jump to next unresolved discussion"]'),
       ).toBeNull();
+    });
+  });
+
+  describe('computed', () => {
+    describe('hasMultipleUnresolvedDiscussions', () => {
+      it('is false if there are no unresolved discussions', done => {
+        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('is false if there is one unresolved discussion', done => {
+        spyOnProperty(vm, 'unresolvedDiscussions').and.returnValue([discussionMock]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+
+      it('is true if there are two unresolved discussions', done => {
+        const discussion = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+        discussion.notes[0].resolved = false;
+        vm.$store.dispatch('setInitialNotes', [discussion, discussion]);
+
+        Vue.nextTick()
+          .then(() => {
+            expect(vm.hasMultipleUnresolvedDiscussions).toBe(true);
+          })
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+  });
+
+  describe('methods', () => {
+    describe('jumpToNextDiscussion', () => {
+      it('expands next unresolved discussion', done => {
+        const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
+        discussion2.resolved = false;
+        discussion2.id = 'next'; // prepare this for being identified as next one (to be jumped to)
+        vm.$store.dispatch('setInitialNotes', [discussionMock, discussion2]);
+        window.mrTabs.currentAction = 'show';
+
+        Vue.nextTick()
+          .then(() => {
+            spyOn(vm, 'expandDiscussion').and.stub();
+
+            const nextDiscussionId = discussion2.id;
+
+            setFixtures(`
+              <div class="discussion" data-discussion-id="${nextDiscussionId}"></div>
+            `);
+
+            vm.jumpToNextDiscussion();
+
+            expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
+          })
+          .then(done)
+          .catch(done.fail);
+      });
     });
   });
 });

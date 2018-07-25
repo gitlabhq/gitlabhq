@@ -1,5 +1,0 @@
----
-title: Eliminate cached N+1 queries for projects in Issue API
-merge_request:
-author:
-type: performance

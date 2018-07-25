@@ -28,6 +28,7 @@ By default, QueryRecorder will ignore cached queries in the count. However, it m
 all queries to avoid introducing an N+1 query that may be masked by the statement cache. To do this,
 pass the `skip_cached` variable to `QueryRecorder` and use the `exceed_all_query_limit` matcher:
 
+```
 it "avoids N+1 database queries" do
   control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) { visit_some_page }.count
   create_list(:issue, 5)

@@ -45,6 +45,21 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       expect(fakeTab.click).toHaveBeenCalled();
     });
 
+    it('clicks the first tab if value in local storage is bad', () => {
+      createMemoizer().saveData('#bogus');
+      const fakeTab = {
+        click: () => {},
+      };
+      spyOn(document, 'querySelector').and.callFake(selector => (selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab));
+      spyOn(fakeTab, 'click');
+
+      memo.bootstrap();
+
+      // verify that triggers click on stored selector and fallback
+      expect(document.querySelector.calls.allArgs()).toEqual([['ul.new-session-tabs a[href="#bogus"]'], ['ul.new-session-tabs a']]);
+      expect(fakeTab.click).toHaveBeenCalled();
+    });
+
     it('saves last selected tab on change', () => {
       createMemoizer();
 

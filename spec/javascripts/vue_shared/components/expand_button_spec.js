@@ -19,7 +19,7 @@ describe('expand button', () => {
   });
 
   it('renders a collpased button', () => {
-    expect(vm.$el.textContent.trim()).toEqual('...');
+    expect(vm.$children[0].iconTestClass).toEqual('ic-ellipsis_h');
   });
 
   it('hides expander on click', done => {

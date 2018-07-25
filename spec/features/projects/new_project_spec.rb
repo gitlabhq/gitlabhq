@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'New project' do
+describe 'New project' do
   include Select2Helper
 
   let(:user) { create(:admin) }
@@ -25,6 +25,22 @@ feature 'New project' do
     expect(page).to have_link('GitLab export')
   end
 
+  describe 'manifest import option' do
+    before do
+      visit new_project_path
+
+      find('#import-project-tab').click
+    end
+
+    context 'when using postgres', :postgresql do
+      it { expect(page).to have_link('Manifest file') }
+    end
+
+    context 'when using mysql', :mysql do
+      it { expect(page).not_to have_link('Manifest file') }
+    end
+  end
+
   context 'Visibility level selector', :js do
     Gitlab::VisibilityLevel.options.each do |key, level|
       it "sets selector to #{key}" do
@@ -45,6 +61,15 @@ feature 'New project' do
           expect(find_field("project_visibility_level_#{level}")).to be_checked
         end
       end
+    end
+  end
+
+  context 'Readme selector' do
+    it 'shows the initialize with Readme checkbox' do
+      visit new_project_path
+
+      expect(page).to have_css('input#project_initialize_with_readme')
+      expect(page).to have_content('Initialize repository with a README')
     end
   end
 
@@ -85,7 +110,7 @@ feature 'New project' do
       let(:subgroup) { create(:group, parent: group) }
 
       before do
-        group.add_master(user)
+        group.add_maintainer(user)
         visit new_project_path(namespace_id: subgroup.id)
       end
 
@@ -190,6 +215,17 @@ feature 'New project' do
       it 'shows import instructions' do
         expect(page).to have_content('Import projects from Google Code')
         expect(current_path).to eq new_import_google_code_path
+      end
+    end
+
+    context 'from manifest file', :postgresql do
+      before do
+        first('.import_manifest').click
+      end
+
+      it 'shows import instructions' do
+        expect(page).to have_content('Manifest file import')
+        expect(current_path).to eq new_import_manifest_path
       end
     end
   end

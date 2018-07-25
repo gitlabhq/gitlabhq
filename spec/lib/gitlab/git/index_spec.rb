@@ -5,7 +5,7 @@ describe Gitlab::Git::Index, seed_helper: true do
   let(:index) { described_class.new(repository) }
 
   before do
-    index.read_tree(repository.lookup('master').tree)
+    index.read_tree(lookup('master').tree)
   end
 
   around do |example|
@@ -30,7 +30,7 @@ describe Gitlab::Git::Index, seed_helper: true do
         entry = index.get(options[:file_path])
 
         expect(entry).not_to be_nil
-        expect(repository.lookup(entry[:oid]).content).to eq(options[:content])
+        expect(lookup(entry[:oid]).content).to eq(options[:content])
       end
     end
 
@@ -54,7 +54,7 @@ describe Gitlab::Git::Index, seed_helper: true do
         index.create(options)
 
         entry = index.get(options[:file_path])
-        expect(repository.lookup(entry[:oid]).content).to eq(Base64.decode64(options[:content]))
+        expect(lookup(entry[:oid]).content).to eq(Base64.decode64(options[:content]))
       end
     end
 
@@ -68,7 +68,7 @@ describe Gitlab::Git::Index, seed_helper: true do
         index.create(options)
 
         entry = index.get(options[:file_path])
-        expect(repository.lookup(entry[:oid]).content).to eq("Hello,\nWorld")
+        expect(lookup(entry[:oid]).content).to eq("Hello,\nWorld")
       end
     end
   end
@@ -135,7 +135,7 @@ describe Gitlab::Git::Index, seed_helper: true do
 
         entry = index.get(options[:file_path])
 
-        expect(repository.lookup(entry[:oid]).content).to eq(options[:content])
+        expect(lookup(entry[:oid]).content).to eq(options[:content])
       end
 
       it 'preserves file mode' do
@@ -190,7 +190,7 @@ describe Gitlab::Git::Index, seed_helper: true do
         entry = index.get(options[:file_path])
 
         expect(entry).not_to be_nil
-        expect(repository.lookup(entry[:oid]).content).to eq(options[:content])
+        expect(lookup(entry[:oid]).content).to eq(options[:content])
       end
 
       it 'preserves file mode' do
@@ -231,5 +231,9 @@ describe Gitlab::Git::Index, seed_helper: true do
         expect(entry).to be_nil
       end
     end
+  end
+
+  def lookup(revision)
+    repository.rugged.rev_parse(revision)
   end
 end

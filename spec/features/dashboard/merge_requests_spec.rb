@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Dashboard Merge Requests' do
+describe 'Dashboard Merge Requests' do
   include Spec::Support::Helpers::Features::SortingHelpers
   include FilterItemSelectHelper
   include ProjectForksHelper
@@ -12,7 +12,7 @@ feature 'Dashboard Merge Requests' do
   let(:forked_project) { fork_project(public_project, current_user, repository: true) }
 
   before do
-    project.add_master(current_user)
+    project.add_maintainer(current_user)
     sign_in(current_user)
   end
 
@@ -20,7 +20,7 @@ feature 'Dashboard Merge Requests' do
     let(:project_with_disabled_merge_requests) { create(:project, :merge_requests_disabled) }
 
     before do
-      project_with_disabled_merge_requests.add_master(current_user)
+      project_with_disabled_merge_requests.add_maintainer(current_user)
       visit merge_requests_dashboard_path
     end
 

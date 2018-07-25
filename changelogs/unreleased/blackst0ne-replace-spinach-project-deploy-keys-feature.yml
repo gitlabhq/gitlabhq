@@ -1,5 +1,0 @@
----
-title: 'Replace the `project/deploy_keys.feature` spinach test with an rspec analog'
-merge_request: 18796
-author: '@blackst0ne'
-type: other

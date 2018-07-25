@@ -263,4 +263,23 @@ describe('Multi-file editor library', () => {
       expect(instance.isDiffEditorType).toBe(false);
     });
   });
+
+  it('sets quickSuggestions to false when language is markdown', () => {
+    instance.createInstance(holder);
+
+    spyOn(instance.instance, 'updateOptions').and.callThrough();
+
+    const model = instance.createModel({
+      ...file(),
+      key: 'index.md',
+      path: 'index.md',
+    });
+
+    instance.attachModel(model);
+
+    expect(instance.instance.updateOptions).toHaveBeenCalledWith({
+      readOnly: false,
+      quickSuggestions: false,
+    });
+  });
 });

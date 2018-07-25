@@ -2,7 +2,9 @@
   = page_specific_javascript_tag('lib/ace.js')
 
 .snippet-form-holder
-  = form_for @snippet, url: url, html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" } do |f|
+  = form_for @snippet, url: url,
+             html: { class: "snippet-form js-requires-input js-quick-submit common-note-form" },
+             data: { markdown_version: @snippet.cached_markdown_version } do |f|
     = form_errors(@snippet)
 
     .form-group.row

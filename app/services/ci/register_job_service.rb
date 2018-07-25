@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
@@ -13,9 +15,9 @@ module Ci
       @runner = runner
     end
 
-    def execute
+    def execute(params = {})
       builds =
-        if runner.shared?
+        if runner.instance_type?
           builds_for_shared_runner
         elsif runner.group_type?
           builds_for_group_runner
@@ -25,14 +27,12 @@ module Ci
 
       valid = true
 
-      if Feature.enabled?('ci_job_request_with_tags_matcher')
-        # pick builds that does not have other tags than runner's one
-        builds = builds.matches_tag_ids(runner.tags.ids)
+      # pick builds that does not have other tags than runner's one
+      builds = builds.matches_tag_ids(runner.tags.ids)
 
-        # pick builds that have at least one tag
-        unless runner.run_untagged?
-          builds = builds.with_any_tags
-        end
+      # pick builds that have at least one tag
+      unless runner.run_untagged?
+        builds = builds.with_any_tags
       end
 
       builds.find do |build|
@@ -43,6 +43,8 @@ module Ci
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
           begin
             build.runner_id = runner.id
+            build.runner_session_attributes = params[:session] if params[:session].present?
+
             build.run!
             register_success(build)
 
@@ -101,7 +103,7 @@ module Ci
     end
 
     def running_builds_for_shared_runners
-      Ci::Build.running.where(runner: Ci::Runner.shared)
+      Ci::Build.running.where(runner: Ci::Runner.instance_type)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
@@ -117,7 +119,7 @@ module Ci
     end
 
     def register_success(job)
-      labels = { shared_runner: runner.shared?,
+      labels = { shared_runner: runner.instance_type?,
                  jobs_running_for_project: jobs_running_for_project(job) }
 
       job_queue_duration_seconds.observe(labels, Time.now - job.queued_at) unless job.queued_at.nil?
@@ -125,10 +127,10 @@ module Ci
     end
 
     def jobs_running_for_project(job)
-      return '+Inf' unless runner.shared?
+      return '+Inf' unless runner.instance_type?
 
       # excluding currently started job
-      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.shared)
+      running_jobs_count = job.project.builds.running.where(runner: Ci::Runner.instance_type)
                               .limit(JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET + 1).count - 1
       running_jobs_count < JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET ? running_jobs_count : "#{JOBS_RUNNING_FOR_PROJECT_MAX_BUCKET}+"
     end

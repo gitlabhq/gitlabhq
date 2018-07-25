@@ -5,19 +5,49 @@ describe 'Dashboard Issues Calendar Feed'  do
     let!(:user)     { create(:user, email: 'private1@example.com', public_email: 'public1@example.com') }
     let!(:assignee) { create(:user, email: 'private2@example.com', public_email: 'public2@example.com') }
     let!(:project) { create(:project) }
+    let(:milestone) { create(:milestone, project_id: project.id, title: 'v1.0') }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context 'when authenticated' do
-      it 'renders calendar feed' do
-        sign_in user
-        visit issues_dashboard_path(:ics)
+      context 'with no referer' do
+        it 'renders calendar feed' do
+          sign_in user
+          visit issues_dashboard_path(:ics,
+                                      due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                      sort: 'closest_future_date')
 
-        expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
-        expect(body).to have_text('BEGIN:VCALENDAR')
+          expect(response_headers['Content-Type']).to have_content('text/calendar')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
+      end
+
+      context 'with GitLab as the referer' do
+        it 'renders calendar feed as text/plain' do
+          sign_in user
+          page.driver.header('Referer', issues_dashboard_url(host: Settings.gitlab.base_url))
+          visit issues_dashboard_path(:ics,
+                                      due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                      sort: 'closest_future_date')
+
+          expect(response_headers['Content-Type']).to have_content('text/plain')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
+      end
+
+      context 'when filtered by milestone' do
+        it 'renders calendar feed' do
+          sign_in user
+          visit issues_dashboard_path(:ics,
+                                      due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                      sort: 'closest_future_date',
+                                      milestone_title: milestone.title)
+
+          expect(response_headers['Content-Type']).to have_content('text/calendar')
+          expect(body).to have_text('BEGIN:VCALENDAR')
+        end
       end
     end
 
@@ -25,20 +55,24 @@ describe 'Dashboard Issues Calendar Feed'  do
       it 'renders calendar feed' do
         personal_access_token = create(:personal_access_token, user: user)
 
-        visit issues_dashboard_path(:ics, private_token: personal_access_token.token)
+        visit issues_dashboard_path(:ics,
+                                    due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                    sort: 'closest_future_date',
+                                    private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end
 
     context 'when authenticated via feed token' do
       it 'renders calendar feed' do
-        visit issues_dashboard_path(:ics, feed_token: user.feed_token)
+        visit issues_dashboard_path(:ics,
+                                    due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                    sort: 'closest_future_date',
+                                    feed_token: user.feed_token)
 
         expect(response_headers['Content-Type']).to have_content('text/calendar')
-        expect(response_headers['Content-Disposition']).to have_content('inline')
         expect(body).to have_text('BEGIN:VCALENDAR')
       end
     end
@@ -50,7 +84,10 @@ describe 'Dashboard Issues Calendar Feed'  do
       end
 
       it 'renders issue fields' do
-        visit issues_dashboard_path(:ics, feed_token: user.feed_token)
+        visit issues_dashboard_path(:ics,
+                                    due_date: Issue::DueNextMonthAndPreviousTwoWeeks.name,
+                                    sort: 'closest_future_date',
+                                    feed_token: user.feed_token)
 
         expect(body).to have_text("SUMMARY:test title (in #{project.full_path})")
         # line length for ics is 75 chars

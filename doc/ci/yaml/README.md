@@ -88,18 +88,18 @@ The example below simply moves all files from the root of the project to the
 `public/` directory. The `.public` workaround is so `cp` doesn't also copy
 `public/` to itself in an infinite loop:
 
-```
+```yaml
 pages:
   stage: deploy
   script:
-  - mkdir .public
-  - cp -r * .public
-  - mv .public public
+    - mkdir .public
+    - cp -r * .public
+    - mv .public public
   artifacts:
     paths:
-    - public
+      - public
   only:
-  - master
+    - master
 ```
 
 Read more on [GitLab Pages user documentation](../../user/project/pages/index.md).
@@ -131,15 +131,15 @@ if you set it per-job:
 
 ```yaml
 before_script:
-- global before script
+  - global before script
 
 job:
   before_script:
-  - execute this instead of global before script
+    - execute this instead of global before script
   script:
-  - my command
+    - my command
   after_script:
-  - execute this after my script
+    - execute this after my script
 ```
 
 ## `stages`
@@ -409,18 +409,18 @@ fails, it will not stop the next stage from running, since it's marked with
 job1:
   stage: test
   script:
-  - execute_script_that_will_fail
+    - execute_script_that_will_fail
   allow_failure: true
 
 job2:
   stage: test
   script:
-  - execute_script_that_will_succeed
+    - execute_script_that_will_succeed
 
 job3:
   stage: deploy
   script:
-  - deploy_to_staging
+    - deploy_to_staging
 ```
 
 ## `when`
@@ -442,38 +442,38 @@ For example:
 
 ```yaml
 stages:
-- build
-- cleanup_build
-- test
-- deploy
-- cleanup
+  - build
+  - cleanup_build
+  - test
+  - deploy
+  - cleanup
 
 build_job:
   stage: build
   script:
-  - make build
+    - make build
 
 cleanup_build_job:
   stage: cleanup_build
   script:
-  - cleanup build when failed
+    - cleanup build when failed
   when: on_failure
 
 test_job:
   stage: test
   script:
-  - make test
+    - make test
 
 deploy_job:
   stage: deploy
   script:
-  - make deploy
+    - make deploy
   when: manual
 
 cleanup_job:
   stage: cleanup
   script:
-  - cleanup after jobs
+    - cleanup after jobs
   when: always
 ```
 
@@ -734,8 +734,8 @@ rspec:
   script: test
   cache:
     paths:
-    - binaries/*.apk
-    - .config
+      - binaries/*.apk
+      - .config
 ```
 
 Locally defined cache overrides globally defined options. The following `rspec`
@@ -744,14 +744,14 @@ job will cache only `binaries/`:
 ```yaml
 cache:
   paths:
-  - my/files
+    - my/files
 
 rspec:
   script: test
   cache:
     key: rspec
     paths:
-    - binaries/
+      - binaries/
 ```
 
 Note that since cache is shared between jobs, if you're using different
@@ -786,7 +786,7 @@ For example, to enable per-branch caching:
 cache:
   key: "$CI_COMMIT_REF_SLUG"
   paths:
-  - binaries/
+    - binaries/
 ```
 
 If you use **Windows Batch** to run your shell scripts you need to replace
@@ -796,7 +796,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 cache:
   key: "%CI_COMMIT_REF_SLUG%"
   paths:
-  - binaries/
+    - binaries/
 ```
 
 ### `cache:untracked`
@@ -819,7 +819,7 @@ rspec:
   cache:
     untracked: true
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ### `cache:policy`
@@ -897,8 +897,8 @@ Send all files in `binaries` and `.config`:
 ```yaml
 artifacts:
   paths:
-  - binaries/
-  - .config
+    - binaries/
+    - .config
 ```
 
 To disable artifact passing, define the job with empty [dependencies](#dependencies):
@@ -927,7 +927,7 @@ release-job:
     - mvn package -U
   artifacts:
     paths:
-    - target/*.war
+      - target/*.war
   only:
     - tags
 ```
@@ -942,6 +942,11 @@ useful when you'd like to download the archive from GitLab. The `artifacts:name`
 variable can make use of any of the [predefined variables](../variables/README.md).
 The default name is `artifacts`, which becomes `artifacts.zip` when downloaded.
 
+NOTE: **Note:**
+If your branch-name contains forward slashes
+(e.g. `feature/my-feature`) it is advised to use `$CI_COMMIT_REF_SLUG`
+instead of `$CI_COMMIT_REF_NAME` for proper naming of the artifact.
+
 To create an archive with a name of the current job:
 
 ```yaml
@@ -949,7 +954,7 @@ job:
   artifacts:
     name: "$CI_JOB_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current branch or tag including only
@@ -960,7 +965,7 @@ job:
    artifacts:
      name: "$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current job and the current branch or
@@ -971,7 +976,7 @@ job:
   artifacts:
     name: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 To create an archive with a name of the current [stage](#stages) and branch name:
@@ -981,7 +986,7 @@ job:
   artifacts:
     name: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ---
@@ -994,7 +999,7 @@ job:
   artifacts:
     name: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 If you use **Windows PowerShell** to run your shell scripts you need to replace
@@ -1005,7 +1010,7 @@ job:
   artifacts:
     name: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
     paths:
-    - binaries/
+      - binaries/
 ```
 
 ### `artifacts:untracked`
@@ -1030,7 +1035,7 @@ Send all Git untracked files and files in `binaries`:
 artifacts:
   untracked: true
   paths:
-  - binaries/
+    - binaries/
 ```
 
 ### `artifacts:when`
@@ -1120,26 +1125,26 @@ build:osx:
   script: make build:osx
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 build:linux:
   stage: build
   script: make build:linux
   artifacts:
     paths:
-    - binaries/
+      - binaries/
 
 test:osx:
   stage: test
   script: make test:osx
   dependencies:
-  - build:osx
+    - build:osx
 
 test:linux:
   stage: test
   script: make test:linux
   dependencies:
-  - build:linux
+    - build:linux
 
 deploy:
   stage: deploy

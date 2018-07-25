@@ -13,9 +13,11 @@
 
   &.diff-collapsed {
     padding: 5px;
+    line-height: 34px;
 
     .click-to-expand {
       cursor: pointer;
+      vertical-align: initial;
     }
   }
 }
@@ -346,11 +348,6 @@
       width: 100%;
     }
   }
-}
-
-.flex-container-block {
-  display: -webkit-flex;
-  display: flex;
 }
 
 .flex-right {

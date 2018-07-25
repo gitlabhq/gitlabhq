@@ -1,10 +1,11 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, comma-dangle, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
+/* eslint-disable max-len, one-var, one-var-declaration-per-line, no-unused-vars, object-shorthand, no-else-return, no-self-compare, consistent-return, no-param-reassign, no-shadow */
 /* global Issuable */
 /* global ListMilestone */
 
 import $ from 'jquery';
 import _ from 'underscore';
 import { __ } from '~/locale';
+import '~/gl_dropdown';
 import axios from './lib/utils/axios_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 import ModalStore from './boards/stores/modal_store';
@@ -16,10 +17,10 @@ export default class MilestoneSelect {
         typeof currentProject === 'string' ? JSON.parse(currentProject) : currentProject;
     }
 
-    this.init(els, options);
+    MilestoneSelect.init(els, options);
   }
 
-  init(els, options) {
+  static init(els, options) {
     let $els = $(els);
 
     if (!els) {
@@ -224,7 +225,6 @@ export default class MilestoneSelect {
                 $selectBox.hide();
                 $value.css('display', '');
                 if (data.milestone != null) {
-                  data.milestone.full_path = this.currentProject.full_path;
                   data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
@@ -252,3 +252,5 @@ export default class MilestoneSelect {
     });
   }
 }
+
+window.MilestoneSelect = MilestoneSelect;

@@ -269,13 +269,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               it "redirects to the sign in page" do
@@ -475,13 +475,13 @@ describe UploadsController do
 
           context "when the user has access to the project" do
             before do
-              project.add_master(user)
+              project.add_maintainer(user)
             end
 
             context "when the user is blocked" do
               before do
                 user.block
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               it "redirects to the sign in page" do
@@ -576,23 +576,6 @@ describe UploadsController do
       context 'has an invalid filename on the original file' do
         it 'returns a 404' do
           get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'bogus.png'
-
-          expect(response).to have_gitlab_http_status(404)
-        end
-      end
-
-      context 'has a valid filename on the version file' do
-        it 'successfully returns the file' do
-          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_main_dk.png'
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response.header['Content-Disposition']).to end_with 'filename="favicon_main_dk.png"'
-        end
-      end
-
-      context 'has an invalid filename on the version file' do
-        it 'returns a 404' do
-          get :show, model: 'appearance', mounted_as: 'favicon', id: appearance.id, filename: 'favicon_bogusversion_dk.png'
 
           expect(response).to have_gitlab_http_status(404)
         end

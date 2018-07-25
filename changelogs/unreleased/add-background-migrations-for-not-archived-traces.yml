@@ -1,5 +1,0 @@
----
-title: Add background migrations for archiving legacy job traces
-merge_request: 19194
-author:
-type: performance

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class ReopenService < Issues::BaseService
     def execute(issue)

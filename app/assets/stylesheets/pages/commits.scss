@@ -79,7 +79,7 @@
 .commit-message-container {
   background-color: $body-bg;
   position: relative;
-  font-family: $monospace_font;
+  font-family: $monospace-font;
   $left: 12px;
   overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
   .max-width-marker {
@@ -135,10 +135,10 @@
 }
 
 .text-expander {
-  display: inline-block;
+  display: inline-flex;
   background: $white-light;
   color: $gl-text-color-secondary;
-  padding: 0 4px;
+  padding: 1px $gl-padding-4;
   cursor: pointer;
   border: 1px solid $border-gray-dark;
   border-radius: $border-radius-default;
@@ -180,6 +180,11 @@
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+
+  .commit-title {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .commit-actions {
@@ -193,10 +198,14 @@
     display: inline-flex;
   }
 
+  .ci-status-icon svg {
+    vertical-align: text-bottom;
+  }
+
   > .ci-status-link,
   > .btn,
   > .commit-sha-group {
-    margin-left: $gl-padding-8;
+    margin-left: $gl-padding;
   }
 }
 
@@ -226,10 +235,6 @@
     fill: $gl-text-color-secondary;
   }
 
-  .fa-clipboard {
-    color: $gl-text-color-secondary;
-  }
-
   :first-child {
     border-bottom-left-radius: $border-radius-default;
     border-top-left-radius: $border-radius-default;
@@ -249,16 +254,19 @@
 .generic_commit_status {
   a,
   button {
-    color: $gl-text-color;
     vertical-align: baseline;
   }
 
-  a.autodevops-badge {
-    color: $white-light;
-  }
+  a {
+    color: $gl-text-color;
 
-  a.autodevops-link {
-    color: $gl-link-color;
+    &.autodevops-badge {
+      color: $white-light;
+    }
+
+    &.autodevops-link {
+      color: $gl-link-color;
+    }
   }
 
   .commit-row-description {

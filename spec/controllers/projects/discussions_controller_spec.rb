@@ -110,7 +110,7 @@ describe Projects::DiscussionsController do
         it "returns the name of the resolving user" do
           post :resolve, request_params
 
-          expect(JSON.parse(response.body)["resolved_by"]).to eq(user.name)
+          expect(JSON.parse(response.body)['resolved_by']['name']).to eq(user.name)
         end
 
         it "returns status 200" do
@@ -119,16 +119,21 @@ describe Projects::DiscussionsController do
           expect(response).to have_gitlab_http_status(200)
         end
 
-        context "when vue_mr_discussions cookie is present" do
-          before do
-            allow(controller).to receive(:cookies).and_return(vue_mr_discussions: 'true')
-          end
+        it "renders discussion with serializer" do
+          expect_any_instance_of(DiscussionSerializer).to receive(:represent)
+            .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
-          it "renders discussion with serializer" do
-            expect_any_instance_of(DiscussionSerializer).to receive(:represent)
-              .with(instance_of(Discussion), { context: instance_of(described_class) })
+          post :resolve, request_params
+        end
 
+        context 'diff discussion' do
+          let(:note) { create(:diff_note_on_merge_request, noteable: merge_request, project: project) }
+          let(:discussion) { note.discussion }
+
+          it "returns truncated diff lines" do
             post :resolve, request_params
+
+            expect(JSON.parse(response.body)['truncated_diff_lines']).to be_present
           end
         end
       end
@@ -187,7 +192,7 @@ describe Projects::DiscussionsController do
 
           it "renders discussion with serializer" do
             expect_any_instance_of(DiscussionSerializer).to receive(:represent)
-              .with(instance_of(Discussion), { context: instance_of(described_class) })
+              .with(instance_of(Discussion), { context: instance_of(described_class), render_truncated_diff_lines: true })
 
             delete :unresolve, request_params
           end

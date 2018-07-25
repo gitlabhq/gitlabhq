@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class AutocompleteService < BaseService
     def issues
@@ -11,7 +13,7 @@ module Projects
         order: { due_date: :asc, title: :asc }
       }
 
-      finder_params[:group_ids] = @project.group.self_and_ancestors.select(:id) if @project.group
+      finder_params[:group_ids] = @project.group.self_and_ancestors_ids if @project.group
 
       MilestonesFinder.new(finder_params).execute.select([:iid, :title])
     end
@@ -20,24 +22,28 @@ module Projects
       MergeRequestsFinder.new(current_user, project_id: project.id, state: 'opened').execute.select([:iid, :title])
     end
 
-    def labels(target = nil)
-      labels = LabelsFinder.new(current_user, project_id: project.id, include_ancestor_groups: true)
-        .execute.select([:color, :title])
+    def labels_as_hash(target = nil)
+      available_labels = LabelsFinder.new(
+        current_user,
+        project_id: project.id,
+        include_ancestor_groups: true
+      ).execute
 
-      return labels unless target&.respond_to?(:labels)
+      label_hashes = available_labels.as_json(only: [:title, :color])
 
-      issuable_label_titles = target.labels.pluck(:title)
-
-      if issuable_label_titles
-        labels = labels.as_json(only: [:title, :color])
-
-        issuable_label_titles.each do |issuable_label_title|
-          found_label = labels.find { |label| label['title'] == issuable_label_title }
-          found_label[:set] = true if found_label
+      if target&.respond_to?(:labels)
+        already_set_labels = available_labels & target.labels
+        if already_set_labels.present?
+          titles = already_set_labels.map(&:title)
+          label_hashes.each do |hash|
+            if titles.include?(hash['title'])
+              hash[:set] = true
+            end
+          end
         end
       end
 
-      labels
+      label_hashes
     end
 
     def commands(noteable, type)

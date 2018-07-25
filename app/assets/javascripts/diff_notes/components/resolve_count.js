@@ -1,10 +1,9 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-param-reassign */
-/* global DiscussionMixins */
+/* eslint-disable comma-dangle, object-shorthand, func-names */
 /* global CommentsStore */
 
 import Vue from 'vue';
 
-import '../mixins/discussion';
+import DiscussionMixins from '../mixins/discussion';
 
 window.ResolveCount = Vue.extend({
   mixins: [DiscussionMixins],

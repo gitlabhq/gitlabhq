@@ -42,6 +42,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         @noteable = @merge_request
         @commits_count = @merge_request.commits_count
 
+        # TODO cleanup- Fatih Simon Create an issue to remove these after the refactoring
+        # we no longer render notes here. I see it will require a small frontend refactoring,
+        # since we gather some data from this collection.
         @discussions = @merge_request.discussions
         @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
 
@@ -115,7 +118,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       end
 
       format.json do
-        render json: @merge_request.to_json(include: { milestone: {}, assignee: { only: [:name, :username], methods: [:avatar_url] }, labels: { methods: :text_color } }, methods: [:task_status, :task_status_short])
+        render json: serializer.represent(@merge_request, serializer: 'basic')
       end
     end
   rescue ActiveRecord::StaleObjectError
@@ -189,7 +192,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
-            if environment.stop_action? && can?(current_user, :create_deployment, environment)
+            if can?(current_user, :stop_environment, environment)
               stop_project_environment_path(project, environment)
             end
 
@@ -224,7 +227,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rebase
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
-    render nothing: true, status: 200
+    render nothing: true, status: :ok
   end
 
   protected

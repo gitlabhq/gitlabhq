@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import service from '~/ide/services';
 import router from '~/ide/ide_router';
 import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
@@ -68,23 +67,6 @@ describe('RepoCommitSection', () => {
 
     vm.$mount();
 
-    spyOn(service, 'getTreeData').and.returnValue(
-      Promise.resolve({
-        headers: {
-          'page-title': 'test',
-        },
-        json: () =>
-          Promise.resolve({
-            last_commit_path: 'last_commit_path',
-            parent_tree_url: 'parent_tree_url',
-            path: '/',
-            trees: [{ name: 'tree' }],
-            blobs: [{ name: 'blob' }],
-            submodules: [{ name: 'submodule' }],
-          }),
-      }),
-    );
-
     Vue.nextTick(done);
   });
 
@@ -111,7 +93,7 @@ describe('RepoCommitSection', () => {
   });
 
   it('renders a commit section', () => {
-    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list li')];
+    const changedFileElements = [...vm.$el.querySelectorAll('.multi-file-commit-list > li')];
     const allFiles = vm.$store.state.changedFiles.concat(vm.$store.state.stagedFiles);
 
     expect(changedFileElements.length).toEqual(4);
@@ -140,22 +122,26 @@ describe('RepoCommitSection', () => {
     vm.$el.querySelector('.multi-file-discard-btn .btn').click();
 
     Vue.nextTick(() => {
-      expect(vm.$el.querySelector('.ide-commit-list-container').querySelectorAll('li').length).toBe(
-        1,
-      );
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('.multi-file-commit-list > li').length,
+      ).toBe(1);
 
       done();
     });
   });
 
   it('discards a single file', done => {
-    vm.$el.querySelectorAll('.multi-file-discard-btn .btn')[1].click();
+    vm.$el.querySelector('.multi-file-discard-btn .dropdown-menu button').click();
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.ide-commit-list-container').textContent).not.toContain('file1');
-      expect(vm.$el.querySelector('.ide-commit-list-container').querySelectorAll('li').length).toBe(
-        1,
-      );
+      expect(
+        vm.$el
+          .querySelector('.ide-commit-list-container')
+          .querySelectorAll('.multi-file-commit-list > li').length,
+      ).toBe(1);
 
       done();
     });

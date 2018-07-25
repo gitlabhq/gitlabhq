@@ -44,9 +44,9 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-## Code quality analysis
+## Code Quality analysis
 
-[Analyze code quality with the Code Climate CLI](code_climate.md).
+**(Starter)** [Analyze your project's Code Quality](code_quality.md).
 
 ## Static Application Security Testing (SAST)
 

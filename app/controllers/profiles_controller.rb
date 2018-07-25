@@ -99,7 +99,8 @@ class ProfilesController < Profiles::ApplicationController
       :username,
       :website_url,
       :organization,
-      :preferred_language
+      :preferred_language,
+      :private_profile
     )
   end
 end

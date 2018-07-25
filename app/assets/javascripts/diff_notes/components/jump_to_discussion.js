@@ -1,11 +1,10 @@
-/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, one-var, space-before-function-paren, no-lonely-if, no-continue, brace-style, max-len, quotes */
-/* global DiscussionMixins */
+/* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, guard-for-in, no-restricted-syntax, no-lonely-if, no-continue, brace-style, max-len, quotes */
 /* global CommentsStore */
 
 import $ from 'jquery';
 import Vue from 'vue';
 
-import '../mixins/discussion';
+import DiscussionMixins from '../mixins/discussion';
 
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
@@ -74,7 +73,7 @@ const JumpToDiscussion = Vue.extend({
         }).toArray();
       };
 
-      const discussions = this.discussions;
+      const { discussions } = this;
 
       if (activeTab === 'diffs') {
         discussionsSelector = '.diffs .notes[data-discussion-id]';

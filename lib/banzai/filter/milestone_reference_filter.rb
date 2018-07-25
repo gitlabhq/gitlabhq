@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that replaces milestone references with links.
@@ -65,7 +67,7 @@ module Banzai
         # We don't support IID lookups for group milestones, because IIDs can
         # clash between group and project milestones.
         if project.group && !params[:iid]
-          finder_params[:group_ids] = project.group.self_and_ancestors.select(:id)
+          finder_params[:group_ids] = project.group.self_and_ancestors_ids
         end
 
         MilestonesFinder.new(finder_params).find_by(params)

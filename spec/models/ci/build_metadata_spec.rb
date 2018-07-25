@@ -30,7 +30,7 @@ describe Ci::BuildMetadata do
 
     context 'when runner is assigned to the job' do
       before do
-        build.update_attributes(runner: runner)
+        build.update(runner: runner)
       end
 
       context 'when runner timeout is lower than project timeout' do

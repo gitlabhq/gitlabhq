@@ -6,7 +6,7 @@ describe Projects::ImportsController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET #show' do
@@ -29,7 +29,7 @@ describe Projects::ImportsController do
 
       context 'when import is in progress' do
         before do
-          project.update_attribute(:import_status, :started)
+          project.update(import_status: :started)
         end
 
         it 'renders template' do
@@ -47,7 +47,7 @@ describe Projects::ImportsController do
 
       context 'when import failed' do
         before do
-          project.update_attribute(:import_status, :failed)
+          project.update(import_status: :failed)
         end
 
         it 'redirects to new_namespace_project_import_path' do
@@ -59,7 +59,7 @@ describe Projects::ImportsController do
 
       context 'when import finished' do
         before do
-          project.update_attribute(:import_status, :finished)
+          project.update(import_status: :finished)
         end
 
         context 'when project is a fork' do
@@ -108,7 +108,7 @@ describe Projects::ImportsController do
 
       context 'when import never happened' do
         before do
-          project.update_attribute(:import_status, :none)
+          project.update(import_status: :none)
         end
 
         it 'redirects to namespace_project_path' do

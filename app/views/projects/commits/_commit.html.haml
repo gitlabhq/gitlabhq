@@ -19,7 +19,7 @@
   %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
     .avatar-cell.d-none.d-sm-block
-      = author_avatar(commit, size: 36)
+      = author_avatar(commit, size: 36, has_tooltip: false)
 
     .commit-detail.flex-list
       .commit-content.qa-commit-content
@@ -34,7 +34,8 @@
           .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.d-none.d-sm-inline-block.js-toggle-button{ type: "button" } ...
+          %button.text-expander.js-toggle-button
+            = sprite_icon('ellipsis_h', size: 12)
 
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)

@@ -1,5 +1,0 @@
----
-title: Fix resolvable check if note's commit could not be found.
-merge_request:
-author:
-type: fixed

@@ -1,6 +1,6 @@
-/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, no-param-reassign, max-len */
+/* eslint-disable object-shorthand, func-names, guard-for-in, no-restricted-syntax, comma-dangle, */
 
-window.DiscussionMixins = {
+const DiscussionMixins = {
   computed: {
     discussionCount: function () {
       return Object.keys(this.discussions).length;
@@ -33,3 +33,5 @@ window.DiscussionMixins = {
     }
   }
 };
+
+export default DiscussionMixins;

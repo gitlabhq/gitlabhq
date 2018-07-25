@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Hook logs' do
-  given(:web_hook_log) { create(:web_hook_log, response_body: '<script>') }
-  given(:project) { web_hook_log.web_hook.project }
-  given(:user) { create(:user) }
+describe 'Hook logs' do
+  let(:web_hook_log) { create(:web_hook_log, response_body: '<script>') }
+  let(:project) { web_hook_log.web_hook.project }
+  let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end
 
-  scenario 'user reads log without getting XSS' do
+  it 'user reads log without getting XSS' do
     visit(
       project_hook_hook_log_path(
         project, web_hook_log.web_hook, web_hook_log))

@@ -21,8 +21,8 @@ describe "Projects > Settings > Pipelines settings" do
     end
   end
 
-  context 'for master' do
-    let(:role) { :master }
+  context 'for maintainer' do
+    let(:role) { :maintainer }
 
     it 'be allowed to change' do
       visit project_settings_ci_cd_path(project)

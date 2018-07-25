@@ -177,7 +177,7 @@ describe('Environments Folder View', () => {
       });
 
       component = mountComponent(Component, mockData);
-      spyOn(history, 'pushState').and.stub();
+      spyOn(window.history, 'pushState').and.stub();
     });
 
     describe('updateContent', () => {

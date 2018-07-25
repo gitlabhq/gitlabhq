@@ -92,16 +92,6 @@ describe RepositoryForkWorker do
       end
 
       it_behaves_like 'RepositoryForkWorker performing'
-
-      it 'logs a message about forking with old-style arguments' do
-        allow(subject).to receive(:gitlab_shell).and_return(shell)
-        expect(shell).to receive(:fork_repository) { true }
-
-        allow(Rails.logger).to receive(:info).with(anything) # To compensate for other logs
-        expect(Rails.logger).to receive(:info).with("Project #{fork_project.id} is being forked using old-style arguments.")
-
-        perform!
-      end
     end
   end
 end

@@ -6,7 +6,7 @@ describe 'Merge request > User toggles whitespace changes', :js do
   let(:user) { project.creator }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request)
   end

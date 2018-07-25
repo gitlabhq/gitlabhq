@@ -1,10 +1,10 @@
-- page_title "Labels"
+- page_title _("Labels")
 
 %div
   = link_to new_admin_label_path, class: "float-right btn btn-nr btn-new" do
-    New label
+    = _('New label')
   %h3.page-title
-    Labels
+    = _('Labels')
 %hr
 
 .labels
@@ -14,5 +14,5 @@
     = paginate @labels, theme: 'gitlab'
   - else
     .card.bg-light
-      .nothing-here-block There are no labels yet
+      .nothing-here-block= _('There are no labels yet')
 

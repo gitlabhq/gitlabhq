@@ -2,10 +2,10 @@ module Gitlab
   class Favicon
     class << self
       def main
-        return appearance_favicon.favicon_main.url if appearance_favicon.exists?
-
         image_name =
-          if Gitlab::Utils.to_boolean(ENV['CANARY'])
+          if appearance_favicon.exists?
+            appearance_favicon.url
+          elsif Gitlab::Utils.to_boolean(ENV['CANARY'])
             'favicon-yellow.png'
           elsif Rails.env.development?
             'favicon-blue.png'
@@ -13,7 +13,7 @@ module Gitlab
             'favicon.png'
           end
 
-        ActionController::Base.helpers.image_path(image_name)
+        ActionController::Base.helpers.image_path(image_name, host: host)
       end
 
       def status_overlay(status_name)
@@ -22,7 +22,7 @@ module Gitlab
           "#{status_name}.png"
         )
 
-        ActionController::Base.helpers.image_path(path)
+        ActionController::Base.helpers.image_path(path, host: host)
       end
 
       def available_status_names
@@ -34,6 +34,17 @@ module Gitlab
       end
 
       private
+
+      # we only want to create full urls when there's a different asset_host
+      # configured.
+      def host
+        asset_host = ActionController::Base.asset_host
+        if asset_host.nil? || asset_host == Gitlab.config.gitlab.base_url
+          nil
+        else
+          Gitlab.config.gitlab.base_url
+        end
+      end
 
       def appearance
         RequestStore.store[:appearance] ||= (Appearance.current || Appearance.new)

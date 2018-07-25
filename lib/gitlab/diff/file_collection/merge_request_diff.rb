@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def cache_key
-          [@merge_request_diff, 'highlighted-diff-files', diff_options]
+          [@merge_request_diff, 'highlighted-diff-files', Gitlab::Diff::Line::SERIALIZE_KEYS, diff_options]
         end
 
         private

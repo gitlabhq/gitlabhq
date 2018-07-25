@@ -212,14 +212,6 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
-  validates_each :disabled_oauth_sign_in_sources do |record, attr, value|
-    value&.each do |source|
-      unless Devise.omniauth_providers.include?(source.to_sym)
-        record.errors.add(attr, "'#{source}' is not an OAuth sign-in source")
-      end
-    end
-  end
-
   validate :terms_exist, if: :enforce_terms?
 
   before_validation :ensure_uuid!
@@ -302,6 +294,7 @@ class ApplicationSetting < ActiveRecord::Base
       gitaly_timeout_medium: 30,
       gitaly_timeout_default: 55,
       allow_local_requests_from_hooks_and_services: false,
+      hide_third_party_offers: false,
       mirror_available: true
     }
   end
@@ -328,6 +321,11 @@ class ApplicationSetting < ActiveRecord::Base
 
   def sidekiq_throttling_column_exists?
     ::Gitlab::Database.cached_column_exists?(:application_settings, :sidekiq_throttling_enabled)
+  end
+
+  def disabled_oauth_sign_in_sources=(sources)
+    sources = (sources || []).map(&:to_s) & Devise.omniauth_providers.map(&:to_s)
+    super(sources)
   end
 
   def domain_whitelist_raw

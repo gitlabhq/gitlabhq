@@ -1,50 +1,59 @@
 require 'rails_helper'
 
 describe RepositoryRemoveRemoteWorker do
-  subject(:worker) { described_class.new }
+  include ExclusiveLeaseHelpers
 
   describe '#perform' do
-    let(:remote_name) { 'joe'}
     let!(:project) { create(:project, :repository) }
+    let(:remote_name) { 'joe'}
+    let(:lease_key) { "remove_remote_#{project.id}_#{remote_name}" }
+    let(:lease_timeout) { RepositoryRemoveRemoteWorker::LEASE_TIMEOUT }
 
-    context 'when it cannot obtain lease' do
-      it 'logs error' do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
-
-        expect_any_instance_of(Repository).not_to receive(:remove_remote)
-        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
-
-        worker.perform(project.id, remote_name)
-      end
+    it 'returns nil when project does not exist' do
+      expect(subject.perform(-1, 'remote_name')).to be_nil
     end
 
-    context 'when it gets the lease' do
+    context 'when project exists' do
       before do
-        allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(true)
+        allow(Project)
+          .to receive(:find_by)
+          .with(id: project.id)
+          .and_return(project)
       end
 
-      context 'when project does not exist' do
-        it 'returns nil' do
-          expect(worker.perform(-1, 'remote_name')).to be_nil
-        end
+      it 'does not remove remote when cannot obtain lease' do
+        stub_exclusive_lease_taken(lease_key, timeout: lease_timeout)
+
+        expect(project.repository)
+          .not_to receive(:remove_remote)
+
+        expect(subject)
+          .to receive(:log_error)
+          .with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
+
+        subject.perform(project.id, remote_name)
       end
 
-      context 'when project exists' do
-        it 'removes remote from repository' do
-          masterrev = project.repository.find_branch('master').dereferenced_target
+      it 'removes remote from repository when obtain a lease' do
+        stub_exclusive_lease(lease_key, timeout: lease_timeout)
+        masterrev = project.repository.find_branch('master').dereferenced_target
+        create_remote_branch(remote_name, 'remote_branch', masterrev)
 
-          create_remote_branch(remote_name, 'remote_branch', masterrev)
+        expect(project.repository)
+          .to receive(:remove_remote)
+          .with(remote_name)
+          .and_call_original
 
-          expect_any_instance_of(Repository).to receive(:remove_remote).with(remote_name).and_call_original
-
-          worker.perform(project.id, remote_name)
-        end
+        subject.perform(project.id, remote_name)
       end
     end
   end
 
   def create_remote_branch(remote_name, branch_name, target)
-    rugged = project.repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
+
     rugged.references.create("refs/remotes/#{remote_name}/#{branch_name}", target.id)
   end
 end

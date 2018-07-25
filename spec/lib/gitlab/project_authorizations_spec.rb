@@ -41,7 +41,7 @@ describe Gitlab::ProjectAuthorizations do
   it 'includes the correct access levels' do
     mapping = map_access_levels(authorizations)
 
-    expect(mapping[owned_project.id]).to eq(Gitlab::Access::MASTER)
+    expect(mapping[owned_project.id]).to eq(Gitlab::Access::MAINTAINER)
     expect(mapping[other_project.id]).to eq(Gitlab::Access::REPORTER)
     expect(mapping[group_project.id]).to eq(Gitlab::Access::DEVELOPER)
   end
@@ -62,11 +62,11 @@ describe Gitlab::ProjectAuthorizations do
       end
 
       it 'uses the greatest access level when a user is a member of a nested group' do
-        nested_group.add_master(user)
+        nested_group.add_maintainer(user)
 
         mapping = map_access_levels(authorizations)
 
-        expect(mapping[nested_project.id]).to eq(Gitlab::Access::MASTER)
+        expect(mapping[nested_project.id]).to eq(Gitlab::Access::MAINTAINER)
       end
     end
   end

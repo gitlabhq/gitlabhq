@@ -22,7 +22,7 @@ describe 'Issue Boards', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
 

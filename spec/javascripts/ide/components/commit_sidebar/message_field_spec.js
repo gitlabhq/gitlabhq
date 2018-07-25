@@ -13,6 +13,7 @@ describe('IDE commit message field', () => {
       Component,
       {
         text: '',
+        placeholder: 'testing',
       },
       '#app',
     );

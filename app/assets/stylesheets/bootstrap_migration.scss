@@ -110,7 +110,7 @@ code {
   padding: 2px 4px;
   color: $red-600;
   background-color: $red-100;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
 
   .code > & {
     background-color: inherit;
@@ -128,7 +128,8 @@ table {
   border-spacing: 0;
 }
 
-.tooltip {
+.tooltip,
+.no-pointer-events {
   // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
   pointer-events: none;
 }
@@ -178,7 +179,16 @@ table {
   display: none;
 }
 
-.badge {
+h3.popover-header {
+  // Default bootstrap popovers use <h3>
+  // which we default to having a top margin
+  margin-top: 0;
+}
+
+// Add to .label so that old system notes that are saved to the db
+// will still receive the correct styling
+.badge,
+.label {
   padding: 4px 5px;
   font-size: 12px;
   font-style: normal;
@@ -212,6 +222,15 @@ table {
 
     &:not(:last-of-type) {
       border-bottom: 1px solid $well-inner-border;
+    }
+
+    p,
+    ol,
+    ul,
+    .form-group {
+      &:last-of-type {
+        margin-bottom: 0;
+      }
     }
   }
 
@@ -264,19 +283,40 @@ pre code {
   white-space: pre-wrap;
 }
 
+.alert,
+.flash-notice {
+  border-radius: 0;
+}
+
+.alert-success {
+  background-color: $green-500;
+  border-color: $green-500;
+}
+
+.alert-info {
+  background-color: $blue-500;
+  border-color: $blue-500;
+}
+
+.alert-warning {
+  background-color: $orange-500;
+  border-color: $orange-500;
+}
+
 .alert-danger {
   background-color: $red-500;
   border-color: $red-500;
 }
 
+.alert-success,
+.alert-info,
 .alert-warning,
 .alert-danger,
 .flash-notice {
-  border-radius: 0;
   color: $white-light;
 
   h4,
-  a,
+  a:not(.btn),
   .alert-link {
     color: $white-light;
   }
@@ -291,5 +331,11 @@ input[type=color].form-control {
   .icon-angle-double-left,
   .icon-angle-double-right {
     color: $gl-text-color-secondary;
+  }
+}
+
+.project-templates-buttons {
+  .btn {
+    vertical-align: unset;
   }
 }

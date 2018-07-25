@@ -131,9 +131,10 @@ class Milestone < ActiveRecord::Base
       rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
       rel
-        .group(:project_id)
+        .group(:project_id, :due_date, :id)
         .having('due_date = MIN(due_date)')
         .pluck(:id, :project_id, :due_date)
+        .uniq(&:second)
         .map(&:first)
     end
   end

@@ -2,6 +2,10 @@
 comments: false
 ---
 
+DANGER: This guide exists for reference of how an AWS deployment could work.
+We are currently seeing very slow EFS access performance which causes GitLab to
+be 5-10x slower than using NFS or Local disk. We _do not_ recommend follow this
+guide at this time.
 
 # High Availability on AWS
 

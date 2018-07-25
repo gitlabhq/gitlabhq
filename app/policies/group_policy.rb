@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupPolicy < BasePolicy
   desc "Group is public"
   with_options scope: :subject, score: 0
@@ -11,7 +13,7 @@ class GroupPolicy < BasePolicy
   condition(:guest) { access_level >= GroupMember::GUEST }
   condition(:developer) { access_level >= GroupMember::DEVELOPER }
   condition(:owner) { access_level >= GroupMember::OWNER }
-  condition(:master) { access_level >= GroupMember::MASTER }
+  condition(:maintainer) { access_level >= GroupMember::MAINTAINER }
   condition(:reporter) { access_level >= GroupMember::REPORTER }
 
   condition(:nested_groups_supported, scope: :global) { Group.supports_nested_groups? }
@@ -59,7 +61,7 @@ class GroupPolicy < BasePolicy
     enable :admin_issue
   end
 
-  rule { master }.policy do
+  rule { maintainer }.policy do
     enable :create_projects
     enable :admin_pipeline
     enable :admin_build
@@ -70,6 +72,19 @@ class GroupPolicy < BasePolicy
     enable :admin_namespace
     enable :admin_group_member
     enable :change_visibility_level
+  end
+
+  rule { can?(:read_nested_project_resources) }.policy do
+    enable :read_group_activity
+    enable :read_group_issues
+    enable :read_group_boards
+    enable :read_group_labels
+    enable :read_group_milestones
+    enable :read_group_merge_requests
+  end
+
+  rule { can?(:read_cross_project) & can?(:read_group) }.policy do
+    enable :read_nested_project_resources
   end
 
   rule { owner & nested_groups_supported }.enable :create_subgroup

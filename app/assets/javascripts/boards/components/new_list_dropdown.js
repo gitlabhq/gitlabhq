@@ -1,4 +1,4 @@
-/* eslint-disable func-names, no-new, space-before-function-paren, one-var, promise/catch-or-return, max-len */
+/* eslint-disable func-names, no-new, promise/catch-or-return */
 
 import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';

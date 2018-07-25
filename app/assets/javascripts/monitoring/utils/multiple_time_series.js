@@ -41,10 +41,10 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     } else {
       const unusedColors = _.difference(defaultColorOrder, usedColors);
       if (unusedColors.length > 0) {
-        pick = unusedColors[0];
+        [pick] = unusedColors;
       } else {
         usedColors = [];
-        pick = defaultColorOrder[0];
+        [pick] = defaultColorOrder;
       }
     }
     usedColors.push(pick);
@@ -73,7 +73,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
     timeSeriesScaleX.ticks(d3.timeMinute, 60);
     timeSeriesScaleY.domain(yDom);
 
-    const defined = d => !isNaN(d.value) && d.value != null;
+    const defined = d => !Number.isNaN(d.value) && d.value != null;
 
     const lineFunction = d3
       .line()

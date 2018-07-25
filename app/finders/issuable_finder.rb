@@ -7,7 +7,7 @@
 #   current_user - which user use
 #   params:
 #     scope: 'created_by_me' or 'assigned_to_me' or 'all'
-#     state: 'opened' or 'closed' or 'all'
+#     state: 'opened' or 'closed' or 'locked' or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -311,6 +311,8 @@ class IssuableFinder
       items.respond_to?(:merged) ? items.merged : items.closed
     when 'opened'
       items.opened
+    when 'locked'
+      items.where(state: 'locked')
     else
       items
     end

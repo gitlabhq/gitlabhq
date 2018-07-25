@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddUpdatedByToIssuablesAndNotes < ActiveRecord::Migration
   def change
     add_column :notes, :updated_by_id, :integer

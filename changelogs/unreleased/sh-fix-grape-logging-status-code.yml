@@ -1,5 +1,0 @@
----
-title: Fix api_json.log not always reporting the right HTTP status code
-merge_request:
-author:
-type: fixed

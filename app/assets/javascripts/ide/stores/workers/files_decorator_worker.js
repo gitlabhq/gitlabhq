@@ -1,6 +1,7 @@
 import { viewerInformationForPath } from '~/vue_shared/components/content_viewer/lib/viewer_utils';
 import { decorateData, sortTree } from '../utils';
 
+// eslint-disable-next-line no-restricted-globals
 self.addEventListener('message', e => {
   const { data, projectId, branchId, tempFile = false, content = '', base64 = false } = e.data;
 
@@ -89,6 +90,7 @@ self.addEventListener('message', e => {
     return acc;
   }, {});
 
+  // eslint-disable-next-line no-restricted-globals
   self.postMessage({
     entries,
     treeList: sortTree(treeList),

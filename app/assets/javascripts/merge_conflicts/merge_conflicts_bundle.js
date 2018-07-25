@@ -1,13 +1,9 @@
-/* eslint-disable new-cap, comma-dangle, no-new */
-
 import $ from 'jquery';
 import Vue from 'vue';
-import Flash from '../flash';
+import createFlash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
 import './merge_conflict_store';
 import MergeConflictsService from './merge_conflict_service';
-import './mixins/line_conflict_utils';
-import './mixins/line_conflict_actions';
 import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
@@ -16,10 +12,10 @@ import syntaxHighlight from '../syntax_highlight';
 export default function initMergeConflicts() {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
   const conflictsEl = document.querySelector('#conflicts');
-  const mergeConflictsStore = gl.mergeConflicts.mergeConflictsStore;
+  const { mergeConflictsStore } = gl.mergeConflicts;
   const mergeConflictsService = new MergeConflictsService({
     conflictsPath: conflictsEl.dataset.conflictsPath,
-    resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath
+    resolveConflictsPath: conflictsEl.dataset.resolveConflictsPath,
   });
 
   initIssuableSidebar();
@@ -29,17 +25,26 @@ export default function initMergeConflicts() {
     components: {
       'diff-file-editor': gl.mergeConflicts.diffFileEditor,
       'inline-conflict-lines': gl.mergeConflicts.inlineConflictLines,
-      'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines
+      'parallel-conflict-lines': gl.mergeConflicts.parallelConflictLines,
     },
     data: mergeConflictsStore.state,
     computed: {
-      conflictsCountText() { return mergeConflictsStore.getConflictsCountText(); },
-      readyToCommit() { return mergeConflictsStore.isReadyToCommit(); },
-      commitButtonText() { return mergeConflictsStore.getCommitButtonText(); },
-      showDiffViewTypeSwitcher() { return mergeConflictsStore.fileTextTypePresent(); }
+      conflictsCountText() {
+        return mergeConflictsStore.getConflictsCountText();
+      },
+      readyToCommit() {
+        return mergeConflictsStore.isReadyToCommit();
+      },
+      commitButtonText() {
+        return mergeConflictsStore.getCommitButtonText();
+      },
+      showDiffViewTypeSwitcher() {
+        return mergeConflictsStore.fileTextTypePresent();
+      },
     },
     created() {
-      mergeConflictsService.fetchConflictsData()
+      mergeConflictsService
+        .fetchConflictsData()
         .then(({ data }) => {
           if (data.type === 'error') {
             mergeConflictsStore.setFailedRequest(data.message);
@@ -87,9 +92,9 @@ export default function initMergeConflicts() {
           })
           .catch(() => {
             mergeConflictsStore.setSubmitState(false);
-            new Flash('Failed to save merge conflicts resolutions. Please try again!');
+            createFlash('Failed to save merge conflicts resolutions. Please try again!');
           });
-      }
-    }
+      },
+    },
   });
 }

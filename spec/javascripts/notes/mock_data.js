@@ -51,6 +51,7 @@ export const noteableDataMock = {
   time_estimate: 0,
   title: '14',
   total_time_spent: 0,
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   updated_at: '2017-08-04T09:53:01.226Z',
   updated_by_id: 1,
   web_url: '/gitlab-org/gitlab-ce/issues/26',
@@ -99,6 +100,8 @@ export const individualNote = {
         { name: 'art', user: { id: 1, name: 'Root', username: 'root' } },
       ],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji',
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
+      note_url: '/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1390',
@@ -157,9 +160,12 @@ export const note = {
     },
   ],
   toggle_award_path: '/gitlab-org/gitlab-ce/notes/546/toggle_award_emoji',
+  note_url: '/group/project/merge_requests/1#note_1',
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   report_abuse_path:
     '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F7%23note_546&user_id=1',
   path: '/gitlab-org/gitlab-ce/notes/546',
+  cached_markdown_version: 11,
 };
 
 export const discussionMock = {
@@ -198,6 +204,7 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1395/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1395&user_id=1',
@@ -244,6 +251,7 @@ export const discussionMock = {
       emoji_awardable: true,
       award_emoji: [],
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1396/toggle_award_emoji',
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1396&user_id=1',
       path: '/gitlab-org/gitlab-ce/notes/1396',
@@ -288,6 +296,7 @@ export const discussionMock = {
       discussion_id: '9e3bd2f71a01de45fd166e6719eb380ad9f270b1',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1437/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1437&user_id=1',
@@ -295,6 +304,7 @@ export const discussionMock = {
     },
   ],
   individual_note: false,
+  resolvable: true,
 };
 
 export const loggedOutnoteableData = {
@@ -335,6 +345,7 @@ export const loggedOutnoteableData = {
     can_create_note: false,
     can_update: false,
   },
+  noteable_note_url: '/group/project/merge_requests/1#note_1',
   create_note_path: '/gitlab-org/gitlab-ce/notes?target_id=98&target_type=issue',
   preview_note_path:
     '/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue',
@@ -469,6 +480,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
                 },
               },
             ],
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390\u0026user_id=1',
@@ -513,6 +525,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
             discussion_id: '70d5c92a4039a36c70100c6691c18c27e4b0a790',
             emoji_awardable: true,
             award_emoji: [],
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1391/toggle_award_emoji',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1391\u0026user_id=1',
@@ -567,6 +580,7 @@ export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
       discussion_id: 'a3ed36e29b1957efb3b68c53e2d7a2b24b1df052',
       emoji_awardable: true,
       award_emoji: [],
+      noteable_note_url: '/group/project/merge_requests/1#note_1',
       toggle_award_path: '/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji',
       report_abuse_path:
         '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1',
@@ -618,6 +632,7 @@ export const DISCUSSION_NOTE_RESPONSE_MAP = {
             emoji_awardable: true,
             award_emoji: [],
             toggle_award_path: '/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji',
+            noteable_note_url: '/group/project/merge_requests/1#note_1',
             report_abuse_path:
               '/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1',
             path: '/gitlab-org/gitlab-ce/notes/1471',
@@ -1153,3 +1168,87 @@ export const collapsedSystemNotes = [
     diff_discussion: false,
   },
 ];
+
+export const discussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const resolvedDiscussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: true,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const discussion2 = {
+  id: 'abc2',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: null,
+      old_line: 20,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T12:05:41.749Z',
+    },
+  ],
+};
+
+export const discussion3 = {
+  id: 'abc3',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: 21,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-05T17:25:41.749Z',
+    },
+  ],
+};
+
+export const unresolvableDiscussion = {
+  resolvable: false,
+};

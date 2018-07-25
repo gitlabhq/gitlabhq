@@ -102,6 +102,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
   describe 'GET show' do
     let!(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:second_job) { create(:ci_build, :failed, pipeline: pipeline) }
+    let!(:third_job) { create(:ci_build, :failed) }
 
     context 'when requesting HTML' do
       context 'when job exists' do
@@ -112,6 +114,13 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
         it 'has a job' do
           expect(response).to have_gitlab_http_status(:ok)
           expect(assigns(:build).id).to eq(job.id)
+        end
+
+        it 'has the correct build collection' do
+          builds = assigns(:builds).map(&:id)
+
+          expect(builds).to include(job.id, second_job.id)
+          expect(builds).not_to include(third_job.id)
         end
       end
 
@@ -207,17 +216,19 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
     end
 
     context 'when trace artifact is in ObjectStorage' do
+      let(:url) { 'http://object-storage/trace' }
+      let(:file_path) { expand_fixture_path('trace/sample_trace') }
       let!(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
         allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
-        allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
-        allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+        allow_any_instance_of(JobArtifactUploader).to receive(:url) { url }
+        allow_any_instance_of(JobArtifactUploader).to receive(:size) { File.size(file_path) }
       end
 
       context 'when there are no network issues' do
         before do
-          stub_remote_trace_206
+          stub_remote_url_206(url, file_path)
 
           get_trace
         end
@@ -232,11 +243,11 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
 
       context 'when there is a network issue' do
         before do
-          stub_remote_trace_500
+          stub_remote_url_500(url)
         end
 
         it 'returns a trace' do
-          expect { get_trace }.to raise_error(Gitlab::Ci::Trace::HttpIO::FailedToGetChunkError)
+          expect { get_trace }.to raise_error(Gitlab::HttpIO::FailedToGetChunkError)
         end
       end
     end
@@ -420,7 +431,7 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
   end
 
   describe 'POST erase' do
-    let(:role) { :master }
+    let(:role) { :maintainer }
 
     before do
       project.add_role(user, role)
@@ -551,6 +562,107 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       it 'redirect to the trace file url' do
         expect(subject).to redirect_to(job.job_artifacts_trace.file.url)
       end
+    end
+  end
+
+  describe 'GET #terminal' do
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    context 'when job exists' do
+      context 'and it has a terminal' do
+        let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+
+        it 'has a job' do
+          get_terminal(id: job.id)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(assigns(:build).id).to eq(job.id)
+        end
+      end
+
+      context 'and does not have a terminal' do
+        let!(:job) { create(:ci_build, :running, pipeline: pipeline) }
+
+        it 'returns not_found' do
+          get_terminal(id: job.id)
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+      end
+    end
+
+    context 'when job does not exist' do
+      it 'renders not_found' do
+        get_terminal(id: 1234)
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    def get_terminal(**extra_params)
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project
+      }
+
+      get :terminal, params.merge(extra_params)
+    end
+  end
+
+  describe 'GET #terminal_websocket_authorize' do
+    let!(:job) { create(:ci_build, :running, :with_runner_session, pipeline: pipeline) }
+
+    before do
+      project.add_developer(user)
+      sign_in(user)
+    end
+
+    context 'with valid workhorse signature' do
+      before do
+        allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_return(nil)
+      end
+
+      context 'and valid id' do
+        it 'returns the terminal for the job' do
+          expect(Gitlab::Workhorse)
+            .to receive(:terminal_websocket)
+            .and_return(workhorse: :response)
+
+          get_terminal_websocket(id: job.id)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.headers["Content-Type"]).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
+          expect(response.body).to eq('{"workhorse":"response"}')
+        end
+      end
+
+      context 'and invalid id' do
+        it 'returns 404' do
+          get_terminal_websocket(id: 1234)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context 'with invalid workhorse signature' do
+      it 'aborts with an exception' do
+        allow(Gitlab::Workhorse).to receive(:verify_api_request!).and_raise(JWT::DecodeError)
+
+        expect { get_terminal_websocket(id: job.id) }.to raise_error(JWT::DecodeError)
+      end
+    end
+
+    def get_terminal_websocket(**extra_params)
+      params = {
+        namespace_id: project.namespace.to_param,
+        project_id: project
+      }
+
+      get :terminal_websocket_authorize, params.merge(extra_params)
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NewIssuable
   attr_reader :issuable, :user
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Used in EE by mirroring
 module ProjectStartImport
   def start(project)

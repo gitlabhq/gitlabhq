@@ -73,6 +73,7 @@ describe Clusters::Applications::Ingress do
     it 'should be initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
+      expect(subject.version).to be_nil
       expect(subject.values).to eq(ingress.values)
     end
   end

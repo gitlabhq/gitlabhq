@@ -50,11 +50,15 @@ module QA
       end
 
       def login_if_not_already_logged_in
-        account = `gcloud auth list --filter=status:ACTIVE --format="value(account)"`
-        if account.empty?
+        if Runtime::Env.has_gcloud_credentials?
           attempt_login_with_env_vars
         else
-          puts "gcloud account found. Using: #{account} for creating K8s cluster."
+          account = `gcloud auth list --filter=status:ACTIVE --format="value(account)"`
+          if account.empty?
+            raise "Failed to login to gcloud. No credentials provided in environment and no credentials found locally."
+          else
+            puts "gcloud account found. Using: #{account} for creating K8s cluster."
+          end
         end
       end
 

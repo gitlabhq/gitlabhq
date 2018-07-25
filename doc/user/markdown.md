@@ -9,7 +9,7 @@
 > For the best result, we encourage you to check this document out as rendered
 by GitLab: [markdown.md]
 
-_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content and Markdown files `.md` in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
+_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content, wiki pages and Markdown files (`.md`) in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
 
 _Where there are significant differences, we will try to call them out in this document._
 
@@ -22,7 +22,7 @@ You can use GFM in the following areas:
 - merge requests
 - milestones
 - snippets (the snippet must be named with a `.md` extension)
-- wiki pages
+- wiki pages (currently only rendered by Redcarpet)
 - markdown documents inside the repository (currently only rendered by Redcarpet)
 
 You can also use other rich text files in GitLab. You might have to install a

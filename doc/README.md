@@ -228,7 +228,7 @@ straight away.
 
 ### GitLab self-hosted
 
-With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/products/): Core, Starter, Premium, and Ultimate.
+With GitLab self-hosted, you deploy your own GitLab instance on-premises or on a private cloud of your choice. GitLab self-hosted is available for [free and with paid subscriptions](https://about.gitlab.com/pricing/): Core, Starter, Premium, and Ultimate.
 
 Every feature available in Core is also available in Starter, Premium, and Ultimate.
 Starter features are also available in Premium and Ultimate, and Premium features are also

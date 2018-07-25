@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AdminEmailWorker
   include ApplicationWorker
   include CronjobQueue

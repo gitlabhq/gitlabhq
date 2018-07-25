@@ -47,6 +47,7 @@ future GitLab releases.**
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_BEFORE_SHA**        | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_COMMIT_MESSAGE**           | 10.8   | all    | The full commit message. |
 | **CI_COMMIT_TITLE**             | 10.8   | all    | The title of the commit - the full first line of the message |
@@ -63,8 +64,8 @@ future GitLab releases.**
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
-| **CI_JOB_URL**                  | 11.0   | 0.5    | Job details URL |
+| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
+| **CI_JOB_URL**                  | 11.1   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
@@ -82,7 +83,7 @@ future GitLab releases.**
 | **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
-| **CI_PIPELINE_URL**             | 11.0   | 0.5    | Pipeline details URL |
+| **CI_PIPELINE_URL**             | 11.1   | 0.5    | Pipeline details URL |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_VISIBILITY**       | 10.3   | all    | The project visibility (internal, private, public) |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
@@ -118,6 +119,7 @@ future GitLab releases.**
 | `CI_BUILD_ID`         | `CI_JOB_ID`             |
 | `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
 | `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
+| `CI_BUILD_BEFORE_SHA` | `CI_COMMIT_BEFORE_SHA`  |
 | `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
 | `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
 | `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
@@ -553,7 +555,7 @@ Below you can find supported syntax reference:
     `/pattern/i` to make a pattern case-insensitive.
 
 [ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
-[eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
+[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
@@ -564,3 +566,5 @@ Below you can find supported syntax reference:
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
+[registry]: ../../user/project/container_registry.md
+[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories

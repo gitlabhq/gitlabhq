@@ -157,7 +157,7 @@ module IssuablesHelper
     output = ""
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
     output << content_tag(:strong) do
-      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline-block", tooltip: true)
+      author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
     end
 
@@ -236,6 +236,7 @@ module IssuablesHelper
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
       issuableTemplates: issuable_templates(issuable),
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,

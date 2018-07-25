@@ -143,7 +143,15 @@ module NotesHelper
       notesIds: @notes.map(&:id),
       now: Time.now.to_i,
       diffView: diff_view,
-      autocomplete: autocomplete
+      enableGFM: {
+        emojis: true,
+        members: autocomplete,
+        issues: autocomplete,
+        mergeRequests: autocomplete,
+        epics: autocomplete,
+        milestones: autocomplete,
+        labels: autocomplete
+      }
     }
   end
 
@@ -161,6 +169,7 @@ module NotesHelper
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
       closePath: close_issuable_path(issuable),
       reopenPath: reopen_issuable_path(issuable),
@@ -174,11 +183,11 @@ module NotesHelper
     discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
 
-  def has_vue_discussions_cookie?
-    cookies[:vue_mr_discussions] == 'true'
+  def rendered_for_merge_request?
+    params[:from_merge_request].present?
   end
 
   def serialize_notes?
-    has_vue_discussions_cookie? && !params['html']
+    rendered_for_merge_request? || params['html'].nil?
   end
 end

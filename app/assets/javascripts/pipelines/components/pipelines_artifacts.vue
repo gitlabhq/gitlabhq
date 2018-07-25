@@ -1,21 +1,21 @@
 <script>
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import icon from '../../vue_shared/components/icon.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+import icon from '../../vue_shared/components/icon.vue';
 
-  export default {
-    directives: {
-      tooltip,
+export default {
+  directives: {
+    tooltip,
+  },
+  components: {
+    icon,
+  },
+  props: {
+    artifacts: {
+      type: Array,
+      required: true,
     },
-    components: {
-      icon,
-    },
-    props: {
-      artifacts: {
-        type: Array,
-        required: true,
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div

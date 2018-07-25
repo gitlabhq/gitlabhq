@@ -1,5 +1,0 @@
----
-title: Fix issue board bug with long strings in titles
-merge_request: 18924
-author:
-type: fixed

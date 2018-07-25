@@ -16,7 +16,8 @@ module Gitlab
       ImportSource.new('fogbugz',        'FogBugz',       Gitlab::FogbugzImport::Importer),
       ImportSource.new('git',            'Repo by URL',   nil),
       ImportSource.new('gitlab_project', 'GitLab export', Gitlab::ImportExport::Importer),
-      ImportSource.new('gitea',          'Gitea',         Gitlab::LegacyGithubImport::Importer)
+      ImportSource.new('gitea',          'Gitea',         Gitlab::LegacyGithubImport::Importer),
+      ImportSource.new('manifest',       'Manifest file', nil)
     ].freeze
 
     class << self

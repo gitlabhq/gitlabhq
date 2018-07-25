@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this, object-shorthand, no-unused-vars, no-use-before-define, no-new, max-len, no-restricted-syntax, guard-for-in, no-continue */
+/* eslint-disable object-shorthand, no-unused-vars, no-use-before-define, max-len, no-restricted-syntax, guard-for-in, no-continue */
 
 import $ from 'jquery';
 import _ from 'underscore';
@@ -321,7 +321,7 @@ export class CopyAsGFM {
   }
 
   static copyAsGFM(e, transformer) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const documentFragment = getSelectedFragment();
@@ -338,7 +338,7 @@ export class CopyAsGFM {
   }
 
   static pasteGFM(e) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const text = clipboardData.getData('text/plain');

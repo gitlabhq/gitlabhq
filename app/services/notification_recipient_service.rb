@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Used by NotificationService to determine who should receive notification
 #
@@ -10,16 +12,16 @@ module NotificationRecipientService
     NotificationRecipient.new(user, *args).notifiable?
   end
 
-  def self.build_recipients(*a)
-    Builder::Default.new(*a).notification_recipients
+  def self.build_recipients(*args)
+    Builder::Default.new(*args).notification_recipients
   end
 
-  def self.build_new_note_recipients(*a)
-    Builder::NewNote.new(*a).notification_recipients
+  def self.build_new_note_recipients(*args)
+    Builder::NewNote.new(*args).notification_recipients
   end
 
-  def self.build_merge_request_unmergeable_recipients(*a)
-    Builder::MergeRequestUnmergeable.new(*a).notification_recipients
+  def self.build_merge_request_unmergeable_recipients(*args)
+    Builder::MergeRequestUnmergeable.new(*args).notification_recipients
   end
 
   module Builder
@@ -44,7 +46,6 @@ module NotificationRecipientService
         raise 'abstract'
       end
 
-      # rubocop:disable Rails/Delegate
       def project
         target.project
       end

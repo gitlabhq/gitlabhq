@@ -71,7 +71,7 @@ For most installations, only two parameters are required:
 
 Other common configuration options:
 - `baseIP`: the desired [external IP address](#external-ip-recommended)
-- `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
+- `gitlab`: Choose the [desired edition](https://about.gitlab.com/pricing), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 

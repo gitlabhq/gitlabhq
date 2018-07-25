@@ -159,7 +159,7 @@ export default class FilteredSearchDropdownManager {
   load(key, firstLoad = false) {
     const mappingKey = this.mapping[key];
     const glClass = mappingKey.gl;
-    const element = mappingKey.element;
+    const { element } = mappingKey;
     let forceShowList = false;
 
     if (!mappingKey.reference) {

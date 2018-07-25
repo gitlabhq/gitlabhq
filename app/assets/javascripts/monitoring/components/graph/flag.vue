@@ -97,7 +97,7 @@ export default {
         ? this.deploymentFlagData.seriesIndex
         : indexFromCoordinates;
       const value = series.values[index] && series.values[index].value;
-      if (isNaN(value)) {
+      if (Number.isNaN(value)) {
         return '-';
       }
       return `${formatRelevantDigits(value)}${this.unitOfDisplay}`;
@@ -125,6 +125,7 @@ export default {
       :class="flagOrientation"
       class="prometheus-graph-flag popover"
     >
+      <div class="arrow-shadow"></div>
       <div class="arrow"></div>
       <div class="popover-title">
         <h5 v-if="deploymentFlagData">

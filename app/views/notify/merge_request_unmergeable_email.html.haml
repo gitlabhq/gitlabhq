@@ -1,6 +1,2 @@
 %p
-  Merge Request #{link_to @merge_request.to_reference, project_merge_request_url(@merge_request.target_project, @merge_request)} can no longer be merged due to the following #{'reason'.pluralize(@reasons.count)}:
-
-  %ul
-    - @reasons.each do |reason|
-      %li= reason
+  Merge Request #{link_to @merge_request.to_reference, project_merge_request_url(@merge_request.target_project, @merge_request)} can no longer be merged due to conflict.

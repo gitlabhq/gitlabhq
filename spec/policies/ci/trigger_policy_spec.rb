@@ -43,9 +43,9 @@ describe Ci::TriggerPolicy do
     context 'when owner is undefined' do
       let(:owner) { nil }
 
-      context 'when user is master of the project' do
+      context 'when user is maintainer of the project' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -67,9 +67,9 @@ describe Ci::TriggerPolicy do
     context 'when owner is an user' do
       let(:owner) { user }
 
-      context 'when user is master of the project' do
+      context 'when user is maintainer of the project' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it_behaves_like 'allows to admin and manage trigger'
@@ -79,9 +79,9 @@ describe Ci::TriggerPolicy do
     context 'when owner is another user' do
       let(:owner) { create(:user) }
 
-      context 'when user is master of the project' do
+      context 'when user is maintainer of the project' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it_behaves_like 'allows to manage trigger'

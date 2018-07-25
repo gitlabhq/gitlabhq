@@ -1,23 +1,27 @@
 <script>
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
 import RepoEditor from './repo_editor.vue';
 import FindFile from './file_finder/index.vue';
 import RightPane from './panes/right.vue';
+import ErrorMessage from './error_message.vue';
 
 const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
+    NewModal,
     IdeSidebar,
     RepoTabs,
     IdeStatusBar,
     RepoEditor,
     FindFile,
     RightPane,
+    ErrorMessage,
   },
   computed: {
     ...mapState([
@@ -28,6 +32,7 @@ export default {
       'fileFindVisible',
       'emptyStateSvgPath',
       'currentProjectId',
+      'errorMessage',
     ]),
     ...mapGetters(['activeFile', 'hasChanges']),
   },
@@ -72,6 +77,10 @@ export default {
 
 <template>
   <article class="ide">
+    <error-message
+      v-if="errorMessage"
+      :message="errorMessage"
+    />
     <div
       class="ide-view"
     >
@@ -130,5 +139,6 @@ export default {
       />
     </div>
     <ide-status-bar :file="activeFile"/>
+    <new-modal />
   </article>
 </template>

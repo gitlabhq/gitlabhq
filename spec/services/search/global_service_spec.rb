@@ -10,7 +10,7 @@ describe Search::GlobalService do
   let!(:public_project)   { create(:project, :public, name: 'searchable_public_project') }
 
   before do
-    found_project.add_master(user)
+    found_project.add_maintainer(user)
   end
 
   describe '#execute' do

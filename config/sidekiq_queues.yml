@@ -62,7 +62,6 @@
   - [default, 1]
   - [pages, 1]
   - [system_hook_push, 1]
-  - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
   - [gcp_cluster, 1]
@@ -76,4 +75,4 @@
   - [repository_update_remote_mirror, 1]
   - [repository_remove_remote, 1]
   - [create_note_diff_file, 1]
- 
+  - [delete_diff_files, 1]

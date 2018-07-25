@@ -9,7 +9,7 @@
     = render 'shared/issuable/nav', type: :issues
     .nav-controls
       = render 'shared/issuable/feed_buttons'
-      = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues
+      = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues, with_feature_enabled: 'issues'
 
   = render 'shared/issuable/search_bar', type: :issues
 

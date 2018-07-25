@@ -180,14 +180,14 @@ export default class UserTabs {
   }
 
   toggleLoading(status) {
-    return this.$parentEl.find('.loading-status .loading').toggleClass('hidden', !status);
+    return this.$parentEl.find('.loading-status .loading').toggleClass('hide', !status);
   }
 
   setCurrentAction(source) {
     let newState = source;
     newState = newState.replace(/\/+$/, '');
     newState += this.windowLocation.search + this.windowLocation.hash;
-    history.replaceState(
+    window.history.replaceState(
       {
         url: newState,
       },

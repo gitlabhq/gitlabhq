@@ -4,7 +4,7 @@ describe 'User updates wiki page' do
   shared_examples 'wiki page user update' do
     let(:user) { create(:user) }
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -96,11 +96,11 @@ describe 'User updates wiki page' do
           expect(find('textarea#wiki_content').value).to eq('')
         end
 
-        it 'shows the autocompletion dropdown', :js do
+        it 'shows the emoji autocompletion dropdown', :js do
           click_link('Edit')
 
           find('#wiki_content').native.send_keys('')
-          fill_in(:wiki_content, with: '@')
+          fill_in(:wiki_content, with: ':')
 
           expect(page).to have_selector('.atwho-view')
         end

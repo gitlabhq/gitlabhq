@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
   new Wikis(); // eslint-disable-line no-new
   new ShortcutsWiki(); // eslint-disable-line no-new
   new ZenMode(); // eslint-disable-line no-new
-  new GLForm($('.wiki-form'), true); // eslint-disable-line no-new
+  new GLForm($('.wiki-form')); // eslint-disable-line no-new
 
   const deleteWikiButton = document.getElementById('delete-wiki-button');
 

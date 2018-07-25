@@ -15,11 +15,21 @@ module StubObjectStorage
 
     return unless enabled
 
+    stub_object_storage(connection_params: uploader.object_store_credentials,
+                        remote_directory: remote_directory)
+  end
+
+  def stub_object_storage(connection_params:, remote_directory:)
     Fog.mock!
 
-    ::Fog::Storage.new(uploader.object_store_credentials).tap do |connection|
+    ::Fog::Storage.new(connection_params).tap do |connection|
       begin
         connection.directories.create(key: remote_directory)
+
+        # Cleanup remaining files
+        connection.directories.each do |directory|
+          directory.files.map(&:destroy)
+        end
       rescue Excon::Error::Conflict
       end
     end

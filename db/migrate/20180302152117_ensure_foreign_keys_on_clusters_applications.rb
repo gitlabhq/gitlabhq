@@ -8,6 +8,7 @@ class EnsureForeignKeysOnClustersApplications < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  # rubocop:disable Cop/InBatches
   def up
     existing = Clusters::Cluster
       .joins(:application_ingress)

@@ -5,7 +5,7 @@ describe GitlabSchema.types['Query'] do
     expect(described_class.graphql_name).to eq('Query')
   end
 
-  it { is_expected.to have_graphql_fields(:project, :merge_request, :echo) }
+  it { is_expected.to have_graphql_fields(:project, :echo) }
 
   describe 'project field' do
     subject { described_class.fields['project'] }
@@ -18,20 +18,6 @@ describe GitlabSchema.types['Query'] do
 
     it 'authorizes with read_project' do
       is_expected.to require_graphql_authorizations(:read_project)
-    end
-  end
-
-  describe 'merge_request field' do
-    subject { described_class.fields['mergeRequest'] }
-
-    it 'finds MRs by project and IID' do
-      is_expected.to have_graphql_arguments(:full_path, :iid)
-      is_expected.to have_graphql_type(Types::MergeRequestType)
-      is_expected.to have_graphql_resolver(Resolvers::MergeRequestResolver)
-    end
-
-    it 'authorizes with read_merge_request' do
-      is_expected.to require_graphql_authorizations(:read_merge_request)
     end
   end
 end

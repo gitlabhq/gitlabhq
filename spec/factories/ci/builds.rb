@@ -248,5 +248,11 @@ FactoryBot.define do
       failed
       failure_reason 2
     end
+
+    trait :with_runner_session do
+      after(:build) do |build|
+        build.build_runner_session(url: 'ws://localhost')
+      end
+    end
   end
 end

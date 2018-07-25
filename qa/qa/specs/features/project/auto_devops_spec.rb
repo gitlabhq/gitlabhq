@@ -1,12 +1,12 @@
 require 'pathname'
 
 module QA
-  feature 'Auto Devops', :kubernetes do
+  describe 'Auto Devops', :kubernetes do
     after do
       @cluster&.remove!
     end
 
-    scenario 'user creates a new project and runs auto devops' do
+    it 'user creates a new project and runs auto devops' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -16,7 +16,7 @@ module QA
       end
 
       # Create Auto Devops compatible repo
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
         push.directory = Pathname
           .new(__dir__)

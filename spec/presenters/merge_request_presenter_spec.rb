@@ -70,41 +70,6 @@ describe MergeRequestPresenter do
     end
   end
 
-  describe "#unmergeable_reasons" do
-    let(:presenter) { described_class.new(resource, current_user: user) }
-
-    before do
-      # Mergeable base state
-      allow(resource).to receive(:has_no_commits?).and_return(false)
-      allow(resource).to receive(:source_branch_exists?).and_return(true)
-      allow(resource).to receive(:target_branch_exists?).and_return(true)
-      allow(resource.project.repository).to receive(:can_be_merged?).and_return(true)
-    end
-
-    it "handles mergeable request" do
-      expect(presenter.unmergeable_reasons).to eq([])
-    end
-
-    it "handles no commit" do
-      allow(resource).to receive(:has_no_commits?).and_return(true)
-
-      expect(presenter.unmergeable_reasons).to eq(["no commits"])
-    end
-
-    it "handles branches missing" do
-      allow(resource).to receive(:source_branch_exists?).and_return(false)
-      allow(resource).to receive(:target_branch_exists?).and_return(false)
-
-      expect(presenter.unmergeable_reasons).to eq(["source branch is missing", "target branch is missing"])
-    end
-
-    it "handles merge conflict" do
-      allow(resource.project.repository).to receive(:can_be_merged?).and_return(false)
-
-      expect(presenter.unmergeable_reasons).to eq(["has merge conflicts"])
-    end
-  end
-
   describe '#conflict_resolution_path' do
     let(:project) { create :project }
     let(:user) { create :user }
@@ -305,7 +270,7 @@ describe MergeRequestPresenter do
     context 'when can create issue and issues enabled' do
       it 'returns path' do
         allow(project).to receive(:issues_enabled?) { true }
-        project.add_master(user)
+        project.add_maintainer(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/issues/new?merge_request_to_resolve_discussions_of=#{resource.iid}")
@@ -323,7 +288,7 @@ describe MergeRequestPresenter do
     context 'when issues disabled' do
       it 'returns nil' do
         allow(project).to receive(:issues_enabled?) { false }
-        project.add_master(user)
+        project.add_maintainer(user)
 
         is_expected.to be_nil
       end
@@ -342,7 +307,7 @@ describe MergeRequestPresenter do
     context 'when merge request enabled and has permission' do
       it 'has remove_wip_path' do
         allow(project).to receive(:merge_requests_enabled?) { true }
-        project.add_master(user)
+        project.add_maintainer(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")

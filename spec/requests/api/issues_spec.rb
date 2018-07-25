@@ -1083,7 +1083,7 @@ describe API::Issues do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       context 'resolving all discussions in a merge request' do
@@ -1679,7 +1679,7 @@ describe API::Issues do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
     context 'when unauthenticated' do
-      it "returns unautorized" do
+      it "returns unauthorized" do
         get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
 
         expect(response).to have_gitlab_http_status(401)
@@ -1695,7 +1695,7 @@ describe API::Issues do
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

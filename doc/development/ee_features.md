@@ -5,7 +5,7 @@
 - **Write documentation.**: Add documentation to the `doc/` directory. Describe
   the feature and include screenshots, if applicable.
 - **Submit a MR to the `www-gitlab-com` project.**: Add the new feature to the
-  [EE features list][ee-features-list].
+  [EE features list](https://about.gitlab.com/features/).
 
 ## Act as CE when unlicensed
 

@@ -100,12 +100,12 @@ const Api = {
   },
 
   // Return Merge Request for project
-  mergeRequest(projectPath, mergeRequestId) {
+  mergeRequest(projectPath, mergeRequestId, params = {}) {
     const url = Api.buildUrl(Api.mergeRequestPath)
       .replace(':id', encodeURIComponent(projectPath))
       .replace(':mrid', mergeRequestId);
 
-    return axios.get(url);
+    return axios.get(url, { params });
   },
 
   mergeRequests(params = {}) {
@@ -150,14 +150,15 @@ const Api = {
   },
 
   // Return group projects list. Filtered by query
-  groupProjects(groupId, query, callback) {
+  groupProjects(groupId, query, options, callback) {
     const url = Api.buildUrl(Api.groupProjectsPath).replace(':id', groupId);
+    const defaults = {
+      search: query,
+      per_page: 20,
+    };
     return axios
       .get(url, {
-        params: {
-          search: query,
-          per_page: 20,
-        },
+        params: Object.assign({}, defaults, options),
       })
       .then(({ data }) => callback(data));
   },
@@ -240,6 +241,15 @@ const Api = {
         },
         options,
       ),
+    });
+  },
+
+  createBranch(id, { ref, branch }) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.post(url, {
+      ref,
+      branch,
     });
   },
 

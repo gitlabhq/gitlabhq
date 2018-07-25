@@ -1,21 +1,21 @@
 <script>
-  export default {
-    name: 'PipelinesEmptyState',
-    props: {
-      helpPagePath: {
-        type: String,
-        required: true,
-      },
-      emptyStateSvgPath: {
-        type: String,
-        required: true,
-      },
-      canSetCi: {
-        type: Boolean,
-        required: true,
-      },
+export default {
+  name: 'PipelinesEmptyState',
+  props: {
+    helpPagePath: {
+      type: String,
+      required: true,
     },
-  };
+    emptyStateSvgPath: {
+      type: String,
+      required: true,
+    },
+    canSetCi: {
+      type: Boolean,
+      required: true,
+    },
+  },
+};
 </script>
 <template>
   <div class="row empty-state js-empty-state">

@@ -1,5 +1,0 @@
----
-title: Make CI job update entrypoint to work as keep-alive endpoint
-merge_request: 19543
-author:
-type: changed

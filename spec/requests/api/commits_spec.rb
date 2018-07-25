@@ -12,7 +12,7 @@ describe API::Commits do
   let(:current_user) { nil }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/repository/commits' do
@@ -55,7 +55,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'project commits'
@@ -514,6 +514,38 @@ describe API::Commits do
         expect(response).to have_gitlab_http_status(400)
       end
     end
+
+    context 'when committing into a fork as a maintainer' do
+      include_context 'merge request allowing collaboration'
+
+      let(:project_id) { forked_project.id }
+
+      def push_params(branch_name)
+        {
+          branch: branch_name,
+          commit_message: 'Hello world',
+          actions: [
+            {
+              action: 'create',
+              file_path: 'foo/bar/baz.txt',
+              content: 'puts 8'
+            }
+          ]
+        }
+      end
+
+      it 'allows pushing to the source branch of the merge request' do
+        post api(url, user), push_params('feature')
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'denies pushing to another branch' do
+        post api(url, user), push_params('other-branch')
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
   end
 
   describe 'GET /projects/:id/repository/commits/:sha/refs' do
@@ -667,7 +699,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref commit'
@@ -785,7 +817,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref diff'
@@ -884,7 +916,7 @@ describe API::Commits do
       end
     end
 
-    context 'when authenticated', 'as a master' do
+    context 'when authenticated', 'as a maintainer' do
       let(:current_user) { user }
 
       it_behaves_like 'ref comments'
@@ -1065,9 +1097,27 @@ describe API::Commits do
         it 'returns 400 if you are not allowed to push to the target branch' do
           post api(route, current_user), branch: 'feature'
 
-          expect(response).to have_gitlab_http_status(400)
-          expect(json_response['message']).to eq('You are not allowed to push into this branch')
+          expect(response).to have_gitlab_http_status(:forbidden)
+          expect(json_response['message']).to match(/You are not allowed to push into this branch/)
         end
+      end
+    end
+
+    context 'when cherry picking to a fork as a maintainer' do
+      include_context 'merge request allowing collaboration'
+
+      let(:project_id) { forked_project.id }
+
+      it 'allows access from a maintainer that to the source branch' do
+        post api(route, user), branch: 'feature'
+
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      it 'denies cherry picking to another branch' do
+        post api(route, user), branch: 'master'
+
+        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

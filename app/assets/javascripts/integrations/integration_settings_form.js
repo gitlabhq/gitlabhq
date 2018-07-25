@@ -91,7 +91,6 @@ export default class IntegrationSettingsForm {
     }
   }
 
-  /* eslint-disable promise/catch-or-return, no-new */
   /**
    * Test Integration config
    */
