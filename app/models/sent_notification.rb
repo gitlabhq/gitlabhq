@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SentNotification < ActiveRecord::Base
   serialize :position, Gitlab::Diff::Position # rubocop:disable Cop/ActiveRecordSerialize
 

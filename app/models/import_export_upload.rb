@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ImportExportUpload < ActiveRecord::Base
   include WithUploads
   include ObjectStorage::BackgroundMove

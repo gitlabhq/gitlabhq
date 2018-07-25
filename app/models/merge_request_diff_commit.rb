@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestDiffCommit < ActiveRecord::Base
   include ShaAttribute
 

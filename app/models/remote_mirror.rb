@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 

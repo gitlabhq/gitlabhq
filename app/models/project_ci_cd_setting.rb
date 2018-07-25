@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectCiCdSetting < ActiveRecord::Base
   belongs_to :project, inverse_of: :ci_cd_settings
 
