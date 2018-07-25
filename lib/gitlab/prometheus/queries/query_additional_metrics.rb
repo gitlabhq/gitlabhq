@@ -14,12 +14,16 @@ module Gitlab
 
           lambda do |group|
             metrics = group.metrics.map do |metric|
-              {
+              metric_hsh = {
                 title: metric.title,
                 weight: metric.weight,
                 y_label: metric.y_label,
                 queries: metric.queries.map(&query_processor).select(&method(:query_with_result))
               }
+
+              metric_hsh[:id] = metric.id if metric.id
+
+              metric_hsh
             end
 
             {
