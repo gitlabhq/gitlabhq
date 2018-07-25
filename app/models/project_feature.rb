@@ -53,12 +53,15 @@ class ProjectFeature < ActiveRecord::Base
   default_value_for :wiki_access_level,           value: ENABLED, allows_nil: false
   default_value_for :repository_access_level,     value: ENABLED, allows_nil: false
 
+<<<<<<< HEAD
   after_commit on: :update do
     if Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?
       ElasticIndexerWorker.perform_async(:update, 'Project', project_id)
     end
   end
 
+=======
+>>>>>>> upstream/master
   after_create ->(model) { SiteStatistic.track(STATISTICS_ATTRIBUTE) if model.wiki_enabled? }
   after_update :update_site_statistics
 
