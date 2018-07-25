@@ -18,6 +18,7 @@ class CreateChatopsTables < ActiveRecord::Migration
       t.index :pipeline_id, unique: true
     end
 
+    # rubocop:disable Migration/AddConcurrentForeignKey
     add_foreign_key :ci_pipeline_chat_data, :ci_pipelines,
       column: :pipeline_id,
       on_delete: :cascade

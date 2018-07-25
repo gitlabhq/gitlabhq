@@ -1,4 +1,4 @@
-  class CreateProjectRepositoryStates < ActiveRecord::Migration
+class CreateProjectRepositoryStates < ActiveRecord::Migration
   DOWNTIME = false
 
   def change

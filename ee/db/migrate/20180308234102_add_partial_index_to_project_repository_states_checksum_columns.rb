@@ -13,7 +13,7 @@ class AddPartialIndexToProjectRepositoryStatesChecksumColumns < ActiveRecord::Mi
         name: INDEX_NAME,
         length: Gitlab::Database.mysql? ? 20 : nil,
         where: 'repository_verification_checksum IS NULL OR wiki_verification_checksum IS NULL'
-      )
+                          )
     end
   end
 
