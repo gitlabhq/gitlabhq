@@ -33,4 +33,9 @@ module MirrorHelper
     count = project.mirror == true ? 1 : 0
     count + @project.remote_mirrors.to_a.count { |mirror| mirror.enabled }
   end
+
+  def mirrors_form_data_attributes
+    { project_mirror_ssh_endpoint: ssh_host_keys_project_mirror_path(@project, :json),
+    project_mirror_endpoint: project_mirror_path(@project) }
+  end
 end

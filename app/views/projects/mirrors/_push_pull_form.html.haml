@@ -1,5 +1,4 @@
-- import_data = @project.import_data || @project.build_import_data
-- is_one_user_option = default_mirror_users.count == 1
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 
 = f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
   = rm_f.hidden_field :enabled, value: '1'

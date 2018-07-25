@@ -3,8 +3,8 @@
 - can_push = can?(current_user, :admin_remote_mirror, @project)
 - can_pull = can?(current_user, :admin_mirror, @project)
 - options = []
-- options.unshift([_('Push'), 'push']) if can_push
 - options.unshift([_('Pull'), 'pull']) if can_pull
+- options.unshift([_('Push'), 'push']) if can_push
 
 %section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -16,7 +16,7 @@
       = link_to _('Read more'), help_page_path('workflow/repository_mirroring'), target: '_blank'
 
   .settings-content
-    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: { project_mirror_ssh_endpoint: ssh_host_keys_project_mirror_path(@project, :json), project_mirror_endpoint: project_mirror_path(@project) } } do |f|
+    = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: mirrors_form_data_attributes } do |f|
       .panel.panel-default
         .panel-heading
           %h3.panel-title= _('Mirror a repository')
@@ -29,9 +29,7 @@
 
           = render 'projects/mirrors/instructions'
 
-          .form-group
-            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
-            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction'
+          = render_if_exists 'projects/mirrors/direction_dropdown', options: options
 
           = render 'projects/mirrors/push_pull_form', can_push: can_push, can_pull: can_pull, f: f
 
@@ -50,29 +48,13 @@
             %tr
               %th
                 = _('Mirrored repositories')
-                %span.js-mirrored-repo-count (#{mirrored_repositories_count})
+                = render_if_exists 'projects/mirrors/mirrored_repositories_count'
               %th= _('Direction')
               %th= _('Last update')
               %th
               %th
           %tbody.js-mirrors-table-body
-            - if @project.mirror
-              %tr
-                %td= @project.username_only_import_url
-                %td= _('Pull')
-                %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : _('Never')
-                %td
-                  - if @project.import_error.present?
-                    .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) }= _('Error')
-                %td
-                  .btn-group.mirror-actions-group{ role: 'group' }
-                    - if @project.mirror? && can?(current_user, :push_code, @project)
-                      - if @project.mirror_about_to_update? || @project.updating_mirror?
-                        %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: _('Updating') }= icon("refresh spin")
-                      - else
-                        = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn js-force-update-mirror', data: { container: 'body', toggle: 'tooltip' }, title: _('Update now') do
-                          = icon("refresh")
-                    %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-danger{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
+            = render_if_exists 'projects/mirrors/table_pull_row'
             - @project.remote_mirrors.each_with_index do |mirror, index|
               - if mirror.enabled
                 %tr
@@ -86,11 +68,3 @@
                     .btn-group.mirror-actions-group{ role: 'group' }
                       = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                       %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
-
-      %template.js-tr-template
-        %tr
-          %td <%- safeUrl %>
-          %td <%- direction %>
-          %td.js-mirror-timeago <%- timeago %>
-          %td
-            %button.js-delete-mirror.btn.btn-transparent{ type: 'button', class: 'js-delete-<%-direction%>-mirror', data: { mirror_id: '<%- id %>' } }= icon('trash-o')
