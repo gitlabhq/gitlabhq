@@ -2411,7 +2411,6 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.integer "wikis_count", default: 0, null: false
   end
 
-<<<<<<< HEAD
   create_table "slack_integrations", force: :cascade do |t|
     t.integer "service_id", null: false
     t.string "team_id", null: false
@@ -2425,8 +2424,6 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_index "slack_integrations", ["service_id"], name: "index_slack_integrations_on_service_id", using: :btree
   add_index "slack_integrations", ["team_id", "alias"], name: "index_slack_integrations_on_team_id_and_alias", unique: true, using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"
