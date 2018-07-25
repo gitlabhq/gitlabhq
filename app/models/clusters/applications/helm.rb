@@ -17,20 +17,7 @@ module Clusters
 
       before_create :create_keys_and_certs
 
-      def create_keys_and_certs
-        ca_cert = Gitlab::Kubernetes::Helm::Certificate.generate_root
-        self.ca_key = ca_cert.key_string
-        self.ca_cert = ca_cert.cert_string
-      end
-
-      def ca_cert_obj
-        return unless has_ssl?
-
-        Gitlab::Kubernetes::Helm::Certificate
-          .from_strings(ca_key, ca_cert)
-      end
-
-      def issue_cert
+      def issue_client_cert
         ca_cert_obj.issue
       end
 
@@ -41,20 +28,41 @@ module Clusters
       end
 
       def install_command
-        tiller_cert = ca_cert_obj.issue(expires_in: Gitlab::Kubernetes::Helm::Certificate::INFINITE_EXPIRY)
-
         Gitlab::Kubernetes::Helm::InitCommand.new(
           name: name,
-          files: {
-            'ca.pem': ca_cert,
-            'cert.pem': tiller_cert.cert_string,
-            'key.pem': tiller_cert.key_string
-          }
+          files: files
         )
       end
 
       def has_ssl?
         ca_key.present? && ca_cert.present?
+      end
+
+      private
+
+      def files
+        {
+          'ca.pem': ca_cert,
+          'cert.pem': tiller_cert.cert_string,
+          'key.pem': tiller_cert.key_string
+        }
+      end
+
+      def create_keys_and_certs
+        ca_cert = Gitlab::Kubernetes::Helm::Certificate.generate_root
+        self.ca_key = ca_cert.key_string
+        self.ca_cert = ca_cert.cert_string
+      end
+
+      def tiller_cert
+        @tiller_cert ||= ca_cert_obj.issue(expires_in: Gitlab::Kubernetes::Helm::Certificate::INFINITE_EXPIRY)
+      end
+
+      def ca_cert_obj
+        return unless has_ssl?
+
+        Gitlab::Kubernetes::Helm::Certificate
+          .from_strings(ca_key, ca_cert)
       end
     end
   end

@@ -15,9 +15,9 @@ describe Clusters::Applications::Helm do
     it { is_expected.to contain_exactly(installed_cluster) }
   end
 
-  describe '#issue_cert' do
+  describe '#issue_client_cert' do
     let(:application) { create(:clusters_applications_helm) }
-    subject { application.issue_cert }
+    subject { application.issue_client_cert }
 
     it 'returns a new cert' do
       is_expected.to be_kind_of(Gitlab::Kubernetes::Helm::Certificate)
