@@ -124,7 +124,7 @@ To use the `copy` strategy instead of the default streaming strategy, specify
 
 ### Excluding specific directories from the backup
 
-You can choose what should be backed up by adding the environment variable `SKIP`.
+You can choose what should be exempt from the backup up by adding the environment variable `SKIP`.
 The available options are:
 
 - `db` (database)
@@ -137,6 +137,9 @@ The available options are:
 - `pages` (Pages content)
 
 Use a comma to specify several options at the same time:
+
+All wikis will be backed up as part of the `repositories` group. Non-existent wikis
+will be skipped during a backup.
 
 ```
 # use this command if you've installed GitLab with the Omnibus package
