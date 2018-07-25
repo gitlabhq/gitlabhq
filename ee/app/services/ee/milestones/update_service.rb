@@ -7,10 +7,8 @@ module EE
       def execute(milestone)
         super
 
-        milestone.issues.includes(epic: :group).each do |issue|
-          if issue.epic
-            issue.epic.update_dates
-          end
+        ::Epic.joins(:issues).where(issues: { milestone_id: milestone.id }).each do |epic|
+          epic.update_dates
         end
 
         milestone
