@@ -9,7 +9,7 @@ describe BitbucketServer::Paginator do
     let(:paginator) { described_class.new(connection, 'http://more-data', :pull_request) }
     let(:page_attrs) { { 'isLastPage' => false, 'nextPageStart' => 1 } }
 
-    it 'return items and raises StopIteration in the end' do
+    it 'returns items and raises StopIteration in the end' do
       allow(paginator).to receive(:fetch_next_page).and_return(first_page)
       expect(paginator.items).to match(['item_1'])
 
