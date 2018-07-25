@@ -73,7 +73,7 @@ export default {
       return !this.clickable ? 'disabled' : '';
     },
     linkClass() {
-      return `author_link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`;
+      return `author-link ${this.tooltipClass} ${this.extraLinkClass} ${this.disabledClass}`;
     },
   },
 };
