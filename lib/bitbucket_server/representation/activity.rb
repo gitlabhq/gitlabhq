@@ -3,16 +3,12 @@
 module BitbucketServer
   module Representation
     class Activity < Representation::Base
-      def action
-        raw['action']
-      end
-
       def comment?
         action == 'COMMENTED'
       end
 
       def inline_comment?
-        comment? && comment_anchor
+        !!(comment? && comment_anchor)
       end
 
       def comment
@@ -26,57 +22,41 @@ module BitbucketServer
           end
       end
 
-      # XXX Move this into MergeEvent
+      # TODO Move this into MergeEvent
       def merge_event?
         action == 'MERGED'
       end
 
       def committer_user
-        commit.fetch('committer', {})['displayName']
+        raw.dig('commit', 'committer', 'displayName')
       end
 
       def committer_email
-        commit.fetch('committer', {})['emailAddress']
+        raw.dig('commit', 'committer', 'emailAddress')
       end
 
       def merge_timestamp
-        timestamp = commit.fetch('committer', {})['commiterTimestamp']
+        timestamp = raw.dig('commit', 'committerTimestamp')
 
         Time.at(timestamp / 1000.0) if timestamp.is_a?(Integer)
-      end
-
-      def commit
-        raw.fetch('commit', {})
       end
 
       def created_at
         Time.at(created_date / 1000) if created_date.is_a?(Integer)
       end
 
-      def updated_at
-        Time.at(updated_date / 1000) if created_date.is_a?(Integer)
-      end
-
       private
 
-      def raw_comment
-        raw.fetch('comment', {})
+      def action
+        raw['action']
       end
 
       def comment_anchor
         raw['commentAnchor']
       end
 
-      def author
-        raw_comment.fetch('author', {})
-      end
-
       def created_date
-        comment['createdDate']
-      end
-
-      def updated_date
-        comment['updatedDate']
+        raw.dig('createdDate')
       end
     end
   end
