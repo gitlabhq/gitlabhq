@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitbucketServer
   class Paginator
     PAGE_LENGTH = 25

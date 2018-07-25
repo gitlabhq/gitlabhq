@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitbucketServer
   module Representation
     # A general comment with the structure:

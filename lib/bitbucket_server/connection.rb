@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 module BitbucketServer
   class Connection
     include ActionView::Helpers::SanitizeHelper
 
-    DEFAULT_API_VERSION = '1.0'.freeze
+    DEFAULT_API_VERSION = '1.0'
 
     attr_reader :api_version, :base_uri, :username, :token
 

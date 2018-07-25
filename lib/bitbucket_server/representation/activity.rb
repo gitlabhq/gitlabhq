@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitbucketServer
   module Representation
     class Activity < Representation::Base
@@ -6,7 +8,7 @@ module BitbucketServer
       end
 
       def comment?
-        action == 'COMMENTED'.freeze
+        action == 'COMMENTED'
       end
 
       def inline_comment?

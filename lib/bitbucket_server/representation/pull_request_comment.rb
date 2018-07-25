@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BitbucketServer
   module Representation
     # An inline comment with the following structure that identifies
