@@ -9,6 +9,10 @@ In case you find throttling is not enough to protect you against abusive clients
 Rack Attack offers IP whitelisting, blacklisting, Fail2ban style filtering and
 tracking.
 
+**Note:** Starting with 11.2, Rack Attack is disabled by default. To continue
+using this feature, please enable it in your `gitlab.rb` by setting 
+`gitlab_rails['rack_attack_git_basic_auth'] = true`.
+
 By default, user sign-in, user sign-up (if enabled), and user password reset is
 limited to 6 requests per minute. After trying for 6 times, the client will
 have to wait for the next minute to be able to try again.
