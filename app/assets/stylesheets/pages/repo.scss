@@ -786,7 +786,10 @@
   top: 0;
   bottom: 0;
   width: 4px;
-  background-color: $white-dark;
+
+  &:hover {
+    background-color: $white-normal;
+  }
 
   &.drag-right {
     right: 0;
