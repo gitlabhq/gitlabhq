@@ -1,5 +1,0 @@
----
-title: Add missing Gitaly branch_update nil checks
-merge_request: 20711
-author:
-type: fixed

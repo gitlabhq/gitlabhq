@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters } from 'vuex';
+import { mapState } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -21,15 +21,16 @@ export default {
       type: Number,
       required: true,
     },
+    discussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters('diffs', ['discussionsByLineCode']),
-    discussions() {
-      return this.discussionsByLineCode[this.line.lineCode] || [];
-    },
     className() {
       return this.discussions.length ? '' : 'js-temp-notes-holder';
     },

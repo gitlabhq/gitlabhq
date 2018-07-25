@@ -1,0 +1,5 @@
+---
+title: Disable SAML and Bitbucket if OmniAuth is disabled
+merge_request: 20608
+author:
+type: fixed

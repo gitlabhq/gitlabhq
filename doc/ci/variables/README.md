@@ -64,7 +64,7 @@ future GitLab releases.**
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
+| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
 | **CI_JOB_URL**                  | 11.1   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
@@ -566,3 +566,5 @@ Below you can find supported syntax reference:
 [subgroups]: ../../user/group/subgroups/index.md
 [builds-policies]: ../yaml/README.md#only-and-except-complex
 [gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
+[registry]: ../../user/project/container_registry.md
+[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories

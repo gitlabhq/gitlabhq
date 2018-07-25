@@ -220,6 +220,9 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
 
+# Hangouts Chat integration
+gem 'hangouts-chat', '~> 0.0.5'
+
 # Asana integration
 gem 'asana', '~> 0.6.0'
 
@@ -230,7 +233,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 4.6.5'
+gem 'sanitize', '~> 4.6'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -419,7 +422,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.106.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.109.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

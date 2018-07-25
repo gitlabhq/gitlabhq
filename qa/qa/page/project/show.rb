@@ -14,7 +14,7 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle
-          element :new_issue_link, "link_to 'New issue', new_project_issue_path(@project)"
+          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)"
         end
 
         view 'app/views/shared/_ref_switcher.html.haml' do

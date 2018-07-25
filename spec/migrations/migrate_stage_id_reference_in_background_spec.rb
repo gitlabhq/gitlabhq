@@ -44,7 +44,7 @@ describe MigrateStageIdReferenceInBackground, :migration, :sidekiq do
   end
 
   it 'schedules background migrations' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       expect(jobs.where(stage_id: nil).count).to eq 5
 
       migrate!

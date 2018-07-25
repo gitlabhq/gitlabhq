@@ -33,11 +33,11 @@
 
   @include media-breakpoint-up(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
-      padding-right: $gutter_collapsed_width;
+      padding-right: $gutter-collapsed-width;
     }
 
     .merge-request-tabs-holder.affix {
-      right: $gutter_collapsed_width;
+      right: $gutter-collapsed-width;
     }
   }
 
@@ -67,21 +67,21 @@
 
   @include media-breakpoint-only(sm) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
-      padding-right: $gutter_collapsed_width;
+      padding-right: $gutter-collapsed-width;
     }
   }
 
   @include media-breakpoint-up(md) {
     .content-wrapper {
-      padding-right: $gutter_width;
+      padding-right: $gutter-width;
     }
 
     &:not(.with-overlay) .merge-request-tabs-holder.affix {
-      right: $gutter_width;
+      right: $gutter-width;
     }
 
     &.with-overlay .merge-request-tabs-holder.affix {
-      right: $gutter_collapsed_width;
+      right: $gutter-collapsed-width;
     }
   }
 }

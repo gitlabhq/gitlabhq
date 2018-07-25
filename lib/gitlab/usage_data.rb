@@ -95,7 +95,7 @@ module Gitlab
           gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
           ldap_enabled: Gitlab.config.ldap.enabled,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
-          omniauth_enabled: Gitlab.config.omniauth.enabled,
+          omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
           reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
           signup_enabled: Gitlab::CurrentSettings.allow_signup?
         }

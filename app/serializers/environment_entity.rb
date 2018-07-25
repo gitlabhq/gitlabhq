@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EnvironmentEntity < Grape::Entity
   include RequestAwareEntity
 

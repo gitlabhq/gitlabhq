@@ -126,10 +126,9 @@ module VisibilityLevelHelper
   end
 
   def visibility_icon_description(form_model)
-    case form_model
-    when Project
+    if form_model.respond_to?(:visibility_level_allowed_as_fork?)
       project_visibility_icon_description(form_model.visibility_level)
-    when Group
+    elsif form_model.respond_to?(:visibility_level_allowed_by_sub_groups?)
       group_visibility_icon_description(form_model.visibility_level)
     end
   end

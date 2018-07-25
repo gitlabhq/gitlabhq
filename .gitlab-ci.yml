@@ -447,9 +447,8 @@ danger-review:
     - retry gem install danger --no-ri --no-rdoc
   cache: {}
   only:
-    refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
+    variables:
+      - $DANGER_GITLAB_API_TOKEN
   except:
     refs:
       - master

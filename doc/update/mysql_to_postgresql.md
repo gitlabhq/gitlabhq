@@ -200,6 +200,12 @@ sudo apt-get install pgloader
     sudo -u git cp config/database.yml.postgresql config/database.yml
     sudo -u git -H chmod o-rwx config/database.yml
     ```
+1. Install Gems related to Postgresql
+
+    ``` bash
+    sudo -u git -H rm .bundle/config
+    sudo -u git -H bundle install --deployment --without development test mysql aws kerberos
+    ```
 
 1. Run the following commands to prepare the schema:
 

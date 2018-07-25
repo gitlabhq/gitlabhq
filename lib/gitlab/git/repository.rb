@@ -353,8 +353,6 @@ module Gitlab
       #     offset: 5,
       #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
         default_options = {
           limit: 10,
@@ -826,6 +824,10 @@ module Gitlab
         end
       end
 
+      # This method, fetch_ref, is used from within
+      # Gitlab::Git::OperationService. OperationService will eventually only
+      # exist in gitaly-ruby. When we delete OperationService from gitlab-ce
+      # we can also remove fetch_ref.
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
@@ -1025,8 +1027,8 @@ module Gitlab
       end
 
       def clean_stale_repository_files
-        gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          gitaly_repository_client.cleanup if is_enabled && exists?
+        wrapped_gitaly_errors do
+          gitaly_repository_client.cleanup if exists?
         end
       rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
         Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
@@ -1251,14 +1253,6 @@ module Gitlab
         args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
 
         run_git(args, env: source_repository.fetch_env)
-      end
-
-      def rugged_add_remote(remote_name, url, mirror_refmap)
-        rugged.remotes.create(remote_name, url)
-
-        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
-      rescue Rugged::ConfigError
-        remote_update(remote_name, url: url)
       end
 
       def gitaly_delete_refs(*ref_names)

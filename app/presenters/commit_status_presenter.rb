@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   CALLOUT_FAILURE_MESSAGES = {
       unknown_failure: 'There is an unknown failure, please try again',

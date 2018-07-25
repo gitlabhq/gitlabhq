@@ -112,7 +112,7 @@ class Projects::WikisController < Projects::ApplicationController
   private
 
   def load_project_wiki
-    @project_wiki = ProjectWiki.new(@project, current_user)
+    @project_wiki = load_wiki
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
@@ -126,6 +126,10 @@ class Projects::WikisController < Projects::ApplicationController
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)
     false
+  end
+
+  def load_wiki
+    ProjectWiki.new(@project, current_user)
   end
 
   def wiki_params

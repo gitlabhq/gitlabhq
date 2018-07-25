@@ -10,13 +10,14 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups owned by the current user |
+| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
+| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups
@@ -94,13 +95,14 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups owned by the current user |
+| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
+| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups/:id/subgroups

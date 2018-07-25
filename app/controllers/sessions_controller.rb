@@ -157,6 +157,8 @@ class SessionsController < Devise::SessionsController
   end
 
   def auto_sign_in_with_provider
+    return unless Gitlab::Auth.omniauth_enabled?
+
     provider = Gitlab.config.omniauth.auto_sign_in_with_provider
     return unless provider.present?
 

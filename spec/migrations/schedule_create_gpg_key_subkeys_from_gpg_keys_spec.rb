@@ -20,7 +20,7 @@ describe ScheduleCreateGpgKeySubkeysFromGpgKeys, :migration, :sidekiq do
   end
 
   it 'schedules background migrations' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       expect(GpgKeySubkey.count).to eq(0)
 
       migrate!

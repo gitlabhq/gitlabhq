@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.1 (2018-07-23)
+
+### Fixed (2 changes)
+
+- Add missing Gitaly branch_update nil checks. !20711
+- Fix filename for accelerated uploads.
+
+### Added (1 change)
+
+- Add uploader support to Import/Export uploads. !20484
+
+
 ## 11.1.0 (2018-07-22)
 
 ### Security (6 changes)
