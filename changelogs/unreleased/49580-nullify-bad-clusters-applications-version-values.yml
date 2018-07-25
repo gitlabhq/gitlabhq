@@ -1,0 +1,5 @@
+---
+title: Remove incorrect version values in the database for cluster applications
+merge_request: 20826
+author:
+type: fixed

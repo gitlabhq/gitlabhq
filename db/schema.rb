@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180722103201) do
+ActiveRecord::Schema.define(version: 20180725011345) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -643,7 +643,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "status", null: false
     t.integer "ingress_type", null: false
-    t.string "version", null: false
+    t.string "version"
     t.string "cluster_ip"
     t.text "status_reason"
     t.string "external_ip"
@@ -653,7 +653,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.integer "cluster_id", null: false
     t.integer "oauth_application_id"
     t.integer "status", null: false
-    t.string "version", null: false
+    t.string "version"
     t.string "hostname"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -663,7 +663,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   create_table "clusters_applications_prometheus", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status", null: false
-    t.string "version", null: false
+    t.string "version"
     t.text "status_reason"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
@@ -675,7 +675,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.integer "status", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
-    t.string "version", null: false
+    t.string "version"
     t.text "status_reason"
     t.boolean "privileged", default: true, null: false
   end
