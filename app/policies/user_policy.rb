@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserPolicy < BasePolicy
   desc "The current user is the user in question"
   condition(:user_is_self, score: 0) { @subject == @user }
