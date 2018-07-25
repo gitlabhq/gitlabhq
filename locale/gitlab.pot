@@ -374,9 +374,9 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Additional text"
-=======
+msgstr ""
+
 msgid "Admin Area"
 msgstr ""
 
@@ -384,7 +384,6 @@ msgid "Admin Overview"
 msgstr ""
 
 msgid "Admin area"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -816,11 +815,10 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Background Color"
-=======
+msgstr ""
+
 msgid "Background Jobs"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Background color"
@@ -2062,7 +2060,6 @@ msgstr ""
 msgid "Control the display of third party offers."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr ""
 
@@ -2072,10 +2069,10 @@ msgstr ""
 msgid "Control the maximum concurrency of verification operations for this Geo node"
 msgstr ""
 
-msgid "Copy SSH public key to clipboard"
-=======
 msgid "ConvDev Index"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -2839,14 +2836,7 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "External Classification Policy Authorization"
-=======
-msgid "Facebook"
-msgstr ""
-
-msgid "Failed"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "External authentication"
@@ -2865,6 +2855,9 @@ msgid "ExternalAuthorizationService|Classification label"
 msgstr ""
 
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
+msgstr ""
+
+msgid "Facebook"
 msgstr ""
 
 msgid "Failed"
@@ -3862,11 +3855,10 @@ msgstr ""
 msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "License"
-=======
+msgstr ""
+
 msgid "LinkedIn"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "List"
@@ -3911,14 +3903,13 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
-msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
-=======
 msgid "Logs"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
@@ -4191,11 +4182,10 @@ msgstr ""
 msgid "Monitoring"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Months"
-=======
+msgstr ""
+
 msgid "More"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "More actions"
@@ -4536,7 +4526,12 @@ msgstr ""
 msgid "Open in Xcode"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Open sidebar"
+msgstr ""
+
+msgid "Open source software to collaborate on code"
+msgstr ""
+
 msgid "Opened"
 msgstr ""
 
@@ -4544,12 +4539,6 @@ msgid "Opened MR"
 msgstr ""
 
 msgid "Opened issues"
-=======
-msgid "Open sidebar"
-msgstr ""
-
-msgid "Open source software to collaborate on code"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "OpenedNDaysAgo|Opened"
@@ -5287,14 +5276,13 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Repair authentication"
 msgstr ""
 
-msgid "Repo by URL"
-=======
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Repo by URL"
 msgstr ""
 
 msgid "Repository"
@@ -5632,7 +5620,6 @@ msgstr ""
 msgid "Shared Runners"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr ""
 
@@ -5640,9 +5627,9 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
-=======
+msgstr ""
+
 msgid "Sherlock Transactions"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Show command"
@@ -5674,7 +5661,6 @@ msgstr[1] ""
 msgid "Side-by-side"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Sidebar|Change weight"
 msgstr ""
 
@@ -5687,16 +5673,16 @@ msgstr ""
 msgid "Sidebar|Weight"
 msgstr ""
 
-msgid "Sign in to %{group_name}"
-msgstr ""
-
-msgid "Sign in with Single Sign-On"
-=======
 msgid "Sign in"
 msgstr ""
 
 msgid "Sign in / Register"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Sign in to %{group_name}"
+msgstr ""
+
+msgid "Sign in with Single Sign-On"
 msgstr ""
 
 msgid "Sign out"
@@ -5975,14 +5961,13 @@ msgstr ""
 msgid "System Hooks"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "System Info"
+msgstr ""
+
 msgid "System header and footer:"
 msgstr ""
 
 msgid "System metrics (Custom)"
-=======
-msgid "System Info"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Tag (%{tag_count})"
@@ -6251,11 +6236,10 @@ msgstr ""
 msgid "This directory"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
-=======
 msgid "This group"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
 msgstr ""
 
 msgid "This group does not provide any group Runners yet."
@@ -6634,11 +6618,10 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Turn on Service Desk"
-=======
+msgstr ""
+
 msgid "Twitter"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
@@ -6754,11 +6737,10 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Used by members to sign in to your group in GitLab"
-=======
+msgstr ""
+
 msgid "User Settings"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "User and IP Rate Limits"
@@ -6800,11 +6782,10 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "View issue"
-=======
+msgstr ""
+
 msgid "View it on GitLab"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "View jobs"
