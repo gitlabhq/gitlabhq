@@ -381,6 +381,10 @@ describe 'Git HTTP requests' do
 
           context "when authentication fails" do
             context "when the user is IP banned" do
+              before do
+                Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+              end
+
               it "responds with status 401" do
                 expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
                 allow_any_instance_of(Rack::Request).to receive(:ip).and_return('1.2.3.4')
@@ -420,6 +424,10 @@ describe 'Git HTTP requests' do
               end
 
               context "when the user isn't blocked" do
+                before do
+                  Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+                end
+
                 it "resets the IP in Rack Attack on download" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset).twice
 

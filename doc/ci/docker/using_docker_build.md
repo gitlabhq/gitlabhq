@@ -427,7 +427,7 @@ services:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_NAME
+  IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_REF_SLUG
 
 before_script:
   - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
@@ -440,8 +440,10 @@ build:
 ```
 
 Here, `$CI_REGISTRY_IMAGE` would be resolved to the address of the registry tied
-to this project, and `$CI_COMMIT_REF_NAME` would be resolved to the branch or
-tag name for this particular job. We also declare our own variable, `$IMAGE_TAG`,
+to this project. Since `$CI_COMMIT_REF_NAME` resolves to the branch or tag name,
+and your branch-name can contain forward slashes (e.g., feature/my-feature), it is
+safer to use `$CI_COMMIT_REF_SLUG` as the image tag. This is due to that image tags
+cannot contain forward slashes. We also declare our own variable, `$IMAGE_TAG`,
 combining the two to save us some typing in the `script` section.
 
 Here's a more elaborate example that splits up the tasks into 4 pipeline stages,
@@ -464,7 +466,7 @@ stages:
 variables:
   DOCKER_HOST: tcp://docker:2375
   DOCKER_DRIVER: overlay2
-  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_NAME
+  CONTAINER_TEST_IMAGE: registry.example.com/my-group/my-project/my-image:$CI_COMMIT_REF_SLUG
   CONTAINER_RELEASE_IMAGE: registry.example.com/my-group/my-project/my-image:latest
 
 before_script:

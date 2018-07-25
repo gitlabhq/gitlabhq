@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class BuildMetadataPresenter < Gitlab::View::Presenter::Delegated
     TIMEOUT_SOURCES = {

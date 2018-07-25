@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   prepend EE::MergeRequestPresenter
 
