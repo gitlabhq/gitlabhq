@@ -1,37 +1,62 @@
-- @registries.each do |project_registry|
+- @registries.each_with_index do |project_registry, index|
   .card.project-card.prepend-top-15
     .card-header{id: "project-#{project_registry.project.id}-header"}
-      %h5.mb-0.mt-0.p-2.d-flex
-        %button.btn.btn-link.btn-card-header.d-flex.flex-fill{ type: 'button', data: { toggle: 'collapse', target: "#project-#{project_registry.project.id}" }, 'aria-expanded' => 'true', 'aria-controls' => "project-#{project_registry.project.id}" }
-          = sprite_icon('chevron-down', size: 18, css_class: 'card-expand-icon')
-          = sprite_icon('chevron-up', size: 18, css_class: 'card-collapse-icon')
-          %strong.header-text
-            = project_registry.project.name
-          = link_to(resync_project_admin_geo_nodes_path(project_registry), method: :post) do
-            %button.btn.btn-outline-primary.btn-sm{ type: 'button' }
-              Resync
+      .d-flex
+        %strong.header-text-primary.flex-fill
+          = project_registry.project.name
+        = link_to(resync_project_admin_geo_nodes_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
+          Resync
 
-    .collapse.show{id: "project-#{project_registry.project.id}", 'aria-labelledby' => "project-#{project_registry.project.id}-header" }
-      .card-body
-        .container
-          .row
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                Next sync scheduled at
-              .project-status-content
-                = distance_of_time_in_words(Time.now, project_registry.repository_retry_at) if project_registry.repository_retry_at
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                Last sync attempt
-              .project-status-content
-                = distance_of_time_in_words(Time.now, project_registry.last_repository_synced_at)
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                Retry counts
-              .project-status-content
-                = project_registry.repository_retry_count
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                Error message
-              .project-status-content.font-weight-bold
-                = project_registry.last_repository_sync_failure
+    .card-body
+      .container
+        .row
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              Status
+            .project-status-content.status-type-failure
+              Failed
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              Next sync scheduled at
+            .project-status-content
+              = distance_of_time_in_words(Time.now, project_registry.repository_retry_at) if project_registry.repository_retry_at
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              Last sync attempt
+            .project-status-content
+              = distance_of_time_in_words(Time.now, project_registry.last_repository_synced_at)
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              Retry counts
+            .project-status-content
+              = project_registry.repository_retry_count
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              Error message
+            .project-status-content.font-weight-bold
+              = project_registry.last_repository_sync_failure
+
+    - if index == 0 # change it to actual condition check so that this section shows up only when there are errors to show
+      .project-card-errors
+        .card-header.bg-transparent.border-bottom-0.border-top
+          %button.btn.btn-link.btn-card-header.collapsed.d-flex{ type: 'button', 
+            data: { toggle: 'collapse', target: "#project-errors-#{project_registry.project.id}" },
+            'aria-expanded' => 'false',
+            'aria-controls' => "project-errors-#{project_registry.project.id}" }
+            = sprite_icon('chevron-down', size: 18, css_class: 'append-right-5 card-expand-icon')
+            = sprite_icon('chevron-up', size: 18, css_class: 'append-right-5 card-collapse-icon')
+            .header-text-secondary
+              More
+        .collapse{ id: "project-errors-#{project_registry.project.id}",
+          'aria-labelledby' => "project-#{project_registry.project.id}-header" }
+          .card-body
+            .container
+              %ul.unstyled-list.errors-list
+                %li.p-0.d-flex
+                  = sprite_icon('warning', size: 18, css_class: 'error-icon')
+                  %span.error-text.prepend-left-5
+                    Synchronization failed - showing error message here
+                %li.p-0.d-flex
+                  = sprite_icon('warning', size: 18, css_class: 'error-icon')
+                  %span.error-text.prepend-left-5
+                    Verification failed - showing error message here

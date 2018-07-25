@@ -4342,6 +4342,9 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
+msgid "Never"
+msgstr ""
+
 msgid "Network"
 msgstr ""
 

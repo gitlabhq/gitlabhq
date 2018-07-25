@@ -178,16 +178,21 @@
 }
 
 .geo-admin-projects {
+  .card-header {
+    .header-text-primary,
+    .header-text-secondary {
+      color: $gl-link-color;
+    }
+
+    .header-text-primary {
+      line-height: 28px;
+    }
+  }
+
   .btn-card-header {
     &:hover,
     &:focus {
       text-decoration: none;
-    }
-
-    .card-collapse-icon,
-    .card-expand-icon {
-      color: $gl-text-color;
-      margin-right: 5px;
     }
 
     &.collapsed {
@@ -201,21 +206,37 @@
         display: none;
       }
     }
-
-    .header-text {
-      color: $gl-link-color;
-
-      &:hover {
-        color: $gl-link-hover-color;
-      }
-    }
   }
 
   .card-body {
+    .project-status-content {
+      &.status-type-success {
+        color: $gl-text-green;
+      }
+
+      &.status-type-failure {
+        color: $gl-text-red;
+      }
+    }
     @include media-breakpoint-down(xs) {
       .project-status-container + .project-status-container {
         margin-top: 10px;
       }
+    }
+  }
+
+  .errors-list {
+    li + li {
+      margin-top: 5px;
+    }
+
+    .error-icon,
+    .error-text {
+      color: $gl-text-red;
+    }
+
+    .error-text {
+      line-height: 18px;
     }
   }
 }
