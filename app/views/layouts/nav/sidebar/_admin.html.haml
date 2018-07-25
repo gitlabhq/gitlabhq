@@ -7,14 +7,14 @@
         .sidebar-context-title
           = _('Admin Area')
     %ul.sidebar-top-level-items
-      = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers cohorts conversational_development_index), html_options: {class: 'home'}) do
+      = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers), html_options: {class: 'home'}) do
         = link_to admin_root_path, class: 'shortcuts-tree' do
           .nav-icon-container
             = sprite_icon('overview')
           %span.nav-item-name
             = _('Overview')
         %ul.sidebar-sub-level-items
-          = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers cohorts conversational_development_index), html_options: { class: "fly-out-top-item" } ) do
+          = nav_link(controller: %w(dashboard admin projects users groups jobs runners gitaly_servers), html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_root_path do
               %strong.fly-out-top-item-name
                 = _('Overview')
@@ -47,14 +47,6 @@
             = link_to admin_gitaly_servers_path, title: 'Gitaly Servers' do
               %span
                 = _('Gitaly Servers')
-          = nav_link path: 'cohorts#index' do
-            = link_to instance_statistics_cohorts_path, title: _('Cohorts') do
-              %span
-                = _('Cohorts')
-          = nav_link(controller: :conversational_development_index) do
-            = link_to instance_statistics_conversational_development_index_index_path, title: _('ConvDev Index') do
-              %span
-                = _('ConvDev Index')
 
       = nav_link(controller: %w(system_info background_jobs logs health_check requests_profiles)) do
         = link_to admin_system_info_path do
