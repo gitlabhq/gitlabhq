@@ -13,24 +13,30 @@ export default {
     };
   },
   computed: {
-    ...mapState(['newEntryModal']),
+    ...mapState(['entryModal']),
     entryName: {
       get() {
-        return this.name || (this.newEntryModal.path !== '' ? `${this.newEntryModal.path}/` : '');
+        if (this.entryModal.type === 'rename') return this.name || this.entryModal.entry.name;
+
+        return this.name || (this.entryModal.path !== '' ? `${this.entryModal.path}/` : '');
       },
       set(val) {
         this.name = val;
       },
     },
     modalTitle() {
-      if (this.newEntryModal.type === 'tree') {
+      if (this.entryModal.type === 'rename') return __('Rename');
+
+      if (this.entryModal.type === 'tree') {
         return __('Create new directory');
       }
 
       return __('Create new file');
     },
     buttonLabel() {
-      if (this.newEntryModal.type === 'tree') {
+      if (this.entryModal.type === 'rename') return __('Update');
+
+      if (this.entryModal.type === 'tree') {
         return __('Create directory');
       }
 
@@ -42,7 +48,7 @@ export default {
     createEntryInStore() {
       this.createTempEntry({
         name: this.name,
-        type: this.newEntryModal.type,
+        type: this.entryModal.type,
       });
     },
     focusInput() {

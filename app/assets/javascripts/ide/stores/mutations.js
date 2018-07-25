@@ -169,7 +169,11 @@ export default {
   },
   [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
     Object.assign(state, {
-      newEntryModal: { type, path },
+      entryModal: {
+        type,
+        path,
+        entry: { ...state.entries[path] },
+      },
     });
   },
   [types.DELETE_ENTRY](state, path) {

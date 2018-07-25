@@ -111,6 +111,15 @@ export default {
         </template>
         <li>
           <item-button
+            :label="__('Rename')"
+            class="d-flex"
+            icon="pencil"
+            icon-classes="mr-2"
+            @click="createNewItem('rename')"
+          />
+        </li>
+        <li>
+          <item-button
             :label="__('Delete')"
             class="d-flex"
             icon="remove"

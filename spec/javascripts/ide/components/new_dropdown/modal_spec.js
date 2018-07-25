@@ -15,7 +15,7 @@ describe('new file modal component', () => {
     describe(type, () => {
       beforeEach(() => {
         const store = createStore();
-        store.state.newEntryModal = {
+        store.state.entryModal = {
           type,
           path: '',
         };
@@ -52,6 +52,38 @@ describe('new file modal component', () => {
             type,
           });
         });
+      });
+    });
+  });
+
+  describe('rename entry', () => {
+    beforeEach(() => {
+      const store = createStore();
+      store.state.entryModal = {
+        type: 'rename',
+        path: '',
+        entry: {
+          name: 'test',
+        },
+      };
+
+      vm = createComponentWithStore(Component, store).$mount();
+    });
+
+    it('renders title and button for renaming', () => {
+      expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe('Rename');
+      expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe('Update');
+    });
+
+    describe('entryName', () => {
+      it('returns entries name', () => {
+        expect(vm.entryName).toBe('test');
+      });
+
+      it('updated name', () => {
+        vm.name = 'index.js';
+
+        expect(vm.entryName).toBe('index.js');
       });
     });
   });
