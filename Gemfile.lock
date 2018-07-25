@@ -397,7 +397,7 @@ GEM
     hipchat (1.5.2)
       httparty
       mimemagic
-    html-pipeline (2.8.3)
+    html-pipeline (2.8.4)
       activesupport (>= 2)
       nokogiri (>= 1.4)
     html2text (0.2.0)
