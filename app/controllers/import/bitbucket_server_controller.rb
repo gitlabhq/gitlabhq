@@ -4,14 +4,14 @@ class Import::BitbucketServerController < Import::BaseController
   before_action :validate_import_params, only: [:create]
 
   # As a basic sanity check to prevent URL injection, restrict project
-  # repostiory input and repository slugs to allowed characters. For Bitbucket:
+  # repository input and repository slugs to allowed characters. For Bitbucket:
   #
   # Project keys must start with a letter and may only consist of ASCII letters, numbers and underscores (A-Z, a-z, 0-9, _).
   #
   # Repository names are limited to 128 characters. They must start with a
   # letter or number and may contain spaces, hyphens, underscores, and periods.
   # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
-  VALID_BITBUCKET_CHARS = /\A[a-zA-z0-9\-_\.\s]*$/
+  VALID_BITBUCKET_CHARS = /\A[a-zA-z0-9\-_\.\s]+\z/
 
   SERVER_ERRORS = [SocketError,
                    OpenSSL::SSL::SSLError,
