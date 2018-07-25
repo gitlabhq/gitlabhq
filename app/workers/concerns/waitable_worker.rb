@@ -2,12 +2,14 @@
 
 module WaitableWorker
   extend ActiveSupport::Concern
+  DEFAULT_TIMEOUT = 10
+  MAX_SYNC_JOBS = 3
 
   module ClassMethods
     # Schedules multiple jobs and waits for them to be completed.
-    def bulk_perform_and_wait(args_list, timeout: 10)
+    def bulk_perform_and_wait(args_list, timeout: DEFAULT_TIMEOUT)
       # Short-circuit: it's more efficient to do small numbers of jobs inline
-      return bulk_perform_inline(args_list) if args_list.size <= 3
+      return bulk_perform_inline(args_list) if args_list.size <= MAX_SYNC_JOBS
 
       waiter = Gitlab::JobWaiter.new(args_list.size)
 
