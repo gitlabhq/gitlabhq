@@ -56,7 +56,7 @@ export default () => {
   gl.IssueBoardsApp = new Vue({
     el: $boardApp,
     components: {
-      'board': gl.issueBoards.Board,
+      board: gl.issueBoards.Board,
       'board-sidebar': gl.issueBoards.BoardSidebar,
       BoardAddIssuesModal,
     },
@@ -74,11 +74,11 @@ export default () => {
       defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
-      detailIssueVisible () {
+      detailIssueVisible() {
         return Object.keys(this.detailIssue.issue).length;
       },
     },
-    created () {
+    created() {
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
         listsEndpoint: this.listsEndpoint,
@@ -100,15 +100,16 @@ export default () => {
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
       sidebarEventHub.$off('updateWeight', this.updateWeight);
     },
-    mounted () {
+    mounted() {
       this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
-      gl.boardService.all()
+      gl.boardService
+        .all()
         .then(res => res.data)
-        .then((data) => {
-          data.forEach((board) => {
+        .then(data => {
+          data.forEach(board => {
             const list = Store.addList(board, this.defaultAvatar);
 
             if (list.type === 'closed') {
@@ -140,7 +141,7 @@ export default () => {
           newIssue.setFetchingState('epic', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.data)
-            .then((data) => {
+            .then(data => {
               newIssue.setFetchingState('subscriptions', false);
               newIssue.setFetchingState('weight', false);
               newIssue.setFetchingState('epic', false);
@@ -185,7 +186,7 @@ export default () => {
           issue.setLoadingState('weight', true);
           BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
             .then(res => res.data)
-            .then((data) => {
+            .then(data => {
               issue.setLoadingState('weight', false);
               issue.updateData({
                 weight: data.weight,
@@ -196,7 +197,7 @@ export default () => {
               Flash(__('An error occurred when updating the issue weight'));
             });
         }
-      }
+      },
     },
   });
 
@@ -206,7 +207,7 @@ export default () => {
       filters: Store.state.filters,
       milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
     },
-    mounted () {
+    mounted() {
       gl.issueBoards.newListDropdownInit();
     },
   });
@@ -231,8 +232,8 @@ export default () => {
           return this.canAdminList ? 'Edit board' : 'View scope';
         },
         tooltipTitle() {
-          return this.hasScope ? __('This board\'s scope is reduced') : '';
-        }
+          return this.hasScope ? __("This board's scope is reduced") : '';
+        },
       },
       methods: {
         showPage: page => gl.issueBoards.BoardsStore.showPage(page),
@@ -254,76 +255,80 @@ export default () => {
     });
   }
 
-  gl.IssueBoardsModalAddBtn = new Vue({
-    el: document.getElementById('js-add-issues-btn'),
-    mixins: [modalMixin],
-    data() {
-      return {
-        modal: ModalStore.store,
-        store: Store.state,
-        isFullscreen: false,
-        focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
-        canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
-      };
-    },
-    computed: {
-      disabled() {
-        if (!this.store) {
-          return true;
-        }
-        return !this.store.lists.filter(list => !list.preset).length;
-      },
-      tooltipTitle() {
-        if (this.disabled) {
-          return 'Please add a list to your board first';
-        }
+  const issueBoardsModal = document.getElementById('js-add-issues-btn');
 
-        return '';
+  if (issueBoardsModal) {
+    gl.IssueBoardsModalAddBtn = new Vue({
+      el: issueBoardsModal,
+      mixins: [modalMixin],
+      data() {
+        return {
+          modal: ModalStore.store,
+          store: Store.state,
+          isFullscreen: false,
+          focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
+          canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
+        };
       },
-    },
-    watch: {
-      disabled() {
+      computed: {
+        disabled() {
+          if (!this.store) {
+            return true;
+          }
+          return !this.store.lists.filter(list => !list.preset).length;
+        },
+        tooltipTitle() {
+          if (this.disabled) {
+            return 'Please add a list to your board first';
+          }
+
+          return '';
+        },
+      },
+      watch: {
+        disabled() {
+          this.updateTooltip();
+        },
+      },
+      mounted() {
         this.updateTooltip();
       },
-    },
-    mounted() {
-      this.updateTooltip();
-    },
-    methods: {
-      updateTooltip() {
-        const $tooltip = $(this.$refs.addIssuesButton);
+      methods: {
+        updateTooltip() {
+          const $tooltip = $(this.$refs.addIssuesButton);
 
-        this.$nextTick(() => {
-          if (this.disabled) {
-            $tooltip.tooltip();
-          } else {
-            $tooltip.tooltip('dispose');
+          this.$nextTick(() => {
+            if (this.disabled) {
+              $tooltip.tooltip();
+            } else {
+              $tooltip.tooltip('dispose');
+            }
+          });
+        },
+        openModal() {
+          if (!this.disabled) {
+            this.toggleModal(true);
           }
-        });
+        },
       },
-      openModal() {
-        if (!this.disabled) {
-          this.toggleModal(true);
-        }
-      },
-    },
-    template: `
-      <div class="board-extra-actions">
-        <button
-          class="btn btn-create prepend-left-10"
-          type="button"
-          data-placement="bottom"
-          ref="addIssuesButton"
-          :class="{ 'disabled': disabled }"
-          :title="tooltipTitle"
-          :aria-disabled="disabled"
-          v-if="canAdminList"
-          @click="openModal">
-          Add issues
-        </button>
-      </div>
-    `,
-  });
+      template: `
+        <div class="board-extra-actions">
+          <button
+            class="btn btn-create prepend-left-10"
+            type="button"
+            data-placement="bottom"
+            ref="addIssuesButton"
+            :class="{ 'disabled': disabled }"
+            :title="tooltipTitle"
+            :aria-disabled="disabled"
+            v-if="canAdminList"
+            @click="openModal">
+            Add issues
+          </button>
+        </div>
+      `,
+    });
+  }
 
   gl.IssueBoardsToggleFocusBtn = new Vue({
     el: document.getElementById('js-toggle-focus-btn'),
@@ -335,7 +340,9 @@ export default () => {
     },
     methods: {
       toggleFocusMode() {
-        if (!this.focusModeAvailable) { return; }
+        if (!this.focusModeAvailable) {
+          return;
+        }
 
         $(this.$refs.toggleFocusModeButton).tooltip('hide');
         issueBoardsContent.classList.toggle('is-focused');
@@ -369,6 +376,6 @@ export default () => {
     el: '#js-multiple-boards-switcher',
     components: {
       'boards-selector': gl.issueBoards.BoardsSelector,
-    }
+    },
   });
 };
