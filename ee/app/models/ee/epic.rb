@@ -111,8 +111,15 @@ module EE
     alias_attribute(:due_date, :end_date)
 
     def update_dates
-      self.start_date = compute_start_date
-      self.due_date = compute_due_date
+      if !start_date_is_fixed? || !due_date_is_fixed?
+        milestone_dates = issues
+          .joins(:milestone)
+          .pluck('MIN(milestones.start_date)', 'MAX(milestones.due_date)')
+          .first
+      end
+
+      self.start_date = start_date_is_fixed? ? start_date_fixed : milestone_dates[0]
+      self.due_date = due_date_is_fixed? ? due_date_fixed : milestone_dates[1]
       save if changed?
     end
 

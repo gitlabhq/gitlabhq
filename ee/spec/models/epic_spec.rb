@@ -165,17 +165,33 @@ describe Epic do
 
     context 'fixed date is not set' do
       subject { create(:epic, start_date: nil, end_date: nil) }
-      let(:start_date) { Date.new(2001, 1, 1) }
-      let(:due_date) { Date.new(2002, 1, 1) }
+      let(:milestone1) {
+        create(
+          :milestone,
+          start_date: Date.new(2000, 1, 1),
+          due_date: Date.new(2000, 1, 10)
+        )
+      }
+      let(:milestone2) {
+        create(
+          :milestone,
+          start_date: Date.new(2000, 1, 3),
+          due_date: Date.new(2000, 1, 20)
+        )
+      }
+
+      before do
+        epic_issue1 = create(:epic_issue, epic: subject)
+        epic_issue1.issue.update(milestone: milestone1)
+        epic_issue2 = create(:epic_issue, epic: subject)
+        epic_issue2.issue.update(milestone: milestone2)
+      end
 
       it 'updates to milestone dates' do
-        expect(subject).to receive(:start_date_from_milestones).and_return(start_date)
-        expect(subject).to receive(:due_date_from_milestones).and_return(due_date)
-
         subject.update_dates
 
-        expect(subject.start_date).to eq(start_date)
-        expect(subject.due_date).to eq(due_date)
+        expect(subject.start_date).to eq(milestone1.start_date)
+        expect(subject.due_date).to eq(milestone2.due_date)
       end
     end
   end
