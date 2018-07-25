@@ -400,6 +400,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
+gem 'rbtrace', '~> 0.4', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
