@@ -9,7 +9,7 @@ In case you find throttling is not enough to protect you against abusive clients
 Rack Attack offers IP whitelisting, blacklisting, Fail2ban style filtering and
 tracking.
 
-**Note:** Starting with 11.0, Rack Attack will be disabled by default. To continue
+**Note:** Starting with 11.2, Rack Attack is disabled by default. To continue
 using this feature, please enable it in your `gitlab.rb` by setting 
 `gitlab_rails['rack_attack_git_basic_auth'] = true`.
 
