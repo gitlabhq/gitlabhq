@@ -51,7 +51,7 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
     &.label-dark {
       color: $theme-gray-900;
     }
-  
+
     &.label-bold {
       font-weight: 600;
     }
@@ -116,7 +116,7 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
         flex-grow: 1;
         flex-basis: 0;
         text-align: center;
-        font-size: $code_font_size;
+        font-size: $code-font-size;
         line-height: 1.5;
         padding: 2px 0;
       }
@@ -182,7 +182,7 @@ $column-right-gradient: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(2
       left: 0;
       width: $details-cell-width;
       padding: $gl-padding-8 $gl-padding;
-      font-size: $code_font_size;
+      font-size: $code-font-size;
       background-color: $white-light;
       z-index: 2;
 

@@ -84,7 +84,7 @@
   .soft-wrap-toggle {
     display: inline-block;
     vertical-align: top;
-    font-family: $regular_font;
+    font-family: $regular-font;
   }
 
   .soft-wrap-toggle {
@@ -205,7 +205,7 @@
   .template-type-selector {
     display: inline-block;
     vertical-align: top;
-    font-family: $regular_font;
+    font-family: $regular-font;
     margin-top: -5px;
 
     @media(max-width: map-get($grid-breakpoints, md)-1) {

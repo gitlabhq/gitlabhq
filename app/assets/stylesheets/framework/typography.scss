@@ -44,7 +44,7 @@
 
   // Single code lines should wrap
   code {
-    font-family: $monospace_font;
+    font-family: $monospace-font;
     white-space: pre-wrap;
     word-wrap: normal;
   }
@@ -321,7 +321,7 @@ h6 {
 
 /** CODE **/
 pre {
-  font-family: $monospace_font;
+  font-family: $monospace-font;
   display: block;
   padding: $gl-padding-8;
   margin: 0 0 $gl-padding-8;
@@ -342,7 +342,7 @@ code {
 }
 
 .monospace {
-  font-family: $monospace_font;
+  font-family: $monospace-font;
 }
 
 .weight-normal {
@@ -381,7 +381,7 @@ code {
  *
  */
 textarea.js-gfm-input {
-  font-family: $monospace_font;
+  font-family: $monospace-font;
   font-size: 13px;
 }
 
