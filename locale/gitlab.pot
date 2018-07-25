@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-17 07:12+0000\n"
-"PO-Revision-Date: 2018-07-17 07:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -4967,6 +4965,36 @@ msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "PrometheusAlerts|Add alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Edit alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error creating alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error deleting alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error fetching alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error saving alert"
+msgstr ""
+
+msgid "PrometheusAlerts|No alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Operator"
+msgstr ""
+
+msgid "PrometheusAlerts|Threshold"
 msgstr ""
 
 msgid "PrometheusDashboard|Time"
