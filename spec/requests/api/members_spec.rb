@@ -22,10 +22,16 @@ describe API::Members do
     end
   end
 
-  shared_examples 'GET /:sources/:id/members' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'GET /:source_type/:id/members/(all)' do |source_type, all|
+    let(:members_url) do
+      "/#{source_type.pluralize}/#{source.id}/members".tap do |url|
+        url << "/all" if all
+      end
+    end
+
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
-        let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members", stranger) }
+        let(:route) { get api(members_url, stranger) }
       end
 
       %i[maintainer developer access_requester stranger].each do |type|
@@ -33,7 +39,7 @@ describe API::Members do
           it 'returns 200' do
             user = public_send(type)
 
-            get api("/#{source_type.pluralize}/#{source.id}/members", user)
+            get api(members_url, user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -46,23 +52,23 @@ describe API::Members do
 
       it 'avoids N+1 queries' do
         # Establish baseline
-        get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
+        get api(members_url, maintainer)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
+          get api(members_url, maintainer)
         end
 
         project.add_developer(create(:user))
 
         expect do
-          get api("/#{source_type.pluralize}/#{source.id}/members", maintainer)
+          get api(members_url, maintainer)
         end.not_to exceed_query_limit(control)
       end
 
       it 'does not return invitees' do
         create(:"#{source_type}_member", invite_token: '123', invite_email: 'test@abc.com', source: source, user: nil)
 
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer)
+        get api(members_url, developer)
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -72,7 +78,7 @@ describe API::Members do
       end
 
       it 'finds members with query string' do
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: maintainer.username
+        get api(members_url, developer), query: maintainer.username
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -82,7 +88,7 @@ describe API::Members do
       end
 
       it 'finds all members with no query specified' do
-        get api("/#{source_type.pluralize}/#{source.id}/members", developer), query: ''
+        get api(members_url, developer), query: ''
 
         expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
@@ -93,8 +99,51 @@ describe API::Members do
     end
   end
 
-  shared_examples 'GET /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  describe 'GET /:source_type/:id/members/all', :nested_groups do
+    let(:nested_user) { create(:user) }
+    let(:project_user) { create(:user) }
+    let(:linked_group_user) { create(:user) }
+    let!(:project_group_link) { create(:project_group_link, project: project, group: linked_group) }
+
+    let(:project) do
+      create(:project, :public, group: nested_group) do |project|
+        project.add_developer(project_user)
+      end
+    end
+
+    let(:linked_group) do
+      create(:group) do |linked_group|
+        linked_group.add_developer(linked_group_user)
+      end
+    end
+
+    let(:nested_group) do
+      create(:group, parent: group) do |nested_group|
+        nested_group.add_developer(nested_user)
+      end
+    end
+
+    it 'finds all project members including inherited members' do
+      get api("/projects/#{project.id}/members/all", developer)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id, project_user.id, linked_group_user.id]
+    end
+
+    it 'finds all group members including inherited members' do
+      get api("/groups/#{nested_group.id}/members/all", developer)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to include_pagination_headers
+      expect(json_response).to be_an Array
+      expect(json_response.map { |u| u['id'] }).to match_array [maintainer.id, developer.id, nested_user.id]
+    end
+  end
+
+  shared_examples 'GET /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
@@ -124,8 +173,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'POST /:sources/:id/members' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'POST /:source_type/:id/members' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           post api("/#{source_type.pluralize}/#{source.id}/members", stranger),
@@ -205,8 +254,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'PUT /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'PUT /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) do
           put api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger),
@@ -262,8 +311,8 @@ describe API::Members do
     end
   end
 
-  shared_examples 'DELETE /:sources/:id/members/:user_id' do |source_type|
-    context "with :sources == #{source_type.pluralize}" do
+  shared_examples 'DELETE /:source_type/:id/members/:user_id' do |source_type|
+    context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
         let(:route) { delete api("/#{source_type.pluralize}/#{source.id}/members/#{developer.id}", stranger) }
       end
@@ -323,43 +372,45 @@ describe API::Members do
     end
   end
 
-  it_behaves_like 'GET /:sources/:id/members', 'project' do
+  [false, true].each do |all|
+    it_behaves_like 'GET /:source_type/:id/members/(all)', 'project', all do
+      let(:source) { project }
+    end
+
+    it_behaves_like 'GET /:source_type/:id/members/(all)', 'group', all do
+      let(:source) { group }
+    end
+  end
+
+  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'GET /:sources/:id/members', 'group' do
+  it_behaves_like 'GET /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'GET /:sources/:id/members/:user_id', 'project' do
+  it_behaves_like 'POST /:source_type/:id/members', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'GET /:sources/:id/members/:user_id', 'group' do
+  it_behaves_like 'POST /:source_type/:id/members', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'POST /:sources/:id/members', 'project' do
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'POST /:sources/:id/members', 'group' do
+  it_behaves_like 'PUT /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
-  it_behaves_like 'PUT /:sources/:id/members/:user_id', 'project' do
+  it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'project' do
     let(:source) { project }
   end
 
-  it_behaves_like 'PUT /:sources/:id/members/:user_id', 'group' do
-    let(:source) { group }
-  end
-
-  it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'project' do
-    let(:source) { project }
-  end
-
-  it_behaves_like 'DELETE /:sources/:id/members/:user_id', 'group' do
+  it_behaves_like 'DELETE /:source_type/:id/members/:user_id', 'group' do
     let(:source) { group }
   end
 
