@@ -1109,39 +1109,24 @@ no_ee_check:
     - //@gitlab-org/gitlab-ce
 
 # GitLab EE Review apps
-review-app-image:
-  <<: *single-script-job
+review:
+  <<: *dedicated-no-docs-pull-cache-job
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: test
   allow_failure: true
+  before_script:
+    - gem install gitlab --no-document
   variables:
-    <<: *single-script-job-variables
-    SCRIPT_NAME: trigger-build
-  script:
-    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./$SCRIPT_NAME cng
-  when: manual
-  only:
-    refs:
-      - branches
-  except:
-    refs:
-      - master
-      - /(^docs[\/-].*|.*-docs$)/
-
-review:
-  <<: *single-script-job
-  image: registry.gitlab.com/charts/gitlab:latest
-  stage: post-test
-  allow_failure: true
-  variables:
-    <<: *single-script-job-variables
-    SCRIPT_NAME: review-apps.sh
+    GIT_DEPTH: "1"
     HOST_SUFFIX: "$CI_ENVIRONMENT_SLUG"
     DOMAIN: "-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN"
     GITLAB_HELM_CHART_REF: "master"
   script:
-    - source ./$SCRIPT_NAME
-    - export GITLAB_SHELL_VERSION=$(< GITLAB_SHELL_VERSION)
-    - export GITALY_VERSION=$(< GITALY_SERVER_VERSION)
+    - export GITLAB_SHELL_VERSION=$(<GITLAB_SHELL_VERSION)
+    - export GITALY_VERSION=$(<GITALY_SERVER_VERSION)
+    - source ./scripts/review_apps/review-apps.sh
+    - ruby -rrubygems scripts/review_apps/automated_cleanup.rb
+    - BUILD_TRIGGER_TOKEN=$REVIEW_APPS_BUILD_TRIGGER_TOKEN ./scripts/trigger-build cng
     - check_kube_domain
     - download_gitlab_chart
     - ensure_namespace
@@ -1152,7 +1137,6 @@ review:
     name: review/$CI_COMMIT_REF_NAME
     url: https://gitlab-$CI_ENVIRONMENT_SLUG.$REVIEW_APPS_DOMAIN
     on_stop: stop_review
-  when: manual
   only:
     refs:
       - branches
@@ -1164,20 +1148,20 @@ review:
 
 stop_review:
   <<: *single-script-job
-  image: registry.gitlab.com/charts/gitlab:latest
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:gitlab-charts-build-base
   stage: post-cleanup
   allow_failure: true
-  variables:
-    <<: *single-script-job-variables
-    SCRIPT_NAME: review-apps.sh
+  cache: {}
+  dependencies: []
+  before_script: []
   script:
-    - source ./$SCRIPT_NAME
+    - source ./scripts/review_apps/review-apps.sh
     - delete
     - cleanup
+  when: manual
   environment:
     name: review/$CI_COMMIT_REF_NAME
     action: stop
-  when: manual
   only:
     refs:
       - branches
