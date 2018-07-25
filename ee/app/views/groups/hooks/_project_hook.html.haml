@@ -9,7 +9,7 @@
     .col-md-4.col-lg-5.text-right-lg.prepend-top-5
       %span.append-right-10.inline
         SSL Verification: #{hook.enable_ssl_verification ? "enabled" : "disabled"}
-      = link_to "Test", test_group_hook_path(@group, hook), class: "btn btn-sm"
+      = link_to "Test", test_group_hook_path(@group, hook), class: "btn btn-sm", method: :post
       = link_to group_hook_path(@group, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-transparent" do
         %span.sr-only Remove
         = icon('trash')

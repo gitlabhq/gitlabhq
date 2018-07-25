@@ -83,7 +83,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
 
     resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
       member do
-        get :test
+        post :test
       end
     end
 
