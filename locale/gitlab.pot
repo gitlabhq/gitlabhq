@@ -278,6 +278,12 @@ msgstr ""
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
+msgid "About GitLab"
+msgstr ""
+
+msgid "About GitLab CE"
+msgstr ""
+
 msgid "About auto deploy"
 msgstr ""
 
@@ -368,7 +374,17 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Additional text"
+=======
+msgid "Admin Area"
+msgstr ""
+
+msgid "Admin Overview"
+msgstr ""
+
+msgid "Admin area"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -596,6 +612,9 @@ msgstr ""
 msgid "Anonymous"
 msgstr ""
 
+msgid "Anti-spam verification"
+msgstr ""
+
 msgid "Any"
 msgstr ""
 
@@ -710,6 +729,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Authentication log"
+msgstr ""
+
 msgid "Author"
 msgstr ""
 
@@ -732,6 +754,9 @@ msgid "Authorized applications (%{size})"
 msgstr ""
 
 msgid "Authors: %{authors}"
+msgstr ""
+
+msgid "Auto DevOps"
 msgstr ""
 
 msgid "Auto DevOps enabled"
@@ -791,7 +816,11 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Background Color"
+=======
+msgid "Background Jobs"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Background color"
@@ -945,6 +974,9 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blog"
 msgstr ""
 
 msgid "Boards"
@@ -1789,6 +1821,9 @@ msgstr ""
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
+msgid "Cohorts"
+msgstr ""
+
 msgid "Collapse"
 msgstr ""
 
@@ -2027,6 +2062,7 @@ msgstr ""
 msgid "Control the display of third party offers."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr ""
 
@@ -2037,6 +2073,9 @@ msgid "Control the maximum concurrency of verification operations for this Geo n
 msgstr ""
 
 msgid "Copy SSH public key to clipboard"
+=======
+msgid "ConvDev Index"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -2076,6 +2115,9 @@ msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a new branch and merge request"
+msgstr ""
+
+msgid "Create a new issue"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
@@ -2217,6 +2259,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "Dashboard"
 msgstr ""
 
 msgid "DashboardProjects|All"
@@ -2764,6 +2809,9 @@ msgstr ""
 msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
+msgid "Everyone can contribute"
+msgstr ""
+
 msgid "Expand"
 msgstr ""
 
@@ -2771,6 +2819,9 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Explore"
 msgstr ""
 
 msgid "Explore GitLab"
@@ -2788,7 +2839,14 @@ msgstr ""
 msgid "Explore public groups"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "External Classification Policy Authorization"
+=======
+msgid "Facebook"
+msgstr ""
+
+msgid "Failed"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "External authentication"
@@ -3270,6 +3328,9 @@ msgstr ""
 msgid "Group avatar"
 msgstr ""
 
+msgid "Group details"
+msgstr ""
+
 msgid "Group info:"
 msgstr ""
 
@@ -3670,6 +3731,9 @@ msgstr ""
 msgid "Koding"
 msgstr ""
 
+msgid "Koding Dashboard"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -3798,7 +3862,11 @@ msgstr ""
 msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "License"
+=======
+msgid "LinkedIn"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "List"
@@ -3843,13 +3911,20 @@ msgstr ""
 msgid "Locked to current projects"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+=======
+msgid "Logs"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
+msgstr ""
+
+msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
 msgstr ""
 
 msgid "Manage access"
@@ -4116,7 +4191,11 @@ msgstr ""
 msgid "Monitoring"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Months"
+=======
+msgid "More"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "More actions"
@@ -4165,6 +4244,9 @@ msgid "Nav|Sign In / Register"
 msgstr ""
 
 msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
+msgid "Network"
 msgstr ""
 
 msgid "New"
@@ -4242,6 +4324,9 @@ msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
+msgstr ""
+
+msgid "New..."
 msgstr ""
 
 msgid "No"
@@ -4451,6 +4536,7 @@ msgstr ""
 msgid "Open in Xcode"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Opened"
 msgstr ""
 
@@ -4458,6 +4544,12 @@ msgid "Opened MR"
 msgstr ""
 
 msgid "Opened issues"
+=======
+msgid "Open sidebar"
+msgstr ""
+
+msgid "Open source software to collaborate on code"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "OpenedNDaysAgo|Opened"
@@ -4776,6 +4868,9 @@ msgid "Private projects can be created in your personal namespace with:"
 msgstr ""
 
 msgid "Profile"
+msgstr ""
+
+msgid "Profile Settings"
 msgstr ""
 
 msgid "Profiles|Account scheduled for removal."
@@ -5192,10 +5287,14 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Repair authentication"
 msgstr ""
 
 msgid "Repo by URL"
+=======
+msgid "Reply to this email directly or %{view_it_on_gitlab}."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Repository"
@@ -5223,6 +5322,9 @@ msgid "RepositorySettingsAccessLevel|Select"
 msgstr ""
 
 msgid "Request Access"
+msgstr ""
+
+msgid "Requests Profiles"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
@@ -5530,6 +5632,7 @@ msgstr ""
 msgid "Shared Runners"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
 msgstr ""
 
@@ -5537,6 +5640,9 @@ msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
 msgstr ""
 
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+=======
+msgid "Sherlock Transactions"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Show command"
@@ -5568,6 +5674,7 @@ msgstr[1] ""
 msgid "Side-by-side"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Sidebar|Change weight"
 msgstr ""
 
@@ -5584,6 +5691,12 @@ msgid "Sign in to %{group_name}"
 msgstr ""
 
 msgid "Sign in with Single Sign-On"
+=======
+msgid "Sign in"
+msgstr ""
+
+msgid "Sign in / Register"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Sign out"
@@ -5823,6 +5936,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Stop impersonation"
+msgstr ""
+
 msgid "Stop this environment"
 msgstr ""
 
@@ -5859,10 +5975,14 @@ msgstr ""
 msgid "System Hooks"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "System header and footer:"
 msgstr ""
 
 msgid "System metrics (Custom)"
+=======
+msgid "System Info"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Tag (%{tag_count})"
@@ -6131,7 +6251,11 @@ msgstr ""
 msgid "This directory"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
+=======
+msgid "This group"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "This group does not provide any group Runners yet."
@@ -6453,10 +6577,16 @@ msgstr ""
 msgid "Todo"
 msgstr ""
 
+msgid "Todos"
+msgstr ""
+
 msgid "Toggle Sidebar"
 msgstr ""
 
 msgid "Toggle discussion"
+msgstr ""
+
+msgid "Toggle navigation"
 msgstr ""
 
 msgid "Toggle sidebar"
@@ -6504,7 +6634,11 @@ msgstr ""
 msgid "Try again"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Turn on Service Desk"
+=======
+msgid "Twitter"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
@@ -6620,7 +6754,11 @@ msgstr ""
 msgid "Use your global notification setting"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Used by members to sign in to your group in GitLab"
+=======
+msgid "User Settings"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "User and IP Rate Limits"
@@ -6662,7 +6800,11 @@ msgstr ""
 msgid "View group labels"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "View issue"
+=======
+msgid "View it on GitLab"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "View jobs"
@@ -6705,6 +6847,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+
+msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
@@ -7013,7 +7158,16 @@ msgstr ""
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
+msgid "You're receiving this email because %{reason}."
+msgstr ""
+
+msgid "You're receiving this email because of your account on %{host}."
+msgstr ""
+
 msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
+msgstr ""
+
+msgid "YouTube"
 msgstr ""
 
 msgid "Your Groups"
@@ -7605,6 +7759,9 @@ msgid "username"
 msgstr ""
 
 msgid "uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "view it on GitLab"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."

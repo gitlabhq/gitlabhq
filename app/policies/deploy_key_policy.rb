@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeployKeyPolicy < BasePolicy
   with_options scope: :subject, score: 0
   condition(:private_deploy_key) { @subject.private? }

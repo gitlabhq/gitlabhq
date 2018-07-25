@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectPolicy < BasePolicy
   extend ClassMethods
   prepend EE::ProjectPolicy

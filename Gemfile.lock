@@ -308,7 +308,7 @@ GEM
       gettext_i18n_rails (>= 0.7.1)
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
-    gitaly-proto (0.106.0)
+    gitaly-proto (0.109.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.10)
     github-linguist (5.3.3)
@@ -424,7 +424,7 @@ GEM
     hipchat (1.5.2)
       httparty
       mimemagic
-    html-pipeline (2.8.3)
+    html-pipeline (2.8.4)
       activesupport (>= 2)
       nokogiri (>= 1.4)
     html2text (0.2.0)
@@ -1076,7 +1076,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.3)
-  gitaly-proto (~> 0.106.0)
+  gitaly-proto (~> 0.109.0)
   github-linguist (~> 5.3.3)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-gollum-lib (~> 4.2)

@@ -85,8 +85,8 @@ module Gitlab
         wiki_page_from_iterator(response)
       end
 
-      def get_all_pages
-        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo)
+      def get_all_pages(limit: 0)
+        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo, limit: limit)
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request, timeout: GitalyClient.medium_timeout)
         pages = []
 

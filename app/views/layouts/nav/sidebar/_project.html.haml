@@ -105,7 +105,7 @@
                     = number_with_delimiter(@project.open_issues_count(current_user))
             %li.divider.fly-out-top-item
             = nav_link(controller: :issues, action: :index) do
-              = link_to project_issues_path(@project), title: 'Issues' do
+              = link_to project_issues_path(@project), title: _('Issues') do
                 %span
                   = _('List')
 
@@ -115,14 +115,14 @@
                   = boards_link_text
 
             = nav_link(controller: :labels) do
-              = link_to project_labels_path(@project), title: 'Labels' do
+              = link_to project_labels_path(@project), title: _('Labels') do
                 %span
                   = _('Labels')
 
             = render_if_exists 'projects/sidebar/issues_service_desk'
 
             = nav_link(controller: :milestones) do
-              = link_to project_milestones_path(@project), title: 'Milestones', class: 'qa-milestones-link' do
+              = link_to project_milestones_path(@project), title: _('Milestones'), class: 'qa-milestones-link' do
                 %span
                   = _('Milestones')
       - if project_nav_tab? :external_issue_tracker
@@ -172,25 +172,25 @@
             %li.divider.fly-out-top-item
             - if project_nav_tab? :pipelines
               = nav_link(path: ['pipelines#index', 'pipelines#show']) do
-                = link_to project_pipelines_path(@project), title: 'Pipelines', class: 'shortcuts-pipelines' do
+                = link_to project_pipelines_path(@project), title: _('Pipelines'), class: 'shortcuts-pipelines' do
                   %span
                     = _('Pipelines')
 
             - if project_nav_tab? :builds
               = nav_link(controller: [:jobs, :artifacts]) do
-                = link_to project_jobs_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
+                = link_to project_jobs_path(@project), title: _('Jobs'), class: 'shortcuts-builds' do
                   %span
                     = _('Jobs')
 
             - if project_nav_tab? :pipelines
               = nav_link(controller: :pipeline_schedules) do
-                = link_to pipeline_schedules_path(@project), title: 'Schedules', class: 'shortcuts-builds' do
+                = link_to pipeline_schedules_path(@project), title: _('Schedules'), class: 'shortcuts-builds' do
                   %span
                     = _('Schedules')
 
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
-                = link_to charts_project_pipelines_path(@project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
+                = link_to charts_project_pipelines_path(@project), title: _('Charts'), class: 'shortcuts-pipelines-charts' do
                   %span
                     = _('Charts')
 
@@ -242,7 +242,7 @@
                       %p= _('Allows you to add and manage Kubernetes clusters.')
                       %p
                         = _('Protip:')
-                        = link_to 'Auto DevOps', help_page_path('topics/autodevops/index.md')
+                        = link_to _('Auto DevOps'), help_page_path('topics/autodevops/index.md')
                         %span= _('uses Kubernetes clusters to deploy your code!')
                       %hr
                       %button.btn.btn-create.btn-sm.dismiss-feature-highlight{ type: 'button' }
@@ -305,11 +305,11 @@
                     = _('Settings')
               %li.divider.fly-out-top-item
               = nav_link(path: %w[projects#edit]) do
-                = link_to edit_project_path(@project), title: 'General' do
+                = link_to edit_project_path(@project), title: _('General') do
                   %span
                     = _('General')
             = nav_link(controller: :project_members) do
-              = link_to project_project_members_path(@project), title: 'Members' do
+              = link_to project_project_members_path(@project), title: _('Members') do
                 %span
                   = _('Members')
             - if can_edit
@@ -319,21 +319,21 @@
                     = _('Badges')
             - if can_edit
               = nav_link(controller: [:integrations, :services, :hooks, :hook_logs]) do
-                = link_to project_settings_integrations_path(@project), title: 'Integrations' do
+                = link_to project_settings_integrations_path(@project), title: _('Integrations') do
                   %span
                     = _('Integrations')
               = nav_link(controller: :repository) do
-                = link_to project_settings_repository_path(@project), title: 'Repository' do
+                = link_to project_settings_repository_path(@project), title: _('Repository') do
                   %span
                     = _('Repository')
               - if @project.feature_available?(:builds, current_user)
                 = nav_link(controller: :ci_cd) do
-                  = link_to project_settings_ci_cd_path(@project), title: 'CI / CD' do
+                  = link_to project_settings_ci_cd_path(@project), title: _('CI / CD') do
                     %span
                       = _('CI / CD')
               - if @project.pages_available?
                 = nav_link(controller: :pages) do
-                  = link_to project_pages_path(@project), title: 'Pages' do
+                  = link_to project_pages_path(@project), title: _('Pages') do
                     %span
                       = _('Pages')
 
@@ -341,7 +341,7 @@
 
       - else
         = nav_link(controller: :project_members) do
-          = link_to project_settings_members_path(@project), title: 'Members', class: 'shortcuts-tree' do
+          = link_to project_settings_members_path(@project), title: _('Members'), class: 'shortcuts-tree' do
             .nav-icon-container
               = sprite_icon('users')
             %span.nav-item-name
@@ -356,41 +356,41 @@
 
       -# Shortcut to Project > Activity
       %li.hidden
-        = link_to activity_project_path(@project), title: 'Activity', class: 'shortcuts-project-activity' do
+        = link_to activity_project_path(@project), title: _('Activity'), class: 'shortcuts-project-activity' do
           %span
-            Activity
+            = _('Activity')
 
       -# Shortcut to Repository > Graph (formerly, Network)
       - if project_nav_tab? :network
         %li.hidden
-          = link_to project_network_path(@project, current_ref), title: 'Network', class: 'shortcuts-network' do
-            Graph
+          = link_to project_network_path(@project, current_ref), title: _('Network'), class: 'shortcuts-network' do
+            = _('Graph')
 
       -# Shortcut to Repository > Charts (formerly, top-nav item "Graphs")
       - unless @project.empty_repo?
         %li.hidden
-          = link_to charts_project_graph_path(@project, current_ref), title: 'Charts', class: 'shortcuts-repository-charts' do
-            Charts
+          = link_to charts_project_graph_path(@project, current_ref), title: _('Charts'), class: 'shortcuts-repository-charts' do
+            = _('Charts')
 
       -# Shortcut to Issues > New Issue
       - if project_nav_tab?(:issues)
         %li.hidden
           = link_to new_project_issue_path(@project), class: 'shortcuts-new-issue' do
-            Create a new issue
+            = _('Create a new issue')
 
       -# Shortcut to Pipelines > Jobs
       - if project_nav_tab? :builds
         %li.hidden
-          = link_to project_jobs_path(@project), title: 'Jobs', class: 'shortcuts-builds' do
-            Jobs
+          = link_to project_jobs_path(@project), title: _('Jobs'), class: 'shortcuts-builds' do
+            = _('Jobs')
 
       -# Shortcut to commits page
       - if project_nav_tab? :commits
         %li.hidden
-          = link_to project_commits_path(@project), title: 'Commits', class: 'shortcuts-commits' do
-            Commits
+          = link_to project_commits_path(@project), title: _('Commits'), class: 'shortcuts-commits' do
+            = _('Commits')
 
       -# Shortcut to issue boards
       - if project_nav_tab?(:issues)
         %li.hidden
-          = link_to 'Issue Boards', project_boards_path(@project), title: 'Issue Boards', class: 'shortcuts-issue-boards'
+          = link_to _('Issue Boards'), project_boards_path(@project), title: _('Issue Boards'), class: 'shortcuts-issue-boards'
