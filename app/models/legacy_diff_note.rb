@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on merge request or commit diffs, using the legacy implementation.
 #
 # All new diff notes are of the type `DiffNote`, but any diff notes created

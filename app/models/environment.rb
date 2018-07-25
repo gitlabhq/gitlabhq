@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Environment < ActiveRecord::Base
   prepend EE::Environment
 
@@ -179,7 +181,7 @@ class Environment < ActiveRecord::Base
   #   * cannot end with `-`
   def generate_slug
     # Lowercase letters and numbers only
-    slugified = name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
+    slugified = +name.to_s.downcase.gsub(/[^a-z0-9]/, '-')
 
     # Must start with a letter
     slugified = 'env-' + slugified unless LETTERS.cover?(slugified[0])

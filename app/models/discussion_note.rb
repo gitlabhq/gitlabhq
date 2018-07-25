@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note in a non-diff discussion on an issue, merge request, commit, or snippet.
 #
 # A note of this type can be resolvable.

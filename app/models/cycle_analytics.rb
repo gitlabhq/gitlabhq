@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CycleAnalytics
   STAGES = %i[issue plan code test review staging production].freeze
 

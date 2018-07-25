@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # An InternalId is a strictly monotone sequence of integers
 # generated for a given scope and usage.
 #

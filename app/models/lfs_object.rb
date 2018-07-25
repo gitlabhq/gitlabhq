@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LfsObject < ActiveRecord::Base
   prepend EE::LfsObject
   include AfterCommitQueue
