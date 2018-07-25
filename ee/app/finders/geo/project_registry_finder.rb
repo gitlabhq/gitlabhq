@@ -1,11 +1,23 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
     def count_repositories
-      current_node.projects.count
+      if selective_sync?
+        # We need to count only the selected projects according to the sync rule
+        current_node.projects.count
+      else
+        # Counting whole table can be expensive, so we use a counter cache instead
+        SiteStatistic.fetch.repositories_count
+      end
     end
 
     def count_wikis
-      current_node.projects.with_wiki_enabled.count
+      if selective_sync?
+        # We need to count only withing the selected projects according to the sync rule
+        current_node.projects.with_wiki_enabled.count
+      else
+        # Counting whole table can be expensive, so we use a counter cache instead
+        SiteStatistic.fetch.wikis_count
+      end
     end
 
     def count_synced_repositories
