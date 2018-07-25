@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe Users::TermsController do
   let(:user) { create(:user) }
-  let(:term) { create(:term) }
 
   before do
     sign_in user
@@ -16,13 +15,17 @@ describe Users::TermsController do
     end
 
     it 'shows terms when they exist' do
-      term
+      create(:term)
+
+      get :index
 
       expect(response).to have_gitlab_http_status(:success)
     end
   end
 
   describe 'POST #accept' do
+    let(:term) { create(:term) }
+
     it 'saves that the user accepted the terms' do
       post :accept, id: term.id
 
@@ -46,6 +49,8 @@ describe Users::TermsController do
     end
 
     context 'redirecting to another domain' do
+      let(:term) { create(:term) }
+
       it 'is prevented when passing a redirect param' do
         post :accept, id: term.id, redirect: '//example.com/random/path'
 
@@ -63,6 +68,8 @@ describe Users::TermsController do
   end
 
   describe 'POST #decline' do
+    let(:term) { create(:term) }
+
     it 'stores that the user declined the terms' do
       post :decline, id: term.id
 
