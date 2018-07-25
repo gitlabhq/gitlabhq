@@ -166,7 +166,7 @@
     border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
-    width: $gutter_inner_width;
+    width: $gutter-inner-width;
     // --
 
     &.issuable-sidebar-header {
@@ -290,7 +290,7 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter_width;
+    width: $gutter-width;
 
     .value {
       line-height: 1;
@@ -377,11 +377,11 @@
       display: block;
     }
 
-    width: $gutter_collapsed_width;
+    width: $gutter-collapsed-width;
     padding: 0;
 
     .block {
-      width: $gutter_collapsed_width - 2px;
+      width: $gutter-collapsed-width - 2px;
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;

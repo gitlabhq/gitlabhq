@@ -6,9 +6,9 @@
 
   $border-style: 1px solid $border-color;
 
-  font-family: $regular_font;
+  font-family: $regular-font;
   font-size: $gl-font-size;
-  line-height: $code_line_height;
+  line-height: $code-line-height;
   color: $gl-text-color;
   margin: 20px;
   font-weight: 200;
@@ -48,9 +48,9 @@
         padding: 10px;
         border: 0;
         border-radius: 0;
-        font-family: $monospace_font;
-        font-size: $code_font_size;
-        line-height: $code_line_height;
+        font-family: $monospace-font;
+        font-size: $code-font-size;
+        line-height: $code-line-height;
         margin: 0;
         overflow: auto;
         overflow-y: hidden;
@@ -66,10 +66,10 @@
       float: left;
 
       .diff-line-num {
-        font-family: $monospace_font;
+        font-family: $monospace-font;
         display: block;
-        font-size: $code_font_size;
-        min-height: $code_line_height;
+        font-size: $code-font-size;
+        min-height: $code-line-height;
         white-space: nowrap;
         color: $black-transparent;
         min-width: 30px;
