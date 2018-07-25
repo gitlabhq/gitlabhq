@@ -1,5 +1,5 @@
 ---
-title: Moved push services to workers to improve performance
+title: Moved push services to background workers to improve performance
 merge_request: 20814
 author:
 type: performance
