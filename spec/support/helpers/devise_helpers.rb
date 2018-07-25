@@ -1,10 +1,10 @@
 module DeviseHelpers
   # explicitly tells Devise which mapping to use
   # this is needed when we are testing a Devise controller bypassing the router
-  def set_devise_mapping(context:)
+  def set_devise_mapping(context:, resource: :user)
     env = env_from_context(context)
 
-    env['devise.mapping'] = Devise.mappings[:user] if env
+    env['devise.mapping'] = Devise.mappings[resource] if env
   end
 
   def env_from_context(context)

@@ -13,10 +13,9 @@ class ConfirmationsController < Devise::ConfirmationsController
   end
 
   def after_confirmation_path_for(resource_name, resource)
-    accept_pending_invitations
-
     # incoming resource can either be a :user or an :email
     if signed_in?(:user)
+      accept_pending_invitations
       after_sign_in(resource)
     else
       Gitlab::AppLogger.info("Email Confirmed: username=#{resource.username} email=#{resource.email} ip=#{request.remote_ip}")

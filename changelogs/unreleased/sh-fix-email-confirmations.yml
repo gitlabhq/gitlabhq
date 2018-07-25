@@ -1,0 +1,5 @@
+---
+title: Fix e-mail verification returning a 500 Error
+merge_request: 20838
+author:
+type: fixed
