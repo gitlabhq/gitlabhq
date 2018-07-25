@@ -834,33 +834,11 @@
   }
 
   .compare-meter {
-    &.within_estimate {
-      .meter-fill {
-        background: $gl-primary;
-      }
-    }
-
     &.over_estimate {
-      .meter-fill {
-        background: $red-500;
-      }
-
       .time-remaining,
       .compare-value.spent {
         color: $red-500;
       }
-    }
-  }
-
-  .meter-container {
-    background: $border-gray-light;
-    border-radius: 3px;
-
-    .meter-fill {
-      max-width: 100%;
-      height: 5px;
-      border-radius: 3px;
-      background: $gl-primary;
     }
   }
 

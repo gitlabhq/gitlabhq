@@ -1,4 +1,3 @@
-import $ from 'jquery';
 import Vue from 'vue';
 
 import TimeTracker from '~/sidebar/components/time_tracking/time_tracker.vue';
@@ -94,21 +93,14 @@ describe('Issuable Time Tracker', () => {
         describe('Remaining meter', () => {
           it('should display the remaining meter with the correct width', done => {
             Vue.nextTick(() => {
-              const meterWidth = vm.$el.querySelector('.time-tracking-comparison-pane .meter-fill')
-                .style.width;
-              const correctWidth = '5%';
-
-              expect(meterWidth).toBe(correctWidth);
+              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[value="5"]')).not.toBeNull();
               done();
             });
           });
 
           it('should display the remaining meter with the correct background color when within estimate', done => {
             Vue.nextTick(() => {
-              const styledMeter = $(vm.$el).find(
-                '.time-tracking-comparison-pane .within_estimate .meter-fill',
-              );
-              expect(styledMeter.length).toBe(1);
+              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="primary"]')).not.toBeNull();
               done();
             });
           });
@@ -117,10 +109,7 @@ describe('Issuable Time Tracker', () => {
             vm.time_estimate = 100000;
             vm.time_spent = 20000000;
             Vue.nextTick(() => {
-              const styledMeter = $(vm.$el).find(
-                '.time-tracking-comparison-pane .over_estimate .meter-fill',
-              );
-              expect(styledMeter.length).toBe(1);
+              expect(vm.$el.querySelector('.time-tracking-comparison-pane .progress[variant="danger"]')).not.toBeNull();
               done();
             });
           });
