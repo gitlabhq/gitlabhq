@@ -31,6 +31,7 @@ class Project < ActiveRecord::Base
 
   BoardLimitExceeded = Class.new(StandardError)
 
+  STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -78,6 +79,10 @@ class Project < ActiveRecord::Base
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_create :create_project_feature, unless: :project_feature
+
+  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
+  before_destroy ->(project) { project.project_feature.untrack_statistics_for_deletion! }
+  after_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
