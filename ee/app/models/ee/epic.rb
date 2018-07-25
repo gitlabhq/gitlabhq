@@ -17,6 +17,7 @@ module EE
       has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) }
 
       has_many :epic_issues
+      has_many :issues, through: :epic_issues
 
       validates :group, presence: true
 
