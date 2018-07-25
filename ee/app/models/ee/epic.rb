@@ -142,7 +142,7 @@ module EE
     def update_project_counter_caches
     end
 
-    def issues(current_user)
+    def issues_readable_by(current_user)
       related_issues = ::Issue.select('issues.*, epic_issues.id as epic_issue_id, epic_issues.relative_position')
         .joins(:epic_issue)
         .where("epic_issues.epic_id = #{id}")

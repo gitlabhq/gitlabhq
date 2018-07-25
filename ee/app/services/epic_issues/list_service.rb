@@ -5,7 +5,7 @@ module EpicIssues
     def issues
       return [] unless issuable&.group&.feature_available?(:epics)
 
-      issuable.issues(current_user)
+      issuable.issues_readable_by(current_user)
     end
 
     def relation_path(issue)

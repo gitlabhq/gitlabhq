@@ -180,7 +180,7 @@ describe Epic do
     end
   end
 
-  describe '#issues' do
+  describe '#issues_readable_by' do
     let(:user) { create(:user) }
     let(:group) { create(:group, :private) }
     let(:project) { create(:project, group: group) }
@@ -197,7 +197,7 @@ describe Epic do
       ]
     end
 
-    let(:result) { epic.issues(user) }
+    let(:result) { epic.issues_readable_by(user) }
 
     it 'returns all issues if a user has access to them' do
       group.add_developer(user)
