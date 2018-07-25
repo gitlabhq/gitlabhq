@@ -1,0 +1,5 @@
+---
+title: Adds SLI alerts to custom prometheus metrics
+merge_request: 6590
+author:
+type: added
