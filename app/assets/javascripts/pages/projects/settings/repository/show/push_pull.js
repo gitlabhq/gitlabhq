@@ -40,8 +40,6 @@ export default class PushPull {
     const $target = $(event.currentTarget);
     let payload = existingPayload;
 
-    debugger;
-
     if (!payload) {
       payload = {
         project: {
