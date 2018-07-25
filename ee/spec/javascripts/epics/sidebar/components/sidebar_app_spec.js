@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 
 import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { props } from '../../epic_show/mock_data';
+import { props } from 'ee_spec/epics/epic_show/mock_data';
 
 describe('epicSidebar', () => {
   let vm;
