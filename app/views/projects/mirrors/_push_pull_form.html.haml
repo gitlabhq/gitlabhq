@@ -1,0 +1,6 @@
+- protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
+
+= f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
+  = rm_f.hidden_field :enabled, value: '1'
+  = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
+  = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
