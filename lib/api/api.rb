@@ -99,7 +99,6 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
-    mount ::API::Groups
     mount ::API::GroupMilestones
     mount ::API::Groups
     mount ::API::GroupVariables
@@ -126,7 +125,6 @@ module API
     mount ::API::ProjectHooks
     mount ::API::ProjectMilestones
     mount ::API::Projects
-    mount ::API::ProjectMilestones
     mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches

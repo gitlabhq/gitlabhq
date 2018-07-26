@@ -27,9 +27,9 @@ describe API::ProtectedTags do
       end
     end
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'protected tags'
@@ -55,7 +55,7 @@ describe API::ProtectedTags do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['name']).to eq(tag_name)
-        expect(json_response['create_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MASTER)
+        expect(json_response['create_access_levels'][0]['access_level']).to eq(::Gitlab::Access::MAINTAINER)
       end
 
       context 'when protected tag does not exist' do
@@ -68,9 +68,9 @@ describe API::ProtectedTags do
       end
     end
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it_behaves_like 'protected tag'
@@ -96,17 +96,17 @@ describe API::ProtectedTags do
   describe 'POST /projects/:id/protected_tags' do
     let(:tag_name) { 'new_tag' }
 
-    context 'when authenticated as a master' do
+    context 'when authenticated as a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
-      it 'protects a single tag with masters can create tags' do
+      it 'protects a single tag with maintainers can create tags' do
         post api("/projects/#{project.id}/protected_tags", user), name: tag_name
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['name']).to eq(tag_name)
-        expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+        expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
       end
 
       it 'protects a single tag with developers can create tags' do
@@ -150,7 +150,7 @@ describe API::ProtectedTags do
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response['name']).to eq(tag_name)
-          expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MASTER)
+          expect(json_response['create_access_levels'][0]['access_level']).to eq(Gitlab::Access::MAINTAINER)
         end
       end
     end
@@ -170,7 +170,7 @@ describe API::ProtectedTags do
 
   describe 'DELETE /projects/:id/protected_tags/unprotect/:tag' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'unprotects a single tag' do

@@ -2,8 +2,6 @@
 # for more information on how to write migrations for GitLab.
 
 class DropDuplicateProtectedTags < ActiveRecord::Migration
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
   disable_ddl_transaction!

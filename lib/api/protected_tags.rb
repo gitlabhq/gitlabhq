@@ -2,7 +2,7 @@ module API
   class ProtectedTags < Grape::API
     include PaginationParams
 
-    TAG_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(branch: API::NO_SLASH_URL_PART_REGEX)
+    TAG_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(name: API::NO_SLASH_URL_PART_REGEX)
 
     before { authorize_admin_project }
 
@@ -11,7 +11,7 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc "Get a project's protected tags" do
-        detail 'This feature was introduced in GitLab 10.6.'
+        detail 'This feature was introduced in GitLab 11.2.'
         success Entities::ProtectedTag
       end
       params do
@@ -24,7 +24,7 @@ module API
       end
 
       desc 'Get a single protected tag' do
-        detail 'This feature was introduced in GitLab 10.6.'
+        detail 'This feature was introduced in GitLab 11.2.'
         success Entities::ProtectedTag
       end
       params do
@@ -37,14 +37,14 @@ module API
       end
 
       desc 'Protect a single tag or wildcard' do
-        detail 'This feature was introduced in GitLab 10.6.'
+        detail 'This feature was introduced in GitLab 11.2.'
         success Entities::ProtectedTag
       end
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
-        optional :create_access_level, type: Integer, default: Gitlab::Access::MASTER,
-                                       values: ProtectedTagAccess::ALLOWED_ACCESS_LEVELS,
-                                       desc: 'Access levels allowed to create (defaults: `40`, master access level)'
+        optional :create_access_level, type: Integer, default: Gitlab::Access::MAINTAINER,
+                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                       desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)'
       end
       post ':id/protected_tags' do
         protected_tags_params = {
@@ -64,7 +64,7 @@ module API
       end
 
       desc 'Unprotect a single tag' do
-        detail 'This feature was introduced in GitLab 10.6.'
+        detail 'This feature was introduced in GitLab 11.2.'
       end
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
