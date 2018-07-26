@@ -28,6 +28,6 @@ Rails.application.configure do |config|
     user = user_warden || auth.user
 
     ActiveSession.destroy(user, auth.request.session.id)
-    Gitlab::Auth::Activity.new(user, opts).user_signed_out!
+    Gitlab::Auth::Activity.new(user, opts).user_session_destroyed!
   end
 end

@@ -7,7 +7,6 @@ module StubMetrics
     authentication_metrics.each_counter do |name, metric, description|
       double("#{metric} - #{description}").tap do |counter|
         allow(authentication_metrics).to receive(name).and_return(counter)
-        allow(counter).to receive(:increment) # TODO, require expectations
       end
     end
 

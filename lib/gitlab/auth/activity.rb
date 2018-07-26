@@ -12,9 +12,9 @@ module Gitlab
         user_not_found: 'Counter of total failed log-ins when user is unknown',
         user_password_invalid: 'Counter of failed log-ins with invalid password',
         user_session_override: 'Counter of manual log-ins and sessions overrides',
+        user_session_destroyed: 'Counter of total user sessions being destroyed',
         user_two_factor_authenticated: 'Counter of two factor authentications',
-        user_blocked: 'Counter of total sign in attempts when user is blocked',
-        user_signed_out: 'Counter of total user sign out events'
+        user_blocked: 'Counter of total sign in attempts when user is blocked'
       }.freeze
 
       def initialize(user, opts)
@@ -50,8 +50,8 @@ module Gitlab
         end
       end
 
-      def user_signed_out!
-        self.class.user_signed_out_counter_increment!
+      def user_session_destroyed!
+        self.class.user_session_destroyed_counter_increment!
       end
 
       def self.each_counter
