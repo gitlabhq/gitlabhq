@@ -22,7 +22,7 @@
           = s_('Branches|protected')
 
       - if @project.mirror_ever_updated_successfully? && @repository.diverged_from_upstream?(branch.name)
-        %span.badge.badge-danger.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
+        %span.badge.badge-danger.prepend-left-5.has-tooltip{ data: { html: "true", title: branch_diverged_tooltip_message } }
           = icon('exclamation-triangle')
           = s_('Branches|diverged from upstream')
 
