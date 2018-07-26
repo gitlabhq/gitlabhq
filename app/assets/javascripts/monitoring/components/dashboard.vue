@@ -1,4 +1,7 @@
 <script>
+// ee-only
+import DashboardMixin from 'ee/monitoring/components/dashboard_mixin';
+
 import _ from 'underscore';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
@@ -17,6 +20,10 @@ export default {
     EmptyState,
     Icon,
   },
+
+  // ee-only
+  mixins: [DashboardMixin],
+
   props: {
     hasMetrics: {
       type: Boolean,
@@ -137,7 +144,7 @@ export default {
           .catch(() => Flash(s__('Metrics|There was an error getting deployment information.'))),
         this.service
           .getEnvironmentsData()
-          .then((data) => this.store.storeEnvironmentsData(data))
+          .then(data => this.store.storeEnvironmentsData(data))
           .catch(() => Flash(s__('Metrics|There was an error getting environments information.'))),
       ])
         .then(() => {
@@ -225,7 +232,13 @@ export default {
         :small-graph="forceSmallGraph"
       >
         <!-- EE content -->
-        {{ null }}
+        <alert-widget
+          v-if="alertsEndpoint && graphData.id"
+          :alerts-endpoint="alertsEndpoint"
+          :label="getGraphLabel(graphData)"
+          :current-alerts="getQueryAlerts(graphData)"
+          :custom-metric-id="graphData.id"
+        />
       </graph>
     </graph-group>
   </div>

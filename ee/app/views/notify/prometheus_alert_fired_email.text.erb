@@ -1,0 +1,7 @@
+An alert has been triggered in <%= @project.full_path %>.
+
+Environment: <%= @environment.name %>
+
+Metric: <%= @alert.full_query %>
+
+You can view the <%= @environment.name %> performance dashboard at <%= metrics_project_environment_url(@environment.project, @environment) %>.

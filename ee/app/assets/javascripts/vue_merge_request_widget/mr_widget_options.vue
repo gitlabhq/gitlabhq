@@ -2,6 +2,7 @@
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
 import GroupedSecurityReportsApp from 'ee/vue_shared/security_reports/grouped_security_reports_app.vue';
 import reportsMixin from 'ee/vue_shared/security_reports/mixins/reports_mixin';
+import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 
 import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
@@ -17,6 +18,7 @@ export default {
   },
   extends: CEWidgetOptions,
   mixins: [reportsMixin],
+  componentNames,
   data() {
     return {
       isLoadingCodequality: false,
@@ -255,8 +257,8 @@ export default {
       :unresolved-issues="mr.codeclimateMetrics.newIssues"
       :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
       :has-issues="hasCodequalityIssues"
+      :component="$options.componentNames.CodequalityIssueBody"
       class="js-codequality-widget mr-widget-border-top"
-      type="codequality"
     />
     <report-section
       v-if="shouldRenderPerformance"
@@ -268,8 +270,8 @@ export default {
       :resolved-issues="mr.performanceMetrics.improved"
       :neutral-issues="mr.performanceMetrics.neutral"
       :has-issues="hasPerformanceMetrics"
+      :component="$options.componentNames.PerformanceIssueBody"
       class="js-performance-widget mr-widget-border-top"
-      type="performance"
     />
     <grouped-security-reports-app
       v-if="shouldRenderSecurityReport"
@@ -299,10 +301,10 @@ export default {
       :loading-text="translateText('license management').loading"
       :error-text="translateText('license management').error"
       :success-text="licenseReportText"
-      :unresolved-issues="mr.licenseReport"
+      :neutral-issues="mr.licenseReport"
       :has-issues="hasLicenseReportIssues"
+      :component="$options.componentNames.LicenseIssueBody"
       class="js-license-report-widget mr-widget-border-top"
-      type="license"
     />
     <div class="mr-section-container">
       <div class="mr-widget-section">

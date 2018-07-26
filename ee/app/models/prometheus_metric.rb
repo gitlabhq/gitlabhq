@@ -1,5 +1,8 @@
 class PrometheusMetric < ActiveRecord::Base
   belongs_to :project, required: true, validate: true, inverse_of: :prometheus_metrics
+
+  has_one :prometheus_alert, inverse_of: :prometheus_metric
+
   enum group: [:business, :response, :system]
 
   validates :title, presence: true
@@ -19,7 +22,7 @@ class PrometheusMetric < ActiveRecord::Base
   end
 
   def to_query_metric
-    Gitlab::Prometheus::Metric.new(title: title, required_metrics: [], weight: 0, y_label: y_label, queries: build_queries)
+    Gitlab::Prometheus::Metric.new(id: id, title: title, required_metrics: [], weight: 0, y_label: y_label, queries: build_queries)
   end
 
   private

@@ -1,8 +1,13 @@
 import Vue from 'vue';
 import component from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import {
+  STATUS_FAILED,
+  STATUS_NEUTRAL,
+  STATUS_SUCCESS,
+} from '~/vue_shared/components/reports/constants';
 
-describe('sast issue body', () => {
+describe('code quality issue body issue body', () => {
   let vm;
 
   const Component = Vue.extend(component);
@@ -22,7 +27,7 @@ describe('sast issue body', () => {
     it('renders fixed label', () => {
       vm = mountComponent(Component, {
         issue: codequalityIssue,
-        isStatusSuccess: true,
+        status: STATUS_SUCCESS,
       });
 
       expect(vm.$el.textContent.trim()).toContain('Fixed');
@@ -33,7 +38,7 @@ describe('sast issue body', () => {
     it('renders fixed label', () => {
       vm = mountComponent(Component, {
         issue: codequalityIssue,
-        isStatusSuccess: false,
+        status: STATUS_FAILED,
       });
 
       expect(vm.$el.textContent.trim()).not.toContain('Fixed');
@@ -44,7 +49,7 @@ describe('sast issue body', () => {
     it('renders name', () => {
       vm = mountComponent(Component, {
         issue: codequalityIssue,
-        isStatusSuccess: false,
+        status: STATUS_NEUTRAL,
       });
 
       expect(vm.$el.textContent.trim()).toContain(codequalityIssue.name);
@@ -55,15 +60,11 @@ describe('sast issue body', () => {
     it('renders name', () => {
       vm = mountComponent(Component, {
         issue: codequalityIssue,
-        isStatusSuccess: false,
+        status: STATUS_NEUTRAL,
       });
 
-      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(
-        codequalityIssue.urlPath,
-      );
-      expect(vm.$el.querySelector('a').textContent.trim()).toEqual(
-        codequalityIssue.path,
-      );
+      expect(vm.$el.querySelector('a').getAttribute('href')).toEqual(codequalityIssue.urlPath);
+      expect(vm.$el.querySelector('a').textContent.trim()).toEqual(codequalityIssue.path);
     });
   });
 });

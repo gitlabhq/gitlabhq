@@ -21,7 +21,7 @@ export default {
       required: false,
       default: false,
     },
-    type: {
+    component: {
       type: String,
       required: false,
       default: '',
@@ -183,8 +183,9 @@ export default {
         <issues-list
           :unresolved-issues="unresolvedIssues"
           :resolved-issues="resolvedIssues"
+          :neutral-issues="neutralIssues"
           :all-issues="allIssues"
-          :type="type"
+          :component="component"
         />
       </slot>
     </div>

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('performance issue body', () => {
   let vm;
