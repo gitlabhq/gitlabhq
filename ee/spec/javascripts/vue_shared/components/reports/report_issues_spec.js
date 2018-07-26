@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import reportIssues from '~/vue_shared/components/reports/report_issues.vue';
+import { STATUS_FAILED, STATUS_SUCCESS } from '~/vue_shared/components/reports/constants';
+import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import store from 'ee/vue_shared/security_reports/store';
 import mountComponent, { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import {
-  codequalityParsedIssues,
-} from 'spec/vue_mr_widget/mock_data';
+import { codequalityParsedIssues } from 'spec/vue_mr_widget/mock_data';
 import {
   sastParsedIssues,
   dockerReportParsed,
@@ -28,8 +28,8 @@ describe('Report issues', () => {
       beforeEach(() => {
         vm = mountComponent(ReportIssues, {
           issues: codequalityParsedIssues,
-          type: 'codequality',
-          status: 'success',
+          component: componentNames.CodequalityIssueBody,
+          status: STATUS_SUCCESS,
         });
       });
 
@@ -49,8 +49,8 @@ describe('Report issues', () => {
       beforeEach(() => {
         vm = mountComponent(ReportIssues, {
           issues: codequalityParsedIssues,
-          type: 'codequality',
-          status: 'failed',
+          component: componentNames.CodequalityIssueBody,
+          status: STATUS_FAILED,
         });
       });
 
@@ -68,8 +68,8 @@ describe('Report issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: sastParsedIssues,
-        type: 'SAST',
-        status: 'failed',
+        component: componentNames.SastIssueBody,
+        status: STATUS_FAILED,
       });
     });
 
@@ -82,8 +82,8 @@ describe('Report issues', () => {
     it('should render location', () => {
       vm = mountComponent(ReportIssues, {
         issues: sastParsedIssues,
-        type: 'SAST',
-        status: 'failed',
+        component: componentNames.SastIssueBody,
+        status: STATUS_FAILED,
       });
 
       expect(vm.$el.querySelector('.report-block-list li').textContent).toContain('in');
@@ -97,8 +97,8 @@ describe('Report issues', () => {
         issues: [{
           title: 'foo',
         }],
-        type: 'SAST',
-        status: 'failed',
+        component: componentNames.SastIssueBody,
+        status: STATUS_SUCCESS,
       });
 
       expect(vm.$el.querySelector('.report-block-list li').textContent).not.toContain('in');
@@ -110,8 +110,8 @@ describe('Report issues', () => {
     beforeEach(() => {
       vm = mountComponent(ReportIssues, {
         issues: dockerReportParsed.unapproved,
-        type: 'SAST_CONTAINER',
-        status: 'failed',
+        component: componentNames.SastContainerIssueBody,
+        status: STATUS_FAILED,
       });
     });
 
@@ -142,8 +142,8 @@ describe('Report issues', () => {
       vm = mountComponentWithStore(ReportIssues, { store,
         props: {
           issues: parsedDast,
-          type: 'DAST',
-          status: 'failed',
+          component: componentNames.DastIssueBody,
+          status: STATUS_FAILED,
         },
       });
     });
