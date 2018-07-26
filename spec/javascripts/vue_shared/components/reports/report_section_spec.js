@@ -23,7 +23,7 @@ describe('Report section', () => {
   describe('computed', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'SUCCESS',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -89,7 +89,7 @@ describe('Report section', () => {
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'LOADING',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -103,7 +103,7 @@ describe('Report section', () => {
   describe('with success status', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'SUCCESS',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -161,7 +161,7 @@ describe('Report section', () => {
   describe('with failed request', () => {
     it('should render error indicator', () => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'ERROR',
         loadingText: 'Loading codeclimate report',
         errorText: 'Failed to load codeclimate report',

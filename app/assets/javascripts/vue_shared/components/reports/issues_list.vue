@@ -1,5 +1,10 @@
 <script>
-import IssuesBlock from './report_issues.vue';
+import IssuesBlock from '~/vue_shared/components/reports/report_issues.vue';
+import {
+  STATUS_SUCCESS,
+  STATUS_FAILED,
+  STATUS_NEUTRAL,
+} from '~/vue_shared/components/reports/constants';
 
 /**
  * Renders block of issues
@@ -9,6 +14,9 @@ export default {
   components: {
     IssuesBlock,
   },
+  success: STATUS_SUCCESS,
+  failed: STATUS_FAILED,
+  neutral: STATUS_NEUTRAL,
   props: {
     unresolvedIssues: {
       type: Array,
@@ -30,20 +38,16 @@ export default {
       required: false,
       default: () => [],
     },
-    type: {
+    component: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
   },
   data() {
     return {
       isFullReportVisible: false,
     };
-  },
-  computed: {
-    unresolvedIssuesStatus() {
-      return this.type === 'license' ? 'neutral' : 'failed';
-    },
   },
   methods: {
     openFullReport() {
@@ -57,34 +61,34 @@ export default {
 
     <issues-block
       v-if="unresolvedIssues.length"
-      :type="type"
-      :status="unresolvedIssuesStatus"
+      :component="component"
       :issues="unresolvedIssues"
+      :status="$options.failed"
       class="js-mr-code-new-issues"
     />
 
     <issues-block
       v-if="isFullReportVisible"
-      :type="type"
+      :component="component"
       :issues="allIssues"
+      :status="$options.failed"
       class="js-mr-code-all-issues"
-      status="failed"
     />
 
     <issues-block
       v-if="neutralIssues.length"
-      :type="type"
+      :component="component"
       :issues="neutralIssues"
+      :status="$options.neutral"
       class="js-mr-code-non-issues"
-      status="neutral"
     />
 
     <issues-block
       v-if="resolvedIssues.length"
-      :type="type"
+      :component="component"
       :issues="resolvedIssues"
+      :status="$options.success"
       class="js-mr-code-resolved-issues"
-      status="success"
     />
 
     <button
