@@ -83,11 +83,22 @@ describe('Approvals Body Component', () => {
         });
       });
 
-      it('shows the "Approved" text message when there is enough approvals in place', done => {
+      it('shows the "Merge request approved" copy when there are enough approvals in place', done => {
         vm.approvalsLeft = 0;
 
         Vue.nextTick(() => {
-          expect(vm.approvalsRequiredStringified).toBe('Approved');
+          expect(vm.approvalsRequiredStringified).toBe('Merge request approved');
+          done();
+        });
+      });
+
+      it('shows the correct copy when there are enough approvals in place but user can approve', done => {
+        vm.approvalsLeft = 0;
+        vm.userCanApprove = true;
+
+        Vue.nextTick(() => {
+          expect(vm.approvalsRequiredStringified)
+            .toBe('Merge request approved; you can approve additionally');
           done();
         });
       });
