@@ -7405,9 +7405,6 @@ msgstr ""
 msgid "ciReport|Severity"
 msgstr ""
 
-msgid "ciReport|Show complete code vulnerabilities report"
-msgstr ""
-
 msgid "ciReport|Solution"
 msgstr ""
 
@@ -7439,6 +7436,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
+msgstr ""
+
+msgid "ciReport|View full report"
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
