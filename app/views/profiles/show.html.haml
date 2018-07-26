@@ -36,7 +36,7 @@
     .row
       .col-lg-4.profile-settings-sidebar
         %h4.prepend-top-0= s_("User|Current Status")
-        %p= _("This emoji and message will appear on your profile and throughout the interface.")
+        %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too.")
       .col-lg-8
         .row
           = f.fields_for :status, @user.status do |status_form|
