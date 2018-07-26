@@ -170,14 +170,6 @@ module EE
 
     private
 
-    def compute_start_date
-      start_date_is_fixed? ? start_date_fixed : start_date_from_milestones
-    end
-
-    def compute_due_date
-      due_date_is_fixed? ? due_date_fixed : due_date_from_milestones
-    end
-
     def fetch_milestone_date_data
       sql = <<~SQL
         SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones 
