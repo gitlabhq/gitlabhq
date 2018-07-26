@@ -125,8 +125,6 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def clear_session_data
-    return unless session
-
     session[bitbucket_server_url_key] = nil
     session[bitbucket_server_username_key] = nil
     session[personal_access_token_key] = nil
