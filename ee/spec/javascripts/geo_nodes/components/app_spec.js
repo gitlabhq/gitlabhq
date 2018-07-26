@@ -182,7 +182,7 @@ describe('AppComponent', () => {
           expect(document.querySelector('.flash-text').innerText.trim()).toBe('Node Authentication was successfully repaired.');
           expect(node.nodeActionActive).toBe(false);
           done();
-        });
+        }, 0);
       });
 
       it('calls service.repairNode and shows failure Flash message on request failure', (done) => {
@@ -196,7 +196,7 @@ describe('AppComponent', () => {
           expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while repairing node');
           expect(node.nodeActionActive).toBe(false);
           done();
-        });
+        }, 0);
       });
     });
 
@@ -216,7 +216,7 @@ describe('AppComponent', () => {
           expect(node.enabled).toBe(true);
           expect(node.nodeActionActive).toBe(false);
           done();
-        });
+        }, 0);
       });
 
       it('calls service.toggleNode and shows Flash error on request failure', (done) => {
@@ -232,7 +232,7 @@ describe('AppComponent', () => {
           expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while changing node status');
           expect(node.nodeActionActive).toBe(false);
           done();
-        });
+        }, 0);
       });
     });
 
@@ -250,7 +250,7 @@ describe('AppComponent', () => {
           expect(vm.store.removeNode).toHaveBeenCalledWith(node);
           expect(document.querySelector('.flash-text').innerText.trim()).toBe('Node was successfully removed.');
           done();
-        });
+        }, 0);
       });
 
       it('calls service.removeNode and shows Flash message on request failure', (done) => {
@@ -266,7 +266,7 @@ describe('AppComponent', () => {
           expect(vm.store.removeNode).not.toHaveBeenCalled();
           expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while removing node');
           done();
-        });
+        }, 0);
       });
     });
 
