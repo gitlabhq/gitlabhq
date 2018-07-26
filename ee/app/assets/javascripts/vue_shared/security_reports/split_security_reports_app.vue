@@ -3,7 +3,7 @@ import { mapActions, mapState } from 'vuex';
 import { s__, sprintf, n__ } from '~/locale';
 import createFlash from '~/flash';
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
-import { SAST, DAST, SAST_CONTAINER } from './store/constants';
+import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';
 import reportsMixin from './mixins/reports_mixin';
@@ -88,9 +88,7 @@ export default {
       required: true,
     },
   },
-  sast: SAST,
-  dast: DAST,
-  sastContainer: SAST_CONTAINER,
+  componentNames,
   computed: {
     ...mapState(['sast', 'dependencyScanning', 'sastContainer', 'dast']),
 
@@ -216,7 +214,7 @@ export default {
     <report-section
       v-if="sastHeadPath"
       :always-open="alwaysOpen"
-      :type="$options.sast"
+      :component="$options.componentNames.SastIssueBody"
       :status="checkReportStatus(sast.isLoading, sast.hasError)"
       :loading-text="translateText('SAST').loading"
       :error-text="translateText('SAST').error"
@@ -230,7 +228,7 @@ export default {
     <report-section
       v-if="dependencyScanningHeadPath"
       :always-open="alwaysOpen"
-      :type="$options.sast"
+      :component="$options.componentNames.SastIssueBody"
       :status="checkReportStatus(dependencyScanning.isLoading, dependencyScanning.hasError)"
       :loading-text="translateText('Dependency scanning').loading"
       :error-text="translateText('Dependency scanning').error"
@@ -244,7 +242,7 @@ export default {
     <report-section
       v-if="sastContainerHeadPath"
       :always-open="alwaysOpen"
-      :type="$options.sastContainer"
+      :component="$options.componentNames.SastContainerIssueBody"
       :status="checkReportStatus(sastContainer.isLoading, sastContainer.hasError)"
       :loading-text="translateText('Container scanning').loading"
       :error-text="translateText('Container scanning').error"
@@ -258,7 +256,7 @@ export default {
     <report-section
       v-if="dastHeadPath"
       :always-open="alwaysOpen"
-      :type="$options.dast"
+      :component="$options.componentNames.DastIssueBody"
       :status="checkReportStatus(dast.isLoading, dast.hasError)"
       :loading-text="translateText('DAST').loading"
       :error-text="translateText('DAST').error"
