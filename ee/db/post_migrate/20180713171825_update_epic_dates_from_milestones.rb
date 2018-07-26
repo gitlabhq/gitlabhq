@@ -24,12 +24,12 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
 
     def fetch_milestone_date_data
       sql = <<~SQL
-        SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones 
+        SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones
         INNER JOIN issues ON issues.milestone_id = milestones.id
         INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
         INNER JOIN (
           SELECT MIN(milestones.start_date) AS start_date, MAX(milestones.due_date) AS due_date
-          FROM milestones 
+          FROM milestones
           INNER JOIN issues ON issues.milestone_id = milestones.id
           INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
           WHERE epic_issues.epic_id = #{id}
