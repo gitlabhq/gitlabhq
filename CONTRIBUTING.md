@@ -323,23 +323,16 @@ To better understand the priority by which UX tackles issues, see the [UX sectio
 
 Once an issue has been worked on and is ready for development, a UXer removes the ~"UX" label and applies the ~"UX ready" label to that issue.
 
-The UX team has a special type label called ~"design artifact". This label indicates that the final output
-for an issue is a UX solution/design. The solution will be developed by frontend and/or backend in a subsequent milestone.
-Any issue labeled ~"design artifact" should not also be labeled ~"frontend" or ~"backend" since no development is
-needed until the solution has been decided.
+There is a special type label called ~"product discovery". It represents a discovery issue intended for UX, PM, FE, and BE to discuss the problem and potential solutions. The final output for this issue could be a doc of requirements, a design artifact, or even a prototype. The solution will be developed in a subsequent milestone.
 
-~"design artifact" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
+~"product discovery" issues are like any other issue and should contain a milestone label, ~"Deliverable" or ~"Stretch", when scheduled in the current milestone.
 
-To prevent the misunderstanding that a feature will be be delivered in the
-assigned milestone, when only UX design is planned for that milestone, the
-Product Manager should create a separate issue for the ~"design artifact",
-assign the ~UX, ~"design artifact" and ~"Deliverable" labels, add a milestone
-and use a title that makes it clear that the scheduled issue is design only
-(e.g. `Design exploration for XYZ`).
+The initial issue should be about the problem we are solving. If a separate [product discovery issue](#product-discovery-issues) is needed for additional research and design work, it will be created by a PM or UX person. Assign the ~UX, ~"product discovery" and ~"Deliverable" labels, add a milestone and use a title that makes it clear that the scheduled issue is product discovery
+(e.g. `Product discovery for XYZ`).
 
-When the ~"design artifact" issue has been completed, the UXer removes the ~UX
+When the ~"product discovery" issue has been completed, the UXer removes the ~UX
 label, adds the ~"UX ready" label and closes the issue. This indicates the
-design artifact is complete. The UXer will also copy the designs to related
+UX work for the issue is complete. The UXer will also copy any designs to related
 issues for implementation in an upcoming milestone.
 
 ## Issue tracker
