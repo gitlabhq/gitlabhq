@@ -271,6 +271,20 @@ entry.
 - Use monospaced font for MR diff commit link ref on GFM.
 
 
+## 11.0.5 (2018-07-26)
+
+### Security (4 changes)
+
+- Don't expose project names in various counters.
+- Don't expose project names in GitHub counters.
+- Adding CSRF protection to Hooks test action.
+- Fixed XSS in branch name in Web IDE.
+
+### Fixed (1 change)
+
+- Escapes milestone and label's names on flash notice when promoting them.
+
+
 ## 11.0.4 (2018-07-17)
 
 ### Security (1 change)
