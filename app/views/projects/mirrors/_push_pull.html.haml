@@ -64,7 +64,7 @@
                   %td
                     - if mirror.last_error.present?
                       .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
-                  %td
-                    .btn-group.mirror-actions-group{ role: 'group' }
+                  %td.mirror-action-buttons
+                    .btn-group.mirror-actions-group.pull-right{ role: 'group' }
                       = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                       %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')

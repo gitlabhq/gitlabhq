@@ -6,9 +6,9 @@
     %td
       - if @project.import_error.present?
         .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) }= _('Error')
-    %td
-      .btn-group.mirror-actions-group{ role: 'group' }
-        - if @project.mirror? && can?(current_user, :push_code, @project)
+    %td.mirror-action-buttons
+      .btn-group.mirror-actions-group.pull-right{ role: 'group' }
+        - if @project.mirror?
           - if @project.mirror_about_to_update? || @project.updating_mirror?
             %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: _('Updating') }= icon("refresh spin")
           - else
