@@ -188,20 +188,20 @@ describe Epic do
     context 'fixed date is not set' do
       subject { create(:epic, start_date: nil, end_date: nil) }
 
-      let(:milestone1) {
+      let(:milestone1) do
         create(
           :milestone,
           start_date: Date.new(2000, 1, 1),
           due_date: Date.new(2000, 1, 10)
         )
-      }
-      let(:milestone2) {
+      end
+      let(:milestone2) do
         create(
           :milestone,
           start_date: Date.new(2000, 1, 3),
           due_date: Date.new(2000, 1, 20)
         )
-      }
+      end
 
       context 'multiple milestones' do
         before do
@@ -221,20 +221,20 @@ describe Epic do
         end
 
         context 'without due date' do
-          let(:milestone1) {
+          let(:milestone1) do
             create(
               :milestone,
               start_date: Date.new(2000, 1, 1),
               due_date: nil
             )
-          }
-          let(:milestone2) {
+          end
+          let(:milestone2) do
             create(
               :milestone,
               start_date: Date.new(2000, 1, 3),
               due_date: nil
             )
-          }
+          end
 
           it 'updates to milestone dates' do
             subject.update_dates
@@ -245,20 +245,20 @@ describe Epic do
         end
 
         context 'without any dates' do
-          let(:milestone1) {
+          let(:milestone1) do
             create(
               :milestone,
               start_date: nil,
               due_date: nil
             )
-          }
-          let(:milestone2) {
+          end
+          let(:milestone2) do
             create(
               :milestone,
               start_date: nil,
               due_date: nil
             )
-          }
+          end
 
           it 'updates to milestone dates' do
             subject.update_dates
@@ -300,13 +300,13 @@ describe Epic do
         end
 
         context 'without due date' do
-          let(:milestone1) {
+          let(:milestone1) do
             create(
               :milestone,
               start_date: Date.new(2000, 1, 1),
               due_date: nil
             )
-          }
+          end
 
           it 'updates to milestone dates' do
             subject.update_dates
@@ -317,13 +317,13 @@ describe Epic do
         end
 
         context 'without any dates' do
-          let(:milestone1) {
+          let(:milestone1) do
             create(
               :milestone,
               start_date: nil,
               due_date: nil
             )
-          }
+          end
 
           it 'updates to milestone dates' do
             subject.update_dates
