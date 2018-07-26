@@ -833,18 +833,21 @@
   }
 }
 
-.dragHandle {
+.drag-handle {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 1px;
-  background-color: $white-dark;
+  width: 4px;
 
-  &.dragright {
+  &:hover {
+    background-color: $white-normal;
+  }
+
+  &.drag-right {
     right: 0;
   }
 
-  &.dragleft {
+  &.drag-left {
     left: 0;
   }
 }
