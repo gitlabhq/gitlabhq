@@ -4,22 +4,16 @@ export default {
     colors: {
       type: Array,
       required: true,
-<<<<<<< HEAD
       validator(value) {
         return value.length === 2;
       },
-=======
->>>>>>> upstream/master
     },
     opacity: {
       type: Array,
       required: true,
-<<<<<<< HEAD
       validator(value) {
         return value.length === 2;
       },
-=======
->>>>>>> upstream/master
     },
     identifierName: {
       type: String,

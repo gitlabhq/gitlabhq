@@ -254,7 +254,6 @@ describe API::Members do
     end
   end
 
-<<<<<<< HEAD
   ## EE specific
   shared_examples 'POST /projects/:id/members with the project group membership locked' do
     context 'project in a group' do
@@ -272,8 +271,6 @@ describe API::Members do
   end
   ## EE specific
 
-=======
->>>>>>> upstream/master
   shared_examples 'PUT /:source_type/:id/members/:user_id' do |source_type|
     context "with :source_type == #{source_type.pluralize}" do
       it_behaves_like 'a 404 response when source is private' do
@@ -414,13 +411,10 @@ describe API::Members do
     let(:source) { project }
   end
 
-<<<<<<< HEAD
   ## EE specific
   it_behaves_like 'POST /projects/:id/members with the project group membership locked'
   ## EE specific
 
-=======
->>>>>>> upstream/master
   it_behaves_like 'POST /:source_type/:id/members', 'group' do
     let(:source) { group }
   end
