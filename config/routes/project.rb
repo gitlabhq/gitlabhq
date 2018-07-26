@@ -80,6 +80,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :validate_query, on: :collection
           get :active_common, on: :collection
         end
+
+        # EE-specific
+        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do
+          post :notify, on: :collection
+        end
+        # EE-specific
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do

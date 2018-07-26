@@ -267,7 +267,7 @@
       border: 1px solid $white-light;
       background-color: $orange-300;
       border-radius: 50%;
-      content: "";
+      content: '';
     }
   }
 }
@@ -286,8 +286,6 @@
     padding-right: 10px;
   }
 }
-
-
 
 .gl-responsive-table-row {
   .branch-commit {
@@ -677,5 +675,68 @@
     .state-button {
       display: none;
     }
+  }
+}
+
+.alert-dropdown-button {
+  margin-left: $btn-side-margin;
+
+  .dropdown.open & {
+    background: $white-normal;
+    outline: 0;
+  }
+
+  svg {
+    margin: 0;
+
+    + svg {
+      margin-left: -$gl-padding-4;
+    }
+
+    &.chevron {
+      color: $gl-text-color-secondary;
+    }
+  }
+}
+
+.alert-dropdown-menu {
+  right: 0;
+  left: auto;
+  z-index: $zindex-popover + 5; // must be higher than graph flag popover
+
+  .dropdown-title {
+    margin: 0;
+  }
+}
+
+.alert-error-message {
+  color: $gl-danger;
+  vertical-align: middle;
+}
+
+.alert-current-setting {
+  color: $gl-text-color-disabled;
+  vertical-align: middle;
+}
+
+.alert-form {
+  padding: $gl-padding $gl-padding $gl-padding-8;
+
+  label {
+    font-weight: normal;
+  }
+
+  .btn-group,
+  .action-group {
+    display: flex;
+
+    .btn {
+      flex: 1 auto;
+      box-shadow: none;
+    }
+  }
+
+  .action-group .btn + .btn {
+    margin-left: $gl-padding-8;
   }
 }

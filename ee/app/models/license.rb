@@ -75,6 +75,7 @@ class License < ActiveRecord::Base
     chatops
     pod_logs
     pseudonymizer
+    prometheus_alerts
   ].freeze
 
   # List all features available for early adopters,
