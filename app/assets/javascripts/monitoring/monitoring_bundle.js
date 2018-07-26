@@ -14,7 +14,6 @@ export default () => {
           props: {
             ...el.dataset,
             hasMetrics: convertPermissionToBoolean(el.dataset.hasMetrics),
-            showEnvironmentDropdown: true,
           },
         });
       },

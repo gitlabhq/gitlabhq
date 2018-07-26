@@ -93,7 +93,8 @@ export default {
     },
     showEnvironmentDropdown: {
       type: Boolean,
-      required: true,
+      required: false,
+      default: true,
     },
   },
   data() {
