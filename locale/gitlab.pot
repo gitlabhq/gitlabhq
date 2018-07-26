@@ -6227,7 +6227,7 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
-msgid "This board\\'s scope is reduced"
+msgid "This board's scope is reduced"
 msgstr ""
 
 msgid "This diff is collapsed."
