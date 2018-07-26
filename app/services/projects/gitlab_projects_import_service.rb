@@ -15,7 +15,7 @@ module Projects
     end
 
     def execute
-      prepare_template_environment(template_file&.path)
+      prepare_template_environment(template_file)
 
       prepare_import_params
 
@@ -61,7 +61,6 @@ module Projects
 
       if template_file
         params[:import_type] = 'gitlab_project'
-        params[:import_source] = import_upload_path
       end
 
       params[:import_data] = { data: data } if data.present?
