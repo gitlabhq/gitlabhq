@@ -8,7 +8,13 @@ import GeoNodesStore from 'ee/geo_nodes/store/geo_nodes_store';
 import GeoNodesService from 'ee/geo_nodes/service/geo_nodes_service';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import { NODE_ACTIONS } from 'ee/geo_nodes/constants';
-import { PRIMARY_VERSION, NODE_DETAILS_PATH, mockNodes, mockNode, rawMockNodeDetails } from '../mock_data';
+import {
+  PRIMARY_VERSION,
+  NODE_DETAILS_PATH,
+  mockNodes,
+  mockNode,
+  rawMockNodeDetails,
+} from '../mock_data';
 
 const createComponent = () => {
   const Component = Vue.extend(appComponent);
@@ -86,187 +92,244 @@ describe('AppComponent', () => {
     });
 
     describe('fetchGeoNodes', () => {
-      it('calls service.getGeoNodes and sets response to the store on success', (done) => {
+      it('calls service.getGeoNodes and sets response to the store on success', done => {
         spyOn(vm.store, 'setNodes');
 
-        vm.fetchGeoNodes();
-        setTimeout(() => {
-          expect(vm.store.setNodes).toHaveBeenCalledWith(mockNodes);
-          expect(vm.isLoading).toBe(false);
-          done();
-        }, 0);
+        vm
+          .fetchGeoNodes()
+          .then(() => {
+            expect(vm.store.setNodes).toHaveBeenCalledWith(mockNodes);
+            expect(vm.isLoading).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('sets error flag and message on failure', (done) => {
+      it('sets error flag and message on failure', done => {
         response = 'Something went wrong';
         statusCode = 500;
 
-        vm.fetchGeoNodes();
-        setTimeout(() => {
-          expect(vm.isLoading).toBe(false);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while fetching nodes');
-          done();
-        }, 0);
+        vm
+          .fetchGeoNodes()
+          .then(() => {
+            expect(vm.isLoading).toBe(false);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Something went wrong while fetching nodes',
+            );
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('fetchNodeDetails', () => {
-      it('calls service.getGeoNodeDetails and sets response to the store on success', (done) => {
+      it('calls service.getGeoNodeDetails and sets response to the store on success', done => {
         mock.onGet(mockNode.statusPath).reply(200, rawMockNodeDetails);
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
-        vm.fetchNodeDetails(mockNode);
-        setTimeout(() => {
-          expect(vm.service.getGeoNodeDetails).toHaveBeenCalled();
-          expect(Object.keys(vm.store.state.nodeDetails).length).not.toBe(0);
-          expect(vm.store.state.nodeDetails['1']).toBeDefined();
-          done();
-        }, 0);
+        vm
+          .fetchNodeDetails(mockNode)
+          .then(() => {
+            expect(vm.service.getGeoNodeDetails).toHaveBeenCalled();
+            expect(Object.keys(vm.store.state.nodeDetails).length).not.toBe(0);
+            expect(vm.store.state.nodeDetails['1']).toBeDefined();
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 404 failure', (done) => {
+      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 404 failure', done => {
         spyOn(eventHub, '$emit');
         mock.onGet(mockNode.statusPath).reply(404, {});
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
-        vm.fetchNodeDetails(mockNode);
-        setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
-          const nodeDetails = vm.store.state.nodeDetails['1'];
-          expect(nodeDetails).toBeDefined();
-          expect(nodeDetails.syncStatusUnavailable).toBe(true);
-          expect(nodeDetails.health).toBe('Request failed with status code 404');
-          done();
-        }, 0);
+        vm
+          .fetchNodeDetails(mockNode)
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
+            const nodeDetails = vm.store.state.nodeDetails['1'];
+            expect(nodeDetails).toBeDefined();
+            expect(nodeDetails.syncStatusUnavailable).toBe(true);
+            expect(nodeDetails.health).toBe('Request failed with status code 404');
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 500 failure', (done) => {
+      it('emits `nodeDetailsLoaded` event with fake nodeDetails object on 500 failure', done => {
         spyOn(eventHub, '$emit');
         mock.onGet(mockNode.statusPath).reply(500, {});
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
-        vm.fetchNodeDetails(mockNode);
-        setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
-          const nodeDetails = vm.store.state.nodeDetails['1'];
-          expect(nodeDetails).toBeDefined();
-          expect(nodeDetails.syncStatusUnavailable).toBe(true);
-          expect(nodeDetails.health).toBe('Request failed with status code 500');
-          done();
-        }, 0);
+        vm
+          .fetchNodeDetails(mockNode)
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoaded', jasmine.any(Object));
+            const nodeDetails = vm.store.state.nodeDetails['1'];
+            expect(nodeDetails).toBeDefined();
+            expect(nodeDetails.syncStatusUnavailable).toBe(true);
+            expect(nodeDetails.health).toBe('Request failed with status code 500');
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('emits `nodeDetailsLoadFailed` event on failure when there is no response', (done) => {
+      it('emits `nodeDetailsLoadFailed` event on failure when there is no response', done => {
         spyOn(eventHub, '$emit');
         mock.onGet(mockNode.statusPath).reply(500, null);
         spyOn(vm.service, 'getGeoNodeDetails').and.callThrough();
 
-        vm.fetchNodeDetails(mockNode);
-        setTimeout(() => {
-          expect(eventHub.$emit).toHaveBeenCalledWith('nodeDetailsLoadFailed', mockNode.id, jasmine.any(Object));
-          done();
-        }, 0);
+        vm
+          .fetchNodeDetails(mockNode)
+          .then(() => {
+            expect(eventHub.$emit).toHaveBeenCalledWith(
+              'nodeDetailsLoadFailed',
+              mockNode.id,
+              jasmine.any(Object),
+            );
+            done();
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('repairNode', () => {
-      it('calls service.repairNode and shows success Flash message on request success', (done) => {
+      it('calls service.repairNode and shows success Flash message on request success', done => {
         const node = { ...mockNode };
-        mock.onPost(node.repairPath).reply(200);
+        mock.onPost(node.repairPath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [200];
+        });
         spyOn(vm.service, 'repairNode').and.callThrough();
 
-        vm.repairNode(node);
-        expect(node.nodeActionActive).toBe(true);
-        setTimeout(() => {
-          expect(vm.service.repairNode).toHaveBeenCalledWith(node);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Node Authentication was successfully repaired.');
-          expect(node.nodeActionActive).toBe(false);
-          done();
-        }, 0);
+        vm
+          .repairNode(node)
+          .then(() => {
+            expect(vm.service.repairNode).toHaveBeenCalledWith(node);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Node Authentication was successfully repaired.',
+            );
+            expect(node.nodeActionActive).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('calls service.repairNode and shows failure Flash message on request failure', (done) => {
+      it('calls service.repairNode and shows failure Flash message on request failure', done => {
         const node = { ...mockNode };
-        mock.onPost(node.repairPath).reply(500);
+        mock.onPost(node.repairPath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [500];
+        });
         spyOn(vm.service, 'repairNode').and.callThrough();
 
-        vm.repairNode(node);
-        setTimeout(() => {
-          expect(vm.service.repairNode).toHaveBeenCalledWith(node);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while repairing node');
-          expect(node.nodeActionActive).toBe(false);
-          done();
-        }, 0);
+        vm
+          .repairNode(node)
+          .then(() => {
+            expect(vm.service.repairNode).toHaveBeenCalledWith(node);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Something went wrong while repairing node',
+            );
+            expect(node.nodeActionActive).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('toggleNode', () => {
-      it('calls service.toggleNode for enabling node and updates toggle button on request success', (done) => {
+      it('calls service.toggleNode for enabling node and updates toggle button on request success', done => {
         const node = { ...mockNode };
-        mock.onPut(node.basePath).reply(200, {
-          enabled: true,
+        mock.onPut(node.basePath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [
+            200,
+            {
+              enabled: true,
+            },
+          ];
         });
         spyOn(vm.service, 'toggleNode').and.callThrough();
         node.enabled = false;
 
-        vm.toggleNode(node);
-        expect(node.nodeActionActive).toBe(true);
-        setTimeout(() => {
-          expect(vm.service.toggleNode).toHaveBeenCalledWith(node);
-          expect(node.enabled).toBe(true);
-          expect(node.nodeActionActive).toBe(false);
-          done();
-        }, 0);
+        vm
+          .toggleNode(node)
+          .then(() => {
+            expect(vm.service.toggleNode).toHaveBeenCalledWith(node);
+            expect(node.enabled).toBe(true);
+            expect(node.nodeActionActive).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('calls service.toggleNode and shows Flash error on request failure', (done) => {
+      it('calls service.toggleNode and shows Flash error on request failure', done => {
         const node = { ...mockNode };
-        mock.onPut(node.basePath).reply(500);
+        mock.onPut(node.basePath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [500];
+        });
         spyOn(vm.service, 'toggleNode').and.callThrough();
         node.enabled = false;
 
-        vm.toggleNode(node);
-        expect(node.nodeActionActive).toBe(true);
-        setTimeout(() => {
-          expect(vm.service.toggleNode).toHaveBeenCalledWith(node);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while changing node status');
-          expect(node.nodeActionActive).toBe(false);
-          done();
-        }, 0);
+        vm
+          .toggleNode(node)
+          .then(() => {
+            expect(vm.service.toggleNode).toHaveBeenCalledWith(node);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Something went wrong while changing node status',
+            );
+            expect(node.nodeActionActive).toBe(false);
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('removeNode', () => {
-      it('calls service.removeNode for removing node and shows Flash message on request success', (done) => {
+      it('calls service.removeNode for removing node and shows Flash message on request success', done => {
         const node = { ...mockNode };
-        mock.onDelete(node.basePath).reply(200);
+        mock.onDelete(node.basePath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [200];
+        });
         spyOn(vm.service, 'removeNode').and.callThrough();
         spyOn(vm.store, 'removeNode').and.stub();
 
-        vm.removeNode(node);
-        expect(node.nodeActionActive).toBe(true);
-        setTimeout(() => {
-          expect(vm.service.removeNode).toHaveBeenCalledWith(node);
-          expect(vm.store.removeNode).toHaveBeenCalledWith(node);
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Node was successfully removed.');
-          done();
-        }, 0);
+        vm
+          .removeNode(node)
+          .then(() => {
+            expect(vm.service.removeNode).toHaveBeenCalledWith(node);
+            expect(vm.store.removeNode).toHaveBeenCalledWith(node);
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Node was successfully removed.',
+            );
+          })
+          .then(done)
+          .catch(done.fail);
       });
 
-      it('calls service.removeNode and shows Flash message on request failure', (done) => {
+      it('calls service.removeNode and shows Flash message on request failure', done => {
         const node = { ...mockNode };
-        mock.onDelete(node.basePath).reply(500);
+        mock.onDelete(node.basePath).reply(() => {
+          expect(node.nodeActionActive).toBe(true);
+          return [500];
+        });
         spyOn(vm.service, 'removeNode').and.callThrough();
         spyOn(vm.store, 'removeNode').and.stub();
 
-        vm.removeNode(node);
-        expect(node.nodeActionActive).toBe(true);
-        setTimeout(() => {
-          expect(vm.service.removeNode).toHaveBeenCalledWith(node);
-          expect(vm.store.removeNode).not.toHaveBeenCalled();
-          expect(document.querySelector('.flash-text').innerText.trim()).toBe('Something went wrong while removing node');
-          done();
-        }, 0);
+        vm
+          .removeNode(node)
+          .then(() => {
+            expect(vm.service.removeNode).toHaveBeenCalledWith(node);
+            expect(vm.store.removeNode).not.toHaveBeenCalled();
+            expect(document.querySelector('.flash-text').innerText.trim()).toBe(
+              'Something went wrong while removing node',
+            );
+          })
+          .then(done)
+          .catch(done.fail);
       });
     });
 
@@ -399,7 +462,9 @@ describe('AppComponent', () => {
 
     it('renders loading animation when `isLoading` is true', () => {
       vm.isLoading = true;
-      expect(vm.$el.querySelectorAll('.loading-animation.prepend-top-20.append-bottom-20').length).not.toBe(0);
+      expect(
+        vm.$el.querySelectorAll('.loading-animation.prepend-top-20.append-bottom-20').length,
+      ).not.toBe(0);
     });
   });
 });
