@@ -18,17 +18,17 @@
         %fieldset
           .row
             .form-group.col-md-9
-              = f.label :name, class: 'label-light', for: 'project_name_edit' do
+              = f.label :name, class: 'label-bold', for: 'project_name_edit' do
                 Project name
               = f.text_field :name, class: "form-control", id: "project_name_edit"
 
             .form-group.col-md-3
-              = f.label :id, class: 'label-light' do
+              = f.label :id, class: 'label-bold' do
                 Project ID
               = f.text_field :id, class: 'form-control', readonly: true
 
           .form-group
-            = f.label :description, class: 'label-light' do
+            = f.label :description, class: 'label-bold' do
               Project description
               %span.light (optional)
             = f.text_area :description, class: "form-control", rows: 3, maxlength: 250
@@ -37,13 +37,13 @@
 
           - unless @project.empty_repo?
             .form-group
-              = f.label :default_branch, "Default Branch", class: 'label-light'
+              = f.label :default_branch, "Default Branch", class: 'label-bold'
               = f.select(:default_branch, @project.repository.branch_names, {}, {class: 'select2 select-wide'})
 
         = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :project
 
         .form-group
-          = f.label :tag_list, "Tags", class: 'label-light'
+          = f.label :tag_list, "Tags", class: 'label-bold'
           = f.text_field :tag_list, value: @project.tag_list.sort.join(', '), maxlength: 2000, class: "form-control"
           %p.form-text.text-muted Separate tags with commas.
         %fieldset.features
@@ -144,12 +144,12 @@
         = render 'projects/errors'
         = form_for([@project.namespace.becomes(Namespace), @project]) do |f|
           .form-group.project_name_holder
-            = f.label :name, class: 'label-light' do
+            = f.label :name, class: 'label-bold' do
               Project name
             .form-group
               = f.text_field :name, class: "form-control"
           .form-group
-            = f.label :path, class: 'label-light' do
+            = f.label :path, class: 'label-bold' do
               %span Path
             .form-group
               .input-group
@@ -169,7 +169,7 @@
             Transfer project
           = form_for([@project.namespace.becomes(Namespace), @project], url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'js-project-transfer-form' } ) do |f|
             .form-group
-              = label_tag :new_namespace_id, nil, class: 'label-light' do
+              = label_tag :new_namespace_id, nil, class: 'label-bold' do
                 %span  Select a new namespace
               .form-group
                 = select_tag :new_namespace_id, namespaces_options(nil), include_blank: true, class: 'select2'

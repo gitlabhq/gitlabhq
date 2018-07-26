@@ -70,7 +70,7 @@ describe('ideStatusBar', () => {
           status: {
             text: 'success',
             details_path: 'test',
-            icon: 'success',
+            icon: 'status_success',
           },
         },
       });

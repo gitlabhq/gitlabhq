@@ -24,8 +24,12 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
+    fileHash: {
+      type: String,
+      required: true,
+    },
+    contextLinesPath: {
+      type: String,
       required: true,
     },
     diffViewType: {
@@ -62,6 +66,11 @@ export default {
       type: Boolean,
       required: false,
       default: false,
+    },
+    discussions: {
+      type: Array,
+      required: false,
+      default: () => [],
     },
   },
   computed: {
@@ -120,18 +129,19 @@ export default {
     :class="classNameMap"
   >
     <diff-line-gutter-content
-      :file-hash="diffFile.fileHash"
+      :file-hash="fileHash"
+      :context-lines-path="contextLinesPath"
       :line-type="normalizedLine.type"
       :line-code="normalizedLine.lineCode"
       :line-position="linePosition"
       :line-number="lineNumber"
       :meta-data="normalizedLine.metaData"
       :show-comment-button="showCommentButton"
-      :context-lines-path="diffFile.contextLinesPath"
       :is-bottom="isBottom"
       :is-match-line="isMatchLine"
       :is-context-line="isContentLine"
       :is-meta-line="isMetaLine"
+      :discussions="discussions"
     />
   </td>
 </template>

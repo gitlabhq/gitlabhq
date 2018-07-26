@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This service lists the download link from a remote source based on the
 # oids provided
 module Projects

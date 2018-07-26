@@ -33,14 +33,14 @@ describe('IDE changed file icon', () => {
   });
 
   describe('changedIconClass', () => {
-    it('includes multi-file-modified when not a temp file', () => {
-      expect(vm.changedIconClass).toContain('multi-file-modified');
+    it('includes ide-file-modified when not a temp file', () => {
+      expect(vm.changedIconClass).toContain('ide-file-modified');
     });
 
-    it('includes multi-file-addition when a temp file', () => {
+    it('includes ide-file-addition when a temp file', () => {
       vm.file.tempFile = true;
 
-      expect(vm.changedIconClass).toContain('multi-file-addition');
+      expect(vm.changedIconClass).toContain('ide-file-addition');
     });
   });
 });

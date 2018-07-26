@@ -138,4 +138,29 @@ describe('VueX test helper (testAction)', () => {
         });
     });
   });
+
+  it('should work with async actions not returning promises', done => {
+    const data = { FOO: 'BAR' };
+
+    const promiseAction = ({ commit, dispatch }) => {
+      dispatch('ACTION');
+
+      axios
+        .get(TEST_HOST)
+        .then(() => {
+          commit('SUCCESS');
+          return data;
+        })
+        .catch(error => {
+          commit('ERROR');
+          throw error;
+        });
+    };
+
+    mock.onGet(TEST_HOST).replyOnce(200, 42);
+
+    assertion = { mutations: [{ type: 'SUCCESS' }], actions: [{ type: 'ACTION' }] };
+
+    testAction(promiseAction, null, {}, assertion.mutations, assertion.actions, done);
+  });
 });

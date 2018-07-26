@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   module ParticipableService
     extend ActiveSupport::Concern

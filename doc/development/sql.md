@@ -243,3 +243,45 @@ WHERE EXISTS (
 ```
 
 [gin-index]: http://www.postgresql.org/docs/current/static/gin.html
+
+## `.find_or_create_by` is not atomic
+
+The inherent pattern with methods like `.find_or_create_by` and
+`.first_or_create` and others is that they are not atomic. This means,
+it first runs a `SELECT`, and if there are no results an `INSERT` is
+performed. With concurrent processes in mind, there is a race condition
+which may lead to trying to insert two similar records. This may not be
+desired, or may cause one of the queries to fail due to a constraint
+violation, for example.
+
+Using transactions does not solve this problem.
+
+The following pattern should be used to avoid the problem:
+
+```ruby
+Project.transaction do
+  begin
+    User.find_or_create_by(username: "foo")
+  rescue ActiveRecord::RecordNotUnique
+    retry
+  end
+end
+```
+
+If the above block is run inside a transaction and hits the race
+condition, the transaction is aborted and we cannot simply retry (any
+further queries inside the aborted transaction are going to fail). We
+can employ [nested transactions](http://api.rubyonrails.org/classes/ActiveRecord/Transactions/ClassMethods.html#module-ActiveRecord::Transactions::ClassMethods-label-Nested+transactions)
+here to only rollback the "inner transaction". Note that `requires_new: true` is required here.
+
+```ruby
+Project.transaction do
+  begin
+    User.transaction(requires_new: true) do
+      User.find_or_create_by(username: "foo")
+    end
+  rescue ActiveRecord::RecordNotUnique
+    retry
+  end
+end
+```

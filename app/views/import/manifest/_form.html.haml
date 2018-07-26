@@ -1,6 +1,6 @@
 = form_tag upload_import_manifest_path, multipart: true do
   .form-group
-    = label_tag :group_id, nil, class: 'label-light' do
+    = label_tag :group_id, nil, class: 'label-bold' do
       = _('Group')
     .input-group
       .input-group-prepend.has-tooltip{ title: root_url }
@@ -11,7 +11,7 @@
       = _('Choose the top-level group for your repository imports.')
 
   .form-group
-    = label_tag :manifest, class: 'label-light' do
+    = label_tag :manifest, class: 'label-bold' do
       = _('Manifest')
     = file_field_tag :manifest, class: 'form-control-file', required: true
     .form-text.text-muted

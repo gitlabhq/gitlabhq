@@ -39,8 +39,8 @@ export default {
       required: false,
       default: true,
     },
-    currentUser: {
-      type: Object,
+    canCurrentUserFork: {
+      type: Boolean,
       required: true,
     },
   },
@@ -228,7 +228,7 @@ export default {
 
         <edit-button
           v-if="!diffFile.deletedFile"
-          :current-user="currentUser"
+          :can-current-user-fork="canCurrentUserFork"
           :edit-path="diffFile.editPath"
           :can-modify-blob="diffFile.canModifyBlob"
           @showForkMessage="showForkMessage"

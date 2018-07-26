@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelineSchedulePolicy < PipelinePolicy
     alias_method :pipeline_schedule, :subject

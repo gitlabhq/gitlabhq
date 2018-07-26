@@ -1,5 +1,0 @@
----
-title: Set MR target branch to default branch if target branch is not valid
-merge_request: 19067
-author:
-type: fixed

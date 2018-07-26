@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalSnippetPolicy < BasePolicy
   condition(:public_snippet, scope: :subject) { @subject.public? }
   condition(:is_author) { @user && @subject.author == @user }

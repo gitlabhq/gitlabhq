@@ -279,7 +279,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -291,7 +291,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
-          expect(user).to have_an_activity_record
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
@@ -309,7 +309,7 @@ describe API::Internal do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(user).to have_an_activity_record
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
@@ -328,7 +328,7 @@ describe API::Internal do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(user).not_to have_an_activity_record
+            expect(user.reload.last_activity_on).to be_nil
           end
         end
       end
@@ -345,7 +345,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -355,7 +355,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
     end
@@ -373,7 +373,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -383,7 +383,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
     end

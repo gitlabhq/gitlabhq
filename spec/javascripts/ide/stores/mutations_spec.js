@@ -156,4 +156,61 @@ describe('Multi-file store mutations', () => {
       expect(localState.errorMessage).toBe('error');
     });
   });
+
+  describe('DELETE_ENTRY', () => {
+    beforeEach(() => {
+      localState.currentProjectId = 'gitlab-ce';
+      localState.currentBranchId = 'master';
+      localState.trees['gitlab-ce/master'] = {
+        tree: [],
+      };
+    });
+
+    it('sets deleted flag', () => {
+      localState.entries.filePath = {
+        deleted: false,
+      };
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.entries.filePath.deleted).toBe(true);
+    });
+
+    it('removes from root tree', () => {
+      localState.entries.filePath = {
+        path: 'filePath',
+        deleted: false,
+      };
+      localState.trees['gitlab-ce/master'].tree.push(localState.entries.filePath);
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.trees['gitlab-ce/master'].tree).toEqual([]);
+    });
+
+    it('removes from parent tree', () => {
+      localState.entries.filePath = {
+        path: 'filePath',
+        deleted: false,
+        parentPath: 'parentPath',
+      };
+      localState.entries.parentPath = {
+        tree: [localState.entries.filePath],
+      };
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.entries.parentPath.tree).toEqual([]);
+    });
+
+    it('adds to changedFiles', () => {
+      localState.entries.filePath = {
+        deleted: false,
+      };
+
+      mutations.DELETE_ENTRY(localState, 'filePath');
+
+      expect(localState.changedFiles).toEqual([localState.entries.filePath]);
+    });
+  });
 });

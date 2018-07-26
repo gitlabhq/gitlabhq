@@ -202,7 +202,7 @@ class Note < ActiveRecord::Base
   end
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::NoteBuilder.new(self).build
   end
 
   def for_commit?

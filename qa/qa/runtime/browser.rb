@@ -72,6 +72,7 @@ module QA
           Capybara::Selenium::Driver.new(
             app,
             browser: :chrome,
+            clear_local_storage: true,
             desired_capabilities: capabilities,
             options: options
           )
@@ -86,7 +87,7 @@ module QA
         end
 
         Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
-          File.join(QA::Runtime::Namespace.name, example.file_path.sub('./qa/specs/features/', ''))
+          ::File.join(QA::Runtime::Namespace.name, example.file_path.sub('./qa/specs/features/', ''))
         end
 
         Capybara.configure do |config|
@@ -94,7 +95,7 @@ module QA
           config.javascript_driver = :chrome
           config.default_max_wait_time = 10
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
-          config.save_path = File.expand_path('../../tmp', __dir__)
+          config.save_path = ::File.expand_path('../../tmp', __dir__)
         end
       end
 

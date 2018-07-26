@@ -33,6 +33,20 @@ GET /users
 ]
 ```
 
+You can also search for users by email or username with: `/users?search=John`
+
+In addition, you can lookup users by username:
+
+```
+GET /users?username=:username
+```
+
+For example:
+
+```
+GET /users?username=jack_smith
+```
+
 In addition, you can filter users based on states eg. `blocked`, `active`
 This works only to filter users who are `blocked` or `active`.
 It does not support `active=false` or `blocked=false`.
@@ -91,7 +105,8 @@ GET /users
     "can_create_group": true,
     "can_create_project": true,
     "two_factor_enabled": true,
-    "external": false
+    "external": false,
+    "private_profile": false
   },
   {
     "id": 2,
@@ -121,26 +136,13 @@ GET /users
     "can_create_group": true,
     "can_create_project": true,
     "two_factor_enabled": true,
-    "external": false
+    "external": false,
+    "private_profile": false
   }
 ]
 ```
 
-You can search for users by email or username with: `/users?search=John`
-
-In addition, you can lookup users by username:
-
-```
-GET /users?username=:username
-```
-
-For example:
-
-```
-GET /users?username=jack_smith
-```
-
-You can also lookup users by external UID and provider:
+You can lookup users by external UID and provider:
 
 ```
 GET /users?extern_uid=:extern_uid&provider=:provider
@@ -248,7 +250,8 @@ Parameters:
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false
+  "external": false,
+  "private_profile": false
 }
 ```
 
@@ -288,6 +291,7 @@ Parameters:
 - `skip_confirmation` (optional) - Skip confirmation - true or false (default)
 - `external` (optional)          - Flags the user as external - true or false(default)
 - `avatar` (optional)            - Image file for user's avatar
+- `private_profile` (optional)   - User's profile is private - true or false
 
 ## User modification
 
@@ -318,6 +322,7 @@ Parameters:
 - `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `avatar` (optional)           - Image file for user's avatar
+- `private_profile` (optional)  - User's profile is private - true or false
 
 On password update, user will be forced to change it upon next login.
 Note, at the moment this method does only return a `404` error,
@@ -382,7 +387,8 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false
+  "external": false,
+  "private_profile": false
 }
 ```
 
@@ -429,7 +435,8 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false
+  "external": false,
+  "private_profile": false
 }
 ```
 

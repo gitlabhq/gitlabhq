@@ -53,6 +53,23 @@ describe Projects::MergeRequestsController do
     it_behaves_like "loads labels", :show
 
     describe 'as html' do
+      context 'when diff files were cleaned' do
+        render_views
+
+        it 'renders page when diff size is not persisted and diff_refs does not exist' do
+          diff = merge_request.merge_request_diff
+
+          diff.clean!
+          diff.update!(real_size: nil,
+                       start_commit_sha: nil,
+                       base_commit_sha: nil)
+
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
+
       it "renders merge request page" do
         go(format: :html)
 

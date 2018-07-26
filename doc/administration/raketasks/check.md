@@ -121,6 +121,45 @@ sudo gitlab-rake gitlab:lfs:check BATCH=100 ID_FROM=50 ID_TO=250
 sudo gitlab-rake gitlab:uploads:check BATCH=100 ID_FROM=50 ID_TO=250
 ```
 
+Example output:
+
+```
+$ sudo gitlab-rake gitlab:uploads:check
+Checking integrity of Uploads
+- 1..1350: Failures: 0
+- 1351..2743: Failures: 0
+- 2745..4349: Failures: 2
+- 4357..5762: Failures: 1
+- 5764..7140: Failures: 2
+- 7142..8651: Failures: 0
+- 8653..10134: Failures: 0
+- 10135..11773: Failures: 0
+- 11777..13315: Failures: 0
+Done!
+```
+
+Example verbose output:
+
+```
+$ sudo gitlab-rake gitlab:uploads:check VERBOSE=1
+Checking integrity of Uploads
+- 1..1350: Failures: 0
+- 1351..2743: Failures: 0
+- 2745..4349: Failures: 2
+  - Upload: 3573: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /opt/gitlab/embedded/service/gitlab-rails/public/uploads/user-foo/project-bar/7a77cc52947bfe188adeff42f890bb77/image.png>
+  - Upload: 3580: #<Errno::ENOENT: No such file or directory @ rb_sysopen - /opt/gitlab/embedded/service/gitlab-rails/public/uploads/user-foo/project-bar/2840ba1ba3b2ecfa3478a7b161375f8a/pug.png>
+- 4357..5762: Failures: 1
+  - Upload: 4636: #<Google::Apis::ServerError: Server error>
+- 5764..7140: Failures: 2
+  - Upload: 5812: #<NoMethodError: undefined method `hashed_storage?' for nil:NilClass>
+  - Upload: 5837: #<NoMethodError: undefined method `hashed_storage?' for nil:NilClass>
+- 7142..8651: Failures: 0
+- 8653..10134: Failures: 0
+- 10135..11773: Failures: 0
+- 11777..13315: Failures: 0
+Done!
+```
+
 ## LDAP Check
 
 The LDAP check Rake task will test the bind_dn and password credentials

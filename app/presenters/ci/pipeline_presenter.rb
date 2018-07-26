@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     include Gitlab::Utils::StrongMemoize

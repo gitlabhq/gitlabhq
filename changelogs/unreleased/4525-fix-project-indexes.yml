@@ -1,0 +1,5 @@
+---
+title: Rework some projects table indexes around repository_storage field
+merge_request: 20377
+author:
+type: fixed

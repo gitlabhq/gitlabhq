@@ -73,5 +73,31 @@ module Gitlab
     def build_trace_section_regex
       @build_trace_section_regexp ||= /section_((?:start)|(?:end)):(\d+):([a-zA-Z0-9_.-]+)\r\033\[0K/.freeze
     end
+
+    def markdown_code_or_html_blocks
+      @markdown_code_or_html_blocks ||= %r{
+          (?<code>
+            # Code blocks:
+            # ```
+            # Anything, including `>>>` blocks which are ignored by this filter
+            # ```
+
+            ^```
+            .+?
+            \n```\ *$
+          )
+        |
+          (?<html>
+            # HTML block:
+            # <tag>
+            # Anything, including `>>>` blocks which are ignored by this filter
+            # </tag>
+
+            ^<[^>]+?>\ *\n
+            .+?
+            \n<\/[^>]+?>\ *$
+          )
+      }mx
+    end
   end
 end

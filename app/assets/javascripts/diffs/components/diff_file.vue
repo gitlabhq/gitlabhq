@@ -18,8 +18,8 @@ export default {
       type: Object,
       required: true,
     },
-    currentUser: {
-      type: Object,
+    canCurrentUserFork: {
+      type: Boolean,
       required: true,
     },
   },
@@ -87,7 +87,7 @@ export default {
     class="diff-file file-holder"
   >
     <diff-file-header
-      :current-user="currentUser"
+      :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
       :expanded="!isCollapsed"

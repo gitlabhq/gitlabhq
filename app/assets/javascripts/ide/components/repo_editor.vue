@@ -87,7 +87,9 @@ export default {
       this.editor.updateDimensions();
     },
     viewer() {
-      this.createEditorInstance();
+      if (!this.file.pending) {
+        this.createEditorInstance();
+      }
     },
     panelResizing() {
       if (!this.panelResizing) {
@@ -109,6 +111,7 @@ export default {
   },
   methods: {
     ...mapActions([
+      'getFileData',
       'getRawFileData',
       'changeFileContent',
       'setFileLanguage',
@@ -123,10 +126,16 @@ export default {
 
       this.editor.clearEditor();
 
-      this.getRawFileData({
+      this.getFileData({
         path: this.file.path,
-        baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
+        makeFileActive: false,
       })
+        .then(() =>
+          this.getRawFileData({
+            path: this.file.path,
+            baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
+          }),
+        )
         .then(() => {
           this.createEditorInstance();
         })
@@ -246,6 +255,8 @@ export default {
       ref="editor"
       :class="{
         'is-readonly': isCommitModeActive,
+        'is-deleted': file.deleted,
+        'is-added': file.tempFile
       }"
       class="multi-file-editor-holder"
     >

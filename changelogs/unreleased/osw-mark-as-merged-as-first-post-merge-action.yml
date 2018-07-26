@@ -1,5 +1,0 @@
----
-title: Mark MR as merged regardless of errors when closing issues
-merge_request:
-author:
-type: fixed

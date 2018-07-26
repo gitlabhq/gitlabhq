@@ -26,6 +26,8 @@
         = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
           = s_('TagsPage|New tag')
 
+  = render_if_exists 'projects/commits/mirror_status'
+
   .tags
     - if @tags.any?
       %ul.flex-list.content-list

@@ -46,6 +46,7 @@ export const dataStructure = () => ({
   parentPath: null,
   lastOpenedAt: 0,
   mrChange: null,
+  deleted: false,
 });
 
 export const decorateData = entity => {
@@ -105,15 +106,37 @@ export const setPageTitle = title => {
   document.title = title;
 };
 
+export const commitActionForFile = file => {
+  if (file.deleted) {
+    return 'delete';
+  } else if (file.tempFile) {
+    return 'create';
+  }
+
+  return 'update';
+};
+
+export const getCommitFiles = (stagedFiles, deleteTree = false) =>
+  stagedFiles.reduce((acc, file) => {
+    if ((file.deleted || deleteTree) && file.type === 'tree') {
+      return acc.concat(getCommitFiles(file.tree, true));
+    }
+
+    return acc.concat({
+      ...file,
+      deleted: deleteTree || file.deleted,
+    });
+  }, []);
+
 export const createCommitPayload = ({ branch, getters, newBranch, state, rootState }) => ({
   branch,
   commit_message: state.commitMessage || getters.preBuiltCommitMessage,
-  actions: rootState.stagedFiles.map(f => ({
-    action: f.tempFile ? 'create' : 'update',
+  actions: getCommitFiles(rootState.stagedFiles).map(f => ({
+    action: commitActionForFile(f),
     file_path: f.path,
     content: f.content,
     encoding: f.base64 ? 'base64' : 'text',
-    last_commit_id: newBranch ? undefined : f.lastCommitSha,
+    last_commit_id: newBranch || f.deleted ? undefined : f.lastCommitSha,
   })),
   start_branch: newBranch ? rootState.currentBranchId : undefined,
 });

@@ -1,0 +1,5 @@
+---
+title: Sanitize git URL in import errors
+merge_request:
+author: Jamie Schembri
+type: fixed

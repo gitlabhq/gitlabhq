@@ -38,7 +38,7 @@ describe('new file modal component', () => {
       });
 
       it(`sets form label as ${type}`, () => {
-        expect(vm.$el.querySelector('.label-light').textContent.trim()).toBe('Name');
+        expect(vm.$el.querySelector('.label-bold').textContent.trim()).toBe('Name');
       });
 
       describe('createEntryInStore', () => {

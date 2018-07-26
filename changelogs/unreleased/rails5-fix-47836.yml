@@ -1,6 +1,0 @@
----
-title: Rails5 fix passing Group objects array into for_projects_and_groups milestone
-  scope
-merge_request: 19863
-author: Jasper Maes
-type: fixed

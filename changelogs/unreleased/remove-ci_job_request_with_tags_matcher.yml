@@ -1,5 +1,0 @@
----
-title: Remove the ci_job_request_with_tags_matcher
-merge_request:
-author:
-type: performance

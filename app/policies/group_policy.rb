@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupPolicy < BasePolicy
   desc "Group is public"
   with_options scope: :subject, score: 0

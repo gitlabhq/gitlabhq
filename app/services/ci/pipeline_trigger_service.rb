@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelineTriggerService < BaseService
     include Gitlab::Utils::StrongMemoize

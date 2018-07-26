@@ -1,5 +1,0 @@
----
-title: Use appropriate timeout on Gitaly server info checks, avoid error on timeout
-merge_request: 20552
-author:
-type: fixed

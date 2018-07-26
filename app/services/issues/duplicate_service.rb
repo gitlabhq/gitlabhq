@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class DuplicateService < Issues::BaseService
     def execute(duplicate_issue, canonical_issue)

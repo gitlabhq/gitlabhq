@@ -85,6 +85,9 @@ export default {
       }
       return __('Show latest version');
     },
+    canCurrentUserFork() {
+      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+    },
   },
   watch: {
     diffViewType() {
@@ -192,7 +195,7 @@ export default {
           v-for="file in diffFiles"
           :key="file.newPath"
           :file="file"
-          :current-user="currentUser"
+          :can-current-user-fork="canCurrentUserFork"
         />
       </div>
       <no-changes v-else />

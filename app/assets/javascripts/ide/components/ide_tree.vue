@@ -17,14 +17,18 @@ export default {
     ...mapGetters(['currentProject', 'currentTree', 'activeFile']),
   },
   mounted() {
-    if (this.activeFile && this.activeFile.pending) {
+    if (!this.activeFile) return;
+
+    if (this.activeFile.pending && !this.activeFile.deleted) {
       this.$router.push(`/project${this.activeFile.url}`, () => {
         this.updateViewer('editor');
       });
+    } else if (this.activeFile.deleted) {
+      this.resetOpenFiles();
     }
   },
   methods: {
-    ...mapActions(['updateViewer', 'openNewEntryModal', 'createTempEntry']),
+    ...mapActions(['updateViewer', 'openNewEntryModal', 'createTempEntry', 'resetOpenFiles']),
   },
 };
 </script>

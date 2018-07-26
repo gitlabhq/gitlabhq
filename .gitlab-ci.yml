@@ -350,25 +350,6 @@ retrieve-tests-metadata:
     - wget -O $FLAKY_RSPEC_SUITE_REPORT_PATH http://${TESTS_METADATA_S3_BUCKET}.s3.amazonaws.com/$FLAKY_RSPEC_SUITE_REPORT_PATH || rm $FLAKY_RSPEC_SUITE_REPORT_PATH
     - '[[ -f $FLAKY_RSPEC_SUITE_REPORT_PATH ]] || echo "{}" > ${FLAKY_RSPEC_SUITE_REPORT_PATH}'
 
-danger-review:
-  image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
-  stage: prepare
-  allow_failure: true
-  before_script:
-    - source scripts/utils.sh
-    - retry gem install danger --no-ri --no-rdoc
-  cache: {}
-  only:
-    refs:
-      - branches@gitlab-org/gitlab-ce
-      - branches@gitlab-org/gitlab-ee
-  except:
-    variables:
-      - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
-  script:
-    - git version
-    - danger --fail-on-errors=true
-
 update-tests-metadata:
   <<: *tests-metadata-state
   <<: *only-canonical-masters
@@ -456,6 +437,25 @@ setup-test-env:
       - tmp/tests
       - config/secrets.yml
       - vendor/gitaly-ruby
+
+danger-review:
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
+  stage: test
+  allow_failure: true
+  cache: {}
+  dependencies: []
+  before_script: []
+  only:
+    variables:
+      - $DANGER_GITLAB_API_TOKEN
+  except:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
+  script:
+    - git version
+    - danger --fail-on-errors=true
 
 rspec-pg 0 30: *rspec-metadata-pg
 rspec-pg 1 30: *rspec-metadata-pg

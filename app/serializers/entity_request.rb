@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EntityRequest
   # We use EntityRequest object to collect parameters and variables
   # from the controller. Because options that are being passed to the entity

@@ -385,10 +385,11 @@ module API
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = params[:archived]
+      finder_params[:archived] = archived_param unless params[:archived].nil?
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
       finder_params
     end
 
@@ -495,6 +496,12 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    def archived_param
+      return 'only' if params[:archived]
+
+      params[:archived]
     end
   end
 end

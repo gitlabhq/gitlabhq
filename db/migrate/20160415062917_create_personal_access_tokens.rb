@@ -1,4 +1,3 @@
-# rubocop:disable Migration/Datetime
 # rubocop:disable Migration/Timestamps
 class CreatePersonalAccessTokens < ActiveRecord::Migration
   def change

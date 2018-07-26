@@ -1,3 +1,5 @@
+- add_to_breadcrumbs "Users", admin_users_path
+- breadcrumb_title @user.name
 - page_title "SSH Keys", @user.name, "Users"
 = render 'admin/users/head'
 = render 'profiles/keys/key_table', admin: true

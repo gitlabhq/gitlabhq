@@ -1,6 +1,0 @@
----
-title: 'Rails5 fix expected: 1 time with arguments: (97, anything, {"squash"=>false})
-  received: 0 times'
-merge_request: 20004
-author: Jasper Maes
-type: fixed

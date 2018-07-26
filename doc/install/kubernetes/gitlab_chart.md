@@ -16,16 +16,8 @@ The default deployment includes:
 
 ### Limitations
 
-Some features and functions are not currently available in the beta release:
-* [GitLab Pages](../../user/project/pages/)
-* [Reply by email](../../administration/reply_by_email.html)
-* [Project templates](../../gitlab-basics/create-project.html)
-* [Project import/export](../../user/project/settings/import_export.html)
-* [Geo](https://docs.gitlab.com/ee/administration/geo/replication/)
-
-Currently out of scope:
-* [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/)
-* [MySQL support](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only)
+Some features and functions are not currently available in the beta release.
+For details, see [known issues and limitations](https://gitlab.com/charts/gitlab/blob/master/doc/architecture/beta.md#known-issues-and-limitations) in the charts repository.
 
 ## Prerequisites
 

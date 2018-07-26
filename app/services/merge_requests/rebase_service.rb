@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class RebaseService < MergeRequests::WorkingCopyBaseService
     REBASE_ERROR = 'Rebase failed. Please rebase locally'.freeze

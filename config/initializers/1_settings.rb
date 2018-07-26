@@ -1,4 +1,5 @@
 require_relative '../settings'
+require_relative '../object_store_settings'
 
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
@@ -140,6 +141,7 @@ Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
 Settings.gitlab['session_expire_delay'] ||= 10080
+Settings.gitlab['unauthenticated_session_expire_delay'] ||= 1.hour.to_i
 Settings.gitlab.default_projects_features['issues']             = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests']     = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']               = true if Settings.gitlab.default_projects_features['wiki'].nil?
@@ -178,14 +180,7 @@ Settings.artifacts['storage_path'] = Settings.absolute(Settings.artifacts.values
 # Settings.artifact['path'] is deprecated, use `storage_path` instead
 Settings.artifacts['path']         = Settings.artifacts['storage_path']
 Settings.artifacts['max_size'] ||= 100 # in megabytes
-Settings.artifacts['object_store'] ||= Settingslogic.new({})
-Settings.artifacts['object_store']['enabled'] = false if Settings.artifacts['object_store']['enabled'].nil?
-Settings.artifacts['object_store']['remote_directory'] ||= nil
-Settings.artifacts['object_store']['direct_upload'] = false if Settings.artifacts['object_store']['direct_upload'].nil?
-Settings.artifacts['object_store']['background_upload'] = true if Settings.artifacts['object_store']['background_upload'].nil?
-Settings.artifacts['object_store']['proxy_download'] = false if Settings.artifacts['object_store']['proxy_download'].nil?
-# Convert upload connection settings to use string keys, to make Fog happy
-Settings.artifacts['object_store']['connection']&.deep_stringify_keys!
+Settings.artifacts['object_store'] = ObjectStoreSettings.parse(Settings.artifacts['object_store'])
 
 #
 # Registry
@@ -224,14 +219,7 @@ Settings.pages.admin['certificate'] ||= ''
 Settings['lfs'] ||= Settingslogic.new({})
 Settings.lfs['enabled']      = true if Settings.lfs['enabled'].nil?
 Settings.lfs['storage_path'] = Settings.absolute(Settings.lfs['storage_path'] || File.join(Settings.shared['path'], "lfs-objects"))
-Settings.lfs['object_store'] ||= Settingslogic.new({})
-Settings.lfs['object_store']['enabled'] = false if Settings.lfs['object_store']['enabled'].nil?
-Settings.lfs['object_store']['remote_directory'] ||= nil
-Settings.lfs['object_store']['direct_upload'] = false if Settings.lfs['object_store']['direct_upload'].nil?
-Settings.lfs['object_store']['background_upload'] = true if Settings.lfs['object_store']['background_upload'].nil?
-Settings.lfs['object_store']['proxy_download'] = false if Settings.lfs['object_store']['proxy_download'].nil?
-# Convert upload connection settings to use string keys, to make Fog happy
-Settings.lfs['object_store']['connection']&.deep_stringify_keys!
+Settings.lfs['object_store'] = ObjectStoreSettings.parse(Settings.lfs['object_store'])
 
 #
 # Uploads
@@ -239,14 +227,8 @@ Settings.lfs['object_store']['connection']&.deep_stringify_keys!
 Settings['uploads'] ||= Settingslogic.new({})
 Settings.uploads['storage_path'] = Settings.absolute(Settings.uploads['storage_path'] || 'public')
 Settings.uploads['base_dir'] = Settings.uploads['base_dir'] || 'uploads/-/system'
-Settings.uploads['object_store'] ||= Settingslogic.new({})
-Settings.uploads['object_store']['enabled'] = false if Settings.uploads['object_store']['enabled'].nil?
+Settings.uploads['object_store'] = ObjectStoreSettings.parse(Settings.uploads['object_store'])
 Settings.uploads['object_store']['remote_directory'] ||= 'uploads'
-Settings.uploads['object_store']['direct_upload'] = false if Settings.uploads['object_store']['direct_upload'].nil?
-Settings.uploads['object_store']['background_upload'] = true if Settings.uploads['object_store']['background_upload'].nil?
-Settings.uploads['object_store']['proxy_download'] = false if Settings.uploads['object_store']['proxy_download'].nil?
-# Convert upload connection settings to use string keys, to make Fog happy
-Settings.uploads['object_store']['connection']&.deep_stringify_keys!
 
 #
 # Mattermost
@@ -317,10 +299,6 @@ Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWo
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
-
-Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['schedule_update_user_activity_worker']['cron'] ||= '30 0 * * *'
-Settings.cron_jobs['schedule_update_user_activity_worker']['job_class'] = 'ScheduleUpdateUserActivityWorker'
 
 Settings.cron_jobs['remove_old_web_hook_logs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['remove_old_web_hook_logs_worker']['cron'] ||= '40 0 * * *'
@@ -440,7 +418,7 @@ Settings['extra'] ||= Settingslogic.new({})
 #
 Settings['rack_attack'] ||= Settingslogic.new({})
 Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
-Settings.rack_attack.git_basic_auth['enabled'] = true if Settings.rack_attack.git_basic_auth['enabled'].nil?
+Settings.rack_attack.git_basic_auth['enabled'] = false if Settings.rack_attack.git_basic_auth['enabled'].nil?
 Settings.rack_attack.git_basic_auth['ip_whitelist'] ||= %w{127.0.0.1}
 Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
 Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute

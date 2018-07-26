@@ -1,5 +1,0 @@
----
-title: Delete non-latest merge request diff files upon merge
-merge_request:
-author:
-type: other
