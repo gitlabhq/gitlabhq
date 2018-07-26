@@ -137,7 +137,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
   end
 
   def read_gaps
-    ::Gitlab::Redis::Cache.with do |redis|
+    ::Gitlab::Redis::SharedState.with do |redis|
       redis.zrangebyscore(described_class::GEO_LOG_CURSOR_GAPS, '-inf', '+inf', with_scores: true)
     end
   end
