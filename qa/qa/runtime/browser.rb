@@ -72,6 +72,7 @@ module QA
           Capybara::Selenium::Driver.new(
             app,
             browser: :chrome,
+            clear_local_storage: true,
             desired_capabilities: capabilities,
             options: options
           )
