@@ -33,25 +33,10 @@ export default {
       required: false,
       default: () => [],
     },
-    allIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     component: {
       type: String,
       required: false,
       default: '',
-    },
-  },
-  data() {
-    return {
-      isFullReportVisible: false,
-    };
-  },
-  methods: {
-    openFullReport() {
-      this.isFullReportVisible = true;
     },
   },
 };
@@ -65,14 +50,6 @@ export default {
       :issues="unresolvedIssues"
       :status="$options.failed"
       class="js-mr-code-new-issues"
-    />
-
-    <issues-block
-      v-if="isFullReportVisible"
-      :component="component"
-      :issues="allIssues"
-      :status="$options.failed"
-      class="js-mr-code-all-issues"
     />
 
     <issues-block
@@ -90,14 +67,5 @@ export default {
       :status="$options.success"
       class="js-mr-code-resolved-issues"
     />
-
-    <button
-      v-if="allIssues.length && !isFullReportVisible"
-      type="button"
-      class="btn-link btn-blank prepend-left-10 js-expand-full-list break-link"
-      @click="openFullReport"
-    >
-      {{ s__("ciReport|Show complete code vulnerabilities report") }}
-    </button>
   </div>
 </template>

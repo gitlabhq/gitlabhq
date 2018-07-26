@@ -59,11 +59,6 @@ export default {
       required: false,
       default: () => [],
     },
-    allIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     infoText: {
       type: [String, Boolean],
       required: false,
@@ -142,18 +137,10 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div
-      class="media"
-    >
-      <status-icon
-        :status="statusIconName"
-      />
-      <div
-        class="media-body space-children d-flex flex-align-self-center"
-      >
-        <span
-          class="js-code-text code-text"
-        >
+    <div class="media">
+      <status-icon :status="statusIconName" />
+      <div class="media-body space-children d-flex flex-align-self-center">
+        <span class="js-code-text code-text">
           {{ headerText }}
 
           <popover
@@ -163,10 +150,12 @@ export default {
           />
         </span>
 
+        <slot name="actionButtons"></slot>
+
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn bt-default float-right btn-sm"
+          class="js-collapse-btn btn float-right btn-sm"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -184,7 +173,6 @@ export default {
           :unresolved-issues="unresolvedIssues"
           :resolved-issues="resolvedIssues"
           :neutral-issues="neutralIssues"
-          :all-issues="allIssues"
           :component="component"
         />
       </slot>

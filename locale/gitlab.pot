@@ -8,8 +8,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-10 16:02-0700\n"
-"PO-Revision-Date: 2018-07-10 16:02-0700\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -6005,9 +6003,6 @@ msgid "assign yourself"
 msgstr ""
 
 msgid "branch name"
-msgstr ""
-
-msgid "ciReport|Show complete code vulnerabilities report"
 msgstr ""
 
 msgid "command line instructions"
