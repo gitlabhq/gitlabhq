@@ -16,6 +16,8 @@ module BitbucketServer
       end
 
       def browse_url
+        # The JSON reponse contains an array of 1 element. Not sure if there
+        # are cases where multiple links would be provided.
         raw.dig('links', 'self').first.fetch('href')
       end
 
