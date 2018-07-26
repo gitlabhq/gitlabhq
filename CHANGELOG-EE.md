@@ -82,6 +82,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo - Make Geo repository verification flag opt-out by default. !6369
 
 
+## 11.0.5 (2018-07-26)
+
+### Security (1 change)
+
+- Don't expose project names in EE counters.
+
+
 ## 11.0.4 (2018-07-17)
 
 - No changes.
