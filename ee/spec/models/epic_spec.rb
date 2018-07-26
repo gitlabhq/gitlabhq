@@ -165,6 +165,7 @@ describe Epic do
 
     context 'fixed date is not set' do
       subject { create(:epic, start_date: nil, end_date: nil) }
+
       let(:milestone1) {
         create(
           :milestone,
@@ -180,18 +181,135 @@ describe Epic do
         )
       }
 
-      before do
-        epic_issue1 = create(:epic_issue, epic: subject)
-        epic_issue1.issue.update(milestone: milestone1)
-        epic_issue2 = create(:epic_issue, epic: subject)
-        epic_issue2.issue.update(milestone: milestone2)
+      context 'multiple milestones' do
+        before do
+          epic_issue1 = create(:epic_issue, epic: subject)
+          epic_issue1.issue.update(milestone: milestone1)
+          epic_issue2 = create(:epic_issue, epic: subject)
+          epic_issue2.issue.update(milestone: milestone2)
+        end
+
+        context 'complete start and due dates' do
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(milestone1.start_date)
+            expect(subject.due_date).to eq(milestone2.due_date)
+          end
+        end
+
+        context 'without due date' do
+          let(:milestone1) {
+            create(
+              :milestone,
+              start_date: Date.new(2000, 1, 1),
+              due_date: nil
+            )
+          }
+          let(:milestone2) {
+            create(
+              :milestone,
+              start_date: Date.new(2000, 1, 3),
+              due_date: nil
+            )
+          }
+
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(milestone1.start_date)
+            expect(subject.due_date).to eq(nil)
+          end
+        end
+
+        context 'without any dates' do
+          let(:milestone1) {
+            create(
+              :milestone,
+              start_date: nil,
+              due_date: nil
+            )
+          }
+          let(:milestone2) {
+            create(
+              :milestone,
+              start_date: nil,
+              due_date: nil
+            )
+          }
+
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(nil)
+            expect(subject.due_date).to eq(nil)
+          end
+        end
       end
 
-      it 'updates to milestone dates' do
-        subject.update_dates
+      context 'without milestone' do
+        before do
+          create(:epic_issue, epic: subject)
+        end
 
-        expect(subject.start_date).to eq(milestone1.start_date)
-        expect(subject.due_date).to eq(milestone2.due_date)
+        it 'updates to milestone dates' do
+          subject.update_dates
+
+          expect(subject.start_date).to eq(nil)
+          expect(subject.start_date_sourcing_milestone_id).to eq(nil)
+          expect(subject.due_date).to eq(nil)
+          expect(subject.due_date_sourcing_milestone_id).to eq(nil)
+        end
+      end
+
+      context 'single milestone' do
+        before do
+          epic_issue1 = create(:epic_issue, epic: subject)
+          epic_issue1.issue.update(milestone: milestone1)
+        end
+
+        context 'complete start and due dates' do
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(milestone1.start_date)
+            expect(subject.due_date).to eq(milestone1.due_date)
+          end
+        end
+
+        context 'without due date' do
+          let(:milestone1) {
+            create(
+              :milestone,
+              start_date: Date.new(2000, 1, 1),
+              due_date: nil
+            )
+          }
+
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(milestone1.start_date)
+            expect(subject.due_date).to eq(nil)
+          end
+        end
+
+        context 'without any dates' do
+          let(:milestone1) {
+            create(
+              :milestone,
+              start_date: nil,
+              due_date: nil
+            )
+          }
+
+          it 'updates to milestone dates' do
+            subject.update_dates
+
+            expect(subject.start_date).to eq(nil)
+            expect(subject.due_date).to eq(nil)
+          end
+        end
       end
     end
   end
