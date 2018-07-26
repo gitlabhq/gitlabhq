@@ -56,7 +56,7 @@ module BitbucketServer
       end
 
       def created_date
-        raw.dig('createdDate')
+        raw['createdDate']
       end
     end
   end

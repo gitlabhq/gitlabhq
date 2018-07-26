@@ -28,11 +28,11 @@ module BitbucketServer
       end
 
       def author_username
-        author['username']
+        author['displayName']
       end
 
       def author_email
-        author['displayName']
+        author['emailAddress']
       end
 
       def note
@@ -44,9 +44,22 @@ module BitbucketServer
       end
 
       def updated_at
-        Time.at(updated_date / 1000) if created_date.is_a?(Integer)
+        Time.at(updated_date / 1000) if updated_date.is_a?(Integer)
       end
 
+      # Bitbucket Server supports the ability to reply to any comment
+      # and created multiple threads. It represents these as a linked list
+      # of comments within comments. For example:
+      #
+      # "comments": [
+      #    {
+      #       "author" : ...
+      #       "comments": [
+      #          {
+      #             "author": ...
+      #
+      # Since GitLab only supports a single thread, we flatten all these
+      # comments into a single discussion.
       def comments
         workset = [raw_comment['comments']].compact
         all_comments = []
@@ -71,15 +84,15 @@ module BitbucketServer
       end
 
       def author
-        raw_comment.fetch('author', {})
+        raw.dig('comment', 'author')
       end
 
       def created_date
-        raw_comment['createdDate']
+        raw.dig('comment', 'createdDate')
       end
 
       def updated_date
-        raw_comment['updatedDate']
+        raw.dig('comment', 'updatedDate')
       end
     end
   end
