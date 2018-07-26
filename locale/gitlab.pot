@@ -3365,6 +3365,9 @@ msgstr ""
 msgid "Metrics|There was an error getting environments information."
 msgstr ""
 
+msgid "Metrics|There was an error while retrieving metrics"
+msgstr ""
+
 msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
 
