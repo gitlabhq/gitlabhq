@@ -34,6 +34,47 @@ describe Clusters::Applications::Prometheus do
     end
   end
 
+  describe '#ready' do
+    let(:project) { create(:project) }
+    let(:cluster) { create(:cluster, projects: [project]) }
+
+    it 'returns true when installed' do
+      application = build(:clusters_applications_prometheus, :installed, cluster: cluster)
+
+      expect(application).to be_ready
+    end
+
+    it 'returns false when not_installable' do
+      application = build(:clusters_applications_prometheus, :not_installable, cluster: cluster)
+
+      expect(application).not_to be_ready
+    end
+
+    it 'returns false when installable' do
+      application = build(:clusters_applications_prometheus, :installable, cluster: cluster)
+
+      expect(application).not_to be_ready
+    end
+
+    it 'returns false when scheduled' do
+      application = build(:clusters_applications_prometheus, :scheduled, cluster: cluster)
+
+      expect(application).not_to be_ready
+    end
+
+    it 'returns false when installing' do
+      application = build(:clusters_applications_prometheus, :installing, cluster: cluster)
+
+      expect(application).not_to be_ready
+    end
+
+    it 'returns false when errored' do
+      application = build(:clusters_applications_prometheus, :errored, cluster: cluster)
+
+      expect(application).not_to be_ready
+    end
+  end
+
   describe '#prometheus_client' do
     context 'cluster is nil' do
       it 'returns nil' do
@@ -102,15 +143,17 @@ describe Clusters::Applications::Prometheus do
     let(:kubeclient) { double('kubernetes client') }
     let(:prometheus) { create(:clusters_applications_prometheus) }
 
-    subject { prometheus.install_command }
-
-    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
+    it 'returns an instance of Gitlab::Kubernetes::Helm::InstallCommand' do
+      expect(prometheus.install_command).to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand)
+    end
 
     it 'should be initialized with 3 arguments' do
-      expect(subject.name).to eq('prometheus')
-      expect(subject.chart).to eq('stable/prometheus')
-      expect(subject.version).to eq('6.7.3')
-      expect(subject.values).to eq(prometheus.values)
+      command = prometheus.install_command
+
+      expect(command.name).to eq('prometheus')
+      expect(command.chart).to eq('stable/prometheus')
+      expect(command.version).to eq('6.7.3')
+      expect(command.values).to eq(prometheus.values)
     end
   end
 
