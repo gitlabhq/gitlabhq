@@ -258,39 +258,22 @@ describe('Grouped security reports app', () => {
         canCreateFeedback: true,
       });
     });
+  });
 
-    it('render show all issues button for sast', done => {
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.js-sast-issue-list .js-expand-full-list')).not.toBeNull();
-        vm.$el.querySelector('.js-sast-issue-list .js-expand-full-list').click();
+  describe('with the pipelinePath prop', () => {
+    const pipelinePath = '/path/to/the/pipeline';
 
-        vm
-          .$nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-sast-issue-list').textContent).toContain(
-              sastHeadAllIssues[0].message,
-            );
-          })
-          .then(done)
-          .catch(done.fail);
-      }, 0);
+    beforeEach(() => {
+      vm = mountComponent(Component, {
+        headBlobPath: 'path',
+        canCreateFeedback: false,
+        canCreateIssue: false,
+        pipelinePath,
+      });
     });
 
-    it('render show all issues button for dependency scanning', done => {
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.js-dss-issue-list .js-expand-full-list')).not.toBeNull();
-        vm.$el.querySelector('.js-dss-issue-list .js-expand-full-list').click();
-
-        vm
-          .$nextTick()
-          .then(() => {
-            expect(vm.$el.querySelector('.js-dss-issue-list').textContent).toContain(
-              sastHeadAllIssues[0].message,
-            );
-          })
-          .then(done)
-          .catch(done.fail);
-      }, 0);
+    it('should calculate the security tab path', () => {
+      expect(vm.securityTab).toEqual(`${pipelinePath}/security`);
     });
   });
 });

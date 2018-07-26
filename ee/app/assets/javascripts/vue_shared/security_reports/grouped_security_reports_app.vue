@@ -102,6 +102,11 @@ export default {
       required: false,
       default: null,
     },
+    pipelinePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     canCreateFeedback: {
       type: Boolean,
       required: true,
@@ -126,6 +131,9 @@ export default {
       'dastStatusIcon',
       'dependencyScanningStatusIcon',
     ]),
+    securityTab() {
+      return `${this.pipelinePath}/security`;
+    },
   },
 
   created() {
@@ -211,6 +219,18 @@ export default {
     class="mr-widget-border-top grouped-security-reports"
   >
     <div
+      v-if="pipelinePath"
+      slot="actionButtons"
+    >
+      <a
+        :href="securityTab"
+        class="btn float-right btn-sm"
+      >
+        {{ s__("ciReport|View full report") }}
+      </a>
+    </div>
+
+    <div
       slot="body"
       class="mr-widget-grouped-section report-block"
     >
@@ -223,7 +243,7 @@ export default {
         />
 
         <issues-list
-          v-if="sast.newIssues.length || sast.resolvedIssues.length || sast.allIssues.length"
+          v-if="sast.newIssues.length || sast.resolvedIssues.length"
           :unresolved-issues="sast.newIssues"
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
@@ -241,8 +261,7 @@ export default {
         />
 
         <issues-list
-          v-if="dependencyScanning.newIssues.length ||
-          dependencyScanning.resolvedIssues.length || dependencyScanning.allIssues.length"
+          v-if="dependencyScanning.newIssues.length || dependencyScanning.resolvedIssues.length"
           :unresolved-issues="dependencyScanning.newIssues"
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
