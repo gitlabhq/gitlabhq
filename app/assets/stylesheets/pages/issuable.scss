@@ -856,18 +856,6 @@
     }
   }
 
-  .meter-container {
-    background: $border-gray-light;
-    border-radius: 3px;
-
-    .meter-fill {
-      max-width: 100%;
-      height: 5px;
-      border-radius: 3px;
-      background: $gl-primary;
-    }
-  }
-
   .compare-display-container {
     display: flex;
     justify-content: space-between;
