@@ -21,6 +21,7 @@ describe API::Users do
 
       expect(response).to have_gitlab_http_status(:success)
       expect(json_response['message']).to be_present
+      expect(json_response['message_html']).to be_present
       expect(json_response['emoji']).to be_present
     end
 
