@@ -15,11 +15,9 @@ module BitbucketServer
     #   "path": "CHANGELOG.md",
     #   "toHash": "a4c2164330f2549f67c13f36a93884cf66e976be"
     #  }
+    #
+    # More details in https://docs.atlassian.com/bitbucket-server/rest/5.12.0/bitbucket-rest.html.
     class PullRequestComment < Comment
-      def file_type
-        comment_anchor['fileType']
-      end
-
       def from_sha
         comment_anchor['fromHash']
       end
@@ -44,6 +42,12 @@ module BitbucketServer
         line_type == 'REMOVED'
       end
 
+      # There are three line comment types: added, removed, or context.
+      #
+      # 1. An added type means a new line was inserted, so there is no old position.
+      # 2. A removed type means a line was removed, so there is no new position.
+      # 3. A context type means the line was unmodified, so there is both a
+      #    old and new position.
       def new_pos
         return if removed?
         return unless line_position
@@ -64,10 +68,30 @@ module BitbucketServer
 
       private
 
+      def file_type
+        comment_anchor['fileType']
+      end
+
       def line_type
         comment_anchor['lineType']
       end
 
+      # Each comment contains the following information about the diff:
+      #
+      # hunks: [
+      #     {
+      #         segments: [
+      #             {
+      #                 "lines": [
+      #                     {
+      #                         "commentIds": [ N ],
+      #                         "source": X,
+      #                         "destination": Y
+      #                     }, ...
+      #                   ] ....
+      #
+      # To determine the line position of a comment, we search all the lines
+      # entries until we find this comment ID.
       def line_position
         @line_position ||= diff_hunks.each do |hunk|
           segments = hunk.fetch('segments', [])
