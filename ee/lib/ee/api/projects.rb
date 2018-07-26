@@ -26,6 +26,32 @@ module EE
 
             projects
           end
+
+          def verify_create_projects_attrs!(attrs)
+            super
+
+            verify_mirror_attrs!(attrs)
+
+            if attrs[:mirror]
+              attrs[:mirror_user_id] = current_user.id
+            end
+          end
+
+          def verify_update_project_attrs!(attrs)
+            super
+
+            verify_mirror_attrs!(attrs)
+
+            unless valid_mirror_user?(attrs)
+              render_api_error!("Invalid mirror user", 400)
+            end
+          end
+
+          def verify_mirror_attrs!(attrs)
+            if attrs[:mirror].present? && !mirroring_available?
+              render_api_error!("Pull mirroring is not available", 403)
+            end
+          end
         end
       end
 

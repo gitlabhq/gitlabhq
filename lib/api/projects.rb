@@ -24,6 +24,12 @@ module API
 
         projects
       end
+
+      def verify_create_projects_attrs!(attrs)
+      end
+
+      def verify_update_project_attrs!(attrs)
+      end
     end
 
     prepend EE::API::Projects
@@ -172,9 +178,7 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
 
-        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
-
-        attrs[:mirror_user_id] = current_user.id if attrs[:mirror]
+        verify_create_projects_attrs!(attrs)
 
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
@@ -209,9 +213,7 @@ module API
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
 
-        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
-
-        attrs[:mirror_user_id] = user.id if attrs[:mirror]
+        verify_create_projects_attrs!(attrs)
 
         project = ::Projects::CreateService.new(user, attrs).execute
 
@@ -312,8 +314,7 @@ module API
 
         attrs = translate_params_for_compatibility(attrs)
 
-        break render_api_error!("Pull mirroring is not available", 403) if attrs[:mirror].present? && !mirroring_available?
-        break render_api_error!("Invalid mirror user", 400) unless valid_mirror_user?(attrs)
+        verify_update_project_attrs!(attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
