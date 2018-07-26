@@ -19,10 +19,18 @@ module EE
           expose :repository_storage, if: ->(_project, options) { options[:current_user].try(:admin?) }
           expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
           expose :mirror, if: ->(project, _) { project.feature_available?(:repository_mirrors) }
-          expose :mirror_user_id, if: ->(project, _) { project.mirror? && project.feature_available?(:repository_mirrors) }
-          expose :mirror_trigger_builds, if: ->(project, _) { project.mirror? && project.feature_available?(:repository_mirrors) }
-          expose :only_mirror_protected_branches, if: ->(project, _) { project.mirror? && project.feature_available?(:repository_mirrors) }
-          expose :mirror_overwrites_diverged_branches, if: ->(project, _) { project.mirror? && project.feature_available?(:repository_mirrors) }
+          expose :mirror_user_id, if: ->(project, _) { mirroring_available? }
+          expose :mirror_trigger_builds, if: ->(project, _) { mirroring_available? }
+          expose :only_mirror_protected_branches, if: ->(project, _) { mirroring_available? }
+          expose :mirror_overwrites_diverged_branches, if: ->(project, _) { mirroring_available? }
+
+          private
+
+          alias_method :project, :object
+
+          def mirroring_available?
+            project.mirror? && project.feature_available?(:repository_mirrors)
+          end
         end
       end
 

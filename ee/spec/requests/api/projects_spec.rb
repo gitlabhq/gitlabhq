@@ -4,6 +4,7 @@ describe API::Projects do
   include ExternalAuthorizationServiceHelpers
 
   let(:user) { create(:user) }
+  let(:project) { create(:project, namespace: user.namespace) }
 
   describe 'POST /projects' do
     context 'when importing with mirror attributes' do
