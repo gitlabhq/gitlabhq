@@ -1,5 +1,0 @@
----
-title: Boost Geo prune worker to run every 2 hours instead of 6
-merge_request: 6074
-author:
-type: performance

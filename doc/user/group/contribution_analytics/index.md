@@ -7,17 +7,16 @@ Track your team members' activity across your organization.
 
 ## Overview
 
-With contribution analytics you can have an overview for the activity of
-issues, merge requests and push events of your organization and its members.
+With Contribution Analytics you can get an overview of the activity of
+issues, merge requests, and push events of your organization and its members.
 
 The analytics page is located at **Group > Contribution Analytics**
 under the URL `/groups/<groupname>/analytics`.
 
-## Use-cases
+## Use cases
 
-- Analyze your team's contributions along a period of time and offer a bonus
-  for the top contributors
-- Identify opportunities for improvement with group members who may benefit from additional support 
+- Analyze your team's contributions over a period of time and offer a bonus for the top contributors
+- Identify opportunities for improveent with group members who may benefit from additional support 
 
 ## Using Contribution Analytics
 
@@ -30,7 +29,7 @@ events for a specific member.
 
 ## Changing the period time
 
-There are three periods you can choose from: 'Last week', 'Last month' and
+There are three periods you can choose from, 'Last week', 'Last month' and
 'Last three months'. The default is 'Last week'.
 
 You can choose which period to display by using the dropdown calendar menu in

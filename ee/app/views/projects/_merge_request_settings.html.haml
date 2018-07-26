@@ -4,7 +4,7 @@
 
 - if @project.feature_available?(:issuable_default_templates)
   .form-group
-    = form.label :merge_requests_template, class: 'label-light' do
+    = form.label :merge_requests_template, class: 'label-bold' do
       Default description template for merge requests
       = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
     = form.text_area :merge_requests_template, class: "form-control", rows: 3

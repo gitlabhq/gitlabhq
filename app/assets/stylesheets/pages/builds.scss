@@ -130,66 +130,6 @@
   }
 }
 
-.build-page-pod-logs {
-  .build-trace-container {
-    position: relative;
-  }
-
-  .build-trace {
-    @include build-trace();
-  }
-
-  .top-bar {
-    @include build-trace-top-bar(48px, $header-height-pod-logs);
-    display: flex;
-    border-top-left-radius: $border-radius-default;
-    border-top-right-radius: $border-radius-default;
-
-    .truncated-info {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .dropdown {
-      display: flex;
-
-      > .dropdown-menu-toggle {
-        display: flex;
-        align-content: center;
-        align-self: center;
-        width: 300px;
-      }
-
-      > .dropdown-menu {
-        width: 300px;
-      }
-    }
-
-    .controllers {
-      @include build-controllers(16px, flex-end, true, 2);
-    }
-
-    .refresh-control {
-      @include build-controllers(16px, flex-end, true, 0);
-      margin-left: 2px;
-
-      .controllers-buttons {
-        .btn-refresh {
-          border-radius: 4px;
-          width: 32px;
-          height: 32px;
-          vertical-align: middle;
-        }
-      }
-    }
-  }
-
-  .build-loader-animation {
-    @include build-loader-animation();
-  }
-}
-
 .build-header {
   .ci-header-container,
   .header-action-buttons {

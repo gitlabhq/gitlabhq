@@ -1,5 +1,0 @@
----
-title: Geo - Retry checksum calculation for failures on the primary node
-merge_request: 6295
-author:
-type: changed

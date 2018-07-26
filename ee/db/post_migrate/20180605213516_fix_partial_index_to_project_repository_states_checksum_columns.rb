@@ -14,7 +14,7 @@ class FixPartialIndexToProjectRepositoryStatesChecksumColumns < ActiveRecord::Mi
       :project_id,
       name: NEW_INDEX_NAME,
       where: '(repository_verification_checksum IS NULL AND last_repository_verification_failure is NULL) OR (wiki_verification_checksum IS NULL AND last_wiki_verification_failure IS NULL)'
-    )
+                        )
   end
 
   def down
@@ -25,6 +25,6 @@ class FixPartialIndexToProjectRepositoryStatesChecksumColumns < ActiveRecord::Mi
       name: OLD_INDEX_NAME,
       length: Gitlab::Database.mysql? ? 20 : nil,
       where: 'repository_verification_checksum IS NULL OR wiki_verification_checksum IS NULL'
-    )
+                        )
   end
 end

@@ -1,5 +1,80 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.1.1 (2018-07-23)
+
+### Fixed (2 changes)
+
+- Fix geo download service ImportExportDownloader unitialized constant. !6567
+- Geo - Allow repository verification to be disabled on a secondary node. !6599
+
+
+## 11.1.0 (2018-07-22)
+
+### Removed (1 change)
+
+- Drop ignored Geo repository_storage_path columns. !5468
+
+### Fixed (19 changes, 7 of them are from the community)
+
+- Log audit and Geo events within a project destroy transaction. !6059
+- Do not pre-select previous user(s) when creating protected branches. !6112
+- Group SAML settings link hidden when unlicensed. !6147
+- Geo: Fix repository/wiki sync race condition with multiple updates, especially in quick succession. !6161
+- [Rails5] Fix error on missed :authenticate_user callback. !6257 (@blackst0ne)
+- Rails5 fix  expected: ({...}) got: (<ActionController::Parameters {...}). !6271 (Jasper Maes)
+- Rails5 fix ArgumentError: wrong number of arguments (given 1, expected 2). !6272 (Jasper Maes)
+- Rails5 fix NoMethodError: undefined method `join' for "":String. !6278 (Jasper Maes)
+- [Rails5] fix Boards::ListsController expected the response to have status code 200 but it was 403. !6318 (Jasper Maes)
+- [Rails5] fix NoMethodError: undefined method 'downcase' for Hash. !6319 (Jasper Maes)
+- [Rails5] fix Projects::VulnerabilityFeedbackController didn't match the schema. !6320 (Jasper Maes)
+- Fix CI/CD pipelines when repository HEAD points to an invalid branch. !6325
+- Geo - Recalculates the checksum for projects up to date. !6333
+- Fixes an issue with security reports footers. !6450
+- Add missing sourceBranchLink prop to CI widget. !6493
+- Resync project repositories on secondaries nodes when import finishes. !6529
+- Adds permission checks to dismiss issue in security reports.
+- Allow all but "/" chars for groups and projects paths on Jira dev panel integration.
+- Fix weight system notes ending in commas.
+
+### Changed (6 changes)
+
+- [Geo] Invert the direction of Geo metrics acquisition. !5934
+- Update read-only message banner styling for Geo secondary node. !6135
+- Removes action buttons from resolved vulnerability modal. !6155
+- Redesign contribution analytics graphs. !6194
+- Geo - Retry checksum calculation for failures on the primary node. !6295
+- Don't show 'Contribute to GitLab' link on self-hosted Enterprise Edition instances. !6297
+
+### Performance (5 changes, 1 of them is from the community)
+
+- Geo - Optimize query to return outdated projects that need to be reverified. !5879
+- Boost Geo prune worker to run every 2 hours instead of 6. !6074
+- Use tooltip component in MrWidgetSecondaryGeoNode vue component. !6078 (George Tsiolis)
+- Eliminate N+1 queries in path lock checks during a push.
+- Memoize the global default for push rules within the request.
+
+### Added (13 changes, 1 of them is from the community)
+
+- Add a new push rule to allow negative matching of commit messages. !5453 (Hannes Rosenögger)
+- Pseudonymizer to safely export data for analytics. !5532
+- Add filename filtering to code search with Elasticsearch. !5590
+- Add API endpoint for viewing and editing board config. !5954
+- Log repository check and failed count to Prometheus. !5984
+- Allow repository verification concurrency to be controlled on primary and secondary. !6102
+- Geo: HTTP git-lfs push (upload) and locks (verify, lock and unlock) to secondary now redirects to the primary. !6109
+- Adds pod selection dropdown to pod logs screen. !6111
+- Add support for autocompleting Epics and Labels within Epics. !6195
+- Add project Security Dashboard. !6197
+- Support GitLab subgroups in Jira development panel. !6290
+- Render container scanning and dast reports in pipeline view.
+- Add link to Jenkins documentation within integration and service template.
+
+### Other (2 changes)
+
+- Enable Geo snapshot synchronization for everyone. !6286
+- Geo - Make Geo repository verification flag opt-out by default. !6369
+
+
 ## 11.0.4 (2018-07-17)
 
 - No changes.

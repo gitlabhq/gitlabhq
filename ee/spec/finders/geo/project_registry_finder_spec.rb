@@ -25,6 +25,54 @@ describe Geo::ProjectRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
+    describe '#count_repositories' do
+      context 'without selective sync' do
+        it 'returns cached count values' do
+          SiteStatistic.fetch.update(repositories_count: 222)
+
+          expect(subject.count_repositories).to eq(222)
+        end
+      end
+
+      context 'with selective sync' do
+        before do
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'returns only slice of selected repositories' do
+          create(:project, group: synced_group)
+          create(:project, group: synced_group)
+          create(:project)
+
+          expect(subject.count_repositories).to eq(2)
+        end
+      end
+    end
+
+    describe '#count_wikis' do
+      context 'without selective sync' do
+        it 'returns cached count values' do
+          SiteStatistic.fetch.update(wikis_count: 333)
+
+          expect(subject.count_wikis).to eq(333)
+        end
+      end
+
+      context 'with selective sync' do
+        before do
+          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+        end
+
+        it 'returns only slice of selected repositories' do
+          create(:project, group: synced_group)
+          create(:project, :wiki_disabled, group: synced_group)
+          create(:project)
+
+          expect(subject.count_wikis).to eq(1)
+        end
+      end
+    end
+
     describe '#count_synced_repositories' do
       it 'delegates to #find_synced_repositories' do
         expect(subject).to receive(:find_synced_repositories).and_call_original
@@ -329,6 +377,62 @@ describe Geo::ProjectRegistryFinder, :geo do
         create(:geo_project_registry, :wiki_verification_failed, project: project_wiki_verification_failed)
 
         expect(subject.count_verification_failed_wikis).to eq 1
+      end
+    end
+  end
+
+  describe '#find_checksum_mismatch_project_registries' do
+    it 'delegates to #find_filtered_checksum_mismatch_project_registries' do
+      expect(subject).to receive(:find_filtered_checksum_mismatch_project_registries).and_call_original
+
+      subject.find_checksum_mismatch_project_registries
+    end
+
+    it 'delegates to #legacy_find_filtered_checksum_mismatch_projects when use_legacy_queries is true' do
+      expect(subject).to receive(:use_legacy_queries?).and_return(true)
+
+      expect(subject).to receive(:legacy_find_filtered_checksum_mismatch_projects).and_call_original
+
+      subject.find_checksum_mismatch_project_registries
+    end
+
+    it 'delegates to #find_filtered_checksum_mismatch_project_registries when use_legacy_queries is false' do
+      expect(subject).to receive(:use_legacy_queries?).and_return(false)
+
+      expect(subject).to receive(:find_filtered_checksum_mismatch_project_registries).and_call_original
+
+      subject.find_checksum_mismatch_project_registries
+    end
+
+    it 'counts projects with a checksum mismatch' do
+      repository_mismatch1 = create(:geo_project_registry, :repository_checksum_mismatch)
+      repository_mismatch2 = create(:geo_project_registry, :repository_checksum_mismatch)
+      create(:geo_project_registry, :wiki_verified)
+      wiki_mismatch = create(:geo_project_registry, :wiki_checksum_mismatch)
+
+      expect(subject.find_checksum_mismatch_project_registries('wiki')).to match_array(wiki_mismatch)
+      expect(subject.find_checksum_mismatch_project_registries('repository')).to match_array([repository_mismatch1, repository_mismatch2])
+      expect(subject.find_checksum_mismatch_project_registries(nil)).to match_array([repository_mismatch1, repository_mismatch2, wiki_mismatch])
+    end
+
+    context 'with selective sync' do
+      before do
+        secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
+      end
+
+      it 'delegates to #legacy_find_filtered_checksum_mismatch_projects' do
+        expect(subject).to receive(:legacy_find_filtered_checksum_mismatch_projects).and_call_original
+
+        subject.find_checksum_mismatch_project_registries
+      end
+
+      it 'returns projects with a checksum mismatch' do
+        project_1_in_synced_group = create(:project, group: synced_group)
+        project_1_registry_record = create(:geo_project_registry, :repository_checksum_mismatch, project: project_1_in_synced_group)
+
+        projects = subject.find_checksum_mismatch_project_registries('repository')
+
+        expect(projects).to match_ids(project_1_registry_record)
       end
     end
   end

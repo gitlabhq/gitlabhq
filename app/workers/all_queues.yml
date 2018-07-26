@@ -13,7 +13,6 @@
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
 - cronjob:requests_profiles
-- cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
@@ -23,8 +22,10 @@
 - cronjob:prune_web_hook_logs
 
 - gcp_cluster:cluster_install_app
+- gcp_cluster:cluster_update_app
 - gcp_cluster:cluster_provision
 - gcp_cluster:cluster_wait_for_app_installation
+- gcp_cluster:cluster_wait_for_app_update
 - gcp_cluster:wait_for_cluster_creation
 - gcp_cluster:cluster_wait_for_ingress_ip_address
 
@@ -114,7 +115,6 @@
 - storage_migrator
 - system_hook_push
 - update_merge_requests
-- update_user_activity
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror

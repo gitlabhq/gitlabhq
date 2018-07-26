@@ -1,5 +1,4 @@
 class AddExternalAuthMutualTlsFieldsToProjectSettings < ActiveRecord::Migration
-
   DOWNTIME = false
 
   def change

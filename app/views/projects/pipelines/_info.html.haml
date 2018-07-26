@@ -1,8 +1,4 @@
 #js-pipeline-header-vue.pipeline-header-container
-- sast_artifact = @pipeline.sast_artifact
-- dependency_artifact = @pipeline.dependency_scanning_artifact
-- dast_artifact = @pipeline.dast_artifact
-- sast_container_artifact = @pipeline.sast_container_artifact
 
 - if @commit.present?
   .commit-box
@@ -17,7 +13,7 @@
       .well-segment.pipeline-info
         .icon-container
           = icon('clock-o')
-        = pluralize @pipeline.statuses.count(:id), "job"
+        = pluralize @pipeline.total_size, "job"
         - if @pipeline.ref
           from
           = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
@@ -38,5 +34,4 @@
         = link_to @pipeline.sha, project_commit_path(@project, @pipeline.sha), class: "commit-sha commit-hash-full"
       = clipboard_button(text: @pipeline.sha, title: "Copy commit SHA to clipboard")
 
-    - if sast_artifact || dependency_artifact || dast_artifact || sast_container_artifact
-      .js-sast-summary
+    = render_if_exists "projects/pipelines/info_extension", pipeline: @pipeline

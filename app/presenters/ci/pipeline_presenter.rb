@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class PipelinePresenter < Gitlab::View::Presenter::Delegated
     prepend ::EE::Ci::PipelinePresenter

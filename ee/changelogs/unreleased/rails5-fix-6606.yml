@@ -1,5 +1,0 @@
----
-title: 'Rails5 fix  expected: ({...}) got: (<ActionController::Parameters {...})'
-merge_request: 6271
-author: Jasper Maes
-type: fixed

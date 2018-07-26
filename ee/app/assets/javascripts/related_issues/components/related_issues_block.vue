@@ -214,6 +214,7 @@ issue-count-badge-add-button btn btn-sm btn-default"
           <loadingIcon
             ref="loadingIcon"
             label="Fetching related issues"
+            class="prepend-top-5"
           />
         </div>
         <ul

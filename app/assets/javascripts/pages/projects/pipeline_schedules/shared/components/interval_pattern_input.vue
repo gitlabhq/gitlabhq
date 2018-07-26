@@ -68,7 +68,7 @@
         :name="inputNameAttribute"
         :value="cronInterval"
         :checked="isEditable"
-        class="label-light"
+        class="label-bold"
         type="radio"
         @click="toggleCustomInput(true)"
       />
@@ -93,13 +93,13 @@
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyDay"
-        class="label-light"
+        class="label-bold"
         type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-day"
       >
         {{ __('Every day (at 4:00am)') }}
@@ -112,13 +112,13 @@
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyWeek"
-        class="label-light"
+        class="label-bold"
         type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-week"
       >
         {{ __('Every week (Sundays at 4:00am)') }}
@@ -131,13 +131,13 @@
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyMonth"
-        class="label-light"
+        class="label-bold"
         type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-month"
       >
         {{ __('Every month (on the 1st at 4:00am)') }}

@@ -1,0 +1,68 @@
+.build-page-pod-logs {
+  .build-trace-container {
+    position: relative;
+  }
+
+  .build-trace {
+    @include build-trace();
+  }
+
+  .top-bar {
+    @include build-trace-top-bar(48px, $header-height-pod-logs);
+    display: flex;
+
+    .truncated-info {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .dropdown {
+      display: flex;
+
+      > .dropdown-menu-toggle {
+        display: flex;
+        align-content: center;
+        align-self: center;
+        width: 200px;
+
+        @include media-breakpoint-up(sm) {
+          width: 300px;
+        }
+      }
+
+      > .dropdown-menu {
+        width: 300px;
+      }
+
+      .dropdown-toggle-text {
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+
+    .controllers {
+      @include build-controllers(16px, flex-end, true, 2);
+    }
+
+    .refresh-control {
+      @include build-controllers(16px, flex-end, true, 0);
+      margin-left: 2px;
+
+      .controllers-buttons {
+        .btn-refresh {
+          height: 32px;
+
+          svg {
+            top: 0;
+          }
+        }
+      }
+    }
+  }
+
+  .build-loader-animation {
+    @include build-loader-animation();
+  }
+}

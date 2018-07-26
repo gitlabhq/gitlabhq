@@ -1,0 +1,17 @@
+- protected_tag = local_assigns.fetch(:protected_tag)
+- user_create_access_levels = protected_tag.create_access_levels.for_user
+- group_create_access_levels = protected_tag.create_access_levels.for_group
+
+- if user_create_access_levels.any?
+  %p.small
+    The following
+    = 'user'.pluralize(user_create_access_levels.size)
+    can also create tags:
+    = user_create_access_levels.map(&:humanize).to_sentence
+
+- if group_create_access_levels.any?
+  %p.small
+    Members of
+    = group_create_access_levels.size > 1 ? 'these groups' : 'this group'
+    can also create tags:
+    = group_create_access_levels.map(&:humanize).to_sentence

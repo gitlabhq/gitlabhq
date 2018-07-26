@@ -42,10 +42,13 @@ export default {
       return this.timeEstimate - this.timeSpent;
     },
     timeRemainingPercent() {
-      return `${Math.floor((this.timeSpent / this.timeEstimate) * 100)}%`;
+      return Math.floor((this.timeSpent / this.timeEstimate) * 100);
     },
     timeRemainingStatusClass() {
       return this.timeEstimate >= this.timeSpent ? 'within_estimate' : 'over_estimate';
+    },
+    progressBarVariant() {
+      return this.timeRemainingPercent > 100 ? 'danger' : 'primary';
     },
   },
 };
@@ -59,16 +62,10 @@ export default {
       :class="timeRemainingStatusClass"
       class="compare-meter"
     >
-      <div
-        :aria-valuenow="timeRemainingPercent"
-        class="meter-container"
-      >
-        <div
-          :style="{ width: timeRemainingPercent }"
-          class="meter-fill"
-        >
-        </div>
-      </div>
+      <gl-progress-bar
+        :value="timeRemainingPercent"
+        :variant="progressBarVariant"
+      />
       <div class="compare-display-container">
         <div class="compare-display float-left">
           <span class="compare-label">

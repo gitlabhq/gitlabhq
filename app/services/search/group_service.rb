@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Search
   class GroupService < Search::GlobalService
     attr_accessor :group

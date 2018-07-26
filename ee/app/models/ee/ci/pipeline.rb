@@ -132,6 +132,14 @@ module EE
           has_performance_data?
       end
 
+      def expose_security_dashboard?
+        expose_sast_data? ||
+          expose_dependency_scanning_data? ||
+          expose_dast_data? ||
+          expose_sast_container_data? ||
+          expose_container_scanning_data?
+      end
+
       # expose_codeclimate_data? is deprecated and replaced with expose_code_quality_data? (#5779)
       def expose_codeclimate_data?
         has_codeclimate_data?

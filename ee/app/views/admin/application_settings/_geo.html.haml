@@ -5,7 +5,7 @@
     %p
       These settings will only take effect if Geo is enabled and require a restart to take effect.
     .form-group
-      = f.label :geo_status_timeout, 'Connection timeout', class: 'label-light'
+      = f.label :geo_status_timeout, 'Connection timeout', class: 'label-bold'
       = f.number_field :geo_status_timeout, class: 'form-control'
       .form-text.text-muted
         The amount of seconds after which a request to get a secondary node

@@ -4,17 +4,17 @@
   %fieldset
     .row
       .form-group.col-md-9
-        = f.label :name, class: 'label-light' do
+        = f.label :name, class: 'label-bold' do
           Group name
         = f.text_field :name, class: 'form-control'
 
       .form-group.col-md-3
-        = f.label :id, class: 'label-light' do
+        = f.label :id, class: 'label-bold' do
           Group ID
         = f.text_field :id, class: 'form-control', readonly: true
 
     .form-group
-      = f.label :description, class: 'label-light' do
+      = f.label :description, class: 'label-bold' do
         Group description
         %span.light (optional)
       = f.text_area :description, class: 'form-control', rows: 3, maxlength: 250

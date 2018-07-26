@@ -1,5 +1,0 @@
----
-title: Resync project repositories on secondaries nodes when import finishes
-merge_request: 6529
-author:
-type: fixed

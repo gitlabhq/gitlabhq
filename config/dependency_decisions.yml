@@ -467,8 +467,8 @@
 - - :license
   - pikaday
   - MIT
-  - :who: 
-    :why: 
+  - :who:
+    :why:
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
 - - :license
@@ -540,3 +540,9 @@
     :why: https://github.com/xtuc/webassemblyjs/blob/master/LICENSE
     :versions: []
     :when: 2018-06-08 05:30:56.764116000 Z
+- - :approve
+  - "@gitlab-org/gitlab-ui"
+  - :who: Clement Ho
+    :why: Our own library
+    :versions: []
+    :when: 2018-07-17 21:02:54.529227000 Z

@@ -1,0 +1,26 @@
+- pipeline = local_assigns.fetch(:pipeline)
+- project = local_assigns.fetch(:project)
+
+- return unless pipeline.expose_security_dashboard?
+
+- sast_endpoint = pipeline.expose_sast_data? ? sast_artifact_url(pipeline) : nil
+- dependency_scanning_endpoint = pipeline.expose_dependency_scanning_data? ? dependency_scanning_artifact_url(pipeline) : nil
+- dast_endpoint = pipeline.expose_dast_data? ? dast_artifact_url(pipeline) : nil
+- sast_container_endpoint = pipeline.expose_sast_container_data? ? sast_container_artifact_url(pipeline) : pipeline.expose_container_scanning_data? ? container_scanning_artifact_url(pipeline) : nil
+- blob_path = project_blob_path(project, pipeline.sha)
+
+#js-tab-security.build-security.tab-pane
+  #js-security-report-app{ data: { endpoint: sast_endpoint,
+  blob_path: blob_path,
+  dependency_scanning_endpoint: dependency_scanning_endpoint,
+  dast_endpoint: dast_endpoint,
+  sast_container_endpoint: sast_container_endpoint,
+  pipeline_id: pipeline.id,
+  vulnerability_feedback_path: project_vulnerability_feedback_index_path(project),
+  vulnerability_feedback_help_path: help_page_path("user/project/merge_requests/index", anchor: "interacting-with-security-reports-ultimate"),
+  sast_help_path: help_page_path('user/project/merge_requests/sast'),
+  dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning'),
+  dast_help_path: help_page_path('user/project/merge_requests/dast'),
+  sast_container_help_path: help_page_path('user/project/merge_requests/sast_container'),
+  can_create_feedback: can?(current_user, :admin_vulnerability_feedback, project),
+  can_create_issue: show_new_issue_link?(project)} }

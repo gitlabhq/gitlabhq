@@ -1,5 +1,0 @@
----
-title: Fix CI/CD pipelines when repository HEAD points to an invalid branch
-merge_request: 6325
-author:
-type: fixed

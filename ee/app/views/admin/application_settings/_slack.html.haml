@@ -10,13 +10,13 @@
         .form-text.text-muted
           This option is only available on GitLab.com
     .form-group
-      = f.label :slack_app_id, 'APP_ID', class: 'label-light'
+      = f.label :slack_app_id, 'APP_ID', class: 'label-bold'
       = f.text_field :slack_app_id, class: 'form-control'
     .form-group
-      = f.label :slack_app_secret, 'APP_SECRET', class: 'label-light'
+      = f.label :slack_app_secret, 'APP_SECRET', class: 'label-bold'
       = f.text_field :slack_app_secret, class: 'form-control'
     .form-group
-      = f.label :slack_app_verification_token, 'Verification token', class: 'label-light'
+      = f.label :slack_app_verification_token, 'Verification token', class: 'label-bold'
       = f.text_field :slack_app_verification_token, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

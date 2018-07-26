@@ -1,0 +1,6 @@
+---
+title: Removes "show all" on security reports and adds a button to take you to the
+  pipeline page
+merge_request: 6675
+author:
+type: changed

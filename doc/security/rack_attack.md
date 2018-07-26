@@ -9,7 +9,7 @@ In case you find throttling is not enough to protect you against abusive clients
 Rack Attack offers IP whitelisting, blacklisting, Fail2ban style filtering and
 tracking.
 
-**Note:** Starting with 11.0, Rack Attack will be disabled by default. To continue
+**Note:** Starting with 11.2, Rack Attack is disabled by default. To continue
 using this feature, please enable it in your `gitlab.rb` by setting 
 `gitlab_rails['rack_attack_git_basic_auth'] = true`.
 
@@ -18,8 +18,8 @@ limited to 6 requests per minute. After trying for 6 times, the client will
 have to wait for the next minute to be able to try again.
 
 If you installed or upgraded GitLab by following the [official guides](../install/README.md)
-this should be enabled by default. If your instance is not exposed to any incoming
-connections, it is recommended to disable Rack Attack.
+this should be disabled by default. If your instance is not exposed to any incoming
+connections, it is recommended to leave Rack Attack disabled.
 
 For more information on how to use these options check out
 [rack-attack README](https://github.com/kickstarter/rack-attack/blob/master/README.md).
@@ -49,7 +49,7 @@ For more information on how to use these options check out
 
 The following settings can be configured:
 
-- `enabled`: By default this is set to `true`. Set this to `false` to disable Rack Attack.
+- `enabled`: By default this is set to `false`. Set this to `true` to enable Rack Attack.
 - `ip_whitelist`: Whitelist any IPs from being blocked. They must be formatted as strings within a ruby array.
    For example, `["127.0.0.1", "127.0.0.2", "127.0.0.3"]`.
 - `maxretry`: The maximum amount of times a request can be made in the

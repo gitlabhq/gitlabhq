@@ -133,7 +133,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
+- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -187,13 +187,14 @@ The current team labels are:
 
 - ~Configuration
 - ~"CI/CD"
-- ~Discussion
+- ~Create
 - ~Distribution
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Manage
 - ~Monitoring
-- ~Platform
+- ~Plan
 - ~Quality
 - ~Release
 - ~"Security Products"
@@ -375,8 +376,14 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
+We also use [GitLab Triage] to automate some triaging policies. This is
+currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
+
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
+[GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
+[scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
+[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
 
 ### Feature proposals
 

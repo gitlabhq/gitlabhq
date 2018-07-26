@@ -21,10 +21,10 @@
       .form-group
         = f.check_box :mirror, class: "float-left"
         .prepend-left-20
-          = f.label :mirror, "Mirror repository", class: "label-light append-bottom-0"
+          = f.label :mirror, "Mirror repository", class: "label-bold append-bottom-0"
 
       .form-group
-        = f.label :username_only_import_url, "Git repository URL", class: "label-light"
+        = f.label :username_only_import_url, "Git repository URL", class: "label-bold"
         = f.text_field :username_only_import_url, class: 'form-control js-repo-url', placeholder: 'https://username@gitlab.company.com/group/project.git', required: 'required', pattern: "(#{protocols}):\/\/.+", title: 'URL must have protocol present (eg; ssh://...)'
 
       = render "projects/mirrors/instructions"
@@ -34,7 +34,7 @@
         = render partial: "projects/mirrors/pull/authentication_method", locals: { f: import_form }
 
       .form-group
-        = f.label :mirror_user_id, "Mirror user", class: "label-light"
+        = f.label :mirror_user_id, "Mirror user", class: "label-bold"
         = select_tag('project[mirror_user_id]', options_for_mirror_user, class: "select2 lg", required: true)
         .form-text.text-muted
           This user will be the author of all events in the activity feed that are the result of an update,
@@ -44,13 +44,13 @@
       .form-group
         = f.check_box :only_mirror_protected_branches, class: 'float-left'
         .prepend-left-20
-          = f.label :only_mirror_protected_branches, class: 'label-light'
+          = f.label :only_mirror_protected_branches, class: 'label-bold'
           = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
 
       .form-group
         = f.check_box :mirror_overwrites_diverged_branches, class: 'float-left'
         .prepend-left-20
-          = f.label :mirror_overwrites_diverged_branches, "Overwrite diverged branches", class: 'label-light'
+          = f.label :mirror_overwrites_diverged_branches, "Overwrite diverged branches", class: 'label-bold'
           .form-text.text-muted
             If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart,
             to prevent local data loss. If the default branch (#{@project.default_branch}) has diverged and cannot be updated,

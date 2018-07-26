@@ -1,5 +1,0 @@
----
-title: Allow repository verification concurrency to be controlled on primary and secondary
-merge_request: 6102
-author:
-type: added

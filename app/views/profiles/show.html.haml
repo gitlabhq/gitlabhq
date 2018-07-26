@@ -69,6 +69,12 @@
         = f.text_field :location
       = f.text_field :organization
       = f.text_area :bio, rows: 4, maxlength: 250, help: 'Tell us about yourself in fewer than 250 characters.'
+      %hr
+      %h5 Private profile
+      - private_profile_label = capture do
+        Don't display activity-related personal information on your profile
+        = link_to icon('question-circle'), help_page_path('user/profile/index.md', anchor: 'private-profile')
+      = f.check_box :private_profile, label: private_profile_label
       .prepend-top-default.append-bottom-default
         = f.submit 'Update profile settings', class: 'btn btn-success'
         = link_to 'Cancel', user_path(current_user), class: 'btn btn-cancel'

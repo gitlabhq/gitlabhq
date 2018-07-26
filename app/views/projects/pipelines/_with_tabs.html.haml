@@ -1,10 +1,3 @@
-- expose_sast_data = @pipeline.expose_sast_data?
-- expose_dependency_data = @pipeline.expose_dependency_scanning_data?
-- expose_dast_data = @pipeline.expose_dast_data?
-- expose_sast_container_data = @pipeline.expose_sast_container_data?
-- expose_container_scanning_data = @pipeline.expose_container_scanning_data?
-- blob_path = project_blob_path(@project, @pipeline.sha)
-
 .tabs-holder
   %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
@@ -19,11 +12,7 @@
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _("Failed Jobs")
           %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
-    - if expose_sast_data || expose_dependency_data
-      %li.js-security-tab-link
-        = link_to security_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
-          = _("Security report")
-          %span.badge.badge-pill.js-sast-counter.hidden
+    = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -87,19 +76,4 @@
                 %pre.build-trace.build-trace-rounded
                   %code.bash.js-build-output
                     = build_summary(build)
-  - if expose_sast_data || expose_dependency_data || expose_dast_data || expose_sast_container_data || expose_container_scanning_data
-    #js-tab-security.build-security.tab-pane
-      #js-security-report-app{ data: { endpoint: expose_sast_data ? sast_artifact_url(@pipeline) : nil,
-      blob_path: blob_path,
-      dependency_scanning_endpoint: expose_dependency_data ? dependency_scanning_artifact_url(@pipeline) : nil,
-      dast_endpoint: expose_dast_data ? dast_artifact_url(@pipeline) : nil,
-      sast_container_endpoint: expose_sast_container_data ? sast_container_artifact_url(@pipeline) : (expose_container_scanning_data ? container_scanning_artifact_url(@pipeline) : nil),
-      pipeline_id: @pipeline.id,
-      vulnerability_feedback_path: project_vulnerability_feedback_index_path(@project),
-      vulnerability_feedback_help_path: help_page_path("user/project/merge_requests/index", anchor: "interacting-with-security-reports-ultimate"),
-      sast_help_path: help_page_path('user/project/merge_requests/sast'),
-      dependency_scanning_help_path: help_page_path('user/project/merge_requests/dependency_scanning'),
-      dast_help_path: help_page_path('user/project/merge_requests/dast'),
-      sast_container_help_path: help_page_path('user/project/merge_requests/sast_container'),
-      can_create_feedback: can?(current_user, :admin_vulnerability_feedback, @project),
-      can_create_issue: show_new_issue_link?(@project)} }
+  = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

@@ -25,7 +25,7 @@
             Search with Elasticsearch enabled
 
       .form-group
-        = f.label :elasticsearch_url, 'URL', class: 'label-light'
+        = f.label :elasticsearch_url, 'URL', class: 'label-bold'
         = f.text_field :elasticsearch_url, value: @application_setting.elasticsearch_url.join(', '), class: 'form-control', placeholder: 'http://localhost:9200'
         .form-text.text-muted
           The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201").
@@ -38,19 +38,19 @@
           = f.label :elasticsearch_aws, class: 'form-check-label' do
             Using AWS hosted Elasticsearch with IAM credentials
       .form-group
-        = f.label :elasticsearch_aws_region, 'AWS region', class: 'label-light'
+        = f.label :elasticsearch_aws_region, 'AWS region', class: 'label-bold'
         = f.text_field :elasticsearch_aws_region, value: @application_setting.elasticsearch_aws_region, class: 'form-control'
         .form-text.text-muted
           Region that elasticsearch is configured
 
       .form-group
-        = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'label-light'
+        = f.label :elasticsearch_aws_access_key, 'AWS Access Key', class: 'label-bold'
         = f.text_field :elasticsearch_aws_access_key, value: @application_setting.elasticsearch_aws_access_key, class: 'form-control'
         .form-text.text-muted
           AWS Access Key.  Only required if not using role instance credentials
 
       .form-group
-        = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'label-light'
+        = f.label :elasticsearch_aws_secret_access_key, 'AWS Secret Access Key', class: 'label-bold'
         = f.password_field :elasticsearch_aws_secret_access_key, value: @application_setting.elasticsearch_aws_secret_access_key, class: 'form-control'
         .form-text.text-muted
           AWS Secret Access Key.  Only required if not using role instance credentials

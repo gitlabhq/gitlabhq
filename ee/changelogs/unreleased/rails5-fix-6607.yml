@@ -1,5 +1,0 @@
----
-title: 'Rails5 fix NoMethodError: undefined method `join'' for "":String'
-merge_request: 6278
-author: Jasper Maes
-type: fixed

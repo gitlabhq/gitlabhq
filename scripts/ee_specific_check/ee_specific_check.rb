@@ -79,7 +79,7 @@ module EESpecificCheck
   def find_backward_ce_head(ce_fetch_head, ce_fetch_base, ce_merge_base)
     if ce_fetch_head.start_with?('canonical-ce') # No specific CE branch
       say("No CE branch found, using merge base directly")
-      run_git_command("merge-base #{ce_merge_base} HEAD")
+      ce_merge_base
     elsif ce_fetch_base == ce_merge_base # Up-to-date, no rebase needed
       say("EE is up-to-date with CE, using #{ce_fetch_head} directly")
       ce_fetch_head
@@ -166,27 +166,16 @@ module EESpecificCheck
         run_git_command("rebase --abort")
 
         say <<~MESSAGE
-          💥 Git status not clean! This shouldn't happen, but there are two
-          💥 known issues. One can be worked around, and the other can't.
+          💥 Git status is not clean! This means the CE branch has or had a
+          💥 conflict with CE master, and we cannot resolve this in an
+          💥 automatic way.
           💥
-          💥 First please try to update your CE branch with CE master, and
-          💥 retry this job. You could find more information in this issue:
+          💥 Please rebase #{target_head} with CE master.
           💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/5960#note_72669536
+          💥 For more details, please read:
+          💥   https://gitlab.com/gitlab-org/gitlab-ee/issues/6038#note_86862115
           💥
-          💥 It's possible, however, that that doesn't work out. In this case,
-          💥 please just disregard this job. You could find other information at:
-          💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/issues/6038
-          💥
-          💥 There's a work-in-progress fix at:
-          💥
-          💥 https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/5719
-          💥
-          💥 If you would like to help, or have any questions, please
-          💥 contact @godfat
-
-          ⚠️ Git diff:
+          💥 Git diff:
 
           #{diff}
         MESSAGE

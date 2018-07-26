@@ -7,7 +7,7 @@
 
 .nested-settings
   .form-group
-    = form.label :approver_ids, class: 'label-light' do
+    = form.label :approver_ids, class: 'label-bold' do
       Approvers
     = hidden_field_tag "project[approver_ids]"
     = hidden_field_tag "project[approver_group_ids]"
@@ -54,7 +54,7 @@
           %li There are no approvers
 
   .form-group
-    = form.label :approvals_before_merge, class: 'label-light' do
+    = form.label :approvals_before_merge, class: 'label-bold' do
       Approvals required
     = form.number_field :approvals_before_merge, class: "form-control", min: 0
     .form-text.text-muted

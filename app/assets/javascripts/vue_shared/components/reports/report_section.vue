@@ -21,7 +21,7 @@ export default {
       required: false,
       default: false,
     },
-    type: {
+    component: {
       type: String,
       required: false,
       default: '',
@@ -55,11 +55,6 @@ export default {
       default: () => [],
     },
     neutralIssues: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    allIssues: {
       type: Array,
       required: false,
       default: () => [],
@@ -142,18 +137,10 @@ export default {
 </script>
 <template>
   <section class="media-section">
-    <div
-      class="media"
-    >
-      <status-icon
-        :status="statusIconName"
-      />
-      <div
-        class="media-body space-children d-flex"
-      >
-        <span
-          class="js-code-text code-text"
-        >
+    <div class="media">
+      <status-icon :status="statusIconName" />
+      <div class="media-body space-children d-flex flex-align-self-center">
+        <span class="js-code-text code-text">
           {{ headerText }}
 
           <popover
@@ -163,10 +150,12 @@ export default {
           />
         </span>
 
+        <slot name="actionButtons"></slot>
+
         <button
           v-if="isCollapsible"
           type="button"
-          class="js-collapse-btn btn bt-default float-right btn-sm"
+          class="js-collapse-btn btn float-right btn-sm"
           @click="toggleCollapsed"
         >
           {{ collapseText }}
@@ -183,8 +172,8 @@ export default {
         <issues-list
           :unresolved-issues="unresolvedIssues"
           :resolved-issues="resolvedIssues"
-          :all-issues="allIssues"
-          :type="type"
+          :neutral-issues="neutralIssues"
+          :component="component"
         />
       </slot>
     </div>

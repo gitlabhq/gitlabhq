@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedBranches
   class AccessLevelParams
     prepend EE::ProtectedBranches::AccessLevelParams

@@ -127,7 +127,7 @@ need some extra configuration.
    handle migrations.
 
 1. **Optional** Configure host keys. Copy all contents(primary and public keys) inside `/etc/ssh/` on
-   the primary application server to `/ets/ssh` on all secondary servers. This
+   the primary application server to `/etc/ssh` on all secondary servers. This
    prevents false man-in-the-middle-attack alerts when accessing servers in your
    High Availability cluster behind a load balancer.
 

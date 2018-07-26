@@ -66,7 +66,7 @@ export default {
     <div
       class="form-group row"
     >
-      <label class="label-light col-form-label col-sm-3">
+      <label class="label-bold col-form-label col-sm-3">
         {{ __('Name') }}
       </label>
       <div class="col-sm-9">

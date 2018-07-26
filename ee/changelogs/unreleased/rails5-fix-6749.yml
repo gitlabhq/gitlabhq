@@ -1,5 +1,0 @@
----
-title: "[Rails5] fix NoMethodError: undefined method 'downcase' for Hash"
-merge_request: 6319
-author: Jasper Maes
-type: fixed

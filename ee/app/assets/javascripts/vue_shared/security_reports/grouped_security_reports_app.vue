@@ -3,8 +3,8 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
 import SummaryRow from '~/vue_shared/components/reports/summary_row.vue';
 import IssuesList from '~/vue_shared/components/reports/issues_list.vue';
+import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import IssueModal from './components/modal.vue';
-import { SAST, DAST, SAST_CONTAINER } from './store/constants';
 import securityReportsMixin from './mixins/security_report_mixin';
 import createStore from './store';
 
@@ -102,6 +102,11 @@ export default {
       required: false,
       default: null,
     },
+    pipelinePath: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
     canCreateFeedback: {
       type: Boolean,
       required: true,
@@ -111,9 +116,7 @@ export default {
       required: true,
     },
   },
-  sast: SAST,
-  dast: DAST,
-  sastContainer: SAST_CONTAINER,
+  componentNames,
   computed: {
     ...mapState(['sast', 'sastContainer', 'dast', 'dependencyScanning', 'summaryCounts']),
     ...mapGetters([
@@ -128,6 +131,9 @@ export default {
       'dastStatusIcon',
       'dependencyScanningStatusIcon',
     ]),
+    securityTab() {
+      return `${this.pipelinePath}/security`;
+    },
   },
 
   created() {
@@ -213,6 +219,18 @@ export default {
     class="mr-widget-border-top grouped-security-reports"
   >
     <div
+      v-if="pipelinePath"
+      slot="actionButtons"
+    >
+      <a
+        :href="securityTab"
+        class="btn float-right btn-sm"
+      >
+        {{ s__("ciReport|View full report") }}
+      </a>
+    </div>
+
+    <div
       slot="body"
       class="mr-widget-grouped-section report-block"
     >
@@ -225,11 +243,11 @@ export default {
         />
 
         <issues-list
-          v-if="sast.newIssues.length || sast.resolvedIssues.length || sast.allIssues.length"
+          v-if="sast.newIssues.length || sast.resolvedIssues.length"
           :unresolved-issues="sast.newIssues"
           :resolved-issues="sast.resolvedIssues"
           :all-issues="sast.allIssues"
-          :type="$options.sast"
+          :component="$options.componentNames.SastIssueBody"
           class="js-sast-issue-list report-block-group-list"
         />
       </template>
@@ -243,12 +261,11 @@ export default {
         />
 
         <issues-list
-          v-if="dependencyScanning.newIssues.length ||
-          dependencyScanning.resolvedIssues.length || dependencyScanning.allIssues.length"
+          v-if="dependencyScanning.newIssues.length || dependencyScanning.resolvedIssues.length"
           :unresolved-issues="dependencyScanning.newIssues"
           :resolved-issues="dependencyScanning.resolvedIssues"
           :all-issues="dependencyScanning.allIssues"
-          :type="$options.sast"
+          :component="$options.componentNames.SastIssueBody"
           class="js-dss-issue-list report-block-group-list"
         />
       </template>
@@ -265,7 +282,7 @@ export default {
           v-if="sastContainer.newIssues.length || sastContainer.resolvedIssues.length"
           :unresolved-issues="sastContainer.newIssues"
           :neutral-issues="sastContainer.resolvedIssues"
-          :type="$options.sastContainer"
+          :component="$options.componentNames.SastContainerIssueBody"
           class="report-block-group-list"
         />
       </template>
@@ -282,7 +299,7 @@ export default {
           v-if="dast.newIssues.length || dast.resolvedIssues.length"
           :unresolved-issues="dast.newIssues"
           :resolved-issues="dast.resolvedIssues"
-          :type="$options.dast"
+          :component="$options.componentNames.DastIssueBody"
           class="report-block-group-list"
         />
       </template>

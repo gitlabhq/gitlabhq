@@ -22,12 +22,6 @@ module EE
       validates :group, :user,
                absence: true,
                unless: :protected_refs_for_users_required_and_available
-
-      scope :by_user, -> (user) { where(user: user ) }
-      scope :by_group, -> (group) { where(group: group ) }
-      scope :for_role, -> { where(user: nil, group: nil) }
-      scope :for_user, -> { where.not(user: nil) }
-      scope :for_group, -> { where.not(group: nil) }
     end
 
     def type

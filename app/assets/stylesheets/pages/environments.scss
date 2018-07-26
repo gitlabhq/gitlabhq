@@ -267,7 +267,7 @@
       border: 1px solid $white-light;
       background-color: $orange-300;
       border-radius: 50%;
-      content: "";
+      content: '';
     }
   }
 }
@@ -286,8 +286,6 @@
     padding-right: 10px;
   }
 }
-
-
 
 .gl-responsive-table-row {
   .branch-commit {
@@ -455,6 +453,8 @@
 .prometheus-graph-flag {
   display: block;
   min-width: 160px;
+  border: 0;
+  box-shadow: 0 1px 4px 0 $black-transparent;
 
   h5 {
     padding: 0;
@@ -474,7 +474,6 @@
 
   &.popover {
     padding: 0;
-    border: 1px solid $border-color;
 
     &.left {
       left: auto;
@@ -482,12 +481,19 @@
       margin-right: 10px;
 
       > .arrow {
-        right: -16px;
+        right: -14px;
         border-left-color: $border-color;
       }
 
       > .arrow::after {
-        border-left-color: $theme-gray-50;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 4px solid $theme-gray-50;
+      }
+
+      .arrow-shadow {
+        right: -3px;
+        box-shadow: 1px 0 9px 0 $black-transparent;
       }
     }
 
@@ -497,19 +503,35 @@
       margin-left: 10px;
 
       > .arrow {
-        left: -16px;
+        left: -7px;
         border-right-color: $border-color;
       }
 
       > .arrow::after {
-        border-right-color: $theme-gray-50;
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-right: 4px solid $theme-gray-50;
+      }
+
+      .arrow-shadow {
+        left: -3px;
+        box-shadow: 1px 0 8px 0 $black-transparent;
       }
     }
 
     > .arrow {
-      top: 16px;
-      margin-top: -8px;
-      border-width: 8px;
+      top: 10px;
+      margin: 0;
+    }
+
+    .arrow-shadow {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background-color: transparent;
+      transform: rotate(45deg);
+      top: 13px;
     }
 
     > .popover-header,
@@ -517,10 +539,12 @@
       padding: 8px;
       font-size: 12px;
       white-space: nowrap;
+      position: relative;
     }
 
     > .popover-header {
       background-color: $theme-gray-50;
+      border-radius: $border-radius-default $border-radius-default 0 0;
     }
   }
 
@@ -614,7 +638,7 @@
     }
 
     .deploy-info-text-link {
-      font-family: $monospace_font;
+      font-family: $monospace-font;
       fill: $gl-link-color;
 
       &:hover {
@@ -651,5 +675,68 @@
     .state-button {
       display: none;
     }
+  }
+}
+
+.alert-dropdown-button {
+  margin-left: $btn-side-margin;
+
+  .dropdown.open & {
+    background: $white-normal;
+    outline: 0;
+  }
+
+  svg {
+    margin: 0;
+
+    + svg {
+      margin-left: -$gl-padding-4;
+    }
+
+    &.chevron {
+      color: $gl-text-color-secondary;
+    }
+  }
+}
+
+.alert-dropdown-menu {
+  right: 0;
+  left: auto;
+  z-index: $zindex-popover + 5; // must be higher than graph flag popover
+
+  .dropdown-title {
+    margin: 0;
+  }
+}
+
+.alert-error-message {
+  color: $gl-danger;
+  vertical-align: middle;
+}
+
+.alert-current-setting {
+  color: $gl-text-color-disabled;
+  vertical-align: middle;
+}
+
+.alert-form {
+  padding: $gl-padding $gl-padding $gl-padding-8;
+
+  label {
+    font-weight: normal;
+  }
+
+  .btn-group,
+  .action-group {
+    display: flex;
+
+    .btn {
+      flex: 1 auto;
+      box-shadow: none;
+    }
+  }
+
+  .action-group .btn + .btn {
+    margin-left: $gl-padding-8;
   }
 }

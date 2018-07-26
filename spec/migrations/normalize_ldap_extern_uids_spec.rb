@@ -38,7 +38,7 @@ describe NormalizeLdapExternUids, :migration, :sidekiq do
   end
 
   it 'migrates the LDAP identities' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       migrate!
       identities.where(id: 1..4).each do |identity|
         expect(identity.extern_uid).to eq("uid=foo #{identity.id},ou=people,dc=example,dc=com")
@@ -47,7 +47,7 @@ describe NormalizeLdapExternUids, :migration, :sidekiq do
   end
 
   it 'does not modify non-LDAP identities' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       migrate!
       identity = identities.last
       expect(identity.extern_uid).to eq(" uid = foo 5, ou = People, dc = example, dc = com ")

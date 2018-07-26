@@ -75,25 +75,68 @@ export const discussionsByLineCode = (state, getters, rootState, rootGetters) =>
     const isDiffDiscussion = note.diff_discussion;
     const hasLineCode = note.line_code;
     const isResolvable = note.resolvable;
-    const diffRefs = diffRefsByLineCode[note.line_code];
 
-    if (isDiffDiscussion && hasLineCode && isResolvable && diffRefs) {
-      const refs = convertObjectPropsToCamelCase(note.position.formatter);
-      const originalRefs = convertObjectPropsToCamelCase(note.original_position.formatter);
+    if (isDiffDiscussion && hasLineCode && isResolvable) {
+      const diffRefs = diffRefsByLineCode[note.line_code];
+      if (diffRefs) {
+        const refs = convertObjectPropsToCamelCase(note.position.formatter);
+        const originalRefs = convertObjectPropsToCamelCase(note.original_position.formatter);
 
-      if (_.isEqual(refs, diffRefs) || _.isEqual(originalRefs, diffRefs)) {
-        const lineCode = note.line_code;
+        if (_.isEqual(refs, diffRefs) || _.isEqual(originalRefs, diffRefs)) {
+          const lineCode = note.line_code;
 
-        if (acc[lineCode]) {
-          acc[lineCode].push(note);
-        } else {
-          acc[lineCode] = [note];
+          if (acc[lineCode]) {
+            acc[lineCode].push(note);
+          } else {
+            acc[lineCode] = [note];
+          }
         }
       }
     }
 
     return acc;
   }, {});
+};
+
+export const singleDiscussionByLineCode = (state, getters) => lineCode => {
+  if (!lineCode) return [];
+  const discussions = getters.discussionsByLineCode;
+  return discussions[lineCode] || [];
+};
+
+export const shouldRenderParallelCommentRow = (state, getters) => line => {
+  const leftLineCode = line.left.lineCode;
+  const rightLineCode = line.right.lineCode;
+  const leftDiscussions = getters.singleDiscussionByLineCode(leftLineCode);
+  const rightDiscussions = getters.singleDiscussionByLineCode(rightLineCode);
+  const hasDiscussion = leftDiscussions.length || rightDiscussions.length;
+
+  const hasExpandedDiscussionOnLeft = leftDiscussions.length
+    ? leftDiscussions.every(discussion => discussion.expanded)
+    : false;
+  const hasExpandedDiscussionOnRight = rightDiscussions.length
+    ? rightDiscussions.every(discussion => discussion.expanded)
+    : false;
+
+  if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
+    return true;
+  }
+
+  const hasCommentFormOnLeft = state.diffLineCommentForms[leftLineCode];
+  const hasCommentFormOnRight = state.diffLineCommentForms[rightLineCode];
+
+  return hasCommentFormOnLeft || hasCommentFormOnRight;
+};
+
+export const shouldRenderInlineCommentRow = (state, getters) => line => {
+  if (state.diffLineCommentForms[line.lineCode]) return true;
+
+  const lineDiscussions = getters.singleDiscussionByLineCode(line.lineCode);
+  if (lineDiscussions.length === 0) {
+    return false;
+  }
+
+  return lineDiscussions.every(discussion => discussion.expanded);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests

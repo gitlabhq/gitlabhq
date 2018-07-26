@@ -11,7 +11,7 @@
   = form_for [project.namespace.becomes(Namespace), project, metric], html: { class: 'col-lg-8 offset-lg-2' } do |f|
     = form_errors(metric)
     .form-group
-      = f.label :title, s_('Metrics|Name'), class: 'label-light'
+      = f.label :title, s_('Metrics|Name'), class: 'label-bold'
       = f.text_field :title, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. Throughput'), autofocus: true
       %span.form-text.text-muted
         = s_('Metrics|Used as a title for the chart')
@@ -20,18 +20,18 @@
 
       .form-group.append-bottom-0
         = f.radio_button :group, :business, checked: true
-        = f.label :group_business, s_("Metrics|Business"), class: 'label-light append-right-10'
+        = f.label :group_business, s_("Metrics|Business"), class: 'label-bold append-right-10'
 
         = f.radio_button :group, :response
-        = f.label :group_response, s_("Metrics|Response"), class: 'label-light append-right-10'
+        = f.label :group_response, s_("Metrics|Response"), class: 'label-bold append-right-10'
 
         = f.radio_button :group, :system
-        = f.label :group_system, s_("Metrics|System"), class: 'label-light'
+        = f.label :group_system, s_("Metrics|System"), class: 'label-bold'
 
       %p.text-tertiary
         = s_('Metrics|For grouping similar metrics')
     .form-group
-      = f.label :query, s_('Metrics|Query'), class: 'label-light'
+      = f.label :query, s_('Metrics|Query'), class: 'label-bold'
       = f.text_field :query, required: true, class: 'form-control', placeholder: s_('Metrics|e.g. rate(http_requests_total[5m])')
       %span.form-text.text-muted
         = s_('Metrics|Must be a valid PromQL query.')
@@ -39,15 +39,15 @@
           = sprite_icon("external-link", size: 12)
           = s_('Metrics|Prometheus Query Documentation')
     .form-group
-      = f.label :y_label, s_('Metrics|Y-axis label'), class: 'label-light'
+      = f.label :y_label, s_('Metrics|Y-axis label'), class: 'label-bold'
       = f.text_field :y_label, class: 'form-control', placeholder: s_('Metrics|e.g. Requests/second')
       %span.form-text.text-muted
         = s_("Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time.")
     .form-group
-      = f.label :unit, s_('Metrics|Unit label'), class: 'label-light'
+      = f.label :unit, s_('Metrics|Unit label'), class: 'label-bold'
       = f.text_field :unit, class: 'form-control', placeholder: s_('Metrics|e.g. req/sec')
     .form-group
-      = f.label :legend, s_('Metrics|Legend label (optional)'), class: 'label-light'
+      = f.label :legend, s_('Metrics|Legend label (optional)'), class: 'label-bold'
       = f.text_field :legend, class: 'form-control', placeholder: s_('Metrics|e.g. HTTP requests')
       %span.form-text.text-muted
         = s_('Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response.')

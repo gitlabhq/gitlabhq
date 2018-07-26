@@ -69,14 +69,6 @@ RSpec.describe Geo::WikiSyncService do
       expect { subject.execute }.not_to raise_error
     end
 
-    it 'rescues exception when Gitlab::Git::RepositoryMirroring::RemoteError is raised' do
-      allow(repository).to receive(:fetch_as_mirror)
-        .with(url_to_repo, remote_name: 'geo', forced: true)
-        .and_raise(Gitlab::Git::RepositoryMirroring::RemoteError)
-
-      expect { subject.execute }.not_to raise_error
-    end
-
     it 'rescues exception when Gitlab::Git::Repository::NoRepository is raised' do
       allow(repository).to receive(:fetch_as_mirror)
         .with(url_to_repo, remote_name: 'geo', forced: true)

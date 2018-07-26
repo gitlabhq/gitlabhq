@@ -102,7 +102,7 @@ describe API::ProjectImport do
     it 'correctly overrides params during the import' do
       override_params = { 'description' => 'Hello world' }
 
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         post api('/projects/import', user),
              path: 'test-import',
              file: fixture_file_upload(file),

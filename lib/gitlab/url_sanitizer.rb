@@ -71,12 +71,10 @@ module Gitlab
     def generate_full_url
       return @url unless valid_credentials?
 
-      @full_url = @url.dup
-
-      @full_url.password = credentials[:password] if credentials[:password].present?
-      @full_url.user = credentials[:user] if credentials[:user].present?
-
-      @full_url
+      @url.dup.tap do |generated|
+        generated.password = encode_percent(credentials[:password]) if credentials[:password].present?
+        generated.user = encode_percent(credentials[:user]) if credentials[:user].present?
+      end
     end
 
     def safe_url
@@ -88,6 +86,11 @@ module Gitlab
 
     def valid_credentials?
       credentials && credentials.is_a?(Hash) && credentials.any?
+    end
+
+    def encode_percent(string)
+      # CGI.escape converts spaces to +, but this doesn't work for git clone
+      CGI.escape(string).gsub('+', '%20')
     end
   end
 end

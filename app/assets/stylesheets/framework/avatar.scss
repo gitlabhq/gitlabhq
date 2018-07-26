@@ -7,7 +7,7 @@
 .avatar-circle {
   float: left;
   margin-right: 15px;
-  border-radius: $avatar_radius;
+  border-radius: $avatar-radius;
   border: 1px solid $avatar-border;
   &.s16 { @include avatar-size(16px, 6px); }
   &.s18 { @include avatar-size(18px, 6px); }
@@ -114,7 +114,7 @@
   color: $white-light;
   border: 1px solid $avatar-border;
   border-radius: 1em;
-  font-family: $regular_font;
+  font-family: $regular-font;
   font-size: 9px;
   line-height: 16px;
   text-align: center;

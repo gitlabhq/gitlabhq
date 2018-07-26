@@ -203,5 +203,34 @@ describe Geo::FileUploadService do
         expect(service.execute).to be_nil
       end
     end
+
+    context 'import export archive' do
+      let(:project) { create(:project) }
+      let(:upload) { Upload.find_by(model: project, uploader: 'ImportExportUploader') }
+      let(:params) { { id: upload.id, type: 'import_export' } }
+      let(:file_transfer) { Gitlab::Geo::FileTransfer.new(:import_export, upload) }
+      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(file_transfer.request_data) }
+      let(:req_header) { transfer_request.headers['Authorization'] }
+      let(:file) { fixture_file_upload('spec/fixtures/project_export.tar.gz') }
+
+      before do
+        ImportExportUploader.new(project).store!(file)
+      end
+
+      it 'sends the file' do
+        service = described_class.new(params, req_header)
+
+        response = service.execute
+
+        expect(response[:code]).to eq(:ok)
+        expect(response[:file].path).to end_with('tar.gz')
+      end
+
+      it 'returns nil if no authorization' do
+        service = described_class.new(params, nil)
+
+        expect(service.execute).to be_nil
+      end
+    end
   end
 end

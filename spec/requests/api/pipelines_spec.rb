@@ -24,7 +24,8 @@ describe API::Pipelines do
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
         expect(json_response.first['id']).to eq pipeline.id
-        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
+        expect(json_response.first['web_url']).to be_present
+        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status web_url])
       end
 
       context 'when parameter is passed' do

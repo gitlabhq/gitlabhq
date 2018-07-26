@@ -1168,3 +1168,87 @@ export const collapsedSystemNotes = [
     diff_discussion: false,
   },
 ];
+
+export const discussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const resolvedDiscussion1 = {
+  id: 'abc1',
+  resolvable: true,
+  resolved: true,
+  diff_file: {
+    file_path: 'about.md',
+  },
+  position: {
+    formatter: {
+      new_line: 50,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T16:25:41.749Z',
+    },
+  ],
+};
+
+export const discussion2 = {
+  id: 'abc2',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: null,
+      old_line: 20,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-04T12:05:41.749Z',
+    },
+  ],
+};
+
+export const discussion3 = {
+  id: 'abc3',
+  resolvable: true,
+  resolved: false,
+  diff_file: {
+    file_path: 'README.md',
+  },
+  position: {
+    formatter: {
+      new_line: 21,
+      old_line: null,
+    },
+  },
+  notes: [
+    {
+      created_at: '2018-07-05T17:25:41.749Z',
+    },
+  ],
+};
+
+export const unresolvableDiscussion = {
+  resolvable: false,
+};

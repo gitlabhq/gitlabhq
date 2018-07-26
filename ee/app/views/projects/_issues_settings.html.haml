@@ -11,7 +11,7 @@
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "issue-settings-form" }, authenticity_token: true do |f|
         .form-group
-          = f.label :issues_template, class: 'label-light' do
+          = f.label :issues_template, class: 'label-bold' do
             Default description template for issues
             = link_to icon('question-circle'), help_page_path('user/project/description_templates', anchor: 'setting-a-default-template-for-issues-and-merge-requests'), target: '_blank'
           = f.text_area :issues_template, class: "form-control", rows: 3

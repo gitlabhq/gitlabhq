@@ -1,5 +1,0 @@
----
-title: "[Rails5] Fix error on missed :authenticate_user callback"
-merge_request: 6257
-author: "@blackst0ne"
-type: fixed

@@ -19,7 +19,7 @@ module Projects
       update_branches
 
       success
-    rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError, UpdateError => e
+    rescue Gitlab::Shell::Error, UpdateError => e
       error(e.message)
     end
 

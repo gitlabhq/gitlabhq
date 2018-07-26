@@ -45,18 +45,18 @@ describe Projects::DestroyService do
   shared_examples 'handles errors thrown during async destroy' do |error_message|
     it 'does not allow the error to bubble up' do
       expect do
-        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+        perform_enqueued_jobs { destroy_project(project, user, {}) }
       end.not_to raise_error
     end
 
     it 'unmarks the project as "pending deletion"' do
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
 
       expect(project.reload.pending_delete).to be(false)
     end
 
     it 'stores an error message in `projects.delete_error`' do
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
 
       expect(project.reload.delete_error).to be_present
       expect(project.delete_error).to include(error_message)
@@ -66,7 +66,7 @@ describe Projects::DestroyService do
   context 'Sidekiq inline' do
     before do
       # Run sidekiq immediatly to check that renamed repository will be removed
-      Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+      perform_enqueued_jobs { destroy_project(project, user, {}) }
     end
 
     context 'when has remote mirrors' do
@@ -110,7 +110,7 @@ describe Projects::DestroyService do
     end
 
     it 'keeps project team intact upon an error' do
-      Sidekiq::Testing.inline! do
+      perform_enqueued_jobs do
         begin
           destroy_project(project, user, {})
         rescue ::Redis::CannotConnectError
@@ -128,7 +128,7 @@ describe Projects::DestroyService do
       before do
         project.project_feature.update_attribute("issues_access_level", ProjectFeature::PRIVATE)
         # Run sidekiq immediately to check that renamed repository will be removed
-        Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+        perform_enqueued_jobs { destroy_project(project, user, {}) }
       end
 
       it_behaves_like 'deleting the project'
@@ -172,7 +172,7 @@ describe Projects::DestroyService do
 
         it 'allows error to bubble up and rolls back project deletion' do
           expect do
-            Sidekiq::Testing.inline! { destroy_project(project, user, {}) }
+            perform_enqueued_jobs { destroy_project(project, user, {}) }
           end.to raise_error(Exception, 'Other error message')
 
           expect(project.reload.pending_delete).to be(false)

@@ -34,6 +34,7 @@ class Project < ActiveRecord::Base
 
   BoardLimitExceeded = Class.new(StandardError)
 
+  STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -82,6 +83,10 @@ class Project < ActiveRecord::Base
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_create :create_project_feature, unless: :project_feature
+
+  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
+  before_destroy ->(project) { project.project_feature.untrack_statistics_for_deletion! }
+  after_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -159,6 +164,7 @@ class Project < ActiveRecord::Base
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
   has_one :packagist_service
+  has_one :hangouts_chat_service
 
   # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
@@ -333,6 +339,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
   scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }

@@ -1,0 +1,5 @@
+---
+title: Fix serialization of LegacyDiffNote
+merge_request:
+author:
+type: fixed

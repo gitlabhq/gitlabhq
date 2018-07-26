@@ -278,6 +278,12 @@ msgstr ""
 msgid "A user with write access to the source branch selected this option"
 msgstr ""
 
+msgid "About GitLab"
+msgstr ""
+
+msgid "About GitLab CE"
+msgstr ""
+
 msgid "About auto deploy"
 msgstr ""
 
@@ -369,6 +375,15 @@ msgid "Add users to group"
 msgstr ""
 
 msgid "Additional text"
+msgstr ""
+
+msgid "Admin Area"
+msgstr ""
+
+msgid "Admin Overview"
+msgstr ""
+
+msgid "Admin area"
 msgstr ""
 
 msgid "AdminArea|Stop all jobs"
@@ -545,7 +560,7 @@ msgstr ""
 msgid "An error occurred while initializing path locks"
 msgstr ""
 
-msgid "An error occurred while loading commits"
+msgid "An error occurred while loading commit signatures"
 msgstr ""
 
 msgid "An error occurred while loading diff"
@@ -594,6 +609,9 @@ msgid "An error occurred. Please try again."
 msgstr ""
 
 msgid "Anonymous"
+msgstr ""
+
+msgid "Anti-spam verification"
 msgstr ""
 
 msgid "Any"
@@ -710,6 +728,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Authentication log"
+msgstr ""
+
 msgid "Author"
 msgstr ""
 
@@ -732,6 +753,9 @@ msgid "Authorized applications (%{size})"
 msgstr ""
 
 msgid "Authors: %{authors}"
+msgstr ""
+
+msgid "Auto DevOps"
 msgstr ""
 
 msgid "Auto DevOps enabled"
@@ -792,6 +816,9 @@ msgid "Average per day: %{average}"
 msgstr ""
 
 msgid "Background Color"
+msgstr ""
+
+msgid "Background Jobs"
 msgstr ""
 
 msgid "Background color"
@@ -945,6 +972,9 @@ msgid "BillingPlans|per user"
 msgstr ""
 
 msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blog"
 msgstr ""
 
 msgid "Boards"
@@ -1531,6 +1561,9 @@ msgstr ""
 msgid "ClusterIntegration|Helm Tiller"
 msgstr ""
 
+msgid "ClusterIntegration|Hide"
+msgstr ""
+
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr ""
 
@@ -1786,6 +1819,9 @@ msgstr ""
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
+msgid "Cohorts"
+msgstr ""
+
 msgid "Collapse"
 msgstr ""
 
@@ -2033,6 +2069,9 @@ msgstr ""
 msgid "Control the maximum concurrency of verification operations for this Geo node"
 msgstr ""
 
+msgid "ConvDev Index"
+msgstr ""
+
 msgid "Copy SSH public key to clipboard"
 msgstr ""
 
@@ -2049,6 +2088,9 @@ msgid "Copy commit SHA to clipboard"
 msgstr ""
 
 msgid "Copy file path to clipboard"
+msgstr ""
+
+msgid "Copy incoming email address to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
@@ -2070,6 +2112,9 @@ msgid "Create a new branch"
 msgstr ""
 
 msgid "Create a new branch and merge request"
+msgstr ""
+
+msgid "Create a new issue"
 msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
@@ -2211,6 +2256,9 @@ msgid "CycleAnalyticsStage|Staging"
 msgstr ""
 
 msgid "CycleAnalyticsStage|Test"
+msgstr ""
+
+msgid "Dashboard"
 msgstr ""
 
 msgid "DashboardProjects|All"
@@ -2758,6 +2806,9 @@ msgstr ""
 msgid "Every week (Sundays at 4:00am)"
 msgstr ""
 
+msgid "Everyone can contribute"
+msgstr ""
+
 msgid "Expand"
 msgstr ""
 
@@ -2765,6 +2816,9 @@ msgid "Expand all"
 msgstr ""
 
 msgid "Expand sidebar"
+msgstr ""
+
+msgid "Explore"
 msgstr ""
 
 msgid "Explore GitLab"
@@ -2801,6 +2855,9 @@ msgid "ExternalAuthorizationService|Classification label"
 msgstr ""
 
 msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
+msgstr ""
+
+msgid "Facebook"
 msgstr ""
 
 msgid "Failed"
@@ -3264,6 +3321,9 @@ msgstr ""
 msgid "Group avatar"
 msgstr ""
 
+msgid "Group details"
+msgstr ""
+
 msgid "Group info:"
 msgstr ""
 
@@ -3664,6 +3724,9 @@ msgstr ""
 msgid "Koding"
 msgstr ""
 
+msgid "Koding Dashboard"
+msgstr ""
+
 msgid "Kubernetes"
 msgstr ""
 
@@ -3795,6 +3858,9 @@ msgstr ""
 msgid "License"
 msgstr ""
 
+msgid "LinkedIn"
+msgstr ""
+
 msgid "List"
 msgstr ""
 
@@ -3840,10 +3906,16 @@ msgstr ""
 msgid "Locks give the ability to lock specific file or folder."
 msgstr ""
 
+msgid "Logs"
+msgstr ""
+
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr ""
 
 msgid "Make sure you're logged into the account that owns the projects you'd like to import."
+msgstr ""
+
+msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
 msgstr ""
 
 msgid "Manage access"
@@ -4113,6 +4185,9 @@ msgstr ""
 msgid "Months"
 msgstr ""
 
+msgid "More"
+msgstr ""
+
 msgid "More actions"
 msgstr ""
 
@@ -4159,6 +4234,9 @@ msgid "Nav|Sign In / Register"
 msgstr ""
 
 msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
+msgid "Network"
 msgstr ""
 
 msgid "New"
@@ -4236,6 +4314,9 @@ msgid "New subgroup"
 msgstr ""
 
 msgid "New tag"
+msgstr ""
+
+msgid "New..."
 msgstr ""
 
 msgid "No"
@@ -4443,6 +4524,12 @@ msgid "Open"
 msgstr ""
 
 msgid "Open in Xcode"
+msgstr ""
+
+msgid "Open sidebar"
+msgstr ""
+
+msgid "Open source software to collaborate on code"
 msgstr ""
 
 msgid "Opened"
@@ -4772,6 +4859,9 @@ msgstr ""
 msgid "Profile"
 msgstr ""
 
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr ""
 
@@ -4968,6 +5058,36 @@ msgid "ProjectsDropdown|Something went wrong on our end."
 msgstr ""
 
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
+msgstr ""
+
+msgid "PrometheusAlerts|Add alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Edit alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error creating alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error deleting alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error fetching alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error saving alert"
+msgstr ""
+
+msgid "PrometheusAlerts|No alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Operator"
+msgstr ""
+
+msgid "PrometheusAlerts|Threshold"
 msgstr ""
 
 msgid "PrometheusDashboard|Time"
@@ -5189,6 +5309,9 @@ msgstr ""
 msgid "Repair authentication"
 msgstr ""
 
+msgid "Reply to this email directly or %{view_it_on_gitlab}."
+msgstr ""
+
 msgid "Repo by URL"
 msgstr ""
 
@@ -5217,6 +5340,9 @@ msgid "RepositorySettingsAccessLevel|Select"
 msgstr ""
 
 msgid "Request Access"
+msgstr ""
+
+msgid "Requests Profiles"
 msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
@@ -5533,6 +5659,9 @@ msgstr ""
 msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
 msgstr ""
 
+msgid "Sherlock Transactions"
+msgstr ""
+
 msgid "Show command"
 msgstr ""
 
@@ -5572,6 +5701,12 @@ msgid "Sidebar|Only numeral characters allowed"
 msgstr ""
 
 msgid "Sidebar|Weight"
+msgstr ""
+
+msgid "Sign in"
+msgstr ""
+
+msgid "Sign in / Register"
 msgstr ""
 
 msgid "Sign in to %{group_name}"
@@ -5817,6 +5952,9 @@ msgstr ""
 msgid "Status"
 msgstr ""
 
+msgid "Stop impersonation"
+msgstr ""
+
 msgid "Stop this environment"
 msgstr ""
 
@@ -5851,6 +5989,9 @@ msgid "Sync information"
 msgstr ""
 
 msgid "System Hooks"
+msgstr ""
+
+msgid "System Info"
 msgstr ""
 
 msgid "System header and footer:"
@@ -6116,13 +6257,16 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
-msgid "This board\\'s scope is reduced"
+msgid "This board's scope is reduced"
 msgstr ""
 
 msgid "This diff is collapsed."
 msgstr ""
 
 msgid "This directory"
+msgstr ""
+
+msgid "This group"
 msgstr ""
 
 msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
@@ -6447,10 +6591,16 @@ msgstr ""
 msgid "Todo"
 msgstr ""
 
+msgid "Todos"
+msgstr ""
+
 msgid "Toggle Sidebar"
 msgstr ""
 
 msgid "Toggle discussion"
+msgstr ""
+
+msgid "Toggle navigation"
 msgstr ""
 
 msgid "Toggle sidebar"
@@ -6499,6 +6649,9 @@ msgid "Try again"
 msgstr ""
 
 msgid "Turn on Service Desk"
+msgstr ""
+
+msgid "Twitter"
 msgstr ""
 
 msgid "Unable to load the diff. %{button_try_again}"
@@ -6617,6 +6770,9 @@ msgstr ""
 msgid "Used by members to sign in to your group in GitLab"
 msgstr ""
 
+msgid "User Settings"
+msgstr ""
+
 msgid "User and IP Rate Limits"
 msgstr ""
 
@@ -6659,6 +6815,9 @@ msgstr ""
 msgid "View issue"
 msgstr ""
 
+msgid "View it on GitLab"
+msgstr ""
+
 msgid "View jobs"
 msgstr ""
 
@@ -6699,6 +6858,9 @@ msgid "VisibilityLevel|Unknown"
 msgstr ""
 
 msgid "Want to see the data? Please ask an administrator for access."
+msgstr ""
+
+msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
@@ -7007,7 +7169,16 @@ msgstr ""
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr ""
 
+msgid "You're receiving this email because %{reason}."
+msgstr ""
+
+msgid "You're receiving this email because of your account on %{host}."
+msgstr ""
+
 msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
+msgstr ""
+
+msgid "YouTube"
 msgstr ""
 
 msgid "Your Groups"
@@ -7234,9 +7405,6 @@ msgstr ""
 msgid "ciReport|Severity"
 msgstr ""
 
-msgid "ciReport|Show complete code vulnerabilities report"
-msgstr ""
-
 msgid "ciReport|Solution"
 msgstr ""
 
@@ -7268,6 +7436,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
+msgstr ""
+
+msgid "ciReport|View full report"
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
@@ -7599,6 +7770,9 @@ msgid "username"
 msgstr ""
 
 msgid "uses Kubernetes clusters to deploy your code!"
+msgstr ""
+
+msgid "view it on GitLab"
 msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."

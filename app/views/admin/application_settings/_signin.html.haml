@@ -21,31 +21,31 @@
             must be used to authenticate.
     - if omniauth_enabled? && button_based_providers.any?
       .form-group
-        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'label-light'
+        = f.label :enabled_oauth_sign_in_sources, 'Enabled OAuth sign-in sources', class: 'label-bold'
         = hidden_field_tag 'application_setting[enabled_oauth_sign_in_sources][]'
         .btn-group{ data: { toggle: 'buttons' } }
           - oauth_providers_checkboxes.each do |source|
             = source
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor authentication', class: 'label-light'
+      = f.label :two_factor_authentication, 'Two-factor authentication', class: 'label-bold'
       .form-check
         = f.check_box :require_two_factor_authentication, class: 'form-check-input'
         = f.label :require_two_factor_authentication, class: 'form-check-label' do
           Require all users to setup Two-factor authentication
     .form-group
-      = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'label-light'
+      = f.label :two_factor_authentication, 'Two-factor grace period (hours)', class: 'label-bold'
       = f.number_field :two_factor_grace_period, min: 0, class: 'form-control', placeholder: '0'
       .form-text.text-muted Amount of time (in hours) that users are allowed to skip forced configuration of two-factor authentication
     .form-group
-      = f.label :home_page_url, 'Home page URL', class: 'label-light'
+      = f.label :home_page_url, 'Home page URL', class: 'label-bold'
       = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'home_help_block'
       %span.form-text.text-muted#home_help_block We will redirect non-logged in users to this page
     .form-group
-      = f.label :after_sign_out_path, class: 'label-light'
+      = f.label :after_sign_out_path, class: 'label-bold'
       = f.text_field :after_sign_out_path, class: 'form-control', placeholder: 'http://company.example.com', :'aria-describedby' => 'after_sign_out_path_help_block'
       %span.form-text.text-muted#after_sign_out_path_help_block We will redirect users to this page after they sign out
     .form-group
-      = f.label :sign_in_text, class: 'label-light'
+      = f.label :sign_in_text, class: 'label-bold'
       = f.text_area :sign_in_text, class: 'form-control', rows: 4
       .form-text.text-muted Markdown enabled
 

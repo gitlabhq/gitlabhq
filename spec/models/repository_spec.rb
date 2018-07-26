@@ -2225,20 +2225,6 @@ describe Repository do
     end
   end
 
-  describe '#remote_branches' do
-    it 'returns the remote branches' do
-      masterrev = repository.find_branch('master').dereferenced_target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev.id)
-
-      # TODO: move this test to gitaly https://gitlab.com/gitlab-org/gitaly/issues/1243
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
-        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
-      end
-    end
-  end
-
   describe '#commit_count' do
     context 'with a non-existing repository' do
       it 'returns 0' do

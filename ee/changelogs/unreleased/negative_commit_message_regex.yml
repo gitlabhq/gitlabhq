@@ -1,5 +1,0 @@
----
-title: Add a new push rule to allow negative matching of commit messages.
-merge_request: 5453
-author: Hannes Rosenögger
-type: added

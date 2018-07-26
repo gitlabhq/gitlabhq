@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectNoteEntity < NoteEntity
   expose :human_access do |note|
     note.project.team.human_max_access(note.author_id)

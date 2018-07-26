@@ -62,7 +62,7 @@
 
     .col-sm-12
       .form-group.row
-        = form.label :approvals_before_merge, class: 'label-light' do
+        = form.label :approvals_before_merge, class: 'label-bold' do
           Approvals required
         = form.number_field :approvals_before_merge, class: 'form-control', value: issuable.approvals_required, readonly: !can_update_approvers
 

@@ -72,7 +72,22 @@ module LfsRequest
   def lfs_download_access?
     return false unless project.lfs_enabled?
 
-    ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code?
+    ci? || lfs_deploy_token? || user_can_download_code? || build_can_download_code? || deploy_token_can_download_code?
+  end
+
+  def deploy_token_can_download_code?
+    deploy_token_present? &&
+      deploy_token.project == project &&
+      deploy_token.active? &&
+      deploy_token.read_repository?
+  end
+
+  def deploy_token_present?
+    user && user.is_a?(DeployToken)
+  end
+
+  def deploy_token
+    user
   end
 
   def lfs_upload_access?
@@ -88,7 +103,7 @@ module LfsRequest
   end
 
   def user_can_download_code?
-    has_authentication_ability?(:download_code) && can?(user, :download_code, project)
+    has_authentication_ability?(:download_code) && can?(user, :download_code, project) && !deploy_token_present?
   end
 
   def build_can_download_code?

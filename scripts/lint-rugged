@@ -17,7 +17,10 @@ ALLOWED = [
   'lib/tasks/gitlab/cleanup.rake',
 
   # The only place where Rugged code is still allowed in production
-  'lib/gitlab/git/'
+  'lib/gitlab/git/',
+
+  # Needed to avoid using the git binary to validate a branch name
+  'lib/gitlab/git_ref_validator.rb'
 ].freeze
 
 rugged_lines = IO.popen(%w[git grep -i -n rugged -- app config lib], &:read).lines

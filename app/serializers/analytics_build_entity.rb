@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class AnalyticsBuildEntity < Grape::Entity
   include RequestAwareEntity
   include EntityDateHelper

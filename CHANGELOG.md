@@ -2,6 +2,257 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.1 (2018-07-23)
+
+### Fixed (2 changes)
+
+- Add missing Gitaly branch_update nil checks. !20711
+- Fix filename for accelerated uploads.
+
+### Added (1 change)
+
+- Add uploader support to Import/Export uploads. !20484
+
+
+## 11.1.0 (2018-07-22)
+
+### Security (6 changes)
+
+- Fix XSS vulnerability for table of content generation.
+- Update sanitize gem to 4.6.5 to fix HTML injection vulnerability.
+- HTML escape branch name in project graphs page.
+- HTML escape the name of the user in ProjectsHelper#link_to_member.
+- Don't show events from internal projects for anonymous users in public feed.
+- Fix symlink vulnerability in project import.
+
+### Removed (1 change)
+
+- Remove deprecated object_storage_upload queue.
+
+### Fixed (98 changes, 52 of them are from the community)
+
+- Keep lists ordered when copying only list items. !18522 (Jan Beckmann)
+- Fix bug where maintainer would not be allowed to push to forks with merge requests that have `Allow maintainer edits` enabled. !18968
+- mergeError message has been binded using v-html directive. !19058 (Murat Dogan)
+- Set MR target branch to default branch if target branch is not valid. !19067
+- Fix CSS for buttons not to be hidden on issues/MR title. !19176 (Takuya Noguchi)
+- Use same gem versions for rails5 as for rails4 where possible. !19498 (Jasper Maes)
+- Fix extra blank line at start of rendered reStructuredText code block. !19596
+- Fix username validation order on signup, resolves #45575. !19610 (Jan Beckmann)
+- Make quick commands case insensitive. !19614 (Jan Beckmann)
+- Remove incorrect CI doc re: PowerShell. !19622 (gfyoung)
+- Fixes Microsoft Teams notifications for pipeline events. !19632 (Jeff Brown)
+- Fix branch name encoding for dropdown on issue page. !19634
+- Rails5 fix expected `issuable.reload.updated_at` to have changed. !19733 (Jasper Maes)
+- Rails5 fix stack level too deep. !19762 (Jasper Maes)
+- Rails5 ActionController::ParameterMissing: param is missing or the value is empty: application_setting. !19763 (Jasper Maes)
+- Invalidate cache with project details when repository is updated. !19774
+- Rails5 fix no implicit conversion of Hash into String. ActionController::Parameters no longer returns an hash in Rails 5. !19792 (Jasper Maes)
+- [Rails5] Fix snippets_finder arel queries. !19796 (@blackst0ne)
+- Fix fields for author & assignee in MR API docs. !19798 (gfyoung)
+- Remove scrollbar in Safari in repo settings page. !19809 (gfyoung)
+- Omits operartions and kubernetes item from project sidebar when repository or builds are disabled. !19835
+- Rails5 fix passing Group objects array into for_projects_and_groups milestone scope. !19863 (Jasper Maes)
+- Fix chat service tag notifications not sending when only default branch enabled. !19864
+- Only show new issue / new merge request on group page when issues / merge requests are enabled. !19869 (Jan Beckmann)
+- [Rails5] Explicitly set request.format for blob_controller. !19876 (@blackst0ne)
+- [Rails5] Fix optimistic lock value. !19878 (@blackst0ne)
+- Rails5 fix update_attribute usage not causing a save. !19881 (Jasper Maes)
+- Rails5 fix connection execute return integer instead of string. !19901 (Jasper Maes)
+- Rails5 fix format in uploads actions. !19907 (Jasper Maes)
+- [Rails5] Fix "-1 is not a valid data_store". !19917 (@blackst0ne)
+- [Rails5] Invalid single-table inheritance type: Group is not a subclass of Namespace. !19918 (@blackst0ne)
+- [Rails5] Fix pipeline_schedules_controller_spec. !19919 (@blackst0ne)
+- Rails5 fix passing Group objects array into for_projects_and_groups milestone scope. !19920 (Jasper Maes)
+- Rails5 update Gemfile.rails5.lock. !19921 (Jasper Maes)
+- [Rails5] Fix sessions_controller_spec. !19936 (@blackst0ne)
+- [Rails5] Set request.format for artifacts_controller. !19937 (@blackst0ne)
+- Fix webhook error when password is not present. !19945 (Jan Beckmann)
+- Fix label and milestone duplicated records and IID errors. !19961
+- Rails5 fix expected: 1 time with arguments: (97, anything, {"squash"=>false}) received: 0 times. !20004 (Jasper Maes)
+- Rails5 fix Projects::PagesController spec. !20007 (Jasper Maes)
+- [Rails5] Fix ActionCable '/cable' mountpoint conflict. !20015 (@blackst0ne)
+- Fix branches are not shown in Merge Request dropdown when preferred language is not English. !20016 (Hiroyuki Sato)
+- Rails5 fix Admin::HooksController. !20017 (Jasper Maes)
+- Rails5 fix  expected: 0 times with any arguments received: 1 time with arguments: DashboardController. !20018 (Jasper Maes)
+- [Rails5] Set request.format in commits_controller. !20023 (@blackst0ne)
+- Keeps the label on an issue when the issue is moved. !20036
+- Cleanup Prometheus ruby metrics. !20039 (Ben Kochie)
+- Rails 5 fix Capybara::ElementNotFound: Unable to find visible css #modal-revert-commit and expected: "/bar" got: "/foo". !20044 (Jasper Maes)
+- [Rails5] Force the callback run first. !20055 (@blackst0ne)
+- Add readme button to non-empty project page. !20104
+- Fixed bug when editing a comment in an issue,the preview mode is toggled in the main textarea. !20112 (Constance Okoghenun)
+- Ignore unknown OAuth sources in ApplicationSetting. !20129
+- Fix paragraph line height for emoji. !20137 (George Tsiolis)
+- Fixes issue with uploading same image to Profile Avatar twice. !20161 (Chirag Bhatia)
+- Rails5 fix arel from in mysql_median_datetime_sql. !20167 (Jasper Maes)
+- Adds the `locked` state to the merge request API so that it can be used as a search filter. !20186
+- Enable Doorkeeper option to avoid generating new tokens when users login via oauth. !20200
+- Fix OAuth Application Authorization screen to appear with each access. !20216
+- Rails5 fix MySQL milliseconds problem in specs. !20221 (Jasper Maes)
+- Rails5 fix Mysql comparison failure caused by milliseconds problem. !20222 (Jasper Maes)
+- Updated last commit link color. !20234 (Constance Okoghenun)
+- Fixed Merge request changes dropdown displays incorrectly. !20237 (Constance Okoghenun)
+- Show jobs from same pipeline in sidebar in job details view. !20243
+- [Rails5] Fix milestone GROUP BY query. !20256 (@blackst0ne)
+- Line separator to the left of the 'Admin area' wrench icon had vanished. !20282 (bitsapien)
+- Check if archived trace exist before archive it. !20297
+- Load Devise with Omniauth when auto_sign_in_with_provider is configured. !20302
+- Fix link to job when creating a new issue from a failed job. !20328
+- Fix double "in" in time to artifact deletion message. !20357 (@bbodenmiller)
+- Fix wrong role badge displayed in projects dashboard. !20374
+- Stop relying on migrations in the CacheableAttributes cache key and cache attributes for 1 minute instead. !20389
+- Fixes toggle discussion button not expanding collapsed discussions. !20452
+- Resolve compatibility issues with node 6. !20461
+- Fixes base command used in Helm installations. !20471
+- Fix RSS button interaction on Dashboard, Project and Group activities. !20549
+- Use appropriate timeout on Gitaly server info checks, avoid error on timeout. !20552
+- Remove healthchecks from prometheus endpoint. !20565
+- Render MR page when diffs cannot be fetched from the database or the git repository. !20680
+- Expire correct method caches after HEAD changed.
+- Ensure MR diffs always exist in the PR importer.
+- Fix overlapping file title and file actions in MR changes tag.
+- Mark MR as merged regardless of errors when closing issues.
+- Fix performance bar modal visibility in Safari.
+- Prevent browser autocomplete for milestone date fields.
+- Limit the action suffixes in transaction metrics.
+- Add /uploads subdirectory to allowed upload paths.
+- Fix cross-project label references.
+- Invalidate merge request diffs cache if diff data change.
+- Don't show context button for diffs of deleted files.
+- Structure getters for diff Store properly and adds specs.
+- Bump rugged to 0.27.2.
+- Fix Bamboo CI status not showing for branch plans.
+- Fixed bug that allowed to remove other wiki pages if the title had wildcard characters.
+- Disabled Web IDE autocomplete suggestions for Markdown files. (Isaac Smith)
+- Fix merge request diffs when created with gitaly_diff_between enabled.
+- Properly detect label reference if followed by period or question mark.
+- Deactivate new KubernetesService created from active template to prevent project creation from failing.
+- Allow trailing whitespace on blockquote fence lines.
+
+### Deprecated (1 change)
+
+- Removes unused bootstrap 4 scss files. !19423
+
+### Changed (33 changes, 16 of them are from the community)
+
+- Change label link vertical alignment property. !18777 (George Tsiolis)
+- Updated the icon for expand buttons to ellipsis. !18793 (Constance Okoghenun)
+- Create new or add existing Kubernetes cluster from a single page. !18963
+- Use object storage as the first class persistable store for new live trace architecture. !19515
+- Hide project name if searching against a project. !19595
+- Allows you to create another deploy token dimmediately after creating one. !19639
+- Removes the environment scope field for users that cannot edit it. !19643
+- Don't hash user ID in OIDC subject claim. !19784 (Markus Koller)
+- Milestone page list redesign. !19832 (Constance Okoghenun)
+- Add environment dropdown for the metrics page. !19833
+- Allow querying a single merge request within a project. !19853
+- Update WebIDE to show file in tree on load. !19887
+- Remove small container width. !19893 (George Tsiolis)
+- Improve U2F workflow when using unsupported browsers. !19938 (Jan Beckmann)
+- Update Web IDE file tree styles. !19969
+- Highlight cluster settings message. !19996 (George Tsiolis)
+- Fade uneditable area in Web IDE. !20008
+- Update pipeline icon in web ide sidebar. !20058 (George Tsiolis)
+- Revert merge request discussion buttons padding. !20060 (George Tsiolis)
+- Fix boards issue highlight. !20063 (George Tsiolis)
+- Update external link icon in header user dropdown. !20150 (George Tsiolis)
+- Update external link icon in merge request widget. !20154 (George Tsiolis)
+- Update environments nav controls icons. !20199 (George Tsiolis)
+- Update integrations external link icons. !20205 (George Tsiolis)
+- Fixes an issue where migrations instead of schema loading were run. !20227
+- Add title placeholder for new issues. !20271 (George Tsiolis)
+- Close revoke deploy token modal on escape keypress. !20347 (George Tsiolis)
+- Change environment scope text depending on number of project clusters. Update form to only include form-groups.
+- Improve Web IDE commit flow.
+- Add machine type and pricing documentation links, add class to labels to make bold.
+- Remove remaining traces of the Allocations Gem.
+- Use one column form layout on Admin Area Settings page.
+- Add back copy for existing gcp accounts within offer banner.
+
+### Performance (16 changes, 4 of them are from the community)
+
+- Fully migrate pipeline stages position. !19369
+- Use Tooltip component in MrWidgetAuthorTime vue comonent. !19635 (George Tsiolis)
+- Move boards modal EmptyState vue component. !20068 (George Tsiolis)
+- Bump carrierwave gem verion to 1.2.3. !20287
+- Remove redundant query when removing trace. !20324
+- Improves performance of mr code, by fixing the state being mutated outside of the store in the util function trimFirstCharOfLineContent and in map operations. Avoids map operation in an empty array. Adds specs to the trimFirstCharOfLineContent function. !20380 (filipa)
+- Reduce the number of queries when searching for groups. !20398
+- Improve render performance of large wiki pages. !20465 (Peter Leitzen)
+- Improves performance on Merge Request diff tab by removing the scroll event listeners being added to every file.
+- Remove the ci_job_request_with_tags_matcher.
+- Updated Gitaly fail-fast timeout values.
+- Add index on deployable_type/id for deployments.
+- Eliminate N+1 queries in LFS file locks checks during a push.
+- Fix performance problem of accessing tag list for projects api endpoints.
+- Improve performance of listing users without projects.
+- Fixed pagination of web hook logs.
+
+### Added (29 changes, 9 of them are from the community)
+
+- Add dropdown to Groups link in top bar. !18280
+- Web IDE supports now Image + Download Diff Viewing. !18768
+- Use CommonMark syntax and rendering for new Markdown content. !19331
+- Add SHA256 and HEAD on File API. !19439 (ahmet2mir)
+- Add filename filtering to code search. !19509
+- Add CI_PIPELINE_URL and CI_JOB_URL. !19618
+- Expose visibility via Snippets API. !19620 (Jan Beckmann)
+- Fixed pagination of groups API. !19665 (Marko, Peter)
+- Added id sorting option to GET groups and subgroups API. !19665 (Marko, Peter)
+- Add a link to the contributing page in the user dropdown. !19708
+- Add Object Storage to project export. !20105
+- Change avatar image in the header when user updates their avatar. !20119 (Jamie Schembri)
+- Allow straight diff in Compare API. !20120 (Maciej Nowak)
+- Add transfer project API endpoint. !20122 (Aram Visser)
+- Expose permissions of the current user on resources in GraphQL. !20152
+- Run repository checks in parallel for each shard. !20179
+- Add pipeline lists to GraphQL. !20249
+- Add option to add README when creating a project. !20335
+- Add option to hide third party offers in admin application settings. !20379
+- Add /confidential quick action. (Jan Beckmann)
+- Support direct_upload for generic uploads.
+- Display merge request title & description in Web IDE.
+- Prune web hook logs older than 90 days.
+- Add Web Terminal for Ci Builds. (Vicky Chijwani)
+- Expose whether current user can push into a branch on branches API.
+- Present state indication on GFM preview.
+- migrate backup rake task to gitaly.
+- Add Gitlab::SQL:CTE for easily building CTE statements.
+- Added with_statsoption for GET /projects/:id/repository/commits.
+
+### Other (28 changes, 11 of them are from the community)
+
+- Move some Gitaly RPC's to opt-out. !19591
+- Bump grape-path-helpers to 1.0.5. !19604 (@blackst0ne)
+- Add CI job to check Gemfile.rails5.lock. !19605 (@blackst0ne)
+- Move Gitaly branch/tag/ref RPC's to opt-out. !19644
+- CE port gitlab-ee!6112. !19714
+- Enable no-multi-assignment in JS files. !19808 (gfyoung)
+- Enable no-restricted globals in JS files. !19877 (gfyoung)
+- Improve no-multi-assignment fixes after enabling rule. !19915 (gfyoung)
+- Enable prefer-structuring in JS files. !19943 (gfyoung)
+- Enable frozen string in app/workers/*.rb. !19944 (gfyoung)
+- Uses long sha version of the merged commit in MR widget copy to clipboard button. !19955
+- Update new group page to better explain what groups are. !19991
+- Update new SSH key page to improve copy. !19994
+- Update new SSH key page to improve key input validation. !19997
+- Gitaly metrics check for read/writeability. !20022
+- Add ellispsis to web ide commit button. !20030
+- Minor style changes to personal access token form and scope checkboxes. !20052
+- Finish enabling frozen string for app/workers/*.rb. !20197 (gfyoung)
+- Allows settings sections to expand by default when linking to them. !20211
+- Enable frozen string in apps/validators/*.rb. !20220 (gfyoung)
+- update bcrypt to also support libxcrypt. !20260 (muhammadn)
+- Enable frozen string in apps/validators/*.rb. !20382 (gfyoung)
+- Removes unused vuex code in mr refactor and removes unneeded dependencies. !20499
+- Delete non-latest merge request diff files upon merge.
+- Schedule workers to delete non-latest diffs in post-migration.
+- Remove the use of `is_shared` of `Ci::Runner`.
+- Add more detailed logging to githost.log when rebasing.
+- Use monospaced font for MR diff commit link ref on GFM.
+
+
 ## 11.0.4 (2018-07-17)
 
 ### Security (1 change)

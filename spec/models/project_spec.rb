@@ -26,6 +26,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:hangouts_chat_service) }
     it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
@@ -100,6 +101,22 @@ describe Project do
 
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
       end
     end
 

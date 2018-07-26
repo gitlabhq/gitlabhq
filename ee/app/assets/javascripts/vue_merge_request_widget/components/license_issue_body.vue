@@ -2,6 +2,7 @@
 import { s__, sprintf } from '~/locale';
 
 export default {
+  name: 'LicenseIssueBody',
   props: {
     issue: {
       type: Object,

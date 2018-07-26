@@ -1,5 +1,0 @@
----
-title: Eliminate N+1 queries in path lock checks during a push
-merge_request:
-author:
-type: performance

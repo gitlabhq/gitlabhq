@@ -228,7 +228,7 @@ export default {
           class="append-bottom-20"
         >
           <label
-            class="form-section-title label-light"
+            class="form-section-title label-bold"
             for="board-new-name"
           >
             Board name
@@ -248,7 +248,7 @@ export default {
             v-if="canAdminBoard"
             class="media append-bottom-10"
           >
-            <label class="form-section-title label-light media-body">
+            <label class="form-section-title label-bold media-body">
               Board scope
             </label>
             <button

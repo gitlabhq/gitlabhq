@@ -91,6 +91,19 @@ beforeEach(() => {
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
 
+let longRunningTestTimeoutHandle;
+
+beforeEach((done) => {
+  longRunningTestTimeoutHandle = setTimeout(() => {
+    done.fail('Test is running too long!');
+  }, 1000);
+  done();
+});
+
+afterEach(() => {
+  clearTimeout(longRunningTestTimeoutHandle);
+});
+
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests

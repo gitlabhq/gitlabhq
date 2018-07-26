@@ -19,6 +19,7 @@ class CanonicalizeKerberosIdentities < ActiveRecord::Migration
 
   def change
     reversible do |dir|
+      # rubocop:disable Cop/AvoidReturnFromBlocks
       return unless kerberos_default_realm.present?
 
       dir.up do

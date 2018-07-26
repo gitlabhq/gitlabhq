@@ -78,15 +78,15 @@ production: &base
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme ID
     ##   1 - Indigo
-    ##   2 - Light Indigo
-    ##   3 - Blue
-    ##   4 - Light Blue
+    ##   2 - Dark
+    ##   3 - Light
+    ##   4 - Blue
     ##   5 - Green
-    ##   6 - Light Green
-    ##   7 - Red
-    ##   8 - Light Red
-    ##   9 - Dark
-    ##   10 - Light
+    ##   6 - Light Indigo
+    ##   7 - Light Blue
+    ##   8 - Light Green
+    ##   9 - Red
+    ##   10 - Light Red
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing

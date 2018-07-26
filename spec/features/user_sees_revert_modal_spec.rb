@@ -9,6 +9,9 @@ describe 'Merge request > User sees revert modal', :js do
     sign_in(user)
     visit(project_merge_request_path(project, merge_request))
     click_button('Merge')
+
+    wait_for_requests
+
     visit(merge_request_path(merge_request))
     click_link('Revert')
   end

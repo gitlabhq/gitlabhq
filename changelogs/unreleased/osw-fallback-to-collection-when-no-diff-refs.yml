@@ -1,5 +1,0 @@
----
-title: Render MR page when diffs cannot be fetched from the database or the git repository
-merge_request: 20680
-author:
-type: fixed
