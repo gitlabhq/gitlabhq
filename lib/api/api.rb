@@ -172,7 +172,7 @@ module API
     mount ::API::License
     mount ::API::ProjectMirror
     mount ::API::ProjectPushRule
-    mount ::API::Packages
+    mount ::API::MavenPackages
     ## EE-specific API V4 endpoints END
 
     route :any, '*path' do
