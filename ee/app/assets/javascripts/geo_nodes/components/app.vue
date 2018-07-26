@@ -83,7 +83,7 @@ export default {
       });
     },
     fetchGeoNodes() {
-      this.service
+      return this.service
         .getGeoNodes()
         .then(res => res.data)
         .then(nodes => {
@@ -92,9 +92,7 @@ export default {
         })
         .catch(() => {
           this.isLoading = false;
-          Flash(
-            s__('GeoNodes|Something went wrong while fetching nodes'),
-          );
+          Flash(s__('GeoNodes|Something went wrong while fetching nodes'));
         });
     },
     fetchNodeDetails(node) {
@@ -109,10 +107,7 @@ export default {
             primaryRevision: primaryNodeVersion.revision,
           });
           this.store.setNodeDetails(nodeId, updatedNodeDetails);
-          eventHub.$emit(
-            'nodeDetailsLoaded',
-            this.store.getNodeDetails(nodeId),
-          );
+          eventHub.$emit('nodeDetailsLoaded', this.store.getNodeDetails(nodeId));
         })
         .catch(err => {
           if (err.response && err.response.data) {
@@ -124,10 +119,7 @@ export default {
               sync_status_unavailable: true,
               storage_shards_match: null,
             });
-            eventHub.$emit(
-              'nodeDetailsLoaded',
-              this.store.getNodeDetails(nodeId),
-            );
+            eventHub.$emit('nodeDetailsLoaded', this.store.getNodeDetails(nodeId));
           } else {
             eventHub.$emit('nodeDetailsLoadFailed', nodeId, err);
           }
@@ -135,14 +127,11 @@ export default {
     },
     repairNode(targetNode) {
       this.setNodeActionStatus(targetNode, true);
-      this.service
+      return this.service
         .repairNode(targetNode)
         .then(() => {
           this.setNodeActionStatus(targetNode, false);
-          Flash(
-            s__('GeoNodes|Node Authentication was successfully repaired.'),
-            'notice',
-          );
+          Flash(s__('GeoNodes|Node Authentication was successfully repaired.'), 'notice');
         })
         .catch(() => {
           this.setNodeActionStatus(targetNode, false);
@@ -151,7 +140,7 @@ export default {
     },
     toggleNode(targetNode) {
       this.setNodeActionStatus(targetNode, true);
-      this.service
+      return this.service
         .toggleNode(targetNode)
         .then(res => res.data)
         .then(node => {
@@ -162,14 +151,12 @@ export default {
         })
         .catch(() => {
           this.setNodeActionStatus(targetNode, false);
-          Flash(
-            s__('GeoNodes|Something went wrong while changing node status'),
-          );
+          Flash(s__('GeoNodes|Something went wrong while changing node status'));
         });
     },
     removeNode(targetNode) {
       this.setNodeActionStatus(targetNode, true);
-      this.service
+      return this.service
         .removeNode(targetNode)
         .then(() => {
           this.store.removeNode(targetNode);
