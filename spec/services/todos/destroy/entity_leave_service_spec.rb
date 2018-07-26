@@ -29,13 +29,41 @@ describe Todos::Destroy::EntityLeaveService do
       end
 
       context 'when project is not private' do
-        before do
-          group.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        context 'when a user is not an author of confidential issue' do
+          before do
+            group.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'removes only confidential issues todos' do
+            expect { subject }.to change { Todo.count }.from(3).to(2)
+          end
         end
 
-        it 'removes only confidential issues todos' do
-          expect { subject }.to change { Todo.count }.from(3).to(2)
+        context 'when a user is an author of confidential issue' do
+          before do
+            issue.update!(author: user)
+
+            group.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'removes only confidential issues todos' do
+            expect { subject }.not_to change { Todo.count }
+          end
+        end
+
+        context 'when a user is an assignee of confidential issue' do
+          before do
+            issue.assignees << user
+
+            group.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+            project.update!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          end
+
+          it 'removes only confidential issues todos' do
+            expect { subject }.not_to change { Todo.count }
+          end
         end
       end
     end

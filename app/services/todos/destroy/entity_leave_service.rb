@@ -42,7 +42,11 @@ module Todos
       end
 
       def confidential_issues
+        assigned_ids = IssueAssignee.select(:issue_id).where(user_id: user_id)
+
         Issue.where(project_id: project_ids, confidential: true)
+          .where('author_id != ?', user_id)
+          .where('id NOT IN (?)', assigned_ids)
       end
     end
   end
