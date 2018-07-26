@@ -179,6 +179,10 @@
     font-weight: inherit;
   }
 
+  a > code {
+    color: $gl-link-color;
+  }
+
   dd {
     margin-left: $gl-padding;
   }
