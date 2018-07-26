@@ -139,7 +139,7 @@ describe('Dashboard', () => {
         },
       });
 
-      setTimeout(() => {
+      Vue.nextTick(() => {
         const dropdownIsActiveElement = component.$el.querySelectorAll('.environments');
         expect(dropdownIsActiveElement.length).toEqual(0);
         done();
