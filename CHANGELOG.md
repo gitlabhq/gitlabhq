@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.2 (2018-07-26)
+
+### Security (4 changes)
+
+- Adding CSRF protection to Hooks test action.
+- Don't expose project names in GitHub counters.
+- Don't expose project names in various counters.
+- Fixed XSS in branch name in Web IDE.
+
+### Fixed (1 change)
+
+- Escapes milestone and label's names on flash notice when promoting them.
+
+### Performance (1 change)
+
+- Fix slow Markdown rendering. !20820
+
+
 ## 11.1.1 (2018-07-23)
 
 ### Fixed (2 changes)
