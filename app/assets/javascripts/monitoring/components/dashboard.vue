@@ -124,7 +124,10 @@ export default {
   mounted() {
     this.resizeThrottled = _.throttle(this.resize, 600);
     this.servicePromises = [
-      this.service.getGraphsData().then(data => this.store.storeMetrics(data)),
+      this.service
+        .getGraphsData()
+        .then(data => this.store.storeMetrics(data))
+        .catch(() => Flash(s__('Metrics|There was an error while retrieving metrics'))),
       this.service
         .getDeploymentData()
         .then(data => this.store.storeDeploymentData(data))
