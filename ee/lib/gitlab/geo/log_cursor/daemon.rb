@@ -129,7 +129,7 @@ module Gitlab
         end
 
         def gap_tracking
-          @gap_tracking ||= EventGapTracking.new(log_level)
+          @gap_tracking ||= ::Gitlab::Geo::EventGapTracking.new(logger)
         end
 
         def logger

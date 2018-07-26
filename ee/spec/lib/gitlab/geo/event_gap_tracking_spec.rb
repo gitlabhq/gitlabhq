@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
+describe Gitlab::Geo::EventGapTracking, :clean_gitlab_redis_cache do
   let(:previous_event_id) { 7 }
   let(:gap_id) { previous_event_id + 1 }
   let(:event_id_with_gap) { previous_event_id + 2 }
@@ -8,6 +8,42 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
 
   before do
     gap_tracking.previous_id = previous_event_id
+  end
+
+  describe '.min_gap_id' do
+    it 'returns nil when there are no gaps' do
+      expect(described_class.min_gap_id).to eq(nil)
+    end
+
+    it 'returns the lowest gap id' do
+      Timecop.travel(50.minutes.ago) do
+        gap_tracking.previous_id = 18
+        gap_tracking.track_gap(20)
+      end
+
+      Timecop.travel(40.minutes.ago) do
+        gap_tracking.previous_id = 12
+        gap_tracking.track_gap(14)
+      end
+
+      expect(described_class.min_gap_id).to eq(13)
+    end
+  end
+
+  describe '.gap_count' do
+    it 'returns 0 when there are no gaps' do
+      expect(described_class.gap_count).to be_zero
+    end
+
+    it 'returns the number of gaps' do
+      gap_tracking.previous_id = 18
+      gap_tracking.track_gap(20)
+
+      gap_tracking.previous_id = 12
+      gap_tracking.track_gap(14)
+
+      expect(described_class.gap_count).to eq(2)
+    end
   end
 
   describe '#check!' do
@@ -68,10 +104,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
 
   describe '#track_gap' do
     it 'logs a message' do
-      logger = spy(:logger)
-      allow(gap_tracking).to receive(:logger).and_return(logger)
-
-      expect(logger).to receive(:info).with(/gap detected/, hash_including(previous_event_id: previous_event_id, current_event_id: event_id_with_gap))
+      expect(gap_tracking).to receive(:log_info).with(/gap detected/, hash_including(previous_event_id: previous_event_id, current_event_id: event_id_with_gap))
 
       gap_tracking.track_gap(event_id_with_gap)
     end
@@ -138,7 +171,7 @@ describe Gitlab::Geo::LogCursor::EventGapTracking, :clean_gitlab_redis_cache do
 
   def read_gaps
     ::Gitlab::Redis::SharedState.with do |redis|
-      redis.zrangebyscore(described_class::GEO_LOG_CURSOR_GAPS, '-inf', '+inf', with_scores: true)
+      redis.zrangebyscore(described_class::GEO_EVENT_LOG_GAPS, '-inf', '+inf', with_scores: true)
     end
   end
 end
