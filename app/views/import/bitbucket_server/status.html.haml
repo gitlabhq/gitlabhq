@@ -50,7 +50,7 @@
               = project.human_import_status_name
 
       - @repos.each do |repo|
-        %tr{ id: "repo_#{repo.owner}___#{repo.slug}", data: { project: repo.project_name, repository: repo.slug } }
+        %tr{ id: "repo_#{repo.owner}___#{repo.slug}", data: { project: repo.project_key, repository: repo.slug } }
           %td
             = link_to repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
           %td.import-target

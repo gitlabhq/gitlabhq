@@ -7,6 +7,10 @@ module BitbucketServer
         super(raw)
       end
 
+      def project_key
+        raw.dig('project', 'key')
+      end
+
       def project_name
         raw.dig('project', 'name')
       end

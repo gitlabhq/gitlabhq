@@ -50,6 +50,10 @@ describe BitbucketServer::Representation::Repo do
 
   subject { described_class.new(JSON.parse(sample_data)) }
 
+  describe '#project_key' do
+    it { expect(subject.project_key).to eq('TEST') }
+  end
+
   describe '#project_name' do
     it { expect(subject.project_name).to eq('test') }
   end
