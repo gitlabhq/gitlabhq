@@ -50,7 +50,7 @@
               = project.human_import_status_name
 
       - @repos.each do |repo|
-        %tr{ id: "repo_#{repo.owner}___#{repo.slug}", data: { project: repo.project_key, repository: repo.slug } }
+        %tr{ id: "repo_#{repo.project_key}___#{repo.slug}", data: { project: repo.project_key, repository: repo.slug } }
           %td
             = link_to repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
@@ -59,7 +59,7 @@
               .project-path.input-group-prepend
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
-                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner, path: repo.owner) } : {}
+                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.project_key, path: repo.slug) } : {}
                   = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
@@ -71,7 +71,7 @@
               Import
               = icon('spinner spin', class: 'loading-icon')
       - @incompatible_repos.each do |repo|
-        %tr{ id: "repo_#{repo.owner}___#{repo.slug}" }
+        %tr{ id: "repo_#{repo.project_key}___#{repo.slug}" }
           %td
             = link_to repo.browse_url, repo.browse_url, target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
