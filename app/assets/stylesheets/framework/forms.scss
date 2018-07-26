@@ -201,7 +201,7 @@ label {
 }
 
 .gl-show-field-errors {
-  .form-control {
+  .form-control:not(textarea) {
     height: 34px;
   }
 
