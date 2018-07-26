@@ -11,7 +11,7 @@ module Gitlab
         @filename = upload.absolute_path
         @request_data = build_request_data(upload)
       rescue ObjectStorage::RemoteStoreError
-        Rails.logger.warn "Cannot transfer a remote object."
+        ::Gitlab::Geo::Logger.warn "Cannot transfer a remote object."
       end
 
       private
