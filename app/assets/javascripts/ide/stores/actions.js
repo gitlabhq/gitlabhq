@@ -185,6 +185,14 @@ export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
   $('#ide-new-entry').modal('show');
 };
 
+export const deleteEntry = ({ commit, dispatch, state }, path) => {
+  dispatch('burstUnusedSeal');
+  dispatch('closeFile', state.entries[path]);
+  commit(types.DELETE_ENTRY, path);
+};
+
+export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/project';
