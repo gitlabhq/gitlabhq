@@ -7,6 +7,8 @@ module EE
 
       prepended do
         helpers do
+          extend ::Gitlab::Utils::Override
+
           params :optional_filter_params_ee do
             optional :wiki_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where wiki checksum is failed'
             optional :repository_checksum_failed, type: Grape::API::Boolean, default: false, desc: 'Limit by projects where repository checksum is failed'
@@ -27,6 +29,7 @@ module EE
             projects
           end
 
+          override :verify_create_projects_attrs!
           def verify_create_projects_attrs!(attrs)
             super
 
@@ -37,6 +40,7 @@ module EE
             end
           end
 
+          override :verify_update_project_attrs!
           def verify_update_project_attrs!(attrs)
             super
 
@@ -56,6 +60,9 @@ module EE
       end
 
       class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :update_params_at_least_one_of
         def update_params_at_least_one_of
           super.concat [
             :approvals_before_merge,
