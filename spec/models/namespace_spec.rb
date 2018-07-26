@@ -205,6 +205,34 @@ describe Namespace do
         expect(gitlab_shell.exists?(project.repository_storage, "#{namespace.path}/#{project.path}.git")).to be_truthy
       end
 
+      context 'when #write_projects_repository_config raises an error' do
+        context 'in test environment' do
+          it 'raises an exception' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+
+            expect do
+              namespace.update(path: namespace.full_path + '_new')
+            end.to raise_error('foo')
+          end
+        end
+
+        context 'in production environment' do
+          it 'does not cancel later callbacks' do
+            expect(namespace).to receive(:write_projects_repository_config).and_raise('foo')
+            expect(namespace).to receive(:move_dir).and_wrap_original do |m, *args|
+              move_dir_result = m.call(*args)
+
+              expect(move_dir_result).to be_truthy # Must be truthy, or else later callbacks would be canceled
+
+              move_dir_result
+            end
+            expect(Gitlab::Sentry).to receive(:should_raise?).and_return(false) # like prod
+
+            namespace.update(path: namespace.full_path + '_new')
+          end
+        end
+      end
+
       context 'with subgroups', :nested_groups do
         let(:parent) { create(:group, name: 'parent', path: 'parent') }
         let(:new_parent) { create(:group, name: 'new_parent', path: 'new_parent') }
