@@ -7545,13 +7545,10 @@ msgstr ""
 msgid "mrWidget|An error occured while removing your approval."
 msgstr ""
 
-msgid "mrWidget|An error occured while submitting your approval."
+msgid "mrWidget|An error occurred while submitting your approval."
 msgstr ""
 
 msgid "mrWidget|Approve"
-msgstr ""
-
-msgid "mrWidget|Approved"
 msgstr ""
 
 msgid "mrWidget|Approved by"
@@ -7615,6 +7612,12 @@ msgid "mrWidget|Merge failed."
 msgstr ""
 
 msgid "mrWidget|Merge locally"
+msgstr ""
+
+msgid "mrWidget|Merge request approved"
+msgstr ""
+
+msgid "mrWidget|Merge request approved; you can approve additionally"
 msgstr ""
 
 msgid "mrWidget|Merged by"
