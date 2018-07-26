@@ -343,7 +343,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
-          get :test
+          post :test
         end
 
         resources :hook_logs, only: [:show] do
