@@ -83,6 +83,8 @@ function deploy() {
   gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ce"
   gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ce"
   gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
+  gitlab_gitaly_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly"
+  gitlab_shell_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell"
 
   if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
     gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
@@ -116,6 +118,40 @@ function deploy() {
   fi
   helm repo add gitlab https://charts.gitlab.io/
   helm dep update .
+
+  cat << EOF
+    Deploying:
+
+    helm upgrade --install \
+      --wait \
+      --timeout 600 \
+      --set releaseOverride="$CI_ENVIRONMENT_SLUG" \
+      --set global.hosts.hostSuffix="$HOST_SUFFIX" \
+      --set global.hosts.domain="$REVIEW_APPS_DOMAIN" \
+      --set global.hosts.externalIP="$REVIEW_APPS_DOMAIN_IP" \
+      --set certmanager.install=false \
+      --set global.ingress.configureCertmanager=false \
+      --set global.ingress.tls.secretName=tls-cert \
+      --set gitlab.unicorn.resources.requests.cpu=200m \
+      --set gitlab.sidekiq.resources.requests.cpu=100m \
+      --set gitlab.gitlab-shell.resources.requests.cpu=100m \
+      --set redis.resources.requests.cpu=100m \
+      --set minio.resources.requests.cpu=100m \
+      --set gitlab.migrations.image.repository="$gitlab_migrations_image_repository" \
+      --set gitlab.migrations.image.tag="$CI_COMMIT_REF_NAME" \
+      --set gitlab.sidekiq.image.repository="$gitlab_sidekiq_image_repository" \
+      --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_NAME" \
+      --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
+      --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_NAME" \
+      --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
+      --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
+      --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
+      --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
+      --namespace="$KUBE_NAMESPACE" \
+      --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
+      "$name" \
+      .
+EOF
 
   helm upgrade --install \
     --wait \
@@ -155,10 +191,13 @@ function delete() {
   if [[ "$track" != "stable" ]]; then
     name="$name-$track"
   fi
+
+  echo "Deleting release '$name'..."
   helm delete --purge "$name" || true
 }
 
 function cleanup() {
+  echo "Cleaning up $CI_ENVIRONMENT_SLUG..."
   kubectl -n "$KUBE_NAMESPACE" get ingress,svc,pdb,hpa,deploy,statefulset,job,pod,secret,configmap,pvc,secret,clusterrole,clusterrolebinding,role,rolebinding,sa 2>&1 \
     | grep "$CI_ENVIRONMENT_SLUG" \
     | awk '{print $1}' \
