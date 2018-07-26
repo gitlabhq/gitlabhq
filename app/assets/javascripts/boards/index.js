@@ -178,6 +178,7 @@ export default () => {
             });
         }
       },
+<<<<<<< HEAD
       updateWeight(newWeight, id) {
         const { issue } = Store.detail;
         if (issue.id === id && issue.sidebarInfoEndpoint) {
@@ -196,6 +197,8 @@ export default () => {
             });
         }
       },
+=======
+>>>>>>> upstream/master
     },
   });
 
@@ -210,6 +213,7 @@ export default () => {
     },
   });
 
+<<<<<<< HEAD
   const configEl = document.querySelector('.js-board-config');
 
   if (configEl) {
@@ -283,6 +287,36 @@ export default () => {
           return '';
         },
       },
+=======
+  const issueBoardsModal = document.getElementById('js-add-issues-btn');
+
+  if (issueBoardsModal) {
+    gl.IssueBoardsModalAddBtn = new Vue({
+      el: issueBoardsModal,
+      mixins: [modalMixin],
+      data() {
+        return {
+          modal: ModalStore.store,
+          store: Store.state,
+          canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
+        };
+      },
+      computed: {
+        disabled() {
+          if (!this.store) {
+            return true;
+          }
+          return !this.store.lists.filter(list => !list.preset).length;
+        },
+        tooltipTitle() {
+          if (this.disabled) {
+            return 'Please add a list to your board first';
+          }
+
+          return '';
+        },
+      },
+>>>>>>> upstream/master
       watch: {
         disabled() {
           this.updateTooltip();
@@ -308,6 +342,7 @@ export default () => {
             this.toggleModal(true);
           }
         },
+<<<<<<< HEAD
       },
       template: `
         <div class="board-extra-actions">
@@ -376,4 +411,25 @@ export default () => {
       'boards-selector': gl.issueBoards.BoardsSelector,
     },
   });
+=======
+      },
+      template: `
+        <div class="board-extra-actions">
+          <button
+            class="btn btn-create prepend-left-10"
+            type="button"
+            data-placement="bottom"
+            ref="addIssuesButton"
+            :class="{ 'disabled': disabled }"
+            :title="tooltipTitle"
+            :aria-disabled="disabled"
+            v-if="canAdminList"
+            @click="openModal">
+            Add issues
+          </button>
+        </div>
+      `,
+    });
+  }
+>>>>>>> upstream/master
 };

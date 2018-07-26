@@ -7,6 +7,7 @@ import actions, {
   updateActivityBarView,
   updateTempFlagForEntry,
   setErrorMessage,
+  deleteEntry,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import * as types from '~/ide/stores/mutation_types';
@@ -453,6 +454,21 @@ describe('Multi-file store actions', () => {
         null,
         [{ type: types.SET_ERROR_MESSAGE, payload: 'error' }],
         [],
+        done,
+      );
+    });
+  });
+
+  describe('deleteEntry', () => {
+    it('commits entry deletion', done => {
+      store.state.entries.path = 'testing';
+
+      testAction(
+        deleteEntry,
+        'path',
+        store.state,
+        [{ type: types.DELETE_ENTRY, payload: 'path' }],
+        [{ type: 'burstUnusedSeal' }, { type: 'closeFile', payload: store.state.entries.path }],
         done,
       );
     });
