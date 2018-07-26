@@ -49,6 +49,9 @@ module EE
         @subject.feature_available?(:pod_logs, @user)
       end
 
+      with_scope :subject
+      condition(:security_reports_feature_available) { @subject.security_reports_feature_available? }
+
       condition(:prometheus_alerts_enabled) do
         @subject.feature_available?(:prometheus_alerts, @user)
       end
@@ -85,8 +88,9 @@ module EE
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
-        enable :read_project_security_dashboard
       end
+
+      rule { can?(:developer_access) & security_reports_feature_available }.enable :read_project_security_dashboard
 
       rule { can?(:read_project) }.enable :read_vulnerability_feedback
 
