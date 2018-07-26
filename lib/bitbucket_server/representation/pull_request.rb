@@ -46,19 +46,19 @@ module BitbucketServer
       end
 
       def source_branch_name
-        dig('fromRef', 'id')
+        raw.dig('fromRef', 'id')
       end
 
       def source_branch_sha
-        dig('fromRef', 'latestCommit')
+        raw.dig('fromRef', 'latestCommit')
       end
 
       def target_branch_name
-        dig('toRef', 'id')
+        raw.dig('toRef', 'id')
       end
 
       def target_branch_sha
-        dig('toRef', 'latestCommit')
+        raw.dig('toRef', 'latestCommit')
       end
 
       private
