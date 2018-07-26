@@ -76,17 +76,29 @@ describe('Multi-file editor commit sidebar list item', () => {
 
         expect(vm.iconName).toBe('file-addition');
       });
+
+      it('returns deletion', () => {
+        f.deleted = true;
+
+        expect(vm.iconName).toBe('file-deletion');
+      });
     });
 
     describe('iconClass', () => {
       it('returns modified when not a tempFile', () => {
-        expect(vm.iconClass).toContain('multi-file-modified');
+        expect(vm.iconClass).toContain('ide-file-modified');
       });
 
       it('returns addition when not a tempFile', () => {
         f.tempFile = true;
 
-        expect(vm.iconClass).toContain('multi-file-addition');
+        expect(vm.iconClass).toContain('ide-file-addition');
+      });
+
+      it('returns deletion', () => {
+        f.deleted = true;
+
+        expect(vm.iconClass).toContain('ide-file-deletion');
       });
     });
   });
