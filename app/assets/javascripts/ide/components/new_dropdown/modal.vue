@@ -44,12 +44,19 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['createTempEntry']),
-    createEntryInStore() {
-      this.createTempEntry({
-        name: this.name,
-        type: this.entryModal.type,
-      });
+    ...mapActions(['createTempEntry', 'renameEntry']),
+    submitForm() {
+      if (this.entryModal.type === 'rename') {
+        this.renameEntry({
+          path: this.entryModal.entry.path,
+          name: this.entryName,
+        });
+      } else {
+        this.createTempEntry({
+          name: this.name,
+          type: this.entryModal.type,
+        });
+      }
     },
     focusInput() {
       setTimeout(() => {
@@ -66,7 +73,7 @@ export default {
     :header-title-text="modalTitle"
     :footer-primary-button-text="buttonLabel"
     footer-primary-button-variant="success"
-    @submit="createEntryInStore"
+    @submit="submitForm"
     @open="focusInput"
   >
     <div

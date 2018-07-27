@@ -47,6 +47,8 @@ export const dataStructure = () => ({
   lastOpenedAt: 0,
   mrChange: null,
   deleted: false,
+  prevPath: '',
+  moved: false,
 });
 
 export const decorateData = entity => {
@@ -107,7 +109,9 @@ export const setPageTitle = title => {
 };
 
 export const commitActionForFile = file => {
-  if (file.deleted) {
+  if (file.prevPath !== '') {
+    return 'move';
+  } else if (file.deleted) {
     return 'delete';
   } else if (file.tempFile) {
     return 'create';
@@ -118,6 +122,8 @@ export const commitActionForFile = file => {
 
 export const getCommitFiles = (stagedFiles, deleteTree = false) =>
   stagedFiles.reduce((acc, file) => {
+    if (file.moved) return acc;
+
     if ((file.deleted || deleteTree) && file.type === 'tree') {
       return acc.concat(getCommitFiles(file.tree, true));
     }
@@ -134,9 +140,10 @@ export const createCommitPayload = ({ branch, getters, newBranch, state, rootSta
   actions: getCommitFiles(rootState.stagedFiles).map(f => ({
     action: commitActionForFile(f),
     file_path: f.path,
+    previous_path: f.prevPath === '' ? undefined : f.prevPath,
     content: f.content,
     encoding: f.base64 ? 'base64' : 'text',
-    last_commit_id: newBranch || f.deleted ? undefined : f.lastCommitSha,
+    last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
   })),
   start_branch: newBranch ? rootState.currentBranchId : undefined,
 });

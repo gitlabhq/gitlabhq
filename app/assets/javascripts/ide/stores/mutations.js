@@ -131,11 +131,14 @@ export default {
   },
   [types.UPDATE_FILE_AFTER_COMMIT](state, { file, lastCommit }) {
     const changedFile = state.changedFiles.find(f => f.path === file.path);
+    const { prevPath } = file;
 
     Object.assign(state.entries[file.path], {
       raw: file.content,
       changed: !!changedFile,
       staged: false,
+      prevPath: '',
+      moved: false,
       lastCommit: Object.assign(state.entries[file.path].lastCommit, {
         id: lastCommit.commit.id,
         url: lastCommit.commit_path,
@@ -144,6 +147,18 @@ export default {
         updatedAt: lastCommit.commit.authored_date,
       }),
     });
+
+    if (prevPath) {
+      // Update URLs after file has moved
+      const regex = new RegExp(`${prevPath}$`);
+
+      Object.assign(state.entries[file.path], {
+        rawPath: file.rawPath.replace(regex, file.name),
+        permalink: file.permalink.replace(regex, file.name),
+        commitsPath: file.commitsPath.replace(regex, file.name),
+        blamePath: file.blamePath.replace(regex, file.name),
+      });
+    }
   },
   [types.BURST_UNUSED_SEAL](state) {
     Object.assign(state, {
@@ -185,6 +200,28 @@ export default {
     entry.deleted = true;
     state.changedFiles = state.changedFiles.concat(entry);
     parent.tree = parent.tree.filter(f => f.path !== entry.path);
+  },
+  [types.RENAME_ENTRY](state, { path, name }) {
+    const oldEntry = state.entries[path];
+    const parent = oldEntry.parentPath
+      ? state.entries[oldEntry.parentPath]
+      : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+    const nameRegex = new RegExp(`${oldEntry.name}$`);
+    const newPath = path.replace(nameRegex, name);
+
+    state.entries[newPath] = {
+      ...oldEntry,
+      id: newPath,
+      key: `${name}-${oldEntry.type}-${oldEntry.id}`,
+      path: newPath,
+      name,
+      tempFile: true,
+      prevPath: path,
+      url: oldEntry.url.replace(nameRegex, name),
+    };
+    oldEntry.moved = true;
+    parent.tree = parent.tree.concat(state.entries[newPath]);
+    state.changedFiles = state.changedFiles.concat(state.entries[newPath]);
   },
   ...projectMutations,
   ...mergeRequestMutation,
