@@ -21,24 +21,30 @@ module Todos
         if entity.private?
           Todo.where(project_id: project_ids, user_id: user_id)
         else
-          Todo.where(target_id: confidential_issues.select(:id), target_type: Issue)
+          project_ids.each do |project_id|
+            TodosDestroyer::PrivateFeaturesWorker.perform_async(project_id, user_id)
+          end
+
+          Todo.where(
+            target_id: confidential_issues.select(:id), target_type: Issue, user_id: user_id
+          )
         end
       end
 
       override :project_ids
       def project_ids
-        if entity.is_a?(Project)
-          entity.id
-        else
+        case entity
+        when Project
+          [entity.id]
+        when Namespace
           Project.select(:id).where(namespace_id: entity.self_and_descendants.select(:id))
         end
       end
 
       override :todos_to_remove?
       def todos_to_remove?
-        return unless entity
-
-        entity.private? || confidential_issues.count > 0
+        # if an entity is provided we want to check always at least private features
+        !!entity
       end
 
       def confidential_issues

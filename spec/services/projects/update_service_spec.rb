@@ -188,6 +188,20 @@ describe Projects::UpdateService do
       end
     end
 
+    context 'when changing feature visibility to private' do
+      it 'updates the visibility correctly' do
+        expect(TodosDestroyer::PrivateFeaturesWorker)
+          .to receive(:perform_in).with(1.hour, project.id)
+
+        result = update_project(project, user, project_feature_attributes:
+                                 { issues_access_level: ProjectFeature::PRIVATE }
+                               )
+
+        expect(result).to eq({ status: :success })
+        expect(project.project_feature.issues_access_level).to be(ProjectFeature::PRIVATE)
+      end
+    end
+
     context 'when updating a project that contains container images' do
       before do
         stub_container_registry_config(enabled: true)

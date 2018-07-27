@@ -42,9 +42,18 @@ module Projects
     private
 
     def after_update
+      todos_features_changes = %w(
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+      )
+      project_changed_feature_keys = project.project_feature.previous_changes.keys
+
       if project.previous_changes.include?(:visibility_level) && project.private?
         # don't enqueue immediately to prevent todos removal in case of a mistake
         TodosDestroyer::ProjectPrivateWorker.perform_in(1.hour, project.id)
+      elsif (project_changed_feature_keys & todos_features_changes).present?
+        TodosDestroyer::PrivateFeaturesWorker.perform_in(1.hour, project.id)
       end
 
       if project.previous_changes.include?('path')

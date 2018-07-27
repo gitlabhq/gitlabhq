@@ -18,15 +18,15 @@ module Todos
       end
 
       def todos
-        # overridden in subclasses
+        raise NotImplementedError
       end
 
       def project_ids
-        # overridden in subclasses
+        raise NotImplementedError
       end
 
       def todos_to_remove?
-        # overridden in subclasses
+        raise NotImplementedError
       end
     end
   end
