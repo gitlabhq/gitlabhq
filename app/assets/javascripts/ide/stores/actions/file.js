@@ -61,7 +61,11 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 
 export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
   const file = state.entries[path];
+
+  if (file.raw || file.tempFile) return Promise.resolve();
+
   commit(types.TOGGLE_LOADING, { entry: file });
+
   return service
     .getFileData(
       `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
@@ -71,7 +75,7 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
 
       commit(types.SET_FILE_DATA, { data, file });
-      commit(types.TOGGLE_FILE_OPEN, path);
+      if (makeFileActive) commit(types.TOGGLE_FILE_OPEN, path);
       if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
@@ -97,7 +101,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
     service
       .getRawFileData(file)
       .then(raw => {
-        commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (!file.tempFile) commit(types.SET_FILE_RAW_DATA, { file, raw });
         if (file.mrChange && file.mrChange.new_file === false) {
           service
             .getBaseRawFileData(file, baseSha)

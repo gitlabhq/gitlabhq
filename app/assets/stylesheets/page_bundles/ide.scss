@@ -1,3 +1,6 @@
+@import 'framework/variables';
+@import 'framework/mixins';
+
 .project-refs-form,
 .project-refs-target-form {
   display: inline-block;
@@ -74,6 +77,7 @@
     .ide-file-icon-holder {
       display: flex;
       align-items: center;
+      color: $theme-gray-700;
     }
 
     .ide-file-changed-icon {
@@ -161,12 +165,23 @@
       background-color: $white-light;
       border-bottom-color: $white-light;
     }
+
+    &:not(.disabled) {
+      .multi-file-tab {
+        cursor: pointer;
+      }
+    }
+
+    &.disabled {
+      .multi-file-tab-close {
+        cursor: default;
+      }
+    }
   }
 }
 
 .multi-file-tab {
   @include str-truncated(141px);
-  cursor: pointer;
 
   svg {
     vertical-align: middle;
@@ -238,6 +253,38 @@
 
     .cursors-layer {
       display: none;
+    }
+  }
+
+  .is-deleted {
+    .editor.modified {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.modified {
+      // !important to override monaco inline styles
+      display: none !important;
+    }
+  }
+
+  .is-added {
+    .editor.original {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.original {
+      // !important to override monaco inline styles
+      display: none !important;
     }
   }
 
@@ -557,14 +604,19 @@
   }
 }
 
-.multi-file-addition,
-.multi-file-addition-solid {
+.ide-file-addition,
+.ide-file-addition-solid {
   color: $green-500;
 }
 
-.multi-file-modified,
-.multi-file-modified-solid {
+.ide-file-modified,
+.ide-file-modified-solid {
   color: $orange-500;
+}
+
+.ide-file-deletion,
+.ide-file-deletion-solid {
+  color: $red-500;
 }
 
 .multi-file-commit-list-collapsed {
@@ -781,18 +833,21 @@
   }
 }
 
-.dragHandle {
+.drag-handle {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 1px;
-  background-color: $white-dark;
+  width: 4px;
 
-  &.dragright {
+  &:hover {
+    background-color: $white-normal;
+  }
+
+  &.drag-right {
     right: 0;
   }
 
-  &.dragleft {
+  &.drag-left {
     left: 0;
   }
 }
@@ -1013,6 +1068,10 @@
 
   .ide-new-btn {
     margin-left: auto;
+  }
+
+  button {
+    color: $gl-text-color;
   }
 }
 

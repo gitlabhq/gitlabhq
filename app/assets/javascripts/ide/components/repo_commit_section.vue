@@ -44,7 +44,7 @@ export default {
     },
   },
   mounted() {
-    if (this.lastOpenedFile) {
+    if (this.lastOpenedFile && this.lastOpenedFile.type !== 'tree') {
       this.openPendingTab({
         file: this.lastOpenedFile,
         keyPrefix: this.lastOpenedFile.changed ? stageKeys.unstaged : stageKeys.staged,
