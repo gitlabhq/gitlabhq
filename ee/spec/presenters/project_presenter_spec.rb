@@ -20,23 +20,24 @@ describe ProjectPresenter do
 
     before do
       allow(Ability).to receive(:allowed?).with(user, :read_project_security_dashboard, project).and_return(true)
+      allow(Ability).to receive(:allowed?).with(nil, :read_project_security_dashboard, project).and_return(false)
       allow(project).to receive(:latest_pipeline_with_security_reports).and_return(pipeline)
     end
 
-    it 'contains security dasbhoard link' do
+    it 'has security dashboard link' do
       expect(presenter.extra_statistics_anchors).to include(security_dashboard_data)
+    end
+
+    shared_examples 'has no security dashboard link' do
+      it do
+        expect(presenter.extra_statistics_anchors).not_to include(security_dashboard_data)
+      end
     end
 
     context 'user not signed in' do
       let(:user) { nil }
 
-      before do
-        allow(Ability).to receive(:allowed?).with(nil, :read_project_security_dashboard, project).and_return(false)
-      end
-
-      it 'has no security dasbhoard link' do
-        expect(presenter.extra_statistics_anchors).not_to include(security_dashboard_data)
-      end
+      it_behaves_like 'has no security dashboard link'
     end
 
     context 'user is not allowed to read security dashboard' do
@@ -44,9 +45,7 @@ describe ProjectPresenter do
         allow(Ability).to receive(:allowed?).with(user, :read_project_security_dashboard, project).and_return(false)
       end
 
-      it 'has no security dasbhoard link' do
-        expect(presenter.extra_statistics_anchors).not_to include(security_dashboard_data)
-      end
+      it_behaves_like 'has no security dashboard link'
     end
 
     context 'no pipeline having security reports' do
@@ -54,9 +53,7 @@ describe ProjectPresenter do
         allow(project).to receive(:latest_pipeline_with_security_reports).and_return(nil)
       end
 
-      it 'has no security dasbhoard link' do
-        expect(presenter.extra_statistics_anchors).not_to include(security_dashboard_data)
-      end
+      it_behaves_like 'has no security dashboard link'
     end
   end
 end
