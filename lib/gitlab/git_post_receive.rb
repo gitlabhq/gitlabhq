@@ -1,6 +1,9 @@
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
+
+    UTF8_ENCODING = 'UTF-8'.freeze
+
     attr_reader :project, :identifier, :changes
 
     def initialize(project, identifier, changes)
@@ -14,10 +17,11 @@ module Gitlab
     end
 
     def changes_refs
-      return enum_for(:changes_refs) unless block_given?
+      return changes unless block_given?
 
       changes.each do |change|
-        oldrev, newrev, ref = change.strip.split(' ')
+        change.strip!
+        oldrev, newrev, ref = change.split(' ')
 
         yield oldrev, newrev, ref
       end
@@ -26,21 +30,18 @@ module Gitlab
     private
 
     def deserialize_changes(changes)
-      changes = utf8_encode_changes(changes)
-      changes.lines
+      utf8_encode_changes(changes).each_line
     end
 
     def utf8_encode_changes(changes)
-      changes = changes.dup
-
-      changes.force_encoding('UTF-8')
+      changes.force_encoding(UTF8_ENCODING)
       return changes if changes.valid_encoding?
 
       # Convert non-UTF-8 branch/tag names to UTF-8 so they can be dumped as JSON.
       detection = CharlockHolmes::EncodingDetector.detect(changes)
       return changes unless detection && detection[:encoding]
 
-      CharlockHolmes::Converter.convert(changes, detection[:encoding], 'UTF-8')
+      CharlockHolmes::Converter.convert(changes, detection[:encoding], UTF8_ENCODING)
     end
   end
 end
