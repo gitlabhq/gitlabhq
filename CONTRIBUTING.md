@@ -212,46 +212,46 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 ## Workflow labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved.  
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.  
 
 
 ### Type labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Subject labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved.
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Team labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Release Scoping labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Priority labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Severity labels
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 #### Severity impact guidance
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
           
 
 ### Label for community contributors
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ## Implement design & UI elements
@@ -261,60 +261,60 @@ This [documentation](doc/development/contributing/design.md) has been moved.
 
 ## Issue tracker
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 ### Issue triaging
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Feature proposals
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 ### Issue tracker guidelines
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Issue weight
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Regression issues
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Technical and UX debt
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ### Stewardship
 
-This [documentation](doc/development/contributing/issue-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
 
 
 ## Merge requests
 
-This [documentation](doc/development/contributing/merge-request-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
 
 
 ### Merge request guidelines
 
-This [documentation](doc/development/contributing/merge-request-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
 
 
 ### Contribution acceptance criteria
 
-This [documentation](doc/development/contributing/merge-request-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
 
 
 ## Definition of done
 
-This [documentation](doc/development/contributing/merge-request-worflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved. 
 
 
 ## Style guides
