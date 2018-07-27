@@ -323,6 +323,16 @@ describe Namespace do
 
       parent.update(path: 'mygroup_new')
 
+      # Routes are loaded when creating the projects, so we need to manually
+      # reload them for the below code to be aware of the above UPDATE.
+      [
+        project_in_parent_group,
+        hashed_project_in_subgroup,
+        legacy_project_in_subgroup
+      ].each do |project|
+        project.route.reload
+      end
+
       expect(project_rugged(project_in_parent_group).config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
       expect(project_rugged(hashed_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
       expect(project_rugged(legacy_project_in_subgroup).config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
