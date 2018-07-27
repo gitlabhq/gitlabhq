@@ -10,6 +10,34 @@ module Gitlab
         @env = env
       end
 
+      def user_blocked?
+        user&.blocked?
+      end
+
+      def user
+        return unless has_user_blocked_message?
+
+        strong_memoize(:user) do
+          # Check for either LDAP or regular GitLab account logins
+          login = @env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'username') ||
+            @env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'user', 'login')
+
+          User.by_login(login) if login.present?
+        end
+      rescue TypeError
+      end
+
+      def log_blocked_user_activity!
+        return unless user_blocked?
+
+        Gitlab::AppLogger.info("Failed login for blocked user: user=#{user.username} ip=#{@env['REMOTE_ADDR']}")
+        SystemHooksService.new.execute_hooks_for(user, :failed_login)
+        true
+      rescue TypeError
+      end
+
+      private
+
       ##
       # Devise calls User#active_for_authentication? on the User model and then
       # throws an exception to Warden with User#inactive_message:
@@ -25,31 +53,6 @@ module Gitlab
           message = @env.dig('warden.options', :message)
           message == User::BLOCKED_MESSAGE
         end
-      end
-
-      def user
-        return unless has_user_blocked_message?
-
-        strong_memoize(:user) do
-          # Check for either LDAP or regular GitLab account logins
-          login = @env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'username') ||
-            @env.dig(ACTIVE_RECORD_REQUEST_PARAMS, 'user', 'login')
-
-          User.by_login(login) if login.present?
-        end
-      end
-
-      def user_blocked?
-        user&.blocked?
-      end
-
-      def log_blocked_user_activity!
-        return unless user_blocked?
-
-        Gitlab::AppLogger.info("Failed login for blocked user: user=#{user.username} ip=#{@env['REMOTE_ADDR']}")
-        SystemHooksService.new.execute_hooks_for(user, :failed_login)
-        true
-      rescue TypeError
       end
     end
   end
