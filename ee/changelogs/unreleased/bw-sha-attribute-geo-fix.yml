@@ -1,0 +1,5 @@
+---
+title: no longer fail when setting up Geo database with GDK
+merge_request: 6680
+author:
+type: fixed
