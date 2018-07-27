@@ -459,7 +459,8 @@ module Ci
     end
 
     def erase_test_reports!
-      job_artifacts.test_reports.destroy_all
+      # TODO: Use fast_destroy_all in the context of https://gitlab.com/gitlab-org/gitlab-ce/issues/35240
+      job_artifacts_junit&.destroy
     end
 
     def erase(opts = {})
