@@ -169,7 +169,7 @@ information, see
 Once the stable branch is frozen, the only MRs that can be cherry-picked into
 the stable branch are:
 
-* Fixes for [regressions](#regressions) where the affected version `xx.x` in `regression:xx.x` is the current release. See [Managing a regression](#managing-a-regression).
+* Fixes for [regressions](#regressions) where the affected version `xx.x` in `regression:xx.x` is the current release. See [Managing bugs](#managing-bugs) section.
 * Fixes for security issues
 * Fixes or improvements to automated QA scenarios
 * Documentation updates for changes in the same release
@@ -228,7 +228,7 @@ Regressions should be considered high priority issues that should be solved as s
 
 ### Managing bugs
 
-**Prioritization:** We give higher priority to regressions which worked in the last recent monthly release and the current release candidates. 
+**Prioritization:** We give higher priority to regressions on features that worked in the last recent monthly release and the current release candidates. 
 The two scenarios below can [bypass the exception request in the release process](https://gitlab.com/gitlab-org/release/docs/blob/master/general/exception-request/process.md#after-the-7th), where the affected regression version matches the current monthly release version. 
 * A regression which worked in the **Last monthly release**
    * **Example:** In 11.0 we released a new `feature X` that is verified as working. Then in release 11.1 the feature no longer works, this is regression for 11.1. The issue should have the `regression:11.1` label.
@@ -246,15 +246,15 @@ When a bug is found:
 1. Notify the respective Engineering Manager to evaluate and apply the [Severity label](../CONTRIBUTING.md#bug-severity-labels) and [Priority label](../CONTRIBUTING.md#bug-priority-labels).
 The counterpart Product Manager is included to weigh-in on prioritization as needed.
 1. If the ~bug is **NOT** a regression:
-   1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied
+   1. The Engineering Manager decides which milestone the bug will be fixed. The appropriate milestone is applied.
 1. If the bug is a ~regression: 
    1. Determine the release that the regression affects and add the corresponding `regression:xx.x` label.
       1. If the affected release version can't be determined, add the generic ~regression label for the time being.
-   1. If the affected version `xx.x` in `regression:xx.x` is the **current release**, schedule it for the current milestone as it should be fixed immediately.
+   1. If the affected version `xx.x` in `regression:xx.x` is the **current release**, it's recommended to schedule the fix for the current milestone. 
       1. This falls under regressions which worked in the last release and the current RCs. More detailed explanations in the **Prioritization** section above. 
    1. If the affected version `xx.x` in `regression:xx.x` is older than the **current release**
-      1. If the regression is an ~S1 severity, schedule it to be fixed in the current milestone. We would like to fix the highest severity regression as soon as we can.
-      1. If the regression is an ~S2, ~S3 or ~S4 severity, the regression may be scheduled for later milestones at the discretion of Engineering Manager and Product Manager.
+      1. If the regression is an ~S1 severity, it's recommended to schedule the fix for the current milestone. We would like to fix the highest severity regression as soon as we can.
+      1. If the regression is an ~S2, ~S3 or ~S4 severity, the regression may be scheduled for later milestones at the discretion of the Engineering Manager and Product Manager.
 
 ## Release retrospective and kickoff
 
