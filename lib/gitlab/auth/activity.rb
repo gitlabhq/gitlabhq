@@ -42,7 +42,6 @@ module Gitlab
       end
 
       def user_session_override!
-        self.class.user_authenticated_counter_increment!
         self.class.user_session_override_counter_increment!
 
         if @opts[:message] == :two_factor_authenticated
