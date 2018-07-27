@@ -115,81 +115,81 @@ When your code contains more than 500 changes, any major breaking changes, or an
 
 
 ## Workflow labels
-This [documentation](issue-worflow.md) outlines the current workflow labels. 
+This [documentation](issue-workflow.md) outlines the current workflow labels. 
 
 ### Type labels 
-This [documentation](issue-worflow.md) outlines the current type labels. 
+This [documentation](issue-worfklow.md) outlines the current type labels. 
 
 ### Subject labels 
-This [documentation](issue-worflow.md) outlines the current subject labels. 
+This [documentation](issue-worfklow.md) outlines the current subject labels. 
 
 ### Team labels 
-This [documentation](issue-worflow.md) outlines the current team labels. 
+This [documentation](issue-worfklow.md) outlines the current team labels. 
 
 
 ### Milestone labels 
-This [documentation](issue-worflow.md) outlines the current milestone labels. 
+This [documentation](issue-worfklow.md) outlines the current milestone labels. 
 
 
 ### Bug Priority labels 
-This [documentation](issue-worflow.md) outlines the current bug priority  labels. 
+This [documentation](issue-worfklow.md) outlines the current bug priority  labels. 
 
 
 ### Bug Severity labels
-This [documentation](issue-worflow.md) outlines the current severity labels. 
+This [documentation](issue-workflow.md) outlines the current severity labels. 
 
 #### Severity impact guidance
-This [documentation](issue-worflow.md) outlines the current severity impact guidance. 
+This [documentation](issue-workflow.md) outlines the current severity impact guidance. 
 
 
 ### Label for community contributors 
-This [documentation](issue-worflow.md) outlines the current policy regarding community contributor issues. 
+This [documentation](issue-workflow.md) outlines the current policy regarding community contributor issues. 
 
 ## Implement design & UI elements
 
 This [documentation](design.md) outlines the current design and UI guidelines. 
 
 ## Issue tracker
-This [documentation](issue-worflow.md) outlines the issue tracker process. 
+This [documentation](issue-workflow.md) outlines the issue tracker process. 
 
 ### Issue triaging
-This [documentation](issue-worflow.md) outlines the current issue triaging process. 
+This [documentation](issue-workflow.md) outlines the current issue triaging process. 
 
 ### Feature proposals
-This [documentation](issue-worflow.md) outlines the feature proposal process. 
+This [documentation](issue-workflow.md) outlines the feature proposal process. 
 
 ### Issue tracker guidelines
 
-This [documentation](issue-worflow.md) outlines the issue tracker guidelines. 
+This [documentation](issue-workflow.md) outlines the issue tracker guidelines. 
 
 ### Issue weight
 
-This [documentation](issue-worflow.md) outlines the issue weight guidelines. 
+This [documentation](issue-workflow.md) outlines the issue weight guidelines. 
 
 ### Regression issues
-This [documentation](issue-worflow.md) outlines the regression issue process. 
+This [documentation](issue-workflow.md) outlines the regression issue process. 
 
 ### Technical and UX debt
-This [documentation](issue-worflow.md) about technical and UX debt has been moved. 
+This [documentation](issue-workflow.md) about technical and UX debt has been moved. 
 
 ### Stewardship
-This [documentation](issue-worflow.md) outlines the stewardship process. 
+This [documentation](issue-workflow.md) outlines the stewardship process. 
 
 ## Merge requests
 
-This [documentation](merge-request-worflow.md) outlines the current merge request process. 
+This [documentation](merge-request-workflow.md) outlines the current merge request process. 
 
 ### Merge request guidelines
 
-This [documentation](merge-request-worflow.md) outlines the current merge request guidelines. 
+This [documentation](merge-request-workflow.md) outlines the current merge request guidelines. 
 
 ### Contribution acceptance criteria
 
-This [documentation](merge-request-worflow.md) outlines the current acceptance criteria for contributions. 
+This [documentation](merge-request-workflow.md) outlines the current acceptance criteria for contributions. 
 
 ## Definition of done
 
-This [documentation](merge-request-worflow.md) outlines the defintion of done. 
+This [documentation](merge-request-workflow.md) outlines the defintion of done. 
 
 ## Style guides
 This [documentation](design.md) outlines the current style guidelines. 
