@@ -82,12 +82,15 @@ class Import::BitbucketServerController < Import::BaseController
   def validate_import_params
     @project_key = params[:project]
     @repo_slug = params[:repository]
-    status = :unprocessable_entity
 
-    return render json: { errors: 'Missing project key' }, status: status unless @project_key.present? && @repo_slug.present?
-    return render json: { errors: 'Missing repository slug' }, status: status unless @repo_slug.present?
-    return render json: { errors: 'Invalid project key' }, status: status unless @project_key =~ VALID_BITBUCKET_CHARS
-    return render json: { errors: 'Invalid repository slug' }, status: status unless @repo_slug =~ VALID_BITBUCKET_CHARS
+    return render_validation_error('Missing project key' ) unless @project_key.present? && @repo_slug.present?
+    return render_validation_error('Missing repository slug') unless @repo_slug.present?
+    return render_validation_error('Invalid project key') unless @project_key =~ VALID_BITBUCKET_CHARS
+    return render_validation_error('Invalid repository slug') unless @repo_slug =~ VALID_BITBUCKET_CHARS
+  end
+
+  def render_validation_error(message)
+    return render json: { errors: message }, status: :unprocessable_entity
   end
 
   def bitbucket_auth
