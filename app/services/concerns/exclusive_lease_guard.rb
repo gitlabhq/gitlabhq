@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Concern that helps with getting an exclusive lease for running a block
 # of code.

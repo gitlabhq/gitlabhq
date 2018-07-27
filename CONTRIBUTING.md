@@ -50,6 +50,7 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 - [Definition of done](#definition-of-done)
 - [Style guides](#style-guides)
 - [Code of conduct](#code-of-conduct)
+- [Contribution Flow](#contribution-flow)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -132,7 +133,7 @@ Most issues will have labels for at least one of the following:
 
 - Type: ~"feature proposal", ~bug, ~customer, etc.
 - Subject: ~wiki, ~"container registry", ~ldap, ~api, ~frontend, etc.
-- Team: ~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.
+- Team: ~"CI/CD", ~Plan, ~Manage, ~Quality, etc.
 - Release Scoping: ~Deliverable, ~Stretch, ~"Next Patch Release"
 - Priority: ~P1, ~P2, ~P3, ~P4
 - Severity: ~S1, ~S2, ~S3, ~S4
@@ -186,13 +187,14 @@ The current team labels are:
 
 - ~Configuration
 - ~"CI/CD"
-- ~Discussion
+- ~Create
 - ~Distribution
 - ~Documentation
 - ~Geo
 - ~Gitaly
+- ~Manage
 - ~Monitoring
-- ~Platform
+- ~Plan
 - ~Quality
 - ~Release
 - ~"Security Products"
@@ -225,24 +227,24 @@ Each issue scheduled for the current milestone should be labeled ~Deliverable
 or ~"Stretch". Any open issue for a previous milestone should be labeled
 ~"Next Patch Release", or otherwise rescheduled to a different milestone.
 
-### Bug Priority labels
+### Priority labels
 
-Bug Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
+Priority labels help us define the time a ~bug fix should be completed. Priority determines how quickly the defect turnaround time must be.
 If there are multiple defects, the priority decides which defect has to be fixed immediately versus later.
 This label documents the planned timeline & urgency which is used to measure against our actual SLA on delivering ~bug fixes.
 
-| Label | Meaning         | Estimate time to fix                                             | Guidance |
-|-------|-----------------|------------------------------------------------------------------|----------|
-| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |  |
-| ~P2   | High Priority   | The next release                                                 |  |
-| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |  |
-| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) | The issue is prominent but does not impact user workflow and a workaround is documented  |
+| Label | Meaning         | Estimate time to fix                                             |
+|-------|-----------------|------------------------------------------------------------------|
+| ~P1   | Urgent Priority | The current release + potentially immediate hotfix to GitLab.com |
+| ~P2   | High Priority   | The next release                                                 |
+| ~P3   | Medium Priority | Within the next 3 releases (approx one quarter)                  |
+| ~P4   | Low Priority    | Anything outside the next 3 releases (approx beyond one quarter) |
 
-### Bug Severity labels
+### Severity labels
 
 Severity labels help us clearly communicate the impact of a ~bug on users.
 
-| Label | Meaning           | Impact of the defect                                  | Example |
+| Label | Meaning           | Impact on Functionality                               | Example |
 |-------|-------------------|-------------------------------------------------------|---------|
 | ~S1   | Blocker           | Outage, broken feature with no workaround             | Unable to create an issue. Data corruption/loss. Security breach. |
 | ~S2   | Critical Severity | Broken Feature, workaround too complex & unacceptable | Can push commits, but only via the command line. |
@@ -251,12 +253,14 @@ Severity labels help us clearly communicate the impact of a ~bug on users.
 
 #### Severity impact guidance
 
-| Label | Security Impact                                                     | Availability / Performance Impact                            |
-|-------|---------------------------------------------------------------------|--------------------------------------------------------------|
-| ~S1   | >50% users impacted (possible company extinction level event)       |                                                              |
-| ~S2   | Many users or multiple paid customers impacted (but not apocalyptic)| The issue is (almost) guaranteed to occur in the near future |
-| ~S3   | A few users or a single paid customer impacted                      | The issue is likely to occur in the near future              |
-| ~S4   | No paid users/customer impacted, or expected impact within 30 days  | The issue _may_ occur but it's not likely                    |
+Severity levels can be applied further depending on the facet of the impact; e.g. Affected customers, GitLab.com availability, performance and etc. The below is a guideline.
+
+| Severity | Affected Customers/Users                                            | GitLab.com Availability                            |  Performance Degradation     |
+|----------|---------------------------------------------------------------------|----------------------------------------------------|------------------------------|
+| ~S1      | >50% users affected (possible company extinction level event)       | Significant impact on all of GitLab.com            |                              |
+| ~S2      | Many users or multiple paid customers affected (but not apocalyptic)| Significant impact on large portions of GitLab.com | Degradation is guaranteed to occur in the near future |
+| ~S3      | A few users or a single paid customer affected                      | Limited impact on important portions of GitLab.com | Degradation is likely to occur in the near future     |
+| ~S4      | No paid users/customer affected, or expected to in the near future  | Minor impact on on GitLab.com                      | Degradation _may_ occur but it's not likely           |
 
 ### Label for community contributors
 
@@ -372,8 +376,14 @@ on those issues. Please select someone with relevant experience from the
 [GitLab team][team]. If there is nobody mentioned with that expertise look in
 the commit history for the affected files to find someone.
 
+We also use [GitLab Triage] to automate some triaging policies. This is
+currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
+
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
+[GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
+[scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
+[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
 
 ### Feature proposals
 
@@ -728,6 +738,24 @@ reported by emailing `contact@gitlab.com`.
 
 This Code of Conduct is adapted from the [Contributor Covenant][contributor-covenant], version 1.1.0,
 available at [http://contributor-covenant.org/version/1/1/0/](http://contributor-covenant.org/version/1/1/0/).
+
+## Contribution Flow
+
+When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
+
+When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
+
+When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
+
+Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+
+GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
+
+GitLab receives a lot of community contributions, so if your code has not been reviewed within 4 days of its initial submission feel free to re-mention the appropriate merge request coach.
+
+When submitting code to GitLab, you may feel that your contribution requires the aid of an external library. If your code includes an external library please provide a link to the library, as well as reasons for including it.
+
+When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
 [core team]: https://about.gitlab.com/core-team/
 [team]: https://about.gitlab.com/team/

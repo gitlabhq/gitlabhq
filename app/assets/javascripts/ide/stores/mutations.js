@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import * as types from './mutation_types';
 import projectMutations from './mutations/project';
 import mergeRequestMutation from './mutations/merge_request';
@@ -165,6 +166,21 @@ export default {
   },
   [types.SET_ERROR_MESSAGE](state, errorMessage) {
     Object.assign(state, { errorMessage });
+  },
+  [types.OPEN_NEW_ENTRY_MODAL](state, { type, path }) {
+    Object.assign(state, {
+      newEntryModal: { type, path },
+    });
+  },
+  [types.DELETE_ENTRY](state, path) {
+    const entry = state.entries[path];
+    const parent = entry.parentPath
+      ? state.entries[entry.parentPath]
+      : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+    entry.deleted = true;
+    state.changedFiles = state.changedFiles.concat(entry);
+    parent.tree = parent.tree.filter(f => f.path !== entry.path);
   },
   ...projectMutations,
   ...mergeRequestMutation,

@@ -9,18 +9,6 @@ module QA
           project.name = 'protected-branch-project'
         end
 
-        product :name do
-          Page::Project::Settings::Repository.act do
-            expand_protected_branches(&:last_branch_name)
-          end
-        end
-
-        product :push_allowance do
-          Page::Project::Settings::Repository.act do
-            expand_protected_branches(&:last_push_allowance)
-          end
-        end
-
         def initialize
           @branch_name = 'test/branch'
           @allow_to_push = true
@@ -80,15 +68,6 @@ module QA
               end
 
               page.protect_branch
-
-              # Avoid Selenium::WebDriver::Error::StaleElementReferenceError
-              # without sleeping. I.e. this completes fast on fast machines.
-              page.refresh
-
-              # It is possible for the protected branch row to "disappear" at first
-              page.wait do
-                page.has_content?(branch_name)
-              end
             end
           end
         end

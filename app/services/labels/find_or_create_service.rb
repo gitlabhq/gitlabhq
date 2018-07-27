@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Labels
   class FindOrCreateService
     def initialize(current_user, parent, params = {})

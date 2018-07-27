@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class UpdateService < MergeRequests::BaseService
     def execute(merge_request)

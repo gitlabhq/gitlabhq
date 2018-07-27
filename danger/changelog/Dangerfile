@@ -2,15 +2,13 @@
 
 require 'yaml'
 
-NO_CHANGELOG_LABELS = %w[backstage QA test].freeze
+NO_CHANGELOG_LABELS = %w[backstage Documentation QA test].freeze
 SEE_DOC = "See [the documentation](https://docs.gitlab.com/ce/development/changelog.html).".freeze
-MISSING_CHANGELOG_MESSAGE = <<~MSG.freeze
-**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html).**
-
+CREATE_CHANGELOG_MESSAGE = <<~MSG.freeze
 You can create one with:
 
 ```
-bin/changelog -m %<mr_iid>s
+bin/changelog -m %<mr_iid>s "%<mr_title>s"
 ```
 
 If your merge request doesn't warrant a CHANGELOG entry,
@@ -38,12 +36,14 @@ def check_changelog(path)
 
   if yaml["merge_request"].nil?
     message "Consider setting `merge_request` to #{gitlab.mr_json["iid"]} in #{gitlab.html_link(path)}. #{SEE_DOC}"
-  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !ce_port_changelog?(changelog_path)
+  elsif yaml["merge_request"] != gitlab.mr_json["iid"] && !ce_port_changelog?(path)
     fail "Merge request ID was not set to #{gitlab.mr_json["iid"]}! #{SEE_DOC}"
   end
-rescue StandardError
+rescue Psych::SyntaxError, Psych::DisallowedClass, Psych::BadAlias
   # YAML could not be parsed, fail the build.
   fail "#{gitlab.html_link(path)} isn't valid YAML! #{SEE_DOC}"
+rescue StandardError => e
+  warn "There was a problem trying to check the Changelog. Exception: #{e.name} - #{e.message}"
 end
 
 def presented_no_changelog_labels
@@ -54,13 +54,15 @@ changelog_needed = (gitlab.mr_labels & NO_CHANGELOG_LABELS).empty?
 changelog_found = git.added_files.find { |path| path =~ %r{\A(ee/)?(changelogs/unreleased)(-ee)?/} }
 
 if git.modified_files.include?("CHANGELOG.md")
-  fail "CHANGELOG.md was edited. Please remove the additions and create an entry with `bin/changelog -m #{gitlab.mr_json["iid"]}` instead."
+  fail "**CHANGELOG.md was edited.** Please remove the additions and create a CHANGELOG entry.\n\n" +
+    format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: gitlab.mr_json["title"], labels: presented_no_changelog_labels)
 end
 
 if changelog_needed
   if changelog_found
-    check_changelog(path)
+    check_changelog(changelog_found)
   else
-    warn format(MISSING_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], labels: presented_no_changelog_labels)
+    warn "**[CHANGELOG missing](https://docs.gitlab.com/ce/development/changelog.html).**\n\n" +
+      format(CREATE_CHANGELOG_MESSAGE, mr_iid: gitlab.mr_json["iid"], mr_title: gitlab.mr_json["title"], labels: presented_no_changelog_labels)
   end
 end

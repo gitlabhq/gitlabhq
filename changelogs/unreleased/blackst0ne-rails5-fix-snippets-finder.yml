@@ -1,5 +1,0 @@
----
-title: "[Rails5] Fix snippets_finder arel queries"
-merge_request: 19796
-author: "@blackst0ne"
-type: fixed

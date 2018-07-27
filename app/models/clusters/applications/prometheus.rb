@@ -21,6 +21,14 @@ module Clusters
         end
       end
 
+      def ready_status
+        [:installed]
+      end
+
+      def ready?
+        ready_status.include?(status_name)
+      end
+
       def chart
         'stable/prometheus'
       end

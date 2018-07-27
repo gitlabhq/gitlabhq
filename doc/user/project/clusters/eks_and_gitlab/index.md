@@ -62,7 +62,7 @@ Click on `Add Kubernetes cluster`, the cluster is now connected to GitLab. At th
 
 If you would like to utilize your own CI/CD scripts to deploy to the cluster, you can stop here.
 
-## Disable Role Based-Access Control (RBAC)
+## Disable Role-Based Access Control (RBAC)
 
 Presently, Auto DevOps and one-click app installs do not support [Kubernetes role-based access control](https://kubernetes.io/docs/reference/access-authn-authz/rbac/). Support is [being worked on](https://gitlab.com/groups/gitlab-org/-/epics/136), but in the interim RBAC must be disabled to utilize for these features.
 

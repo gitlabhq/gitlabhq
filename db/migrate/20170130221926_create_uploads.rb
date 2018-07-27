@@ -1,4 +1,3 @@
-# rubocop:disable Migration/Datetime
 class CreateUploads < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

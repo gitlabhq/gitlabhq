@@ -575,6 +575,40 @@ describe 'Git LFS API and storage' do
         end
       end
 
+      context 'when using Deploy Tokens' do
+        let(:project) { create(:project, :repository) }
+        let(:authorization) { authorize_deploy_token }
+        let(:update_user_permissions) { nil }
+        let(:role) { nil }
+        let(:update_lfs_permissions) do
+          project.lfs_objects << lfs_object
+        end
+
+        context 'when Deploy Token is valid' do
+          let(:deploy_token) { create(:deploy_token, projects: [project]) }
+
+          it_behaves_like 'an authorized requests'
+        end
+
+        context 'when Deploy Token is not valid' do
+          let(:deploy_token) { create(:deploy_token, projects: [project], read_repository: false) }
+
+          it 'responds with access denied' do
+            expect(response).to have_gitlab_http_status(401)
+          end
+        end
+
+        context 'when Deploy Token is not related to the project' do
+          let(:another_project) { create(:project, :repository) }
+          let(:deploy_token) { create(:deploy_token, projects: [another_project]) }
+
+          it 'responds with access forbidden' do
+            # We render 404, to prevent data leakage about existence of the project
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
+      end
+
       context 'when build is authorized as' do
         let(:authorization) { authorize_ci_project }
 
@@ -1379,6 +1413,10 @@ describe 'Git LFS API and storage' do
 
   def authorize_user_key
     ActionController::HttpAuthentication::Basic.encode_credentials(user.username, Gitlab::LfsToken.new(user).token)
+  end
+
+  def authorize_deploy_token
+    ActionController::HttpAuthentication::Basic.encode_credentials(deploy_token.username, deploy_token.token)
   end
 
   def post_lfs_json(url, body = nil, headers = nil)

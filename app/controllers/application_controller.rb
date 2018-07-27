@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
+  before_action :limit_unauthenticated_session_times
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -30,7 +31,13 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception, prepend: true
 
   helper_method :can?
-  helper_method :import_sources_enabled?, :github_import_enabled?, :gitea_import_enabled?, :github_import_configured?, :gitlab_import_enabled?, :gitlab_import_configured?, :bitbucket_import_enabled?, :bitbucket_import_configured?, :google_code_import_enabled?, :fogbugz_import_enabled?, :git_import_enabled?, :gitlab_project_import_enabled?
+  helper_method :import_sources_enabled?, :github_import_enabled?,
+    :gitea_import_enabled?, :github_import_configured?,
+    :gitlab_import_enabled?, :gitlab_import_configured?,
+    :bitbucket_import_enabled?, :bitbucket_import_configured?,
+    :google_code_import_enabled?, :fogbugz_import_enabled?,
+    :git_import_enabled?, :gitlab_project_import_enabled?,
+    :manifest_import_enabled?
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -77,6 +84,24 @@ class ApplicationController < ActionController::Base
     else
       authenticate_user!
     end
+  end
+
+  # By default, all sessions are given the same expiration time configured in
+  # the session store (e.g. 1 week). However, unauthenticated users can
+  # generate a lot of sessions, primarily for CSRF verification. It makes
+  # sense to reduce the TTL for unauthenticated to something much lower than
+  # the default (e.g. 1 hour) to limit Redis memory. In addition, Rails
+  # creates a new session after login, so the short TTL doesn't even need to
+  # be extended.
+  def limit_unauthenticated_session_times
+    return if current_user
+
+    # Rack sets this header, but not all tests may have it: https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L251-L259
+    return unless request.env['rack.session.options']
+
+    # This works because Rack uses these options every time a request is handled:
+    # https://github.com/rack/rack/blob/fdcd03a3c5a1c51d1f96fc97f9dfa1a9deac0c77/lib/rack/session/abstract/id.rb#L342
+    request.env['rack.session.options'][:expire_after] = Settings.gitlab['unauthenticated_session_expire_delay']
   end
 
   protected
@@ -349,6 +374,10 @@ class ApplicationController < ActionController::Base
 
   def gitlab_project_import_enabled?
     Gitlab::CurrentSettings.import_sources.include?('gitlab_project')
+  end
+
+  def manifest_import_enabled?
+    Group.supports_nested_groups? && Gitlab::CurrentSettings.import_sources.include?('manifest')
   end
 
   # U2F (universal 2nd factor) devices need a unique identifier for the application

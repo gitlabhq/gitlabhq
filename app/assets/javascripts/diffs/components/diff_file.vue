@@ -18,14 +18,13 @@ export default {
       type: Object,
       required: true,
     },
-    currentUser: {
-      type: Object,
+    canCurrentUserFork: {
+      type: Boolean,
       required: true,
     },
   },
   data() {
     return {
-      isActive: false,
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
     };
@@ -48,12 +47,6 @@ export default {
       return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
     },
   },
-  mounted() {
-    document.addEventListener('scroll', this.handleScroll);
-  },
-  beforeDestroy() {
-    document.removeEventListener('scroll', this.handleScroll);
-  },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff']),
     handleToggle() {
@@ -64,36 +57,6 @@ export default {
       } else {
         this.file.collapsed = !this.file.collapsed;
       }
-    },
-    handleScroll() {
-      if (!this.updating) {
-        requestAnimationFrame(this.scrollUpdate.bind(this));
-        this.updating = true;
-      }
-    },
-    scrollUpdate() {
-      const header = document.querySelector('.js-diff-files-changed');
-      if (!header) {
-        this.updating = false;
-        return;
-      }
-
-      const { top, bottom } = this.$el.getBoundingClientRect();
-      const { top: topOfFixedHeader, bottom: bottomOfFixedHeader } = header.getBoundingClientRect();
-
-      const headerOverlapsContent = top < topOfFixedHeader && bottom > bottomOfFixedHeader;
-      const fullyAboveHeader = bottom < bottomOfFixedHeader;
-      const fullyBelowHeader = top > topOfFixedHeader;
-
-      if (headerOverlapsContent && !this.isActive) {
-        this.$emit('setActive');
-        this.isActive = true;
-      } else if (this.isActive && (fullyAboveHeader || fullyBelowHeader)) {
-        this.$emit('unsetActive');
-        this.isActive = false;
-      }
-
-      this.updating = false;
     },
     handleLoadCollapsedDiff() {
       this.isLoadingCollapsedDiff = true;
@@ -124,7 +87,7 @@ export default {
     class="diff-file file-holder"
   >
     <diff-file-header
-      :current-user="currentUser"
+      :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
       :expanded="!isCollapsed"

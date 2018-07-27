@@ -541,6 +541,26 @@ export const addSelectOnFocusBehaviour = (selector = '.js-select-on-focus') => {
   });
 };
 
+/**
+ * Method to round of values with decimal places
+ * with provided precision.
+ *
+ * Taken from https://stackoverflow.com/a/7343013/414749
+ *
+ * Eg; roundOffFloat(3.141592, 3) = 3.142
+ *
+ * Refer to spec/javascripts/lib/utils/common_utils_spec.js for
+ * more supported examples.
+ *
+ * @param {Float} number
+ * @param {Number} precision
+ */
+export const roundOffFloat = (number, precision = 0) => {
+  // eslint-disable-next-line no-restricted-properties
+  const multiplier = Math.pow(10, precision);
+  return Math.round(number * multiplier) / multiplier;
+};
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),

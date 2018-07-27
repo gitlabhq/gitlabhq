@@ -1,6 +1,7 @@
 <script>
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
 import IdeStatusBar from './ide_status_bar.vue';
@@ -13,6 +14,7 @@ const originalStopCallback = Mousetrap.stopCallback;
 
 export default {
   components: {
+    NewModal,
     IdeSidebar,
     RepoTabs,
     IdeStatusBar,
@@ -137,5 +139,6 @@ export default {
       />
     </div>
     <ide-status-bar :file="activeFile"/>
+    <new-modal />
   </article>
 </template>

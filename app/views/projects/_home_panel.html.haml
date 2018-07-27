@@ -12,6 +12,9 @@
     .project-home-desc
       - if @project.description.present?
         = markdown_field(@project, :description)
+      - if can?(current_user, :read_project, @project)
+        .text-secondary.prepend-top-8
+          = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
 
       - if @project.forked?
         %p

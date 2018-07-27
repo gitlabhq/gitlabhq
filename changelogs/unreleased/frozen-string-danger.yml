@@ -1,0 +1,5 @@
+---
+title: Add Dangerfile for frozen_string_literal
+merge_request: 20767
+author: gfyoung
+type: performance

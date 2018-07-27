@@ -26,6 +26,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:hangouts_chat_service) }
     it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
@@ -101,6 +102,22 @@ describe Project do
       end
     end
 
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
+      end
+    end
+
     context 'updating cd_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
@@ -149,22 +166,24 @@ describe Project do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
-
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
-
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
-
     it { is_expected.to validate_presence_of(:creator) }
-
     it { is_expected.to validate_presence_of(:namespace) }
-
     it { is_expected.to validate_presence_of(:repository_storage) }
+
+    it 'validates build timeout constraints' do
+      is_expected.to validate_numericality_of(:build_timeout)
+        .only_integer
+        .is_greater_than_or_equal_to(10.minutes)
+        .is_less_than(1.month)
+        .with_message('needs to be beetween 10 minutes and 1 month')
+    end
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
@@ -2939,8 +2958,6 @@ describe Project do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        expect(project).to receive(:expires_full_path_cache)
-
         project.rename_repo
       end
 
@@ -3099,8 +3116,6 @@ describe Project do
             .with(project, :rename)
 
         expect(project).to receive(:expire_caches_before_rename)
-
-        expect(project).to receive(:expires_full_path_cache)
 
         project.rename_repo
       end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Keys
   class BaseService
     attr_accessor :user, :params

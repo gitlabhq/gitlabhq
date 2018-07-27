@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestWidgetEntity < IssuableEntity
   expose :state
   expose :in_progress_merge_commit_sha
@@ -10,9 +12,15 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_when_pipeline_succeeds
   expose :source_branch
   expose :source_project_id
+  expose :source_project_full_path do |merge_request|
+    merge_request.source_project&.full_path
+  end
   expose :squash
   expose :target_branch
   expose :target_project_id
+  expose :target_project_full_path do |merge_request|
+    merge_request.project&.full_path
+  end
   expose :allow_collaboration
 
   expose :should_be_rebased?, as: :should_be_rebased

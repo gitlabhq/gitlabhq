@@ -82,6 +82,14 @@ describe MergeRequestDiff do
 
         diff.diffs
       end
+
+      it 'returns persisted diffs if diff refs does not exist' do
+        expect(diff).to receive(:load_diffs)
+
+        diff.update!(start_commit_sha: nil, base_commit_sha: nil)
+
+        diff.diffs
+      end
     end
   end
 

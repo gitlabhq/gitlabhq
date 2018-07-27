@@ -1,5 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__))
 
+Encoding.default_external = 'UTF-8'
+
 module QA
   ##
   # GitLab QA runtime classes, mostly singletons.
@@ -41,14 +43,18 @@ module QA
       autoload :Project, 'qa/factory/resource/project'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
       autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
+      autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
       autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
       autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :User, 'qa/factory/resource/user'
       autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
       autoload :Wiki, 'qa/factory/resource/wiki'
+      autoload :File, 'qa/factory/resource/file'
+      autoload :Fork, 'qa/factory/resource/fork'
     end
 
     module Repository
@@ -107,6 +113,7 @@ module QA
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
+      autoload :SignUp, 'qa/page/main/sign_up'
     end
 
     module Settings
@@ -128,6 +135,15 @@ module QA
     module Group
       autoload :New, 'qa/page/group/new'
       autoload :Show, 'qa/page/group/show'
+    end
+
+    module File
+      autoload :Form, 'qa/page/file/form'
+      autoload :Show, 'qa/page/file/show'
+
+      module Shared
+        autoload :CommitMessage, 'qa/page/file/shared/commit_message'
+      end
     end
 
     module Project
@@ -167,6 +183,10 @@ module QA
         autoload :Index, 'qa/page/project/issue/index'
       end
 
+      module Fork
+        autoload :New, 'qa/page/project/fork/new'
+      end
+
       module Milestone
         autoload :New, 'qa/page/project/milestone/new'
         autoload :Index, 'qa/page/project/milestone/index'
@@ -198,6 +218,10 @@ module QA
 
     module Issuable
       autoload :Sidebar, 'qa/page/issuable/sidebar'
+    end
+
+    module Layout
+      autoload :Banner, 'qa/page/layout/banner'
     end
 
     module MergeRequest

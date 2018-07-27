@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelineSerializer < BaseSerializer
   include WithPagination
   entity PipelineDetailsEntity
@@ -9,10 +11,15 @@ class PipelineSerializer < BaseSerializer
         :retryable_builds,
         :cancelable_statuses,
         :trigger_requests,
-        :project,
         :manual_actions,
         :artifacts,
-        { pending_builds: :project }
+        {
+          pending_builds: :project,
+          project: [:route, { namespace: :route }],
+          artifacts: {
+            project: [:route, { namespace: :route }]
+          }
+        }
       ])
     end
 

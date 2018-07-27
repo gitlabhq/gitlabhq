@@ -25,19 +25,24 @@ module QA
           element :standard_tab, "link_to 'Standard'"
         end
 
+        view 'app/views/devise/shared/_tabs_normal.html.haml' do
+          element :sign_in_tab, /nav-link.*login-pane.*Sign in/
+          element :register_tab, /nav-link.*register-pane.*Register/
+        end
+
         def initialize
           # The login page is usually the entry point for all the scenarios so
           # we need to wait for the instance to start. That said, in some cases
           # we are already logged-in so we check both cases here.
           wait(max: 500) do
             page.has_css?('.login-page') ||
-              Page::Menu::Main.act { has_personal_area? }
+              Page::Menu::Main.act { has_personal_area?(wait: 0) }
           end
         end
 
         def sign_in_using_credentials
           # Don't try to log-in if we're already logged-in
-          return if Page::Menu::Main.act { has_personal_area? }
+          return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present
@@ -48,10 +53,20 @@ module QA
               sign_in_using_gitlab_credentials
             end
           end
+
+          Page::Menu::Main.act { has_personal_area? }
         end
 
         def self.path
           '/users/sign_in'
+        end
+
+        def switch_to_sign_in_tab
+          click_on 'Sign in'
+        end
+
+        def switch_to_register_tab
+          click_on 'Register'
         end
 
         private

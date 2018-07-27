@@ -1,0 +1,5 @@
+---
+title: Close revert and cherry pick modal on escape keypress
+merge_request: 20341
+author: George Tsiolis
+type: changed

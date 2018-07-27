@@ -93,4 +93,10 @@ RSpec.describe NotificationSetting do
       end
     end
   end
+
+  context 'email events' do
+    it 'includes EXCLUDED_WATCHER_EVENTS in EMAIL_EVENTS' do
+      expect(described_class::EMAIL_EVENTS).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
+    end
+  end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Keys
   class DestroyService < ::Keys::BaseService
     def execute(key)

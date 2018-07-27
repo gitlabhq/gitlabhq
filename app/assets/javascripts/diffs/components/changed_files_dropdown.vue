@@ -40,7 +40,7 @@ export default {
         {{ n__('%d changed file', '%d changed files', diffFiles.length) }}
       </span>
       <icon
-        :size="8"
+        class="caret-icon"
         name="chevron-down"
       />
     </button>

@@ -13,12 +13,19 @@
  * />
  */
 import tooltip from '../directives/tooltip';
+import Icon from '../components/icon.vue';
 
 export default {
   name: 'ClipboardButton',
+
   directives: {
     tooltip,
   },
+
+  components: {
+    Icon,
+  },
+
   props: {
     text: {
       type: String,
@@ -58,10 +65,6 @@ export default {
     type="button"
     class="btn"
   >
-    <i
-      aria-hidden="true"
-      class="fa fa-clipboard"
-    >
-    </i>
+    <icon name="duplicate" />
   </button>
 </template>

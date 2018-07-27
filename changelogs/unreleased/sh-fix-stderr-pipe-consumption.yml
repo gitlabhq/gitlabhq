@@ -1,0 +1,5 @@
+---
+title: Avoid process deadlock in popen by consuming input pipes
+merge_request: 20600
+author:
+type: fixed

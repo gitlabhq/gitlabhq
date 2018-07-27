@@ -6,6 +6,7 @@ import '~/commons';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
+import jasmineDiff from 'jasmine-diff';
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
@@ -35,7 +36,15 @@ Vue.use(Translate);
 jasmine.getFixtures().fixturesPath = FIXTURES_PATH;
 jasmine.getJSONFixtures().fixturesPath = FIXTURES_PATH;
 
-beforeAll(() => jasmine.addMatchers(customMatchers));
+beforeAll(() => {
+  jasmine.addMatchers(
+    jasmineDiff(jasmine, {
+      colors: true,
+      inline: true,
+    }),
+  );
+  jasmine.addMatchers(customMatchers);
+});
 
 // globalize common libraries
 window.$ = $;
@@ -80,6 +89,19 @@ const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
 beforeEach(() => {
   // restore interceptors so we have no remaining ones from previous tests
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
+});
+
+let longRunningTestTimeoutHandle;
+
+beforeEach((done) => {
+  longRunningTestTimeoutHandle = setTimeout(() => {
+    done.fail('Test is running too long!');
+  }, 1000);
+  done();
+});
+
+afterEach(() => {
+  clearTimeout(longRunningTestTimeoutHandle);
 });
 
 const axiosDefaultAdapter = getDefaultAdapter();
@@ -166,13 +188,13 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
-    const sourceFiles = require.context('~', true, /\.js$/);
+    const sourceFiles = require.context('~', true, /\.(js|vue)$/);
 
     $.holdReady(true);
 
     sourceFiles.keys().forEach(function(path) {
       // ignore if there is a matching spec file
-      if (testsContext.keys().indexOf(`${path.replace(/\.js$/, '')}_spec`) > -1) {
+      if (testsContext.keys().indexOf(`${path.replace(/\.(js|vue)$/, '')}_spec`) > -1) {
         return;
       }
 

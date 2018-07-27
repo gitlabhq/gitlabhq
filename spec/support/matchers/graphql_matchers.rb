@@ -34,6 +34,15 @@ RSpec::Matchers.define :have_graphql_field do |field_name|
   end
 end
 
+RSpec::Matchers.define :have_graphql_mutation do |mutation_class|
+  match do |mutation_type|
+    field = mutation_type.fields[GraphqlHelpers.fieldnamerize(mutation_class.graphql_name)]
+
+    expect(field).to be_present
+    expect(field.resolver).to eq(mutation_class)
+  end
+end
+
 RSpec::Matchers.define :have_graphql_arguments do |*expected|
   include GraphqlHelpers
 

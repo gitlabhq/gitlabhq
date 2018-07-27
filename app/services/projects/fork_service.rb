@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class ForkService < BaseService
     def execute(fork_to_project = nil)

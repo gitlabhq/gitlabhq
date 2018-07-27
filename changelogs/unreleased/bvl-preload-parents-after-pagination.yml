@@ -1,5 +1,0 @@
----
-title: Reduce the number of queries when searching for groups
-merge_request: 20398
-author:
-type: performance

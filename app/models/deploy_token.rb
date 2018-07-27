@@ -1,6 +1,7 @@
 class DeployToken < ActiveRecord::Base
   include Expirable
   include TokenAuthenticatable
+  include PolicyActor
   add_authentication_token_field :token
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
@@ -27,7 +28,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def active?
-    !revoked
+    !revoked && expires_at > Date.today
   end
 
   def scopes

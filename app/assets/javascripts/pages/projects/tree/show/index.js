@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Vue from 'vue';
 import initBlob from '~/blob_edit/blob_bundle';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
+import GpgBadges from '~/gpg_badges';
 import TreeView from '../../../../tree';
 import ShortcutsNavigation from '../../../../shortcuts_navigation';
 import BlobViewer from '../../../../blob/viewer';
@@ -14,7 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
   new BlobViewer(); // eslint-disable-line no-new
   new NewCommitForm($('.js-create-dir-form')); // eslint-disable-line no-new
   $('#tree-slider').waitForImages(() =>
-    ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath));
+    ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath),
+  );
 
   initBlob();
   const commitPipelineStatusEl = document.querySelector('.js-commit-pipeline-status');
@@ -36,4 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
       },
     });
   }
+
+  GpgBadges.fetch();
 });

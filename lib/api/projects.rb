@@ -9,6 +9,21 @@ module API
     before { authenticate_non_get! }
 
     helpers do
+      params :optional_filter_params_ee do
+        # EE::API::Projects would override this helper
+      end
+
+      # EE::API::Projects would override this method
+      def apply_filters(projects)
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+
+        projects
+      end
+    end
+
+    helpers do
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
@@ -30,7 +45,7 @@ module API
       end
 
       params :filter_params do
-        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of projects matching the search criteria'
@@ -39,6 +54,9 @@ module API
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+
+        use :optional_filter_params_ee
       end
 
       params :create_params do
@@ -52,9 +70,7 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-        projects = projects.with_statistics if params[:statistics]
+        projects = apply_filters(projects)
         projects = paginate(projects)
         projects, options = with_custom_attributes(projects, options)
 

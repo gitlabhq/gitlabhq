@@ -1,5 +1,0 @@
----
-title: Removes unused vuex code in mr refactor and removes unneeded dependencies
-merge_request: 20499
-author:
-type: other

@@ -41,11 +41,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      activeFile: '',
-    };
-  },
   computed: {
     ...mapState({
       isLoading: state => state.diffs.isLoading,
@@ -90,6 +85,9 @@ export default {
       }
       return __('Show latest version');
     },
+    canCurrentUserFork() {
+      return this.currentUser.canFork === true && this.currentUser.canCreateMergeRequest;
+    },
   },
   watch: {
     diffViewType() {
@@ -124,14 +122,6 @@ export default {
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');
-      }
-    },
-    setActive(filePath) {
-      this.activeFile = filePath;
-    },
-    unsetActive(filePath) {
-      if (this.activeFile === filePath) {
-        this.activeFile = '';
       }
     },
     adjustView() {
@@ -195,7 +185,6 @@ export default {
 
       <changed-files
         :diff-files="diffFiles"
-        :active-file="activeFile"
       />
 
       <div
@@ -206,9 +195,7 @@ export default {
           v-for="file in diffFiles"
           :key="file.newPath"
           :file="file"
-          :current-user="currentUser"
-          @setActive="setActive(file.filePath)"
-          @unsetActive="unsetActive(file.filePath)"
+          :can-current-user-fork="canCurrentUserFork"
         />
       </div>
       <no-changes v-else />

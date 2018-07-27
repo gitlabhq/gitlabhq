@@ -16,16 +16,11 @@ module QA
           end
 
           view 'app/views/projects/protected_branches/_update_protected_branch.html.haml' do
-            element :allowed_to_push
             element :allowed_to_merge
           end
 
           view 'app/views/projects/protected_branches/shared/_branches_list.html.haml' do
             element :protected_branches_list
-          end
-
-          view 'app/views/projects/protected_branches/shared/_protected_branch.html.haml' do
-            element :protected_branch_name
           end
 
           def select_branch(branch_name)
@@ -60,18 +55,6 @@ module QA
 
           def protect_branch
             click_on 'Protect'
-          end
-
-          def last_branch_name
-            within_element(:protected_branches_list) do
-              all('.qa-protected-branch-name').last
-            end
-          end
-
-          def last_push_allowance
-            within_element(:protected_branches_list) do
-              all('.qa-allowed-to-push').last
-            end
           end
 
           private

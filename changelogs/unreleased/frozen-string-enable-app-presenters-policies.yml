@@ -1,0 +1,5 @@
+---
+title: Enable frozen string in app/presenters and app/policies
+merge_request: 20819
+author: gfyoung
+type: performance

@@ -1,5 +1,0 @@
----
-title: Run repository checks in parallel for each shard
-merge_request: 20179
-author:
-type: added

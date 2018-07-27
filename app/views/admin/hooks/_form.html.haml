@@ -1,15 +1,15 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, 'URL', class: 'label-light'
+  = form.label :url, 'URL', class: 'label-bold'
   = form.text_field :url, class: 'form-control'
 .form-group
-  = form.label :token, 'Secret Token', class: 'label-light'
+  = form.label :token, 'Secret Token', class: 'label-bold'
   = form.text_field :token, class: 'form-control'
   %p.form-text.text-muted
     Use this token to validate received payloads
 .form-group
-  = form.label :url, 'Trigger', class: 'label-light'
+  = form.label :url, 'Trigger', class: 'label-bold'
   %ul.list-unstyled
     %li
       .form-text.text-muted
@@ -45,7 +45,7 @@
         %p.light
           This URL will be triggered when a merge request is created/updated/merged
 .form-group
-  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
+  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-bold checkbox'
   .form-check
     = form.check_box :enable_ssl_verification, class: 'form-check-input'
     = form.label :enable_ssl_verification, class: 'form-check-label' do

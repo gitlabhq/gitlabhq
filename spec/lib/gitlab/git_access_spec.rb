@@ -734,26 +734,18 @@ describe Gitlab::GitAccess do
         merge_into_protected_branch: "0b4bc9a #{merge_into_protected_branch} refs/heads/feature" }
     end
 
-    def stub_git_hooks
-      # Running the `pre-receive` hook is expensive, and not necessary for this test.
-      allow_any_instance_of(Gitlab::Git::HooksService).to receive(:execute) do |service, &block|
-        block.call(service)
-      end
-    end
-
     def merge_into_protected_branch
       @protected_branch_merge_commit ||= begin
         Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          stub_git_hooks
           project.repository.add_branch(user, unprotected_branch, 'feature')
-          target_branch = project.repository.lookup('feature')
+          rugged = project.repository.rugged
+          target_branch = rugged.rev_parse('feature')
           source_branch = project.repository.create_file(
             user,
             'filename',
             'This is the file content',
             message: 'This is a good commit message',
             branch_name: unprotected_branch)
-          rugged = project.repository.rugged
           author = { email: "email@example.com", time: Time.now, name: "Example Git User" }
 
           merge_index = rugged.merge_commits(target_branch, source_branch)

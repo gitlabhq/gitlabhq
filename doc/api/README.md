@@ -388,7 +388,7 @@ For example, `/` is represented by `%2F`:
 GET /api/v4/projects/diaspora%2Fdiaspora
 ```
 
-## Branches & tags name encoding
+## Branches and tags name encoding
 
 If your branch or tag contains a `/`, make sure the branch/tag name is
 URL-encoded.
@@ -397,6 +397,36 @@ For example, `/` is represented by `%2F`:
 
 ```
 GET /api/v4/projects/1/branches/my%2Fbranch/commits
+```
+
+## Encoding API parameters of `array` and `hash` types
+
+When making an API call with parameters of type `array` and/or `hash`, the parameters may be
+specified as shown below.
+
+### `array`
+
+`import_sources` is a parameter of type `array`:
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+-d "import_sources[]=github" \
+-d "import_sources[]=bitbucket" \
+"https://gitlab.example.com/api/v4/some_endpoint
+```
+
+### `hash`
+
+`override_params` is a parameter of type `hash`:
+
+```
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
+--form "namespace=email" \
+--form "path=impapi" \
+--form "file=@/path/to/somefile.txt"
+--form "override_params[visibility]=private" \
+--form "override_params[some_other_param]=some_value" \
+https://gitlab.example.com/api/v4/projects/import
 ```
 
 ## `id` vs `iid`

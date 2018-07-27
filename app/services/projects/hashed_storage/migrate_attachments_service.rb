@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   module HashedStorage
     AttachmentMigrationError = Class.new(StandardError)

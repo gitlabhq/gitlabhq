@@ -6,7 +6,7 @@
   = render_if_exists 'admin/namespace_plan', f: f
 
   .form-group.row.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'col-form-label col-sm-2'
+    = f.label :avatar, _("Group avatar"), class: 'col-form-label col-sm-2'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
@@ -26,12 +26,12 @@
         .alert.alert-info
           = render 'shared/group_tips'
     .form-actions
-      = f.submit 'Create group', class: "btn btn-create"
-      = link_to  'Cancel', admin_groups_path, class: "btn btn-cancel"
+      = f.submit _('Create group'), class: "btn btn-create"
+      = link_to  _('Cancel'), admin_groups_path, class: "btn btn-cancel"
 
   - else
     .form-actions
-      = f.submit 'Save changes', class: "btn btn-save"
-      = link_to  'Cancel', admin_group_path(@group), class: "btn btn-cancel"
+      = f.submit _('Save changes'), class: "btn btn-save"
+      = link_to  _('Cancel'), admin_group_path(@group), class: "btn btn-cancel"
 
 = render_if_exists 'ldap_group_links/ldap_syncrhonizations', group: @group

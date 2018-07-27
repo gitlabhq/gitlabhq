@@ -40,5 +40,14 @@ describe Gitlab::HookData::IssueBuilder do
       expect(data).to include(:human_total_time_spent)
       expect(data).to include(:assignee_ids)
     end
+
+    context 'when the issue has an image in the description' do
+      let(:issue_with_description) { create(:issue, description: 'test![Issue_Image](/uploads/abc/Issue_Image.png)') }
+      let(:builder) { described_class.new(issue_with_description) }
+
+      it 'sets the image to use an absolute URL' do
+        expect(data[:description]).to eq("test![Issue_Image](#{Settings.gitlab.url}/uploads/abc/Issue_Image.png)")
+      end
+    end
   end
 end

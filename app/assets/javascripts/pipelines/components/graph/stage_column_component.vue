@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import JobComponent from './job_component.vue';
 import DropdownJobComponent from './dropdown_job_component.vue';
 
@@ -37,7 +38,7 @@ export default {
     },
 
     jobId(job) {
-      return `ci-badge-${job.name}`;
+      return `ci-badge-${_.escape(job.name)}`;
     },
 
     buildConnnectorClass(index) {

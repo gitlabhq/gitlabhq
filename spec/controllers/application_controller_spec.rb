@@ -89,6 +89,32 @@ describe ApplicationController do
     end
   end
 
+  describe 'session expiration' do
+    controller(described_class) do
+      def index
+        render text: 'authenticated'
+      end
+    end
+
+    context 'authenticated user' do
+      it 'does not set the expire_after option' do
+        sign_in(create(:user))
+
+        get :index
+
+        expect(request.env['rack.session.options'][:expire_after]).to be_nil
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'sets the expire_after option' do
+        get :index
+
+        expect(request.env['rack.session.options'][:expire_after]).to eq(Settings.gitlab['unauthenticated_session_expire_delay'])
+      end
+    end
+  end
+
   describe 'rescue from Gitlab::Git::Storage::Inaccessible' do
     controller(described_class) do
       def index

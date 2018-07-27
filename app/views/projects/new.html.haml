@@ -55,13 +55,12 @@
                   = render 'project_templates', f: f
 
         .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
-          = form_for @project, html: { class: 'new_project' } do |f|
-            - if import_sources_enabled?
-              = render 'import_project_pane', f: f, active_tab: active_tab
-            - else
-              .nothing-here-block
-                %h4 No import options available
-                %p Contact an administrator to enable options for importing your project.
+          - if import_sources_enabled?
+            = render 'import_project_pane', active_tab: active_tab
+          - else
+            .nothing-here-block
+              %h4 No import options available
+              %p Contact an administrator to enable options for importing your project.
 
 .save-project-loader.d-none
   .center

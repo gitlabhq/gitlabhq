@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const notesDataset = document.getElementById('js-vue-notes').dataset;
       const parsedUserData = JSON.parse(notesDataset.currentUserData);
       const noteableData = JSON.parse(notesDataset.noteableData);
-      const { markdownVersion } = notesDataset;
+      const markdownVersion = parseInt(notesDataset.markdownVersion, 10);
       let currentUserData = {};
 
       noteableData.noteableType = notesDataset.noteableType;

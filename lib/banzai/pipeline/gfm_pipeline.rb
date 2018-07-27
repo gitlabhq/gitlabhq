@@ -24,6 +24,17 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
+          *reference_filters,
+
+          Filter::TaskListFilter,
+          Filter::InlineDiffFilter,
+
+          Filter::SetDirectionFilter
+        ]
+      end
+
+      def self.reference_filters
+        [
           Filter::UserReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
@@ -32,12 +43,7 @@ module Banzai
           Filter::CommitRangeReferenceFilter,
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
-          Filter::MilestoneReferenceFilter,
-
-          Filter::TaskListFilter,
-          Filter::InlineDiffFilter,
-
-          Filter::SetDirectionFilter
+          Filter::MilestoneReferenceFilter
         ]
       end
 

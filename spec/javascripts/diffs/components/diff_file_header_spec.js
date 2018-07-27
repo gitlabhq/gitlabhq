@@ -24,7 +24,7 @@ describe('diff_file_header', () => {
     const diffFile = convertObjectPropsToCamelCase(diffDiscussionMock.diff_file, { deep: true });
     props = {
       diffFile,
-      currentUser: {},
+      canCurrentUserFork: false,
     };
   });
 

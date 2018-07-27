@@ -59,7 +59,7 @@ module QA
       end
 
       def add_file(name, contents)
-        File.write(name, contents)
+        ::File.write(name, contents)
 
         `git add #{name}`
       end

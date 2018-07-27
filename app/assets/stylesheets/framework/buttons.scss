@@ -294,6 +294,10 @@
 .btn-clipboard {
   border: 0;
   padding: 0 5px;
+
+  svg {
+    top: auto;
+  }
 }
 
 .input-group-prepend,

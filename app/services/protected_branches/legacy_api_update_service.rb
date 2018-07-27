@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The branches#protect API still uses the `developers_can_push` and `developers_can_merge`
 # flags for backward compatibility, and so performs translation between that format and the
 # internal data model (separate access levels). The translation code is non-trivial, and so

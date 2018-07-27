@@ -321,10 +321,17 @@
   }
 
   &.activities {
+    display: flex;
     border-bottom: 1px solid $border-color;
+    overflow: hidden;
 
     .nav-links {
       border-bottom: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      display: block;
+      overflow: visible;
     }
   }
 }

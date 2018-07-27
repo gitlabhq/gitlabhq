@@ -91,25 +91,6 @@ describe('RepoFile', () => {
         done();
       });
     });
-
-    it('disables action dropdown', done => {
-      createComponent({
-        file: {
-          ...file('t4'),
-          type: 'tree',
-          branchId: 'master',
-          projectId: 'project',
-        },
-        level: 0,
-        disableActionDropdown: true,
-      });
-
-      setTimeout(() => {
-        expect(vm.$el.querySelector('.ide-new-btn')).toBeNull();
-
-        done();
-      });
-    });
   });
 
   describe('locked file', () => {

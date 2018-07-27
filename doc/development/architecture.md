@@ -197,4 +197,4 @@ Note: It is recommended to log into the `git` user using `sudo -i -u git` or `su
 
 ## GitLab.com
 
-We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

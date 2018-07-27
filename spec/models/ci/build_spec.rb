@@ -1613,6 +1613,7 @@ describe Ci::Build do
         { key: 'CI_JOB_NAME', value: 'test', public: true },
         { key: 'CI_JOB_STAGE', value: 'test', public: true },
         { key: 'CI_COMMIT_SHA', value: build.sha, public: true },
+        { key: 'CI_COMMIT_BEFORE_SHA', value: build.before_sha, public: true },
         { key: 'CI_COMMIT_REF_NAME', value: build.ref, public: true },
         { key: 'CI_COMMIT_REF_SLUG', value: build.ref_slug, public: true },
         { key: 'CI_BUILD_REF', value: build.sha, public: true },
@@ -2264,6 +2265,34 @@ describe Ci::Build do
       it 'returns a hash including variable with higher precedence' do
         expect(build.scoped_variables_hash).to include('MY_VAR': 'pipeline value')
         expect(build.scoped_variables_hash).not_to include('MY_VAR': 'myvar')
+      end
+    end
+  end
+
+  describe '#yaml_variables' do
+    before do
+      build.update_attribute(:yaml_variables, variables)
+    end
+
+    context 'when serialized valu is a symbolized hash' do
+      let(:variables) do
+        [{ key: :VARIABLE, value: 'my value 1' }]
+      end
+
+      it 'keeps symbolizes keys and stringifies variables names' do
+        expect(build.yaml_variables)
+          .to eq [{ key: 'VARIABLE', value: 'my value 1' }]
+      end
+    end
+
+    context 'when serialized value is a hash with string keys' do
+      let(:variables) do
+        [{ 'key' => :VARIABLE, 'value' => 'my value 2' }]
+      end
+
+      it 'symblizes variables hash' do
+        expect(build.yaml_variables)
+          .to eq [{ key: 'VARIABLE', value: 'my value 2' }]
       end
     end
   end

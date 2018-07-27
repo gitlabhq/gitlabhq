@@ -30,7 +30,7 @@ module API
     end
 
     class User < UserBasic
-      expose :created_at
+      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
@@ -55,6 +55,7 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+      expose :private_profile
     end
 
     class UserWithAdmin < UserPublic
@@ -132,13 +133,17 @@ module API
       expose :star_count, :forks_count
       expose :last_activity_at
 
+      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         projects_relation.preload(:project_feature, :route)
-                         .preload(:import_state)
-                         .preload(namespace: [:route, :owner],
-                                  tags: :taggings)
+                         .preload(:import_state, :tags)
+                         .preload(namespace: [:route, :owner])
       end
     end
 
@@ -191,7 +196,6 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -212,11 +216,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       def self.preload_relation(projects_relation, options =  {})
+        # Preloading tags, should be done with using only `:tags`,
+        # as `:tags` are defined as: `has_many :tags, through: :taggings`
+        # N+1 is solved then by using `subject.tags.map(&:name)`
+        # MR describing the solution: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20555
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
                                          forked_project_link: :forked_from_project,
-                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+                                         forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
 
       def self.forks_counting_projects(projects_relation)
@@ -522,6 +530,10 @@ module API
 
     class PipelineBasic < Grape::Entity
       expose :id, :sha, :ref, :status
+
+      expose :web_url do |pipeline, _options|
+        Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
+      end
     end
 
     class MergeRequestSimple < ProjectEntity
@@ -694,7 +706,7 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
 
-      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
         note.position.to_h
       end
 
@@ -1062,6 +1074,10 @@ module API
       expose :user, with: User
       expose :commit, with: Commit
       expose :pipeline, with: PipelineBasic
+
+      expose :web_url do |job, _options|
+        Gitlab::Routing.url_helpers.project_job_url(job.project, job)
+      end
     end
 
     class Job < JobBasic
