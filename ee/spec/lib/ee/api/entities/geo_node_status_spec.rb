@@ -133,6 +133,6 @@ describe EE::API::Entities::GeoNodeStatus, :postgresql do
     end
 
     it { is_expected.to have_key(:storage_shards) }
-    it { is_expected.not_to have_key(:storage_shards_match) }
+    it { is_expected.to have_key(:storage_shards_match) }
   end
 end
