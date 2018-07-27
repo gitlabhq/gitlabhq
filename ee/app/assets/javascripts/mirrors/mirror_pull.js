@@ -24,6 +24,7 @@ export default class MirrorPull {
     this.$wellPasswordAuth = this.$form.find('.js-well-password-auth');
     this.$wellSSHAuth = this.$form.find('.js-well-ssh-auth');
     this.$sshPublicKeyWrap = this.$form.find('.js-ssh-public-key-wrap');
+    this.$regeneratePublicSshKeyButton = this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key');
   }
 
   init() {
@@ -213,7 +214,7 @@ export default class MirrorPull {
   toggleSSHAuthWellMessage(sshKeyPresent) {
     this.$sshPublicKeyWrap.collapse(sshKeyPresent ? 'show' : 'hide');
     this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse(sshKeyPresent ? 'show' : 'hide');
-    this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key').collapse(sshKeyPresent ? 'show' : 'hide');
+    this.$regeneratePublicSshKeyButton.collapse(sshKeyPresent ? 'show' : 'hide');
     this.$wellSSHAuth.find('.js-ssh-public-key-pending').collapse(sshKeyPresent ? 'hide' : 'show');
   }
 

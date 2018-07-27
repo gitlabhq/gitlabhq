@@ -26,7 +26,8 @@
         = import_data.ssh_public_key
       = clipboard_button(text: import_data.ssh_public_key, title: _("Copy SSH public key to clipboard"), class: 'prepend-top-10 btn-copy-ssh-public-key')
 
-    = link_to _('Regenerate key'), project_mirror_path(@project, project: { import_data_attributes: regen_data }),
-        method: :patch,
-        data: { confirm: _('Are you sure you want to regenerate public key? You will have to update the public key on the remote server before mirroring will work again.') },
-        class: "btn btn-inverted btn-warning prepend-top-10 js-btn-regenerate-ssh-key #{ 'collapse' unless ssh_public_key_present }"
+    = button_tag _('Regenerate key'),
+      type: 'button',
+      data: { endpoint: project_mirror_path(@project, project: { import_data_attributes: regen_data }),
+      confirm: _('Are you sure you want to regenerate public key? You will have to update the public key on the remote server before mirroring will work again.') },
+      class: "btn btn-inverted btn-warning prepend-top-10 js-btn-regenerate-ssh-key#{ ' collapse' unless ssh_public_key_present }"
