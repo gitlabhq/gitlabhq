@@ -7243,7 +7243,6 @@ msgstr ""
 msgid "branch name"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "by"
 msgstr ""
 
@@ -7454,8 +7453,6 @@ msgstr ""
 msgid "ciReport|on pipeline"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "command line instructions"
 msgstr ""
 
