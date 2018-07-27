@@ -377,6 +377,10 @@ This functionality is only available:
 - For users with at least Developer access.
 - If the the stage contains [manual actions](#manual-actions-from-pipeline-graphs).
 
+## Most Recent Pipeline
+
+There's a link to the latest pipeline for the last commit of a given branch at `/project/pipelines/[branch]/latest`. Also, `/project/pipelines/latest` will redirect you to the latest pipeline for the last commit on the project's default branch.
+
 ## Security on protected branches
 
 A strict security model is enforced when pipelines are executed on

@@ -3,6 +3,7 @@
 class Projects::PipelinesController < Projects::ApplicationController
   before_action :whitelist_query_limiting, only: [:create, :retry]
   before_action :pipeline, except: [:index, :new, :create, :charts]
+  before_action :set_pipeline_path, only: [:show]
   before_action :authorize_read_pipeline!
   before_action :authorize_read_build!, only: [:index]
   before_action :authorize_create_pipeline!, only: [:new, :create]
@@ -174,13 +175,35 @@ class Projects::PipelinesController < Projects::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
-    @pipeline ||= project
-                    .all_pipelines
-                    .includes(user: :status)
-                    .find_by!(id: params[:id])
-                    .present(current_user: current_user)
+    @pipeline ||= if params[:id].blank? && params[:latest]
+                    latest_pipeline
+                  else
+                    project
+                      .all_pipelines
+                      .includes(user: :status)
+                      .find_by!(id: params[:id])
+                      .present(current_user: current_user)
+                  end
   end
   # rubocop: enable CodeReuse/ActiveRecord
+
+  def set_pipeline_path
+    @pipeline_path ||= if params[:id].blank? && params[:latest]
+                         latest_project_pipelines_path(@project, params['ref'])
+                       else
+                         project_pipeline_path(@project, @pipeline)
+                       end
+  end
+
+  def latest_pipeline
+    ref = params['ref'].presence || @project.default_branch
+    sha = @project.commit(ref)&.sha
+
+    @project.ci_pipelines
+            .newest_first(ref: ref, sha: sha)
+            .first
+            &.present(current_user: current_user)
+  end
 
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343

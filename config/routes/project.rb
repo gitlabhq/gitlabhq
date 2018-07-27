@@ -359,6 +359,9 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         collection do
           resource :pipelines_settings, path: 'settings', only: [:show, :update]
           get :charts
+          scope '(*ref)', constraints: { ref: Gitlab::PathRegex.git_reference_regex } do
+            get :latest, action: :show, defaults: { latest: true }
+          end
         end
 
         member do
