@@ -122,7 +122,7 @@ describe "Projects > Settings > Pipelines settings" do
 
         it 'shows the help text with the nip.io domain as the default' do
           visit project_settings_ci_cd_path(project)
-          expect(page).to have_content('we will use 192.168.1.100.nip.io by default')
+          expect(page).to have_content('192.168.1.100.nip.io will be used as a default alternative')
         end
       end
 
@@ -133,7 +133,7 @@ describe "Projects > Settings > Pipelines settings" do
 
         it 'help text with nip.io default is not shown' do
           visit project_settings_ci_cd_path(project)
-          expect(page).not_to have_content('we will use 192.168.1.100.nip.io by default')
+          expect(page).not_to have_content('192.168.1.100.nip.io will be used as a default alternative')
         end
       end
     end
