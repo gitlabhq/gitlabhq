@@ -20,7 +20,6 @@ describe ProjectPresenter do
 
     before do
       allow(Ability).to receive(:allowed?).with(user, :read_project_security_dashboard, project).and_return(true)
-      allow(Ability).to receive(:allowed?).with(nil, :read_project_security_dashboard, project).and_return(false)
       allow(project).to receive(:latest_pipeline_with_security_reports).and_return(pipeline)
     end
 
@@ -32,12 +31,6 @@ describe ProjectPresenter do
       it do
         expect(presenter.extra_statistics_anchors).not_to include(security_dashboard_data)
       end
-    end
-
-    context 'user not signed in' do
-      let(:user) { nil }
-
-      it_behaves_like 'has no security dashboard link'
     end
 
     context 'user is not allowed to read security dashboard' do
