@@ -8,8 +8,8 @@ Rails.application.configure do |config|
     when :set_user
       Gitlab::Auth::Activity.new(user, opts).user_authenticated!
       Gitlab::Auth::Activity.new(user, opts).user_session_override!
-    when :fetch
-      # no-op
+    when :fetch # rubocop:disable Lint/EmptyWhen
+      # We ignore session fetch events
     else
       Gitlab::Auth::Activity.new(user, opts).user_session_override!
     end
