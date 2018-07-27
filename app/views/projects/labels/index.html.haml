@@ -15,10 +15,16 @@
       .nav-text
         = _('Labels can be applied to issues and merge requests.')
         - if can_admin_label
+          %br
           = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
 
-    = form_tag project_labels_path(@project), method: :get do
-      = search_field_tag :search, params[:search], { placeholder: _('Filter labels by name or description'), id: 'label-search', class: 'form-control', spellcheck: false }
+      .nav-controls
+        = form_tag project_labels_path(@project), method: :get do
+          .input-group
+            = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
+            %span.input-group-append
+              %button.btn{ type: "submit", "aria-label" => "Submit search" }
+                = icon("search")
 
     .labels-container.prepend-top-10
       - if can_admin_label
