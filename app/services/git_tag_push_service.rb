@@ -9,8 +9,8 @@ class GitTagPushService < BaseService
     Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push)
 
     SystemHooksService.new.execute_hooks(system_push_data, :tag_push_hooks)
-    project.execute_hooks(push_data.dup, :tag_push_hooks)
-    project.execute_services(push_data.dup, :tag_push_hooks)
+    project.execute_hooks(push_data, :tag_push_hooks)
+    project.execute_services(push_data, :tag_push_hooks)
 
     ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
 
