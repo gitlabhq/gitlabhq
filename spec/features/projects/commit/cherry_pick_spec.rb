@@ -86,7 +86,7 @@ describe 'Cherry-pick Commits' do
         click_button 'Cherry-pick'
       end
 
-      expect(page).to have_content('The commit has been successfully cherry-picked into master.')
+      expect(page).to have_content('The commit has been successfully cherry-picked into feature.')
     end
   end
 
