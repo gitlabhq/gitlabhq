@@ -6,11 +6,8 @@
 module PolicyActor
   extend ActiveSupport::Concern
 
-<<<<<<< HEAD
   prepend EE::PolicyActor
 
-=======
->>>>>>> upstream/master
   def blocked?
     false
   end
