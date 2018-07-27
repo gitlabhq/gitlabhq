@@ -126,7 +126,7 @@ class Notify < BaseMailer
 
       fallback_reply_message_id = "<reply-#{reply_key}@#{Gitlab.config.gitlab.host}>".freeze
       headers['References'] ||= []
-      headers['References'] << fallback_reply_message_id
+      headers['References'].unshift(fallback_reply_message_id)
 
       @reply_by_email = true
     end
@@ -160,7 +160,7 @@ class Notify < BaseMailer
   def mail_answer_thread(model, headers = {})
     headers['Message-ID'] = "<#{SecureRandom.hex}@#{Gitlab.config.gitlab.host}>"
     headers['In-Reply-To'] = message_id(model)
-    headers['References'] = message_id(model)
+    headers['References'] = [message_id(model)]
 
     headers[:subject]&.prepend('Re: ')
 

@@ -1,8 +1,10 @@
 import Vue from 'vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
 import graphJSON from './mock_data';
 import linkedPipelineJSON from './linked_pipelines_mock_data';
 
+<<<<<<< HEAD
 const GraphComponent = Vue.extend(graphComponent);
 
 const pipelineJSON = Object.assign(graphJSON, {
@@ -61,6 +63,32 @@ describe('graph component', function () {
       it('should include the left-margin class on the second child', function () {
         const firstStageColumnElement = this.component.$el.querySelector('.stage-column-list .stage-column:last-child');
         expect(firstStageColumnElement.classList.contains('left-margin')).toEqual(true);
+=======
+describe('graph component', () => {
+  const GraphComponent = Vue.extend(graphComponent);
+  let component;
+
+  afterEach(() => {
+    component.$destroy();
+  });
+
+  describe('while is loading', () => {
+    it('should render a loading icon', () => {
+      component = mountComponent(GraphComponent, {
+        isLoading: true,
+        pipeline: {},
+      });
+
+      expect(component.$el.querySelector('.loading-icon')).toBeDefined();
+    });
+  });
+
+  describe('with data', () => {
+    it('should render the graph', () => {
+      component = mountComponent(GraphComponent, {
+        isLoading: false,
+        pipeline: graphJSON,
+>>>>>>> upstream/master
       });
 
       it('should include the has-linked-pipelines flag', function () {
@@ -126,6 +154,17 @@ describe('graph component', function () {
       it('it returns left-margin when no triggerer and not the first stage', function () {
         expect(this.component.stageConnectorClass(99, { groups: ['job'] })).toBe('left-margin');
       });
+    });
+  });
+
+  describe('capitalizeStageName', () => {
+    it('capitalizes and escapes stage name', () => {
+      component = mountComponent(GraphComponent, {
+        isLoading: false,
+        pipeline: graphJSON,
+      });
+
+      expect(component.$el.querySelector('.stage-column:nth-child(2) .stage-name').textContent.trim()).toEqual('Deploy &lt;img src=x onerror=alert(document.domain)&gt;');
     });
   });
 });

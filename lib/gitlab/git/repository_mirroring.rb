@@ -6,7 +6,9 @@ module Gitlab
           if is_enabled
             gitaly_ref_client.remote_branches(remote_name)
           else
-            rugged_remote_branches(remote_name)
+            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+              rugged_remote_branches(remote_name)
+            end
           end
         end
       end
