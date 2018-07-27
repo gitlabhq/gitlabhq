@@ -113,7 +113,6 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-
 ## Workflow labels
 
 This [documentation](issue_workflow.md) outlines the current workflow labels. 
@@ -130,16 +129,13 @@ This [documentation](issue_worfklow.md) outlines the current subject labels.
 
 This [documentation](issue_worfklow.md) outlines the current team labels. 
 
-
 ### Milestone labels 
 
 This [documentation](issue_worfklow.md) outlines the current milestone labels. 
 
-
 ### Bug Priority labels 
 
 This [documentation](issue_worfklow.md) outlines the current bug priority  labels. 
-
 
 ### Bug Severity labels
 
@@ -148,7 +144,6 @@ This [documentation](issue_workflow.md) outlines the current severity labels.
 #### Severity impact guidance
 
 This [documentation](issue_workflow.md) outlines the current severity impact guidance. 
-
 
 ### Label for community contributors 
 
@@ -208,5 +203,3 @@ This [documentation](merge_request_workflow.md) outlines the defintion of done.
 
 ## Style guides
 This [documentation](design.md) outlines the current style guidelines. 
-
-
