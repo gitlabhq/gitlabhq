@@ -4,8 +4,7 @@ module Gitlab
       class InstallCommand
         include BaseCommand
 
-        attr_reader :name, :files
-        attr_reader :chart, :version, :repository
+        attr_reader :name, :files, :chart, :version, :repository
 
         def initialize(name:, chart:, files:, version: nil, repository: nil)
           @name = name
