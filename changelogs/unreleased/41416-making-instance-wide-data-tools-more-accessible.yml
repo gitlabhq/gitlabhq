@@ -1,6 +1,5 @@
 ---
-title: Add instance_statistics namespace, containing convdev index and cohorts instance
-  stats
-merge_request: 20679
+title: Allow non-admins to view instance statistics (if permitted by the instance admins)
+merge_request: 20874
 author:
 type: changed
