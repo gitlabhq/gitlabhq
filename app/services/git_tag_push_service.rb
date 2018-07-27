@@ -3,7 +3,7 @@
 class GitTagPushService < BaseService
   attr_accessor :push_data
 
-  def execute
+  def execute(update_statistics: true)
     project.repository.after_create if project.empty_repo?
     project.repository.before_push_tag
 
@@ -16,7 +16,9 @@ class GitTagPushService < BaseService
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
     project.execute_services(@push_data.dup, :tag_push_hooks)
 
-    ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
+    if update_statistics
+      ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
+    end
 
     true
   end

@@ -20,7 +20,7 @@ class GitPushService < BaseService
   #  5. Executes the project's services
   #  6. Checks if the project's main language has changed
   #
-  def execute
+  def execute(update_statistics: true)
     @project.repository.after_create if @project.empty_repo?
     @project.repository.after_push_commit(branch_name)
 
@@ -58,7 +58,7 @@ class GitPushService < BaseService
     perform_housekeeping
 
     update_remote_mirrors
-    update_caches
+    update_caches(update_statistics)
 
     update_signatures
   end
@@ -67,7 +67,7 @@ class GitPushService < BaseService
     @project.repository.copy_gitattributes(params[:ref])
   end
 
-  def update_caches
+  def update_caches(update_statistics)
     if default_branch?
       if push_to_new_branch?
         # If this is the initial push into the default branch, the file type caches
@@ -88,7 +88,9 @@ class GitPushService < BaseService
       types = []
     end
 
-    ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
+    if update_statistics || types.any?
+      ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
+    end
   end
 
   def update_signatures

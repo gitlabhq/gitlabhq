@@ -39,14 +39,16 @@ class PostReceive
       end
 
       if Gitlab::Git.tag_ref?(ref)
-        GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+        GitTagPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute(update_statistics: false)
       elsif Gitlab::Git.branch_ref?(ref)
-        GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute
+        GitPushService.new(post_received.project, @user, oldrev: oldrev, newrev: newrev, ref: ref).execute(update_statistics: false)
       end
 
       changes << Gitlab::DataBuilder::Repository.single_change(oldrev, newrev, ref)
       refs << ref
     end
+
+    ProjectCacheWorker.perform_async(project.id, [], [:commit_count, :repository_size])
 
     after_project_changes_hooks(post_received, @user, refs.to_a, changes)
   end
