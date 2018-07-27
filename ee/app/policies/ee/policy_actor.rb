@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EE
-  module PolicyCheckable
+  module PolicyActor
     def auditor?
       false
     end
