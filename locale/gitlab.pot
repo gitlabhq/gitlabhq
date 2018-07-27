@@ -2522,10 +2522,10 @@ msgstr ""
 msgid "Files (%{human_size})"
 msgstr ""
 
-msgid "Filter by commit message"
+msgid "Filter"
 msgstr ""
 
-msgid "Filter labels by name or description"
+msgid "Filter by commit message"
 msgstr ""
 
 msgid "Find by path"
@@ -3563,6 +3563,9 @@ msgid "No files found"
 msgstr ""
 
 msgid "No files found."
+msgstr ""
+
+msgid "No labels with such name or description"
 msgstr ""
 
 msgid "No merge requests found"
