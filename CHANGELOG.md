@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.3 (2018-07-27)
+
+### Fixed (8 changes, 1 of them is from the community)
+
+- Rework some projects table indexes around repository_storage field. !20377
+- Fix navigation to First and Next discussion on MR Changes tab. !20434
+- Fix showing outdated discussions on Changes tab. !20445
+- Fix autosave and ESC confirmation issues for MR discussions. !20569
+- Fix rendering of the context lines in MR diffs page. !20642
+- Don't overflow project/group dropdown results. !20704 (gfyoung)
+- Fixed IDE not opening JSON files. !20798
+- Disable Gitaly timeouts when creating or restoring backups. !20810
+
+### Performance (1 change)
+
+- Reduces the client side memory footprint on merge requests. !20744
+
+
 ## 11.1.2 (2018-07-26)
 
 ### Security (4 changes)
