@@ -29,31 +29,21 @@ module EE
             projects
           end
 
-          override :verify_create_projects_attrs!
-          def verify_create_projects_attrs!(attrs)
-            super
-
-            verify_mirror_attrs!(attrs)
-
-            if attrs[:mirror]
-              attrs[:mirror_user_id] = current_user.id
-            end
-          end
-
           override :verify_update_project_attrs!
-          def verify_update_project_attrs!(attrs)
+          def verify_update_project_attrs!(project, attrs)
             super
 
-            verify_mirror_attrs!(attrs)
-
-            unless valid_mirror_user?(attrs)
-              render_api_error!("Invalid mirror user", 400)
-            end
+            verify_mirror_attrs!(project, attrs)
           end
 
-          def verify_mirror_attrs!(attrs)
-            if attrs[:mirror].present? && !mirroring_available?
-              render_api_error!("Pull mirroring is not available", 403)
+          def verify_mirror_attrs!(project, attrs)
+            unless can?(current_user, :admin_mirror, project)
+              attrs.delete(:mirror)
+              attrs.delete(:mirror_user_id)
+              attrs.delete(:mirror_trigger_builds)
+              attrs.delete(:only_mirror_protected_branches)
+              attrs.delete(:mirror_overwrites_diverged_branches)
+              attrs.delete(:import_data_attributes)
             end
           end
         end

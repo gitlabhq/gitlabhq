@@ -50,11 +50,11 @@ describe API::Projects do
           stub_ee_application_setting(mirror_available: false)
         end
 
-        it 'returns a 403' do
+        it 'ignores the mirroring options' do
           post api('/projects', user), mirror_params
 
-          expect(response).to have_gitlab_http_status(403)
-          expect(json_response["message"]).to eq("Pull mirroring is not available")
+          expect(response).to have_gitlab_http_status(201)
+          expect(Project.first.mirror?).to be false
         end
 
         it 'creates project with mirror settings' do
@@ -107,11 +107,11 @@ describe API::Projects do
           stub_ee_application_setting(mirror_available: false)
         end
 
-        it 'raises an API error' do
+        it 'does not update mirror related attributes' do
           put(api("/projects/#{project.id}", user), mirror_params)
 
-          expect(response).to have_gitlab_http_status(403)
-          expect(json_response["message"]).to eq("Pull mirroring is not available")
+          expect(response).to have_gitlab_http_status(200)
+          expect(project.reload.mirror).to be false
         end
 
         it 'updates mirror related attributes when user is admin' do
@@ -168,7 +168,7 @@ describe API::Projects do
         put(api("/projects/#{project.id}", user), mirror_params)
 
         expect(response).to have_gitlab_http_status(400)
-        expect(json_response["message"]).to eq("Invalid mirror user")
+        expect(json_response["message"]["mirror_user_id"].first).to eq("is invalid")
       end
 
       it 'returns 403 when the user does not have access to mirror settings' do

@@ -7,19 +7,16 @@ module EE
 
       override :execute
       def execute
-        unless project.feature_available?(:repository_mirrors)
-          params.delete(:mirror)
-          params.delete(:mirror_user_id)
-          params.delete(:mirror_trigger_builds)
-          params.delete(:only_mirror_protected_branches)
-          params.delete(:mirror_overwrites_diverged_branches)
-          params.delete(:import_data_attributes)
-        end
-
         should_remove_old_approvers = params.delete(:remove_old_approvers)
         wiki_was_enabled = project.wiki_enabled?
 
         limit = params.delete(:repository_size_limit)
+
+        unless valid_mirror_user?
+          project.errors.add(:mirror_user_id, 'is invalid')
+          return project
+        end
+
         result = super do
           # Repository size limit comes as MB from the view
           project.repository_size_limit = ::Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
@@ -51,6 +48,15 @@ module EE
       end
 
       private
+
+      def valid_mirror_user?
+        return true unless params[:mirror_user_id].present?
+
+        mirror_user_id = params[:mirror_user_id].to_i
+
+        mirror_user_id == current_user.id ||
+          mirror_user_id == project.mirror_user&.id
+      end
 
       def log_audit_events
         EE::Audit::ProjectChangesAuditor.new(current_user, project).execute

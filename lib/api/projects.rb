@@ -14,6 +14,7 @@ module API
       end
 
       params :optional_update_params_ee do
+        # EE::API::Projects would override this helper
       end
 
       # EE::API::Projects would override this method
@@ -25,10 +26,7 @@ module API
         projects
       end
 
-      def verify_create_projects_attrs!(attrs)
-      end
-
-      def verify_update_project_attrs!(attrs)
+      def verify_update_project_attrs!(project, attrs)
       end
     end
 
@@ -177,9 +175,6 @@ module API
       post do
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
-
-        verify_create_projects_attrs!(attrs)
-
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -212,9 +207,6 @@ module API
 
         attrs = declared_params(include_missing: false)
         attrs = translate_params_for_compatibility(attrs)
-
-        verify_create_projects_attrs!(attrs)
-
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -314,7 +306,7 @@ module API
 
         attrs = translate_params_for_compatibility(attrs)
 
-        verify_update_project_attrs!(attrs)
+        verify_update_project_attrs!(user_project, attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 

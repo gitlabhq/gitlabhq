@@ -20,7 +20,6 @@ describe ProjectsController do
         namespace_id: user.namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PUBLIC,
         mirror: true,
-        mirror_user_id: user.id,
         mirror_trigger_builds: true
       }
     end

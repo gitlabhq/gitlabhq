@@ -4,10 +4,6 @@ module EE
       extend ::Gitlab::Utils::Override
       extend ActiveSupport::Concern
 
-      prepended do
-        include SafeMirrorParams
-      end
-
       def ssh_host_keys
         lookup = SshHostKey.new(project: project, url: params[:ssh_url])
 
@@ -98,8 +94,6 @@ module EE
 
       def safe_mirror_params
         params = mirror_params
-
-        params[:mirror_user_id] = current_user.id unless valid_mirror_user?(params)
 
         import_data = params[:import_data_attributes]
         if import_data.present?
