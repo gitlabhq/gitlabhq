@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 describe ProjectPresenter do
+  include Gitlab::Routing.url_helpers
+
   let(:user) { create(:user) }
 
   describe '#extra_statistics_anchors' do
@@ -13,7 +15,7 @@ describe ProjectPresenter do
     let(:security_dashboard_data) do
       OpenStruct.new(enabled: true,
                      label: _('Security Dashboard'),
-                     link: presenter.project_security_dashboard_path(project))
+                     link: project_security_dashboard_path(project))
     end
 
     before do
