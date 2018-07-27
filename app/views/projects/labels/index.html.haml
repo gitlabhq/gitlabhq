@@ -45,6 +45,10 @@
           .content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
             = paginate @labels, theme: 'gitlab'
+      - elsif params[:search].present?
+        .nothing-here-block
+          = _('No labels with such name or description')
+
 - else
   = render 'shared/empty_states/labels'
 
