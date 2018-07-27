@@ -7,5 +7,8 @@ describe Gitlab::Auth::Activity do
         expect(described_class).to respond_to(counter)
       end
     end
+
+    # todo incrementer pairs
+    # todo all metrics starting with `user`_
   end
 end

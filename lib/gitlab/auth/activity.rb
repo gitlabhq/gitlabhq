@@ -14,6 +14,7 @@ module Gitlab
         user_session_override: 'Counter of manual log-ins and sessions overrides',
         user_session_destroyed: 'Counter of total user sessions being destroyed',
         user_two_factor_authenticated: 'Counter of two factor authentications',
+        user_sessionless_authentication: 'Counter of sessionless authentications',
         user_blocked: 'Counter of total sign in attempts when user is blocked'
       }.freeze
 
@@ -42,8 +43,11 @@ module Gitlab
       def user_session_override!
         self.class.user_session_override_counter_increment!
 
-        if @opts[:message] == :two_factor_authenticated
+        case @opts[:message]
+        when :two_factor_authenticated
           self.class.user_two_factor_authenticated_counter_increment!
+        when :sessionless_sign_in
+          self.class.user_sessionless_authentication_counter_increment!
         end
       end
 
