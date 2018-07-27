@@ -22,16 +22,16 @@ module Gitlab
         end
 
         def self.generate_root
-          _issue(signed_by: nil, expires_in: INFINITE_EXPIRY, ca: true)
+          _issue(signed_by: nil, expires_in: INFINITE_EXPIRY, certificate_authority: true)
         end
 
         def issue(expires_in: SHORT_EXPIRY)
-          self.class._issue(signed_by: self, expires_in: expires_in, ca: false)
+          self.class._issue(signed_by: self, expires_in: expires_in, certificate_authority: false)
         end
 
         private
 
-        def self._issue(signed_by:, expires_in:, ca:)
+        def self._issue(signed_by:, expires_in:, certificate_authority:)
           key = OpenSSL::PKey::RSA.new(4096)
           public_key = key.public_key
 
@@ -48,7 +48,7 @@ module Gitlab
           cert.serial = 0x0
           cert.version = 2
 
-          if ca
+          if certificate_authority
             extension_factory = OpenSSL::X509::ExtensionFactory.new
             extension_factory.subject_certificate = cert
             extension_factory.issuer_certificate = cert
