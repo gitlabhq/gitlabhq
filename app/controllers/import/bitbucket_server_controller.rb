@@ -90,7 +90,7 @@ class Import::BitbucketServerController < Import::BaseController
   end
 
   def render_validation_error(message)
-    return render json: { errors: message }, status: :unprocessable_entity
+    render json: { errors: message }, status: :unprocessable_entity
   end
 
   def bitbucket_auth
