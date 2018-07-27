@@ -32,9 +32,7 @@ module Gitlab
           self.class.user_password_invalid_counter_increment!
         end
 
-        if @user.present? && @user.blocked?
-          self.class.user_blocked_counter_increment!
-        end
+        self.class.user_blocked_counter_increment! if @user&.blocked?
       end
 
       def user_authenticated!
