@@ -116,7 +116,7 @@ module SnippetsHelper
                         raw_project_snippet_url(@snippet.project, @snippet)
                       end
 
-    link_to external_snippet_icon('doc_code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
+    link_to external_snippet_icon('doc-code'), snippet_raw_url, class: 'btn', target: '_blank', rel: 'noopener noreferrer', title: 'Open raw'
   end
 
   def embedded_snippet_download_button
