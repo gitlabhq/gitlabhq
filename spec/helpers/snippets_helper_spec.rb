@@ -7,13 +7,13 @@ describe SnippetsHelper do
     it 'gives view raw button of embedded snippets for project snippets' do
       @snippet = create(:project_snippet, :public)
 
-      expect(embedded_snippet_raw_button.to_s).to eq("<a class=\"btn\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"Open raw\" href=\"#{raw_project_snippet_url(@snippet.project, @snippet)}\">#{external_snippet_icon('doc_code')}</a>")
+      expect(embedded_snippet_raw_button.to_s).to eq("<a class=\"btn\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"Open raw\" href=\"#{raw_project_snippet_url(@snippet.project, @snippet)}\">#{external_snippet_icon('doc-code')}</a>")
     end
 
     it 'gives view raw button of embedded snippets for personal snippets' do
       @snippet = create(:personal_snippet, :public)
 
-      expect(embedded_snippet_raw_button.to_s).to eq("<a class=\"btn\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"Open raw\" href=\"#{raw_snippet_url(@snippet)}\">#{external_snippet_icon('doc_code')}</a>")
+      expect(embedded_snippet_raw_button.to_s).to eq("<a class=\"btn\" target=\"_blank\" rel=\"noopener noreferrer\" title=\"Open raw\" href=\"#{raw_snippet_url(@snippet)}\">#{external_snippet_icon('doc-code')}</a>")
     end
   end
 
