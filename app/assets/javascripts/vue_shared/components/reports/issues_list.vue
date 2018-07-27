@@ -5,12 +5,9 @@ import {
   STATUS_FAILED,
   STATUS_NEUTRAL,
 } from '~/vue_shared/components/reports/constants';
-<<<<<<< HEAD
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 
 import SastContainerInfo from 'ee/vue_shared/security_reports/components/sast_container_info.vue';
-=======
->>>>>>> upstream/master
 
 /**
  * Renders block of issues
@@ -21,10 +18,7 @@ export default {
     IssuesBlock,
     SastContainerInfo,
   },
-<<<<<<< HEAD
   componentNames,
-=======
->>>>>>> upstream/master
   success: STATUS_SUCCESS,
   failed: STATUS_FAILED,
   neutral: STATUS_NEUTRAL,
