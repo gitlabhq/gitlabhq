@@ -50,11 +50,11 @@ describe BitbucketServer::Representation::PullRequest do
   end
 
   describe '#created_at' do
-    it { expect(subject.created_at).to eq(Time.parse('2018-07-02 23:50:35')) }
+    it { expect(subject.created_at.to_i).to eq(sample_data['createdDate'] / 1000) }
   end
 
   describe '#updated_at' do
-    it { expect(subject.updated_at).to eq(Time.parse('2018-07-02 23:50:48')) }
+    it { expect(subject.updated_at.to_i).to eq(sample_data['updatedDate'] / 1000) }
   end
 
   describe '#title' do
