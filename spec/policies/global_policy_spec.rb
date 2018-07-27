@@ -180,38 +180,4 @@ describe GlobalPolicy do
       end
     end
   end
-
-  describe 'read instance statistics' do
-    context 'regular user' do
-      it { is_expected.to be_allowed(:read_instance_statistics) }
-
-      context 'when instance statistics are set to private' do
-        before do
-          stub_application_setting(instance_statistics_visibility_private: true)
-        end
-
-        it { is_expected.not_to be_allowed(:read_instance_statistics) }
-      end
-    end
-
-    context 'admin' do
-      let(:current_user) { create(:admin) }
-
-      it { is_expected.to be_allowed(:read_instance_statistics) }
-
-      context 'when instance statistics are set to private' do
-        before do
-          stub_application_setting(instance_statistics_visibility_private: true)
-        end
-
-        it { is_expected.to be_allowed(:read_instance_statistics) }
-      end
-    end
-
-    context 'anonymous' do
-      let(:current_user) { nil }
-
-      it { is_expected.not_to be_allowed(:read_instance_statistics) }
-    end
-  end
 end

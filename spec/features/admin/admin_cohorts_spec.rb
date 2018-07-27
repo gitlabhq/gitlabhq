@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Cohorts page' do
+describe 'Admin cohorts page' do
   before do
     sign_in(create(:admin))
   end
@@ -8,7 +8,7 @@ describe 'Cohorts page' do
   it 'See users count per month' do
     2.times { create(:user) }
 
-    visit instance_statistics_cohorts_path
+    visit admin_cohorts_path
 
     expect(page).to have_content("#{Time.now.strftime('%b %Y')} 3 0")
   end

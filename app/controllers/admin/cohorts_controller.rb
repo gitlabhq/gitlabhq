@@ -1,6 +1,4 @@
-# frozen_string_literal: true
-
-class InstanceStatistics::CohortsController < InstanceStatistics::ApplicationController
+class Admin::CohortsController < Admin::ApplicationController
   def index
     if Gitlab::CurrentSettings.usage_ping_enabled
       cohorts_results = Rails.cache.fetch('cohorts', expires_in: 1.day) do

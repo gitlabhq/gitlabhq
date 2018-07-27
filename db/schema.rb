@@ -168,7 +168,6 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.boolean "enforce_terms", default: false
     t.boolean "mirror_available", default: true, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
-    t.boolean "instance_statistics_visibility_private", default: false, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
