@@ -156,7 +156,7 @@ module Gitlab
 
     # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
     # connect to the database.
-    config.middleware.insert_after "Rails::Rack::Logger", "Gitlab::Middleware::LivenessHealthCheck"
+    config.middleware.insert_after "Rails::Rack::Logger", "Gitlab::Middleware::BasicHealthCheck"
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
 

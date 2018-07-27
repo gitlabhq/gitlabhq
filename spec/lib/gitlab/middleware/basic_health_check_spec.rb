@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Middleware::LivenessHealthCheck do
+describe Gitlab::Middleware::BasicHealthCheck do
   let(:app) { double(:app) }
   let(:middleware) { described_class.new(app) }
   let(:env) { {} }
@@ -12,7 +12,7 @@ describe Gitlab::Middleware::LivenessHealthCheck do
       end
 
       it 'returns a 404' do
-        env['PATH_INFO'] = described_class::LIVENESS_PATH
+        env['PATH_INFO'] = described_class::HEALTH_PATH
 
         response = middleware.call(env)
 
@@ -34,7 +34,7 @@ describe Gitlab::Middleware::LivenessHealthCheck do
       end
 
       it 'returns 200 response when endpoint is hit' do
-        env['PATH_INFO'] = described_class::LIVENESS_PATH
+        env['PATH_INFO'] = described_class::HEALTH_PATH
 
         expect(app).not_to receive(:call)
 
@@ -42,7 +42,7 @@ describe Gitlab::Middleware::LivenessHealthCheck do
 
         expect(response[0]).to eq(200)
         expect(response[1]).to eq({ 'Content-Type' => 'text/plain' })
-        expect(response[2]).to eq(['GitLab is alive'])
+        expect(response[2]).to eq(['GitLab OK'])
       end
 
       it 'forwards the call for other paths' do

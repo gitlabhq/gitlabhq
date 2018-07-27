@@ -1,5 +1,5 @@
 ---
-title: Simplify /-/liveness check to avoid connecting to the database
-merge_request:
+title: Add /-/health basic health check endpoint
+merge_request: 20456
 author:
-type: changed
+type: added

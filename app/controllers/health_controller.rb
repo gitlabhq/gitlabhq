@@ -18,8 +18,9 @@ class HealthController < ActionController::Base
   end
 
   def liveness
-    # This should never be called; it should be intercepted by LivenessHealthCheck middleware
-    head :not_found
+    results = CHECKS.map { |check| [check.name, check.liveness] }
+
+    render_check_results(results)
   end
 
   def storage_check

@@ -9,20 +9,20 @@
 
 module Gitlab
   module Middleware
-    class LivenessHealthCheck
+    class BasicHealthCheck
       # This can't be frozen because Rails::Rack::Logger wraps the body
       # rubocop:disable Style/MutableConstant
-      OK_RESPONSE = [200, { 'Content-Type' => 'text/plain' }, ["GitLab is alive"]]
+      OK_RESPONSE = [200, { 'Content-Type' => 'text/plain' }, ["GitLab OK"]]
       EMPTY_RESPONSE = [404, { 'Content-Type' => 'text/plain' }, [""]]
       # rubocop:enable Style/MutableConstant
-      LIVENESS_PATH = '/-/liveness'
+      HEALTH_PATH = '/-/health'
 
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        return @app.call(env) unless env['PATH_INFO'] == LIVENESS_PATH
+        return @app.call(env) unless env['PATH_INFO'] == HEALTH_PATH
 
         request = Rack::Request.new(env)
 
