@@ -3,7 +3,7 @@
 # Include this module if we want to pass something else than the user to
 # check policies. This defines several methods which the policy checker
 # would call and check.
-module PolicyCheckable
+module PolicyActor
   extend ActiveSupport::Concern
 
   def blocked?
