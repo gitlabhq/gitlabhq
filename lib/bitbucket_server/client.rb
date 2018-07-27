@@ -4,6 +4,18 @@ module BitbucketServer
   class Client
     attr_reader :connection
 
+    ServerError = Class.new(StandardError)
+
+    SERVER_ERRORS = [SocketError,
+                     OpenSSL::SSL::SSLError,
+                     Errno::ECONNRESET,
+                     Errno::ECONNREFUSED,
+                     Errno::EHOSTUNREACH,
+                     Net::OpenTimeout,
+                     Net::ReadTimeout,
+                     Gitlab::HTTP::BlockedUrlError,
+                     BitbucketServer::Connection::ConnectionError].freeze
+
     def initialize(options = {})
       @connection = Connection.new(options)
     end
@@ -13,8 +25,8 @@ module BitbucketServer
       get_collection(path, :pull_request)
     end
 
-    def activities(project_key, repo, pull_request)
-      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request}/activities"
+    def activities(project_key, repo, pull_request_id)
+      path = "/projects/#{project_key}/repos/#{repo}/pull-requests/#{pull_request_id}/activities"
       get_collection(path, :activity)
     end
 
@@ -50,8 +62,10 @@ module BitbucketServer
     private
 
     def get_collection(path, type)
-      paginator = BitbucketServer::Paginator.new(connection, path, type)
+      paginator = BitbucketServer::Paginator.new(connection, Addressable::URI.escape(path), type)
       BitbucketServer::Collection.new(paginator)
+    rescue *SERVER_ERRORS => e
+      raise ServerError, e
     end
   end
 end

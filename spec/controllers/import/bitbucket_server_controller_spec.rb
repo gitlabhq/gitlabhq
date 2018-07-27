@@ -78,7 +78,7 @@ describe Import::BitbucketServerController do
     end
 
     it "returns an error when the server can't be contacted" do
-      expect(client).to receive(:repo).with(project_key, repo_slug).and_raise(Errno::ECONNREFUSED)
+      expect(client).to receive(:repo).with(project_key, repo_slug).and_raise(BitbucketServer::Client::ServerError)
 
       post :create, project: project_key, repository: repo_slug, format: :json
 

@@ -15,16 +15,6 @@ class Import::BitbucketServerController < Import::BaseController
   # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
   VALID_BITBUCKET_CHARS = /\A[a-zA-z0-9\-_\.\s]+\z/
 
-  SERVER_ERRORS = [SocketError,
-                   OpenSSL::SSL::SSLError,
-                   Errno::ECONNRESET,
-                   Errno::ECONNREFUSED,
-                   Errno::EHOSTUNREACH,
-                   Net::OpenTimeout,
-                   Net::ReadTimeout,
-                   Gitlab::HTTP::BlockedUrlError,
-                   BitbucketServer::Connection::ConnectionError].freeze
-
   def new
   end
 
@@ -52,7 +42,7 @@ class Import::BitbucketServerController < Import::BaseController
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity
     end
-  rescue *SERVER_ERRORS => e
+  rescue BitbucketServer::Client::ServerError => e
     render json: { errors: "Unable to connect to server: #{e}" }, status: :unprocessable_entity
   end
 
@@ -73,7 +63,7 @@ class Import::BitbucketServerController < Import::BaseController
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.browse_url) }
-  rescue *SERVER_ERRORS => e
+  rescue BitbucketServer::Connection::ConnectionError, BitbucketServer::Client::ServerError => e
     flash[:alert] = "Unable to connect to server: #{e}"
     clear_session_data
     redirect_to new_import_bitbucket_server_path
