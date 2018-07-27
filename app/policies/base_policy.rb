@@ -22,14 +22,4 @@ class BasePolicy < DeclarativePolicy::Base
 
   # This is prevented in some cases in `gitlab-ee`
   rule { default }.enable :read_cross_project
-
-  # EE Extensions
-  with_scope :user
-  condition(:auditor, score: 0) { @user&.auditor? }
-
-  with_scope :user
-  condition(:support_bot, score: 0) { @user&.support_bot? }
-
-  with_scope :global
-  condition(:license_block) { License.block_changes? }
 end
