@@ -6,7 +6,7 @@
   %button.btn.btn-inverted.btn-success.inline.js-detect-host-keys.append-right-10{ type: 'button' }
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
     = _('Detect host keys')
-  .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('collapse' unless import_data.ssh_import?) }
+  .fingerprint-ssh-info.js-fingerprint-ssh-info.prepend-top-10.append-bottom-10{ class: ('collapse' unless import_data.ssh_import?) }
     %label.label-bold
       = _('Fingerprints')
     .fingerprints-list.js-fingerprints-list
