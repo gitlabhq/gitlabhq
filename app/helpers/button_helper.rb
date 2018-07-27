@@ -112,7 +112,7 @@ module ButtonHelper
   def geo_button(modal_target: nil)
     data = { placement: 'bottom', container: 'body', toggle: 'modal', target: modal_target }
     content_tag :button,
-                sprite_icon('geo-nodes', size: 15),
+                sprite_icon('location-dot', size: 15),
                 class: 'btn btn-geo has-tooltip',
                 data: data,
                 type: :button,
