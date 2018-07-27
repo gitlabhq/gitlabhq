@@ -59,16 +59,17 @@ module BitbucketServer
     private
 
     def check_errors!(response)
+      raise ConnectionError, "Response is not valid JSON" unless response.parsed_response.is_a?(Hash)
+
       return if response.code >= 200 && response.code < 300
 
-      details =
-        if response.parsed_response && response.parsed_response.is_a?(Hash)
-          sanitize(response.parsed_response.dig('errors', 0, 'message'))
-        end
-
+      details = sanitize(response.parsed_response.dig('errors', 0, 'message'))
       message = "Error #{response.code}"
-      message += ": #{details}" if details
+      message += ": #{details}"
+
       raise ConnectionError, message
+    rescue JSON::ParserError
+      raise ConnectionError, "Unable to parse the server response as JSON"
     end
 
     def auth

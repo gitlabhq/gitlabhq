@@ -20,6 +20,12 @@ describe BitbucketServer::Connection do
 
       expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
     end
+
+    it 'throws an exception if the response is not JSON' do
+      WebMock.stub_request(:get, url).with(headers: { 'Accept' => 'application/json' }).to_return(body: 'bad data', status: 200, headers: headers)
+
+      expect { subject.get(url) }.to raise_error(described_class::ConnectionError)
+    end
   end
 
   describe '#post' do
