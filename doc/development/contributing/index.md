@@ -117,32 +117,32 @@ When your code contains more than 500 changes, any major breaking changes, or an
 ## Workflow labels
 This [documentation](issue-worflow.md) outlines the current workflow labels. 
 
-### Type labels (~"feature proposal", ~bug, ~customer, etc.)
+### Type labels 
 This [documentation](issue-worflow.md) outlines the current type labels. 
 
-### Subject labels (~wiki, ~"container registry", ~ldap, ~api, etc.)
+### Subject labels 
 This [documentation](issue-worflow.md) outlines the current subject labels. 
 
-### Team labels (~"CI/CD", ~Discussion, ~Quality, ~Platform, etc.)
+### Team labels 
 This [documentation](issue-worflow.md) outlines the current team labels. 
 
 
-### Milestone labels (~Deliverable, ~Stretch, ~"Next Patch Release")
+### Milestone labels 
 This [documentation](issue-worflow.md) outlines the current milestone labels. 
 
 
-### Bug Priority labels (~P1, ~P2, ~P3, ~P4)
+### Bug Priority labels 
 This [documentation](issue-worflow.md) outlines the current bug priority  labels. 
 
 
-### Bug Severity labels (~S1, ~S2, ~S3, ~S4)
+### Bug Severity labels
 This [documentation](issue-worflow.md) outlines the current severity labels. 
 
 #### Severity impact guidance
 This [documentation](issue-worflow.md) outlines the current severity impact guidance. 
 
 
-### Label for community contributors (~"Accepting Merge Requests")
+### Label for community contributors 
 This [documentation](issue-worflow.md) outlines the current policy regarding community contributor issues. 
 
 ## Implement design & UI elements
