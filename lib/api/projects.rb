@@ -13,6 +13,10 @@ module API
         # EE::API::Projects would override this helper
       end
 
+      params :optional_update_params_ee do
+        # EE::API::Projects would override this helper
+      end
+
       # EE::API::Projects would override this method
       def apply_filters(projects)
         projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
@@ -21,6 +25,37 @@ module API
 
         projects
       end
+
+      def verify_update_project_attrs!(project, attrs)
+      end
+    end
+
+    def self.update_params_at_least_one_of
+      [
+        :jobs_enabled,
+        :resolve_outdated_diff_discussions,
+        :ci_config_path,
+        :container_registry_enabled,
+        :default_branch,
+        :description,
+        :issues_enabled,
+        :lfs_enabled,
+        :merge_requests_enabled,
+        :merge_method,
+        :name,
+        :only_allow_merge_if_all_discussions_are_resolved,
+        :only_allow_merge_if_pipeline_succeeds,
+        :path,
+        :printing_merge_request_link_enabled,
+        :public_builds,
+        :request_access_enabled,
+        :shared_runners_enabled,
+        :snippets_enabled,
+        :tag_list,
+        :visibility,
+        :wiki_enabled,
+        :avatar
+      ]
     end
 
     helpers do
@@ -252,39 +287,13 @@ module API
         success Entities::Project
       end
       params do
-        # CE
-        at_least_one_of_ce =
-          [
-            :jobs_enabled,
-            :resolve_outdated_diff_discussions,
-            :ci_config_path,
-            :container_registry_enabled,
-            :default_branch,
-            :description,
-            :issues_enabled,
-            :lfs_enabled,
-            :merge_requests_enabled,
-            :merge_method,
-            :name,
-            :only_allow_merge_if_all_discussions_are_resolved,
-            :only_allow_merge_if_pipeline_succeeds,
-            :path,
-            :printing_merge_request_link_enabled,
-            :public_builds,
-            :request_access_enabled,
-            :shared_runners_enabled,
-            :snippets_enabled,
-            :tag_list,
-            :visibility,
-            :wiki_enabled,
-            :avatar
-          ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
-        at_least_one_of(*at_least_one_of_ce)
+
+        at_least_one_of(*::API::Projects.update_params_at_least_one_of)
       end
       put ':id' do
         authorize_admin_project
@@ -293,6 +302,8 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
+
+        verify_update_project_attrs!(user_project, attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
