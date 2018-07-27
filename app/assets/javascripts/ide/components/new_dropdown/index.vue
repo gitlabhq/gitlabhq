@@ -13,7 +13,7 @@ export default {
     ItemButton,
   },
   props: {
-    branch: {
+    type: {
       type: String,
       required: true,
     },
@@ -45,7 +45,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['createTempEntry', 'openNewEntryModal']),
+    ...mapActions(['createTempEntry', 'openNewEntryModal', 'deleteEntry']),
     createNewItem(type) {
       this.openNewEntryModal({ type, path: this.path });
       this.dropdownOpen = false;
@@ -82,28 +82,40 @@ export default {
         ref="dropdownMenu"
         class="dropdown-menu dropdown-menu-right"
       >
+        <template v-if="type === 'tree'">
+          <li>
+            <item-button
+              :label="__('New file')"
+              class="d-flex"
+              icon="doc-new"
+              icon-classes="mr-2"
+              @click="createNewItem('blob')"
+            />
+          </li>
+          <li>
+            <upload
+              :path="path"
+              @create="createTempEntry"
+            />
+          </li>
+          <li>
+            <item-button
+              :label="__('New directory')"
+              class="d-flex"
+              icon="folder-new"
+              icon-classes="mr-2"
+              @click="createNewItem('tree')"
+            />
+          </li>
+          <li class="divider"></li>
+        </template>
         <li>
           <item-button
-            :label="__('New file')"
+            :label="__('Delete')"
             class="d-flex"
-            icon="doc-new"
+            icon="remove"
             icon-classes="mr-2"
-            @click="createNewItem('blob')"
-          />
-        </li>
-        <li>
-          <upload
-            :path="path"
-            @create="createTempEntry"
-          />
-        </li>
-        <li>
-          <item-button
-            :label="__('New directory')"
-            class="d-flex"
-            icon="folder-new"
-            icon-classes="mr-2"
-            @click="createNewItem('tree')"
+            @click="deleteEntry(path)"
           />
         </li>
       </ul>

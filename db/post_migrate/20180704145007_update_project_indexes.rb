@@ -14,7 +14,7 @@ class UpdateProjectIndexes < ActiveRecord::Migration
       [:repository_storage, :created_at],
       name: NEW_INDEX_NAME,
       where: 'last_repository_check_at IS NULL'
-    )
+                        )
   end
 
   def down

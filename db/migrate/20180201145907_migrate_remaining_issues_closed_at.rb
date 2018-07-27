@@ -25,6 +25,7 @@ class MigrateRemainingIssuesClosedAt < ActiveRecord::Migration
         # Due to some EE merge problems some environments may not have the
         # "closed_at_for_type_change" column. If this is the case we have no
         # other option than to migrate the data _right now_.
+        # rubocop:disable Migration/UpdateLargeTable
         change_column_type_concurrently(:issues, :closed_at, :datetime_with_timezone)
         cleanup_concurrent_column_type_change(:issues, :closed_at)
       end

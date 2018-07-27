@@ -10,6 +10,7 @@ class CleanupUsersLdapEmailRename < ActiveRecord::Migration
   end
 
   def down
+    # rubocop:disable Migration/UpdateLargeTable
     rename_column_concurrently :users, :external_email, :ldap_email
   end
 end

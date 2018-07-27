@@ -1,4 +1,3 @@
-# rubocop:disable all
 require 'fileutils'
 
 class RemoveSatellites < ActiveRecord::Migration

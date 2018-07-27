@@ -22,4 +22,10 @@ describe Gitlab::Kubernetes::ConfigMap do
       is_expected.to eq(resource)
     end
   end
+
+  describe '#config_map_name' do
+    it 'returns the config_map name' do
+      expect(config_map.config_map_name).to eq("values-content-configuration-#{application.name}")
+    end
+  end
 end

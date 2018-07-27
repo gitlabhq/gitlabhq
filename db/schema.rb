@@ -1841,6 +1841,11 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
+  create_table "site_statistics", force: :cascade do |t|
+    t.integer "repositories_count", default: 0, null: false
+    t.integer "wikis_count", default: 0, null: false
+  end
+
   create_table "snippets", force: :cascade do |t|
     t.string "title"
     t.text "content"

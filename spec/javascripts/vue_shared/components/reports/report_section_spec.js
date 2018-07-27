@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import reportSection from '~/vue_shared/components/reports/report_section.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Report section', () => {
   let vm;
@@ -23,7 +23,7 @@ describe('Report section', () => {
   describe('computed', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'SUCCESS',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -89,7 +89,7 @@ describe('Report section', () => {
   describe('when it is loading', () => {
     it('should render loading indicator', () => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'LOADING',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -103,7 +103,7 @@ describe('Report section', () => {
   describe('with success status', () => {
     beforeEach(() => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'SUCCESS',
         loadingText: 'Loading codeclimate report',
         errorText: 'foo',
@@ -161,7 +161,7 @@ describe('Report section', () => {
   describe('with failed request', () => {
     it('should render error indicator', () => {
       vm = mountComponent(ReportSection, {
-        type: 'codequality',
+        component: '',
         status: 'ERROR',
         loadingText: 'Loading codeclimate report',
         errorText: 'Failed to load codeclimate report',
@@ -169,6 +169,29 @@ describe('Report section', () => {
         hasIssues: false,
       });
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
+    });
+  });
+
+  describe('with action buttons passed to the slot', () => {
+    beforeEach(() => {
+      vm = mountComponentWithSlots(ReportSection, {
+        props: {
+          status: 'SUCCESS',
+          successText: 'success',
+          hasIssues: true,
+        },
+        slots: {
+          actionButtons: ['Action!'],
+        },
+      });
+    });
+
+    it('should render the passed button', () => {
+      expect(vm.$el.textContent.trim()).toContain('Action!');
+    });
+
+    it('should still render the expand/collapse button', () => {
+      expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
     });
   });
 });

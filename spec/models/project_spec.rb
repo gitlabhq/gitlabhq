@@ -102,6 +102,22 @@ describe Project do
       end
     end
 
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
+      end
+    end
+
     context 'updating cd_cd_settings' do
       it 'does not raise an error' do
         project = create(:project)
@@ -2942,8 +2958,6 @@ describe Project do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        expect(project).to receive(:expires_full_path_cache)
-
         project.rename_repo
       end
 
@@ -3102,8 +3116,6 @@ describe Project do
             .with(project, :rename)
 
         expect(project).to receive(:expire_caches_before_rename)
-
-        expect(project).to receive(:expires_full_path_cache)
 
         project.rename_repo
       end

@@ -366,6 +366,23 @@ describe('IDE store file actions', () => {
       });
     });
 
+    describe('return JSON', () => {
+      beforeEach(() => {
+        mock.onGet(/(.*)/).replyOnce(200, JSON.stringify({ test: '123' }));
+      });
+
+      it('does not parse returned JSON', done => {
+        store
+          .dispatch('getRawFileData', { path: tmpFile.path })
+          .then(() => {
+            expect(tmpFile.raw).toEqual('{"test":"123"}');
+
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
     describe('error', () => {
       beforeEach(() => {
         mock.onGet(/(.*)/).networkError();

@@ -270,6 +270,7 @@
 
   .block {
     width: 100%;
+    word-break: break-word;
 
     &:last-child {
       border-bottom: 1px solid $border-gray-normal;
