@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UpdateDateColumnsOnEpics < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
