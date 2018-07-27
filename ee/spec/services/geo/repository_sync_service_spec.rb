@@ -105,8 +105,10 @@ describe Geo::RepositorySyncService do
 
       subject.execute
 
-      expect(Geo::ProjectRegistry.last.resync_repository).to be true
-      expect(Geo::ProjectRegistry.last.repository_retry_count).to eq(1)
+      expect(Geo::ProjectRegistry.last).to have_attributes(
+        resync_repository: true,
+        repository_retry_count: 1
+      )
     end
 
     it 'marks sync as successful if no repository found' do
@@ -118,8 +120,11 @@ describe Geo::RepositorySyncService do
 
       subject.execute
 
-      expect(registry.reload.resync_repository).to be false
-      expect(registry.reload.last_repository_successful_sync_at).not_to be nil
+      expect(registry.reload).to have_attributes(
+        resync_repository: false,
+        last_repository_successful_sync_at: be_present,
+        repository_missing_on_primary: true
+      )
     end
 
     it 'marks resync as true after a failure' do
