@@ -174,27 +174,19 @@ export default {
 
   [types.UPDATE_NOTE](state, note) {
     const noteObj = utils.findNoteObjectById(state.discussions, note.discussion_id);
-
     if (noteObj.individual_note) {
       noteObj.notes.splice(0, 1, note);
     } else {
       const comment = utils.findNoteObjectById(noteObj.notes, note.id);
-      noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
+      Object.assign(comment, note);
     }
   },
 
   [types.UPDATE_DISCUSSION](state, noteData) {
     const note = noteData;
-    let index = 0;
-
-    state.discussions.forEach((n, i) => {
-      if (n.id === note.id) {
-        index = i;
-      }
-    });
-
+    const selectedDiscussion = state.discussions.find(n => n.id === note.id);
     note.expanded = true; // override expand flag to prevent collapse
-    state.discussions.splice(index, 1, note);
+    Object.assign(selectedDiscussion, note);
   },
 
   [types.CLOSE_ISSUE](state) {
@@ -215,12 +207,9 @@ export default {
 
   [types.SET_DISCUSSION_DIFF_LINES](state, { discussionId, diffLines }) {
     const discussion = utils.findNoteObjectById(state.discussions, discussionId);
-    const index = state.discussions.indexOf(discussion);
 
-    const discussionWithDiffLines = Object.assign({}, discussion, {
+    Object.assign(discussion, {
       truncated_diff_lines: diffLines,
     });
-
-    state.discussions.splice(index, 1, discussionWithDiffLines);
   },
 };

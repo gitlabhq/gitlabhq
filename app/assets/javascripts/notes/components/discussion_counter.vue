@@ -5,19 +5,20 @@ import resolvedSvg from 'icons/_icon_status_success_solid.svg';
 import mrIssueSvg from 'icons/_icon_mr_issue.svg';
 import nextDiscussionSvg from 'icons/_next_discussion.svg';
 import { pluralize } from '../../lib/utils/text_utility';
-import { scrollToElement } from '../../lib/utils/common_utils';
+import discussionNavigation from '../mixins/discussion_navigation';
 import tooltip from '../../vue_shared/directives/tooltip';
 
 export default {
   directives: {
     tooltip,
   },
+  mixins: [discussionNavigation],
   computed: {
     ...mapGetters([
       'getUserData',
       'getNoteableData',
       'discussionCount',
-      'unresolvedDiscussions',
+      'firstUnresolvedDiscussionId',
       'resolvedDiscussionCount',
     ]),
     isLoggedIn() {
@@ -35,11 +36,6 @@ export default {
     resolveAllDiscussionsIssuePath() {
       return this.getNoteableData.create_issue_to_resolve_discussions_path;
     },
-    firstUnresolvedDiscussionId() {
-      const item = this.unresolvedDiscussions[0] || {};
-
-      return item.id;
-    },
   },
   created() {
     this.resolveSvg = resolveSvg;
@@ -50,22 +46,10 @@ export default {
   methods: {
     ...mapActions(['expandDiscussion']),
     jumpToFirstUnresolvedDiscussion() {
-      const discussionId = this.firstUnresolvedDiscussionId;
-      if (!discussionId) {
-        return;
-      }
+      const diffTab = window.mrTabs.currentAction === 'diffs';
+      const discussionId = this.firstUnresolvedDiscussionId(diffTab);
 
-      const el = document.querySelector(`[data-discussion-id="${discussionId}"]`);
-      const activeTab = window.mrTabs.currentAction;
-
-      if (activeTab === 'commits' || activeTab === 'pipelines') {
-        window.mrTabs.activateTab('show');
-      }
-
-      if (el) {
-        this.expandDiscussion({ discussionId });
-        scrollToElement(el);
-      }
+      this.jumpToDiscussion(discussionId);
     },
   },
 };
