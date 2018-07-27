@@ -151,7 +151,7 @@ class GitPushService < BaseService
     EventCreateService.new.push(project, current_user, push_data)
     Ci::CreatePipelineService.new(project, current_user, push_data).execute(:push)
 
-    SystemHookPushWorker.perform_async(push_data.dup, :push_hooks)
+    SystemHookPushWorker.perform_async(push_data, :push_hooks)
     project.execute_hooks(push_data.dup, :push_hooks)
     project.execute_services(push_data.dup, :push_hooks)
 
