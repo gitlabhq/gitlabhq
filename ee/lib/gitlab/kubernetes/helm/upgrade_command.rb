@@ -1,4 +1,4 @@
-require_dependency 'lib/gitlab/kubernetes/helm.rb'
+require_dependency 'gitlab/kubernetes/helm.rb'
 
 module Gitlab
   module Kubernetes
