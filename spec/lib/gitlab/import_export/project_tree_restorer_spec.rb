@@ -16,7 +16,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         @shared = @project.import_export_shared
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
-        allow_any_instance_of(Repository).to receive(:fetch_ref).and_return(true)
+        allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
 
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
