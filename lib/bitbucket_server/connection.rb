@@ -20,6 +20,7 @@ module BitbucketServer
     def get(path, extra_query = {})
       response = Gitlab::HTTP.get(build_url(path),
                                   basic_auth: auth,
+                                  headers: accept_headers,
                                   query: extra_query)
 
       check_errors!(response)
@@ -74,8 +75,12 @@ module BitbucketServer
       @auth ||= { username: username, password: token }
     end
 
+    def accept_headers
+      @accept_headers ||= { 'Accept' => 'application/json' }
+    end
+
     def post_headers
-      @post_headers ||= { 'Content-Type' => 'application/json' }
+      @post_headers ||= accept_headers.merge({ 'Content-Type' => 'application/json' })
     end
 
     def build_url(path)
