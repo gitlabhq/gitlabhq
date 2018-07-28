@@ -59,7 +59,7 @@ module Gitlab
               name: 'configuration-volume',
               configMap: {
                 name: "values-content-configuration-#{command.name}",
-                items: command.files.map { |name, _| { key: name, path: name } }
+                items: command.file_names.map { |name| { key: name, path: name } }
               }
             }
           ]

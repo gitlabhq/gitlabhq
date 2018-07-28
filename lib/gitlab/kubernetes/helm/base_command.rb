@@ -26,6 +26,10 @@ module Gitlab
           Gitlab::Kubernetes::ConfigMap.new(name, files).generate
         end
 
+        def file_names
+          files.keys
+        end
+
         def name
           raise "Not implemented"
         end

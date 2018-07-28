@@ -33,9 +33,13 @@ module Gitlab
         end
 
         def script_command
-          <<~HEREDOC
-          helm install#{optional_tls_flags} #{chart} --name #{name}#{optional_version_flag} --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} -f /data/helm/#{name}/config/values.yaml >/dev/null
-          HEREDOC
+          "helm install" \
+          "#{optional_tls_flags} " \
+          "#{chart} " \
+          "--name #{name}" \
+          "#{optional_version_flag} " \
+          "--namespace #{Gitlab::Kubernetes::Helm::NAMESPACE} " \
+          "-f /data/helm/#{name}/config/values.yaml >/dev/null\n"
         end
 
         def optional_version_flag
