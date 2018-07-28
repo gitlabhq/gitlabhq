@@ -12,7 +12,7 @@ describe('dropdown job component', () => {
         id: 4256,
         name: '<img src=x onerror=alert(document.domain)>',
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           tooltip: 'passed',
@@ -31,7 +31,7 @@ describe('dropdown job component', () => {
         id: 4299,
         name: 'test',
         status: {
-          icon: 'icon_status_success',
+          icon: 'status_success',
           text: 'passed',
           label: 'passed',
           tooltip: 'passed',
@@ -50,7 +50,7 @@ describe('dropdown job component', () => {
     name: 'rspec:linux',
     size: 2,
     status: {
-      icon: 'icon_status_success',
+      icon: 'status_success',
       text: 'passed',
       label: 'passed',
       tooltip: 'passed',
