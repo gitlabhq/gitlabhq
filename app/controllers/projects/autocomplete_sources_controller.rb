@@ -1,5 +1,5 @@
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
-  before_action :load_autocomplete_service, except: [:members]
+  before_action :load_autocomplete_service
 
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
@@ -32,13 +32,6 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def target
-    case params[:type]&.downcase
-    when 'issue'
-      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id]) || @project.issues.build
-    when 'mergerequest'
-      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id]) || @project.merge_requests.build
-    when 'commit'
-      @project.commit(params[:type_id])
-    end
+    @autocomplete_service.target(params[:type], params[:type_id])
   end
 end
