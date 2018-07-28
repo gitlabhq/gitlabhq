@@ -1,4 +1,6 @@
 class ResourceLabelEvent < ActiveRecord::Base
+  prepend EE::ResourceLabelEvent
+
   ISSUABLE_COLUMNS = %i(issue_id merge_request_id).freeze
 
   belongs_to :user
