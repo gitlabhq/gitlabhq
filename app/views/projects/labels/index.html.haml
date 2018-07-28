@@ -2,13 +2,14 @@
 - page_title "Labels"
 - can_admin_label = can?(current_user, :admin_label, @project)
 - hide_class = ''
+- search = params[:search]
 
 - if can_admin_label
   - content_for(:header_content) do
     .nav-controls
       = link_to _('New label'), new_project_label_path(@project), class: "btn btn-new"
 
-- if @labels.exists? || @prioritized_labels.exists? || params[:search].present?
+- if @labels.exists? || @prioritized_labels.exists? || search.present?
   #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
@@ -33,10 +34,13 @@
         .prioritized-labels{ class: ('hide' if hide) }
           %h5.prepend-top-10= _('Prioritized Labels')
           .content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
-            #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
+            #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?
               = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label, locals: { force_priority: true }
+            - elsif search.present?
+              .nothing-here-block
+                = _('No labels with such name or description')
 
       - if @labels.present?
         .other-labels
@@ -45,9 +49,13 @@
           .content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
             = paginate @labels, theme: 'gitlab'
-      - elsif params[:search].present?
-        .nothing-here-block
-          = _('No labels with such name or description')
+      - elsif search.present?
+        .other-labels
+          - if @available_labels.any?
+            %h5
+              = _('Other Labels')
+          .nothing-here-block
+            = _('No labels with such name or description')
 
 - else
   = render 'shared/empty_states/labels'
