@@ -65,7 +65,7 @@ class LabelsFinder < UnionFinder
   end
 
   def by_search(labels)
-    return labels unless params[:search].present?
+    return labels unless search?
 
     labels.search(params[:search])
   end
@@ -111,6 +111,10 @@ class LabelsFinder < UnionFinder
 
   def only_group_labels?
     params[:only_group_labels]
+  end
+
+  def search?
+    params[:search].present?
   end
 
   def title
