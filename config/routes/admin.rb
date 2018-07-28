@@ -136,13 +136,13 @@ namespace :admin do
       post :toggle
       get  :status
     end
-    collection do
-      get :projects
-      scope(path: 'projects/:id') do
-        post :recheck_project, action: :recheck
-        post :resync_project, action: :resync
-        post :force_redownload_project, action: :force_redownload
-      end
+  end
+
+  resources :geo_projects, only: [:index] do
+    member do
+      post :recheck
+      post :resync
+      post :force_redownload
     end
   end
 

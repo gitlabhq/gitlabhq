@@ -10,7 +10,7 @@ module EE
           }.freeze
 
           WHITELISTED_GEO_ROUTES_TRACKING_DB = {
-            'admin/geo_nodes' => %w{resync recheck force_redownload}
+            'admin/geo_projects' => %w{resync recheck force_redownload}
           }.freeze
 
           private
@@ -22,16 +22,16 @@ module EE
 
           def geo_node_update_route
             # Calling route_hash may be expensive. Only do it if we think there's a possible match
-            return false unless request.path =~ %r{/admin/geo_nodes}
+            return false unless request.path =~ %r{/admin/geo_}
 
             controller = route_hash[:controller]
             action = route_hash[:action]
 
             if WHITELISTED_GEO_ROUTES[controller]&.include?(action)
-              return ::Gitlab::Database.db_read_write?
+              ::Gitlab::Database.db_read_write?
+            else
+              WHITELISTED_GEO_ROUTES_TRACKING_DB[controller]&.include?(action)
             end
-
-            WHITELISTED_GEO_ROUTES_TRACKING_DB[controller]&.include?(action)
           end
         end
       end

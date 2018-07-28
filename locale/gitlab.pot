@@ -2915,9 +2915,6 @@ msgstr ""
 msgid "Failure"
 msgstr ""
 
-msgid "Failures"
-msgstr ""
-
 msgid "Faster as it re-uses the project workspace (falling back to clone if it doesn't exist)"
 msgstr ""
 
@@ -4342,9 +4339,6 @@ msgstr ""
 msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
-msgid "Never"
-msgstr ""
-
 msgid "Network"
 msgstr ""
 
@@ -5732,9 +5726,6 @@ msgstr ""
 msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
 msgstr ""
 
-msgid "See all of the projects and registries files of Geo Secondaries"
-msgstr ""
-
 msgid "Select"
 msgstr ""
 
@@ -6188,6 +6179,9 @@ msgid "Switch branch/tag"
 msgstr ""
 
 msgid "Sync information"
+msgstr ""
+
+msgid "Synced"
 msgstr ""
 
 msgid "System Hooks"

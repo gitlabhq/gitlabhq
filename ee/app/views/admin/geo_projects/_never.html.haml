@@ -1,16 +1,14 @@
 - @projects.each do |project|
   .card.project-card.prepend-top-15
-    .card-header{id: "project-#{project.id}-header"}
+    .card-header{ id: "project-#{project.id}-header" }
       %h5.mb-0.mt-0.p-2.d-flex
         %button.btn.btn-link.btn-card-header.d-flex.flex-fill{ type: 'button', data: { toggle: 'collapse', target: "#project-#{project.id}" }, 'aria-expanded' => 'true', 'aria-controls' => "project-#{project.id}" }
           = sprite_icon('chevron-down', size: 18, css_class: 'card-expand-icon')
           = sprite_icon('chevron-up', size: 18, css_class: 'card-collapse-icon')
           %strong.header-text
             = project.name
-          %button.btn.btn-outline-primary.btn-sm{ type: 'button' }
-            Resync
 
-    .collapse.show{id: "project-#{project.id}", 'aria-labelledby' => "project-#{project.id}-header" }
+    .collapse.show{ id: "project-#{project.id}", 'aria-labelledby' => "project-#{project.id}-header" }
       .card-body
         .container
           .row
@@ -34,3 +32,5 @@
                 Error message
               .project-status-content.font-weight-bold
                 = project.project_registry.last_repository_sync_failure if project.project_registry
+
+= paginate @projects, theme: 'gitlab'

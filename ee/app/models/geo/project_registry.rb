@@ -201,19 +201,29 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     public_send("#{type}_verification_retry_count").to_i # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  # Flag the repository to be rechecked
-  def flag_repository_for_recheck
-    self.update(repository_verification_checksum_sha: nil)
+  # Flag the repository to be re-checked
+  def flag_repository_for_recheck!
+    self.update(repository_verification_checksum_sha: nil, last_repository_verification_failure: nil, repository_checksum_mismatch: nil)
   end
 
-  # Flag the repository to be resynced
-  def flag_repository_for_resync
-    self.update(resync_repository: true)
+  # Flag the repository to be re-synced
+  def flag_repository_for_resync!
+    repository_updated!(:repository, Time.now)
   end
 
-  # Flag the repository to perform a full redownload
-  def flag_repository_for_redownload
+  # Flag the repository to perform a full re-download
+  def flag_repository_for_redownload!
     self.update(resync_repository: true, force_to_redownload_repository: true)
+  end
+
+  # A registry becomes candidate for re-download after first failed retries
+  #
+  # This is used by the Admin > Geo Nodes > Projects UI interface to choose
+  # when to display the re-download button
+  #
+  # @return [Boolean] whether the registry is candidate for a re-download
+  def candidate_for_redownload?
+    self.repository_retry_count && self.repository_retry_count >= 1
   end
 
   private
