@@ -583,7 +583,7 @@ module QuickActions
     end
 
     desc 'Tag this commit.'
-    explanation do |(tag_name, message)|
+    explanation do |tag_name, message|
       with_message = %{ with "#{message}"} if message.present?
       "Tags this commit to #{tag_name}#{with_message}."
     end
@@ -594,7 +594,7 @@ module QuickActions
     condition do
       issuable.is_a?(Commit) && current_user.can?(:push_code, project)
     end
-    command :tag do |(tag_name, message)|
+    command :tag do |tag_name, message|
       @updates[:tag_name] = tag_name
       @updates[:tag_message] = message
     end
