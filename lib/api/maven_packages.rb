@@ -77,13 +77,13 @@ module API
 
             # Skip handling top level maven-metadata.xml for now
             # Also stop request if version in metadata file differs from one in URL
-            return unless version || version != params[:app_version]
+            return if version.blank? || version != params[:app_version]
           end
 
-          package = Packages::Package.crate(project: user_project)
+          package = Packages::Package.create(project: user_project)
 
-          metadata = ::Packages::MavenMetadatum.crate_by!(
-            project: package.project,
+          metadata = ::Packages::MavenMetadatum.create!(
+            package: package,
             app_group: params[:app_group],
             app_name: params[:app_name],
             app_version: params[:app_version]
