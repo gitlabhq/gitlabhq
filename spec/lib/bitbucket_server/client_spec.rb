@@ -4,6 +4,7 @@ describe BitbucketServer::Client do
   let(:options) { { base_uri: 'https://test:7990', user: 'bitbucket', password: 'mypassword' } }
   let(:project) { 'SOME-PROJECT' }
   let(:repo_slug) { 'my-repo' }
+  let(:headers) { { "Content-Type" => "application/json" } }
 
   subject { described_class.new(options) }
 
@@ -38,7 +39,7 @@ describe BitbucketServer::Client do
     let(:url) { "https://test:7990/rest/api/1.0/projects/SOME-PROJECT/repos/my-repo" }
 
     it 'requests a specific repository' do
-      stub_request(:get, url)
+      stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
 
       subject.repo(project, repo_slug)
 
@@ -62,7 +63,7 @@ describe BitbucketServer::Client do
     let(:url) { 'https://test:7990/rest/api/1.0/projects/SOME-PROJECT/repos/my-repo/branches' }
 
     it 'requests Bitbucket to create a branch' do
-      stub_request(:post, url)
+      stub_request(:post, url).to_return(status: 204, headers: headers, body: '{}')
 
       subject.create_branch(project, repo_slug, branch, sha)
 
@@ -76,7 +77,7 @@ describe BitbucketServer::Client do
     let(:url) { 'https://test:7990/rest/branch-utils/1.0/projects/SOME-PROJECT/repos/my-repo/branches' }
 
     it 'requests Bitbucket to create a branch' do
-      stub_request(:delete, url)
+      stub_request(:delete, url).to_return(status: 204, headers: headers, body: '{}')
 
       subject.delete_branch(project, repo_slug, branch, sha)
 
