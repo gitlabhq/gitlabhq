@@ -4,6 +4,10 @@ class Packages::PackageFileUploader < GitlabUploader
 
   storage_options Gitlab.config.packages
 
+  def filename
+    model.file_name
+  end
+
   def store_dir
     dynamic_segment
   end

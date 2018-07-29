@@ -9,6 +9,7 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
     create_table :packages_package_files do |t|
       t.references :package, index: true, null: false
       t.string :file
+      t.string :file_name, null: false
       t.integer :file_type
       t.integer :file_store
       t.integer :size

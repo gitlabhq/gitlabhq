@@ -6,6 +6,8 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
+    MAVEN_METADATA_FILE = 'maven-metadata.xml'.freeze
+
     content_type :md5, 'text/plain'
     content_type :sha1, 'text/plain'
     content_type :binary, 'application/octet-stream'
@@ -42,8 +44,7 @@ module API
                                                        app_name: params[:app_name],
                                                        app_version: params[:app_version])
 
-
-        package_file = metadata.package.package_files.find_by!(file: file_name)
+        package_file = metadata.package.package_files.find_by!(file_name: file_name)
 
         case format
         when 'md5'
@@ -59,7 +60,55 @@ module API
         detail 'This feature was introduced in GitLab 11.3'
       end
       put ':id/packages/maven/*app_group/:app_name/:app_version/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
-        # TODO: Implement me
+        file_name, format = extract_format(params[:file_name])
+
+        metadata = ::Packages::MavenMetadatum.find_by(app_group: params[:app_group],
+                                                      app_name: params[:app_name],
+                                                      app_version: params[:app_version])
+
+        if metadata
+          # Everything seems legit. We can proceed to file uploading
+        else
+          if file_name == MAVEN_METADATA_FILE
+            xml = env['api.request.input']
+            version = Nokogiri::XML(xml).css('metadata:root > version').text
+
+            # Skip handling top level maven-metadata.xml for now
+            # Also stop request if version in metadata file differs from one in URL
+            return unless version || version != params[:app_version]
+          end
+
+          package = Packages::Package.crate(project: user_project)
+
+          metadata = ::Packages::MavenMetadatum.crate_by!(
+            project: package.project,
+            app_group: params[:app_group],
+            app_name: params[:app_name],
+            app_version: params[:app_version]
+          )
+        end
+
+        # Convert string into CarrierWave compatible StringIO object
+        string_file = CarrierWaveStringFile.new(env['api.request.input'])
+
+        if format
+          package_file = metadata.package.package_files.find_by!(file_name: file_name)
+
+          case format
+          when 'md5'
+            package_file.file_md5 = string_file
+          when 'sha1'
+            package_file.file_sha1 = string_file
+          end
+
+          package_file.save!
+        else
+          package_file = metadata.package.package_files.new
+          package_file.file_name = file_name
+          package_file.file_type = file_name.rpartition('.').last
+          package_file.file = string_file
+          package_file.save!
+        end
       end
     end
   end

@@ -1921,6 +1921,42 @@ ActiveRecord::Schema.define(version: 20180807153545) do
     t.string "nonce", null: false
   end
 
+  create_table "packages_maven_metadata", force: :cascade do |t|
+    t.integer "package_id", null: false
+    t.string "app_group", null: false
+    t.string "app_name", null: false
+    t.string "app_version", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "packages_maven_metadata", ["package_id"], name: "index_packages_maven_metadata_on_package_id", using: :btree
+
+  create_table "packages_package_files", force: :cascade do |t|
+    t.integer "package_id", null: false
+    t.string "file"
+    t.string "file_name", null: false
+    t.integer "file_type"
+    t.integer "file_store"
+    t.integer "size"
+    t.binary "file_md5"
+    t.binary "file_sha1"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "packages_package_files", ["package_id"], name: "index_packages_package_files_on_package_id", using: :btree
+
+  create_table "packages_packages", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.string "name"
+    t.string "version"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  add_index "packages_packages", ["project_id"], name: "index_packages_packages_on_project_id", using: :btree
+
   create_table "pages_domains", force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
