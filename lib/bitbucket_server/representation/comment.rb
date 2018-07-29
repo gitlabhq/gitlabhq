@@ -84,15 +84,15 @@ module BitbucketServer
       end
 
       def author
-        raw.dig('comment', 'author')
+        raw_comment['author']
       end
 
       def created_date
-        raw.dig('comment', 'createdDate')
+        raw_comment['createdDate']
       end
 
       def updated_date
-        raw.dig('comment', 'updatedDate')
+        raw_comment['updatedDate']
       end
     end
   end
