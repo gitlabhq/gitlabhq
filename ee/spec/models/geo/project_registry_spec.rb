@@ -699,7 +699,7 @@ describe Geo::ProjectRegistry do
                         repository_retry_count: 1,
                         repository_verification_retry_count: 1)
 
-        subject.repository_updated!(event, Time.now)
+        subject.repository_updated!(event.source, Time.now)
       end
 
       it 'resets sync state' do
@@ -737,7 +737,7 @@ describe Geo::ProjectRegistry do
                         wiki_retry_count: 1,
                         wiki_verification_retry_count: 1)
 
-        subject.repository_updated!(event, Time.now)
+        subject.repository_updated!(event.source, Time.now)
       end
 
       it 'resets sync state' do
