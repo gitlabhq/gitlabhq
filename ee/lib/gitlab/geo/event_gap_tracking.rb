@@ -40,7 +40,7 @@ module Gitlab
 
         return unless gap?(current_id)
 
-        track_gap(current_id)
+        track_gaps(current_id)
       ensure
         self.previous_id = current_id
       end
@@ -60,7 +60,7 @@ module Gitlab
         end
       end
 
-      def track_gap(current_id)
+      def track_gaps(current_id)
         log_info("Event log gap detected", previous_event_id: previous_id, current_event_id: current_id)
 
         with_redis do |redis|
