@@ -40,11 +40,11 @@ module BitbucketServer
       end
 
       def created_at
-        Time.at(created_date / 1000) if created_date.is_a?(Integer)
+        self.class.convert_timestamp(created_date)
       end
 
       def updated_at
-        Time.at(updated_date / 1000) if updated_date.is_a?(Integer)
+        self.class.convert_timestamp(created_date)
       end
 
       # Bitbucket Server supports the ability to reply to any comment

@@ -38,11 +38,11 @@ module BitbucketServer
       def merge_timestamp
         timestamp = raw.dig('commit', 'committerTimestamp')
 
-        Time.at(timestamp / 1000.0) if timestamp.is_a?(Integer)
+        self.class.convert_timestamp(timestamp)
       end
 
       def created_at
-        Time.at(created_date / 1000) if created_date.is_a?(Integer)
+        self.class.convert_timestamp(created_date)
       end
 
       private
