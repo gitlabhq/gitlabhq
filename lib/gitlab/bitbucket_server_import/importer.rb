@@ -64,8 +64,8 @@ module Gitlab
 
         return users[email] if users.key?(email)
 
-        user = User.find_by_any_email(email)
-        users[email] = user&.id if user
+        user = User.find_by_any_email(email, confirmed: true)
+        users[email] = user&.id
 
         user&.id
       end
