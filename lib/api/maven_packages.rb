@@ -12,6 +12,8 @@ module API
     content_type :sha1, 'text/plain'
     content_type :binary, 'application/octet-stream'
 
+    before { authenticate_non_get! }
+
     helpers do
       def extract_format(file_name)
         name, _, format = file_name.rpartition('.')
