@@ -104,7 +104,8 @@ describe Gitlab::Geo::EventGapTracking, :clean_gitlab_redis_cache do
 
   describe '#track_gaps' do
     it 'logs a message' do
-      expect(gap_tracking).to receive(:log_info).with(/gap detected/, hash_including(previous_event_id: previous_event_id, current_event_id: event_id_with_gap))
+      expect(Gitlab::Geo::Logger).to receive(:info)
+        .with(/gap detected/, hash_including(previous_event_id: previous_event_id, current_event_id: event_id_with_gap))
 
       gap_tracking.track_gaps(event_id_with_gap)
     end
