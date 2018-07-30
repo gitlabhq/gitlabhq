@@ -109,7 +109,7 @@ created in snippets, wikis, and repos.
 
 With **[GitLab Enterprise Edition](https://about.gitlab.com/pricing)**, you can also:
 
-- [Custom project templates](https://docs.gitlab.com/ee/user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom template when creating a new project. **[PREMIUM]**
+- [Custom project templates](https://docs.gitlab.com/ee/user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom templates when creating a new project. **[PREMIUM]**
 
 ### Repository settings
 
