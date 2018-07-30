@@ -1,7 +1,7 @@
 project_identifier: 'gitlab-ee'
 api_key_env: CROWDIN_API_KEY
 preserve_hierarchy: true
-commit_message: [skip ci]
+commit_message: "[skip ci]"
 
 files:
   - source: /locale/gitlab.pot
