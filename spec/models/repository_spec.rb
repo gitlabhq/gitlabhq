@@ -1129,16 +1129,12 @@ describe Repository do
       end
 
       it 'raises Rugged::ReferenceError' do
-        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
-          expect(err.cause).to be_nil
-        end
-
         expect do
           Gitlab::Git::OperationService.new(git_user, target_project.repository.raw_repository)
             .with_branch('feature',
                          start_repository: project.repository.raw_repository,
                          &:itself)
-        end.to raise_reference_error
+        end.to raise_error(Gitlab::Git::CommandError)
       end
     end
 

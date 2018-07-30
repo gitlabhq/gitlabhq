@@ -1,5 +1,0 @@
----
-title: Disable Gitaly timeouts when creating or restoring backups
-merge_request: 20810
-author:
-type: fixed
