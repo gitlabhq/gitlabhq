@@ -32,13 +32,12 @@ module Storage
       begin
         send_update_instructions
         write_projects_repository_config
-
-        true
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
+      rescue => e
+        # Raise if development/test environment, else just notify Sentry
+        Gitlab::Sentry.track_exception(e, extra: { full_path_was: full_path_was, full_path: full_path, action: 'move_dir' })
       end
+
+      true # false would cancel later callbacks but not rollback
     end
 
     # Hooks

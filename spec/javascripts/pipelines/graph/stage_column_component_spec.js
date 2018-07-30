@@ -1,8 +1,11 @@
 import Vue from 'vue';
 import stageColumnComponent from '~/pipelines/components/graph/stage_column_component.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('stage column component', () => {
   let component;
+  const StageColumnComponent = Vue.extend(stageColumnComponent);
+
   const mockJob = {
     id: 4250,
     name: 'test',
@@ -22,7 +25,6 @@ describe('stage column component', () => {
   };
 
   beforeEach(() => {
-    const StageColumnComponent = Vue.extend(stageColumnComponent);
 
     const mockJobs = [];
     for (let i = 0; i < 3; i += 1) {
@@ -31,13 +33,11 @@ describe('stage column component', () => {
       mockJobs.push(mockedJob);
     }
 
-    component = new StageColumnComponent({
-      propsData: {
-        title: 'foo',
-        jobs: mockJobs,
-        hasTriggeredBy: false,
-      },
-    }).$mount();
+    component = mountComponent(StageColumnComponent, {
+      title: 'foo',
+      jobs: mockJobs,
+      hasTriggeredBy: false,
+    });
   });
 
   it('should render provided title', () => {
@@ -46,5 +46,29 @@ describe('stage column component', () => {
 
   it('should render the provided jobs', () => {
     expect(component.$el.querySelectorAll('.builds-container > ul > li').length).toEqual(3);
+  });
+
+  describe('jobId', () => {
+    it('escapes job name', () => {
+      component = mountComponent(StageColumnComponent, {
+        jobs: [
+          {
+            id: 4259,
+            name: '<img src=x onerror=alert(document.domain)>',
+            status: {
+              icon: 'status_success',
+              label: 'success',
+              tooltip: '<img src=x onerror=alert(document.domain)>',
+            },
+          },
+        ],
+        title: 'test',
+        hasTriggeredBy: false,
+      });
+
+      expect(
+        component.$el.querySelector('.builds-container li').getAttribute('id'),
+      ).toEqual('ci-badge-&lt;img src=x onerror=alert(document.domain)&gt;');
+    });
   });
 });

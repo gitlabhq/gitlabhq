@@ -1,4 +1,5 @@
 <script>
+import _ from 'underscore';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import StageColumnComponent from './stage_column_component.vue';
 import LinkedPipelinesColumn from 'ee/pipelines/components/graph/linked_pipelines_column.vue'; // eslint-disable-line import/first
@@ -41,7 +42,8 @@ export default {
 
   methods: {
     capitalizeStageName(name) {
-      return name.charAt(0).toUpperCase() + name.slice(1);
+      const escapedName = _.escape(name);
+      return escapedName.charAt(0).toUpperCase() + escapedName.slice(1);
     },
 
     isFirstColumn(index) {
