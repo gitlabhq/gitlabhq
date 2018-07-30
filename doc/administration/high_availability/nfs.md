@@ -39,27 +39,11 @@ Our support team will not be able to assist on performance issues related to
 file system access.
 
 Customers and users have reported that AWS EFS does not perform well for GitLab's
-<<<<<<< HEAD
-use-case. There are several issues that can cause problems. For these reasons
-GitLab does not recommend using EFS with GitLab.
-
-- EFS bases allowed IOPS on volume size. The larger the volume, the more IOPS
-  are allocated. For smaller volumes, users may experience decent performance
-  for a period of time due to 'Burst Credits'. Over a period of weeks to months
-  credits may run out and performance will bottom out.
-- For larger volumes, allocated IOPS may not be the problem. Workloads where
-  many small files are written in a serialized manner are not well-suited for EFS.
-  EBS with an NFS server on top will perform much better.
-
-In addition, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
-because this will also affect performance. We recommend that the log files be
-=======
 use-case. Workloads where many small files are written in a serialized manner, like `git`,
 are not well-suited for EFS. EBS with an NFS server on top will perform much better.
 
 If you do choose to use EFS, avoid storing GitLab log files (e.g. those in `/var/log/gitlab`)
 there because this will also affect performance. We recommend that the log files be
->>>>>>> upstream/master
 stored on a local volume.
 
 For more details on another person's experience with EFS, see
