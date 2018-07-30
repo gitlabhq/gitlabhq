@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == LabelEventable concern
 #
 # Contains functionality related to objects that support adding/removing events.

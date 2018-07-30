@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CreateResourceLabelEvents < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
