@@ -36,10 +36,6 @@
           %span.issue-count-badge-count
             %icon.mr-1{ name: "issues" }
             {{ list.issuesSize }}
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
           = render_if_exists "shared/boards/components/list_weight"
 
         - if can?(current_user, :admin_list, current_board_parent)
@@ -50,10 +46,6 @@
             "title" => _("New issue"),
             data: { placement: "top", container: "body" } }
             = icon("plus", class: "js-no-trigger-collapse")
-<<<<<<< HEAD
-=======
-
->>>>>>> upstream/master
     %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
       ":list" => "list",
       ":issues" => "list.issues",
