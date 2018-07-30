@@ -220,6 +220,10 @@ module NotificationRecipientService
     end
 
     class Default < Base
+      prepend ::EE::NotificationRecipientBuilders::Default
+
+      MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request].freeze
+
       attr_reader :target
       attr_reader :current_user
       attr_reader :action
@@ -252,7 +256,7 @@ module NotificationRecipientService
 
         add_subscribed_users
 
-        if [:new_issue, :new_merge_request].include?(custom_action)
+        if self.class.mention_type_actions.include?(custom_action)
           # These will all be participants as well, but adding with the :mention
           # type ensures that users with the mention notification level will
           # receive them, too.
@@ -282,6 +286,10 @@ module NotificationRecipientService
       # Check NotificationSetting.email_events
       def custom_action
         @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
+      end
+
+      def self.mention_type_actions
+        MENTION_TYPE_ACTIONS.dup
       end
     end
 
