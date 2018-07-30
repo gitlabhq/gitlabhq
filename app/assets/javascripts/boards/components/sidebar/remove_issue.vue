@@ -39,13 +39,13 @@
         Vue.http.patch(this.updateUrl, data).catch(() => {
           Flash(__('Failed to remove issue from board, please try again.'));
 
-          lists.forEach(list => {
+          lists.forEach((list) => {
             list.addIssue(issue);
           });
         });
 
         // Remove from the frontend store
-        lists.forEach(list => {
+        lists.forEach((list) => {
           list.removeIssue(issue);
         });
 

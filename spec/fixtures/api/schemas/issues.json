@@ -2,14 +2,16 @@
   "type": "object",
   "required" : [
     "issues",
-    "size"
+    "size",
+    "total_weight"
   ],
   "properties" : {
     "issues": {
       "type": "array",
       "items": { "$ref": "issue.json" }
     },
-    "size": { "type": "integer" }
+    "size": { "type": "integer" },
+    "total_weight": { "type": "integer" }
   },
   "additionalProperties": false
 }

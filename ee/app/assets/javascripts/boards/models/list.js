@@ -11,8 +11,39 @@ const EE_TYPES = {
 };
 
 class ListEE extends List {
+  constructor(...args) {
+    super(...args);
+    this.totalWeight = 0;
+  }
+
   getTypeInfo(type) {
     return EE_TYPES[type] || super.getTypeInfo(type);
+  }
+
+  getIssues(...args) {
+    return super.getIssues(...args).then(data => {
+      this.totalWeight = data.total_weight;
+    });
+  }
+
+  addIssue(issue, ...args) {
+    super.addIssue(issue, ...args);
+
+    if (issue.weight) {
+      this.totalWeight += issue.weight;
+    }
+  }
+
+  removeIssue(issue, ...args) {
+    if (issue.weight) {
+      this.totalWeight -= issue.weight;
+    }
+
+    super.removeIssue(issue, ...args);
+  }
+
+  addWeight(weight) {
+    this.totalWeight += weight;
   }
 
   onNewIssueResponse(issue, data) {
