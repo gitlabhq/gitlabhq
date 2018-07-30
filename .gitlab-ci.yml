@@ -572,13 +572,12 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
-  image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  before_script:
-    - source scripts/utils.sh
-    - retry gem install danger --no-ri --no-rdoc
   cache: {}
+  dependencies: []
+  before_script: []
   only:
     variables:
       - $DANGER_GITLAB_API_TOKEN

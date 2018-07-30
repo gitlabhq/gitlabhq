@@ -292,7 +292,7 @@ module EE
       if import? && !repository_exists?
         super
       elsif mirror?
-        ::Gitlab::Metrics.add_event(:mirrors_scheduled, path: full_path)
+        ::Gitlab::Metrics.add_event(:mirrors_scheduled)
         job_id = RepositoryUpdateMirrorWorker.perform_async(self.id)
 
         log_import_activity(job_id, type: :mirror)

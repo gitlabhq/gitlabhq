@@ -1,9 +1,8 @@
 class DeployToken < ActiveRecord::Base
   include Expirable
   include TokenAuthenticatable
+  include PolicyActor
   add_authentication_token_field :token
-
-  prepend EE::DeployToken
 
   AVAILABLE_SCOPES = %i(read_repository read_registry).freeze
   GITLAB_DEPLOY_TOKEN_NAME = 'gitlab-deploy-token'.freeze
@@ -58,10 +57,6 @@ class DeployToken < ActiveRecord::Base
 
   def expires_at=(value)
     write_attribute(:expires_at, value.presence || Forever.date)
-  end
-
-  def admin?
-    false
   end
 
   private

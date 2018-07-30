@@ -291,6 +291,7 @@ export default {
       :dependency-scanning-help-path="mr.dependencyScanningHelp"
       :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
       :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
+      :pipeline-path="mr.pipeline.path"
       :pipeline-id="mr.securityReportsPipelineId"
       :can-create-issue="mr.canCreateIssue"
       :can-create-feedback="mr.canCreateFeedback"

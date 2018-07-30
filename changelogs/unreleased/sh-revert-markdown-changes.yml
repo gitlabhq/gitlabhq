@@ -1,5 +1,0 @@
----
-title: Fix slow Markdown rendering
-merge_request: 20820
-author:
-type: performance

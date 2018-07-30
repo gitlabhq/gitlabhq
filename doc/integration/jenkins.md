@@ -1,4 +1,4 @@
-# Jenkins CI service
+# Jenkins CI service **[STARTER]**
 
 >**Note:**
 In GitLab 8.3, Jenkins integration using the

@@ -146,6 +146,11 @@ msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{text} %{files}"
+msgid_plural "%{text} %{files} files"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{text} is available"
 msgstr ""
 
@@ -2297,6 +2302,9 @@ msgstr ""
 msgid "Delete list"
 msgstr ""
 
+msgid "Deleted"
+msgstr ""
+
 msgid "Deny"
 msgstr ""
 
@@ -4105,6 +4113,9 @@ msgid "Metrics|There was an error getting deployment information."
 msgstr ""
 
 msgid "Metrics|There was an error getting environments information."
+msgstr ""
+
+msgid "Metrics|There was an error while retrieving metrics"
 msgstr ""
 
 msgid "Metrics|Type"
@@ -6705,10 +6716,8 @@ msgstr ""
 msgid "Up to date"
 msgstr ""
 
-msgid "Update %{files}"
-msgid_plural "Update %{files} files"
-msgstr[0] ""
-msgstr[1] ""
+msgid "Update"
+msgstr ""
 
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr ""
@@ -7405,9 +7414,6 @@ msgstr ""
 msgid "ciReport|Severity"
 msgstr ""
 
-msgid "ciReport|Show complete code vulnerabilities report"
-msgstr ""
-
 msgid "ciReport|Solution"
 msgstr ""
 
@@ -7439,6 +7445,9 @@ msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
 msgstr ""
 
 msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
+msgstr ""
+
+msgid "ciReport|View full report"
 msgstr ""
 
 msgid "ciReport|no vulnerabilities"
@@ -7545,13 +7554,10 @@ msgstr ""
 msgid "mrWidget|An error occured while removing your approval."
 msgstr ""
 
-msgid "mrWidget|An error occured while submitting your approval."
+msgid "mrWidget|An error occurred while submitting your approval."
 msgstr ""
 
 msgid "mrWidget|Approve"
-msgstr ""
-
-msgid "mrWidget|Approved"
 msgstr ""
 
 msgid "mrWidget|Approved by"
@@ -7615,6 +7621,12 @@ msgid "mrWidget|Merge failed."
 msgstr ""
 
 msgid "mrWidget|Merge locally"
+msgstr ""
+
+msgid "mrWidget|Merge request approved"
+msgstr ""
+
+msgid "mrWidget|Merge request approved; you can approve additionally"
 msgstr ""
 
 msgid "mrWidget|Merged by"

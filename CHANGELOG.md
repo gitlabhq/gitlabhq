@@ -2,6 +2,42 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.3 (2018-07-27)
+
+### Fixed (8 changes, 1 of them is from the community)
+
+- Rework some projects table indexes around repository_storage field. !20377
+- Fix navigation to First and Next discussion on MR Changes tab. !20434
+- Fix showing outdated discussions on Changes tab. !20445
+- Fix autosave and ESC confirmation issues for MR discussions. !20569
+- Fix rendering of the context lines in MR diffs page. !20642
+- Don't overflow project/group dropdown results. !20704 (gfyoung)
+- Fixed IDE not opening JSON files. !20798
+- Disable Gitaly timeouts when creating or restoring backups. !20810
+
+### Performance (1 change)
+
+- Reduces the client side memory footprint on merge requests. !20744
+
+
+## 11.1.2 (2018-07-26)
+
+### Security (4 changes)
+
+- Adding CSRF protection to Hooks test action.
+- Don't expose project names in GitHub counters.
+- Don't expose project names in various counters.
+- Fixed XSS in branch name in Web IDE.
+
+### Fixed (1 change)
+
+- Escapes milestone and label's names on flash notice when promoting them.
+
+### Performance (1 change)
+
+- Fix slow Markdown rendering. !20820
+
+
 ## 11.1.1 (2018-07-23)
 
 ### Fixed (2 changes)
@@ -251,6 +287,20 @@ entry.
 - Remove the use of `is_shared` of `Ci::Runner`.
 - Add more detailed logging to githost.log when rebasing.
 - Use monospaced font for MR diff commit link ref on GFM.
+
+
+## 11.0.5 (2018-07-26)
+
+### Security (4 changes)
+
+- Don't expose project names in various counters.
+- Don't expose project names in GitHub counters.
+- Adding CSRF protection to Hooks test action.
+- Fixed XSS in branch name in Web IDE.
+
+### Fixed (1 change)
+
+- Escapes milestone and label's names on flash notice when promoting them.
 
 
 ## 11.0.4 (2018-07-17)

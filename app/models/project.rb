@@ -1256,8 +1256,6 @@ class Project < ActiveRecord::Base
     return true if skip_disk_validation
     return false unless repository_storage
 
-    expires_full_path_cache # we need to clear cache to validate renames correctly
-
     # Check if repository with same path already exists on disk we can
     # skip this for the hashed storage because the path does not change
     if legacy_storage? && repository_with_same_path_already_exists?
@@ -1636,7 +1634,6 @@ class Project < ActiveRecord::Base
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
     send_move_instructions(full_path_was) unless import_started?
-    expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
     SystemHooksService.new.execute_hooks_for(self, :rename)
