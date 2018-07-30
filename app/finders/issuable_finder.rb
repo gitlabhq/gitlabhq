@@ -130,7 +130,7 @@ class IssuableFinder
 
     counts[:all] = counts.values.sum
 
-    counts
+    counts.with_indifferent_access
   end
 
   def group
