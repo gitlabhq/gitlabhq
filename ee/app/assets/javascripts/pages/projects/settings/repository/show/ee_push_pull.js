@@ -8,7 +8,6 @@ export default class EEPushPull extends PushPull {
   constructor(...args) {
     super(...args);
 
-    this.$mirrorDirectionSelect = $('.js-mirror-direction', this.$form);
     this.$insertionPoint = $('.js-form-insertion-point', this.$form);
     this.$repoCount = $('.js-mirrored-repo-count', this.$container);
     this.directionFormMap = {
@@ -18,6 +17,9 @@ export default class EEPushPull extends PushPull {
   }
 
   init() {
+    this.$insertionPoint.collapse({
+      toggle: false,
+    });
     this.handleUpdate();
     super.init();
   }
@@ -26,8 +28,7 @@ export default class EEPushPull extends PushPull {
     return this.hideForm()
       .then(() => {
         this.updateForm();
-
-        this.$insertionPoint.collapse('show');
+        this.showForm();
       })
       .catch(() => {
         Flash(__('Something went wrong on our end.'));
@@ -36,9 +37,21 @@ export default class EEPushPull extends PushPull {
 
   hideForm() {
     return new Promise(resolve => {
-      if (!this.$insertionPoint.hasClass('in')) return resolve();
+      if (!this.$insertionPoint.html()) return resolve();
 
-      return this.$insertionPoint.collapse('hide').one('hidden.bs.collapse', () => resolve());
+      this.$insertionPoint.one('hidden.bs.collapse', () => {
+        resolve();
+      });
+      return this.$insertionPoint.collapse('hide');
+    });
+  }
+
+  showForm() {
+    return new Promise(resolve => {
+      this.$insertionPoint.one('shown.bs.collapse', () => {
+        resolve();
+      });
+      this.$insertionPoint.collapse('show');
     });
   }
 

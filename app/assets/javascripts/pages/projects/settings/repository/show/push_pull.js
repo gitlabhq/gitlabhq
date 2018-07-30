@@ -10,8 +10,9 @@ export default class PushPull {
     this.$form = $('.js-mirror-form', this.$container);
     this.$urlInput = $('.js-mirror-url', this.$form);
     this.$protectedBranchesInput = $('.js-mirror-protected', this.$form);
-    this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
+    this.$mirrorDirectionSelect = $('.js-mirror-direction', this.$form);
     this.$table = $('.js-mirrors-table-body', this.$container);
+    this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
   }
 
   init() {
@@ -21,7 +22,15 @@ export default class PushPull {
   }
 
   updateUrl() {
-    $('.js-mirror-url-hidden', this.$form).val(this.$urlInput.val());
+    let val = this.$urlInput.val();
+    const $authMethod = $('.js-auth-method', this.$form);
+
+    if ($authMethod.val() === 'password') {
+      const password = $('.js-password', this.$form).val();
+      if (password) val = val.replace('@', `:${password}@`);
+    }
+
+    $('.js-mirror-url-hidden', this.$form).val(val);
   }
 
   updateProtectedBranches() {
