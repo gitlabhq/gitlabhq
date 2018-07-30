@@ -109,7 +109,7 @@ export const setPageTitle = title => {
 };
 
 export const commitActionForFile = file => {
-  if (file.prevPath !== '') {
+  if (file.prevPath) {
     return 'move';
   } else if (file.deleted) {
     return 'delete';

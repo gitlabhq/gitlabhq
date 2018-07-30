@@ -45,7 +45,7 @@ describe('new file modal component', () => {
         it('$emits create', () => {
           spyOn(vm, 'createTempEntry');
 
-          vm.createEntryInStore();
+          vm.submitForm();
 
           expect(vm.createTempEntry).toHaveBeenCalledWith({
             name: 'testing',

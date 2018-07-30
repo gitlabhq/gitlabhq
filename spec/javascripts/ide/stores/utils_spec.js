@@ -112,6 +112,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -119,6 +120,7 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'delete',
@@ -126,6 +128,7 @@ describe('Multi-file store utils', () => {
             content: '',
             encoding: 'text',
             last_commit_id: undefined,
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
@@ -172,6 +175,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -179,6 +183,7 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
@@ -193,6 +198,10 @@ describe('Multi-file store utils', () => {
 
     it('returns create for tempFile', () => {
       expect(utils.commitActionForFile({ tempFile: true })).toBe('create');
+    });
+
+    it('returns move for moved file', () => {
+      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe('move');
     });
 
     it('returns update by default', () => {
