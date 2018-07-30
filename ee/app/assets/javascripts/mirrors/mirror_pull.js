@@ -35,6 +35,7 @@ export default class MirrorPull {
     this.$dropdownAuthType.on('change', e => this.handleAuthTypeChange(e));
     this.$btnDetectHostKeys.on('click', e => this.handleDetectHostKeys(e));
     this.$btnSSHHostsShowAdvanced.on('click', e => this.handleSSHHostsAdvanced(e));
+    this.$regeneratePublicSshKeyButton.on('click', e => this.regeneratePublicSshKey(e));
   }
 
   /**
@@ -77,37 +78,42 @@ export default class MirrorPull {
 
     // Make backOff polling to get data
     backOff((next, stop) => {
-      axios.get(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
-      .then(({ data, status }) => {
-        if (status === 204) {
-          this.backOffRequestCounter += 1;
-          if (this.backOffRequestCounter < 3) {
-            next();
+      axios
+        .get(`${projectMirrorSSHEndpoint}?ssh_url=${repositoryUrl}`)
+        .then(({ data, status }) => {
+          if (status === 204) {
+            this.backOffRequestCounter += 1;
+            if (this.backOffRequestCounter < 3) {
+              next();
+            } else {
+              stop(data);
+            }
           } else {
             stop(data);
           }
-        } else {
-          stop(data);
+        })
+        .catch(stop);
+    })
+      .then(res => {
+        $btnLoadSpinner.addClass('hidden');
+        // Once data is received, we show verification info along with Host keys and fingerprints
+        this.$hostKeysInformation
+          .find('.js-fingerprint-verification')
+          .collapse(res.changes_project_import_data ? 'hide' : 'show');
+        if (res.known_hosts && res.fingerprints) {
+          this.showSSHInformation(res);
         }
       })
-      .catch(stop);
-    })
-    .then((res) => {
-      $btnLoadSpinner.addClass('hidden');
-      // Once data is received, we show verification info along with Host keys and fingerprints
-      this.$hostKeysInformation.find('.js-fingerprint-verification').collapse(res.changes_project_import_data ? 'hide' : 'show');
-      if (res.known_hosts && res.fingerprints) {
-        this.showSSHInformation(res);
-      }
-    })
-    .catch(({ response }) => {
-      // Show failure message when there's an error and re-enable Detect host keys button
-      const failureMessage = response.data ? response.data.message : __('An error occurred while detecting host keys');
-      Flash(failureMessage);
+      .catch(({ response }) => {
+        // Show failure message when there's an error and re-enable Detect host keys button
+        const failureMessage = response.data
+          ? response.data.message
+          : __('An error occurred while detecting host keys');
+        Flash(failureMessage);
 
-      $btnLoadSpinner.addClass('hidden');
-      this.$btnDetectHostKeys.enable();
-    });
+        $btnLoadSpinner.addClass('hidden');
+        this.$btnDetectHostKeys.enable();
+      });
   }
 
   /**
@@ -151,31 +157,31 @@ export default class MirrorPull {
 
     // This request should happen only if selected Auth type was SSH
     // and SSH Public key was not present on page load
-    if (selectedAuthType === AUTH_METHOD.SSH &&
-        !$sshPublicKey.text().trim()) {
+    if (selectedAuthType === AUTH_METHOD.SSH && !$sshPublicKey.text().trim()) {
       this.$wellAuthTypeChanging.collapse('show');
       this.$dropdownAuthType.disable();
 
-      axios.put(projectMirrorAuthTypeEndpoint, JSON.stringify(authTypeData), {
-        headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-        },
-      })
-      .then(({ data }) => {
-        // Show SSH public key container and fill in public key
-        this.toggleAuthWell(selectedAuthType);
-        this.toggleSSHAuthWellMessage(true);
-        this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
+      axios
+        .put(projectMirrorAuthTypeEndpoint, JSON.stringify(authTypeData), {
+          headers: {
+            'Content-Type': 'application/json; charset=utf-8',
+          },
+        })
+        .then(({ data }) => {
+          // Show SSH public key container and fill in public key
+          this.toggleAuthWell(selectedAuthType);
+          this.toggleSSHAuthWellMessage(true);
+          this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
 
-        this.$wellAuthTypeChanging.collapse('hide');
-        this.$dropdownAuthType.enable();
-      })
-      .catch(() => {
-        Flash(__('Something went wrong on our end.'));
+          this.$wellAuthTypeChanging.collapse('hide');
+          this.$dropdownAuthType.enable();
+        })
+        .catch(() => {
+          Flash(__('Something went wrong on our end.'));
 
-        this.$wellAuthTypeChanging.collapse('hide');
-        this.$dropdownAuthType.enable();
-      });
+          this.$wellAuthTypeChanging.collapse('hide');
+          this.$dropdownAuthType.enable();
+        });
     } else {
       this.toggleAuthWell(selectedAuthType);
       this.$wellSSHAuth.find('.js-ssh-public-key-present').collapse('show');
@@ -189,7 +195,7 @@ export default class MirrorPull {
   showSSHInformation(sshHostKeys) {
     const $fingerprintsList = this.$hostKeysInformation.find('.js-fingerprints-list');
     let fingerprints = '';
-    sshHostKeys.fingerprints.forEach((fingerprint) => {
+    sshHostKeys.fingerprints.forEach(fingerprint => {
       const escFingerprints = _.escape(fingerprint.fingerprint);
       fingerprints += `<code>${escFingerprints}</code>`;
     });
@@ -223,6 +229,34 @@ export default class MirrorPull {
    */
   setSSHPublicKey(sshPublicKey) {
     this.$sshPublicKeyWrap.find('.ssh-public-key').text(sshPublicKey);
-    this.$sshPublicKeyWrap.find('.btn-copy-ssh-public-key').attr('data-clipboard-text', sshPublicKey);
+    this.$sshPublicKeyWrap
+      .find('.btn-copy-ssh-public-key')
+      .attr('data-clipboard-text', sshPublicKey);
+  }
+
+  regeneratePublicSshKey(event) {
+    event.preventDefault();
+
+    const button = this.$regeneratePublicSshKeyButton;
+
+    if (!window.confirm(button.data('confirm'))) return; // eslint-disable-line no-alert
+
+    const spinner = $('.js-spinner', button);
+    const endpoint = button.data('endpoint');
+
+    button.attr('disabled', 'disabled');
+    spinner.removeClass('hide');
+
+    axios
+      .patch(endpoint)
+      .then(({ data }) => {
+        button.removeAttr('disabled');
+        spinner.addClass('hide');
+
+        this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
+      })
+      .catch(() => {
+        Flash(_('Unable to regenerate public ssh key.'));
+      });
   }
 }
