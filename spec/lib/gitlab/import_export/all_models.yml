@@ -334,6 +334,7 @@ project:
 - import_export_upload
 - vulnerability_feedback
 - prometheus_alerts
+- software_license_policies
 award_emoji:
 - awardable
 - user

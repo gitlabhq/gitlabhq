@@ -1422,6 +1422,10 @@ module API
       expose :reset_approvals_on_push
       expose :disable_overriding_approvers_per_merge_request
     end
+
+    class ManagedLicense < Grape::Entity
+      expose :id, :name, :approval_status
+    end
   end
 end
 

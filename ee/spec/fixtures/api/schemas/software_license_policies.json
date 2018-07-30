@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "required": ["software_license_policies"],
+  "properties": {
+    "software_license_policies": {
+      "type": "array",
+      "items": { "$ref": "software_license_policy.json" }
+    }
+  },
+  "additionalProperties": false
+}

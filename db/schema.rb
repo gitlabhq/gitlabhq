@@ -2463,6 +2463,20 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_index "snippets", ["updated_at"], name: "index_snippets_on_updated_at", using: :btree
   add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
 
+  create_table "software_license_policies", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "software_license_id", null: false
+    t.integer "approval_status", default: 0, null: false
+  end
+
+  add_index "software_license_policies", ["project_id", "software_license_id"], name: "index_software_license_policies_unique_per_project", unique: true, using: :btree
+
+  create_table "software_licenses", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "software_licenses", ["name"], name: "index_software_licenses_on_name", using: :btree
+
   create_table "spam_logs", force: :cascade do |t|
     t.integer "user_id"
     t.string "source_ip"
@@ -3021,6 +3035,8 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
+  add_foreign_key "software_license_policies", "projects", on_delete: :cascade
+  add_foreign_key "software_license_policies", "software_licenses", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "term_agreements", "application_setting_terms", column: "term_id"

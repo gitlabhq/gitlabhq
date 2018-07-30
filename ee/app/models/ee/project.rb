@@ -34,6 +34,8 @@ module EE
       has_many :audit_events, as: :entity
       has_many :path_locks
       has_many :vulnerability_feedback
+      has_many :software_license_policies, inverse_of: :project, class_name: 'SoftwareLicensePolicy'
+      accepts_nested_attributes_for :software_license_policies, allow_destroy: true
 
       has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
 
