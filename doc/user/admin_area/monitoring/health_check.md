@@ -42,12 +42,6 @@ Readiness example output:
    "shared_state_check" : {
       "status" : "ok"
    },
-   "fs_shards_check" : {
-      "labels" : {
-         "shard" : "default"
-      },
-      "status" : "ok"
-   },
    "db_check" : {
       "status" : "ok"
    },
@@ -61,9 +55,6 @@ Liveness example output:
 
 ```
 {
-   "fs_shards_check" : {
-      "status" : "ok"
-   },
    "cache_check" : {
       "status" : "ok"
    },
