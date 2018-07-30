@@ -80,10 +80,6 @@ module Gitlab
 
       private
 
-      def geo_logger
-        @logger
-      end
-
       def grace_timestamp
         (Time.now - GAP_GRACE_PERIOD).to_i
       end
