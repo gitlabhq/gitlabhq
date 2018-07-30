@@ -7,7 +7,7 @@ module Projects
 
       prepend ::EE::Projects::HashedStorage::MigrateRepositoryService
 
-      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :logger, :move_wiki
+      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
 
       def initialize(project, old_disk_path, logger: nil)
         @project = project
@@ -18,6 +18,7 @@ module Projects
       end
 
       def execute
+        @old_storage_version = project.storage_version
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
         project.ensure_storage_path_exists
 
