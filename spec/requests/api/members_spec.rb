@@ -231,6 +231,14 @@ describe API::Members do
         expect(response).to have_gitlab_http_status(409)
       end
 
+      it 'returns 404 when the user_id is not valid' do
+        post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
+             user_id: 0, access_level: Member::MAINTAINER
+
+        expect(response).to have_gitlab_http_status(404)
+        expect(json_response['message']).to eq('404 User Not Found')
+      end
+
       it 'returns 400 when user_id is not given' do
         post api("/#{source_type.pluralize}/#{source.id}/members", maintainer),
              access_level: Member::MAINTAINER
