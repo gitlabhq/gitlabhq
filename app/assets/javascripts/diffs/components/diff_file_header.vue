@@ -108,6 +108,9 @@ export default {
         false,
       );
     },
+    gfmCopyText() {
+      return `\`${this.diffFile.filePath}\``;
+    },
   },
   methods: {
     ...mapActions('diffs', ['toggleFileDiscussions']),
@@ -191,6 +194,7 @@ export default {
       <clipboard-button
         :title="__('Copy file path to clipboard')"
         :text="diffFile.filePath"
+        :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
