@@ -303,7 +303,7 @@ describe('diff_file_header', () => {
 
       const button = vm.$el.querySelector('.btn-clipboard');
       expect(button).not.toBe(null);
-      expect(button.dataset.clipboardText).toBe(props.diffFile.filePath);
+      expect(button.dataset.clipboardText).toBe('{"text":"files/ruby/popen.rb","gfm":"`files/ruby/popen.rb`"}');
     });
 
     describe('file mode', () => {
