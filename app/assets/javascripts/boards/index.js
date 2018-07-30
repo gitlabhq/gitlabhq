@@ -28,6 +28,7 @@ import 'ee/boards/models/issue'; // eslint-disable-line import/first
 import 'ee/boards/models/project'; // eslint-disable-line import/first
 import BoardService from 'ee/boards/services/board_service'; // eslint-disable-line import/first
 import 'ee/boards/components/board_sidebar'; // eslint-disable-line import/first
+import 'ee/boards/components/board'; // eslint-disable-line import/first
 import 'ee/boards/components/modal/index'; // eslint-disable-line import/first
 import 'ee/boards/components/boards_selector'; // eslint-disable-line import/first
 import collapseIcon from 'ee/boards/icons/fullscreen_collapse.svg'; // eslint-disable-line import/first
@@ -89,14 +90,12 @@ export default () => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
-      sidebarEventHub.$on('updateWeight', this.updateWeight);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
-      sidebarEventHub.$off('updateWeight', this.updateWeight);
     },
     mounted() {
       this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
@@ -175,24 +174,6 @@ export default () => {
             .catch(() => {
               issue.setFetchingState('subscriptions', false);
               Flash(__('An error occurred when toggling the notification subscription'));
-            });
-        }
-      },
-      updateWeight(newWeight, id) {
-        const { issue } = Store.detail;
-        if (issue.id === id && issue.sidebarInfoEndpoint) {
-          issue.setLoadingState('weight', true);
-          BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
-            .then(res => res.data)
-            .then(data => {
-              issue.setLoadingState('weight', false);
-              issue.updateData({
-                weight: data.weight,
-              });
-            })
-            .catch(() => {
-              issue.setLoadingState('weight', false);
-              Flash(__('An error occurred when updating the issue weight'));
             });
         }
       },
