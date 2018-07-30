@@ -25,7 +25,7 @@ describe CreateGpgSignatureWorker do
       subject
     end
 
-    it 'can recover form exception and continue the siganture frocess' do
+    it 'can recover from exception and continue the signature process' do
       allow(gpg_commit).to receive(:signature)
       allow(Gitlab::Gpg::Commit).to receive(:new).and_return(gpg_commit)
       allow(Gitlab::Gpg::Commit).to receive(:new).with(commits.first).and_raise(StandardError)
