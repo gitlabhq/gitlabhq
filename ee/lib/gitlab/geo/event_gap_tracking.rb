@@ -2,6 +2,7 @@ module Gitlab
   module Geo
     class EventGapTracking
       include Utils::StrongMemoize
+      include ::Gitlab::Geo::LogHelpers
 
       attr_accessor :previous_id
 
@@ -60,7 +61,7 @@ module Gitlab
       end
 
       def track_gaps(current_id)
-        logger.info("Event log gap detected", previous_event_id: previous_id, current_event_id: current_id)
+        log_info("Event log gap detected", previous_event_id: previous_id, current_event_id: current_id)
 
         with_redis do |redis|
           expire_time = Time.now.to_i
