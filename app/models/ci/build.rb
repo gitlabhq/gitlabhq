@@ -338,7 +338,9 @@ module Ci
     end
 
     def runner_required_features
-      []
+      features = []
+      features << :upload_multiple_artifacts if publishes_artifacts_reports?
+      features
     end
 
     def merge_request
@@ -596,6 +598,10 @@ module Ci
       runner_required_features.all? do |feature_name|
         features&.dig(feature_name)
       end
+    end
+
+    def publishes_artifacts_reports?
+      options.dig(:artifacts, :reports).any?
     end
 
     def hide_secrets(trace)
