@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 14:12\n"
+"PO-Revision-Date: 2018-07-30 14:39\n"
 
 msgid " and"
 msgstr " e"
@@ -376,19 +376,19 @@ msgid "Add user(s) to the group:"
 msgstr "Adicionar usuário(s) ao grupo:"
 
 msgid "Add users to group"
-msgstr ""
+msgstr "Adicionar usuários ao grupo"
 
 msgid "Additional text"
 msgstr "Texto adicional"
 
 msgid "Admin Area"
-msgstr ""
+msgstr "Área do Administrador"
 
 msgid "Admin Overview"
-msgstr ""
+msgstr "Visão Geral do Administrador"
 
 msgid "Admin area"
-msgstr ""
+msgstr "Área do administrador"
 
 msgid "AdminArea|Stop all jobs"
 msgstr "Parar todos os processos"
