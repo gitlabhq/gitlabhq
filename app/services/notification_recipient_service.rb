@@ -130,7 +130,7 @@ module NotificationRecipientService
       end
 
       def add_project_watchers
-        add_recipients(project_watchers, :watch, nil)
+        add_recipients(project_watchers, :watch, nil) if project
       end
 
       def add_group_watchers
