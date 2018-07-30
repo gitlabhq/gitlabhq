@@ -15,7 +15,7 @@ module Gitlab
           @pull_request = pull_request
           @project = project
           @client = client
-          @user_finder = UserFinder.new(project, client)
+          @user_finder = GithubImport::UserFinder.new(project, client)
           @milestone_finder = MilestoneFinder.new(project)
           @issuable_finder =
             GithubImport::IssuableFinder.new(project, pull_request)
