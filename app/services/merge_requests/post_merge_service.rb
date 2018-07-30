@@ -25,7 +25,7 @@ module MergeRequests
     def close_issues(merge_request)
       return unless merge_request.target_branch == project.default_branch
 
-      closed_issues = merge_request.closes_issues(current_user)
+      closed_issues = merge_request.visible_closing_issues_for(current_user)
 
       closed_issues.each do |issue|
         if can?(current_user, :update_issue, issue)

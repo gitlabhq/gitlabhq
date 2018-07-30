@@ -47,6 +47,12 @@ describe MergeRequests::ReopenService do
       end
     end
 
+    it 'caches merge request closing issues' do
+      expect(merge_request).to receive(:cache_merge_request_closes_issues!)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
+
     it 'updates metrics' do
       metrics = merge_request.metrics
       service = double(MergeRequestMetricsService)
