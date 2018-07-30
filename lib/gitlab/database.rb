@@ -57,6 +57,33 @@ module Gitlab
       !self.db_read_only?
     end
 
+    # Returns the replication lag time of this secondary in seconds as a
+    # float.
+    #
+    # This method will return nil if no lag time could be calculated.
+    def self.replication_lag_seconds
+      return unless postgresql?
+
+      # Obtain the replication lag in seconds
+      lag = ActiveRecord::Base.connection.execute(self.pg_replication_lag_query).first.fetch('lag')
+
+      lag.present? ? lag.to_f : lag
+    end
+
+    def self.pg_replication_lag_query
+      # Before we check the actual replication lag, we check if the master is actaully active.
+      # From https://www.postgresql.org/message-id/flat/CADKbJJWz9M0swPT3oqe8f9%2BtfD4-F54uE6Xtkh4nERpVsQnjnw%40mail.gmail.com.
+      <<-SQL.squish
+        SELECT CASE
+               WHEN #{Gitlab::Database.pg_last_wal_receive_lsn}() = #{Gitlab::Database.pg_last_wal_receive_lsn}()
+                 THEN 0
+               ELSE
+                 EXTRACT (EPOCH FROM now() - pg_last_xact_replay_timestamp())::float
+               END
+                 AS lag
+      SQL
+    end
+
     def self.version
       @version ||= database_version.match(/\A(?:PostgreSQL |)([^\s]+).*\z/)[1]
     end

@@ -472,6 +472,37 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.replication_lag_seconds' do
+    context 'when using PostgreSQL' do
+      let(:sql) { Gitlab::Database.pg_replication_lag_query }
+
+      before do
+        allow(ActiveRecord::Base.connection).to receive(:execute).and_call_original
+        allow(described_class).to receive(:postgresql?).and_return(true)
+      end
+
+      it 'reports unknown lag' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with(sql).and_return([{ "lag" => nil }])
+
+        expect(described_class.replication_lag_seconds).to be_nil
+      end
+
+      it 'reports replication lag' do
+        allow(ActiveRecord::Base.connection).to receive(:execute).with(sql).and_return([{ "lag" => "10.0" }])
+
+        expect(described_class.replication_lag_seconds).to eq(10.0)
+      end
+    end
+
+    context 'when using MySQL' do
+      before do
+        expect(described_class).to receive(:postgresql?).and_return(false)
+      end
+
+      it { expect(described_class.replication_lag_seconds).to be_falsey }
+    end
+  end
+
   describe '#sanitize_timestamp' do
     let(:max_timestamp) { Time.at((1 << 31) - 1) }
 
