@@ -33,20 +33,11 @@ describe('stage column component', () => {
       mockJobs.push(mockedJob);
     }
 
-<<<<<<< HEAD
-    component = new StageColumnComponent({
-      propsData: {
-        title: 'foo',
-        jobs: mockJobs,
-        hasTriggeredBy: false,
-      },
-    }).$mount();
-=======
     component = mountComponent(StageColumnComponent, {
       title: 'foo',
       jobs: mockJobs,
+      hasTriggeredBy: false,
     });
->>>>>>> upstream/master
   });
 
   it('should render provided title', () => {
@@ -72,6 +63,7 @@ describe('stage column component', () => {
           },
         ],
         title: 'test',
+        hasTriggeredBy: false,
       });
 
       expect(
