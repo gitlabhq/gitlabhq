@@ -32,7 +32,8 @@ export default class PushPull {
   }
 
   registerUpdateListeners() {
-    this.$urlInput.on('change', () => this.updateUrl());
+    this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 200);
+    this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
   }
 
