@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 17:51\n"
+"PO-Revision-Date: 2018-07-30 18:32\n"
 
 msgid " and"
 msgstr " e"
@@ -3568,7 +3568,7 @@ msgid "ImageDiffViewer|2-up"
 msgstr "2-up"
 
 msgid "ImageDiffViewer|Onion skin"
-msgstr ""
+msgstr "Onion skin"
 
 msgid "ImageDiffViewer|Swipe"
 msgstr "Deslizar"
@@ -3622,16 +3622,16 @@ msgid "ImportButtons|Connect repositories from"
 msgstr "Conectar repositórios de"
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr ""
+msgstr "Melhore os quadros de issues com GitLab Enterprise Edition."
 
 msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
 msgstr "Melhore o gerenciamento de issues com o peso de issues e GitLab Enterprise Edition."
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
-msgstr ""
+msgstr "Melhore a pesquisa com Advanced Global Search e GitLab Enterprise Edition."
 
 msgid "In the next step, you'll be able to select the projects you want to import."
-msgstr ""
+msgstr "Na próxima etapa, você poderá selecionar os projetos que deseja importar."
 
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr "Inclua um contrato de Termos de Serviço e uma Política de Privacidade que todos os usuários devem aceitar."
@@ -3643,15 +3643,15 @@ msgid "Inline"
 msgstr "Em linha"
 
 msgid "Install GitLab Runner"
-msgstr ""
+msgstr "Instalar o GitLab Runner"
 
 msgid "Install Runner on Kubernetes"
 msgstr "Instalar Runner no Kubernates"
 
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Instância"
+msgstr[1] "Instâncias"
 
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr "A instância não suporta múltiplos clusters Kubernetes"
@@ -3660,7 +3660,7 @@ msgid "Integrations"
 msgstr "Integrações"
 
 msgid "Integrations Settings"
-msgstr ""
+msgstr "Configurações de Integrações"
 
 msgid "Interested parties can even contribute by pushing commits if they want to."
 msgstr "As partes interessadas podem até contribuir enviando commits, caso queiram."
@@ -3678,10 +3678,10 @@ msgid "Introducing Cycle Analytics"
 msgstr "Apresentando a Análise de Ciclo"
 
 msgid "Issue Boards"
-msgstr ""
+msgstr "Quadros de issues"
 
 msgid "Issue board focus mode"
-msgstr ""
+msgstr "Modo de foco no quadro de issues"
 
 msgid "Issue events"
 msgstr "Eventos de issue"
@@ -3690,7 +3690,7 @@ msgid "IssueBoards|Board"
 msgstr "Board"
 
 msgid "IssueBoards|Boards"
-msgstr ""
+msgstr "Quadros"
 
 msgid "Issues"
 msgstr "Issues"
@@ -3699,7 +3699,7 @@ msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are sear
 msgstr "Issues podem ser bugs, tarefas ou ideias a serem discutidas. Além disso, issues são pesquisáveis e filtráveis."
 
 msgid "Issues closed"
-msgstr ""
+msgstr "Issues fechadas"
 
 msgid "Jan"
 msgstr "Jan"
@@ -3708,7 +3708,7 @@ msgid "January"
 msgstr "Janeiro"
 
 msgid "Job"
-msgstr ""
+msgstr "Trabalho"
 
 msgid "Job has been erased"
 msgstr "O job foi apagado"
@@ -3759,7 +3759,7 @@ msgid "Kubernetes service integration has been deprecated. %{deprecated_message_
 msgstr "Integração de serviço Kubernetes foi depreciada. %{deprecated_message_content} seus clusters Kubernetes usando a nova página <a href=\"%{url}\"/>Clusters Kubernetes</a>"
 
 msgid "LFS"
-msgstr ""
+msgstr "LFS"
 
 msgid "LFSStatus|Disabled"
 msgstr "Desabilitado"
@@ -3771,7 +3771,7 @@ msgid "Label"
 msgstr "Label"
 
 msgid "Label actions dropdown"
-msgstr ""
+msgstr "Dropdown de ações de etiqueta"
 
 msgid "Label lists show all issues with the selected label."
 msgstr "Listas de etiquetas mostram todas as issues com a etiqueta selecionada."
@@ -3863,25 +3863,25 @@ msgid "Leave the \"File type\" and \"Delivery method\" options on their default 
 msgstr ""
 
 msgid "License"
-msgstr ""
+msgstr "Licença"
 
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 msgid "List"
 msgstr "Lista"
 
 msgid "List Your Gitea Repositories"
-msgstr ""
+msgstr "Listar os seus Repositórios do Gitea"
 
 msgid "List available repositories"
-msgstr ""
+msgstr "Listar repositórios disponíveis"
 
 msgid "List your GitHub repositories"
 msgstr "Listar os seus repositórios no GitHub"
 
 msgid "Loading contribution stats for group members"
-msgstr ""
+msgstr "Carregando estados de contribuição para membros de grupo"
 
 msgid "Loading the GitLab IDE..."
 msgstr "Carregando IDE do GitLab..."
@@ -3905,13 +3905,13 @@ msgid "Locked"
 msgstr "Bloqueado"
 
 msgid "Locked Files"
-msgstr ""
+msgstr "Arquivos travados"
 
 msgid "Locked to current projects"
 msgstr "Travado para projetos existentes"
 
 msgid "Locks give the ability to lock specific file or folder."
-msgstr ""
+msgstr "Travas possibilitam travar um arquivo ou uma pasta específica."
 
 msgid "Logs"
 msgstr ""
@@ -3926,16 +3926,16 @@ msgid "Manage Git repositories with fine-grained access controls that keep your 
 msgstr ""
 
 msgid "Manage access"
-msgstr ""
+msgstr "Gerenciar acesso"
 
 msgid "Manage all notifications"
 msgstr "Gerenciar todas as notificações"
 
 msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
-msgstr ""
+msgstr "Gerencie aplicativos que podem utilizar o GitLab como um provedor OAuth e aplicativos que você autorizou a utilizar sua conta."
 
 msgid "Manage applications that you've authorized to use your account."
-msgstr ""
+msgstr "Gerencie aplicativos que você autorizou a utilizar sua conta."
 
 msgid "Manage group labels"
 msgstr "Gerenciar Labels de grupo"
@@ -3947,13 +3947,13 @@ msgid "Manage project labels"
 msgstr "Gerenciar Labels de projetos"
 
 msgid "Manage your group’s membership while adding another level of security with SAML."
-msgstr ""
+msgstr "Gerencie a qualidade de membros do seu grupo ao adicionar outro nível de segurança com o SAML."
 
 msgid "Manifest"
-msgstr ""
+msgstr "Manifesto"
 
 msgid "Manifest file import"
-msgstr ""
+msgstr "Importação de arquivo de manifesto"
 
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
@@ -3992,10 +3992,10 @@ msgid "Members"
 msgstr "Membros"
 
 msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
-msgstr ""
+msgstr "Membros serão encaminhados quando fizerem login no seu grupo. Obtenha isso pelo seu provedor de identidade, também chamado de \"SSO Service Location\", \"SAM Token Issuance Endpoint\", ou \"SAML 2.0/W-Federation URL\"."
 
 msgid "Merge Request"
-msgstr ""
+msgstr "Merge Request"
 
 msgid "Merge Request:"
 msgstr "Merge Request:"
@@ -4004,7 +4004,7 @@ msgid "Merge Requests"
 msgstr "Merge Requests"
 
 msgid "Merge Requests created"
-msgstr ""
+msgstr "Merge Requests criadas"
 
 msgid "Merge events"
 msgstr "Eventos de merge"
@@ -4013,7 +4013,7 @@ msgid "Merge request"
 msgstr "Merge requests"
 
 msgid "Merge request approvals"
-msgstr ""
+msgstr "Aprovações de merge request"
 
 msgid "Merge requests"
 msgstr "Merge requests"
@@ -4022,22 +4022,22 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr "A tela de Merge request é um lugar para propor mudanças em um projeto e discutir essas mudanças com outros"
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
-msgstr ""
+msgstr "Resolver essa discussão em um novo issue"
 
 msgid "MergeRequests|Saving the comment failed"
-msgstr ""
+msgstr "Falha ao salvar comentário"
 
 msgid "MergeRequests|Toggle comments for this file"
-msgstr ""
+msgstr "Ativar/desativar comentários para este arquivo"
 
 msgid "MergeRequests|Updating discussions failed"
-msgstr ""
+msgstr "A atualização de discussões falhou"
 
 msgid "MergeRequests|View file @ %{commitId}"
-msgstr ""
+msgstr "Visualizar o arquivo @ %{commitId}"
 
 msgid "MergeRequests|View replaced file @ %{commitId}"
-msgstr ""
+msgstr "Ver arquivo substituído @ %{commitId}"
 
 msgid "Merged"
 msgstr "Merge realizado"
@@ -4046,7 +4046,7 @@ msgid "Messages"
 msgstr "Mensagens"
 
 msgid "Metrics"
-msgstr ""
+msgstr "Métricas"
 
 msgid "Metrics - Influx"
 msgstr "Métricas - Influx"
@@ -4055,34 +4055,34 @@ msgid "Metrics - Prometheus"
 msgstr "Métricas - Prometheus"
 
 msgid "Metrics|Business"
-msgstr ""
+msgstr "Negócios"
 
 msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
-msgstr ""
+msgstr "Confira a documentação de CI/CD sobre como implantar em um ambiente"
 
 msgid "Metrics|Create metric"
-msgstr ""
+msgstr "Criar métricas"
 
 msgid "Metrics|Edit metric"
-msgstr ""
+msgstr "Editar métricas"
 
 msgid "Metrics|Environment"
-msgstr ""
+msgstr "Ambiente"
 
 msgid "Metrics|For grouping similar metrics"
-msgstr ""
+msgstr "Para agrupar métricas similares"
 
 msgid "Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time."
-msgstr ""
+msgstr "Rotula do eixo vertical do gráfico. Geralmente, o tipo da unidade que está sendo mapeada. O eixo horizontal (eixo X) representa sempre o tempo."
 
 msgid "Metrics|Learn about environments"
-msgstr ""
+msgstr "Aprenda sobre ambientes"
 
 msgid "Metrics|Legend label (optional)"
-msgstr ""
+msgstr "Rótulo de legenda (opcional)"
 
 msgid "Metrics|Must be a valid PromQL query."
-msgstr ""
+msgstr "Deve ser uma consulta PromQL válida."
 
 msgid "Metrics|Name"
 msgstr ""
