@@ -8,8 +8,6 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
 
-    MissingDependenciesError = Class.new(StandardError)
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -581,15 +579,13 @@ module Ci
       options[:dependencies]&.empty?
     end
 
-    def valid_build_dependencies?
-      return unless Feature.enabled?('ci_disable_validates_dependencies')
+    def has_valid_build_dependencies?
+      return true unless Feature.enabled?('ci_disable_validates_dependencies')
 
-      dependencies.each do |dependency|
-        raise MissingDependenciesError unless dependency.valid_dependency?
-      end
+      dependencies.all?(&:is_valid_dependency?)
     end
 
-    def valid_dependency?
+    def is_valid_dependency?
       return false if artifacts_expired?
       return false if erased?
 
