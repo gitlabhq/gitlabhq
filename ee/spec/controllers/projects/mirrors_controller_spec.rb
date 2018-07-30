@@ -15,27 +15,9 @@ describe Projects::MirrorsController do
       end
 
       it 'allows to create a remote mirror' do
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
         expect do
           do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
         end.to change { RemoteMirror.count }.to(1)
-      end
-
-      context 'when remote mirror has the same URL' do
-        it 'does not allow to create the remote mirror' do
-          expect do
-            do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => project.import_url } })
-          end.not_to change { RemoteMirror.count }
-        end
-
-        context 'with disabled local mirror' do
-          it 'allows to create a remote mirror' do
-            expect do
-              do_put(project, mirror: 0, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => project.import_url } })
-            end.to change { RemoteMirror.count }.to(1)
-          end
-        end
       end
     end
 
@@ -47,7 +29,7 @@ describe Projects::MirrorsController do
       end
 
       context 'when trying to create a mirror with the same URL' do
-        it 'should not setup the mirror' do
+        it 'does not setup the mirror' do
           do_put(project, mirror: true, import_url: remote_mirror.url)
 
           expect(project.reload.mirror).to be_falsey
@@ -56,9 +38,7 @@ describe Projects::MirrorsController do
       end
 
       context 'when trying to create a mirror with a different URL' do
-        it 'should setup the mirror' do
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
+        it 'sets up the mirror' do
           do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: 'http://local.dev')
 
           expect(project.reload.mirror).to eq(true)
@@ -66,16 +46,14 @@ describe Projects::MirrorsController do
         end
 
         context 'mirror user is not the current user' do
-          it 'should only assign the current user' do
-            expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
+          it 'does not setup the mirror' do
             new_user = create(:user)
             project.add_maintainer(new_user)
 
             do_put(project, mirror: true, mirror_user_id: new_user.id, import_url: 'http://local.dev')
 
-            expect(project.reload.mirror).to eq(true)
-            expect(project.reload.mirror_user.id).to eq(project.owner.id)
+            expect(project.reload.mirror).to be_falsey
+            expect(project.reload.import_url).to be_blank
           end
         end
       end
@@ -96,7 +74,6 @@ describe Projects::MirrorsController do
 
         it 'creates a new mirror' do
           sign_in(admin)
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
           expect do
             do_put(project, mirror: true, mirror_user_id: admin.id, import_url: url)
@@ -122,8 +99,6 @@ describe Projects::MirrorsController do
 
       context 'when project does not have a mirror' do
         it 'allows to create a mirror' do
-          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
           expect do
             do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: url)
           end.to change { Project.mirror.count }.to(1)
@@ -210,15 +185,13 @@ describe Projects::MirrorsController do
       end
 
       it 'only allows the current user to be the mirror user' do
-        mirror_user = project.mirror_user
-
         other_user = create(:user)
         project.add_maintainer(other_user)
 
         do_put(project, { mirror_user_id: other_user.id }, format: :json)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(project.mirror_user(true)).to eq(mirror_user)
+        expect(response).to have_gitlab_http_status(422)
+        expect(json_response['mirror_user_id'].first).to eq("is invalid")
       end
     end
 

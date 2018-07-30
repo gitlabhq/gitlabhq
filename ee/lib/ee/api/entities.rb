@@ -18,6 +18,11 @@ module EE
         prepended do
           expose :repository_storage, if: ->(_project, options) { options[:current_user].try(:admin?) }
           expose :approvals_before_merge, if: ->(project, _) { project.feature_available?(:merge_request_approvers) }
+          expose :mirror, if: ->(project, _) { project.feature_available?(:repository_mirrors) }
+          expose :mirror_user_id, if: ->(project, _) { project.mirror? }
+          expose :mirror_trigger_builds, if: ->(project, _) { project.mirror? }
+          expose :only_mirror_protected_branches, if: ->(project, _) { project.mirror? }
+          expose :mirror_overwrites_diverged_branches, if: ->(project, _) { project.mirror? }
         end
       end
 
