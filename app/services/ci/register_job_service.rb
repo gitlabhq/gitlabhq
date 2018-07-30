@@ -72,7 +72,7 @@ module Ci
       build.runner_id = runner.id
       build.runner_session_attributes = params[:session] if params[:session].present?
 
-      unless build.valid_build_dependencies?
+      unless build.has_valid_build_dependencies?
         build.drop!(:missing_dependency_failure)
         return false
       end

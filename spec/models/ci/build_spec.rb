@@ -2411,18 +2411,18 @@ describe Ci::Build do
     end
   end
 
-  describe 'state transition: any => [:running]' do
+  describe '#has_valid_build_dependencies?' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect { job.run! }.to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -2432,7 +2432,7 @@ describe Ci::Build do
           pre_stage_job.erase
         end
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to have_valid_build_dependencies }
       end
     end
 
@@ -2440,12 +2440,12 @@ describe Ci::Build do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect { job.run! }.to have_valid_build_dependencies }
       end
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect { job.run! }.to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -2455,7 +2455,7 @@ describe Ci::Build do
           pre_stage_job.erase
         end
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect { job.run! }.to have_valid_build_dependencies }
       end
     end
 
