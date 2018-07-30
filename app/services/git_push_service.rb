@@ -80,7 +80,7 @@ class GitPushService < BaseService
       else
         paths = Set.new
 
-        @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+        last_pushed_commits.each do |commit|
           commit.raw_deltas.each do |diff|
             paths << diff.new_path
           end
@@ -96,7 +96,7 @@ class GitPushService < BaseService
   end
 
   def update_signatures
-    commit_shas = @push_commits.last(PROCESS_COMMIT_LIMIT).map(&:sha)
+    commit_shas = last_pushed_commits.map(&:sha)
 
     return if commit_shas.empty?
 
@@ -107,16 +107,14 @@ class GitPushService < BaseService
 
     commit_shas = Gitlab::Git::Commit.shas_with_signatures(project.repository, commit_shas)
 
-    commit_shas.each do |sha|
-      CreateGpgSignatureWorker.perform_async(sha, project.id)
-    end
+    CreateGpgSignatureWorker.perform_async(commit_shas, project.id)
   end
 
   # Schedules processing of commit messages.
   def process_commit_messages
     default = default_branch?
 
-    @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+    last_pushed_commits.each do |commit|
       if commit.matches_cross_reference_regex?
         ProcessCommitWorker
           .perform_async(project.id, current_user.id, commit.to_hash, default)
@@ -211,5 +209,9 @@ class GitPushService < BaseService
 
   def branch_name
     @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+  end
+
+  def last_pushed_commits
+    @last_pushed_commits ||= @push_commits.last(PROCESS_COMMIT_LIMIT)
   end
 end

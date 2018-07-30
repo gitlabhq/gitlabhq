@@ -1,0 +1,5 @@
+---
+title: Performing Commit GPG signature calculation in bulk
+merge_request: 20870
+author:
+type: performance

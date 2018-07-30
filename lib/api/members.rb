@@ -75,7 +75,10 @@ module API
           member = source.members.find_by(user_id: params[:user_id])
           conflict!('Member already exists') if member
 
-          member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+          user = User.find_by_id(params[:user_id])
+          not_found!('User') unless user
+
+          member = source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
           if !member
             not_allowed! # This currently can only be reached in EE

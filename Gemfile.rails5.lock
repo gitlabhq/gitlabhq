@@ -668,7 +668,7 @@ GEM
       parser
       unparser
     procto (0.0.3)
-    prometheus-client-mmap (0.9.3)
+    prometheus-client-mmap (0.9.4)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -1173,7 +1173,7 @@ DEPENDENCIES
   peek-sidekiq (~> 1.0.3)
   pg (~> 0.18.2)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.9.3)
+  prometheus-client-mmap (~> 0.9.4)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)

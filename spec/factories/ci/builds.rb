@@ -187,6 +187,13 @@ FactoryBot.define do
       end
     end
 
+    trait :test_reports do
+      after(:create) do |build|
+        create(:ci_job_artifact, :junit, job: build)
+        build.reload
+      end
+    end
+
     trait :expired do
       artifacts_expire_at 1.minute.ago
     end

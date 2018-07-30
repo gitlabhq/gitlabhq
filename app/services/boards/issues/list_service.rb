@@ -3,7 +3,10 @@
 module Boards
   module Issues
     class ListService < Boards::BaseService
+<<<<<<< HEAD
       prepend EE::Boards::Issues::ListService
+=======
+>>>>>>> upstream/master
       include Gitlab::Utils::StrongMemoize
 
       def execute

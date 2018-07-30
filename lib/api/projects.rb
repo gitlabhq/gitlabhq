@@ -30,8 +30,11 @@ module API
       end
     end
 
+<<<<<<< HEAD
     prepend EE::API::Projects
 
+=======
+>>>>>>> upstream/master
     def self.update_params_at_least_one_of
       [
         :jobs_enabled,
@@ -294,7 +297,10 @@ module API
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
+<<<<<<< HEAD
         use :optional_update_params_ee
+=======
+>>>>>>> upstream/master
 
         at_least_one_of(*::API::Projects.update_params_at_least_one_of)
       end
