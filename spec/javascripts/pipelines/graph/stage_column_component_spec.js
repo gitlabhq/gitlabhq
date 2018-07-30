@@ -56,7 +56,7 @@ describe('stage column component', () => {
             id: 4259,
             name: '<img src=x onerror=alert(document.domain)>',
             status: {
-              icon: 'icon_status_success',
+              icon: 'status_success',
               label: 'success',
               tooltip: '<img src=x onerror=alert(document.domain)>',
             },
