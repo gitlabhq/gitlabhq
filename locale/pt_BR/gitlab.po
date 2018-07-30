@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 14:39\n"
+"PO-Revision-Date: 2018-07-30 17:51\n"
 
 msgid " and"
 msgstr " e"
@@ -484,7 +484,7 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "Alternativamente, você pode usar um %{personal_access_token_link}. Quando você cria seu Token de Acesso Pessoal, você precisará selecionar o escopo do <code>repositório</code>, para que possamos exibir uma lista de seus repositórios públicos e privados que estão disponíveis para se importar."
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
-msgstr ""
+msgstr "Um aplicativo chamado %{link_to_client} está solicitando acesso à sua conta do GitLab."
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
@@ -493,7 +493,7 @@ msgid "An error accured whilst committing your changes."
 msgstr "Ocorreu um erro ao fazer commit de suas alterações."
 
 msgid "An error has occurred"
-msgstr ""
+msgstr "Ocorreu um erro"
 
 msgid "An error occured creating the new branch."
 msgstr "Um erro ocorreu ao criar o novo branch."
@@ -613,13 +613,13 @@ msgid "An error occurred. Please try again."
 msgstr "Ocorreu um erro. Tente novamente."
 
 msgid "Anonymous"
-msgstr ""
+msgstr "Anônimo"
 
 msgid "Anti-spam verification"
-msgstr ""
+msgstr "Verificação anti-spam"
 
 msgid "Any"
-msgstr ""
+msgstr "Qualquer um"
 
 msgid "Any Label"
 msgstr "Qualquer Label"
@@ -628,13 +628,13 @@ msgid "Appearance"
 msgstr "Aparência"
 
 msgid "Application"
-msgstr ""
+msgstr "Aplicativo"
 
 msgid "Application Id"
-msgstr ""
+msgstr "ID do aplicativo"
 
 msgid "Application: %{name}"
-msgstr ""
+msgstr "Aplicativo: %{name}"
 
 msgid "Applications"
 msgstr "Aplicações"
@@ -652,7 +652,7 @@ msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Tem certeza que deseja excluir este agendamento de pipeline?"
 
 msgid "Are you sure you want to remove %{group_name}?"
-msgstr ""
+msgstr "Você tem certeza que quer remover %{group_name}?"
 
 msgid "Are you sure you want to remove this identity?"
 msgstr "Você tem certeza de que deseja excluir este item?"
@@ -739,22 +739,22 @@ msgid "Author"
 msgstr "Autor"
 
 msgid "Authorization code:"
-msgstr ""
+msgstr "Código de autorização:"
 
 msgid "Authorization was granted by entering your username and password in the application."
-msgstr ""
+msgstr "A autorização foi concedida digitando seu nome de usuário e senha no aplicativo."
 
 msgid "Authorize"
-msgstr ""
+msgstr "Autorizar"
 
 msgid "Authorize %{link_to_client} to use your account?"
-msgstr ""
+msgstr "Autorizar %{link_to_client} usar sua conta?"
 
 msgid "Authorized At"
-msgstr ""
+msgstr "Autorizado em"
 
 msgid "Authorized applications (%{size})"
-msgstr ""
+msgstr "Aplicativos autorizados (%{size})"
 
 msgid "Authors: %{authors}"
 msgstr "Autores: %{authors}"
@@ -823,7 +823,7 @@ msgid "Background Color"
 msgstr "Cor de Fundo"
 
 msgid "Background Jobs"
-msgstr ""
+msgstr "Tarefas em Segundo Plano"
 
 msgid "Background color"
 msgstr "Cor do plano de fundo"
@@ -907,7 +907,7 @@ msgid "Below are examples of regex for existing tools:"
 msgstr "Abaixo estão exemplos de regex para ferramentas existentes:"
 
 msgid "Below you will find all the groups that are public."
-msgstr ""
+msgstr "Abaixo você encontrará todos os grupos que são públicos."
 
 msgid "Billing"
 msgstr "Cobrança"
@@ -979,7 +979,7 @@ msgid "Bitbucket import"
 msgstr ""
 
 msgid "Blog"
-msgstr ""
+msgstr "Blog"
 
 msgid "Boards"
 msgstr "Boards"
@@ -1290,10 +1290,10 @@ msgid "Cherry-pick this merge request"
 msgstr "Cherry-pick esse merge request"
 
 msgid "Choose <strong>Create archive</strong> and wait for archiving to complete."
-msgstr ""
+msgstr "Escolha <strong>Criar arquivo</strong> e aguarde até que o arquivamento seja concluído."
 
 msgid "Choose <strong>Next</strong> at the bottom of the page."
-msgstr ""
+msgstr "Escolha <strong>Próximo</strong> na parte inferior da página."
 
 msgid "Choose File ..."
 msgstr "Escolha o arquivo ..."
@@ -1428,13 +1428,13 @@ msgid "Click any <strong>project name</strong> in the project list below to navi
 msgstr "Clique em qualquer <strong>nome de projeto</strong> na lista a seguir para navegar para o milestone do projeto."
 
 msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
-msgstr ""
+msgstr "Clique no botão <strong>Baixar</strong> e aguarde a conclusão do download."
 
 msgid "Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone."
 msgstr "Clique no botão <strong>Promover</strong> no canto superior direito para promover a um milestone de grupo."
 
 msgid "Click the <strong>Select none</strong> button on the right, since we only need \"Google Code Project Hosting\"."
-msgstr ""
+msgstr "Clique no botão à direita <strong>Selecionar nenhum</strong>, uma vez que só precisamos do \"Google Code Project Hosting\"."
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr "Clique no botão abaixo para iniciar o processo de instalação navegando para a página do Kubernetes"
@@ -1455,7 +1455,7 @@ msgid "Client authentication key password"
 msgstr "Senha da chave de autenticação do cliente"
 
 msgid "Clients"
-msgstr ""
+msgstr "Clientes"
 
 msgid "Clone repository"
 msgstr "Clonar repositório"
@@ -1527,7 +1527,7 @@ msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr "Integração de Clusters | Criar cluster Kubernetes"
 
 msgid "ClusterIntegration|Did you know?"
-msgstr ""
+msgstr "Você sabia?"
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr "Digite detalhes para seu cluster Kubernetes"
@@ -1566,7 +1566,7 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr "Helm Tiller"
 
 msgid "ClusterIntegration|Hide"
-msgstr ""
+msgstr "Ocultar"
 
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr "Se você está configurando múltiplos clusters e você está usando auto DevOps, %{help_link_start}leia isso primeiro%{help_link_end}."
@@ -1824,7 +1824,7 @@ msgid "ClusterIntegration|sign up"
 msgstr "cadastrar"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "Cohorts"
 
 msgid "Collapse"
 msgstr "Recolher"
@@ -2029,7 +2029,7 @@ msgid "Continue"
 msgstr "Continuar"
 
 msgid "Continue to the next step"
-msgstr ""
+msgstr "Continuar para a próxima etapa"
 
 msgid "Continuous Integration and Deployment"
 msgstr "Integração contínua e Implantação"
@@ -2062,7 +2062,7 @@ msgid "ContributorsPage|Please wait a moment, this page will automatically refre
 msgstr "Por favor, espere um momento, essa página será atualizada automaticamente."
 
 msgid "Control the display of third party offers."
-msgstr ""
+msgstr "Controle a exibição de ofertas de terceiros."
 
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr "Controlar a concorrência máxima do enchimento de anexo/LFS para esse nó secundário"
@@ -2095,7 +2095,7 @@ msgid "Copy file path to clipboard"
 msgstr "Copiar o local do arquivo para a área de transferência"
 
 msgid "Copy incoming email address to clipboard"
-msgstr ""
+msgstr "Copiar endereço de e-mail para a área de transferência"
 
 msgid "Copy reference to clipboard"
 msgstr "Copiar referência para área de transferência"
@@ -2104,7 +2104,7 @@ msgid "Copy to clipboard"
 msgstr "Copiar para área de transferência"
 
 msgid "Copy token to clipboard"
-msgstr ""
+msgstr "Copiar token para a área de transferência"
 
 msgid "Create"
 msgstr "Criar"
@@ -2119,7 +2119,7 @@ msgid "Create a new branch and merge request"
 msgstr "Criar um novo branch e abrir merge request"
 
 msgid "Create a new issue"
-msgstr ""
+msgstr "Criar uma nova issue"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Crie um token de acesso pessoal na sua conta para dar pull ou push via %{protocol}."
@@ -2143,7 +2143,7 @@ msgid "Create file"
 msgstr "Criar arquivo"
 
 msgid "Create group"
-msgstr ""
+msgstr "Criar grupo"
 
 msgid "Create group label"
 msgstr "Criar Label de grupo"
@@ -2170,7 +2170,7 @@ msgid "Create new file"
 msgstr "Criar novo arquivo"
 
 msgid "Create new file or directory"
-msgstr ""
+msgstr "Criar novo arquivo ou diretório"
 
 msgid "Create new label"
 msgstr "Criar nova label"
@@ -2194,13 +2194,13 @@ msgid "Created"
 msgstr "Feito"
 
 msgid "Created At"
-msgstr ""
+msgstr "Criado em"
 
 msgid "Created by me"
 msgstr "Criado por mim"
 
 msgid "Created on:"
-msgstr ""
+msgstr "Criado em:"
 
 msgid "Creating epic"
 msgstr "Criando epic"
@@ -2263,7 +2263,7 @@ msgid "CycleAnalyticsStage|Test"
 msgstr "Teste"
 
 msgid "Dashboard"
-msgstr ""
+msgstr "Dashboard"
 
 msgid "DashboardProjects|All"
 msgstr "Todos"
@@ -2284,10 +2284,10 @@ msgid "Default classification label"
 msgstr "Label de classificação padrão"
 
 msgid "Default: Directly import the Google Code email address or username"
-msgstr ""
+msgstr "Padrão: Importar diretamente o endereço de e-mail ou nome de usuário do Google Code"
 
 msgid "Default: Map a FogBugz account ID to a full name"
-msgstr ""
+msgstr "Padrão: Mapeie uma ID de conta do FogBugz para um nome completo"
 
 msgid "Define a custom pattern with cron syntax"
 msgstr "Defina um padrão personalizado utilizando a sintaxe do cron"
@@ -2302,10 +2302,10 @@ msgid "Delete list"
 msgstr "Excluir lista"
 
 msgid "Deleted"
-msgstr ""
+msgstr "Excluído"
 
 msgid "Deny"
-msgstr ""
+msgstr "Recusar"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -2448,7 +2448,7 @@ msgid "Description templates allow you to define context-specific templates for 
 msgstr "Os modelos de descrição permitem que você defina modelos específicos de contexto para os campos de descrição de merge request e emissão para seu projeto."
 
 msgid "Description:"
-msgstr ""
+msgstr "Descrição:"
 
 msgid "Destroy"
 msgstr ""
@@ -2484,7 +2484,7 @@ msgid "Discover GitLab Geo."
 msgstr "Descubra o GitLab Geo."
 
 msgid "Discover projects, groups and snippets. Share your projects with others"
-msgstr ""
+msgstr "Descubra projetos, grupos e snippets. Compartilhe seus projetos com outras pessoas"
 
 msgid "Dismiss"
 msgstr ""
@@ -2562,13 +2562,13 @@ msgid "Edit Snippet"
 msgstr "Editar Snippet"
 
 msgid "Edit application"
-msgstr ""
+msgstr "Editar aplicativo"
 
 msgid "Edit files in the editor and commit changes here"
 msgstr "Alterar arquivos no editor e fazer commit das alterações aqui"
 
 msgid "Edit group: %{group_name}"
-msgstr ""
+msgstr "Editar grupo: %{group_name}"
 
 msgid "Edit identity for %{user_name}"
 msgstr "Editar identidade para %{user_name}"
@@ -2691,7 +2691,7 @@ msgid "Environments|Note that this action will stop the environment, but it will
 msgstr ""
 
 msgid "Environments|Open live environment"
-msgstr ""
+msgstr "Abrir ambiente ao vivo"
 
 msgid "Environments|Pod logs from"
 msgstr "Logs de pod de"
@@ -2922,7 +2922,7 @@ msgid "Find file"
 msgstr "Localizar arquivo"
 
 msgid "Find the downloaded ZIP file and decompress it."
-msgstr ""
+msgstr "Encontre o arquivo ZIP baixado e extraia-o."
 
 msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
 msgstr ""
@@ -2937,7 +2937,7 @@ msgid "FirstPushedBy|pushed by"
 msgstr "publicado por"
 
 msgid "FogBugz Email"
-msgstr ""
+msgstr "E-mail do FogBugz"
 
 msgid "FogBugz Import"
 msgstr ""
@@ -3218,7 +3218,7 @@ msgid "Geo|Verification capacity"
 msgstr "Capacidade de verificação"
 
 msgid "Git"
-msgstr ""
+msgstr "Git"
 
 msgid "Git repository URL"
 msgstr "URL do repositório Git"
@@ -3242,7 +3242,7 @@ msgid "GitLab CI Linter has been moved"
 msgstr "Linter do GitLab CI foi movido"
 
 msgid "GitLab Geo"
-msgstr ""
+msgstr "GitLab Geo"
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
 msgstr "Os GitLab Group Runners podem executar código para todos os projetos neste grupo."
@@ -3257,10 +3257,10 @@ msgid "GitLab project export"
 msgstr ""
 
 msgid "GitLab single sign on URL"
-msgstr ""
+msgstr "URL de logon único do GitLab"
 
 msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
-msgstr ""
+msgstr "O GitLab executará um trabalho em segundo plano que produzirá CSVs com pseudônimos do banco de dados do GitLab que serão carregados no diretório de armazenamento de objetos configurado."
 
 msgid "GitLab.com import"
 msgstr ""
@@ -3311,7 +3311,7 @@ msgid "Graph"
 msgstr "Gráfico"
 
 msgid "Group"
-msgstr ""
+msgstr "Grupo"
 
 msgid "Group CI/CD settings"
 msgstr "Configurações de CI/CD do grupo"
@@ -3326,55 +3326,55 @@ msgid "Group Runners"
 msgstr "Group Runners"
 
 msgid "Group avatar"
-msgstr ""
+msgstr "Avatar do grupo"
 
 msgid "Group details"
-msgstr ""
+msgstr "Detalhes do grupo"
 
 msgid "Group info:"
-msgstr ""
+msgstr "Info. do grupo:"
 
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr "Os mantenedores podem registrar grupos de runners em %{link}"
 
 msgid "Group: %{group_name}"
-msgstr ""
+msgstr "Grupo: %{group_name}"
 
 msgid "GroupRoadmap|From %{dateWord}"
-msgstr ""
+msgstr "A partir de %{dateWord}"
 
 msgid "GroupRoadmap|Loading roadmap"
-msgstr ""
+msgstr "Carregando roadmap"
 
 msgid "GroupRoadmap|Something went wrong while fetching epics"
-msgstr ""
+msgstr "Alguma coisa deu errada ao recuperar epics"
 
 msgid "GroupRoadmap|Sorry, no epics matched your search"
-msgstr ""
+msgstr "Desculpe, nenhum epic corresponde à sua pesquisa"
 
 msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
-msgstr ""
+msgstr "O roadmap mostra o progresso de seus epics ao longo de uma linha do tempo"
 
 msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para visualizar o roadmap, adicione uma data de início ou término planejada a um dos seus epics nesse grupo ou em seus subgrupos. Na visão mensal, apenas epics no mês passado, no mês atual e nos próximos 5 meses são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para visualizar o roadmap, adicione uma data de início ou término planejada a um dos seus epics nesse grupo ou em seus subgrupos. Na visão trimestral, apenas epics no trimestre passado, no trimestre atual e nos próximos 4 trimestres são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para visualizar o roadmap, adicione uma data de início ou término planejada a um dos seus epics nesse grupo ou em seus subgrupos. Na visão semanal, apenas epics na semana passada, na semana atual e nas próximas 4 semanas são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para ampliar sua pesquisa, alterar ou remover filtros. Na visão mensal, apenas epics no mês passado, no mês atual e nos próximos 5 meses são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para ampliar sua pesquisa, alterar ou remover filtros. Na visão trimestral, apenas epics no trimestre passado, no trimestre atual e nos próximos 4 trimestre são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|To widen your search, change or remove filters. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
-msgstr ""
+msgstr "Para ampliar sua pesquisa, alterar ou remover filtros. Na visão semanal, apenas epics na semana passada, na semana atual e nas próximas 4 semanas são exibidos &ndash; de %{startDate} a %{endDate}."
 
 msgid "GroupRoadmap|Until %{dateWord}"
-msgstr ""
+msgstr "Até %{dateWord}"
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr "Bloquear compartilhamento de projetos do grupo %{group} com outros grupos"
@@ -3404,28 +3404,28 @@ msgid "Groups"
 msgstr "Grupos"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
-msgstr ""
+msgstr "Grupos também podem ser aninhados criando %{subgroup_docs_link_start}subgrupos%{subgroup_docs_link_end}."
 
 msgid "GroupsDropdown|Frequently visited"
-msgstr ""
+msgstr "Visitados frequentemente"
 
 msgid "GroupsDropdown|Groups you visit often will appear here"
 msgstr "Grupos que você visita frequentemente aparecerão aqui"
 
 msgid "GroupsDropdown|Loading groups"
-msgstr ""
+msgstr "Carregando grupos"
 
 msgid "GroupsDropdown|Search your groups"
-msgstr ""
+msgstr "Procure seus grupos"
 
 msgid "GroupsDropdown|Something went wrong on our end."
-msgstr ""
+msgstr "Algo deu errado do nosso lado."
 
 msgid "GroupsDropdown|Sorry, no groups matched your search"
-msgstr ""
+msgstr "Desculpe, nenhum grupo corresponde à sua pesquisa"
 
 msgid "GroupsDropdown|This feature requires browser localStorage support"
-msgstr ""
+msgstr "Esse recurso requer um navegador com suporte a localStorage"
 
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "Um grupo é uma coleção de vários projetos."
@@ -3467,10 +3467,10 @@ msgid "GroupsTree|Sorry, no groups or projects matched your search"
 msgstr "Desculpe, nenhum grupo ou projeto correspondem à sua pesquisa"
 
 msgid "Have your users email"
-msgstr ""
+msgstr "Tem o e-mail de seus usuários"
 
 msgid "Header message"
-msgstr ""
+msgstr "Mensagem de cabeçalho"
 
 msgid "Health Check"
 msgstr "Status de Saúde"
@@ -3505,7 +3505,7 @@ msgstr[0] "Ocultar valor"
 msgstr[1] "Ocultar valores"
 
 msgid "Hide whitespace changes"
-msgstr ""
+msgstr "Ocultar as alterações de espaço em branco"
 
 msgid "History"
 msgstr "Histórico"
@@ -3538,25 +3538,25 @@ msgid "IDE|Review"
 msgstr "Revisar"
 
 msgid "Identifier"
-msgstr ""
+msgstr "Identificador"
 
 msgid "Identities"
 msgstr "Identidades"
 
 msgid "Identity provider single sign on URL"
-msgstr ""
+msgstr "URL de logon único de provedor de identidade"
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
-msgstr ""
+msgstr "Se desativado, o nível de acesso irá depender das permissões do usuário no projeto."
 
 msgid "If enabled"
-msgstr ""
+msgstr "Se ativado"
 
 msgid "If enabled, access to projects will be validated on an external service using their classification label."
-msgstr ""
+msgstr "Se ativado, o acesso aos projetos será validado em um serviço externo usando seu rótulo de classificação."
 
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
-msgstr ""
+msgstr "Se estiver usando o GitHub, você verá os status do pipeline no GitHub para seus commits e pull requests. %{more_info_link}"
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "Se você já tem arquivos, pode realizar um push usando o %{link_to_cli} abaixo."
@@ -3565,52 +3565,52 @@ msgid "If your HTTP repository is not publicly accessible, add authentication in
 msgstr "Se o seu repositório HTTP não estiver acessível publicamente, adicione informações de autenticação à URL:<code>https://username:password@gitlab.company.com/group/project.git</code>."
 
 msgid "ImageDiffViewer|2-up"
-msgstr ""
+msgstr "2-up"
 
 msgid "ImageDiffViewer|Onion skin"
 msgstr ""
 
 msgid "ImageDiffViewer|Swipe"
-msgstr ""
+msgstr "Deslizar"
 
 msgid "Import"
 msgstr "Importar"
 
 msgid "Import Projects from Gitea"
-msgstr ""
+msgstr "Importar projetos do Gitea"
 
 msgid "Import all compatible projects"
-msgstr ""
+msgstr "Importar todos os projetos compatíveis"
 
 msgid "Import all projects"
-msgstr ""
+msgstr "Importar todos os projetos"
 
 msgid "Import all repositories"
 msgstr "Importar todos repositórios"
 
 msgid "Import an exported GitLab project"
-msgstr ""
+msgstr "Importar um projeto GitLab exportado"
 
 msgid "Import in progress"
 msgstr "Importação em andamento"
 
 msgid "Import multiple repositories by uploading a manifest file."
-msgstr ""
+msgstr "Importar vários repositórios fazendo o upload de um arquivo manifest."
 
 msgid "Import project"
-msgstr ""
+msgstr "Importar projeto"
 
 msgid "Import projects from Bitbucket"
-msgstr ""
+msgstr "Importar projetos do Bitbucket"
 
 msgid "Import projects from FogBugz"
-msgstr ""
+msgstr "Importar projetos do FogBugz"
 
 msgid "Import projects from GitLab.com"
-msgstr ""
+msgstr "Importar projetos do GitLab.com"
 
 msgid "Import projects from Google Code"
-msgstr ""
+msgstr "Importar projetos do Google Code"
 
 msgid "Import repositories from GitHub"
 msgstr "Importar repositórios do GitHub"
@@ -3619,13 +3619,13 @@ msgid "Import repository"
 msgstr "Importar repositório"
 
 msgid "ImportButtons|Connect repositories from"
-msgstr ""
+msgstr "Conectar repositórios de"
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr ""
+msgstr "Melhore o gerenciamento de issues com o peso de issues e GitLab Enterprise Edition."
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr ""
