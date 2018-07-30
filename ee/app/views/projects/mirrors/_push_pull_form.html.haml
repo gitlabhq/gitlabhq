@@ -11,6 +11,14 @@
       = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
       = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
 
+    .form-group
+      = label_tag :auth_method, _('Authentication method'), class: 'label-bold'
+      = select_tag :auth_method, options_for_select([[_('Password'), 'password']], 'password'), { class: "form-control js-auth-method", disabled: 'disabled' }
+
+    .form-group
+      = label_tag :password, _('Password'), class: 'label-bold'
+      = text_field_tag :password, '', class: 'form-control js-password'
+
 - if can_pull
   %template.js-pull-mirrors-form
     = f.hidden_field :mirror, value: '1'
