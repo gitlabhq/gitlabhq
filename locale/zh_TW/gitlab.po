@@ -2,8 +2,6 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-01 16:35+1000\n"
-"PO-Revision-Date: 2018-07-02 07:22\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -15,6 +13,18 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
+"PO-Revision-Date: 2018-07-30 13:46\n"
+
+msgid " and"
+msgstr " 和"
+
+msgid " degraded on %d point"
+msgid_plural " degraded on %d points"
+msgstr[0] " 在 %d 點上降級"
+
+msgid " improved on %d point"
+msgid_plural " improved on %d points"
+msgstr[0] " 在 %d 點上改善"
 
 msgid "%d changed file"
 msgid_plural "%d changed files"
@@ -48,6 +58,10 @@ msgid "%d metric"
 msgid_plural "%d metrics"
 msgstr[0] "%d 指標"
 
+msgid "%d new license"
+msgid_plural "%d new licenses"
+msgstr[0] "%d 個新授權"
+
 msgid "%d staged change"
 msgid_plural "%d staged changes"
 msgstr[0] "%d 個暫存變更"
@@ -55,6 +69,10 @@ msgstr[0] "%d 個暫存變更"
 msgid "%d unstaged change"
 msgid_plural "%d unstaged changes"
 msgstr[0] "%d 個未暫存變更"
+
+msgid "%d vulnerability"
+msgid_plural "%d vulnerabilities"
+msgstr[0] "%d 個漏洞"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
@@ -65,6 +83,9 @@ msgstr "%{actionText} 和 %{openOrClose} %{noteable}"
 
 msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交於 %{commit_timeago}"
+
+msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
+msgstr ""
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
@@ -81,6 +102,9 @@ msgstr "%{loadingIcon} 開始"
 
 msgid "%{lock_path} is locked by GitLab User %{lock_user_id}"
 msgstr "%{lock_path} 被使用者 %{lock_user_id} 鎖定"
+
+msgid "%{name}'s avatar"
+msgstr "%{name} 的頭貼"
 
 msgid "%{nip_domain} can be used as an alternative to a custom domain."
 msgstr "%{nip_domain} 可以使用為自訂網域的替代方案。"
@@ -104,17 +128,22 @@ msgid "%{storage_name}: failed storage access attempt on host:"
 msgid_plural "%{storage_name}: %{failed_attempts} failed storage access attempts:"
 msgstr[0] "%{storage_name}：已存取此主機失敗 %{failed_attempts} 次"
 
+msgid "%{text} %{files}"
+msgid_plural "%{text} %{files} files"
+msgstr[0] ""
+
 msgid "%{text} is available"
 msgstr "%{text} 可用"
 
 msgid "%{title} changes"
 msgstr "%{title} 變更"
 
+msgid "%{type} detected 1 vulnerability"
+msgid_plural "%{type} detected %{vulnerabilityCount} vulnerabilities"
+msgstr[0] "%{type} 偵測到 %{vulnerabilityCount} 個漏洞"
+
 msgid "%{unstaged} unstaged and %{staged} staged changes"
 msgstr "%{unstaged} 個未暫存和 %{staged} 個已暫存變更"
-
-msgid "(checkout the %{link} for information on how to install it)."
-msgstr "(如何安裝請參閱 %{link})"
 
 msgid "+ %{moreCount} more"
 msgstr "+ %{moreCount} 更多"
@@ -181,6 +210,30 @@ msgstr "無法找到網頁"
 msgid "404|Please contact your GitLab administrator if you think this is a mistake."
 msgstr "404 |如果您認為這是錯誤，請聯繫您的GitLab管理員。"
 
+msgid "<code>\"johnsmith@example.com\": \"@johnsmith\"</code> will add \"By <a href=\"#\">@johnsmith</a>\" to all issues and comments originally created by johnsmith@example.com, and will set <a href=\"#\">@johnsmith</a> as the assignee on all issues originally assigned to johnsmith@example.com."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"John Smith\"</code> will add \"By John Smith\" to all issues and comments originally created by johnsmith@example.com."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"johnsm...@example.com\"</code> will add \"By johnsm...@example.com\" to all issues and comments originally created by johnsmith@example.com. The email address or username is masked to ensure the user's privacy."
+msgstr ""
+
+msgid "<code>\"johnsmith@example.com\": \"johnsmith@example.com\"</code> will add \"By <a href=\"#\">johnsmith@example.com</a>\" to all issues and comments originally created by johnsmith@example.com. By default, the email address or username is masked to ensure the user's privacy. Use this option if you want to show the full email address."
+msgstr ""
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
+msgstr "建立 <strong>%{created_count}</strong> 個，同意 <strong>%{accepted_count}</strong> 個。"
+
+msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
+msgstr "建立 <strong>%{created_count}</strong> 個，關閉 <strong>%{closed_count}</strong> 個。"
+
+msgid "<strong>%{group_name}</strong> group members"
+msgstr ""
+
+msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
+msgstr "推送 <strong>%{pushes}</strong> 個，<strong>%{people}</strong> 個貢獻者提交了超過 <strong>%{commits}</strong> 個提交。"
+
 msgid "<strong>Removes</strong> source branch"
 msgstr "<strong>刪除</strong>來源分支"
 
@@ -202,8 +255,17 @@ msgstr "正則表達式，將用於在作業跟踪中查找測試覆蓋率的輸
 msgid "A user with write access to the source branch selected this option"
 msgstr "一個有存取原始分支權限的使用者，選擇了此項目"
 
+msgid "About GitLab"
+msgstr ""
+
+msgid "About GitLab CE"
+msgstr ""
+
 msgid "About auto deploy"
 msgstr "關於自動部署"
+
+msgid "About this feature"
+msgstr "關於此功能"
 
 msgid "Abuse Reports"
 msgstr "濫用報告"
@@ -214,8 +276,17 @@ msgstr "濫用報告"
 msgid "Accept terms"
 msgstr "接受條款"
 
+msgid "Accepted MR"
+msgstr "接受的合併請求"
+
 msgid "Access Tokens"
 msgstr "存取憑證"
+
+msgid "Access denied! Please verify you can add deploy keys to this repository."
+msgstr ""
+
+msgid "Access to '%{classification_label}' not allowed"
+msgstr "不允許存取「%{classification_label}」"
 
 msgid "Access to failing storages has been temporarily disabled to allow the mount to recover. Reset storage information after the issue has been resolved to allow access again."
 msgstr "已暫時停用失敗的 Git 儲存空間。當儲存空間恢復正常後，請重置儲存空間健康指數。"
@@ -238,11 +309,17 @@ msgstr "連線中的裝置"
 msgid "Activity"
 msgstr "活動"
 
+msgid "Add"
+msgstr "新增"
+
 msgid "Add Changelog"
 msgstr "新增更新日誌"
 
 msgid "Add Contribution guide"
 msgstr "新增協作指南"
+
+msgid "Add Group Webhooks and GitLab Enterprise Edition."
+msgstr "新增群組 Webhook 和 GitLab 企業版本。"
 
 msgid "Add Kubernetes cluster"
 msgstr "增加 Kubernetes 叢集"
@@ -253,6 +330,12 @@ msgstr "新增授權條款"
 msgid "Add Readme"
 msgstr "增加說明檔案"
 
+msgid "Add additional text to appear in all email communications. %{character_limit} character limit"
+msgstr "增加顯示於所有電子郵件對話的附加文字。最多 %{character_limit} 個字。"
+
+msgid "Add new application"
+msgstr ""
+
 msgid "Add new directory"
 msgstr "新增目錄"
 
@@ -261,6 +344,24 @@ msgstr "添加回應"
 
 msgid "Add todo"
 msgstr "增加待辦事項"
+
+msgid "Add user(s) to the group:"
+msgstr ""
+
+msgid "Add users to group"
+msgstr ""
+
+msgid "Additional text"
+msgstr "附加文字"
+
+msgid "Admin Area"
+msgstr ""
+
+msgid "Admin Overview"
+msgstr ""
+
+msgid "Admin area"
+msgstr ""
 
 msgid "AdminArea|Stop all jobs"
 msgstr "停止所有任務"
@@ -343,11 +444,38 @@ msgstr "允許來自鉤子和服務的對本地網絡的請求。"
 msgid "Allows you to add and manage Kubernetes clusters."
 msgstr "允許您增加和管理Kubernetes叢集。"
 
+msgid "Also called \"Issuer\" or \"Relying party trust identifier\""
+msgstr "也被稱為「議題擁有者」或「依賴方信任標識標籤」"
+
+msgid "Also called \"Relying party service URL\" or \"Reply URL\""
+msgstr "也稱為「依賴方服務 URL」或「回覆 URL」"
+
+msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
+msgstr "或者，你可以使用 %{personal_access_token_link}。當你建立你的個人存取憑證時，你將需要選擇<code>版本庫</code>範圍，所以我們可以顯示你可以連線之公開及私密的版本庫清單。"
+
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr "或者，你可以使用 %{personal_access_token_link}。當你建立你的個人存取權杖時，你將需要選擇<code>檔案庫</code>範圍，所以我們將會顯示你公開及私人的檔案庫清單進行匯入。"
 
+msgid "An application called %{link_to_client} is requesting access to your GitLab account."
+msgstr ""
+
+msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
+msgstr ""
+
+msgid "An error accured whilst committing your changes."
+msgstr "提交您的變更時發生錯誤"
+
+msgid "An error has occurred"
+msgstr ""
+
 msgid "An error occured creating the new branch."
 msgstr "創建新分支時發生錯誤。"
+
+msgid "An error occured whilst fetching the job trace."
+msgstr "取得工作追蹤資訊時發生錯誤"
+
+msgid "An error occured whilst fetching the latest pipline."
+msgstr "取得最新流水線時發生錯誤"
 
 msgid "An error occured whilst loading all the files."
 msgstr "讀取檔案時發生錯誤。"
@@ -367,11 +495,23 @@ msgstr "讀取合併請求的版本資訊時發生錯誤。"
 msgid "An error occured whilst loading the merge request."
 msgstr "讀取合併請求時發生錯誤。"
 
+msgid "An error occured whilst loading the pipelines jobs."
+msgstr "載入流水線工作的同時發生了錯誤"
+
 msgid "An error occurred previewing the blob"
 msgstr "預覽 blob 檔案時發生錯誤"
 
 msgid "An error occurred when toggling the notification subscription"
 msgstr "切換訂閱通知時發生錯誤"
+
+msgid "An error occurred when updating the issue weight"
+msgstr "更新問題權重時發生錯誤"
+
+msgid "An error occurred while adding approver"
+msgstr "增加審核者時發生錯誤"
+
+msgid "An error occurred while detecting host keys"
+msgstr "偵測主機金鑰時發生錯誤"
 
 msgid "An error occurred while dismissing the alert. Refresh the page and try again."
 msgstr "當解除通知時錯誤發生。請嘗試重新整理頁面並重試。"
@@ -394,8 +534,11 @@ msgstr "讀取專案時發生錯誤"
 msgid "An error occurred while importing project: ${details}"
 msgstr "匯入專案時發生錯誤: ${details}"
 
-msgid "An error occurred while loading commits"
-msgstr "讀取更動記錄時發生錯誤"
+msgid "An error occurred while initializing path locks"
+msgstr "初始化路徑鎖時發生錯誤"
+
+msgid "An error occurred while loading commit signatures"
+msgstr ""
 
 msgid "An error occurred while loading diff"
 msgstr "讀取差異檔時發生錯誤"
@@ -409,6 +552,9 @@ msgstr "讀取檔案時發生錯誤"
 msgid "An error occurred while making the request."
 msgstr "建立請求時發生錯誤"
 
+msgid "An error occurred while removing approver"
+msgstr "刪除審核者時發生錯誤"
+
 msgid "An error occurred while rendering KaTeX"
 msgstr "渲染 KaTex 時發生錯誤"
 
@@ -421,8 +567,17 @@ msgstr "讀取行事曆時發生錯誤"
 msgid "An error occurred while retrieving diff"
 msgstr "讀取差異檔時發生錯誤"
 
+msgid "An error occurred while saving LDAP override status. Please try again."
+msgstr "儲存 LDAP 覆蓋狀態時發生錯誤，請重試。"
+
 msgid "An error occurred while saving assignees"
 msgstr "儲存被指派人時發生錯誤"
+
+msgid "An error occurred while subscribing to notifications."
+msgstr "訂閱通知時發生錯誤。"
+
+msgid "An error occurred while unsubscribing to notifications."
+msgstr "當取消訂閱通知時發生錯誤"
 
 msgid "An error occurred while validating username"
 msgstr "驗證使用者名稱時發生錯誤"
@@ -430,8 +585,29 @@ msgstr "驗證使用者名稱時發生錯誤"
 msgid "An error occurred. Please try again."
 msgstr "發生錯誤，請再試一次。"
 
+msgid "Anonymous"
+msgstr ""
+
+msgid "Anti-spam verification"
+msgstr ""
+
+msgid "Any"
+msgstr ""
+
+msgid "Any Label"
+msgstr "任意標籤"
+
 msgid "Appearance"
 msgstr "外觀"
+
+msgid "Application"
+msgstr ""
+
+msgid "Application Id"
+msgstr ""
+
+msgid "Application: %{name}"
+msgstr ""
 
 msgid "Applications"
 msgstr "應用程式"
@@ -448,6 +624,9 @@ msgstr "這是個已經封存的專案！其檔案庫與其其他專案資源為
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "確定要刪除此流水線排程嗎？"
 
+msgid "Are you sure you want to remove %{group_name}?"
+msgstr ""
+
 msgid "Are you sure you want to remove this identity?"
 msgstr "您確定要刪除此身份嗎?"
 
@@ -457,14 +636,23 @@ msgstr "確定要重置註冊憑證嗎？"
 msgid "Are you sure you want to reset the health check token?"
 msgstr "確定要重置健康檢查存取憑證嗎？"
 
+msgid "Are you sure you want to unlock %{path_lock_path}?"
+msgstr "你確定要解鎖 %{path_lock_path} ？"
+
 msgid "Are you sure?"
 msgstr "確定嗎？"
 
 msgid "Artifacts"
 msgstr "產物"
 
+msgid "Ascending"
+msgstr "順序"
+
 msgid "Ask your group maintainer to setup a group Runner."
 msgstr "詢問您的群組維護者以安裝群組執行器。"
+
+msgid "Assertion consumer service URL"
+msgstr "Assertion 客戶服務連結"
 
 msgid "Assign custom color like #FF0000"
 msgstr "自定義顏色，例如 #FF0000"
@@ -493,11 +681,20 @@ msgstr "指派給我"
 msgid "Assignee"
 msgstr "指派人"
 
+msgid "Assignee boards not available with your current license"
+msgstr "您目前的授權並不支援指派看板"
+
+msgid "Assignee lists show all issues assigned to the selected user."
+msgstr "指派列表顯示了分配給選定使用者的所有議題"
+
 msgid "Assignee(s)"
 msgstr "執行者"
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放檔案到此處或者 %{upload_link}"
+
+msgid "Audit Events"
+msgstr "審計活動"
 
 msgid "Aug"
 msgstr "八月"
@@ -508,11 +705,35 @@ msgstr "八月"
 msgid "Authentication Log"
 msgstr "登入紀錄"
 
+msgid "Authentication log"
+msgstr ""
+
 msgid "Author"
 msgstr "作者"
 
+msgid "Authorization code:"
+msgstr ""
+
+msgid "Authorization was granted by entering your username and password in the application."
+msgstr ""
+
+msgid "Authorize"
+msgstr ""
+
+msgid "Authorize %{link_to_client} to use your account?"
+msgstr ""
+
+msgid "Authorized At"
+msgstr ""
+
+msgid "Authorized applications (%{size})"
+msgstr ""
+
 msgid "Authors: %{authors}"
 msgstr "作者：%{authors}"
+
+msgid "Auto DevOps"
+msgstr ""
 
 msgid "Auto DevOps enabled"
 msgstr "啟動自動 DevOps"
@@ -570,6 +791,12 @@ msgstr "大頭貼將被刪除。你確定嗎？"
 
 msgid "Average per day: %{average}"
 msgstr "平均每天：%{average}"
+
+msgid "Background Color"
+msgstr "背景顏色"
+
+msgid "Background Jobs"
+msgstr ""
 
 msgid "Background color"
 msgstr "背景顏色"
@@ -651,6 +878,81 @@ msgstr "從選定的變更紀錄開始"
 
 msgid "Below are examples of regex for existing tools:"
 msgstr "以下是現有工具的正規表達式示例："
+
+msgid "Below you will find all the groups that are public."
+msgstr ""
+
+msgid "Billing"
+msgstr "方案"
+
+msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
+msgstr "%{group_name} 目前使用 %{plan_link} 方案。"
+
+msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
+msgstr "在部份的方案中，不支援自動升級或降級。"
+
+msgid "BillingPlans|Current plan"
+msgstr "目前方案"
+
+msgid "BillingPlans|Customer Support"
+msgstr "客戶服務"
+
+msgid "BillingPlans|Downgrade"
+msgstr "降級"
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}, or start a free 30-day trial of GitLab.com Gold."
+msgstr ""
+
+msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
+msgstr "透過閱讀 %{faq_link} 了解更多我們的每個方案"
+
+msgid "BillingPlans|Manage plan"
+msgstr "管理方案"
+
+msgid "BillingPlans|Please contact %{customer_support_link} in that case."
+msgstr "在這情況下，請聯繫 %{customer_support_link}"
+
+msgid "BillingPlans|See all %{plan_name} features"
+msgstr "查看更多 %{plan_name} 功能"
+
+msgid "BillingPlans|This group uses the plan associated with its parent group."
+msgstr "此群組使用和上層群組相關的方案。"
+
+msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
+msgstr "若要管理這個群組的方案，請瀏覽 %{parent_billing_page_link} 的方案部分。"
+
+msgid "BillingPlans|Upgrade"
+msgstr "升級"
+
+msgid "BillingPlans|You are currently on the %{plan_link} plan."
+msgstr "你目前正在使用方案 %{plan_link}"
+
+msgid "BillingPlans|Your GitLab.com trial expired on %{expiration_date}. %{learn_more_text}"
+msgstr ""
+
+msgid "BillingPlans|Your Gold trial will <strong>expire after %{expiration_date}</strong>. You can learn more about GitLab.com Gold by reading about our %{features_link}."
+msgstr ""
+
+msgid "BillingPlans|features"
+msgstr ""
+
+msgid "BillingPlans|frequently asked questions"
+msgstr "常見問題"
+
+msgid "BillingPlans|monthly"
+msgstr "每個月"
+
+msgid "BillingPlans|paid annually at %{price_per_year}"
+msgstr "每年收取 %{price_per_year}"
+
+msgid "BillingPlans|per user"
+msgstr "每位使用者"
+
+msgid "Bitbucket import"
+msgstr ""
+
+msgid "Blog"
+msgstr ""
 
 msgid "Boards"
 msgstr "看板"
@@ -770,6 +1072,9 @@ msgstr "沉靜的"
 msgid "Branches|Stale branches"
 msgstr "沉靜的分支"
 
+msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
+msgstr "分支無法自動更新，因為與上游分支存在差異。"
+
 msgid "Branches|The default branch cannot be deleted"
 msgstr "無法刪除預設分支"
 
@@ -782,8 +1087,14 @@ msgstr "為避免資料遺失，請合併該分支後再將它刪除。"
 msgid "Branches|To confirm, type %{branch_name_confirmation}:"
 msgstr "請輸入 %{branch_name_confirmation} 以進行確認 ："
 
+msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
+msgstr "若要放棄本機變更並使用上游版本覆寫這個分支，請先從這裡刪除再按下上方的「立刻更新」。"
+
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
 msgstr "你將永久刪除受保護的 %{branch_name} 分支。"
+
+msgid "Branches|diverged from upstream"
+msgstr "與上游存在差異"
 
 msgid "Branches|merged"
 msgstr "已合併"
@@ -806,6 +1117,9 @@ msgstr "瀏覽檔案"
 msgid "Browse files"
 msgstr "瀏覽檔案"
 
+msgid "Business metrics (Custom)"
+msgstr "企業指標（自訂）"
+
 msgid "ByAuthor|by"
 msgstr "作者："
 
@@ -815,8 +1129,14 @@ msgstr "CI / CD"
 msgid "CI / CD Settings"
 msgstr "CI / CD 設定"
 
+msgid "CI/CD"
+msgstr "CI / CD"
+
 msgid "CI/CD configuration"
 msgstr "CI/CD 設定"
+
+msgid "CI/CD for external repo"
+msgstr "外部儲存庫的 CI / CD"
 
 msgid "CI/CD settings"
 msgstr "CI / CD 設定"
@@ -845,6 +1165,9 @@ msgstr "部屬策略需要網域才能正常工作"
 msgid "CICD|Disable Auto DevOps"
 msgstr "停用自動 DevOps"
 
+msgid "CICD|Do not set up a domain here if you are setting up multiple Kubernetes clusters with Auto DevOps."
+msgstr "如果你設定了多個使用「自動 DevOps」的 Kubernetes 叢集，請不要在這裡設定網域。"
+
 msgid "CICD|Enable Auto DevOps"
 msgstr "啟用自動 DevOps"
 
@@ -866,6 +1189,12 @@ msgstr "當專案沒有 %{ci_file} 檔案，將啟用 Auto DevOps 的流水線�
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
 msgstr "如果你想要使用自動複閱程式及自動部署，請指定網域。"
 
+msgid "Callback URL"
+msgstr ""
+
+msgid "Callback url"
+msgstr ""
+
 msgid "Can't find HEAD commit for this branch"
 msgstr "找不到此分支的 HEAD 更動。"
 
@@ -880,6 +1209,12 @@ msgstr "不能自動合併"
 
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr "無法變更託管的 Kubernetes 叢集"
+
+msgid "Certificate fingerprint"
+msgstr "憑證指紋"
+
+msgid "Change Weight"
+msgstr "變更權重"
 
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr "更改此數值將影響到 GitLab UI 拉取更新的頻率。"
@@ -926,6 +1261,12 @@ msgstr "挑選此更動記錄"
 msgid "Cherry-pick this merge request"
 msgstr "挑選此合併請求"
 
+msgid "Choose <strong>Create archive</strong> and wait for archiving to complete."
+msgstr ""
+
+msgid "Choose <strong>Next</strong> at the bottom of the page."
+msgstr ""
+
 msgid "Choose File ..."
 msgstr "選擇檔案⋯"
 
@@ -941,8 +1282,20 @@ msgstr "選擇 <code>複製</code> 或 <code>抓取</code> 以獲取最新的應
 msgid "Choose file..."
 msgstr "選擇檔案⋯"
 
+msgid "Choose the top-level group for your repository imports."
+msgstr ""
+
+msgid "Choose which groups you wish to synchronize to this secondary node."
+msgstr "選擇您希望與這個次要節點同步的群組"
+
+msgid "Choose which repositories you want to connect and run CI/CD pipelines."
+msgstr "選擇你想要連線並執行 CI / CD 流水線的版本庫。"
+
 msgid "Choose which repositories you want to import."
 msgstr "選擇你想匯入的檔案庫。"
+
+msgid "Choose which shards you wish to synchronize to this secondary node."
+msgstr "選擇你想要用來與這個次要節點同步的碎片 (shards)。"
 
 msgid "CiStatusLabel|canceled"
 msgstr "已取消"
@@ -1013,11 +1366,20 @@ msgstr "* (所有環境)"
 msgid "CiVariable|All environments"
 msgstr "所有環境"
 
+msgid "CiVariable|Create wildcard"
+msgstr "建立萬用字元"
+
 msgid "CiVariable|Error occured while saving variables"
 msgstr "儲存變數時發生錯誤"
 
+msgid "CiVariable|New environment"
+msgstr "建立新的環境"
+
 msgid "CiVariable|Protected"
 msgstr "受保護的"
+
+msgid "CiVariable|Search environments"
+msgstr "搜尋環境"
 
 msgid "CiVariable|Toggle protected"
 msgstr "切換為保護狀態"
@@ -1028,14 +1390,23 @@ msgstr "驗證失敗"
 msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr "斷路器 Api"
 
+msgid "ClassificationLabelUnavailable|is unavailable: %{reason}"
+msgstr "無法使用：%{reason}"
+
 msgid "Clear search input"
 msgstr "清除搜尋紀錄"
 
 msgid "Click any <strong>project name</strong> in the project list below to navigate to the project milestone."
 msgstr "在專案列表點擊任何<strong>專案名稱</strong>，將轉跳到專案的里程碑。"
 
+msgid "Click the <strong>Download</strong> button and wait for downloading to complete."
+msgstr ""
+
 msgid "Click the <strong>Promote</strong> button in the top right corner to promote it to a group milestone."
 msgstr "點擊左上角的<strong>升級</strong>按鈕，將提升至群組里程碑。"
+
+msgid "Click the <strong>Select none</strong> button on the right, since we only need \"Google Code Project Hosting\"."
+msgstr ""
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr "點擊下面的按鈕，連結到 Kubernetes 頁面開始安裝。"
@@ -1046,11 +1417,29 @@ msgstr "按一下以展開。"
 msgid "Click to expand text"
 msgstr "點擊以展開內容"
 
+msgid "Client authentication certificate"
+msgstr "客戶端認證憑證"
+
+msgid "Client authentication key"
+msgstr "客戶端驗證金鑰"
+
+msgid "Client authentication key password"
+msgstr "客戶端驗證金鑰密碼"
+
+msgid "Clients"
+msgstr ""
+
 msgid "Clone repository"
 msgstr "複製檔案庫"
 
 msgid "Close"
 msgstr "關閉"
+
+msgid "Closed"
+msgstr "已關閉"
+
+msgid "Closed issues"
+msgstr "已關閉議題"
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
 msgstr "%{appList} 已經成功安裝到您的 Kubernetes 叢集"
@@ -1060,9 +1449,6 @@ msgstr "Api 網址"
 
 msgid "ClusterIntegration|Add Kubernetes cluster"
 msgstr "增加 Kubernetes 叢集"
-
-msgid "ClusterIntegration|Add an existing Kubernetes cluster"
-msgstr "增加現有的 Kubernetes 叢集"
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
 msgstr "Kubernetes 叢集整合的進階設定"
@@ -1084,9 +1470,6 @@ msgstr "CA認證"
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr "憑證 (PEM格式)"
-
-msgid "ClusterIntegration|Choose how to set up Kubernetes cluster integration"
-msgstr "選擇如何整合 Kubernetes 叢集"
 
 msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
 msgstr "選擇您要使用此 Kubernetes 叢集的專案環境"
@@ -1115,17 +1498,8 @@ msgstr "複製權杖"
 msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr "建立 Kubernetes 叢集"
 
-msgid "ClusterIntegration|Create Kubernetes cluster on Google Kubernetes Engine"
-msgstr "在 Google Kubernetes Engine 上建立 Kubernetes 叢集"
-
-msgid "ClusterIntegration|Create a new Kubernetes cluster on Google Kubernetes Engine right from GitLab"
-msgstr "透過 GitLab 在 Google Kubernetes Engine 上建立 Kubernetes 叢集"
-
-msgid "ClusterIntegration|Create on Google Kubernetes Engine"
-msgstr "在 Google Kubernetes Engine 上建立"
-
-msgid "ClusterIntegration|Enter the details for an existing Kubernetes cluster"
-msgstr "輸入現有的 Kubernetes 叢集詳細資訊"
+msgid "ClusterIntegration|Did you know?"
+msgstr ""
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr "輸入您的 Kubernetes 叢集詳細資訊"
@@ -1163,6 +1537,15 @@ msgstr "Google Kubernetes Engine 專案"
 msgid "ClusterIntegration|Helm Tiller"
 msgstr "Helm Tiller"
 
+msgid "ClusterIntegration|Hide"
+msgstr ""
+
+msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
+msgstr "如果你正在設定多個叢集且正在使用自動 DevOps，%{help_link_start}請先閱讀這個說明%{help_link_end}。"
+
+msgid "ClusterIntegration|In order to show the health of the cluster, we'll need to provision your cluster with Prometheus to collect the required data."
+msgstr "為了要顯示叢集的健康狀況，我們需要為您的叢集設定 Prometheus 以收集所需的資訊。"
+
 msgid "ClusterIntegration|Ingress"
 msgstr "入口"
 
@@ -1171,6 +1554,9 @@ msgstr "入口 IP 位置"
 
 msgid "ClusterIntegration|Install"
 msgstr "安裝"
+
+msgid "ClusterIntegration|Install Prometheus"
+msgstr "安裝 Prometheus"
 
 msgid "ClusterIntegration|Installed"
 msgstr "已安裝"
@@ -1195,6 +1581,9 @@ msgstr "Kubernetes 叢集"
 
 msgid "ClusterIntegration|Kubernetes cluster details"
 msgstr "Kubernetes 叢集詳細資訊"
+
+msgid "ClusterIntegration|Kubernetes cluster health"
+msgstr "Kubernetes 叢集健康程度"
 
 msgid "ClusterIntegration|Kubernetes cluster integration"
 msgstr "Kubernetes 叢集整合"
@@ -1253,6 +1642,9 @@ msgstr "請至 %{link_gke} 管理您的 Kubernetes 叢集"
 msgid "ClusterIntegration|More information"
 msgstr "詳細資料"
 
+msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
+msgstr "多個 Kubernetes 叢集於 GitLab 企業版本 Premium 和 Ultimate 中支援"
+
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr "沒有機器類型符合您的搜尋"
 
@@ -1288,9 +1680,6 @@ msgstr "Prometheus"
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
 msgstr "閱讀我們關於 Kubernetes 叢集整合的 %{link_to_help_page}。"
-
-msgid "ClusterIntegration|Redeem up to $500 in free credit for Google Cloud Platform"
-msgstr "為 Google Cloud Platform 兌換免費的 500 元額度"
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
 msgstr "刪除 Kubernetes 叢集整合"
@@ -1405,6 +1794,9 @@ msgstr "設定正確"
 
 msgid "ClusterIntegration|sign up"
 msgstr "註冊"
+
+msgid "Cohorts"
+msgstr ""
 
 msgid "Collapse"
 msgstr "收起"
@@ -1531,8 +1923,8 @@ msgstr "於檔案庫上設定自動 Git 檢查與內務管理"
 msgid "Configure limits for web and API requests."
 msgstr "為網路與 API 請求設定限制。"
 
-msgid "Configure push mirrors."
-msgstr "設定推送的鏡像。"
+msgid "Configure push and pull mirrors."
+msgstr "設定推送和提取的鏡像。"
 
 msgid "Configure storage path and circuit breaker settings."
 msgstr "設定儲存路徑與斷路器設定。"
@@ -1543,8 +1935,17 @@ msgstr "設定使用者建立新帳號的方式。"
 msgid "Connect"
 msgstr "連線"
 
+msgid "Connect all repositories"
+msgstr "連接所有版本庫"
+
 msgid "Connect repositories from GitHub"
 msgstr "連結 GitHub 檔案庫"
+
+msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
+msgstr "連結您的外部版本庫，CI / CD 流水線將會為新的提交執行。只會建立只啟用 CI / CD 功能的 GitLab 專案。"
+
+msgid "Connecting..."
+msgstr "正在連結…"
 
 msgid "Container Registry"
 msgstr "Container Registry"
@@ -1597,6 +1998,9 @@ msgstr "您也可以使用 %{deploy_token} 為 Registry 映像檔進行唯讀存
 msgid "Continue"
 msgstr "繼續"
 
+msgid "Continue to the next step"
+msgstr ""
+
 msgid "Continuous Integration and Deployment"
 msgstr "持續整合與部屬"
 
@@ -1608,6 +2012,9 @@ msgstr "貢獻"
 
 msgid "Contribution guide"
 msgstr "協作指南"
+
+msgid "Contributions per group member"
+msgstr "每個群組成員的貢獻"
 
 msgid "Contributors"
 msgstr "協作者"
@@ -1624,6 +2031,24 @@ msgstr "提交到%{branch_name}，不包含合併提交，限制於 6,000 次更
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr "請稍等片刻，這個頁面會準備好時自動刷新。"
 
+msgid "Control the display of third party offers."
+msgstr ""
+
+msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
+msgstr "控制此次要節點的 LFS 和附加檔案的最大併發量"
+
+msgid "Control the maximum concurrency of repository backfill for this secondary node"
+msgstr "控制此次要節點的版本庫最大並行量"
+
+msgid "Control the maximum concurrency of verification operations for this Geo node"
+msgstr "控制此 Geo 節點驗證操作的最大並行量"
+
+msgid "ConvDev Index"
+msgstr ""
+
+msgid "Copy SSH public key to clipboard"
+msgstr "複製 SSH 公鑰到剪貼簿"
+
 msgid "Copy URL to clipboard"
 msgstr "複製網址到剪貼簿"
 
@@ -1636,17 +2061,20 @@ msgstr "複製指令"
 msgid "Copy commit SHA to clipboard"
 msgstr "複製更動記錄的 SHA 值到剪貼簿"
 
-msgid "Copy file name to clipboard"
-msgstr "將檔案名稱複製到剪貼簿"
-
 msgid "Copy file path to clipboard"
 msgstr "複製檔案路徑到剪貼簿"
+
+msgid "Copy incoming email address to clipboard"
+msgstr ""
 
 msgid "Copy reference to clipboard"
 msgstr "複製連結"
 
 msgid "Copy to clipboard"
 msgstr "複製至剪貼簿"
+
+msgid "Copy token to clipboard"
+msgstr ""
 
 msgid "Create"
 msgstr "建立"
@@ -1659,6 +2087,9 @@ msgstr "建立新分支"
 
 msgid "Create a new branch and merge request"
 msgstr "建立新分支及合併請求"
+
+msgid "Create a new issue"
+msgstr ""
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "建立個人存取憑證以使用 %{protocol} 來上傳或下載。"
@@ -1675,11 +2106,20 @@ msgstr "建立目錄"
 msgid "Create empty repository"
 msgstr "建立空的檔案庫"
 
+msgid "Create epic"
+msgstr "建立 epic"
+
 msgid "Create file"
 msgstr "新增檔案"
 
+msgid "Create group"
+msgstr ""
+
 msgid "Create group label"
 msgstr "建立群組標籤"
+
+msgid "Create issue"
+msgstr "建立議題"
 
 msgid "Create lists from labels. Issues with that label appear in that list."
 msgstr "建立標籤列表。含有此標籤的議題將會顯示於清單中。"
@@ -1698,6 +2138,9 @@ msgstr "新增資料夾"
 
 msgid "Create new file"
 msgstr "新增檔案"
+
+msgid "Create new file or directory"
+msgstr ""
 
 msgid "Create new label"
 msgstr "建立新的標籤"
@@ -1720,14 +2163,26 @@ msgstr "建立個人存取憑證"
 msgid "Created"
 msgstr "已建立"
 
+msgid "Created At"
+msgstr ""
+
 msgid "Created by me"
 msgstr "由我創建"
+
+msgid "Created on:"
+msgstr ""
+
+msgid "Creating epic"
+msgstr "建立 epic"
 
 msgid "Cron Timezone"
 msgstr "Cron 時區"
 
 msgid "Cron syntax"
 msgstr "Cron 語法"
+
+msgid "Current node"
+msgstr "目前節點"
 
 msgid "CurrentUser|Profile"
 msgstr "個人資料"
@@ -1743,6 +2198,15 @@ msgstr "自訂事件通知"
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
 msgstr "自訂通知的等級與參與度設定相同。使用自訂通知讓你只收到特定的事件通知。想了解更多資訊，請查閱 %{notification_link} 。"
+
+msgid "Customize colors"
+msgstr "自訂顏色"
+
+msgid "Customize how FogBugz email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
+msgid "Customize how Google Code email addresses and usernames are imported into GitLab. In the next step, you'll be able to select the projects you want to import."
+msgstr ""
 
 msgid "Cycle Analytics"
 msgstr "週期分析"
@@ -1768,6 +2232,9 @@ msgstr "試營運"
 msgid "CycleAnalyticsStage|Test"
 msgstr "測試"
 
+msgid "Dashboard"
+msgstr ""
+
 msgid "DashboardProjects|All"
 msgstr "全部"
 
@@ -1783,14 +2250,32 @@ msgstr "十二月"
 msgid "Decline and sign out"
 msgstr "拒絕並登出"
 
+msgid "Default classification label"
+msgstr "預設分類標籤"
+
+msgid "Default: Directly import the Google Code email address or username"
+msgstr ""
+
+msgid "Default: Map a FogBugz account ID to a full name"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr "使用 Cron 語法自訂排程"
 
 msgid "Delete"
 msgstr "刪除"
 
+msgid "Delete Snippet"
+msgstr "刪除片段"
+
 msgid "Delete list"
 msgstr "刪除清單"
+
+msgid "Deleted"
+msgstr ""
+
+msgid "Deny"
+msgstr ""
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -1922,8 +2407,20 @@ msgstr "您的新專案部屬憑證已經建立。"
 msgid "Deprioritize label"
 msgstr "優先標籤"
 
+msgid "Descending"
+msgstr "降冪"
+
 msgid "Description"
 msgstr "描述"
+
+msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
+msgstr "《描述範本》允許你為您專案的議題或合併請求之描述欄位定義符合上下文的範本。"
+
+msgid "Description:"
+msgstr ""
+
+msgid "Destroy"
+msgstr ""
 
 msgid "Details"
 msgstr "細節"
@@ -1952,8 +2449,26 @@ msgstr "撤銷變更"
 msgid "Discard draft"
 msgstr "放棄草稿"
 
+msgid "Discover GitLab Geo."
+msgstr "探索 GitLab Geo。"
+
+msgid "Discover projects, groups and snippets. Share your projects with others"
+msgstr ""
+
+msgid "Dismiss"
+msgstr ""
+
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr "關閉循環分析介紹視窗"
+
+msgid "Dismiss Merge Request promotion"
+msgstr "忽略合併請求的促銷廣告"
+
+msgid "Do you want to customize how Google Code email addresses and usernames are imported into GitLab?"
+msgstr ""
+
+msgid "Documentation for popular identity providers"
+msgstr "知名身份提供商的文件"
 
 msgid "Domain"
 msgstr "網域"
@@ -1997,6 +2512,9 @@ msgstr "噓"
 msgid "Due date"
 msgstr "截止日期"
 
+msgid "During this process, you’ll be asked for URLs from GitLab’s side. Use the URLs shown below."
+msgstr "在這過程中，您將會被詢問 GitLab 方的連結，請使用底下顯示的連結。"
+
 msgid "Each Runner can be in one of the following states:"
 msgstr "每個執行器可以處於以下狀態之一："
 
@@ -2009,11 +2527,26 @@ msgstr "編輯標籤"
 msgid "Edit Pipeline Schedule %{id}"
 msgstr "編輯 %{id} 流水線排程"
 
+msgid "Edit Snippet"
+msgstr "編輯片段"
+
+msgid "Edit application"
+msgstr ""
+
 msgid "Edit files in the editor and commit changes here"
 msgstr "在編輯器中編輯提交更動紀錄"
 
+msgid "Edit group: %{group_name}"
+msgstr ""
+
 msgid "Edit identity for %{user_name}"
 msgstr "編輯 %{user_name} 的身份"
+
+msgid "Elasticsearch"
+msgstr "Elasticsearch"
+
+msgid "Elasticsearch intergration. Elasticsearch AWS IAM."
+msgstr "Elasticsearch 整合。 Elasticsearch AWS IAM。"
 
 msgid "Email"
 msgstr "電子信箱"
@@ -2033,6 +2566,12 @@ msgstr "啟用"
 msgid "Enable Auto DevOps"
 msgstr "啟用自動 DevOps"
 
+msgid "Enable Pseudonymizer data collection"
+msgstr "啟用 Pseudonymizer 的資料收集"
+
+msgid "Enable SAML authentication for this group"
+msgstr "為此群組啟用 SAML 驗證"
+
 msgid "Enable Sentry for error reporting and logging."
 msgstr "為錯誤報告與日誌啟用 Sentry。"
 
@@ -2041,6 +2580,9 @@ msgstr "啟用與設定 InfluxDB 指標。"
 
 msgid "Enable and configure Prometheus metrics."
 msgstr "啟用與設定 Prometheus 指標。"
+
+msgid "Enable classification control using an external service"
+msgstr "使用外部服務進行分類控制"
 
 msgid "Enable for this project"
 msgstr "為此專案啟用"
@@ -2051,6 +2593,9 @@ msgstr "啟用群組執行器"
 msgid "Enable or disable certain group features and choose access levels."
 msgstr "啟用或停用某些群組功能，並選擇存取等級。"
 
+msgid "Enable or disable the Pseudonymizer data collection."
+msgstr "啟用或停用 Pseudonymizer 的資料收集。"
+
 msgid "Enable or disable version check and usage ping."
 msgstr "啟用或停用版本檢查和使用 ping。"
 
@@ -2059,6 +2604,9 @@ msgstr "啟用 reCAPTCHA 或 Akismet 並設定 IP 上限。"
 
 msgid "Enable the Performance Bar for a given group."
 msgstr "啟用提供群組的效能桿。"
+
+msgid "Enabled"
+msgstr "已啟用"
 
 msgid "Ends at (UTC)"
 msgstr "於 (UTC) 結束"
@@ -2072,8 +2620,17 @@ msgstr "獲取環境時發生錯誤。"
 msgid "Environments|An error occurred while making the request."
 msgstr "發送請求時發生錯誤"
 
+msgid "Environments|An error occurred while stopping the environment, please try again"
+msgstr ""
+
+msgid "Environments|Are you sure you want to stop this environment?"
+msgstr ""
+
 msgid "Environments|Commit"
 msgstr "更動"
+
+msgid "Environments|Deploy to..."
+msgstr ""
 
 msgid "Environments|Deployment"
 msgstr "部署"
@@ -2087,26 +2644,44 @@ msgstr "環境"
 msgid "Environments|Job"
 msgstr "任務"
 
+msgid "Environments|Learn more about stopping environments"
+msgstr ""
+
 msgid "Environments|New environment"
 msgstr "新建環境"
 
 msgid "Environments|No deployments yet"
 msgstr "尚未部署"
 
-msgid "Environments|Open"
-msgstr "開啟"
+msgid "Environments|No pod name has been specified"
+msgstr "沒有指定 pod 名稱"
 
-msgid "Environments|Re-deploy"
-msgstr "重新部署"
+msgid "Environments|Note that this action will stop the environment, but it will %{emphasis_start}not%{emphasis_end} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ci_config_link_start}.gitlab-ci.yml%{ci_config_link_end} file."
+msgstr ""
+
+msgid "Environments|Open live environment"
+msgstr ""
+
+msgid "Environments|Pod logs from"
+msgstr "Pod 日誌由"
+
+msgid "Environments|Re-deploy to environment"
+msgstr ""
 
 msgid "Environments|Read more about environments"
 msgstr "了解有關環境的更多訊息"
 
-msgid "Environments|Rollback"
-msgstr "還原"
+msgid "Environments|Rollback environment"
+msgstr ""
 
 msgid "Environments|Show all"
 msgstr "顯示全部"
+
+msgid "Environments|Stop"
+msgstr ""
+
+msgid "Environments|Stop environment"
+msgstr ""
 
 msgid "Environments|Updated"
 msgstr "已更新"
@@ -2114,17 +2689,29 @@ msgstr "已更新"
 msgid "Environments|You don't have any environments right now."
 msgstr "你還沒有設置環境"
 
+msgid "Epic"
+msgstr "Epic"
+
+msgid "Epic will be removed! Are you sure?"
+msgstr "將會移除 Epic！您確定嗎？"
+
+msgid "Epics"
+msgstr "Epic"
+
+msgid "Epics Roadmap"
+msgstr "Epics 開發藍圖"
+
+msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
+msgstr "Epics 讓你能更有效率且花費更少功夫的管理您專案的組合。"
+
 msgid "Error Reporting and Logging"
 msgstr "錯誤報告與日誌"
 
-msgid "Error committing changes. Please try again."
-msgstr "提交改變時發生錯誤，請稍後再試。"
+msgid "Error creating epic"
+msgstr "建立 epic 時發生錯誤"
 
 msgid "Error fetching contributors data."
 msgstr "讀取貢獻者資料時發生錯誤。"
-
-msgid "Error fetching job trace"
-msgstr "追蹤讀取任務錯誤"
 
 msgid "Error fetching labels."
 msgstr "讀取標籤時發生錯誤。"
@@ -2143,6 +2730,9 @@ msgstr "載入分支資料時錯誤，請重試。"
 
 msgid "Error loading last commit."
 msgstr "載入最新更動紀錄時失敗。"
+
+msgid "Error loading markdown preview"
+msgstr ""
 
 msgid "Error loading merge requests."
 msgstr "載入合併請求時錯誤。"
@@ -2192,6 +2782,9 @@ msgstr "每月執行（每月一日淩晨四點）"
 msgid "Every week (Sundays at 4:00am)"
 msgstr "每週執行（週日淩晨 四點）"
 
+msgid "Everyone can contribute"
+msgstr ""
+
 msgid "Expand"
 msgstr "展開"
 
@@ -2201,11 +2794,47 @@ msgstr "展開全部"
 msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
+msgid "Explore"
+msgstr ""
+
+msgid "Explore GitLab"
+msgstr ""
+
+msgid "Explore Groups"
+msgstr ""
+
+msgid "Explore groups"
+msgstr "瀏覽群組"
+
 msgid "Explore projects"
 msgstr "瀏覽專案"
 
 msgid "Explore public groups"
 msgstr "搜尋公開的群組"
+
+msgid "External Classification Policy Authorization"
+msgstr "外部分類策略認證"
+
+msgid "External authentication"
+msgstr "外部認證"
+
+msgid "External authorization denied access to this project"
+msgstr "外部認證拒絕存取這個專案。"
+
+msgid "External authorization request timeout"
+msgstr "外部認證請求等待過久"
+
+msgid "ExternalAuthorizationService|Classification Label"
+msgstr "分類標籤"
+
+msgid "ExternalAuthorizationService|Classification label"
+msgstr "分類標籤"
+
+msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
+msgstr "當沒有設定分類標籤時，將會使用預設標籤 `%{default_label}`。"
+
+msgid "Facebook"
+msgstr ""
 
 msgid "Failed"
 msgstr "失敗"
@@ -2249,6 +2878,9 @@ msgstr "檔案"
 msgid "Files (%{human_size})"
 msgstr "檔案 (%{human_size})"
 
+msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
+msgstr "填寫以下的欄位，開啟 <strong>%{enable_label}</strong> 後按下 <strong>%{save_changes}</strong>"
+
 msgid "Filter by commit message"
 msgstr "以更動說明篩選"
 
@@ -2258,6 +2890,12 @@ msgstr "以路徑搜尋"
 msgid "Find file"
 msgstr "搜尋檔案"
 
+msgid "Find the downloaded ZIP file and decompress it."
+msgstr ""
+
+msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
+msgstr ""
+
 msgid "Finished"
 msgstr "已完成"
 
@@ -2266,6 +2904,30 @@ msgstr "首次"
 
 msgid "FirstPushedBy|pushed by"
 msgstr "推送者："
+
+msgid "FogBugz Email"
+msgstr ""
+
+msgid "FogBugz Import"
+msgstr ""
+
+msgid "FogBugz Password"
+msgstr ""
+
+msgid "FogBugz URL"
+msgstr ""
+
+msgid "FogBugz import"
+msgstr ""
+
+msgid "Follow the steps below to export your Google Code project data."
+msgstr ""
+
+msgid "Font Color"
+msgstr "字體顏色"
+
+msgid "Footer message"
+msgstr "頁尾訊息"
 
 msgid "For internal projects, any logged in user can view pipelines and access job details (output logs and artifacts)"
 msgstr "對於內部專案，任何登錄的使用者都可以查看流水線並存取工作詳細資訊 (輸出日誌和產物)"
@@ -2298,6 +2960,18 @@ msgstr "在您的 .gitlab-ci.yml 中找到錯誤："
 msgid "From %{provider_title}"
 msgstr "來自 %{provider_title}"
 
+msgid "From Bitbucket"
+msgstr ""
+
+msgid "From FogBugz"
+msgstr ""
+
+msgid "From GitLab.com"
+msgstr ""
+
+msgid "From Google Code"
+msgstr ""
+
 msgid "From issue creation until deploy to production"
 msgstr "從議題建立直到部署至營運環境"
 
@@ -2318,6 +2992,201 @@ msgstr "一般流水線"
 
 msgid "Generate a default set of labels"
 msgstr "產生預設的標籤"
+
+msgid "Geo Nodes"
+msgstr "Geo 節點"
+
+msgid "Geo allows you to replicate your GitLab instance to other geographical locations."
+msgstr "Geo 允許您將您的 GitLab 實例複製到其他地理位置。"
+
+msgid "GeoNodeSyncStatus|Node is failing or broken."
+msgstr "節點發生錯誤或損壞。"
+
+msgid "GeoNodeSyncStatus|Node is slow, overloaded, or it just recovered after an outage."
+msgstr "節點過慢、超載或剛從停機中還原。"
+
+msgid "GeoNodes|Checksummed"
+msgstr "已進行雜湊值驗證"
+
+msgid "GeoNodes|Data is out of date from %{timeago}"
+msgstr "資料已經過期了 %{timeago} 之久"
+
+msgid "GeoNodes|Data replication lag"
+msgstr "資料複製延遲"
+
+msgid "GeoNodes|Disabling a node stops the sync process. Are you sure?"
+msgstr "停用節點將會停止同步程序，您確定要這麼做嗎？"
+
+msgid "GeoNodes|Does not match the primary storage configuration"
+msgstr "不符合主要儲存空間配置"
+
+msgid "GeoNodes|Failed"
+msgstr "失敗"
+
+msgid "GeoNodes|Full"
+msgstr "全部"
+
+msgid "GeoNodes|GitLab version"
+msgstr "GitLab 版本"
+
+msgid "GeoNodes|GitLab version does not match the primary node version"
+msgstr "GitLab 版本與主要節點版本不符"
+
+msgid "GeoNodes|Health status"
+msgstr "健康狀況"
+
+msgid "GeoNodes|Last event ID processed by cursor"
+msgstr "利用游標處理最後一個事件 ID"
+
+msgid "GeoNodes|Last event ID seen from primary"
+msgstr "從主畫面看到的最新活動 ID"
+
+msgid "GeoNodes|Learn more about Repository checksum progress"
+msgstr "了解關於版本庫計算雜湊值過程的更多資訊"
+
+msgid "GeoNodes|Learn more about Repository verification"
+msgstr "了解關於版本庫驗證的更多資訊"
+
+msgid "GeoNodes|Learn more about Wiki checksum progress"
+msgstr "了解關於維基雜湊值過程的更多資訊"
+
+msgid "GeoNodes|Learn more about Wiki verification"
+msgstr "關於維基認證的更多資訊"
+
+msgid "GeoNodes|Loading nodes"
+msgstr "正在載入節點"
+
+msgid "GeoNodes|Local LFS objects"
+msgstr "本機 LFS 物件"
+
+msgid "GeoNodes|Local attachments"
+msgstr "本機附件"
+
+msgid "GeoNodes|Local job artifacts"
+msgstr "本機任務文件"
+
+msgid "GeoNodes|New node"
+msgstr "新增節點"
+
+msgid "GeoNodes|Node Authentication was successfully repaired."
+msgstr "節點認證已成功修復。"
+
+msgid "GeoNodes|Node was successfully removed."
+msgstr "已順利移除節點。"
+
+msgid "GeoNodes|Not checksummed"
+msgstr "未檢查雜湊值"
+
+msgid "GeoNodes|Out of sync"
+msgstr "不同步"
+
+msgid "GeoNodes|Removing a node stops the sync process. Are you sure?"
+msgstr "移除節點將會停止同步程序，確定？"
+
+msgid "GeoNodes|Replication slot WAL"
+msgstr "複製 WAL 插槽"
+
+msgid "GeoNodes|Replication slots"
+msgstr "複製插槽"
+
+msgid "GeoNodes|Repositories"
+msgstr "版本庫"
+
+msgid "GeoNodes|Repositories checksummed for verification with their counterparts on Secondary nodes"
+msgstr "輔助節點上與對應方認證的版本庫已算出雜湊值"
+
+msgid "GeoNodes|Repositories verified with their counterparts on the Primary node"
+msgstr "主節點上與對應方的版本庫已驗證"
+
+msgid "GeoNodes|Repository checksum progress"
+msgstr "版本庫雜湊值程序"
+
+msgid "GeoNodes|Repository verification progress"
+msgstr "版本庫驗證程序"
+
+msgid "GeoNodes|Selective"
+msgstr "選擇"
+
+msgid "GeoNodes|Something went wrong while changing node status"
+msgstr "變更節點狀態時發生錯誤"
+
+msgid "GeoNodes|Something went wrong while fetching nodes"
+msgstr "抓取節點時發生錯誤"
+
+msgid "GeoNodes|Something went wrong while removing node"
+msgstr "移除節點時發生錯誤"
+
+msgid "GeoNodes|Something went wrong while repairing node"
+msgstr "修復節點時發生錯誤"
+
+msgid "GeoNodes|Storage config"
+msgstr "儲存空間設定"
+
+msgid "GeoNodes|Sync settings"
+msgstr "同步設定"
+
+msgid "GeoNodes|Synced"
+msgstr "已同步"
+
+msgid "GeoNodes|Unused slots"
+msgstr "未使用插槽"
+
+msgid "GeoNodes|Unverified"
+msgstr "未驗證"
+
+msgid "GeoNodes|Used slots"
+msgstr "使用的插槽"
+
+msgid "GeoNodes|Verified"
+msgstr "已驗證"
+
+msgid "GeoNodes|Wiki checksum progress"
+msgstr "維基雜湊值進度"
+
+msgid "GeoNodes|Wiki verification progress"
+msgstr "維基驗證進度"
+
+msgid "GeoNodes|Wikis"
+msgstr "維基"
+
+msgid "GeoNodes|Wikis checksummed for verification with their counterparts on Secondary nodes"
+msgstr "主節點上與對應方驗證的維基已算出雜湊值"
+
+msgid "GeoNodes|Wikis verified with their counterparts on the Primary node"
+msgstr "Wiki 已在主要節點的對應方驗證完成"
+
+msgid "GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS."
+msgstr "您使用不安全的 HTTP 連線設定 Geo 節點。我們建議使用 HTTPS。"
+
+msgid "Geo|All projects"
+msgstr "所有專案"
+
+msgid "Geo|File sync capacity"
+msgstr "檔案同步量"
+
+msgid "Geo|Groups to synchronize"
+msgstr "要同步的群組"
+
+msgid "Geo|Projects in certain groups"
+msgstr "某些群組中的專案"
+
+msgid "Geo|Projects in certain storage shards"
+msgstr "某些儲存空間碎片中的專案"
+
+msgid "Geo|Repository sync capacity"
+msgstr "版本庫同步量"
+
+msgid "Geo|Select groups to replicate."
+msgstr "選擇要複製的群組。"
+
+msgid "Geo|Shards to synchronize"
+msgstr "要同步的碎片"
+
+msgid "Geo|Verification capacity"
+msgstr "驗證能力"
+
+msgid "Git"
+msgstr ""
 
 msgid "Git repository URL"
 msgstr "Git 檔案庫網址"
@@ -2340,11 +3209,29 @@ msgstr "GitHub 匯入"
 msgid "GitLab CI Linter has been moved"
 msgstr "GitLab CI Linter 已經搬移"
 
+msgid "GitLab Geo"
+msgstr "GitLab Geo"
+
 msgid "GitLab Group Runners can execute code for all the projects in this group."
 msgstr "GitLab 群組執行器可以為此群組的所有專案執行程式碼。"
 
-msgid "GitLab Runner section"
-msgstr "GitLab Runner"
+msgid "GitLab Import"
+msgstr ""
+
+msgid "GitLab User"
+msgstr ""
+
+msgid "GitLab project export"
+msgstr ""
+
+msgid "GitLab single sign on URL"
+msgstr "GitLab URL 單一登入"
+
+msgid "GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
+msgstr "GitLab 將會在後台進行產生 GitLab 資料庫假名 CSV 的作業，該資料庫將會上傳到您設定的對象儲存目錄。"
+
+msgid "GitLab.com import"
+msgstr ""
 
 msgid "Gitaly"
 msgstr "Gitaly"
@@ -2355,17 +3242,32 @@ msgstr "Gitaly 伺服器"
 msgid "Gitaly|Address"
 msgstr "地址"
 
+msgid "Gitea Host URL"
+msgstr ""
+
+msgid "Gitea Import"
+msgstr ""
+
 msgid "Go Back"
 msgstr "返回"
 
 msgid "Go back"
 msgstr "上一頁"
 
+msgid "Go to %{link_to_google_takeout}."
+msgstr ""
+
 msgid "Go to your fork"
 msgstr "前往您的分支"
 
 msgid "GoToYourFork|Fork"
 msgstr "前往您的分支"
+
+msgid "Google Code import"
+msgstr ""
+
+msgid "Google Takeout"
+msgstr ""
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Google 身份驗證不是 %{link_to_documentation}。如果您想使用此服務，請諮詢管理員。"
@@ -2376,8 +3278,14 @@ msgstr "明白！"
 msgid "Graph"
 msgstr "圖表"
 
+msgid "Group"
+msgstr ""
+
 msgid "Group CI/CD settings"
 msgstr "群組 CI / CD 設定"
+
+msgid "Group Git LFS status:"
+msgstr ""
 
 msgid "Group ID"
 msgstr "群組 ID"
@@ -2385,8 +3293,56 @@ msgstr "群組 ID"
 msgid "Group Runners"
 msgstr "群組執行器"
 
+msgid "Group avatar"
+msgstr ""
+
+msgid "Group details"
+msgstr ""
+
+msgid "Group info:"
+msgstr ""
+
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr "群組維護者可以在 %{link} 註冊群組執行器"
+
+msgid "Group: %{group_name}"
+msgstr ""
+
+msgid "GroupRoadmap|From %{dateWord}"
+msgstr "從 %{dateWord}"
+
+msgid "GroupRoadmap|Loading roadmap"
+msgstr "正在讀取開發藍圖"
+
+msgid "GroupRoadmap|Something went wrong while fetching epics"
+msgstr "取得 Epic 時發生錯誤。"
+
+msgid "GroupRoadmap|Sorry, no epics matched your search"
+msgstr "抱歉，沒有任何 Epic 符合您的搜尋。"
+
+msgid "GroupRoadmap|The roadmap shows the progress of your epics along a timeline"
+msgstr "開發藍圖顯示時間軸上您的 Epic 進度"
+
+msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。月檢視中，只會顯示上個月、這個月、和接下來五個月的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。季度檢視中，只會顯示上個季度、這個季度、和接下來四個季度的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要檢視開發藍圖，請新增這個群組或其子群組中一個 Epic 的計畫開始與完成日期。週檢視中，只會顯示上週、這週、和接下來四週的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|To widen your search, change or remove filters. In the months view, only epics in the past month, current month, and next 5 months are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要擴大您的搜尋，請嘗試修改或移除篩選器。月檢視中，只會顯示上個月、這個月、和接下來五個月的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|To widen your search, change or remove filters. In the quarters view, only epics in the past quarter, current quarter, and next 4 quarters are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要擴大您的搜尋，請嘗試修改或移除篩選器。季度檢視中，只會顯示上個季度、這個季度、和接下來四個季度的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|To widen your search, change or remove filters. In the weeks view, only epics in the past week, current week, and next 4 weeks are shown &ndash; from %{startDate} to %{endDate}."
+msgstr "若要擴大您的搜尋，請嘗試修改或移除篩選器。週檢視中，只會顯示上週、這週、和接下來四週的 Epic &ndash; 從 %{startDate} 到 %{endDate}。"
+
+msgid "GroupRoadmap|Until %{dateWord}"
+msgstr "直到 %{dateWord}"
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr "禁止與其他群組共享 %{group} 中的專案"
@@ -2412,8 +3368,32 @@ msgstr "無法啟用上級群組的「共享群組鎖」。只有上級群組的
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr "從 %{ancestor_group_name} 中移除共享群組鎖"
 
+msgid "Groups"
+msgstr ""
+
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr "群組也可以創建 %{subgroup_docs_link_start}子群組%{subgroup_docs_link_end}。"
+
+msgid "GroupsDropdown|Frequently visited"
+msgstr "最近瀏覽"
+
+msgid "GroupsDropdown|Groups you visit often will appear here"
+msgstr "你經常瀏覽的群組將會在這裡顯示"
+
+msgid "GroupsDropdown|Loading groups"
+msgstr "正在載入群組"
+
+msgid "GroupsDropdown|Search your groups"
+msgstr "搜尋您的群組"
+
+msgid "GroupsDropdown|Something went wrong on our end."
+msgstr "結束時發生錯誤。"
+
+msgid "GroupsDropdown|Sorry, no groups matched your search"
+msgstr "抱歉，沒有符合您搜尋的群組。"
+
+msgid "GroupsDropdown|This feature requires browser localStorage support"
+msgstr "這個功能需要瀏覽器的 localStorage 支援"
 
 msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "群組是數個專案的集合。"
@@ -2453,6 +3433,12 @@ msgstr "不好意思，沒有搜尋到任何符合條件的群組"
 
 msgid "GroupsTree|Sorry, no groups or projects matched your search"
 msgstr "不好意思，沒有搜尋到任何符合條件的群組或專案"
+
+msgid "Have your users email"
+msgstr "有來自您使用者的信件"
+
+msgid "Header message"
+msgstr "標頭訊息"
 
 msgid "Health Check"
 msgstr "健康檢查"
@@ -2524,11 +3510,20 @@ msgstr "識別碼"
 msgid "Identities"
 msgstr "身份"
 
+msgid "Identity provider single sign on URL"
+msgstr "身份提供者的 URL 單一登入"
+
 msgid "If disabled, the access level will depend on the user's permissions in the project."
 msgstr "如果禁用，存取等級將取決於使用者在專案中的權限。"
 
 msgid "If enabled"
 msgstr "如果啟用"
+
+msgid "If enabled, access to projects will be validated on an external service using their classification label."
+msgstr "如果啟用，將會使用其分類標籤在外部服務上驗證專案的存取。"
+
+msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
+msgstr "如果使用 GitHub，你將會看到用於提交與推送請求的 GitHub 流水線狀態。%{more_info_link}"
 
 msgid "If you already have files you can push them using the %{link_to_cli} below."
 msgstr "如果你已經擁有檔案，你可以使用 %{link_to_cli} 推送他們。"
@@ -2548,11 +3543,41 @@ msgstr "Swipe"
 msgid "Import"
 msgstr "匯入"
 
+msgid "Import Projects from Gitea"
+msgstr ""
+
+msgid "Import all compatible projects"
+msgstr ""
+
+msgid "Import all projects"
+msgstr ""
+
 msgid "Import all repositories"
 msgstr "匯入所有檔案庫"
 
+msgid "Import an exported GitLab project"
+msgstr ""
+
 msgid "Import in progress"
 msgstr "匯入中..."
+
+msgid "Import multiple repositories by uploading a manifest file."
+msgstr ""
+
+msgid "Import project"
+msgstr ""
+
+msgid "Import projects from Bitbucket"
+msgstr ""
+
+msgid "Import projects from FogBugz"
+msgstr ""
+
+msgid "Import projects from GitLab.com"
+msgstr ""
+
+msgid "Import projects from Google Code"
+msgstr ""
 
 msgid "Import repositories from GitHub"
 msgstr "從 GitHub 匯入檔案庫"
@@ -2560,17 +3585,39 @@ msgstr "從 GitHub 匯入檔案庫"
 msgid "Import repository"
 msgstr "匯入檔案庫"
 
+msgid "ImportButtons|Connect repositories from"
+msgstr "連線版本庫自"
+
+msgid "Improve Issue boards with GitLab Enterprise Edition."
+msgstr "改善 GitLab 企業版本的議題看板。"
+
+msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
+msgstr "透過議題權重和 GitLab 企業版本改善議題管理。"
+
+msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
+msgstr "使用進階全域搜尋和 GitLab 企業版本來改進搜尋。"
+
+msgid "In the next step, you'll be able to select the projects you want to import."
+msgstr ""
+
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr "包括所有用戶必須接受的服務條款協議和隱私政策。"
+
+msgid "Incompatible Project"
+msgstr ""
 
 msgid "Inline"
 msgstr "內嵌"
 
+msgid "Install GitLab Runner"
+msgstr ""
+
 msgid "Install Runner on Kubernetes"
 msgstr "在 Kubernetes 上安裝運行器"
 
-msgid "Install a Runner compatible with GitLab CI"
-msgstr "安裝與 GitLab CI 相容的 Runner"
+msgid "Instance"
+msgid_plural "Instances"
+msgstr[0] "實例"
 
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr "主機沒有支援多個 Kubernetes 叢集"
@@ -2596,8 +3643,11 @@ msgstr "循環週期"
 msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
 
-msgid "Issue Board"
+msgid "Issue Boards"
 msgstr "議題看板"
+
+msgid "Issue board focus mode"
+msgstr "議題看板焦點模式"
 
 msgid "Issue events"
 msgstr "議題事件"
@@ -2605,11 +3655,17 @@ msgstr "議題事件"
 msgid "IssueBoards|Board"
 msgstr "看板"
 
+msgid "IssueBoards|Boards"
+msgstr "看板"
+
 msgid "Issues"
 msgstr "議題"
 
 msgid "Issues can be bugs, tasks or ideas to be discussed. Also, issues are searchable and filterable."
 msgstr "議題可以是bug，任務或想法來討論。此外，問題是可搜尋和過濾的。"
+
+msgid "Issues closed"
+msgstr "議題已關閉"
 
 msgid "Jan"
 msgstr "一月"
@@ -2640,6 +3696,9 @@ msgstr "六月"
 
 msgid "Koding"
 msgstr "Koding"
+
+msgid "Koding Dashboard"
+msgstr ""
 
 msgid "Kubernetes"
 msgstr "Kubernetes"
@@ -2680,11 +3739,17 @@ msgstr "標籤"
 msgid "Label actions dropdown"
 msgstr "標籤操作下拉菜單"
 
+msgid "Label lists show all issues with the selected label."
+msgstr "標籤列表顯示了選取標籤的所有問題。"
+
 msgid "LabelSelect|%{firstLabelName} +%{remainingLabelCount} more"
 msgstr "%{firstLabelName} +%{remainingLabelCount} 更多"
 
 msgid "LabelSelect|%{labelsString}, and %{remainingLabelCount} more"
 msgstr "%{labelsString}，和%{remainingLabelCount} 更多"
+
+msgid "LabelSelect|Labels"
+msgstr "標籤"
 
 msgid "Labels"
 msgstr "標籤"
@@ -2759,11 +3824,29 @@ msgstr "退出群組"
 msgid "Leave project"
 msgstr "退出專案"
 
+msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
+msgstr ""
+
+msgid "License"
+msgstr "授權"
+
+msgid "LinkedIn"
+msgstr ""
+
 msgid "List"
 msgstr "清單"
 
+msgid "List Your Gitea Repositories"
+msgstr ""
+
+msgid "List available repositories"
+msgstr ""
+
 msgid "List your GitHub repositories"
 msgstr "列出您 GitHub 的檔案庫"
+
+msgid "Loading contribution stats for group members"
+msgstr "正在讀取群組成員的貢獻統計"
 
 msgid "Loading the GitLab IDE..."
 msgstr "讀取 GitLab IDE..."
@@ -2786,14 +3869,38 @@ msgstr "鎖定目前專案"
 msgid "Locked"
 msgstr "鎖定"
 
+msgid "Locked Files"
+msgstr "鎖定的檔案"
+
 msgid "Locked to current projects"
 msgstr "已鎖定目前專案"
 
-msgid "Login"
-msgstr "登入"
+msgid "Locks give the ability to lock specific file or folder."
+msgstr "《鎖定》提供了鎖定特定檔案或資料夾的能力。"
+
+msgid "Logs"
+msgstr ""
+
+msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
+msgstr "無論身在何處，都能讓您團隊中的每個人都更有效率。GitLab Geo 建立了您 GitLab 主機的唯讀鏡像，所以您可以縮短複製和抓取大型版本庫的時間。"
+
+msgid "Make sure you're logged into the account that owns the projects you'd like to import."
+msgstr ""
+
+msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
+msgstr ""
+
+msgid "Manage access"
+msgstr ""
 
 msgid "Manage all notifications"
 msgstr "管理所有通知"
+
+msgid "Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account."
+msgstr ""
+
+msgid "Manage applications that you've authorized to use your account."
+msgstr ""
 
 msgid "Manage group labels"
 msgstr "管理群組標籤"
@@ -2803,6 +3910,27 @@ msgstr "管理標籤"
 
 msgid "Manage project labels"
 msgstr "管理專案標籤"
+
+msgid "Manage your group’s membership while adding another level of security with SAML."
+msgstr "當透過 SAML 增加其他安全性等級時，管理您的群組成員身份。"
+
+msgid "Manifest"
+msgstr ""
+
+msgid "Manifest file import"
+msgstr ""
+
+msgid "Map a FogBugz account ID to a GitLab user"
+msgstr ""
+
+msgid "Map a Google Code user to a GitLab user"
+msgstr ""
+
+msgid "Map a Google Code user to a full email address"
+msgstr ""
+
+msgid "Map a Google Code user to a full name"
+msgstr ""
 
 msgid "Mar"
 msgstr "三月"
@@ -2828,17 +3956,29 @@ msgstr "中位數"
 msgid "Members"
 msgstr "成員"
 
+msgid "Members will be forwarded here when signing in to your group. Get this from your identity provider, where it can also be called \"SSO Service Location\", \"SAML Token Issuance Endpoint\", or \"SAML 2.0/W-Federation URL\"."
+msgstr "當登入至您的群組，成員們將會被轉移到這裡。從您的身份提供取得這個，其可能被稱為「SSO 服務位置」、「SAML 憑證頒發端點」或「SAML 2.0/W-Federation URL」。"
+
+msgid "Merge Request"
+msgstr "合併請求"
+
 msgid "Merge Request:"
 msgstr "合併請求："
 
 msgid "Merge Requests"
 msgstr "合併請求"
 
+msgid "Merge Requests created"
+msgstr "已建立合併請求"
+
 msgid "Merge events"
 msgstr "合併事件"
 
 msgid "Merge request"
 msgstr "合併請求"
+
+msgid "Merge request approvals"
+msgstr "批准合併請求"
 
 msgid "Merge requests"
 msgstr "合併請求"
@@ -2870,11 +4010,113 @@ msgstr "已合併"
 msgid "Messages"
 msgstr "公告"
 
+msgid "Metrics"
+msgstr "指標"
+
 msgid "Metrics - Influx"
 msgstr "指標 - Influx"
 
 msgid "Metrics - Prometheus"
 msgstr "指標 - Prometheus"
+
+msgid "Metrics|Business"
+msgstr "企業"
+
+msgid "Metrics|Check out the CI/CD documentation on deploying to an environment"
+msgstr "查看有關部署到環境的 CI / CD 文件。"
+
+msgid "Metrics|Create metric"
+msgstr "建立指標"
+
+msgid "Metrics|Edit metric"
+msgstr "編輯指標"
+
+msgid "Metrics|Environment"
+msgstr "環境"
+
+msgid "Metrics|For grouping similar metrics"
+msgstr "對相似的指標進行分組"
+
+msgid "Metrics|Label of the chart's vertical axis. Usually the type of the unit being charted. The horizontal axis (X-axis) always represents time."
+msgstr "圖表垂直軸的標籤，通常是繪製單位的類型。水平軸 (X 軸) 總是表示時間。"
+
+msgid "Metrics|Learn about environments"
+msgstr "了解關於環境的資訊"
+
+msgid "Metrics|Legend label (optional)"
+msgstr "圖例標籤（非必要）"
+
+msgid "Metrics|Must be a valid PromQL query."
+msgstr "必須是有效的 PromQL 查詢。"
+
+msgid "Metrics|Name"
+msgstr "名稱"
+
+msgid "Metrics|New metric"
+msgstr "建立指標"
+
+msgid "Metrics|No deployed environments"
+msgstr "沒有已經佈署的環境"
+
+msgid "Metrics|Prometheus Query Documentation"
+msgstr "Prometheus 查詢文件"
+
+msgid "Metrics|Query"
+msgstr "查詢"
+
+msgid "Metrics|Response"
+msgstr "回應"
+
+msgid "Metrics|System"
+msgstr "系統"
+
+msgid "Metrics|There was an error fetching the environments data, please try again"
+msgstr "取得環境資訊時發生錯誤，請重試。"
+
+msgid "Metrics|There was an error getting deployment information."
+msgstr "取得部署資訊時發生錯誤。"
+
+msgid "Metrics|There was an error getting environments information."
+msgstr "取得部署資訊時發生錯誤。"
+
+msgid "Metrics|There was an error while retrieving metrics"
+msgstr ""
+
+msgid "Metrics|Type"
+msgstr "類別"
+
+msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
+msgstr "來自 Prometheus 端點的非預期部屬資料回應"
+
+msgid "Metrics|Unexpected metrics data response from prometheus endpoint"
+msgstr "來自 Prometheus 端點的非預期指標資料回應"
+
+msgid "Metrics|Unit label"
+msgstr "單位標籤"
+
+msgid "Metrics|Used as a title for the chart"
+msgstr "用來當作圖表的標題"
+
+msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
+msgstr "如果查詢回傳了單個序列則使用，如果其回傳多個序列，則會從回應中取出其圖例標籤。"
+
+msgid "Metrics|Y-axis label"
+msgstr "Y 軸標籤"
+
+msgid "Metrics|e.g. HTTP requests"
+msgstr "例如 HTTP 請求"
+
+msgid "Metrics|e.g. Requests/second"
+msgstr "例如：每秒請求"
+
+msgid "Metrics|e.g. Throughput"
+msgstr "例如：Throughput"
+
+msgid "Metrics|e.g. rate(http_requests_total[5m])"
+msgstr "例如：rate(http_requests_total[5m])"
+
+msgid "Metrics|e.g. req/sec"
+msgstr "例如：每秒請求"
 
 msgid "Milestone"
 msgstr "里程碑"
@@ -2900,6 +4142,9 @@ msgstr "將 %{milestoneTitle} 提升成群組里程碑？"
 msgid "Milestones|Promote Milestone"
 msgstr "推動里程碑"
 
+msgid "Milestones|This action cannot be reversed."
+msgstr "這動作無法復原。"
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "新增 SSH 金鑰"
 
@@ -2912,8 +4157,17 @@ msgstr "關閉"
 msgid "Monitoring"
 msgstr "監控"
 
+msgid "Months"
+msgstr "月"
+
+msgid "More"
+msgstr ""
+
 msgid "More actions"
 msgstr "更多動作"
+
+msgid "More info"
+msgstr "更多資訊"
 
 msgid "More information"
 msgstr "更多資訊"
@@ -2921,11 +4175,17 @@ msgstr "更多資訊"
 msgid "More information is available|here"
 msgstr "健康檢查"
 
+msgid "Most stars"
+msgstr ""
+
 msgid "Move"
 msgstr "移動"
 
 msgid "Move issue"
 msgstr "移動議題"
+
+msgid "Multiple issue boards"
+msgstr "多個議題看板"
 
 msgid "Name"
 msgstr "名稱"
@@ -2935,6 +4195,9 @@ msgstr "命名新標籤"
 
 msgid "Name your individual key via a title"
 msgstr "透過標題為您的個人密鑰命名"
+
+msgid "Name:"
+msgstr ""
 
 msgid "Nav|Help"
 msgstr "幫助"
@@ -2948,6 +4211,18 @@ msgstr "註冊 / 登入"
 msgid "Nav|Sign out and sign in with a different account"
 msgstr "登出，並使用其他帳號登入"
 
+msgid "Network"
+msgstr ""
+
+msgid "New"
+msgstr "新增"
+
+msgid "New Application"
+msgstr ""
+
+msgid "New Group"
+msgstr ""
+
 msgid "New Identity"
 msgstr "新增身份"
 
@@ -2955,17 +4230,17 @@ msgid "New Issue"
 msgid_plural "New Issues"
 msgstr[0] "建立議題"
 
-msgid "New Kubernetes Cluster"
-msgstr "建立 Kubernetes 叢集"
-
-msgid "New Kubernetes cluster"
-msgstr "建立 Kubernetes 叢集"
-
 msgid "New Label"
 msgstr "新增標籤"
 
 msgid "New Pipeline Schedule"
 msgstr "建立流水線排程"
+
+msgid "New Snippet"
+msgstr "新增片段"
+
+msgid "New Snippets"
+msgstr "新增片段"
 
 msgid "New branch"
 msgstr "新分支"
@@ -2975,6 +4250,9 @@ msgstr "新的分支不可用"
 
 msgid "New directory"
 msgstr "新增目錄"
+
+msgid "New epic"
+msgstr "新的 Epic"
 
 msgid "New file"
 msgstr "新增檔案"
@@ -3012,8 +4290,14 @@ msgstr "新子群組"
 msgid "New tag"
 msgstr "新增標籤"
 
+msgid "New..."
+msgstr ""
+
 msgid "No"
 msgstr "否"
+
+msgid "No Label"
+msgstr "沒有標籤"
 
 msgid "No assignee"
 msgstr "未指派"
@@ -3039,17 +4323,32 @@ msgstr "找不到任何檔案"
 msgid "No files found."
 msgstr "找不到任何檔案"
 
+msgid "No issues for the selected time period."
+msgstr "選取的時間範圍中沒有議題。"
+
+msgid "No merge requests for the selected time period."
+msgstr "選取的時間範圍中沒有合併請求。"
+
 msgid "No merge requests found"
 msgstr "找不到合併請求"
 
 msgid "No messages were logged"
 msgstr "沒有消息被記錄"
 
+msgid "No public groups"
+msgstr ""
+
+msgid "No pushes for the selected time period."
+msgstr "選取的時間範圍中沒有推送。"
+
 msgid "No repository"
 msgstr "找不到檔案庫"
 
 msgid "No schedules"
 msgstr "沒有排程"
+
+msgid "No, directly import the existing email addresses and usernames."
+msgstr ""
 
 msgid "None"
 msgstr "無"
@@ -3075,11 +4374,20 @@ msgstr "資料不足"
 msgid "Note that the master branch is automatically protected. %{link_to_protected_branches}"
 msgstr "請注意，master 分支預設為受保護的。 %{link_to_protected_branches}"
 
+msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
+msgstr "注意：作為管理員，您可能希望設定 %{github_integration_link}，其可以允許透過 GitHub 登入，並允許在未產生個人存取憑證的情況下連線版本庫。"
+
 msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr "注意：作為管理員，您可能希望配置 %{github_integration_link}，這將允許通過 GitHub 登入並允許匯入存儲庫而不生成個人存取憑證。"
 
+msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
+msgstr "注意：請考慮讓您的 GitLab 管理員設定 %{github_integration_link}，讓其允許透過 GitHub 登入並允許在沒有產生個人存取憑證的情況下連線到版本庫。"
+
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr "注意：請考慮讓您的 GitLab 管理員設定 %{github_integration_link}，這將允許使用者透過 GitHub 登入並允許匯入儲存庫而不生成個人存取憑證。"
+
+msgid "Notes|Are you sure you want to cancel creating this comment?"
+msgstr ""
 
 msgid "Notification events"
 msgstr "事件通知"
@@ -3153,6 +4461,9 @@ msgstr "十一月"
 msgid "Number of access attempts"
 msgstr "嘗試存取的次數"
 
+msgid "OK"
+msgstr "確定"
+
 msgid "Oct"
 msgstr "十月"
 
@@ -3161,6 +4472,15 @@ msgstr "十月"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "篩選"
+
+msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
+msgstr "一旦匯入，就可以透過 SSH 鏡像版本庫。閱讀 %{ssh_link} 以了解更多資訊"
+
+msgid "One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
+msgstr ""
+
+msgid "One or more of your Google Code projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
+msgstr ""
 
 msgid "Online IDE integration settings."
 msgstr "線上 IDE 整合設定。"
@@ -3171,8 +4491,29 @@ msgstr "下面僅顯示來自以下提交的註釋"
 msgid "Only project members can comment."
 msgstr "只有群組成員才能留言。"
 
+msgid "Oops, are you sure?"
+msgstr "喔喔…你確定嗎？"
+
+msgid "Open"
+msgstr "開啟"
+
 msgid "Open in Xcode"
 msgstr "在 Xcode 開啟"
+
+msgid "Open sidebar"
+msgstr ""
+
+msgid "Open source software to collaborate on code"
+msgstr ""
+
+msgid "Opened"
+msgstr "開啟的"
+
+msgid "Opened MR"
+msgstr "開啟的合併請求 (MR)"
+
+msgid "Opened issues"
+msgstr "開啟的議題"
 
 msgid "OpenedNDaysAgo|Opened"
 msgstr "開始於"
@@ -3183,6 +4524,12 @@ msgstr "於新視窗開啟"
 msgid "Operations"
 msgstr "動作"
 
+msgid "Optionally, you can %{link_to_customize} how FogBugz email addresses and usernames are imported into GitLab."
+msgstr ""
+
+msgid "Optionally, you can %{link_to_customize} how Google Code email addresses and usernames are imported into GitLab."
+msgstr ""
+
 msgid "Options"
 msgstr "選項"
 
@@ -3191,6 +4538,9 @@ msgstr "或者您可以在下方建議的顏色中選擇一個"
 
 msgid "Other Labels"
 msgstr "其他標籤"
+
+msgid "Other information"
+msgstr "其他資訊"
 
 msgid "Otherwise it is recommended you start with one of the options below."
 msgstr "此外，建議您從下面的一個選項開始。"
@@ -3228,6 +4578,9 @@ msgstr "密碼"
 msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh/id_rsa.pub' and begins with 'ssh-rsa'. Don't use your private SSH key."
 msgstr "貼上您的SSH公鑰，通常放置在 '~/.ssh/id_rsa.pub'，並以 'ssh-rsa' 開頭。不要使用您的SSH私鑰。"
 
+msgid "Path:"
+msgstr ""
+
 msgid "Pause"
 msgstr "暫停"
 
@@ -3260,6 +4613,9 @@ msgstr "流水線排程"
 
 msgid "Pipeline Schedules"
 msgstr "流水線排程"
+
+msgid "Pipeline quota"
+msgstr "流水線額度"
 
 msgid "Pipeline triggers"
 msgstr "流水線觸發器"
@@ -3405,6 +4761,12 @@ msgstr "於階段"
 msgid "Plain diff"
 msgstr "本文差異"
 
+msgid "Planned finish date"
+msgstr "計畫完成日期"
+
+msgid "Planned start date"
+msgstr "計畫開始日期"
+
 msgid "PlantUML"
 msgstr "PlantUML"
 
@@ -3413,6 +4775,15 @@ msgstr "執行"
 
 msgid "Please accept the Terms of Service before continuing."
 msgstr "在繼續之前，請同意服務條款"
+
+msgid "Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please convert them to Git on Google Code, and go through the %{link_to_import_flow} again."
+msgstr ""
+
+msgid "Please note that this application is not provided by GitLab and you should verify its authenticity before allowing access."
+msgstr ""
 
 msgid "Please select at least one filter to see results"
 msgstr "請選擇至少一個篩選器以檢視結果"
@@ -3423,6 +4794,9 @@ msgstr "請填寫驗證碼"
 msgid "Please try again"
 msgstr "請再試一次"
 
+msgid "Please wait while we connect to your repository. Refresh at will."
+msgstr "請稍候，我們正在連結到您的版本庫，稍後請重新整理。"
+
 msgid "Please wait while we import the repository for you. Refresh at will."
 msgstr "請稍候，我們正在匯入您的檔案庫，稍後請重新整理。"
 
@@ -3431,6 +4805,9 @@ msgstr "偏好設定"
 
 msgid "Preferences|Navigation theme"
 msgstr "導航主題"
+
+msgid "Primary"
+msgstr "主要"
 
 msgid "Prioritize"
 msgstr "優先"
@@ -3456,8 +4833,14 @@ msgstr "可以在您的個人命名空間中建立私人專案:"
 msgid "Profile"
 msgstr "個人資料"
 
+msgid "Profile Settings"
+msgstr ""
+
 msgid "Profiles|Account scheduled for removal."
 msgstr "帳號將會被刪除"
+
+msgid "Profiles|Add key"
+msgstr "新增金鑰"
 
 msgid "Profiles|Change username"
 msgstr "變更使用者名稱"
@@ -3486,8 +4869,14 @@ msgstr "無效的使用者名稱"
 msgid "Profiles|Path"
 msgstr "位置"
 
+msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
+msgstr "這看起來不像是 SSH 公鑰，您確定要增加它嗎？"
+
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "輸入您的 %{confirmationValue} 以確認："
+
+msgid "Profiles|Typically starts with \"ssh-rsa …\""
+msgstr "通常以 \"ssh-rsa …\" 起頭"
 
 msgid "Profiles|Update username"
 msgstr "更新使用者名稱"
@@ -3506,6 +4895,9 @@ msgstr "你必須轉換你的所有權或在你刪除你帳號前刪除這些群
 
 msgid "Profiles|Your account is currently an owner in these groups:"
 msgstr "你的帳號目前擁有這些群組："
+
+msgid "Profiles|e.g. My MacBook key"
+msgstr "例如：我的 MacBook 金鑰"
 
 msgid "Profiles|your account"
 msgstr "你的帳號"
@@ -3561,8 +4953,26 @@ msgstr "專案的匯出連結已失效。請到專案設定中產生新的連結
 msgid "Project export started. A download link will be sent by email."
 msgstr "專案導出已開始。完成後下載連結會送到您的信箱。"
 
+msgid "Project name"
+msgstr ""
+
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "訂閱"
+
+msgid "ProjectCreationLevel|Allowed to create projects"
+msgstr "允許建立專案"
+
+msgid "ProjectCreationLevel|Default project creation protection"
+msgstr "預設專案建立保護"
+
+msgid "ProjectCreationLevel|Developers + Maintainers"
+msgstr "開發者 + 維護者"
+
+msgid "ProjectCreationLevel|Maintainers"
+msgstr "維護者"
+
+msgid "ProjectCreationLevel|No one"
+msgstr "完全沒有"
 
 msgid "ProjectFileTree|Name"
 msgstr "名稱"
@@ -3573,8 +4983,38 @@ msgstr "從未"
 msgid "ProjectLifecycle|Stage"
 msgstr "階段"
 
+msgid "ProjectPage|Project ID: %{project_id}"
+msgstr ""
+
+msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr "聯絡管理員以變更這個設定。"
+
+msgid "ProjectSettings|Failed to protect the tag"
+msgstr "無法保護標籤"
+
+msgid "ProjectSettings|Failed to update tag!"
+msgstr "無法更新標籤！"
+
+msgid "ProjectSettings|Only signed commits can be pushed to this repository."
+msgstr "只有已簽署的變更才能推送到版本庫。"
+
+msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
+msgstr "此設定已經套用於伺服器層級，並且可被管理員覆寫。"
+
+msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
+msgstr "此設定已經套用於伺服器級別，但已經在這個專案被覆寫。"
+
+msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
+msgstr "此設定將套用於所有專案，除非被管理員覆寫。"
+
+msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
+msgstr "使用者只能透過他們自己通過驗證的電子信箱之一提交，才能推送提交到這個版本庫。"
+
 msgid "Projects"
 msgstr "專案"
+
+msgid "Projects shared with %{group_name}"
+msgstr ""
 
 msgid "ProjectsDropdown|Frequently visited"
 msgstr "經常使用"
@@ -3594,8 +5034,35 @@ msgstr "發生了內部錯誤"
 msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr "抱歉，沒有符合搜尋條件的專案"
 
-msgid "ProjectsDropdown|This feature requires browser localStorage support"
-msgstr "此功能需要瀏覽器支援 localStorage"
+msgid "PrometheusAlerts|Add alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Edit alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error creating alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error deleting alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error fetching alert"
+msgstr ""
+
+msgid "PrometheusAlerts|Error saving alert"
+msgstr ""
+
+msgid "PrometheusAlerts|No alert set"
+msgstr ""
+
+msgid "PrometheusAlerts|Operator"
+msgstr ""
+
+msgid "PrometheusAlerts|Threshold"
+msgstr ""
 
 msgid "PrometheusDashboard|Time"
 msgstr "時間"
@@ -3621,8 +5088,17 @@ msgstr "預設 Prometheus 監聽 ‘http://localhost:9090’。不建議更改�
 msgid "PrometheusService|Common metrics"
 msgstr "常見指標"
 
+msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
+msgstr "常用的指標會根據受匯出者歡迎的指標庫來自動監控。"
+
+msgid "PrometheusService|Custom metrics"
+msgstr "自訂指標"
+
 msgid "PrometheusService|Finding and configuring metrics..."
 msgstr "尋找和配置指標⋯⋯"
+
+msgid "PrometheusService|Finding custom metrics..."
+msgstr "正在搜尋自訂指標…"
 
 msgid "PrometheusService|Install Prometheus on clusters"
 msgstr "在叢集中安裝 Prometheus"
@@ -3636,20 +5112,23 @@ msgstr "手動設置"
 msgid "PrometheusService|Metrics"
 msgstr "指標"
 
-msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
-msgstr "指標會根據一些受大眾歡迎的指標，自動設置及監控。"
-
 msgid "PrometheusService|Missing environment variable"
 msgstr "缺少環境變數"
 
 msgid "PrometheusService|More information"
 msgstr "更多訊息"
 
+msgid "PrometheusService|New metric"
+msgstr "新增指標"
+
 msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
 msgstr "Prometheus API 地址，例如 http://prometheus.example.com/"
 
 msgid "PrometheusService|Prometheus is being automatically managed on your clusters"
 msgstr "Prometheus 正在自動管理您的叢集"
+
+msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
+msgstr "這些指標只會在你第一次部屬環境時才會監控"
 
 msgid "PrometheusService|Time-series monitoring service"
 msgstr "時間監控服務"
@@ -3675,11 +5154,26 @@ msgstr "提升至群組里程碑"
 msgid "Promote to group label"
 msgstr "提升至群組標籤"
 
+msgid "Promotions|Don't show me this again"
+msgstr "不要再顯示"
+
+msgid "Promotions|Epics let you manage your portfolio of projects more efficiently and with less effort by tracking groups of issues that share a theme, across projects and milestones."
+msgstr "Epic 讓您更有效率且更少工作量的管理您的專案組合，透過追蹤相同主題、跨專案與里程碑的群組議題。"
+
+msgid "Promotions|This feature is locked."
+msgstr "這個功能已被鎖定。"
+
+msgid "Promotions|Upgrade plan"
+msgstr "升級方案"
+
 msgid "Protip:"
 msgstr "提示:"
 
 msgid "Provider"
 msgstr "提供者"
+
+msgid "Pseudonymizer data collection"
+msgstr "Pseudonymizer 資料收集"
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
 msgstr "公開 - 未登入的情況下依然可以查看任何公開專案"
@@ -3690,6 +5184,9 @@ msgstr "公開 - 無須任何身份驗證即可存取該專案"
 msgid "Public pipelines"
 msgstr "公共流水線"
 
+msgid "Push Rules"
+msgstr "推送規則"
+
 msgid "Push events"
 msgstr "推送事件"
 
@@ -3699,14 +5196,26 @@ msgstr "透過指令推送專案"
 msgid "Push to create a project"
 msgstr "透過推送建立專案"
 
+msgid "PushRule|Committer restriction"
+msgstr "限制提交者"
+
+msgid "Pushed"
+msgstr "推送的"
+
+msgid "Pushes"
+msgstr "推送"
+
+msgid "Quarters"
+msgstr "季度"
+
 msgid "Quick actions can be used in the issues description and comment boxes."
 msgstr "快速操作可以用於問題描述和評論框。"
 
-msgid "Re-deploy"
-msgstr "重新部署"
-
 msgid "Read more"
 msgstr "瞭解更多"
+
+msgid "Read more about project permissions <strong>%{link_to_help}</strong>"
+msgstr ""
 
 msgid "Readme"
 msgstr "說明檔"
@@ -3716,6 +5225,9 @@ msgstr "即時功能"
 
 msgid "Reference:"
 msgstr "參考來源:"
+
+msgid "Refresh"
+msgstr "重新整理"
 
 msgid "Register / Sign In"
 msgstr "註冊 / 登入"
@@ -3768,11 +5280,26 @@ msgstr "刪除優先權"
 msgid "Remove project"
 msgstr "刪除專案"
 
+msgid "Repair authentication"
+msgstr "修復認證"
+
+msgid "Reply to this email directly or %{view_it_on_gitlab}."
+msgstr ""
+
+msgid "Repo by URL"
+msgstr "來自 URL 的版本庫"
+
 msgid "Repository"
 msgstr "檔案庫"
 
 msgid "Repository Settings"
 msgstr "檔案庫設置"
+
+msgid "Repository URL"
+msgstr ""
+
+msgid "Repository has no locks."
+msgstr "版本庫沒有上鎖。"
 
 msgid "Repository maintenance"
 msgstr "檔案庫維護"
@@ -3783,8 +5310,14 @@ msgstr "鏡像檔案庫"
 msgid "Repository storage"
 msgstr "檔案庫儲存空間"
 
+msgid "RepositorySettingsAccessLevel|Select"
+msgstr "選擇"
+
 msgid "Request Access"
 msgstr "申請權限"
+
+msgid "Requests Profiles"
+msgstr ""
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr "要求所有用戶在訪問GitLab時接受服務條款和隱私政策。"
@@ -3806,6 +5339,9 @@ msgstr "解決來源分支上的衝突"
 
 msgid "Resolve discussion"
 msgstr "關閉討論"
+
+msgid "Response metrics (Custom)"
+msgstr "接收指標 (自訂)"
 
 msgid "Resume"
 msgstr "繼續"
@@ -3832,14 +5368,23 @@ msgstr "還原此合併"
 msgid "Review"
 msgstr "審閱"
 
+msgid "Review the process for configuring service providers in your identity provider — in this case, GitLab is the \"service provider\" or \"relying party\"."
+msgstr "審閱您的身份提供者中設定服務提供者的過程 -- 如果這樣，GitLab 就是「服務提供者」或「依賴方」。"
+
 msgid "Reviewing"
 msgstr "審查"
 
 msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr "正在審閱中（合併請求 !%{mergeRequestId}）"
 
-msgid "Rollback"
-msgstr "退回"
+msgid "Revoke"
+msgstr ""
+
+msgid "Roadmap"
+msgstr "開發藍圖"
+
+msgid "Run CI/CD pipelines for external repositories"
+msgstr "執行外部版本庫的 CI / CD 流水線。"
 
 msgid "Runner token"
 msgstr "執行器憑證"
@@ -3856,6 +5401,21 @@ msgstr "執行器可放置於不同的使用者、伺服器，甚至在您的本
 msgid "Running"
 msgstr "執行中"
 
+msgid "SAML SSO"
+msgstr "SAML SSO"
+
+msgid "SAML SSO for %{group_name}"
+msgstr "%{group_name} 的 SAML SSO"
+
+msgid "SAML Single Sign On"
+msgstr "SAML 單一登入"
+
+msgid "SAML Single Sign On Settings"
+msgstr "SAML 單一登入設定"
+
+msgid "SHA1 fingerprint of the SAML token signing certificate. Get this from your identity provider, where it can also be called \"Thumbprint\"."
+msgstr "SAML 憑證登入憑證的 SHA1 指紋。從您的身份提供者取得這個指紋 -- 它可能被稱為「Thumbprint」"
+
 msgid "SSH Keys"
 msgstr "SSH 金鑰"
 
@@ -3864,6 +5424,9 @@ msgstr "SSL 驗證"
 
 msgid "Save"
 msgstr "儲存"
+
+msgid "Save application"
+msgstr ""
 
 msgid "Save changes"
 msgstr "儲存變更"
@@ -3885,6 +5448,15 @@ msgstr "排程"
 
 msgid "Scheduling Pipelines"
 msgstr "流水線排程"
+
+msgid "Scope"
+msgstr ""
+
+msgid "Scoped issue boards"
+msgstr "區域性的議題看板"
+
+msgid "Scroll down to <strong>Google Code Project Hosting</strong> and enable the switch on the right."
+msgstr ""
 
 msgid "Scroll to bottom"
 msgstr "滾到底部"
@@ -3925,6 +5497,21 @@ msgstr "重置失敗訊息等待時間（秒）"
 msgid "Seconds to wait for a storage access attempt"
 msgstr "等待存取儲存空間的嘗試時間（秒）"
 
+msgid "Secret:"
+msgstr ""
+
+msgid "Security Dashboard"
+msgstr "安全儀表板"
+
+msgid "Security report"
+msgstr "安全性報告"
+
+msgid "SecurityDashboard|Monitor vulnerabilities in your code"
+msgstr "監控程式碼中的漏洞"
+
+msgid "SecurityDashboard|Pipeline %{pipelineLink} triggered"
+msgstr "觸發了流水線 %{pipelineLink}"
+
 msgid "Select"
 msgstr "選擇"
 
@@ -3955,11 +5542,20 @@ msgstr "選擇專案與位置來選擇機器類型"
 msgid "Select project to choose zone"
 msgstr "選擇專案以選擇位置"
 
+msgid "Select projects you want to import."
+msgstr ""
+
 msgid "Select source branch"
 msgstr "選擇來源分支"
 
 msgid "Select target branch"
 msgstr "選擇目標分支"
+
+msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
+msgstr ""
+
+msgid "Selective synchronization"
+msgstr "選擇性同步"
 
 msgid "Send email"
 msgstr "傳送電子郵件"
@@ -3973,8 +5569,14 @@ msgstr "九月"
 msgid "Server version"
 msgstr "伺服器版本"
 
+msgid "Service Desk"
+msgstr "服務區"
+
 msgid "Service Templates"
 msgstr "服務範本"
+
+msgid "Service URL"
+msgstr "服務 URL"
 
 msgid "Session expiration, projects limit and attachment size."
 msgstr "過期工作階段、專案上限與附件大小。"
@@ -4000,6 +5602,9 @@ msgstr "設定 CI/CD"
 msgid "Set up Koding"
 msgstr "設定 Koding"
 
+msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
+msgstr "根據 %{docsLinkStart}這個文件%{icon}%{docsLinkEnd} 設定斷言 / 屬性 / 聲明 (email, first_name, last_name) 和 NameID"
+
 msgid "SetPasswordToCloneLink|set a password"
 msgstr "設定密碼"
 
@@ -4012,8 +5617,23 @@ msgstr "自動設置特定的執行器"
 msgid "Share"
 msgstr "分享"
 
+msgid "Share the <strong>%{sso_label}</strong> with members so they can sign in to your group through your identity provider"
+msgstr "與成員分享 <strong>%{sso_label}</strong>，使他們能透過您的身份提供者登入您的群組。"
+
 msgid "Shared Runners"
 msgstr "分享的執行器"
+
+msgid "SharedRunnersMinutesSettings|By resetting the pipeline minutes for this namespace, the currently used minutes will be set to zero."
+msgstr "通過重設此命名空間的流水線執行時間，目前使用的執行時間將會被歸零。"
+
+msgid "SharedRunnersMinutesSettings|Reset pipeline minutes"
+msgstr "重設流水線執行時間"
+
+msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
+msgstr "重設流水線已用時間"
+
+msgid "Sherlock Transactions"
+msgstr ""
 
 msgid "Show command"
 msgstr "顯示指令"
@@ -4043,6 +5663,30 @@ msgstr[0] "顯示 %d 個事件"
 msgid "Side-by-side"
 msgstr "並排"
 
+msgid "Sidebar|Change weight"
+msgstr "變更權重"
+
+msgid "Sidebar|None"
+msgstr "無"
+
+msgid "Sidebar|Only numeral characters allowed"
+msgstr "只允許數字字元"
+
+msgid "Sidebar|Weight"
+msgstr "權重"
+
+msgid "Sign in"
+msgstr ""
+
+msgid "Sign in / Register"
+msgstr ""
+
+msgid "Sign in to %{group_name}"
+msgstr "登入至 %{group_name}"
+
+msgid "Sign in with Single Sign-On"
+msgstr "透過單一登入進行登入"
+
 msgid "Sign out"
 msgstr "登出"
 
@@ -4054,6 +5698,9 @@ msgstr "註冊限制"
 
 msgid "Size and domain settings for static websites"
 msgstr "為靜態網站的大小與網域設定"
+
+msgid "Slack application"
+msgstr "Slack 應用程式"
 
 msgid "Slower but makes sure the project workspace is pristine as it clones the repository from scratch for every job"
 msgstr "速度較慢，但確保項目工作空間是原始的，因為它為每項工作從頭開始複製檔案庫"
@@ -4076,6 +5723,12 @@ msgstr "切換按鈕時發生未知的錯誤"
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr "在關閉議題 %{issuable} 時出現問題，請稍後再試"
 
+msgid "Something went wrong while fetching assignees list"
+msgstr "抓取指派者清單時發生錯誤。"
+
+msgid "Something went wrong while fetching group member contributions"
+msgstr "取得群組成員貢獻時發生錯誤。"
+
 msgid "Something went wrong while fetching the projects."
 msgstr "讀取專案時發生錯誤。"
 
@@ -4090,6 +5743,9 @@ msgstr "解決此議題時出現問題。請再試一次。"
 
 msgid "Something went wrong. Please try again."
 msgstr "發生了未知的錯誤，請稍後再試"
+
+msgid "Sorry, no epics matched your search"
+msgstr "抱歉，沒有符合您搜尋的 Epic"
 
 msgid "Sort by"
 msgstr "排序"
@@ -4133,6 +5789,9 @@ msgstr "最近更新"
 msgid "SortOptions|Least popular"
 msgstr "最不受歡迎"
 
+msgid "SortOptions|Less weight"
+msgstr "降低權重"
+
 msgid "SortOptions|Milestone"
 msgstr "里程碑"
 
@@ -4141,6 +5800,9 @@ msgstr "里程碑截止日期"
 
 msgid "SortOptions|Milestone due soon"
 msgstr "即將截止的里程碑"
+
+msgid "SortOptions|More weight"
+msgstr "加大權重"
 
 msgid "SortOptions|Most popular"
 msgstr "最受歡迎"
@@ -4180,6 +5842,9 @@ msgstr "稍後開始"
 
 msgid "SortOptions|Start soon"
 msgstr "現在開始"
+
+msgid "SortOptions|Weight"
+msgstr "權重"
 
 msgid "Source"
 msgstr "來源"
@@ -4253,8 +5918,14 @@ msgstr "已開始"
 msgid "Starts at (UTC)"
 msgstr "開始於 (UTC)"
 
+msgid "State your message to activate"
+msgstr "暫存您的訊息以啟用"
+
 msgid "Status"
 msgstr "狀態"
+
+msgid "Stop impersonation"
+msgstr ""
 
 msgid "Stop this environment"
 msgstr "停止此環境"
@@ -4265,8 +5936,14 @@ msgstr "已停止"
 msgid "Storage"
 msgstr "儲存"
 
+msgid "Storage:"
+msgstr ""
+
 msgid "Subgroups"
 msgstr "子群組"
+
+msgid "Submit as spam"
+msgstr "以垃圾訊息提交"
 
 msgid "Subscribe"
 msgstr "訂閱"
@@ -4280,8 +5957,20 @@ msgstr "訂閱專案"
 msgid "Switch branch/tag"
 msgstr "切換分支/標籤"
 
+msgid "Sync information"
+msgstr "同步詳細資訊"
+
 msgid "System Hooks"
 msgstr "系統鉤子"
+
+msgid "System Info"
+msgstr ""
+
+msgid "System header and footer:"
+msgstr "系統標頭與尾端："
+
+msgid "System metrics (Custom)"
+msgstr "系統指標 (自訂)"
 
 msgid "Tag (%{tag_count})"
 msgid_plural "Tags (%{tag_count})"
@@ -4380,17 +6069,29 @@ msgstr "服務條款和隱私政策"
 msgid "Test coverage parsing"
 msgstr "測試覆蓋率分析"
 
+msgid "Thanks! Don't show me this again"
+msgstr "感謝！請不要再次顯示"
+
+msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
+msgstr "GitLab 的進階全域搜尋功能是非常強大的搜尋服務。您可以立刻搜尋其他團隊的代碼以幫助您完善自己項目中的代碼。從而避免建立重複的程式碼浪費時間。"
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr "議題追蹤器是添加專案中需要改進或解決問題的地方。"
 
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr "議題追蹤器是添加專案中需要改進或解決問題的地方。您可以註冊或登入為專案創建議題。"
 
+msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
+msgstr "當需要相互 TLS 與外部認證服務聯絡時，所使用的 X509 憑證。如果留白，使用 HTTPS 連線時伺服器的憑證仍然為「已認證」。"
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "程式開發階段顯示從第一次更動記錄到建立合併請求的時間。建立第一個合併請求後，資料將自動填入。"
 
 msgid "The collection of events added to the data gathered for that stage."
 msgstr "該階段中的相關事件集合。"
+
+msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+msgstr "該連線將在 %{timeout} 之後超時。對於需要使用更長時間的版本庫，請使用 clone / push 組合。"
 
 msgid "The fork relationship has been removed."
 msgstr "分支與主幹間的關聯已被刪除。"
@@ -4410,6 +6111,9 @@ msgstr "GitLab 存取儲存空間的嘗試次數。"
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "GitLab 將阻擋存取失敗的次數。在管理者介面中可以重置失敗次數: %{link_to_health_page} 或使用 %{api_documentation_link}。"
 
+msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
+msgstr "解密私鑰所需的密碼。這是選用且該值將會被加密儲存。"
+
 msgid "The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>"
 msgstr "CI 設定檔的路徑。默認為 <code>.gitlab-ci.yml</code>"
 
@@ -4419,6 +6123,9 @@ msgstr "專案開發週期的各個階段。"
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
 msgstr "計劃階段顯示從更動記錄被排程至第一個推送的時間。第一次推送之後，資料將自動填入。"
 
+msgid "The private key to use when a client certificate is provided. This value is encrypted at rest."
+msgstr "提供客戶端憑證時所使用的私鑰。此私鑰將會被加密儲存。"
+
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr "營運階段顯示從建立議題到部署程式上線所花的時間。完成從發想到上線的完整開發週期後，資料將自動填入。"
 
@@ -4427,6 +6134,9 @@ msgstr "本專案可讓任何已登入的使用者存取"
 
 msgid "The project can be accessed without any authentication."
 msgstr "本專案可讓任何人存取"
+
+msgid "The pseudonymizer data collection is disabled. When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory."
+msgstr "Pseudonymizer 資料蒐集已經停用。如果啟用，GitLab 將會執行一個背景作業 -- 其將會產生 GitLab 資料庫的假名 CSV，使其可以上傳到您設定的對象儲存目錄。"
 
 msgid "The repository for this project does not exist."
 msgstr "本專案沒有檔案庫"
@@ -4439,6 +6149,9 @@ msgstr "該存儲庫必須可通過 <code>http：//</code>， <code>https：//</
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
 msgstr "複閱階段顯示從合併請求建立後至被合併的時間。當建立第一個合併請求後，資料將自動填入。"
+
+msgid "The roadmap shows the progress of your epics along a timeline"
+msgstr "開發藍圖顯示了時間軸上您的 Epic 的進度"
 
 msgid "The secure token used by the Runner to checkout the project"
 msgstr "此安全憑證使用於執行器簽出專案"
@@ -4461,6 +6174,12 @@ msgstr "存儲檢查之間的時間（秒）。當以前的檢查完成時，Git
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "該階段中每一個資料項目所花的時間。"
 
+msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
+msgstr ""
+
+msgid "The user map is a mapping of the FogBugz users that participated on your projects to the way their email address and usernames will be imported into GitLab. You can change this by populating the table below."
+msgstr ""
+
 msgid "The value lying at the midpoint of a series of observed values. E.g., between 3, 5, 9, the median is 5. Between 3, 5, 7, 8, the median is (5+7)/2 = 6."
 msgstr "中位數是一個數列中最中間的值。例如在 3、5、9 之間，中位數是 5。在 3、5、7、8 之間，中位數是 （5 + 7）/ 2 = 6。"
 
@@ -4475,12 +6194,6 @@ msgstr "沒有任何的合併請求"
 
 msgid "There are problems accessing Git storage: "
 msgstr "存取 Git 儲存空間時出現問題："
-
-msgid "There was an error loading jobs"
-msgstr "載入工作時發生錯誤"
-
-msgid "There was an error loading latest pipeline"
-msgstr "載入最新流水線時發生錯誤"
 
 msgid "There was an error loading users activity calendar."
 msgstr "讀取使用者行事曆活動時發生錯誤"
@@ -4503,14 +6216,32 @@ msgstr "取消訂閱此標籤時出現錯誤。"
 msgid "They can be managed using the %{link}."
 msgstr "其可以使用 %{link} 進行管理。"
 
+msgid "Third party offers"
+msgstr ""
+
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr "此 GitLab 實例不提供任何分享的執行器。實例管理員可以在管理員區域註冊分享的執行器。"
+
+msgid "This application was created by %{link_to_owner}."
+msgstr ""
+
+msgid "This application will be able to:"
+msgstr ""
+
+msgid "This board's scope is reduced"
+msgstr ""
 
 msgid "This diff is collapsed."
 msgstr "此差異已折疊。"
 
 msgid "This directory"
 msgstr "這個目錄"
+
+msgid "This group"
+msgstr ""
+
+msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
+msgstr "此群組允許您以您的 %{group_name} 單一登入帳號登入。這將會重新導向您到外部登入頁面。"
 
 msgid "This group does not provide any group Runners yet."
 msgstr "這群組尚未提供任何群組執行器。"
@@ -4587,6 +6318,12 @@ msgstr "此原始碼差異無法顯示，因為它太大。"
 msgid "This user has no identities"
 msgstr "該使用者沒有身份"
 
+msgid "This will delete the custom metric, Are you sure?"
+msgstr "這會刪除自訂指標資料，你確定嗎？"
+
+msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
+msgstr "這裡列出了那些自動成為議題的電子郵件（從留言變成的電子郵件對話）"
+
 msgid "Time before an issue gets scheduled"
 msgstr "議題被列入日程表的時間"
 
@@ -4595,6 +6332,9 @@ msgstr "議題等待開始實作的時間"
 
 msgid "Time between merge request creation and merge/close"
 msgstr "合併請求從建立到被合併或是關閉的時間"
+
+msgid "Time in seconds GitLab will wait for a response from the external service. When the service does not respond in time, access will be denied."
+msgstr "GitLab 等待外部服務的回應時間（秒）。當服務沒有在時間內回應時，存取將被拒絕。"
 
 msgid "Time remaining"
 msgstr "剩餘時間"
@@ -4760,11 +6500,29 @@ msgstr "秒"
 msgid "Tip:"
 msgstr "提示:"
 
+msgid "Title"
+msgstr "標題"
+
 msgid "To GitLab"
 msgstr "到 GitLab"
 
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
 msgstr "要添加SSH密鑰，你需要 %{generate_link_start}產生一個%{link_end} 或使用 %{existing_link_start}現有的密鑰%{link_end}。"
+
+msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
+msgstr "若要連線到 GitHub 版本庫，您可以使用 %{personal_access_token_link} 連結。當您建立了您的個人存取憑證，您將需要選擇 <code>版本庫</code> 範圍，所以我們可以顯示您可供連線的公開與私密版本庫列表。"
+
+msgid "To connect GitHub repositories, you first need to authorize GitLab to access the list of your GitHub repositories:"
+msgstr "要連接 GitHub 版本庫，您首先需要授權 GitLab 存取您的 GitHub 版本庫列表："
+
+msgid "To connect an SVN repository, check out %{svn_link}."
+msgstr "若要連接到一個 SVN 版本庫，請參閱 %{svn_link}。"
+
+msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
+msgstr ""
+
+msgid "To get started, please enter your Gitea Host URL and a %{link_to_personal_token}."
+msgstr ""
 
 msgid "To import GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr "要匯入 GitHub 存儲庫，你可以使用 %{personal_access_token_link}。當你建立你的個人存取權杖時，你將需要選擇<code>檔案庫</code>範圍，所以我們將會顯示你公開及私人的檔案庫清單進行匯入。"
@@ -4775,20 +6533,44 @@ msgstr "要匯入 GitHub 存儲庫，您首先需要授權 GitLab 訪問您的 G
 msgid "To import an SVN repository, check out %{svn_link}."
 msgstr "要匯入SVN存儲庫，請查看 %{svn_link}。"
 
+msgid "To move or copy an entire GitLab project from another GitLab installation to this one, navigate to the original project's settings page, generate an export file, and upload it here."
+msgstr ""
+
+msgid "To only use CI/CD features for an external repository, choose <strong>CI/CD for external repo</strong>."
+msgstr "若要只對外部版本庫使用 CI / CD 功能，請選擇 <strong>為外部版本庫的 CI/CD</strong>"
+
+msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
+msgstr "若要透過身份提供者（例如 Azure、Okta、Onelogin、Ping Identity 或您自訂的 SAML 2.0 提供者）設定 SAML 認證："
+
 msgid "To start serving your jobs you can add Runners to your group"
 msgstr "若要開始提供您的工作，您可以增加執行器至這個群組"
+
+msgid "To this GitLab instance"
+msgstr ""
 
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr "若要驗證您的 GitLab CI 設定，請前往您專案內的「CI/CD → 流水線」，並按下「CI Lint」按鈕。"
 
+msgid "To view the roadmap, add a planned start or finish date to one of your epics in this group or its subgroups. Only epics in the past 3 months and the next 3 months are shown."
+msgstr "若要檢視開發藍圖，請在您群組或子群組中的其中一個 Epic 中增加計畫開始或完成時間。只會顯示最近三個月或接下來三個月的 Epic。"
+
+msgid "To widen your search, change or remove filters."
+msgstr "若要擴大搜尋範圍，請變更或移除篩選器。"
+
 msgid "Todo"
 msgstr "待辦事項"
+
+msgid "Todos"
+msgstr ""
 
 msgid "Toggle Sidebar"
 msgstr "展開 / 收起側邊欄"
 
 msgid "Toggle discussion"
 msgstr "切換討論"
+
+msgid "Toggle navigation"
+msgstr ""
 
 msgid "Toggle sidebar"
 msgstr "切換側邊欄"
@@ -4802,6 +6584,9 @@ msgstr "切換狀態：開啟"
 msgid "Too many changes to show."
 msgstr "太多的更改。"
 
+msgid "Total Contributions"
+msgstr "總計貢獻"
+
 msgid "Total Time"
 msgstr "總時間"
 
@@ -4811,8 +6596,17 @@ msgstr "合併/更動記錄的總測試時間"
 msgid "Total: %{total}"
 msgstr "總計: %{total}"
 
+msgid "Track activity with Contribution Analytics."
+msgstr "追蹤貢獻分析的相關動態"
+
+msgid "Track groups of issues that share a theme, across projects and milestones"
+msgstr "跟蹤共通主題、跨專案和里程碑的議題群組"
+
 msgid "Track time with quick actions"
 msgstr "快速使用時間追蹤工具"
+
+msgid "Trending"
+msgstr ""
 
 msgid "Trigger this manual action"
 msgstr "啟動此任務"
@@ -4823,8 +6617,20 @@ msgstr "觸發器可以強制使用API​​調用重建特定的分支或標記
 msgid "Try again"
 msgstr "重試"
 
+msgid "Turn on Service Desk"
+msgstr "開啟服務區"
+
+msgid "Twitter"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "無法載入差異。%{button_try_again}"
+
+msgid "Unable to sign you in to the group with SAML due to \"%{reason}\""
+msgstr "因為「%{reason}」，所以無法讓你透過 SAML 登入這個群組。"
+
+msgid "Unknown"
+msgstr "未知"
 
 msgid "Unlock"
 msgstr "解鎖"
@@ -4868,12 +6674,29 @@ msgstr "未驗證"
 msgid "Up to date"
 msgstr "已經是最新"
 
-msgid "Update %{files}"
-msgid_plural "Update %{files} files"
-msgstr[0] "更新 %{files} 檔案"
+msgid "Update"
+msgstr ""
 
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr "更新您的群組名稱、說明、頭像與其他一般設定。"
+
+msgid "Upgrade your plan to activate Advanced Global Search."
+msgstr "升級您的方案以啟用進階全局搜尋。"
+
+msgid "Upgrade your plan to activate Contribution Analytics."
+msgstr "升級您的方案以啟用貢獻分析。"
+
+msgid "Upgrade your plan to activate Group Webhooks."
+msgstr "升級你的方案以啟用群組 Webhook。"
+
+msgid "Upgrade your plan to activate Issue weight."
+msgstr "升級您的方案以啟用議題權重。"
+
+msgid "Upgrade your plan to improve Issue boards."
+msgstr "升級您的方案以改善議題看板。"
+
+msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
+msgstr ""
 
 msgid "Upload New File"
 msgstr "上傳新檔案"
@@ -4893,8 +6716,17 @@ msgstr "讚"
 msgid "Usage statistics"
 msgstr "使用情形統計資料"
 
+msgid "Use <code>%{native_redirect_uri}</code> for local tests"
+msgstr ""
+
+msgid "Use Service Desk to connect with your users (e.g. to offer customer support) through email right inside GitLab"
+msgstr "使用服務台在 GitLab 內部透過電子郵件與使用者聯絡 (例如提供客戶服務)"
+
 msgid "Use group milestones to manage issues from multiple projects in the same milestone."
 msgstr "使用群組里程碑從多個專案中於同一個里程碑管理議題。"
+
+msgid "Use one line per URI"
+msgstr ""
 
 msgid "Use the following registration token during setup:"
 msgstr "在安裝過程中使用此註冊憑證:"
@@ -4902,8 +6734,17 @@ msgstr "在安裝過程中使用此註冊憑證:"
 msgid "Use your global notification setting"
 msgstr "使用全域通知設定"
 
+msgid "Used by members to sign in to your group in GitLab"
+msgstr "用來讓成員登入您在 GitLab 的群組"
+
+msgid "User Settings"
+msgstr ""
+
 msgid "User and IP Rate Limits"
 msgstr "使用者與 IP 速率限制"
+
+msgid "User map"
+msgstr ""
 
 msgid "Users"
 msgstr "使用者"
@@ -4923,14 +6764,26 @@ msgstr "各種電子信箱設定。"
 msgid "Various settings that affect GitLab performance."
 msgstr "各種會影響 GitLab 效能的設定。"
 
+msgid "Verification information"
+msgstr "認證資訊"
+
 msgid "Verified"
 msgstr "已驗證"
+
+msgid "View epics list"
+msgstr "檢視 Epic 列表"
 
 msgid "View file @ "
 msgstr "瀏覽檔案 @ "
 
 msgid "View group labels"
 msgstr "查看群組標籤"
+
+msgid "View issue"
+msgstr "檢視議題"
+
+msgid "View it on GitLab"
+msgstr ""
 
 msgid "View jobs"
 msgstr "查看工作"
@@ -4953,6 +6806,12 @@ msgstr "瀏覽已替換檔案 @ "
 msgid "Visibility and access controls"
 msgstr "可見性與存取控制"
 
+msgid "Visibility level:"
+msgstr ""
+
+msgid "Visibility:"
+msgstr ""
+
 msgid "VisibilityLevel|Internal"
 msgstr "內部"
 
@@ -4968,6 +6827,9 @@ msgstr "不明"
 msgid "Want to see the data? Please ask an administrator for access."
 msgstr "權限不足。如需查看相關資料，請向管理員申請權限。"
 
+msgid "We detected potential spam in the %{humanized_resource_name}. Please solve the reCAPTCHA to proceed."
+msgstr ""
+
 msgid "We don't have enough data to show this stage."
 msgstr "因該階段的資料不足而無法顯示相關資訊"
 
@@ -4980,11 +6842,26 @@ msgstr "網頁 IDE"
 msgid "Web terminal"
 msgstr "網頁終端器"
 
+msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
+msgstr "Webhooks 允許你觸發 URL，例如推送了新的程式碼、或是建立了新的議題。您可以設定 Webhook 以監聽指定的活動，例如推送、議題或合併請求。群組 Webhooks 將套用至群組中的所有專案，允許你規範整個群組中的 Webhook 的功能。"
+
+msgid "Weeks"
+msgstr "週"
+
+msgid "Weight"
+msgstr "權重"
+
+msgid "Weight %{weight}"
+msgstr "權重 %{weight}"
+
 msgid "When a runner is locked, it cannot be assigned to other projects"
 msgstr "當執行器被鎖定，其將不能被其他專案指定。"
 
 msgid "When enabled, users cannot use GitLab until the terms have been accepted."
 msgstr "當啟用，使用者在接受條款之前都不能使用 GitLab。"
+
+msgid "When leaving the URL blank, classification labels can still be specified without disabling cross project features or performing external authorization checks."
+msgstr "當 URL 留空時，還是可以指定分類標籤，而且不必停用跨專案功能或執行外部授權檢查。"
 
 msgid "Wiki"
 msgstr "Wiki"
@@ -5121,11 +6998,23 @@ msgstr "頁面"
 msgid "Wiki|Wiki Pages"
 msgstr "維基頁面"
 
+msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
+msgstr "透過貢獻分析，您可以取得活動概覽，其包含了您的組織和其成員的議題、合併請求與推送活動。"
+
 msgid "Withdraw Access Request"
 msgstr "取消權限申請"
 
 msgid "Yes"
 msgstr "是"
+
+msgid "Yes, add it"
+msgstr "是的，新增它"
+
+msgid "Yes, let me map Google Code users to full names or GitLab users."
+msgstr ""
+
+msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
+msgstr ""
 
 msgid "You are going to remove %{group_name}. Removed groups CANNOT be restored! Are you ABSOLUTELY sure?"
 msgstr "將要刪除 %{group_name}。被刪除的群組無法復原！真的「確定」要這麼做嗎？"
@@ -5142,6 +7031,9 @@ msgstr "將要把 %{project_full_name} 的所有權轉移給另一個人。真�
 msgid "You are on a read-only GitLab instance."
 msgstr "您在唯讀的 GitLab 主機上。"
 
+msgid "You are on a secondary, <b>read-only</b> Geo node. If you want to make changes, you must visit this page on the %{primary_node}."
+msgstr "您在次要且<b>唯讀</b>的 Geo 節點上。若您想要進行變更，您必須瀏覽 %{primary_node} 的這個頁面"
+
 msgid "You can %{linkStart}view the blob%{linkEnd} instead."
 msgstr "您可以 %{linkStart}查看BLOB%{linkEnd} 。"
 
@@ -5153,6 +7045,9 @@ msgstr "您還可以為某個標籤加上星星，使其成為優先標籤。"
 
 msgid "You can also test your .gitlab-ci.yml in the %{linkStart}Lint%{linkEnd}"
 msgstr "您也可以在 %{linkStart}Lint%{linkEnd} 測試您的 .gitlab-ci.yml"
+
+msgid "You can easily contribute to them by requesting to join these groups."
+msgstr ""
 
 msgid "You can easily install a Runner on a Kubernetes cluster. %{link_to_help_page}"
 msgstr "您可以輕鬆地在 Kubernetes 叢集上安裝運行器。 %{link_to_help_page}"
@@ -5169,11 +7064,23 @@ msgstr "您只能在分支上編輯文件"
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr "您可以透過使用互動模式選擇 %{use_ours} 或 %{use_theirs} 按鈕、或者是直接編輯檔案來解決合併衝突，並將這些變更提交到 %{branch_name}。"
 
+msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
+msgstr "您不能寫入到唯讀的次要 GitLab Geo 主機。請改用 %{link_to_primary_node}。"
+
 msgid "You cannot write to this read-only GitLab instance."
 msgstr "您不能修改這個唯讀的 GitLab 主機。"
 
 msgid "You do not have any assigned merge requests"
 msgstr "您沒有被分配的合併請求"
+
+msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
+msgstr "您沒有權限來覆蓋 LDAP 群組同步設定。"
+
+msgid "You don't have any applications"
+msgstr ""
+
+msgid "You don't have any authorized applications"
+msgstr ""
 
 msgid "You have no permissions"
 msgstr "你沒有權限"
@@ -5192,6 +7099,12 @@ msgstr "您必須擁有維護者存取才能強制移除鎖定"
 
 msgid "You must sign in to star a project"
 msgstr "必須登入才能收藏專案"
+
+msgid "You need a different license to enable FileLocks feature"
+msgstr "您需要使用不同的授權以啟用 FileLocks 功能"
+
+msgid "You need git-lfs version %{min_git_lfs_version} (or greater) to continue. Please visit https://git-lfs.github.com"
+msgstr "您需要 git-lfs 版本 %{min_git_lfs_version} (或更高版本) 才能繼續。請前往 https://git-lfs.github.com"
 
 msgid "You need permission."
 msgstr "需要權限才能這麼做。"
@@ -5223,8 +7136,17 @@ msgstr "在您的個人資料中添加 SSH 密鑰之前，你不能透過 SSH �
 msgid "You'll need to use different branch names to get a valid comparison."
 msgstr "你需要選擇兩個不同的分支，才能進行比較。"
 
+msgid "You're receiving this email because %{reason}."
+msgstr ""
+
+msgid "You're receiving this email because of your account on %{host}."
+msgstr ""
+
 msgid "You're receiving this email because of your account on %{host}. %{manage_notifications_link} &middot; %{help_link}"
 msgstr "你收到此電子郵件是因為你的帳戶在 %{host}. %{manage_notifications_link} &middot; %{help_link}"
+
+msgid "YouTube"
+msgstr ""
 
 msgid "Your Groups"
 msgstr "你的群組"
@@ -5240,6 +7162,12 @@ msgstr "您的專案活動"
 
 msgid "Your Todos"
 msgstr "您的待辦事項"
+
+msgid "Your applications (%{size})"
+msgstr ""
+
+msgid "Your authorized applications"
+msgstr ""
 
 msgid "Your changes can be committed to %{branch_name} because a merge request is open."
 msgstr "你的更改將可以提交到 %{branch_name} 因為合併請求已打開。"
@@ -5265,11 +7193,225 @@ msgstr "之前"
 msgid "among other things"
 msgstr "除了其他事情"
 
+msgid "and 1 fixed vulnerability"
+msgid_plural "and %d fixed vulnerabilities"
+msgstr[0] "和 %d 個已經修復的漏洞"
+
 msgid "assign yourself"
 msgstr "指派給自己"
 
 msgid "branch name"
 msgstr "分支名稱"
+
+msgid "by"
+msgstr "來自"
+
+msgid "ciReport|%{linkStartTag}Learn more about Container Scanning %{linkEndTag}"
+msgstr "%{linkStartTag}關於容器掃描的更多資訊%{linkEndTag}"
+
+msgid "ciReport|%{linkStartTag}Learn more about DAST %{linkEndTag}"
+msgstr "%{linkStartTag}關於 DAST 的更多資訊%{linkEndTag}"
+
+msgid "ciReport|%{linkStartTag}Learn more about Dependency Scanning %{linkEndTag}"
+msgstr "%{linkStartTag}關於相依性掃描的更多資訊%{linkEndTag}"
+
+msgid "ciReport|%{linkStartTag}Learn more about SAST %{linkEndTag}"
+msgstr "%{linkStartTag}關於 SAST 的更多資訊%{linkEndTag}"
+
+msgid "ciReport|%{namespace} is affected by %{vulnerability}."
+msgstr "%{namespace} 被 %{vulnerability} 影響"
+
+msgid "ciReport|%{packagesString} and "
+msgstr "%{packagesString} 和 "
+
+msgid "ciReport|%{packagesString} and %{lastPackage}"
+msgstr "%{packagesString} 和 %{lastPackage}"
+
+msgid "ciReport|%{remainingPackagesCount} more"
+msgstr "%{remainingPackagesCount} 更多"
+
+msgid "ciReport|%{reportName} is loading"
+msgstr "正在載入 %{reportName}"
+
+msgid "ciReport|%{reportName} resulted in error while loading results"
+msgstr "載入結果時因 %{reportName} 而導致錯誤"
+
+msgid "ciReport|%{type} detected no new security vulnerabilities"
+msgstr "%{type} 未偵測到新的安全性漏洞"
+
+msgid "ciReport|%{type} detected no security vulnerabilities"
+msgstr "%{type} 未偵測到安全性漏洞"
+
+msgid "ciReport|%{type} detected no vulnerabilities"
+msgstr "%{type} 未偵測到漏洞"
+
+msgid "ciReport|Class"
+msgstr "類別"
+
+msgid "ciReport|Code quality"
+msgstr "程式碼品質"
+
+msgid "ciReport|Confidence"
+msgstr "信任"
+
+msgid "ciReport|Container scanning detected"
+msgstr "偵測到容器掃描"
+
+msgid "ciReport|Container scanning detects known vulnerabilities in your docker images."
+msgstr "容器掃描偵測在您的 Docker 映像中的已知漏洞。"
+
+msgid "ciReport|Container scanning is loading"
+msgstr "正在載入容器掃描"
+
+msgid "ciReport|Container scanning resulted in error while loading results"
+msgstr "當載入結果時，因容器掃描而導致錯誤"
+
+msgid "ciReport|DAST detected"
+msgstr "偵測到 DAST"
+
+msgid "ciReport|DAST is loading"
+msgstr "正在載入 DAST"
+
+msgid "ciReport|DAST resulted in error while loading results"
+msgstr "載入結果時，因 DAST 而導致錯誤"
+
+msgid "ciReport|Dependency Scanning detects known vulnerabilities in your source code\\'s dependencies."
+msgstr "相依性掃描偵測您原始碼相依性的已知漏洞。"
+
+msgid "ciReport|Dependency scanning detected"
+msgstr "偵測到相依性掃描"
+
+msgid "ciReport|Dependency scanning is loading"
+msgstr "正在載入相依性掃描"
+
+msgid "ciReport|Dependency scanning resulted in error while loading results"
+msgstr "當載入結果時因相依性掃描而導致錯誤"
+
+msgid "ciReport|Description"
+msgstr "說明"
+
+msgid "ciReport|Dismiss vulnerability"
+msgstr "忽略漏洞"
+
+msgid "ciReport|Dismissed by"
+msgstr "忽略由"
+
+msgid "ciReport|Dynamic Application Security Testing (DAST) detects known vulnerabilities in your web application."
+msgstr "動態應用程式安全性測試 (DAST) 在您的網頁應用程式中偵測到已知漏洞。"
+
+msgid "ciReport|Failed to load %{reportName} report"
+msgstr "無法載入 %{reportName} 報告"
+
+msgid "ciReport|File"
+msgstr "檔案"
+
+msgid "ciReport|Fixed:"
+msgstr "修正的："
+
+msgid "ciReport|Identifiers"
+msgstr "身份"
+
+msgid "ciReport|Instances"
+msgstr "實例"
+
+msgid "ciReport|Learn more about interacting with security reports (Alpha)."
+msgstr "了解關於和安全性報告 (Alpha) 互動的更多資訊。"
+
+msgid "ciReport|Learn more about whitelisting"
+msgstr "了解關於白名單的更多資訊"
+
+msgid "ciReport|License management detected %{licenseInfo}"
+msgstr "授權管理偵測到 %{licenseInfo}"
+
+msgid "ciReport|License management detected no new licenses"
+msgstr "授權管理未偵測到新授權"
+
+msgid "ciReport|Links"
+msgstr "連結"
+
+msgid "ciReport|Loading %{reportName} report"
+msgstr "正在載入 %{reportName} 報告"
+
+msgid "ciReport|Method"
+msgstr "方法"
+
+msgid "ciReport|Namespace"
+msgstr "命名空間"
+
+msgid "ciReport|No changes to code quality"
+msgstr "沒有程式碼品質的更動"
+
+msgid "ciReport|No changes to performance metrics"
+msgstr "沒有效能指標的變動"
+
+msgid "ciReport|Performance metrics"
+msgstr "效能指標"
+
+msgid "ciReport|Revert dismissal"
+msgstr "撤回忽略"
+
+msgid "ciReport|SAST detected"
+msgstr "偵測到 SAST"
+
+msgid "ciReport|SAST is loading"
+msgstr "正在載入 SAST"
+
+msgid "ciReport|SAST resulted in error while loading results"
+msgstr "當載入結果時，因 SAST 而導致錯誤"
+
+msgid "ciReport|Security scanning"
+msgstr "安全性掃描"
+
+msgid "ciReport|Security scanning failed loading any results"
+msgstr "安全性掃描無法載入任何結果"
+
+msgid "ciReport|Security scanning is loading"
+msgstr "正在載入安全掃描"
+
+msgid "ciReport|Severity"
+msgstr "嚴重性"
+
+msgid "ciReport|Solution"
+msgstr "解決方案"
+
+msgid "ciReport|Static Application Security Testing (SAST) detects known vulnerabilities in your source code."
+msgstr "靜態應用程式安全性測試 (SAST) 在您的原始碼中偵測已知漏洞。"
+
+msgid "ciReport|There was an error creating the issue. Please try again."
+msgstr "建立議題時發生錯誤。請重試。"
+
+msgid "ciReport|There was an error dismissing the vulnerability. Please try again."
+msgstr "駁回此漏洞時發生錯誤。請重試。"
+
+msgid "ciReport|There was an error loading DAST report"
+msgstr "載入 DAST 報告時發生錯誤。"
+
+msgid "ciReport|There was an error loading SAST report"
+msgstr "載入 SAST 報告時發生錯誤。"
+
+msgid "ciReport|There was an error loading container scanning report"
+msgstr "載入容器掃描報告時發生錯誤。"
+
+msgid "ciReport|There was an error loading dependency scanning report"
+msgstr "載入相依性掃描報告時發生錯誤。"
+
+msgid "ciReport|There was an error reverting the dismissal. Please try again."
+msgstr "撤回駁回時發生錯誤。請重試。"
+
+msgid "ciReport|Unapproved vulnerabilities (red) can be marked as approved."
+msgstr "未批准的漏洞 (紅色) 可以標記為已批准。"
+
+msgid "ciReport|Upgrade %{name} from %{version} to %{fixed}."
+msgstr "將 %{name} 從 %{version} 升級到 %{fixed}。"
+
+msgid "ciReport|View full report"
+msgstr ""
+
+msgid "ciReport|no vulnerabilities"
+msgstr "沒有漏洞"
+
+msgid "ciReport|on pipeline"
+msgstr "流水線上"
 
 msgid "command line instructions"
 msgstr "指令說明"
@@ -5277,15 +7419,35 @@ msgstr "指令說明"
 msgid "connecting"
 msgstr "連線中"
 
+msgid "could not read private key, is the passphrase correct?"
+msgstr "無法存取私鑰，檢查密碼是否正確？"
+
+msgid "customize"
+msgstr ""
+
 msgid "day"
 msgid_plural "days"
-msgstr[0] "天"
+msgstr[0] "日"
 
 msgid "deploy token"
 msgstr "部署憑證"
 
+msgid "detected %d fixed vulnerability"
+msgid_plural "detected %d fixed vulnerabilities"
+msgstr[0] "偵測到 %d 個已修復漏洞"
+
+msgid "detected %d new vulnerability"
+msgid_plural "detected %d new vulnerabilities"
+msgstr[0] "偵測到 %d 個新漏洞"
+
+msgid "detected no vulnerabilities"
+msgstr "未偵測到漏洞"
+
 msgid "disabled"
 msgstr "已停用"
+
+msgid "done"
+msgstr ""
 
 msgid "enabled"
 msgstr "已啟用"
@@ -5296,11 +7458,29 @@ msgstr "%{slash_command} 將更新預估花費時間。"
 msgid "for this project"
 msgstr "為此專案"
 
+msgid "here"
+msgstr "這裡"
+
+msgid "import flow"
+msgstr ""
+
 msgid "importing"
 msgstr "輸入"
 
+msgid "is invalid because there is downstream lock"
+msgstr "因為下游鎖定，所以無效"
+
+msgid "is invalid because there is upstream lock"
+msgstr "因上游鎖定而無效"
+
+msgid "is not a valid X509 certificate."
+msgstr "非有效 X509 憑證。"
+
 msgid "latest version"
 msgstr "最新版本"
+
+msgid "locked by %{path_lock_user_name} %{created_at}"
+msgstr "由 %{path_lock_user_name} 於 %{created_at} 鎖定"
 
 msgid "merge request"
 msgid_plural "merge requests"
@@ -5318,8 +7498,23 @@ msgstr "%{metricsLinkStart} 記憶體 %{metricsLinkEnd} 使用 %{emphasisStart} 
 msgid "mrWidget|%{metricsLinkStart} Memory %{metricsLinkEnd} usage is %{emphasisStart} unchanged %{emphasisEnd} at %{memoryFrom}MB"
 msgstr "%{metricsLinkStart} 記憶體 %{metricsLinkEnd} 使用 %{emphasisStart} 沒有發生變化 %{emphasisEnd} 於 %{memoryFrom} MB"
 
+msgid "mrWidget|Add approval"
+msgstr "新增批准"
+
 msgid "mrWidget|Allows commits from members who can merge to the target branch"
 msgstr "允許可以合併到目標分支的成員提交"
+
+msgid "mrWidget|An error occured while removing your approval."
+msgstr "移除您的批准時發生錯誤。"
+
+msgid "mrWidget|An error occurred while submitting your approval."
+msgstr ""
+
+msgid "mrWidget|Approve"
+msgstr "批准"
+
+msgid "mrWidget|Approved by"
+msgstr "批准由"
 
 msgid "mrWidget|Cancel automatic merge"
 msgstr "取消自動合併"
@@ -5381,8 +7576,23 @@ msgstr "合併失敗"
 msgid "mrWidget|Merge locally"
 msgstr "本地合併"
 
+msgid "mrWidget|Merge request approved"
+msgstr ""
+
+msgid "mrWidget|Merge request approved; you can approve additionally"
+msgstr ""
+
 msgid "mrWidget|Merged by"
 msgstr "合併者"
+
+msgid "mrWidget|No Approval required"
+msgstr "無須批准"
+
+msgid "mrWidget|No Approval required; you can still approve"
+msgstr "不需要批准；但您仍可以批准"
+
+msgid "mrWidget|Open in Web IDE"
+msgstr "在網頁 IDE 中開啟"
 
 msgid "mrWidget|Plain diff"
 msgstr "本文差異"
@@ -5401,6 +7611,9 @@ msgstr "刪除原始分支"
 
 msgid "mrWidget|Remove source branch"
 msgstr "刪除原始分支"
+
+msgid "mrWidget|Remove your approval"
+msgstr "移除您的批准"
 
 msgid "mrWidget|Request to merge"
 msgstr "請求合併"
@@ -5453,9 +7666,6 @@ msgstr "此合併請求正在被合併"
 msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr "這個專案已經被打包，無法寫入"
 
-msgid "mrWidget|Web IDE"
-msgstr "網頁 IDE"
-
 msgid "mrWidget|You can merge this merge request manually using the"
 msgstr "你可以手動合併這個合併請求，藉由"
 
@@ -5493,11 +7703,17 @@ msgstr "密碼"
 msgid "personal access token"
 msgstr "私人存取憑證"
 
+msgid "private key does not match certificate."
+msgstr "私鑰不符合憑證。"
+
 msgid "remaining"
 msgstr "剩餘"
 
 msgid "remove due date"
 msgstr "刪除截止日期"
+
+msgid "remove weight"
+msgstr "移除權重"
 
 msgid "source"
 msgstr "來源"
@@ -5505,14 +7721,23 @@ msgstr "來源"
 msgid "spendCommand|%{slash_command} will update the sum of the time spent."
 msgstr "%{slash_command} 將會更新、加總所花費的時間"
 
+msgid "started"
+msgstr ""
+
 msgid "this document"
 msgstr "這份文件"
+
+msgid "to help your contributors communicate effectively!"
+msgstr "協助你的貢獻者進行有效的溝通！"
 
 msgid "username"
 msgstr "使用者名稱"
 
 msgid "uses Kubernetes clusters to deploy your code!"
 msgstr "使用 Kubernetes 叢集部署您的程式碼!"
+
+msgid "view it on GitLab"
+msgstr ""
 
 msgid "with %{additions} additions, %{deletions} deletions."
 msgstr "共增加 %{additions} ，刪除 %{deletions}"
