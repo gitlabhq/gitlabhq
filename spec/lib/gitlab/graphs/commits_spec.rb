@@ -29,7 +29,7 @@ describe Gitlab::Graphs::Commits do
   context 'with commits from yesterday and today' do
     subject { described_class.new([commit2, commit1_yesterday]) }
     describe '#commit_per_day' do
-      it { expect(subject.commit_per_day).to eq 1 }
+      it { expect(subject.commit_per_day).to eq 0.7 }
     end
 
     describe '#duration' do
