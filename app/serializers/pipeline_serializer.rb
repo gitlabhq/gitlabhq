@@ -11,11 +11,8 @@ class PipelineSerializer < BaseSerializer
         :retryable_builds,
         :cancelable_statuses,
         :trigger_requests,
-<<<<<<< HEAD
         { triggered_by_pipeline: [:project, :user] },
         { triggered_pipelines: [:project, :user] },
-=======
->>>>>>> upstream/master
         :manual_actions,
         :artifacts,
         {
