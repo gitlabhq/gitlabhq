@@ -4,4 +4,6 @@ class Packages::PackageFile < ActiveRecord::Base
   validates :package, presence: true
 
   mount_uploader :file, PackageFileUploader
+
+  scope :recent, -> { reorder(id: :desc) }
 end

@@ -54,7 +54,7 @@ module API
                                                        app_name: params[:app_name],
                                                        app_version: params[:app_version])
 
-        package_file = metadata.package.package_files.find_by!(file_name: file_name)
+        package_file = metadata.package.package_files.recent.find_by!(file_name: file_name)
 
         case format
         when 'md5'
@@ -96,7 +96,7 @@ module API
         if format
           # Maven tries to create a md5 and sha1 files for each package file.
           # Instead, we update existing package file record with such data.
-          package_file = metadata.package.package_files.find_by!(file_name: file_name)
+          package_file = metadata.package.package_files.recent.find_by!(file_name: file_name)
 
           case format
           when 'md5'
@@ -105,6 +105,8 @@ module API
             package_file.file_sha1 = string_file
           end
         else
+          # TODO: If maven-metadata.xml file is present for this package, we
+          # need to update it instead of creating a new one
           package_file = metadata.package.package_files.new
           package_file.file_name = file_name
           package_file.file_type = file_name.rpartition('.').last
