@@ -193,7 +193,7 @@ export default {
               data-container="body"
               data-placement="right"
               name="file-modified"
-              css-classes="prepend-left-5 multi-file-modified"
+              css-classes="prepend-left-5 ide-file-modified"
             />
           </span>
           <changed-file-icon

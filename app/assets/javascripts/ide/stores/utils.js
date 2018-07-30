@@ -124,7 +124,7 @@ export const getCommitFiles = (stagedFiles, deleteTree = false) =>
   stagedFiles.reduce((acc, file) => {
     if (file.moved) return acc;
 
-    if ((file.deleted || deleteTree) && file.type === 'tree') {
+    if ((file.deleted || deleteTree || file.prevPath) && file.type === 'tree') {
       return acc.concat(getCommitFiles(file.tree, true));
     }
 

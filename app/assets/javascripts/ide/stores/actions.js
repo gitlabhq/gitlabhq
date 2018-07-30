@@ -193,9 +193,16 @@ export const deleteEntry = ({ commit, dispatch, state }, path) => {
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 
-export const renameEntry = ({ dispatch, commit }, { path, name }) => {
-  commit(types.RENAME_ENTRY, { path, name });
-  dispatch('deleteEntry', path);
+export const renameEntry = ({ dispatch, commit, state }, { path, name, entryPath = null }) => {
+  commit(types.RENAME_ENTRY, { path, name, entryPath });
+
+  state.entries[entryPath || path].tree.forEach(f =>
+    dispatch('renameEntry', { path, name, entryPath: f.path }),
+  );
+
+  if (!entryPath) {
+    dispatch('deleteEntry', path);
+  }
 };
 
 export * from './actions/tree';
