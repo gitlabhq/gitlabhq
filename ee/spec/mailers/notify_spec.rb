@@ -151,46 +151,77 @@ describe Notify do
   end
 
   context 'for a group' do
-    context 'for epic notes' do
+    describe 'for epics' do
       set(:group) { create(:group) }
       set(:epic) { create(:epic, group: group) }
-      set(:note) { create(:note, project: nil, noteable: epic) }
-      let(:note_author) { note.author }
-      let(:epic_note_path) { group_epic_path(group, epic, anchor: "note_#{note.id}") }
 
-      subject { described_class.note_epic_email(recipient.id, note.id) }
+      context 'that are new' do
+        subject { described_class.new_epic_email(recipient.id, epic.id) }
 
-      it_behaves_like 'a note email'
+        it_behaves_like 'an epic email starting a new thread with reply-by-email enabled' do
+          let(:model) { epic }
+        end
+        it_behaves_like 'it should show Gmail Actions View Epic link'
+        it_behaves_like 'an unsubscribeable thread'
 
-      it_behaves_like 'an unsubscribeable thread'
+        it 'has the correct subject and body' do
+          prefix = "#{epic.group.name} | "
+          suffix = "#{epic.title} (#{epic.to_reference})"
 
-      it 'has the characteristics of a threaded reply' do
-        host = Gitlab.config.gitlab.host
-        route_key = "#{epic.class.model_name.singular_route_key}_#{epic.id}"
+          aggregate_failures do
+            is_expected.to have_subject [prefix, suffix].compact.join
+            is_expected.to have_body_text(group_epic_path(group, epic))
+          end
+        end
 
-        aggregate_failures do
-          is_expected.to have_header('Message-ID', /\A<.*@#{host}>\Z/)
-          is_expected.to have_header('In-Reply-To', "<#{route_key}@#{host}>")
-          is_expected.to have_header('References',  /\A<reply\-.*@#{host}> <#{route_key}@#{host}>\Z/ )
-          is_expected.to have_subject(/^Re: /)
+        context 'got deleted before notification' do
+          subject { described_class.new_epic_email(recipient.id, 0) }
+
+          it 'does not send email' do
+            expect(subject.message).to be_a_kind_of ActionMailer::Base::NullMail
+          end
         end
       end
 
-      context 'when reply-by-email is enabled with incoming address with %{key}' do
-        it 'has a Reply-To header' do
-          is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/
+      context 'for epic notes' do
+        set(:note) { create(:note, project: nil, noteable: epic) }
+        let(:note_author) { note.author }
+        let(:epic_note_path) { group_epic_path(group, epic, anchor: "note_#{note.id}") }
+
+        subject { described_class.note_epic_email(recipient.id, note.id) }
+
+        it_behaves_like 'a note email'
+
+        it_behaves_like 'an unsubscribeable thread'
+
+        it 'has the characteristics of a threaded reply' do
+          host = Gitlab.config.gitlab.host
+          route_key = "#{epic.class.model_name.singular_route_key}_#{epic.id}"
+
+          aggregate_failures do
+            is_expected.to have_header('Message-ID', /\A<.*@#{host}>\Z/)
+            is_expected.to have_header('In-Reply-To', "<#{route_key}@#{host}>")
+            is_expected.to have_header('References',  /\A<reply\-.*@#{host}> <#{route_key}@#{host}>\Z/ )
+            is_expected.to have_subject(/^Re: /)
+          end
         end
-      end
 
-      it { is_expected.to have_body_text('View Epic') }
+        context 'when reply-by-email is enabled with incoming address with %{key}' do
+          it 'has a Reply-To header' do
+            is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/
+          end
+        end
 
-      it 'has the correct subject and body' do
-        prefix = "Re: #{epic.group.name} | "
-        suffix = "#{epic.title} (#{epic.to_reference})"
+        it_behaves_like 'it should show Gmail Actions View Epic link'
 
-        aggregate_failures do
-          is_expected.to have_subject [prefix, suffix].compact.join
-          is_expected.to have_body_text(epic_note_path)
+        it 'has the correct subject and body' do
+          prefix = "Re: #{epic.group.name} | "
+          suffix = "#{epic.title} (#{epic.to_reference})"
+
+          aggregate_failures do
+            is_expected.to have_subject [prefix, suffix].compact.join
+            is_expected.to have_body_text(epic_note_path)
+          end
         end
       end
     end
