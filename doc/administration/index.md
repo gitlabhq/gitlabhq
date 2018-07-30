@@ -107,6 +107,10 @@ created in snippets, wikis, and repos.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 
+With **[GitLab Enterprise Edition](https://about.gitlab.com/pricing)**, you can also:
+
+- [Custom project templates](https://docs.gitlab.com/ee/user/admin_area/custom_project_templates.md): Configure a set of projects to be used as custom template when creating a new project. **[PREMIUM]**
+
 ### Repository settings
 
 - [Repository checks](repository_checks.md): Periodic Git repository checks.

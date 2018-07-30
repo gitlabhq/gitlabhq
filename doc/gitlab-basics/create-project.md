@@ -36,16 +36,6 @@
 
 1. Click **Create project**.
 
-## Custom project templates
-> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Edition Premium][ee] 11.2
-
-When you create a new project, creating it based on custom project templates is a convenient option to bootstrap from an existing project boilerplate. The administration setting to configure a GitLab group that serves as template source can be found under **Admin > Settings > Custom project templates**.
-
-Within this section, you can configure the group where all the custom project templates are sourced. Every project direcly under the group namespace will be available to the user if they have access to them. For example: Every public project in the group will be available to the user. However, private projects will be available only if the user is authorized.  
-Projects below subgroups of the template group are not supported.
-
-Repository and database information that are copied over to your template instance are identical to our GitLab project export. See the [Project import/export documentation](../user/project/settings/import_export.md) for reference.
-
 ## Push to create a new project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26388) in GitLab 10.5.
