@@ -84,7 +84,7 @@ module Pseudonymizer
       if connection.service == ::Fog::Storage::Local
         connection.directories.create(key: @remote_dir)
       else
-        connection.directories.get(@remote_dir)
+        connection.directories.new(key: @remote_dir)
       end
     end
 
