@@ -15,6 +15,10 @@ module Ci
 
     has_many :deployments, as: :deployable
 
+    RUNNER_FEATURES = {
+      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
+    }.freeze
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
@@ -337,12 +341,6 @@ module Ci
       { trace_sections: true }
     end
 
-    def runner_required_features
-      features = []
-      features << :upload_multiple_artifacts if publishes_artifacts_reports?
-      features
-    end
-
     def merge_request
       return @merge_request if defined?(@merge_request)
 
@@ -594,14 +592,22 @@ module Ci
       true
     end
 
+    def runner_required_feature_names
+      strong_memoize(:runner_required_feature_names) do
+        RUNNER_FEATURES.select do |feature, method|
+          method.call(self)
+        end.keys
+      end
+    end
+
     def supported_runner?(features)
-      runner_required_features.all? do |feature_name|
+      runner_required_feature_names.all? do |feature_name|
         features&.dig(feature_name)
       end
     end
 
     def publishes_artifacts_reports?
-      options.dig(:artifacts, :reports).any?
+      options&.dig(:artifacts, :reports)&.any?
     end
 
     def hide_secrets(trace)
