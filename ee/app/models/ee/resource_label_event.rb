@@ -5,16 +5,19 @@ module EE
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
 
-    EE_ISSUABLE_COLUMNS = %i(epic_id).freeze
+    prepended do
+      belongs_to :epic
+    end
+
+    class_methods do
+      def issuable_columns
+        %i(epic_id).freeze + super
+      end
+    end
 
     override :issuable
     def issuable
       epic || super
-    end
-
-    override :issuable_columns
-    def issuable_columns
-      EE_ISSUABLE_COLUMNS + super
     end
   end
 end

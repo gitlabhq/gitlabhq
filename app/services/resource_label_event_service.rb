@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module ResourceLabelEventService
+  prepend EE::ResourceLabelEventService
+
   extend self
 
   def change_labels(resource, user, added_labels, removed_labels)
@@ -23,9 +25,10 @@ module ResourceLabelEventService
   private
 
   def resource_column(resource)
-    if resource.is_a?(Issue)
+    case resource
+    when Issue
       :issue_id
-    elsif resource.is_a?(MergeRequest)
+    when MergeRequest
       :merge_request_id
     else
       raise ArgumentError, "Unknown resource type #{resource.class.name}"

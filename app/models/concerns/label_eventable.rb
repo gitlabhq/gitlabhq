@@ -2,9 +2,7 @@
 
 # == LabelEventable concern
 #
-# Contains functionality related to objects that support adding/removing events.
-#
-# Used by Issue and MergeRequest.
+# Contains functionality related to objects that support adding/removing labels.
 #
 
 module LabelEventable
