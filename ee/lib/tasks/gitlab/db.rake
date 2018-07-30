@@ -13,7 +13,9 @@ namespace :gitlab do
       dumper = Pseudonymizer::Dumper.new(options)
       uploader = Pseudonymizer::Uploader.new(options)
 
-      abort "There is an error in the pseudonymizer object store configuration." unless uploader.available?
+      unless uploader.available?
+        abort "There is an error in the pseudonymizer object store configuration."
+      end
 
       begin
         dumper.tables_to_csv

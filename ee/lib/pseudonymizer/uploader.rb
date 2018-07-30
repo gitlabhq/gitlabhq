@@ -36,8 +36,6 @@ module Pseudonymizer
       file_list.each do |file|
         upload_file(file, remote_directory)
       end
-    rescue ObjectStorageUnavailableError
-      abort "Cannot upload files, make sure the `pseudonimizer.upload.connection` is set properly"
     end
 
     def cleanup
