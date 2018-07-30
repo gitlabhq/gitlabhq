@@ -59,9 +59,10 @@ export default {
       }
     },
     focusInput() {
-      setTimeout(() => {
-        this.$refs.fieldName.focus();
-      });
+      this.$refs.fieldName.focus();
+    },
+    closedModal() {
+      this.name = '';
     },
   },
 };
@@ -75,6 +76,7 @@ export default {
     footer-primary-button-variant="success"
     @submit="submitForm"
     @open="focusInput"
+    @closed="closedModal"
   >
     <div
       class="form-group row"
