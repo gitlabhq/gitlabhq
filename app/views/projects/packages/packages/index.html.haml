@@ -1,30 +1,23 @@
-- @no_container = true
 - page_title "Packages"
 
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Version
+      %th Type
+      %th Created at
 
-%div{ class: container_class }
-  %table.table
-    %thead
+  %tbody
+    - @packages.each do |package|
       %tr
-        %th ID
-        %th Name
-        %th Version
-        %th Files
-        %th Created at
+        %td
+          = link_to package.name, project_package_path(@project, package)
+        %td
+          = package.version
+        %td
+          = _('Maven package')
+        %td
+          = package.created_at
 
-    %tbody
-      - @packages.each do |package|
-        %tr
-          %td
-            = package.id
-          %td
-            = package.name
-          %td
-            = package.version
-          %td
-            %ul.content-list
-              - package.package_files.each do |package_file|
-                %li
-                  = package_file.file.identifier
-          %td
-            = package.created_at
+= paginate @packages, theme: "gitlab"

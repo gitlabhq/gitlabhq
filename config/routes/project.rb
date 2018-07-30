@@ -311,7 +311,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         get 'archive/*id', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+?/ }, to: 'repositories#archive', as: 'archive'
 
         ## EE-specific
-        resources :packages, only: :index, module: 'packages'
+        resources :packages, only: [:index, :show, :destroy], module: 'packages'
         ## EE-specific
 
         resources :jobs, only: [:index, :show], constraints: { id: /\d+/ } do
