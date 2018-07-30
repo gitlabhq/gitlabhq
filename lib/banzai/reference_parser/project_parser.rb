@@ -13,16 +13,15 @@ module Banzai
 
       # Returns an Array of Project ids that can be read by the given user.
       #
-      # projects - The projects to reduce down to those readable by the user.
       # user - The User for which to check the projects
-      def readable_project_ids_for(projects, user)
-        strong_memoize(:readable_project_ids_for) do
-          Project.public_or_visible_to_user(user).where("projects.id IN (?)", projects.map(&:id)).pluck(:id)
-        end
+      def readable_project_ids_for(user)
+        @project_ids_by_user ||= {}
+        @project_ids_by_user[user] ||=
+          Project.public_or_visible_to_user(user).where("projects.id IN (?)", @projects_for_nodes.values.map(&:id)).pluck(:id)
       end
 
       def can_read_reference?(user, ref_project, node)
-        readable_project_ids_for(@projects_for_nodes.values, user).include?(ref_project.try(:id))
+        readable_project_ids_for(user).include?(ref_project.try(:id))
       end
     end
   end
