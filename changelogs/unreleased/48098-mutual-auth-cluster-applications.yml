@@ -1,0 +1,6 @@
+---
+title: Ensure installed Helm Tiller For GitLab Managed Apps Is protected by mutual
+  auth
+merge_request: 20801
+author:
+type: changed
