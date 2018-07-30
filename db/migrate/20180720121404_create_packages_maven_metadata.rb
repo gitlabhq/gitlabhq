@@ -12,7 +12,7 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
       t.string :app_name, null: false
       t.string :app_version, null: false
 
-      t.timestamps null: false
+      t.timestamps_with_timezone null: false
     end
 
     add_concurrent_foreign_key :packages_maven_metadata, :packages_packages,

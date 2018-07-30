@@ -24,6 +24,14 @@ module API
           [file_name, nil]
         end
       end
+
+      def valid_metadata_xml?(xml)
+        version = Nokogiri::XML(xml).css('metadata:root > version').text
+
+        # Skip handling top level maven-metadata.xml (one without the version) for now.
+        # Also make sure version in the metadata file is equal to one in the URL
+        version.present? && version == params[:app_version]
+      end
     end
 
     params do
@@ -53,7 +61,7 @@ module API
           package_file.file_md5
         when 'sha1'
           package_file.file_sha1
-        else
+        when nil
           present_carrierwave_file!(package_file.file)
         end
       end
@@ -61,39 +69,33 @@ module API
       desc 'Upload the maven package file' do
         detail 'This feature was introduced in GitLab 11.3'
       end
+      params do
+        requires :app_group, type: String, desc: 'Package group id'
+        requires :app_name, type: String, desc: 'Package artifact id'
+        requires :app_version, type: String, desc: 'Package version'
+        requires :file_name, type: String, desc: 'Package file name'
+      end
       put ':id/packages/maven/*app_group/:app_name/:app_version/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         file_name, format = extract_format(params[:file_name])
+        string_file = env['api.request.input']
 
         metadata = ::Packages::MavenMetadatum.find_by(app_group: params[:app_group],
                                                       app_name: params[:app_name],
                                                       app_version: params[:app_version])
 
-        if metadata
-          # Everything seems legit. We can proceed to file uploading
-        else
+        unless metadata
           if file_name == MAVEN_METADATA_FILE
-            xml = env['api.request.input']
-            version = Nokogiri::XML(xml).css('metadata:root > version').text
-
-            # Skip handling top level maven-metadata.xml for now
-            # Also stop request if version in metadata file differs from one in URL
-            return if version.blank? || version != params[:app_version]
+            return unless valid_metadata_xml?(string_file)
           end
 
-          package = Packages::Package.create(project: user_project)
-
-          metadata = ::Packages::MavenMetadatum.create!(
-            package: package,
-            app_group: params[:app_group],
-            app_name: params[:app_name],
-            app_version: params[:app_version]
-          )
+          # There is no metadata for this upload. We need to create a package
+          # record and corresponding maven metadata record
+          metadata = Packages::CreateMavenPackageService.new(user_project, current_user, params).execute
         end
 
-        # Convert string into CarrierWave compatible StringIO object
-        string_file = CarrierWaveStringFile.new(env['api.request.input'])
-
         if format
+          # Maven tries to create a md5 and sha1 files for each package file.
+          # Instead, we update existing package file record with such data.
           package_file = metadata.package.package_files.find_by!(file_name: file_name)
 
           case format
@@ -102,15 +104,16 @@ module API
           when 'sha1'
             package_file.file_sha1 = string_file
           end
-
-          package_file.save!
         else
           package_file = metadata.package.package_files.new
           package_file.file_name = file_name
           package_file.file_type = file_name.rpartition('.').last
-          package_file.file = string_file
-          package_file.save!
+
+          # Convert string into CarrierWave compatible StringIO object
+          package_file.file = CarrierWaveStringFile.new(string_file)
         end
+
+        package_file.save!
       end
     end
   end

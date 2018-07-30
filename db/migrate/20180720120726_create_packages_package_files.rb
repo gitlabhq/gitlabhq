@@ -16,7 +16,7 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
       t.binary :file_md5
       t.binary :file_sha1
 
-      t.timestamps null: false
+      t.timestamps_with_timezone null: false
     end
 
     add_concurrent_foreign_key :packages_package_files, :packages_packages,
