@@ -120,8 +120,8 @@ export default {
   mounted() {
     this.resizeThrottled = _.throttle(this.resize, 600);
     if (!this.hasMetrics) {
-      this.state = 'gettingStarted';
-    } else {
+    //   this.state = 'gettingStarted';
+    // } else {
       this.getGraphsData();
       window.addEventListener('resize', this.resizeThrottled, false);
     }
@@ -146,6 +146,7 @@ export default {
             return;
           }
           this.showEmptyState = false;
+          // this.$nextTick(this.resize);
         })
         .catch(() => {
           this.state = 'unableToConnect';

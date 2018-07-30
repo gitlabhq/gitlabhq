@@ -138,6 +138,8 @@ export default {
       this.unitOfDisplay = query.unit || '';
       this.yAxisLabel = this.graphData.y_label || 'Values';
       this.legendTitle = query.label || 'Average';
+
+      debugger
       this.graphWidth = this.$refs.baseSvg.clientWidth - this.margin.left - this.margin.right;
       this.graphHeight = this.graphHeight - this.margin.top - this.margin.bottom;
       this.baseGraphHeight = this.graphHeight - 50;
