@@ -207,24 +207,4 @@ describe('DiffsStoreUtils', () => {
       expect(utils.trimFirstCharOfLineContent()).toEqual({});
     });
   });
-
-  describe('getDiffRefsByLineCode', () => {
-    it('should return diffRefs for all highlightedDiffLines', () => {
-      const diffFile = getDiffFileMock();
-      const map = utils.getDiffRefsByLineCode([diffFile]);
-      const { highlightedDiffLines } = diffFile;
-      const lineCodeCount = highlightedDiffLines.reduce(
-        (acc, line) => (line.lineCode ? acc + 1 : acc),
-        0,
-      );
-
-      const { baseSha, headSha, startSha } = diffFile.diffRefs;
-      const targetLine = map[highlightedDiffLines[4].lineCode];
-
-      expect(Object.keys(map).length).toEqual(lineCodeCount);
-      expect(targetLine.baseSha).toEqual(baseSha);
-      expect(targetLine.headSha).toEqual(headSha);
-      expect(targetLine.startSha).toEqual(startSha);
-    });
-  });
 });
