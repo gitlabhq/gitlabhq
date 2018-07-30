@@ -20,14 +20,24 @@ To access monitoring resources, the client IP needs to be included in a whitelis
 
 [Read how to add IPs to a whitelist for the monitoring endpoints][admin].
 
-## Using the endpoint
+## Using the endpoints
 
 With default whitelist settings, the probes can be accessed from localhost:
 
+- `http://localhost/-/health`
 - `http://localhost/-/readiness`
 - `http://localhost/-/liveness`
 
-which will then provide a report of system health in JSON format.
+
+The first endpoint, `/-/health/`, only checks whether the application server is running. It does
+-not verify the database or other services are running. A successful response with return
+a 200 status code with the following message:
+
+```
+GitLab OK
+```
+
+The readiness and liveness probes will provide a report of system health in JSON format.
 
 Readiness example output:
 
