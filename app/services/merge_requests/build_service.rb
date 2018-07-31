@@ -162,7 +162,7 @@ module MergeRequests
     def assign_title_from_issue
       return unless issue
 
-      merge_request.title = "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
+      merge_request.title ||= "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
 
       return if merge_request.title.present?
 
