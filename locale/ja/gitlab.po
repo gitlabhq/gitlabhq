@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 07:52\n"
+"PO-Revision-Date: 2018-07-31 08:01\n"
 
 msgid " and"
 msgstr " と"
@@ -2351,19 +2351,19 @@ msgid "DeployTokens|Copy username to clipboard"
 msgstr "ユーザー名をクリップボードにコピーする"
 
 msgid "DeployTokens|Create deploy token"
-msgstr ""
+msgstr "デプロイトークンを作成"
 
 msgid "DeployTokens|Created"
-msgstr ""
+msgstr "作成日"
 
 msgid "DeployTokens|Deploy Tokens"
-msgstr ""
+msgstr "デプロイトークン"
 
 msgid "DeployTokens|Deploy tokens allow read-only access to your repository and registry images."
-msgstr ""
+msgstr "デプロイトークンによるリポジトリおよびレジストリイメージへの読み取り専用アクセスを許可"
 
 msgid "DeployTokens|Expires"
-msgstr ""
+msgstr "有効期限"
 
 msgid "DeployTokens|Name"
 msgstr "名前"
@@ -2372,7 +2372,7 @@ msgid "DeployTokens|Pick a name for the application, and we'll give you a unique
 msgstr "アプリケーションの名前を選択すると、固有のデプロイトークンが表示されます。"
 
 msgid "DeployTokens|Revoke"
-msgstr ""
+msgstr "失効"
 
 msgid "DeployTokens|Revoke %{name}"
 msgstr "%{name} を取り消す"
@@ -2387,7 +2387,7 @@ msgid "DeployTokens|This project has no active Deploy Tokens."
 msgstr "このプロジェクトにはアクティブなデプロイトークンはありません。"
 
 msgid "DeployTokens|Use this token as a password. Make sure you save it - you won't be able to access it again."
-msgstr ""
+msgstr "このトークンをパスワードとして使用します。再度アクセスすることはできないので、忘れずに保存してください。"
 
 msgid "DeployTokens|Use this username as a login."
 msgstr "このユーザー名をログインに使用します。"
@@ -2402,7 +2402,7 @@ msgid "DeployTokens|Your New Deploy Token"
 msgstr "新規デプロイトークン"
 
 msgid "DeployTokens|Your new project deploy token has been created."
-msgstr ""
+msgstr "新しいプロジェクトデプロイトークンが作成されました。"
 
 msgid "Deprioritize label"
 msgstr ""
@@ -2729,7 +2729,7 @@ msgid "Error loading branch data. Please try again."
 msgstr "ブランチ データの読み込み中にエラーが発生しました。もう一度やり直してください。"
 
 msgid "Error loading last commit."
-msgstr ""
+msgstr "直近のコミットの読み込み中にエラーが発生しました。"
 
 msgid "Error loading markdown preview"
 msgstr ""
@@ -2738,7 +2738,7 @@ msgid "Error loading merge requests."
 msgstr "マージリクエストをロード中にエラーが発生しました。"
 
 msgid "Error loading project data. Please try again."
-msgstr ""
+msgstr "プロジェクトデータの読み込み中にエラーが発生しました。もう一度やり直してください。"
 
 msgid "Error occurred when toggling the notification subscription"
 msgstr "通知購読の切り替えでエラーが発生しました。"
@@ -2747,10 +2747,10 @@ msgid "Error saving label update."
 msgstr "ラベルの更新中にエラーが発生しました。"
 
 msgid "Error updating status for all todos."
-msgstr ""
+msgstr "すべての TODO のステータスを更新中にエラーが発生しました。"
 
 msgid "Error updating todo status."
-msgstr ""
+msgstr "TODO のステータスを更新中にエラーが発生しました。"
 
 msgid "Estimated"
 msgstr "見積"
@@ -2789,7 +2789,7 @@ msgid "Expand"
 msgstr "展開"
 
 msgid "Expand all"
-msgstr ""
+msgstr "すべて展開"
 
 msgid "Expand sidebar"
 msgstr "サイドバーを開く"
@@ -2870,7 +2870,7 @@ msgid "February"
 msgstr "2月"
 
 msgid "Fields on this page are now uneditable, you can configure"
-msgstr ""
+msgstr "このページの項目は編集できない設定です。次の Kubernetes クラスターを設定できます。"
 
 msgid "Files"
 msgstr "ファイル"
@@ -2979,7 +2979,7 @@ msgid "From merge request merge until deploy to production"
 msgstr "マージリクエストがマージされてからプロダクションにデプロイされるまで"
 
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
-msgstr ""
+msgstr "Kubernetes クラスターの詳細画面を介して、アプリケーションリストから Runner をインストールします。"
 
 msgid "GPG Keys"
 msgstr "GPG キー"
@@ -3207,13 +3207,13 @@ msgid "GitHub import"
 msgstr "GitHub インポート"
 
 msgid "GitLab CI Linter has been moved"
-msgstr ""
+msgstr "GitLab CI Linter が移動しました"
 
 msgid "GitLab Geo"
 msgstr "GitLab Geo"
 
 msgid "GitLab Group Runners can execute code for all the projects in this group."
-msgstr ""
+msgstr "GitLab グループ Runner はこのグループ内の全てのプロジェクトのコードを実行できます。"
 
 msgid "GitLab Import"
 msgstr ""
@@ -3303,7 +3303,7 @@ msgid "Group info:"
 msgstr ""
 
 msgid "Group maintainers can register group runners in the %{link}"
-msgstr ""
+msgstr "グループ Maintainer は %{link} でグループ Runner を登録できます。"
 
 msgid "Group: %{group_name}"
 msgstr ""
