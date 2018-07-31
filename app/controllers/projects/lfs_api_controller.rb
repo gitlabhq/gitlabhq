@@ -6,6 +6,8 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   prepend ::EE::Projects::LfsApiController
 
+  LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'.freeze
+
   skip_before_action :lfs_check_access!, only: [:deprecated]
   before_action :lfs_check_batch_operation!, only: [:batch]
 
@@ -91,7 +93,10 @@ class Projects::LfsApiController < Projects::GitHttpClientController
       upload: {
         href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
         header: {
-          Authorization: request.headers['Authorization']
+          Authorization: request.headers['Authorization'],
+          # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
+          # ensures that Workhorse can intercept the request.
+          'Content-Type': LFS_TRANSFER_CONTENT_TYPE
         }.compact
       }
     }
