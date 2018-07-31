@@ -77,7 +77,12 @@ and more. However, this is not enabled by default. To enable it, define the
 gitlab_rails['env'] = {"ENABLE_RBTRACE" => "1"}
 ```
 
-Then reconfigure the system and restart Unicorn and Sidekiq.
+Then reconfigure the system and restart Unicorn and Sidekiq. To run this
+in Omnibus, run as root:
+
+```ruby
+/opt/gitlab/embedded/bin/ruby /opt/gitlab/embedded/bin/rbtrace
+```
 
 ## Common Problems
 

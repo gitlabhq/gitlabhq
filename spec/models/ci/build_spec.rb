@@ -515,6 +515,44 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { build.has_test_reports? }
+
+    context 'when build has a test report' do
+      let(:build) { create(:ci_build, :test_reports) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when build does not have test reports' do
+      let(:build) { create(:ci_build, :artifacts) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#erase_test_reports!' do
+    subject { build.erase_test_reports! }
+
+    context 'when build has a test report' do
+      let!(:build) { create(:ci_build, :test_reports) }
+
+      it 'removes a test report' do
+        subject
+
+        expect(build.has_test_reports?).to be_falsy
+      end
+    end
+
+    context 'when build does not have test reports' do
+      let!(:build) { create(:ci_build, :artifacts) }
+
+      it 'does not erase anything' do
+        expect { subject }.not_to change { Ci::JobArtifact.count }
+      end
+    end
+  end
+
   describe '#has_old_trace?' do
     subject { build.has_old_trace? }
 
@@ -777,6 +815,10 @@ describe Ci::Build do
         expect(build.artifacts_metadata.exists?).to be_falsy
       end
 
+      it 'removes test reports' do
+        expect(build.job_artifacts.test_reports.count).to eq(0)
+      end
+
       it 'erases build trace in trace file' do
         expect(build).not_to have_trace
       end
@@ -808,7 +850,7 @@ describe Ci::Build do
 
     context 'build is erasable' do
       context 'new artifacts' do
-        let!(:build) { create(:ci_build, :trace_artifact, :success, :artifacts) }
+        let!(:build) { create(:ci_build, :test_reports, :trace_artifact, :success, :artifacts) }
 
         describe '#erase' do
           before do

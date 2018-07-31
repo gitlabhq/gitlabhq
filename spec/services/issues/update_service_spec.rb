@@ -55,6 +55,8 @@ describe Issues::UpdateService, :mailer do
       end
 
       it 'updates the issue with the given params' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
         update_issue(opts)
 
         expect(issue).to be_valid
@@ -72,6 +74,21 @@ describe Issues::UpdateService, :mailer do
 
         expect { update_issue(confidential: true) }
           .to change { project.open_issues_count }.from(1).to(0)
+      end
+
+      it 'enqueues ConfidentialIssueWorker when an issue is made confidential' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(1.hour, issue.id)
+
+        update_issue(confidential: true)
+      end
+
+      it 'does not enqueue ConfidentialIssueWorker when an issue is made non confidential' do
+        # set confidentiality to true before the actual update
+        issue.update!(confidential: true)
+
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
+        update_issue(confidential: false)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do

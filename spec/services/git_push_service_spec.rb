@@ -784,7 +784,7 @@ describe GitPushService do
         end
 
         it 'does not queue a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).not_to receive(:perform_async).with(sample_commit.id, project.id)
+          expect(CreateGpgSignatureWorker).not_to receive(:perform_async)
 
           execute_service(project, user, oldrev, newrev, ref)
         end
@@ -792,7 +792,15 @@ describe GitPushService do
 
       context 'when the signature is not yet cached' do
         it 'queues a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+          expect(CreateGpgSignatureWorker).to receive(:perform_async).with([sample_commit.id], project.id)
+
+          execute_service(project, user, oldrev, newrev, ref)
+        end
+
+        it 'can queue several commits to create the gpg signature' do
+          allow(Gitlab::Git::Commit).to receive(:shas_with_signatures).and_return([sample_commit.id, another_sample_commit.id])
+
+          expect(CreateGpgSignatureWorker).to receive(:perform_async).with([sample_commit.id, another_sample_commit.id], project.id)
 
           execute_service(project, user, oldrev, newrev, ref)
         end

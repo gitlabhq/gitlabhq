@@ -31,6 +31,11 @@ export default {
       type: String,
       required: true,
     },
+    gfm: {
+      type: String,
+      required: false,
+      default: null,
+    },
     title: {
       type: String,
       required: true,
@@ -51,6 +56,14 @@ export default {
       default: 'btn-default',
     },
   },
+  computed: {
+    clipboardText() {
+      if (this.gfm !== null) {
+        return JSON.stringify({ text: this.text, gfm: this.gfm });
+      }
+      return this.text;
+    },
+  },
 };
 </script>
 
@@ -59,7 +72,7 @@ export default {
     v-tooltip
     :class="cssClass"
     :title="title"
-    :data-clipboard-text="text"
+    :data-clipboard-text="clipboardText"
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     type="button"

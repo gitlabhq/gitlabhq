@@ -482,6 +482,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.string "file"
     t.integer "file_store"
     t.binary "file_sha256"
+    t.integer "file_format", limit: 2
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree

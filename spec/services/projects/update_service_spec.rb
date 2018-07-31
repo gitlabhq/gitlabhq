@@ -16,6 +16,8 @@ describe Projects::UpdateService, '#execute' do
     context 'when changing visibility level' do
       context 'when visibility_level is INTERNAL' do
         it 'updates the project to internal' do
+          expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
+
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
 
           expect(result).to eq({ status: :success })
@@ -25,9 +27,27 @@ describe Projects::UpdateService, '#execute' do
 
       context 'when visibility_level is PUBLIC' do
         it 'updates the project to public' do
+          expect(TodosDestroyer::ProjectPrivateWorker).not_to receive(:perform_in)
+
           result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
           expect(result).to eq({ status: :success })
           expect(project).to be_public
+        end
+      end
+
+      context 'when visibility_level is PRIVATE' do
+        before do
+          project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        end
+
+        it 'updates the project to private' do
+          expect(TodosDestroyer::ProjectPrivateWorker).to receive(:perform_in).with(1.hour, project.id)
+
+          result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+          expect(result).to eq({ status: :success })
+          expect(project).to be_private
         end
       end
 
@@ -39,6 +59,7 @@ describe Projects::UpdateService, '#execute' do
         context 'when visibility_level is INTERNAL' do
           it 'updates the project to internal' do
             result = update_project(project, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+
             expect(result).to eq({ status: :success })
             expect(project).to be_internal
           end
@@ -55,6 +76,7 @@ describe Projects::UpdateService, '#execute' do
           context 'when updated by an admin' do
             it 'updates the project to public' do
               result = update_project(project, admin, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+
               expect(result).to eq({ status: :success })
               expect(project).to be_public
             end
@@ -164,6 +186,20 @@ describe Projects::UpdateService, '#execute' do
         expect(Gitlab::Metrics).to receive(:counter)
 
         update_project(project, user, project_feature_attributes: { wiki_access_level: ProjectFeature::ENABLED })
+      end
+    end
+
+    context 'when changing feature visibility to private' do
+      it 'updates the visibility correctly' do
+        expect(TodosDestroyer::PrivateFeaturesWorker)
+          .to receive(:perform_in).with(1.hour, project.id)
+
+        result = update_project(project, user, project_feature_attributes:
+                                 { issues_access_level: ProjectFeature::PRIVATE }
+                               )
+
+        expect(result).to eq({ status: :success })
+        expect(project.project_feature.issues_access_level).to be(ProjectFeature::PRIVATE)
       end
     end
 
