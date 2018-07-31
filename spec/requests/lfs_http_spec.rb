@@ -732,7 +732,7 @@ describe 'Git LFS API and storage' do
           expect(json_response['objects'].first['oid']).to eq(sample_oid)
           expect(json_response['objects'].first['size']).to eq(sample_size)
           expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
-          expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+          expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
         end
       end
 
@@ -761,7 +761,7 @@ describe 'Git LFS API and storage' do
               expect(lfs_object.projects.pluck(:id)).not_to include(project.id)
               expect(lfs_object.projects.pluck(:id)).to include(other_project.id)
               expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{project.http_url_to_repo}/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
+              expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
             end
           end
 
@@ -796,7 +796,7 @@ describe 'Git LFS API and storage' do
               expect(json_response['objects'].first['oid']).to eq("91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897")
               expect(json_response['objects'].first['size']).to eq(1575078)
               expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{project.http_url_to_repo}/gitlab-lfs/objects/91eff75a492a3ed0dfcb544d7f31326bc4014c8551849c192fd1e48d4dd2c897/1575078")
-              expect(json_response['objects'].first['actions']['upload']['header']).to eq("Authorization" => authorization)
+              expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
 
               expect(json_response['objects'].last['oid']).to eq(sample_oid)
               expect(json_response['objects'].last['size']).to eq(sample_size)
