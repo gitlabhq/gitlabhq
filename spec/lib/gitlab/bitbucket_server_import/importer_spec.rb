@@ -221,9 +221,6 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(notes.first.note).to start_with('*Comment on .gitmodules')
       expect(notes.second.note).to start_with('*Comment on .gitmodules')
     end
-
-    it 'restores branches of inaccessible SHAs' do
-    end
   end
 
   describe 'inaccessible branches' do
