@@ -26,17 +26,6 @@ export default class EEPushPull extends PushPull {
     super.init();
   }
 
-  updateUrl() {
-    let val = this.$urlInput.val();
-
-    if (this.$password) {
-      const password = this.$password.val();
-      if (password) val = val.replace('@', `:${password}@`);
-    }
-
-    $('.js-mirror-url-hidden', this.$form).val(val);
-  }
-
   handleUpdate() {
     return this.hideForm()
       .then(() => {
@@ -90,11 +79,6 @@ export default class EEPushPull extends PushPull {
     mirrorPull.init();
 
     this.initSelect2();
-  }
-
-  initMirrorPush() {
-    this.$password = $('.js-password', this.$form);
-    this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
   }
 
   initSelect2() {
