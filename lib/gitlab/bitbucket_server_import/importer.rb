@@ -178,8 +178,6 @@ module Gitlab
 
         source_branch_sha = pull_request.source_branch_sha
         target_branch_sha = pull_request.target_branch_sha
-        source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
-        target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
         author_id = gitlab_user_id(pull_request.author_email)
 
         attributes = {
