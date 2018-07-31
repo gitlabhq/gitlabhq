@@ -31,6 +31,15 @@ describe NamespacesHelper do
       expect(options).to include(user.name)
     end
 
+    it 'avoids duplicate groups when extra_group is used' do
+      allow(helper).to receive(:current_user).and_return(admin)
+
+      options = helper.namespaces_options(user_group.id, display_path: true, extra_group: build(:group, name: admin_group.name))
+
+      expect(options.scan("data-name=\"#{admin_group.name}\"").count).to eq(1)
+      expect(options).to include(admin_group.name)
+    end
+
     it 'returns only groups if groups_only option is true' do
       allow(helper).to receive(:current_user).and_return(user)
 

@@ -14,8 +14,11 @@ module NamespacesHelper
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
     end
 
-    if extra_group && extra_group.is_a?(Group) && (!Group.exists?(name: extra_group.name) || Ability.allowed?(current_user, :read_group, extra_group))
-      groups |= [extra_group]
+    if extra_group && extra_group.is_a?(Group)
+      # Avoid duplicate groups if one already exists by that name
+      existing_group = Group.find_by(name: extra_group.name)
+      extra_group = existing_group if existing_group
+      groups |= [extra_group] if Ability.allowed?(current_user, :read_group, extra_group)
     end
 
     options = []
