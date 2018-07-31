@@ -75,7 +75,9 @@ describe Gitlab::BitbucketServerImport::Importer do
         author_email: 'unknown@gmail.com',
         comments: [],
         created_at: now,
-        updated_at: now)
+        updated_at: now,
+        parent_comment: nil)
+
       @pr_comment = instance_double(
         BitbucketServer::Representation::Activity,
         comment?: true,
@@ -115,8 +117,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         author_email: 'someuser@gitlab.com',
         note: 'I agree',
         created_at: now,
-        updated_at: now
-      )
+        updated_at: now)
 
       # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
       inline_note = instance_double(
@@ -131,7 +132,10 @@ describe Gitlab::BitbucketServerImport::Importer do
         author_email: 'unknown@gmail.com',
         comments: [reply],
         created_at: now,
-        updated_at: now)
+        updated_at: now,
+        parent_comment: nil)
+
+      allow(reply).to receive(:parent_comment).and_return(inline_note)
 
       inline_comment = instance_double(
         BitbucketServer::Representation::Activity,
@@ -161,7 +165,8 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(start_note.position.new_line).to eq(inline_note.new_pos)
 
       reply_note = notes.last
-      expect(reply_note.note).to eq(reply.note)
+      # Make sure reply context is included
+      expect(reply_note.note).to eq("> #{inline_note.note}\n\n#{reply.note}")
       expect(reply_note.author).to eq(project.owner)
       expect(reply_note.created_at).to eq(reply.created_at)
       expect(reply_note.updated_at).to eq(reply.created_at)
@@ -186,7 +191,8 @@ describe Gitlab::BitbucketServerImport::Importer do
         author_email: project.owner.email,
         comments: [],
         created_at: now,
-        updated_at: now)
+        updated_at: now,
+        parent_comment: nil)
 
       inline_comment = instance_double(
         BitbucketServer::Representation::Activity,
