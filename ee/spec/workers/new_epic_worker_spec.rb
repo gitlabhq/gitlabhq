@@ -35,19 +35,40 @@ describe NewEpicWorker do
     end
 
     context 'when everything is ok' do
-      let(:mentioned) { create(:user) }
       let(:user) { create(:user) }
-      let(:epic) { create(:epic, description: "epic for #{mentioned.to_reference}") }
+      let(:epic) { create(:epic) }
 
       before do
         stub_licensed_features(epics: true)
       end
 
-      it 'creates a notification for the mentioned user' do
-        expect(Notify).to receive(:new_epic_email).with(mentioned.id, epic.id, NotificationReason::MENTIONED)
-          .and_return(double(deliver_later: true))
+      context 'user watches group' do
+        before do
+          create(
+            :notification_setting,
+            user: user,
+            source: epic.group,
+            level: NotificationSetting.levels[:watch]
+          )
+        end
 
-        worker.perform(epic.id, user.id)
+        it 'creates a notification for watcher' do
+          expect(Notify).to receive(:new_epic_email).with(user.id, epic.id, nil)
+            .and_return(double(deliver_later: true))
+
+          worker.perform(epic.id, user.id)
+        end
+      end
+
+      context 'mention' do
+        let(:epic) { create(:epic, description: "epic for #{user.to_reference}") }
+
+        it 'creates a notification for the mentioned user' do
+          expect(Notify).to receive(:new_epic_email).with(user.id, epic.id, NotificationReason::MENTIONED)
+            .and_return(double(deliver_later: true))
+
+          worker.perform(epic.id, user.id)
+        end
       end
     end
   end

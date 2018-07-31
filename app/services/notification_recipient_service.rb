@@ -240,7 +240,13 @@ module NotificationRecipientService
 
       def build!
         add_participants(current_user)
-        add_project_watchers
+
+        if project
+          add_project_watchers
+        else # for group level targets
+          add_group_watchers
+        end
+
         add_custom_notifications
 
         # Re-assign is considered as a mention of the new assignee
