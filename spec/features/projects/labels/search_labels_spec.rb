@@ -57,7 +57,7 @@ describe 'Search for labels', :js do
       end
 
       page.within('.other-labels') do
-        expect(page).to have_content('No labels with such name or description')
+        expect(page).to have_content('No other labels with such name or description')
       end
     end
 
@@ -66,7 +66,7 @@ describe 'Search for labels', :js do
       find('#label-search').native.send_keys(:enter)
 
       page.within('.prioritized-labels') do
-        expect(page).to have_content('No labels with such name or description')
+        expect(page).to have_content('No prioritised labels with such name or description')
       end
 
       page.within('.other-labels') do

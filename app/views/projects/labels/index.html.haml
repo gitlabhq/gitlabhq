@@ -28,7 +28,6 @@
       - if can_admin_label
         %p.text-muted
           = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
-
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
@@ -54,8 +53,12 @@
           - if @available_labels.any?
             %h5
               = _('Other Labels')
-          .nothing-here-block
-            = _('No other labels with such name or description')
+            .nothing-here-block
+              = _('No other labels with such name or description')
+          - else
+            .nothing-here-block
+              = _('No labels with such name or description')
+
 
 - else
   = render 'shared/empty_states/labels'
