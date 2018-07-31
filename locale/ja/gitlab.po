@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:28\n"
+"PO-Revision-Date: 2018-07-31 08:30\n"
 
 msgid " and"
 msgstr " と"
@@ -3429,10 +3429,10 @@ msgid "GroupsTree|Loading groups"
 msgstr "グループの読み込み中"
 
 msgid "GroupsTree|Sorry, no groups matched your search"
-msgstr ""
+msgstr "すみません、検索に一致するグループが存在しません"
 
 msgid "GroupsTree|Sorry, no groups or projects matched your search"
-msgstr ""
+msgstr "すみません、検索に一致するプロジェクトかグループが存在しません"
 
 msgid "Have your users email"
 msgstr ""
@@ -3462,7 +3462,7 @@ msgid "Help"
 msgstr "ヘルプ"
 
 msgid "Help page"
-msgstr ""
+msgstr "ヘルプページ"
 
 msgid "Help page text and support page url."
 msgstr "ヘルプページテキストとサポートページURL。"
