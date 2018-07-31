@@ -174,7 +174,7 @@ module Gitlab
       def import_bitbucket_pull_request(pull_request)
         description = ''
         description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
-        description += pull_request.description
+        description += pull_request.description if pull_request.description
 
         source_branch_sha = pull_request.source_branch_sha
         target_branch_sha = pull_request.target_branch_sha
