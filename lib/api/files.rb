@@ -1,6 +1,8 @@
 module API
   class Files < Grape::API
     FILE_ENDPOINT_REQUIREMENTS = API::PROJECT_ENDPOINT_REQUIREMENTS.merge(file_path: API::NO_SLASH_URL_PART_REGEX)
+    FILE_TYPE = 'file'.freeze
+    SUBMODULE_TYPE = 'submodule'.freeze
 
     # Prevents returning plain/text responses for files with .txt extension
     after_validation { content_type "application/json" }
@@ -24,7 +26,7 @@ module API
 
       def assign_file_vars!
         authorize! :download_code, user_project
-
+        # binding.pry
         @commit = user_project.commit(params[:ref])
         not_found!('Commit') unless @commit
 
@@ -42,12 +44,17 @@ module API
         }
       end
 
+      def blob_file_type(blob)
+        !blob.mode && blob.loaded_size.zero? ? SUBMODULE_TYPE : FILE_TYPE
+      end
+
       def blob_data
         {
+          type: blob_file_type(@blob),
           file_name: @blob.name,
           file_path: @blob.path,
           size: @blob.size,
-          encoding: "base64",
+          encoding: 'base64',
           content_sha256: Digest::SHA256.hexdigest(@blob.data),
           ref: params[:ref],
           blob_id: @blob.id,
@@ -147,13 +154,20 @@ module API
 
       desc 'Update existing file in repository'
       params do
-        use :extended_file_params
+        use :simple_file_params
+        optional :content, type: String, desc: 'File content'
+        given :content do
+          optional :encoding, type: String, values: %w[base64], desc: 'File encoding'
+          optional :last_commit_id, type: String, desc: 'Last known commit id for this file'
+        end
+        optional :sha, type: String, desc: 'SHA to update the submodule with'
+        exactly_one_of :content, :sha
       end
       put ":id/repository/files/:file_path", requirements: FILE_ENDPOINT_REQUIREMENTS do
         authorize! :push_code, user_project
 
         file_params = declared_params(include_missing: false)
-
+        file_params[:content] = file_params[:sha] if file_params[:sha]
         begin
           result = ::Files::UpdateService.new(user_project, current_user, commit_params(file_params)).execute
         rescue ::Files::UpdateService::FileChangedError => e
