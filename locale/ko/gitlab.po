@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:22\n"
+"PO-Revision-Date: 2018-07-31 11:14\n"
 
 msgid " and"
 msgstr " 그리고"
@@ -6108,8 +6108,8 @@ msgstr ""
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr "저장공간에 접근하기 위해 GitLab이 시도할 횟수"
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "GitLab이 저장공간에 대한 접근을 완전히 차단한 이후에 발생한 오류 횟수. 오류 횟수는 관리자 인터페이스의: %{link_to_health_page} 혹은 %{api_documentation_link} 링크를 사용하여 리셋할 수 있습니다."
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
@@ -6168,7 +6168,7 @@ msgstr "GitLab이 실패 정보를 보관하는 시간(초). 이 시간동안 �
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr "GitLab이 저장공간에 접근을 시도하는 시간(초). 이 시간 이후 timeout 에러가 발생합니다."
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
