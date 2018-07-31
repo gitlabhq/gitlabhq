@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 07:39\n"
+"PO-Revision-Date: 2018-07-31 07:52\n"
 
 msgid " and"
 msgstr " と"
@@ -1607,10 +1607,10 @@ msgid "ClusterIntegration|Kubernetes cluster was successfully created on Google 
 msgstr "Kubernetes クラスター は正常に Google Kubernetes Engine に作成されました。クラスター の詳細を表示するにはページを更新してください。"
 
 msgid "ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}"
-msgstr ""
+msgstr "Kubernetes クラスターを利用すると、 Review Apps の使用、アプリケーションのデプロイ、パイプラインの実行などをより簡単に実現できます。%{link_to_help_page}"
 
 msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications and to provide Review Apps for this project"
-msgstr ""
+msgstr "Kubernetes クラスターは、このプロジェクトにアプリケーションのデプロイや Review Apps の環境を提供するのに使用できます。"
 
 msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
 msgstr "%{help_link_start_machine_type}マシンタイプ%{help_link_end}と%{help_link_start_pricing}価格%{help_link_end}の詳細。"
@@ -1915,22 +1915,22 @@ msgid "Configure Gitaly timeouts."
 msgstr "Gitaly のタイムアウトを設定します。"
 
 msgid "Configure Sidekiq job throttling."
-msgstr ""
+msgstr "Sidekiq job throttling の設定"
 
 msgid "Configure automatic git checks and housekeeping on repositories."
-msgstr ""
+msgstr "リポジトリに対して自動実行する Git チェックとハウスキーピングを設定します。"
 
 msgid "Configure limits for web and API requests."
-msgstr ""
+msgstr "ウェブおよびAPIリクエストの制限を設定する。"
 
 msgid "Configure push and pull mirrors."
 msgstr ""
 
 msgid "Configure storage path and circuit breaker settings."
-msgstr ""
+msgstr "ストレージのパスとサーキットブレーカーを設定する。"
 
 msgid "Configure the way a user creates a new account."
-msgstr ""
+msgstr "ユーザーが新しいアカウントを作成する方法を設定します。"
 
 msgid "Connect"
 msgstr "接続"
@@ -1939,7 +1939,7 @@ msgid "Connect all repositories"
 msgstr "すべてのリポジトリへ接続"
 
 msgid "Connect repositories from GitHub"
-msgstr ""
+msgstr "GitHubからリポジトリに接続"
 
 msgid "Connect your external repositories, and CI/CD pipelines will run for new commits. A GitLab project will be created with only CI/CD features enabled."
 msgstr ""
@@ -2002,19 +2002,19 @@ msgid "Continue to the next step"
 msgstr ""
 
 msgid "Continuous Integration and Deployment"
-msgstr ""
+msgstr "継続的インテグレーションとデプロイ"
 
 msgid "Contribute to GitLab"
 msgstr "GitLab に貢献する"
 
 msgid "Contribution"
-msgstr ""
+msgstr "貢献度"
 
 msgid "Contribution guide"
 msgstr "貢献者向けガイド"
 
 msgid "Contributions per group member"
-msgstr ""
+msgstr "グループメンバーの貢献度"
 
 msgid "Contributors"
 msgstr "貢献者"
@@ -2023,13 +2023,13 @@ msgid "ContributorsPage|%{startDate} – %{endDate}"
 msgstr "%{startDate} – %{endDate}"
 
 msgid "ContributorsPage|Building repository graph."
-msgstr ""
+msgstr "リポジトリグラフを構築しています。"
 
 msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits."
-msgstr ""
+msgstr "%{branch_name} へのコミット（マージコミットを除く、6,000コミットまで）"
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
-msgstr ""
+msgstr "しばらくお待ちください、このページは準備が整うと自動的に更新されます。"
 
 msgid "Control the display of third party offers."
 msgstr ""
@@ -2068,7 +2068,7 @@ msgid "Copy incoming email address to clipboard"
 msgstr ""
 
 msgid "Copy reference to clipboard"
-msgstr ""
+msgstr "クリップボードへコピー"
 
 msgid "Copy to clipboard"
 msgstr "クリップボードにコピー"
@@ -2248,7 +2248,7 @@ msgid "December"
 msgstr "12月"
 
 msgid "Decline and sign out"
-msgstr ""
+msgstr "辞退してサインアウト"
 
 msgid "Default classification label"
 msgstr ""
@@ -2285,7 +2285,7 @@ msgid "Deploy Keys"
 msgstr "デプロイキー"
 
 msgid "DeployKeys|+%{count} others"
-msgstr ""
+msgstr "+ %{count} プロジェクト"
 
 msgid "DeployKeys|Current project"
 msgstr "現在のプロジェクト"
@@ -2294,7 +2294,7 @@ msgid "DeployKeys|Deploy key"
 msgstr "デプロイキー"
 
 msgid "DeployKeys|Enabled deploy keys"
-msgstr ""
+msgstr "有効なデプロイキー"
 
 msgid "DeployKeys|Error enabling deploy key"
 msgstr "デプロイキーの有効中にエラーが発生"
@@ -2303,10 +2303,10 @@ msgid "DeployKeys|Error getting deploy keys"
 msgstr "デプロイキーの取得中にエラーが発生"
 
 msgid "DeployKeys|Error removing deploy key"
-msgstr ""
+msgstr "デプロイキーの削除中にエラーが発生"
 
 msgid "DeployKeys|Expand %{count} other projects"
-msgstr ""
+msgstr "他の %{count} プロジェクトを展開"
 
 msgid "DeployKeys|Loading deploy keys"
 msgstr "デプロイキーを読込中"
@@ -2315,19 +2315,19 @@ msgid "DeployKeys|No deploy keys found. Create one with the form above."
 msgstr "デプロイキーが見つかりません。上のフォームで作成してください。"
 
 msgid "DeployKeys|Privately accessible deploy keys"
-msgstr ""
+msgstr "プライベートアクセスが可能なデプロイキー"
 
 msgid "DeployKeys|Project usage"
 msgstr "プロジェクトの使用状況"
 
 msgid "DeployKeys|Publicly accessible deploy keys"
-msgstr ""
+msgstr "パブリックアクセスが可能なデプロイキー"
 
 msgid "DeployKeys|Read access only"
 msgstr "読み取り専用"
 
 msgid "DeployKeys|Write access allowed"
-msgstr ""
+msgstr "書き込みアクセス許可"
 
 msgid "DeployKeys|You are going to remove this deploy key. Are you sure?"
 msgstr "このデプロイキーを削除します。よろしいですか？"
@@ -2336,16 +2336,16 @@ msgid "DeployTokens|Active Deploy Tokens (%{active_tokens})"
 msgstr "アクティブなデプロイトークン (%{active_tokens})"
 
 msgid "DeployTokens|Add a deploy token"
-msgstr ""
+msgstr "デプロイトークンを追加"
 
 msgid "DeployTokens|Allows read-only access to the registry images"
-msgstr ""
+msgstr "レジストリイメージへの読み取り専用アクセスを許可する"
 
 msgid "DeployTokens|Allows read-only access to the repository"
-msgstr ""
+msgstr "リポジトリへの読み取り専用アクセスを許可する"
 
 msgid "DeployTokens|Copy deploy token to clipboard"
-msgstr ""
+msgstr "デプロイトークンをクリップボードにコピーする"
 
 msgid "DeployTokens|Copy username to clipboard"
 msgstr "ユーザー名をクリップボードにコピーする"
