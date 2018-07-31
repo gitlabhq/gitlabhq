@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 07:16\n"
+"PO-Revision-Date: 2018-07-31 07:32\n"
 
 msgid " and"
 msgstr " と"
@@ -1442,37 +1442,37 @@ msgid "Closed issues"
 msgstr ""
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your Kubernetes cluster"
-msgstr ""
+msgstr "%{appList} は正常に Kubernetes クラスターにインストールされました"
 
 msgid "ClusterIntegration|API URL"
 msgstr "API URL"
 
 msgid "ClusterIntegration|Add Kubernetes cluster"
-msgstr ""
+msgstr "Kubernetes クラスターを追加"
 
 msgid "ClusterIntegration|Advanced options on this Kubernetes cluster's integration"
-msgstr ""
+msgstr "この Kubernetes クラスター統合に関する詳細オプション"
 
 msgid "ClusterIntegration|An error occured while trying to fetch project zones: %{error}"
-msgstr ""
+msgstr "プロジェクトゾーンの取得中にエラーが発生しました: %{error}"
 
 msgid "ClusterIntegration|An error occured while trying to fetch your projects: %{error}"
-msgstr ""
+msgstr "プロジェクトの取得中にエラーが発生しました: %{error}"
 
 msgid "ClusterIntegration|Applications"
 msgstr "アプリケーション"
 
 msgid "ClusterIntegration|Are you sure you want to remove this Kubernetes cluster's integration? This will not delete your actual Kubernetes cluster."
-msgstr ""
+msgstr "この Kubernetes クラスター統合を削除してもよろしいですか？この操作では実際の Kubernetes クラスターは削除されません。"
 
 msgid "ClusterIntegration|CA Certificate"
-msgstr ""
+msgstr "CA 証明書"
 
 msgid "ClusterIntegration|Certificate Authority bundle (PEM format)"
 msgstr "認証局バンドル (PEM形式)"
 
 msgid "ClusterIntegration|Choose which of your project's environments will use this Kubernetes cluster."
-msgstr ""
+msgstr "どのプロジェクト環境でこの Kubernetes クラスターを使うか選択してください。"
 
 msgid "ClusterIntegration|Control how your Kubernetes cluster integrates with GitLab"
 msgstr "Kubernetes クラスターと GitLab の統合方法の制御"
@@ -1613,31 +1613,31 @@ msgid "ClusterIntegration|Kubernetes clusters can be used to deploy applications
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}."
-msgstr ""
+msgstr "%{help_link_start_machine_type}マシンタイプ%{help_link_end}と%{help_link_start_pricing}価格%{help_link_end}の詳細。"
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}Kubernetes%{help_link_end}."
-msgstr ""
+msgstr "%{help_link_start}Kubernetes%{help_link_end}の詳細。"
 
 msgid "ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}."
-msgstr ""
+msgstr "%{help_link_start}ゾーン%{help_link_end}の詳細。"
 
 msgid "ClusterIntegration|Learn more about environments"
-msgstr ""
+msgstr "環境の詳細"
 
 msgid "ClusterIntegration|Learn more about security configuration"
-msgstr ""
+msgstr "セキュリティ設定の詳細"
 
 msgid "ClusterIntegration|Machine type"
-msgstr ""
+msgstr "マシンタイプ"
 
 msgid "ClusterIntegration|Make sure your account %{link_to_requirements} to create Kubernetes clusters"
-msgstr ""
+msgstr "Kubernetes クラスター を作成するには、アカウントの %{link_to_requirements} を確認してください"
 
 msgid "ClusterIntegration|Manage"
 msgstr "管理"
 
 msgid "ClusterIntegration|Manage your Kubernetes cluster by visiting %{link_gke}"
-msgstr ""
+msgstr "%{link_gke} にアクセスして Kubernetes クラスターを管理"
 
 msgid "ClusterIntegration|More information"
 msgstr "詳細情報"
@@ -1646,7 +1646,7 @@ msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab E
 msgstr ""
 
 msgid "ClusterIntegration|No machine types matched your search"
-msgstr ""
+msgstr "検索条件に一致するマシンタイプはありません"
 
 msgid "ClusterIntegration|No projects found"
 msgstr "プロジェクトが見つかりません"
@@ -1658,7 +1658,7 @@ msgid "ClusterIntegration|No zones matched your search"
 msgstr "検索条件に一致するゾーンはありません"
 
 msgid "ClusterIntegration|Note:"
-msgstr ""
+msgstr "注意:"
 
 msgid "ClusterIntegration|Number of nodes"
 msgstr "ノード数"
@@ -1679,16 +1679,16 @@ msgid "ClusterIntegration|Prometheus"
 msgstr "Prometheus"
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration."
-msgstr ""
+msgstr "Kubernetes クラスターの統合については、%{link_to_help_page} をお読みください。"
 
 msgid "ClusterIntegration|Remove Kubernetes cluster integration"
-msgstr ""
+msgstr "Kubernetes クラスターの統合を削除"
 
 msgid "ClusterIntegration|Remove integration"
 msgstr "統合を削除"
 
 msgid "ClusterIntegration|Remove this Kubernetes cluster's configuration from this project. This will not delete your actual Kubernetes cluster."
-msgstr ""
+msgstr "プロジェクトから Kubernetes クラスターの設定を削除します。なお、実際の Kubernetes クラスターは削除されません。"
 
 msgid "ClusterIntegration|Request to begin installing failed"
 msgstr "インストール開始に失敗しました"
@@ -1697,7 +1697,7 @@ msgid "ClusterIntegration|Save changes"
 msgstr "変更を保存"
 
 msgid "ClusterIntegration|Search machine types"
-msgstr ""
+msgstr "マシンタイプの検索"
 
 msgid "ClusterIntegration|Search projects"
 msgstr "プロジェクトの検索"
@@ -1712,22 +1712,22 @@ msgid "ClusterIntegration|See and edit the details for your Kubernetes cluster"
 msgstr "Kubernetes クラスターの詳細を閲覧、編集する"
 
 msgid "ClusterIntegration|Select machine type"
-msgstr ""
+msgstr "マシンタイプを選択"
 
 msgid "ClusterIntegration|Select project"
 msgstr "プロジェクトを選択"
 
 msgid "ClusterIntegration|Select project and zone to choose machine type"
-msgstr ""
+msgstr "プロジェクトとゾーンを選択してマシンタイプを選択"
 
 msgid "ClusterIntegration|Select project to choose zone"
-msgstr ""
+msgstr "プロジェクトを選択してゾーンを選択"
 
 msgid "ClusterIntegration|Select zone"
 msgstr "ゾーンを選択"
 
 msgid "ClusterIntegration|Select zone to choose machine type"
-msgstr ""
+msgstr "ゾーンを選択してマシンタイプを選択"
 
 msgid "ClusterIntegration|Service token"
 msgstr "サービストークン"
@@ -1736,13 +1736,13 @@ msgid "ClusterIntegration|Show"
 msgstr "表示"
 
 msgid "ClusterIntegration|Something went wrong on our end."
-msgstr ""
+msgstr "問題が発生しました。"
 
 msgid "ClusterIntegration|Something went wrong while creating your Kubernetes cluster on Google Kubernetes Engine"
-msgstr ""
+msgstr "Google Kubernetes Engine 上の Kubernetes クラスターを作成中に問題が発生しました"
 
 msgid "ClusterIntegration|Something went wrong while installing %{title}"
-msgstr ""
+msgstr "%{title} のインストール中に問題が発生しました"
 
 msgid "ClusterIntegration|The default cluster configuration grants access to a wide set of functionalities needed to successfully build and deploy a containerised application."
 msgstr "既定のクラスター設定では、コンテナ化されたアプリケーションを正常にビルドやデプロイするために必要な様々な機能にアクセスできます。"
@@ -1751,19 +1751,19 @@ msgid "ClusterIntegration|This account must have permissions to create a Kuberne
 msgstr "このアカウントは %{link_to_container_project} で Kubernetes クラスターを作成するのに以下の権限が必要です"
 
 msgid "ClusterIntegration|Toggle Kubernetes Cluster"
-msgstr ""
+msgstr "Kubernetes クラスターを切り替え"
 
 msgid "ClusterIntegration|Toggle Kubernetes cluster"
-msgstr ""
+msgstr "Kubernetes クラスターを切り替え"
 
 msgid "ClusterIntegration|Token"
 msgstr "トークン"
 
 msgid "ClusterIntegration|Validating project billing status"
-msgstr ""
+msgstr "プロジェクトの請求ステータスを検証しています"
 
 msgid "ClusterIntegration|With a Kubernetes cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
-msgstr ""
+msgstr "このプロジェクトに Kubernetes クラスターを関連付けることで、Review Apps の使用、アプリケーションのデプロイ、パイプラインの実行などを簡単に行うことができます。"
 
 msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr "アカウントに %{link_to_kubernetes_engine} が必要です。"
@@ -1784,7 +1784,7 @@ msgid "ClusterIntegration|help page"
 msgstr "ヘルプ ページ"
 
 msgid "ClusterIntegration|installing applications"
-msgstr ""
+msgstr "アプリケーションをインストールしています"
 
 msgid "ClusterIntegration|meets the requirements"
 msgstr "必要条件"
@@ -1799,10 +1799,10 @@ msgid "Cohorts"
 msgstr ""
 
 msgid "Collapse"
-msgstr ""
+msgstr "折りたたむ"
 
 msgid "Collapse sidebar"
-msgstr ""
+msgstr "サイドバーを隠す"
 
 msgid "Comment & resolve discussion"
 msgstr ""
