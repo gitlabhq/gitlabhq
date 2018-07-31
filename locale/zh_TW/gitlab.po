@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:25\n"
+"PO-Revision-Date: 2018-07-31 08:28\n"
 
 msgid " and"
 msgstr " 和"
@@ -130,7 +130,7 @@ msgstr[0] "%{storage_name}：已存取此主機失敗 %{failed_attempts} 次"
 
 msgid "%{text} %{files}"
 msgid_plural "%{text} %{files} files"
-msgstr[0] ""
+msgstr[0] "%{text} %{files} 檔案"
 
 msgid "%{text} is available"
 msgstr "%{text} 可用"
@@ -2233,7 +2233,7 @@ msgid "CycleAnalyticsStage|Test"
 msgstr "測試"
 
 msgid "Dashboard"
-msgstr ""
+msgstr "監控面板"
 
 msgid "DashboardProjects|All"
 msgstr "全部"
@@ -2272,10 +2272,10 @@ msgid "Delete list"
 msgstr "刪除清單"
 
 msgid "Deleted"
-msgstr ""
+msgstr "已刪除"
 
 msgid "Deny"
-msgstr ""
+msgstr "拒絕"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -2417,10 +2417,10 @@ msgid "Description templates allow you to define context-specific templates for 
 msgstr "《描述範本》允許你為您專案的議題或合併請求之描述欄位定義符合上下文的範本。"
 
 msgid "Description:"
-msgstr ""
+msgstr "說明："
 
 msgid "Destroy"
-msgstr ""
+msgstr "銷毀"
 
 msgid "Details"
 msgstr "細節"
@@ -2456,7 +2456,7 @@ msgid "Discover projects, groups and snippets. Share your projects with others"
 msgstr ""
 
 msgid "Dismiss"
-msgstr ""
+msgstr "忽略"
 
 msgid "Dismiss Cycle Analytics introduction box"
 msgstr "關閉循環分析介紹視窗"
@@ -2531,13 +2531,13 @@ msgid "Edit Snippet"
 msgstr "編輯片段"
 
 msgid "Edit application"
-msgstr ""
+msgstr "編輯應用程式"
 
 msgid "Edit files in the editor and commit changes here"
 msgstr "在編輯器中編輯提交更動紀錄"
 
 msgid "Edit group: %{group_name}"
-msgstr ""
+msgstr "編輯群組：%{group_name}"
 
 msgid "Edit identity for %{user_name}"
 msgstr "編輯 %{user_name} 的身份"
@@ -2630,7 +2630,7 @@ msgid "Environments|Commit"
 msgstr "更動"
 
 msgid "Environments|Deploy to..."
-msgstr ""
+msgstr "部屬到…"
 
 msgid "Environments|Deployment"
 msgstr "部署"
@@ -2678,10 +2678,10 @@ msgid "Environments|Show all"
 msgstr "顯示全部"
 
 msgid "Environments|Stop"
-msgstr ""
+msgstr "停止"
 
 msgid "Environments|Stop environment"
-msgstr ""
+msgstr "停止環境"
 
 msgid "Environments|Updated"
 msgstr "已更新"
@@ -2732,7 +2732,7 @@ msgid "Error loading last commit."
 msgstr "載入最新更動紀錄時失敗。"
 
 msgid "Error loading markdown preview"
-msgstr ""
+msgstr "載入 Markdown 預覽時發生問題"
 
 msgid "Error loading merge requests."
 msgstr "載入合併請求時錯誤。"
@@ -2783,7 +2783,7 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr "每週執行（週日淩晨 四點）"
 
 msgid "Everyone can contribute"
-msgstr ""
+msgstr "每個人都能貢獻"
 
 msgid "Expand"
 msgstr "展開"
@@ -2795,13 +2795,13 @@ msgid "Expand sidebar"
 msgstr "展開側邊欄"
 
 msgid "Explore"
-msgstr ""
+msgstr "瀏覽"
 
 msgid "Explore GitLab"
-msgstr ""
+msgstr "瀏覽 GitLab"
 
 msgid "Explore Groups"
-msgstr ""
+msgstr "瀏覽群組"
 
 msgid "Explore groups"
 msgstr "瀏覽群組"
@@ -2834,7 +2834,7 @@ msgid "ExternalAuthorizationService|When no classification label is set the defa
 msgstr "當沒有設定分類標籤時，將會使用預設標籤 `%{default_label}`。"
 
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
 msgid "Failed"
 msgstr "失敗"
@@ -2906,19 +2906,19 @@ msgid "FirstPushedBy|pushed by"
 msgstr "推送者："
 
 msgid "FogBugz Email"
-msgstr ""
+msgstr "FogBugz 電子信箱"
 
 msgid "FogBugz Import"
-msgstr ""
+msgstr "匯入 FogBugz"
 
 msgid "FogBugz Password"
-msgstr ""
+msgstr "FogBugz 密碼"
 
 msgid "FogBugz URL"
-msgstr ""
+msgstr "FogBugz URL"
 
 msgid "FogBugz import"
-msgstr ""
+msgstr "匯入 FogBugz"
 
 msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
@@ -2961,16 +2961,16 @@ msgid "From %{provider_title}"
 msgstr "來自 %{provider_title}"
 
 msgid "From Bitbucket"
-msgstr ""
+msgstr "從 Bitbucket"
 
 msgid "From FogBugz"
-msgstr ""
+msgstr "從 FogBugz"
 
 msgid "From GitLab.com"
-msgstr ""
+msgstr "從 GitLab.com"
 
 msgid "From Google Code"
-msgstr ""
+msgstr "從 Google Code"
 
 msgid "From issue creation until deploy to production"
 msgstr "從議題建立直到部署至營運環境"
@@ -3186,7 +3186,7 @@ msgid "Geo|Verification capacity"
 msgstr "驗證能力"
 
 msgid "Git"
-msgstr ""
+msgstr "Git"
 
 msgid "Git repository URL"
 msgstr "Git 檔案庫網址"
@@ -3216,13 +3216,13 @@ msgid "GitLab Group Runners can execute code for all the projects in this group.
 msgstr "GitLab 群組執行器可以為此群組的所有專案執行程式碼。"
 
 msgid "GitLab Import"
-msgstr ""
+msgstr "匯入 GitLab"
 
 msgid "GitLab User"
-msgstr ""
+msgstr "GitLab 使用者"
 
 msgid "GitLab project export"
-msgstr ""
+msgstr "匯出 GitLab 專案"
 
 msgid "GitLab single sign on URL"
 msgstr "GitLab URL 單一登入"
@@ -3231,7 +3231,7 @@ msgid "GitLab will run a background job that will produce pseudonymized CSVs of 
 msgstr "GitLab 將會在後台進行產生 GitLab 資料庫假名 CSV 的作業，該資料庫將會上傳到您設定的對象儲存目錄。"
 
 msgid "GitLab.com import"
-msgstr ""
+msgstr "匯入 GitLab.com"
 
 msgid "Gitaly"
 msgstr "Gitaly"
@@ -3243,10 +3243,10 @@ msgid "Gitaly|Address"
 msgstr "地址"
 
 msgid "Gitea Host URL"
-msgstr ""
+msgstr "Gitea 主機 URL"
 
 msgid "Gitea Import"
-msgstr ""
+msgstr "匯入 Gitea"
 
 msgid "Go Back"
 msgstr "返回"
@@ -3264,10 +3264,10 @@ msgid "GoToYourFork|Fork"
 msgstr "前往您的分支"
 
 msgid "Google Code import"
-msgstr ""
+msgstr "匯入 Google Code"
 
 msgid "Google Takeout"
-msgstr ""
+msgstr "Google Takeout"
 
 msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service."
 msgstr "Google 身份驗證不是 %{link_to_documentation}。如果您想使用此服務，請諮詢管理員。"
@@ -3279,13 +3279,13 @@ msgid "Graph"
 msgstr "圖表"
 
 msgid "Group"
-msgstr ""
+msgstr "群組"
 
 msgid "Group CI/CD settings"
 msgstr "群組 CI / CD 設定"
 
 msgid "Group Git LFS status:"
-msgstr ""
+msgstr "群組 Git LFS 狀態："
 
 msgid "Group ID"
 msgstr "群組 ID"
