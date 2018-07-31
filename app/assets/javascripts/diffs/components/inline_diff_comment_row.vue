@@ -26,15 +26,12 @@ export default {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    ...mapGetters('diffs', ['discussionsByLineCode']),
+    ...mapGetters(['discussionsByLineCode']),
     discussions() {
       return this.discussionsByLineCode[this.line.lineCode] || [];
     },
     className() {
       return this.discussions.length ? '' : 'js-temp-notes-holder';
-    },
-    hasCommentForm() {
-      return this.diffLineCommentForms[this.line.lineCode];
     },
   },
 };
@@ -56,7 +53,7 @@ export default {
           :discussions="discussions"
         />
         <diff-line-note-form
-          v-if="hasCommentForm"
+          v-if="diffLineCommentForms[line.lineCode]"
           :diff-file-hash="diffFileHash"
           :line="line"
           :note-target-line="line"
