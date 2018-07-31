@@ -5,9 +5,8 @@ module StubMetrics
 
   def stub_authentication_activity_metrics(debug: false)
     authentication_metrics.each_counter do |name, metric, description|
-      double("#{metric} - #{description}").tap do |counter|
-        allow(authentication_metrics).to receive(name).and_return(counter)
-      end
+      allow(authentication_metrics).to receive(name)
+        .and_return(double("#{metric} - #{description}"))
     end
 
     debug_authentication_activity_metrics if debug

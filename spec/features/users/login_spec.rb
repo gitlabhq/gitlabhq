@@ -159,6 +159,7 @@ describe 'Login' do
 
         it 'blocks login with invalid code' do
           # TODO invalid 2FA code does not generate any events
+          # See gitlab-org/gitlab-ce#49785
 
           enter_code('foo')
 
@@ -233,7 +234,7 @@ describe 'Login' do
         context 'with invalid code' do
           it 'blocks login' do
             # TODO, invalid two factor authentication does not increment
-            # metrics / counters
+            # metrics / counters, see gitlab-org/gitlab-ce#49785
 
             code = codes.sample
             expect(user.invalidate_otp_backup_code!(code)).to eq true
@@ -267,7 +268,8 @@ describe 'Login' do
         end
 
         it 'signs user in without prompting for second factor' do
-          # TODO, OAuth authentication does not fire events
+          # TODO, OAuth authentication does not fire events,
+          # see gitlab-org/gitlab-ce#49786
 
           expect(authentication_metrics)
             .to increment(:user_authenticated_counter)

@@ -7,15 +7,15 @@ module Gitlab
       extend Gitlab::Utils::StrongMemoize
 
       COUNTERS = {
-        user_authenticated: 'Counter of total successful authentication events',
-        user_unauthenticated: 'Counter of total authentication failures',
-        user_not_found: 'Counter of total failed log-ins when user is unknown',
+        user_authenticated: 'Counter of successful authentication events',
+        user_unauthenticated: 'Counter of authentication failures',
+        user_not_found: 'Counter of failed log-ins when user is unknown',
         user_password_invalid: 'Counter of failed log-ins with invalid password',
         user_session_override: 'Counter of manual log-ins and sessions overrides',
-        user_session_destroyed: 'Counter of total user sessions being destroyed',
+        user_session_destroyed: 'Counter of user sessions being destroyed',
         user_two_factor_authenticated: 'Counter of two factor authentications',
         user_sessionless_authentication: 'Counter of sessionless authentications',
-        user_blocked: 'Counter of total sign in attempts when user is blocked'
+        user_blocked: 'Counter of sign in attempts when user is blocked'
       }.freeze
 
       def initialize(user, opts)

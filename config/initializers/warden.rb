@@ -2,16 +2,18 @@ Rails.application.configure do |config|
   Warden::Manager.after_set_user(scope: :user) do |user, auth, opts|
     Gitlab::Auth::UniqueIpsLimiter.limit_user!(user)
 
+    activity = Gitlab::Auth::Activity.new(user, opts)
+
     case opts[:event]
     when :authentication
-      Gitlab::Auth::Activity.new(user, opts).user_authenticated!
+      activity.user_authenticated!
     when :set_user
-      Gitlab::Auth::Activity.new(user, opts).user_authenticated!
-      Gitlab::Auth::Activity.new(user, opts).user_session_override!
+      activity.user_authenticated!
+      activity.user_session_override!
     when :fetch # rubocop:disable Lint/EmptyWhen
       # We ignore session fetch events
     else
-      Gitlab::Auth::Activity.new(user, opts).user_session_override!
+      activity.user_session_override!
     end
   end
 
