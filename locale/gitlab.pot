@@ -3574,6 +3574,12 @@ msgstr ""
 msgid "No messages were logged"
 msgstr ""
 
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
+msgstr ""
+
 msgid "No public groups"
 msgstr ""
 
@@ -4905,6 +4911,9 @@ msgid "Subgroups"
 msgstr ""
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit search"
 msgstr ""
 
 msgid "Subscribe"
