@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 07:32\n"
+"PO-Revision-Date: 2018-07-31 07:39\n"
 
 msgid " and"
 msgstr " と"
@@ -1565,7 +1565,7 @@ msgid "ClusterIntegration|Installing"
 msgstr "インストール中"
 
 msgid "ClusterIntegration|Integrate Kubernetes cluster automation"
-msgstr ""
+msgstr "Kubernetes クラスターを自動統合"
 
 msgid "ClusterIntegration|Integration status"
 msgstr "統合の状態"
@@ -1595,16 +1595,16 @@ msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this pro
 msgstr "Kubernetes クラスターの統合がこのプロジェクトで有効です。"
 
 msgid "ClusterIntegration|Kubernetes cluster integration is enabled for this project. Disabling this integration will not affect your Kubernetes cluster, it will only temporarily turn off GitLab's connection to it."
-msgstr ""
+msgstr "Kubernetes クラスターの統合がこのプロジェクトで有効です。この統合を無効にしても Kubernetes クラスターには影響せず、GitLab との接続が一時的に切断されるだけです。"
 
 msgid "ClusterIntegration|Kubernetes cluster is being created on Google Kubernetes Engine..."
-msgstr ""
+msgstr "Kubernetes クラスターを Google Kubernetes Engine 上に作成しています..."
 
 msgid "ClusterIntegration|Kubernetes cluster name"
-msgstr ""
+msgstr "Kubernetes クラスター名"
 
 msgid "ClusterIntegration|Kubernetes cluster was successfully created on Google Kubernetes Engine. Refresh the page to see Kubernetes cluster's details"
-msgstr ""
+msgstr "Kubernetes クラスター は正常に Google Kubernetes Engine に作成されました。クラスター の詳細を表示するにはページを更新してください。"
 
 msgid "ClusterIntegration|Kubernetes clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}"
 msgstr ""
@@ -1805,10 +1805,10 @@ msgid "Collapse sidebar"
 msgstr "サイドバーを隠す"
 
 msgid "Comment & resolve discussion"
-msgstr ""
+msgstr "この検討にコメントし解決する"
 
 msgid "Comment & unresolve discussion"
-msgstr ""
+msgstr "この検討にコメントし未解決にする"
 
 msgid "Comments"
 msgstr "コメント"
@@ -3988,7 +3988,7 @@ msgid "Merge requests are a place to propose changes you've made to a project an
 msgstr ""
 
 msgid "MergeRequests|Resolve this discussion in a new issue"
-msgstr ""
+msgstr "新しい課題でこの検討を解決する"
 
 msgid "MergeRequests|Saving the comment failed"
 msgstr ""
@@ -3997,7 +3997,7 @@ msgid "MergeRequests|Toggle comments for this file"
 msgstr ""
 
 msgid "MergeRequests|Updating discussions failed"
-msgstr ""
+msgstr "検討の更新に失敗しました"
 
 msgid "MergeRequests|View file @ %{commitId}"
 msgstr ""
@@ -5339,7 +5339,7 @@ msgid "Resolve conflicts on source branch"
 msgstr "ソースブランチでの競合を解決する"
 
 msgid "Resolve discussion"
-msgstr ""
+msgstr "検討を解決"
 
 msgid "Response metrics (Custom)"
 msgstr ""
@@ -5740,7 +5740,7 @@ msgid "Something went wrong while reopening the %{issuable}. Please try again la
 msgstr ""
 
 msgid "Something went wrong while resolving this discussion. Please try again."
-msgstr ""
+msgstr "この検討を解決しているときに問題が発生しました。もう一度やり直してください。"
 
 msgid "Something went wrong. Please try again."
 msgstr ""
@@ -6568,7 +6568,7 @@ msgid "Toggle Sidebar"
 msgstr ""
 
 msgid "Toggle discussion"
-msgstr ""
+msgstr "検討の表示・非表示を切り替える"
 
 msgid "Toggle navigation"
 msgstr ""
@@ -6640,7 +6640,7 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unresolve discussion"
-msgstr ""
+msgstr "検討を未解決にする"
 
 msgid "Unstage all changes"
 msgstr "すべての変更のステージを取り消す"
@@ -7656,7 +7656,7 @@ msgid "mrWidget|There are merge conflicts"
 msgstr ""
 
 msgid "mrWidget|There are unresolved discussions. Please resolve these discussions"
-msgstr ""
+msgstr "未解決の検討があります。これらの検討を解決してください。"
 
 msgid "mrWidget|This merge request failed to be merged automatically"
 msgstr ""
