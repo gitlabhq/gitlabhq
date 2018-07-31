@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:44\n"
+"PO-Revision-Date: 2018-07-31 07:16\n"
 
 msgid " and"
 msgstr " と"
@@ -634,7 +634,7 @@ msgid "Are you sure you want to reset registration token?"
 msgstr "本当に登録トークンをリセットしますか？"
 
 msgid "Are you sure you want to reset the health check token?"
-msgstr ""
+msgstr "本当にヘルスチェックトークンをリセットしますか？"
 
 msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr ""
