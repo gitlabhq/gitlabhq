@@ -23,7 +23,7 @@ describe 'Scoped issue boards', :js do
 
   before do
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
-    stub_licensed_features(scoped_issue_boards: true)
+    stub_licensed_features(scoped_issue_board: true)
   end
 
   context 'user with edit permissions' do
@@ -301,7 +301,7 @@ describe 'Scoped issue boards', :js do
 
         context 'group board' do
           it 'only shows group labels in list' do
-            stub_licensed_features(group_issue_boards: true)
+            stub_licensed_features(multiple_group_issue_boards: true)
 
             visit group_boards_path(group)
             edit_board.click
@@ -419,7 +419,7 @@ describe 'Scoped issue boards', :js do
 
   context 'with scoped_issue_boards feature disabled' do
     before do
-      stub_licensed_features(scoped_issue_boards: false)
+      stub_licensed_features(scoped_issue_board: false)
 
       project.add_maintainer(user)
       login_as(user)
@@ -441,7 +441,7 @@ describe 'Scoped issue boards', :js do
         # To make sure the form is shown
         expect(page).to have_field('board-new-name')
 
-        expect(page).not_to have_button('Toggle')
+        expect(page).not_to have_button('Expand')
       end
     end
 

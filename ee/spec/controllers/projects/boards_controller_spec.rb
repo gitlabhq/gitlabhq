@@ -45,7 +45,7 @@ describe Projects::BoardsController do
   describe 'POST create' do
     context 'with the multiple issue boards available' do
       before do
-        stub_licensed_features(multiple_issue_boards: true)
+        stub_licensed_features(multiple_project_issue_boards: true)
       end
 
       context 'with valid params' do
