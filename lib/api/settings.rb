@@ -62,7 +62,11 @@ module API
         requires :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
       end
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
+<<<<<<< HEAD
       optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
+=======
+      optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project manifest],
+>>>>>>> origin/master
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do
@@ -76,8 +80,13 @@ module API
         requires :metrics_host, type: String, desc: 'The InfluxDB host'
         requires :metrics_method_call_threshold, type: Integer, desc: 'A method call is only tracked when it takes longer to complete than the given amount of milliseconds.'
         requires :metrics_packet_size, type: Integer, desc: 'The amount of points to store in a single UDP packet'
+<<<<<<< HEAD
         requires :metrics_port, type: Integer, desc: 'The UDP port to use for connecting to InfluxDB'
         requires :metrics_pool_size, type: Integer, desc: 'The amount of InfluxDB connections to open'
+=======
+        requires :metrics_pool_size, type: Integer, desc: 'The amount of InfluxDB connections to open'
+        requires :metrics_port, type: Integer, desc: 'The UDP port to use for connecting to InfluxDB'
+>>>>>>> origin/master
         requires :metrics_sample_interval, type: Integer, desc: 'The sampling interval in seconds'
         requires :metrics_timeout, type: Integer, desc: 'The amount of seconds after which an InfluxDB connection will time out'
       end
@@ -97,8 +106,8 @@ module API
       optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'
       optional :recaptcha_enabled, type: Boolean, desc: 'Helps prevent bots from creating accounts'
       given recaptcha_enabled: ->(val) { val } do
-        requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
         requires :recaptcha_private_key, type: String, desc: 'Generate private key at http://www.google.com/recaptcha'
+        requires :recaptcha_site_key, type: String, desc: 'Generate site key at http://www.google.com/recaptcha'
       end
       optional :repository_checks_enabled, type: Boolean, desc: "GitLab will periodically run 'git fsck' in all project and wiki repositories to look for silent disk corruption issues."
       optional :repository_storages, type: Array[String], desc: 'Storage paths for new projects'
@@ -139,22 +148,22 @@ module API
       end
 
       ## EE-only START
-      optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
-      optional :help_text, type: String, desc: 'GitLab server administrator information'
+      optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
+      given elasticsearch_aws: ->(val) { val } do
+        optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
+        requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
+        optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
+      end
       optional :elasticsearch_indexing, type: Boolean, desc: 'Enable Elasticsearch indexing'
       given elasticsearch_indexing: ->(val) { val } do
         optional :elasticsearch_search, type: Boolean, desc: 'Enable Elasticsearch search'
         requires :elasticsearch_url, type: String, desc: 'The url to use for connecting to Elasticsearch. Use a comma-separated list to support clustering (e.g., "http://localhost:9200, http://localhost:9201")'
       end
-      optional :elasticsearch_aws, type: Boolean, desc: 'Enable support for AWS hosted elasticsearch'
-      given elasticsearch_aws: ->(val) { val } do
-        requires :elasticsearch_aws_region, type: String, desc: 'The AWS region the elasticsearch domain is configured'
-        optional :elasticsearch_aws_access_key, type: String, desc: 'AWS IAM access key'
-        optional :elasticsearch_aws_secret_access_key, type: String, desc: 'AWS IAM secret access key'
-      end
-      optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
-      optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
+      optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
+      optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+      optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
+      optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       ## EE-only END
 
       optional_attributes = ::ApplicationSettingsHelper.visible_attributes << :performance_bar_allowed_group_id

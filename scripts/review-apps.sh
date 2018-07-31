@@ -80,14 +80,14 @@ function deploy() {
   replicas="1"
   service_enabled="false"
   postgres_enabled="$POSTGRES_ENABLED"
-  gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ce"
-  gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce"
-  gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ce"
+  gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ce"
+  gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ce"
+  gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ce"
 
   if [[ "$CI_PROJECT_NAME" == "gitlab-ee" ]]; then
-    gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-rails-ee"
-    gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ee"
-    gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-unicorn-ee"
+    gitlab_migrations_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-rails-ee"
+    gitlab_sidekiq_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-sidekiq-ee"
+    gitlab_unicorn_image_repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-unicorn-ee"
   fi
 
   # canary uses stable db
@@ -138,9 +138,9 @@ function deploy() {
     --set gitlab.sidekiq.image.tag="$CI_COMMIT_REF_NAME" \
     --set gitlab.unicorn.image.repository="$gitlab_unicorn_image_repository" \
     --set gitlab.unicorn.image.tag="$CI_COMMIT_REF_NAME" \
-    --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng/gitaly" \
+    --set gitlab.gitaly.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitaly" \
     --set gitlab.gitaly.image.tag="v$GITALY_VERSION" \
-    --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng/gitlab-shell" \
+    --set gitlab.gitlab-shell.image.repository="registry.gitlab.com/gitlab-org/build/cng-mirror/gitlab-shell" \
     --set gitlab.gitlab-shell.image.tag="v$GITLAB_SHELL_VERSION" \
     --namespace="$KUBE_NAMESPACE" \
     --version="$CI_PIPELINE_ID-$CI_JOB_ID" \

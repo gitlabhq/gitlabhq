@@ -204,7 +204,7 @@ class GeoNodeStatus < ActiveRecord::Base
   def load_secondary_data
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
-      self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
+      self.cursor_last_event_id = current_cursor_last_event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
       self.repositories_synced_count = projects_finder.count_synced_repositories
       self.repositories_failed_count = projects_finder.count_failed_repositories
@@ -239,6 +239,15 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.wikis_checksum_mismatch_count = projects_finder.count_wikis_checksum_mismatch
     end
+  end
+
+  def current_cursor_last_event_id
+    return unless Gitlab::Geo.secondary?
+
+    min_gap_id = ::Gitlab::Geo::EventGapTracking.min_gap_id
+    last_processed_id = Geo::EventLogState.last_processed&.event_id
+
+    [min_gap_id, last_processed_id].compact.min
   end
 
   def healthy?

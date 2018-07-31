@@ -230,6 +230,7 @@ class ApplicationSetting < ActiveRecord::Base
       after_sign_up_text: nil,
       allow_local_requests_from_hooks_and_services: false,
       akismet_enabled: false,
+      allow_local_requests_from_hooks_and_services: false,
       authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',
@@ -274,8 +275,8 @@ class ApplicationSetting < ActiveRecord::Base
       repository_storages: ['default'],
       require_two_factor_authentication: false,
       restricted_visibility_levels: Settings.gitlab['restricted_visibility_levels'],
-      session_expire_delay: Settings.gitlab['session_expire_delay'],
       send_user_confirmation_email: false,
+      session_expire_delay: Settings.gitlab['session_expire_delay'],
       shared_runners_enabled: Settings.gitlab_ci['shared_runners_enabled'],
       shared_runners_text: nil,
       sidekiq_throttling_enabled: false,

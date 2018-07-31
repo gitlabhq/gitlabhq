@@ -305,6 +305,10 @@ describe ProjectPolicy do
   end
 
   describe 'read_project_security_dashboard' do
+    before do
+      allow(project).to receive(:security_reports_feature_available?).and_return(true)
+    end
+
     subject { described_class.new(current_user, project) }
 
     context 'with admin' do
@@ -329,6 +333,14 @@ describe ProjectPolicy do
       let(:current_user) { developer }
 
       it { is_expected.to be_allowed(:read_project_security_dashboard) }
+
+      context 'when security reports features are not available' do
+        before do
+          allow(project).to receive(:security_reports_feature_available?).and_return(false)
+        end
+
+        it { is_expected.to be_disallowed(:read_project_security_dashboard) }
+      end
     end
 
     context 'with reporter' do
