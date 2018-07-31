@@ -417,24 +417,6 @@ namespace :gitlab do
     end
   end
 
-<<<<<<< HEAD
-  namespace :user do
-    desc "GitLab | Check the integrity of a specific user's repositories"
-    task :check_repos, [:username] => :gitlab_environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for username? ".color(:blue))
-      user = User.find_by(username: username)
-      if user
-        repo_dirs = user.authorized_projects.map do |p|
-          p.repository.path_to_repo
-        end
-
-        repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
-      else
-        puts "\nUser '#{username}' not found".color(:red)
-      end
-    end
-  end
-
   namespace :geo do
     desc 'GitLab | Check Geo configuration and dependencies'
     task check: :gitlab_environment do
@@ -459,8 +441,6 @@ namespace :gitlab do
     end
   end
 
-=======
->>>>>>> ce/master
   # Helper methods
   ##########################
 
