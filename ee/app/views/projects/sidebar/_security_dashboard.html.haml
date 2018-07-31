@@ -1,4 +1,4 @@
-- return unless @project.security_reports_feature_available? && can?(current_user, :read_project_security_dashboard, @project)
+- return unless can?(current_user, :read_project_security_dashboard, @project)
 
 = nav_link(path: 'projects/security/dashboard#show') do
   = link_to project_security_dashboard_path(@project), title: _('Security Dashboard'), class: 'shortcuts-project-security-dashboard' do
