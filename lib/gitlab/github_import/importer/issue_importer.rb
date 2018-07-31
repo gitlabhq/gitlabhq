@@ -55,7 +55,11 @@ module Gitlab
             updated_at: issue.updated_at
           }
 
-          GithubImport.insert_and_return_id(attributes, project.issues)
+          GithubImport.insert_and_return_id(attributes, project.issues).tap do |id|
+            # We use .insert_and_return_id which effectively disables all callbacks.
+            # Trigger iid logic here to make sure we track internal id values consistently.
+            project.issues.find(id).ensure_project_iid!
+          end
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project has been deleted since scheduling this
           # job. In this case we'll just skip creating the issue.
