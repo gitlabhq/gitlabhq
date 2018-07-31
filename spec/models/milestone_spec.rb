@@ -312,4 +312,24 @@ describe Milestone do
       expect(milestone.participants).to eq [user]
     end
   end
+
+  describe '.sort_by_attribute' do
+    set(:milestone_1) { create(:milestone, title: 'Foo') }
+    set(:milestone_2) { create(:milestone, title: 'Bar') }
+    set(:milestone_3) { create(:milestone, title: 'Zoo') }
+
+    context 'ordering by name ascending' do
+      it 'sorts by title ascending' do
+        expect(described_class.sort_by_attribute('name_asc'))
+          .to eq([milestone_2, milestone_1, milestone_3])
+      end
+    end
+
+    context 'ordering by name descending' do
+      it 'sorts by title descending' do
+        expect(described_class.sort_by_attribute('name_desc'))
+          .to eq([milestone_3, milestone_1, milestone_2])
+      end
+    end
+  end
 end

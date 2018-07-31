@@ -228,8 +228,8 @@ class ApplicationSetting < ActiveRecord::Base
   def self.defaults
     {
       after_sign_up_text: nil,
-      akismet_enabled: false,
       allow_local_requests_from_hooks_and_services: false,
+      akismet_enabled: false,
       authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
       container_registry_token_expire_delay: 5,
       default_artifacts_expire_in: '30 days',

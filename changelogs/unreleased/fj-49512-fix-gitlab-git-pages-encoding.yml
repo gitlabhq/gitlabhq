@@ -1,0 +1,5 @@
+---
+title: Prevent editing and updating wiki pages with non UTF-8 encoding via web interface
+merge_request: 20906
+author:
+type: fixed

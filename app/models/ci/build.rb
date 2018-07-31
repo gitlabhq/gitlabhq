@@ -26,9 +26,10 @@ module Ci
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
-    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
-    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
-    has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+
+    Ci::JobArtifact.file_types.each do |key, value|
+      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    end
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
@@ -390,6 +391,10 @@ module Ci
       trace.exist?
     end
 
+    def has_test_reports?
+      job_artifacts.test_reports.any?
+    end
+
     def has_old_trace?
       old_trace.present?
     end
@@ -457,16 +462,22 @@ module Ci
       save
     end
 
+    def erase_test_reports!
+      # TODO: Use fast_destroy_all in the context of https://gitlab.com/gitlab-org/gitlab-ce/issues/35240
+      job_artifacts_junit&.destroy
+    end
+
     def erase(opts = {})
       return false unless erasable?
 
       erase_artifacts!
+      erase_test_reports!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
 
     def erasable?
-      complete? && (artifacts? || has_trace?)
+      complete? && (artifacts? || has_test_reports? || has_trace?)
     end
 
     def erased?
@@ -541,10 +552,6 @@ module Ci
 
     def services
       Gitlab::Ci::Build::Image.from_services(self)
-    end
-
-    def artifacts
-      [options[:artifacts]]
     end
 
     def cache

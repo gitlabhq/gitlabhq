@@ -977,6 +977,7 @@ describe User do
       user = create(:user, email: 'foo@example.com')
 
       expect(described_class.find_by_any_email(user.email)).to eq user
+      expect(described_class.find_by_any_email(user.email, confirmed: true)).to eq user
     end
 
     it 'finds by secondary email' do
@@ -984,10 +985,18 @@ describe User do
       user  = email.user
 
       expect(described_class.find_by_any_email(email.email)).to eq user
+      expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
     end
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+
+    it 'returns nil when user is not confirmed' do
+      user = create(:user, email: 'foo@example.com', confirmed_at: nil)
+
+      expect(described_class.find_by_any_email(user.email, confirmed: false)).to eq(user)
+      expect(described_class.find_by_any_email(user.email, confirmed: true)).to be_nil
     end
   end
 
@@ -1001,6 +1010,12 @@ describe User do
       user = create(:user)
 
       expect(described_class.by_any_email(user.email)).to eq([user])
+    end
+
+    it 'returns a relation of users for confirmed users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email, confirmed: true)).to eq([user])
     end
   end
 

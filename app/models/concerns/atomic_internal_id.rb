@@ -26,6 +26,10 @@ module AtomicInternalId
 
   module ClassMethods
     def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
+      # We require init here to retain the ability to recalculate in the absence of a
+      # InternaLId record (we may delete records in `internal_ids` for example).
+      raise "has_internal_id requires a init block, none given." unless init
+
       before_validation :"ensure_#{scope}_#{column}!", on: :create
       validates column, presence: presence
 

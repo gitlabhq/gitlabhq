@@ -36,7 +36,6 @@
           %span.issue-count-badge-count
             %icon.mr-1{ name: "issues" }
             {{ list.issuesSize }}
-
           = render_if_exists "shared/boards/components/list_weight"
 
         - if can?(current_user, :admin_list, current_board_parent)
