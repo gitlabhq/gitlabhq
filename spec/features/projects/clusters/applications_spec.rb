@@ -46,13 +46,11 @@ describe 'Clusters Applications', :js do
           end
         end
 
-        it 'they see status transition' do
+        it 'he sees status transition' do
           page.within('.js-cluster-application-row-helm') do
             # FE sends request and gets the response, then the buttons is "Install"
             expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
             expect(page).to have_css('.js-cluster-application-install-button', exact_text: 'Install')
-
-            wait_until_helm_created!
 
             Clusters::Cluster.last.application_helm.make_installing!
 
@@ -85,7 +83,7 @@ describe 'Clusters Applications', :js do
             end
           end
 
-          it 'they see status transition' do
+          it 'he sees status transition' do
             page.within('.js-cluster-application-row-ingress') do
               # FE sends request and gets the response, then the buttons is "Install"
               expect(page).to have_css('.js-cluster-application-install-button[disabled]')
@@ -116,16 +114,6 @@ describe 'Clusters Applications', :js do
           end
         end
       end
-    end
-  end
-
-  def wait_until_helm_created!
-    retries = 0
-
-    while Clusters::Cluster.last.application_helm.nil?
-      raise "Timed out waiting for helm application to be created in DB" if (retries += 1) > 3
-
-      sleep(1)
     end
   end
 end

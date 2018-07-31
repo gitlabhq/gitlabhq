@@ -16,7 +16,6 @@ module QA
 
             def install!(application_name)
               within(".js-cluster-application-row-#{application_name}") do
-                page.has_button?('Install', wait: 30)
                 click_on 'Install'
               end
             end

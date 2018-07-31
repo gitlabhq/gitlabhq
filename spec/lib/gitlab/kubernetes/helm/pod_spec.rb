@@ -2,13 +2,14 @@ require 'rails_helper'
 
 describe Gitlab::Kubernetes::Helm::Pod do
   describe '#generate' do
-    let(:app) {  create(:clusters_applications_prometheus) }
+    let(:cluster) { create(:cluster) }
+    let(:app) {  create(:clusters_applications_prometheus, cluster: cluster) }
     let(:command) {  app.install_command }
     let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
 
     subject { described_class.new(command, namespace) }
 
-    context 'with a command' do
+    shared_examples 'helm pod' do
       it 'should generate a Kubeclient::Resource' do
         expect(subject.generate).to be_a_kind_of(Kubeclient::Resource)
       end
@@ -40,6 +41,10 @@ describe Gitlab::Kubernetes::Helm::Pod do
         spec = subject.generate.spec
         expect(spec.restartPolicy).to eq('Never')
       end
+    end
+
+    context 'with a install command' do
+      it_behaves_like 'helm pod'
 
       it 'should include volumes for the container' do
         container = subject.generate.spec.containers.first
@@ -55,8 +60,24 @@ describe Gitlab::Kubernetes::Helm::Pod do
       it 'should mount configMap specification in the volume' do
         volume = subject.generate.spec.volumes.first
         expect(volume.configMap['name']).to eq("values-content-configuration-#{app.name}")
-        expect(volume.configMap['items'].first['key']).to eq(:'values.yaml')
-        expect(volume.configMap['items'].first['path']).to eq(:'values.yaml')
+        expect(volume.configMap['items'].first['key']).to eq('values')
+        expect(volume.configMap['items'].first['path']).to eq('values.yaml')
+      end
+    end
+
+    context 'with a init command' do
+      let(:app) { create(:clusters_applications_helm, cluster: cluster) }
+
+      it_behaves_like 'helm pod'
+
+      it 'should not include volumeMounts inside the container' do
+        container = subject.generate.spec.containers.first
+        expect(container.volumeMounts).to be_nil
+      end
+
+      it 'should not a volume inside the specification' do
+        spec = subject.generate.spec
+        expect(spec.volumes).to be_nil
       end
     end
   end

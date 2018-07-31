@@ -47,7 +47,7 @@ describe Clusters::Applications::InstallService do
     end
 
     context 'when application cannot be persisted' do
-      let(:application) { create(:clusters_applications_helm, :scheduled) }
+      let(:application) { build(:clusters_applications_helm, :scheduled) }
 
       it 'make the application errored' do
         expect(application).to receive(:make_installing!).once.and_raise(ActiveRecord::RecordInvalid)
