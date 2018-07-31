@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:53\n"
+"PO-Revision-Date: 2018-07-31 11:17\n"
 
 msgid " and"
 msgstr " 和"
@@ -6108,8 +6108,8 @@ msgstr "最大檔案大小為 200KB"
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr "GitLab 存取儲存空間的嘗試次數。"
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "GitLab 將阻擋存取失敗的次數。在管理者介面中可以重置失敗次數: %{link_to_health_page} 或使用 %{api_documentation_link}。"
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr "解密私鑰所需的密碼。這是選用且該值將會被加密儲存。"
@@ -6168,8 +6168,8 @@ msgstr "GitLab 保存失敗訊息的時間(秒)。在此時間內若沒有發生
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr "GitLab 嘗試存取檔案庫的時間 (秒)。超過此時間將會引發逾時錯誤。"
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr "存儲檢查之間的時間（秒）。當以前的檢查完成時，GitLab將跳過檢查。"
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
+msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "該階段中每一個資料項目所花的時間。"
