@@ -3622,6 +3622,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
+msgid "Notes|Are you sure you want to cancel creating this comment?"
+msgstr ""
+
 msgid "Notification events"
 msgstr ""
 
