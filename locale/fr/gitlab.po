@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:44\n"
+"PO-Revision-Date: 2018-07-31 11:16\n"
 
 msgid " and"
 msgstr ""
@@ -6147,8 +6147,8 @@ msgstr "La taille maximale autorisée pour un fichier est de 200 Kio."
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr "Le nombre de tentatives que GitLab va effectuer pour accéder à un stockage."
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "Nombre d’échecs avant que GitLab n’empêche tout accès au stockage. Ce nombre d’échecs peut être réinitialisé dans l’interface d’administration : %{link_to_health_page} ou en suivant l’%{api_documentation_link}."
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
@@ -6207,8 +6207,8 @@ msgstr "Délai en secondes pendant lequel GitLab gardera les informations d’é
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr "Temps en secondes pendant lequel GitLab essaiera d’accéder au stockage. Après ce délai, une erreur d’expiration du délai d’attente sera déclenchée."
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr "Le temps en secondes entre les vérifications du stockage. GitLab ne débutera pas de nouvelle vérification si une vérification est déjà en cours."
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
+msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "Le temps pris par chaque entrée récoltée durant cette étape."
