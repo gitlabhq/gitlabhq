@@ -64,15 +64,26 @@ describe('new file modal component', () => {
         path: '',
         entry: {
           name: 'test',
+          type: 'blob',
         },
       };
 
       vm = createComponentWithStore(Component, store).$mount();
     });
 
-    it('renders title and button for renaming', () => {
-      expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe('Rename');
-      expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe('Update');
+    ['tree', 'blob'].forEach(type => {
+      it(`renders title and button for renaming ${type}`, done => {
+        const text = type === 'tree' ? 'folder' : 'file';
+
+        vm.$store.state.entryModal.entry.type = type;
+
+        vm.$nextTick(() => {
+          expect(vm.$el.querySelector('.modal-title').textContent.trim()).toBe(`Rename ${text}`);
+          expect(vm.$el.querySelector('.btn-success').textContent.trim()).toBe(`Rename ${text}`);
+
+          done();
+        });
+      });
     });
 
     describe('entryName', () => {
