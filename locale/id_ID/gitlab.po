@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: id\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:42\n"
+"PO-Revision-Date: 2018-07-31 11:13\n"
 
 msgid " and"
 msgstr ""
@@ -6108,7 +6108,7 @@ msgstr ""
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr ""
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
@@ -6168,7 +6168,7 @@ msgstr ""
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr ""
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
