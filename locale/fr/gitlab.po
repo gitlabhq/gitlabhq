@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 16:07\n"
+"PO-Revision-Date: 2018-07-31 16:21\n"
 
 msgid " and"
 msgstr ""
@@ -1311,7 +1311,7 @@ msgid "Choose file..."
 msgstr "Choisir le fichier…"
 
 msgid "Choose the top-level group for your repository imports."
-msgstr ""
+msgstr "Choisissez le groupe de premier niveau pour vos importations dans le dépôt."
 
 msgid "Choose which groups you wish to synchronize to this secondary node."
 msgstr "Choisissez les groupes que vous souhaitez synchroniser avec ce nœud secondaire."
@@ -1434,7 +1434,7 @@ msgid "Click the <strong>Promote</strong> button in the top right corner to prom
 msgstr "Cliquez sur le bouton <strong>Promouvoir</strong> en haut à droite pour le promouvoir en tant que jalon de groupe."
 
 msgid "Click the <strong>Select none</strong> button on the right, since we only need \"Google Code Project Hosting\"."
-msgstr ""
+msgstr "Cliquez sur le bouton <strong>Sélectionner aucun</strong> sur la droite, puisque nous n’avons seulement besoin que de « Google Code Project Hosting »."
 
 msgid "Click the button below to begin the install process by navigating to the Kubernetes page"
 msgstr "Cliquez sur le bouton ci-dessous pour lancer le processus d’installation en accédant à la page Kubernetes"
@@ -1824,7 +1824,7 @@ msgid "ClusterIntegration|sign up"
 msgstr "s’inscrire"
 
 msgid "Cohorts"
-msgstr ""
+msgstr "Cohortes"
 
 msgid "Collapse"
 msgstr "Réduire"
@@ -2062,7 +2062,7 @@ msgid "ContributorsPage|Please wait a moment, this page will automatically refre
 msgstr "Veuillez patienter, cette page va être automatiquement actualisée."
 
 msgid "Control the display of third party offers."
-msgstr ""
+msgstr "Contrôle l’affichage des offres tierces."
 
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr "Contrôle la concurrence maximale du remplissage du stockage pour les gros fichiers (LFS) pour ce nœud secondaire"
@@ -2074,7 +2074,7 @@ msgid "Control the maximum concurrency of verification operations for this Geo n
 msgstr "Contrôle la concurrence maximale des opérations de vérification pour ce nœud Geo"
 
 msgid "ConvDev Index"
-msgstr ""
+msgstr "Index ConvDev"
 
 msgid "Copy SSH public key to clipboard"
 msgstr "Copier la clef SSH publique dans le presse‐papiers"
@@ -2661,7 +2661,7 @@ msgid "Environments|Commit"
 msgstr "Commit"
 
 msgid "Environments|Deploy to..."
-msgstr ""
+msgstr "Déployer vers…"
 
 msgid "Environments|Deployment"
 msgstr "Déploiement"
@@ -2709,10 +2709,10 @@ msgid "Environments|Show all"
 msgstr "Tout afficher"
 
 msgid "Environments|Stop"
-msgstr ""
+msgstr "Arrêter"
 
 msgid "Environments|Stop environment"
-msgstr ""
+msgstr "Arrêter l’environnement"
 
 msgid "Environments|Updated"
 msgstr "Mis à jour"
@@ -2763,7 +2763,7 @@ msgid "Error loading last commit."
 msgstr "Erreur lors du chargement du dernier commit."
 
 msgid "Error loading markdown preview"
-msgstr ""
+msgstr "Erreur lors du chargement de l’aperçu du Markdown"
 
 msgid "Error loading merge requests."
 msgstr "Erreur lors du chargement des demandes de fusion."
@@ -2814,7 +2814,7 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr "Chaque semaine (dimanche à 4 h du matin)"
 
 msgid "Everyone can contribute"
-msgstr ""
+msgstr "Tout le monde peut contribuer"
 
 msgid "Expand"
 msgstr "Étendre"
@@ -2829,7 +2829,7 @@ msgid "Explore"
 msgstr ""
 
 msgid "Explore GitLab"
-msgstr ""
+msgstr "Explorer GitLab"
 
 msgid "Explore Groups"
 msgstr ""
@@ -2937,19 +2937,19 @@ msgid "FirstPushedBy|pushed by"
 msgstr "poussé par"
 
 msgid "FogBugz Email"
-msgstr ""
+msgstr "Courriel de FogBugz"
 
 msgid "FogBugz Import"
-msgstr ""
+msgstr "Importation de FogBugz"
 
 msgid "FogBugz Password"
-msgstr ""
+msgstr "Mot de passe FogBugz"
 
 msgid "FogBugz URL"
-msgstr ""
+msgstr "URL de FogBugz"
 
 msgid "FogBugz import"
-msgstr ""
+msgstr "Importation de FogBugz"
 
 msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
