@@ -11,7 +11,7 @@ module Gitlab
 
         def install(command)
           namespace.ensure_exists!
-          create_config_map(command)
+          create_config_map(command) if command.config_map?
           kubeclient.create_pod(command.pod_resource)
         end
 

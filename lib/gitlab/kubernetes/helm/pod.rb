@@ -10,8 +10,10 @@ module Gitlab
         def generate
           spec = { containers: [container_specification], restartPolicy: 'Never' }
 
-          spec[:volumes] = volumes_specification
-          spec[:containers][0][:volumeMounts] = volume_mounts_specification
+          if command.config_map?
+            spec[:volumes] = volumes_specification
+            spec[:containers][0][:volumeMounts] = volume_mounts_specification
+          end
 
           ::Kubeclient::Resource.new(metadata: metadata, spec: spec)
         end
@@ -59,7 +61,7 @@ module Gitlab
               name: 'configuration-volume',
               configMap: {
                 name: "values-content-configuration-#{command.name}",
-                items: command.file_names.map { |name| { key: name, path: name } }
+                items: [{ key: 'values', path: 'values.yaml' }]
               }
             }
           ]

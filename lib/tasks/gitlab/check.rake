@@ -388,14 +388,6 @@ namespace :gitlab do
     end
   end
 
-  namespace :repo do
-    desc "GitLab | Check the integrity of the repositories managed by GitLab"
-    task check: :gitlab_environment do
-      puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
-      Rake::Task["gitlab:git:fsck"].execute
-    end
-  end
-
   namespace :orphans do
     desc 'Gitlab | Check for orphaned namespaces and repositories'
     task check: :gitlab_environment do
@@ -425,6 +417,7 @@ namespace :gitlab do
     end
   end
 
+<<<<<<< HEAD
   namespace :user do
     desc "GitLab | Check the integrity of a specific user's repositories"
     task :check_repos, [:username] => :gitlab_environment do |t, args|
@@ -466,6 +459,8 @@ namespace :gitlab do
     end
   end
 
+=======
+>>>>>>> ce/master
   # Helper methods
   ##########################
 

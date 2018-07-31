@@ -149,6 +149,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :allow_local_requests_from_hooks_and_services,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
@@ -175,6 +176,7 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :enforce_terms,
       :gitaly_timeout_default,
       :gitaly_timeout_medium,
       :gitaly_timeout_fast,
@@ -183,6 +185,7 @@ module ApplicationSettingsHelper
       :help_page_hide_commercial_content,
       :help_page_support_url,
       :help_page_text,
+      :hide_third_party_offers,
       :home_page_url,
       :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
@@ -204,6 +207,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :mirror_available,
       :pages_domain_verification_enabled,
       :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
@@ -234,6 +238,7 @@ module ApplicationSettingsHelper
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
+      :terms,
       :throttle_unauthenticated_enabled,
       :throttle_unauthenticated_requests_per_period,
       :throttle_unauthenticated_period_in_seconds,
@@ -250,12 +255,7 @@ module ApplicationSettingsHelper
       :usage_ping_enabled,
       :user_default_external,
       :user_oauth_applications,
-      :version_check_enabled,
-      :allow_local_requests_from_hooks_and_services,
-      :hide_third_party_offers,
-      :enforce_terms,
-      :terms,
-      :mirror_available
+      :version_check_enabled
     ]
   end
 end

@@ -1,6 +1,7 @@
 <script>
 import Mousetrap from 'mousetrap';
 import { mapActions, mapState, mapGetters } from 'vuex';
+import { __ } from '~/locale';
 import NewModal from './new_dropdown/modal.vue';
 import IdeSidebar from './ide_side_bar.vue';
 import RepoTabs from './repo_tabs.vue';
@@ -25,7 +26,6 @@ export default {
   },
   computed: {
     ...mapState([
-      'changedFiles',
       'openFiles',
       'viewer',
       'currentMergeRequestId',
@@ -34,18 +34,10 @@ export default {
       'currentProjectId',
       'errorMessage',
     ]),
-    ...mapGetters(['activeFile', 'hasChanges']),
+    ...mapGetters(['activeFile', 'hasChanges', 'someUncommitedChanges']),
   },
   mounted() {
-    const returnValue = 'Are you sure you want to lose unsaved changes?';
-    window.onbeforeunload = e => {
-      if (!this.changedFiles.length) return undefined;
-
-      Object.assign(e, {
-        returnValue,
-      });
-      return returnValue;
-    };
+    window.onbeforeunload = e => this.onBeforeUnload(e);
 
     Mousetrap.bind(['t', 'command+p', 'ctrl+p'], e => {
       if (e.preventDefault) {
@@ -59,6 +51,16 @@ export default {
   },
   methods: {
     ...mapActions(['toggleFileFinder']),
+    onBeforeUnload(e = {}) {
+      const returnValue = __('Are you sure you want to lose unsaved changes?');
+
+      if (!this.someUncommitedChanges) return undefined;
+
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
+    },
     mousetrapStopCallback(e, el, combo) {
       if (
         (combo === 't' && el.classList.contains('dropdown-input-field')) ||

@@ -2,25 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::Kubernetes::Helm::BaseCommand do
   let(:application) { create(:clusters_applications_helm) }
-  let(:test_class) do
-    Class.new do
-      include Gitlab::Kubernetes::Helm::BaseCommand
-
-      def name
-        "test-class-name"
-      end
-
-      def files
-        {
-          some: 'value'
-        }
-      end
-    end
-  end
-
-  let(:base_command) do
-    test_class.new
-  end
+  let(:base_command) { described_class.new(application.name) }
 
   subject { base_command }
 
@@ -36,9 +18,15 @@ describe Gitlab::Kubernetes::Helm::BaseCommand do
     end
   end
 
+  describe '#config_map?' do
+    subject { base_command.config_map? }
+
+    it { is_expected.to be_falsy }
+  end
+
   describe '#pod_name' do
     subject { base_command.pod_name }
 
-    it { is_expected.to eq('install-test-class-name') }
+    it { is_expected.to eq('install-helm') }
   end
 end

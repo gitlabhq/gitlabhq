@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Kubernetes::ConfigMap do
   let(:kubeclient) { double('kubernetes client') }
   let(:application) { create(:clusters_applications_prometheus) }
-  let(:config_map) { described_class.new(application.name, application.files) }
+  let(:config_map) { described_class.new(application.name, application.values) }
   let(:namespace) { Gitlab::Kubernetes::Helm::NAMESPACE }
 
   let(:metadata) do
@@ -15,7 +15,7 @@ describe Gitlab::Kubernetes::ConfigMap do
   end
 
   describe '#generate' do
-    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: application.files) }
+    let(:resource) { ::Kubeclient::Resource.new(metadata: metadata, data: { values: application.values }) }
     subject { config_map.generate }
 
     it 'should build a Kubeclient Resource' do
