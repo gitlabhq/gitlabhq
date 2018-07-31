@@ -123,6 +123,39 @@ module API
           not_found!
         end
       end
+
+      desc 'Get the common ancestor between commits' do
+        success Entities::Commit
+      end
+      params do
+        # For now we just support 2 refs passed, but `merge-base` supports
+        # multiple defining this as an Array instead of 2 separate params will
+        # make sure we don't need to deprecate this API in favor of one
+        # supporting multiple commits when this functionality gets added to
+        # Gitaly
+        requires :refs, type: Array[String]
+      end
+      get ':id/repository/merge_base' do
+        refs = params[:refs]
+
+        unless refs.size == 2
+          render_api_error!('Provide exactly 2 refs', 400)
+        end
+
+        merge_base = Gitlab::Git::MergeBase.new(user_project.repository, refs)
+
+        if merge_base.unknown_refs.any?
+          ref_noun = 'ref'.pluralize(merge_base.unknown_refs.size)
+          message = "Could not find #{ref_noun}: #{merge_base.unknown_refs.join(', ')}"
+          render_api_error!(message, 400)
+        end
+
+        if merge_base.commit
+          present merge_base.commit, with: Entities::Commit
+        else
+          not_found!("Merge Base")
+        end
+      end
     end
   end
 end
