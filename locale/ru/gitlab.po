@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:43\n"
+"PO-Revision-Date: 2018-07-31 11:13\n"
 
 msgid " and"
 msgstr ""
@@ -6225,8 +6225,8 @@ msgstr "Максимально допустимый размер файла со
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr "Количество попыток, которые GitLab будет предпринимать для доступа к хранилищу."
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "Количество сбоев, после которого Gitlab полностью прекратит доступ к хранилищу. Изменение счётчика \"количество сбоев\" может быть произведено через административный интерфейс: %{link_to_health_page} или при помощи API %{api_documentation_link}."
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
@@ -6285,7 +6285,7 @@ msgstr "Время в секундах, в течение которого GitLa
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr "Время в секундах в течении которого GitLab будет пытаться получить доступ к хранилищу. После этого времени будет зафиксирована ошибка превышения времени ожидания."
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
