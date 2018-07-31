@@ -149,21 +149,16 @@ module Gitlab
             description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author)
             description += pull_request.description
 
-            source_branch_sha = pull_request.source_branch_sha
-            target_branch_sha = pull_request.target_branch_sha
-            source_branch_sha = project.repository.commit(source_branch_sha)&.sha || source_branch_sha
-            target_branch_sha = project.repository.commit(target_branch_sha)&.sha || target_branch_sha
-
             merge_request = project.merge_requests.create!(
               iid: pull_request.iid,
               title: pull_request.title,
               description: description,
               source_project: project,
               source_branch: pull_request.source_branch_name,
-              source_branch_sha: source_branch_sha,
+              source_branch_sha: pull_request.source_branch_sha,
               target_project: project,
               target_branch: pull_request.target_branch_name,
-              target_branch_sha: target_branch_sha,
+              target_branch_sha: pull_request.target_branch_sha,
               state: pull_request.state,
               author_id: gitlab_user_id(project, pull_request.author),
               assignee_id: nil,
