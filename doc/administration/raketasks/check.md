@@ -1,4 +1,4 @@
-# Check Rake Tasks
+# Integrity Check Rake Task
 
 ## Repository Integrity
 
@@ -28,14 +28,8 @@ exactly which repositories are causing the trouble.
 
 ### Check all GitLab repositories
 
->**Note:**
->
->  - `gitlab:repo:check` has been deprecated in favor of `gitlab:git:fsck`
->  - [Deprecated][ce-15931] in GitLab 10.4.
->  - `gitlab:repo:check` will be removed in the future. [Removal issue][ce-41699]
-
 This task loops through all repositories on the GitLab server and runs the
-3 integrity checks described previously.
+integrity check described previously.
 
 **Omnibus Installation**
 
@@ -48,33 +42,6 @@ sudo gitlab-rake gitlab:git:fsck
 ```bash
 sudo -u git -H bundle exec rake gitlab:git:fsck RAILS_ENV=production
 ```
-
-### Check repositories for a specific user
-
-This task checks all repositories that a specific user has access to. This is important
-because sometimes you know which user is experiencing trouble but you don't know
-which project might be the cause.
-
-If the rake task is executed without brackets at the end, you will be prompted
-to enter a username.
-
-**Omnibus Installation**
-
-```bash
-sudo gitlab-rake gitlab:user:check_repos
-sudo gitlab-rake gitlab:user:check_repos[<username>]
-```
-
-**Source Installation**
-
-```bash
-sudo -u git -H bundle exec rake gitlab:user:check_repos RAILS_ENV=production
-sudo -u git -H bundle exec rake gitlab:user:check_repos[<username>] RAILS_ENV=production
-```
-
-Example output:
-
-![gitlab:user:check_repos output](../img/raketasks/check_repos_output.png)
 
 ## Uploaded Files Integrity
 
@@ -167,5 +134,4 @@ The LDAP check Rake task will test the bind_dn and password credentials
 executed as part of the `gitlab:check` task, but can run independently.
 See [LDAP Rake Tasks - LDAP Check](ldap.md#check) for details.
 
-[ce-15931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15931
-[ce-41699]: https://gitlab.com/gitlab-org/gitlab-ce/issues/41699
+[git-fsck]: https://git-scm.com/docs/git-fsck
