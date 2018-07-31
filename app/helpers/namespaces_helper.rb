@@ -9,6 +9,7 @@ module NamespacesHelper
                .includes(:route)
                .order('routes.path')
     users = [current_user.namespace]
+    selected_option = nil
 
     unless extra_group.nil? || extra_group.is_a?(Group)
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
@@ -18,7 +19,11 @@ module NamespacesHelper
       # Avoid duplicate groups if one already exists by that name
       existing_group = Group.find_by(name: extra_group.name)
       extra_group = existing_group if existing_group
-      groups |= [extra_group] if Ability.allowed?(current_user, :read_group, extra_group)
+
+      if Ability.allowed?(current_user, :read_group, extra_group)
+        groups |= [extra_group]
+        selected_option = extra_group.id if selected == :extra_group
+      end
     end
 
     options = []
@@ -27,12 +32,12 @@ module NamespacesHelper
     unless groups_only
       options << options_for_group(users, display_path: display_path, type: 'user')
 
-      if selected == :current_user && current_user.namespace
-        selected = current_user.namespace.id
+      if (selected == :current_user || selected_option.nil?) && current_user.namespace
+        selected_option = current_user.namespace.id
       end
     end
 
-    grouped_options_for_select(options, selected)
+    grouped_options_for_select(options, selected_option)
   end
 
   def namespace_icon(namespace, size = 40)

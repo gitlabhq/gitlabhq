@@ -40,6 +40,25 @@ describe NamespacesHelper do
       expect(options).to include(admin_group.name)
     end
 
+    it 'selects extra_group' do
+      allow(helper).to receive(:current_user).and_return(admin)
+
+      options = helper.namespaces_options(:extra_group, display_path: true, extra_group: user_group)
+
+      expect(options).to include("selected=\"selected\" value=\"#{user_group.id}\"")
+      expect(options).to include(admin_group.name)
+    end
+
+    it 'falls back to current user selection' do
+      allow(helper).to receive(:current_user).and_return(user)
+
+      options = helper.namespaces_options(:extra_group, display_path: true, extra_group: build(:group, name: admin_group.name))
+
+      expect(options).to include(user_group.name)
+      expect(options).not_to include(admin_group.name)
+      expect(options).to include("selected=\"selected\" value=\"#{user.namespace.id}\"")
+    end
+
     it 'returns only groups if groups_only option is true' do
       allow(helper).to receive(:current_user).and_return(user)
 
