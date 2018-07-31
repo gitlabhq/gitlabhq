@@ -1,15 +1,15 @@
 module Gitlab
   module Kubernetes
     class ConfigMap
-      def initialize(name, files)
+      def initialize(name, values = "")
         @name = name
-        @files = files
+        @values = values
       end
 
       def generate
         resource = ::Kubeclient::Resource.new
         resource.metadata = metadata
-        resource.data = files
+        resource.data = { values: values }
         resource
       end
 
@@ -19,7 +19,7 @@ module Gitlab
 
       private
 
-      attr_reader :name, :files
+      attr_reader :name, :values
 
       def metadata
         {

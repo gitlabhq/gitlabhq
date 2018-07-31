@@ -33,55 +33,31 @@ describe Clusters::Applications::Runner do
       expect(subject.chart).to eq('runner/gitlab-runner')
       expect(subject.version).to be_nil
       expect(subject.repository).to eq('https://charts.gitlab.io')
-      expect(subject.files).to eq(gitlab_runner.files)
+      expect(subject.values).to eq(gitlab_runner.values)
     end
   end
 
-  describe '#files' do
-    let(:application) { create(:clusters_applications_runner, runner: ci_runner) }
+  describe '#values' do
+    let(:gitlab_runner) { create(:clusters_applications_runner, runner: ci_runner) }
 
-    subject { application.files }
-    let(:values) { subject[:'values.yaml'] }
-
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
+    subject { gitlab_runner.values }
 
     it 'should include runner valid values' do
-      expect(values).to include('concurrent')
-      expect(values).to include('checkInterval')
-      expect(values).to include('rbac')
-      expect(values).to include('runners')
-      expect(values).to include('privileged: true')
-      expect(values).to include('image: ubuntu:16.04')
-      expect(values).to include('resources')
-      expect(values).to match(/runnerToken: '?#{ci_runner.token}/)
-      expect(values).to match(/gitlabUrl: '?#{Gitlab::Routing.url_helpers.root_url}/)
+      is_expected.to include('concurrent')
+      is_expected.to include('checkInterval')
+      is_expected.to include('rbac')
+      is_expected.to include('runners')
+      is_expected.to include('privileged: true')
+      is_expected.to include('image: ubuntu:16.04')
+      is_expected.to include('resources')
+      is_expected.to include("runnerToken: #{ci_runner.token}")
+      is_expected.to include("gitlabUrl: #{Gitlab::Routing.url_helpers.root_url}")
     end
 
     context 'without a runner' do
       let(:project) { create(:project) }
-      let(:cluster) { create(:cluster, :with_installed_helm, projects: [project]) }
-      let(:application) { create(:clusters_applications_runner, cluster: cluster) }
+      let(:cluster) { create(:cluster, projects: [project]) }
+      let(:gitlab_runner) { create(:clusters_applications_runner, cluster: cluster) }
 
       it 'creates a runner' do
         expect do
@@ -90,18 +66,18 @@ describe Clusters::Applications::Runner do
       end
 
       it 'uses the new runner token' do
-        expect(values).to match(/runnerToken: '?#{application.reload.runner.token}/)
+        expect(subject).to include("runnerToken: #{gitlab_runner.reload.runner.token}")
       end
 
       it 'assigns the new runner to runner' do
         subject
 
-        expect(application.reload.runner).to be_project_type
+        expect(gitlab_runner.reload.runner).to be_project_type
       end
     end
 
     context 'with duplicated values on vendor/runner/values.yaml' do
-      let(:stub_values) do
+      let(:values) do
         {
           "concurrent" => 4,
           "checkInterval" => 3,
@@ -120,11 +96,11 @@ describe Clusters::Applications::Runner do
       end
 
       before do
-        allow(application).to receive(:chart_values).and_return(stub_values)
+        allow(gitlab_runner).to receive(:chart_values).and_return(values)
       end
 
       it 'should overwrite values.yaml' do
-        expect(values).to match(/privileged: '?#{application.privileged}/)
+        is_expected.to include("privileged: #{gitlab_runner.privileged}")
       end
     end
   end

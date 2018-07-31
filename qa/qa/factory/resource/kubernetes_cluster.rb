@@ -44,11 +44,10 @@ module QA
               page.await_installed(:helm)
 
               page.install!(:ingress) if @install_ingress
-              page.install!(:prometheus) if @install_prometheus
-              page.install!(:runner) if @install_runner
-
               page.await_installed(:ingress) if @install_ingress
+              page.install!(:prometheus) if @install_prometheus
               page.await_installed(:prometheus) if @install_prometheus
+              page.install!(:runner) if @install_runner
               page.await_installed(:runner) if @install_runner
             end
           end

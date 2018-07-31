@@ -74,43 +74,18 @@ describe Clusters::Applications::Ingress do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
       expect(subject.version).to be_nil
-      expect(subject.files).to eq(ingress.files)
+      expect(subject.values).to eq(ingress.values)
     end
   end
 
-  describe '#files' do
-    let(:application) { ingress }
-    subject { application.files }
-    let(:values) { subject[:'values.yaml'] }
+  describe '#values' do
+    subject { ingress.values }
 
-    it 'should include ingress valid keys in values' do
-      expect(values).to include('image')
-      expect(values).to include('repository')
-      expect(values).to include('stats')
-      expect(values).to include('podAnnotations')
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
-
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
+    it 'should include ingress valid keys' do
+      is_expected.to include('image')
+      is_expected.to include('repository')
+      is_expected.to include('stats')
+      is_expected.to include('podAnnotations')
     end
   end
 end

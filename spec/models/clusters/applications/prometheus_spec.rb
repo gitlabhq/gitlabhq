@@ -153,44 +153,21 @@ describe Clusters::Applications::Prometheus do
       expect(command.name).to eq('prometheus')
       expect(command.chart).to eq('stable/prometheus')
       expect(command.version).to eq('6.7.3')
-      expect(command.files).to eq(prometheus.files)
+      expect(command.values).to eq(prometheus.values)
     end
   end
 
-  describe '#files' do
-    let(:application) { create(:clusters_applications_prometheus) }
-    subject { application.files }
-    let(:values) { subject[:'values.yaml'] }
+  describe '#values' do
+    let(:prometheus) { create(:clusters_applications_prometheus) }
 
-    it 'should include cert files' do
-      expect(subject[:'ca.pem']).to be_present
-      expect(subject[:'ca.pem']).to eq(application.cluster.application_helm.ca_cert)
-
-      expect(subject[:'cert.pem']).to be_present
-      expect(subject[:'key.pem']).to be_present
-
-      cert = OpenSSL::X509::Certificate.new(subject[:'cert.pem'])
-      expect(cert.not_after).to be < 60.minutes.from_now
-    end
-
-    context 'when the helm application does not have a ca_cert' do
-      before do
-        application.cluster.application_helm.ca_cert = nil
-      end
-
-      it 'should not include cert files' do
-        expect(subject[:'ca.pem']).not_to be_present
-        expect(subject[:'cert.pem']).not_to be_present
-        expect(subject[:'key.pem']).not_to be_present
-      end
-    end
+    subject { prometheus.values }
 
     it 'should include prometheus valid values' do
-      expect(values).to include('alertmanager')
-      expect(values).to include('kubeStateMetrics')
-      expect(values).to include('nodeExporter')
-      expect(values).to include('pushgateway')
-      expect(values).to include('serverFiles')
+      is_expected.to include('alertmanager')
+      is_expected.to include('kubeStateMetrics')
+      is_expected.to include('nodeExporter')
+      is_expected.to include('pushgateway')
+      is_expected.to include('serverFiles')
     end
   end
 end
