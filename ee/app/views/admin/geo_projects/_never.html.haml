@@ -14,22 +14,22 @@
           .row
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Next sync scheduled at
+                = s_('Geo|Next sync scheduled at')
               .project-status-content
                 = distance_of_time_in_words(Time.now, project.project_registry.repository_retry_at) if project.project_registry&.repository_retry_at
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Last sync attempt
+                = s_('Geo|Last sync attempt')
               .project-status-content
                 = distance_of_time_in_words(Time.now, project.project_registry.last_repository_synced_at) if project.project_registry&.last_repository_synced_at
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Retry counts
+                = s_('Geo|Retry counts')
               .project-status-content
                 = project.project_registry.repository_retry_count if project.project_registry
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Error message
+                = s_('Geo|Error message')
               .project-status-content.font-weight-bold
                 = project.project_registry.last_repository_sync_failure if project.project_registry
 

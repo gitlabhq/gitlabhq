@@ -9,9 +9,9 @@
             = project_registry.project.name
         - if project_registry.candidate_for_redownload?
           = link_to(force_redownload_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
-            Redownload
+            = s_('Geo|Redownload')
         = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
-          Resync
+          = s_('Geo|Resync')
 
     .collapse.show{ id: "project-#{project_registry.project.id}", 'aria-labelledby' => "project-#{project_registry.project.id}-header" }
       .card-body
@@ -19,22 +19,22 @@
           .row
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Status
+                = s_('Geo|Status')
               .project-status-content.status-type-failure
-                Failed
+                = s_('Geo|Failed')
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Next sync scheduled at
+                = s_('Geo|Next sync scheduled at')
               .project-status-content
                 = distance_of_time_in_words(Time.now, project_registry.repository_retry_at) if project_registry.repository_retry_at
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Last sync attempt
+                = s_('Geo|Last sync attempt')
               .project-status-content
                 = distance_of_time_in_words(Time.now, project_registry.last_repository_synced_at) if project_registry.last_repository_synced_at
             .col-sm.project-status-container
               .project-status-title.text-muted
-                Retry counts
+                = s_('Geo|Retry counts')
               .project-status-content
                 = project_registry.repository_retry_count
 
@@ -57,13 +57,11 @@
                   %li.p-0.d-flex
                     = sprite_icon('warning', size: 18, css_class: 'error-icon')
                     %span.error-text.prepend-left-5
-                      Synchronization failed -
-                      = project_registry.last_repository_sync_failure
+                      = s_('Geo|Synchronization failed - %{error}') % { error: project_registry.last_repository_sync_failure }
                 - if project_registry.last_repository_verification_failure
                   %li.p-0.d-flex
                     = sprite_icon('warning', size: 18, css_class: 'error-icon')
                     %span.error-text.prepend-left-5
-                      Verification failed -
-                      = project_registry.last_repository_verification_failure
+                      = s_('Geo|Verification failed - %{error}') % { error: project_registry.last_repository_verification_failure }
 
 = paginate @registries, theme: 'gitlab'

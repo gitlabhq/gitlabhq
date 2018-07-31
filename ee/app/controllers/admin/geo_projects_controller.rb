@@ -24,26 +24,26 @@ class Admin::GeoProjectsController < Admin::ApplicationController
   def recheck
     @registry.flag_repository_for_recheck!
 
-    redirect_back_or_admin_geo_projects(notice: "#{@registry.project.full_name} is scheduled for recheck")
+    redirect_back_or_admin_geo_projects(notice: s_('Geo|%{name} is scheduled for re-check') % { name: @registry.project.full_name })
   end
 
   def resync
     @registry.flag_repository_for_resync!
 
-    redirect_back_or_admin_geo_projects(notice: "#{@registry.project.full_name} is scheduled for resync")
+    redirect_back_or_admin_geo_projects(notice: s_('Geo|%{name} is scheduled for re-sync') % { name: @registry.project.full_name })
   end
 
   def force_redownload
     @registry.flag_repository_for_redownload!
 
-    redirect_back_or_admin_geo_projects(notice: "#{@registry.project.full_name} is scheduled for forced re-download")
+    redirect_back_or_admin_geo_projects(notice: s_('Geo|%{name} is scheduled for forced re-download') % { name: @registry.project.full_name })
   end
 
   private
 
   def check_license
     unless Gitlab::Geo.license_allows?
-      redirect_to admin_license_path, alert: 'You need a different license to use Geo replication'
+      redirect_to admin_license_path, alert: s_('Geo|You need a different license to use Geo replication')
     end
   end
 

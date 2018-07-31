@@ -3220,7 +3220,22 @@ msgstr ""
 msgid "GeoNodes|You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS."
 msgstr ""
 
+msgid "Geo|%{name} is scheduled for forced re-download"
+msgstr ""
+
+msgid "Geo|%{name} is scheduled for re-check"
+msgstr ""
+
+msgid "Geo|%{name} is scheduled for re-sync"
+msgstr ""
+
 msgid "Geo|All projects"
+msgstr ""
+
+msgid "Geo|Error message"
+msgstr ""
+
+msgid "Geo|Failed"
 msgstr ""
 
 msgid "Geo|File sync capacity"
@@ -3229,13 +3244,46 @@ msgstr ""
 msgid "Geo|Groups to synchronize"
 msgstr ""
 
+msgid "Geo|In sync"
+msgstr ""
+
+msgid "Geo|Last successful sync"
+msgstr ""
+
+msgid "Geo|Last sync attempt"
+msgstr ""
+
+msgid "Geo|Last time verified"
+msgstr ""
+
+msgid "Geo|Never"
+msgstr ""
+
+msgid "Geo|Next sync scheduled at"
+msgstr ""
+
+msgid "Geo|Pending"
+msgstr ""
+
 msgid "Geo|Projects in certain groups"
 msgstr ""
 
 msgid "Geo|Projects in certain storage shards"
 msgstr ""
 
+msgid "Geo|Recheck"
+msgstr ""
+
+msgid "Geo|Redownload"
+msgstr ""
+
 msgid "Geo|Repository sync capacity"
+msgstr ""
+
+msgid "Geo|Resync"
+msgstr ""
+
+msgid "Geo|Retry counts"
 msgstr ""
 
 msgid "Geo|Select groups to replicate."
@@ -3244,7 +3292,22 @@ msgstr ""
 msgid "Geo|Shards to synchronize"
 msgstr ""
 
+msgid "Geo|Status"
+msgstr ""
+
+msgid "Geo|Synced"
+msgstr ""
+
+msgid "Geo|Synchronization failed - %{error}"
+msgstr ""
+
 msgid "Geo|Verification capacity"
+msgstr ""
+
+msgid "Geo|Verification failed - %{error}"
+msgstr ""
+
+msgid "Geo|You need a different license to use Geo replication"
 msgstr ""
 
 msgid "Git"
@@ -4340,9 +4403,6 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
-msgstr ""
-
-msgid "Never"
 msgstr ""
 
 msgid "New"
@@ -6179,9 +6239,6 @@ msgid "Switch branch/tag"
 msgstr ""
 
 msgid "Sync information"
-msgstr ""
-
-msgid "Synced"
 msgstr ""
 
 msgid "System Hooks"
