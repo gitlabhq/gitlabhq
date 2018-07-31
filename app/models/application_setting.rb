@@ -295,8 +295,8 @@ class ApplicationSetting < ActiveRecord::Base
       unique_ips_limit_per_user: 10,
       unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
-      user_default_external: false,
-      instance_statistics_visibility_private: false
+      instance_statistics_visibility_private: false,
+      user_default_external: false
     }
   end
 
