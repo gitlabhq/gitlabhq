@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:25\n"
+"PO-Revision-Date: 2018-07-31 08:28\n"
 
 msgid " and"
 msgstr " と"
@@ -3399,7 +3399,7 @@ msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "グループは複数のプロジェクトの集合体です。"
 
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
-msgstr ""
+msgstr "グループはプロジェクトを整理するための、フォルダーのように機能します。"
 
 msgid "GroupsEmptyState|No groups found"
 msgstr "グループはありません"
@@ -3408,7 +3408,7 @@ msgid "GroupsEmptyState|You can manage your group member’s permissions and acc
 msgstr "グループメンバーの権限管理、およびグループ内の各プロジェクトのアクセス権限を管理できます。"
 
 msgid "GroupsTree|Create a project in this group."
-msgstr ""
+msgstr "このグループにプロジェクトを作成する。"
 
 msgid "GroupsTree|Create a subgroup in this group."
 msgstr "このグループにサブグループを作成する"
@@ -3417,7 +3417,7 @@ msgid "GroupsTree|Edit group"
 msgstr "グループを編集"
 
 msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
-msgstr ""
+msgstr "グループの唯一のオーナーとなっているため、このグループから離脱することができません。"
 
 msgid "GroupsTree|Filter by name..."
 msgstr "名前で絞り込み..."
