@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-describe ResourceLabelEventService do
+describe ResourceEvents::ChangeLabelsService do
   set(:project)  { create(:project) }
   set(:author)   { create(:user) }
   let(:resource) { create(:issue, project: project) }
 
   describe '.change_labels' do
-    subject { described_class.change_labels(resource, author, added, removed) }
+    subject { described_class.new(resource, author).execute(added_labels: added, removed_labels: removed) }
 
     let(:labels)  { create_list(:label, 2, project: project) }
 
