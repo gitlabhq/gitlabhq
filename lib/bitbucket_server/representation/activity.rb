@@ -28,17 +28,21 @@ module BitbucketServer
       end
 
       def committer_user
-        raw.dig('commit', 'committer', 'displayName')
+        commit.dig('committer', 'displayName')
       end
 
       def committer_email
-        raw.dig('commit', 'committer', 'emailAddress')
+        commit.dig('committer', 'emailAddress')
       end
 
       def merge_timestamp
-        timestamp = raw.dig('commit', 'committerTimestamp')
+        timestamp = commit['committerTimestamp']
 
         self.class.convert_timestamp(timestamp)
+      end
+
+      def merge_commit
+        commit['id']
       end
 
       def created_at
@@ -46,6 +50,10 @@ module BitbucketServer
       end
 
       private
+
+      def commit
+        raw.fetch('commit', {})
+      end
 
       def action
         raw['action']

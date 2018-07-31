@@ -65,7 +65,9 @@ describe Gitlab::BitbucketServerImport::Importer do
         comment?: false,
         merge_event?: true,
         committer_email: project.owner.email,
-        merge_timestamp: now)
+        merge_timestamp: now,
+        merge_commit: '12345678'
+      )
 
       @pr_note = instance_double(
         BitbucketServer::Representation::Comment,
@@ -90,6 +92,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       merge_request = MergeRequest.first
       expect(merge_request.metrics.merged_by).to eq(project.owner)
       expect(merge_request.metrics.merged_at).to eq(@merge_event.merge_timestamp)
+      expect(merge_request.merge_commit_sha).to eq('12345678')
     end
 
     it 'imports comments' do

@@ -33,5 +33,6 @@ describe BitbucketServer::Representation::Activity do
     it { expect(subject.committer_email).to eq('test.user@example.com') }
     it { expect(subject.merge_timestamp).to be_a(Time) }
     it { expect(subject.created_at).to be_a(Time) }
+    it { expect(subject.merge_commit).to eq('839fa9a2d434eb697815b8fcafaecc51accfdbbc') }
   end
 end
