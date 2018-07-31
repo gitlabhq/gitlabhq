@@ -81,6 +81,7 @@
         "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_create_note": { "type": "boolean" },
+        "can_create_issue": { "type": "boolean" },
         "can_update": { "type": "boolean" }
       },
       "additionalProperties": false

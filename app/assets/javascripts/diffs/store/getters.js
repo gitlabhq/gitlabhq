@@ -48,6 +48,14 @@ export const diffHasExpandedDiscussions = (state, getters) => diff => {
 };
 
 /**
+ * Checks if the diff has any discussion
+ * @param {Boolean} diff
+ * @returns {Boolean}
+ */
+export const diffHasDiscussions = (state, getters) => diff =>
+  getters.getDiffFileDiscussions(diff).length > 0;
+
+/**
  * Returns an array with the discussions of the given diff
  * @param {Object} diff
  * @returns {Array}

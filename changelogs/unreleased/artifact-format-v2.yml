@@ -1,0 +1,5 @@
+---
+title: Extend gitlab-ci.yml to request junit.xml test reports
+merge_request: 20390
+author:
+type: added

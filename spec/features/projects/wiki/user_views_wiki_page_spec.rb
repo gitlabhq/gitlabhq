@@ -137,6 +137,26 @@ describe 'User views a wiki page' do
       end
     end
 
+    context 'when page has invalid content encoding' do
+      let(:content) { 'whatever'.force_encoding('ISO-8859-1') }
+
+      before do
+        allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)
+
+        visit(project_wiki_path(project, wiki_page))
+      end
+
+      it 'does not show "Edit" button' do
+        expect(page).not_to have_selector('a.btn', text: 'Edit')
+      end
+
+      it 'shows error' do
+        page.within(:css, '.flash-notice') do
+          expect(page).to have_content('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+        end
+      end
+    end
+
     it 'opens a default wiki page', :js do
       visit(project_path(project))
 

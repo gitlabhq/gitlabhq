@@ -8,6 +8,8 @@ Sidekiq.default_worker_options = { retry: 3 }
 enable_json_logs = Gitlab.config.sidekiq.log_format == 'json'
 
 Sidekiq.configure_server do |config|
+  require 'rbtrace' if ENV['ENABLE_RBTRACE']
+
   config.redis = queues_config_hash
 
   config.server_middleware do |chain|

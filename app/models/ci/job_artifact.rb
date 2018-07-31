@@ -4,11 +4,17 @@ module Ci
     include ObjectStorage::BackgroundMove
     extend Gitlab::Ci::Model
 
+    TEST_REPORT_FILE_TYPES = %w[junit].freeze
+    DEFAULT_FILE_NAMES = { junit: 'junit.xml' }.freeze
+    TYPE_AND_FORMAT_PAIRS = { archive: :zip, metadata: :gzip, trace: :raw, junit: :gzip }.freeze
+
     belongs_to :project
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
     mount_uploader :file, JobArtifactUploader
 
+    validates :file_format, presence: true, unless: :trace?, on: :create
+    validate :valid_file_format?, unless: :trace?, on: :create
     before_save :set_size, if: :file_changed?
     after_save :update_project_statistics_after_save, if: :size_changed?
     after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
@@ -17,13 +23,32 @@ module Ci
 
     scope :with_files_stored_locally, -> { where(file_store: [nil, ::JobArtifactUploader::Store::LOCAL]) }
 
+    scope :test_reports, -> do
+      types = self.file_types.select { |file_type| TEST_REPORT_FILE_TYPES.include?(file_type) }.values
+
+      where(file_type: types)
+    end
+
     delegate :exists?, :open, to: :file
 
     enum file_type: {
       archive: 1,
       metadata: 2,
-      trace: 3
+      trace: 3,
+      junit: 4
     }
+
+    enum file_format: {
+      raw: 1,
+      zip: 2,
+      gzip: 3
+    }
+
+    def valid_file_format?
+      unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
+        errors.add(:file_format, 'Invalid file format with specified file type')
+      end
+    end
 
     def update_file_store
       # The file.object_store is set during `uploader.store!`

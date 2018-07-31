@@ -20,6 +20,11 @@ describe Members::DestroyService do
   end
 
   shared_examples 'a service destroying a member' do
+    before do
+      type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+      expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(1.hour, member.user_id, member.source_id, type)
+    end
+
     it 'destroys the member' do
       expect { described_class.new(current_user).execute(member, opts) }.to change { member.source.members_and_requesters.count }.by(-1)
     end

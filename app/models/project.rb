@@ -548,6 +548,10 @@ class Project < ActiveRecord::Base
     repository.commit_by(oid: oid)
   end
 
+  def commits_by(oids:)
+    repository.commits_by(oids: oids)
+  end
+
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
     latest_pipeline = pipelines.latest_successful_for(ref)

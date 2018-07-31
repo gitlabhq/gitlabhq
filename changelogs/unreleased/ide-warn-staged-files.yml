@@ -1,0 +1,5 @@
+---
+title: Warn user when reload IDE with staged changes
+merge_request: 20857
+author:
+type: added

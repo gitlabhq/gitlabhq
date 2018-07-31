@@ -29,7 +29,7 @@ describe Ci::BuildRunnerSession, model: true do
       it 'adds Authorization header if authorization is present' do
         subject.authorization = 'whatever'
 
-        expect(terminal_specification[:headers]).to include(Authorization: 'whatever')
+        expect(terminal_specification[:headers]).to include(Authorization: ['whatever'])
       end
     end
   end

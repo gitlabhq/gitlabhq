@@ -15,7 +15,7 @@ Use the following rules when creating realtime solutions.
 Use that as your polling interval. This way it is [easy for system administrators to change the
 polling rate](../../administration/polling.md).
 A `Poll-Interval: -1` means you should disable polling, and this must be implemented.
-1. A response with HTTP status `4XX` or `5XX` should disable polling as well.
+1. A response with HTTP status different from 2XX should disable polling as well.
 1. Use a common library for polling.
 1. Poll on active tabs only. Please use [Visibility](https://github.com/ai/visibilityjs).
 1. Use regular polling intervals, do not use backoff polling, or jitter, as the interval will be
@@ -25,15 +25,15 @@ controlled by the server.
 
 ### Lazy Loading Images
 
-To improve the time to first render we are using lazy loading for images. This works by setting 
-the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded, 
+To improve the time to first render we are using lazy loading for images. This works by setting
+the actual image source on the `data-src` attribute. After the HTML is rendered and JavaScript is loaded,
 the value of `data-src` will be moved to `src` automatically if the image is in the current viewport.
 
 *  Prepare images in HTML for lazy loading by renaming the `src` attribute to `data-src` AND adding the class `lazy`
 *  If you are using the Rails `image_tag` helper, all images will be lazy-loaded by default unless `lazy: false` is provided.
 
 If you are asynchronously adding content which contains lazy images then you need to call the function
-`gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed. 
+`gl.lazyLoader.searchLazyImages()` which will search for lazy images and load them if needed.
 But in general it should be handled automatically through a `MutationObserver` in the lazy loading function.
 
 ### Animations
@@ -97,19 +97,19 @@ bundle and included on the page.
 
     ```javascript
     import initMyWidget from './my_widget';
-  
+
     document.addEventListener('DOMContentLoaded', () => {
       initMyWidget();
     });
     ```
 
-- **Supporting Module Placement:**  
+- **Supporting Module Placement:**
     - If a class or a module is _specific to a particular route_, try to locate
       it close to the entry point it will be used. For instance, if
       `my_widget.js` is only imported within `pages/widget/show/index.js`, you
       should place the module at `pages/widget/show/my_widget.js` and import it
       with a relative path (e.g. `import initMyWidget from './my_widget';`).
-      
+
     - If a class or module is _used by multiple routes_, place it within a
       shared directory at the closest common parent directory for the entry
       points that import it.  For example, if `my_widget.js` is imported within
