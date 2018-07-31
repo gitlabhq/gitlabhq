@@ -257,7 +257,7 @@ describe API::Epics do
 
   describe 'PUT /groups/:id/epics/:epic_iid' do
     let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
-    let(:params) { { title: 'new title', description: 'new description', labels: 'label2' } }
+    let(:params) { { title: 'new title', description: 'new description', labels: 'label2', start_date_fixed: "2018-07-17", start_date_is_fixed: true } }
 
     it_behaves_like 'error requests'
 
@@ -305,6 +305,9 @@ describe API::Epics do
           expect(result.title).to eq('new title')
           expect(result.description).to eq('new description')
           expect(result.labels.first.title).to eq('label2')
+          expect(result.start_date).to eq(Date.new(2018, 7, 17))
+          expect(result.start_date_fixed).to eq(Date.new(2018, 7, 17))
+          expect(result.start_date_is_fixed).to eq(true)
         end
 
         context 'when deprecated start_date and end_date params are present' do
