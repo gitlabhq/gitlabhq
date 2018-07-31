@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:30\n"
+"PO-Revision-Date: 2018-07-31 08:54\n"
 
 msgid " and"
 msgstr " と"
@@ -3472,7 +3472,7 @@ msgid_plural "Hide values"
 msgstr[0] "非表示"
 
 msgid "Hide whitespace changes"
-msgstr ""
+msgstr "空白の変更を隠す"
 
 msgid "History"
 msgstr "履歴"
@@ -3481,7 +3481,7 @@ msgid "Housekeeping successfully started"
 msgstr "ハウスキーピングは正常に起動しました。"
 
 msgid "I accept the %{terms_link}"
-msgstr ""
+msgstr "%{terms_link} に同意する"
 
 msgid "I accept the|Terms of Service and Privacy Policy"
 msgstr ""
