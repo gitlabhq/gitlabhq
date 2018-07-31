@@ -27,9 +27,11 @@ module EpicsHelper
         start_date_fixed: epic.start_date_fixed,
         start_date_is_fixed: epic.start_date_is_fixed?,
         start_date_from_milestones: epic.start_date_from_milestones,
+        start_date_sourcing_milestone_title: epic.start_date_sourcing_milestone&.title,
         due_date_fixed: epic.due_date_fixed,
         due_date_is_fixed: epic.due_date_is_fixed?,
-        due_date_from_milestones: epic.due_date_from_milestones
+        due_date_from_milestones: epic.due_date_from_milestones,
+        due_date_sourcing_milestone_title: epic.due_date_sourcing_milestone&.title
       )
     end
 

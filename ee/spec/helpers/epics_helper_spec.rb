@@ -28,6 +28,19 @@ describe EpicsHelper do
     end
 
     context 'when user has edit permission' do
+      let(:milestone) { create(:milestone, title: 'make me a sandwich') }
+
+      let!(:epic) do
+        create(
+          :epic,
+          author: user,
+          start_date_sourcing_milestone: milestone,
+          start_date: Date.new(2000, 1, 1),
+          due_date_sourcing_milestone: milestone,
+          due_date: Date.new(2000, 1, 2)
+        )
+      end
+
       before do
         epic.group.add_developer(user)
       end
@@ -38,9 +51,13 @@ describe EpicsHelper do
 
         expect(meta_data.keys).to match_array(%w[
           created author
-          start_date start_date_fixed start_date_is_fixed start_date_from_milestones
-          end_date due_date due_date_fixed due_date_is_fixed due_date_from_milestones
+          start_date start_date_fixed start_date_is_fixed start_date_from_milestones start_date_sourcing_milestone_title
+          end_date due_date due_date_fixed due_date_is_fixed due_date_from_milestones due_date_sourcing_milestone_title
         ])
+        expect(meta_data['start_date']).to eq('2000-01-01')
+        expect(meta_data['start_date_sourcing_milestone_title']).to eq(milestone.title)
+        expect(meta_data['due_date']).to eq('2000-01-02')
+        expect(meta_data['due_date_sourcing_milestone_title']).to eq(milestone.title)
       end
     end
   end

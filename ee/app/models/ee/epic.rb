@@ -13,6 +13,8 @@ module EE
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
+      belongs_to :start_date_sourcing_milestone, class_name: 'Milestone'
+      belongs_to :due_date_sourcing_milestone, class_name: 'Milestone'
 
       has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) }
 
