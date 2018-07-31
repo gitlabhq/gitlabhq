@@ -30,7 +30,6 @@ rules:
   jasmine/no-spec-dupes:
     - warn
     - branch
-  no-console: off
   prefer-arrow-callback: off
   import/no-unresolved:
     - error
