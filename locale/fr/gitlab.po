@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 16:21\n"
+"PO-Revision-Date: 2018-07-31 16:41\n"
 
 msgid " and"
 msgstr ""
@@ -2095,7 +2095,7 @@ msgid "Copy file path to clipboard"
 msgstr "Copier le chemin d’accès du fichier dans le presse‐papiers"
 
 msgid "Copy incoming email address to clipboard"
-msgstr ""
+msgstr "Copier l’adresse de courriel de l’expéditeur dans le presse-papiers"
 
 msgid "Copy reference to clipboard"
 msgstr "Copier la référence dans le presse‐papiers"
