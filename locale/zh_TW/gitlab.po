@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:30\n"
+"PO-Revision-Date: 2018-07-31 08:53\n"
 
 msgid " and"
 msgstr " 和"
@@ -5062,7 +5062,7 @@ msgid "PrometheusAlerts|Operator"
 msgstr "操作者"
 
 msgid "PrometheusAlerts|Threshold"
-msgstr ""
+msgstr "門檻"
 
 msgid "PrometheusDashboard|Time"
 msgstr "時間"
@@ -5296,7 +5296,7 @@ msgid "Repository Settings"
 msgstr "檔案庫設置"
 
 msgid "Repository URL"
-msgstr ""
+msgstr "版本庫 URL"
 
 msgid "Repository has no locks."
 msgstr "版本庫沒有上鎖。"
@@ -5317,7 +5317,7 @@ msgid "Request Access"
 msgstr "申請權限"
 
 msgid "Requests Profiles"
-msgstr ""
+msgstr "請求個人資料"
 
 msgid "Require all users to accept Terms of Service and Privacy Policy when they access GitLab."
 msgstr "要求所有用戶在訪問GitLab時接受服務條款和隱私政策。"
@@ -5378,7 +5378,7 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr "正在審閱中（合併請求 !%{mergeRequestId}）"
 
 msgid "Revoke"
-msgstr ""
+msgstr "撤回"
 
 msgid "Roadmap"
 msgstr "開發藍圖"
@@ -5426,7 +5426,7 @@ msgid "Save"
 msgstr "儲存"
 
 msgid "Save application"
-msgstr ""
+msgstr "儲存應用程式"
 
 msgid "Save changes"
 msgstr "儲存變更"
@@ -5450,7 +5450,7 @@ msgid "Scheduling Pipelines"
 msgstr "流水線排程"
 
 msgid "Scope"
-msgstr ""
+msgstr "範圍"
 
 msgid "Scoped issue boards"
 msgstr "區域性的議題看板"
@@ -5498,7 +5498,7 @@ msgid "Seconds to wait for a storage access attempt"
 msgstr "等待存取儲存空間的嘗試時間（秒）"
 
 msgid "Secret:"
-msgstr ""
+msgstr "金鑰："
 
 msgid "Security Dashboard"
 msgstr "安全儀表板"
@@ -5633,7 +5633,7 @@ msgid "SharedRunnersMinutesSettings|Reset used pipeline minutes"
 msgstr "重設流水線已用時間"
 
 msgid "Sherlock Transactions"
-msgstr ""
+msgstr "Sherlock 交易"
 
 msgid "Show command"
 msgstr "顯示指令"
@@ -5676,10 +5676,10 @@ msgid "Sidebar|Weight"
 msgstr "權重"
 
 msgid "Sign in"
-msgstr ""
+msgstr "登入"
 
 msgid "Sign in / Register"
-msgstr ""
+msgstr "登入 / 註冊"
 
 msgid "Sign in to %{group_name}"
 msgstr "登入至 %{group_name}"
@@ -5925,7 +5925,7 @@ msgid "Status"
 msgstr "狀態"
 
 msgid "Stop impersonation"
-msgstr ""
+msgstr "停止模擬"
 
 msgid "Stop this environment"
 msgstr "停止此環境"
@@ -5937,7 +5937,7 @@ msgid "Storage"
 msgstr "儲存"
 
 msgid "Storage:"
-msgstr ""
+msgstr "儲存空間："
 
 msgid "Subgroups"
 msgstr "子群組"
@@ -5964,7 +5964,7 @@ msgid "System Hooks"
 msgstr "系統鉤子"
 
 msgid "System Info"
-msgstr ""
+msgstr "系統資訊"
 
 msgid "System header and footer:"
 msgstr "系統標頭與尾端："
@@ -6217,7 +6217,7 @@ msgid "They can be managed using the %{link}."
 msgstr "其可以使用 %{link} 進行管理。"
 
 msgid "Third party offers"
-msgstr ""
+msgstr "第三方提供"
 
 msgid "This GitLab instance does not provide any shared Runners yet. Instance administrators can register shared Runners in the admin area."
 msgstr "此 GitLab 實例不提供任何分享的執行器。實例管理員可以在管理員區域註冊分享的執行器。"
@@ -6229,7 +6229,7 @@ msgid "This application will be able to:"
 msgstr ""
 
 msgid "This board's scope is reduced"
-msgstr ""
+msgstr "已縮小此看板範圍"
 
 msgid "This diff is collapsed."
 msgstr "此差異已折疊。"
@@ -6238,7 +6238,7 @@ msgid "This directory"
 msgstr "這個目錄"
 
 msgid "This group"
-msgstr ""
+msgstr "此群組"
 
 msgid "This group allows you to sign in with your %{group_name} Single Sign-On account. This will redirect you to an external sign in page."
 msgstr "此群組允許您以您的 %{group_name} 單一登入帳號登入。這將會重新導向您到外部登入頁面。"
@@ -6561,7 +6561,7 @@ msgid "Todo"
 msgstr "待辦事項"
 
 msgid "Todos"
-msgstr ""
+msgstr "待辦事項"
 
 msgid "Toggle Sidebar"
 msgstr "展開 / 收起側邊欄"
@@ -6570,7 +6570,7 @@ msgid "Toggle discussion"
 msgstr "切換討論"
 
 msgid "Toggle navigation"
-msgstr ""
+msgstr "切換導航欄"
 
 msgid "Toggle sidebar"
 msgstr "切換側邊欄"
@@ -6621,7 +6621,7 @@ msgid "Turn on Service Desk"
 msgstr "開啟服務區"
 
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr "無法載入差異。%{button_try_again}"
@@ -6675,7 +6675,7 @@ msgid "Up to date"
 msgstr "已經是最新"
 
 msgid "Update"
-msgstr ""
+msgstr "更新"
 
 msgid "Update your group name, description, avatar, and other general settings."
 msgstr "更新您的群組名稱、說明、頭像與其他一般設定。"
@@ -6726,7 +6726,7 @@ msgid "Use group milestones to manage issues from multiple projects in the same 
 msgstr "使用群組里程碑從多個專案中於同一個里程碑管理議題。"
 
 msgid "Use one line per URI"
-msgstr ""
+msgstr "每個 URL 使用一行"
 
 msgid "Use the following registration token during setup:"
 msgstr "在安裝過程中使用此註冊憑證:"
