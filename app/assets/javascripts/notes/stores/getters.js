@@ -70,9 +70,6 @@ export const allDiscussions = (state, getters) => {
   return Object.values(resolved).concat(unresolved);
 };
 
-export const allResolvableDiscussions = (state, getters) =>
-  getters.allDiscussions.filter(d => !d.individual_note && d.resolvable);
-
 export const resolvedDiscussionsById = state => {
   const map = {};
 
@@ -89,51 +86,6 @@ export const resolvedDiscussionsById = state => {
   return map;
 };
 
-// Gets Discussions IDs ordered by the date of their initial note
-export const unresolvedDiscussionsIdsByDate = (state, getters) =>
-  getters.allResolvableDiscussions
-    .filter(d => !d.resolved)
-    .sort((a, b) => {
-      const aDate = new Date(a.notes[0].created_at);
-      const bDate = new Date(b.notes[0].created_at);
-
-      if (aDate < bDate) {
-        return -1;
-      }
-
-      return aDate === bDate ? 0 : 1;
-    })
-    .map(d => d.id);
-
-// Gets Discussions IDs ordered by their position in the diff
-//
-// Sorts the array of resolvable yet unresolved discussions by
-// comparing file names first. If file names are the same, compares
-// line numbers.
-export const unresolvedDiscussionsIdsByDiff = (state, getters) =>
-  getters.allResolvableDiscussions
-    .filter(d => !d.resolved)
-    .sort((a, b) => {
-      if (!a.diff_file || !b.diff_file) {
-        return 0;
-      }
-
-      // Get file names comparison result
-      const filenameComparison = a.diff_file.file_path.localeCompare(b.diff_file.file_path);
-
-      // Get the line numbers, to compare within the same file
-      const aLines = [a.position.formatter.new_line, a.position.formatter.old_line];
-      const bLines = [b.position.formatter.new_line, b.position.formatter.old_line];
-
-      return filenameComparison < 0 ||
-        (filenameComparison === 0 &&
-          // .max() because one of them might be zero (if removed/added)
-          Math.max(aLines[0], aLines[1]) < Math.max(bLines[0], bLines[1]))
-        ? -1
-        : 1;
-    })
-    .map(d => d.id);
-
 export const resolvedDiscussionCount = (state, getters) => {
   const resolvedMap = getters.resolvedDiscussionsById;
 
@@ -148,43 +100,6 @@ export const discussionTabCounter = state => {
   });
 
   return all.length;
-};
-
-// Returns the list of discussion IDs ordered according to given parameter
-// @param {Boolean} diffOrder - is ordered by diff?
-export const unresolvedDiscussionsIdsOrdered = (state, getters) => diffOrder => {
-  if (diffOrder) {
-    return getters.unresolvedDiscussionsIdsByDiff;
-  }
-  return getters.unresolvedDiscussionsIdsByDate;
-};
-
-// Checks if a given discussion is the last in the current order (diff or date)
-// @param {Boolean} discussionId - id of the discussion
-// @param {Boolean} diffOrder - is ordered by diff?
-export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, diffOrder) => {
-  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const lastDiscussionId = idsOrdered[idsOrdered.length - 1];
-
-  return lastDiscussionId === discussionId;
-};
-
-// Gets the ID of the discussion following the one provided, respecting order (diff or date)
-// @param {Boolean} discussionId - id of the current discussion
-// @param {Boolean} diffOrder - is ordered by diff?
-export const nextUnresolvedDiscussionId = (state, getters) => (discussionId, diffOrder) => {
-  const idsOrdered = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const currentIndex = idsOrdered.indexOf(discussionId);
-
-  return idsOrdered.slice(currentIndex + 1, currentIndex + 2)[0];
-};
-
-// @param {Boolean} diffOrder - is ordered by diff?
-export const firstUnresolvedDiscussionId = (state, getters) => diffOrder => {
-  if (diffOrder) {
-    return getters.unresolvedDiscussionsIdsByDiff[0];
-  }
-  return getters.unresolvedDiscussionsIdsByDate[0];
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

@@ -14,7 +14,6 @@ describe('noteable_discussion component', () => {
   preloadFixtures(discussionWithTwoUnresolvedNotes);
 
   beforeEach(() => {
-    window.mrTabs = {};
     store = createStore();
     store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
@@ -107,29 +106,33 @@ describe('noteable_discussion component', () => {
 
   describe('methods', () => {
     describe('jumpToNextDiscussion', () => {
-      it('expands next unresolved discussion', done => {
-        const discussion2 = getJSONFixture(discussionWithTwoUnresolvedNotes)[0];
-        discussion2.resolved = false;
-        discussion2.id = 'next'; // prepare this for being identified as next one (to be jumped to)
-        vm.$store.dispatch('setInitialNotes', [discussionMock, discussion2]);
-        window.mrTabs.currentAction = 'show';
+      it('expands next unresolved discussion', () => {
+        spyOn(vm, 'expandDiscussion').and.stub();
+        const discussions = [
+          discussionMock,
+          {
+            ...discussionMock,
+            id: discussionMock.id + 1,
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: true }],
+          },
+          {
+            ...discussionMock,
+            id: discussionMock.id + 2,
+            notes: [{ ...discussionMock.notes[0], resolvable: true, resolved: false }],
+          },
+        ];
+        const nextDiscussionId = discussionMock.id + 2;
+        store.replaceState({
+          ...store.state,
+          discussions,
+        });
+        setFixtures(`
+          <div data-discussion-id="${nextDiscussionId}"></div>
+        `);
 
-        Vue.nextTick()
-          .then(() => {
-            spyOn(vm, 'expandDiscussion').and.stub();
+        vm.jumpToNextDiscussion();
 
-            const nextDiscussionId = discussion2.id;
-
-            setFixtures(`
-              <div class="discussion" data-discussion-id="${nextDiscussionId}"></div>
-            `);
-
-            vm.jumpToNextDiscussion();
-
-            expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
-          })
-          .then(done)
-          .catch(done.fail);
+        expect(vm.expandDiscussion).toHaveBeenCalledWith({ discussionId: nextDiscussionId });
       });
     });
   });
