@@ -274,9 +274,8 @@ GEM
       gettext_i18n_rails (>= 0.7.1)
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
-    gitaly-proto (0.118.1)
-      google-protobuf (~> 3.1)
-      grpc (~> 1.10)
+    gitaly-proto (0.123.0)
+      grpc (~> 1.0)
     github-markup (1.7.0)
     gitlab-markup (1.6.4)
     gitlab-sidekiq-fetcher (0.3.0)
@@ -1000,7 +999,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.3)
-  gitaly-proto (~> 0.118.1)
+  gitaly-proto (~> 0.123.0)
   github-markup (~> 1.7.0)
   gitlab-markup (~> 1.6.4)
   gitlab-sidekiq-fetcher
@@ -1158,4 +1157,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.16.6
+   1.17.1

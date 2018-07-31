@@ -1014,6 +1014,18 @@ class Repository
                                        message: merge_request.title)
   end
 
+  def update_submodule(user, submodule, commit_sha, message:, branch:)
+    with_cache_hooks do
+      raw.update_submodule(
+        user: user,
+        submodule: submodule,
+        commit_sha: commit_sha,
+        branch: branch,
+        message: message
+      )
+    end
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob

@@ -571,6 +571,20 @@ module Gitlab
         end
       end
 
+      def update_submodule(user:, submodule:, commit_sha:, message:, branch:)
+        args = {
+          user: user,
+          submodule: submodule,
+          commit_sha: commit_sha,
+          branch: branch,
+          message: message
+        }
+
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_update_submodule(args)
+        end
+      end
+
       # Delete the specified branch from the repository
       def delete_branch(branch_name)
         wrapped_gitaly_errors do

@@ -58,7 +58,8 @@ module TestEnv
     'before-create-delete-modify-move'   => '845009f',
     'between-create-delete-modify-move'  => '3f5f443',
     'after-create-delete-modify-move'    => 'ba3faa7',
-    'with-codeowners'                    => '219560e'
+    'with-codeowners'                    => '219560e',
+    'submodule_inside_folder'            => 'b491b92'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
