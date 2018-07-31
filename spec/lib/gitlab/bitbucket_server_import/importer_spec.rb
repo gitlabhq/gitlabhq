@@ -178,6 +178,13 @@ describe Gitlab::BitbucketServerImport::Importer do
     end
 
     it 'falls back to comments if diff comments fail to validate' do
+      reply = instance_double(
+        BitbucketServer::Representation::Comment,
+        author_email: 'someuser@gitlab.com',
+        note: 'I agree',
+        created_at: now,
+        updated_at: now)
+
       # https://gitlab.com/gitlab-org/gitlab-test/compare/c1acaa58bbcbc3eafe538cb8274ba387047b69f8...5937ac0a7beb003549fc5fd26fc247ad
       inline_note = instance_double(
         BitbucketServer::Representation::PullRequestComment,
@@ -189,7 +196,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         new_pos: 9,
         note: 'This is a note with an invalid line position.',
         author_email: project.owner.email,
-        comments: [],
+        comments: [reply],
         created_at: now,
         updated_at: now,
         parent_comment: nil)
@@ -201,15 +208,18 @@ describe Gitlab::BitbucketServerImport::Importer do
         merge_event?: false,
         comment: inline_note)
 
+      allow(reply).to receive(:parent_comment).and_return(inline_note)
+
       expect(subject.client).to receive(:activities).and_return([inline_comment])
 
       expect { subject.execute }.to change { MergeRequest.count }.by(1)
 
       merge_request = MergeRequest.first
-      expect(merge_request.notes.count).to eq(1)
-      note = merge_request.notes.first
+      expect(merge_request.notes.count).to eq(2)
+      notes = merge_request.notes
 
-      expect(note.note).to start_with('*Comment on file:')
+      expect(notes.first.note).to start_with('*Comment on .gitmodules')
+      expect(notes.second.note).to start_with('*Comment on .gitmodules')
     end
 
     it 'restores branches of inaccessible SHAs' do

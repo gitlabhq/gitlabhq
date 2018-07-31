@@ -253,15 +253,15 @@ module Gitlab
         # Bitbucket Server supports the ability to comment on any line, not just the
         # line in the diff. If we can't add the note as a DiffNote, fallback to creating
         # a regular note.
-        create_fallback_diff_note(merge_request, comment)
+        create_fallback_diff_note(merge_request, comment, position)
       rescue StandardError => e
         errors << { type: :pull_request, id: comment.id, errors: e.message }
         nil
       end
 
-      def create_fallback_diff_note(merge_request, comment)
+      def create_fallback_diff_note(merge_request, comment, position)
         attributes = pull_request_comment_attributes(comment)
-        attributes[:note] = "*Comment on file: #{comment.file_path}, old line: #{comment.old_pos}, new line: #{comment.new_pos}*\n\n" + attributes[:note]
+        attributes[:note] = "*Comment on #{position.old_path}:#{position.old_line} -> #{position.new_path}:#{position.new_line}*\n\n" + attributes[:note]
 
         merge_request.notes.create!(attributes)
       end
