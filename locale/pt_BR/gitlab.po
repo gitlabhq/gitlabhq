@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 18:32\n"
+"PO-Revision-Date: 2018-07-31 00:21\n"
 
 msgid " and"
 msgstr " e"
@@ -4085,10 +4085,10 @@ msgid "Metrics|Must be a valid PromQL query."
 msgstr "Deve ser uma consulta PromQL válida."
 
 msgid "Metrics|Name"
-msgstr ""
+msgstr "Nome"
 
 msgid "Metrics|New metric"
-msgstr ""
+msgstr "Nova métrica"
 
 msgid "Metrics|No deployed environments"
 msgstr ""
@@ -4103,7 +4103,7 @@ msgid "Metrics|Response"
 msgstr ""
 
 msgid "Metrics|System"
-msgstr ""
+msgstr "Sistema"
 
 msgid "Metrics|There was an error fetching the environments data, please try again"
 msgstr ""
@@ -4118,7 +4118,7 @@ msgid "Metrics|There was an error while retrieving metrics"
 msgstr ""
 
 msgid "Metrics|Type"
-msgstr ""
+msgstr "Tipo"
 
 msgid "Metrics|Unexpected deployment data response from prometheus endpoint"
 msgstr ""
@@ -4130,7 +4130,7 @@ msgid "Metrics|Unit label"
 msgstr ""
 
 msgid "Metrics|Used as a title for the chart"
-msgstr ""
+msgstr "Usado como um título para o gráfico"
 
 msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
 msgstr ""
@@ -4178,7 +4178,7 @@ msgid "Milestones|Promote Milestone"
 msgstr "Promover Milestone"
 
 msgid "Milestones|This action cannot be reversed."
-msgstr ""
+msgstr "Essa ação não pode ser revertida."
 
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr "adicione uma chave SSH"
@@ -4196,13 +4196,13 @@ msgid "Months"
 msgstr "Meses"
 
 msgid "More"
-msgstr ""
+msgstr "Mais"
 
 msgid "More actions"
 msgstr "Mais ações"
 
 msgid "More info"
-msgstr ""
+msgstr "Mais informações"
 
 msgid "More information"
 msgstr "Mais informações"
@@ -4211,7 +4211,7 @@ msgid "More information is available|here"
 msgstr "Mais informações estão disponíveis|aqui"
 
 msgid "Most stars"
-msgstr ""
+msgstr "Mais estrelas"
 
 msgid "Move"
 msgstr "Mover"
@@ -4232,7 +4232,7 @@ msgid "Name your individual key via a title"
 msgstr ""
 
 msgid "Name:"
-msgstr ""
+msgstr "Nome:"
 
 msgid "Nav|Help"
 msgstr "Ajuda"
