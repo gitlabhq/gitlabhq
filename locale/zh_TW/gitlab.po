@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:46\n"
+"PO-Revision-Date: 2018-07-31 08:22\n"
 
 msgid " and"
 msgstr " 和"
@@ -85,7 +85,7 @@ msgid "%{commit_author_link} authored %{commit_timeago}"
 msgstr "由 %{commit_author_link} 提交於 %{commit_timeago}"
 
 msgid "%{counter_storage} (%{counter_repositories} repositories, %{counter_build_artifacts} build artifacts, %{counter_lfs_objects} LFS)"
-msgstr ""
+msgstr "%{counter_storage} (%{counter_repositories} 個版本庫、%{counter_build_artifacts} 個編譯產物、和 %{counter_lfs_objects} 個 LFS)"
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
@@ -229,7 +229,7 @@ msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</stron
 msgstr "建立 <strong>%{created_count}</strong> 個，關閉 <strong>%{closed_count}</strong> 個。"
 
 msgid "<strong>%{group_name}</strong> group members"
-msgstr ""
+msgstr "<strong>%{group_name}</strong> 群組成員"
 
 msgid "<strong>%{pushes}</strong> pushes, more than <strong>%{commits}</strong> commits by <strong>%{people}</strong> contributors."
 msgstr "推送 <strong>%{pushes}</strong> 個，<strong>%{people}</strong> 個貢獻者提交了超過 <strong>%{commits}</strong> 個提交。"
@@ -256,10 +256,10 @@ msgid "A user with write access to the source branch selected this option"
 msgstr "一個有存取原始分支權限的使用者，選擇了此項目"
 
 msgid "About GitLab"
-msgstr ""
+msgstr "關於 GitLab"
 
 msgid "About GitLab CE"
-msgstr ""
+msgstr "關於 GitLab CE"
 
 msgid "About auto deploy"
 msgstr "關於自動部署"
@@ -283,7 +283,7 @@ msgid "Access Tokens"
 msgstr "存取憑證"
 
 msgid "Access denied! Please verify you can add deploy keys to this repository."
-msgstr ""
+msgstr "存取被拒！請驗證您是否可以在此版本庫部屬金鑰。"
 
 msgid "Access to '%{classification_label}' not allowed"
 msgstr "不允許存取「%{classification_label}」"
@@ -334,7 +334,7 @@ msgid "Add additional text to appear in all email communications. %{character_li
 msgstr "增加顯示於所有電子郵件對話的附加文字。最多 %{character_limit} 個字。"
 
 msgid "Add new application"
-msgstr ""
+msgstr "建立新應用程式"
 
 msgid "Add new directory"
 msgstr "新增目錄"
@@ -346,22 +346,22 @@ msgid "Add todo"
 msgstr "增加待辦事項"
 
 msgid "Add user(s) to the group:"
-msgstr ""
+msgstr "加入使用者至群組："
 
 msgid "Add users to group"
-msgstr ""
+msgstr "加入使用者到群組"
 
 msgid "Additional text"
 msgstr "附加文字"
 
 msgid "Admin Area"
-msgstr ""
+msgstr "管理區塊"
 
 msgid "Admin Overview"
-msgstr ""
+msgstr "管理員概覽"
 
 msgid "Admin area"
-msgstr ""
+msgstr "管理區塊"
 
 msgid "AdminArea|Stop all jobs"
 msgstr "停止所有任務"
@@ -457,7 +457,7 @@ msgid "Alternatively, you can use a %{personal_access_token_link}. When you crea
 msgstr "或者，你可以使用 %{personal_access_token_link}。當你建立你的個人存取權杖時，你將需要選擇<code>檔案庫</code>範圍，所以我們將會顯示你公開及私人的檔案庫清單進行匯入。"
 
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
-msgstr ""
+msgstr "一個自稱 %{link_to_client} 的應用程式請求您 GitLab 帳號的存取權。"
 
 msgid "An empty GitLab User field will add the FogBugz user's full name (e.g. \"By John Smith\") in the description of all issues and comments. It will also associate and/or assign these issues and comments with the project creator."
 msgstr ""
@@ -466,7 +466,7 @@ msgid "An error accured whilst committing your changes."
 msgstr "提交您的變更時發生錯誤"
 
 msgid "An error has occurred"
-msgstr ""
+msgstr "發生了一個錯誤"
 
 msgid "An error occured creating the new branch."
 msgstr "創建新分支時發生錯誤。"
@@ -538,7 +538,7 @@ msgid "An error occurred while initializing path locks"
 msgstr "初始化路徑鎖時發生錯誤"
 
 msgid "An error occurred while loading commit signatures"
-msgstr ""
+msgstr "載入提交簽名時發生錯誤"
 
 msgid "An error occurred while loading diff"
 msgstr "讀取差異檔時發生錯誤"
