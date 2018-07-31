@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: pt-BR\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 00:21\n"
+"PO-Revision-Date: 2018-07-31 11:13\n"
 
 msgid " and"
 msgstr " e"
@@ -6147,8 +6147,8 @@ msgstr "O tamanho máximo do arquivo é de 200KB."
 msgid "The number of attempts GitLab will make to access a storage."
 msgstr "O número de tentativas que gitlab fará para acessar um storage."
 
-msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
-msgstr "O número de falhas para que o GitLab desabilite o acesso ao storage. O número de falhas pode ser redefinido na interface do administrador: %{link_to_health_page} ou %{api_documentation_link}."
+msgid "The number of failures after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
+msgstr ""
 
 msgid "The passphrase required to decrypt the private key. This is optional and the value is encrypted at rest."
 msgstr ""
@@ -6207,8 +6207,8 @@ msgstr "Tempo em segundos para o GitLab manter as informações de falha. Se nen
 msgid "The time in seconds GitLab will try to access storage. After this time a timeout error will be raised."
 msgstr "Tempo em segundos que o GitLab tentará acessar o storage. Depois desse tempo, um erro de tempo excedido será disparado."
 
-msgid "The time in seconds between storage checks. When a previous check did complete yet, GitLab will skip a check."
-msgstr "O tempo em segundos entre as verificações de armazenamento. Quando uma verificação anterior foi concluída ainda, o GitLab pulará uma verificação."
+msgid "The time in seconds between storage checks. If a check did not complete yet, GitLab will skip the next check."
+msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
 msgstr "O tempo necessário por cada entrada de dados reunida por essa etapa."
