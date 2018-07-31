@@ -9,8 +9,4 @@ module ProfilesHelper
       end
     end
   end
-
-  def show_user_status_field?
-    Feature.enabled?(:user_status_form) || cookies[:feature_user_status_form] == 'true'
-  end
 end

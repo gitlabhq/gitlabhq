@@ -546,6 +546,7 @@ ul.notes {
 
   svg {
     @include btn-svg;
+    margin: 0;
   }
 
   .award-control-icon-positive,
