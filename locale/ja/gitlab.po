@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:01\n"
+"PO-Revision-Date: 2018-07-31 08:22\n"
 
 msgid " and"
 msgstr " と"
@@ -3351,16 +3351,16 @@ msgid "GroupSettings|Share with group lock"
 msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
-msgstr ""
+msgstr "この設定は %{ancestor_group} に適用され、サブグループで上書きされます。"
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
-msgstr ""
+msgstr "この設定は %{ancestor_group} に適用されます。このグループのプロジェクトを他のグループと共有するには、設定を上書きするか、%{remove_ancestor_share_with_group_lock} するようにオーナーに確認してください。"
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
 msgstr "この設定は %{ancestor_group} に適用されます。設定を上書き、または %{remove_ancestor_share_with_group_lock} することができます。"
 
 msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
-msgstr ""
+msgstr "この設定はグループオーナーによって上書きされない限り、すべてのサブグループに適用されます。プロジェクトへのアクセスが既にあるグループは、手動で削除しない限り引き続きアクセスできます。"
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
 msgstr ""
@@ -3529,8 +3529,7 @@ msgid "If you already have files you can push them using the %{link_to_cli} belo
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add authentication information to the URL: <code>https://username:password@gitlab.company.com/group/project.git</code>."
-msgstr "HTTP リポジトリが公開設定されていないときは、認証情報を URL に追加してください（URL:\n"
-"<code>https://username:password@gitlab.company.com/group/project.git</code>）。"
+msgstr ""
 
 msgid "ImageDiffViewer|2-up"
 msgstr "2-up"
