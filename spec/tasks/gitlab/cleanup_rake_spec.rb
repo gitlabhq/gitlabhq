@@ -185,6 +185,78 @@ describe 'gitlab:cleanup rake tasks' do
             expect(File.exist?(correct_path)).to be_falsey
           end
         end
+
+        context 'when the file should be in object storage' do
+
+          # We will probably want to add logic (Reschedule background upload) to
+          # cover Case 2 in https://gitlab.com/gitlab-org/gitlab-ce/issues/46535#note_75355104
+          context 'when the file otherwise has the correct local path' do
+            let!(:orphaned) { create(:upload, :issuable_upload, :object_storage, model: build(:project, :legacy_storage)) }
+            let!(:orphaned_path) { File.join(FileUploader.root, orphaned.model.full_path, orphaned.path) }
+
+            before do
+              stub_feature_flags(import_export_object_storage: true)
+              stub_uploads_object_storage(FileUploader)
+
+              FileUtils.mkdir_p(File.dirname(orphaned_path))
+              FileUtils.touch(orphaned_path)
+            end
+
+            it 'does not move the file' do
+              expect(File.exist?(orphaned_path)).to be_truthy
+
+              stub_env('DRY_RUN', 'false')
+              run_rake_task('gitlab:cleanup:project_uploads')
+
+              expect(File.exist?(orphaned_path)).to be_truthy
+            end
+          end
+
+          # I'm not even sure if this state can or has occurred.
+          #
+          # This test only serves to define what would happen.
+          context 'when the file has the wrong local path' do
+            let!(:orphaned) { create(:upload, :issuable_upload, :object_storage, model: build(:project, :legacy_storage)) }
+            let!(:orphaned_path) { File.join(FileUploader.root, 'wrong', orphaned.path) }
+            let!(:lost_and_found_path) { File.join(FileUploader.root, '-', 'project-lost-found', 'wrong', orphaned.path) }
+
+            before do
+              stub_feature_flags(import_export_object_storage: true)
+              stub_uploads_object_storage(FileUploader)
+
+              FileUtils.mkdir_p(File.dirname(orphaned_path))
+              FileUtils.touch(orphaned_path)
+            end
+
+            it 'moves the file to lost and found' do
+              expect(Rails.logger).to receive(:info).twice
+              expect(Rails.logger).to receive(:info).with("Did move to lost and found #{orphaned_path} -> #{lost_and_found_path}")
+
+              expect(File.exist?(orphaned_path)).to be_truthy
+              expect(File.exist?(lost_and_found_path)).to be_falsey
+
+              stub_env('DRY_RUN', 'false')
+              run_rake_task('gitlab:cleanup:project_uploads')
+
+              expect(File.exist?(orphaned_path)).to be_falsey
+              expect(File.exist?(lost_and_found_path)).to be_truthy
+            end
+
+            it 'a dry run does not move the file' do
+              expect(Rails.logger).to receive(:info).twice
+              expect(Rails.logger).to receive(:info).with("Can move to lost and found #{orphaned_path} -> #{lost_and_found_path}")
+              expect(Rails.logger).to receive(:info)
+
+              expect(File.exist?(orphaned_path)).to be_truthy
+              expect(File.exist?(lost_and_found_path)).to be_falsey
+
+              run_rake_task('gitlab:cleanup:project_uploads')
+
+              expect(File.exist?(orphaned_path)).to be_truthy
+              expect(File.exist?(lost_and_found_path)).to be_falsey
+            end
+          end
+        end
       end
 
       context 'when a matching upload record can not be found' do
