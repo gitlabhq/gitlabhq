@@ -1,0 +1,5 @@
+---
+title: Track the Geo event log gaps in redis and handle them later
+merge_request: 6640
+author:
+type: changed
