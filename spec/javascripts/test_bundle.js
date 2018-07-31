@@ -1,4 +1,6 @@
-/* eslint-disable jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle */
+/* eslint-disable
+  jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle, no-console
+*/
 
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
