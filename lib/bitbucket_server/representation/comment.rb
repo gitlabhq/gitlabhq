@@ -23,6 +23,16 @@ module BitbucketServer
     #   }
     # }
     class Comment < Representation::Base
+      attr_reader :parent_comment
+
+      CommentNode = Struct.new(:raw_comments, :parent)
+
+      def initialize(raw, parent_comment: nil)
+        super(raw)
+
+        @parent_comment = parent_comment
+      end
+
       def id
         raw_comment['id']
       end
@@ -61,23 +71,44 @@ module BitbucketServer
       # Since GitLab only supports a single thread, we flatten all these
       # comments into a single discussion.
       def comments
-        workset = [raw_comment['comments']].compact
+        @comments ||= flatten_comments
+      end
+
+      private
+
+      # In order to provide context for each reply, we need to track
+      # the parent of each comment. This method works as follows:
+      #
+      # 1. Insert the root comment into the workset. The root element is the current note.
+      # 2. For each node in the workset:
+      #    a. Examine if it has replies to that comment. If it does,
+      #       insert that node into the workset.
+      #    b. Parse that note into a Comment structure and add it to a flat list.
+      def flatten_comments
+        comments = raw_comment['comments']
+        workset =
+          if comments
+            [CommentNode.new(comments, self)]
+          else
+            []
+          end
+
         all_comments = []
 
         until workset.empty?
-          comments = workset.pop
+          node = workset.pop
+          parent = node.parent
 
-          comments.each do |comment|
+          node.raw_comments.each do |comment|
             new_comments = comment.delete('comments')
-            workset << new_comments if new_comments
-            all_comments << Comment.new({ 'comment' => comment })
+            current_comment = Comment.new({ 'comment' => comment }, parent_comment: parent)
+            all_comments << current_comment
+            workset << CommentNode.new(new_comments, current_comment) if new_comments
           end
         end
 
         all_comments
       end
-
-      private
 
       def raw_comment
         raw.fetch('comment', {})
