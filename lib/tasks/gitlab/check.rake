@@ -385,14 +385,6 @@ namespace :gitlab do
     end
   end
 
-  namespace :repo do
-    desc "GitLab | Check the integrity of the repositories managed by GitLab"
-    task check: :gitlab_environment do
-      puts "This task is deprecated. Please use gitlab:git:fsck instead".color(:red)
-      Rake::Task["gitlab:git:fsck"].execute
-    end
-  end
-
   namespace :orphans do
     desc 'Gitlab | Check for orphaned namespaces and repositories'
     task check: :gitlab_environment do
@@ -419,23 +411,6 @@ namespace :gitlab do
       checks = [SystemCheck::Orphans::RepositoryCheck]
 
       SystemCheck.run('Orphans', checks)
-    end
-  end
-
-  namespace :user do
-    desc "GitLab | Check the integrity of a specific user's repositories"
-    task :check_repos, [:username] => :gitlab_environment do |t, args|
-      username = args[:username] || prompt("Check repository integrity for username? ".color(:blue))
-      user = User.find_by(username: username)
-      if user
-        repo_dirs = user.authorized_projects.map do |p|
-          p.repository.path_to_repo
-        end
-
-        repo_dirs.each { |repo_dir| check_repo_integrity(repo_dir) }
-      else
-        puts "\nUser '#{username}' not found".color(:red)
-      end
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Delete todos when user loses access to read the target
+merge_request: 20665
+author:
+type: other

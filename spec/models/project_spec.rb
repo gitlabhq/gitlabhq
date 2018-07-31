@@ -3877,6 +3877,16 @@ describe Project do
     end
   end
 
+  context '#commits_by' do
+    let(:project) { create(:project, :repository) }
+    let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
+    let(:commit_shas) { commits.map(&:id) }
+
+    it 'retrieves several commits from the repository by oid' do
+      expect(project.commits_by(oids: commit_shas)).to eq commits
+    end
+  end
+
   def rugged_config
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
       project.repository.rugged.config

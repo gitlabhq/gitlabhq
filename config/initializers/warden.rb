@@ -1,10 +1,20 @@
 Rails.application.configure do |config|
   Warden::Manager.after_set_user(scope: :user) do |user, auth, opts|
     Gitlab::Auth::UniqueIpsLimiter.limit_user!(user)
-  end
 
-  Warden::Manager.before_failure(scope: :user) do |env, opts|
-    Gitlab::Auth::BlockedUserTracker.log_if_user_blocked(env)
+    activity = Gitlab::Auth::Activity.new(user, opts)
+
+    case opts[:event]
+    when :authentication
+      activity.user_authenticated!
+    when :set_user
+      activity.user_authenticated!
+      activity.user_session_override!
+    when :fetch # rubocop:disable Lint/EmptyWhen
+      # We ignore session fetch events
+    else
+      activity.user_session_override!
+    end
   end
 
   Warden::Manager.after_authentication(scope: :user) do |user, auth, opts|
@@ -15,7 +25,17 @@ Rails.application.configure do |config|
     ActiveSession.set(user, auth.request)
   end
 
-  Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
-    ActiveSession.destroy(user || auth.user, auth.request.session.id)
+  Warden::Manager.before_failure(scope: :user) do |env, opts|
+    tracker = Gitlab::Auth::BlockedUserTracker.new(env)
+    tracker.log_blocked_user_activity! if tracker.user_blocked?
+
+    Gitlab::Auth::Activity.new(tracker.user, opts).user_authentication_failed!
+  end
+
+  Warden::Manager.before_logout(scope: :user) do |user_warden, auth, opts|
+    user = user_warden || auth.user
+
+    ActiveSession.destroy(user, auth.request.session.id)
+    Gitlab::Auth::Activity.new(user, opts).user_session_destroyed!
   end
 end

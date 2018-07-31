@@ -57,6 +57,10 @@ describe ApplicationController do
   end
 
   describe "#authenticate_user_from_personal_access_token!" do
+    before do
+      stub_authentication_activity_metrics(debug: false)
+    end
+
     controller(described_class) do
       def index
         render text: 'authenticated'
@@ -67,7 +71,13 @@ describe ApplicationController do
 
     context "when the 'personal_access_token' param is populated with the personal access token" do
       it "logs the user in" do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+          .and increment(:user_sessionless_authentication_counter)
+
         get :index, private_token: personal_access_token.token
+
         expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq('authenticated')
       end
@@ -75,15 +85,25 @@ describe ApplicationController do
 
     context "when the 'PERSONAL_ACCESS_TOKEN' header is populated with the personal access token" do
       it "logs the user in" do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+          .and increment(:user_sessionless_authentication_counter)
+
         @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
         get :index
+
         expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq('authenticated')
       end
     end
 
     it "doesn't log the user in otherwise" do
+      expect(authentication_metrics)
+        .to increment(:user_unauthenticated_counter)
+
       get :index, private_token: "token"
+
       expect(response.status).not_to eq(200)
       expect(response.body).not_to eq('authenticated')
     end
@@ -174,6 +194,10 @@ describe ApplicationController do
   end
 
   describe '#authenticate_sessionless_user!' do
+    before do
+      stub_authentication_activity_metrics(debug: false)
+    end
+
     describe 'authenticating a user from a feed token' do
       controller(described_class) do
         def index
@@ -184,7 +208,13 @@ describe ApplicationController do
       context "when the 'feed_token' param is populated with the feed token" do
         context 'when the request format is atom' do
           it "logs the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_session_override_counter)
+              .and increment(:user_sessionless_authentication_counter)
+
             get :index, feed_token: user.feed_token, format: :atom
+
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
@@ -192,7 +222,13 @@ describe ApplicationController do
 
         context 'when the request format is ics' do
           it "logs the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_session_override_counter)
+              .and increment(:user_sessionless_authentication_counter)
+
             get :index, feed_token: user.feed_token, format: :ics
+
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
@@ -200,7 +236,11 @@ describe ApplicationController do
 
         context 'when the request format is neither atom nor ics' do
           it "doesn't log the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_unauthenticated_counter)
+
             get :index, feed_token: user.feed_token
+
             expect(response.status).not_to have_gitlab_http_status 200
             expect(response.body).not_to eq 'authenticated'
           end
@@ -209,7 +249,11 @@ describe ApplicationController do
 
       context "when the 'feed_token' param is populated with an invalid feed token" do
         it "doesn't log the user" do
+          expect(authentication_metrics)
+            .to increment(:user_unauthenticated_counter)
+
           get :index, feed_token: 'token', format: :atom
+
           expect(response.status).not_to eq 200
           expect(response.body).not_to eq 'authenticated'
         end
