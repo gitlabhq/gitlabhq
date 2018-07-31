@@ -59,7 +59,7 @@
               .project-path.input-group-prepend
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
-                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.project_key, path: repo.slug) } : {}
+                  - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.project_key, path: repo.project_key) } : {}
                   = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace', tabindex: 1 }
                 - else
                   = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
