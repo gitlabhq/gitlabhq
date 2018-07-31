@@ -4,8 +4,11 @@ class Projects::LfsApiController < Projects::GitHttpClientController
   include GitlabRoutingHelper
   include LfsRequest
 
+<<<<<<< HEAD
   prepend ::EE::Projects::LfsApiController
 
+=======
+>>>>>>> upstream/master
   LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'.freeze
 
   skip_before_action :lfs_check_access!, only: [:deprecated]

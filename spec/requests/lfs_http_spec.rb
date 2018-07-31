@@ -733,6 +733,7 @@ describe 'Git LFS API and storage' do
           expect(json_response['objects'].first['size']).to eq(sample_size)
           expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
           expect(json_response['objects'].first['actions']['upload']['header']).to eq({ 'Authorization' => authorization, 'Content-Type' => 'application/octet-stream' })
+<<<<<<< HEAD
         end
 
         ## EE-specific context
@@ -761,6 +762,8 @@ describe 'Git LFS API and storage' do
             expect(json_response['documentation_url']).to include('/help')
             expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 300 MB by 50 MB. Please contact your GitLab administrator for more information.')
           end
+=======
+>>>>>>> upstream/master
         end
       end
 
