@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180613184349) do
+ActiveRecord::Schema.define(version: 20180727221937) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,6 +78,8 @@ ActiveRecord::Schema.define(version: 20180613184349) do
     t.datetime_with_timezone "last_repository_check_at"
     t.datetime_with_timezone "resync_repository_was_scheduled_at"
     t.datetime_with_timezone "resync_wiki_was_scheduled_at"
+    t.boolean "repository_missing_on_primary"
+    t.boolean "wiki_missing_on_primary"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
