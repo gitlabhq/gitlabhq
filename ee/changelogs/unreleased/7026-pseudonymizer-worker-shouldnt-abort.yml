@@ -1,5 +1,0 @@
----
-title: Fixed the pseudonymizer potentially killing a sidekiq worker.
-merge_request: 6707
-author:
-type: fixed
