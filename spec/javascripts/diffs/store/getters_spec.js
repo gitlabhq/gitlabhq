@@ -167,6 +167,24 @@ describe('Diffs Module Getters', () => {
     });
   });
 
+  describe('diffHasDiscussions', () => {
+    it('returns true when getDiffFileDiscussions returns discussions', () => {
+      expect(
+        getters.diffHasDiscussions(localState, {
+          getDiffFileDiscussions: () => [discussionMock],
+        })(diffFileMock),
+      ).toEqual(true);
+    });
+
+    it('returns false when getDiffFileDiscussions returns no discussions', () => {
+      expect(
+        getters.diffHasDiscussions(localState, {
+          getDiffFileDiscussions: () => [],
+        })(diffFileMock),
+      ).toEqual(false);
+    });
+  });
+
   describe('getDiffFileDiscussions', () => {
     it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
       discussionMock.diff_file.file_hash = diffFileMock.fileHash;
