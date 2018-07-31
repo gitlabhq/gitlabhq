@@ -22,15 +22,7 @@ export default class PushPull {
   }
 
   updateUrl() {
-    let val = this.$urlInput.val();
-    const $authMethod = $('.js-auth-method', this.$form);
-
-    if ($authMethod.val() === 'password') {
-      const password = $('.js-password', this.$form).val();
-      if (password) val = val.replace('@', `:${password}@`);
-    }
-
-    $('.js-mirror-url-hidden', this.$form).val(val);
+    $('.js-mirror-url-hidden', this.$form).val(this.$urlInput.val());
   }
 
   updateProtectedBranches() {
@@ -41,7 +33,7 @@ export default class PushPull {
   }
 
   registerUpdateListeners() {
-    this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 200);
+    this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 500);
     this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
   }
