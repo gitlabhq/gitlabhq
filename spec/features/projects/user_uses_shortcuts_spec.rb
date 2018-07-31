@@ -9,6 +9,8 @@ describe 'User uses shortcuts', :js do
     sign_in(user)
 
     visit(project_path(project))
+
+    wait_for_requests
   end
 
   context 'when navigating to the Project pages' do
