@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This model is not used yet, it will be used for:
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
 class ResourceLabelEvent < ActiveRecord::Base
   prepend EE::ResourceLabelEvent
 

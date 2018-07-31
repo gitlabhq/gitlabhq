@@ -4,6 +4,8 @@
 #
 # Contains functionality related to objects that support adding/removing labels.
 #
+# This concern is not used yet, it will be used for:
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
 
 module LabelEventable
   extend ActiveSupport::Concern

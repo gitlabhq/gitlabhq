@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+# This service is not used yet, it will be used for:
+# https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
 module ResourceEvents
   class ChangeLabelsService
     prepend EE::ResourceEvents::ChangeLabelsService
