@@ -8,6 +8,8 @@ export default class EEPushPull extends PushPull {
   constructor(...args) {
     super(...args);
 
+    this.$password = undefined;
+    this.$mirrorDirectionSelect = $('.js-mirror-direction', this.$form);
     this.$insertionPoint = $('.js-form-insertion-point', this.$form);
     this.$repoCount = $('.js-mirrored-repo-count', this.$container);
     this.directionFormMap = {
@@ -22,6 +24,17 @@ export default class EEPushPull extends PushPull {
     });
     this.handleUpdate();
     super.init();
+  }
+
+  updateUrl() {
+    let val = this.$urlInput.val();
+
+    if (this.$password) {
+      const password = this.$password.val();
+      if (password) val = val.replace('@', `:${password}@`);
+    }
+
+    $('.js-mirror-url-hidden', this.$form).val(val);
   }
 
   handleUpdate() {
@@ -63,16 +76,25 @@ export default class EEPushPull extends PushPull {
     this.updateUrl();
     this.updateProtectedBranches();
 
-    if (direction === 'pull') this.initMirrorPull();
+    if (direction === 'pull') return this.initMirrorPull();
+    return this.initMirrorPush();
   }
 
   initMirrorPull() {
+    this.$password.off('input.updateUrl');
+    this.$password = undefined;
+
     const mirrorPull = new MirrorPull('.js-mirror-form');
 
     if (this.$urlInput.val() !== '') mirrorPull.handleRepositoryUrlInput();
     mirrorPull.init();
 
     this.initSelect2();
+  }
+
+  initMirrorPush() {
+    this.$password = $('.js-password', this.$form);
+    this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
   }
 
   initSelect2() {

@@ -10,7 +10,6 @@ export default class PushPull {
     this.$form = $('.js-mirror-form', this.$container);
     this.$urlInput = $('.js-mirror-url', this.$form);
     this.$protectedBranchesInput = $('.js-mirror-protected', this.$form);
-    this.$mirrorDirectionSelect = $('.js-mirror-direction', this.$form);
     this.$table = $('.js-mirrors-table-body', this.$container);
     this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
   }
