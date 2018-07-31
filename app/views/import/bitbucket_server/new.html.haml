@@ -21,6 +21,6 @@
   .form-group.row
     = label_tag :personal_access_token, 'Password/Personal Access Token', class: 'col-form-label col-md-2'
     .col-md-4
-      = text_field_tag :personal_access_token, '', class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
+      = password_field_tag :personal_access_token, '', class: 'form-control append-right-8', placeholder: _('Personal Access Token'), size: 40
   .form-actions
     = submit_tag _('List your Bitbucket Server repositories'), class: 'btn btn-success'
