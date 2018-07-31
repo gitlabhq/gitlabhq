@@ -3515,7 +3515,9 @@ describe Project do
           let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
           it 'moves pages folder to hashed storage' do
-            expect_any_instance_of(Projects::HashedStorage::MigrateAttachmentsService).to receive(:execute)
+            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
+              expect(service).to receive(:execute)
+            end
 
             project.rename_repo
           end

@@ -9,8 +9,8 @@ module EE
           super do
             ::Geo::HashedStorageAttachmentsEventStore.new(
               project,
-              old_disk_path: old_path,
-              new_disk_path: new_path
+              old_attachments_path: old_disk_path,
+              new_attachments_path: new_disk_path
             ).create
           end
         end

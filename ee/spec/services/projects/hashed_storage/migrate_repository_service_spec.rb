@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateRepositoryService do
   let(:project) { create(:project, :empty_repo, :wiki_repo, :legacy_storage) }
-  let(:service) { described_class.new(project) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
+  let(:service) { described_class.new(project, legacy_storage.disk_path) }
 
   describe '#execute' do
     set(:primary) { create(:geo_node, :primary) }
