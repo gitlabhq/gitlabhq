@@ -239,15 +239,6 @@ module ApplicationSettingsHelper
       :signup_enabled,
       :terminal_max_session_time,
       :terms,
-<<<<<<< HEAD
-      :throttle_unauthenticated_enabled,
-      :throttle_unauthenticated_requests_per_period,
-      :throttle_unauthenticated_period_in_seconds,
-      :throttle_authenticated_web_enabled,
-      :throttle_authenticated_web_requests_per_period,
-      :throttle_authenticated_web_period_in_seconds,
-=======
->>>>>>> origin/master
       :throttle_authenticated_api_enabled,
       :throttle_authenticated_api_period_in_seconds,
       :throttle_authenticated_api_requests_per_period,
