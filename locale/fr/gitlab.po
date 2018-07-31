@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 16:41\n"
+"PO-Revision-Date: 2018-07-31 22:42\n"
 
 msgid " and"
 msgstr ""
@@ -3326,7 +3326,7 @@ msgid "Group Runners"
 msgstr "Exécuteurs de groupe"
 
 msgid "Group avatar"
-msgstr ""
+msgstr "Avatar de groupe"
 
 msgid "Group details"
 msgstr ""
