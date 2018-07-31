@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 22:42\n"
+"PO-Revision-Date: 2018-07-31 22:46\n"
 
 msgid " and"
 msgstr ""
@@ -3275,7 +3275,7 @@ msgid "Gitaly|Address"
 msgstr "Adresse"
 
 msgid "Gitea Host URL"
-msgstr ""
+msgstr "URL de l’hôte Gitea"
 
 msgid "Gitea Import"
 msgstr ""
@@ -3577,7 +3577,7 @@ msgid "Import"
 msgstr "Importer"
 
 msgid "Import Projects from Gitea"
-msgstr ""
+msgstr "Importe des projets depuis Gitea"
 
 msgid "Import all compatible projects"
 msgstr ""
@@ -3926,7 +3926,7 @@ msgid "Manage Git repositories with fine-grained access controls that keep your 
 msgstr ""
 
 msgid "Manage access"
-msgstr ""
+msgstr "Gestion des accès"
 
 msgid "Manage all notifications"
 msgstr "Gérer toutes les notifications"
