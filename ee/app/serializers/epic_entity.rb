@@ -6,8 +6,14 @@ class EpicEntity < IssuableEntity
   expose :group_full_name do |epic|
     epic.group.full_name
   end
+
   expose :start_date
-  expose :end_date
+  expose :start_date_is_fixed?, as: :start_date_is_fixed
+  expose :start_date_fixed, :start_date_from_milestones
+  expose :end_date, as: :due_date
+  expose :due_date_is_fixed?, as: :due_date_is_fixed
+  expose :due_date_fixed, :due_date_from_milestones
+
   expose :web_url do |epic|
     group_epic_path(epic.group, epic)
   end
