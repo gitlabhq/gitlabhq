@@ -15,15 +15,11 @@ If verification fails on the **primary**, this indicates that Geo is
 successfully replicating a corrupted object; restore it from backup or remove it
 it from the primary to resolve the issue.
 
-If verification succeeds on the **primary** but fails on the **secondary**, this
-indicates that the object was corrupted during the replication process. Until
-[issue #5195][ee-5195] is implemented, Geo won't automatically resolve
-verification failures of this kind, so you should remove the registry entries to
-force Geo to re-replicate the files:
-
-```
-sudo gitlab-rails runner 'Geo::ProjectRegistry.verification_failed.delete_all'
-```
+If verification succeeds on the **primary** but fails on the **secondary**,
+this indicates that the object was corrupted during the replication process.
+Until [issue #5195][ee-5195] is implemented, Geo won't automatically resolve
+verification failures of this kind, so you should follow
+[these instructions][reset-verification]
 
 If verification is lagging significantly behind replication, consider giving
 the node more time before scheduling a planned failover.
@@ -90,6 +86,40 @@ GitLab-specific references to ensure true consistency. If two nodes have the
 same checksum, then they definitely hold the same data. We compute the checksum
 for every node after every update to make sure that they are all in sync.
 
+# Reset verification for projects where verification has failed
+
+Until [issue #5195][ee-5195] is implemented, Geo won't automatically resolve
+verification failures, so you should reset them manually. This rake task marks
+projects where verification has failed or the checksum mismatch to be resynced:
+
+#### For repositories:
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake geo:verification:repository:reset
+```
+
+**Source Installation**
+
+```bash
+sudo -u git -H bundle exec rake geo:verification:repository:reset RAILS_ENV=production
+```
+
+#### For wikis:
+
+**Omnibus Installation**
+
+```
+sudo gitlab-rake geo:verification:wiki:reset
+```
+
+**Source Installation**
+
+```bash
+sudo -u git -H bundle exec rake geo:verification:wiki:reset RAILS_ENV=production
+```
+
 # Current limitations
 
 Until [issue #5064][ee-5064] is completed, background verification doesn't cover
@@ -102,6 +132,7 @@ for ensuring the integrity of the data.
 
 [disaster-recovery]: index.md
 [feature-flag]: background_verification.md#enabling-or-disabling-the-automatic-background-verification
+[reset-verification]: background_verification.md#reset-verification-for-projects-where-verification-has-failed
 [foreground-verification]: ../../raketasks/check.md
 [ee-5064]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5064
 [ee-5699]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5699

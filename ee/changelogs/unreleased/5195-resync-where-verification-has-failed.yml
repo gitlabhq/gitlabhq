@@ -1,0 +1,5 @@
+---
+title: 'Geo: Add rake task to resync projects where verification has failed'
+merge_request: 6727
+author:
+type: other
