@@ -116,6 +116,7 @@ module API
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
+    mount ::API::ManagedLicenses
     mount ::API::Markdown
     mount ::API::Members
     mount ::API::MergeRequestApprovals

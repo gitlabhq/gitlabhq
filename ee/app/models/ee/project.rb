@@ -34,6 +34,8 @@ module EE
       has_many :audit_events, as: :entity
       has_many :path_locks
       has_many :vulnerability_feedback
+      has_many :software_license_policies, inverse_of: :project, class_name: 'SoftwareLicensePolicy'
+      accepts_nested_attributes_for :software_license_policies, allow_destroy: true
 
       has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
 
@@ -292,7 +294,7 @@ module EE
       if import? && !repository_exists?
         super
       elsif mirror?
-        ::Gitlab::Metrics.add_event(:mirrors_scheduled, path: full_path)
+        ::Gitlab::Metrics.add_event(:mirrors_scheduled)
         job_id = RepositoryUpdateMirrorWorker.perform_async(self.id)
 
         log_import_activity(job_id, type: :mirror)

@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import reportSection from '~/vue_shared/components/reports/report_section.vue';
-import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import mountComponent, { mountComponentWithSlots } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Report section', () => {
   let vm;
@@ -169,6 +169,29 @@ describe('Report section', () => {
         hasIssues: false,
       });
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
+    });
+  });
+
+  describe('with action buttons passed to the slot', () => {
+    beforeEach(() => {
+      vm = mountComponentWithSlots(ReportSection, {
+        props: {
+          status: 'SUCCESS',
+          successText: 'success',
+          hasIssues: true,
+        },
+        slots: {
+          actionButtons: ['Action!'],
+        },
+      });
+    });
+
+    it('should render the passed button', () => {
+      expect(vm.$el.textContent.trim()).toContain('Action!');
+    });
+
+    it('should still render the expand/collapse button', () => {
+      expect(vm.$el.querySelector('.js-collapse-btn').textContent.trim()).toEqual('Expand');
     });
   });
 });

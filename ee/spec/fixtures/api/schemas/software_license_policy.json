@@ -1,0 +1,14 @@
+{
+  "type": "object",
+  "required": [
+    "id",
+    "name",
+    "approval_status"
+  ],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "approval_status": { "type": "string" }
+  },
+  "additionalProperties": false
+}

@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import * as types from '../mutation_types';
+import { sortTree } from '../utils';
 import { diffModes } from '../../constants';
 
 export default {
@@ -51,9 +52,17 @@ export default {
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
+    const openPendingFile = state.openFiles.find(
+      f => f.path === file.path && f.pending && !f.tempFile,
+    );
+
     Object.assign(state.entries[file.path], {
       raw,
     });
+
+    if (openPendingFile) {
+      openPendingFile.raw = raw;
+    }
   },
   [types.SET_FILE_BASE_RAW_DATA](state, { file, baseRaw }) {
     Object.assign(state.entries[file.path], {
@@ -109,11 +118,22 @@ export default {
   },
   [types.DISCARD_FILE_CHANGES](state, path) {
     const stagedFile = state.stagedFiles.find(f => f.path === path);
+    const entry = state.entries[path];
+    const { deleted } = entry;
 
     Object.assign(state.entries[path], {
       content: stagedFile ? stagedFile.content : state.entries[path].raw,
       changed: false,
+      deleted: false,
     });
+
+    if (deleted) {
+      const parent = entry.parentPath
+        ? state.entries[entry.parentPath]
+        : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+
+      parent.tree = sortTree(parent.tree.concat(entry));
+    }
   },
   [types.ADD_FILE_TO_CHANGED](state, path) {
     Object.assign(state, {

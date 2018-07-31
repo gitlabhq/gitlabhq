@@ -116,6 +116,8 @@ describe MergeRequestWidgetEntity do
     expect(subject.as_json).to include(:license_management)
     expect(subject.as_json[:license_management]).to include(:head_path)
     expect(subject.as_json[:license_management]).to include(:base_path)
+    expect(subject.as_json[:license_management]).to include(:managed_licenses_path)
+    expect(subject.as_json[:license_management]).to include(:can_manage_licenses)
   end
 
   # methods for old artifact are deprecated and replaced with ones for the new name (#5779)

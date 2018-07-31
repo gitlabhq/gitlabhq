@@ -343,7 +343,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
-          get :test
+          post :test
         end
 
         resources :hook_logs, only: [:show] do
@@ -519,6 +519,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
+
+      ## EE-specific
+      resources :managed_licenses, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+      ## EE-specific
     end
 
     resources(:projects,

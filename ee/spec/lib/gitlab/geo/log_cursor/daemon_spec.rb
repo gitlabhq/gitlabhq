@@ -84,6 +84,15 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
         daemon.run_once!
       end
+
+      it 'calls #handle_gap_event for each gap the gap tracking finds' do
+        allow(daemon.gap_tracking).to receive(:fill_gaps).and_yield(1).and_yield(5)
+
+        expect(daemon).to receive(:handle_gap_event).with(1)
+        expect(daemon).to receive(:handle_gap_event).with(5)
+
+        daemon.run_once!
+      end
     end
 
     context 'when node has namespace restrictions' do
@@ -116,32 +125,28 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         daemon.run_once!
       end
 
-      it "logs a message if an event was skipped" do
+      it 'detects when an event was skipped' do
         updated_event = create(:geo_repository_updated_event, project: project)
         new_event = create(:geo_event_log, id: event_log.id + 2, repository_updated_event: updated_event)
 
-        expect(Gitlab::Geo::Logger).to receive(:info)
-                                        .with(hash_including(
-                                                class: 'Gitlab::Geo::LogCursor::Daemon',
-                                                message: 'Event log gap',
-                                                previous_event_log_id: event_log.id,
-                                                event_log_id: new_event.id))
-
         daemon.run_once!
+
+        expect(read_gaps).to eq([event_log.id + 1])
 
         expect(::Geo::EventLogState.last_processed.id).to eq(new_event.id)
+      end
 
-        # Test that the cursor picks up from the last stored ID
-        third_event = create(:geo_event_log, id: new_event.id + 3, repository_updated_event: updated_event)
-
-        expect(Gitlab::Geo::Logger).to receive(:info)
-                                        .with(hash_including(
-                                                class: 'Gitlab::Geo::LogCursor::Daemon',
-                                                message: 'Event log gap',
-                                                previous_event_log_id: new_event.id,
-                                                event_log_id: third_event.id))
+      it 'detects when an event was skipped between batches' do
+        updated_event = create(:geo_repository_updated_event, project: project)
+        new_event = create(:geo_event_log, repository_updated_event: updated_event)
 
         daemon.run_once!
+
+        create(:geo_event_log, id: new_event.id + 3, repository_updated_event: updated_event)
+
+        daemon.run_once!
+
+        expect(read_gaps).to eq([new_event.id + 1, new_event.id + 2])
       end
 
       it "logs a message if an associated event can't be found" do
@@ -182,5 +187,68 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         daemon.run_once!
       end
     end
+  end
+
+  describe '#handle_events' do
+    let(:batch) { create_list(:geo_event_log, 2) }
+
+    it 'passes the previous batch id on to gap tracking' do
+      expect(daemon.gap_tracking).to receive(:previous_id=).with(55).ordered
+      batch.each do |event_log|
+        expect(daemon.gap_tracking).to receive(:previous_id=).with(event_log.id).ordered
+      end
+
+      daemon.handle_events(batch, 55)
+    end
+
+    it 'checks for gaps for each id in batch' do
+      batch.each do |event_log|
+        expect(daemon.gap_tracking).to receive(:check!).with(event_log.id)
+      end
+
+      daemon.handle_events(batch, 55)
+    end
+
+    it 'handles every single event' do
+      batch.each do |event_log|
+        expect(daemon).to receive(:handle_single_event).with(event_log)
+      end
+
+      daemon.handle_events(batch, 55)
+    end
+  end
+
+  describe '#handle_single_event' do
+    set(:event_log) { create(:geo_event_log, :updated_event) }
+
+    it 'skips execution when no event data is found' do
+      event_log = build(:geo_event_log)
+      expect(daemon).not_to receive(:can_replay?)
+
+      daemon.handle_single_event(event_log)
+    end
+
+    it 'checks if it can replay the event' do
+      expect(daemon).to receive(:can_replay?)
+
+      daemon.handle_single_event(event_log)
+    end
+
+    it 'processes event when it is replayable' do
+      allow(daemon).to receive(:can_replay?).and_return(true)
+      expect(daemon).to receive(:process_event).with(event_log.event, event_log)
+
+      daemon.handle_single_event(event_log)
+    end
+  end
+
+  def read_gaps
+    gaps = []
+
+    Timecop.travel(12.minutes) do
+      daemon.gap_tracking.fill_gaps { |id| gaps << id }
+    end
+
+    gaps
   end
 end

@@ -7,7 +7,7 @@ export default class Model {
     this.disposable = new Disposable();
     this.file = file;
     this.head = head;
-    this.content = file.content !== '' ? file.content : file.raw;
+    this.content = file.content !== '' || file.deleted ? file.content : file.raw;
 
     this.disposable.add(
       (this.originalModel = monacoEditor.createModel(

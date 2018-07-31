@@ -1,29 +1,11 @@
 .issue-count-badge {
   display: inline-flex;
-  align-items: stretch;
-  height: 24px;
+  border-radius: $border-radius-base;
+  border: 1px solid $border-color;
+  padding: 5px $gl-padding-8;
 }
 
 .issue-count-badge-count {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  padding-right: 10px;
-  padding-left: 10px;
-  border: 1px solid $border-color;
-  border-radius: $border-radius-base;
-  line-height: 1;
-
-  &.has-btn {
-    border-right: 0;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-}
-
-.issue-count-badge-add-button {
-  display: flex;
-  align-items: center;
-  border: 1px solid $border-color;
-  border-radius: 0 $border-radius-base $border-radius-base 0;
-  line-height: 1;
 }

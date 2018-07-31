@@ -572,13 +572,12 @@ setup-test-env:
       - vendor/gitaly-ruby
 
 danger-review:
-  image: registry.gitlab.com/gitlab-org/gitaly/dangercontainer:latest
+  image: registry.gitlab.com/gitlab-org/gitlab-build-images:danger
   stage: test
   allow_failure: true
-  before_script:
-    - source scripts/utils.sh
-    - retry gem install danger --no-ri --no-rdoc
   cache: {}
+  dependencies: []
+  before_script: []
   only:
     variables:
       - $DANGER_GITLAB_API_TOKEN
@@ -603,8 +602,8 @@ rspec-pg-ee-rails5 0 2: *rspec-ee-pg-rails5
 rspec-pg-ee-rails5 1 2: *rspec-ee-pg-rails5
 rspec-mysql-ee-rails5 0 2: *rspec-ee-mysql-rails5
 rspec-mysql-ee-rails5 1 2: *rspec-ee-mysql-rails5
-rspec-pg-geo-rails5 0 2: *rspec-metadata-pg-geo-9-6-rails5
-rspec-pg-geo-rails5 1 2: *rspec-metadata-pg-geo-10-2-rails5
+rspec-pg-geo-rails5 0 1: *rspec-metadata-pg-geo-9-6-rails5
+rspec-pg-10-geo-rails5 0 1: *rspec-metadata-pg-geo-10-2-rails5
 ## EE jobs
 
 rspec-pg 0 30: *rspec-metadata-pg

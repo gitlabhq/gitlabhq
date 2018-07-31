@@ -669,6 +669,12 @@ POST /projects
 | `ci_config_path` | string | no | The path to CI config file |
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Create project for user
 
@@ -708,6 +714,12 @@ POST /projects/user/:user_id
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 | `external_authorization_classification_label` | string | no | The classification label for the project |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Edit project
 
@@ -746,6 +758,15 @@ PUT /projects/:id
 | `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
 | `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
 | `external_authorization_classification_label` | string | no | The classification label for the project |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_user_id` | integer | no | User responsible for all the activity surrounding a pull mirror event |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+| `only_mirror_protected_branches` | boolean | no | Only mirror protected branches |
+| `mirror_overwrites_diverged_branches` | boolean | no | Pull mirror overwrites diverged branches |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Fork project
 

@@ -1,9 +1,9 @@
-require "spec_helper"
+require "rails_helper"
 
-describe "User tests hooks" do
-  set(:group) { create(:group) }
-  set(:hook) { create(:group_hook, group: group) }
-  set(:user) { create(:user) }
+describe "User tests hooks", :js do
+  let!(:group) { create(:group) }
+  let!(:hook) { create(:group_hook, group: group) }
+  let!(:user) { create(:user) }
 
   before do
     group.add_owner(user)

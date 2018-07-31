@@ -20,7 +20,6 @@ describe ProjectsController do
         namespace_id: user.namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PUBLIC,
         mirror: true,
-        mirror_user_id: user.id,
         mirror_trigger_builds: true
       }
     end
@@ -144,6 +143,8 @@ describe ProjectsController do
         end
 
         it 'updates repository mirror attributes' do
+          expect_any_instance_of(EE::Project).to receive(:force_import_job!).once
+
           put :update,
             namespace_id: project.namespace,
             id: project,

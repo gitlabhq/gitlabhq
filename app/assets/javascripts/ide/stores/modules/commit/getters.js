@@ -1,7 +1,15 @@
-import { sprintf, n__ } from '../../../../locale';
+import { sprintf, n__, __ } from '../../../../locale';
 import * as consts from './constants';
 
 const BRANCH_SUFFIX_COUNT = 5;
+const createTranslatedTextForFiles = (files, text) => {
+  if (!files.length) return null;
+
+  return sprintf(n__('%{text} %{files}', '%{text} %{files} files', files.length), {
+    files: files.reduce((acc, val) => acc.concat(val.path), []).join(', '),
+    text,
+  });
+};
 
 export const discardDraftButtonDisabled = state =>
   state.commitMessage === '' || state.submitCommitLoading;
@@ -29,14 +37,16 @@ export const branchName = (state, getters, rootState) => {
 export const preBuiltCommitMessage = (state, _, rootState) => {
   if (state.commitMessage) return state.commitMessage;
 
-  const files = (rootState.stagedFiles.length
-    ? rootState.stagedFiles
-    : rootState.changedFiles
-  ).reduce((acc, val) => acc.concat(val.path), []);
+  const files = rootState.stagedFiles.length ? rootState.stagedFiles : rootState.changedFiles;
+  const modifiedFiles = files.filter(f => !f.deleted);
+  const deletedFiles = files.filter(f => f.deleted);
 
-  return sprintf(n__('Update %{files}', 'Update %{files} files', files.length), {
-    files: files.join(', '),
-  });
+  return [
+    createTranslatedTextForFiles(modifiedFiles, __('Update')),
+    createTranslatedTextForFiles(deletedFiles, __('Deleted')),
+  ]
+    .filter(t => t)
+    .join('\n');
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

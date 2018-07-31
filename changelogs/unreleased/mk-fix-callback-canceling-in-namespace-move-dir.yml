@@ -1,0 +1,5 @@
+---
+title: Fix namespace move callback behavior, especially to fix Geo replication of namespace moves during certain exceptions.
+merge_request: 19297
+author:
+type: fixed

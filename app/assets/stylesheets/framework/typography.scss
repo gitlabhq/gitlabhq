@@ -179,6 +179,10 @@
     font-weight: inherit;
   }
 
+  a > code {
+    color: $gl-link-color;
+  }
+
   dd {
     margin-left: $gl-padding;
   }
@@ -440,3 +444,5 @@ textarea {
     color: $placeholder-text-color;
   }
 }
+
+.lh-100 { line-height: 1; }

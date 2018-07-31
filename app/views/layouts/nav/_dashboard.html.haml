@@ -78,4 +78,4 @@
   - if Gitlab::Geo.secondary? && Gitlab::Geo.primary_node_configured?
     %li
       = link_to Gitlab::Geo.primary_node.url, title: 'Go to primary node', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
-        = sprite_icon('geo-nodes', size: 18)
+        = sprite_icon('location-dot', size: 18)
