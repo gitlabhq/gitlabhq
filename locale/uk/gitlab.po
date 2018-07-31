@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 11:17\n"
+"PO-Revision-Date: 2018-07-31 20:32\n"
 
 msgid " and"
 msgstr " і"
@@ -337,10 +337,10 @@ msgid "A user with write access to the source branch selected this option"
 msgstr "Користувач із правом запису в гілку-джерело вибрав цей варіант"
 
 msgid "About GitLab"
-msgstr ""
+msgstr "Про GitLab"
 
 msgid "About GitLab CE"
-msgstr ""
+msgstr "Про GitLab CE"
 
 msgid "About auto deploy"
 msgstr "Про авто розгортання"
@@ -430,19 +430,19 @@ msgid "Add user(s) to the group:"
 msgstr ""
 
 msgid "Add users to group"
-msgstr ""
+msgstr "Додати користувача до групи"
 
 msgid "Additional text"
 msgstr "Додатковий текст"
 
 msgid "Admin Area"
-msgstr ""
+msgstr "Область адміністратора"
 
 msgid "Admin Overview"
-msgstr ""
+msgstr "Огляд адміністратора"
 
 msgid "Admin area"
-msgstr ""
+msgstr "Область адміністратора"
 
 msgid "AdminArea|Stop all jobs"
 msgstr "Зупинити всі завдання"
@@ -1030,7 +1030,7 @@ msgid "BillingPlans|per user"
 msgstr "За користувача"
 
 msgid "Bitbucket import"
-msgstr ""
+msgstr "Імпорт з Bitbucket"
 
 msgid "Blog"
 msgstr ""
@@ -1511,7 +1511,7 @@ msgid "Client authentication key password"
 msgstr "Пароль ключа аутентифікації клієнта"
 
 msgid "Clients"
-msgstr ""
+msgstr "Клієнти"
 
 msgid "Clone repository"
 msgstr "Клонувати репозиторій"
@@ -1727,7 +1727,7 @@ msgid "ClusterIntegration|More information"
 msgstr "Додаткова інформація"
 
 msgid "ClusterIntegration|Multiple Kubernetes clusters are available in GitLab Enterprise Edition Premium and Ultimate"
-msgstr ""
+msgstr "Декілька Kubernetes-кластерів доступні в GitLab Enterprise Edition Premium та Ultimate"
 
 msgid "ClusterIntegration|No machine types matched your search"
 msgstr "Жоден тип машин не відповідає вашому пошуку"
@@ -2134,7 +2134,7 @@ msgid "Control the maximum concurrency of verification operations for this Geo n
 msgstr "Встановіть максимальну кількість паралельних операцій перевірки для цього Geo-вузла"
 
 msgid "ConvDev Index"
-msgstr ""
+msgstr "Індекс ConvDev"
 
 msgid "Copy SSH public key to clipboard"
 msgstr "Скопіюйте відкритий SSH-ключ в буфер обміну"
@@ -2155,7 +2155,7 @@ msgid "Copy file path to clipboard"
 msgstr "Скопіювати шлях до файлу в буфер обміну"
 
 msgid "Copy incoming email address to clipboard"
-msgstr ""
+msgstr "Копіювати адресу електронної пошти у буфер обміну"
 
 msgid "Copy reference to clipboard"
 msgstr "Скопіювати посилання в буфер обміну"
@@ -2164,7 +2164,7 @@ msgid "Copy to clipboard"
 msgstr "Копіювати в буфер обміну"
 
 msgid "Copy token to clipboard"
-msgstr ""
+msgstr "Скопіювати токен в буфер обміну"
 
 msgid "Create"
 msgstr "Створити"
@@ -2179,7 +2179,7 @@ msgid "Create a new branch and merge request"
 msgstr "Створити нову гілку і запит на злиття"
 
 msgid "Create a new issue"
-msgstr ""
+msgstr "Створити нову проблему"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Створіть токен доступу для вашого аккаунта, щоб відправляти та отримувати через %{protocol}."
@@ -2203,7 +2203,7 @@ msgid "Create file"
 msgstr "Створити файл"
 
 msgid "Create group"
-msgstr ""
+msgstr "Створити групу"
 
 msgid "Create group label"
 msgstr "Створити мітку групи"
@@ -2230,7 +2230,7 @@ msgid "Create new file"
 msgstr "Створити новий файл"
 
 msgid "Create new file or directory"
-msgstr ""
+msgstr "Створити новий файл чи папку"
 
 msgid "Create new label"
 msgstr "Створити нову мітку"
@@ -2323,7 +2323,7 @@ msgid "CycleAnalyticsStage|Test"
 msgstr "Тестування"
 
 msgid "Dashboard"
-msgstr ""
+msgstr "Панель керування"
 
 msgid "DashboardProjects|All"
 msgstr "Всі"
@@ -2362,7 +2362,7 @@ msgid "Delete list"
 msgstr "Видалити список"
 
 msgid "Deleted"
-msgstr ""
+msgstr "Видалено"
 
 msgid "Deny"
 msgstr ""
@@ -2897,7 +2897,7 @@ msgid "Explore Groups"
 msgstr ""
 
 msgid "Explore groups"
-msgstr ""
+msgstr "Огляд груп"
 
 msgid "Explore projects"
 msgstr "Огляд проектів"
@@ -2927,7 +2927,7 @@ msgid "ExternalAuthorizationService|When no classification label is set the defa
 msgstr "Якщо класифікаційну мітку не встановлено, використовуватиметься стандартна мітка `%{default_label}`."
 
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
 msgid "Failed"
 msgstr "Невдало"
@@ -3002,7 +3002,7 @@ msgid "FogBugz Email"
 msgstr ""
 
 msgid "FogBugz Import"
-msgstr ""
+msgstr "Імпорт з FogBugz"
 
 msgid "FogBugz Password"
 msgstr ""
@@ -3011,7 +3011,7 @@ msgid "FogBugz URL"
 msgstr ""
 
 msgid "FogBugz import"
-msgstr ""
+msgstr "Імпорт з FogBugz"
 
 msgid "Follow the steps below to export your Google Code project data."
 msgstr ""
@@ -3402,7 +3402,7 @@ msgid "Group maintainers can register group runners in the %{link}"
 msgstr "Керівники групи можуть зареєструвати групові runner'и через %{link}"
 
 msgid "Group: %{group_name}"
-msgstr ""
+msgstr "Група: %{group_name}"
 
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr "Від %{dateWord}"
@@ -3465,7 +3465,7 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr "Видалити блокування спільного доступу з іншими групами з %{ancestor_group_name}"
 
 msgid "Groups"
-msgstr ""
+msgstr "Групи"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr ""
@@ -3643,13 +3643,13 @@ msgid "Import"
 msgstr "Імпорт"
 
 msgid "Import Projects from Gitea"
-msgstr ""
+msgstr "Імпортувати проекти з Gitea"
 
 msgid "Import all compatible projects"
-msgstr ""
+msgstr "Імпорт всіх сумісних проектів"
 
 msgid "Import all projects"
-msgstr ""
+msgstr "Імпортувати всі проекти"
 
 msgid "Import all repositories"
 msgstr "Імпорт всіх репозиторіїв"
