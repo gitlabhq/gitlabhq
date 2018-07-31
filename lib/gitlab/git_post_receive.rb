@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Gitlab
   class GitPostReceive
     include Gitlab::Identifier
@@ -14,10 +16,11 @@ module Gitlab
     end
 
     def changes_refs
-      return enum_for(:changes_refs) unless block_given?
+      return changes unless block_given?
 
       changes.each do |change|
-        oldrev, newrev, ref = change.strip.split(' ')
+        change.strip!
+        oldrev, newrev, ref = change.split(' ')
 
         yield oldrev, newrev, ref
       end
@@ -26,13 +29,10 @@ module Gitlab
     private
 
     def deserialize_changes(changes)
-      changes = utf8_encode_changes(changes)
-      changes.lines
+      utf8_encode_changes(changes).each_line
     end
 
     def utf8_encode_changes(changes)
-      changes = changes.dup
-
       changes.force_encoding('UTF-8')
       return changes if changes.valid_encoding?
 
