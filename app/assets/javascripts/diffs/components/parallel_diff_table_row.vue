@@ -119,7 +119,6 @@ export default {
       class="diff-line-num old_line"
     />
     <td
-      v-once
       :id="line.left.lineCode"
       :class="parallelViewLeftLineType"
       class="line_content parallel left-side"
@@ -140,7 +139,6 @@ export default {
       class="diff-line-num new_line"
     />
     <td
-      v-once
       :id="line.right.lineCode"
       :class="line.right.type"
       class="line_content parallel right-side"
