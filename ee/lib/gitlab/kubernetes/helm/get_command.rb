@@ -3,15 +3,7 @@ require_dependency 'gitlab/kubernetes/helm.rb'
 module Gitlab
   module Kubernetes
     module Helm
-      class GetCommand
-        include BaseCommand
-
-        attr_reader :name
-
-        def initialize(name)
-          @name = name
-        end
-
+      class GetCommand < BaseCommand
         def config_map?
           true
         end

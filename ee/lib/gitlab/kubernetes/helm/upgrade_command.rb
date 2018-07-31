@@ -3,13 +3,11 @@ require_dependency 'gitlab/kubernetes/helm.rb'
 module Gitlab
   module Kubernetes
     module Helm
-      class UpgradeCommand
-        include BaseCommand
-
-        attr_reader :name, :chart, :version, :repository, :values
+      class UpgradeCommand < BaseCommand
+        attr_reader :chart, :version, :repository, :values
 
         def initialize(name, chart:, values:, version: nil, repository: nil)
-          @name = name
+          super(name)
           @chart = chart
           @version = version
           @values = values
