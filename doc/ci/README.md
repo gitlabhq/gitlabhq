@@ -81,6 +81,7 @@ learn how to leverage its potential even more.
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
   and status of each CI/CD environment running on Kubernetes
 - [ChatOps](chatops/README.md) - Trigger CI jobs from chat, with results sent back to the channel.
+- [Protected Environments](environments/protected_environments.md): Ensure that only people with right privileges can deploy code to an environment.
 
 ## GitLab CI/CD for Docker
 
