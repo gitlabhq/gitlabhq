@@ -295,13 +295,8 @@ class ApplicationSetting < ActiveRecord::Base
       unique_ips_limit_per_user: 10,
       unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
-      instance_statistics_visibility_private: false,
-      gitaly_timeout_fast: 10,
-      gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55,
-      allow_local_requests_from_hooks_and_services: false,
-      hide_third_party_offers: false,
-      mirror_available: true
+      user_default_external: false,
+      instance_statistics_visibility_private: false
     }
   end
 
