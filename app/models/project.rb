@@ -1145,22 +1145,11 @@ class Project < ActiveRecord::Base
   end
 
   def avatar_in_git
-    # repository.expire_avatar_cache
     repository.avatar
   end
 
   def avatar_url(**args)
-    if avatar_in_git
-      avatar_blob = repository.blob_at_branch(repository.root_ref, avatar_in_git)
-      if avatar_blob.stored_externally?
-        lfs_object = LfsObject.find_by_oid(avatar_blob.lfs_oid)
-        if lfs_object && lfs_object.file.exists?
-          lfs_object.file.url
-        end
-      else
-        Gitlab::Routing.url_helpers.project_avatar_url(self)
-      end
-    end
+    Gitlab::Routing.url_helpers.project_avatar_url(self) if avatar_in_git
   end
 
   # For compatibility with old code
