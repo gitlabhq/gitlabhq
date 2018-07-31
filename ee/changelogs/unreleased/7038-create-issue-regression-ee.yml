@@ -1,0 +1,5 @@
+---
+title: Ensure that Create issue button is shown in vulnerability dialog
+merge_request: 6708
+author:
+type: fixed
