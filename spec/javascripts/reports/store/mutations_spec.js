@@ -1,6 +1,7 @@
 import state from '~/reports/store/state';
 import mutations from '~/reports/store/mutations';
 import * as types from '~/reports/store/mutation_types';
+import { issue } from '../mock_data/mock_data';
 
 describe('Reports Store Mutations', () => {
   let stateCopy;
@@ -89,6 +90,7 @@ describe('Reports Store Mutations', () => {
     beforeEach(() => {
       mutations[types.RECEIVE_REPORTS_ERROR](stateCopy);
     });
+
     it('should reset isLoading', () => {
       expect(stateCopy.isLoading).toEqual(false);
     });
@@ -97,5 +99,30 @@ describe('Reports Store Mutations', () => {
       expect(stateCopy.hasError).toEqual(true);
     });
 
+    it('should reset reports', () => {
+      expect(stateCopy.reports).toEqual([]);
+    });
+  });
+
+  describe('SET_ISSUE_MODAL_DATA', () => {
+    beforeEach(() => {
+      mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, {
+        issue,
+        status: 'failed',
+      });
+    });
+
+    it('should set modal title', () => {
+      expect(stateCopy.modal.title).toEqual(issue.name);
+    });
+
+    it('should set modal status', () => {
+      expect(stateCopy.modal.status).toEqual('failed');
+    });
+
+    it('should set modal data', () => {
+      expect(stateCopy.modal.data.execution_time.value).toEqual(issue.execution_time);
+      expect(stateCopy.modal.data.system_output.value).toEqual(issue.system_output);
+    });
   });
 });
