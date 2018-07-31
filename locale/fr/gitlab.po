@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 11:16\n"
+"PO-Revision-Date: 2018-07-31 16:03\n"
 
 msgid " and"
 msgstr ""
@@ -2305,7 +2305,7 @@ msgid "Deleted"
 msgstr ""
 
 msgid "Deny"
-msgstr ""
+msgstr "Refuser"
 
 msgid "Deploy"
 msgid_plural "Deploys"
@@ -2451,7 +2451,7 @@ msgid "Description:"
 msgstr ""
 
 msgid "Destroy"
-msgstr ""
+msgstr "Détruire"
 
 msgid "Details"
 msgstr "Détails"
