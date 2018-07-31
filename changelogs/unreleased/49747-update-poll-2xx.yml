@@ -1,0 +1,5 @@
+---
+title: Changes poll.js to keep polling on any 2xx http status code
+merge_request: 20904
+author:
+type: other
