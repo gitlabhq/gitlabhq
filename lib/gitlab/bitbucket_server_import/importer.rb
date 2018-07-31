@@ -218,7 +218,7 @@ module Gitlab
 
         user_id = gitlab_user_id(committer)
         timestamp = merge_event.merge_timestamp
-        merge_request.update_attributes({ merge_commit_sha: merge_event.merge_commit })
+        merge_request.update({ merge_commit_sha: merge_event.merge_commit })
         metric = MergeRequest::Metrics.find_or_initialize_by(merge_request: merge_request)
         metric.update(merged_by_id: user_id, merged_at: timestamp)
       end
