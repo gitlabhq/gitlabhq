@@ -87,16 +87,16 @@ module BitbucketServer
     def build_url(path)
       return path if path.starts_with?(root_url)
 
-      "#{root_url}#{path}"
+      URI.join(root_url, path).to_s
     end
 
     def root_url
-      "#{base_uri}/rest/api/#{api_version}"
+      URI.join(base_uri, "/rest/api/#{api_version}").to_s
     end
 
     def delete_url(resource, path)
       if resource == :branches
-        "#{base_uri}/rest/branch-utils/#{api_version}#{path}"
+        URI.join(base_uri, "/rest/branch-utils/#{api_version}#{path}").to_s
       else
         build_url(path)
       end
