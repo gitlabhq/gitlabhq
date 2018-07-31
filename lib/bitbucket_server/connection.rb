@@ -65,7 +65,7 @@ module BitbucketServer
 
       details = sanitize(response.parsed_response.dig('errors', 0, 'message'))
       message = "Error #{response.code}"
-      message += ": #{details}"
+      message += ": #{details}" if details
 
       raise ConnectionError, message
     rescue JSON::ParserError
