@@ -153,10 +153,10 @@ export default {
       const regex = new RegExp(`${prevPath}$`);
 
       Object.assign(state.entries[file.path], {
-        rawPath: file.rawPath.replace(regex, file.name),
-        permalink: file.permalink.replace(regex, file.name),
-        commitsPath: file.commitsPath.replace(regex, file.name),
-        blamePath: file.blamePath.replace(regex, file.name),
+        rawPath: file.rawPath.replace(regex, file.path),
+        permalink: file.permalink.replace(regex, file.path),
+        commitsPath: file.commitsPath.replace(regex, file.path),
+        blamePath: file.blamePath.replace(regex, file.path),
       });
     }
   },

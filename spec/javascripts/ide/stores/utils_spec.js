@@ -232,6 +232,17 @@ describe('Multi-file store utils', () => {
             },
           ],
         },
+        {
+          path: 'c',
+          prevPath: 'x',
+          type: 'tree',
+          tree: [
+            {
+              path: 'c/index.js',
+              type: 'blob',
+            },
+          ],
+        },
       ];
 
       const flattendFiles = utils.getCommitFiles(files);
@@ -249,6 +260,11 @@ describe('Multi-file store utils', () => {
         },
         {
           path: 'd',
+          type: 'blob',
+          deleted: true,
+        },
+        {
+          path: 'c/index.js',
           type: 'blob',
           deleted: true,
         },

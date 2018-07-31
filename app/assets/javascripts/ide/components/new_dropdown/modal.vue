@@ -25,19 +25,19 @@ export default {
       },
     },
     modalTitle() {
-      if (this.entryModal.type === 'rename') return __('Rename');
-
       if (this.entryModal.type === 'tree') {
         return __('Create new directory');
+      } else if (this.entryModal.type === 'rename') {
+        return this.entryModal.entry.type === 'tree' ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create new file');
     },
     buttonLabel() {
-      if (this.entryModal.type === 'rename') return __('Update');
-
       if (this.entryModal.type === 'tree') {
         return __('Create directory');
+      } else if (this.entryModal.type === 'rename') {
+        return this.entryModal.entry.type === 'tree' ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create file');
