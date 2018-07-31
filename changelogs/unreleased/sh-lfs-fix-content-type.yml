@@ -1,0 +1,5 @@
+---
+title: Fix LFS uploads not working with git-lfs 2.5.0
+merge_request: 20923
+author:
+type: fixed
