@@ -50,6 +50,7 @@ module EE
     override :visible_attributes
     def visible_attributes
       super + [
+        :allow_group_owners_to_manage_ldap,
         :check_namespace_plan,
         :elasticsearch_aws,
         :elasticsearch_aws_access_key,
@@ -61,14 +62,13 @@ module EE
         :elasticsearch_url,
         :geo_status_timeout,
         :help_text,
+        :pseudonymizer_enabled,
         :repository_size_limit,
         :shared_runners_minutes,
         :slack_app_enabled,
         :slack_app_id,
         :slack_app_secret,
-        :slack_app_verification_token,
-        :allow_group_owners_to_manage_ldap,
-        :pseudonymizer_enabled
+        :slack_app_verification_token
       ]
     end
 
@@ -82,13 +82,13 @@ module EE
 
     def self.external_authorization_service_attributes
       [
-        :external_authorization_service_enabled,
-        :external_authorization_service_url,
-        :external_authorization_service_default_label,
-        :external_authorization_service_timeout,
         :external_auth_client_cert,
         :external_auth_client_key,
-        :external_auth_client_key_pass
+        :external_auth_client_key_pass,
+        :external_authorization_service_default_label,
+        :external_authorization_service_enabled,
+        :external_authorization_service_timeout,
+        :external_authorization_service_url
       ]
     end
 
