@@ -1,0 +1,245 @@
+.common_conditions:
+  label_exemptions: &label_exemptions
+    forbidden_labels:
+      - technical debt
+      - Accepting Merge Requests
+      - backstage
+      - security
+      - customer
+      - customer+
+      - test
+      - development guidelines
+      - schema redesign
+      - direction
+
+resource_rules:
+  issues:
+    rules:
+      - name: Mark stale issues with no milestone for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 12
+          milestone:
+            - No Milestone
+          state: opened
+          <<: *label_exemptions
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+          comment: |
+            Hi,
+
+            First of all, thank you for raising an issue to help improve the GitLab product. We're sorry about this, but this particular issue has gone unnoticed for quite some time. To establish order in the GitLab-CE Issue Tracker, we must ensure that every issue is correctly labelled and triaged, to get the proper attention.
+
+            This issue will be closed, as it meets the following criteria:
+            * No activity in the past 12 months
+            * No milestone (unscheduled)
+
+            We'd like to ask you to help us out and determine whether this issue should be reopened.
+
+            If this issue is reporting a bug, please can you attempt to reproduce on the latest version of GitLab or GitLab.com, to help us to understand whether the bug still needs our attention.
+
+            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
+
+            Thanks for your help
+      - name: Mark stale issues for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 3
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+          comment: |
+            Hi,
+
+            First of all, thank you for raising an issue to help improve the GitLab product. We're sorry about this, but this particular issue has gone unnoticed for quite some time. To establish order in the GitLab-CE Issue Tracker, we must ensure that every issue is correctly labelled and triaged, to get the proper attention.
+
+            This issue will be closed, as it meets the following criteria:
+            * No activity in the past 3 months
+            * Unlabelled
+
+            We'd like to ask you to help us out and determine whether this issue should be reopened.
+
+            If this issue is reporting a bug, please can you attempt to reproduce on the latest version of GitLab or GitLab.com, to help us to understand whether the bug still needs our attention.
+
+            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
+
+            Thanks for your help
+      - name: Mark potentially interesting feature proposals
+        conditions:
+          labels:
+            - feature proposal
+          state: opened
+          upvotes:
+            attribute: upvotes
+            condition: greater_than
+            threshold: 10
+          milestone:
+            - No Milestone
+        actions:
+          labels:
+            - auto updated
+            - potential proposal
+      - name: Mark very popular, unscheduled feature proposals
+        conditions:
+          labels:
+            - feature proposal
+          state: opened
+          milestone:
+            - No Milestone
+          upvotes:
+            attribute: upvotes
+            condition: greater_than
+            threshold: 50
+        actions:
+          labels:
+            - auto updated
+            - popular proposal
+      - name: Mark stale bugs for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 6
+          labels:
+            - bug
+          milestone:
+            - No Milestone
+          state: opened
+          <<: *label_exemptions
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+          comment: |
+            Hi,
+
+            First of all, thank you for raising an issue to help improve the GitLab product. We're sorry about this, but this particular issue has gone unnoticed for quite some time. To establish order in the GitLab-CE Issue Tracker, we must ensure that every issue is correctly labelled and triaged, to get the proper attention.
+
+            This issue will be marked for closure, as it meets the following criteria:
+            * Issue is open
+            * No activity in the past 6 months
+            * Labelled as a bug
+            * Unscheduled (no milestone)
+
+            We'd like to ask you to help us out and determine whether this issue should be reopened.
+
+            Because this issue is reporting a bug, please can you attempt to reproduce on the latest version of GitLab or on GitLab.com, to help us to understand whether the bug still needs our attention.
+
+            Thanks for your help
+      - name: Mark stale Support Requests for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 3
+          labels:
+            - support request
+          milestone:
+            - No Milestone
+          state: opened
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - markglenfletcher
+          comment: |
+            Hi,
+
+            This issue was labelled as a support request.
+
+            This issue will be marked for closure, as it meets the following criteria:
+            * Issue is open
+            * No activity in the past 3 months
+            * Labelled as a support request
+            * Unscheduled (no milestone)
+
+            We'd like to ask you to help us out and determine whether this issue should remain open.
+
+            Please could you revisit the issue and provide an update if it is still relevant.
+
+            Thanks for your help
+  merge_requests:
+    rules:
+      - name: Encourage old Community Merge Requests to completion
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 6
+          labels:
+            - Community Contribution
+          state: opened
+        actions:
+          labels:
+            - awaiting feedback
+            - auto updated
+          mention:
+            - rymai
+          comment: |
+            Hi,
+
+            First of all, thank you for creating a Merge Request to help improve the GitLab product. We are running through old Merge Requests and asking authors to update their Merge Requests
+
+            This Merge Request was chosen, as it meets the following criteria:
+            * Open
+            * Labelled ~"Community Contribution"
+            * No activity in the past 6 months
+
+            We'd like to ask you to help us out and let us know whether:
+            * You would like to continue the work here
+            * You would like us to take on the Merge Request for you
+            * You would like us to close down the Merge Request
+
+            Thanks for your help
+      - name: Remind team members to set relevant labels on their MRs
+        conditions:
+          author_member:
+            source: group
+            condition: member_of
+            source_id: gitlab-org
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - auto updated
+          comment: |
+            Hi,
+
+            Please [add labels to your merge request](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#workflow-labels), this helps triage community merge requests.
+
+            Thanks for your help! :black_heart:
+      - name: Label community merge requests
+        conditions:
+          author_member:
+            source: group
+            condition: not_member_of
+            source_id: gitlab-org
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - Community Contribution

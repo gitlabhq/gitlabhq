@@ -377,13 +377,12 @@ on those issues. Please select someone with relevant experience from the
 the commit history for the affected files to find someone.
 
 We also use [GitLab Triage] to automate some triaging policies. This is
-currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
+currently setup as a [scheduled pipeline] running on master.
 
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 [GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
 [scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
-[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
 
 ### Feature proposals
 
