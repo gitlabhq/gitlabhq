@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-30 13:44\n"
+"PO-Revision-Date: 2018-07-31 08:22\n"
 
 msgid " and"
 msgstr " 그리고"
@@ -1957,8 +1957,7 @@ msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using
 msgstr "GitLab 사용자 이름 및 암호를 사용 하여 GitLab의 컨테이너 레지스트리에 처음 로그인 합니다. %{link_2fa} 를 사용한다면 %{link_token} 를 사용해야 합니다."
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr "GitLab은 이미지 이름에 최대 3 레벨을 지원합니다. 다음의 예제 이미지들이 당신의\n"
-" 프로젝트에서 유효합니다"
+msgstr ""
 
 msgid "ContainerRegistry|How to use the Container Registry"
 msgstr "컨테이너 레지스트리를 사용 하는 방법"
