@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ja\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:22\n"
+"PO-Revision-Date: 2018-07-31 08:25\n"
 
 msgid " and"
 msgstr " と"
@@ -3372,13 +3372,13 @@ msgid "Groups"
 msgstr ""
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
-msgstr ""
+msgstr "グループは、%{subgroup_docs_link_start}サブグループ%{subgroup_docs_link_end}を作成することでネストすることもできます。"
 
 msgid "GroupsDropdown|Frequently visited"
 msgstr ""
 
 msgid "GroupsDropdown|Groups you visit often will appear here"
-msgstr ""
+msgstr "よく使うグループはここに表示されます"
 
 msgid "GroupsDropdown|Loading groups"
 msgstr ""
