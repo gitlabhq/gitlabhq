@@ -16,7 +16,7 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
 
       self.start_date = start_date_is_fixed? ? start_date_fixed : milestone_data[:start_date]
       self.start_date_sourcing_milestone_id = milestone_data[:start_date_sourcing_milestone_id]
-      self.due_date = due_date_is_fixed? ? due_date_fixed : milestone_data[:due_date]
+      self.end_date = due_date_is_fixed? ? due_date_fixed : milestone_data[:due_date]
       self.due_date_sourcing_milestone_id = milestone_data[:due_date_sourcing_milestone_id]
 
       save if changed?
