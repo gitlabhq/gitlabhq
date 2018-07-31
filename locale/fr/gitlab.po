@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 16:03\n"
+"PO-Revision-Date: 2018-07-31 16:07\n"
 
 msgid " and"
 msgstr ""
@@ -961,7 +961,7 @@ msgid "BillingPlans|Your Gold trial will <strong>expire after %{expiration_date}
 msgstr ""
 
 msgid "BillingPlans|features"
-msgstr ""
+msgstr "caractéristiques"
 
 msgid "BillingPlans|frequently asked questions"
 msgstr "foire aux questions"
@@ -976,7 +976,7 @@ msgid "BillingPlans|per user"
 msgstr "par utilisateur"
 
 msgid "Bitbucket import"
-msgstr ""
+msgstr "Importation de Bitbucket"
 
 msgid "Blog"
 msgstr ""
@@ -1527,7 +1527,7 @@ msgid "ClusterIntegration|Create Kubernetes cluster"
 msgstr "Créer une grappe de serveurs Kubernetes"
 
 msgid "ClusterIntegration|Did you know?"
-msgstr ""
+msgstr "Le saviez‐vous ?"
 
 msgid "ClusterIntegration|Enter the details for your Kubernetes cluster"
 msgstr "Entrez les détails de votre grappe de serveurs Kubernetes"
@@ -1566,7 +1566,7 @@ msgid "ClusterIntegration|Helm Tiller"
 msgstr "Helm Tiller"
 
 msgid "ClusterIntegration|Hide"
-msgstr ""
+msgstr "Masquer"
 
 msgid "ClusterIntegration|If you are setting up multiple clusters and are using Auto DevOps, %{help_link_start}read this first%{help_link_end}."
 msgstr "Si vous configurez plusieurs grappes de serveurs et que vous utilisez Auto DevOps, %{help_link_start}veillez d’abord lire ceci%{help_link_end}."
@@ -2104,7 +2104,7 @@ msgid "Copy to clipboard"
 msgstr "Copier dans le presse‐papiers"
 
 msgid "Copy token to clipboard"
-msgstr ""
+msgstr "Copier le jeton dans le presse‐papiers"
 
 msgid "Create"
 msgstr "Créer"
@@ -2119,7 +2119,7 @@ msgid "Create a new branch and merge request"
 msgstr "Créer une nouvelle branche et une nouvelle demande de fusion"
 
 msgid "Create a new issue"
-msgstr ""
+msgstr "Créer un nouveau ticket"
 
 msgid "Create a personal access token on your account to pull or push via %{protocol}."
 msgstr "Créer un jeton d’accès personnel pour votre compte afin de récupérer ou pousser par %{protocol}."
