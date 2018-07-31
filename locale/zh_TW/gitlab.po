@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 08:28\n"
+"PO-Revision-Date: 2018-07-31 08:30\n"
 
 msgid " and"
 msgstr " 和"
@@ -3294,19 +3294,19 @@ msgid "Group Runners"
 msgstr "群組執行器"
 
 msgid "Group avatar"
-msgstr ""
+msgstr "群組頭像"
 
 msgid "Group details"
-msgstr ""
+msgstr "群組詳細資訊"
 
 msgid "Group info:"
-msgstr ""
+msgstr "群組資訊："
 
 msgid "Group maintainers can register group runners in the %{link}"
 msgstr "群組維護者可以在 %{link} 註冊群組執行器"
 
 msgid "Group: %{group_name}"
-msgstr ""
+msgstr "群組：%{group_name}"
 
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr "從 %{dateWord}"
@@ -3369,7 +3369,7 @@ msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name
 msgstr "從 %{ancestor_group_name} 中移除共享群組鎖"
 
 msgid "Groups"
-msgstr ""
+msgstr "群組"
 
 msgid "Groups can also be nested by creating %{subgroup_docs_link_start}subgroups%{subgroup_docs_link_end}."
 msgstr "群組也可以創建 %{subgroup_docs_link_start}子群組%{subgroup_docs_link_end}。"
@@ -3544,13 +3544,13 @@ msgid "Import"
 msgstr "匯入"
 
 msgid "Import Projects from Gitea"
-msgstr ""
+msgstr "從 Gitea 匯入專案"
 
 msgid "Import all compatible projects"
-msgstr ""
+msgstr "匯入所有相容的項目"
 
 msgid "Import all projects"
-msgstr ""
+msgstr "匯入所有專案"
 
 msgid "Import all repositories"
 msgstr "匯入所有檔案庫"
@@ -3565,13 +3565,13 @@ msgid "Import multiple repositories by uploading a manifest file."
 msgstr ""
 
 msgid "Import project"
-msgstr ""
+msgstr "匯入專案"
 
 msgid "Import projects from Bitbucket"
 msgstr ""
 
 msgid "Import projects from FogBugz"
-msgstr ""
+msgstr "從 FogBugz 匯入專案"
 
 msgid "Import projects from GitLab.com"
 msgstr ""
@@ -3604,13 +3604,13 @@ msgid "Include a Terms of Service agreement and Privacy Policy that all users mu
 msgstr "包括所有用戶必須接受的服務條款協議和隱私政策。"
 
 msgid "Incompatible Project"
-msgstr ""
+msgstr "不相容的專案"
 
 msgid "Inline"
 msgstr "內嵌"
 
 msgid "Install GitLab Runner"
-msgstr ""
+msgstr "安裝 GitHub 執行器"
 
 msgid "Install Runner on Kubernetes"
 msgstr "在 Kubernetes 上安裝運行器"
@@ -3698,7 +3698,7 @@ msgid "Koding"
 msgstr "Koding"
 
 msgid "Koding Dashboard"
-msgstr ""
+msgstr "Koding 控制面板"
 
 msgid "Kubernetes"
 msgstr "Kubernetes"
@@ -3831,16 +3831,16 @@ msgid "License"
 msgstr "授權"
 
 msgid "LinkedIn"
-msgstr ""
+msgstr "LinkedIn"
 
 msgid "List"
 msgstr "清單"
 
 msgid "List Your Gitea Repositories"
-msgstr ""
+msgstr "列出您的 Gitea 版本庫"
 
 msgid "List available repositories"
-msgstr ""
+msgstr "列出可用的版本庫"
 
 msgid "List your GitHub repositories"
 msgstr "列出您 GitHub 的檔案庫"
@@ -3879,7 +3879,7 @@ msgid "Locks give the ability to lock specific file or folder."
 msgstr "《鎖定》提供了鎖定特定檔案或資料夾的能力。"
 
 msgid "Logs"
-msgstr ""
+msgstr "記錄檔"
 
 msgid "Make everyone on your team more productive regardless of their location. GitLab Geo creates read-only mirrors of your GitLab instance so you can reduce the time it takes to clone and fetch large repos."
 msgstr "無論身在何處，都能讓您團隊中的每個人都更有效率。GitLab Geo 建立了您 GitLab 主機的唯讀鏡像，所以您可以縮短複製和抓取大型版本庫的時間。"
@@ -3891,7 +3891,7 @@ msgid "Manage Git repositories with fine-grained access controls that keep your 
 msgstr ""
 
 msgid "Manage access"
-msgstr ""
+msgstr "管理存取"
 
 msgid "Manage all notifications"
 msgstr "管理所有通知"
@@ -3915,10 +3915,10 @@ msgid "Manage your group’s membership while adding another level of security w
 msgstr "當透過 SAML 增加其他安全性等級時，管理您的群組成員身份。"
 
 msgid "Manifest"
-msgstr ""
+msgstr "Manifest"
 
 msgid "Manifest file import"
-msgstr ""
+msgstr "匯入 Manifest 檔案"
 
 msgid "Map a FogBugz account ID to a GitLab user"
 msgstr ""
@@ -4161,7 +4161,7 @@ msgid "Months"
 msgstr "月"
 
 msgid "More"
-msgstr ""
+msgstr "更多"
 
 msgid "More actions"
 msgstr "更多動作"
@@ -4176,7 +4176,7 @@ msgid "More information is available|here"
 msgstr "健康檢查"
 
 msgid "Most stars"
-msgstr ""
+msgstr "最多星數"
 
 msgid "Move"
 msgstr "移動"
@@ -4197,7 +4197,7 @@ msgid "Name your individual key via a title"
 msgstr "透過標題為您的個人密鑰命名"
 
 msgid "Name:"
-msgstr ""
+msgstr "名稱："
 
 msgid "Nav|Help"
 msgstr "幫助"
@@ -4212,16 +4212,16 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr "登出，並使用其他帳號登入"
 
 msgid "Network"
-msgstr ""
+msgstr "網路"
 
 msgid "New"
 msgstr "新增"
 
 msgid "New Application"
-msgstr ""
+msgstr "新增應用程式"
 
 msgid "New Group"
-msgstr ""
+msgstr "新增群組"
 
 msgid "New Identity"
 msgstr "新增身份"
@@ -4291,7 +4291,7 @@ msgid "New tag"
 msgstr "新增標籤"
 
 msgid "New..."
-msgstr ""
+msgstr "新增…"
 
 msgid "No"
 msgstr "否"
@@ -4336,7 +4336,7 @@ msgid "No messages were logged"
 msgstr "沒有消息被記錄"
 
 msgid "No public groups"
-msgstr ""
+msgstr "沒有公開群組"
 
 msgid "No pushes for the selected time period."
 msgstr "選取的時間範圍中沒有推送。"
@@ -4501,7 +4501,7 @@ msgid "Open in Xcode"
 msgstr "在 Xcode 開啟"
 
 msgid "Open sidebar"
-msgstr ""
+msgstr "開啟側邊欄"
 
 msgid "Open source software to collaborate on code"
 msgstr ""
@@ -4579,7 +4579,7 @@ msgid "Paste your public SSH key, which is usually contained in the file '~/.ssh
 msgstr "貼上您的SSH公鑰，通常放置在 '~/.ssh/id_rsa.pub'，並以 'ssh-rsa' 開頭。不要使用您的SSH私鑰。"
 
 msgid "Path:"
-msgstr ""
+msgstr "位置："
 
 msgid "Pause"
 msgstr "暫停"
@@ -4834,7 +4834,7 @@ msgid "Profile"
 msgstr "個人資料"
 
 msgid "Profile Settings"
-msgstr ""
+msgstr "個人資料設定"
 
 msgid "Profiles|Account scheduled for removal."
 msgstr "帳號將會被刪除"
@@ -4954,7 +4954,7 @@ msgid "Project export started. A download link will be sent by email."
 msgstr "專案導出已開始。完成後下載連結會送到您的信箱。"
 
 msgid "Project name"
-msgstr ""
+msgstr "專案名稱"
 
 msgid "ProjectActivityRSS|Subscribe"
 msgstr "訂閱"
@@ -5035,13 +5035,13 @@ msgid "ProjectsDropdown|Sorry, no projects matched your search"
 msgstr "抱歉，沒有符合搜尋條件的專案"
 
 msgid "PrometheusAlerts|Add alert"
-msgstr ""
+msgstr "增加警報"
 
 msgid "PrometheusAlerts|Alert set"
-msgstr ""
+msgstr "警報設定"
 
 msgid "PrometheusAlerts|Edit alert"
-msgstr ""
+msgstr "編輯警報"
 
 msgid "PrometheusAlerts|Error creating alert"
 msgstr ""
@@ -5056,10 +5056,10 @@ msgid "PrometheusAlerts|Error saving alert"
 msgstr ""
 
 msgid "PrometheusAlerts|No alert set"
-msgstr ""
+msgstr "未設定警報"
 
 msgid "PrometheusAlerts|Operator"
-msgstr ""
+msgstr "操作者"
 
 msgid "PrometheusAlerts|Threshold"
 msgstr ""
