@@ -2,6 +2,7 @@ class UsersController < ApplicationController
   include RoutableActions
   include RendersMemberAccess
   include ControllerWithCrossProjectAccessCheck
+  prepend EE::UsersController
 
   requires_cross_project_access show: false,
                                 groups: false,

@@ -29,7 +29,7 @@ describe UpdateAllMirrorsWorker do
     def schedule_mirrors!(capacity:)
       allow(Gitlab::Mirror).to receive_messages(available_capacity: capacity)
 
-      allow_any_instance_of(RepositoryImportWorker).to receive(:perform)
+      allow(RepositoryImportWorker).to receive(:perform_async)
 
       Sidekiq::Testing.inline! do
         worker.schedule_mirrors!

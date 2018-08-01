@@ -21,6 +21,7 @@ module EE
         service_desk_enabled
         external_authorization_classification_label
         ci_cd_only
+        use_custom_template
       ]
 
       if allow_mirror_params?

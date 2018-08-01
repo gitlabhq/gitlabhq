@@ -101,7 +101,8 @@ module EE
           slack_app_enabled: false,
           slack_app_id: nil,
           slack_app_secret: nil,
-          slack_app_verification_token: nil
+          slack_app_verification_token: nil,
+          custom_project_templates_group_id: nil
         )
       end
     end
@@ -167,6 +168,20 @@ module EE
     end
     alias_method :external_authorization_service_enabled?,
                  :external_authorization_service_enabled
+
+    def custom_project_templates_enabled?
+      License.feature_available?(:custom_project_templates)
+    end
+
+    def custom_project_templates_group_id
+      custom_project_templates_enabled? && super
+    end
+
+    def available_custom_project_templates
+      return [] unless group_id = custom_project_templates_group_id
+
+      ::Project.where(namespace_id: group_id)
+    end
 
     private
 
