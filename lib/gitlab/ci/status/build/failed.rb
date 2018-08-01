@@ -10,7 +10,7 @@ module Gitlab
             stuck_or_timeout_failure: 'stuck or timeout failure',
             runner_system_failure: 'runner system failure',
             missing_dependency_failure: 'missing dependency failure',
-            runner_unsupported: 'Your runner is outdated, please upgrade your runner'
+            runner_unsupported: 'unsupported runner'
           }.freeze
 
           def status_tooltip
