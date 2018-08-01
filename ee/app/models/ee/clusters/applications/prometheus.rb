@@ -7,7 +7,7 @@ module EE
         prepended do
           state_machine :status do
             after_transition any => :updating do |application|
-              application.update(last_update_started_at: Time.now)
+              application.update(last_update_started_at: Time.now, version: application.class.const_get(:VERSION))
             end
           end
         end
@@ -34,11 +34,12 @@ module EE
           ::Gitlab::Kubernetes::Helm::GetCommand.new(name)
         end
 
+        # TODO allow users to chose which version to upgrade to.
         def upgrade_command(values)
           ::Gitlab::Kubernetes::Helm::UpgradeCommand.new(
             name,
+            version: self.class.const_get(:VERSION),
             chart: chart,
-            version: version,
             values: values
           )
         end
