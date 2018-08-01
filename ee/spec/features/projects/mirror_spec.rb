@@ -136,7 +136,8 @@ describe 'Project mirror', :js do
         expect(page).to have_content(first_key)
 
         # Check regenerating the public key works
-        accept_confirm { click_without_sidekiq 'Regenerate key' }
+        click_without_sidekiq 'Regenerate key'
+        find('.js-regenerate-public-ssh-key-confirm-modal .js-confirm').click
         wait_for_requests
 
         page.within('.project-mirror-settings') do
