@@ -36,16 +36,6 @@ export default {
       required: false,
       default: false,
     },
-    leftDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    rightDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   data() {
     return {
@@ -126,7 +116,6 @@ export default {
       :is-hover="isLeftHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
-      :discussions="leftDiscussions"
       class="diff-line-num old_line"
     />
     <td
@@ -147,7 +136,6 @@ export default {
       :is-hover="isRightHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
-      :discussions="rightDiscussions"
       class="diff-line-num new_line"
     />
     <td
