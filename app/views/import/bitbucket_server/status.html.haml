@@ -3,22 +3,23 @@
 
 %h3.page-title
   %i.fa.fa-bitbucket-square
-  Import projects from Bitbucket Server
-  = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary float-right', method: :post)
+  = _('Import projects from Bitbucket Server')
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    = _('Select projects you want to import.')
   %hr
-  %p
+  .btn-group
     - if @incompatible_repos.any?
       = button_tag class: 'btn btn-import btn-success js-import-all' do
-        Import all compatible projects
+        = _('Import all compatible projects')
         = icon('spinner spin', class: 'loading-icon')
     - else
       = button_tag class: 'btn btn-import btn-success js-import-all' do
-        Import all projects
+        = _('Import all projects')
         = icon('spinner spin', class: 'loading-icon')
+  .btn-group
+    = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary', method: :post)
   %p
 
 .table-responsive
@@ -28,9 +29,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From Bitbucket Server
-        %th To GitLab
-        %th Status
+        %th= _('From Bitbucket Server')
+        %th= _('To GitLab')
+        %th= _(' Status')
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
