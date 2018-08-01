@@ -125,6 +125,14 @@ module API
           present []
         end
 
+        # Self-hosted Jira (tested on 7.11.1) requests this endpoint right
+        # after fetching branches.
+        # We need to respond with a 200 request to avoid breaking the
+        # integration flow (fetching merge requests).
+        get '/-/jira/events' do
+          present []
+        end
+
         params do
           use :project_full_path
           use :pagination

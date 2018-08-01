@@ -37,6 +37,15 @@ describe API::V3::Github do
     end
   end
 
+  describe 'GET /repos/-/jira/events' do
+    it 'returns an empty array' do
+      get v3_api('/repos/-/jira/events', user)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to eq([])
+    end
+  end
+
   describe 'GET /-/jira/pulls' do
     let(:assignee) { create(:user) }
     let!(:merge_request) do
