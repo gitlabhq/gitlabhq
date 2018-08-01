@@ -77,6 +77,7 @@
   - [repository_remove_remote, 1]
   - [create_note_diff_file, 1]
   - [delete_diff_files, 1]
+  - [detect_repository_languages, 1]
 
   # EE-specific queues
   - [ldap_group_sync, 2]

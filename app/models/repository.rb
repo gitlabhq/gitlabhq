@@ -240,6 +240,12 @@ class Repository
     false
   end
 
+  def languages
+    return [] if empty?
+
+    raw_repository.languages(root_ref)
+  end
+
   # Makes sure a commit is kept around when Git garbage collection runs.
   # Git GC will delete commits from the repository that are no longer in any
   # branches or tags, but we want to keep some of these commits around, for
@@ -437,6 +443,8 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
+
+    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
   end
 
   # Runs code after a new commit has been pushed.

@@ -116,6 +116,7 @@ excluded_attributes:
     - :pull_mirror_available_overridden
     - :mirror_overwrites_diverged_branches
     - :description_html
+    - :repository_languages
   snippets:
     - :expired_at
   merge_request_diff:

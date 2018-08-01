@@ -1958,6 +1958,14 @@ ActiveRecord::Schema.define(version: 20180726172057) do
 
   add_index "plans", ["name"], name: "index_plans_on_name", using: :btree
 
+  create_table "programming_languages", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "color", null: false
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "programming_languages", ["name"], name: "index_programming_languages_on_name", unique: true, using: :btree
+
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -2359,6 +2367,14 @@ ActiveRecord::Schema.define(version: 20180726172057) do
 
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
+
+  create_table "repository_languages", id: false, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "programming_language_id", null: false
+    t.float "share", null: false
+  end
+
+  add_index "repository_languages", ["project_id", "programming_language_id"], name: "index_repository_languages_on_project_and_languages_id", unique: true, using: :btree
 
   create_table "resource_label_events", id: :bigserial, force: :cascade do |t|
     t.integer "action", null: false
@@ -3051,6 +3067,7 @@ ActiveRecord::Schema.define(version: 20180726172057) do
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
+  add_foreign_key "repository_languages", "projects", on_delete: :cascade
   add_foreign_key "resource_label_events", "epics", on_delete: :cascade
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify
