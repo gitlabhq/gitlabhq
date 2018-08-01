@@ -1,10 +1,10 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
-import tooltip from '~/vue_shared/directives/tooltip';
-import timeAgoMixin from '~/vue_shared/mixins/timeago';
 import CiIcon from '../../vue_shared/components/ci_icon.vue';
 import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import Timeago from '../../vue_shared/components/time_ago_auto.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
 import { rightSidebarViews } from '../constants';
 
 export default {
@@ -12,22 +12,15 @@ export default {
     icon,
     userAvatarImage,
     CiIcon,
+    Timeago,
   },
-  directives: {
-    tooltip,
-  },
-  mixins: [timeAgoMixin],
+  directives: { tooltip },
   props: {
     file: {
       type: Object,
       required: false,
       default: null,
     },
-  },
-  data() {
-    return {
-      lastCommitFormatedAge: null,
-    };
   },
   computed: {
     ...mapState(['currentBranchId', 'currentProjectId']),
@@ -39,32 +32,15 @@ export default {
       this.initPipelinePolling();
     },
   },
-  mounted() {
-    this.startTimer();
-  },
   beforeDestroy() {
-    if (this.intervalId) {
-      clearInterval(this.intervalId);
-    }
-
     this.stopPipelinePolling();
   },
   methods: {
     ...mapActions(['setRightPane']),
     ...mapActions('pipelines', ['fetchLatestPipeline', 'stopPipelinePolling']),
-    startTimer() {
-      this.intervalId = setInterval(() => {
-        this.commitAgeUpdate();
-      }, 1000);
-    },
     initPipelinePolling() {
       if (this.lastCommit) {
         this.fetchLatestPipeline();
-      }
-    },
-    commitAgeUpdate() {
-      if (this.lastCommit) {
-        this.lastCommitFormatedAge = this.timeFormated(this.lastCommit.committed_date);
       }
     },
     getCommitPath(shortSha) {
@@ -115,15 +91,9 @@ export default {
       >{{ lastCommit.short_id }}</a>
       by
       {{ lastCommit.author_name }}
-      <time
-        v-tooltip
-        :datetime="lastCommit.committed_date"
-        :title="tooltipTitle(lastCommit.committed_date)"
-        data-placement="top"
-        data-container="body"
-      >
-        {{ lastCommitFormatedAge }}
-      </time>
+      <timeago
+        :time="lastCommit.committed_date"
+      />
     </div>
     <div
       v-if="file"

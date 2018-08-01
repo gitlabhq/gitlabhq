@@ -34,28 +34,6 @@ describe('ideStatusBar', () => {
     });
   });
 
-  describe('commitAgeUpdate', () => {
-    beforeEach(function() {
-      jasmine.clock().install();
-      spyOn(vm, 'commitAgeUpdate').and.callFake(() => {});
-      vm.startTimer();
-    });
-
-    afterEach(function() {
-      jasmine.clock().uninstall();
-    });
-
-    it('gets called every second', () => {
-      expect(vm.commitAgeUpdate).not.toHaveBeenCalled();
-
-      jasmine.clock().tick(1100);
-      expect(vm.commitAgeUpdate.calls.count()).toEqual(1);
-
-      jasmine.clock().tick(1000);
-      expect(vm.commitAgeUpdate.calls.count()).toEqual(2);
-    });
-  });
-
   describe('getCommitPath', () => {
     it('returns the path to the commit details', () => {
       expect(vm.getCommitPath('abc123de')).toBe('/commit/abc123de');
