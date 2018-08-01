@@ -637,16 +637,6 @@ describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'todo command' do
-      let(:content) { '/todo' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'todo command' do
-      let(:content) { '/todo' }
-      let(:issuable) { merge_request }
-    end
-
     it_behaves_like 'done command' do
       let(:content) { '/done' }
       let(:issuable) { issue }
@@ -794,6 +784,28 @@ describe QuickActions::InterpretService do
     it_behaves_like 'confidential command' do
       let(:content) { '/confidential' }
       let(:issuable) { issue }
+    end
+
+    context '/todo' do
+      let(:content) { '/todo' }
+
+      context 'if issuable is an Issue' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'if issuable is a MergeRequest' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'if issuable is a Commit' do
+        it_behaves_like 'empty command' do
+          let(:issuable) { commit }
+        end
+      end
     end
 
     context '/copy_metadata command' do

@@ -301,7 +301,8 @@ module QuickActions
     desc 'Add a todo'
     explanation 'Adds a todo.'
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         !TodoService.new.todo_exist?(issuable, current_user)
     end
     command :todo do
