@@ -4,6 +4,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   include ::IgnorableColumn
   include ::ShaAttribute
 
+  REGISTRY_TYPES = %i{repository wiki}.freeze
   RETRIES_BEFORE_REDOWNLOAD = 5
 
   ignore_column :last_repository_verification_at
