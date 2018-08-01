@@ -311,3 +311,11 @@
 .push-pull-table {
   margin-top: 1em;
 }
+
+.push-pull-table {
+  margin-top: 1em;
+
+  .mirror-action-buttons {
+    padding-right: 0;
+  }
+}

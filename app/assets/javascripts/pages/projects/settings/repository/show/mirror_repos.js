@@ -4,24 +4,32 @@ import { __ } from '~/locale';
 import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-export default class PushPull {
+export default class MirrorRepos {
   constructor(container) {
     this.$container = $(container);
     this.$form = $('.js-mirror-form', this.$container);
     this.$urlInput = $('.js-mirror-url', this.$form);
     this.$protectedBranchesInput = $('.js-mirror-protected', this.$form);
-    this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
     this.$table = $('.js-mirrors-table-body', this.$container);
+    this.mirrorEndpoint = this.$form.data('projectMirrorEndpoint');
   }
 
   init() {
     this.registerUpdateListeners();
+    this.initMirrorPush();
 
     this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
   }
 
   updateUrl() {
-    $('.js-mirror-url-hidden', this.$form).val(this.$urlInput.val());
+    let val = this.$urlInput.val();
+
+    if (this.$password) {
+      const password = this.$password.val();
+      if (password) val = val.replace('@', `:${password}@`);
+    }
+
+    $('.js-mirror-url-hidden', this.$form).val(val);
   }
 
   updateProtectedBranches() {
@@ -32,8 +40,14 @@ export default class PushPull {
   }
 
   registerUpdateListeners() {
-    this.$urlInput.on('change', () => this.updateUrl());
+    this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 200);
+    this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
+  }
+
+  initMirrorPush() {
+    this.$password = $('.js-password', this.$form);
+    this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
   }
 
   deleteMirror(event, existingPayload) {

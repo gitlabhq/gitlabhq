@@ -29,9 +29,11 @@
 
           = render 'projects/mirrors/instructions'
 
-          = render_if_exists 'projects/mirrors/direction_dropdown', options: options
+          .form-group
+            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
+            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction'
 
-          = render 'projects/mirrors/push_pull_form', can_push: can_push, can_pull: can_pull, f: f
+          = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
 
           .form-check.append-bottom-10
             = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
@@ -64,7 +66,7 @@
                   %td
                     - if mirror.last_error.present?
                       .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(mirror.last_error.try(:strip)) }= _('Error')
-                  %td
-                    .btn-group.mirror-actions-group{ role: 'group' }
+                  %td.mirror-action-buttons
+                    .btn-group.mirror-actions-group.pull-right{ role: 'group' }
                       = render 'shared/remote_mirror_update_button', remote_mirror: mirror
                       %button.js-delete-mirror.btn.btn-danger{ type: 'button', data: { mirror_id: mirror.id, toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')
