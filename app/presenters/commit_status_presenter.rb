@@ -22,6 +22,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def unrecoverable?
-    script_failure? || missing_dependency_failure? || runner_unsupported?
+    script_failure? || missing_dependency_failure?
   end
 end
