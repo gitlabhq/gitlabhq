@@ -22,23 +22,27 @@ module Gitlab
 
     class << self
       def options
-        @options ||= Hash[ImportTable.map { |importer| [importer.title, importer.name] }]
+        Hash[import_table.map { |importer| [importer.title, importer.name] }]
       end
 
       def values
-        @values ||= ImportTable.map(&:name)
+        import_table.map(&:name)
       end
 
       def importer_names
-        @importer_names ||= ImportTable.select(&:importer).map(&:name)
+        import_table.select(&:importer).map(&:name)
       end
 
       def importer(name)
-        ImportTable.find { |import_source| import_source.name == name }.importer
+        import_table.find { |import_source| import_source.name == name }.importer
       end
 
       def title(name)
         options.key(name)
+      end
+
+      def import_table
+        ImportTable
       end
     end
   end

@@ -43,7 +43,7 @@
 When you create a new repo locally, instead of going to GitLab to manually
 create a new project and then push the repo, you can directly push it to
 GitLab to create the new project, all without leaving your terminal. If you have access to that
-namespace, we will automatically create a new project under that GitLab namespace with its 
+namespace, we will automatically create a new project under that GitLab namespace with its
 visibility set to Private by default (you can later change it in the [project's settings](../public_access/public_access.md#how-to-change-project-visibility)).
 
 This can be done by using either SSH or HTTP:
