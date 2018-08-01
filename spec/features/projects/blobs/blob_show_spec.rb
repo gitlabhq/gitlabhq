@@ -553,7 +553,7 @@ describe 'File blob', :js do
     end
   end
 
-  context 'on signed merge request' do
+  context 'on signed merge commit' do
     it 'displays a GPG badge' do
       visit_blob('some-file.md', ref: 'winh-signed-merge-commit')
 
