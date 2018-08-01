@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ko\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-08-01 11:39\n"
+"PO-Revision-Date: 2018-08-01 12:38\n"
 
 msgid " and"
 msgstr " 그리고"
@@ -159,11 +159,11 @@ msgstr "-덜 보기"
 
 msgid "1 %{type} addition"
 msgid_plural "%{count} %{type} additions"
-msgstr[0] "%d %{type} 개의 추가 정보"
+msgstr[0] "%{count} %{type} 개의 추가 정보"
 
 msgid "1 %{type} modification"
 msgid_plural "%{count} %{type} modifications"
-msgstr[0] "%d 개 %{type} 의 수정사항"
+msgstr[0] "%{count} 개 %{type} 의 수정사항"
 
 msgid "1 closed issue"
 msgid_plural "%d closed issues"
