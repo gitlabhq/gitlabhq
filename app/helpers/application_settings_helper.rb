@@ -220,6 +220,7 @@ module ApplicationSettingsHelper
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,
+      :receive_max_input_size,
       :repository_checks_enabled,
       :repository_storages,
       :require_two_factor_authentication,
