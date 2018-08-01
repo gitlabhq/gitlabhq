@@ -127,9 +127,7 @@ module API
       optional :signup_enabled, type: Boolean, desc: 'Flag indicating if sign up is enabled'
       optional :terminal_max_session_time, type: Integer, desc: 'Maximum time for web terminal websocket connection (in seconds). Set to 0 for unlimited time.'
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
-      optional :user_default_external, type: Boolean, desc: 'Newly registered users will by default be external'
-      optional :user_oauth_applications, type: Boolean, desc: 'Allow users to register any application to use GitLab as an OAuth provider'
-      optional :version_check_enabled, type: Boolean, desc: 'Let GitLab inform you when an update is available.'
+      optional :instance_statistics_visibility_private, type: Boolean, desc: 'When set to `true` Instance statistics will only be available to admins'
 
       ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
         optional :"#{type}_key_restriction",

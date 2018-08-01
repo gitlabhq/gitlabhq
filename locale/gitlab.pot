@@ -396,6 +396,9 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
+msgid "All users"
+msgstr ""
+
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
@@ -2991,6 +2994,12 @@ msgstr ""
 msgid "Install Runner on Kubernetes"
 msgstr ""
 
+msgid "Instance Statistics"
+msgstr ""
+
+msgid "Instance Statistics visibility"
+msgstr ""
+
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
@@ -3710,6 +3719,9 @@ msgid "One or more of your Google Code projects cannot be imported into GitLab d
 msgstr ""
 
 msgid "Online IDE integration settings."
+msgstr ""
+
+msgid "Only admins"
 msgstr ""
 
 msgid "Only comments from the following commit are shown below"
