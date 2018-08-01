@@ -1002,6 +1002,38 @@ describe API::Issues do
       end
     end
 
+    context 'an internal ID is provided' do
+      context 'by an admin' do
+        it 'sets the internal ID on the new issue' do
+          post api("/projects/#{project.id}/issues", admin),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
+      context 'by an owner' do
+        it 'sets the internal ID on the new issue' do
+          post api("/projects/#{project.id}/issues", user),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
+      context 'by another user' do
+        it 'ignores the given internal ID' do
+          post api("/projects/#{project.id}/issues", user2),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).not_to eq 9001
+        end
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
