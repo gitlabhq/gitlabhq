@@ -29,7 +29,7 @@
 
           = render 'projects/mirrors/instructions'
 
-          = render_if_exists 'projects/mirrors/direction_dropdown', options: options
+          = render 'projects/mirrors/direction_dropdown', options: options
 
           = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
 
