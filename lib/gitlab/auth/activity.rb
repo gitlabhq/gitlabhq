@@ -32,8 +32,6 @@ module Gitlab
         when :invalid
           self.class.user_password_invalid_counter_increment!
         end
-
-        self.class.user_blocked_counter_increment! if @user&.blocked?
       end
 
       def user_authenticated!
@@ -49,6 +47,10 @@ module Gitlab
         when :sessionless_sign_in
           self.class.user_sessionless_authentication_counter_increment!
         end
+      end
+
+      def user_blocked!
+        self.class.user_blocked_counter_increment!
       end
 
       def user_session_destroyed!

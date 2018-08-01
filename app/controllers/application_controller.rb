@@ -108,6 +108,7 @@ class ApplicationController < ActionController::Base
 
   def append_info_to_payload(payload)
     super
+
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user
@@ -122,12 +123,19 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  ##
   # Controllers such as GitHttpController may use alternative methods
-  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
+  #
+  #  `current_user` call is going to trigger Warden::Proxy authentication
+  #  that is going to invoke warden callbacks, so we use Warden directly here.
+  #
   def auth_user
-    return current_user if current_user.present?
-
-    return try(:authenticated_user)
+    if warden.authenticated?(:user)
+      current_user
+    else
+      try(:authenticated_user)
+    end
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens

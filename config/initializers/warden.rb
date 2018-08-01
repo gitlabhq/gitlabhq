@@ -35,7 +35,11 @@ Rails.application.configure do |config|
   Warden::Manager.before_logout(scope: :user) do |user_warden, auth, opts|
     user = user_warden || auth.user
 
+    Gitlab::Auth::Activity.new(user, opts).tap do |activity|
+      activity.user_blocked! if user.blocked?
+      activity.user_session_destroyed!
+    end
+
     ActiveSession.destroy(user, auth.request.session.id)
-    Gitlab::Auth::Activity.new(user, opts).user_session_destroyed!
   end
 end
