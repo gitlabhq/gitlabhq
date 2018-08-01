@@ -9,13 +9,13 @@ while others are for production. As deploy jobs could be raised by different use
 with different roles, it is very important that specific environments are "protected" 
 to avoid unauthorized people to affect them. 
 
-By default a protected environment does one simple thing: Ensures that only people 
+By default a protected environment does one simple thing: it ensures that only people 
 with right privileges can deploy code to an environment, keeping it safe.
 
 >**Note**:
 A GitLab admin is always allowed to use environments, even if they are protected.
 
-To protect an environment, and to update or unprotect an environment, 
+To protect, update, or unprotect an environment, 
 you need to have at least [Maintainer permission][perm] level.
 
 ## Configuring protected environments
@@ -27,19 +27,19 @@ you need to have at least [Maintainer permission][perm] level.
 1. From the 'Allowed to Deploy' dropdown menu, you can select the role and/or the users and/or the groups
 you want to have deploy access. In the screenshot below, we chose the 'maintainers'. role
 
-    ![Protected environment form](img/protected_environments_form.png)
+    ![Protected Environment form](img/protected_environments_form.png)
 
-1. Once done, the protected environment will appear in the "Protected environments" list.
+1. Once done, the protected environment will appear in the "Protected Environments" list.
 
-    ![Protected environment list](img/protected_environments_list.png)
+    ![Protected Environment list](img/protected_environments_list.png)
 
 For the 'Allowed to Deploy' dropdown, there are some considerations to have in mind:
 
 - There are two roles to choose from:
   - *Maintainers* - Will allow access to all maintainers in the project.
   - *Developers* - Will allow access to all maintainers and all developers in the project.
-- You can only select groups that are associted with the project.
-- Only users that have at least Developer permimssion level will appear on 'Allowed to Deploy' dropdown menu.
+- You can only select groups that are associated with the project.
+- Only users that have at least Developer permimssion level will appear on the 'Allowed to Deploy' dropdown menu.
 
 ## Updating protected environments access
 
