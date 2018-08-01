@@ -62,16 +62,12 @@ describe Geo::ProjectRegistryStatusFinder, :geo do
 
   describe '#never_synced_projects' do
     it 'returns only FDW projects without registry or with never synced registries' do
-      fdw_project_with_never_synced_registry_with_failure = Geo::Fdw::Project.find(never_synced_registry_with_failure.project.id)
-      fdw_project_with_never_synced_registry = Geo::Fdw::Project.find(project_with_never_synced_registry.id)
-      fdw_project_without_registry = Geo::Fdw::Project.find(project_without_registry.id)
-
       result = subject.never_synced_projects
 
       expect(result).to contain_exactly(
-        fdw_project_without_registry,
-        fdw_project_with_never_synced_registry,
-        fdw_project_with_never_synced_registry_with_failure
+        project_without_registry,
+        project_with_never_synced_registry,
+        never_synced_registry_with_failure.project
       )
     end
   end

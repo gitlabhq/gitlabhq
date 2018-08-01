@@ -63,16 +63,23 @@ module Geo
     # We include here both projects without a corresponding ProjectRegistry
     # or projects that have never successfully synced.
     #
+    # @yield [ActiveRecord::Relation]
     # @return [Geo::Fdw::Project] Projects that has never been fully synced
     def never_synced_projects
       no_project_registry = project_registry[:project_id].eq(nil)
       no_repository_synced = project_registry[:last_repository_successful_sync_at].eq(nil)
 
-      Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON (project_registry.project_id = #{Geo::Fdw::Project.table_name}.id)")
+      project_ids = Geo::Fdw::Project.select(:id).joins("LEFT OUTER JOIN project_registry ON (project_registry.project_id = #{Geo::Fdw::Project.table_name}.id)")
         .where(
           no_project_registry
-            .or(no_repository_synced)
-        ).includes(:project_registry)
+            .or(no_repository_synced))
+
+      # This allows us to inject pagination
+      if block_given?
+        project_ids = yield(project_ids)
+      end
+
+      Project.where(id: project_ids.to_a).includes(:project_registry)
     end
 
     private

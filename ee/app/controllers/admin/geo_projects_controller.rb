@@ -11,7 +11,11 @@ class Admin::GeoProjectsController < Admin::ApplicationController
 
     case params[:sync_status]
     when 'never'
-      @projects = finder.never_synced_projects.page(params[:page])
+      # This method uses FDW heavily and due to optimizations we need to inject the pagination
+      # earlier as well, so we need the block to do that
+      @projects = finder.never_synced_projects do |fdw_relation|
+        fdw_relation.page(params[:page])
+      end.page(params[:page])
     when 'failed'
       @registries = finder.failed_projects.page(params[:page])
     when 'pending'
