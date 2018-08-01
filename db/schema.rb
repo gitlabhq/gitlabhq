@@ -208,7 +208,7 @@ ActiveRecord::Schema.define(version: 20180726172057) do
     t.boolean "enforce_terms", default: false
     t.boolean "pseudonymizer_enabled", default: false, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
-    t.boolean "instance_statistics_visibility_private", default: false, null: false,
+    t.boolean "instance_statistics_visibility_private", default: false, null: false
     t.integer "custom_project_templates_group_id"
   end
 
