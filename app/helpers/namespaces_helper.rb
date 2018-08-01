@@ -19,15 +19,15 @@ module NamespacesHelper
       # group if one exists by that name to prevent duplicates.
       unless extra_group.persisted?
         existing_group = Group.find_by(name: extra_group.name)
-        extra_group = existing_group if existing_group
+        extra_group = existing_group if existing_group&.persisted?
       end
 
       if Ability.allowed?(current_user, :read_group, extra_group)
         selected = extra_group.id if selected == :extra_group
         groups |= [extra_group]
-      else
-        selected = :current_user
       end
+
+      selected ||= :current_user
     end
 
     options = []
