@@ -72,7 +72,7 @@ export default {
         @click.stop="openDropdown()"
       >
         <icon
-          name="hamburger"
+          name="ellipsis_v"
         />
         <icon
           name="arrow-down"
