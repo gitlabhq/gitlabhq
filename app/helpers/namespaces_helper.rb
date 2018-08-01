@@ -9,7 +9,7 @@ module NamespacesHelper
                .includes(:route)
                .order('routes.path')
     users = [current_user.namespace]
-    selected_id = current_user.namespace.id
+    selected_id = selected
 
     unless extra_group.nil? || extra_group.is_a?(Group)
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
@@ -25,7 +25,7 @@ module NamespacesHelper
 
       if Ability.allowed?(current_user, :read_group, extra_group)
         # Assign the value to an invalid primary ID so that the select box works
-        extra_group.id = -1 if !extra_group.persisted?
+        extra_group.id = -1 unless extra_group.persisted?
         selected_id = extra_group.id if selected == :extra_group
         groups |= [extra_group]
       end
