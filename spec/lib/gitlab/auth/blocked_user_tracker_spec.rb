@@ -10,7 +10,7 @@ describe Gitlab::Auth::BlockedUserTracker do
 
         user = create(:user)
 
-        described_class.new(user, spy('auth')).log_blocked_user_activity!
+        described_class.new(user, spy('auth')).log_activity!
       end
     end
 
@@ -24,7 +24,7 @@ describe Gitlab::Auth::BlockedUserTracker do
         expect(Gitlab::AppLogger).to receive(:info)
           .with(/Failed login for blocked user/)
 
-        described_class.new(user, spy('auth')).log_blocked_user_activity!
+        described_class.new(user, spy('auth')).log_activity!
       end
     end
   end

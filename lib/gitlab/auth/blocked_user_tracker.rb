@@ -8,7 +8,7 @@ module Gitlab
         @auth = auth
       end
 
-      def log_blocked_user_activity!
+      def log_activity!
         return unless @user.blocked?
 
         Gitlab::AppLogger.info <<~INFO

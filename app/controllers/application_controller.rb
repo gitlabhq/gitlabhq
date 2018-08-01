@@ -128,18 +128,21 @@ class ApplicationController < ActionController::Base
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
   #
   #  `current_user` call is going to trigger Warden::Proxy authentication
-  #  that is going to invoke warden callbacks, so we use Warden directly here.
+  #  that is going to invoke warden callbacks, and we don't want to do it
+  #  twice in case of authentication request.
   #
   def auth_user
-    # TODO improve that
-    #
-    return if controller_name == 'sessions' && action_name == 'create'
+    return if authentication_request?
 
     if user_signed_in?
       current_user
     else
       try(:authenticated_user)
     end
+  end
+
+  def authentication_request?
+    controller_name == 'sessions' && action_name == 'create'
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens
