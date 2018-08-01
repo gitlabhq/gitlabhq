@@ -43,6 +43,8 @@ module Gitlab
           end
         end
 
+        private
+
         def handle_events(batch, previous_batch_last_id)
           logger.info("Handling events", first_id: batch.first.id, last_id: batch.last.id)
 

@@ -60,6 +60,8 @@ module Gitlab
         end
       end
 
+      private
+
       def track_gaps(current_id)
         log_info("Event log gap detected", previous_event_id: previous_id, current_event_id: current_id)
 
@@ -77,8 +79,6 @@ module Gitlab
 
         current_id > (previous_id + 1)
       end
-
-      private
 
       def grace_timestamp
         (Time.now - GAP_GRACE_PERIOD).to_i
