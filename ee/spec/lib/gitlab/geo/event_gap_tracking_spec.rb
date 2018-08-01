@@ -86,9 +86,13 @@ describe Gitlab::Geo::EventGapTracking, :clean_gitlab_redis_cache do
     it 'handles gaps that are more than 10 minutes old' do
       gap_tracking.check!(event_id_with_gap)
 
+      gap_event = create(:geo_event_log, id: gap_id)
+
       Timecop.travel(12.minutes) do
-        expect { |blk| gap_tracking.fill_gaps(&blk) }.to yield_with_args(gap_id)
+        expect { |blk| gap_tracking.fill_gaps(&blk) }.to yield_with_args(gap_event)
       end
+
+      expect(read_gaps).to be_empty
     end
 
     it 'drops gaps older than 1 hour' do
@@ -99,6 +103,34 @@ describe Gitlab::Geo::EventGapTracking, :clean_gitlab_redis_cache do
       end
 
       expect(read_gaps).to be_empty
+    end
+
+    it 'avoids N+1 queries to fetch event logs and their associated events' do
+      yielded = []
+
+      blk = lambda do |event_log|
+        event_log.event
+        yielded << event_log
+      end
+
+      Timecop.travel(13.minutes.ago) do
+        gap_tracking.check!(event_id_with_gap)
+      end
+      create(:geo_event_log, :updated_event, id: gap_id)
+
+      control_count = ActiveRecord::QueryRecorder.new do
+        expect { gap_tracking.fill_gaps(&blk) }.to change { yielded.count }.by(1)
+      end.count
+
+      Timecop.travel(12.minutes.ago) do
+        gap_tracking.check!(event_id_with_gap + 3)
+      end
+      create(:geo_event_log, :updated_event, id: event_id_with_gap + 1)
+      create(:geo_event_log, :updated_event, id: event_id_with_gap + 2)
+
+      expect do
+        expect { gap_tracking.fill_gaps(&blk) }.to change { yielded.count }.by(2)
+      end.not_to exceed_query_limit(control_count)
     end
   end
 

@@ -86,10 +86,13 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
 
       it 'calls #handle_gap_event for each gap the gap tracking finds' do
-        allow(daemon.send(:gap_tracking)).to receive(:fill_gaps).and_yield(1).and_yield(5)
+        second_event_log = create(:geo_event_log, repository_updated_event: repository_updated_event)
 
-        expect(daemon).to receive(:handle_gap_event).with(1)
-        expect(daemon).to receive(:handle_gap_event).with(5)
+        allow_any_instance_of(::Gitlab::Geo::LogCursor::EventLogs).to receive(:fetch_in_batches)
+        allow(daemon.send(:gap_tracking)).to receive(:fill_gaps).and_yield(event_log).and_yield(second_event_log)
+
+        expect(daemon).to receive(:handle_single_event).with(event_log)
+        expect(daemon).to receive(:handle_single_event).with(second_event_log)
 
         daemon.run_once!
       end
@@ -131,6 +134,8 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
         daemon.run_once!
 
+        create(:geo_event_log, id: event_log.id + 1)
+
         expect(read_gaps).to eq([event_log.id + 1])
 
         expect(::Geo::EventLogState.last_processed.id).to eq(new_event.id)
@@ -145,6 +150,9 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         create(:geo_event_log, id: new_event.id + 3, repository_updated_event: updated_event)
 
         daemon.run_once!
+
+        create(:geo_event_log, id: new_event.id + 1, repository_updated_event: updated_event)
+        create(:geo_event_log, id: new_event.id + 2, repository_updated_event: updated_event)
 
         expect(read_gaps).to eq([new_event.id + 1, new_event.id + 2])
       end
@@ -246,7 +254,7 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
     gaps = []
 
     Timecop.travel(12.minutes) do
-      daemon.send(:gap_tracking).send(:fill_gaps, { |id| gaps << id })
+      daemon.send(:gap_tracking).send(:fill_gaps) { |event| gaps << event.id }
     end
 
     gaps

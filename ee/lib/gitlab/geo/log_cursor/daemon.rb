@@ -34,7 +34,7 @@ module Gitlab
         end
 
         def run_once!
-          gap_tracking.fill_gaps { |event_id| handle_gap_event(event_id) }
+          gap_tracking.fill_gaps { |event_log| handle_single_event(event_log) }
 
           # Wrap this with the connection to make it possible to reconnect if
           # PGbouncer dies: https://github.com/rails/rails/issues/29189
@@ -80,15 +80,6 @@ module Gitlab
         rescue NoMethodError => e
           logger.error(e.message)
           raise e
-        end
-
-        def handle_gap_event(event_id)
-          event_log = ::Geo::EventLog.find_by(id: event_id)
-
-          return false unless event_log
-
-          handle_single_event(event_log)
-          true
         end
 
         def event_klass_for(event)
