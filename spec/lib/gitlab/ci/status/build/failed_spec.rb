@@ -80,4 +80,31 @@ describe Gitlab::Ci::Status::Build::Failed do
       end
     end
   end
+
+  describe 'covers all failure reasons' do
+    let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:tooltip) { subject.status_tooltip }
+
+    CommitStatus.failure_reasons.keys.each do |failure_reason|
+      context failure_reason do
+        before do
+          build.failure_reason = failure_reason
+        end
+
+        it "is a valid status" do
+          expect { tooltip }.not_to raise_error
+        end
+      end
+    end
+
+    context 'invalid failure message' do
+      before do
+        expect(build).to receive(:failure_reason) { 'invalid failure message' }
+      end
+
+      it "is an invalid status" do
+        expect { tooltip }.to raise_error(/key not found:/)
+      end
+    end
+  end
 end

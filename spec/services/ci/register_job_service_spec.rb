@@ -351,6 +351,38 @@ module Ci
         end
       end
 
+      context 'runner feature set is verified' do
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
+
+        before do
+          expect_any_instance_of(Ci::Build).to receive(:runner_required_feature_names) do
+            [:runner_required_feature]
+          end
+        end
+
+        subject { execute(specific_runner, params) }
+
+        context 'when feature is missing by runner' do
+          let(:params) { {} }
+
+          it 'does not pick the build and drops the build' do
+            expect(subject).to be_nil
+            expect(pending_job.reload).to be_failed
+            expect(pending_job).to be_runner_unsupported
+          end
+        end
+
+        context 'when feature is supported by runner' do
+          let(:params) do
+            { info: { features: { runner_required_feature: true } } }
+          end
+
+          it 'does pick job' do
+            expect(subject).not_to be_nil
+          end
+        end
+      end
+
       context 'when "dependencies" keyword is specified' do
         shared_examples 'not pick' do
           it 'does not pick the build and drops the build' do
@@ -403,6 +435,7 @@ module Ci
 
             it { expect(subject).to eq(pending_job) }
           end
+
           context 'when artifacts of depended job has been expired' do
             let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 

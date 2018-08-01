@@ -10,8 +10,6 @@ module Ci
 
     prepend EE::Ci::Build
 
-    MissingDependenciesError = Class.new(StandardError)
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -20,6 +18,10 @@ module Ci
     has_many :sourced_pipelines, class_name: Ci::Sources::Pipeline, foreign_key: :source_job_id
 
     has_many :deployments, as: :deployable
+
+    RUNNER_FEATURES = {
+      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
+    }.freeze
 
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
@@ -176,10 +178,6 @@ module Ci
             Rails.logger.error "Unable to auto-retry job #{build.id}: #{ex}"
           end
         end
-      end
-
-      before_transition any => [:running] do |build|
-        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
 
       after_transition pending: :running do |build|
@@ -585,10 +583,10 @@ module Ci
       options[:dependencies]&.empty?
     end
 
-    def validates_dependencies!
-      dependencies.each do |dependency|
-        raise MissingDependenciesError unless dependency.valid_dependency?
-      end
+    def has_valid_build_dependencies?
+      return true if Feature.enabled?('ci_disable_validates_dependencies')
+
+      dependencies.all?(&:valid_dependency?)
     end
 
     def valid_dependency?
@@ -596,6 +594,24 @@ module Ci
       return false if erased?
 
       true
+    end
+
+    def runner_required_feature_names
+      strong_memoize(:runner_required_feature_names) do
+        RUNNER_FEATURES.select do |feature, method|
+          method.call(self)
+        end.keys
+      end
+    end
+
+    def supported_runner?(features)
+      runner_required_feature_names.all? do |feature_name|
+        features&.dig(feature_name)
+      end
+    end
+
+    def publishes_artifacts_reports?
+      options&.dig(:artifacts, :reports)&.any?
     end
 
     def hide_secrets(trace)
