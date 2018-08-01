@@ -29,7 +29,9 @@
 
           = render 'projects/mirrors/instructions'
 
-          = render 'projects/mirrors/direction_dropdown', options: options
+          .form-group
+            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
+            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction'
 
           = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
 
