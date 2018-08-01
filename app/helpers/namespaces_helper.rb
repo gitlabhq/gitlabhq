@@ -16,18 +16,15 @@ module NamespacesHelper
     end
 
     if extra_group && extra_group.is_a?(Group)
-      # Many importers create a temporary Group, so use the real
-      # group if one exists by that name to prevent duplicates.
-      unless extra_group.persisted?
-        existing_group = Group.find_by(name: extra_group.name)
-        extra_group = existing_group if existing_group&.persisted?
-      end
+      extra_group = dedup_extra_group(extra_group)
 
       if Ability.allowed?(current_user, :read_group, extra_group)
         # Assign the value to an invalid primary ID so that the select box works
         extra_group.id = -1 unless extra_group.persisted?
         selected_id = extra_group.id if selected == :extra_group
         groups |= [extra_group]
+      else
+        selected_id = current_user.namespace.id
       end
     end
 
@@ -54,6 +51,17 @@ module NamespacesHelper
   end
 
   private
+
+  # Many importers create a temporary Group, so use the real
+  # group if one exists by that name to prevent duplicates.
+  def dedup_extra_group(extra_group)
+    unless extra_group.persisted?
+      existing_group = Group.find_by(name: extra_group.name)
+      extra_group = existing_group if existing_group&.persisted?
+    end
+
+    extra_group
+  end
 
   def options_for_group(namespaces, display_path:, type:)
     group_label = type.pluralize
