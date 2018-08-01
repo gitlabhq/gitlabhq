@@ -64,11 +64,15 @@
         = link_to '#', class: 'dashboard-shortcuts-web-ide', title: _('Web IDE') do
           = _('Web IDE')
 
-  - if current_user.admin? || Gitlab::Sherlock.enabled?
+  - if Gitlab::Sherlock.enabled? || can?(current_user, :read_instance_statistics)
     %li.line-separator.d-none.d-sm-block
+  - if can?(current_user, :read_instance_statistics)
+    = nav_link(controller: [:conversational_development_index, :cohorts]) do
+      = link_to instance_statistics_root_path, title: _('Instance Statistics'), aria: { label: _('Instance Statistics') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+        = sprite_icon('chart', size: 18)
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
-      = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin area'), aria: { label: _("Admin area") }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+      = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin area'), aria: { label: _('Admin area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
         = sprite_icon('admin', size: 18)
   - if Gitlab::Sherlock.enabled?
     %li
