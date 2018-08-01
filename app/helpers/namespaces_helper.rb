@@ -25,6 +25,8 @@ module NamespacesHelper
       if Ability.allowed?(current_user, :read_group, extra_group)
         selected = extra_group.id if selected == :extra_group
         groups |= [extra_group]
+      else
+        selected = :current_user
       end
     end
 
