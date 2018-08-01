@@ -297,6 +297,7 @@ project:
 - settings
 - ci_cd_settings
 - import_export_upload
+- repository_languages
 award_emoji:
 - awardable
 - user
