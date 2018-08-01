@@ -5,6 +5,7 @@ module BitbucketServer
     include ActionView::Helpers::SanitizeHelper
 
     DEFAULT_API_VERSION = '1.0'
+    SEPARATOR = '/'
 
     attr_reader :api_version, :base_uri, :username, :token
 
@@ -87,19 +88,35 @@ module BitbucketServer
     def build_url(path)
       return path if path.starts_with?(root_url)
 
-      URI.join(root_url, path).to_s
+      url_join_paths(root_url, path)
     end
 
     def root_url
-      URI.join(base_uri, "/rest/api/#{api_version}").to_s
+      url_join_paths(base_uri, "/rest/api/#{api_version}")
     end
 
     def delete_url(resource, path)
       if resource == :branches
-        URI.join(base_uri, "/rest/branch-utils/#{api_version}#{path}").to_s
+        url_join_paths(base_uri, "/rest/branch-utils/#{api_version}#{path}")
       else
         build_url(path)
       end
+    end
+
+    # URI.join is stupid in that slashes are important:
+    #
+    # # URI.join('http://example.com/subpath', 'hello')
+    # => http://example.com/hello
+    #
+    # We really want http://example.com/subpath/hello
+    #
+    def url_join_paths(*paths)
+      paths.map { |path| strip_slashes(path) }.join(SEPARATOR)
+    end
+
+    def strip_slashes(path)
+      path = path[1..-1] if path.starts_with?(SEPARATOR)
+      path.chomp(SEPARATOR)
     end
   end
 end

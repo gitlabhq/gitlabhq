@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe BitbucketServer::Client do
-  let(:options) { { base_uri: 'https://test:7990', user: 'bitbucket', password: 'mypassword' } }
+  let(:base_uri) { 'https://test:7990/stash/' }
+  let(:options) { { base_uri: base_uri, user: 'bitbucket', password: 'mypassword' } }
   let(:project) { 'SOME-PROJECT' }
   let(:repo_slug) { 'my-repo' }
   let(:headers) { { "Content-Type" => "application/json" } }
@@ -36,7 +37,7 @@ describe BitbucketServer::Client do
 
   describe '#repo' do
     let(:path) { "/projects/#{project}/repos/#{repo_slug}" }
-    let(:url) { "https://test:7990/rest/api/1.0/projects/SOME-PROJECT/repos/my-repo" }
+    let(:url) { "#{base_uri}rest/api/1.0/projects/SOME-PROJECT/repos/my-repo" }
 
     it 'requests a specific repository' do
       stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
@@ -60,7 +61,7 @@ describe BitbucketServer::Client do
   describe '#create_branch' do
     let(:branch) { 'test-branch' }
     let(:sha) { '12345678' }
-    let(:url) { 'https://test:7990/rest/api/1.0/projects/SOME-PROJECT/repos/my-repo/branches' }
+    let(:url) { "#{base_uri}rest/api/1.0/projects/SOME-PROJECT/repos/my-repo/branches" }
 
     it 'requests Bitbucket to create a branch' do
       stub_request(:post, url).to_return(status: 204, headers: headers, body: '{}')
@@ -74,7 +75,7 @@ describe BitbucketServer::Client do
   describe '#delete_branch' do
     let(:branch) { 'test-branch' }
     let(:sha) { '12345678' }
-    let(:url) { 'https://test:7990/rest/branch-utils/1.0/projects/SOME-PROJECT/repos/my-repo/branches' }
+    let(:url) { "#{base_uri}rest/branch-utils/1.0/projects/SOME-PROJECT/repos/my-repo/branches" }
 
     it 'requests Bitbucket to create a branch' do
       stub_request(:delete, url).to_return(status: 204, headers: headers, body: '{}')
