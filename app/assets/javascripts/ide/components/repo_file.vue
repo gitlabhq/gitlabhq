@@ -34,11 +34,6 @@ export default {
       type: Number,
       required: true,
     },
-    disableActionDropdown: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -212,8 +207,7 @@ export default {
           />
         </span>
         <new-dropdown
-          v-if="isTree && !disableActionDropdown"
-          :project-id="file.projectId"
+          :type="file.type"
           :branch="file.branchId"
           :path="file.path"
           :mouse-over="mouseOver"

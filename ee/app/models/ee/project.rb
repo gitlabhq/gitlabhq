@@ -34,10 +34,14 @@ module EE
       has_many :audit_events, as: :entity
       has_many :path_locks
       has_many :vulnerability_feedback
+      has_many :software_license_policies, inverse_of: :project, class_name: 'SoftwareLicensePolicy'
+      accepts_nested_attributes_for :software_license_policies, allow_destroy: true
 
       has_many :sourced_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :source_project_id
 
       has_many :source_pipelines, class_name: 'Ci::Sources::Pipeline', foreign_key: :project_id
+
+      has_many :prometheus_alerts, inverse_of: :project
 
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
@@ -97,6 +101,12 @@ module EE
 
     def latest_pipeline_with_security_reports
       pipelines.newest_first(default_branch).with_security_reports.first
+    end
+
+    def environments_for_scope(scope)
+      quoted_scope = ::Gitlab::SQL::Glob.q(scope)
+
+      environments.where("name LIKE (#{::Gitlab::SQL::Glob.to_like(quoted_scope)})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def ensure_external_webhook_token
@@ -280,11 +290,14 @@ module EE
       UpdateAllMirrorsWorker.perform_async
     end
 
+    override :add_import_job
     def add_import_job
+      return if gitlab_custom_project_template_import?
+
       if import? && !repository_exists?
         super
       elsif mirror?
-        ::Gitlab::Metrics.add_event(:mirrors_scheduled, path: full_path)
+        ::Gitlab::Metrics.add_event(:mirrors_scheduled)
         job_id = RepositoryUpdateMirrorWorker.perform_async(self.id)
 
         log_import_activity(job_id, type: :mirror)
@@ -507,6 +520,16 @@ module EE
     def after_import
       super
       log_geo_events
+    end
+
+    override :import?
+    def import?
+      super || gitlab_custom_project_template_import?
+    end
+
+    def gitlab_custom_project_template_import?
+      import_type == 'gitlab_custom_project_template' &&
+        ::Gitlab::CurrentSettings.custom_project_templates_enabled?
     end
 
     private

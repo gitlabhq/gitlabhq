@@ -15,6 +15,22 @@ describe Ci::JobArtifact do
   it { is_expected.to delegate_method(:open).to(:file) }
   it { is_expected.to delegate_method(:exists?).to(:file) }
 
+  describe '.test_reports' do
+    subject { described_class.test_reports }
+
+    context 'when there is a test report' do
+      let!(:artifact) { create(:ci_job_artifact, :junit) }
+
+      it { is_expected.to eq([artifact]) }
+    end
+
+    context 'when there are no test reports' do
+      let!(:artifact) { create(:ci_job_artifact, :archive) }
+
+      it { is_expected.to be_empty }
+    end
+  end
+
   describe 'callbacks' do
     subject { create(:ci_job_artifact, :archive) }
 
@@ -84,6 +100,40 @@ describe Ci::JobArtifact do
       expect { artifact.update!(file: fixture_file_upload('spec/fixtures/dk.png')) }
         .to change { artifact.project.statistics.reload.build_artifacts_size }
         .by(1062 - 106365)
+    end
+  end
+
+  describe 'validates file format' do
+    subject { artifact }
+
+    context 'when archive type with zip format' do
+      let(:artifact) { build(:ci_job_artifact, :archive, file_format: :zip) }
+
+      it { is_expected.to be_valid }
+    end
+
+    context 'when archive type with gzip format' do
+      let(:artifact) { build(:ci_job_artifact, :archive, file_format: :gzip) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when archive type without format specification' do
+      let(:artifact) { build(:ci_job_artifact, :archive, file_format: nil) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when junit type with zip format' do
+      let(:artifact) { build(:ci_job_artifact, :junit, file_format: :zip) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when junit type with gzip format' do
+      let(:artifact) { build(:ci_job_artifact, :junit, file_format: :gzip) }
+
+      it { is_expected.to be_valid }
     end
   end
 

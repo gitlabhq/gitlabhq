@@ -18,10 +18,11 @@
 = render "home_panel"
 
 - if can?(current_user, :download_code, @project)
-  %nav.project-stats{ class: container_class }
+  %nav.project-stats{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     = render 'stat_anchor_list', anchors: @project.statistics_anchors(show_auto_devops_callout: show_auto_devops_callout)
     = render 'stat_anchor_list', anchors: @project.statistics_buttons(show_auto_devops_callout: show_auto_devops_callout)
-
+    - if Feature.enabled?(:repository_languages, @project.namespace.becomes(Namespace))
+      = repository_languages_bar(@project.repository_languages)
 
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   - if @project.archived?

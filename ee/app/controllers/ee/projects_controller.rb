@@ -9,7 +9,7 @@ module EE
     private
 
     def project_params_ee
-      %i[
+      attrs = %i[
         approvals_before_merge
         approver_group_ids
         approver_ids
@@ -19,11 +19,23 @@ module EE
         repository_size_limit
         reset_approvals_on_push
         service_desk_enabled
+        external_authorization_classification_label
+        ci_cd_only
+        use_custom_template
+      ]
+
+      if allow_mirror_params?
+        attrs + mirror_params
+      else
+        attrs
+      end
+    end
+
+    def mirror_params
+      %i[
         mirror
         mirror_trigger_builds
         mirror_user_id
-        external_authorization_classification_label
-        ci_cd_only
       ]
     end
 
@@ -39,6 +51,14 @@ module EE
     override :active_new_project_tab
     def active_new_project_tab
       project_params[:ci_cd_only] == 'true' ? 'ci_cd_only' : super
+    end
+
+    def allow_mirror_params?
+      if @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        can?(current_user, :admin_mirror, @project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      else
+        ::Gitlab::CurrentSettings.current_application_settings.mirror_available || current_user&.admin?
+      end
     end
   end
 end

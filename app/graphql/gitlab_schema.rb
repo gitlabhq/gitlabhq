@@ -7,5 +7,5 @@ class GitlabSchema < GraphQL::Schema
   query(Types::QueryType)
 
   default_max_page_size 100
-  # mutation(Types::MutationType)
+  mutation(Types::MutationType)
 end

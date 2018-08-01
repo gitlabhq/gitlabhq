@@ -2,9 +2,9 @@
  * Layout
  */
 $grid-size: 8px;
-$gutter_collapsed_width: 62px;
-$gutter_width: 290px;
-$gutter_inner_width: 250px;
+$gutter-collapsed-width: 62px;
+$gutter-width: 290px;
+$gutter-inner-width: 250px;
 $sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
@@ -234,8 +234,8 @@ $md-area-border: #ddd;
 /*
  * Code
  */
-$code_font_size: 90%;
-$code_line_height: 1.6;
+$code-font-size: 90%;
+$code-line-height: 1.6;
 
 /*
  * Tooltips
@@ -383,9 +383,9 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
+$monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 /*
@@ -538,7 +538,7 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 /*
 * Avatar
 */
-$avatar_radius: 50%;
+$avatar-radius: 50%;
 $avatar-border: $gray-normal;
 $avatar-border-hover: $gray-darker;
 $avatar-background: $gray-lightest;
@@ -869,8 +869,10 @@ $secondary: $gray-light;
 $input-disabled-bg: $gray-light;
 $input-border-color: $theme-gray-200;
 $input-color: $gl-text-color;
-$font-family-sans-serif: $regular_font;
-$font-family-monospace: $monospace_font;
+$font-family-sans-serif: $regular-font;
+$font-family-monospace: $monospace-font;
 $input-line-height: 20px;
 $btn-line-height: 20px;
 $table-accent-bg: $gray-light;
+$card-border-color: $border-color;
+$card-cap-bg: $gray-light;

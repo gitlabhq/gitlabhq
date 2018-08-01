@@ -4,14 +4,34 @@ module Boards
   module Issues
     class ListService < Boards::BaseService
       prepend EE::Boards::Issues::ListService
+      include Gitlab::Utils::StrongMemoize
 
       def execute
-        issues = IssuesFinder.new(current_user, filter_params).execute
-        issues = filter(issues)
-        issues.order_by_position_and_priority
+        fetch_issues.order_by_position_and_priority
+      end
+
+      def metadata
+        keys = metadata_fields.keys
+        columns = metadata_fields.values_at(*keys).join(', ')
+        results = Issue.where(id: fetch_issues.select('issues.id')).pluck(columns)
+
+        Hash[keys.zip(results.flatten)]
       end
 
       private
+
+      def metadata_fields
+        { size: 'COUNT(*)' }
+      end
+
+      # We memoize the query here since the finder methods we use are quite complex. This does not memoize the result of the query.
+      def fetch_issues
+        strong_memoize(:fetch_issues) do
+          issues = IssuesFinder.new(current_user, filter_params).execute
+
+          filter(issues).reorder(nil)
+        end
+      end
 
       def filter(issues)
         issues = without_board_labels(issues) unless list&.movable? || list&.closed?

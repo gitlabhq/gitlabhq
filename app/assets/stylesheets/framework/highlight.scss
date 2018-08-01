@@ -9,8 +9,8 @@
     padding: 10px 0;
     border: 0;
     border-radius: 0;
-    font-family: $monospace_font;
-    font-size: $code_font_size;
+    font-family: $monospace-font;
+    font-size: $code-font-size;
     line-height: 19px;
     margin: 0;
     overflow: auto;
@@ -22,7 +22,7 @@
     code {
       display: inline-block;
       min-width: 100%;
-      font-family: $monospace_font;
+      font-family: $monospace-font;
       white-space: normal;
       word-wrap: normal;
       padding: 0;
@@ -44,9 +44,9 @@
     float: left;
 
     a {
-      font-family: $monospace_font;
+      font-family: $monospace-font;
       display: block;
-      font-size: $code_font_size !important;
+      font-size: $code-font-size !important;
       min-height: 19px;
       white-space: nowrap;
 

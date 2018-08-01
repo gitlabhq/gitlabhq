@@ -1,4 +1,3 @@
-# rubocop:disable all
 class MigrateCiSlackService < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

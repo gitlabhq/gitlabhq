@@ -7,6 +7,7 @@ module EE
       issue_link
       approvers
       vulnerability_feedback
+      license_management
     ].freeze
 
     prepended do
@@ -49,6 +50,18 @@ module EE
         @subject.feature_available?(:pod_logs, @user)
       end
 
+      with_scope :subject
+      condition(:security_reports_feature_available) { @subject.security_reports_feature_available? }
+
+      condition(:prometheus_alerts_enabled) do
+        @subject.feature_available?(:prometheus_alerts, @user)
+      end
+
+      with_scope :subject
+      condition(:license_management_enabled) do
+        @subject.feature_available?(:license_management)
+      end
+
       rule { admin }.enable :change_repository_storage
 
       rule { support_bot }.enable :guest_access
@@ -81,10 +94,13 @@ module EE
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
-        enable :read_project_security_dashboard
       end
 
+      rule { can?(:developer_access) & security_reports_feature_available }.enable :read_project_security_dashboard
+
       rule { can?(:read_project) }.enable :read_vulnerability_feedback
+
+      rule { license_management_enabled & can?(:read_project) }.enable :read_software_license_policy
 
       rule { repository_mirrors_enabled & ((mirror_available & can?(:admin_project)) | admin) }.enable :admin_mirror
 
@@ -96,7 +112,10 @@ module EE
         enable :update_approvers
       end
 
+      rule { license_management_enabled & can?(:maintainer_access) }.enable :admin_software_license_policy
+
       rule { pod_logs_enabled & can?(:maintainer_access) }.enable :read_pod_logs
+      rule { prometheus_alerts_enabled & can?(:maintainer_access) }.enable :read_prometheus_alerts
 
       rule { auditor }.policy do
         enable :public_user_access

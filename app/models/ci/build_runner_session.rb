@@ -17,7 +17,7 @@ module Ci
       {
         subprotocols: ['terminal.gitlab.com'].freeze,
         url: "#{url}/exec".sub("https://", "wss://"),
-        headers: { Authorization: authorization.presence }.compact,
+        headers: { Authorization: [authorization.presence] }.compact,
         ca_pem: certificate.presence
       }
     end

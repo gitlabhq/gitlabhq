@@ -126,10 +126,10 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
-    def mark_sync_as_successful
+    def mark_sync_as_successful(missing_on_primary: false)
       log_info("Marking #{type} sync as successful")
 
-      persisted = registry.finish_sync!(type)
+      persisted = registry.finish_sync!(type, missing_on_primary)
 
       reschedule_sync unless persisted
 

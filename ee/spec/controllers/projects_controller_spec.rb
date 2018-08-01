@@ -20,7 +20,6 @@ describe ProjectsController do
         namespace_id: user.namespace.id,
         visibility_level: Gitlab::VisibilityLevel::PUBLIC,
         mirror: true,
-        mirror_user_id: user.id,
         mirror_trigger_builds: true
       }
     end
@@ -50,6 +49,49 @@ describe ProjectsController do
         created_project = Project.find_by_path('foo')
         expect(created_project.reload.mirror).to be false
         expect(created_project.reload.mirror_user).to be nil
+      end
+    end
+
+    context 'custom project templates' do
+      let(:group) { create(:group) }
+      let(:project_template) { create(:project, :repository, :public, namespace: group) }
+      let(:templates_params) do
+        {
+          path: 'foo',
+          description: 'bar',
+          namespace_id: user.namespace.id,
+          use_custom_template: true,
+          template_name: project_template.name
+        }
+      end
+
+      context 'when licensed' do
+        before do
+          stub_licensed_features(custom_project_templates: true)
+          stub_ee_application_setting(custom_project_templates_group_id: group.id)
+        end
+
+        it 'creates the project from project template' do
+          post :create, project: templates_params
+
+          created_project = Project.find_by_path('foo')
+          expect(flash[:notice]).to eq "Project 'foo' was successfully created."
+          expect(created_project.repository.empty?).to be false
+        end
+      end
+
+      context 'when unlicensed' do
+        before do
+          stub_licensed_features(custom_project_templates: false)
+        end
+
+        it 'creates the project from project template' do
+          post :create, project: templates_params
+
+          created_project = Project.find_by_path('foo')
+          expect(flash[:notice]).to eq "Project 'foo' was successfully created."
+          expect(created_project.repository.empty?).to be true
+        end
       end
     end
   end
@@ -144,6 +186,8 @@ describe ProjectsController do
         end
 
         it 'updates repository mirror attributes' do
+          expect_any_instance_of(EE::Project).to receive(:force_import_job!).once
+
           put :update,
             namespace_id: project.namespace,
             id: project,
@@ -173,33 +217,6 @@ describe ProjectsController do
             end.not_to change(project, param)
           end
         end
-      end
-    end
-
-    context 'external authaurization service attributes' do
-      def update_classification_label
-        put :update,
-            namespace_id: project.namespace,
-            id: project,
-            project: { external_authorization_classification_label: 'new_label' }
-        project.reload
-      end
-
-      it 'updates the project classification label' do
-        external_service_allow_access(user, project)
-
-        expect(EE::Gitlab::ExternalAuthorization)
-          .to receive(:access_allowed?).with(user, 'new_label') { true }
-
-        expect { update_classification_label }
-          .to change(project, :external_authorization_classification_label).to('new_label')
-      end
-
-      it 'does not update the project classification label when the feature is not available' do
-        stub_licensed_features(external_authorization_service: false)
-
-        expect { update_classification_label }
-          .not_to change(project, :external_authorization_classification_label)
       end
     end
 

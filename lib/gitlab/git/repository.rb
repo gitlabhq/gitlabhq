@@ -353,8 +353,6 @@ module Gitlab
       #     offset: 5,
       #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
         default_options = {
           limit: 10,
@@ -560,7 +558,9 @@ module Gitlab
           if is_enabled
             gitaly_operation_client.user_update_branch(branch_name, user, newrev, oldrev)
           else
-            OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+              OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+            end
           end
         end
       end
@@ -826,22 +826,17 @@ module Gitlab
         end
       end
 
+      # This method, fetch_ref, is used from within
+      # Gitlab::Git::OperationService. OperationService will eventually only
+      # exist in gitaly-ruby. When we delete OperationService from gitlab-ce
+      # we can also remove fetch_ref.
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
 
-        message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
-          if is_enabled
-            gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
-          else
-            # When removing this code, also remove source_repository#path
-            # to remove deprecated method calls
-            local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
-          end
-        end
-
-        # Make sure ref was created, and raise Rugged::ReferenceError when not
-        raise Rugged::ReferenceError, message if status != 0
+        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
+        message, status = run_git(args, env: source_repository.fetch_env)
+        raise Gitlab::Git::CommandError, message if status != 0
 
         target_ref
       end
@@ -1025,8 +1020,8 @@ module Gitlab
       end
 
       def clean_stale_repository_files
-        gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          gitaly_repository_client.cleanup if is_enabled && exists?
+        wrapped_gitaly_errors do
+          gitaly_repository_client.cleanup if exists?
         end
       rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
         Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
@@ -1240,17 +1235,6 @@ module Gitlab
 
       def gitaly_copy_gitattributes(revision)
         gitaly_repository_client.apply_gitattributes(revision)
-      end
-
-      def local_fetch_ref(source_path, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-        run_git(args)
-      end
-
-      def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
-
-        run_git(args, env: source_repository.fetch_env)
       end
 
       def gitaly_delete_refs(*ref_names)

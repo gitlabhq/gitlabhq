@@ -104,6 +104,14 @@ describe Admin::ApplicationSettingsController do
       it_behaves_like 'settings for licensed features'
     end
 
+    context 'custom project templates settings' do
+      let(:group) { create(:group) }
+      let(:settings) { { custom_project_templates_group_id: group.id } }
+      let(:feature) { :custom_project_templates }
+
+      it_behaves_like 'settings for licensed features'
+    end
+
     it 'updates the default_project_creation for string value' do
       stub_licensed_features(project_creation_level: true)
       put :update, application_setting: { default_project_creation: ::EE::Gitlab::Access::MAINTAINER_PROJECT_ACCESS }

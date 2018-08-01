@@ -34,6 +34,8 @@ module Gitlab
         end
 
         def run_once!
+          gap_tracking.fill_gaps { |event_id| handle_gap_event(event_id) }
+
           # Wrap this with the connection to make it possible to reconnect if
           # PGbouncer dies: https://github.com/rails/rails/issues/29189
           ActiveRecord::Base.connection_pool.with_connection do
@@ -41,44 +43,50 @@ module Gitlab
           end
         end
 
-        private
-
-        def handle_events(batch, last_id)
+        def handle_events(batch, previous_batch_last_id)
           logger.info("Handling events", first_id: batch.first.id, last_id: batch.last.id)
 
-          last_event_id = last_id
+          gap_tracking.previous_id = previous_batch_last_id
 
-          batch.each_with_index do |event_log, index|
-            event = event_log.event
+          batch.each do |event_log|
+            gap_tracking.check!(event_log.id)
 
-            # If a project is deleted, the event log and its associated event data
-            # could be purged from the log. We ignore this and move along.
-            unless event
-              logger.warn("Unknown event", event_log_id: event_log.id)
-              next
-            end
-
-            check_event_id(last_event_id, event_log.id) if last_event_id > 0
-            last_event_id = event_log.id
-
-            unless can_replay?(event_log)
-              logger.event_info(event_log.created_at, 'Skipped event', event_data(event_log))
-              next
-            end
-
-            begin
-              event_klass_for(event).new(event, event_log.created_at, logger).process
-            rescue NoMethodError => e
-              logger.error(e.message)
-              raise e
-            end
+            handle_single_event(event_log)
           end
         end
 
-        def check_event_id(last_event_id, current_log_id)
-          if last_event_id + 1 != current_log_id
-            logger.info("Event log gap", previous_event_log_id: last_event_id, event_log_id: current_log_id)
+        def handle_single_event(event_log)
+          event = event_log.event
+
+          # If a project is deleted, the event log and its associated event data
+          # could be purged from the log. We ignore this and move along.
+          unless event
+            logger.warn("Unknown event", event_log_id: event_log.id)
+            return
           end
+
+          unless can_replay?(event_log)
+            logger.event_info(event_log.created_at, 'Skipped event', event_data(event_log))
+            return
+          end
+
+          process_event(event, event_log)
+        end
+
+        def process_event(event, event_log)
+          event_klass_for(event).new(event, event_log.created_at, logger).process
+        rescue NoMethodError => e
+          logger.error(e.message)
+          raise e
+        end
+
+        def handle_gap_event(event_id)
+          event_log = ::Geo::EventLog.find_by(id: event_id)
+
+          return false unless event_log
+
+          handle_single_event(event_log)
+          true
         end
 
         def event_klass_for(event)
@@ -118,6 +126,10 @@ module Gitlab
         # without favouring the shortest path (or latency).
         def arbitrary_sleep(delay)
           sleep(delay + rand(1..20) * 0.1)
+        end
+
+        def gap_tracking
+          @gap_tracking ||= ::Gitlab::Geo::EventGapTracking.new(logger)
         end
 
         def logger

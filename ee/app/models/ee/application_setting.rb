@@ -96,12 +96,13 @@ module EE
           mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
           mirror_max_delay: Settings.gitlab['mirror_max_delay'],
+          pseudonymizer_enabled: false,
           repository_size_limit: 0,
           slack_app_enabled: false,
           slack_app_id: nil,
           slack_app_secret: nil,
           slack_app_verification_token: nil,
-          pseudonymizer_enabled: false
+          custom_project_templates_group_id: nil
         )
       end
     end
@@ -167,6 +168,20 @@ module EE
     end
     alias_method :external_authorization_service_enabled?,
                  :external_authorization_service_enabled
+
+    def custom_project_templates_enabled?
+      License.feature_available?(:custom_project_templates)
+    end
+
+    def custom_project_templates_group_id
+      custom_project_templates_enabled? && super
+    end
+
+    def available_custom_project_templates
+      return [] unless group_id = custom_project_templates_group_id
+
+      ::Project.where(namespace_id: group_id)
+    end
 
     private
 

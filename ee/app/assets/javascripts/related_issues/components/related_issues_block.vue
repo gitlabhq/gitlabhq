@@ -2,6 +2,7 @@
 import Sortable from 'sortablejs';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import Icon from '~/vue_shared/components/icon.vue';
 import sortableConfig from 'ee/sortable/sortable_config';
 import eventHub from '../event_hub';
 import issueItem from './issue_item.vue';
@@ -13,6 +14,7 @@ export default {
     tooltip,
   },
   components: {
+    Icon,
     loadingIcon,
     addIssuableForm,
     issueItem,
@@ -159,16 +161,21 @@ fa fa-question-circle"
               aria-label="Read more about related issues">
             </i>
           </a>
-          <div
-            class="js-related-issues-header-issue-count
-related-issues-header-issue-count issue-count-badge"
-          >
-            <span
-              :class="{ 'has-btn': canAdmin }"
-              class="issue-count-badge-count"
+          <div class="d-inline-flex lh-100 align-middle">
+            <div
+              class="js-related-issues-header-issue-count
+  related-issues-header-issue-count issue-count-badge mx-1"
             >
-              {{ badgeLabel }}
-            </span>
+              <span
+                class="issue-count-badge-count"
+              >
+                <icon
+                  name="issues"
+                  class="mr-1 text-secondary"
+                />
+                {{ badgeLabel }}
+              </span>
+            </div>
             <button
               v-if="canAdmin"
               ref="issueCountBadgeAddButton"

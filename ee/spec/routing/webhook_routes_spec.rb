@@ -7,7 +7,7 @@ describe "routes to the proper webhooks controller", type: :routing do
 
     it "routes the test action" do
       expect(
-        get: polymorphic_path([project.namespace.becomes(Namespace), project, project_hook], action: :test)
+        post: polymorphic_path([project.namespace.becomes(Namespace), project, project_hook], action: :test)
       ).to route_to(controller: 'projects/hooks',
                     action: 'test',
                     namespace_id: project.namespace.name,
@@ -32,7 +32,7 @@ describe "routes to the proper webhooks controller", type: :routing do
 
     it "routes the test action" do
       expect(
-        get: polymorphic_path([group, group_hook], action: :test)
+        post: polymorphic_path([group, group_hook], action: :test)
       ).to route_to(controller: 'groups/hooks',
                     action: 'test',
                     group_id: group.name,

@@ -1,3 +1,10 @@
+# Consider using SSH certificates instead of, or in addition to this
+
+This document describes a drop-in replacement for the
+`authorized_keys` file for normal (non-deploy key) users. Consider
+using [ssh certificates](ssh_certificates.md), they are even faster,
+but are not is not a drop-in replacement.
+
 # Fast lookup of authorized SSH keys in the database
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/1631) in 

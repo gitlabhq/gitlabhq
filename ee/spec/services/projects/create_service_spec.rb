@@ -85,8 +85,7 @@ describe Projects::CreateService, '#execute' do
   context 'with repository mirror' do
     before do
       opts.merge!(import_url: 'http://foo.com',
-                  mirror: true,
-                  mirror_user_id: user.id)
+                  mirror: true)
     end
 
     context 'when licensed' do
@@ -229,7 +228,6 @@ describe Projects::CreateService, '#execute' do
           visibility_level: Gitlab::VisibilityLevel::PRIVATE,
           namespace_id: user.namespace.id,
           mirror: true,
-          mirror_user_id: user.id,
           mirror_trigger_builds: true
         }
 

@@ -24,6 +24,11 @@ module EE
 
         private
 
+        override :metadata_fields
+        def metadata_fields
+          super.merge(total_weight: 'COALESCE(SUM(weight), 0)')
+        end
+
         def board_assignee_ids
           @board_assignee_ids ||=
             if parent.feature_available?(:board_assignee_lists)

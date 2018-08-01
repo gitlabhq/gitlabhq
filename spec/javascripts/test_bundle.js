@@ -1,4 +1,6 @@
-/* eslint-disable jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle */
+/* eslint-disable
+  jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle, no-console
+*/
 
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
@@ -89,6 +91,19 @@ const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
 beforeEach(() => {
   // restore interceptors so we have no remaining ones from previous tests
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
+});
+
+let longRunningTestTimeoutHandle;
+
+beforeEach((done) => {
+  longRunningTestTimeoutHandle = setTimeout(() => {
+    done.fail('Test is running too long!');
+  }, 1000);
+  done();
+});
+
+afterEach(() => {
+  clearTimeout(longRunningTestTimeoutHandle);
 });
 
 const axiosDefaultAdapter = getDefaultAdapter();

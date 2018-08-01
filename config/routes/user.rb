@@ -63,6 +63,10 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get :exists
     get :pipelines_quota
     get '/', to: redirect('%{username}'), as: nil
+
+    ## EE-specific
+    get :available_templates, format: :json
+    ## EE-specific
   end
 
   # Compatibility with old routing

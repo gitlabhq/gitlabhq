@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'issue boards', :js do
+  include DragTo
+
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
   let!(:board) { create(:board, project: project) }
@@ -89,6 +91,43 @@ describe 'issue boards', :js do
         expect(page).not_to have_css('.js-tab-button-assignees')
       end
     end
+  end
+
+  context 'total weight' do
+    let!(:label) { create(:label, project: project, name: 'Label 1') }
+    let!(:list) { create(:list, board: board, label: label, position: 0) }
+    let!(:issue) { create(:issue, project: project, weight: 3) }
+    let!(:issue_2) { create(:issue, project: project, weight: 2) }
+
+    before do
+      project.add_developer(user)
+      login_as(user)
+      visit_board_page
+    end
+
+    it 'shows total weight for backlog' do
+      backlog = board.lists.first
+      expect(badge(backlog)).to have_content('5')
+    end
+
+    it 'updates weight when moving to list' do
+      from = board.lists.first
+      to = list
+
+      drag_to(selector: '.board-list',
+              scrollable: '#board-app',
+              list_from_index: 0,
+              from_index: 0,
+              to_index: 0,
+              list_to_index: 1)
+
+      expect(badge(from)).to have_content('3')
+      expect(badge(to)).to have_content('2')
+    end
+  end
+
+  def badge(list)
+    find(".board[data-id='#{list.id}'] .issue-count-badge")
   end
 
   def visit_board_page

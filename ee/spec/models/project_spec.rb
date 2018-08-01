@@ -152,6 +152,24 @@ describe Project do
     end
   end
 
+  describe '#environments_for_scope' do
+    set(:project) { create(:project) }
+
+    before do
+      create_list(:environment, 2, project: project)
+    end
+
+    it 'retrieves all project environments when using the * wildcard' do
+      expect(project.environments_for_scope("*")).to eq(project.environments)
+    end
+
+    it 'retrieves a specific project environment when using the name of that environment' do
+      environment = project.environments.first
+
+      expect(project.environments_for_scope(environment.name)).to eq([environment])
+    end
+  end
+
   describe '#ensure_external_webhook_token' do
     let(:project) { create(:project, :repository) }
 
@@ -1311,6 +1329,35 @@ describe Project do
     end
   end
 
+  describe 'Project import job' do
+    let(:project) { create(:project, import_url: generate(:url)) }
+
+    before do
+      allow_any_instance_of(Gitlab::Shell).to receive(:import_repository)
+        .with(project.repository_storage, project.disk_path, project.import_url)
+        .and_return(true)
+
+      # Works around https://github.com/rspec/rspec-mocks/issues/910
+      allow(described_class).to receive(:find).with(project.id).and_return(project)
+      expect(project.repository).to receive(:after_import)
+        .and_call_original
+      expect(project.wiki.repository).to receive(:after_import)
+        .and_call_original
+    end
+
+    context 'with a mirrored project' do
+      let(:project) { create(:project, :mirror) }
+
+      it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
+        allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
+        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+        expect(RepositoryImportWorker).to receive(:perform_async).with(project.id).and_call_original
+
+        expect { project.import_schedule }.to change { project.import_jid }
+      end
+    end
+  end
+
   describe '#licensed_features' do
     let(:plan_license) { :free_plan }
     let(:global_license) { create(:license) }
@@ -1515,6 +1562,38 @@ describe Project do
       expect(wiki_updated_service).not_to receive(:execute)
 
       project.after_import
+    end
+  end
+
+  describe '#add_import_job' do
+    let(:project) { create(:project) }
+
+    context 'when import_type is gitlab_custom_project_template_import' do
+      it 'does not create import job' do
+        project.import_type = 'gitlab_custom_project_template_import'
+
+        expect(project.add_import_job).to be_nil
+      end
+    end
+  end
+
+  describe '#gitlab_custom_project_template_import?' do
+    let(:project) { create(:project, import_type: 'gitlab_custom_project_template') }
+
+    context 'when licensed' do
+      before do
+        stub_licensed_features(custom_project_templates: true)
+      end
+
+      it 'returns true' do
+        expect(project.gitlab_custom_project_template_import?).to be true
+      end
+    end
+
+    context 'when unlicensed' do
+      it 'returns false' do
+        expect(project.gitlab_custom_project_template_import?).to be false
+      end
     end
   end
 end

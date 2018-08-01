@@ -70,6 +70,25 @@ describe JwtController do
 
       it { expect(service_class).to have_received(:new).with(nil, user, parameters) }
 
+      context 'when passing a flat array of scopes' do
+        # We use this trick to make rails to generate a query_string:
+        # scope=scope1&scope=scope2
+        # It works because :scope and 'scope' are the same as string, but different objects
+        let(:parameters) do
+          {
+            :service => service_name,
+            :scope => 'scope1',
+            'scope' => 'scope2'
+          }
+        end
+
+        let(:service_parameters) do
+          { service: service_name, scopes: %w(scope1 scope2) }
+        end
+
+        it { expect(service_class).to have_received(:new).with(nil, user, service_parameters) }
+      end
+
       context 'when user has 2FA enabled' do
         let(:user) { create(:user, :two_factor) }
 

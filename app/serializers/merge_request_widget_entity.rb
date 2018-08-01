@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestWidgetEntity < IssuableEntity
   prepend ::EE::MergeRequestWidgetEntity
 
@@ -130,6 +132,10 @@ class MergeRequestWidgetEntity < IssuableEntity
 
     expose :can_create_note do |merge_request|
       can?(request.current_user, :create_note, merge_request)
+    end
+
+    expose :can_create_issue do |merge_request|
+      can?(current_user, :create_issue, merge_request.project)
     end
 
     expose :can_update do |merge_request|

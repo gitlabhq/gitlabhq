@@ -15,7 +15,7 @@ module Geo
       # If it does not exist we should consider it as successfully downloaded.
       if e.message.include? Gitlab::GitAccess::ERROR_MESSAGES[:no_repo]
         log_info('Repository is not found, marking it as successfully synced')
-        mark_sync_as_successful
+        mark_sync_as_successful(missing_on_primary: true)
       else
         fail_registry!('Error syncing repository', e)
       end

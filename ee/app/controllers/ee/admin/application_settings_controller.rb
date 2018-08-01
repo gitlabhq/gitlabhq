@@ -16,6 +16,10 @@ module EE
           attrs += EE::ApplicationSettingsHelper.external_authorization_service_attributes
         end
 
+        if License.feature_available?(:custom_project_templates)
+          attrs << :custom_project_templates_group_id
+        end
+
         if License.feature_available?(:email_additional_text)
           attrs << :email_additional_text
         end

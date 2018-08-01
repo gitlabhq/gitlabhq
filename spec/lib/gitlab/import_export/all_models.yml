@@ -7,6 +7,7 @@ issues:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
@@ -79,6 +80,7 @@ merge_requests:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
@@ -333,6 +335,9 @@ project:
 - ci_cd_settings
 - import_export_upload
 - vulnerability_feedback
+- prometheus_alerts
+- software_license_policies
+- repository_languages
 award_emoji:
 - awardable
 - user
@@ -340,6 +345,7 @@ priorities:
 - label
 prometheus_metrics:
 - project
+- prometheus_alert
 timelogs:
 - issue
 - merge_request

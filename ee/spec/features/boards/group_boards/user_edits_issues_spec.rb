@@ -12,7 +12,7 @@ describe 'label issues', :js do
   let!(:list) { create(:list, board: board, label: development, position: 0) }
 
   before do
-    stub_licensed_features(group_issue_boards: true)
+    stub_licensed_features(multiple_group_issue_boards: true)
     group.add_maintainer(user)
 
     sign_in(user)

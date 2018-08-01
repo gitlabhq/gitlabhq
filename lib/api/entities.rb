@@ -30,7 +30,7 @@ module API
     end
 
     class User < UserBasic
-      expose :created_at
+      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
@@ -55,6 +55,7 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+      expose :private_profile
     end
 
     class UserWithAdmin < UserPublic
@@ -1263,7 +1264,13 @@ module API
       end
 
       class Artifacts < Grape::Entity
-        expose :name, :untracked, :paths, :when, :expire_in
+        expose :name
+        expose :untracked
+        expose :paths
+        expose :when
+        expose :expire_in
+        expose :artifact_type
+        expose :artifact_format
       end
 
       class Cache < Grape::Entity
@@ -1420,6 +1427,10 @@ module API
       expose :approvals_before_merge
       expose :reset_approvals_on_push
       expose :disable_overriding_approvers_per_merge_request
+    end
+
+    class ManagedLicense < Grape::Entity
+      expose :id, :name, :approval_status
     end
   end
 end

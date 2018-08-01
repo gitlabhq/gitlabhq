@@ -1,6 +1,10 @@
 /* eslint-disable class-methods-use-this */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
+import { __ } from '~/locale';
+import BoardService from 'ee/boards/services/board_service';
+import sidebarEventHub from '~/sidebar/event_hub';
+import createFlash from '~/flash';
 
 class BoardsStoreEE {
   initEESpecific(boardsStore) {
@@ -36,6 +40,8 @@ class BoardsStoreEE {
         window.history.pushState(null, null, `?${this.store.filter.path}`);
       }
     };
+
+    sidebarEventHub.$on('updateWeight', this.updateWeight.bind(this));
   }
 
   initBoardFilters() {
@@ -125,6 +131,32 @@ class BoardsStoreEE {
 
   promotionIsHidden() {
     return Cookies.get('promotion_issue_board_hidden') === 'true';
+  }
+
+  updateWeight(newWeight, id) {
+    const { issue } = this.store.detail;
+    if (issue.id === id && issue.sidebarInfoEndpoint) {
+      issue.setLoadingState('weight', true);
+      BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
+        .then(res => res.data)
+        .then(data => {
+          const lists = issue.getLists();
+          const oldWeight = issue.weight;
+          const weightDiff = newWeight - oldWeight;
+
+          issue.setLoadingState('weight', false);
+          issue.updateData({
+            weight: data.weight,
+          });
+          lists.forEach(list => {
+            list.addWeight(weightDiff);
+          });
+        })
+        .catch(() => {
+          issue.setLoadingState('weight', false);
+          createFlash(__('An error occurred when updating the issue weight'));
+        });
+    }
   }
 }
 

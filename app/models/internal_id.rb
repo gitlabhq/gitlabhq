@@ -1,6 +1,9 @@
 # An InternalId is a strictly monotone sequence of integers
 # generated for a given scope and usage.
 #
+# The monotone sequence may be broken if an ID is explicitly provided
+# to `.track_greatest_and_save!` or `#track_greatest`.
+#
 # For example, issues use their project to scope internal ids:
 # In that sense, scope is "project" and usage is "issues".
 # Generated internal ids for an issue are unique per project.
@@ -25,13 +28,34 @@ class InternalId < ActiveRecord::Base
   # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
   # As such, the increment is atomic and safe to be called concurrently.
   def increment_and_save!
+    update_and_save { self.last_value = (last_value || 0) + 1 }
+  end
+
+  # Increments #last_value with new_value if it is greater than the current,
+  # and saves the record
+  #
+  # The operation locks the record and gathers a `ROW SHARE` lock (in PostgreSQL).
+  # As such, the increment is atomic and safe to be called concurrently.
+  def track_greatest_and_save!(new_value)
+    update_and_save { self.last_value = [last_value || 0, new_value].max }
+  end
+
+  private
+
+  def update_and_save(&block)
     lock!
-    self.last_value = (last_value || 0) + 1
+    yield
     save!
     last_value
   end
 
   class << self
+    def track_greatest(subject, scope, usage, new_value, init)
+      return new_value unless available?
+
+      InternalIdGenerator.new(subject, scope, usage, init).track_greatest(new_value)
+    end
+
     def generate_next(subject, scope, usage, init)
       # Shortcut if `internal_ids` table is not available (yet)
       # This can be the case in other (unrelated) migration specs
@@ -91,6 +115,16 @@ class InternalId < ActiveRecord::Base
         #
         # Note this will acquire a ROW SHARE lock on the InternalId record
         (lookup || create_record).increment_and_save!
+      end
+    end
+
+    # Create a record in internal_ids if one does not yet exist
+    # and set its new_value if it is higher than the current last_value
+    #
+    # Note this will acquire a ROW SHARE lock on the InternalId record
+    def track_greatest(new_value)
+      subject.transaction do
+        (lookup || create_record).track_greatest_and_save!(new_value)
       end
     end
 

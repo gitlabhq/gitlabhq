@@ -114,7 +114,7 @@ module ApplicationSettingsHelper
   def circuitbreaker_failure_count_help_text
     health_link = link_to(s_('AdminHealthPageLink|health page'), admin_health_check_path)
     api_link = link_to(s_('CircuitBreakerApiLink|circuitbreaker api'), help_page_path("api/repository_storage_health"))
-    message = _("The number of failures of after which GitLab will completely "\
+    message = _("The number of failures after which GitLab will completely "\
                 "prevent access to the storage. The number of failures can be "\
                 "reset in the admin interface: %{link_to_health_page} or using "\
                 "the %{api_documentation_link}.")
@@ -138,8 +138,8 @@ module ApplicationSettingsHelper
   end
 
   def circuitbreaker_check_interval_help_text
-    _("The time in seconds between storage checks. When a previous check did "\
-      "complete yet, GitLab will skip a check.")
+    _("The time in seconds between storage checks. If a check did "\
+      "not complete yet, GitLab will skip the next check.")
   end
 
   def visible_attributes
@@ -149,6 +149,7 @@ module ApplicationSettingsHelper
       :after_sign_up_text,
       :akismet_api_key,
       :akismet_enabled,
+      :allow_local_requests_from_hooks_and_services,
       :authorized_keys_enabled,
       :auto_devops_enabled,
       :auto_devops_domain,
@@ -175,14 +176,16 @@ module ApplicationSettingsHelper
       :ed25519_key_restriction,
       :email_author_in_body,
       :enabled_git_access_protocol,
+      :enforce_terms,
       :gitaly_timeout_default,
-      :gitaly_timeout_medium,
       :gitaly_timeout_fast,
+      :gitaly_timeout_medium,
       :gravatar_enabled,
       :hashed_storage_enabled,
       :help_page_hide_commercial_content,
       :help_page_support_url,
       :help_page_text,
+      :hide_third_party_offers,
       :home_page_url,
       :housekeeping_bitmaps_enabled,
       :housekeeping_enabled,
@@ -204,9 +207,10 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
+      :mirror_available,
       :pages_domain_verification_enabled,
-      :password_authentication_enabled_for_web,
       :password_authentication_enabled_for_git,
+      :password_authentication_enabled_for_web,
       :performance_bar_allowed_group_path,
       :performance_bar_enabled,
       :plantuml_enabled,
@@ -234,28 +238,25 @@ module ApplicationSettingsHelper
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
-      :throttle_unauthenticated_enabled,
-      :throttle_unauthenticated_requests_per_period,
-      :throttle_unauthenticated_period_in_seconds,
-      :throttle_authenticated_web_enabled,
-      :throttle_authenticated_web_requests_per_period,
-      :throttle_authenticated_web_period_in_seconds,
+      :terms,
       :throttle_authenticated_api_enabled,
-      :throttle_authenticated_api_requests_per_period,
       :throttle_authenticated_api_period_in_seconds,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_web_enabled,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_unauthenticated_enabled,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_unauthenticated_requests_per_period,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,
       :unique_ips_limit_time_window,
       :usage_ping_enabled,
+      :instance_statistics_visibility_private,
       :user_default_external,
       :user_oauth_applications,
-      :version_check_enabled,
-      :allow_local_requests_from_hooks_and_services,
-      :hide_third_party_offers,
-      :enforce_terms,
-      :terms,
-      :mirror_available
+      :version_check_enabled
     ]
   end
 end

@@ -405,7 +405,7 @@ class ApplicationController < ActionController::Base
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
       # sign in token, you can simply remove store: false.
-      sign_in user, store: false
+      sign_in(user, store: false, message: :sessionless_sign_in)
     end
   end
 

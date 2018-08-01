@@ -1,4 +1,6 @@
 class GeoNodeStatus < ActiveRecord::Base
+  include ShaAttribute
+
   belongs_to :geo_node
 
   delegate :selective_sync_type, to: :geo_node
@@ -17,6 +19,8 @@ class GeoNodeStatus < ActiveRecord::Base
                 :lfs_objects_registry_count, :job_artifacts_registry_count, :attachments_registry_count,
                 :hashed_storage_migrated_max_id, :hashed_storage_attachments_max_id,
                 :repositories_checked_count, :repositories_checked_failed_count
+
+  sha_attribute :storage_configuration_digest
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -155,6 +159,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.attachments_count = attachments_finder.count_syncable
     self.last_successful_status_check_at = Time.now
     self.storage_shards = StorageShard.all
+    self.storage_configuration_digest = StorageShard.build_digest
 
     self.version = Gitlab::VERSION
     self.revision = Gitlab.revision
@@ -199,7 +204,7 @@ class GeoNodeStatus < ActiveRecord::Base
   def load_secondary_data
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
-      self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
+      self.cursor_last_event_id = current_cursor_last_event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
       self.repositories_synced_count = projects_finder.count_synced_repositories
       self.repositories_failed_count = projects_finder.count_failed_repositories
@@ -234,6 +239,15 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.wikis_checksum_mismatch_count = projects_finder.count_wikis_checksum_mismatch
     end
+  end
+
+  def current_cursor_last_event_id
+    return unless Gitlab::Geo.secondary?
+
+    min_gap_id = ::Gitlab::Geo::EventGapTracking.min_gap_id
+    last_processed_id = Geo::EventLogState.last_processed&.event_id
+
+    [min_gap_id, last_processed_id].compact.min
   end
 
   def healthy?
@@ -330,13 +344,11 @@ class GeoNodeStatus < ActiveRecord::Base
     calc_percentage(replication_slots_count, replication_slots_used_count)
   end
 
-  # This method only is useful when the storage shard information is loaded
-  # from a remote node via JSON.
   def storage_shards_match?
-    return unless Gitlab::Geo.primary?
-    return unless current_shards && primary_shards
+    return true if geo_node.primary?
+    return false unless storage_configuration_digest && primary_storage_digest
 
-    shards_match?(current_shards, primary_shards)
+    storage_configuration_digest == primary_storage_digest
   end
 
   def [](key)
@@ -345,28 +357,8 @@ class GeoNodeStatus < ActiveRecord::Base
 
   private
 
-  def current_shards
-    serialize_storage_shards(storage_shards)
-  end
-
-  def primary_shards
-    serialize_storage_shards(StorageShard.all)
-  end
-
-  def serialize_storage_shards(shards)
-    StorageShardSerializer.new.represent(shards).as_json
-  end
-
-  def shards_match?(first, second)
-    names_match?(first, second)
-  end
-
-  def names_match?(first, second)
-    extract_names(first) == extract_names(second)
-  end
-
-  def extract_names(shards)
-    shards.map { |shard| shard['name'] }.sort
+  def primary_storage_digest
+    @primary_storage_digest ||= Gitlab::Geo.primary_node.find_or_build_status.storage_configuration_digest
   end
 
   def attachments_finder

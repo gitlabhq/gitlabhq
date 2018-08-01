@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddArtifactsFileToBuilds < ActiveRecord::Migration
   def change
     add_column :ci_builds, :artifacts_file, :text

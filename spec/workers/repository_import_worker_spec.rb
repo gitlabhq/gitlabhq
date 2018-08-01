@@ -47,19 +47,6 @@ describe RepositoryImportWorker do
       end
     end
 
-    context 'when project is a mirror' do
-      let(:project) { create(:project, :mirror, :import_scheduled) }
-
-      it 'adds mirror in front of the mirror scheduler queue' do
-        expect_any_instance_of(Projects::ImportService).to receive(:execute)
-          .and_return({ status: :ok })
-
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
-        subject.perform(project.id)
-      end
-    end
-
     context 'when the import has failed' do
       it 'hide the credentials that were used in the import URL' do
         error = %q{remote: Not Found fatal: repository 'https://user:pass@test.com/root/repoC.git/' not found }

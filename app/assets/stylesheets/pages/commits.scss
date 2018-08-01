@@ -79,7 +79,7 @@
 .commit-message-container {
   background-color: $body-bg;
   position: relative;
-  font-family: $monospace_font;
+  font-family: $monospace-font;
   $left: 12px;
   overflow: hidden; // See https://gitlab.com/gitlab-org/gitlab-ce/issues/13987
   .max-width-marker {

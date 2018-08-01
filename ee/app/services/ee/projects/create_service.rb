@@ -7,8 +7,8 @@ module EE
       override :execute
       def execute
         limit = params.delete(:repository_size_limit)
-        mirror = params.delete(:mirror)
-        mirror_user_id = params.delete(:mirror_user_id)
+        mirror = ::Gitlab::Utils.to_boolean(params.delete(:mirror))
+        mirror_user_id = current_user.id if mirror
         mirror_trigger_builds = params.delete(:mirror_trigger_builds)
         ci_cd_only = ::Gitlab::Utils.to_boolean(params.delete(:ci_cd_only))
 
@@ -16,7 +16,7 @@ module EE
           # Repository size limit comes as MB from the view
           project.repository_size_limit = ::Gitlab::Utils.try_megabytes_to_bytes(limit) if limit
 
-          if mirror && project.feature_available?(:repository_mirrors)
+          if mirror && can?(current_user, :admin_mirror, project)
             project.mirror = mirror unless mirror.nil?
             project.mirror_trigger_builds = mirror_trigger_builds unless mirror_trigger_builds.nil?
             project.mirror_user_id = mirror_user_id

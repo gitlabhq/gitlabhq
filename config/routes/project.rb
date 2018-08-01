@@ -80,6 +80,12 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :validate_query, on: :collection
           get :active_common, on: :collection
         end
+
+        # EE-specific
+        resources :alerts, constraints: { id: /\d+/ }, only: [:index, :create, :show, :update, :destroy] do
+          post :notify, on: :collection
+        end
+        # EE-specific
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do
@@ -337,7 +343,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
       resources :hooks, only: [:index, :create, :edit, :update, :destroy], constraints: { id: /\d+/ } do
         member do
-          get :test
+          post :test
         end
 
         resources :hook_logs, only: [:show] do
@@ -513,6 +519,10 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
       # its preferable to keep it below all other project routes
       draw :wiki
       draw :repository
+
+      ## EE-specific
+      resources :managed_licenses, only: [:index, :show, :new, :create, :edit, :update, :destroy]
+      ## EE-specific
     end
 
     resources(:projects,

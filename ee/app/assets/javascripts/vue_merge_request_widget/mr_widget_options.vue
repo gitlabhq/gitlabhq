@@ -2,26 +2,29 @@
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
 import GroupedSecurityReportsApp from 'ee/vue_shared/security_reports/grouped_security_reports_app.vue';
 import reportsMixin from 'ee/vue_shared/security_reports/mixins/reports_mixin';
+import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
+import MrWidgetLicenses from 'ee/vue_shared/license_management/mr_widget_license_report.vue';
 
 import { n__, s__, __, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options.vue';
-import WidgetApprovals from './components/approvals/mr_widget_approvals.vue';
-import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node.vue';
+import MrWidgetApprovals from './components/approvals/mr_widget_approvals.vue';
+import MrWidgetGeoSecondaryNode from './components/states/mr_widget_secondary_geo_node.vue';
 
 export default {
   components: {
-    'mr-widget-approvals': WidgetApprovals,
-    'mr-widget-geo-secondary-node': GeoSecondaryNode,
+    MrWidgetLicenses,
+    MrWidgetApprovals,
+    MrWidgetGeoSecondaryNode,
     GroupedSecurityReportsApp,
     ReportSection,
   },
   extends: CEWidgetOptions,
   mixins: [reportsMixin],
+  componentNames,
   data() {
     return {
       isLoadingCodequality: false,
       isLoadingPerformance: false,
-      isLoadingLicenseReport: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
       loadingLicenseReportFailed: false,
@@ -55,10 +58,6 @@ export default {
           (this.mr.performanceMetrics.improved && this.mr.performanceMetrics.improved.length > 0) ||
           (this.mr.performanceMetrics.neutral && this.mr.performanceMetrics.neutral.length > 0))
       );
-    },
-    hasLicenseReportIssues() {
-      const { licenseReport } = this.mr;
-      return licenseReport && licenseReport.length > 0;
     },
     shouldRenderPerformance() {
       const { performance } = this.mr;
@@ -122,28 +121,12 @@ export default {
       return text.join('');
     },
 
-    licenseReportText() {
-      const { licenseReport } = this.mr;
-
-      if (licenseReport.length > 0) {
-        return sprintf(s__('ciReport|License management detected %{licenseInfo}'), {
-          licenseInfo: n__('%d new license', '%d new licenses', licenseReport.length),
-        });
-      }
-
-      return s__('ciReport|License management detected no new licenses');
-    },
-
     codequalityStatus() {
       return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
     },
 
     performanceStatus() {
       return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
-    },
-
-    licenseReportStatus() {
-      return this.checkReportStatus(this.isLoadingLicenseReport, this.loadingLicenseReportFailed);
     },
   },
   created() {
@@ -153,10 +136,6 @@ export default {
 
     if (this.shouldRenderPerformance) {
       this.fetchPerformance();
-    }
-
-    if (this.shouldRenderLicenseReport) {
-      this.fetchLicenseReport();
     }
   },
   methods: {
@@ -197,22 +176,6 @@ export default {
         });
     },
 
-    fetchLicenseReport() {
-      const { head_path, base_path } = this.mr.licenseManagement;
-
-      this.isLoadingLicenseReport = true;
-
-      Promise.all([this.service.fetchReport(head_path), this.service.fetchReport(base_path)])
-        .then(values => {
-          this.mr.parseLicenseReportMetrics(values[0], values[1]);
-          this.isLoadingLicenseReport = false;
-        })
-        .catch(() => {
-          this.isLoadingLicenseReport = false;
-          this.loadingLicenseReportFailed = true;
-        });
-    },
-
     translateText(type) {
       return {
         error: sprintf(s__('ciReport|Failed to load %{reportName} report'), {
@@ -228,7 +191,7 @@ export default {
 </script>
 <template>
   <div class="mr-state-widget prepend-top-default">
-    <mr-widget-header :mr="mr" />
+    <mr-widget-header :mr="mr"/>
     <mr-widget-pipeline
       v-if="shouldRenderPipelines"
       :pipeline="mr.pipeline"
@@ -255,8 +218,8 @@ export default {
       :unresolved-issues="mr.codeclimateMetrics.newIssues"
       :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
       :has-issues="hasCodequalityIssues"
+      :component="$options.componentNames.CodequalityIssueBody"
       class="js-codequality-widget mr-widget-border-top"
-      type="codequality"
     />
     <report-section
       v-if="shouldRenderPerformance"
@@ -268,8 +231,8 @@ export default {
       :resolved-issues="mr.performanceMetrics.improved"
       :neutral-issues="mr.performanceMetrics.neutral"
       :has-issues="hasPerformanceMetrics"
+      :component="$options.componentNames.PerformanceIssueBody"
       class="js-performance-widget mr-widget-border-top"
-      type="performance"
     />
     <grouped-security-reports-app
       v-if="shouldRenderSecurityReport"
@@ -289,20 +252,18 @@ export default {
       :dependency-scanning-help-path="mr.dependencyScanningHelp"
       :vulnerability-feedback-path="mr.vulnerabilityFeedbackPath"
       :vulnerability-feedback-help-path="mr.vulnerabilityFeedbackHelpPath"
+      :pipeline-path="mr.pipeline.path"
       :pipeline-id="mr.securityReportsPipelineId"
       :can-create-issue="mr.canCreateIssue"
       :can-create-feedback="mr.canCreateFeedback"
     />
-    <report-section
+    <mr-widget-licenses
       v-if="shouldRenderLicenseReport"
-      :status="licenseReportStatus"
-      :loading-text="translateText('license management').loading"
-      :error-text="translateText('license management').error"
-      :success-text="licenseReportText"
-      :unresolved-issues="mr.licenseReport"
-      :has-issues="hasLicenseReportIssues"
-      class="js-license-report-widget mr-widget-border-top"
-      type="license"
+      :api-url="mr.licenseManagement.managed_licenses_path"
+      :can-manage-licenses="mr.licenseManagement.can_manage_licenses"
+      :base-path="mr.licenseManagement.base_path"
+      :head-path="mr.licenseManagement.head_path"
+      report-section-class="mr-widget-border-top"
     />
     <div class="mr-section-container">
       <div class="mr-widget-section">
@@ -332,7 +293,7 @@ export default {
         v-if="shouldRenderMergeHelp"
         class="mr-widget-footer"
       >
-        <mr-widget-merge-help />
+        <mr-widget-merge-help/>
       </div>
     </div>
   </div>

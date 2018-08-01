@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180718100455) do
+ActiveRecord::Schema.define(version: 20180726172057) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -208,6 +208,8 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.boolean "enforce_terms", default: false
     t.boolean "pseudonymizer_enabled", default: false, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
+    t.boolean "instance_statistics_visibility_private", default: false, null: false
+    t.integer "custom_project_templates_group_id"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -482,6 +484,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.string "file"
     t.integer "file_store"
     t.binary "file_sha256"
+    t.integer "file_format", limit: 2
   end
 
   add_index "ci_job_artifacts", ["expire_at", "job_id"], name: "index_ci_job_artifacts_on_expire_at_and_job_id", using: :btree
@@ -778,6 +781,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.text "status_reason"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "last_update_started_at"
   end
 
   create_table "clusters_applications_runners", force: :cascade do |t|
@@ -1154,6 +1158,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.integer "wikis_checksummed_count"
     t.integer "wikis_checksum_failed_count"
     t.integer "wikis_checksum_mismatch_count"
+    t.binary "storage_configuration_digest"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
@@ -1953,6 +1958,14 @@ ActiveRecord::Schema.define(version: 20180718100455) do
 
   add_index "plans", ["name"], name: "index_plans_on_name", using: :btree
 
+  create_table "programming_languages", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "color", null: false
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "programming_languages", ["name"], name: "index_programming_languages_on_name", unique: true, using: :btree
+
   create_table "project_authorizations", id: false, force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "project_id", null: false
@@ -2180,6 +2193,19 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
   add_index "projects", ["visibility_level"], name: "index_projects_on_visibility_level", using: :btree
 
+  create_table "prometheus_alerts", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.float "threshold", null: false
+    t.integer "operator", null: false
+    t.integer "environment_id", null: false
+    t.integer "project_id", null: false
+    t.integer "prometheus_metric_id", null: false
+  end
+
+  add_index "prometheus_alerts", ["environment_id"], name: "index_prometheus_alerts_on_environment_id", using: :btree
+  add_index "prometheus_alerts", ["prometheus_metric_id"], name: "index_prometheus_alerts_on_prometheus_metric_id", unique: true, using: :btree
+
   create_table "prometheus_metrics", force: :cascade do |t|
     t.integer "project_id"
     t.string "title", null: false
@@ -2342,6 +2368,30 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_index "remote_mirrors", ["last_successful_update_at"], name: "index_remote_mirrors_on_last_successful_update_at", using: :btree
   add_index "remote_mirrors", ["project_id"], name: "index_remote_mirrors_on_project_id", using: :btree
 
+  create_table "repository_languages", id: false, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "programming_language_id", null: false
+    t.float "share", null: false
+  end
+
+  add_index "repository_languages", ["project_id", "programming_language_id"], name: "index_repository_languages_on_project_and_languages_id", unique: true, using: :btree
+
+  create_table "resource_label_events", id: :bigserial, force: :cascade do |t|
+    t.integer "action", null: false
+    t.integer "issue_id"
+    t.integer "merge_request_id"
+    t.integer "epic_id"
+    t.integer "label_id"
+    t.integer "user_id"
+    t.datetime_with_timezone "created_at", null: false
+  end
+
+  add_index "resource_label_events", ["epic_id"], name: "index_resource_label_events_on_epic_id", using: :btree
+  add_index "resource_label_events", ["issue_id"], name: "index_resource_label_events_on_issue_id", using: :btree
+  add_index "resource_label_events", ["label_id"], name: "index_resource_label_events_on_label_id", using: :btree
+  add_index "resource_label_events", ["merge_request_id"], name: "index_resource_label_events_on_merge_request_id", using: :btree
+  add_index "resource_label_events", ["user_id"], name: "index_resource_label_events_on_user_id", using: :btree
+
   create_table "routes", force: :cascade do |t|
     t.integer "source_id", null: false
     t.string "source_type", null: false
@@ -2406,6 +2456,11 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
   add_index "services", ["template"], name: "index_services_on_template", using: :btree
 
+  create_table "site_statistics", force: :cascade do |t|
+    t.integer "repositories_count", default: 0, null: false
+    t.integer "wikis_count", default: 0, null: false
+  end
+
   create_table "slack_integrations", force: :cascade do |t|
     t.integer "service_id", null: false
     t.string "team_id", null: false
@@ -2442,6 +2497,20 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_index "snippets", ["title"], name: "index_snippets_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
   add_index "snippets", ["updated_at"], name: "index_snippets_on_updated_at", using: :btree
   add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
+
+  create_table "software_license_policies", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "software_license_id", null: false
+    t.integer "approval_status", default: 0, null: false
+  end
+
+  add_index "software_license_policies", ["project_id", "software_license_id"], name: "index_software_license_policies_unique_per_project", unique: true, using: :btree
+
+  create_table "software_licenses", force: :cascade do |t|
+    t.string "name", null: false
+  end
+
+  add_index "software_licenses", ["name"], name: "index_software_licenses_on_name", using: :btree
 
   create_table "spam_logs", force: :cascade do |t|
     t.integer "user_id"
@@ -2710,6 +2779,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
     t.integer "theme_id", limit: 2
     t.integer "accepted_term_id"
     t.string "feed_token"
+    t.boolean "private_profile"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -2800,6 +2870,7 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
@@ -2974,6 +3045,9 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_foreign_key "project_mirror_data", "projects", name: "fk_d1aad367d7", on_delete: :cascade
   add_foreign_key "project_repository_states", "projects", on_delete: :cascade
   add_foreign_key "project_statistics", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alerts", "environments", on_delete: :cascade
+  add_foreign_key "prometheus_alerts", "projects", on_delete: :cascade
+  add_foreign_key "prometheus_alerts", "prometheus_metrics", on_delete: :cascade
   add_foreign_key "prometheus_metrics", "projects", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "namespaces", column: "group_id", name: "fk_98f3d044fe", on_delete: :cascade
   add_foreign_key "protected_branch_merge_access_levels", "protected_branches", name: "fk_8a3072ccb3", on_delete: :cascade
@@ -2993,10 +3067,18 @@ ActiveRecord::Schema.define(version: 20180718100455) do
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
+  add_foreign_key "repository_languages", "projects", on_delete: :cascade
+  add_foreign_key "resource_label_events", "epics", on_delete: :cascade
+  add_foreign_key "resource_label_events", "issues", on_delete: :cascade
+  add_foreign_key "resource_label_events", "labels", on_delete: :nullify
+  add_foreign_key "resource_label_events", "merge_requests", on_delete: :cascade
+  add_foreign_key "resource_label_events", "users", on_delete: :nullify
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade
+  add_foreign_key "software_license_policies", "projects", on_delete: :cascade
+  add_foreign_key "software_license_policies", "software_licenses", on_delete: :cascade
   add_foreign_key "subscriptions", "projects", on_delete: :cascade
   add_foreign_key "system_note_metadata", "notes", name: "fk_d83a918cb1", on_delete: :cascade
   add_foreign_key "term_agreements", "application_setting_terms", column: "term_id"

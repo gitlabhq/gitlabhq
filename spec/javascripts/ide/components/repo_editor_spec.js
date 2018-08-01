@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
+import '~/behaviors/markdown/render_gfm';
 import axios from '~/lib/utils/axios_utils';
 import store from '~/ide/stores';
 import repoEditor from '~/ide/components/repo_editor.vue';
@@ -24,6 +25,8 @@ describe('RepoEditor', () => {
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
     Vue.set(vm.$store.state.entries, f.path, f);
+
+    spyOn(vm, 'getFileData').and.returnValue(Promise.resolve());
 
     vm.$mount();
 

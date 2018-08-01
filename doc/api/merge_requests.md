@@ -15,11 +15,6 @@ given state (`opened`, `closed`, `locked`, or `merged`) or all of them (`all`). 
 The pagination parameters `page` and `per_page` can be used to
 restrict the list of merge requests.
 
-**Note**: the `changes_count` value in the response is a string, not an
-integer. This is because when an MR has too many changes to display and store,
-it will be capped at 1,000. In that case, the API will return the string
-`"1000+"` for the changes count.
-
 ```
 GET /merge_requests
 GET /merge_requests?state=opened
@@ -104,7 +99,6 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
-    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
@@ -144,10 +138,6 @@ will be the same. In the case of a merge request from a fork,
 `target_project_id` and `project_id` will be the same and
 `source_project_id` will be the fork project's ID.
 
-**Note**: the `changes_count` value in the response is a string, not an
-integer. This is because when an MR has too many changes to display and store,
-it will be capped at 1,000. In that case, the API will return the string
-`"1000+"` for the changes count.
 
 Parameters:
 
@@ -224,7 +214,6 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
-    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
@@ -332,7 +321,6 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
-    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
@@ -350,6 +338,11 @@ Parameters:
 ## Get single MR
 
 Shows information about a single merge request.
+
+**Note**: the `changes_count` value in the response is a string, not an
+integer. This is because when an MR has too many changes to display and store,
+it will be capped at 1,000. In that case, the API will return the string
+`"1000+"` for the changes count.
 
 ```
 GET /projects/:id/merge_requests/:merge_request_iid

@@ -4,6 +4,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   include ::IgnorableColumn
   include ::ShaAttribute
 
+  REGISTRY_TYPES = %i{repository wiki}.freeze
   RETRIES_BEFORE_REDOWNLOAD = 5
 
   ignore_column :last_repository_verification_at
@@ -71,7 +72,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       "#{type}_retry_at" => next_retry_time(new_count))
   end
 
-  def finish_sync!(type)
+  def finish_sync!(type, missing_on_primary = false)
     update!(
       # Indicate that the sync succeeded (but separately mark as synced atomically)
       "last_#{type}_successful_sync_at" => Time.now,
@@ -79,6 +80,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       "#{type}_retry_at" => nil,
       "force_to_redownload_#{type}" => false,
       "last_#{type}_sync_failure" => nil,
+      "#{type}_missing_on_primary" => missing_on_primary,
 
       # Indicate that repository verification needs to be done again
       "#{type}_verification_checksum_sha" => nil,

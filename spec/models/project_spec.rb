@@ -70,6 +70,7 @@ describe Project do
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:repository_languages) }
     it { is_expected.to have_many(:environments) }
     it { is_expected.to have_many(:deployments) }
     it { is_expected.to have_many(:todos) }
@@ -101,6 +102,22 @@ describe Project do
 
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
       end
     end
 
@@ -1896,22 +1913,10 @@ describe Project do
     end
 
     it 'imports a project' do
-      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+      expect(RepositoryImportWorker).to receive(:perform_async).and_call_original
 
       expect { project.import_schedule }.to change { project.import_jid }
       expect(project.reload.import_status).to eq('finished')
-    end
-
-    context 'with a mirrored project' do
-      let(:project) { create(:project, :mirror) }
-
-      it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
-        allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-        expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
-
-        expect { project.import_schedule }.to change { project.import_jid }
-      end
     end
   end
 
@@ -3291,8 +3296,6 @@ describe Project do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        expect(project).to receive(:expires_full_path_cache)
-
         project.rename_repo
       end
 
@@ -3451,8 +3454,6 @@ describe Project do
             .with(project, :rename)
 
         expect(project).to receive(:expire_caches_before_rename)
-
-        expect(project).to receive(:expires_full_path_cache)
 
         project.rename_repo
       end
@@ -4234,6 +4235,16 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  context '#commits_by' do
+    let(:project) { create(:project, :repository) }
+    let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
+    let(:commit_shas) { commits.map(&:id) }
+
+    it 'retrieves several commits from the repository by oid' do
+      expect(project.commits_by(oids: commit_shas)).to eq commits
     end
   end
 

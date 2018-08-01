@@ -243,7 +243,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 4.6.5'
+gem 'sanitize', '~> 4.6'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -318,7 +318,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.3'
+  gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -412,6 +412,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
+gem 'rbtrace', '~> 0.4', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -437,7 +438,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.106.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.109.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

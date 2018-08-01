@@ -41,8 +41,8 @@ end
 
 all_files = git.added_files + git.modified_files
 
-non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb/}).empty?
-geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb/}).empty?
+non_geo_db_schema_updated = !git.modified_files.grep(%r{\Adb/schema\.rb}).empty?
+geo_db_schema_updated = !git.modified_files.grep(%r{\Aee/db/geo/schema\.rb}).empty?
 
 non_geo_migration_created = !git.added_files.grep(%r{\A(db/(post_)?migrate)/}).empty?
 geo_migration_created = !git.added_files.grep(%r{\Aee/db/geo/(post_)?migrate/}).empty?

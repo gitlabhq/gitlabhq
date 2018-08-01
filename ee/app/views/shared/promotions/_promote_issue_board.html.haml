@@ -14,10 +14,10 @@
         = link_to _('Multiple issue boards'), help_page_path('user/project/issue_board.html', anchor:'use-cases-for-multiple-issue-boards'), target: '_blank'
     - unless @project.feature_available?(:scoped_issue_board)
       %li
-        = link_to _('Scoped issue boards'), help_page_path('user/project/issue_board.html', anchor:'board-with-a-milestone'), target: '_blank'
+        = link_to _('Scoped issue boards'), help_page_path('user/project/issue_board.html', anchor:'configurable-issue-boards-starter'), target: '_blank'
     - unless @project.feature_available?(:issue_board_focus_mode)
       %li
-        = link_to _('Issue board focus mode'), help_page_path('user/project/issue_board.html', anchor:'focus-mode'), target: '_blank'
+        = link_to _('Issue board focus mode'), help_page_path('user/project/issue_board.html', anchor:'focus-mode-starter'), target: '_blank'
   = render 'shared/promotions/promotion_link_project'
   .top-space
     %button.btn.btn-default.btn-block#hide-btn{ :href => "#", "@click.stop" => "clearPromotionState" }

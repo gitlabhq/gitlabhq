@@ -1,4 +1,4 @@
-$token_spacing_bottom: 0.5em;
+$token-spacing-bottom: 0.5em;
 
 .related-issues-block {
   margin-top: 3 * $gl-vert-padding;
@@ -45,7 +45,7 @@ $token_spacing_bottom: 0.5em;
 }
 
 .related-issues-loading-icon {
-  margin-bottom: $token_spacing_bottom;
+  margin-bottom: $token-spacing-bottom;
   line-height: 1.75;
 }
 
@@ -59,7 +59,7 @@ $token_spacing_bottom: 0.5em;
 
 .related-issues-token-list-item {
   max-width: 100%;
-  margin-bottom: $token_spacing_bottom;
+  margin-bottom: $token-spacing-bottom;
   margin-right: 5px;
 }
 

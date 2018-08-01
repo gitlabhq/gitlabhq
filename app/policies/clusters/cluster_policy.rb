@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class ClusterPolicy < BasePolicy
     alias_method :cluster, :subject

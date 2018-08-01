@@ -128,13 +128,7 @@ class IssuesFinder < IssuableFinder
   end
 
   def by_assignee(items)
-    if assignees.any?
-      assignees.each do |assignee|
-        items = items.assigned_to(assignee)
-      end
-
-      items
-    elsif assignee && assignees.empty?
+    if assignee
       items.assigned_to(assignee)
     elsif no_assignee?
       items.unassigned
@@ -143,18 +137,5 @@ class IssuesFinder < IssuableFinder
     else
       items
     end
-  end
-
-  def assignees
-    return @assignees if defined?(@assignees)
-
-    @assignees =
-      if params[:assignee_ids]
-        User.where(id: params[:assignee_ids])
-      elsif params[:assignee_username]
-        User.where(username: params[:assignee_username])
-      else
-        []
-      end
   end
 end

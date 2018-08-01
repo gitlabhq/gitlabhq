@@ -38,6 +38,7 @@ following locations:
 - [Keys](keys.md)
 - [Labels](labels.md)
 - [License](license.md)
+- [Managed licenses](managed_licenses.md) **[ULTIMATE]**
 - [Markdown](markdown.md)
 - [Merge Requests](merge_requests.md)
 - [Merge Request Approvals](merge_request_approvals.md) **[STARTER]**

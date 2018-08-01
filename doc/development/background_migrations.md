@@ -296,10 +296,18 @@ for more details.
 
 ## Best practices
 
+1. Make sure to know how much data you're dealing with
 1. Make sure that background migration jobs are idempotent.
 1. Make sure that tests you write are not false positives.
 1. Make sure that if the data being migrated is critical and cannot be lost, the
    clean-up migration also checks the final state of the data before completing.
+1. Make sure to know how much time it'll take to run all scheduled migrations
+1. When migrating many columns, make sure it won't generate too many
+   dead tuples in the process (you may need to directly query the number of dead tuples
+   and adjust the scheduling according to this piece of data)
+1. Make sure to discuss the numbers with a database specialist, the migration may add
+   more pressure on DB than you expect (measure on staging,
+   or ask someone to measure on production)
 
 [migrations-readme]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/spec/migrations/README.md
 [issue-rspec-hooks]: https://gitlab.com/gitlab-org/gitlab-ce/issues/35351

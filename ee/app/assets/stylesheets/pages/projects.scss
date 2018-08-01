@@ -26,7 +26,7 @@
   }
 
   .known-hosts {
-    font-family: $monospace_font;
+    font-family: $monospace-font;
   }
 
   .btn-show-advanced {
@@ -109,7 +109,7 @@
 
 .git-clone-holder {
   .btn-geo {
-    border-left: none;
+    border-left: 0;
   }
 }
 
@@ -137,6 +137,25 @@
   }
 
   .split-report-section:last-of-type {
-    border-bottom: none;
+    border-bottom: 0;
   }
+}
+
+.license-management {
+  li.list-group-item {
+    line-height: $gl-padding-32;
+  }
+
+  .dropdown-toggle {
+    min-width: $gl-padding-8 * 15;
+  }
+
+  .dropdown-item svg {
+    vertical-align: sub;
+  }
+
+  .btn-blank {
+    padding: 6px 10px;
+  }
+
 }

@@ -10,5 +10,3 @@
     - if Gitlab::CurrentSettings.should_check_namespace_plan?
       .form-text.text-muted
         Mirroring will only be available if the feature is included in the plan of the selected group or user.
-
-  = f.hidden_field :mirror_user_id, value: current_user.id
