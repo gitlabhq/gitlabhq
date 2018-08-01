@@ -62,7 +62,7 @@ module API
         requires :housekeeping_incremental_repack_period, type: Integer, desc: "Number of Git pushes after which an incremental 'git repack' is run."
       end
       optional :html_emails_enabled, type: Boolean, desc: 'By default GitLab sends emails in HTML and plain text formats so mail clients can choose what format to use. Disable this option if you only want to send emails in plain text format.'
-      optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project],
+      optional :import_sources, type: Array[String], values: %w[github bitbucket gitlab google_code fogbugz git gitlab_project manifest],
                                 desc: 'Enabled sources for code import during project creation. OmniAuth must be configured for GitHub, Bitbucket, and GitLab.com'
       optional :koding_enabled, type: Boolean, desc: 'Enable Koding'
       given koding_enabled: ->(val) { val } do
@@ -76,8 +76,8 @@ module API
         requires :metrics_host, type: String, desc: 'The InfluxDB host'
         requires :metrics_method_call_threshold, type: Integer, desc: 'A method call is only tracked when it takes longer to complete than the given amount of milliseconds.'
         requires :metrics_packet_size, type: Integer, desc: 'The amount of points to store in a single UDP packet'
-        requires :metrics_port, type: Integer, desc: 'The UDP port to use for connecting to InfluxDB'
         requires :metrics_pool_size, type: Integer, desc: 'The amount of InfluxDB connections to open'
+        requires :metrics_port, type: Integer, desc: 'The UDP port to use for connecting to InfluxDB'
         requires :metrics_sample_interval, type: Integer, desc: 'The sampling interval in seconds'
         requires :metrics_timeout, type: Integer, desc: 'The amount of seconds after which an InfluxDB connection will time out'
       end
