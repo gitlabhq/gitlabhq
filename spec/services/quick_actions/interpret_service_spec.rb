@@ -980,6 +980,12 @@ describe QuickActions::InterpretService do
           let(:issuable) { issue }
         end
       end
+
+      context 'if issuable is a Commit' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { commit }
+        it_behaves_like 'empty command'
+      end
     end
 
     context '/shrug command' do
