@@ -25,6 +25,7 @@ export default class MirrorPull {
     this.$wellSSHAuth = this.$form.find('.js-well-ssh-auth');
     this.$sshPublicKeyWrap = this.$form.find('.js-ssh-public-key-wrap');
     this.$regeneratePublicSshKeyButton = this.$wellSSHAuth.find('.js-btn-regenerate-ssh-key');
+    this.$regeneratePublicSshKeyModal = this.$wellSSHAuth.find('.js-regenerate-public-ssh-key-confirm-modal');
   }
 
   init() {
@@ -35,7 +36,9 @@ export default class MirrorPull {
     this.$dropdownAuthType.on('change', e => this.handleAuthTypeChange(e));
     this.$btnDetectHostKeys.on('click', e => this.handleDetectHostKeys(e));
     this.$btnSSHHostsShowAdvanced.on('click', e => this.handleSSHHostsAdvanced(e));
-    this.$regeneratePublicSshKeyButton.on('click', e => this.regeneratePublicSshKey(e));
+    this.$regeneratePublicSshKeyButton.on('click', () => this.$regeneratePublicSshKeyModal.toggle(true));
+    $('.js-confirm', this.$regeneratePublicSshKeyModal).on('click', e => this.regeneratePublicSshKey(e));
+    $('.js-cancel', this.$regeneratePublicSshKeyModal).on('click', () => this.$regeneratePublicSshKeyModal.toggle(false));
   }
 
   /**
@@ -237,10 +240,9 @@ export default class MirrorPull {
   regeneratePublicSshKey(event) {
     event.preventDefault();
 
+    this.$regeneratePublicSshKeyModal.toggle(false);
+
     const button = this.$regeneratePublicSshKeyButton;
-
-    if (!window.confirm(button.data('confirm'))) return; // eslint-disable-line no-alert
-
     const spinner = $('.js-spinner', button);
     const endpoint = button.data('endpoint');
 

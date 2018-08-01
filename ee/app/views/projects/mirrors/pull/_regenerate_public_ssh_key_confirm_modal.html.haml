@@ -1,0 +1,13 @@
+.modal.js-regenerate-public-ssh-key-confirm-modal{ tabindex: -1 }
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h3.modal-title.page-title
+          Regenerate public SSH key?
+        %button.close.js-cancel{ type: 'button', 'data-dismiss': 'modal', 'aria-label' => _('Close') }
+          %span{ 'aria-hidden': true } &times;
+      .modal-body
+        %p= _('Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again.')
+      .form-actions.modal-footer
+        = button_tag _('Cancel'), type: 'button', class: 'btn js-cancel'
+        = button_tag _('Confirm'), type: 'button', class: 'btn btn-danger js-confirm'
