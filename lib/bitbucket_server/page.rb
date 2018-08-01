@@ -20,7 +20,7 @@ module BitbucketServer
     private
 
     def parse_attrs(raw)
-      raw.slice(*%w(size nextPageStart isLastPage)).symbolize_keys
+      raw.slice('size', 'nextPageStart', 'isLastPage').symbolize_keys
     end
 
     def parse_values(raw, bitbucket_rep_class)

@@ -13,7 +13,7 @@ class Import::BitbucketServerController < Import::BaseController
   # Repository names are limited to 128 characters. They must start with a
   # letter or number and may contain spaces, hyphens, underscores, and periods.
   # (https://community.atlassian.com/t5/Answers-Developer-Questions/stash-repository-names/qaq-p/499054)
-  VALID_BITBUCKET_CHARS = /\A[a-zA-z0-9\-_\.\s]+\z/
+  VALID_BITBUCKET_CHARS = /\A[\w\-_\.\s]+\z/
 
   def new
   end

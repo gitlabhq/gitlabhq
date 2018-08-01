@@ -41,12 +41,9 @@
             = link_to project.full_path, [project.namespace.becomes(Namespace), project]
           %td.job-status
             - if project.import_status == 'finished'
-              %span
-                %i.fa.fa-check
-                Done
+              = icon('check', text: 'Done')
             - elsif project.import_status == 'started'
-              %i.fa.fa-spinner.fa-spin
-              started
+              = icon('spin', text: 'started')
             - else
               = project.human_import_status_name
 
