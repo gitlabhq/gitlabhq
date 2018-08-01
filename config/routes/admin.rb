@@ -88,8 +88,6 @@ namespace :admin do
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
 
-  get 'conversational_development_index' => 'conversational_development_index#show'
-
   resources :projects, only: [:index]
 
   scope(path: 'projects/*namespace_id',
@@ -151,8 +149,6 @@ namespace :admin do
       get :pause
     end
   end
-
-  resources :cohorts, only: :index
 
   resources :jobs, only: :index do
     collection do

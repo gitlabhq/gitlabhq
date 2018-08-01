@@ -55,7 +55,8 @@ Example response:
    "ed25519_key_restriction": 0,
    "enforce_terms": true,
    "terms": "Hello world!",
-   "performance_bar_allowed_group_id": 42
+   "performance_bar_allowed_group_id": 42,
+   "instance_statistics_visibility_private": false
 }
 ```
 
@@ -182,6 +183,7 @@ PUT /application/settings
 | `external_auth_client_key_pass` | string | no | Passphrase to use for the private key when authenticating with the external service this is encrypted when stored |
 | `enforce_terms`                          | boolean          | no                                            | Enforce application ToS to all users                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `terms`                                  | text             | yes (if `enforce_terms` is true)              | Markdown content for the ToS                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `instance_statistics_visibility_private` | boolean          | no                                            | When set to `true` Instance statistics will only be available to admins                                                                                                                                                                                                                                                                                                                                                                      |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -230,6 +232,7 @@ Example response:
   "ed25519_key_restriction": 0,
   "enforce_terms": true,
   "terms": "Hello world!",
-  "performance_bar_allowed_group_id": 42
+  "performance_bar_allowed_group_id": 42,
+  "instance_statistics_visibility_private": false
 }
 ```

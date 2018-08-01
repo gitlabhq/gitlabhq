@@ -88,6 +88,8 @@ Rails.application.routes.draw do
 
     get 'ide' => 'ide#index'
     get 'ide/*vueroute' => 'ide#index', format: false
+
+    draw :instance_statistics
   end
 
   # Koding route
