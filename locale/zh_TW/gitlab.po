@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: zh-TW\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 11:17\n"
+"PO-Revision-Date: 2018-08-01 11:41\n"
 
 msgid " and"
 msgstr " 和"
@@ -623,6 +623,9 @@ msgstr "這是個已經封存的專案！其檔案庫與其其他專案資源為
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "確定要刪除此流水線排程嗎？"
+
+msgid "Are you sure you want to lose unsaved changes?"
+msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr "確定移除 %{group_name}？"
@@ -2881,6 +2884,9 @@ msgstr "檔案 (%{human_size})"
 msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
 msgstr "填寫以下的欄位，開啟 <strong>%{enable_label}</strong> 後按下 <strong>%{save_changes}</strong>"
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr "以更動說明篩選"
 
@@ -4326,6 +4332,9 @@ msgstr "找不到任何檔案"
 msgid "No issues for the selected time period."
 msgstr "選取的時間範圍中沒有議題。"
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests for the selected time period."
 msgstr "選取的時間範圍中沒有合併請求。"
 
@@ -4334,6 +4343,12 @@ msgstr "找不到合併請求"
 
 msgid "No messages were logged"
 msgstr "沒有消息被記錄"
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
+msgstr ""
 
 msgid "No public groups"
 msgstr "沒有公開群組"
@@ -5944,6 +5959,9 @@ msgstr "子群組"
 
 msgid "Submit as spam"
 msgstr "以垃圾訊息提交"
+
+msgid "Submit search"
+msgstr ""
 
 msgid "Subscribe"
 msgstr "訂閱"
