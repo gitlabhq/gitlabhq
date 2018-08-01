@@ -342,9 +342,8 @@ describe 'Merge request > User resolves diff notes and discussions', :js do
         end
       end
 
-      it 'shows jump to next discussion button, apart from the last one' do
-        expect(page).to have_selector('.discussion-reply-holder', count: 2)
-        expect(page).to have_selector('.discussion-reply-holder .discussion-next-btn', count: 1)
+      it 'shows jump to next discussion button' do
+        expect(page.all('.discussion-reply-holder', count: 2)).to all(have_selector('.discussion-next-btn'))
       end
 
       it 'displays next discussion even if hidden' do
