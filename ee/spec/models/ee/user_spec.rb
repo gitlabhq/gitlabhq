@@ -158,4 +158,64 @@ describe EE::User do
       end
     end
   end
+
+  describe '#available_custom_project_templates' do
+    let(:user) { create(:user) }
+
+    it 'returns an empty relation if group is not set' do
+      expect(user.available_custom_project_templates.empty?).to be_truthy
+    end
+
+    context 'when group with custom project templates is set' do
+      let(:group) { create(:group) }
+
+      before do
+        stub_ee_application_setting(custom_project_templates_group_id: group.id)
+      end
+
+      it 'returns an empty relation if group has no available project templates' do
+        expect(group.projects.empty?).to be true
+        expect(user.available_custom_project_templates.empty?).to be true
+      end
+
+      context 'when group has custom project templates' do
+        let!(:private_project) { create :project, :private, namespace: group, name: 'private_project' }
+        let!(:internal_project) { create :project, :internal, namespace: group, name: 'internal_project' }
+        let!(:public_project) { create :project, :public, namespace: group, name: 'public_project' }
+
+        it 'returns public projects' do
+          expect(user.available_custom_project_templates).to include public_project
+        end
+
+        context 'returns private projects if user' do
+          it 'is a member of the project' do
+            expect(user.available_custom_project_templates).not_to include private_project
+
+            private_project.add_developer(user)
+
+            expect(user.available_custom_project_templates).to include private_project
+          end
+
+          it 'is a member of the group' do
+            expect(user.available_custom_project_templates).not_to include private_project
+
+            group.add_developer(user)
+
+            expect(user.available_custom_project_templates).to include private_project
+          end
+        end
+
+        it 'returns internal projects' do
+          expect(user.available_custom_project_templates).to include internal_project
+        end
+
+        it 'allows to search available project templates by name' do
+          projects = user.available_custom_project_templates(search: 'publi')
+
+          expect(projects.count).to eq 1
+          expect(projects.first).to eq public_project
+        end
+      end
+    end
+  end
 end

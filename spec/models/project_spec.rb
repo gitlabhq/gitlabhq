@@ -1912,22 +1912,10 @@ describe Project do
     end
 
     it 'imports a project' do
-      expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
+      expect(RepositoryImportWorker).to receive(:perform_async).and_call_original
 
       expect { project.import_schedule }.to change { project.import_jid }
       expect(project.reload.import_status).to eq('finished')
-    end
-
-    context 'with a mirrored project' do
-      let(:project) { create(:project, :mirror) }
-
-      it 'calls RepositoryImportWorker and inserts in front of the mirror scheduler queue' do
-        allow_any_instance_of(described_class).to receive(:repository_exists?).and_return(false, true)
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-        expect_any_instance_of(RepositoryImportWorker).to receive(:perform).with(project.id).and_call_original
-
-        expect { project.import_schedule }.to change { project.import_jid }
-      end
     end
   end
 

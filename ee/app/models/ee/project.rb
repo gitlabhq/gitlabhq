@@ -290,7 +290,10 @@ module EE
       UpdateAllMirrorsWorker.perform_async
     end
 
+    override :add_import_job
     def add_import_job
+      return if gitlab_custom_project_template_import?
+
       if import? && !repository_exists?
         super
       elsif mirror?
@@ -517,6 +520,16 @@ module EE
     def after_import
       super
       log_geo_events
+    end
+
+    override :import?
+    def import?
+      super || gitlab_custom_project_template_import?
+    end
+
+    def gitlab_custom_project_template_import?
+      import_type == 'gitlab_custom_project_template' &&
+        ::Gitlab::CurrentSettings.custom_project_templates_enabled?
     end
 
     private

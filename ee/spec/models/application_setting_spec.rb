@@ -23,6 +23,7 @@ describe ApplicationSetting do
     it { is_expected.not_to allow_value(1.1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(-1).for(:mirror_capacity_threshold) }
     it { is_expected.not_to allow_value(subject.mirror_max_capacity + 1).for(:mirror_capacity_threshold) }
+    it { is_expected.to allow_value(nil).for(:custom_project_templates_group_id) }
 
     describe 'when additional email text is enabled' do
       before do
@@ -207,6 +208,71 @@ describe ApplicationSetting do
         aws_access_key: 'test-access-key',
         aws_secret_access_key: 'test-secret-access-key'
       )
+    end
+  end
+
+  describe 'custom project templates' do
+    let(:group) { create(:group) }
+    let(:projects) { create_list(:project, 3, namespace: group) }
+
+    before do
+      setting.update_column(:custom_project_templates_group_id, group.id)
+
+      setting.reload
+    end
+
+    context 'when custom_project_templates feature is enabled' do
+      before do
+        stub_licensed_features(custom_project_templates: true)
+      end
+
+      describe '#custom_project_templates_enabled?' do
+        it 'returns true' do
+          expect(setting.custom_project_templates_enabled?).to be_truthy
+        end
+      end
+
+      describe '#custom_project_template_id' do
+        it 'returns group id' do
+          expect(setting.custom_project_templates_group_id).to eq group.id
+        end
+      end
+
+      describe '#available_custom_project_templates' do
+        it 'returns group projects' do
+          expect(setting.available_custom_project_templates).to match_array(projects)
+        end
+
+        it 'returns an empty array if group is not set' do
+          allow(setting).to receive(:custom_project_template_id).and_return(nil)
+
+          expect(setting.available_custom_project_templates).to eq []
+        end
+      end
+    end
+
+    context 'when custom_project_templates feature is disabled' do
+      before do
+        stub_licensed_features(custom_project_templates: false)
+      end
+
+      describe '#custom_project_templates_enabled?' do
+        it 'returns false' do
+          expect(setting.custom_project_templates_enabled?).to be false
+        end
+      end
+
+      describe '#custom_project_template_id' do
+        it 'returns false' do
+          expect(setting.custom_project_templates_group_id).to be false
+        end
+      end
+
+      describe '#available_custom_project_templates' do
+        it 'returns an empty relation' do
+          expect(setting.available_custom_project_templates).to be_empty
+        end
+      end
     end
   end
 end

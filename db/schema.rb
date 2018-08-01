@@ -208,6 +208,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
     t.boolean "enforce_terms", default: false
     t.boolean "pseudonymizer_enabled", default: false, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
+    t.integer "custom_project_templates_group_id"
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -2836,6 +2837,7 @@ ActiveRecord::Schema.define(version: 20180722103201) do
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
   add_index "web_hooks", ["type"], name: "index_web_hooks_on_type", using: :btree
 
+  add_foreign_key "application_settings", "namespaces", column: "custom_project_templates_group_id", on_delete: :nullify
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
   add_foreign_key "badges", "namespaces", column: "group_id", on_delete: :cascade
