@@ -75,31 +75,27 @@
   margin: 0;
 
   .license-item {
-    line-height: $gl-padding-24;
+    line-height: $gl-padding-32;
 
-    .license-dependencies {
-      color: $gl-text-color-tertiary;
+    .license-packages {
+      font-size: $label-font-size;
     }
 
-    .btn-show-all-packages {
-      line-height: $gl-btn-line-height;
-      margin-bottom: 2px;
-    }
   }
 }
 
 .report-block-list-icon {
   display: flex;
 
-  &.failed {
+  &.failed svg {
     color: $red-500;
   }
 
-  &.success {
+  &.success svg {
     color: $green-500;
   }
 
-  &.neutral {
+  &.neutral svg {
     color: $theme-gray-700;
   }
 

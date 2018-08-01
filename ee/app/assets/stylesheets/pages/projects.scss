@@ -140,3 +140,22 @@
     border-bottom: none;
   }
 }
+
+.license-management {
+  li.list-group-item {
+    line-height: $gl-padding-32;
+  }
+
+  .dropdown-toggle {
+    min-width: $gl-padding-8 * 15;
+  }
+
+  .dropdown-item svg {
+    vertical-align: sub;
+  }
+
+  .btn-blank {
+    padding: 6px 10px;
+  }
+
+}

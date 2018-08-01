@@ -367,7 +367,7 @@ describe('mrWidgetOptions', () => {
       vm.mr.relatedLinks = {
         assignToMe: null,
         closing: `
-          <a class="close-related-link" href="#'>
+          <a class="close-related-link" href="#">
             Close
           </a>
         `,
