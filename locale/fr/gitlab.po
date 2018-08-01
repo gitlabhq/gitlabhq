@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: fr\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 22:46\n"
+"PO-Revision-Date: 2018-08-01 11:40\n"
 
 msgid " and"
 msgstr ""
@@ -650,6 +650,9 @@ msgstr "Projet archivé ! Le dépôt et les autres ressources du projet sont e
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Êtes‐vous sûr·e de vouloir supprimer ce pipeline programmé ?"
+
+msgid "Are you sure you want to lose unsaved changes?"
+msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
@@ -2912,6 +2915,9 @@ msgstr "Fichiers (%{human_size})"
 msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
 msgstr "Renseignez les champs ci‐dessous, activez <strong>%{enable_label}</strong> et appuyez sur <strong>%{save_changes}</strong>"
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr "Filtrer par message de commit"
 
@@ -4362,6 +4368,9 @@ msgstr "Aucun fichier trouvé."
 msgid "No issues for the selected time period."
 msgstr ""
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests for the selected time period."
 msgstr ""
 
@@ -4370,6 +4379,12 @@ msgstr "Aucune demande de fusion trouvée"
 
 msgid "No messages were logged"
 msgstr "Aucun message n’a été enregistré"
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
+msgstr ""
 
 msgid "No public groups"
 msgstr ""
@@ -5982,6 +5997,9 @@ msgstr "Sous‐groupes"
 
 msgid "Submit as spam"
 msgstr "Soumettre comme indésirable"
+
+msgid "Submit search"
+msgstr ""
 
 msgid "Subscribe"
 msgstr "S’abonner"
