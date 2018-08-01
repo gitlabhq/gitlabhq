@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " Status"
+msgstr ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -2605,6 +2608,9 @@ msgstr ""
 msgid "From Bitbucket"
 msgstr ""
 
+msgid "From Bitbucket Server"
+msgstr ""
+
 msgid "From FogBugz"
 msgstr ""
 
@@ -2959,6 +2965,9 @@ msgid "Import project"
 msgstr ""
 
 msgid "Import projects from Bitbucket"
+msgstr ""
+
+msgid "Import projects from Bitbucket Server"
 msgstr ""
 
 msgid "Import projects from FogBugz"
