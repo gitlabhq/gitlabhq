@@ -18,8 +18,7 @@ module Gitlab
         user_blocked: 'Counter of sign in attempts when user is blocked'
       }.freeze
 
-      def initialize(user, opts)
-        @user = user
+      def initialize(opts)
         @opts = opts
       end
 

@@ -2,7 +2,7 @@ Rails.application.configure do |config|
   Warden::Manager.after_set_user(scope: :user) do |user, auth, opts|
     Gitlab::Auth::UniqueIpsLimiter.limit_user!(user)
 
-    activity = Gitlab::Auth::Activity.new(user, opts)
+    activity = Gitlab::Auth::Activity.new(opts)
 
     case opts[:event]
     when :authentication
@@ -26,20 +26,18 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.before_failure(scope: :user) do |env, opts|
-    tracker = Gitlab::Auth::BlockedUserTracker.new(env)
-    tracker.log_blocked_user_activity! if tracker.user_blocked?
-
-    Gitlab::Auth::Activity.new(tracker.user, opts).user_authentication_failed!
+    Gitlab::Auth::Activity.new(opts).user_authentication_failed!
   end
 
-  Warden::Manager.before_logout(scope: :user) do |user_warden, auth, opts|
-    user = user_warden || auth.user
+  Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
+    user ||= auth.user
 
-    Gitlab::Auth::Activity.new(user, opts).tap do |activity|
-      activity.user_blocked! if user.blocked?
-      activity.user_session_destroyed!
+    if user.blocked?
+      Gitlab::Auth::Activity.new(opts).user_blocked!
+      BlockedUserTracker.new(user, auth).log_blocked_user_activity!
     end
 
+    Gitlab::Auth::Activity.new(opts).user_session_destroyed!
     ActiveSession.destroy(user, auth.request.session.id)
   end
 end
