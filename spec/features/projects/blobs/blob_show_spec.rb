@@ -552,4 +552,13 @@ describe 'File blob', :js do
       end
     end
   end
+
+  context 'on signed merge request' do
+    it 'displays a GPG badge' do
+      visit_blob('some-file.md', ref: 'winh-signed-merge-commit')
+
+      expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+      expect(page).to have_selector '.gpg-status-box.invalid'
+    end
+  end
 end

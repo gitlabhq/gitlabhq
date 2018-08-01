@@ -51,7 +51,8 @@ module TestEnv
     'add-pdf-text-binary'                => '79faa7b',
     'add_images_and_changes'             => '010d106',
     'update-gitlab-shell-v-6-0-1'        => '2f61d70',
-    'update-gitlab-shell-v-6-0-3'        => 'de78448'
+    'update-gitlab-shell-v-6-0-3'        => 'de78448',
+    'winh-signed-merge-commit'           => 'bd693b1'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
