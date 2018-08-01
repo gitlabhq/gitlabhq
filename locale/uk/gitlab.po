@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: uk\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 20:32\n"
+"PO-Revision-Date: 2018-08-01 11:41\n"
 
 msgid " and"
 msgstr " і"
@@ -704,6 +704,9 @@ msgstr "Архівований проект! Репозиторій та інш�
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Ви впевнені, що хочете видалити цей розклад для конвеєра?"
+
+msgid "Are you sure you want to lose unsaved changes?"
+msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
@@ -2974,6 +2977,9 @@ msgstr "Файли (%{human_size})"
 msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
 msgstr "Заповніть поля нижче, увімкніть <strong>%{enable_label}</strong> та натисніть <strong>%{save_changes}</strong>"
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr "Фільтрувати за коміт-повідомленням"
 
@@ -4434,6 +4440,9 @@ msgstr "Не знайдено жодного файлу."
 msgid "No issues for the selected time period."
 msgstr ""
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests for the selected time period."
 msgstr ""
 
@@ -4442,6 +4451,12 @@ msgstr "Не знайдено жодного запиту на злиття"
 
 msgid "No messages were logged"
 msgstr "Немає повідомлень у журналі"
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
+msgstr ""
 
 msgid "No public groups"
 msgstr ""
@@ -6057,6 +6072,9 @@ msgid "Subgroups"
 msgstr "Підгрупи"
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit search"
 msgstr ""
 
 msgid "Subscribe"
