@@ -1,0 +1,5 @@
+---
+title: Fix loading GPG status for merge requests on blob page
+merge_request: 20957
+author:
+type: fixed
