@@ -43,24 +43,21 @@ describe('Reports Store Mutations', () => {
             {
               name: 'StringHelper#concatenate when a is git and b is lab returns summary',
               execution_time: 0.0092435,
-              system_output:
-                'Failure/Error: is_expected.to eq(\'gitlab\')',
+              system_output: "Failure/Error: is_expected.to eq('gitlab')",
             },
           ],
           resolved_failures: [
             {
               name: 'StringHelper#concatenate when a is git and b is lab returns summary',
               execution_time: 0.009235,
-              system_output:
-                'Failure/Error: is_expected.to eq(\'gitlab\')',
+              system_output: "Failure/Error: is_expected.to eq('gitlab')",
             },
           ],
           existing_failures: [
             {
               name: 'StringHelper#concatenate when a is git and b is lab returns summary',
               execution_time: 1232.08,
-              system_output:
-                'Failure/Error: is_expected.to eq(\'gitlab\')',
+              system_output: "Failure/Error: is_expected.to eq('gitlab')",
             },
           ],
         },
@@ -108,16 +105,11 @@ describe('Reports Store Mutations', () => {
     beforeEach(() => {
       mutations[types.SET_ISSUE_MODAL_DATA](stateCopy, {
         issue,
-        status: 'failed',
       });
     });
 
     it('should set modal title', () => {
       expect(stateCopy.modal.title).toEqual(issue.name);
-    });
-
-    it('should set modal status', () => {
-      expect(stateCopy.modal.status).toEqual('failed');
     });
 
     it('should set modal data', () => {

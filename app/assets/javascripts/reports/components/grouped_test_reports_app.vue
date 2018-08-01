@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapGetters } from 'vuex';
+  import { mapActions, mapGetters, mapState } from 'vuex';
   import { s__ } from '~/locale';
   import { componentNames } from '~/vue_shared/components/reports/issue_body';
   import ReportSection from '~/vue_shared/components/reports/report_section.vue';
@@ -26,27 +26,29 @@
     },
     componentNames,
     computed: {
-      ...mapGetters([
+      ...mapState([
         'reports',
-        'summaryStatus',
         'isLoading',
         'hasError',
-        'summaryCounts',
-        'modalTitle',
-        'modalData',
-        'isCreatingNewIssue',
+        'summary',
       ]),
-
+      ...mapState({
+        modalTitle: state => state.modal.title || '',
+        modalData: state => state.modal.data || {},
+      }),
+      ...mapGetters([
+        'summaryStatus',
+      ]),
       groupedSummaryText() {
         if (this.isLoading) {
           return s__('Reports|Test summary results are being parsed');
         }
 
-        if (this.hasError || !this.summaryCounts) {
+        if (this.hasError) {
           return s__('Reports|Test summary failed loading results');
         }
 
-        return summaryTextBuilder(s__('Reports|Test summary'), this.summaryCounts);
+        return summaryTextBuilder(s__('Reports|Test summary'), this.summary);
       },
     },
     created() {

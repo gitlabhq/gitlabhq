@@ -1,19 +1,11 @@
-import { LOADING, ERROR, SUCCESS } from '../constants';
-
-export const reports = state => state.reports;
-export const summaryCounts = state => state.summary;
-export const isLoading = state => state.isLoading;
-export const hasError = state => state.hasError;
-export const modalTitle = state => state.modal.title || '';
-export const modalData = state => state.modal.data || {};
-export const isCreatingNewIssue = state => state.modal.isLoading;
+import { LOADING, ERROR, SUCCESS, STATUS_FAILED } from '../constants';
 
 export const summaryStatus = state => {
   if (state.isLoading) {
     return LOADING;
   }
 
-  if (state.hasError) {
+  if (state.hasError || state.status === STATUS_FAILED) {
     return ERROR;
   }
 

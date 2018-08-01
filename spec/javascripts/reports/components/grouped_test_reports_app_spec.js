@@ -49,6 +49,26 @@ describe('Grouped Test Reports App', () => {
     });
   });
 
+  describe('with 204 result', () => {
+    beforeEach(() => {
+      mock.onGet('test_results.json').reply(204, {}, {});
+      vm = mountComponent(Component, {
+        endpoint: 'test_results.json',
+      });
+    });
+
+    it('renders success summary text', done => {
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.fa-spinner')).not.toBeNull();
+        expect(vm.$el.querySelector('.js-code-text').textContent.trim()).toEqual(
+          'Test summary results are being parsed',
+        );
+
+        done();
+      }, 0);
+    });
+  });
+
   describe('with new failed result', () => {
     beforeEach(() => {
       mock.onGet('test_results.json').reply(200, newFailedTestReports, {});

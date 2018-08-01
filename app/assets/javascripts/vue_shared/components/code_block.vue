@@ -10,7 +10,7 @@ export default {
 };
 </script>
 <template>
-  <pre class="code-block build-trace-rounded">
-    <code class="bash">{{ code }}</code>
+  <pre class="code-block rounded">
+    <code class="d-block">{{ code }}</code>
   </pre>
 </template>

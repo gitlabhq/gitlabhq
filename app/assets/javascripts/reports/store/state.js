@@ -34,8 +34,6 @@ export default () => ({
   modal: {
     title: null,
 
-    status: null,
-
     data: {
       class: {
         value: null,

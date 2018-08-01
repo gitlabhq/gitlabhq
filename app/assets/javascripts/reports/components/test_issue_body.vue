@@ -21,10 +21,6 @@
     },
     methods: {
       ...mapActions(['openModal']),
-      handleIssueClick() {
-        const { issue, status, openModal } = this;
-        openModal({ issue, status });
-      },
     },
   };
 </script>
@@ -34,7 +30,7 @@
       <button
         type="button"
         class="btn-link btn-blank text-left break-link vulnerability-name-button"
-        @click="handleIssueClick()"
+        @click="openModal({ issue })"
       >
         <div
           v-if="isNew"

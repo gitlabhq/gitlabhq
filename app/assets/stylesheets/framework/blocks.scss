@@ -360,20 +360,11 @@
   white-space: pre;
   overflow-x: auto;
   font-size: 12px;
-  border-radius: 0;
   border: 0;
   padding: $grid-size;
 
   code {
     background-color: inherit;
     padding: inherit;
-  }
-
-  .bash {
-    display: block;
-  }
-
-  &.build-trace-rounded {
-    border-radius: $border-radius-base;
   }
 }

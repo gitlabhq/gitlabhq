@@ -17,7 +17,8 @@ const textBuilder = results => {
     ? n__('%d fixed test result', '%d fixed test results', resolved)
     : null;
   const totalString = total ? n__('out of %d total test', 'out of %d total tests', total) : null;
-  let resultsString;
+
+  let resultsString = s__('Reports|no changed test results');
 
   if (failed) {
     if (resolved) {
@@ -30,19 +31,17 @@ const textBuilder = results => {
     }
   } else if (resolved) {
     resultsString = resolvedString;
-  } else {
-    resultsString = s__('Reports|no changed test results');
   }
 
   return `${resultsString} ${totalString}`;
 };
 
-export const summaryTextBuilder = (name = '', results) => {
+export const summaryTextBuilder = (name = '', results = {}) => {
   const resultsString = textBuilder(results);
   return `${name} contained ${resultsString}`;
 };
 
-export const reportTextBuilder = (name = '', results) => {
+export const reportTextBuilder = (name = '', results = {}) => {
   const resultsString = textBuilder(results);
   return `${name} found ${resultsString}`;
 };

@@ -36,9 +36,9 @@
         :key="index"
         class="row prepend-top-10 append-bottom-10"
       >
-        <label class="col-sm-2 text-right font-weight-bold">
+        <strong class="col-sm-2 text-right">
           {{ field.text }}:
-        </label>
+        </strong>
 
         <div class="col-sm-10 text-secondary">
           <code-block

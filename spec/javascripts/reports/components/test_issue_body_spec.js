@@ -31,7 +31,6 @@ describe('Test Issue body', () => {
       vm.$el.querySelector('button').click();
       expect(vm.openModal).toHaveBeenCalledWith({
         issue: commonProps.issue,
-        status: commonProps.status,
       });
     });
   });

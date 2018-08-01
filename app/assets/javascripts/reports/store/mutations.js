@@ -23,11 +23,17 @@ export default {
   [types.RECEIVE_REPORTS_ERROR](state) {
     state.isLoading = false;
     state.hasError = true;
+
     state.reports = [];
+    state.summary = {
+      total: 0,
+      resolved: 0,
+      failed: 0,
+    };
+    state.status = null;
   },
   [types.SET_ISSUE_MODAL_DATA](state, payload) {
     state.modal.title = payload.issue.name;
-    state.modal.status = payload.status;
 
     Object.keys(payload.issue).forEach((key) => {
       if (Object.prototype.hasOwnProperty.call(state.modal.data, key)) {
