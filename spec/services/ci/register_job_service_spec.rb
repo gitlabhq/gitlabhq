@@ -352,7 +352,7 @@ module Ci
       end
 
       context 'runner feature set is verified' do
-        set(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline) }
 
         before do
           expect_any_instance_of(Ci::Build).to receive(:runner_required_feature_names) do
@@ -364,7 +364,7 @@ module Ci
 
         context 'when feature is missing by runner' do
           let(:params) { {} }
-          
+
           it 'does not pick the build and drops the build' do
             expect(subject).to be_nil
             expect(pending_job.reload).to be_failed
