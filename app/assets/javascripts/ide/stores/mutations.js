@@ -198,12 +198,18 @@ export default {
       : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
     entry.deleted = true;
-    state.changedFiles = state.changedFiles.concat(entry);
     parent.tree = parent.tree.filter(f => f.path !== entry.path);
+
+    if (entry.type === 'blob') {
+      state.changedFiles = state.changedFiles.concat(entry);
+    }
   },
   [types.RENAME_ENTRY](state, { path, name, entryPath = null }) {
     const oldEntry = state.entries[entryPath || path];
-    const nameRegex = new RegExp(`^${path}`);
+    const nameRegex =
+      !entryPath && oldEntry.type === 'blob'
+        ? new RegExp(`${oldEntry.name}$`)
+        : new RegExp(`^${path}`);
     const newPath = oldEntry.path.replace(nameRegex, name);
     const parentPath = oldEntry.parentPath ? oldEntry.parentPath.replace(nameRegex, name) : '';
 
@@ -220,15 +226,17 @@ export default {
       parentPath,
     };
     oldEntry.moved = true;
+    oldEntry.movedPath = newPath;
 
     const parent = parentPath
       ? state.entries[parentPath]
       : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
+    const newEntry = state.entries[newPath];
 
-    parent.tree = sortTree(parent.tree.concat(state.entries[newPath]));
+    parent.tree = sortTree(parent.tree.concat(newEntry));
 
-    if (!entryPath) {
-      state.changedFiles = state.changedFiles.concat(state.entries[newPath]);
+    if (newEntry.type === 'blob') {
+      state.changedFiles = state.changedFiles.concat(newEntry);
     }
   },
   ...projectMutations,

@@ -48,6 +48,7 @@ export const dataStructure = () => ({
   mrChange: null,
   deleted: false,
   prevPath: '',
+  movedPath: '',
   moved: false,
 });
 

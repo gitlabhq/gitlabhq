@@ -186,8 +186,14 @@ export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
 };
 
 export const deleteEntry = ({ commit, dispatch, state }, path) => {
+  const entry = state.entries[path];
   dispatch('burstUnusedSeal');
-  dispatch('closeFile', state.entries[path]);
+  dispatch('closeFile', entry);
+
+  if (entry.type === 'tree') {
+    entry.tree.forEach(f => dispatch('deleteEntry', f.path));
+  }
+
   commit(types.DELETE_ENTRY, path);
 };
 

@@ -89,3 +89,13 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
       resolve();
     }
   });
+
+export const restoreTree = ({ dispatch, commit, state }, path) => {
+  const entry = state.entries[path];
+
+  commit(types.RESTORE_TREE, path);
+
+  if (entry.parentPath) {
+    dispatch('restoreTree', entry.parentPath);
+  }
+};
