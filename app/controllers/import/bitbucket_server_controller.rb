@@ -81,7 +81,7 @@ class Import::BitbucketServerController < Import::BaseController
     @project_key = params[:project]
     @repo_slug = params[:repository]
 
-    return render_validation_error('Missing project key' ) unless @project_key.present? && @repo_slug.present?
+    return render_validation_error('Missing project key') unless @project_key.present? && @repo_slug.present?
     return render_validation_error('Missing repository slug') unless @repo_slug.present?
     return render_validation_error('Invalid project key') unless @project_key =~ VALID_BITBUCKET_CHARS
     return render_validation_error('Invalid repository slug') unless @repo_slug =~ VALID_BITBUCKET_CHARS
