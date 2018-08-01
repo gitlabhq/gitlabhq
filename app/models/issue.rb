@@ -12,6 +12,7 @@ class Issue < ActiveRecord::Base
   include TimeTrackable
   include ThrottledTouch
   include IgnorableColumn
+  include LabelEventable
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
