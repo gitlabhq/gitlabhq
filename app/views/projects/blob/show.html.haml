@@ -3,7 +3,7 @@
 
 - page_title @blob.path, @ref
 
-- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.path, project_id: @project.path, id: @ref)
+- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.path, project_id: @project.path, id: @last_commit)
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
 %div{ class: container_class }
