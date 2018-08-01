@@ -27,13 +27,13 @@ module QA
           end
 
           # The rebase button is enabled via JS
-          wait.sleep(reload: false) do
+          wait.sleep do
             !first(element_selector_css(:mr_rebase_button)).disabled?
           end
 
           click_element :mr_rebase_button
 
-          wait.sleep(reload: false) do
+          wait.sleep do
             has_text?('Fast-forward merge without a merge commit')
           end
         end
@@ -55,13 +55,13 @@ module QA
           end
 
           # The merge button is enabled via JS
-          wait.sleep(reload: false) do
+          wait.sleep do
             !first(element_selector_css(:merge_button)).disabled?
           end
 
           click_element :merge_button
 
-          wait.sleep(reload: false) do
+          wait.sleep do
             has_text?('The changes were merged into')
           end
         end
@@ -73,7 +73,7 @@ module QA
           end
 
           # The squash checkbox is enabled via JS
-          wait.sleep(reload: false) do
+          wait.sleep do
             !first(element_selector_css(:squash_checkbox)).disabled?
           end
 

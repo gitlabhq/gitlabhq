@@ -8,7 +8,7 @@ module QA
         def expand_section(element_name)
           within_element(element_name) do
             # Because it is possible to click the button before the JS toggle code is bound
-            wait.sleep(reload: false) do
+            wait.sleep do
               click_button 'Expand' unless first('button', text: 'Collapse')
 
               page.has_content?('Collapse')

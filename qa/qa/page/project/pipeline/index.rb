@@ -8,7 +8,7 @@ module QA::Page
       def go_to_latest_pipeline
         css = '.js-pipeline-url-link'
 
-        link = wait.sleep(reload: false) do
+        link = wait.sleep do
           first(css)
         end
 

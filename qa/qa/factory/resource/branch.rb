@@ -63,7 +63,7 @@ module QA
                 page.allow_no_one_to_merge
               end
 
-              page.wait.sleep(reload: false) do
+              page.wait.sleep do
                 !page.first('.btn-create').disabled?
               end
 

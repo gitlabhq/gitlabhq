@@ -52,7 +52,7 @@ module QA
             css = "li[data-value='new-#{kind}']"
 
             # May need to click again because it is possible to click the button quicker than the JS is bound
-            wait.sleep(reload: false) do
+            wait.sleep do
               find('.dropdown-toggle').click
 
               page.has_css?(css)

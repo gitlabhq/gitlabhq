@@ -299,7 +299,7 @@ describe Gitlab::GitalyClient, skip_gitaly_mock: true do
       end
 
       it 'returns expected values' do
-        expect(described_class.default_timeout).to be(55)
+        expect(described_class.DEFAULT_TIMEOUT).to be(55)
         expect(described_class.medium_timeout).to be(30)
         expect(described_class.fast_timeout).to be(10)
       end

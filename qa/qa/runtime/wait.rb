@@ -2,50 +2,44 @@ module QA
   module Runtime
     module Wait
       class Timer
+        attr_reader :end_time, :timeout
         TimeoutError = Class.new(StandardError)
 
-        def initialize(timeout: nil)
+        def initialize(timeout: Wait::DEFAULT_TIMEOUT)
+          @timeout = timeout
           @end_time = current_time + timeout if timeout
-          @remaining_time = @end_time - current_time if @end_time
+          @remaining_time = @end_time - current_time if end_time
         end
 
-        def wait(timeout, &block)
-          end_time = @end_time || current_time + timeout
+        def wait(&block)
           loop do
             yield(block)
-            @remaining_time = end_time - current_time
-            return if @remaining_time < 0
+            return if remaining_time + timeout < 0
           end
           raise TimeoutError, "timed out after #{timeout} seconds"
         end
 
         def remaining_time
-          @end_time - current_time
+          end_time - current_time
         end
 
         private
 
-        if defined?(Process::CLOCK_MONOTONIC)
-          def current_time
-            Process.clock_gettime(Process::CLOCK_MONOTONIC)
-          end
-        else
-          def current_time
-            ::Time.now.to_f
-          end
+        def current_time
+          ::Time.now.to_f
         end
       end
 
       class << self
-        @default_timeout = 10 # seconds
-        @default_interval = 1 # seconds
-        @reload = false
+        DEFAULT_TIMEOUT = 10 # seconds
+        DEFAULT_INTERVAL = 1 # seconds
+        RELOAD = false
 
         # hard sleep
         def sleep(timeout: nil, interval: nil, reload: false)
-          interval ||= @default_interval
-          timeout ||= @default_timeout
-          reload ||= @reload
+          interval ||= DEFAULT_INTERVAL
+          timeout ||= DEFAULT_TIMEOUT
+          reload ||= RELOAD
 
           start = Time.now
 
@@ -62,7 +56,7 @@ module QA
         end
 
         def until(timeout: nil, interval: nil)
-          timeout ||= @default_timeout
+          timeout ||= DEFAULT_TIMEOUT
           run_with_timer(timeout, interval) do
             result = yield
             break result if result
@@ -76,7 +70,7 @@ module QA
 
           timer.wait(timeout) do
             yield block
-            Kernel.sleep interval || @default_interval
+            Kernel.sleep interval || DEFAULT_INTERVAL
           end
         end
       end

@@ -57,7 +57,7 @@ module QA
           private
 
           def within_project_deploy_keys
-            wait.sleep(reload: false) do
+            wait.sleep do
               has_css?(element_selector_css(:project_deploy_keys))
             end
 
