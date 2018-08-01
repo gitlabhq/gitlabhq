@@ -173,24 +173,3 @@ export function trimFirstCharOfLineContent(line = {}) {
 
   return parsedLine;
 }
-
-export function getDiffRefsByLineCode(diffFiles) {
-  return diffFiles.reduce((acc, diffFile) => {
-    const { baseSha, headSha, startSha } = diffFile.diffRefs;
-    const { newPath, oldPath } = diffFile;
-
-    // We can only use highlightedDiffLines to create the map of diff lines because
-    // highlightedDiffLines will also include every parallel diff line in it.
-    if (diffFile.highlightedDiffLines) {
-      diffFile.highlightedDiffLines.forEach(line => {
-        const { lineCode, oldLine, newLine } = line;
-
-        if (lineCode) {
-          acc[lineCode] = { baseSha, headSha, startSha, newPath, oldPath, oldLine, newLine };
-        }
-      });
-    }
-
-    return acc;
-  }, {});
-}

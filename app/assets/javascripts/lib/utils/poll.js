@@ -63,7 +63,6 @@ export default class Poll {
     const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
     if (pollInterval > 0 && successCodes.indexOf(response.status) !== -1 && this.canPoll) {
-      clearTimeout(this.timeoutID);
       this.timeoutID = setTimeout(() => {
         this.makeRequest();
       }, pollInterval);

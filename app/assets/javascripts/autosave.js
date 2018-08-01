@@ -53,8 +53,4 @@ export default class Autosave {
 
     return window.localStorage.removeItem(this.key);
   }
-
-  dispose() {
-    this.field.off('input');
-  }
 }

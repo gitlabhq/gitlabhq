@@ -12,17 +12,6 @@ export default {
       head_sha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
     },
   },
-  original_position: {
-    formatter: {
-      old_line: null,
-      new_line: 2,
-      old_path: 'CHANGELOG',
-      new_path: 'CHANGELOG',
-      base_sha: 'e63f41fe459e62e1228fcef60d7189127aeba95a',
-      start_sha: 'd9eaefe5a676b820c57ff18cf5b68316025f7962',
-      head_sha: 'c48ee0d1bf3b30453f5b32250ce03134beaa6d13',
-    },
-  },
   line_code: '1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2',
   expanded: true,
   notes: [
