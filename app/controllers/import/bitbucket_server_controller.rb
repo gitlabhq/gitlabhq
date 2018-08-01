@@ -26,9 +26,7 @@ class Import::BitbucketServerController < Import::BaseController
     end
 
     project_name = params[:new_name].presence || repo.name
-
-    repo_owner = current_user.username
-    namespace_path = params[:new_namespace].presence || repo_owner
+    namespace_path = params[:new_namespace].presence || current_user.username
     target_namespace = find_or_create_namespace(namespace_path, current_user)
 
     if current_user.can?(:create_projects, target_namespace)
