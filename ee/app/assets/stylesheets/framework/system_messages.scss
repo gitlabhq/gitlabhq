@@ -63,48 +63,48 @@
       height: calc(100vh - #{$header-height + $system-header-height});
     }
   }
+
+  // Performance Bar
+  // System Header
+  &.with-performance-bar {
+    // main navigation
+    header.navbar-gitlab {
+      top: $performance-bar-height + $system-header-height;
+    }
+
+    .layout-page {
+      margin-top: $header-height + $performance-bar-height + $system-header-height;
+    }
+
+    // left sidebar eg: project page
+    // right sidebar eg: MR page
+    .nav-sidebar,
+    .right-sidebar {
+      top: $header-height + $performance-bar-height + $system-header-height;
+    }
+
+    // IDE adjustments
+
+    // body element on WebIDe view
+    .ide.nav-only {
+      padding-top: $header-height + $performance-bar-height + $system-header-height;
+    }
+  }
 }
 
 // System Footer
 .with-system-footer {
   // left sidebar eg: project page
   // right sidebar eg: mr page
-  .nav-sidebar, 
-  .right-sidebar, 
+  .nav-sidebar,
+  .right-sidebar,
   // web IDE status bar
   .ide-status-bar,
   // navless pages' footer eg: login page
   // navless pages' footer border eg: login page
-  &.devise-layout-html body .footer-container, 
+  &.devise-layout-html body .footer-container,
   &.devise-layout-html body hr.footer-fixed {
     bottom: $system-footer-height;
-  }
-}
-
-// Performance Bar
-// System Header
-.with-system-header.with-performance-bar {
-  // main navigation
-  header.navbar-gitlab {
-    top: $performance-bar-height + $system-header-height;
-  }
-
-  .layout-page {
-    margin-top: $header-height + $performance-bar-height + $system-header-height;
-  }
-
-  // left sidebar eg: project page
-  // right sidebar eg: MR page
-  .nav-sidebar,
-  .right-sidebar {
-    top: $header-height + $performance-bar-height + $system-header-height;
-  }
-
-  // IDE adjustments
-
-  // body element on WebIDe view
-  .ide.nav-only {
-    padding-top: $header-height + $performance-bar-height + $system-header-height;
   }
 }
 

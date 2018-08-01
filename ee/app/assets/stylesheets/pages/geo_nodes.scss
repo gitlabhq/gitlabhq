@@ -60,17 +60,13 @@
   .status-icon-failure {
     fill: $gl-danger;
   }
-}
 
-.geo-node-item {
   .card-body {
     padding: 0;
 
     .node-detail-section {
       padding: $gl-padding 0;
-    }
 
-    .node-detail-section {
       &.sync-section,
       &.verification-section,
       &.other-section {
