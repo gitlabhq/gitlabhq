@@ -160,7 +160,10 @@ class Projects::LabelsController < Projects::ApplicationController
 
   def find_labels
     @available_labels ||=
-      LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: params[:include_ancestor_groups]).execute
+      LabelsFinder.new(current_user,
+                       project_id: @project.id,
+                       include_ancestor_groups: params[:include_ancestor_groups],
+                       search: params[:search]).execute
   end
 
   def authorize_admin_labels!

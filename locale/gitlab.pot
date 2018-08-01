@@ -2522,6 +2522,9 @@ msgstr ""
 msgid "Files (%{human_size})"
 msgstr ""
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr ""
 
@@ -3562,10 +3565,19 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
@@ -4899,6 +4911,9 @@ msgid "Subgroups"
 msgstr ""
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit search"
 msgstr ""
 
 msgid "Subscribe"
