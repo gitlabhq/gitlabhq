@@ -394,7 +394,8 @@ module QuickActions
     end
     params ':emoji:'
     condition do
-      issuable.persisted?
+      issuable.is_a?(Issuable) &&
+        issuable.persisted?
     end
     parse_params do |emoji_param|
       match = emoji_param.match(Banzai::Filter::EmojiFilter.emoji_pattern)
