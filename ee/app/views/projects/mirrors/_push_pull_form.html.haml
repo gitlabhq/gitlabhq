@@ -17,7 +17,7 @@
 
     .form-group
       = label_tag :password, _('Password'), class: 'label-bold'
-      = text_field_tag :password, '', class: 'form-control js-password'
+      = text_field_tag :password, '', type: 'password', class: 'form-control js-password'
 
 - if can_pull
   %template.js-pull-mirrors-form
