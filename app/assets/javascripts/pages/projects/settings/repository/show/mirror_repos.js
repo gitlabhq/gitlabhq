@@ -4,7 +4,7 @@ import { __ } from '~/locale';
 import Flash from '~/flash';
 import axios from '~/lib/utils/axios_utils';
 
-export default class PushPull {
+export default class MirrorRepos {
   constructor(container) {
     this.$container = $(container);
     this.$form = $('.js-mirror-form', this.$container);

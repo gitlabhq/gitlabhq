@@ -31,7 +31,7 @@
 
           = render_if_exists 'projects/mirrors/direction_dropdown', options: options
 
-          = render 'projects/mirrors/push_pull_form', can_push: can_push, can_pull: can_pull, f: f
+          = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
 
           .form-check.append-bottom-10
             = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'

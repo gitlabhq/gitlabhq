@@ -1,10 +1,10 @@
 import $ from 'jquery';
 import { __ } from '~/locale';
 import Flash from '~/flash';
-import PushPull from '~/pages/projects/settings/repository/show/push_pull';
+import MirrorRepos from '~/pages/projects/settings/repository/show/mirror_repos';
 import MirrorPull from 'ee/mirrors/mirror_pull';
 
-export default class EEPushPull extends PushPull {
+export default class EEMirrorRepos extends MirrorRepos {
   constructor(...args) {
     super(...args);
 

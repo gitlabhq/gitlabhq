@@ -1,9 +1,9 @@
 import initForm from '../form';
-import PushPull from './push_pull';
+import MirrorRepos from './mirror_repos';
 
 document.addEventListener('DOMContentLoaded', () => {
   initForm();
 
-  const pushPullContainer = document.querySelector('.js-mirror-settings');
-  if (pushPullContainer) new PushPull(pushPullContainer).init();
+  const mirrorReposContainer = document.querySelector('.js-mirror-settings');
+  if (mirrorReposContainer) new MirrorRepos(mirrorReposContainer).init();
 });
