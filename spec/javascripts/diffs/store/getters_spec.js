@@ -2,7 +2,6 @@ import * as getters from '~/diffs/store/getters';
 import state from '~/diffs/store/modules/diff_state';
 import { PARALLEL_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
 import discussion from '../mock_data/diff_discussions';
-import diffFile from '../mock_data/diff_file';
 
 describe('Diffs Module Getters', () => {
   let localState;
@@ -220,40 +219,6 @@ describe('Diffs Module Getters', () => {
     it('returns null if no matching file is found', () => {
       localState.diffFiles = [];
       expect(getters.getDiffFileByHash(localState)('123')).toBeUndefined();
-    });
-  });
-
-  describe('discussionsByLineCode', () => {
-    let mockState;
-
-    beforeEach(() => {
-      mockState = { diffFiles: [diffFile] };
-    });
-
-    it('should return a map of diff lines with their line codes', () => {
-      const mockGetters = { discussions: [discussionMock] };
-
-      const map = getters.discussionsByLineCode(mockState, {}, {}, mockGetters);
-      expect(map['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2']).toBeDefined();
-      expect(Object.keys(map).length).toEqual(1);
-    });
-
-    it('should have the diff discussion on the map if the original position matches', () => {
-      discussionMock.position.formatter.base_sha = 'ff9200';
-      const mockGetters = { discussions: [discussionMock] };
-
-      const map = getters.discussionsByLineCode(mockState, {}, {}, mockGetters);
-      expect(map['1c497fbb3a46b78edf04cc2a2fa33f67e3ffbe2a_1_2']).toBeDefined();
-      expect(Object.keys(map).length).toEqual(1);
-    });
-
-    it('should not add an outdated diff discussion to the returned map', () => {
-      discussionMock.position.formatter.base_sha = 'ff9200';
-      discussionMock.original_position.formatter.base_sha = 'ff9200';
-      const mockGetters = { discussions: [discussionMock] };
-
-      const map = getters.discussionsByLineCode(mockState, {}, {}, mockGetters);
-      expect(Object.keys(map).length).toEqual(0);
     });
   });
 });

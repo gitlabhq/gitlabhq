@@ -21,11 +21,8 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', [
-      'commitId',
-      'singleDiscussionByLineCode',
-      'shouldRenderParallelCommentRow',
-    ]),
+    ...mapGetters('diffs', ['commitId']),
+    ...mapGetters(['discussionsByLineCode']),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
@@ -55,6 +52,32 @@ export default {
       return window.gon.user_color_scheme;
     },
   },
+  methods: {
+    shouldRenderCommentRow(line) {
+      const leftLineCode = line.left.lineCode;
+      const rightLineCode = line.right.lineCode;
+      const discussions = this.discussionsByLineCode;
+      const leftDiscussions = discussions[leftLineCode];
+      const rightDiscussions = discussions[rightLineCode];
+      const hasDiscussion = leftDiscussions || rightDiscussions;
+
+      const hasExpandedDiscussionOnLeft = leftDiscussions
+        ? leftDiscussions.every(discussion => discussion.expanded)
+        : false;
+      const hasExpandedDiscussionOnRight = rightDiscussions
+        ? rightDiscussions.every(discussion => discussion.expanded)
+        : false;
+
+      if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
+        return true;
+      }
+
+      const hasCommentFormOnLeft = this.diffLineCommentForms[leftLineCode];
+      const hasCommentFormOnRight = this.diffLineCommentForms[rightLineCode];
+
+      return hasCommentFormOnLeft || hasCommentFormOnRight;
+    },
+  },
 };
 </script>
 
@@ -75,17 +98,13 @@ export default {
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
             :key="index"
-            :left-discussions="singleDiscussionByLineCode(line.left.lineCode)"
-            :right-discussions="singleDiscussionByLineCode(line.right.lineCode)"
           />
           <parallel-diff-comment-row
-            v-if="shouldRenderParallelCommentRow(line)"
+            v-if="shouldRenderCommentRow(line)"
             :key="`dcr-${index}`"
             :line="line"
             :diff-file-hash="diffFile.fileHash"
             :line-index="index"
-            :left-discussions="singleDiscussionByLineCode(line.left.lineCode)"
-            :right-discussions="singleDiscussionByLineCode(line.right.lineCode)"
           />
         </template>
       </tbody>
