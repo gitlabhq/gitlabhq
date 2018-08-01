@@ -69,6 +69,15 @@ describe 'gitlab:cleanup rake tasks' do
   end
 
   describe 'cleanup:project_uploads' do
+    let!(:logger) { double(:logger) }
+
+    before do
+      expect(main_object).to receive(:logger).and_return(logger).at_least(1).times
+
+      allow(logger).to receive(:info).at_least(1).times
+      allow(logger).to receive(:debug).at_least(1).times
+    end
+
     shared_examples_for 'moves the file' do
       context 'with DRY_RUN disabled' do
         before do
@@ -86,8 +95,8 @@ describe 'gitlab:cleanup rake tasks' do
         end
 
         it 'logs action as done' do
-          expect(Rails.logger).to receive(:info).twice
-          expect(Rails.logger).to receive(:info).with("Did #{action}")
+          expect(logger).to receive(:info).with("Looking for orphaned project uploads to clean up...")
+          expect(logger).to receive(:info).with("Did #{action}")
 
           run_rake_task('gitlab:cleanup:project_uploads')
         end
@@ -105,9 +114,9 @@ describe 'gitlab:cleanup rake tasks' do
         end
 
         it 'logs action as able to be done' do
-          expect(Rails.logger).to receive(:info).twice
-          expect(Rails.logger).to receive(:info).with("Can #{action}")
-          expect(Rails.logger).to receive(:info).with("\e[33mTo clean up these files run this command with DRY_RUN=false\e[0m")
+          expect(logger).to receive(:info).with("Looking for orphaned project uploads to clean up. Dry run...")
+          expect(logger).to receive(:info).with("Can #{action}")
+          expect(logger).to receive(:info).with(/To clean up these files run this command with DRY_RUN=false/)
 
           run_rake_task('gitlab:cleanup:project_uploads')
         end
@@ -181,6 +190,8 @@ describe 'gitlab:cleanup rake tasks' do
 
           before do
             orphaned.model.delete
+
+            expect(logger).to receive(:error).with("undefined method `hashed_storage?' for nil:NilClass")
           end
 
           it_behaves_like 'moves the file to lost and found'
@@ -269,7 +280,7 @@ describe 'gitlab:cleanup rake tasks' do
         tracked = create(:upload, :issuable_upload, :with_file, model: build(:project, :legacy_storage))
         tracked_path = tracked.absolute_path
 
-        expect(Rails.logger).not_to receive(:info).with(/move|fix/i)
+        expect(logger).not_to receive(:info).with(/move|fix/i)
         expect(File.exist?(tracked_path)).to be_truthy
 
         stub_env('DRY_RUN', 'false')
@@ -289,7 +300,7 @@ describe 'gitlab:cleanup rake tasks' do
 
         before do
           stub_env('DRY_RUN', 'false')
-          expect(Rails.logger).not_to receive(:info).with(/move|fix/i)
+          expect(logger).not_to receive(:info).with(/move|fix/i)
         end
 
         it 'does not move even an orphan file' do
@@ -317,7 +328,7 @@ describe 'gitlab:cleanup rake tasks' do
         paths << orphaned3.absolute_path
         Upload.delete_all
 
-        expect(Rails.logger).not_to receive(:info).with(/move|fix/i)
+        expect(logger).not_to receive(:info).with(/move|fix/i)
         paths.each do |path|
           expect(File.exist?(path)).to be_truthy
         end
@@ -336,7 +347,7 @@ describe 'gitlab:cleanup rake tasks' do
         FileUtils.mkdir_p(File.dirname(path))
         FileUtils.touch(path)
 
-        expect(Rails.logger).not_to receive(:info).with(/move|fix/i)
+        expect(logger).not_to receive(:info).with(/move|fix/i)
         expect(File.exist?(path)).to be_truthy
 
         run_rake_task('gitlab:cleanup:project_uploads')
