@@ -31,7 +31,9 @@
       .note-header
         .note-header-info
           %a{ href: user_path(note.author) }
-            %span.note-header-author-name= sanitize(note.author.name)
+            %span.note-header-author-name
+              = sanitize(note.author.name)
+            = user_status(note.author)
             %span.note-headline-light
               = note.author.to_reference
           %span.note-headline-light

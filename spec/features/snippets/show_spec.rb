@@ -155,4 +155,12 @@ describe 'Snippet', :js do
       end
     end
   end
+
+  it_behaves_like 'showing user status' do
+    let(:file_name) { 'popen.rb' }
+    let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
+    let(:user_with_status) { snippet.author }
+
+    subject { visit snippet_path(snippet) }
+  end
 end

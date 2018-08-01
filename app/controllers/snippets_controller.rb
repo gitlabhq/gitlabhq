@@ -95,7 +95,7 @@ class SnippetsController < ApplicationController
   protected
 
   def snippet
-    @snippet ||= PersonalSnippet.find_by(id: params[:id])
+    @snippet ||= PersonalSnippet.inc_relations_for_view.find_by(id: params[:id])
   end
 
   alias_method :awardable, :snippet

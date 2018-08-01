@@ -16,6 +16,7 @@ class UserPolicy < BasePolicy
   rule { ~subject_ghost & (user_is_self | admin) }.policy do
     enable :destroy_user
     enable :update_user
+    enable :update_user_status
   end
 
   rule { default }.enable :read_user_profile

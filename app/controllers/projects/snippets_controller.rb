@@ -88,7 +88,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   protected
 
   def snippet
-    @snippet ||= @project.snippets.find(params[:id])
+    @snippet ||= @project.snippets.inc_relations_for_view.find(params[:id])
   end
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

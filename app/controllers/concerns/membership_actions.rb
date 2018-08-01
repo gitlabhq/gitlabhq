@@ -1,4 +1,5 @@
 module MembershipActions
+  include MembersPresentation
   extend ActiveSupport::Concern
 
   def create
@@ -20,6 +21,7 @@ module MembershipActions
       .execute(member)
       .present(current_user: current_user)
 
+    present_members([member])
     respond_to do |format|
       format.js { render 'shared/members/update', locals: { member: member } }
     end

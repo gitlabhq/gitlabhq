@@ -22,7 +22,9 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html  { render }
+      format.html  do
+        render
+      end
       format.diff  do
         send_git_diff(@project.repository, @commit.diff_refs)
       end
@@ -124,7 +126,10 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit_by(oid: params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+      # preload author and their status for rendering
+      commit&.author&.status
+    end
   end
 
   def define_commit_vars
