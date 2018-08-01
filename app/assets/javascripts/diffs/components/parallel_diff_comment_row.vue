@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -21,51 +21,48 @@ export default {
       type: Number,
       required: true,
     },
-    leftDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    rightDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
+    ...mapGetters(['discussionsByLineCode']),
     leftLineCode() {
       return this.line.left.lineCode;
     },
     rightLineCode() {
       return this.line.right.lineCode;
     },
+    hasDiscussion() {
+      const discussions = this.discussionsByLineCode;
+
+      return discussions[this.leftLineCode] || discussions[this.rightLineCode];
+    },
     hasExpandedDiscussionOnLeft() {
-      const discussions = this.leftDiscussions;
+      const discussions = this.discussionsByLineCode[this.leftLineCode];
+
       return discussions ? discussions.every(discussion => discussion.expanded) : false;
     },
     hasExpandedDiscussionOnRight() {
-      const discussions = this.rightDiscussions;
+      const discussions = this.discussionsByLineCode[this.rightLineCode];
+
       return discussions ? discussions.every(discussion => discussion.expanded) : false;
     },
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
     shouldRenderDiscussionsOnLeft() {
-      return this.leftDiscussions && this.hasExpandedDiscussionOnLeft;
+      return this.discussionsByLineCode[this.leftLineCode] && this.hasExpandedDiscussionOnLeft;
     },
     shouldRenderDiscussionsOnRight() {
-      return this.rightDiscussions && this.hasExpandedDiscussionOnRight && this.line.right.type;
-    },
-    showRightSideCommentForm() {
-      return this.line.right.type && this.diffLineCommentForms[this.rightLineCode];
+      return (
+        this.discussionsByLineCode[this.rightLineCode] &&
+        this.hasExpandedDiscussionOnRight &&
+        this.line.right.type
+      );
     },
     className() {
-      return this.leftDiscussions.length > 0 || this.rightDiscussions.length > 0
-        ? ''
-        : 'js-temp-notes-holder';
+      return this.hasDiscussion ? '' : 'js-temp-notes-holder';
     },
   },
 };
@@ -83,12 +80,13 @@ export default {
         class="content"
       >
         <diff-discussions
-          v-if="leftDiscussions.length"
-          :discussions="leftDiscussions"
+          v-if="discussionsByLineCode[leftLineCode].length"
+          :discussions="discussionsByLineCode[leftLineCode]"
         />
       </div>
       <diff-line-note-form
-        v-if="diffLineCommentForms[leftLineCode]"
+        v-if="diffLineCommentForms[leftLineCode] &&
+        diffLineCommentForms[leftLineCode]"
         :diff-file-hash="diffFileHash"
         :line="line.left"
         :note-target-line="line.left"
@@ -102,12 +100,13 @@ export default {
         class="content"
       >
         <diff-discussions
-          v-if="rightDiscussions.length"
-          :discussions="rightDiscussions"
+          v-if="discussionsByLineCode[rightLineCode].length"
+          :discussions="discussionsByLineCode[rightLineCode]"
         />
       </div>
       <diff-line-note-form
-        v-if="showRightSideCommentForm"
+        v-if="diffLineCommentForms[rightLineCode] &&
+        diffLineCommentForms[rightLineCode] && line.right.type"
         :diff-file-hash="diffFileHash"
         :line="line.right"
         :note-target-line="line.right"

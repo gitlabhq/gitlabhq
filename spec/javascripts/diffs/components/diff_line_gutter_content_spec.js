@@ -18,12 +18,10 @@ describe('DiffLineGutterContent', () => {
   };
   const setDiscussions = component => {
     component.$store.dispatch('setInitialNotes', getDiscussionsMockData());
-    component.$store.commit('diffs/SET_DIFF_DATA', { diffFiles: [getDiffFileMock()] });
   };
 
   const resetDiscussions = component => {
     component.$store.dispatch('setInitialNotes', []);
-    component.$store.commit('diffs/SET_DIFF_DATA', {});
   };
 
   describe('computed', () => {
@@ -50,11 +48,7 @@ describe('DiffLineGutterContent', () => {
 
       it('should return discussions for the given lineCode', () => {
         const { lineCode } = getDiffFileMock().highlightedDiffLines[1];
-        const component = createComponent({
-          lineCode,
-          showCommentButton: true,
-          discussions: getDiscussionsMockData(),
-        });
+        const component = createComponent({ lineCode, showCommentButton: true });
 
         setDiscussions(component);
 
