@@ -1,0 +1,5 @@
+---
+title: Geo log cursor gap tracking performance improvements
+merge_request: 6754
+author:
+type: performance
