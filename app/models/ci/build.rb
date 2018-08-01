@@ -584,12 +584,12 @@ module Ci
     end
 
     def has_valid_build_dependencies?
-      return true unless Feature.enabled?('ci_disable_validates_dependencies')
+      return true if Feature.enabled?('ci_disable_validates_dependencies')
 
-      dependencies.all?(&:is_valid_dependency?)
+      dependencies.all?(&:valid_dependency?)
     end
 
-    def is_valid_dependency?
+    def valid_dependency?
       return false if artifacts_expired?
       return false if erased?
 
