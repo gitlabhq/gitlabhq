@@ -4,8 +4,11 @@
 # https://gitlab.com/gitlab-org/gitlab-ce/issues/48483
 module ResourceEvents
   class ChangeLabelsService
+<<<<<<< HEAD
     prepend EE::ResourceEvents::ChangeLabelsService
 
+=======
+>>>>>>> upstream/master
     attr_reader :resource, :user
 
     def initialize(resource, user)

@@ -35,16 +35,21 @@ module AtomicInternalId
 
       define_method("ensure_#{scope}_#{column}!") do
         scope_value = association(scope).reader
+        value = read_attribute(column)
 
-        if read_attribute(column).blank? && scope_value
-          scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
-          usage = self.class.table_name.to_sym
+        return value unless scope_value
 
-          new_iid = InternalId.generate_next(self, scope_attrs, usage, init)
-          write_attribute(column, new_iid)
+        scope_attrs = { scope_value.class.table_name.singularize.to_sym => scope_value }
+        usage = self.class.table_name.to_sym
+
+        if value.present?
+          InternalId.track_greatest(self, scope_attrs, usage, value, init)
+        else
+          value = InternalId.generate_next(self, scope_attrs, usage, init)
+          write_attribute(column, value)
         end
 
-        read_attribute(column)
+        value
       end
     end
   end

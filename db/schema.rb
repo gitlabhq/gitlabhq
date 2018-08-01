@@ -2363,13 +2363,19 @@ ActiveRecord::Schema.define(version: 20180726172057) do
     t.integer "action", null: false
     t.integer "issue_id"
     t.integer "merge_request_id"
+<<<<<<< HEAD
     t.integer "epic_id"
+=======
+>>>>>>> upstream/master
     t.integer "label_id"
     t.integer "user_id"
     t.datetime_with_timezone "created_at", null: false
   end
 
+<<<<<<< HEAD
   add_index "resource_label_events", ["epic_id"], name: "index_resource_label_events_on_epic_id", using: :btree
+=======
+>>>>>>> upstream/master
   add_index "resource_label_events", ["issue_id"], name: "index_resource_label_events_on_issue_id", using: :btree
   add_index "resource_label_events", ["label_id"], name: "index_resource_label_events_on_label_id", using: :btree
   add_index "resource_label_events", ["merge_request_id"], name: "index_resource_label_events_on_merge_request_id", using: :btree
@@ -3049,13 +3055,20 @@ ActiveRecord::Schema.define(version: 20180726172057) do
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
+<<<<<<< HEAD
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "resource_label_events", "epics", on_delete: :cascade
+=======
+  add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
+>>>>>>> upstream/master
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify
   add_foreign_key "resource_label_events", "merge_requests", on_delete: :cascade
   add_foreign_key "resource_label_events", "users", on_delete: :nullify
+<<<<<<< HEAD
   add_foreign_key "saml_providers", "namespaces", column: "group_id", on_delete: :cascade
+=======
+>>>>>>> upstream/master
   add_foreign_key "services", "projects", name: "fk_71cce407f9", on_delete: :cascade
   add_foreign_key "slack_integrations", "services", on_delete: :cascade
   add_foreign_key "snippets", "projects", name: "fk_be41fd4bb7", on_delete: :cascade

@@ -5,7 +5,10 @@
 # The latter will under the hood just import an archive supplied by GitLab.
 module Projects
   class GitlabProjectsImportService
+<<<<<<< HEAD
     prepend ::EE::Projects::GitlabProjectsImportService
+=======
+>>>>>>> upstream/master
     include Gitlab::Utils::StrongMemoize
     include Gitlab::TemplateHelper
 

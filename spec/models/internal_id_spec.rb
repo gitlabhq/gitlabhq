@@ -79,6 +79,46 @@ describe InternalId do
     end
   end
 
+  describe '.track_greatest' do
+    let(:value) { 9001 }
+    subject { described_class.track_greatest(issue, scope, usage, value, init) }
+
+    context 'in the absence of a record' do
+      it 'creates a record if not yet present' do
+        expect { subject }.to change { described_class.count }.from(0).to(1)
+      end
+    end
+
+    it 'stores record attributes' do
+      subject
+
+      described_class.first.tap do |record|
+        expect(record.project).to eq(project)
+        expect(record.usage).to eq(usage.to_s)
+        expect(record.last_value).to eq(value)
+      end
+    end
+
+    context 'with existing issues' do
+      before do
+        create(:issue, project: project)
+        described_class.delete_all
+      end
+
+      it 'still returns the last value to that of the given value' do
+        expect(subject).to eq(value)
+      end
+    end
+
+    context 'when value is less than the current last_value' do
+      it 'returns the current last_value' do
+        described_class.create!(**scope, usage: usage, last_value: 10_001)
+
+        expect(subject).to eq 10_001
+      end
+    end
+  end
+
   describe '#increment_and_save!' do
     let(:id) { create(:internal_id) }
     subject { id.increment_and_save! }
@@ -100,6 +140,32 @@ describe InternalId do
 
       it 'returns 1' do
         expect(subject).to eq(1)
+      end
+    end
+  end
+
+  describe '#track_greatest_and_save!' do
+    let(:id) { create(:internal_id) }
+    let(:new_last_value) { 9001 }
+    subject { id.track_greatest_and_save!(new_last_value) }
+
+    it 'returns new last value' do
+      expect(subject).to eq new_last_value
+    end
+
+    it 'saves the record' do
+      subject
+
+      expect(id.changed?).to be_falsey
+    end
+
+    context 'when new last value is lower than the max' do
+      it 'does not update the last value' do
+        id.update!(last_value: 10_001)
+
+        subject
+
+        expect(id.reload.last_value).to eq 10_001
       end
     end
   end
