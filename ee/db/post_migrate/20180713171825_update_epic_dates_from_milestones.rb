@@ -56,7 +56,7 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
   end
 
   def up
-    Epic.where(start_date: nil).find_each do |epic|
+    Epic.where('start_date IS NULL OR end_date IS NULL').find_each do |epic|
       epic.update_dates
     end
   end
