@@ -1,0 +1,13 @@
+- return unless @project.feature_available?(:license_management)
+- expanded = Rails.env.test?
+
+%section.settings.no-animate{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = s_('LicenseManagement|License Management')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = s_('LicenseManagement|Manage approved and blacklisted licenses for this project.')
+  .settings-content
+    #js-managed-licenses{ data: { api_url: @license_management_url } }

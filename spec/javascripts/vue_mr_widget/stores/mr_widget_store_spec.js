@@ -1,13 +1,6 @@
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import mockData, {
-  headIssues,
-  baseIssues,
-  parsedBaseIssues,
-  parsedHeadIssues,
-  licenseBaseIssues,
-  licenseHeadIssues,
-} from '../mock_data';
+import mockData, { headIssues, baseIssues, parsedBaseIssues, parsedHeadIssues } from '../mock_data';
 
 describe('MergeRequestStore', () => {
   let store;
@@ -94,26 +87,6 @@ describe('MergeRequestStore', () => {
       expect(codequality.name).toEqual(baseIssues[0].check_name);
       expect(codequality.path).toEqual(baseIssues[0].location.path);
       expect(codequality.line).toEqual(baseIssues[0].location.lines.begin);
-    });
-  });
-
-  describe('parseLicenseReportMetrics', () => {
-    it('should parse the received issues', () => {
-      store.parseLicenseReportMetrics(licenseHeadIssues, licenseBaseIssues);
-      expect(store.licenseReport[0].name).toBe(licenseHeadIssues.licenses[0].name);
-      expect(store.licenseReport[0].url).toBe(licenseHeadIssues.dependencies[0].license.url);
-    });
-
-    it('should ommit issues from base report', () => {
-      const knownLicenseName = licenseBaseIssues.licenses[0].name;
-      store.parseLicenseReportMetrics(licenseHeadIssues, licenseBaseIssues);
-      expect(store.licenseReport.length).toBe(licenseHeadIssues.licenses.length - 1);
-      expect(store.licenseReport[0].packages.length).toBe(
-        licenseHeadIssues.dependencies.length - 1,
-      );
-      store.licenseReport.forEach(license => {
-        expect(license.name).not.toBe(knownLicenseName);
-      });
     });
   });
 

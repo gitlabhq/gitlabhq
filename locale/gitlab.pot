@@ -69,11 +69,6 @@ msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d new license"
-msgid_plural "%d new licenses"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d staged change"
 msgid_plural "%d staged changes"
 msgstr[0] ""
@@ -3881,6 +3876,54 @@ msgstr ""
 msgid "License"
 msgstr ""
 
+msgid "LicenseManagement|Approve license"
+msgstr ""
+
+msgid "LicenseManagement|Approve license?"
+msgstr ""
+
+msgid "LicenseManagement|Approved"
+msgstr ""
+
+msgid "LicenseManagement|Blacklist license"
+msgstr ""
+
+msgid "LicenseManagement|Blacklist license?"
+msgstr ""
+
+msgid "LicenseManagement|Blacklisted"
+msgstr ""
+
+msgid "LicenseManagement|License"
+msgstr ""
+
+msgid "LicenseManagement|License Management"
+msgstr ""
+
+msgid "LicenseManagement|License details"
+msgstr ""
+
+msgid "LicenseManagement|Manage approved and blacklisted licenses for this project."
+msgstr ""
+
+msgid "LicenseManagement|Packages"
+msgstr ""
+
+msgid "LicenseManagement|Remove license"
+msgstr ""
+
+msgid "LicenseManagement|Remove license?"
+msgstr ""
+
+msgid "LicenseManagement|URL"
+msgstr ""
+
+msgid "LicenseManagement|Unapproved"
+msgstr ""
+
+msgid "LicenseManagement|You are about to remove the license, %{name}, from this project."
+msgstr ""
+
 msgid "LinkedIn"
 msgstr ""
 
@@ -7291,12 +7334,6 @@ msgstr ""
 msgid "ciReport|%{namespace} is affected by %{vulnerability}."
 msgstr ""
 
-msgid "ciReport|%{packagesString} and "
-msgstr ""
-
-msgid "ciReport|%{packagesString} and %{lastPackage}"
-msgstr ""
-
 msgid "ciReport|%{remainingPackagesCount} more"
 msgstr ""
 
@@ -7388,9 +7425,6 @@ msgid "ciReport|Learn more about interacting with security reports (Alpha)."
 msgstr ""
 
 msgid "ciReport|Learn more about whitelisting"
-msgstr ""
-
-msgid "ciReport|License management detected %{licenseInfo}"
 msgstr ""
 
 msgid "ciReport|License management detected no new licenses"
@@ -7550,6 +7584,9 @@ msgid "is not a valid X509 certificate."
 msgstr ""
 
 msgid "latest version"
+msgstr ""
+
+msgid "license management"
 msgstr ""
 
 msgid "locked by %{path_lock_user_name} %{created_at}"

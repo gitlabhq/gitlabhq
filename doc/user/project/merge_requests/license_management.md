@@ -11,12 +11,15 @@ by implicitly using [Auto License Management](../../../topics/autodevops/index.m
 that is provided by [Auto DevOps](../../../topics/autodevops/index.md).
 
 Going a step further, GitLab can show the licenses list right in the merge
-request widget area.
+request widget area, highlighting the presence of licenses you don't want to use, or new
+ones that need a decision.
+Licenses can be accepted or blacklisted in the project settings, or directly from the
+merge request widget.
 
 ## Use cases
 
-It helps you find licenses that you don't want to use in your project and see
-which dependencies use them. For example, your application is using an external (open source)
+It helps you find what licenses your project uses in its dependencies, and decide for each of then
+whether to allow it or forbid it. For example, your application is using an external (open source)
 library whose license is incompatible with yours.
 
 ## Supported languages and package managers
@@ -54,9 +57,18 @@ management report will be shown properly.
 The `license_management` job will search the application dependencies for licenses,
 the resulting JSON file will be uploaded as an artifact, and
 GitLab will then check this file and show the information inside the merge
-request.
+request. Blacklisted licenses will be clearly visible, as well as new licenses which
+need a decision from you.
 
-![License Management Widget](img/license_management.jpg)
+![License Management Widget](img/license_management.png)
+
+You can click on a license to be given the choice to approve it or blacklist it.
+
+![License approval decision](img/license_management_decision.png)
+
+The list of licenses and their status can also be managed from the project settings.
+
+![License Management Settings](img/license_management_settings.png)
 
 [ee-5483]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5483
 [ee]: https://about.gitlab.com/pricing/
