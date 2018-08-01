@@ -13,7 +13,7 @@ msgstr ""
 "X-Crowdin-Project: gitlab-ee\n"
 "X-Crowdin-Language: ru\n"
 "X-Crowdin-File: /master/locale/gitlab.pot\n"
-"PO-Revision-Date: 2018-07-31 11:13\n"
+"PO-Revision-Date: 2018-08-01 11:39\n"
 
 msgid " and"
 msgstr ""
@@ -704,6 +704,9 @@ msgstr "Архивный проект! Репозиторий и другие р
 
 msgid "Are you sure you want to delete this pipeline schedule?"
 msgstr "Вы действительно хотите удалить это расписание сборочной линии?"
+
+msgid "Are you sure you want to lose unsaved changes?"
+msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
@@ -2974,6 +2977,9 @@ msgstr "Файлов (%{human_size})"
 msgid "Fill in the fields below, turn on <strong>%{enable_label}</strong>, and press <strong>%{save_changes}</strong>"
 msgstr ""
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr "Фильтр по комментариями к коммитам"
 
@@ -4434,6 +4440,9 @@ msgstr "Файлы не найдены."
 msgid "No issues for the selected time period."
 msgstr ""
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests for the selected time period."
 msgstr ""
 
@@ -4441,6 +4450,12 @@ msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
@@ -6057,6 +6072,9 @@ msgid "Subgroups"
 msgstr "Подгруппы"
 
 msgid "Submit as spam"
+msgstr ""
+
+msgid "Submit search"
 msgstr ""
 
 msgid "Subscribe"
