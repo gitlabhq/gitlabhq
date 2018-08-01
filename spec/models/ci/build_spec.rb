@@ -2813,4 +2813,76 @@ describe Ci::Build do
       end
     end
   end
+
+  describe '#publishes_artifacts_reports?' do
+    let(:build) { create(:ci_build, options: options) }
+
+    subject { build.publishes_artifacts_reports? }
+
+    context 'when artifacts reports are defined' do
+      let(:options) do
+        { artifacts: { reports: { junit: "junit.xml" } } }
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when artifacts reports missing defined' do
+      let(:options) do
+        { artifacts: { paths: ["file.txt"] } }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when options are missing' do
+      let(:options) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#runner_required_feature_names' do
+    let(:build) { create(:ci_build, options: options) }
+
+    subject { build.runner_required_feature_names }
+
+    context 'when artifacts reports are defined' do
+      let(:options) do
+        { artifacts: { reports: { junit: "junit.xml" } } }
+      end
+
+      it { is_expected.to include(:upload_multiple_artifacts) }
+    end
+  end
+
+  describe '#supported_runner?' do
+    set(:build) { create(:ci_build) }
+
+    subject { build.supported_runner?(runner_features) }
+
+    context 'when feature is required by build' do
+      before do
+        expect(build).to receive(:runner_required_feature_names) do
+          [:upload_multiple_artifacts]
+        end
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) do
+          { upload_multiple_artifacts: true }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) do
+          {}
+        end
+
+        it { is_expected.to be_falsey }
+      end
+    end
+  end
 end
