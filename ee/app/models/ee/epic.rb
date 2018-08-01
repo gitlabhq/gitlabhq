@@ -9,6 +9,7 @@ module EE
       include Noteable
       include Referable
       include Awardable
+      include LabelEventable
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
