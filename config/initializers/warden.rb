@@ -34,7 +34,7 @@ Rails.application.configure do |config|
 
     if user.blocked?
       Gitlab::Auth::Activity.new(opts).user_blocked!
-      BlockedUserTracker.new(user, auth).log_blocked_user_activity!
+      Gitlab::Auth::BlockedUserTracker.new(user, auth).log_blocked_user_activity!
     end
 
     Gitlab::Auth::Activity.new(opts).user_session_destroyed!

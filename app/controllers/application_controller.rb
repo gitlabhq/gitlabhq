@@ -131,7 +131,11 @@ class ApplicationController < ActionController::Base
   #  that is going to invoke warden callbacks, so we use Warden directly here.
   #
   def auth_user
-    if warden.authenticated?(:user)
+    # TODO improve that
+    #
+    return if controller_name == 'sessions' && action_name == 'create'
+
+    if user_signed_in?
       current_user
     else
       try(:authenticated_user)
