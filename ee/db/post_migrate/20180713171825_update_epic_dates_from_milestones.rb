@@ -11,6 +11,9 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
     self.table_name = 'epics'
     include EachBatch
 
+    has_many :epic_issues
+    has_many :issues, through: :epic_issues
+
     def update_dates
       milestone_data = fetch_milestone_date_data
 
@@ -56,7 +59,7 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
   end
 
   def up
-    Epic.where('start_date IS NULL OR end_date IS NULL').find_each do |epic|
+    Epic.joins(:issues).where('issues.milestone_id IS NOT NULL').find_each do |epic|
       epic.update_dates
     end
   end
