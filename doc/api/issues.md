@@ -467,7 +467,7 @@ POST /projects/:id/issues
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
-<<<<<<< HEAD
+| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string         | yes      | The title of an issue |
 | `description`                             | string         | no       | The description of an issue  |
 | `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
@@ -479,19 +479,6 @@ POST /projects/:id/issues
 | `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
 | `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
 | `weight` | integer                                         | no | The weight of the issue in range 0 to 9 |
-=======
-| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
-| `title`                                   | string  | yes      | The title of an issue |
-| `description`                             | string  | no       | The description of an issue  |
-| `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
-| `milestone_id`                            | integer | no       | The global ID of a milestone to assign issue  |
-| `labels`                                  | string  | no       | Comma-separated label names for an issue  |
-| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
-| `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
-| `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
-| `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
->>>>>>> upstream/master
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
