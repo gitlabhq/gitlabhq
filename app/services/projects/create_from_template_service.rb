@@ -2,10 +2,7 @@
 
 module Projects
   class CreateFromTemplateService < BaseService
-<<<<<<< HEAD
     prepend ::EE::Projects::CreateFromTemplateService
-=======
->>>>>>> upstream/master
     include Gitlab::Utils::StrongMemoize
 
     def initialize(user, params)
