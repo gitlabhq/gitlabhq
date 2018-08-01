@@ -15,4 +15,7 @@ that to prioritize important jobs.
 to restart Sidekiq.
 - [Extra Sidekiq operations](extra_sidekiq_processes.md): Configure an extra set of Sidekiq processes to ensure certain queues always have dedicated workers, no matter the amount of jobs that need to be processed. **[STARTER ONLY]**
 - [Unicorn](unicorn.md): Understand Unicorn and unicorn-worker-killer.
-- [Speed up SSH operations](fast_ssh_key_lookup.md): Authorize SSH users via a fast, indexed lookup to the GitLab database.
+- Speed up SSH operations by [Authorizing SSH users via a fast,
+indexed lookup to the GitLab database](fast_ssh_key_lookup.md), and/or
+by [doing away with user SSH keys stored on GitLab entirely in favor
+of SSH certificates](ssh_certificates.md).
