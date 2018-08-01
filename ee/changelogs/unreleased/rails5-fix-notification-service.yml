@@ -1,0 +1,5 @@
+---
+title: Rails 5 fix product array method delagation by manually calling .to_a in NotificationService
+merge_request: 6753
+author: Jasper Maes
+type: fixed
