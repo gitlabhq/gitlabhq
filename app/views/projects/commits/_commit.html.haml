@@ -44,7 +44,7 @@
           #{ commit_text.html_safe }
 
         - if commit.description?
-          %pre.commit-row-description.js-toggle-content.prepend-top-8.append-bottom-8
+          %pre.commit-row-description.js-toggle-content.append-bottom-8
             = preserve(markdown_field(commit, :description))
 
       .commit-actions.flex-row.d-none.d-sm-flex
