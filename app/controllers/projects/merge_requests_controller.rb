@@ -102,6 +102,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def test_reports
     result = @merge_request.compare_test_reports
 
+    Gitlab::PollingInterval.set_header(response, interval: 10_000)
+
     case result[:status]
     when :parsing
       render json: '', status: :no_content
