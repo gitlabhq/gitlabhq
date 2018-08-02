@@ -63,6 +63,47 @@ class Gitlab::Seeder::Pipelines
     end
   end
 
+  def create_running_pipeline_with_test_reports(ref, rspec_pattern:, ant_pattern:)
+    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(rspec_pattern)
+    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(ant_pattern)
+
+    last_commit = @project.repository.commit(ref)
+    pipeline = create_pipeline!(@project, ref, last_commit)
+
+    @project.merge_requests.find_by_source_branch(ref).update!(head_pipeline_id: pipeline.id) if ref != 'master'
+
+    (0...3).each do |index|
+      Ci::Build.create!(name: "rspec:pg #{index} 3", stage: 'test', status: :running, project: @project, pipeline: pipeline, ref: ref).tap do |build|
+        path = Rails.root + "spec/fixtures/junit/#{rspec_pattern}-rspec-#{index}-3.xml.gz"
+
+        artifacts_cache_file(path) do |file|
+          build.job_artifacts.create!(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+        end
+      end
+    end
+
+    Ci::Build.create!(name: "java ant", stage: 'test', status: :running, project: @project, pipeline: pipeline, ref: ref).tap do |build|
+      path = Rails.root + "spec/fixtures/junit/#{ant_pattern}-ant-test.xml.gz"
+
+      artifacts_cache_file(path) do |file|
+        build.job_artifacts.create!(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+      end
+    end
+
+    pipeline.update_duration
+    pipeline.update_status
+  end
+
+  def finish_last_pipeline(ref)
+    last_pipeline = @project.pipelines.where(ref: ref).last
+    last_pipeline.builds.update_all(status: :success)
+    last_pipeline.update_status
+  end
+
+  def destroy_pipeline(ref)
+    @project.pipelines.where(ref: ref).destroy_all
+  end
+
   private
 
   def pipelines
@@ -222,9 +263,9 @@ class Gitlab::Seeder::Pipelines
   end
 end
 
-Gitlab::Seeder.quiet do
-  Project.all.sample(5).each do |project|
-    project_builds = Gitlab::Seeder::Pipelines.new(project)
-    project_builds.seed!
-  end
-end
+# Gitlab::Seeder.quiet do
+#   Project.all.sample(5).each do |project|
+#     project_builds = Gitlab::Seeder::Pipelines.new(project)
+#     project_builds.seed!
+#   end
+# end
