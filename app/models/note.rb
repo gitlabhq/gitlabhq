@@ -107,7 +107,7 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, :author, :updated_by, :resolved_by, :award_emoji,
+    includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              :system_note_metadata, :note_diff_file)
   end
 

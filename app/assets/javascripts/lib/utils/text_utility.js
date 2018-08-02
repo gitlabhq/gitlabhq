@@ -76,6 +76,20 @@ export function capitalizeFirstCharacter(text) {
 }
 
 /**
+ * Returns the first character capitalized
+ *
+ * If falsey, returns empty string.
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function getFirstCharacterCapitalized(text) {
+  return text
+    ? text.charAt(0).toUpperCase()
+    : '';
+}
+
+/**
  * Replaces all html tags from a string with the given replacement.
  *
  * @param {String} string

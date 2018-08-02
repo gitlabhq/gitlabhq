@@ -73,7 +73,10 @@
 .identicon {
   text-align: center;
   vertical-align: top;
+  color: $identicon-fg-color;
+  background-color: $identicon-gray;
 
+  // Sizes
   &.s16 { font-size: 12px; line-height: 1.33; }
   &.s24 { font-size: 13px; line-height: 1.8; }
   &.s26 { font-size: 20px; line-height: 1.33; }
@@ -86,6 +89,15 @@
   &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
+
+  // Background colors
+  &.bg1 { background-color: $identicon-red; }
+  &.bg2 { background-color: $identicon-purple; }
+  &.bg3 { background-color: $identicon-indigo; }
+  &.bg4 { background-color: $identicon-blue; }
+  &.bg5 { background-color: $identicon-teal; }
+  &.bg6 { background-color: $identicon-orange; }
+  &.bg7 { background-color: $identicon-gray; }
 }
 
 .avatar-container {

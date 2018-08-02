@@ -110,4 +110,21 @@ describe('text_utility', () => {
       expect(textUtils.splitCamelCase('HelloWorld')).toBe('Hello World');
     });
   });
+
+  describe('getFirstCharacterCapitalized', () => {
+    it('returns the first character captialized, if first character is alphabetic', () => {
+      expect(textUtils.getFirstCharacterCapitalized('loremIpsumDolar')).toEqual('L');
+      expect(textUtils.getFirstCharacterCapitalized('Sit amit !')).toEqual('S');
+    });
+
+    it('returns the first character, if first character is non-alphabetic', () => {
+      expect(textUtils.getFirstCharacterCapitalized(' lorem')).toEqual(' ');
+      expect(textUtils.getFirstCharacterCapitalized('%#!')).toEqual('%');
+    });
+
+    it('returns an empty string, if string is falsey', () => {
+      expect(textUtils.getFirstCharacterCapitalized('')).toEqual('');
+      expect(textUtils.getFirstCharacterCapitalized(null)).toEqual('');
+    });
+  });
 });

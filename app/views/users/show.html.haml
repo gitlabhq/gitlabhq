@@ -40,6 +40,11 @@
         .cover-title
           = @user.name
 
+        - if @user.status
+          .cover-status
+            = emoji_icon(@user.status.emoji)
+            = markdown_field(@user.status, :message)
+
         .cover-desc.member-date
           %p
             %span.middle-dot-divider

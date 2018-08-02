@@ -55,4 +55,31 @@ describe 'User edit profile' do
       expect(page).to have_link('gravatar.com')
     end
   end
+
+  context 'user status' do
+    it 'hides user status when the feature is disabled' do
+      stub_feature_flags(user_status_form: false)
+
+      visit(profile_path)
+
+      expect(page).not_to have_content('Current Status')
+    end
+
+    it 'shows the status form when the feature is enabled' do
+      stub_feature_flags(user_status_form: true)
+
+      visit(profile_path)
+
+      expect(page).to have_content('Current Status')
+    end
+
+    it 'shows the status form when the feature is enabled by setting a cookie', :js do
+      stub_feature_flags(user_status_form: false)
+      set_cookie('feature_user_status_form', 'true')
+
+      visit(profile_path)
+
+      expect(page).to have_content('Current Status')
+    end
+  end
 end
