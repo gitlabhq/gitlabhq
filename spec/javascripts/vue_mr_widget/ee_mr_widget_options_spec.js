@@ -484,21 +484,29 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      beforeEach(() => {
+      beforeEach(done => {
         mock.onGet('head.json').reply(200, []);
         mock.onGet('base.json').reply(200, []);
         vm = mountComponent(Component);
+        // wait for network request from component created() method
+        setTimeout(done, 0);
       });
 
-      it('should render provided data', done => {
-        setTimeout(() => {
-          expect(
-            removeBreakLine(
-              vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
-            ),
-          ).toEqual('No changes to performance metrics');
-          done();
-        }, 0);
+      it('should render provided data', () => {
+        expect(
+          removeBreakLine(
+            vm.$el.querySelector('.js-performance-widget .js-code-text').textContent,
+          ),
+        ).toEqual('No changes to performance metrics');
+      });
+
+      it('does not show Expand button', () => {
+        const expandButton = vm.$el.querySelector('.js-performance-widget .js-collapse-btn');
+        expect(expandButton).toBeNull();
+      });
+
+      it('shows success icon', () => {
+        expect(vm.$el.querySelector('.js-performance-widget .js-ci-status-icon-success')).not.toBeNull();
       });
     });
 
