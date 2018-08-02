@@ -1,23 +1,28 @@
 - page_title "Packages"
 
-%table.table
-  %thead
-    %tr
-      %th Name
-      %th Version
-      %th Type
-      %th Created at
-
-  %tbody
-    - @packages.each do |package|
+- if @packages.any?
+  %table.table
+    %thead
       %tr
-        %td
-          = link_to package.name, project_package_path(@project, package)
-        %td
-          = package.version
-        %td
-          = _('Maven package')
-        %td
-          = package.created_at
+        %th Name
+        %th Version
+        %th Type
+        %th Created at
 
-= paginate @packages, theme: "gitlab"
+    %tbody
+      - @packages.each do |package|
+        %tr
+          %td
+            = link_to package.name, project_package_path(@project, package)
+          %td
+            = package.version
+          %td
+            = _('Maven package')
+          %td
+            = package.created_at
+
+  = paginate @packages, theme: "gitlab"
+
+- else
+  .nothing-here-block
+    = _('No packages stored for this project.')
