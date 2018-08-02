@@ -456,20 +456,6 @@ module EE
     end
     alias_method :merge_requests_ff_only_enabled?, :merge_requests_ff_only_enabled
 
-    override :rename_repo
-    def rename_repo
-      super
-
-      path_was = previous_changes['path'].first
-      old_path_with_namespace = File.join(namespace.full_path, path_was)
-
-      ::Geo::RepositoryRenamedEventStore.new(
-        self,
-        old_path: path_was,
-        old_path_with_namespace: old_path_with_namespace
-      ).create
-    end
-
     override :disabled_services
     def disabled_services
       strong_memoize(:disabled_services) do
@@ -560,6 +546,17 @@ module EE
 
       ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::REPOSITORY).execute
       ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
+    end
+
+    override :after_rename_repository
+    def after_rename_repository(full_path_before, path_before)
+      super(full_path_before, path_before)
+
+      ::Geo::RepositoryRenamedEventStore.new(
+        self,
+        old_path: path_before,
+        old_path_with_namespace: full_path_before
+      ).create
     end
   end
 end
