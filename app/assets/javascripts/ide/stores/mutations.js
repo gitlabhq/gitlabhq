@@ -199,7 +199,7 @@ export default {
 
     entry.deleted = true;
 
-    parent.tree.splice(parent.tree.findIndex(f => f.path === entry.path), 1);
+    parent.tree = parent.tree.filter(f => f.path !== entry.path);
 
     if (entry.type === 'blob') {
       state.changedFiles = state.changedFiles.concat(entry);
