@@ -321,7 +321,7 @@ describe('IDE commit module actions', () => {
                 {
                   action: 'update',
                   file_path: jasmine.anything(),
-                  content: jasmine.anything(),
+                  content: undefined,
                   encoding: jasmine.anything(),
                   last_commit_id: '123456789',
                   previous_path: undefined,
