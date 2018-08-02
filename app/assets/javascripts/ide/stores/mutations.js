@@ -198,7 +198,8 @@ export default {
       : state.trees[`${state.currentProjectId}/${state.currentBranchId}`];
 
     entry.deleted = true;
-    parent.tree = parent.tree.filter(f => f.path !== entry.path);
+
+    parent.tree.splice(parent.tree.findIndex(f => f.path === entry.path), 1);
 
     if (entry.type === 'blob') {
       state.changedFiles = state.changedFiles.concat(entry);

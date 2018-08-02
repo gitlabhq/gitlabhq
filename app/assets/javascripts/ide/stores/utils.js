@@ -172,8 +172,7 @@ export const sortTree = sortedTree =>
     )
     .sort(sortTreesByTypeAndName);
 
-export const filePathMatches = (f, path) =>
-  f.path.replace(new RegExp(`${f.name}$`), '').indexOf(`${path}/`) === 0;
+export const filePathMatches = (filePath, path) => filePath.indexOf(`${path}/`) === 0;
 
 export const getChangesCountForFiles = (files, path) =>
-  files.filter(f => filePathMatches(f, path)).length;
+  files.filter(f => filePathMatches(f.path, path)).length;

@@ -187,24 +187,32 @@ export const openNewEntryModal = ({ commit }, { type, path = '' }) => {
 
 export const deleteEntry = ({ commit, dispatch, state }, path) => {
   const entry = state.entries[path];
-  dispatch('burstUnusedSeal');
-  dispatch('closeFile', entry);
+
+  if (state.unusedSeal) dispatch('burstUnusedSeal');
+  if (entry.opened) dispatch('closeFile', entry);
 
   if (entry.type === 'tree') {
     entry.tree.forEach(f => dispatch('deleteEntry', f.path));
   }
 
   commit(types.DELETE_ENTRY, path);
+
+  if (entry.parentPath && state.entries[entry.parentPath].tree.length === 0) {
+    dispatch('deleteEntry', entry.parentPath);
+  }
 };
 
 export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 
 export const renameEntry = ({ dispatch, commit, state }, { path, name, entryPath = null }) => {
+  const entry = state.entries[entryPath || path];
   commit(types.RENAME_ENTRY, { path, name, entryPath });
 
-  state.entries[entryPath || path].tree.forEach(f =>
-    dispatch('renameEntry', { path, name, entryPath: f.path }),
-  );
+  if (entry.type === 'tree') {
+    state.entries[entryPath || path].tree.forEach(f =>
+      dispatch('renameEntry', { path, name, entryPath: f.path }),
+    );
+  }
 
   if (!entryPath) {
     dispatch('deleteEntry', path);
