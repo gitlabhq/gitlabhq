@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BroadcastMessage < ActiveRecord::Base
   prepend EE::BroadcastMessage
   include CacheMarkdownField

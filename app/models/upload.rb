@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Upload < ActiveRecord::Base
   prepend EE::Upload
 

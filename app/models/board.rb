@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Board < ActiveRecord::Base
   prepend EE::Board
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on merge request or commit diffs
 #
 # A note of this type can be resolvable.

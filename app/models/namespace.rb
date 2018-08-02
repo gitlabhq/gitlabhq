@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   prepend EE::Namespace
   include CacheMarkdownField

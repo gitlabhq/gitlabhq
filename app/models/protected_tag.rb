@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectedTag < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include ProtectedRef

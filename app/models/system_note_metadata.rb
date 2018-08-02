@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SystemNoteMetadata < ActiveRecord::Base
   prepend EE::SystemNoteMetadata
 

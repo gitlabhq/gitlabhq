@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectSnippet < Snippet
   # Elastic search configuration (it does not support STI)
   document_type 'snippet'

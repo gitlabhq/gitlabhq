@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificationSetting < ActiveRecord::Base
   include IgnorableColumn
 
