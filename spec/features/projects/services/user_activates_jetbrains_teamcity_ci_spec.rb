@@ -15,6 +15,8 @@ describe 'User activates JetBrains TeamCity CI' do
 
   it 'activates service' do
     check('Active')
+    check('Push')
+    check('Merge request')
     fill_in('Teamcity url', with: 'http://teamcity.example.com')
     fill_in('Build type', with: 'GitlabTest_Build')
     fill_in('Username', with: 'user')

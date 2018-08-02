@@ -207,6 +207,91 @@ describe TeamcityService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#execute' do
+    context 'when push' do
+      let(:data) do
+        {
+          object_kind: 'push',
+          ref: 'refs/heads/dev-123_branch',
+          after: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
+          total_commits_count: 1
+        }
+      end
+
+      it 'handles push request correctly' do
+        stub_post_to_build_queue(branch: 'dev-123_branch')
+
+        expect(service.execute(data)).to include('Ok')
+      end
+
+      it 'returns nil when ref is blank' do
+        data[:after] = "0000000000000000000000000000000000000000"
+
+        expect(service.execute(data)).to be_nil
+      end
+
+      it 'returns nil when there is no content' do
+        data[:total_commits_count] = 0
+
+        expect(service.execute(data)).to be_nil
+      end
+    end
+
+    context 'when merge_request' do
+      let(:data) do
+        {
+          object_kind: 'merge_request',
+          ref: 'refs/heads/dev-123_branch',
+          after: '0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e',
+          total_commits_count: 1,
+          object_attributes: {
+            state: 'opened',
+            source_branch: 'dev-123_branch',
+            merge_status: 'unchecked'
+          }
+        }
+      end
+
+      it 'handles merge request correctly' do
+        stub_post_to_build_queue(branch: 'dev-123_branch')
+
+        expect(service.execute(data)).to include('Ok')
+      end
+
+      it 'returns nil when merge request is not opened' do
+        data[:object_attributes][:state] = 'closed'
+
+        expect(service.execute(data)).to be_nil
+      end
+
+      it 'returns nil when merge request is not unchecked or cannot_be_merged_recheck' do
+        data[:object_attributes][:merge_status] = 'checked'
+
+        expect(service.execute(data)).to be_nil
+      end
+    end
+
+    it 'returns nil when event is not supported' do
+      data = { object_kind: 'foo' }
+
+      expect(service.execute(data)).to be_nil
+    end
+  end
+
+  def stub_post_to_build_queue(branch:)
+    teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/buildQueue'
+    body ||= %Q(<build branchName=\"#{branch}\"><buildType id=\"foo\"/></build>)
+    auth = %w(mic password)
+
+    stub_full_request(teamcity_full_url, method: :post).with(
+      basic_auth: auth,
+      body: body,
+      headers: {
+        'Content-Type' => 'application/xml'
+      }
+    ).to_return(status: 200, body: 'Ok', headers: {})
+  end
+
   def stub_request(status: 200, body: nil, build_status: 'success')
     teamcity_full_url = 'http://gitlab.com/teamcity/httpAuth/app/rest/builds/branch:unspecified:any,revision:123'
     auth = %w(mic password)

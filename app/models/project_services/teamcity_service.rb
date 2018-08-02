@@ -19,6 +19,25 @@ class TeamcityService < CiService
   after_save :compose_service_hook, if: :activated?
   before_update :reset_password
 
+  class << self
+    def to_param
+      'teamcity'
+    end
+
+    def supported_events
+      %w(push merge_request)
+    end
+
+    def event_description(event)
+      case event
+      when 'push', 'push_events'
+        'TeamCity CI will be triggered after every push to the repository except branch delete'
+      when 'merge_request', 'merge_request_events'
+        'TeamCity CI will be triggered after a merge request has been created or updated'
+      end
+    end
+  end
+
   def compose_service_hook
     hook = service_hook || build_service_hook
     hook.save
@@ -41,10 +60,6 @@ class TeamcityService < CiService
   def help
     'You will want to configure monitoring of all branches so merge '\
     'requests build, that setting is in the vsc root advanced settings.'
-  end
-
-  def self.to_param
-    'teamcity'
   end
 
   def fields
@@ -76,21 +91,14 @@ class TeamcityService < CiService
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    auth = {
-      username: username,
-      password: password
-    }
-
-    branch = Gitlab::Git.ref_name(data[:ref])
-
-    Gitlab::HTTP.post(
-      build_url('httpAuth/app/rest/buildQueue'),
-      body: "<build branchName=\"#{branch}\">"\
-            "<buildType id=\"#{build_type}\"/>"\
-            '</build>',
-      headers: { 'Content-type' => 'application/xml' },
-      basic_auth: auth
-    )
+    case data[:object_kind]
+    when 'push'
+      branch = Gitlab::Git.ref_name(data[:ref])
+      post_to_build_queue(data, branch) if push_valid?(data)
+    when 'merge_request'
+      branch = data[:object_attributes][:source_branch]
+      post_to_build_queue(data, branch) if merge_request_valid?(data)
+    end
   end
 
   private
@@ -134,10 +142,44 @@ class TeamcityService < CiService
   end
 
   def get_path(path)
-    Gitlab::HTTP.get(build_url(path), verify: false,
-                                      basic_auth: {
-                                        username: username,
-                                        password: password
-                                      })
+    Gitlab::HTTP.get(build_url(path), verify: false, basic_auth: basic_auth)
+  end
+
+  def post_to_build_queue(data, branch)
+    Gitlab::HTTP.post(
+      build_url('httpAuth/app/rest/buildQueue'),
+      body: "<build branchName=#{branch.encode(xml: :attr)}>"\
+            "<buildType id=#{build_type.encode(xml: :attr)}/>"\
+            '</build>',
+      headers: { 'Content-type' => 'application/xml' },
+      basic_auth: basic_auth
+    )
+  end
+
+  def basic_auth
+    { username: username, password: password }
+  end
+
+  def push_valid?(data)
+    data[:total_commits_count] > 0 &&
+      !branch_removed?(data) &&
+      no_open_merge_requests?(data)
+  end
+
+  def merge_request_valid?(data)
+    data.dig(:object_attributes, :state) == 'opened' &&
+      MergeRequest.state_machines[:merge_status].check_state?(data.dig(:object_attributes, :merge_status))
+  end
+
+  def branch_removed?(data)
+    Gitlab::Git.blank_ref?(data[:after])
+  end
+
+  def no_open_merge_requests?(data)
+    !project.merge_requests
+      .opened
+      .from_project(project)
+      .from_source_branches(Gitlab::Git.ref_name(data[:ref]))
+      .exists?
   end
 end
