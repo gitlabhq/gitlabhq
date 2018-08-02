@@ -16,6 +16,20 @@ describe Clusters::Applications::Prometheus do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '#make_installing!' do
+    before do
+      application.make_installing!
+    end
+
+    context 'application install previously errored with older version' do
+      let(:application) { create(:clusters_applications_prometheus, :scheduled, version: '6.7.2') }
+
+      it 'updates the application version' do
+        expect(application.reload.version).to eq('6.7.3')
+      end
+    end
+  end
+
   describe 'transition to installed' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, projects: [project]) }
@@ -154,6 +168,14 @@ describe Clusters::Applications::Prometheus do
       expect(command.chart).to eq('stable/prometheus')
       expect(command.version).to eq('6.7.3')
       expect(command.values).to eq(prometheus.values)
+    end
+
+    context 'application failed to install previously' do
+      let(:prometheus) { create(:clusters_applications_prometheus, :errored, version: '2.0.0') }
+
+      it 'should be initialized with the locked version' do
+        expect(subject.version).to eq('6.7.3')
+      end
     end
   end
 

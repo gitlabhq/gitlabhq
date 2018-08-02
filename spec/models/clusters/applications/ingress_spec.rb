@@ -23,6 +23,20 @@ describe Clusters::Applications::Ingress do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '#make_installing!' do
+    before do
+      application.make_installing!
+    end
+
+    context 'application install previously errored with older version' do
+      let(:application) { create(:clusters_applications_ingress, :scheduled, version: '0.22.0') }
+
+      it 'updates the application version' do
+        expect(application.reload.version).to eq('0.23.0')
+      end
+    end
+  end
+
   describe '#make_installed!' do
     before do
       application.make_installed!
@@ -73,8 +87,16 @@ describe Clusters::Applications::Ingress do
     it 'should be initialized with ingress arguments' do
       expect(subject.name).to eq('ingress')
       expect(subject.chart).to eq('stable/nginx-ingress')
-      expect(subject.version).to be_nil
+      expect(subject.version).to eq('0.23.0')
       expect(subject.values).to eq(ingress.values)
+    end
+
+    context 'application failed to install previously' do
+      let(:ingress) { create(:clusters_applications_ingress, :errored, version: 'nginx') }
+
+      it 'should be initialized with the locked version' do
+        expect(subject.version).to eq('0.23.0')
+      end
     end
   end
 
