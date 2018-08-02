@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class UserSyncedAttributesMetadata < ActiveRecord::Base
   belongs_to :user
 

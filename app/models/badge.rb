@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Badge < ActiveRecord::Base
   # This structure sets the placeholders that the urls
   # can have. This hash also sets which action to ask when

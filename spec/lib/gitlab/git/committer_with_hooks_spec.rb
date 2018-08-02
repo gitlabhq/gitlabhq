@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::CommitterWithHooks, seed_helper: true do
+describe Gitlab::Git::CommitterWithHooks, :seed_helper do
   # TODO https://gitlab.com/gitlab-org/gitaly/issues/1234
   skip 'needs to be moved to gitaly-ruby test suite' do
     shared_examples 'calling wiki hooks' do

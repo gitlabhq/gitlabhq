@@ -8,6 +8,7 @@ describe 'Import/Export - project import integration test', :js do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
   before do
+    stub_feature_flags(import_export_object_storage: false)
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     gitlab_sign_in(user)
   end

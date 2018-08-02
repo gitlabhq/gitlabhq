@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
@@ -46,7 +48,8 @@ class CommitStatus < ActiveRecord::Base
     api_failure: 2,
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4,
-    missing_dependency_failure: 5
+    missing_dependency_failure: 5,
+    runner_unsupported: 6
   }
 
   ##

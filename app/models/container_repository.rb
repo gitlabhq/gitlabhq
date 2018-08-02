@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContainerRepository < ActiveRecord::Base
   belongs_to :project
 

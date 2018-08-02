@@ -243,6 +243,14 @@ module TestEnv
     set_repo_refs(target_repo_path, refs)
   end
 
+  def create_bare_repository(path)
+    FileUtils.mkdir_p(path)
+
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{path} init --bare),
+           out: '/dev/null',
+           err: '/dev/null')
+  end
+
   def repos_path
     @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
   end

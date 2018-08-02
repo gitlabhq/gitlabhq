@@ -396,6 +396,9 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
+msgid "All users"
+msgstr ""
+
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
@@ -2991,6 +2994,12 @@ msgstr ""
 msgid "Install Runner on Kubernetes"
 msgstr ""
 
+msgid "Instance Statistics"
+msgstr ""
+
+msgid "Instance Statistics visibility"
+msgstr ""
+
 msgid "Instance does not support multiple Kubernetes clusters"
 msgstr ""
 
@@ -3712,6 +3721,9 @@ msgstr ""
 msgid "Online IDE integration settings."
 msgstr ""
 
+msgid "Only admins"
+msgstr ""
+
 msgid "Only comments from the following commit are shown below"
 msgstr ""
 
@@ -4067,6 +4079,9 @@ msgid "Profiles|Path"
 msgstr ""
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
+msgstr ""
+
+msgid "Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -5610,6 +5625,9 @@ msgid "User map"
 msgstr ""
 
 msgid "Users"
+msgstr ""
+
+msgid "User|Current Status"
 msgstr ""
 
 msgid "Variables"

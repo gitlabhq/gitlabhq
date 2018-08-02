@@ -35,7 +35,8 @@ module Gitlab
       end
 
       def import_file
-        Gitlab::ImportExport::FileImporter.import(archive_file: @archive_file,
+        Gitlab::ImportExport::FileImporter.import(project: @project,
+                                                  archive_file: @archive_file,
                                                   shared: @shared)
       end
 
@@ -91,7 +92,14 @@ module Gitlab
       end
 
       def remove_import_file
-        FileUtils.rm_rf(@archive_file)
+        return unless Gitlab::ImportExport.object_storage?
+
+        upload = @project.import_export_upload
+
+        return unless upload&.import_file&.file
+
+        upload.remove_import_file!
+        upload.save!
       end
 
       def overwrite_project

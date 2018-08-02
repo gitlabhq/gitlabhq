@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Commit, seed_helper: true do
+describe Gitlab::Git::Commit, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:commit) { described_class.find(repository, SeedRepo::Commit::ID) }
   let(:rugged_commit) do

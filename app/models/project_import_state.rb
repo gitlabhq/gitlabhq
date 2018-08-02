@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectImportState < ActiveRecord::Base
   include AfterCommitQueue
 

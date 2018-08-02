@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.

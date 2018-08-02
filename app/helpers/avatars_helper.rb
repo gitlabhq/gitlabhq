@@ -15,22 +15,12 @@ module AvatarsHelper
   end
 
   def project_identicon(project, options = {})
-    allowed_colors = {
-      red: 'FFEBEE',
-      purple: 'F3E5F5',
-      indigo: 'E8EAF6',
-      blue: 'E3F2FD',
-      teal: 'E0F2F1',
-      orange: 'FBE9E7',
-      gray: 'EEEEEE'
-    }
-
+    bg_key = (project.id % 7) + 1
     options[:class] ||= ''
     options[:class] << ' identicon'
-    bg_key = project.id % 7
-    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
+    options[:class] << " bg#{bg_key}"
 
-    content_tag(:div, class: options[:class], style: style) do
+    content_tag(:div, class: options[:class]) do
       project.name[0, 1].upcase
     end
   end

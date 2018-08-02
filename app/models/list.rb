@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class List < ActiveRecord::Base
   belongs_to :board
   belongs_to :label

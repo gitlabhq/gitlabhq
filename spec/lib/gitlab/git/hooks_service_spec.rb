@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::HooksService, seed_helper: true do
+describe Gitlab::Git::HooksService, :seed_helper do
   let(:gl_id) { 'user-456' }
   let(:gl_username) { 'janedoe' }
   let(:user) { Gitlab::Git::User.new(gl_username, 'Jane Doe', 'janedoe@example.com', gl_id) }

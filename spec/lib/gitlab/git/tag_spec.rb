@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Tag, seed_helper: true do
+describe Gitlab::Git::Tag, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
   shared_examples 'Gitlab::Git::Repository#tags' do

@@ -2409,18 +2409,18 @@ describe Ci::Build do
     end
   end
 
-  describe 'state transition: any => [:running]' do
+  describe '#has_valid_build_dependencies?' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect(job).not_to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -2430,7 +2430,7 @@ describe Ci::Build do
           pre_stage_job.erase
         end
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect(job).not_to have_valid_build_dependencies }
       end
     end
 
@@ -2438,12 +2438,13 @@ describe Ci::Build do
       context 'when depended job has not been completed yet' do
         let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
+
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
 
       context 'when artifacts of depended job has been erased' do
@@ -2453,7 +2454,7 @@ describe Ci::Build do
           pre_stage_job.erase
         end
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
     end
 
@@ -2469,13 +2470,13 @@ describe Ci::Build do
       context 'when "dependencies" keyword is not defined' do
         let(:options) { {} }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
 
       context 'when "dependencies" keyword is empty' do
         let(:options) { { dependencies: [] } }
 
-        it { expect { job.run! }.not_to raise_error }
+        it { expect(job).to have_valid_build_dependencies }
       end
 
       context 'when "dependencies" keyword is specified' do
@@ -2809,6 +2810,78 @@ describe Ci::Build do
         it 'does not exist' do
           is_expected.not_to be_exists
         end
+      end
+    end
+  end
+
+  describe '#publishes_artifacts_reports?' do
+    let(:build) { create(:ci_build, options: options) }
+
+    subject { build.publishes_artifacts_reports? }
+
+    context 'when artifacts reports are defined' do
+      let(:options) do
+        { artifacts: { reports: { junit: "junit.xml" } } }
+      end
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when artifacts reports missing defined' do
+      let(:options) do
+        { artifacts: { paths: ["file.txt"] } }
+      end
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when options are missing' do
+      let(:options) { nil }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#runner_required_feature_names' do
+    let(:build) { create(:ci_build, options: options) }
+
+    subject { build.runner_required_feature_names }
+
+    context 'when artifacts reports are defined' do
+      let(:options) do
+        { artifacts: { reports: { junit: "junit.xml" } } }
+      end
+
+      it { is_expected.to include(:upload_multiple_artifacts) }
+    end
+  end
+
+  describe '#supported_runner?' do
+    set(:build) { create(:ci_build) }
+
+    subject { build.supported_runner?(runner_features) }
+
+    context 'when feature is required by build' do
+      before do
+        expect(build).to receive(:runner_required_feature_names) do
+          [:upload_multiple_artifacts]
+        end
+      end
+
+      context 'when runner provides given feature' do
+        let(:runner_features) do
+          { upload_multiple_artifacts: true }
+        end
+
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when runner does not provide given feature' do
+        let(:runner_features) do
+          {}
+        end
+
+        it { is_expected.to be_falsey }
       end
     end
   end
