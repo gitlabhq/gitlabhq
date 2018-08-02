@@ -433,7 +433,7 @@ cloud-native-image:
     SCRIPT_NAME: trigger-build
   script:
     - gem install gitlab --no-document
-    - BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./$SCRIPT_NAME cng
+    - CNG_PROJECT_PATH="gitlab-org/build/CNG" BUILD_TRIGGER_TOKEN=$CI_JOB_TOKEN ./$SCRIPT_NAME cng
   only:
     - tags@gitlab-org/gitlab-ce
     - tags@gitlab-org/gitlab-ee
