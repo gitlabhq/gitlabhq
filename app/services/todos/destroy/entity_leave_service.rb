@@ -19,7 +19,7 @@ module Todos
       override :todos
       def todos
         if entity.private?
-          Todo.where(project_id: project_ids, user_id: user_id)
+          Todo.where('(project_id IN (?) OR group_id IN (?)) AND user_id = ?', project_ids, group_ids, user_id)
         else
           project_ids.each do |project_id|
             TodosDestroyer::PrivateFeaturesWorker.perform_async(project_id, user_id)
@@ -37,7 +37,16 @@ module Todos
         when Project
           [entity.id]
         when Namespace
-          Project.select(:id).where(namespace_id: entity.self_and_descendants.select(:id))
+          Project.select(:id).where(namespace_id: group_ids)
+        end
+      end
+
+      def group_ids
+        case entity
+        when Project
+          []
+        when Namespace
+          entity.self_and_descendants.select(:id)
         end
       end
 

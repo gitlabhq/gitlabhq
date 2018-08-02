@@ -10,18 +10,20 @@ describe Todos::Destroy::EntityLeaveService do
 
   let!(:todo_mr_user)     { create(:todo, user: user, target: mr, project: project) }
   let!(:todo_issue_user)  { create(:todo, user: user, target: issue, project: project) }
+  let!(:todo_group_user)  { create(:todo, user: user, group: group) }
   let!(:todo_issue_user2) { create(:todo, user: user2, target: issue, project: project) }
+  let!(:todo_group_user2) { create(:todo, user: user2, group: group) }
 
   describe '#execute' do
     context 'when a user leaves a project' do
       subject { described_class.new(user.id, project.id, 'Project').execute }
 
       context 'when project is private' do
-        it 'removes todos for the provided user' do
-          expect { subject }.to change { Todo.count }.from(3).to(1)
+        it 'removes project todos for the provided user' do
+          expect { subject }.to change { Todo.count }.from(5).to(3)
 
-          expect(user.todos).to be_empty
-          expect(user2.todos).to match_array([todo_issue_user2])
+          expect(user.todos).to match_array([todo_group_user])
+          expect(user2.todos).to match_array([todo_issue_user2, todo_group_user2])
         end
       end
 
@@ -37,7 +39,7 @@ describe Todos::Destroy::EntityLeaveService do
           end
 
           it 'removes only confidential issues todos' do
-            expect { subject }.to change { Todo.count }.from(3).to(2)
+            expect { subject }.to change { Todo.count }.from(5).to(4)
           end
         end
 
@@ -69,7 +71,7 @@ describe Todos::Destroy::EntityLeaveService do
             end
 
             it 'removes only users issue todos' do
-              expect { subject }.to change { Todo.count }.from(3).to(2)
+              expect { subject }.to change { Todo.count }.from(5).to(4)
             end
           end
         end
@@ -80,26 +82,30 @@ describe Todos::Destroy::EntityLeaveService do
       subject { described_class.new(user.id, group.id, 'Group').execute }
 
       context 'when group is private' do
-        it 'removes todos for the user' do
-          expect { subject }.to change { Todo.count }.from(3).to(1)
+        it 'removes group and subproject todos for the user' do
+          expect { subject }.to change { Todo.count }.from(5).to(2)
 
           expect(user.todos).to be_empty
-          expect(user2.todos).to match_array([todo_issue_user2])
+          expect(user2.todos).to match_array([todo_issue_user2, todo_group_user2])
         end
 
         context 'with nested groups', :nested_groups do
           let(:subgroup) { create(:group, :private, parent: group) }
           let(:subproject) { create(:project, group: subgroup) }
 
-          let!(:todo_subproject_user) { create(:todo, user: user, project: subproject) }
+          let!(:todo_subproject_user)  { create(:todo, user: user, project: subproject) }
+          let!(:todo_subgroup_user)    { create(:todo, user: user, group: subgroup) }
           let!(:todo_subproject_user2) { create(:todo, user: user2, project: subproject) }
+          let!(:todo_subpgroup_user2)  { create(:todo, user: user2, group: subgroup) }
 
           it 'removes todos for the user including subprojects todos' do
-            expect { subject }.to change { Todo.count }.from(5).to(2)
+            expect { subject }.to change { Todo.count }.from(9).to(4)
 
             expect(user.todos).to be_empty
             expect(user2.todos)
-              .to match_array([todo_issue_user2, todo_subproject_user2])
+              .to match_array(
+                [todo_issue_user2, todo_group_user2, todo_subproject_user2, todo_subpgroup_user2]
+              )
           end
         end
       end
@@ -113,7 +119,7 @@ describe Todos::Destroy::EntityLeaveService do
         end
 
         it 'removes only confidential issues todos' do
-          expect { subject }.to change { Todo.count }.from(3).to(2)
+          expect { subject }.to change { Todo.count }.from(5).to(4)
         end
       end
     end
