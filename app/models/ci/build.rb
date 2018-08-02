@@ -8,11 +8,8 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
 
-<<<<<<< HEAD
     prepend EE::Ci::Build
 
-=======
->>>>>>> upstream/master
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
