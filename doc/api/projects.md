@@ -1419,6 +1419,11 @@ Allows modification of the forked relationship between existing projects. Availa
 
 ### Create a forked from/to relation between existing projects
 
+CAUTION: **Warning:**
+This will destroy the LFS objects stored in the fork.
+So to retain the LFS objects, make sure you've pulled them **before** creating the fork relation,
+and push them again **after** creating the fork relation.
+
 ```
 POST /projects/:id/fork/:forked_from_id
 ```
