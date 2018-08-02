@@ -1029,11 +1029,8 @@ class MergeRequest < ActiveRecord::Base
 
   def calculate_reactive_cache(base_pipeline_iid, head_pipeline_iid)
     begin
-      if base_pipeline_iid
-        base_pipeline, head_pipeline = project.pipelines.where(iid: [base_pipeline_iid, head_pipeline_iid]).all
-      else
-        head_pipeline = project.pipelines.find(iid: head_pipeline_iid)
-      end
+      base_pipeline = project.pipelines.find_by_iid(base_pipeline_iid)
+      head_pipeline = project.pipelines.find_by_iid(head_pipeline_iid)
 
       comparer = Gitlab::Ci::Reports::TestReportsComparer
         .new(base_pipeline&.test_reports, head_pipeline.test_reports)
