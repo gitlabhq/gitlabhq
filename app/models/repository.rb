@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 # coding: utf-8
-=======
->>>>>>> upstream/master
 # frozen_string_literal: true
 
 require 'securerandom'
