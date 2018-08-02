@@ -35,7 +35,9 @@ export default {
   watch: {
     dropdownOpen() {
       this.$nextTick(() => {
-        this.$refs.dropdownMenu.scrollIntoView();
+        this.$refs.dropdownMenu.scrollIntoView({
+          block: 'nearest',
+        });
       });
     },
     mouseOver() {

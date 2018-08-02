@@ -62,7 +62,9 @@ describe('new dropdown component', () => {
       vm.dropdownOpen = true;
 
       setTimeout(() => {
-        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalled();
+        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
+          block: 'nearest',
+        });
 
         done();
       });
