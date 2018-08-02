@@ -206,6 +206,7 @@ describe('Multi-file store mutations', () => {
     it('adds to changedFiles', () => {
       localState.entries.filePath = {
         deleted: false,
+        type: 'blob',
       };
 
       mutations.DELETE_ENTRY(localState, 'filePath');
@@ -263,6 +264,7 @@ describe('Multi-file store mutations', () => {
       localState.entries.oldPath = {
         ...file(),
         type: 'blob',
+        name: 'oldPath',
         path: 'oldPath',
         url: `${gl.TEST_HOST}/oldPath`,
       };
@@ -283,6 +285,7 @@ describe('Multi-file store mutations', () => {
         parentPath: '',
         url: `${gl.TEST_HOST}/newPath`,
         moved: jasmine.anything(),
+        movedPath: jasmine.anything(),
       });
     });
 
