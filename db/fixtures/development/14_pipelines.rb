@@ -30,6 +30,8 @@ class Gitlab::Seeder::Pipelines
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
     { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true,
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
+    { name: 'java ant', stage: 'test', status: :failed, allow_failure: true,
+        queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
 
     # deploy stage
     { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
@@ -41,7 +43,7 @@ class Gitlab::Seeder::Pipelines
       when: 'manual', status: :skipped },
 
     # notify stage
-    { name: 'slack', stage: 'notify', when: 'manual', status: :created },
+    { name: 'slack', stage: 'notify', when: 'manual', status: :success },
   ]
   EXTERNAL_JOBS = [
     { name: 'jenkins', stage: 'test', status: :success,
@@ -54,16 +56,10 @@ class Gitlab::Seeder::Pipelines
 
   def seed!
     pipelines.each do |pipeline|
-      begin
-        BUILDS.each { |opts| build_create!(pipeline, opts) }
-        EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
-        print '.'
-      rescue ActiveRecord::RecordInvalid
-        print 'F'
-      ensure
-        pipeline.update_duration
-        pipeline.update_status
-      end
+      BUILDS.each { |opts| build_create!(pipeline, opts) }
+      EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
+      pipeline.update_duration
+      pipeline.update_status
     end
   end
 
@@ -87,7 +83,9 @@ class Gitlab::Seeder::Pipelines
       branch = merge_request.source_branch
 
       merge_request.commits.last(4).map do |commit|
-        create_pipeline!(project, branch, commit)
+        create_pipeline!(project, branch, commit).tap do |pipeline|
+          merge_request.update!(head_pipeline_id: pipeline.id)
+        end
       end
     end
 
@@ -98,7 +96,7 @@ class Gitlab::Seeder::Pipelines
 
 
   def create_pipeline!(project, ref, commit)
-    project.pipelines.create(sha: commit.id, ref: ref, source: :push)
+    project.pipelines.create!(sha: commit.id, ref: ref, source: :push)
   end
 
   def build_create!(pipeline, opts = {})
@@ -110,25 +108,50 @@ class Gitlab::Seeder::Pipelines
       # (id required), that is why we need `#tap` method instead of passing
       # block directly to `Ci::Build#create!`.
 
-      setup_artifacts(build)
+      setup_artifacts(build) if %w[build test].include?(build.stage)
+      setup_test_reports(build) if %w[test].include?(build.stage)
       setup_build_log(build)
 
       build.project.environments.
         find_or_create_by(name: build.expanded_environment_name)
 
-      build.save
+      build.save!
     end
   end
 
   def setup_artifacts(build)
-    return unless %w[build test].include?(build.stage)
-
     artifacts_cache_file(artifacts_archive_path) do |file|
-      build.job_artifacts.build(project: build.project, file_type: :archive, file: file)
+      build.job_artifacts.build(project: build.project, file_type: :archive, file_format: :zip, file: file)
     end
 
     artifacts_cache_file(artifacts_metadata_path) do |file|
-      build.job_artifacts.build(project: build.project, file_type: :metadata, file: file)
+      build.job_artifacts.build(project: build.project, file_type: :metadata, file_format: :gzip, file: file)
+    end
+  end
+
+  def setup_test_reports(build)
+    if build.ref == build.project.default_branch
+      if build.name.include?('rspec:linux')
+        artifacts_cache_file(artifacts_rspec_junit_master_path(build.name)) do |file|
+          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+        end
+      elsif build.name.include?('java ant')
+        artifacts_cache_file(artifacts_ant_junit_master_path) do |file|
+          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+        end
+      end
+    else
+      if build.name.include?('rspec:linux')
+        artifacts_rspec_junit_feature_path(build.name).try do |path|
+          artifacts_cache_file(path) do |file|
+            build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+          end
+        end
+      elsif build.name.include?('java ant')
+        artifacts_cache_file(artifacts_ant_junit_feature_path) do |file|
+          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+        end
+      end
     end
   end
 
@@ -171,13 +194,31 @@ class Gitlab::Seeder::Pipelines
     Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz'
   end
 
-  def artifacts_cache_file(file_path)
-    cache_path = file_path.to_s.gsub('ci_', "p#{@project.id}_")
+  def artifacts_rspec_junit_master_path(build_name)
+    index, total = build_name.scan(/ (\d) (\d)/).first
+    Rails.root + "spec/fixtures/junit/junit_master_rspec_#{index}_#{total}.xml.gz"
+  end
 
-    FileUtils.copy(file_path, cache_path)
-    File.open(cache_path) do |file|
-      yield file
-    end
+  def artifacts_rspec_junit_feature_path(build_name)
+    index, total = build_name.scan(/ (\d) (\d)/).first
+    Rails.root + "spec/fixtures/junit/junit_feature_rspec_#{index}_#{total}.xml.gz"
+  end
+
+  def artifacts_ant_junit_master_path
+    Rails.root + "spec/fixtures/junit/junit_master_ant.xml.gz"
+  end
+
+  def artifacts_ant_junit_feature_path
+    Rails.root + "spec/fixtures/junit/junit_feature_ant.xml.gz"
+  end
+
+  def artifacts_cache_file(file_path)
+    file = Tempfile.new("artifacts")
+    file.close
+
+    FileUtils.copy(file_path, file.path)
+
+    yield(UploadedFile.new(file.path, filename: File.basename(file_path)))
   end
 end
 
