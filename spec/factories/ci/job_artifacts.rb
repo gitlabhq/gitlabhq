@@ -50,7 +50,7 @@ FactoryBot.define do
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit.xml.gz'), 'application/x-gzip')
+          Rails.root.join('spec/fixtures/junit/junit.xml.gz'), 'application/x-gzip')
       end
     end
 
@@ -60,7 +60,7 @@ FactoryBot.define do
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit/junit_master_ant.xml.gz'), 'application/x-gzip')
+          Rails.root.join('spec/fixtures/junit/junit_ant.xml.gz'), 'application/x-gzip')
       end
     end
 
