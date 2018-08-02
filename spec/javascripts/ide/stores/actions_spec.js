@@ -469,7 +469,7 @@ describe('Multi-file store actions', () => {
         'path',
         store.state,
         [{ type: types.DELETE_ENTRY, payload: 'path' }],
-        [{ type: 'burstUnusedSeal' }, { type: 'closeFile', payload: store.state.entries.path }],
+        [{ type: 'burstUnusedSeal' }],
         done,
       );
     });
@@ -498,6 +498,7 @@ describe('Multi-file store actions', () => {
 
     it('renames all entries in tree', done => {
       store.state.entries.test = {
+        type: 'tree',
         tree: [
           {
             path: 'tree-1',
