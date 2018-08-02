@@ -26,9 +26,9 @@ brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/f1a767645f
 
 There is no need to install any plugins
 
-## Experimental indexer
+## New repo indexer (beta)
 
-If you're interested on working with the experimental indexer, all you need to do is:
+If you're interested on working with the new beta repo indexer, all you need to do is:
 
 - git clone git@gitlab.com:gitlab-org/gitlab-elasticsearch-indexer.git
 - make
