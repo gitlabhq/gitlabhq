@@ -6,7 +6,7 @@ require 'cgi'
 
 module Trigger
   OMNIBUS_PROJECT_PATH = 'gitlab-org/omnibus-gitlab'.freeze
-  CNG_PROJECT_PATH = 'gitlab-org/build/CNG-mirror'.freeze
+  CNG_PROJECT_PATH = ENV['CNG_PROJECT_PATH'] || 'gitlab-org/build/CNG-mirror'.freeze
   TOKEN = ENV['BUILD_TRIGGER_TOKEN']
 
   def self.ee?
