@@ -62,6 +62,14 @@ module API
       expose :admin?, as: :is_admin
     end
 
+    class UserStatus < Grape::Entity
+      expose :emoji
+      expose :message
+      expose :message_html do |entity|
+        MarkupHelper.markdown_field(entity, :message)
+      end
+    end
+
     class Email < Grape::Entity
       expose :id, :email
     end

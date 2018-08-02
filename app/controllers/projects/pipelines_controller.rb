@@ -163,7 +163,11 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def pipeline
-    @pipeline ||= project.pipelines.find_by!(id: params[:id]).present(current_user: current_user)
+    @pipeline ||= project
+                    .pipelines
+                    .includes(user: :status)
+                    .find_by!(id: params[:id])
+                    .present(current_user: current_user)
   end
 
   def commit

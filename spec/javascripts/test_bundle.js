@@ -98,7 +98,7 @@ let longRunningTestTimeoutHandle;
 beforeEach((done) => {
   longRunningTestTimeoutHandle = setTimeout(() => {
     done.fail('Test is running too long!');
-  }, 1000);
+  }, 2000);
   done();
 });
 

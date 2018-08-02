@@ -29,4 +29,22 @@ describe "User views issue" do
       expect(page).not_to have_link('Close issue')
     end
   end
+
+  describe 'user status' do
+    subject { visit(project_issue_path(project, issue)) }
+
+    describe 'showing status of the author of the issue' do
+      it_behaves_like 'showing user status' do
+        let(:user_with_status) { issue.author }
+      end
+    end
+
+    describe 'showing status of a user who commented on an issue', :js do
+      let!(:note) { create(:note, noteable: issue, project: project, author: user_with_status) }
+
+      it_behaves_like 'showing user status' do
+        let(:user_with_status) { create(:user) }
+      end
+    end
+  end
 end

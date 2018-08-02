@@ -53,6 +53,14 @@ describe 'User page' do
     end
   end
 
+  it 'shows the status if there was one' do
+    create(:user_status, user: user, message: "Working hard!")
+
+    visit(user_path(user))
+
+    expect(page).to have_content("Working hard!")
+  end
+
   context 'signup disabled' do
     it 'shows the sign in link' do
       stub_application_setting(signup_enabled: false)

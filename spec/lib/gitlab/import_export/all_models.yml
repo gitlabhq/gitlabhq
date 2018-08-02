@@ -334,9 +334,12 @@ project:
 - settings
 - ci_cd_settings
 - import_export_upload
+<<<<<<< HEAD
 - vulnerability_feedback
 - prometheus_alerts
 - software_license_policies
+=======
+>>>>>>> upstream/master
 - repository_languages
 award_emoji:
 - awardable

@@ -8,6 +8,7 @@ module Users
     def initialize(current_user, params = {})
       @current_user = current_user
       @user = params.delete(:user)
+      @status_params = params.delete(:status)
       @params = params.dup
     end
 
@@ -18,10 +19,11 @@ module Users
 
       assign_attributes(&block)
 
-      if @user.save(validate: validate)
+      if @user.save(validate: validate) && update_status
         notify_success(user_exists)
       else
-        error(@user.errors.full_messages.uniq.join('. '))
+        messages = @user.errors.full_messages + Array(@user.status&.errors&.full_messages)
+        error(messages.uniq.join('. '))
       end
     end
 
@@ -34,6 +36,12 @@ module Users
     end
 
     private
+
+    def update_status
+      return true unless @status_params
+
+      Users::SetStatusService.new(current_user, @status_params.merge(user: @user)).execute
+    end
 
     def notify_success(user_exists)
       notify_new_user(@user, nil) unless user_exists

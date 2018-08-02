@@ -13,6 +13,7 @@
     = author_avatar(@commit, size: 24, has_tooltip: false)
     %strong
       = commit_author_link(@commit, avatar: true, size: 24)
+    = user_status(@commit.author)
     - if @commit.different_committer?
       %span.light= _('Committed by')
       %strong

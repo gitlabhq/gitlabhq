@@ -8,7 +8,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   private
 
   def merge_request
-    @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+    @issuable = @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
   end
 
   def merge_request_params

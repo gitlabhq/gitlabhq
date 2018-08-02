@@ -127,6 +127,17 @@ module API
         present user, opts
       end
 
+      desc "Get the status of a user"
+      params do
+        requires :id_or_username, type: String, desc: 'The ID or username of the user'
+      end
+      get ":id_or_username/status" do
+        user = find_user(params[:id_or_username])
+        not_found!('User') unless user && can?(current_user, :read_user, user)
+
+        present user.status || {}, with: Entities::UserStatus
+      end
+
       desc 'Create a user. Available only for admins.' do
         success Entities::UserPublic
       end
@@ -745,6 +756,30 @@ module API
           .reorder(last_activity_on: :asc)
 
         present paginate(activities), with: Entities::UserActivity
+      end
+
+      desc 'Set the status of the current user' do
+        success Entities::UserStatus
+      end
+      params do
+        optional :emoji, type: String, desc: "The emoji to set on the status"
+        optional :message, type: String, desc: "The status message to set"
+      end
+      put "status" do
+        forbidden! unless can?(current_user, :update_user_status, current_user)
+
+        if ::Users::SetStatusService.new(current_user, declared_params).execute
+          present current_user.status, with: Entities::UserStatus
+        else
+          render_validation_error!(current_user.status)
+        end
+      end
+
+      desc 'get the status of the current user' do
+        success Entities::UserStatus
+      end
+      get 'status' do
+        present current_user.status || {}, with: Entities::UserStatus
       end
     end
   end

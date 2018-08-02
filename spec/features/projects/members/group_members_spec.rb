@@ -87,4 +87,12 @@ describe 'Projects members' do
       end
     end
   end
+
+  describe 'showing status of members' do
+    it_behaves_like 'showing user status' do
+      let(:user_with_status) { developer }
+
+      subject { visit project_settings_members_path(project) }
+    end
+  end
 end

@@ -141,4 +141,16 @@ describe 'Projects > Snippets > Project snippet', :js do
       end
     end
   end
+
+  it_behaves_like 'showing user status' do
+    let(:file_name) { 'ruby-style-guide.md' }
+    let(:content) { project.repository.blob_at('master', 'files/markdown/ruby-style-guide.md').data }
+
+    let(:user_with_status) { snippet.author }
+
+    subject do
+      visit project_snippet_path(project, snippet)
+      wait_for_requests
+    end
+  end
 end

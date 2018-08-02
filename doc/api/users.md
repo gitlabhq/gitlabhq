@@ -445,6 +445,83 @@ GET /user
 }
 ```
 
+## User status
+
+Get the status of the currently signed in user.
+
+```
+GET /user/status
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/user/status"
+```
+
+Example response:
+
+```json
+{
+  "emoji":"coffee",
+  "message":"I crave coffee :coffee:",
+  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>"
+}
+```
+
+## Get the status of a user
+
+Get the status of a user.
+
+```
+GET /users/:id_or_username/status
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id_or_username` | string | yes    | The id or username of the user to get a status of |
+
+```bash
+curl "https://gitlab.example.com/users/janedoe/status"
+```
+
+Example response:
+
+```json
+{
+  "emoji":"coffee",
+  "message":"I crave coffee :coffee:",
+  "message_html": "I crave coffee <gl-emoji title=\"hot beverage\" data-name=\"coffee\" data-unicode-version=\"4.0\">☕</gl-emoji>"
+}
+```
+
+## Set user status
+
+Set the status of the current user.
+
+```
+PUT /user/status
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `emoji`   | string | no     | The name of the emoji to use as status, if omitted `speech_balloon` is used. Emoji name can be one of the specified names in the [Gemojione index][gemojione-index]. |
+| `message` | string | no     | The message to set as a status. It can also contain emoji codes. |
+
+When both parameters `emoji` and `message` are empty, the status will be cleared.
+
+```bash
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --data "emoji=coffee" --data "emoji=I crave coffee" https://gitlab.example.com/api/v4/user/status
+```
+
+Example responses
+
+```json
+{
+  "emoji":"coffee",
+  "message":"I crave coffee",
+  "message_html": "I crave coffee"
+}
+```
+
 ## List user projects
 
 Please refer to the [List of user projects ](projects.md#list-user-projects).
@@ -1170,3 +1247,5 @@ Example response:
 ```
 
 Please note that `last_activity_at` is deprecated, please use `last_activity_on`.
+
+[gemojione-index]: https://github.com/jonathanwiesel/gemojione/blob/master/config/index.json
