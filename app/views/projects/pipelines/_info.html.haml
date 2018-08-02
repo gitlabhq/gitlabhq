@@ -1,7 +1,3 @@
-- commit = local_assigns.fetch(:commit)
-
-- return unless commit&.present?
-
 .commit-box
   %h3.commit-title
     = markdown(commit.title, pipeline: :single_line)
