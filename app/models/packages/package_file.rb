@@ -3,7 +3,7 @@ class Packages::PackageFile < ActiveRecord::Base
 
   validates :package, presence: true
 
-  mount_uploader :file, PackageFileUploader
+  mount_uploader :file, Packages::PackageFileUploader
 
   scope :recent, -> { reorder(id: :desc) }
 end
