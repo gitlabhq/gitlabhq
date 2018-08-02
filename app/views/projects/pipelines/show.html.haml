@@ -4,6 +4,9 @@
 - page_title "Pipeline"
 
 .js-pipeline-container{ class: container_class, data: { controller_action: "#{controller.action_name}" } }
+
+  #js-pipeline-header-vue.pipeline-header-container
+
   - if @commit
     = render "projects/pipelines/info"
 
