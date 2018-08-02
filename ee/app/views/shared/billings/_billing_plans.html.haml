@@ -4,8 +4,8 @@
   = render 'shared/billings/billing_plan_header', namespace: namespace, plan: current_plan
 
   - unless has_plan_purchase_link?(plans_data)
-    .billing-plans-alert.card.bg-warning.prepend-top-10
-      .card-header
+    .billing-plans-alert.card.prepend-top-10
+      .card-header.bg-warning.text-white
         = s_("BillingPlans|Automatic downgrade and upgrade to some plans is currently not available.")
         - customer_support_url = 'https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=334447';
         - customer_support_link = link_to s_("BillingPlans|Customer Support"), customer_support_url

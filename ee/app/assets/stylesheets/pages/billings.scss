@@ -29,6 +29,10 @@
   justify-content: center;
   margin-top: 8px;
 
+  .card-header {
+    border-bottom: 0;
+  }
+
   .card {
     display: flex;
     flex-direction: column;
@@ -48,13 +52,13 @@
       width: 290px;
     }
 
-    .card-heading,
+    .card-header,
     .card-body {
       border-left: 1px solid $list-border;
       border-right: 1px solid $list-border;
     }
 
-    .card-heading {
+    .card-header {
       background-color: $blue-500;
       color: $white-light;
       border: 0;
@@ -138,10 +142,6 @@
     }
 
     &.current {
-      .card-heading {
-        background-color: $blue-600;
-      }
-
       .card-body {
         border-color: $blue-600;
         border-width: 2px;
