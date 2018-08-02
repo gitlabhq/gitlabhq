@@ -56,9 +56,15 @@ export default {
       f => f.path === file.path && f.pending && !(f.tempFile && !f.prevPath),
     );
 
-    Object.assign(state.entries[file.path], {
-      raw,
-    });
+    if (file.tempFile) {
+      Object.assign(state.entries[file.path], {
+        content: raw,
+      });
+    } else {
+      Object.assign(state.entries[file.path], {
+        raw,
+      });
+    }
 
     if (!openPendingFile) return;
 

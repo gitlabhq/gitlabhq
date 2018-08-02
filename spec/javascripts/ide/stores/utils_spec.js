@@ -125,7 +125,7 @@ describe('Multi-file store utils', () => {
           {
             action: 'delete',
             file_path: 'deletedFile',
-            content: '',
+            content: undefined,
             encoding: 'text',
             last_commit_id: undefined,
             previous_path: undefined,
@@ -210,7 +210,7 @@ describe('Multi-file store utils', () => {
   });
 
   describe('getCommitFiles', () => {
-    it('returns flattened list of files and folders', () => {
+    it('returns list of files excluding moved files', () => {
       const files = [
         {
           path: 'a',
@@ -218,30 +218,9 @@ describe('Multi-file store utils', () => {
           deleted: true,
         },
         {
-          path: 'b',
-          type: 'tree',
-          deleted: true,
-          tree: [
-            {
-              path: 'c',
-              type: 'blob',
-            },
-            {
-              path: 'd',
-              type: 'blob',
-            },
-          ],
-        },
-        {
           path: 'c',
-          prevPath: 'x',
-          type: 'tree',
-          tree: [
-            {
-              path: 'c/index.js',
-              type: 'blob',
-            },
-          ],
+          type: 'blob',
+          moved: true,
         },
       ];
 
@@ -250,21 +229,6 @@ describe('Multi-file store utils', () => {
       expect(flattendFiles).toEqual([
         {
           path: 'a',
-          type: 'blob',
-          deleted: true,
-        },
-        {
-          path: 'c',
-          type: 'blob',
-          deleted: true,
-        },
-        {
-          path: 'd',
-          type: 'blob',
-          deleted: true,
-        },
-        {
-          path: 'c/index.js',
           type: 'blob',
           deleted: true,
         },

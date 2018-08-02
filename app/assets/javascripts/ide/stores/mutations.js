@@ -225,6 +225,7 @@ export default {
       url: oldEntry.url.replace(new RegExp(`${oldEntry.path}/?$`), newPath),
       tree: [],
       parentPath,
+      raw: '',
     };
     oldEntry.moved = true;
     oldEntry.movedPath = newPath;
