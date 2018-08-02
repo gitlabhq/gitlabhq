@@ -83,7 +83,7 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   def update_service
-    ::Epics::UpdateService.new(@group, current_user, epic_params.stringify_keys)
+    ::Epics::UpdateService.new(@group, current_user, epic_params)
   end
 
   def finder_type
