@@ -170,8 +170,6 @@ module EE
       super.merge(label_url_method: :group_epics_url)
     end
 
-    private
-
     def fetch_milestone_date_data
       sql = <<~SQL
         SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones

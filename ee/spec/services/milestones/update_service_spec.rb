@@ -17,7 +17,10 @@ describe Milestones::UpdateService do
 
         epic.reload
 
+        expect(epic.start_date).to eq(nil)
+        expect(epic.start_date_sourcing_milestone).to eq(nil)
         expect(epic.due_date).to eq(due_date)
+        expect(epic.due_date_sourcing_milestone).to eq(milestone)
       end
     end
   end
