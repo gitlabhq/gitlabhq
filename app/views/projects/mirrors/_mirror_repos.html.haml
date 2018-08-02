@@ -31,7 +31,7 @@
 
           .form-group
             = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
-            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: "#{'disabled' if options.count == 1}"
+            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: options.count == 1
 
           = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
 
