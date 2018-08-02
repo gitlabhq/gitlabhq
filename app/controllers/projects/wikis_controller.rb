@@ -1,10 +1,16 @@
 class Projects::WikisController < Projects::ApplicationController
   include PreviewMarkdown
+  include Gitlab::Utils::StrongMemoize
 
   before_action :authorize_read_wiki!
   before_action :authorize_create_wiki!, only: [:edit, :create, :history]
   before_action :authorize_admin_wiki!, only: :destroy
   before_action :load_project_wiki
+  before_action :load_page, only: [:show, :edit, :update, :history, :destroy]
+  before_action :valid_encoding?, only: [:show, :edit, :update], if: :load_page
+  before_action only: [:edit, :update], unless: :valid_encoding? do
+    redirect_to(project_wiki_path(@project, @page))
+  end
 
   def pages
     @wiki_pages = Kaminari.paginate_array(@project_wiki.pages).page(params[:page])
@@ -12,11 +18,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def show
-    @page = @project_wiki.find_page(params[:id], params[:version_id])
-
     view_param = @project_wiki.empty? ? params[:view] : 'create'
 
     if @page
+      set_encoding_error unless valid_encoding?
+
       render 'show'
     elsif file = @project_wiki.find_file(params[:id], params[:version_id])
       response.headers['Content-Security-Policy'] = "default-src 'none'"
@@ -38,13 +44,11 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def edit
-    @page = @project_wiki.find_page(params[:id])
   end
 
   def update
     return render('empty') unless can?(current_user, :create_wiki, @project)
 
-    @page = @project_wiki.find_page(params[:id])
     @page = WikiPages::UpdateService.new(@project, current_user, wiki_params).execute(@page)
 
     if @page.valid?
@@ -79,8 +83,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def history
-    @page = @project_wiki.find_page(params[:id])
-
     if @page
       @page_versions = Kaminari.paginate_array(@page.versions(page: params[:page].to_i),
                                                total_count: @page.count_versions)
@@ -94,8 +96,6 @@ class Projects::WikisController < Projects::ApplicationController
   end
 
   def destroy
-    @page = @project_wiki.find_page(params[:id])
-
     WikiPages::DestroyService.new(@project, current_user).execute(@page)
 
     redirect_to project_wiki_path(@project, :home),
@@ -140,5 +140,26 @@ class Projects::WikisController < Projects::ApplicationController
     WikiPage.new(@project_wiki).tap do |page|
       page.update_attributes(args) # rubocop:disable Rails/ActiveRecordAliases
     end
+  end
+
+  def load_page
+    @page ||= @project_wiki.find_page(*page_params)
+  end
+
+  def page_params
+    keys = [:id]
+    keys << :version_id if params[:action] == 'show'
+
+    params.values_at(*keys)
+  end
+
+  def valid_encoding?
+    strong_memoize(:valid_encoding) do
+      @page.content.encoding == Encoding::UTF_8
+    end
+  end
+
+  def set_encoding_error
+    flash.now[:notice] = "The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository."
   end
 end

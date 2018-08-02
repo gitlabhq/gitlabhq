@@ -107,6 +107,7 @@ excluded_attributes:
     - :storage_version
     - :remote_mirror_available_overridden
     - :description_html
+    - :repository_languages
   snippets:
     - :expired_at
   merge_request_diff:

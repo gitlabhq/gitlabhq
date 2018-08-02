@@ -100,7 +100,8 @@ class ProfilesController < Profiles::ApplicationController
       :website_url,
       :organization,
       :preferred_language,
-      :private_profile
+      :private_profile,
+      status: [:emoji, :message]
     )
   end
 end

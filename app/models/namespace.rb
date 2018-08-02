@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
@@ -122,6 +124,7 @@ class Namespace < ActiveRecord::Base
   def to_param
     full_path
   end
+  alias_method :flipper_id, :to_param
 
   def human_name
     owner_name

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Project < ActiveRecord::Base
@@ -192,6 +194,7 @@ class Project < ActiveRecord::Base
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :protected_tags
+  has_many :repository_languages, -> { order "share DESC" }
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
@@ -546,6 +549,10 @@ class Project < ActiveRecord::Base
 
   def commit_by(oid:)
     repository.commit_by(oid: oid)
+  end
+
+  def commits_by(oids:)
+    repository.commits_by(oids: oids)
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA

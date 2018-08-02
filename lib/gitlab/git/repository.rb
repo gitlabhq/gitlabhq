@@ -39,19 +39,6 @@ module Gitlab
       ChecksumError = Class.new(StandardError)
 
       class << self
-        # Unlike `new`, `create` takes the repository path
-        def create(repo_path, bare: true, symlink_hooks_to: nil)
-          FileUtils.mkdir_p(repo_path, mode: 0770)
-
-          # Equivalent to `git --git-path=#{repo_path} init [--bare]`
-          repo = Rugged::Repository.init_at(repo_path, bare)
-          repo.close
-
-          create_hooks(repo_path, symlink_hooks_to) if symlink_hooks_to.present?
-
-          true
-        end
-
         def create_hooks(repo_path, global_hooks_path)
           local_hooks_path = File.join(repo_path, 'hooks')
           real_local_hooks_path = :not_found

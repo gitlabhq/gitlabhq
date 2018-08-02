@@ -162,6 +162,9 @@ module API
                                                            desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
                                          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+        optional :iid, type: Integer,
+                       desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+
         use :issue_params
       end
       post ':id/issues' do
@@ -169,9 +172,10 @@ module API
 
         authorize! :create_issue, user_project
 
-        # Setting created_at time only allowed for admins and project owners
+        # Setting created_at time or iid only allowed for admins and project owners
         unless current_user.admin? || user_project.owner == current_user
           params.delete(:created_at)
+          params.delete(:iid)
         end
 
         issue_params = declared_params(include_missing: false)

@@ -2,6 +2,19 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.1.4 (2018-07-30)
+
+### Fixed (4 changes, 1 of them is from the community)
+
+- Rework some projects table indexes around repository_storage field. !20377
+- Don't overflow project/group dropdown results. !20704 (gfyoung)
+- Fixed IDE not opening JSON files. !20798
+- Disable Gitaly timeouts when creating or restoring backups. !20810
+
+## 11.1.3 (2018-07-27)
+
+- Not released.
+
 ## 11.1.2 (2018-07-26)
 
 ### Security (4 changes)

@@ -73,6 +73,11 @@
 - repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
+- todos_destroyer:todos_destroyer_confidential_issue
+- todos_destroyer:todos_destroyer_entity_leave
+- todos_destroyer:todos_destroyer_project_private
+- todos_destroyer:todos_destroyer_private_features
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
@@ -118,3 +123,4 @@
 - repository_update_remote_mirror
 - create_note_diff_file
 - delete_diff_files
+- detect_repository_languages

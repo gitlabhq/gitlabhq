@@ -7,9 +7,8 @@ namespace :gitlab do
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :gitlab_environment do
       warn_user_is_not_gitlab
-      remove_flag = ENV['REMOVE']
 
-      namespaces  = Namespace.pluck(:path)
+      namespaces = Namespace.pluck(:path)
       namespaces << HASHED_REPOSITORY_NAME  # add so that it will be ignored
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         git_base_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository_storage.legacy_disk_path }
@@ -31,7 +30,7 @@ namespace :gitlab do
         end
 
         all_dirs.each do |dir_path|
-          if remove_flag
+          if remove?
             if FileUtils.rm_rf dir_path
               puts "Removed...#{dir_path}".color(:red)
             else
@@ -43,7 +42,7 @@ namespace :gitlab do
         end
       end
 
-      unless remove_flag
+      unless remove?
         puts "To cleanup this directories run this command with REMOVE=true".color(:yellow)
       end
     end
@@ -103,6 +102,38 @@ namespace :gitlab do
       unless block_flag
         puts "To block these users run this command with BLOCK=true".color(:yellow)
       end
+    end
+
+    desc "GitLab | Cleanup | Clean orphaned project uploads"
+    task project_uploads: :gitlab_environment do
+      warn_user_is_not_gitlab
+
+      cleaner = Gitlab::Cleanup::ProjectUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
+
+      if dry_run?
+        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
+    def remove?
+      ENV['REMOVE'] == 'true'
+    end
+
+    def dry_run?
+      ENV['DRY_RUN'] != 'false'
+    end
+
+    def logger
+      return @logger if defined?(@logger)
+
+      @logger = if Rails.env.development? || Rails.env.production?
+                  Logger.new(STDOUT).tap do |stdout_logger|
+                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
+                  end
+                else
+                  Rails.logger
+                end
     end
   end
 end

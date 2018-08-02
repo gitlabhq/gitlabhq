@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ChatName < ActiveRecord::Base
   LAST_USED_AT_INTERVAL = 1.hour
 

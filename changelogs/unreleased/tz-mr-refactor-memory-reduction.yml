@@ -1,5 +1,0 @@
----
-title: Reduces the client side memory footprint on merge requests
-merge_request: 20744
-author:
-type: performance

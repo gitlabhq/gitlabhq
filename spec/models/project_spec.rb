@@ -69,6 +69,7 @@ describe Project do
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:repository_languages) }
     it { is_expected.to have_many(:environments) }
     it { is_expected.to have_many(:deployments) }
     it { is_expected.to have_many(:todos) }
@@ -3874,6 +3875,16 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  context '#commits_by' do
+    let(:project) { create(:project, :repository) }
+    let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
+    let(:commit_shas) { commits.map(&:id) }
+
+    it 'retrieves several commits from the repository by oid' do
+      expect(project.commits_by(oids: commit_shas)).to eq commits
     end
   end
 

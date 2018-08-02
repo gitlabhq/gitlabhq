@@ -10,9 +10,10 @@ describe Gitlab::ImportExport::Importer do
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(test_path)
+    allow_any_instance_of(Gitlab::ImportExport::FileImporter).to receive(:remove_import_file)
+
     FileUtils.mkdir_p(shared.export_path)
     FileUtils.cp(Rails.root.join('spec/features/projects/import_export/test_project_export.tar.gz'), test_path)
-    allow(subject).to receive(:remove_import_file)
   end
 
   after do
@@ -69,7 +70,7 @@ describe Gitlab::ImportExport::Importer do
       let(:project) { create(:project, namespace: user.namespace, name: 'whatever', path: 'whatever') }
 
       before do
-        restorers = double
+        restorers = double(:restorers, all?: true)
 
         allow(subject).to receive(:import_file).and_return(true)
         allow(subject).to receive(:check_version!).and_return(true)

@@ -15,12 +15,20 @@ module Members
         notification_service.decline_access_request(member)
       end
 
+      enqeue_delete_todos(member)
+
       after_execute(member: member)
 
       member
     end
 
     private
+
+    def enqeue_delete_todos(member)
+      type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+      # don't enqueue immediately to prevent todos removal in case of a mistake
+      TodosDestroyer::EntityLeaveWorker.perform_in(1.hour, member.user_id, member.source_id, type)
+    end
 
     def can_destroy_member?(member)
       can?(current_user, destroy_member_permission(member), member)

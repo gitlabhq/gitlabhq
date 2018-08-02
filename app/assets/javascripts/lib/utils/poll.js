@@ -1,4 +1,4 @@
-import httpStatusCodes from './http_status';
+import httpStatusCodes, { successCodes } from './http_status';
 import { normalizeHeaders } from './common_utils';
 
 /**
@@ -62,8 +62,7 @@ export default class Poll {
   checkConditions(response) {
     const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
-    if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
-      clearTimeout(this.timeoutID);
+    if (pollInterval > 0 && successCodes.indexOf(response.status) !== -1 && this.canPoll) {
       this.timeoutID = setTimeout(() => {
         this.makeRequest();
       }, pollInterval);

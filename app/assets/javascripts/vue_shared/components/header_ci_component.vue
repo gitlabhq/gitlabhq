@@ -113,6 +113,9 @@ export default {
 
           {{ user.name }}
         </a>
+        <span
+          v-if="user.status_tooltip_html"
+          v-html="user.status_tooltip_html"></span>
       </template>
     </section>
 

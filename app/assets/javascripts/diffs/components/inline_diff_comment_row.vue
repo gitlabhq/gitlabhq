@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapGetters } from 'vuex';
 import diffDiscussions from './diff_discussions.vue';
 import diffLineNoteForm from './diff_line_note_form.vue';
 
@@ -21,21 +21,17 @@ export default {
       type: Number,
       required: true,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
+    ...mapGetters(['discussionsByLineCode']),
+    discussions() {
+      return this.discussionsByLineCode[this.line.lineCode] || [];
+    },
     className() {
       return this.discussions.length ? '' : 'js-temp-notes-holder';
-    },
-    hasCommentForm() {
-      return this.diffLineCommentForms[this.line.lineCode];
     },
   },
 };
@@ -57,7 +53,7 @@ export default {
           :discussions="discussions"
         />
         <diff-line-note-form
-          v-if="hasCommentForm"
+          v-if="diffLineCommentForms[line.lineCode]"
           :diff-file-hash="diffFileHash"
           :line="line"
           :note-target-line="line"

@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Projects::CreateFromTemplateService do
   let(:user) { create(:user) }
+  let(:template_name) { 'rails' }
   let(:project_params) do
     {
         path: user.to_param,
-        template_name: 'rails',
+        template_name: template_name,
         description: 'project description',
         visibility_level: Gitlab::VisibilityLevel::PUBLIC
     }
@@ -14,7 +15,10 @@ describe Projects::CreateFromTemplateService do
   subject { described_class.new(user, project_params) }
 
   it 'calls the importer service' do
-    expect_any_instance_of(Projects::GitlabProjectsImportService).to receive(:execute)
+    import_service_double = double
+
+    allow(Projects::GitlabProjectsImportService).to receive(:new).and_return(import_service_double)
+    expect(import_service_double).to receive(:execute)
 
     subject.execute
   end
@@ -24,6 +28,31 @@ describe Projects::CreateFromTemplateService do
 
     expect(project).to be_saved
     expect(project.import_scheduled?).to be(true)
+  end
+
+  context 'when template is not present' do
+    let(:template_name) { 'non_existent' }
+    let(:project) { subject.execute }
+
+    before do
+      expect(project).to be_saved
+    end
+
+    it 'does not set import set import type' do
+      expect(project.import_type).to be nil
+    end
+
+    it 'does not set import set import source' do
+      expect(project.import_source).to be nil
+    end
+
+    it 'is not scheduled' do
+      expect(project.import_scheduled?).to be(false)
+    end
+
+    it 'repository is empty' do
+      expect(project.repository.empty?).to be(true)
+    end
   end
 
   context 'the result project' do

@@ -962,8 +962,8 @@ the binaries directory:
 
 ```yaml
 job:
-   artifacts:
-     name: "$CI_COMMIT_REF_NAME"
+  artifacts:
+    name: "$CI_COMMIT_REF_NAME"
     paths:
       - binaries/
 ```

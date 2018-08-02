@@ -1,4 +1,5 @@
 import Poll from '~/lib/utils/poll';
+import { successCodes } from '~/lib/utils/http_status';
 
 const waitForAllCallsToFinish = (service, waitForCount, successCallback) => {
   const timer = () => {
@@ -91,28 +92,32 @@ describe('Poll', () => {
     }).catch(done.fail);
   });
 
-  it('starts polling when http status is 200 and interval header is provided', (done) => {
-    mockServiceCall(service, { status: 200, headers: { 'poll-interval': 1 } });
+  describe('for 2xx status code', () => {
+    successCodes.forEach(httpCode => {
+      it(`starts polling when http status is ${httpCode} and interval header is provided`, (done) => {
+        mockServiceCall(service, { status: httpCode, headers: { 'poll-interval': 1 } });
 
-    const Polling = new Poll({
-      resource: service,
-      method: 'fetch',
-      data: { page: 1 },
-      successCallback: callbacks.success,
-      errorCallback: callbacks.error,
-    });
+        const Polling = new Poll({
+          resource: service,
+          method: 'fetch',
+          data: { page: 1 },
+          successCallback: callbacks.success,
+          errorCallback: callbacks.error,
+        });
 
-    Polling.makeRequest();
+        Polling.makeRequest();
 
-    waitForAllCallsToFinish(service, 2, () => {
-      Polling.stop();
+        waitForAllCallsToFinish(service, 2, () => {
+          Polling.stop();
 
-      expect(service.fetch.calls.count()).toEqual(2);
-      expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
-      expect(callbacks.success).toHaveBeenCalled();
-      expect(callbacks.error).not.toHaveBeenCalled();
+          expect(service.fetch.calls.count()).toEqual(2);
+          expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
+          expect(callbacks.success).toHaveBeenCalled();
+          expect(callbacks.error).not.toHaveBeenCalled();
 
-      done();
+          done();
+        });
+      });
     });
   });
 

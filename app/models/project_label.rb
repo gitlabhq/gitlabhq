@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectLabel < Label
   MAX_NUMBER_OF_PRIORITIES = 1
 

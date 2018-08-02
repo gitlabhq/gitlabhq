@@ -1,4 +1,6 @@
-/* eslint-disable jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle */
+/* eslint-disable
+  jasmine/no-global-setup, jasmine/no-unsafe-spy, no-underscore-dangle, no-console
+*/
 
 import $ from 'jquery';
 import 'vendor/jasmine-jquery';
@@ -96,7 +98,7 @@ let longRunningTestTimeoutHandle;
 beforeEach((done) => {
   longRunningTestTimeoutHandle = setTimeout(() => {
     done.fail('Test is running too long!');
-  }, 1000);
+  }, 2000);
   done();
 });
 

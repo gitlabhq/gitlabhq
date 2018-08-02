@@ -46,7 +46,7 @@ describe('DiscussionCounter component', () => {
           discussions,
         });
         setFixtures(`
-          <div class="discussion" data-discussion-id="${firstDiscussionId}"></div>
+          <div data-discussion-id="${firstDiscussionId}"></div>
         `);
 
         vm.jumpToFirstUnresolvedDiscussion();

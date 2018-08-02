@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupMilestone < GlobalMilestone
   attr_accessor :group
 

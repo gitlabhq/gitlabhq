@@ -396,6 +396,9 @@ msgstr ""
 msgid "All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings."
 msgstr ""
 
+msgid "All users"
+msgstr ""
+
 msgid "Allow commits from members who can merge to the target branch."
 msgstr ""
 
@@ -553,6 +556,9 @@ msgid "Archived project! Repository and other project resources are read-only"
 msgstr ""
 
 msgid "Are you sure you want to delete this pipeline schedule?"
+msgstr ""
+
+msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
 msgid "Are you sure you want to remove %{group_name}?"
@@ -2519,6 +2525,9 @@ msgstr ""
 msgid "Files (%{human_size})"
 msgstr ""
 
+msgid "Filter"
+msgstr ""
+
 msgid "Filter by commit message"
 msgstr ""
 
@@ -2983,6 +2992,12 @@ msgid "Install GitLab Runner"
 msgstr ""
 
 msgid "Install Runner on Kubernetes"
+msgstr ""
+
+msgid "Instance Statistics"
+msgstr ""
+
+msgid "Instance Statistics visibility"
 msgstr ""
 
 msgid "Instance does not support multiple Kubernetes clusters"
@@ -3559,10 +3574,19 @@ msgstr ""
 msgid "No files found."
 msgstr ""
 
+msgid "No labels with such name or description"
+msgstr ""
+
 msgid "No merge requests found"
 msgstr ""
 
 msgid "No messages were logged"
+msgstr ""
+
+msgid "No other labels with such name or description"
+msgstr ""
+
+msgid "No prioritised labels with such name or description"
 msgstr ""
 
 msgid "No public groups"
@@ -3605,9 +3629,6 @@ msgid "Note: As an administrator you may like to configure %{github_integration_
 msgstr ""
 
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
-msgstr ""
-
-msgid "Notes|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "Notification events"
@@ -3698,6 +3719,9 @@ msgid "One or more of your Google Code projects cannot be imported into GitLab d
 msgstr ""
 
 msgid "Online IDE integration settings."
+msgstr ""
+
+msgid "Only admins"
 msgstr ""
 
 msgid "Only comments from the following commit are shown below"
@@ -4055,6 +4079,9 @@ msgid "Profiles|Path"
 msgstr ""
 
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
+msgstr ""
+
+msgid "Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -4898,6 +4925,9 @@ msgstr ""
 msgid "Submit as spam"
 msgstr ""
 
+msgid "Submit search"
+msgstr ""
+
 msgid "Subscribe"
 msgstr ""
 
@@ -5595,6 +5625,9 @@ msgid "User map"
 msgstr ""
 
 msgid "Users"
+msgstr ""
+
+msgid "User|Current Status"
 msgstr ""
 
 msgid "Variables"
