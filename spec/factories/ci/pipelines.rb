@@ -58,12 +58,24 @@ FactoryBot.define do
         status :success
       end
 
+      trait :running do
+        status :running
+      end
+
       trait :failed do
         status :failed
       end
 
       trait :protected do
         protected true
+      end
+
+      trait :test_reports do
+        status :success
+
+        after(:build) do |pipeline, evaluator|
+          create(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
+        end
       end
     end
   end

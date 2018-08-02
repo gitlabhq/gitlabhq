@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "status": { "type": "string" },
+    "summary": {
+      "total": { "type": "integer" },
+      "resolved": { "type": "integer" },
+      "failed": { "type": "integer" }
+    },
+    "suites": { "type": "array", "items": { "$ref": "test_suite_comparer.json" } }
+  },
+  "additionalProperties": false
+}

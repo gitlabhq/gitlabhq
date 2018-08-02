@@ -96,6 +96,5 @@ describe('Reports Store Mutations', () => {
     it('should set hasError to true', () => {
       expect(stateCopy.hasError).toEqual(true);
     });
-
   });
 });

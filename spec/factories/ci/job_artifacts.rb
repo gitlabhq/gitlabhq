@@ -54,6 +54,36 @@ FactoryBot.define do
       end
     end
 
+    trait :junit_with_ant do
+      file_type :junit
+      file_format :gzip
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_master_ant.xml.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :junit_with_three_testsuites do
+      file_type :junit
+      file_format :gzip
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_three_testsuites.xml.gz'), 'application/x-gzip')
+      end
+    end
+
+    trait :junit_with_corrupted_data do
+      file_type :junit
+      file_format :gzip
+
+      after(:build) do |artifact, evaluator|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/junit/junit_with_corrupted_data.xml.gz'), 'application/x-gzip')
+      end
+    end
+
     trait :correct_checksum do
       after(:build) do |artifact, evaluator|
         artifact.file_sha256 = Digest::SHA256.file(artifact.file.path).hexdigest

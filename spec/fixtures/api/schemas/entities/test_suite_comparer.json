@@ -1,0 +1,16 @@
+{
+  "type": "object",
+  "properties": {
+    "name": { "type": "string" },
+    "status": { "type": "string" },
+    "summary": {
+      "total": { "type": "integer" },
+      "resolved": { "type": "integer" },
+      "failed": { "type": "integer" }
+    },
+    "new_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "resolved_failures": { "type": "array", "items": { "$ref": "test_case.json" } },
+    "existing_failures": { "type": "array", "items": { "$ref": "test_case.json" } }
+  },
+  "additionalProperties": false
+}

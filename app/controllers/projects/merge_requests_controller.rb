@@ -99,6 +99,21 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     }
   end
 
+  def test_reports
+    result = @merge_request.compare_test_reports
+
+    case result[:status]
+    when :parsing
+      render json: '', status: :no_content
+    when :parsed
+      render json: result[:data], status: :ok
+    when :error
+      render json: { status_reason: result[:status_reason] }, status: :bad_request
+    else
+      render json: { status_reason: 'Unknown error' }, status: :internal_server_error
+    end
+  end
+
   def edit
     define_edit_vars
   end

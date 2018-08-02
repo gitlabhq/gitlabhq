@@ -11,6 +11,11 @@ class MergeRequest < ActiveRecord::Base
   include ThrottledTouch
   include Gitlab::Utils::StrongMemoize
   include LabelEventable
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
+  self.reactive_cache_refresh_interval = 1.hour
+  self.reactive_cache_lifetime = 1.hour
 
   ignore_column :locked_at,
                 :ref_fetched,
@@ -1010,6 +1015,40 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
+  def has_test_reports?
+    actual_head_pipeline&.has_test_reports?
+  end
+
+  def compare_test_reports
+    unless actual_head_pipeline && actual_head_pipeline.has_test_reports?
+      return { status: :error, status_reason: 'head pipeline does not have test reports' }
+    end
+
+    with_reactive_cache(base_pipeline&.iid, actual_head_pipeline.iid) { |data| data } || { status: :parsing }
+  end
+
+  def calculate_reactive_cache(base_pipeline_iid, head_pipeline_iid)
+    begin
+      if base_pipeline_iid
+        base_pipeline, head_pipeline = project.pipelines.where(iid: [base_pipeline_iid, head_pipeline_iid]).all
+      else
+        head_pipeline = project.pipelines.find(iid: head_pipeline_iid)
+      end
+
+      comparer = Gitlab::Ci::Reports::TestReportsComparer
+        .new(base_pipeline&.test_reports, head_pipeline.test_reports)
+
+      {
+        status: :parsed,
+        data: TestReportsComparerSerializer
+          .new(project: project)
+          .represent(comparer).to_json
+      }
+    rescue => e
+      { status: :error, status_reason: e.message }
+    end
+  end
+
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
     diffs_relation = if Gitlab::Database.postgresql?
@@ -1120,6 +1159,12 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines
+      .order(id: :desc)
+      .find_by(sha: diff_base_sha)
   end
 
   def discussions_rendered_on_frontend?
