@@ -169,6 +169,10 @@ describe MergeRequests::BuildService do
             end
           end
 
+          it 'uses the title of the commit as the title of the merge request' do
+            expect(merge_request.title).to eq('Initial commit')
+          end
+
           it 'appends the closing description' do
             expected_description = [commit_description, closing_message].compact.join("\n\n")
 
