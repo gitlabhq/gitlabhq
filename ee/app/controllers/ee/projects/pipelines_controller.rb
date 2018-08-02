@@ -4,8 +4,6 @@ module EE
       extend ActiveSupport::Concern
 
       def security
-        commit
-
         if pipeline.expose_sast_data?
           render_show
         else
