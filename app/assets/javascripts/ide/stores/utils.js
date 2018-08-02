@@ -137,7 +137,7 @@ export const createCommitPayload = ({ branch, getters, newBranch, state, rootSta
     action: commitActionForFile(f),
     file_path: f.path,
     previous_path: f.prevPath === '' ? undefined : f.prevPath,
-    content: f.content,
+    content: f.content || undefined,
     encoding: f.base64 ? 'base64' : 'text',
     last_commit_id: newBranch || f.deleted || f.prevPath ? undefined : f.lastCommitSha,
   })),
