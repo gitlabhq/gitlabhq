@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable

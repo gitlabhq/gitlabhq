@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationSetting < ActiveRecord::Base
   include CacheableAttributes
   include CacheMarkdownField

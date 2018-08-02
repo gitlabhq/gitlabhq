@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Label < ActiveRecord::Base
   include CacheMarkdownField
   include Referable

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeployToken < ActiveRecord::Base
   include Expirable
   include TokenAuthenticatable
