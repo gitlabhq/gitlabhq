@@ -18,6 +18,12 @@ describe ExportCsvWorker do
     perform
   end
 
+  it 'removes sort parameter' do
+    expect(IssuesFinder).to receive(:new).with(anything, hash_not_including(:sort)).and_call_original
+
+    perform
+  end
+
   it 'converts controller string keys to symbol keys for IssuesFinder' do
     expect(IssuesFinder).to receive(:new).with(anything, hash_including(test_key: true)).and_call_original
 

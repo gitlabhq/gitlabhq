@@ -36,6 +36,10 @@ You will be asked to confirm the number of issues and email address for the expo
 
 ![CSV export modal dialog](img/csv_export_modal.png)
 
+## Sorting
+
+Exported issues are always sorted by `Issue ID`.
+
 ## Format
 
 > **Time Estimate** and **Time Spent** columns were [introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2627) in GitLab Starter 10.0.
