@@ -9,6 +9,14 @@ module Todos
         @project = Project.find_by(id: project_id)
       end
 
+      def execute
+        Issue.where(project_id: project_ids, confidential: true).each do |issue|
+          TodosDestroyer::ConfidentialIssueWorker.perform_async(issue.id)
+        end
+
+        super
+      end
+
       private
 
       override :todos

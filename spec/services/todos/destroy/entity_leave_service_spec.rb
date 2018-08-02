@@ -14,14 +14,40 @@ describe Todos::Destroy::EntityLeaveService do
 
   describe '#execute' do
     context 'when a user leaves a project' do
+      before do
+        issue.update!(confidential: true)
+      end
+
       subject { described_class.new(user.id, project.id, 'Project').execute }
 
       context 'when project is private' do
-        it 'removes todos for the provided user' do
-          expect { subject }.to change { Todo.count }.from(3).to(1)
+        context 'when the provided user is not a project member' do
+          it 'removes todos for the provided user' do
+            expect { subject }.to change { Todo.count }.from(3).to(1)
 
-          expect(user.todos).to be_empty
-          expect(user2.todos).to match_array([todo_issue_user2])
+            expect(user.todos).to be_empty
+            expect(user2.todos).to match_array([todo_issue_user2])
+          end
+        end
+
+        context 'when the provided user is guest' do
+          before do
+            project.add_guest(user)
+          end
+
+          it 'removes only confidential issues todos for the provided user' do
+            expect { subject }.to change { Todo.count }.from(3).to(2)
+          end
+        end
+
+        context 'when the provided user is developer' do
+          before do
+            project.add_developer(user)
+          end
+
+          it 'does not remove any todos for the provided user' do
+            expect { subject }.not_to change { Todo.count }
+          end
         end
       end
 
@@ -33,6 +59,17 @@ describe Todos::Destroy::EntityLeaveService do
 
         context 'when a user is not an author of confidential issue' do
           before do
+            issue.update!(confidential: true)
+          end
+
+          it 'removes only confidential issues todos' do
+            expect { subject }.to change { Todo.count }.from(3).to(2)
+          end
+        end
+
+        context 'when a user is a guest of the project' do
+          before do
+            project.add_guest(user)
             issue.update!(confidential: true)
           end
 
