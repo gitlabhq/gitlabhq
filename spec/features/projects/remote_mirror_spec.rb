@@ -17,7 +17,9 @@ describe 'Project remote mirror', :feature do
 
         visit project_mirror_path(project)
 
-        expect(page).to have_content('The remote repository failed to update.')
+        row = first('.js-mirrors-table-body tr')
+        expect(row).to have_content('Error')
+        expect(row).to have_content('Never')
       end
     end
 
@@ -27,7 +29,9 @@ describe 'Project remote mirror', :feature do
 
         visit project_mirror_path(project)
 
-        expect(page).to have_content('The remote repository failed to update 5 minutes ago.')
+        row = first('.js-mirrors-table-body tr')
+        expect(row).to have_content('Error')
+        expect(row).to have_content('5 minutes ago')
       end
     end
   end
