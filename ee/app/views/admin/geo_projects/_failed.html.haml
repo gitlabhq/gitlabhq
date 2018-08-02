@@ -5,7 +5,7 @@
         %button.btn.btn-link.btn-card-header.d-flex.flex-fill{ type: 'button', data: { toggle: 'collapse', target: "#project-#{project_registry.project.id}" }, 'aria-expanded' => 'true', 'aria-controls' => "project-#{project_registry.project.id}" }
           = sprite_icon('chevron-down', size: 18, css_class: 'card-expand-icon')
           = sprite_icon('chevron-up', size: 18, css_class: 'card-collapse-icon')
-          %strong.header-text
+          %strong.header-text-primary
             = project_registry.project.name
         - if project_registry.candidate_for_redownload?
           = link_to(force_redownload_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
