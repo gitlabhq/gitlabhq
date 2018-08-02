@@ -2,7 +2,6 @@
 module Gitlab
   module Auth
     class BlockedUserTracker
-
       def initialize(user, auth)
         @user = user
         @auth = auth
