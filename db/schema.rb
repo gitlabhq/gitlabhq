@@ -209,10 +209,7 @@ ActiveRecord::Schema.define(version: 20180726172057) do
     t.boolean "pseudonymizer_enabled", default: false, null: false
     t.boolean "hide_third_party_offers", default: false, null: false
     t.boolean "instance_statistics_visibility_private", default: false, null: false
-<<<<<<< HEAD
     t.integer "custom_project_templates_group_id"
-=======
->>>>>>> upstream/master
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1950,7 +1947,6 @@ ActiveRecord::Schema.define(version: 20180726172057) do
   add_index "personal_access_tokens", ["token"], name: "index_personal_access_tokens_on_token", unique: true, using: :btree
   add_index "personal_access_tokens", ["user_id"], name: "index_personal_access_tokens_on_user_id", using: :btree
 
-<<<<<<< HEAD
   create_table "plans", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1962,8 +1958,6 @@ ActiveRecord::Schema.define(version: 20180726172057) do
 
   add_index "plans", ["name"], name: "index_plans_on_name", using: :btree
 
-=======
->>>>>>> upstream/master
   create_table "programming_languages", force: :cascade do |t|
     t.string "name", null: false
     t.string "color", null: false
@@ -3079,14 +3073,9 @@ ActiveRecord::Schema.define(version: 20180726172057) do
   add_foreign_key "push_event_payloads", "events", name: "fk_36c74129da", on_delete: :cascade
   add_foreign_key "push_rules", "projects", name: "fk_83b29894de", on_delete: :cascade
   add_foreign_key "releases", "projects", name: "fk_47fe2a0596", on_delete: :cascade
-<<<<<<< HEAD
   add_foreign_key "remote_mirrors", "projects", name: "fk_43a9aa4ca8", on_delete: :cascade
   add_foreign_key "repository_languages", "projects", on_delete: :cascade
   add_foreign_key "resource_label_events", "epics", on_delete: :cascade
-=======
-  add_foreign_key "remote_mirrors", "projects", on_delete: :cascade
-  add_foreign_key "repository_languages", "projects", on_delete: :cascade
->>>>>>> upstream/master
   add_foreign_key "resource_label_events", "issues", on_delete: :cascade
   add_foreign_key "resource_label_events", "labels", on_delete: :nullify
   add_foreign_key "resource_label_events", "merge_requests", on_delete: :cascade
