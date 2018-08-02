@@ -20,9 +20,10 @@ module BitbucketServer
       end
 
       def state
-        if raw['state'] == 'MERGED'
+        case raw['state']
+        when 'MERGED'
           'merged'
-        elsif raw['state'] == 'DECLINED'
+        when 'DECLINED'
           'closed'
         else
           'opened'
