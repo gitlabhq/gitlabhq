@@ -137,7 +137,11 @@ export default class SearchAutocomplete {
     if (!term) {
       const contents = this.getCategoryContents();
       if (contents) {
-        this.searchInput.data('glDropdown').filter.options.callback(contents);
+        const glDropdownInstance = this.searchInput.data('glDropdown');
+
+        if (glDropdownInstance) {
+          glDropdownInstance.filter.options.callback(contents);
+        }
         this.enableAutocomplete();
       }
       return;

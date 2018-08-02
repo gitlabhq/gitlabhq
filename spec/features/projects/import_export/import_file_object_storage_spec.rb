@@ -8,7 +8,8 @@ describe 'Import/Export - project import integration test', :js do
   let(:export_path) { "#{Dir.tmpdir}/import_file_spec" }
 
   before do
-    stub_feature_flags(import_export_object_storage: false)
+    stub_feature_flags(import_export_object_storage: true)
+    stub_uploads_object_storage(FileUploader)
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
     gitlab_sign_in(user)
   end
@@ -33,7 +34,6 @@ describe 'Import/Export - project import integration test', :js do
 
         expect(page).to have_content('Import an exported GitLab project')
         expect(URI.parse(current_url).query).to eq("namespace_id=#{namespace.id}&path=#{project_path}")
-        expect(Gitlab::ImportExport).to receive(:import_upload_path).with(filename: /\A\h{32}\z/).and_call_original
 
         attach_file('file', file)
         click_on 'Import project'

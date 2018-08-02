@@ -1,7 +1,7 @@
 # coding: utf-8
 require "spec_helper"
 
-describe Gitlab::Git::Repository, seed_helper: true do
+describe Gitlab::Git::Repository, :seed_helper do
   include Gitlab::EncodingHelper
   using RSpec::Parameterized::TableSyntax
 

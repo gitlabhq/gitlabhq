@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe Gitlab::Git::Branch, seed_helper: true do
+describe Gitlab::Git::Branch, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
   let(:rugged) do
     Gitlab::GitalyClient::StorageSettings.allow_disk_access do
