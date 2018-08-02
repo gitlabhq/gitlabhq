@@ -57,17 +57,20 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
           WHERE epic_issues.epic_id = #{id}
         ) inner_results ON (inner_results.start_date = milestones.start_date OR inner_results.due_date = milestones.due_date)
         WHERE epic_issues.epic_id = #{id}
-        ORDER BY milestones.start_date, milestones.due_date;
       SQL
 
       db_results = ActiveRecord::Base.connection.select_all(sql).to_a
 
       results = {}
-      db_results.find { |row| row['start_date'] }&.tap do |row|
+      db_results
+        .reject { |row| row['start_date'].nil? }
+        .min_by { |row| row['start_date'] }&.tap do |row|
         results[:start_date] = row['start_date']
         results[:start_date_sourcing_milestone_id] = row['id']
       end
-      db_results.reverse.find { |row| row['due_date'] }&.tap do |row|
+      db_results
+        .reject { |row| row['due_date'].nil? }
+        .max_by { |row| row['due_date'] }&.tap do |row|
         results[:due_date] = row['due_date']
         results[:due_date_sourcing_milestone_id] = row['id']
       end
