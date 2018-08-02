@@ -2,6 +2,7 @@
 import { __ } from '~/locale';
 import { mapActions, mapState } from 'vuex';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
+import { modalTypes } from '../../constants';
 
 export default {
   components: {
@@ -16,7 +17,9 @@ export default {
     ...mapState(['entryModal']),
     entryName: {
       get() {
-        if (this.entryModal.type === 'rename') return this.name || this.entryModal.entry.name;
+        if (this.entryModal.type === modalTypes.rename) {
+          return this.name || this.entryModal.entry.name;
+        }
 
         return this.name || (this.entryModal.path !== '' ? `${this.entryModal.path}/` : '');
       },
@@ -25,19 +28,19 @@ export default {
       },
     },
     modalTitle() {
-      if (this.entryModal.type === 'tree') {
+      if (this.entryModal.type === modalTypes.tree) {
         return __('Create new directory');
-      } else if (this.entryModal.type === 'rename') {
-        return this.entryModal.entry.type === 'tree' ? __('Rename folder') : __('Rename file');
+      } else if (this.entryModal.type === modalTypes.rename) {
+        return this.entryModal.entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create new file');
     },
     buttonLabel() {
-      if (this.entryModal.type === 'tree') {
+      if (this.entryModal.type === modalTypes.tree) {
         return __('Create directory');
-      } else if (this.entryModal.type === 'rename') {
-        return this.entryModal.entry.type === 'tree' ? __('Rename folder') : __('Rename file');
+      } else if (this.entryModal.type === modalTypes.rename) {
+        return this.entryModal.entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create file');
@@ -46,7 +49,7 @@ export default {
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
     submitForm() {
-      if (this.entryModal.type === 'rename') {
+      if (this.entryModal.type === modalTypes.rename) {
         this.renameEntry({
           path: this.entryModal.entry.path,
           name: this.entryName,

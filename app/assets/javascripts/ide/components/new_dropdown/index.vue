@@ -4,6 +4,7 @@ import icon from '~/vue_shared/components/icon.vue';
 import newModal from './modal.vue';
 import upload from './upload.vue';
 import ItemButton from './button.vue';
+import { modalTypes } from '../../constants';
 
 export default {
   components: {
@@ -54,6 +55,7 @@ export default {
       this.dropdownOpen = !this.dropdownOpen;
     },
   },
+  modalTypes,
 };
 </script>
 
@@ -104,7 +106,7 @@ export default {
               class="d-flex"
               icon="folder-new"
               icon-classes="mr-2"
-              @click="createNewItem('tree')"
+              @click="createNewItem($options.modalTypes.tree)"
             />
           </li>
           <li class="divider"></li>
@@ -115,7 +117,7 @@ export default {
             class="d-flex"
             icon="pencil"
             icon-classes="mr-2"
-            @click="createNewItem('rename')"
+            @click="createNewItem($options.modalTypes.rename)"
           />
         </li>
         <li>
