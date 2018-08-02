@@ -7,8 +7,7 @@
 
   #js-pipeline-header-vue.pipeline-header-container
 
-  - if @commit
-    = render "projects/pipelines/info"
+  = render "projects/pipelines/info", commit: @pipeline.commit
 
   = render "projects/pipelines/with_tabs", pipeline: @pipeline
 
