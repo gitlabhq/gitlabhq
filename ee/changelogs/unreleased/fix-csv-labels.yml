@@ -1,0 +1,5 @@
+---
+title: Fix exporting issues to CSV when sorting by label priority is used.
+merge_request:
+author:
+type: fixed

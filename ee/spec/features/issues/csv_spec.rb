@@ -5,7 +5,7 @@ describe 'Issues csv' do
   let(:project) { create(:project, :public) }
   let(:milestone) { create(:milestone, title: 'v1.0', project: project) }
   let(:idea_label) { create(:label, project: project, title: 'Idea') }
-  let(:feature_label) { create(:label, project: project, title: 'Feature') }
+  let(:feature_label) { create(:label, project: project, title: 'Feature', priority: 10) }
   let!(:issue)  { create(:issue, project: project, author: user) }
 
   before do
@@ -65,6 +65,15 @@ describe 'Issues csv' do
     request_csv(state: :closed)
 
     expect(csv.count).to eq 0
+  end
+
+  it 'ignores sorting from issue index' do
+    issue2 = create(:labeled_issue, project: project, author: user, labels: [feature_label])
+
+    request_csv(sort: :label_priority)
+
+    expected = [issue.iid.to_s, issue2.iid.to_s]
+    expect(csv.map { |row| row['Issue ID'] }).to eq expected
   end
 
   it 'uses array filters, such as label_name' do
