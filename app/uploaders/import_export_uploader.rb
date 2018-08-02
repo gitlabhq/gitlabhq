@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ImportExportUploader < AttachmentUploader
-  EXTENSION_WHITELIST = %w[tar.gz].freeze
+  EXTENSION_WHITELIST = %w[tar.gz gz].freeze
 
   def extension_whitelist
     EXTENSION_WHITELIST

@@ -10,15 +10,18 @@ module Gitlab
         new(*args).import
       end
 
-      def initialize(archive_file:, shared:)
+      def initialize(project:, archive_file:, shared:)
+        @project = project
         @archive_file = archive_file
         @shared = shared
       end
 
       def import
         mkdir_p(@shared.export_path)
+        mkdir_p(@shared.archive_path)
 
-        remove_symlinks!
+        remove_symlinks
+        copy_archive
 
         wait_for_archived_file do
           decompress_archive
@@ -27,7 +30,8 @@ module Gitlab
         @shared.error(e)
         false
       ensure
-        remove_symlinks!
+        remove_import_file
+        remove_symlinks
       end
 
       private
@@ -51,12 +55,24 @@ module Gitlab
         result
       end
 
-      def remove_symlinks!
+      def copy_archive
+        return if @archive_file
+
+        @archive_file = File.join(@shared.archive_path, Gitlab::ImportExport.export_filename(project: @project))
+
+        download_or_copy_upload(@project.import_export_upload.import_file, @archive_file)
+      end
+
+      def remove_symlinks
         extracted_files.each do |path|
           FileUtils.rm(path) if File.lstat(path).symlink?
         end
 
         true
+      end
+
+      def remove_import_file
+        FileUtils.rm_rf(@archive_file)
       end
 
       def extracted_files

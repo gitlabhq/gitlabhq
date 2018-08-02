@@ -7,6 +7,8 @@ describe API::ProjectImport do
   let(:namespace) { create(:group) }
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    stub_feature_flags(import_export_object_storage: true)
+    stub_uploads_object_storage(FileUploader)
 
     namespace.add_owner(user)
   end
