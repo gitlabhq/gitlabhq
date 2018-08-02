@@ -7,7 +7,7 @@
 
 .form-group
   = label_tag :auth_method, _('Authentication method'), class: 'label-bold'
-  = select_tag :auth_method, options_for_select([[_('Password'), 'password']], 'password'), { class: "form-control js-auth-method", disabled: 'disabled' }
+  = select_tag :auth_method, options_for_select([[_('Password'), 'password']], 'password'), { class: "form-control js-auth-method", disabled: true }
 
 .form-group
   = label_tag :password, _('Password'), class: 'label-bold'
