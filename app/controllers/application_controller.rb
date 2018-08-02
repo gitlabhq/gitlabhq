@@ -24,6 +24,7 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
+
   around_action :set_locale
 
   after_action :set_page_title_header, if: -> { request.format == :json }
@@ -127,22 +128,12 @@ class ApplicationController < ActionController::Base
   # Controllers such as GitHttpController may use alternative methods
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
   #
-  #  `current_user` call is going to trigger Warden::Proxy authentication
-  #  that is going to invoke warden callbacks, and we don't want to do it
-  #  twice in case of authentication request.
-  #
   def auth_user
-    return if authentication_request?
-
     if user_signed_in?
       current_user
     else
       try(:authenticated_user)
     end
-  end
-
-  def authentication_request?
-    controller_name == 'sessions' && action_name == 'create'
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens

@@ -30,14 +30,23 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
-    user ||= auth.user
+    ActiveSession.destroy(user || auth.user, auth.request.session.id)
+
+    activity = Gitlab::Auth::Activity.new(opts)
+    tracker = Gitlab::Auth::BlockedUserTracker.new(user, auth)
+
+    ##
+    # It is possible that `before_logout` event is going to be triggered
+    # multiple times during the request lifecycle. We want to increment
+    # metrics and write logs only once in that case.
+    #
+    next if (auth.env['warden.auth.trackers'] ||= {}).push(activity).many?
 
     if user.blocked?
-      Gitlab::Auth::Activity.new(opts).user_blocked!
-      Gitlab::Auth::BlockedUserTracker.new(user, auth).log_activity!
+      activity.user_blocked!
+      tracker.log_activity!
     end
 
-    Gitlab::Auth::Activity.new(opts).user_session_destroyed!
-    ActiveSession.destroy(user, auth.request.session.id)
+    activity.user_session_destroyed!
   end
 end
