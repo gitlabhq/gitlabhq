@@ -1,7 +1,9 @@
 module Projects
   module Packages
     class PackagesController < ApplicationController
-      before_action :authorize_admin_project!
+      before_action :verify_packages_enabled!
+      before_action :authorize_read_packages!
+      before_action :authorize_admin_project!, only: [:destroy]
 
       def index
         @packages = project.packages.all.page(params[:page])
@@ -18,6 +20,12 @@ module Projects
         @package.destroy
 
         redirect_to project_packages_path(@project), notice: _('Package was removed')
+      end
+
+      private
+
+      def verify_packages_enabled!
+        render_404 unless Gitlab.config.packages.enabled
       end
     end
   end

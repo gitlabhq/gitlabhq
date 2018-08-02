@@ -183,6 +183,7 @@ class ProjectPolicy < BasePolicy
     enable :read_commit_status
     enable :read_build
     enable :read_container_image
+    enable :read_packages
     enable :read_pipeline
     enable :read_pipeline_schedule
     enable :read_environment

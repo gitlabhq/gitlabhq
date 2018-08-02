@@ -268,6 +268,10 @@ module ProjectsHelper
       nav_tabs << :container_registry
     end
 
+    if Gitlab.config.packages.enabled && can?(current_user, :read_packages, project)
+      nav_tabs << :packages
+    end
+
     if project.builds_enabled? && can?(current_user, :read_pipeline, project)
       nav_tabs << :pipelines
     end
