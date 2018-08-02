@@ -165,14 +165,13 @@ module MergeRequests
       merge_request.title ||= "Resolve \"#{issue.title}\"" if issue.is_a?(Issue)
 
       return if merge_request.title.present?
+      return if issue_iid.blank?
 
-      if issue_iid.present?
-        title_parts = ["Resolve #{issue.to_reference}"]
-        branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
+      title_parts = ["Resolve #{issue.to_reference}"]
+      branch_title = source_branch.downcase.remove(issue_iid.downcase).titleize.humanize
 
-        title_parts << "\"#{branch_title}\"" if branch_title.present?
-        merge_request.title = title_parts.join(' ')
-      end
+      title_parts << "\"#{branch_title}\"" if branch_title.present?
+      merge_request.title = title_parts.join(' ')
     end
 
     def issue_iid
