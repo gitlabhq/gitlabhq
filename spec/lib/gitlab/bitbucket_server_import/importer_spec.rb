@@ -73,6 +73,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         BitbucketServer::Representation::Comment,
         note: 'Hello world',
         author_email: 'unknown@gmail.com',
+        author_username: 'The Flash',
         comments: [],
         created_at: now,
         updated_at: now,
@@ -105,7 +106,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       merge_request = MergeRequest.first
       expect(merge_request.notes.count).to eq(1)
       note = merge_request.notes.first
-      expect(note.note).to eq(@pr_note.note)
+      expect(note.note).to end_with(@pr_note.note)
       expect(note.author).to eq(project.owner)
       expect(note.created_at).to eq(@pr_note.created_at)
       expect(note.updated_at).to eq(@pr_note.created_at)
@@ -115,6 +116,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       reply = instance_double(
         BitbucketServer::Representation::PullRequestComment,
         author_email: 'someuser@gitlab.com',
+        author_username: 'Batman',
         note: 'I agree',
         created_at: now,
         updated_at: now)
@@ -130,6 +132,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         new_pos: 4,
         note: 'Hello world',
         author_email: 'unknown@gmail.com',
+        author_username: 'Superman',
         comments: [reply],
         created_at: now,
         updated_at: now,
@@ -155,7 +158,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       notes = merge_request.notes.order(:id).to_a
       start_note = notes.first
       expect(start_note.type).to eq('DiffNote')
-      expect(start_note.note).to eq(inline_note.note)
+      expect(start_note.note).to end_with(inline_note.note)
       expect(start_note.created_at).to eq(inline_note.created_at)
       expect(start_note.updated_at).to eq(inline_note.updated_at)
       expect(start_note.position.base_sha).to eq(inline_note.from_sha)
@@ -165,8 +168,9 @@ describe Gitlab::BitbucketServerImport::Importer do
       expect(start_note.position.new_line).to eq(inline_note.new_pos)
 
       reply_note = notes.last
-      # Make sure reply context is included
-      expect(reply_note.note).to eq("> #{inline_note.note}\n\n#{reply.note}")
+      # Make sure author and reply context is included
+      expect(reply_note.note).to start_with("*By #{reply.author_username} (#{reply.author_email}) on #{reply.created_at}*\n\n")
+      expect(reply_note.note).to end_with("> #{inline_note.note}\n\n#{reply.note}")
       expect(reply_note.author).to eq(project.owner)
       expect(reply_note.created_at).to eq(reply.created_at)
       expect(reply_note.updated_at).to eq(reply.created_at)
@@ -181,6 +185,7 @@ describe Gitlab::BitbucketServerImport::Importer do
       reply = instance_double(
         BitbucketServer::Representation::Comment,
         author_email: 'someuser@gitlab.com',
+        author_username: 'Aquaman',
         note: 'I agree',
         created_at: now,
         updated_at: now)
@@ -196,6 +201,7 @@ describe Gitlab::BitbucketServerImport::Importer do
         new_pos: 9,
         note: 'This is a note with an invalid line position.',
         author_email: project.owner.email,
+        author_username: 'Owner',
         comments: [reply],
         created_at: now,
         updated_at: now,

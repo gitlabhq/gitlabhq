@@ -298,7 +298,15 @@ module Gitlab
       end
 
       def pull_request_comment_attributes(comment)
-        note =
+        author = find_user_id(comment.author_email)
+        note = ''
+
+        unless author
+          author = project.creator_id
+          note = "*By #{comment.author_username} (#{comment.author_email}) on #{comment.created_at}*\n\n"
+        end
+
+        note +=
           # Provide some context for replying
           if comment.parent_comment
             "> #{comment.parent_comment.note.truncate(80)}\n\n#{comment.note}"
@@ -309,7 +317,7 @@ module Gitlab
         {
           project: project,
           note: note,
-          author_id: gitlab_user_id(comment.author_email),
+          author_id: author,
           created_at: comment.created_at,
           updated_at: comment.updated_at
         }
