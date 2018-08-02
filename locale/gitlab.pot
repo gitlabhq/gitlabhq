@@ -3653,14 +3653,11 @@ msgstr ""
 msgid "Install Runner on Kubernetes"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Instance"
 msgid_plural "Instances"
 msgstr[0] ""
 msgstr[1] ""
 
-=======
->>>>>>> upstream/master
 msgid "Instance Statistics"
 msgstr ""
 
@@ -4490,12 +4487,9 @@ msgstr ""
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow connecting repositories without generating a Personal Access Token."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Notification events"
 msgstr ""
 
