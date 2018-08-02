@@ -17,9 +17,9 @@ it from the primary to resolve the issue.
 
 If verification succeeds on the **primary** but fails on the **secondary**,
 this indicates that the object was corrupted during the replication process.
-Until [issue #5195][ee-5195] is implemented, Geo won't automatically resolve
-verification failures of this kind, so you should follow
-[these instructions][reset-verification]
+Geo actively try to correct verification failures marking the repository to
+be resynced with a backoff period. If you want to reset the verification for
+these failures, so you should follow [these instructions][reset-verification].
 
 If verification is lagging significantly behind replication, consider giving
 the node more time before scheduling a planned failover.
@@ -88,9 +88,10 @@ for every node after every update to make sure that they are all in sync.
 
 # Reset verification for projects where verification has failed
 
-Until [issue #5195][ee-5195] is implemented, Geo won't automatically resolve
-verification failures, so you should reset them manually. This rake task marks
-projects where verification has failed or the checksum mismatch to be resynced:
+Geo actively try to correct verification failures marking the repository to
+be resynced with a backoff period. If you want to reset them manually, this
+rake task marks projects where verification has failed or the checksum mismatch
+to be resynced without the backoff period:
 
 #### For repositories:
 

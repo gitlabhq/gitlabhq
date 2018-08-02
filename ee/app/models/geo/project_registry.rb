@@ -4,6 +4,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   include ::IgnorableColumn
   include ::ShaAttribute
 
+  MAX_VERIFICATION_RETRIES = 5
   REGISTRY_TYPES = %i{repository wiki}.freeze
   RETRIES_BEFORE_REDOWNLOAD = 5
 
@@ -115,7 +116,11 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       "#{type}_verification_checksum_sha" => nil,
       "#{type}_checksum_mismatch" => false,
       "last_#{type}_verification_failure" => nil,
-      "resync_#{type}_was_scheduled_at" => scheduled_at)
+      "#{type}_verification_retry_count" => nil,
+      "resync_#{type}_was_scheduled_at" => scheduled_at,
+      "#{type}_retry_count" => nil,
+      "#{type}_retry_at" => nil
+    )
   end
 
   def repository_sync_due?(scheduled_time)
@@ -150,6 +155,14 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     retry_count(type) > RETRIES_BEFORE_REDOWNLOAD
   end
 
+  def should_be_reverified?(type)
+    verification_retry_count(type) <= MAX_VERIFICATION_RETRIES
+  end
+
+  def verification_retry_count(type)
+    public_send("#{type}_verification_retry_count").to_i # rubocop:disable GitlabSecurity/PublicSend
+  end
+
   private
 
   def fetches_since_gc_redis_key
@@ -176,15 +189,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     return false if wiki_retry_at && timestamp < wiki_retry_at
 
     last_wiki_synced_at && timestamp > last_wiki_synced_at
-  end
-
-  # To prevent the retry time from storing invalid dates in the database,
-  # cap the max time to a week plus some random jitter value.
-  def next_retry_time(retry_count)
-    proposed_time = Time.now + delay(retry_count).seconds
-    max_future_time = Time.now + 7.days + delay(1).seconds
-
-    [proposed_time, max_future_time].min
   end
 
   def retry_count(type)

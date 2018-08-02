@@ -53,7 +53,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_repository: true,
           repository_verification_checksum_sha: nil,
           repository_checksum_mismatch: false,
-          last_repository_verification_failure: nil
+          last_repository_verification_failure: nil,
+          repository_verification_retry_count: nil,
+          repository_missing_on_primary: nil
         )
       end
 
@@ -67,7 +69,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_repository: true,
           repository_verification_checksum_sha: nil,
           repository_checksum_mismatch: false,
-          last_repository_verification_failure: nil
+          last_repository_verification_failure: nil,
+          repository_verification_retry_count: nil,
+          repository_missing_on_primary: nil
         )
       end
 
@@ -81,7 +85,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_repository: false,
           repository_verification_checksum_sha: be_present,
           repository_checksum_mismatch: false,
-          last_repository_verification_failure: nil
+          last_repository_verification_failure: nil,
+          repository_verification_retry_count: nil,
+          repository_missing_on_primary: nil
         )
       end
 
@@ -95,7 +101,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_repository: false,
           repository_verification_checksum_sha: nil,
           repository_checksum_mismatch: false,
-          last_repository_verification_failure: nil
+          last_repository_verification_failure: nil,
+          repository_verification_retry_count: nil,
+          repository_missing_on_primary: nil
         )
       end
     end
@@ -121,7 +129,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_wiki: true,
           wiki_verification_checksum_sha: nil,
           wiki_checksum_mismatch: false,
-          last_wiki_verification_failure: nil
+          last_wiki_verification_failure: nil,
+          wiki_verification_retry_count: nil,
+          wiki_missing_on_primary: nil
         )
       end
 
@@ -135,7 +145,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_wiki: true,
           wiki_verification_checksum_sha: nil,
           wiki_checksum_mismatch: false,
-          last_wiki_verification_failure: nil
+          last_wiki_verification_failure: nil,
+          wiki_verification_retry_count: nil,
+          wiki_missing_on_primary: nil
         )
       end
 
@@ -149,7 +161,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_wiki: false,
           wiki_verification_checksum_sha: be_present,
           wiki_checksum_mismatch: false,
-          last_wiki_verification_failure: nil
+          last_wiki_verification_failure: nil,
+          wiki_verification_retry_count: nil,
+          wiki_missing_on_primary: nil
         )
       end
 
@@ -163,7 +177,9 @@ describe Geo::RepositoryVerificationReset, :geo do
           resync_wiki: false,
           wiki_verification_checksum_sha: nil,
           wiki_checksum_mismatch: false,
-          last_wiki_verification_failure: nil
+          last_wiki_verification_failure: nil,
+          wiki_verification_retry_count: nil,
+          wiki_missing_on_primary: nil
         )
       end
     end

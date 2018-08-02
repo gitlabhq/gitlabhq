@@ -388,11 +388,13 @@ describe Geo::ProjectRegistry do
       before do
         subject.start_sync!(type)
         subject.update!(repository_retry_at: 1.day.from_now,
+                        repository_retry_count: 1,
                         force_to_redownload_repository: true,
                         last_repository_sync_failure: 'foo',
                         repository_verification_checksum_sha: 'abc123',
                         repository_checksum_mismatch: true,
-                        last_repository_verification_failure: 'bar')
+                        last_repository_verification_failure: 'bar',
+                        repository_verification_retry_count: 1)
       end
 
       it 'sets last_repository_successful_sync_at to now' do
@@ -408,10 +410,10 @@ describe Geo::ProjectRegistry do
 
         expect(subject.reload).to have_attributes(
           resync_repository: false,
-          repository_retry_count: be_nil,
-          repository_retry_at: be_nil,
+          repository_retry_count: nil,
+          repository_retry_at: nil,
           force_to_redownload_repository: false,
-          last_repository_sync_failure: be_nil,
+          last_repository_sync_failure: nil,
           repository_missing_on_primary: false
         )
       end
@@ -419,9 +421,17 @@ describe Geo::ProjectRegistry do
       it 'resets verification state' do
         subject.finish_sync!(type)
 
-        expect(subject.reload.repository_verification_checksum_sha).to be_nil
-        expect(subject.reload.repository_checksum_mismatch).to be false
-        expect(subject.reload.last_repository_verification_failure).to be_nil
+        expect(subject.reload).to have_attributes(
+          repository_verification_checksum_sha: nil,
+          repository_checksum_mismatch: false,
+          last_repository_verification_failure: nil
+        )
+      end
+
+      it 'does not reset repository_verification_retry_count' do
+        subject.finish_sync!(type)
+
+        expect(subject.reload.repository_verification_retry_count).to eq 1
       end
 
       context 'when a repository was missing on primary' do
@@ -444,15 +454,25 @@ describe Geo::ProjectRegistry do
         end
 
         it 'resets the other sync state fields' do
-          expect(subject.reload.repository_retry_count).to be_nil
-          expect(subject.reload.repository_retry_at).to be_nil
-          expect(subject.reload.force_to_redownload_repository).to be false
+          expect(subject.reload).to have_attributes(
+            repository_retry_count: nil,
+            repository_retry_at: nil,
+            force_to_redownload_repository: false,
+            last_repository_sync_failure: nil,
+            repository_missing_on_primary: false
+          )
         end
 
         it 'resets the verification state' do
-          expect(subject.reload.repository_verification_checksum_sha).to be_nil
-          expect(subject.reload.repository_checksum_mismatch).to be false
-          expect(subject.reload.last_repository_verification_failure).to be_nil
+          expect(subject.reload).to have_attributes(
+            repository_verification_checksum_sha: nil,
+            repository_checksum_mismatch: false,
+            last_repository_verification_failure: nil
+          )
+        end
+
+        it 'does not reset repository_verification_retry_count' do
+          expect(subject.reload.repository_verification_retry_count).to eq 1
         end
       end
     end
@@ -463,11 +483,13 @@ describe Geo::ProjectRegistry do
       before do
         subject.start_sync!(type)
         subject.update!(wiki_retry_at: 1.day.from_now,
+                        wiki_retry_count: 1,
                         force_to_redownload_wiki: true,
                         last_wiki_sync_failure: 'foo',
                         wiki_verification_checksum_sha: 'abc123',
                         wiki_checksum_mismatch: true,
-                        last_wiki_verification_failure: 'bar')
+                        last_wiki_verification_failure: 'bar',
+                        wiki_verification_retry_count: 1)
       end
 
       it 'sets last_wiki_successful_sync_at to now' do
@@ -483,10 +505,10 @@ describe Geo::ProjectRegistry do
 
         expect(subject.reload).to have_attributes(
           resync_wiki: false,
-          wiki_retry_count: be_nil,
-          wiki_retry_at: be_nil,
+          wiki_retry_count: nil,
+          wiki_retry_at: nil,
           force_to_redownload_wiki: false,
-          last_wiki_sync_failure: be_nil,
+          last_wiki_sync_failure: nil,
           wiki_missing_on_primary: false
         )
       end
@@ -494,9 +516,17 @@ describe Geo::ProjectRegistry do
       it 'resets verification state' do
         subject.finish_sync!(type)
 
-        expect(subject.reload.wiki_verification_checksum_sha).to be_nil
-        expect(subject.reload.wiki_checksum_mismatch).to be false
-        expect(subject.reload.last_wiki_verification_failure).to be_nil
+        expect(subject.reload).to have_attributes(
+          wiki_verification_checksum_sha: nil,
+          wiki_checksum_mismatch: false,
+          last_wiki_verification_failure: nil
+        )
+      end
+
+      it 'does not reset wiki_verification_retry_count' do
+        subject.finish_sync!(type)
+
+        expect(subject.reload.wiki_verification_retry_count).to eq 1
       end
 
       context 'when a wiki was missing on primary' do
@@ -519,15 +549,25 @@ describe Geo::ProjectRegistry do
         end
 
         it 'resets the other sync state fields' do
-          expect(subject.reload.wiki_retry_count).to be_nil
-          expect(subject.reload.wiki_retry_at).to be_nil
-          expect(subject.reload.force_to_redownload_wiki).to be false
+          expect(subject.reload).to have_attributes(
+            wiki_retry_count: nil,
+            wiki_retry_at: nil,
+            force_to_redownload_wiki: false,
+            last_wiki_sync_failure: nil,
+            wiki_missing_on_primary: false
+          )
         end
 
         it 'resets the verification state' do
-          expect(subject.reload.wiki_verification_checksum_sha).to be_nil
-          expect(subject.reload.wiki_checksum_mismatch).to be false
-          expect(subject.reload.last_wiki_verification_failure).to be_nil
+          expect(subject.reload).to have_attributes(
+            wiki_verification_checksum_sha: nil,
+            wiki_checksum_mismatch: false,
+            last_wiki_verification_failure: nil
+          )
+        end
+
+        it 'does not reset wiki_verification_retry_count' do
+          expect(subject.reload.wiki_verification_retry_count).to eq 1
         end
       end
     end
@@ -646,8 +686,6 @@ describe Geo::ProjectRegistry do
   end
 
   describe '#repository_updated!' do
-    let(:now) { Time.now }
-
     context 'for a repository' do
       let(:event) { double(:event, source: 'repository') }
 
@@ -656,29 +694,33 @@ describe Geo::ProjectRegistry do
                         repository_verification_checksum_sha: 'abc123',
                         repository_checksum_mismatch: true,
                         last_repository_verification_failure: 'foo',
-                        resync_repository_was_scheduled_at: nil)
+                        resync_repository_was_scheduled_at: nil,
+                        repository_retry_at: 1.hour.from_now,
+                        repository_retry_count: 1,
+                        repository_verification_retry_count: 1)
 
-        subject.repository_updated!(event, now)
+        subject.repository_updated!(event, Time.now)
       end
 
-      it 'sets resync_repository to true' do
-        expect(subject.resync_repository).to be true
+      it 'resets sync state' do
+        expect(subject.reload).to have_attributes(
+          resync_repository: true,
+          repository_retry_count: nil,
+          repository_retry_at: nil,
+          force_to_redownload_repository: nil,
+          last_repository_sync_failure: nil,
+          repository_missing_on_primary: nil,
+          resync_repository_was_scheduled_at: be_within(1.minute).of(Time.now)
+        )
       end
 
-      it 'sets repository_verification_checksum_sha to nil' do
-        expect(subject.repository_verification_checksum_sha).to be_nil
-      end
-
-      it 'sets repository_checksum_mismatch to false' do
-        expect(subject.repository_checksum_mismatch).to be false
-      end
-
-      it 'sets last_repository_verification_failure to nil' do
-        expect(subject.last_repository_verification_failure).to be_nil
-      end
-
-      it 'sets resync_repository_was_scheduled_at to scheduled_at' do
-        expect(subject.resync_repository_was_scheduled_at).to eq(now)
+      it 'resets verification state' do
+        expect(subject).to have_attributes(
+          repository_verification_checksum_sha: nil,
+          repository_checksum_mismatch: false,
+          last_repository_verification_failure: nil,
+          repository_verification_retry_count: nil
+        )
       end
     end
 
@@ -690,29 +732,33 @@ describe Geo::ProjectRegistry do
                         wiki_verification_checksum_sha: 'abc123',
                         wiki_checksum_mismatch: true,
                         last_wiki_verification_failure: 'foo',
-                        resync_wiki_was_scheduled_at: nil)
+                        resync_wiki_was_scheduled_at: nil,
+                        wiki_retry_at: 1.hour.from_now,
+                        wiki_retry_count: 1,
+                        wiki_verification_retry_count: 1)
 
-        subject.repository_updated!(event, now)
+        subject.repository_updated!(event, Time.now)
       end
 
-      it 'sets resync_wiki to true' do
-        expect(subject.resync_wiki).to be true
+      it 'resets sync state' do
+        expect(subject.reload).to have_attributes(
+          resync_wiki: true,
+          wiki_retry_count: nil,
+          wiki_retry_at: nil,
+          force_to_redownload_wiki: nil,
+          last_wiki_sync_failure: nil,
+          wiki_missing_on_primary: nil,
+          resync_wiki_was_scheduled_at: be_within(1.minute).of(Time.now)
+        )
       end
 
-      it 'sets wiki_verification_checksum_sha to nil' do
-        expect(subject.wiki_verification_checksum_sha).to be_nil
-      end
-
-      it 'sets wiki_checksum_mismatch to false' do
-        expect(subject.wiki_checksum_mismatch).to be false
-      end
-
-      it 'sets last_wiki_verification_failure to nil' do
-        expect(subject.last_wiki_verification_failure).to be_nil
-      end
-
-      it 'sets resync_wiki_was_scheduled_at to scheduled_at' do
-        expect(subject.resync_wiki_was_scheduled_at).to eq(now)
+      it 'resets verification state' do
+        expect(subject).to have_attributes(
+          wiki_verification_checksum_sha: nil,
+          wiki_checksum_mismatch: false,
+          last_wiki_verification_failure: nil,
+          wiki_verification_retry_count: nil
+        )
       end
     end
   end

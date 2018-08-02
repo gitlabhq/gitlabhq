@@ -677,6 +677,20 @@ describe Geo::ProjectRegistryFinder, :geo do
 
         expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
       end
+
+      it 'does not return registries when the repository is missing on primary' do
+        project_verified = create(:repository_state, :repository_verified).project
+        create(:geo_project_registry, :synced, project: project_verified, repository_missing_on_primary: true)
+
+        expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+      end
+
+      it 'does not return registries when the wiki is missing on primary' do
+        project_verified = create(:repository_state, :wiki_verified).project
+        create(:geo_project_registry, :synced, project: project_verified, wiki_missing_on_primary: true)
+
+        expect(subject.find_registries_to_verify(batch_size: 100)).to be_empty
+      end
     end
   end
 

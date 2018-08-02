@@ -355,12 +355,9 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of registries that need verification
     def legacy_find_registries_to_verify(batch_size:)
-      repo_condition = local_repo_condition
-      wiki_condition = local_wiki_condition
-
       registries = Geo::ProjectRegistry
-        .where(repo_condition.or(wiki_condition))
-        .pluck(:project_id, repo_condition.to_sql, wiki_condition.to_sql)
+        .where(local_repo_condition.or(local_wiki_condition))
+        .pluck(:project_id, local_repo_condition.to_sql, local_wiki_condition.to_sql)
 
       return Geo::ProjectRegistry.none if registries.empty?
 
@@ -410,12 +407,22 @@ module Geo
       local_registry_table[:repository_verification_checksum_sha].eq(nil)
         .and(local_registry_table[:last_repository_verification_failure].eq(nil))
         .and(local_registry_table[:resync_repository].eq(false))
+        .and(repository_missing_on_primary_is_not_true)
     end
 
     def local_wiki_condition
       local_registry_table[:wiki_verification_checksum_sha].eq(nil)
         .and(local_registry_table[:last_wiki_verification_failure].eq(nil))
         .and(local_registry_table[:resync_wiki].eq(false))
+        .and(wiki_missing_on_primary_is_not_true)
+    end
+
+    def repository_missing_on_primary_is_not_true
+      Arel::Nodes::SqlLiteral.new("project_registry.repository_missing_on_primary IS NOT TRUE")
+    end
+
+    def wiki_missing_on_primary_is_not_true
+      Arel::Nodes::SqlLiteral.new("project_registry.wiki_missing_on_primary IS NOT TRUE")
     end
   end
 end

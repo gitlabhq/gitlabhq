@@ -52,6 +52,18 @@ describe Geo::RepositoryVerification::Secondary::ShardWorker, :postgresql, :clea
       subject.perform(shard_name)
     end
 
+    it 'does not schedule jobs for projects missing repositories on primary' do
+      other_project = create(:project)
+      create(:repository_state, :repository_verified, project: project)
+      create(:repository_state, :wiki_verified, project: other_project)
+      create(:geo_project_registry, :synced, project: project, repository_missing_on_primary: true)
+      create(:geo_project_registry, :synced, project: other_project, wiki_missing_on_primary: true)
+
+      expect(secondary_singleworker).not_to receive(:perform_async)
+
+      subject.perform(shard_name)
+    end
+
     # test that when jobs are always moving forward and we're not querying the same things
     # over and over
     describe 'resource loading' do
