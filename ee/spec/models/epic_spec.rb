@@ -336,6 +336,83 @@ describe Epic do
     end
   end
 
+  describe '.update_dates' do
+    def link_epic_to_milestone(epic, milestone)
+      create(:issue, epic: epic, milestone: milestone)
+    end
+
+    it 'updates in bulk' do
+      milestone1 = create(:milestone, start_date: Date.new(2000, 1, 1), due_date: Date.new(2000, 1, 10))
+      milestone2 = create(:milestone, due_date: Date.new(2000, 1, 30))
+
+      epics = [
+        create(:epic),
+        create(:epic),
+        create(:epic, :use_fixed_dates)
+      ]
+      old_attributes = epics.map(&:attributes)
+
+      link_epic_to_milestone(epics[0], milestone1)
+      link_epic_to_milestone(epics[0], milestone2)
+      link_epic_to_milestone(epics[1], milestone2)
+      link_epic_to_milestone(epics[2], milestone1)
+      link_epic_to_milestone(epics[2], milestone2)
+
+      described_class.update_dates(described_class.where(id: epics.map(&:id)))
+
+      epics.each(&:reload)
+
+      expect(epics[0].start_date).to eq(milestone1.start_date)
+      expect(epics[0].start_date_sourcing_milestone).to eq(milestone1)
+      expect(epics[0].due_date).to eq(milestone2.due_date)
+      expect(epics[0].due_date_sourcing_milestone).to eq(milestone2)
+
+      expect(epics[1].start_date).to eq(nil)
+      expect(epics[1].start_date_sourcing_milestone).to eq(nil)
+      expect(epics[1].due_date).to eq(milestone2.due_date)
+      expect(epics[1].due_date_sourcing_milestone).to eq(milestone2)
+
+      expect(epics[2].start_date).to eq(old_attributes[2]['start_date'])
+      expect(epics[2].start_date_sourcing_milestone).to eq(milestone1)
+      expect(epics[2].due_date).to eq(old_attributes[2]['end_date'])
+      expect(epics[2].due_date_sourcing_milestone).to eq(milestone2)
+    end
+
+    context 'query count check' do
+      let(:milestone) { create(:milestone, start_date: Date.new(2000, 1, 1), due_date: Date.new(2000, 1, 10)) }
+      let!(:epics) { [ create(:epic) ] }
+
+      def setup_control_group
+        link_epic_to_milestone(epics[0], milestone)
+
+        ActiveRecord::QueryRecorder.new do
+          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+        end.count
+      end
+
+      it 'does not increase query count when adding epics without milestones' do
+        control_count = setup_control_group
+
+        epics << create(:epic)
+
+        expect do
+          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+        end.not_to exceed_query_limit(control_count)
+      end
+
+      it 'does not increase query count when adding epics belongs to same milestones' do
+        control_count = setup_control_group
+
+        epics << create(:epic)
+        link_epic_to_milestone(epics[1], milestone)
+
+        expect do
+          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+        end.not_to exceed_query_limit(control_count)
+      end
+    end
+  end
+
   describe '#issues_readable_by' do
     let(:user) { create(:user) }
     let(:group) { create(:group, :private) }
