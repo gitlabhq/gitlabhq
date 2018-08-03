@@ -1,7 +1,3 @@
-.mr-widget-border-top {
-  border-top: 1px solid $border-color;
-}
-
 .link-to-member-avatar {
   .disabled {
     pointer-events: none;
@@ -20,24 +16,6 @@
 
   .zero-approvals .ci-status-icon-success svg {
     fill: $gray-darkest;
-  }
-}
-
-.media-section {
-  @include media-breakpoint-down(md) {
-    align-items: flex-start;
-
-    .media-body {
-      flex-direction: column;
-      align-items: flex-start;
-    }
-  }
-
-  .code-text {
-    @include media-breakpoint-up(lg) {
-      align-self: center;
-      flex: 1;
-    }
   }
 }
 
@@ -108,24 +86,5 @@
     &:first-of-type {
       border-radius: $border-radius-default $border-radius-default 0 0;
     }
-  }
-
-  .grouped-security-reports,
-  .license-report-widget {
-    padding: 0;
-
-    > .media {
-      padding: $gl-padding;
-    }
-  }
-}
-
-.mr-widget-section {
-  .media {
-    align-items: center;
-  }
-
-  .code-text {
-    flex: 1;
   }
 }
