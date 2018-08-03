@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-describe Gitlab::Git::BlobSnippet, seed_helper: true do
+describe Gitlab::Git::BlobSnippet, :seed_helper do
   describe '#data' do
     context 'empty lines' do
       let(:snippet) { Gitlab::Git::BlobSnippet.new('master', nil, nil, nil) }

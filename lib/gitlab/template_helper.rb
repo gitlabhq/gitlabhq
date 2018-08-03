@@ -2,11 +2,17 @@ module Gitlab
   module TemplateHelper
     include Gitlab::Utils::StrongMemoize
 
-    def prepare_template_environment(file_path)
-      return unless file_path.present?
+    def prepare_template_environment(file)
+      return unless file
 
-      FileUtils.mkdir_p(File.dirname(import_upload_path))
-      FileUtils.copy_entry(file_path, import_upload_path)
+      if Gitlab::ImportExport.object_storage?
+        params[:import_export_upload] = ImportExportUpload.new(import_file: file)
+      else
+        FileUtils.mkdir_p(File.dirname(import_upload_path))
+        FileUtils.copy_entry(file.path, import_upload_path)
+
+        params[:import_source] = import_upload_path
+      end
     end
 
     def import_upload_path

@@ -1,0 +1,5 @@
+---
+title: Improve performance when fetching collapsed diffs and commenting in merge requests
+merge_request: 20940
+author:
+type: performance

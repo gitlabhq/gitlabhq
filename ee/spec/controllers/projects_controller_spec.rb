@@ -71,12 +71,33 @@ describe ProjectsController do
           stub_ee_application_setting(custom_project_templates_group_id: group.id)
         end
 
-        it 'creates the project from project template' do
-          post :create, project: templates_params
+        context 'old upload' do
+          before do
+            stub_feature_flags(import_export_object_storage: false)
+          end
 
-          created_project = Project.find_by_path('foo')
-          expect(flash[:notice]).to eq "Project 'foo' was successfully created."
-          expect(created_project.repository.empty?).to be false
+          it 'creates the project from project template' do
+            post :create, project: templates_params
+
+            created_project = Project.find_by_path('foo')
+            expect(flash[:notice]).to eq "Project 'foo' was successfully created."
+            expect(created_project.repository.empty?).to be false
+          end
+        end
+
+        context 'object storage' do
+          before do
+            stub_feature_flags(import_export_object_storage: true)
+            stub_uploads_object_storage(FileUploader)
+          end
+
+          it 'creates the project from project template' do
+            post :create, project: templates_params
+
+            created_project = Project.find_by_path('foo')
+            expect(flash[:notice]).to eq "Project 'foo' was successfully created."
+            expect(created_project.repository.empty?).to be false
+          end
         end
       end
 

@@ -88,7 +88,7 @@ storage in a safe place. **Each code can be used only once** to log in to your
 account.
 
 If you lose the recovery codes or just want to generate new ones, you can do so
-from the **Profile settings ➔ Account** page where you first enabled 2FA.
+[using SSH](#generate-new-recovery-codes-using-ssh).
 
 ## Logging in with 2FA Enabled
 
