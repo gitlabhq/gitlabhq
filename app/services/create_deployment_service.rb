@@ -35,7 +35,7 @@ class CreateDeploymentService
   end
 
   def deploy
-    project.deployments.create(
+    deployment = project.deployments.create(
       environment: environment,
       ref: job.ref,
       tag: job.tag,
@@ -43,6 +43,9 @@ class CreateDeploymentService
       user: job.user,
       deployable: job,
       on_stop: on_stop)
+
+    deployment.update_build_environment_relationship(job.id)
+    deployment
   end
 
   def environment

@@ -33,6 +33,8 @@ module Ci
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
+    has_one :build_environment_deployment
+    has_one :related_environment, through: :build_environment_deployment, source: :environment
 
     accepts_nested_attributes_for :runner_session
 

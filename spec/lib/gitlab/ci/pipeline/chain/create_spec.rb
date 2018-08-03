@@ -54,4 +54,23 @@ describe Gitlab::Ci::Pipeline::Chain::Create do
         .to include /Failed to persist the pipeline/
     end
   end
+
+  context 'when build is related to environment' do
+    before do
+      pipeline.stages.build(name: 'test', position: 0, project: project)
+      pipeline.builds << build(:ci_build, environment: 'production')
+    end
+
+    it 'creates an environment' do
+      expect do
+        step.perform!
+      end.to change { Environment.count }.from(0).to(1)
+    end
+
+    it 'creates a build-environment-deployment relationship' do
+      expect do
+        step.perform!
+      end.to change { Ci::BuildEnvironmentDeployment.count }.from(0).to(1)
+    end
+  end
 end

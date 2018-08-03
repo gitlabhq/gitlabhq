@@ -23,6 +23,8 @@ describe Ci::Build do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
+  it { is_expected.to have_one(:build_environment_deployment) }
+  it { is_expected.to have_one(:related_environment).through(:build_environment_deployment) }
 
   it { is_expected.to be_a(ArtifactMigratable) }
 

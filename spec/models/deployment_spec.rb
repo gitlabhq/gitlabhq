@@ -7,6 +7,7 @@ describe Deployment do
   it { is_expected.to belong_to(:environment) }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:deployable) }
+  it { is_expected.to have_one(:build_environment_deployment) }
 
   it { is_expected.to delegate_method(:name).to(:environment).with_prefix }
   it { is_expected.to delegate_method(:commit).to(:project) }
@@ -155,6 +156,31 @@ describe Deployment do
 
         it { is_expected.to eq(close_action) }
       end
+    end
+  end
+
+  describe '#update_build_environment_relationship' do
+    let(:deployment) { create(:deployment) }
+    let(:build) { create(:ci_build) }
+
+    subject { deployment.build_environment_deployment }
+
+    context 'when the relationship exists' do
+      before do
+        create(:build_environment_deployment, build: build, environment: deployment.environment)
+
+        deployment.update_build_environment_relationship(build.id)
+      end
+
+      it { is_expected.to be_present }
+    end
+
+    context 'when the relationship does not exist' do
+      before do
+        deployment.update_build_environment_relationship(build.id)
+      end
+
+      it { is_expected.to be_nil }
     end
   end
 end

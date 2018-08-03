@@ -124,6 +124,16 @@ describe CreateDeploymentService do
         expect(Deployment.count).to be_zero
       end
     end
+
+    context 'when build-environment relationship exists' do
+      before do
+        create(:build_environment_deployment, build: job, environment: environment)
+      end
+
+      it 'updates the relationship' do
+        expect(subject).to eq(job.build_environment_deployment.deployment)
+      end
+    end
   end
 
   describe '#expanded_environment_url' do

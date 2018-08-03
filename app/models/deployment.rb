@@ -8,6 +8,7 @@ class Deployment < ActiveRecord::Base
   belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  has_one :build_environment_deployment, class_name: 'Ci::BuildEnvironmentDeployment'
 
   has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.deployments&.maximum(:iid) }
 
@@ -116,6 +117,14 @@ class Deployment < ActiveRecord::Base
     metrics&.merge(deployment_time: created_at.to_i) || {}
   end
 
+  def update_build_environment_relationship(build_id)
+    build_environment_deployment = find_build_environment_relationship(build_id)
+
+    return unless build_environment_deployment
+
+    build_environment_deployment.update_attribute(:deployment, self)
+  end
+
   private
 
   def prometheus_adapter
@@ -124,5 +133,12 @@ class Deployment < ActiveRecord::Base
 
   def ref_path
     File.join(environment.ref_path, 'deployments', iid.to_s)
+  end
+
+  def find_build_environment_relationship(build_id)
+    Ci::BuildEnvironmentDeployment.find_by(
+      environment_id: environment_id,
+      build_id: build_id
+    )
   end
 end
