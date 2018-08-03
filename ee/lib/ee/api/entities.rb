@@ -331,6 +331,9 @@ module EE
         end
         expose :wikis_checksum_mismatch_count
 
+        expose :repositories_retrying_verification_count
+        expose :wikis_retrying_verification_count
+
         expose :replication_slots_count
         expose :replication_slots_used_count
         expose :replication_slots_used_in_percentage do |node|

@@ -88,6 +88,14 @@ module Geo
       Geo::ProjectRegistry.wiki_checksum_mismatch.count
     end
 
+    def count_repositories_retrying_verification
+      Geo::ProjectRegistry.repositories_retrying_verification.count
+    end
+
+    def count_wikis_retrying_verification
+      Geo::ProjectRegistry.wikis_retrying_verification.count
+    end
+
     def count_verification_failed_repositories
       find_verification_failed_project_registries('repository').count
     end

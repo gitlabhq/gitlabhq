@@ -33,6 +33,8 @@ FactoryBot.define do
       wikis_verified_count 499
       wikis_verification_failed_count 99
       wikis_checksum_mismatch_count 10
+      repositories_retrying_verification_count 25
+      wikis_retrying_verification_count 3
       last_event_id 2
       last_event_timestamp { Time.now.to_i }
       cursor_last_event_id 1
