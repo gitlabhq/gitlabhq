@@ -605,7 +605,7 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when comparison is done' do
-      let(:comparison_status) { { status: :parsed, data: { summary: 1 }.to_json } }
+      let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
 
       it 'returns 200 HTTP status' do
         subject
