@@ -1,0 +1,1 @@
+{"status":"success","summary":{"total":11,"resolved":0,"failed":0},"suites":[{"name":"rspec:pg","status":"success","summary":{"total":8,"resolved":0,"failed":0},"new_failures":[],"resolved_failures":[],"existing_failures":[]},{"name":"java ant","status":"success","summary":{"total":3,"resolved":0,"failed":0},"new_failures":[],"resolved_failures":[],"existing_failures":[]}]}

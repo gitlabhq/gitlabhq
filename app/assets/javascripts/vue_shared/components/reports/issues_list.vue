@@ -23,6 +23,11 @@ export default {
   failed: STATUS_FAILED,
   neutral: STATUS_NEUTRAL,
   props: {
+    newIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
     unresolvedIssues: {
       type: Array,
       required: false,
@@ -49,6 +54,24 @@ export default {
 <template>
   <div class="report-block-container">
     <sast-container-info v-if="component === $options.componentNames.SastContainerIssueBody" />
+    <issues-block
+      v-if="newIssues.length"
+      :component="component"
+      :issues="newIssues"
+      class="js-mr-code-new-issues"
+      status="failed"
+      is-new
+    />
+
+    <issues-block
+      v-if="newIssues.length"
+      :component="component"
+      :issues="newIssues"
+      class="js-mr-code-new-issues"
+      status="failed"
+      is-new
+    />
+
     <issues-block
       v-if="unresolvedIssues.length"
       :component="component"
