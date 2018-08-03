@@ -336,5 +336,6 @@
   .settings-content
     = render 'third_party_offers', application_setting: @application_setting
 
-= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
+= render_if_exists 'admin/application_settings/custom_templates_form', expanded: expanded
 
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded
