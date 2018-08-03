@@ -1,5 +1,13 @@
 /* global $ */
 
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.register(
+    '/serviceWorker.js', {
+      scope: '/'
+    }
+  );
+}
+
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
 

@@ -1,0 +1,14 @@
+{
+  "name": "GitLab",
+  "short_name": "GitLab",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#fc6d26",
+  "background_color": "#fc6d26",
+  "icons": [{
+    "src": "/manifest-icon.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}
