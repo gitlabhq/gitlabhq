@@ -7433,6 +7433,9 @@ msgstr ""
 msgid "ciReport|Learn more about whitelisting"
 msgstr ""
 
+msgid "ciReport|License management detected no licenses for the source branch only"
+msgstr ""
+
 msgid "ciReport|License management detected no new licenses"
 msgstr ""
 
