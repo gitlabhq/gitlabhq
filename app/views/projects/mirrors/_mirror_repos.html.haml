@@ -1,10 +1,5 @@
 - expanded = Rails.env.test?
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
-- can_push = can?(current_user, :admin_remote_mirror, @project)
-- can_pull = can?(current_user, :admin_mirror, @project)
-- options = []
-- options.push([_('Pull'), 'pull']) if can_pull
-- options.push([_('Push'), 'push']) if can_push
 
 %section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
@@ -29,11 +24,7 @@
 
           = render 'projects/mirrors/instructions'
 
-          .form-group
-            = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
-            = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: options.count == 1
-
-          = render 'projects/mirrors/mirror_repos_form', can_push: can_push, can_pull: can_pull, f: f
+          = render 'projects/mirrors/mirror_repos_form', f: f
 
           .form-check.append-bottom-10
             = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
