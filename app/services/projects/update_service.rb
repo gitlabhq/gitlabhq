@@ -4,11 +4,8 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
-<<<<<<< HEAD
     prepend ::EE::Projects::UpdateService
 
-=======
->>>>>>> upstream/master
     ValidationError = Class.new(StandardError)
 
     def execute
