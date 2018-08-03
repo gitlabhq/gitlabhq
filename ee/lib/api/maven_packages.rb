@@ -80,7 +80,7 @@ module API
       end
       put ':id/packages/maven/*app_group/:app_name/:app_version/:file_name/authorize', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         not_allowed! unless Gitlab.config.packages.enabled
-        unauthorized! unless can?(current_user, :write_package, user_project)
+        unauthorized! unless can?(current_user, :admin_package, user_project)
 
         require_gitlab_workhorse!
         Gitlab::Workhorse.verify_api_request!(headers)
@@ -106,7 +106,7 @@ module API
       end
       put ':id/packages/maven/*app_group/:app_name/:app_version/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         not_allowed! unless Gitlab.config.packages.enabled
-        unauthorized! unless can?(current_user, :write_package, user_project)
+        unauthorized! unless can?(current_user, :admin_package, user_project)
 
         require_gitlab_workhorse!
 

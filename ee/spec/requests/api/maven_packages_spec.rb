@@ -52,15 +52,13 @@ describe API::MavenPackages do
 
         download_file_with_token(package_file_xml.file_name)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       it 'denies download when no private token' do
-        project.add_guest(user)
-
         download_file(package_file_xml.file_name)
 
-        expect(response).to have_gitlab_http_status(400)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -70,8 +68,8 @@ describe API::MavenPackages do
               "#{maven_metadatum.app_version}/#{file_name}"), params, request_headers
     end
 
-    def download_file_with_token(params = {}, request_headers = headers_with_token)
-      download_file(params, request_headers)
+    def download_file_with_token(file_name, params = {}, request_headers = headers_with_token)
+      download_file(file_name, params, request_headers)
     end
   end
 
@@ -109,7 +107,7 @@ describe API::MavenPackages do
     end
 
     def authorize_upload(params = {}, request_headers = headers)
-      put api("/projects/#{project.id}/packages/maven/com/example/my-app/1-0-SNAPSHOT/maven-metadata.xml/authorize"), params, request_headers
+      put api("/projects/#{project.id}/packages/maven/com/example/my-app/1.0-SNAPSHOT/maven-metadata.xml/authorize"), params, request_headers
     end
 
     def authorize_upload_with_token(params = {}, request_headers = headers_with_token)
@@ -153,12 +151,12 @@ describe API::MavenPackages do
           .and change { Packages::PackageFile.count }.by(1)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(package_file.original_filename).to eq(file_upload.original_filename)
+        expect(package_file.file_name).to eq(file_upload.original_filename)
       end
     end
 
     def upload_file(params = {}, request_headers = headers)
-      put api("/projects/#{project.id}/packages/maven/com/example/my-app/1-0-SNAPSHOT/maven-metadata.xml"), params, request_headers
+      put api("/projects/#{project.id}/packages/maven/com/example/my-app/1.0-SNAPSHOT/maven-metadata.xml"), params, request_headers
     end
 
     def upload_file_with_token(params = {}, request_headers = headers_with_token)
