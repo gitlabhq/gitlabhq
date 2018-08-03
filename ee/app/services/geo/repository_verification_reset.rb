@@ -47,7 +47,9 @@ module Geo
         "resync_#{type}" => true,
         "#{type}_verification_checksum_sha" => nil,
         "#{type}_checksum_mismatch" => false,
-        "last_#{type}_verification_failure" => nil
+        "last_#{type}_verification_failure" => nil,
+        "#{type}_verification_retry_count" => nil,
+        "#{type}_missing_on_primary" => nil
       }
     end
   end
