@@ -112,6 +112,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -119,13 +120,15 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'delete',
             file_path: 'deletedFile',
-            content: '',
+            content: undefined,
             encoding: 'text',
             last_commit_id: undefined,
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
@@ -172,6 +175,7 @@ describe('Multi-file store utils', () => {
             content: 'updated file content',
             encoding: 'text',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
           {
             action: 'create',
@@ -179,6 +183,7 @@ describe('Multi-file store utils', () => {
             content: 'new file content',
             encoding: 'base64',
             last_commit_id: '123456789',
+            previous_path: undefined,
           },
         ],
         start_branch: undefined,
@@ -195,39 +200,18 @@ describe('Multi-file store utils', () => {
       expect(utils.commitActionForFile({ tempFile: true })).toBe('create');
     });
 
+    it('returns move for moved file', () => {
+      expect(utils.commitActionForFile({ prevPath: 'test' })).toBe('move');
+    });
+
     it('returns update by default', () => {
       expect(utils.commitActionForFile({})).toBe('update');
     });
   });
 
   describe('getCommitFiles', () => {
-    it('returns flattened list of files and folders', () => {
+    it('returns list of files excluding moved files', () => {
       const files = [
-        {
-          path: 'a',
-          type: 'blob',
-          deleted: true,
-        },
-        {
-          path: 'b',
-          type: 'tree',
-          deleted: true,
-          tree: [
-            {
-              path: 'c',
-              type: 'blob',
-            },
-            {
-              path: 'd',
-              type: 'blob',
-            },
-          ],
-        },
-      ];
-
-      const flattendFiles = utils.getCommitFiles(files);
-
-      expect(flattendFiles).toEqual([
         {
           path: 'a',
           type: 'blob',
@@ -236,10 +220,15 @@ describe('Multi-file store utils', () => {
         {
           path: 'c',
           type: 'blob',
-          deleted: true,
+          moved: true,
         },
+      ];
+
+      const flattendFiles = utils.getCommitFiles(files);
+
+      expect(flattendFiles).toEqual([
         {
-          path: 'd',
+          path: 'a',
           type: 'blob',
           deleted: true,
         },

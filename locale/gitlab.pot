@@ -4378,6 +4378,15 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
+msgid "Rename file"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
