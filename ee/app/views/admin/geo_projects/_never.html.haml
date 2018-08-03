@@ -1,36 +1,41 @@
 - @projects.each do |project|
   .card.project-card.prepend-top-15
     .card-header{ id: "project-#{project.id}-header" }
-      %h5.mb-0.mt-0.p-2.d-flex
-        %button.btn.btn-link.btn-card-header.d-flex.flex-fill{ type: 'button', data: { toggle: 'collapse', target: "#project-#{project.id}" }, 'aria-expanded' => 'true', 'aria-controls' => "project-#{project.id}" }
-          = sprite_icon('chevron-down', size: 18, css_class: 'card-expand-icon')
-          = sprite_icon('chevron-up', size: 18, css_class: 'card-collapse-icon')
-          %strong.header-text-primary
-            = project.name
+      .d-flex
+        %strong.header-text-primary.flex-fill
+          = project.full_name
 
-    .collapse.show{ id: "project-#{project.id}", 'aria-labelledby' => "project-#{project.id}-header" }
-      .card-body
-        .container
-          .row
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                = s_('Geo|Next sync scheduled at')
-              .project-status-content
-                = distance_of_time_in_words(Time.now, project.project_registry.repository_retry_at) if project.project_registry&.repository_retry_at
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                = s_('Geo|Last sync attempt')
-              .project-status-content
-                = distance_of_time_in_words(Time.now, project.project_registry.last_repository_synced_at) if project.project_registry&.last_repository_synced_at
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                = s_('Geo|Retry counts')
-              .project-status-content
-                = project.project_registry.repository_retry_count if project.project_registry
-            .col-sm.project-status-container
-              .project-status-title.text-muted
-                = s_('Geo|Error message')
-              .project-status-content.font-weight-bold
-                = project.project_registry.last_repository_sync_failure if project.project_registry
+    .card-body
+      .container
+        .row
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Next sync scheduled at')
+            .project-status-content
+              - if project.project_registry&.repository_retry_at
+                = distance_of_time_in_words(Time.now, project.project_registry.repository_retry_at)
+              - else
+                = s_('Geo|Never')
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Last sync attempt')
+            .project-status-content
+              - if project.project_registry&.last_repository_synced_at
+                = distance_of_time_in_words(Time.now, project.project_registry.last_repository_synced_at)
+              - else
+                = s_('Geo|Never')
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Retry counts')
+            .project-status-content
+              = project.project_registry.repository_retry_count if project.project_registry
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Error message')
+            .project-status-content.font-weight-bold
+              - if project.project_registry
+                = project.project_registry.last_repository_sync_failure
+              - else
+                = s_('Geo|No errors')
 
 = paginate @projects, theme: 'gitlab'

@@ -3,7 +3,7 @@
     .card-header{ id: "project-#{project_registry.project.id}-header" }
       .d-flex
         %strong.header-text-primary.flex-fill
-          = project_registry.project.name
+          = project_registry.project.full_name
         = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
           = s_('Geo|Recheck')
         = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
@@ -15,17 +15,23 @@
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Status')
-            .project-status-content.status-type-failure
+            .project-status-content
               = s_('Geo|In sync')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last successful sync')
             .project-status-content
-              = distance_of_time_in_words(Time.now, project_registry.last_repository_successful_sync_at) if project_registry.last_repository_successful_sync_at
+              - if project_registry.last_repository_successful_sync_at
+                = distance_of_time_in_words(Time.now, project_registry.last_repository_successful_sync_at)
+              - else
+              = s_('Geo|Never')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last time verified')
             .project-status-content
-              = distance_of_time_in_words(Time.now, project_registry.last_repository_check_at) if project_registry.last_repository_check_at
+              - if project_registry.last_repository_check_at
+                = distance_of_time_in_words(Time.now, project_registry.last_repository_check_at)
+              - else
+                = s_('Geo|Never')
 
 = paginate @registries, theme: 'gitlab'
