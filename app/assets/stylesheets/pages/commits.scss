@@ -1,12 +1,12 @@
 %commit-description-base {
-  padding: 0 0 0 $gl-padding-8;
+  padding: $gl-padding-8 0 $gl-padding-8 $gl-padding-8;
   margin-top: $gl-padding-8;
   border: 0;
   border-radius: unset;
   background: none;
   word-break: normal;
   overflow-x: auto;
-  border-left: 2px solid $theme-gray-300;
+  border-left: 3px solid $white-dark;
   color: $gl-text-color-secondary;
 }
 
