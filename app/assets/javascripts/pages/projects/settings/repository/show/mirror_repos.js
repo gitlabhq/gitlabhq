@@ -15,10 +15,17 @@ export default class MirrorRepos {
   }
 
   init() {
-    this.registerUpdateListeners();
     this.initMirrorPush();
+    this.registerUpdateListeners();
+  }
 
-    this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
+  initMirrorPush() {
+    this.$passwordGroup = $('.js-password-group', this.$container);
+    this.$password = $('.js-password', this.$passwordGroup);
+    this.$authMethod = $('.js-auth-method', this.$form);
+
+    this.$authMethod.on('change', () => this.togglePassword());
+    this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
   }
 
   updateUrl() {
@@ -43,11 +50,17 @@ export default class MirrorRepos {
     this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 200);
     this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
+    this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
   }
 
-  initMirrorPush() {
-    this.$password = $('.js-password', this.$form);
-    this.$password.on('input.updateUrl', () => this.debouncedUpdateUrl());
+  togglePassword() {
+    const isPassword = this.$authMethod.val() === 'password';
+
+    if (!isPassword) {
+      this.$password.val('');
+      this.updateUrl();
+    }
+    this.$passwordGroup.collapse(isPassword ? 'show' : 'hide');
   }
 
   deleteMirror(event, existingPayload) {
