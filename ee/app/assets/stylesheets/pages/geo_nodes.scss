@@ -186,6 +186,9 @@
 
     .header-text-primary {
       line-height: 28px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
     }
   }
 
