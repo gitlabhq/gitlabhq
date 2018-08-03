@@ -4217,9 +4217,6 @@ msgstr ""
 msgid "Public pipelines"
 msgstr ""
 
-msgid "Pull"
-msgstr ""
-
 msgid "Push"
 msgstr ""
 
