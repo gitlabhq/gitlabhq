@@ -24,6 +24,11 @@ export default {
       type: String,
       required: true,
     },
+    isNew: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
@@ -46,6 +51,7 @@ export default {
           :is="component"
           :issue="issue"
           :status="issue.status || status"
+          :is-new="isNew"
         />
       </li>
     </ul>
