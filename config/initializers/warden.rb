@@ -30,10 +30,12 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
-    ActiveSession.destroy(user || auth.user, auth.request.session.id)
-
     activity = Gitlab::Auth::Activity.new(opts)
     tracker = Gitlab::Auth::BlockedUserTracker.new(user, auth)
+
+    ActiveSession.destroy(user || auth.user, auth.request.session.id)
+
+    activity.user_session_destroyed!
 
     ##
     # It is possible that `before_logout` event is going to be triggered
@@ -51,7 +53,5 @@ Rails.application.configure do |config|
       activity.user_blocked!
       tracker.log_activity!
     end
-
-    activity.user_session_destroyed!
   end
 end
