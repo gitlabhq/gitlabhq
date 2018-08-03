@@ -110,7 +110,7 @@ export default {
         return false;
       }
 
-      return this.showCommentButton && this.hasDiscussions;
+      return this.hasDiscussions && this.showCommentButton;
     },
   },
   methods: {
