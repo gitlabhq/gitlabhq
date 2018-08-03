@@ -2,13 +2,12 @@
 
 .file-holder-bottom-radius.file-holder.file.append-bottom-default
   .js-file-title.file-title.clearfix{ data: { current_action: action } }
-    .editor-ref
+    .editor-ref.block-truncated
       = sprite_icon('fork', size: 12)
       = ref
-    %span.editor-file-name
-      - if current_action?(:edit) || current_action?(:update)
-        = text_field_tag 'file_path', (params[:file_path] || @path),
-                                      class: 'form-control new-file-path js-file-path-name-input'
+    - if current_action?(:edit) || current_action?(:update)
+      = text_field_tag 'file_path', (params[:file_path] || @path),
+                                    class: 'form-control new-file-path js-file-path-name-input'
 
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name
@@ -16,7 +15,7 @@
       = text_field_tag 'file_name', params[:file_name], placeholder: "File name",
         required: true, class: 'form-control new-file-name js-file-path-name-input'
 
-    .float-right.file-buttons
+    .file-buttons
       = button_tag class: 'soft-wrap-toggle btn', type: 'button', tabindex: '-1' do
         %span.no-wrap
           = custom_icon('icon_no_wrap')
