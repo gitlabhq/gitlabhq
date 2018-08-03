@@ -8,8 +8,12 @@ module EE
 
           validates :export_into_project_id, presence: true
 
+          attr_reader :params
+
           def initialize(export_into_project_id:)
             super
+
+            @params = {}
           end
 
           protected
@@ -17,7 +21,7 @@ module EE
           def strategy_execute
             return unless export_into_project_exists?
 
-            prepare_template_environment(export_file_path)
+            prepare_template_environment(export_file)
 
             set_import_attributes
 
@@ -26,18 +30,18 @@ module EE
             project.remove_exported_project_file
           end
 
-          def export_file_path
-            strong_memoize(:export_file_path) do
+          def export_file
+            strong_memoize(:export_file) do
               if object_storage?
-                project.import_export_upload.export_file.path
+                project.import_export_upload.export_file&.file
               else
-                project.export_project_path
+                File.open(project.export_project_path)
               end
             end
           end
 
           def set_import_attributes
-            ::Project.update(export_into_project_id, import_source: import_upload_path)
+            ::Project.update(export_into_project_id, params)
           end
 
           def export_into_project_exists?

@@ -22,7 +22,6 @@ module EE
 
         if custom_template
           params[:import_type] = 'gitlab_custom_project_template'
-          params[:import_source] = custom_template.id
         end
       end
 
