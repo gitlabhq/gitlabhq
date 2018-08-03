@@ -4,10 +4,9 @@ describe CreateGpgSignatureWorker do
   let(:project) { create(:project, :repository) }
   let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
   let(:commit_shas) { commits.map(&:id) }
+  let(:gpg_commit) { instance_double(Gitlab::Gpg::Commit) }
 
   context 'when GpgKey is found' do
-    let(:gpg_commit) { instance_double(Gitlab::Gpg::Commit) }
-
     before do
       allow(Project).to receive(:find_by).with(id: project.id).and_return(project)
       allow(project).to receive(:commits_by).with(oids: commit_shas).and_return(commits)
@@ -33,6 +32,16 @@ describe CreateGpgSignatureWorker do
       expect(gpg_commit).to receive(:signature).exactly(2).times
 
       subject
+    end
+  end
+
+  context 'handles when a string is passed in for the commit SHA' do
+    it 'creates a signature once' do
+      allow(Gitlab::Gpg::Commit).to receive(:new).with(commits.first).and_return(gpg_commit)
+
+      expect(gpg_commit).to receive(:signature).once
+
+      described_class.new.perform(commit_shas.first, project.id)
     end
   end
 

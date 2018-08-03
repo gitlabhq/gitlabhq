@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PushEvent < Event
   # This validation exists so we can't accidentally use PushEvent with a
   # different "action" value.

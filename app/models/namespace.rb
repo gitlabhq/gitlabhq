@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable

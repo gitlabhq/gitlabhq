@@ -74,6 +74,14 @@ describe DeployToken do
         expect(deploy_token.active?).to be_falsy
       end
     end
+
+    context "when it hasn't been revoked and has no expiry" do
+      let(:deploy_token) { create(:deploy_token, expires_at: nil) }
+
+      it 'should return true' do
+        expect(deploy_token.active?).to be_truthy
+      end
+    end
   end
 
   describe '#username' do

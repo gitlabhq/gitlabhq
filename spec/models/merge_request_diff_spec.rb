@@ -127,6 +127,13 @@ describe MergeRequestDiff do
           expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
         end
 
+        it 'only serializes diff files found by query' do
+          expect(diff_with_commits.merge_request_diff_files.count).to be > 10
+          expect_any_instance_of(MergeRequestDiffFile).to receive(:to_hash).once
+
+          diffs
+        end
+
         it 'uses the diffs from the DB' do
           expect(diff_with_commits).to receive(:load_diffs)
 

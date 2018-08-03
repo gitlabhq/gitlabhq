@@ -347,13 +347,7 @@ def expire_first_branch_cache
 end
 ```
 
-## Anti-Patterns
-
-This is a collection of [anti-patterns][anti-pattern] that should be avoided
-unless these changes have a measurable, significant and positive impact on
-production environments.
-
-### String Freezing
+## String Freezing
 
 In recent Ruby versions calling `freeze` on a String leads to it being allocated
 only once and re-used. For example, on Ruby 2.3 this will only allocate the
@@ -365,17 +359,38 @@ only once and re-used. For example, on Ruby 2.3 this will only allocate the
 end
 ```
 
-Blindly adding a `.freeze` call to every String is an anti-pattern that should
-be avoided unless one can prove (using production data) the call actually has a
-positive impact on performance.
+Depending on the size of the String and how frequently it would be allocated
+(before the `.freeze` call was added), this _may_ make things faster, but
+there's no guarantee it will.
 
-This feature of Ruby wasn't really meant to make things faster directly, instead
-it was meant to reduce the number of allocations. Depending on the size of the
-String and how frequently it would be allocated (before the `.freeze` call was
-added), this _may_ make things faster, but there's no guarantee it will.
+Strings will be frozen by default in Ruby 3.0. To prepare our code base for
+this eventuality, it's a good practice to add the following header to all
+Ruby files:
 
-Another common flavour of this is to not only freeze a String, but also assign
-it to a constant, for example:
+```ruby
+# frozen_string_literal: true
+```
+
+This may cause test failures in the code that expects to be able to manipulate
+strings. Instead of using `dup`, use the unary plus to get an unfrozen string:
+
+```ruby
+test = +"hello"
+test += " world"
+```
+
+## Anti-Patterns
+
+This is a collection of [anti-patterns][anti-pattern] that should be avoided
+unless these changes have a measurable, significant and positive impact on
+production environments.
+
+### Moving Allocations to Constants
+
+Storing an object as a constant so you only allocate it once _may_ improve
+performance, but there's no guarantee this will. Looking up constants has an
+impact on runtime performance, and as such, using a constant instead of
+referencing an object directly may even slow code down. For example:
 
 ```ruby
 SOME_CONSTANT = 'foo'.freeze
@@ -392,13 +407,6 @@ there's nothing stopping somebody from doing this elsewhere in the code:
 ```ruby
 SOME_CONSTANT = 'bar'
 ```
-
-### Moving Allocations to Constants
-
-Storing an object as a constant so you only allocate it once _may_ improve
-performance, but there's no guarantee this will. Looking up constants has an
-impact on runtime performance, and as such, using a constant instead of
-referencing an object directly may even slow code down.
 
 [#15607]: https://gitlab.com/gitlab-org/gitlab-ce/issues/15607
 [yorickpeterse]: https://gitlab.com/yorickpeterse

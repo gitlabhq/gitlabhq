@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::AttributesAtRefParser, seed_helper: true do
+describe Gitlab::Git::AttributesAtRefParser, :seed_helper do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
 

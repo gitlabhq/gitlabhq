@@ -11,6 +11,7 @@ module Users
                 author.user
               end
 
+      @user = nil unless @user.is_a?(User)
       @activity = activity
     end
 

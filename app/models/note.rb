@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.

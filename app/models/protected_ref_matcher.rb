@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectedRefMatcher
   def initialize(protected_ref)
     @protected_ref = protected_ref
