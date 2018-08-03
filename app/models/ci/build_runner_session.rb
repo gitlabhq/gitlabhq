@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # The purpose of this class is to store Build related runner session.
   # Data will be removed after transitioning from running to any state.
