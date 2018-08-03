@@ -1,19 +1,13 @@
 import $ from 'jquery';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
-import * as attach from 'xterm/lib/addons/attach/attach';
 
 export default class GLTerminal {
-  constructor(options) {
-    this.options = options || {};
-
-    if (!Object.prototype.hasOwnProperty.call(this.options, 'cursorBlink')) {
-      this.options.cursorBlink = true;
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(this.options, 'screenKeys')) {
-      this.options.screenKeys = true;
-    }
+  constructor(options = {}) {
+    this.options = Object.assign({}, {
+      cursorBlink: true,
+      screenKeys: true,
+    }, options);
 
     this.container = document.querySelector(options.selector);
 
@@ -37,16 +31,15 @@ export default class GLTerminal {
 
   createTerminal() {
     Terminal.applyAddon(fit);
-    Terminal.applyAddon(attach);
 
     this.terminal = new Terminal(this.options);
 
-    //TODO - CHECK IF WE SHOULD USE `attach` instead
     this.socket = new WebSocket(this.socketUrl, ['terminal.gitlab.com']);
     this.socket.binaryType = 'arraybuffer';
 
     this.terminal.open(this.container);
     this.terminal.fit();
+    this.terminal.focus();
 
     this.socket.onopen = () => {
       this.runTerminal();

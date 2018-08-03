@@ -1,0 +1,5 @@
+---
+title: Move xterm to a node dependency and remove it from vendor's folder
+merge_request: 20588
+author:
+type: other
