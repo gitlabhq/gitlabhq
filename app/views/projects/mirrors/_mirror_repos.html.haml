@@ -3,8 +3,8 @@
 - can_push = can?(current_user, :admin_remote_mirror, @project)
 - can_pull = can?(current_user, :admin_mirror, @project)
 - options = []
-- options.unshift([_('Pull'), 'pull']) if can_pull
-- options.unshift([_('Push'), 'push']) if can_push
+- options.push([_('Pull'), 'pull']) if can_pull
+- options.push([_('Push'), 'push']) if can_push
 
 %section.settings.project-mirror-settings.js-mirror-settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
