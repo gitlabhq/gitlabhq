@@ -29,5 +29,11 @@
         = f.check_box :user_default_external, class: 'form-check-input'
         = f.label :user_default_external, class: 'form-check-label' do
           Newly registered users will by default be external
+    .form-group
+      = f.label :user_show_add_ssh_key_message, 'Prompt users to upload SSH keys', class: 'label-bold'
+      .form-check
+        = f.check_box :user_show_add_ssh_key_message, class: 'form-check-input'
+        = f.label :user_show_add_ssh_key_message, class: 'form-check-label' do
+          Inform users without uploaded SSH keys that they can't push over SSH until one is added
 
   = f.submit 'Save changes', class: 'btn btn-success'
