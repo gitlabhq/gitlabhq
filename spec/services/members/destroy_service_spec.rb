@@ -20,6 +20,11 @@ describe Members::DestroyService do
   end
 
   shared_examples 'a service destroying a member' do
+    before do
+      type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+      expect(TodosDestroyer::EntityLeaveWorker).to receive(:perform_in).with(1.hour, member.user_id, member.source_id, type)
+    end
+
     it 'destroys the member' do
       expect { described_class.new(current_user).execute(member, opts) }.to change { member.source.members_and_requesters.count }.by(-1)
     end
@@ -114,7 +119,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given member' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 
@@ -142,8 +147,8 @@ describe Members::DestroyService do
 
   context 'with an access requester' do
     before do
-      group_project.update_attributes(request_access_enabled: true)
-      group.update_attributes(request_access_enabled: true)
+      group_project.update(request_access_enabled: true)
+      group.update(request_access_enabled: true)
       group_project.request_access(member_user)
       group.request_access(member_user)
     end
@@ -170,7 +175,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given access requester' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 
@@ -210,7 +215,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given invited user' do
       before do
-        group_project.add_master(current_user)
+        group_project.add_maintainer(current_user)
         group.add_owner(current_user)
       end
 

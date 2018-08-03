@@ -12,8 +12,8 @@ describe 'Projects > Members > Group member cannot request access to his group p
     expect(page).not_to have_content 'Request Access'
   end
 
-  it 'master does not see the request access button' do
-    group.add_master(user)
+  it 'maintainer does not see the request access button' do
+    group.add_maintainer(user)
     login_and_visit_project_page(user)
 
     expect(page).not_to have_content 'Request Access'

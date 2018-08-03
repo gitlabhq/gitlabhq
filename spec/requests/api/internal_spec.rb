@@ -152,7 +152,7 @@ describe API::Internal do
 
     context 'user key' do
       it 'returns the correct information about the key' do
-        lfs_auth(key.id, project)
+        lfs_auth_key(key.id, project)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq(user.username)
@@ -161,8 +161,30 @@ describe API::Internal do
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
       end
 
+      it 'returns the correct information about the user' do
+        lfs_auth_user(user.id, project)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['username']).to eq(user.username)
+        expect(json_response['lfs_token']).to eq(Gitlab::LfsToken.new(user).token)
+
+        expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
+      end
+
+      it 'returns a 404 when no key or user is provided' do
+        lfs_auth_project(project)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
       it 'returns a 404 when the wrong key is provided' do
-        lfs_auth(nil, project)
+        lfs_auth_key(key.id + 12345, project)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns a 404 when the wrong user is provided' do
+        lfs_auth_user(user.id + 12345, project)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -172,7 +194,7 @@ describe API::Internal do
       let(:key) { create(:deploy_key) }
 
       it 'returns the correct information about the key' do
-        lfs_auth(key.id, project)
+        lfs_auth_key(key.id, project)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
@@ -183,8 +205,24 @@ describe API::Internal do
   end
 
   describe "GET /internal/discover" do
-    it do
+    it "finds a user by key id" do
       get(api("/internal/discover"), key_id: key.id, secret_token: secret_token)
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response['name']).to eq(user.name)
+    end
+
+    it "finds a user by user id" do
+      get(api("/internal/discover"), user_id: user.id, secret_token: secret_token)
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response['name']).to eq(user.name)
+    end
+
+    it "finds a user by username" do
+      get(api("/internal/discover"), username: user.username, secret_token: secret_token)
 
       expect(response).to have_gitlab_http_status(200)
 
@@ -279,7 +317,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -291,7 +329,7 @@ describe API::Internal do
           expect(json_response["status"]).to be_truthy
           expect(json_response["repository_path"]).to eq('/')
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
-          expect(user).to have_an_activity_record
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
@@ -309,7 +347,7 @@ describe API::Internal do
           expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
           expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
           expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-          expect(user).to have_an_activity_record
+          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
@@ -328,7 +366,7 @@ describe API::Internal do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(user).not_to have_an_activity_record
+            expect(user.reload.last_activity_on).to be_nil
           end
         end
       end
@@ -345,7 +383,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -355,7 +393,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
     end
@@ -373,7 +411,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
 
@@ -383,7 +421,7 @@ describe API::Internal do
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response["status"]).to be_falsey
-          expect(user).not_to have_an_activity_record
+          expect(user.reload.last_activity_on).to be_nil
         end
       end
     end
@@ -871,10 +909,27 @@ describe API::Internal do
     )
   end
 
-  def lfs_auth(key_id, project)
+  def lfs_auth_project(project)
+    post(
+      api("/internal/lfs_authenticate"),
+      secret_token: secret_token,
+      project: project.full_path
+    )
+  end
+
+  def lfs_auth_key(key_id, project)
     post(
       api("/internal/lfs_authenticate"),
       key_id: key_id,
+      secret_token: secret_token,
+      project: project.full_path
+    )
+  end
+
+  def lfs_auth_user(user_id, project)
+    post(
+      api("/internal/lfs_authenticate"),
+      user_id: user_id,
       secret_token: secret_token,
       project: project.full_path
     )

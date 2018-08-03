@@ -102,7 +102,7 @@ export const receiveJobsSuccess = ({ commit }, { id, data }) =>
 export const fetchJobs = ({ dispatch }, stage) => {
   dispatch('requestJobs', stage.id);
 
-  axios
+  return axios
     .get(stage.dropdownPath)
     .then(({ data }) => dispatch('receiveJobsSuccess', { id: stage.id, data }))
     .catch(() => dispatch('receiveJobsError', stage));

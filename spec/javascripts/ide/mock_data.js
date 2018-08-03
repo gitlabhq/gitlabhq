@@ -9,6 +9,9 @@ export const projectData = {
     master: {
       treeId: 'abcproject/master',
       can_push: true,
+      commit: {
+        id: '123',
+      },
     },
   },
   mergeRequests: {},
@@ -71,7 +74,7 @@ export const jobs = [
     name: 'test',
     path: 'testing',
     status: {
-      icon: 'status_passed',
+      icon: 'status_success',
       text: 'passed',
     },
     stage: 'test',
@@ -83,7 +86,7 @@ export const jobs = [
     name: 'test 2',
     path: 'testing2',
     status: {
-      icon: 'status_passed',
+      icon: 'status_success',
       text: 'passed',
     },
     stage: 'test',
@@ -95,7 +98,7 @@ export const jobs = [
     name: 'test 3',
     path: 'testing3',
     status: {
-      icon: 'status_passed',
+      icon: 'status_success',
       text: 'passed',
     },
     stage: 'test',
@@ -143,7 +146,7 @@ export const fullPipelinesResponse = {
         },
         details: {
           status: {
-            icon: 'status_passed',
+            icon: 'status_success',
             text: 'passed',
           },
           stages: [...stages],

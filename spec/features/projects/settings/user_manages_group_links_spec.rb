@@ -9,10 +9,10 @@ describe 'Projects > Settings > User manages group links' do
   let(:group_market) { create(:group, name: 'Market', path: 'market') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
-    share_link = project.project_group_links.new(group_access: Gitlab::Access::MASTER)
+    share_link = project.project_group_links.new(group_access: Gitlab::Access::MAINTAINER)
     share_link.group_id = group_ops.id
     share_link.save!
 

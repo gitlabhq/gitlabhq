@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TestHooks
   class BaseService
     attr_accessor :hook, :current_user, :trigger

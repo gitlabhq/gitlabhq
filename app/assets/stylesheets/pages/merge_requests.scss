@@ -116,10 +116,8 @@
 
       .modify-merge-commit-link {
         padding: 0;
-
         background-color: transparent;
         border: 0;
-
         color: $gl-text-color;
 
         &:hover,
@@ -210,10 +208,14 @@
         position: absolute;
         content: '...';
         right: 0;
-        font-family: $regular_font;
+        font-family: $regular-font;
         background-color: $gray-light;
       }
     }
+  }
+
+  .widget-status-icon {
+    align-self: flex-start;
   }
 
   .mr-widget-body {
@@ -501,10 +503,6 @@
   }
 }
 
-.merge-request-details .content-block {
-  border-bottom: 0;
-}
-
 .mr-source-target {
   display: flex;
   flex-wrap: wrap;
@@ -553,6 +551,7 @@
     @include media-breakpoint-up(lg) {
       .branch-actions {
         align-self: center;
+        margin-left: $gl-padding;
       }
     }
   }

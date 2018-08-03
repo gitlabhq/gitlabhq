@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Files
   class UpdateService < Files::BaseService
     def create_commit!

@@ -272,6 +272,16 @@ describe 'Admin updates settings' do
     expect(Gitlab::CurrentSettings.allow_local_requests_from_hooks_and_services).to be true
   end
 
+  it 'Enable hiding third party offers' do
+    page.within('.as-third-party-offers') do
+      check 'Do not display offers from third parties within GitLab'
+      click_button 'Save changes'
+    end
+
+    expect(page).to have_content "Application settings saved successfully"
+    expect(Gitlab::CurrentSettings.hide_third_party_offers).to be true
+  end
+
   it 'Change Slack Notifications Service template settings' do
     first(:link, 'Service Templates').click
     click_link 'Slack notifications'

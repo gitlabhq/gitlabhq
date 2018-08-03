@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   # Service class for counting and caching the number of open issues of a
   # project.

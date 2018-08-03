@@ -45,6 +45,7 @@
   - [github_import_advance_stage, 1]
   - [project_service, 1]
   - [delete_user, 1]
+  - [todos_destroyer, 1]
   - [delete_merged_branches, 1]
   - [authorized_projects, 1]
   - [expire_build_instance_artifacts, 1]
@@ -62,7 +63,6 @@
   - [default, 1]
   - [pages, 1]
   - [system_hook_push, 1]
-  - [update_user_activity, 1]
   - [propagate_service_template, 1]
   - [background_migration, 1]
   - [gcp_cluster, 1]
@@ -77,4 +77,4 @@
   - [repository_remove_remote, 1]
   - [create_note_diff_file, 1]
   - [delete_diff_files, 1]
- 
+  - [detect_repository_languages, 1]

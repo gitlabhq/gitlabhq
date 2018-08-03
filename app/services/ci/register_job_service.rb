@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # This class responsible for assigning
   # proper pending build to runner on runner API request
@@ -39,16 +41,10 @@ module Ci
         begin
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          begin
-            build.runner_id = runner.id
-            build.runner_session_attributes = params[:session] if params[:session].present?
-
-            build.run!
+          if assign_runner!(build, params)
             register_success(build)
 
             return Result.new(build, true) # rubocop:disable Cop/AvoidReturnFromBlocks
-          rescue Ci::Build::MissingDependenciesError
-            build.drop!(:missing_dependency_failure)
           end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
@@ -69,6 +65,24 @@ module Ci
     end
 
     private
+
+    def assign_runner!(build, params)
+      build.runner_id = runner.id
+      build.runner_session_attributes = params[:session] if params[:session].present?
+
+      unless build.has_valid_build_dependencies?
+        build.drop!(:missing_dependency_failure)
+        return false
+      end
+
+      unless build.supported_runner?(params.dig(:info, :features))
+        build.drop!(:runner_unsupported)
+        return false
+      end
+
+      build.run!
+      true
+    end
 
     def builds_for_shared_runner
       new_builds.

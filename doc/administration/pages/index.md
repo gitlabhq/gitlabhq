@@ -49,8 +49,8 @@ supporting custom domains a secondary IP is not needed.
 
 Before proceeding with the Pages configuration, you will need to:
 
-1. Have a separate domain under which the GitLab Pages will be served. In this
-   document we assume that to be `example.io`.
+1. Have an exclusive root domain for serving GitLab Pages. Note that you cannot
+   use a subdomain of your GitLab's instance domain.
 1. Configure a **wildcard DNS record**.
 1. (Optional) Have a **wildcard certificate** for that domain if you decide to
    serve Pages under HTTPS.
@@ -124,11 +124,6 @@ The Pages daemon doesn't listen to the outside world.
     ```
 
 1. [Reconfigure GitLab][reconfigure]
-1. Restart gitlab-pages by running the following command:
-
-     ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
 
 
 Watch the [video tutorial][video-admin] for this configuration.
@@ -161,11 +156,6 @@ outside world.
     respectively.
 
 1. [Reconfigure GitLab][reconfigure]
-1. Restart gitlab-pages by running the following command:
-
-     ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
 
 ## Advanced configuration
 
@@ -203,11 +193,6 @@ world. Custom domains are supported, but no TLS.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
-1. Restart gitlab-pages by running the following command:
-
-     ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
 
 ### Custom domains with TLS support
 
@@ -241,11 +226,6 @@ world. Custom domains and TLS are supported.
     listens on. If you don't have IPv6, you can omit the IPv6 address.
 
 1. [Reconfigure GitLab][reconfigure]
-1. Restart gitlab-pages by running the following command:
-
-     ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
 
 ### Custom domain verification
 
@@ -258,6 +238,23 @@ If your userbase is private or otherwise trusted, you can disable the
 verification requirement. Navigate to `Admin area ➔ Settings` and uncheck
 **Require users to prove ownership of custom domains** in the Pages section.
 This setting is enabled by default.
+
+## Activate verbose logging for daemon
+
+Verbose logging was [introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Omnibus GitLab 11.1.
+
+Follow the steps below to configure verbose logging of GitLab Pages daemon.
+
+1. By default the daemon only logs with `INFO` level.
+   If you wish to make it log events with level `DEBUG` you must configure this in
+   `/etc/gitlab/gitlab.rb`:
+
+     ```shell
+     gitlab_pages['log_verbose'] = true
+     ```
+
+1. [Reconfigure GitLab][reconfigure]
 
 ## Change storage path
 
@@ -273,11 +270,29 @@ are stored.
      ```
 
 1. [Reconfigure GitLab][reconfigure]
-1. Restart gitlab-pages by running the following command:
+
+## Configure listener for reverse proxy requests
+
+Follow the steps below to configure the proxy listener of GitLab Pages. [Introduced](https://gitlab.com/gitlab-org/omnibus-gitlab/merge_requests/2533) in
+Omnibus GitLab 11.1.
+
+1. By default the listener is configured to listen for requests on `localhost:8090`.
+
+   If you wish to disable it you must configure this in
+   `/etc/gitlab/gitlab.rb`:
 
      ```shell
-    sudo gitlab-ctl restart gitlab-pages
-    ```
+     gitlab_pages['listen_proxy'] = nil
+     ```
+
+   If you wish to make it listen on a different port you must configure this also in
+   `/etc/gitlab/gitlab.rb`:
+
+     ```shell
+     gitlab_pages['listen_proxy'] = "localhost:10080"
+     ```
+
+1. [Reconfigure GitLab][reconfigure]
 
 ## Set maximum pages size
 

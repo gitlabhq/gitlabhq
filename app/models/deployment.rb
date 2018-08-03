@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
@@ -90,10 +92,6 @@ class Deployment < ActiveRecord::Base
     return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
-  end
-
-  def stop_action?
-    stop_action.present?
   end
 
   def formatted_deployment_time

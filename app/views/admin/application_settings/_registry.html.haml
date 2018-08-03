@@ -3,7 +3,7 @@
 
   %fieldset
     .form-group
-      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'label-light'
+      = f.label :container_registry_token_expire_delay, 'Authorization token duration (minutes)', class: 'label-bold'
       = f.number_field :container_registry_token_expire_delay, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

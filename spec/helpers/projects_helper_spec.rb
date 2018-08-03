@@ -290,33 +290,6 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#sanitizerepo_repo_path' do
-    let(:project) { create(:project, :repository) }
-    let(:storage_path) do
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        Gitlab.config.repositories.storages.default.legacy_disk_path
-      end
-    end
-
-    before do
-      allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
-    end
-
-    it 'removes the repo path' do
-      repo = File.join(storage_path, 'namespace/test.git')
-      import_error = "Could not clone #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
-    end
-
-    it 'removes the temporary repo path used for uploads/exports' do
-      repo = '/base/repo/export/path/tmp/project_exports/uploads/test.tar.gz'
-      import_error = "Unable to decompress #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Unable to decompress [REPO EXPORT PATH]/uploads/test.tar.gz')
-    end
-  end
-
   describe '#last_push_event' do
     let(:user) { double(:user, fork_of: nil) }
     let(:project) { double(:project, id: 1) }

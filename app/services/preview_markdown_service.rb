@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PreviewMarkdownService < BaseService
   def execute
     text, commands = explain_quick_actions(params[:text])

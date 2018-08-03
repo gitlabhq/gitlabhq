@@ -1,4 +1,4 @@
-# Gitlab::Git::Commit is a wrapper around native Rugged::Commit object
+# Gitlab::Git::Commit is a wrapper around Gitaly::GitCommit
 module Gitlab
   module Git
     class Commit
@@ -55,7 +55,6 @@ module Gitlab
 
           # A rugged reference?
           commit_id = Gitlab::Git::Ref.dereference_object(commit_id)
-          return decorate(repo, commit_id) if commit_id.is_a?(Rugged::Commit)
 
           # Some weird thing?
           return nil unless commit_id.is_a?(String)
@@ -68,9 +67,7 @@ module Gitlab
           end
 
           decorate(repo, commit) if commit
-        rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
-               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
-               Rugged::OdbError, Rugged::TreeError, ArgumentError
+        rescue Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository, ArgumentError
           nil
         end
 
@@ -142,20 +139,6 @@ module Gitlab
           Gitlab::Git::Commit.new(repository, commit, ref)
         end
 
-        # Returns the `Rugged` sorting type constant for one or more given
-        # sort types. Valid keys are `:none`, `:topo`, and `:date`, or an array
-        # containing more than one of them. `:date` uses a combination of date and
-        # topological sorting to closer mimic git's native ordering.
-        def rugged_sort_type(sort_type)
-          @rugged_sort_types ||= {
-            none: Rugged::SORT_NONE,
-            topo: Rugged::SORT_TOPO,
-            date: Rugged::SORT_DATE | Rugged::SORT_TOPO
-          }
-
-          @rugged_sort_types.fetch(sort_type, Rugged::SORT_NONE)
-        end
-
         def shas_with_signatures(repository, shas)
           Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
         end
@@ -164,13 +147,8 @@ module Gitlab
         # relation to each other. The last 10 commits for a branch for example,
         # should go through .where
         def batch_by_oid(repo, oids)
-          repo.gitaly_migrate(:list_commits_by_oid,
-                              status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-            if is_enabled
-              repo.gitaly_commit_client.list_commits_by_oid(oids)
-            else
-              oids.map { |oid| find(repo, oid) }.compact
-            end
+          repo.wrapped_gitaly_errors do
+            repo.gitaly_commit_client.list_commits_by_oid(oids)
           end
         end
 
@@ -228,8 +206,6 @@ module Gitlab
         case raw_commit
         when Hash
           init_from_hash(raw_commit)
-        when Rugged::Commit
-          init_from_rugged(raw_commit)
         when Gitaly::GitCommit
           init_from_gitaly(raw_commit)
         else
@@ -270,33 +246,9 @@ module Gitlab
         @repository.gitaly_commit_client.diff_from_parent(self, options)
       end
 
-      # Not to be called directly, but right now its used for tests and in old
-      # migrations
-      def rugged_diff_from_parent(options = {})
-        options ||= {}
-        break_rewrites = options[:break_rewrites]
-        actual_options = Gitlab::Git::Diff.filter_diff_options(options)
-
-        diff = if rugged_commit.parents.empty?
-                 rugged_commit.diff(actual_options.merge(reverse: true))
-               else
-                 rugged_commit.parents[0].diff(rugged_commit, actual_options)
-               end
-
-        diff.find_similar!(break_rewrites: break_rewrites)
-        diff
-      end
-
       def deltas
         @deltas ||= begin
-          deltas = Gitlab::GitalyClient.migrate(:commit_deltas) do |is_enabled|
-            if is_enabled
-              @repository.gitaly_commit_client.commit_deltas(self)
-            else
-              rugged_diff_from_parent.each_delta
-            end
-          end
-
+          deltas = @repository.gitaly_commit_client.commit_deltas(self)
           deltas.map { |delta| Gitlab::Git::Diff.new(delta) }
         end
       end
@@ -364,14 +316,6 @@ module Gitlab
         encode! @committer_email
       end
 
-      def rugged_commit
-        @rugged_commit ||= if raw_commit.is_a?(Rugged::Commit)
-                             raw_commit
-                           else
-                             @repository.rev_parse_target(id)
-                           end
-      end
-
       def merge_commit?
         parent_ids.size > 1
       end
@@ -415,22 +359,6 @@ module Gitlab
         serialize_keys.each do |key|
           send("#{key}=", raw_commit[key]) # rubocop:disable GitlabSecurity/PublicSend
         end
-      end
-
-      def init_from_rugged(commit)
-        author = commit.author
-        committer = commit.committer
-
-        @raw_commit = commit
-        @id = commit.oid
-        @message = commit.message
-        @authored_date = author[:time]
-        @committed_date = committer[:time]
-        @author_name = author[:name]
-        @author_email = author[:email]
-        @committer_name = committer[:name]
-        @committer_email = committer[:email]
-        @parent_ids = commit.parents.map(&:oid)
       end
 
       def init_from_gitaly(commit)

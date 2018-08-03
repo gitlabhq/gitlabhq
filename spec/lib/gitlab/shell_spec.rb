@@ -403,46 +403,36 @@ describe Gitlab::Shell do
     end
 
     describe '#create_repository' do
-      shared_examples '#create_repository' do
-        let(:repository_storage) { 'default' }
-        let(:repository_storage_path) do
-          Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-            Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
-          end
-        end
-        let(:repo_name) { 'project/path' }
-        let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
-
-        after do
-          FileUtils.rm_rf(created_path)
-        end
-
-        it 'creates a repository' do
-          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
-
-          expect(File.stat(created_path).mode & 0o777).to eq(0o770)
-
-          hooks_path = File.join(created_path, 'hooks')
-          expect(File.lstat(hooks_path)).to be_symlink
-          expect(File.realpath(hooks_path)).to eq(gitlab_shell_hooks_path)
-        end
-
-        it 'returns false when the command fails' do
-          FileUtils.mkdir_p(File.dirname(created_path))
-          # This file will block the creation of the repo's .git directory. That
-          # should cause #create_repository to fail.
-          FileUtils.touch(created_path)
-
-          expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) do
+        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+          Gitlab.config.repositories.storages[repository_storage].legacy_disk_path
         end
       end
+      let(:repo_name) { 'project/path' }
+      let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
-      context 'with gitaly' do
-        it_behaves_like '#create_repository'
+      after do
+        FileUtils.rm_rf(created_path)
       end
 
-      context 'without gitaly', :skip_gitaly_mock do
-        it_behaves_like '#create_repository'
+      it 'creates a repository' do
+        expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_truthy
+
+        expect(File.stat(created_path).mode & 0o777).to eq(0o770)
+
+        hooks_path = File.join(created_path, 'hooks')
+        expect(File.lstat(hooks_path)).to be_symlink
+        expect(File.realpath(hooks_path)).to eq(gitlab_shell_hooks_path)
+      end
+
+      it 'returns false when the command fails' do
+        FileUtils.mkdir_p(File.dirname(created_path))
+        # This file will block the creation of the repo's .git directory. That
+        # should cause #create_repository to fail.
+        FileUtils.touch(created_path)
+
+        expect(gitlab_shell.create_repository(repository_storage, repo_name)).to be_falsy
       end
     end
 
@@ -513,22 +503,12 @@ describe Gitlab::Shell do
       end
     end
 
-    shared_examples 'fetch_remote' do |gitaly_on|
+    describe '#fetch_remote' do
       def fetch_remote(ssh_auth = nil, prune = true)
         gitlab_shell.fetch_remote(repository.raw_repository, 'remote-name', ssh_auth: ssh_auth, prune: prune)
       end
 
-      def expect_gitlab_projects(fail = false, options = {})
-        expect(gitlab_projects).to receive(:fetch_remote).with(
-          'remote-name',
-          timeout,
-          options
-        ).and_return(!fail)
-
-        allow(gitlab_projects).to receive(:output).and_return('error') if fail
-      end
-
-      def expect_gitaly_call(fail, options = {})
+      def expect_call(fail, options = {})
         receive_fetch_remote =
           if fail
             receive(:fetch_remote).and_raise(GRPC::NotFound)
@@ -537,16 +517,6 @@ describe Gitlab::Shell do
           end
 
         expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive_fetch_remote
-      end
-
-      if gitaly_on
-        def expect_call(fail, options = {})
-          expect_gitaly_call(fail, options)
-        end
-      else
-        def expect_call(fail, options = {})
-          expect_gitlab_projects(fail, options)
-        end
       end
 
       def build_ssh_auth(opts = {})
@@ -634,14 +604,6 @@ describe Gitlab::Shell do
           expect(fetch_remote(ssh_auth)).to be_truthy
         end
       end
-    end
-
-    describe '#fetch_remote local', :skip_gitaly_mock do
-      it_should_behave_like 'fetch_remote', false
-    end
-
-    describe '#fetch_remote gitaly' do
-      it_should_behave_like 'fetch_remote', true
 
       context 'gitaly call' do
         let(:remote_name) { 'remote-name' }
@@ -677,25 +639,6 @@ describe Gitlab::Shell do
           expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:import_repository)
             .with(import_url) { raise GRPC::BadStatus, 'bla' }
           expect_any_instance_of(Gitlab::Shell::GitalyGitlabProjects).to receive(:output) { 'error'}
-
-          expect do
-            gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
-          end.to raise_error(Gitlab::Shell::Error, "error")
-        end
-      end
-
-      context 'without gitaly', :disable_gitaly do
-        it 'returns true when the command succeeds' do
-          expect(gitlab_projects).to receive(:import_project).with(import_url, timeout) { true }
-
-          result = gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)
-
-          expect(result).to be_truthy
-        end
-
-        it 'raises an exception when the command fails' do
-          allow(gitlab_projects).to receive(:output) { 'error' }
-          expect(gitlab_projects).to receive(:import_project) { false }
 
           expect do
             gitlab_shell.import_repository(project.repository_storage, project.disk_path, import_url)

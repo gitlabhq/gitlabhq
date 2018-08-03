@@ -6,7 +6,7 @@ describe "User edits labels" do
   set(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(edit_project_label_path(project, label))

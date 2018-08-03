@@ -39,11 +39,15 @@ class Feature
       # Flipper creates on-memory features when asked for a not-yet-created one.
       # If we want to check if a feature has been actually set, we look for it
       # on the persisted features list.
-      persisted_names.include?(feature.name)
+      persisted_names.include?(feature.name.to_s)
     end
 
     def enabled?(key, thing = nil)
       get(key).enabled?(thing)
+    end
+
+    def disabled?(key, thing = nil)
+      !enabled?(key, thing)
     end
 
     def enable(key, thing = true)

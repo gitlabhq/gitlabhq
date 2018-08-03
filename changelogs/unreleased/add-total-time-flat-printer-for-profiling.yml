@@ -1,0 +1,6 @@
+---
+title: Add a Gitlab::Profiler.print_by_total_time convenience method for profiling
+  from a Rails console
+merge_request:
+author:
+type: other

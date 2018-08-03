@@ -12,7 +12,7 @@ describe 'Project Badges' do
   let!(:group_badge) { create(:group_badge, group: group) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     sign_in(user)
 
     visit(project_settings_badges_path(project))

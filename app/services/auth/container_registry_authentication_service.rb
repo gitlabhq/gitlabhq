@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Auth
   class ContainerRegistryAuthenticationService < BaseService
     AUDIENCE = 'container_registry'.freeze
@@ -7,11 +9,11 @@ module Auth
 
       return error('UNAVAILABLE', status: 404, message: 'registry not enabled') unless registry.enabled
 
-      unless scope || current_user || project
+      unless scopes.any? || current_user || project
         return error('DENIED', status: 403, message: 'access forbidden')
       end
 
-      { token: authorized_token(scope).encoded }
+      { token: authorized_token(*scopes).encoded }
     end
 
     def self.full_access_token(*names)
@@ -45,10 +47,12 @@ module Auth
       end
     end
 
-    def scope
-      return unless params[:scope]
+    def scopes
+      return [] unless params[:scopes]
 
-      @scope ||= process_scope(params[:scope])
+      @scopes ||= params[:scopes].map do |scope|
+        process_scope(scope)
+      end.compact
     end
 
     def process_scope(scope)

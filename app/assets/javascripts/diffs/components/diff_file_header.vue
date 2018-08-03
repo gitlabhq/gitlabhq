@@ -1,5 +1,6 @@
 <script>
 import _ from 'underscore';
+import { mapActions, mapGetters } from 'vuex';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import FileIcon from '~/vue_shared/components/file_icon.vue';
@@ -38,13 +39,8 @@ export default {
       required: false,
       default: true,
     },
-    discussionsExpanded: {
+    canCurrentUserFork: {
       type: Boolean,
-      required: false,
-      default: true,
-    },
-    currentUser: {
-      type: Object,
       required: true,
     },
   },
@@ -54,6 +50,10 @@ export default {
     };
   },
   computed: {
+    ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
+    hasExpandedDiscussions() {
+      return this.diffHasExpandedDiscussions(this.diffFile);
+    },
     icon() {
       if (this.diffFile.submodule) {
         return 'archive';
@@ -88,9 +88,6 @@ export default {
     collapseIcon() {
       return this.expanded ? 'chevron-down' : 'chevron-right';
     },
-    isDiscussionsExpanded() {
-      return this.discussionsExpanded && this.expanded;
-    },
     viewFileButtonText() {
       const truncatedContentSha = _.escape(truncateSha(this.diffFile.contentSha));
       return sprintf(
@@ -111,9 +108,13 @@ export default {
         false,
       );
     },
+    gfmCopyText() {
+      return `\`${this.diffFile.filePath}\``;
+    },
   },
   methods: {
-    handleToggle(e, checkTarget) {
+    ...mapActions('diffs', ['toggleFileDiscussions']),
+    handleToggleFile(e, checkTarget) {
       if (
         !checkTarget ||
         e.target === this.$refs.header ||
@@ -125,6 +126,9 @@ export default {
     showForkMessage() {
       this.$emit('showForkMessage');
     },
+    handleToggleDiscussions() {
+      this.toggleFileDiscussions(this.diffFile);
+    },
   },
 };
 </script>
@@ -133,7 +137,7 @@ export default {
   <div
     ref="header"
     class="js-file-title file-title file-title-flex-parent"
-    @click="handleToggle($event, true)"
+    @click="handleToggleFile($event, true)"
   >
     <div class="file-header-content">
       <icon
@@ -145,6 +149,7 @@ export default {
         @click.stop="handleToggle"
       />
       <a
+        v-once
         ref="titleWrapper"
         :href="titleLink"
         class="append-right-4"
@@ -189,6 +194,7 @@ export default {
       <clipboard-button
         :title="__('Copy file path to clipboard')"
         :text="diffFile.filePath"
+        :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
@@ -215,17 +221,19 @@ export default {
         v-if="diffFile.blob && diffFile.blob.readableText"
       >
         <button
-          :class="{ active: isDiscussionsExpanded }"
+          :disabled="!diffHasDiscussions(diffFile)"
+          :class="{ active: hasExpandedDiscussions }"
           :title="s__('MergeRequests|Toggle comments for this file')"
-          class="btn js-toggle-diff-comments"
+          class="js-btn-vue-toggle-comments btn"
           type="button"
+          @click="handleToggleDiscussions"
         >
           <icon name="comment" />
         </button>
 
         <edit-button
           v-if="!diffFile.deletedFile"
-          :current-user="currentUser"
+          :can-current-user-fork="canCurrentUserFork"
           :edit-path="diffFile.editPath"
           :can-modify-blob="diffFile.canModifyBlob"
           @showForkMessage="showForkMessage"

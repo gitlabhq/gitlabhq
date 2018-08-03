@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class TriggerPolicy < BasePolicy
     delegate { @subject.project }

@@ -79,7 +79,7 @@ describe Gitlab::Middleware::Go do
                 let(:current_user) { project.creator }
 
                 before do
-                  project.team.add_master(current_user)
+                  project.team.add_maintainer(current_user)
                 end
 
                 shared_examples 'authenticated' do

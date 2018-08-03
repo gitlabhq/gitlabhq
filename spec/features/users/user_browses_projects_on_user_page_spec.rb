@@ -4,19 +4,19 @@ describe 'Users > User browses projects on user page', :js do
   let!(:user) { create :user }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 
   let!(:internal_project) do
     create :project, :internal, name: 'internal', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 
   let!(:public_project) do
     create :project, :public, name: 'public', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 

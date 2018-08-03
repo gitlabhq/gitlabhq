@@ -63,6 +63,12 @@ describe 'Pipeline', :js do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
+    it_behaves_like 'showing user status' do
+      let(:user_with_status) { pipeline.user }
+
+      subject { visit project_pipeline_path(project, pipeline) }
+    end
+
     describe 'pipeline graph' do
       context 'when pipeline has running builds' do
         it 'shows a running icon and a cancel action for the running build' do

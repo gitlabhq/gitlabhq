@@ -37,7 +37,7 @@ describe Projects::ProjectMembersController do
 
     context 'when user has enough rights' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'adds user to members' do
@@ -70,7 +70,7 @@ describe Projects::ProjectMembersController do
     let(:requester) { create(:project_member, :access_request, project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
@@ -121,7 +121,7 @@ describe Projects::ProjectMembersController do
 
       context 'when user has enough rights' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it '[HTML] removes user from members' do
@@ -181,7 +181,7 @@ describe Projects::ProjectMembersController do
         let(:project) { create(:project, namespace: user.namespace) }
 
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'cannot remove themselves from the project' do
@@ -263,7 +263,7 @@ describe Projects::ProjectMembersController do
 
       context 'when user has enough rights' do
         before do
-          project.add_master(user)
+          project.add_maintainer(user)
         end
 
         it 'adds user to members' do
@@ -285,7 +285,7 @@ describe Projects::ProjectMembersController do
     let(:member) { create(:user) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       another_project.add_guest(member)
       sign_in(user)
     end
@@ -332,7 +332,7 @@ describe Projects::ProjectMembersController do
 
     context 'when creating owner' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -346,9 +346,9 @@ describe Projects::ProjectMembersController do
       end
     end
 
-    context 'when create master' do
+    context 'when create maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
         sign_in(user)
       end
 
@@ -356,7 +356,7 @@ describe Projects::ProjectMembersController do
         expect do
           post :create, user_ids: stranger.id,
                         namespace_id: project.namespace,
-                        access_level: Member::MASTER,
+                        access_level: Member::MAINTAINER,
                         project_id: project
         end.to change { project.members.count }.by(1)
       end

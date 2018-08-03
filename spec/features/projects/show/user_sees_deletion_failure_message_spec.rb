@@ -8,7 +8,7 @@ describe 'Projects > Show > User sees a deletion failure message' do
   end
 
   it 'shows error message if deletion for project fails' do
-    project.update_attributes(delete_error: "Something went wrong", pending_delete: false)
+    project.update(delete_error: "Something went wrong", pending_delete: false)
 
     visit project_path(project)
 

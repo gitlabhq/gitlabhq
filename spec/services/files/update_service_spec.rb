@@ -24,7 +24,7 @@ describe Files::UpdateService do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe "#execute" do

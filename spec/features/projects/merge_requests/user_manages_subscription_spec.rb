@@ -6,7 +6,7 @@ describe 'User manages subscription', :js do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit(merge_request_path(merge_request))

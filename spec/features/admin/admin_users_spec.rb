@@ -315,6 +315,40 @@ describe "Admin::Users" do
     end
   end
 
+  describe 'show breadcrumbs' do
+    it do
+      visit admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit projects_admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit keys_admin_user_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit admin_user_impersonation_tokens_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit admin_user_identities_path(user)
+
+      check_breadcrumb(user.name)
+
+      visit new_admin_user_identity_path(user)
+
+      check_breadcrumb("New Identity")
+
+      visit admin_user_identities_path(user)
+
+      find('.table').find(:link, 'Edit').click
+
+      check_breadcrumb("Edit Identity")
+    end
+  end
+
   describe 'show user attributes' do
     it do
       visit admin_users_path
@@ -408,5 +442,9 @@ describe "Admin::Users" do
       expect(page).to have_content(user.name)
       expect(page).not_to have_content('twitter')
     end
+  end
+
+  def check_breadcrumb(content)
+    expect(find('.breadcrumbs-sub-title')).to have_content(content)
   end
 end

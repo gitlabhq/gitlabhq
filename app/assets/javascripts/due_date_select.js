@@ -171,6 +171,8 @@ export default class DueDateSelectors {
   initMilestoneDatePicker() {
     $('.datepicker').each(function initPikadayMilestone() {
       const $datePicker = $(this);
+      const datePickerVal = $datePicker.val();
+
       const calendar = new Pikaday({
         field: $datePicker.get(0),
         theme: 'gitlab-theme animate-picker',
@@ -183,7 +185,7 @@ export default class DueDateSelectors {
         },
       });
 
-      calendar.setDate(parsePikadayDate($datePicker.val()));
+      calendar.setDate(parsePikadayDate(datePickerVal));
 
       $datePicker.data('pikaday', calendar);
     });

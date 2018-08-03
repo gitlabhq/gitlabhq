@@ -162,8 +162,10 @@ export default class Clusters {
 
     if (type === 'password') {
       this.tokenField.setAttribute('type', 'text');
+      this.showTokenButton.textContent = s__('ClusterIntegration|Hide');
     } else {
       this.tokenField.setAttribute('type', 'password');
+      this.showTokenButton.textContent = s__('ClusterIntegration|Show');
     }
   }
 

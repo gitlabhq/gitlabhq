@@ -20,9 +20,9 @@ describe 'Dropdown assignee', :js do
   end
 
   before do
-    project.add_master(user)
-    project.add_master(user_john)
-    project.add_master(user_jacob)
+    project.add_maintainer(user)
+    project.add_maintainer(user_john)
+    project.add_maintainer(user_jacob)
     sign_in(user)
     create(:issue, project: project)
 
@@ -224,7 +224,7 @@ describe 'Dropdown assignee', :js do
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.add_master(new_user)
+      project.add_maintainer(new_user)
       find('.filtered-search-box .clear-search').click
       input_filtered_search('assignee:', submit: false, extra_space: false)
 

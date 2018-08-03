@@ -5,7 +5,7 @@ describe 'Global search' do
   let(:project) { create(:project, namespace: user.namespace) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
   end
 

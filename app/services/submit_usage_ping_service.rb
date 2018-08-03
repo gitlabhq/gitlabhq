@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SubmitUsagePingService
   URL = 'https://version.gitlab.com/usage_data'.freeze
 

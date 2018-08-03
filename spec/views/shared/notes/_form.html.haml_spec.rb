@@ -7,7 +7,7 @@ describe 'shared/notes/_form' do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     assign(:project, project)
     assign(:note, note)
 

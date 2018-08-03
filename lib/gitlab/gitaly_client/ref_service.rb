@@ -17,6 +17,13 @@ module Gitlab
         consume_find_all_branches_response(response)
       end
 
+      def remote_branches(remote_name)
+        request = Gitaly::FindAllRemoteBranchesRequest.new(repository: @gitaly_repo, remote_name: remote_name)
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_all_remote_branches, request)
+
+        consume_find_all_remote_branches_response(remote_name, response)
+      end
+
       def merged_branches(branch_names = [])
         request = Gitaly::FindAllBranchesRequest.new(
           repository: @gitaly_repo,
@@ -54,6 +61,25 @@ module Gitlab
         )
         response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient.medium_timeout)
         encode!(response.name.dup)
+      end
+
+      def list_new_commits(newrev)
+        request = Gitaly::ListNewCommitsRequest.new(
+          repository: @gitaly_repo,
+          commit_id: newrev
+        )
+
+        response = GitalyClient
+          .call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
+
+        commits = []
+        response.each do |msg|
+          msg.commits.each do |c|
+            commits << Gitlab::Git::Commit.new(@repository, c)
+          end
+        end
+
+        commits
       end
 
       def count_tag_names
@@ -220,6 +246,18 @@ module Gitlab
           message.branches.map do |branch|
             target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target)
             Gitlab::Git::Branch.new(@repository, branch.name, branch.target.id, target_commit)
+          end
+        end
+      end
+
+      def consume_find_all_remote_branches_response(remote_name, response)
+        remote_name += '/' unless remote_name.ends_with?('/')
+
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+            branch_name = branch.name.sub(remote_name, '')
+            Gitlab::Git::Branch.new(@repository, branch_name, branch.target_commit.id, target_commit)
           end
         end
       end

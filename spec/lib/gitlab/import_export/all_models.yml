@@ -7,6 +7,7 @@ issues:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
@@ -76,6 +77,7 @@ merge_requests:
 - updated_by
 - milestone
 - notes
+- resource_label_events
 - label_links
 - labels
 - last_edited_by
@@ -211,6 +213,7 @@ project:
 - slack_service
 - microsoft_teams_service
 - mattermost_service
+- hangouts_chat_service
 - buildkite_service
 - bamboo_service
 - teamcity_service
@@ -294,6 +297,7 @@ project:
 - settings
 - ci_cd_settings
 - import_export_upload
+- repository_languages
 award_emoji:
 - awardable
 - user

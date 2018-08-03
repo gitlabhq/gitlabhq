@@ -109,13 +109,13 @@ describe API::ProjectExport do
         it_behaves_like 'get project export status ok'
       end
 
-      context 'when user is a master' do
+      context 'when user is a maintainer' do
         before do
-          project.add_master(user)
-          project_none.add_master(user)
-          project_started.add_master(user)
-          project_finished.add_master(user)
-          project_after_export.add_master(user)
+          project.add_maintainer(user)
+          project_none.add_maintainer(user)
+          project_started.add_maintainer(user)
+          project_finished.add_maintainer(user)
+          project_after_export.add_maintainer(user)
         end
 
         it_behaves_like 'get project export status ok'
@@ -228,13 +228,13 @@ describe API::ProjectExport do
         it_behaves_like 'get project download by strategy'
       end
 
-      context 'when user is a master' do
+      context 'when user is a maintainer' do
         before do
-          project.add_master(user)
-          project_none.add_master(user)
-          project_started.add_master(user)
-          project_finished.add_master(user)
-          project_after_export.add_master(user)
+          project.add_maintainer(user)
+          project_none.add_maintainer(user)
+          project_started.add_maintainer(user)
+          project_finished.add_maintainer(user)
+          project_after_export.add_maintainer(user)
         end
 
         it_behaves_like 'get project download by strategy'
@@ -274,7 +274,7 @@ describe API::ProjectExport do
         stub_uploads_object_storage(ImportExportUploader)
 
         [project, project_finished, project_after_export].each do |p|
-          p.add_master(user)
+          p.add_maintainer(user)
 
           upload = ImportExportUpload.new(project: p)
           upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
@@ -338,13 +338,13 @@ describe API::ProjectExport do
         it_behaves_like 'post project export start'
       end
 
-      context 'when user is a master' do
+      context 'when user is a maintainer' do
         before do
-          project.add_master(user)
-          project_none.add_master(user)
-          project_started.add_master(user)
-          project_finished.add_master(user)
-          project_after_export.add_master(user)
+          project.add_maintainer(user)
+          project_none.add_maintainer(user)
+          project_started.add_maintainer(user)
+          project_finished.add_maintainer(user)
+          project_after_export.add_maintainer(user)
         end
 
         it_behaves_like 'post project export start'

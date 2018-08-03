@@ -13,7 +13,6 @@
 - cronjob:repository_archive_cache
 - cronjob:repository_check_dispatch
 - cronjob:requests_profiles
-- cronjob:schedule_update_user_activity
 - cronjob:stuck_ci_jobs
 - cronjob:stuck_import_jobs
 - cronjob:stuck_merge_jobs
@@ -74,6 +73,11 @@
 - repository_check:repository_check_batch
 - repository_check:repository_check_single_repository
 
+- todos_destroyer:todos_destroyer_confidential_issue
+- todos_destroyer:todos_destroyer_entity_leave
+- todos_destroyer:todos_destroyer_project_private
+- todos_destroyer:todos_destroyer_private_features
+
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
 
@@ -114,9 +118,9 @@
 - storage_migrator
 - system_hook_push
 - update_merge_requests
-- update_user_activity
 - upload_checksum
 - web_hook
 - repository_update_remote_mirror
 - create_note_diff_file
 - delete_diff_files
+- detect_repository_languages

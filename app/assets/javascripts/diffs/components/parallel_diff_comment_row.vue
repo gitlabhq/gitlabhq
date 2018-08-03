@@ -13,12 +13,8 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     lineIndex: {
@@ -55,13 +51,6 @@ export default {
     hasAnyExpandedDiscussion() {
       return this.hasExpandedDiscussionOnLeft || this.hasExpandedDiscussionOnRight;
     },
-    shouldRenderDiscussionsRow() {
-      const hasDiscussion = this.hasDiscussion && this.hasAnyExpandedDiscussion;
-      const hasCommentFormOnLeft = this.diffLineCommentForms[this.leftLineCode];
-      const hasCommentFormOnRight = this.diffLineCommentForms[this.rightLineCode];
-
-      return hasDiscussion || hasCommentFormOnLeft || hasCommentFormOnRight;
-    },
     shouldRenderDiscussionsOnLeft() {
       return this.discussionsByLineCode[this.leftLineCode] && this.hasExpandedDiscussionOnLeft;
     },
@@ -81,7 +70,6 @@ export default {
 
 <template>
   <tr
-    v-if="shouldRenderDiscussionsRow"
     :class="className"
     class="notes_holder"
   >
@@ -92,16 +80,16 @@ export default {
         class="content"
       >
         <diff-discussions
+          v-if="discussionsByLineCode[leftLineCode].length"
           :discussions="discussionsByLineCode[leftLineCode]"
         />
       </div>
       <diff-line-note-form
         v-if="diffLineCommentForms[leftLineCode] &&
         diffLineCommentForms[leftLineCode]"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        :diff-file-hash="diffFileHash"
         :line="line.left"
-        :note-target-line="diffLines[lineIndex].left"
+        :note-target-line="line.left"
         position="left"
       />
     </td>
@@ -112,16 +100,16 @@ export default {
         class="content"
       >
         <diff-discussions
+          v-if="discussionsByLineCode[rightLineCode].length"
           :discussions="discussionsByLineCode[rightLineCode]"
         />
       </div>
       <diff-line-note-form
         v-if="diffLineCommentForms[rightLineCode] &&
         diffLineCommentForms[rightLineCode] && line.right.type"
-        :diff-file="diffFile"
-        :diff-lines="diffLines"
+        :diff-file-hash="diffFileHash"
         :line="line.right"
-        :note-target-line="diffLines[lineIndex].right"
+        :note-target-line="line.right"
         position="right"
       />
     </td>

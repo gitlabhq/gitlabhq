@@ -1,4 +1,4 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 
 require 'rails/all'
 
@@ -43,10 +43,12 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
+                                     #{config.root}/app/policies/concerns
                                      #{config.root}/app/services/concerns
                                      #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns
-                                     #{config.root}/app/graphql/resolvers/concerns])
+                                     #{config.root}/app/graphql/resolvers/concerns
+                                     #{config.root}/app/graphql/mutations/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -132,6 +134,7 @@ module Gitlab
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
     config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
@@ -150,6 +153,10 @@ module Gitlab
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
+
+    # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
+    # connect to the database.
+    config.middleware.insert_after "Rails::Rack::Logger", "Gitlab::Middleware::BasicHealthCheck"
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
 
@@ -211,7 +218,7 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
+            send(name, project&.namespace, project, *args)
           end
         end
       end

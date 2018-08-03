@@ -1,5 +1,0 @@
----
-title: Fix link to job when creating a new issue from a failed job
-merge_request: 20328
-author:
-type: fixed

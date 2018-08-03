@@ -26,6 +26,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:hangouts_chat_service) }
     it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
@@ -68,6 +69,7 @@ describe Project do
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:repository_languages) }
     it { is_expected.to have_many(:environments) }
     it { is_expected.to have_many(:deployments) }
     it { is_expected.to have_many(:todos) }
@@ -98,6 +100,22 @@ describe Project do
 
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
       end
     end
 
@@ -149,22 +167,24 @@ describe Project do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
-
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_most(255) }
-
     it { is_expected.to validate_length_of(:description).is_at_most(2000) }
-
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
-
     it { is_expected.to validate_presence_of(:creator) }
-
     it { is_expected.to validate_presence_of(:namespace) }
-
     it { is_expected.to validate_presence_of(:repository_storage) }
+
+    it 'validates build timeout constraints' do
+      is_expected.to validate_numericality_of(:build_timeout)
+        .only_integer
+        .is_greater_than_or_equal_to(10.minutes)
+        .is_less_than(1.month)
+        .with_message('needs to be beetween 10 minutes and 1 month')
+    end
 
     it 'does not allow new projects beyond user limits' do
       project2 = build(:project)
@@ -336,7 +356,7 @@ describe Project do
   end
 
   describe 'delegation' do
-    [:add_guest, :add_reporter, :add_developer, :add_master, :add_user, :add_users].each do |method|
+    [:add_guest, :add_reporter, :add_developer, :add_maintainer, :add_user, :add_users].each do |method|
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
@@ -567,15 +587,15 @@ describe Project do
       end
 
       it 'returns the most recent timestamp' do
-        project.update_attributes(updated_at: nil,
-                                  last_activity_at: timestamp,
-                                  last_repository_updated_at: timestamp - 1.hour)
+        project.update(updated_at: nil,
+                       last_activity_at: timestamp,
+                       last_repository_updated_at: timestamp - 1.hour)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
 
-        project.update_attributes(updated_at: timestamp,
-                                  last_activity_at: timestamp - 1.hour,
-                                  last_repository_updated_at: nil)
+        project.update(updated_at: timestamp,
+                       last_activity_at: timestamp - 1.hour,
+                       last_repository_updated_at: nil)
 
         expect(project.last_activity_date).to be_like_time(timestamp)
       end
@@ -1130,7 +1150,7 @@ describe Project do
 
     describe 'when a user has access to a project' do
       before do
-        project.add_user(user, Gitlab::Access::MASTER)
+        project.add_user(user, Gitlab::Access::MAINTAINER)
       end
 
       it { is_expected.to eq([project]) }
@@ -1768,7 +1788,7 @@ describe Project do
       it 'resets project import_error' do
         error_message = 'Some error'
         mirror = create(:project_empty_repo, :import_started)
-        mirror.import_state.update_attributes(last_error: error_message)
+        mirror.import_state.update(last_error: error_message)
 
         expect { mirror.import_finish }.to change { mirror.import_error }.from(error_message).to(nil)
       end
@@ -1929,7 +1949,7 @@ describe Project do
     end
 
     it 'returns false when remote mirror is disabled' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       is_expected.to be_falsy
     end
@@ -1959,7 +1979,7 @@ describe Project do
     end
 
     it 'does not sync disabled remote mirrors' do
-      project.remote_mirrors.first.update_attributes(enabled: false)
+      project.remote_mirrors.first.update(enabled: false)
 
       expect_any_instance_of(RemoteMirror).not_to receive(:sync)
 
@@ -2939,8 +2959,6 @@ describe Project do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        expect(project).to receive(:expires_full_path_cache)
-
         project.rename_repo
       end
 
@@ -3099,8 +3117,6 @@ describe Project do
             .with(project, :rename)
 
         expect(project).to receive(:expire_caches_before_rename)
-
-        expect(project).to receive(:expires_full_path_cache)
 
         project.rename_repo
       end
@@ -3496,8 +3512,8 @@ describe Project do
 
         expect(project.protected_branches).not_to be_empty
         expect(project.default_branch).to eq(project.protected_branches.first.name)
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
     end
   end
@@ -3733,7 +3749,7 @@ describe Project do
       end
 
       it 'does not allow access if the user cannot merge the merge request' do
-        create(:protected_branch, :masters_can_push, project: target_project, name: 'target-branch')
+        create(:protected_branch, :maintainers_can_push, project: target_project, name: 'target-branch')
 
         expect(project.branch_allows_collaboration?(user, 'awesome-feature-1'))
           .to be_falsy
@@ -3859,6 +3875,16 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  context '#commits_by' do
+    let(:project) { create(:project, :repository) }
+    let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
+    let(:commit_shas) { commits.map(&:id) }
+
+    it 'retrieves several commits from the repository by oid' do
+      expect(project.commits_by(oids: commit_shas)).to eq commits
     end
   end
 

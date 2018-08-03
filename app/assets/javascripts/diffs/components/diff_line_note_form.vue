@@ -13,12 +13,8 @@ export default {
     noteForm,
   },
   props: {
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     line: {
@@ -40,6 +36,7 @@ export default {
       noteableData: state => state.notes.noteableData,
       diffViewType: state => state.diffs.diffViewType,
     }),
+    ...mapGetters('diffs', ['getDiffFileByHash']),
     ...mapGetters(['isLoggedIn', 'noteableType', 'getNoteableData', 'getNotesDataByProp']),
   },
   mounted() {
@@ -59,7 +56,8 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['cancelCommentForm', 'saveNote', 'fetchDiscussions']),
+    ...mapActions('diffs', ['cancelCommentForm']),
+    ...mapActions(['saveNote', 'refetchDiscussionById']),
     handleCancelCommentForm() {
       this.autosave.reset();
       this.cancelCommentForm({
@@ -67,21 +65,22 @@ export default {
       });
     },
     handleSaveNote(note) {
+      const selectedDiffFile = this.getDiffFileByHash(this.diffFileHash);
       const postData = getNoteFormData({
         note,
         noteableData: this.noteableData,
         noteableType: this.noteableType,
         noteTargetLine: this.noteTargetLine,
         diffViewType: this.diffViewType,
-        diffFile: this.diffFile,
+        diffFile: selectedDiffFile,
         linePosition: this.position,
       });
 
       this.saveNote(postData)
-        .then(() => {
+        .then(result => {
           const endpoint = this.getNotesDataByProp('discussionsPath');
 
-          this.fetchDiscussions(endpoint)
+          this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
             .then(() => {
               this.handleCancelCommentForm();
             })

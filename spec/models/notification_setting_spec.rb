@@ -58,7 +58,7 @@ RSpec.describe NotificationSetting do
       1.upto(4) do |i|
         setting = create(:notification_setting, user: user)
 
-        setting.project.update_attributes(pending_delete: true) if i.even?
+        setting.project.update(pending_delete: true) if i.even?
       end
     end
 
@@ -91,6 +91,12 @@ RSpec.describe NotificationSetting do
       it 'returns false' do
         expect(subject.event_enabled?(:foo_event)).to be(false)
       end
+    end
+  end
+
+  context 'email events' do
+    it 'includes EXCLUDED_WATCHER_EVENTS in EMAIL_EVENTS' do
+      expect(described_class::EMAIL_EVENTS).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
     end
   end
 end

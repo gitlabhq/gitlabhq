@@ -1,6 +1,0 @@
----
-title: "[Rails5] Invalid single-table inheritance type: Group is not a subclass of
-  Namespace"
-merge_request: 19918
-author: "@blackst0ne"
-type: fixed

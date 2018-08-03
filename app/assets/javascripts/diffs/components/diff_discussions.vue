@@ -15,9 +15,7 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="discussions.length"
-  >
+  <div>
     <div
       v-for="discussion in discussions"
       :key="discussion.id"

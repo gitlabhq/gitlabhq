@@ -101,10 +101,4 @@ bla/bla.txt
       handle.write('# hello'.encode(enc))
     end
   end
-
-  # Prevent developer git configurations from being persisted to test
-  # repositories
-  def git_env
-    { 'GIT_TEMPLATE_DIR' => '' }
-  end
 end

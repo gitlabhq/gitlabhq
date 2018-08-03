@@ -63,7 +63,7 @@
     width: 100%;
 
     &.is-compact {
-      width: calc(100% - #{$gutter_width});
+      width: calc(100% - #{$gutter-width});
     }
   }
 }
@@ -205,7 +205,7 @@
 
 .board-title {
   margin: 0;
-  padding: 12px $gl-padding;
+  padding: $gl-padding-8 $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
   display: flex;

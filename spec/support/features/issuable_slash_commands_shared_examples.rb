@@ -4,7 +4,7 @@
 shared_examples 'issuable record that supports quick actions in its description and notes' do |issuable_type|
   include Spec::Support::Helpers::Features::NotesHelpers
 
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
   let(:project) do
     case issuable_type
     when :merge_request
@@ -19,9 +19,9 @@ shared_examples 'issuable record that supports quick actions in its description 
   let(:new_url_opts) { {} }
 
   before do
-    project.add_master(master)
+    project.add_maintainer(maintainer)
 
-    gitlab_sign_in(master)
+    gitlab_sign_in(maintainer)
   end
 
   after do
@@ -210,31 +210,31 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(page).not_to have_content '/todo'
         expect(page).to have_content 'Commands applied'
 
-        todos = TodosFinder.new(master).execute
+        todos = TodosFinder.new(maintainer).execute
         todo = todos.first
 
         expect(todos.size).to eq 1
         expect(todo).to be_pending
         expect(todo.target).to eq issuable
-        expect(todo.author).to eq master
-        expect(todo.user).to eq master
+        expect(todo.author).to eq maintainer
+        expect(todo.user).to eq maintainer
       end
     end
 
     context "with a note marking the #{issuable_type} as done" do
       before do
-        TodoService.new.mark_todo(issuable, master)
+        TodoService.new.mark_todo(issuable, maintainer)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        todos = TodosFinder.new(master).execute
+        todos = TodosFinder.new(maintainer).execute
         todo = todos.first
 
         expect(todos.size).to eq 1
         expect(todos.first).to be_pending
         expect(todo.target).to eq issuable
-        expect(todo.author).to eq master
-        expect(todo.user).to eq master
+        expect(todo.author).to eq maintainer
+        expect(todo.user).to eq maintainer
 
         add_note("/done")
 
@@ -247,31 +247,31 @@ shared_examples 'issuable record that supports quick actions in its description 
 
     context "with a note subscribing to the #{issuable_type}" do
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master, project)).to be_falsy
+        expect(issuable.subscribed?(maintainer, project)).to be_falsy
 
         add_note("/subscribe")
 
         expect(page).not_to have_content '/subscribe'
         expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master, project)).to be_truthy
+        expect(issuable.subscribed?(maintainer, project)).to be_truthy
       end
     end
 
     context "with a note unsubscribing to the #{issuable_type} as done" do
       before do
-        issuable.subscribe(master, project)
+        issuable.subscribe(maintainer, project)
       end
 
       it "creates a new todo for the #{issuable_type}" do
-        expect(issuable.subscribed?(master, project)).to be_truthy
+        expect(issuable.subscribed?(maintainer, project)).to be_truthy
 
         add_note("/unsubscribe")
 
         expect(page).not_to have_content '/unsubscribe'
         expect(page).to have_content 'Commands applied'
 
-        expect(issuable.subscribed?(master, project)).to be_falsy
+        expect(issuable.subscribed?(maintainer, project)).to be_falsy
       end
     end
 
@@ -282,7 +282,7 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(page).not_to have_content '/assign me'
         expect(page).to have_content 'Commands applied'
 
-        expect(issuable.reload.assignees).to eq [master]
+        expect(issuable.reload.assignees).to eq [maintainer]
       end
     end
   end

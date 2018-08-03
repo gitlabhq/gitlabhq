@@ -30,6 +30,18 @@
       - if @user.avatar?
         %hr
         = link_to _('Remove avatar'), profile_avatar_path, data: { confirm: _('Avatar will be removed. Are you sure?') }, method: :delete, class: 'btn btn-danger btn-inverted'
+
+  - if show_user_status_field?
+    %hr
+    .row
+      .col-lg-4.profile-settings-sidebar
+        %h4.prepend-top-0= s_("User|Current Status")
+        %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too.")
+      .col-lg-8
+        .row
+          = f.fields_for :status, @user.status do |status_form|
+            = status_form.text_field :emoji
+            = status_form.text_field :message, maxlength: 100
   %hr
   .row
     .col-lg-4.profile-settings-sidebar
@@ -69,6 +81,12 @@
         = f.text_field :location
       = f.text_field :organization
       = f.text_area :bio, rows: 4, maxlength: 250, help: 'Tell us about yourself in fewer than 250 characters.'
+      %hr
+      %h5 Private profile
+      - private_profile_label = capture do
+        Don't display activity-related personal information on your profile
+        = link_to icon('question-circle'), help_page_path('user/profile/index.md', anchor: 'private-profile')
+      = f.check_box :private_profile, label: private_profile_label
       .prepend-top-default.append-bottom-default
         = f.submit 'Update profile settings', class: 'btn btn-success'
         = link_to 'Cancel', user_path(current_user), class: 'btn btn-cancel'

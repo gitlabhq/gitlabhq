@@ -34,11 +34,12 @@ module API
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :order_by, type: String, values: %w[name path id], default: 'name', desc: 'Order by name, path or id'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
         use :pagination
       end
 
       def find_groups(params, parent_id = nil)
-        find_params = params.slice(:all_available, :custom_attributes, :owned)
+        find_params = params.slice(:all_available, :custom_attributes, :owned, :min_access_level)
         find_params[:parent] = find_group!(parent_id) if parent_id
         find_params[:all_available] =
           find_params.fetch(:all_available, current_user&.full_private_access?)
@@ -150,12 +151,13 @@ module API
       end
       params do
         use :with_custom_attributes
+        optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
       get ":id" do
         group = find_group!(params[:id])
 
         options = {
-          with: Entities::GroupDetail,
+          with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
           current_user: current_user
         }
 

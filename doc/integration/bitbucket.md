@@ -22,8 +22,8 @@ Bitbucket.org.
 
 > **Note:**
 GitLab 8.15 significantly simplified the way to integrate Bitbucket.org with
-GitLab. You are encouraged to upgrade your GitLab instance if you haven't done
-already. If you're using GitLab 8.14 and below, [use the previous integration
+GitLab. You are encouraged to upgrade your GitLab instance if you haven't done so
+already. If you're using GitLab 8.14 or below, [use the previous integration
 docs][bb-old].
 
 To enable the Bitbucket OmniAuth provider you must register your application
@@ -64,7 +64,7 @@ you to use.
 
 1.  Select **Save**.
 1.  Select your newly created OAuth consumer and you should now see a Key and
-    Secret in the list of OAuth customers. Keep this page open as you continue
+    Secret in the list of OAuth consumers. Keep this page open as you continue
     the configuration.
 
       ![Bitbucket OAuth key](img/bitbucket_oauth_keys.png)
@@ -114,8 +114,8 @@ you to use.
     from the Bitbucket application page.
 
 1.  Save the configuration file.
-1.  [Reconfigure][] or [restart GitLab][] for the changes to take effect if you
-    installed GitLab via Omnibus or from source respectively.
+1.  For the changes to take effect, [reconfigure GitLab][] if you installed via
+    Omnibus, or [restart][] if installed from source.
 
 On the sign in page there should now be a Bitbucket icon below the regular sign
 in form. Click the icon to begin the authentication process. Bitbucket will ask
@@ -127,12 +127,12 @@ well, the user will be returned to GitLab and will be signed in.
 Once the above configuration is set up, you can use Bitbucket to sign into
 GitLab and [start importing your projects][bb-import].
 
-If you don't want to enable signing in with Bitbucket but just want to import
-projects from Bitbucket, you could [disable it in the admin panel](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
+If you want to import projects from Bitbucket, but don't want to enable signing in,
+you can [disable Sign-Ins in the admin panel](omniauth.md#enable-or-disable-sign-in-with-an-omniauth-provider-without-disabling-import-sources).
 
 [init-oauth]: omniauth.md#initial-omniauth-configuration
 [bb-import]: ../workflow/importing/import_projects_from_bitbucket.md
 [bb-old]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-14-stable/doc/integration/bitbucket.md
 [bitbucket-docs]: https://confluence.atlassian.com/bitbucket/use-the-ssh-protocol-with-bitbucket-cloud-221449711.html#UsetheSSHprotocolwithBitbucketCloud-KnownhostorBitbucket%27spublickeyfingerprints
-[reconfigure]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
-[restart GitLab]: ../administration/restart_gitlab.md#installations-from-source
+[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[restart]: ../administration/restart_gitlab.md#installations-from-source

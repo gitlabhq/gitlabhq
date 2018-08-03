@@ -141,7 +141,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
         expect(invalid_gpg_signature.reload.verification_status).to eq 'unverified_key'
 
         # InvalidGpgSignatureUpdater is called by the after_update hook
-        user.update_attributes!(email: GpgHelpers::User1.emails.first)
+        user.update!(email: GpgHelpers::User1.emails.first)
 
         expect(invalid_gpg_signature.reload).to have_attributes(
           project: project,
@@ -166,7 +166,7 @@ RSpec.describe Gitlab::Gpg::InvalidGpgSignatureUpdater do
         )
 
         # InvalidGpgSignatureUpdater is called by the after_update hook
-        user.update_attributes!(email: 'still.unrelated@example.com')
+        user.update!(email: 'still.unrelated@example.com')
 
         expect(invalid_gpg_signature.reload).to have_attributes(
           project: project,

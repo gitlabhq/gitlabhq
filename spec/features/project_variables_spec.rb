@@ -8,7 +8,7 @@ describe 'Project variables', :js do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     project.variables << variable
 
     visit page_path

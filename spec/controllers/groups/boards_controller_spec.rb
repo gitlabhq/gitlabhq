@@ -5,7 +5,7 @@ describe Groups::BoardsController do
   let(:user)    { create(:user) }
 
   before do
-    group.add_master(user)
+    group.add_maintainer(user)
     sign_in(user)
   end
 

@@ -18,7 +18,7 @@ describe('Rollback Component', () => {
       },
     }).$mount();
 
-    expect(component.$el.querySelector('span').textContent).toContain('Re-deploy');
+    expect(component.$el).toHaveSpriteIcon('repeat');
   });
 
   it('Should render Rollback label when isLastDeployment is false', () => {
@@ -30,6 +30,6 @@ describe('Rollback Component', () => {
       },
     }).$mount();
 
-    expect(component.$el.querySelector('span').textContent).toContain('Rollback');
+    expect(component.$el).toHaveSpriteIcon('redo');
   });
 });

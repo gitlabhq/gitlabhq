@@ -1,5 +1,0 @@
----
-title: Don't show context button for diffs of deleted files.
-merge_request:
-author:
-type: fixed

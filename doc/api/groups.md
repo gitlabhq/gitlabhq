@@ -10,13 +10,14 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups owned by the current user |
+| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
+| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups
@@ -94,13 +95,14 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
 | `skip_groups` | array of integers | no | Skip the group IDs passed |
-| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin) |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users, `true` for admin); Attributes `owned` and `min_access_level` have precedence |
 | `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name`, `path` or `id`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
-| `owned` | boolean | no | Limit to groups owned by the current user |
+| `owned` | boolean | no | Limit to groups explicitly owned by the current user |
+| `min_access_level` | integer | no | Limit to groups where current user has at least this [access level](members.md) |
 
 ```
 GET /groups/:id/subgroups
@@ -210,6 +212,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
+| `with_projects` | boolean | no | Include details from projects that belong to the specified group (defaults to `true`). |
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4
@@ -358,6 +361,30 @@ Example response:
       ]
     }
   ]
+}
+```
+
+When adding the parameter `with_projects=false`, projects will not be returned.
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/4?with_projects=false
+```
+
+Example response:
+
+```json
+{
+  "id": 4,
+  "name": "Twitter",
+  "path": "twitter",
+  "description": "Aliquid qui quis dignissimos distinctio ut commodi voluptas est.",
+  "visibility": "public",
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/twitter",
+  "request_access_enabled": false,
+  "full_name": "Twitter",
+  "full_path": "twitter",
+  "parent_id": null
 }
 ```
 

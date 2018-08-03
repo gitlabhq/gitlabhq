@@ -154,6 +154,12 @@ describe 'Group' do
       end
     end
 
+    it 'focuses confirmation field on remove group' do
+      click_button('Remove group')
+
+      expect(page).to have_selector '#confirm_name_input:focus'
+    end
+
     it 'removes group' do
       expect { remove_with_confirm('Remove group', group.path) }.to change {Group.count}.by(-1)
       expect(group.members.all.count).to be_zero

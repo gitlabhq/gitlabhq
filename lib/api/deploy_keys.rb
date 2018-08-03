@@ -112,9 +112,9 @@ module API
         can_push = params[:can_push].nil? ? deploy_keys_project.can_push : params[:can_push]
         title = params[:title] || deploy_keys_project.deploy_key.title
 
-        result = deploy_keys_project.update_attributes(can_push: can_push,
-                                                       deploy_key_attributes: { id: params[:key_id],
-                                                                                title: title })
+        result = deploy_keys_project.update(can_push: can_push,
+                                            deploy_key_attributes: { id: params[:key_id],
+                                                                     title: title })
 
         if result
           present deploy_keys_project, with: Entities::DeployKeysProject

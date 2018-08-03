@@ -31,12 +31,6 @@ describe Projects::TransferService do
       transfer_project(project, user, group)
     end
 
-    it 'expires full_path cache' do
-      expect(project).to receive(:expires_full_path_cache)
-
-      transfer_project(project, user, group)
-    end
-
     it 'invalidates the user\'s personal_project_count cache' do
       expect(user).to receive(:invalidate_personal_projects_count)
 
@@ -247,7 +241,7 @@ describe Projects::TransferService do
     let(:group_member) { create(:user) }
 
     before do
-      group.add_user(owner, GroupMember::MASTER)
+      group.add_user(owner, GroupMember::MAINTAINER)
       group.add_user(group_member, GroupMember::DEVELOPER)
     end
 

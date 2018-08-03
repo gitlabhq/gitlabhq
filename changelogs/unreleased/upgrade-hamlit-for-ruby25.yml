@@ -1,0 +1,5 @@
+---
+title: 'Update hamlit to fix ruby 2.5 incompatibilities, fixes #42045'
+merge_request:
+author: Matthew Dawson
+type: fixed

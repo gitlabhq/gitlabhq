@@ -8,15 +8,15 @@ describe DeployTokenPolicy do
   subject { described_class.new(current_user, deploy_token) }
 
   describe 'creating a deploy key' do
-    context 'when user is master' do
+    context 'when user is maintainer' do
       before do
-        project.add_master(current_user)
+        project.add_maintainer(current_user)
       end
 
       it { is_expected.to be_allowed(:create_deploy_token) }
     end
 
-    context 'when user is not master' do
+    context 'when user is not maintainer' do
       before do
         project.add_developer(current_user)
       end
@@ -26,15 +26,15 @@ describe DeployTokenPolicy do
   end
 
   describe 'updating a deploy key' do
-    context 'when user is master' do
+    context 'when user is maintainer' do
       before do
-        project.add_master(current_user)
+        project.add_maintainer(current_user)
       end
 
       it { is_expected.to be_allowed(:update_deploy_token) }
     end
 
-    context 'when user is not master' do
+    context 'when user is not maintainer' do
       before do
         project.add_developer(current_user)
       end

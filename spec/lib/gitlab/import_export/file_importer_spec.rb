@@ -7,6 +7,7 @@ describe Gitlab::ImportExport::FileImporter do
   let(:symlink_file) { "#{shared.export_path}/invalid.json" }
   let(:hidden_symlink_file) { "#{shared.export_path}/.hidden" }
   let(:subfolder_symlink_file) { "#{shared.export_path}/subfolder/invalid.json" }
+  let(:evil_symlink_file) { "#{shared.export_path}/.\nevil" }
 
   before do
     stub_const('Gitlab::ImportExport::FileImporter::MAX_RETRIES', 0)
@@ -23,7 +24,7 @@ describe Gitlab::ImportExport::FileImporter do
 
   context 'normal run' do
     before do
-      described_class.import(archive_file: '', shared: shared)
+      described_class.import(project: nil, archive_file: '', shared: shared)
     end
 
     it 'removes symlinks in root folder' do
@@ -32,6 +33,10 @@ describe Gitlab::ImportExport::FileImporter do
 
     it 'removes hidden symlinks in root folder' do
       expect(File.exist?(hidden_symlink_file)).to be false
+    end
+
+    it 'removes evil symlinks in root folder' do
+      expect(File.exist?(evil_symlink_file)).to be false
     end
 
     it 'removes symlinks in subfolders' do
@@ -50,7 +55,7 @@ describe Gitlab::ImportExport::FileImporter do
   context 'error' do
     before do
       allow_any_instance_of(described_class).to receive(:wait_for_archived_file).and_raise(StandardError)
-      described_class.import(archive_file: '', shared: shared)
+      described_class.import(project: nil, archive_file: '', shared: shared)
     end
 
     it 'removes symlinks in root folder' do
@@ -75,5 +80,7 @@ describe Gitlab::ImportExport::FileImporter do
     FileUtils.touch(valid_file)
     FileUtils.ln_s(valid_file, symlink_file)
     FileUtils.ln_s(valid_file, subfolder_symlink_file)
+    FileUtils.ln_s(valid_file, hidden_symlink_file)
+    FileUtils.ln_s(valid_file, evil_symlink_file)
   end
 end

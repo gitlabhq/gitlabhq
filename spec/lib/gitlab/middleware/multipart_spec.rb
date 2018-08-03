@@ -75,6 +75,33 @@ describe Gitlab::Middleware::Multipart do
     it_behaves_like 'multipart upload files'
   end
 
+  it 'allows symlinks for uploads dir' do
+    Tempfile.open('two-levels') do |tempfile|
+      symlinked_dir = '/some/dir/uploads'
+      symlinked_path = File.join(symlinked_dir, File.basename(tempfile.path))
+      env = post_env({ 'file' => symlinked_path }, { 'file.name' => original_filename, 'file.path' => symlinked_path }, Gitlab::Workhorse.secret, 'gitlab-workhorse')
+
+      allow(FileUploader).to receive(:root).and_return(symlinked_dir)
+      allow(UploadedFile).to receive(:allowed_paths).and_return([symlinked_dir, Gitlab.config.uploads.storage_path])
+      allow(File).to receive(:realpath).and_call_original
+      allow(File).to receive(:realpath).with(symlinked_dir).and_return(Dir.tmpdir)
+      allow(File).to receive(:realpath).with(symlinked_path).and_return(tempfile.path)
+      allow(File).to receive(:exist?).and_call_original
+      allow(File).to receive(:exist?).with(symlinked_dir).and_return(true)
+
+      # override Dir.tmpdir because this dir is in the list of allowed paths
+      # and it would match FileUploader.root path (which in this test is linked
+      # to /tmp too)
+      allow(Dir).to receive(:tmpdir).and_return(File.join(Dir.tmpdir, 'tmpsubdir'))
+
+      expect(app).to receive(:call) do |env|
+        expect(Rack::Request.new(env).params['file']).to be_a(::UploadedFile)
+      end
+
+      middleware.call(env)
+    end
+  end
+
   def post_env(rewritten_fields, params, secret, issuer)
     token = JWT.encode({ 'iss' => issuer, 'rewritten_fields' => rewritten_fields }, secret, 'HS256')
     Rack::MockRequest.env_for(

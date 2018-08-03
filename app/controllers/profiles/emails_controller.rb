@@ -19,7 +19,7 @@ class Profiles::EmailsController < Profiles::ApplicationController
     Emails::DestroyService.new(current_user, user: current_user).execute(@email)
 
     respond_to do |format|
-      format.html { redirect_to profile_emails_url, status: 302 }
+      format.html { redirect_to profile_emails_url, status: :found }
       format.js { head :ok }
     end
   end

@@ -125,10 +125,16 @@ gl.issueBoards.BoardsStore = {
     } else if (listTo.type === 'backlog' && listFrom.type === 'assignee') {
       issue.removeAssignee(listFrom.assignee);
       listFrom.removeIssue(issue);
-    } else if ((listTo.type !== 'label' && listFrom.type === 'assignee') ||
-               (listTo.type !== 'assignee' && listFrom.type === 'label')) {
+    } else if (this.shouldRemoveIssue(listFrom, listTo)) {
       listFrom.removeIssue(issue);
     }
+  },
+  shouldRemoveIssue(listFrom, listTo) {
+    return (
+      (listTo.type !== 'label' && listFrom.type === 'assignee') ||
+      (listTo.type !== 'assignee' && listFrom.type === 'label') ||
+      (listFrom.type === 'backlog')
+    );
   },
   moveIssueInList (list, issue, oldIndex, newIndex, idArray) {
     const beforeId = parseInt(idArray[newIndex - 1], 10) || null;

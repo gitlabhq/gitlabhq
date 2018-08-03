@@ -127,7 +127,7 @@ module IssuableActions
           errors: [
             "Someone edited this #{issuable.human_class_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."
           ]
-        }, status: 409
+        }, status: :conflict
       end
     end
   end

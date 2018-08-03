@@ -32,13 +32,13 @@ module DeclarativePolicy
       Rule::DelegatedCondition.new(delegate_name, condition)
     end
 
-    def method_missing(m, *a, &b)
-      return super unless a.empty? && !block_given?
+    def method_missing(msg, *args)
+      return super unless args.empty? && !block_given?
 
-      if @context_class.delegations.key?(m)
-        DelegateDsl.new(self, m)
+      if @context_class.delegations.key?(msg)
+        DelegateDsl.new(self, msg)
       else
-        cond(m.to_sym)
+        cond(msg.to_sym)
       end
     end
   end

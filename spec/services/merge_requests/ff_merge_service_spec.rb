@@ -13,7 +13,7 @@ describe MergeRequests::FfMergeService do
   let(:project) { merge_request.project }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
   end
 

@@ -9,7 +9,7 @@ describe 'Cherry-pick Commits' do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     visit project_commit_path(project, master_pickable_commit.id)
   end
 

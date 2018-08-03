@@ -7,7 +7,7 @@ module AuthHelper
   end
 
   def omniauth_enabled?
-    Gitlab.config.omniauth.enabled
+    Gitlab::Auth.omniauth_enabled?
   end
 
   def provider_has_icon?(name)

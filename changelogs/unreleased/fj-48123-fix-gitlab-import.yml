@@ -1,0 +1,5 @@
+---
+title: Fix GitLab project imports not loading due to API timeouts
+merge_request: 20599
+author:
+type: fixed

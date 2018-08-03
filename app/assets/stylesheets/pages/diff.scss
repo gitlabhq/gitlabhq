@@ -16,6 +16,7 @@
 
     svg {
       vertical-align: middle;
+      top: -1px;
     }
   }
 
@@ -56,7 +57,7 @@
 
     table {
       width: 100%;
-      font-family: $monospace_font;
+      font-family: $monospace-font;
       border: 0;
       border-collapse: separate;
       margin: 0;
@@ -73,8 +74,8 @@
       }
 
       .line_holder td {
-        line-height: $code_line_height;
-        font-size: $code_font_size;
+        line-height: $code-line-height;
+        font-size: $code-font-size;
 
         &.noteable_line {
           position: relative;
@@ -517,6 +518,12 @@
   &:focus {
     outline: none;
     color: $gl-link-hover-color;
+  }
+
+  .caret-icon {
+    position: relative;
+    top: 2px;
+    left: -1px;
   }
 }
 

@@ -17,7 +17,7 @@ describe 'Projects (JavaScript fixtures)', type: :controller do
   end
 
   before do
-    project.add_master(admin)
+    project.add_maintainer(admin)
     sign_in(admin)
   end
 

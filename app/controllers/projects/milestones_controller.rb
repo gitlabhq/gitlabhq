@@ -76,8 +76,8 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def promote
     promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
+    flash[:notice] = flash_notice_for(promoted_milestone, project.group)
 
-    flash[:notice] = "#{milestone.title} promoted to <a href=\"#{group_milestone_path(project.group, promoted_milestone.iid)}\"><u>group milestone</u></a>.".html_safe
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)
@@ -90,13 +90,22 @@ class Projects::MilestonesController < Projects::ApplicationController
     redirect_to milestone, alert: error.message
   end
 
+  def flash_notice_for(milestone, group)
+    notice = ''.html_safe
+    notice << milestone.title
+    notice << ' promoted to '
+    notice << view_context.link_to('<u>group milestone</u>'.html_safe, group_milestone_path(group, milestone.iid))
+    notice << '.'
+    notice
+  end
+
   def destroy
     return access_denied! unless can?(current_user, :admin_milestone, @project)
 
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path, status: 303 }
+      format.html { redirect_to namespace_project_milestones_path, status: :see_other }
       format.js { head :ok }
     end
   end

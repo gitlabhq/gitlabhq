@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ContainerRepositoryEntity < Grape::Entity
   include RequestAwareEntity
 

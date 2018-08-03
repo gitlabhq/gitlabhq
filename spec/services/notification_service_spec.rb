@@ -172,9 +172,9 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
-        project.add_master(issue.author)
-        project.add_master(assignee)
-        project.add_master(note.author)
+        project.add_maintainer(issue.author)
+        project.add_maintainer(assignee)
+        project.add_maintainer(note.author)
 
         @u_custom_off = create_user_with_notification(:custom, 'custom_off')
         project.add_guest(@u_custom_off)
@@ -255,8 +255,8 @@ describe NotificationService, :mailer do
       describe 'new note on issue in project that belongs to a group' do
         before do
           note.project.namespace_id = group.id
-          group.add_user(@u_watcher, GroupMember::MASTER)
-          group.add_user(@u_custom_global, GroupMember::MASTER)
+          group.add_user(@u_watcher, GroupMember::MAINTAINER)
+          group.add_user(@u_custom_global, GroupMember::MAINTAINER)
           note.project.save
 
           @u_watcher.notification_settings_for(note.project).participating!
@@ -373,7 +373,7 @@ describe NotificationService, :mailer do
       before do
         build_team(note.project)
         build_group(note.project)
-        note.project.add_master(note.author)
+        note.project.add_maintainer(note.author)
         add_users_with_subscription(note.project, issue)
         reset_delivered_emails!
       end
@@ -436,7 +436,7 @@ describe NotificationService, :mailer do
         project.add_guest(@u_guest_watcher)
         project.add_guest(@u_guest_custom)
         add_member_for_parent_group(@pg_watcher, project)
-        note.project.add_master(note.author)
+        note.project.add_maintainer(note.author)
         reset_delivered_emails!
       end
 
@@ -577,8 +577,8 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
-        project.add_master(merge_request.author)
-        project.add_master(merge_request.assignee)
+        project.add_maintainer(merge_request.author)
+        project.add_maintainer(merge_request.assignee)
       end
 
       describe '#new_note' do
@@ -1088,8 +1088,8 @@ describe NotificationService, :mailer do
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
-      project.add_master(merge_request.author)
-      project.add_master(merge_request.assignee)
+      project.add_maintainer(merge_request.author)
+      project.add_maintainer(merge_request.assignee)
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
@@ -1314,7 +1314,7 @@ describe NotificationService, :mailer do
 
       describe 'when merge_when_pipeline_succeeds is true' do
         before do
-          merge_request.update_attributes(
+          merge_request.update(
             merge_when_pipeline_succeeds: true,
             merge_user: create(:user)
           )
@@ -1529,13 +1529,13 @@ describe NotificationService, :mailer do
     let(:added_user) { create(:user) }
 
     describe '#new_access_request' do
-      let(:master) { create(:user) }
+      let(:maintainer) { create(:user) }
       let(:owner) { create(:user) }
       let(:developer) { create(:user) }
       let!(:group) do
         create(:group, :public, :access_requestable) do |group|
           group.add_owner(owner)
-          group.add_master(master)
+          group.add_maintainer(maintainer)
           group.add_developer(developer)
         end
       end
@@ -1544,11 +1544,11 @@ describe NotificationService, :mailer do
         reset_delivered_emails!
       end
 
-      it 'sends notification to group owners_and_masters' do
+      it 'sends notification to group owners_and_maintainers' do
         group.request_access(added_user)
 
         should_email(owner)
-        should_email(master)
+        should_email(maintainer)
         should_not_email(developer)
       end
     end
@@ -1601,11 +1601,11 @@ describe NotificationService, :mailer do
       context 'for a project in a user namespace' do
         let(:project) do
           create(:project, :public, :access_requestable) do |project|
-            project.add_master(project.owner)
+            project.add_maintainer(project.owner)
           end
         end
 
-        it 'sends notification to project owners_and_masters' do
+        it 'sends notification to project owners_and_maintainers' do
           project.request_access(added_user)
 
           should_only_email(project.owner)
@@ -1621,7 +1621,7 @@ describe NotificationService, :mailer do
           reset_delivered_emails!
         end
 
-        it 'sends notification to group owners_and_masters' do
+        it 'sends notification to group owners_and_maintainers' do
           project.request_access(added_user)
 
           should_only_email(group_owner)
@@ -1759,11 +1759,11 @@ describe NotificationService, :mailer do
       end
 
       before do
-        project.add_master(u_member)
-        project.add_master(u_watcher)
-        project.add_master(u_custom_notification_unset)
-        project.add_master(u_custom_notification_enabled)
-        project.add_master(u_custom_notification_disabled)
+        project.add_maintainer(u_member)
+        project.add_maintainer(u_watcher)
+        project.add_maintainer(u_custom_notification_unset)
+        project.add_maintainer(u_custom_notification_enabled)
+        project.add_maintainer(u_custom_notification_disabled)
 
         reset_delivered_emails!
       end
@@ -1903,15 +1903,15 @@ describe NotificationService, :mailer do
     set(:u_blocked) { create(:user, :blocked) }
     set(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
     set(:u_owner)   { project.owner }
-    set(:u_master1) { create(:user) }
-    set(:u_master2) { create(:user) }
+    set(:u_maintainer1) { create(:user) }
+    set(:u_maintainer2) { create(:user) }
     set(:u_developer) { create(:user) }
 
     before do
-      project.add_master(u_blocked)
-      project.add_master(u_silence)
-      project.add_master(u_master1)
-      project.add_master(u_master2)
+      project.add_maintainer(u_blocked)
+      project.add_maintainer(u_silence)
+      project.add_maintainer(u_maintainer1)
+      project.add_maintainer(u_maintainer2)
       project.add_developer(u_developer)
 
       reset_delivered_emails!
@@ -1926,12 +1926,12 @@ describe NotificationService, :mailer do
       describe "##{sym}" do
         subject(:notify!) { notification.send(sym, domain) }
 
-        it 'emails current watching masters' do
+        it 'emails current watching maintainers' do
           expect(Notify).to receive(:"#{sym}_email").at_least(:once).and_call_original
 
           notify!
 
-          should_only_email(u_master1, u_master2, u_owner)
+          should_only_email(u_maintainer1, u_maintainer2, u_owner)
         end
 
         it 'emails nobody if the project is missing' do
@@ -1945,26 +1945,26 @@ describe NotificationService, :mailer do
     end
 
     describe '#pages_domain_verification_failed' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_verification_failed(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
 
     describe '#pages_domain_enabled' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_enabled(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
 
     describe '#pages_domain_disabled' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_disabled(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
   end
@@ -1988,15 +1988,15 @@ describe NotificationService, :mailer do
     @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching')
     @u_guest_custom = create_user_with_notification(:custom, 'guest_custom')
 
-    project.add_master(@u_watcher)
-    project.add_master(@u_participating)
-    project.add_master(@u_participant_mentioned)
-    project.add_master(@u_disabled)
-    project.add_master(@u_mentioned)
-    project.add_master(@u_committer)
-    project.add_master(@u_not_mentioned)
-    project.add_master(@u_lazy_participant)
-    project.add_master(@u_custom_global)
+    project.add_maintainer(@u_watcher)
+    project.add_maintainer(@u_participating)
+    project.add_maintainer(@u_participant_mentioned)
+    project.add_maintainer(@u_disabled)
+    project.add_maintainer(@u_mentioned)
+    project.add_maintainer(@u_committer)
+    project.add_maintainer(@u_not_mentioned)
+    project.add_maintainer(@u_lazy_participant)
+    project.add_maintainer(@u_custom_global)
   end
 
   # Users in the project's group but not part of project's team
@@ -2011,7 +2011,7 @@ describe NotificationService, :mailer do
 
     # Group member: global=watch, group=global
     @g_global_watcher ||= create_global_setting_for(create(:user), :watch)
-    group.add_users([@g_watcher, @g_global_watcher], :master)
+    group.add_users([@g_watcher, @g_global_watcher], :maintainer)
 
     group
   end
@@ -2050,7 +2050,7 @@ describe NotificationService, :mailer do
 
     project.reload
 
-    project.group.parent.add_master(user)
+    project.group.parent.add_maintainer(user)
   end
 
   def should_email_nested_group_user(user, times: 1, recipients: email_recipients)
@@ -2072,11 +2072,11 @@ describe NotificationService, :mailer do
     @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
     @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
 
-    project.add_master(@subscribed_participant)
-    project.add_master(@subscriber)
-    project.add_master(@unsubscriber)
-    project.add_master(@watcher_and_subscriber)
-    project.add_master(@unsubscribed_mentioned)
+    project.add_maintainer(@subscribed_participant)
+    project.add_maintainer(@subscriber)
+    project.add_maintainer(@unsubscriber)
+    project.add_maintainer(@watcher_and_subscriber)
+    project.add_maintainer(@unsubscribed_mentioned)
 
     issuable.subscriptions.create(user: @unsubscribed_mentioned, project: project, subscribed: false)
     issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)

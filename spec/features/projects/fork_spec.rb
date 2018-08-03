@@ -129,11 +129,11 @@ describe 'Project fork' do
     end
   end
 
-  context 'master in group' do
+  context 'maintainer in group' do
     let(:group) { create(:group) }
 
     before do
-      group.add_master(user)
+      group.add_maintainer(user)
     end
 
     it 'allows user to fork project to group or to user namespace' do

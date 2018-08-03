@@ -105,7 +105,7 @@ export default {
         </div>
         <label
           :for="list.id + '-title'"
-          class="label-light"
+          class="label-bold"
         >
           Title
         </label>
@@ -115,6 +115,7 @@ export default {
           :id="list.id + '-title'"
           class="form-control"
           type="text"
+          name="issue_title"
           autocomplete="off"
         />
         <project-select

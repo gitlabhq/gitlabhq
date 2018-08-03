@@ -192,7 +192,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
           deployment = environment.first_deployment_for(@merge_request.diff_head_sha)
 
           stop_url =
-            if environment.stop_action? && can?(current_user, :create_deployment, environment)
+            if can?(current_user, :stop_environment, environment)
               stop_project_environment_path(project, environment)
             end
 
@@ -227,7 +227,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   def rebase
     RebaseWorker.perform_async(@merge_request.id, current_user.id)
 
-    render nothing: true, status: 200
+    render nothing: true, status: :ok
   end
 
   protected

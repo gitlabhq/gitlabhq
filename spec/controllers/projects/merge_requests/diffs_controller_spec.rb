@@ -140,7 +140,7 @@ describe Projects::MergeRequests::DiffsController do
       let(:other_project) { create(:project) }
 
       before do
-        other_project.add_master(user)
+        other_project.add_maintainer(user)
         diff_for_path(old_path: existing_path, new_path: existing_path, project_id: other_project)
       end
 

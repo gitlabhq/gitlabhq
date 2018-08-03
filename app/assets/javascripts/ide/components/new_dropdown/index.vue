@@ -3,15 +3,17 @@ import { mapActions } from 'vuex';
 import icon from '~/vue_shared/components/icon.vue';
 import newModal from './modal.vue';
 import upload from './upload.vue';
+import ItemButton from './button.vue';
 
 export default {
   components: {
     icon,
     newModal,
     upload,
+    ItemButton,
   },
   props: {
-    branch: {
+    type: {
       type: String,
       required: true,
     },
@@ -20,11 +22,13 @@ export default {
       required: false,
       default: '',
     },
+    mouseOver: {
+      type: Boolean,
+      required: true,
+    },
   },
   data() {
     return {
-      openModal: false,
-      modalType: '',
       dropdownOpen: false,
     };
   },
@@ -34,16 +38,17 @@ export default {
         this.$refs.dropdownMenu.scrollIntoView();
       });
     },
+    mouseOver() {
+      if (!this.mouseOver) {
+        this.dropdownOpen = false;
+      }
+    },
   },
   methods: {
-    ...mapActions(['createTempEntry']),
+    ...mapActions(['createTempEntry', 'openNewEntryModal', 'deleteEntry']),
     createNewItem(type) {
-      this.modalType = type;
-      this.openModal = true;
+      this.openNewEntryModal({ type, path: this.path });
       this.dropdownOpen = false;
-    },
-    hideModal() {
-      this.openModal = false;
     },
     openDropdown() {
       this.dropdownOpen = !this.dropdownOpen;
@@ -58,63 +63,62 @@ export default {
       :class="{
         show: dropdownOpen,
       }"
-      class="dropdown"
+      class="dropdown d-flex"
     >
       <button
+        :aria-label="__('Create new file or directory')"
         type="button"
-        class="btn btn-sm btn-default dropdown-toggle add-to-tree"
-        aria-label="Create new file or directory"
+        class="rounded border-0 d-flex ide-entry-dropdown-toggle"
         @click.stop="openDropdown()"
       >
         <icon
-          :size="12"
-          name="plus"
-          css-classes="float-left"
+          name="hamburger"
         />
         <icon
-          :size="12"
           name="arrow-down"
-          css-classes="float-left"
         />
       </button>
       <ul
         ref="dropdownMenu"
         class="dropdown-menu dropdown-menu-right"
       >
+        <template v-if="type === 'tree'">
+          <li>
+            <item-button
+              :label="__('New file')"
+              class="d-flex"
+              icon="doc-new"
+              icon-classes="mr-2"
+              @click="createNewItem('blob')"
+            />
+          </li>
+          <li>
+            <upload
+              :path="path"
+              @create="createTempEntry"
+            />
+          </li>
+          <li>
+            <item-button
+              :label="__('New directory')"
+              class="d-flex"
+              icon="folder-new"
+              icon-classes="mr-2"
+              @click="createNewItem('tree')"
+            />
+          </li>
+          <li class="divider"></li>
+        </template>
         <li>
-          <a
-            href="#"
-            role="button"
-            @click.stop.prevent="createNewItem('blob')"
-          >
-            {{ __('New file') }}
-          </a>
-        </li>
-        <li>
-          <upload
-            :branch-id="branch"
-            :path="path"
-            @create="createTempEntry"
+          <item-button
+            :label="__('Delete')"
+            class="d-flex"
+            icon="remove"
+            icon-classes="mr-2"
+            @click="deleteEntry(path)"
           />
-        </li>
-        <li>
-          <a
-            href="#"
-            role="button"
-            @click.stop.prevent="createNewItem('tree')"
-          >
-            {{ __('New directory') }}
-          </a>
         </li>
       </ul>
     </div>
-    <new-modal
-      v-if="openModal"
-      :type="modalType"
-      :branch-id="branch"
-      :path="path"
-      @hide="hideModal"
-      @create="createTempEntry"
-    />
   </div>
 </template>

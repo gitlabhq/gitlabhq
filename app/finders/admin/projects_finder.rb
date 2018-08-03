@@ -7,7 +7,7 @@ class Admin::ProjectsFinder
   end
 
   def execute
-    items = Project.without_deleted.with_statistics
+    items = Project.without_deleted.with_statistics.with_route
     items = by_namespace_id(items)
     items = by_visibilty_level(items)
     items = by_with_push(items)
@@ -16,7 +16,7 @@ class Admin::ProjectsFinder
     items = by_archived(items)
     items = by_personal(items)
     items = by_name(items)
-    items = items.includes(namespace: [:owner])
+    items = items.includes(namespace: [:owner, :route])
     sort(items).page(params[:page])
   end
 

@@ -18,7 +18,7 @@ describe ResetProjectCacheService do
 
   context 'when project cache_index is a numeric value' do
     before do
-      project.update_attributes(jobs_cache_index: 1)
+      project.update(jobs_cache_index: 1)
     end
 
     it 'increments project cache index' do

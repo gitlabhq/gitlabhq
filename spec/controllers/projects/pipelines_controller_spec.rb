@@ -55,10 +55,8 @@ describe Projects::PipelinesController do
         stub_feature_flags(ci_pipeline_persisted_stages: false)
       end
 
-      it 'returns JSON with serialized pipelines', :request_store do
-        queries = ActiveRecord::QueryRecorder.new do
-          get_pipelines_index_json
-        end
+      it 'returns JSON with serialized pipelines' do
+        get_pipelines_index_json
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('pipeline')
@@ -73,8 +71,14 @@ describe Projects::PipelinesController do
         json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
           expect(stages.count).to eq 3
         end
+      end
 
-        expect(queries.count).to be_within(5).of(30)
+      it 'does not execute N+1 queries' do
+        queries = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end
+
+        expect(queries.count).to be <= 36
       end
     end
 

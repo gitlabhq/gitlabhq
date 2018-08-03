@@ -14,7 +14,7 @@ module QA
 
         view 'app/views/layouts/header/_new_dropdown.haml' do
           element :new_menu_toggle
-          element :new_issue_link, "link_to 'New issue', new_project_issue_path(@project)"
+          element :new_issue_link, "link_to _('New issue'), new_project_issue_path(@project)"
         end
 
         view 'app/views/shared/_ref_switcher.html.haml' do
@@ -22,12 +22,25 @@ module QA
           element :branches_dropdown
         end
 
+        view 'app/views/projects/buttons/_fork.html.haml' do
+          element :fork_label, "%span= s_('GoToYourFork|Fork')"
+          element :fork_link, "link_to new_project_fork_path(@project)"
+        end
+
         view 'app/views/projects/_files.html.haml' do
           element :tree_holder, '.tree-holder'
         end
 
+        view 'app/presenters/project_presenter.rb' do
+          element :new_file_button, "label: _('New file'),"
+        end
+
         def project_name
           find('.qa-project-name').text
+        end
+
+        def go_to_new_file!
+          click_on 'New file'
         end
 
         def switch_to_branch(branch_name)
@@ -60,6 +73,10 @@ module QA
           click_element :new_menu_toggle
 
           click_link 'New issue'
+        end
+
+        def fork_project
+          click_on 'Fork'
         end
       end
     end

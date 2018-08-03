@@ -144,8 +144,8 @@ describe Note do
     describe 'admin' do
       before do
         @p1.project_members.create(user: @u1, access_level: ProjectMember::REPORTER)
-        @p1.project_members.create(user: @u2, access_level: ProjectMember::MASTER)
-        @p2.project_members.create(user: @u3, access_level: ProjectMember::MASTER)
+        @p1.project_members.create(user: @u2, access_level: ProjectMember::MAINTAINER)
+        @p2.project_members.create(user: @u3, access_level: ProjectMember::MAINTAINER)
       end
 
       it { expect(Ability.allowed?(@u1, :admin_note, @p1)).to be_falsey }
@@ -225,7 +225,7 @@ describe Note do
 
   describe "cross_reference_not_visible_for?" do
     let(:private_user)    { create(:user) }
-    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_master(private_user) } }
+    let(:private_project) { create(:project, namespace: private_user.namespace) { |p| p.add_maintainer(private_user) } }
     let(:private_issue)   { create(:issue, project: private_project) }
 
     let(:ext_proj)  { create(:project, :public) }

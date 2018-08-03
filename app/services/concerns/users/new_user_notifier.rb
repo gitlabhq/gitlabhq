@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   module NewUserNotifier
     def notify_new_user(user, reset_token)

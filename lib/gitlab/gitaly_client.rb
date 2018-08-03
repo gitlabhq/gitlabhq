@@ -401,13 +401,13 @@ module Gitlab
       path.read.chomp
     end
 
-    def self.timestamp(t)
-      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    def self.timestamp(time)
+      Google::Protobuf::Timestamp.new(seconds: time.to_i)
     end
 
     # The default timeout on all Gitaly calls
     def self.default_timeout
-      return 0 if Sidekiq.server?
+      return no_timeout if Sidekiq.server?
 
       timeout(:gitaly_timeout_default)
     end
@@ -418,6 +418,10 @@ module Gitlab
 
     def self.medium_timeout
       timeout(:gitaly_timeout_medium)
+    end
+
+    def self.no_timeout
+      0
     end
 
     def self.timeout(timeout_name)

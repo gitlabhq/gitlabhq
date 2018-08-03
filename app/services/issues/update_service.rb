@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Issues
   class UpdateService < Issues::BaseService
     include SpamCheckService
@@ -35,6 +37,8 @@ module Issues
       end
 
       if issue.previous_changes.include?('confidential')
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::ConfidentialIssueWorker.perform_in(1.hour, issue.id) if issue.confidential?
         create_confidentiality_note(issue)
       end
 

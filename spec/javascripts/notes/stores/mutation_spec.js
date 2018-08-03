@@ -74,6 +74,20 @@ describe('Notes Store mutations', () => {
     });
   });
 
+  describe('COLLAPSE_DISCUSSION', () => {
+    it('should collpase an expanded discussion', () => {
+      const discussion = Object.assign({}, discussionMock, { expanded: true });
+
+      const state = {
+        discussions: [discussion],
+      };
+
+      mutations.COLLAPSE_DISCUSSION(state, { discussionId: discussion.id });
+
+      expect(state.discussions[0].expanded).toEqual(false);
+    });
+  });
+
   describe('REMOVE_PLACEHOLDER_NOTES', () => {
     it('should remove all placeholder notes in indivudal notes and discussion', () => {
       const placeholderNote = Object.assign({}, individualNote, { isPlaceholderNote: true });

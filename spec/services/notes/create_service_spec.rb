@@ -10,7 +10,7 @@ describe Notes::CreateService do
 
   describe '#execute' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     context "valid params" do

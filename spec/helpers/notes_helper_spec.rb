@@ -6,18 +6,18 @@ describe NotesHelper do
   let(:owner) { create(:owner) }
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
   let(:reporter) { create(:user) }
   let(:guest) { create(:user) }
 
   let(:owner_note) { create(:note, author: owner, project: project) }
-  let(:master_note) { create(:note, author: master, project: project) }
+  let(:maintainer_note) { create(:note, author: maintainer, project: project) }
   let(:reporter_note) { create(:note, author: reporter, project: project) }
-  let!(:notes) { [owner_note, master_note, reporter_note] }
+  let!(:notes) { [owner_note, maintainer_note, reporter_note] }
 
   before do
     group.add_owner(owner)
-    project.add_master(master)
+    project.add_maintainer(maintainer)
     project.add_reporter(reporter)
     project.add_guest(guest)
   end
@@ -25,16 +25,16 @@ describe NotesHelper do
   describe "#notes_max_access_for_users" do
     it 'returns access levels' do
       expect(helper.note_max_access_for_user(owner_note)).to eq(Gitlab::Access::OWNER)
-      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(maintainer_note)).to eq(Gitlab::Access::MAINTAINER)
       expect(helper.note_max_access_for_user(reporter_note)).to eq(Gitlab::Access::REPORTER)
     end
 
     it 'handles access in different projects' do
       second_project = create(:project)
-      second_project.add_reporter(master)
-      other_note = create(:note, author: master, project: second_project)
+      second_project.add_reporter(maintainer)
+      other_note = create(:note, author: maintainer, project: second_project)
 
-      expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)
+      expect(helper.note_max_access_for_user(maintainer_note)).to eq(Gitlab::Access::MAINTAINER)
       expect(helper.note_max_access_for_user(other_note)).to eq(Gitlab::Access::REPORTER)
     end
   end

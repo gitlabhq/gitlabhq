@@ -8,8 +8,8 @@ describe ProtectedBranchPolicy do
 
   subject { described_class.new(user, protected_branch) }
 
-  it 'branches can be updated via project masters' do
-    project.add_master(user)
+  it 'branches can be updated via project maintainers' do
+    project.add_maintainer(user)
 
     is_expected.to be_allowed(:update_protected_branch)
   end

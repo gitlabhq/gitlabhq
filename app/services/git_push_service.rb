@@ -1,6 +1,9 @@
+# frozen_string_literal: true
+
 class GitPushService < BaseService
   attr_accessor :push_data, :push_commits
   include Gitlab::Access
+  include Gitlab::Utils::StrongMemoize
 
   # The N most recent commits to process in a single push payload.
   PROCESS_COMMIT_LIMIT = 100
@@ -19,14 +22,14 @@ class GitPushService < BaseService
   #  6. Checks if the project's main language has changed
   #
   def execute
-    @project.repository.after_create if @project.empty_repo?
-    @project.repository.after_push_commit(branch_name)
+    project.repository.after_create if project.empty_repo?
+    project.repository.after_push_commit(branch_name)
 
     if push_remove_branch?
-      @project.repository.after_remove_branch
+      project.repository.after_remove_branch
       @push_commits = []
     elsif push_to_new_branch?
-      @project.repository.after_create_branch
+      project.repository.after_create_branch
 
       # Re-find the pushed commits.
       if default_branch?
@@ -36,14 +39,14 @@ class GitPushService < BaseService
         # Use the pushed commits that aren't reachable by the default branch
         # as a heuristic. This may include more commits than are actually pushed, but
         # that shouldn't matter because we check for existing cross-references later.
-        @push_commits = @project.repository.commits_between(@project.default_branch, params[:newrev])
+        @push_commits = project.repository.commits_between(project.default_branch, params[:newrev])
 
         # don't process commits for the initial push to the default branch
         process_commit_messages
       end
     elsif push_to_existing_branch?
       # Collect data for this git push
-      @push_commits = @project.repository.commits_between(params[:oldrev], params[:newrev])
+      @push_commits = project.repository.commits_between(params[:oldrev], params[:newrev])
 
       process_commit_messages
 
@@ -62,7 +65,7 @@ class GitPushService < BaseService
   end
 
   def update_gitattributes
-    @project.repository.copy_gitattributes(params[:ref])
+    project.repository.copy_gitattributes(params[:ref])
   end
 
   def update_caches
@@ -74,7 +77,7 @@ class GitPushService < BaseService
       else
         paths = Set.new
 
-        @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+        last_pushed_commits.each do |commit|
           commit.raw_deltas.each do |diff|
             paths << diff.new_path
           end
@@ -82,15 +85,17 @@ class GitPushService < BaseService
 
         types = Gitlab::FileDetector.types_in_paths(paths.to_a)
       end
+
+      DetectRepositoryLanguagesWorker.perform_async(@project.id, current_user.id)
     else
       types = []
     end
 
-    ProjectCacheWorker.perform_async(@project.id, types, [:commit_count, :repository_size])
+    ProjectCacheWorker.perform_async(project.id, types, [:commit_count, :repository_size])
   end
 
   def update_signatures
-    commit_shas = @push_commits.last(PROCESS_COMMIT_LIMIT).map(&:sha)
+    commit_shas = last_pushed_commits.map(&:sha)
 
     return if commit_shas.empty?
 
@@ -101,16 +106,14 @@ class GitPushService < BaseService
 
     commit_shas = Gitlab::Git::Commit.shas_with_signatures(project.repository, commit_shas)
 
-    commit_shas.each do |sha|
-      CreateGpgSignatureWorker.perform_async(sha, project.id)
-    end
+    CreateGpgSignatureWorker.perform_async(commit_shas, project.id)
   end
 
   # Schedules processing of commit messages.
   def process_commit_messages
     default = default_branch?
 
-    @push_commits.last(PROCESS_COMMIT_LIMIT).each do |commit|
+    last_pushed_commits.each do |commit|
       if commit.matches_cross_reference_regex?
         ProcessCommitWorker
           .perform_async(project.id, current_user.id, commit.to_hash, default)
@@ -121,10 +124,10 @@ class GitPushService < BaseService
   protected
 
   def update_remote_mirrors
-    return unless @project.has_remote_mirror?
+    return unless project.has_remote_mirror?
 
-    @project.mark_stuck_remote_mirrors_as_failed!
-    @project.update_remote_mirrors
+    project.mark_stuck_remote_mirrors_as_failed!
+    project.update_remote_mirrors
   end
 
   def execute_related_hooks
@@ -132,14 +135,14 @@ class GitPushService < BaseService
     # could cause the last commit of a merge request to change.
     #
     UpdateMergeRequestsWorker
-      .perform_async(@project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
+      .perform_async(project.id, current_user.id, params[:oldrev], params[:newrev], params[:ref])
 
-    EventCreateService.new.push(@project, current_user, build_push_data)
-    Ci::CreatePipelineService.new(@project, current_user, build_push_data).execute(:push)
+    EventCreateService.new.push(project, current_user, build_push_data)
+    Ci::CreatePipelineService.new(project, current_user, build_push_data).execute(:push)
 
     SystemHookPushWorker.perform_async(build_push_data.dup, :push_hooks)
-    @project.execute_hooks(build_push_data.dup, :push_hooks)
-    @project.execute_services(build_push_data.dup, :push_hooks)
+    project.execute_hooks(build_push_data.dup, :push_hooks)
+    project.execute_services(build_push_data.dup, :push_hooks)
 
     if push_remove_branch?
       AfterBranchDeleteService
@@ -149,52 +152,50 @@ class GitPushService < BaseService
   end
 
   def perform_housekeeping
-    housekeeping = Projects::HousekeepingService.new(@project)
+    housekeeping = Projects::HousekeepingService.new(project)
     housekeeping.increment!
     housekeeping.execute if housekeeping.needed?
   rescue Projects::HousekeepingService::LeaseTaken
   end
 
   def process_default_branch
-    @push_commits_count = project.repository.commit_count_for_ref(params[:ref])
-
-    offset = [@push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
+    offset = [push_commits_count - PROCESS_COMMIT_LIMIT, 0].max
     @push_commits = project.repository.commits(params[:newrev], offset: offset, limit: PROCESS_COMMIT_LIMIT)
 
-    @project.after_create_default_branch
+    project.after_create_default_branch
   end
 
   def build_push_data
     @push_data ||= Gitlab::DataBuilder::Push.build(
-      @project,
+      project,
       current_user,
       params[:oldrev],
       params[:newrev],
       params[:ref],
       @push_commits,
-      commits_count: @push_commits_count)
+      commits_count: push_commits_count)
   end
 
   def push_to_existing_branch?
     # Return if this is not a push to a branch (e.g. new commits)
-    Gitlab::Git.branch_ref?(params[:ref]) && !Gitlab::Git.blank_ref?(params[:oldrev])
+    branch_ref? && !Gitlab::Git.blank_ref?(params[:oldrev])
   end
 
   def push_to_new_branch?
-    Gitlab::Git.branch_ref?(params[:ref]) && Gitlab::Git.blank_ref?(params[:oldrev])
+    strong_memoize(:push_to_new_branch) do
+      branch_ref? && Gitlab::Git.blank_ref?(params[:oldrev])
+    end
   end
 
   def push_remove_branch?
-    Gitlab::Git.branch_ref?(params[:ref]) && Gitlab::Git.blank_ref?(params[:newrev])
-  end
-
-  def push_to_branch?
-    Gitlab::Git.branch_ref?(params[:ref])
+    strong_memoize(:push_remove_branch) do
+      branch_ref? && Gitlab::Git.blank_ref?(params[:newrev])
+    end
   end
 
   def default_branch?
-    Gitlab::Git.branch_ref?(params[:ref]) &&
-      (Gitlab::Git.ref_name(params[:ref]) == project.default_branch || project.default_branch.nil?)
+    branch_ref? &&
+      (branch_name == project.default_branch || project.default_branch.nil?)
   end
 
   def commit_user(commit)
@@ -202,6 +203,24 @@ class GitPushService < BaseService
   end
 
   def branch_name
-    @branch_name ||= Gitlab::Git.ref_name(params[:ref])
+    strong_memoize(:branch_name) do
+      Gitlab::Git.ref_name(params[:ref])
+    end
+  end
+
+  def branch_ref?
+    strong_memoize(:branch_ref) do
+      Gitlab::Git.branch_ref?(params[:ref])
+    end
+  end
+
+  def push_commits_count
+    strong_memoize(:push_commits_count) do
+      project.repository.commit_count_for_ref(params[:ref])
+    end
+  end
+
+  def last_pushed_commits
+    @last_pushed_commits ||= @push_commits.last(PROCESS_COMMIT_LIMIT)
   end
 end

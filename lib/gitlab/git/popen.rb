@@ -21,6 +21,10 @@ module Gitlab
         Open3.popen3(vars, *cmd, options) do |stdin, stdout, stderr, wait_thr|
           stdout.set_encoding(Encoding::ASCII_8BIT)
 
+          # stderr and stdout pipes can block if stderr/stdout aren't drained: https://bugs.ruby-lang.org/issues/9082
+          # Mimic what Ruby does with capture3: https://github.com/ruby/ruby/blob/1ec544695fa02d714180ef9c34e755027b6a2103/lib/open3.rb#L257-L273
+          err_reader = Thread.new { stderr.read }
+
           yield(stdin) if block_given?
           stdin.close
 
@@ -32,7 +36,7 @@ module Gitlab
             cmd_output << stdout.read
           end
 
-          cmd_output << stderr.read
+          cmd_output << err_reader.value
           cmd_status = wait_thr.value.exitstatus
         end
 
@@ -55,16 +59,20 @@ module Gitlab
         rerr, werr = IO.pipe
 
         pid = Process.spawn(vars, *cmd, out: wout, err: werr, chdir: path, pgroup: true)
+        # stderr and stdout pipes can block if stderr/stdout aren't drained: https://bugs.ruby-lang.org/issues/9082
+        # Mimic what Ruby does with capture3: https://github.com/ruby/ruby/blob/1ec544695fa02d714180ef9c34e755027b6a2103/lib/open3.rb#L257-L273
+        out_reader = Thread.new { rout.read }
+        err_reader = Thread.new { rerr.read }
 
         begin
-          status = process_wait_with_timeout(pid, timeout)
-
           # close write ends so we could read them
           wout.close
           werr.close
 
-          cmd_output = rout.readlines.join
-          cmd_output << rerr.readlines.join # Copying the behaviour of `popen` which merges stderr into output
+          status = process_wait_with_timeout(pid, timeout)
+
+          cmd_output = out_reader.value
+          cmd_output << err_reader.value # Copying the behaviour of `popen` which merges stderr into output
 
           [cmd_output, status.exitstatus]
         rescue Timeout::Error => e

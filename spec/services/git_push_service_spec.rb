@@ -3,15 +3,15 @@ require 'spec_helper'
 describe GitPushService, services: true do
   include RepoHelpers
 
-  let(:user)     { create(:user) }
-  let(:project)  { create(:project, :repository) }
+  set(:user)     { create(:user) }
+  set(:project)  { create(:project, :repository) }
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:oldrev)   { sample_commit.parent_id }
   let(:newrev)   { sample_commit.id }
   let(:ref)      { 'refs/heads/master' }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'with remote mirrors' do
@@ -267,8 +267,8 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, blankrev, 'newrev', ref)
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
-        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
+        expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
 
       it "when pushing a branch for the first time with default branch protection disabled" do
@@ -290,7 +290,7 @@ describe GitPushService, services: true do
 
         expect(project.protected_branches).not_to be_empty
         expect(project.protected_branches.last.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
-        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.last.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
       end
 
       it "when pushing a branch for the first time with an existing branch permission configured" do
@@ -315,7 +315,7 @@ describe GitPushService, services: true do
         expect(project.default_branch).to eq("master")
         execute_service(project, user, blankrev, 'newrev', ref)
         expect(project.protected_branches).not_to be_empty
-        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MASTER])
+        expect(project.protected_branches.first.push_access_levels.map(&:access_level)).to eq([Gitlab::Access::MAINTAINER])
         expect(project.protected_branches.first.merge_access_levels.map(&:access_level)).to eq([Gitlab::Access::DEVELOPER])
       end
 
@@ -442,7 +442,7 @@ describe GitPushService, services: true do
       allow_any_instance_of(ProcessCommitWorker).to receive(:build_commit)
         .and_return(closing_commit)
 
-      project.add_master(commit_author)
+      project.add_maintainer(commit_author)
     end
 
     context "to default branches" do
@@ -761,7 +761,7 @@ describe GitPushService, services: true do
         end
 
         it 'does not queue a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).not_to receive(:perform_async).with(sample_commit.id, project.id)
+          expect(CreateGpgSignatureWorker).not_to receive(:perform_async)
 
           execute_service(project, user, oldrev, newrev, ref)
         end
@@ -769,7 +769,15 @@ describe GitPushService, services: true do
 
       context 'when the signature is not yet cached' do
         it 'queues a CreateGpgSignatureWorker' do
-          expect(CreateGpgSignatureWorker).to receive(:perform_async).with(sample_commit.id, project.id)
+          expect(CreateGpgSignatureWorker).to receive(:perform_async).with([sample_commit.id], project.id)
+
+          execute_service(project, user, oldrev, newrev, ref)
+        end
+
+        it 'can queue several commits to create the gpg signature' do
+          allow(Gitlab::Git::Commit).to receive(:shas_with_signatures).and_return([sample_commit.id, another_sample_commit.id])
+
+          expect(CreateGpgSignatureWorker).to receive(:perform_async).with([sample_commit.id, another_sample_commit.id], project.id)
 
           execute_service(project, user, oldrev, newrev, ref)
         end

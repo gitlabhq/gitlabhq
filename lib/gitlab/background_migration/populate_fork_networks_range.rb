@@ -19,7 +19,7 @@ module Gitlab
         create_fork_networks_for_missing_projects(start_id, end_id)
         create_fork_networks_memberships_for_root_projects(start_id, end_id)
 
-        delay = BackgroundMigration::CreateForkNetworkMembershipsRange::RESCHEDULE_DELAY # rubocop:disable Metrics/LineLength
+        delay = BackgroundMigration::CreateForkNetworkMembershipsRange::RESCHEDULE_DELAY
         BackgroundMigrationWorker.perform_in(
           delay, "CreateForkNetworkMembershipsRange", [start_id, end_id]
         )

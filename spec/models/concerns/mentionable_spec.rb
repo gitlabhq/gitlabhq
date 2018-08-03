@@ -136,7 +136,7 @@ describe Issue, "Mentionable" do
 
         expect(SystemNoteService).not_to receive(:cross_reference)
 
-        issue.update_attributes(description: 'New description')
+        issue.update(description: 'New description')
         issue.create_new_cross_references!
       end
 
@@ -145,7 +145,7 @@ describe Issue, "Mentionable" do
 
         expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)
 
-        issue.update_attributes(description: issues[1].to_reference)
+        issue.update(description: issues[1].to_reference)
         issue.create_new_cross_references!
       end
 
@@ -155,7 +155,7 @@ describe Issue, "Mentionable" do
 
         expect(SystemNoteService).to receive(:cross_reference).with(issues[1], any_args)
 
-        note.update_attributes(note: issues[1].to_reference)
+        note.update(note: issues[1].to_reference)
         note.create_new_cross_references!
       end
     end

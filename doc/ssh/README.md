@@ -77,6 +77,8 @@ Note that Public SSH key may also be named as follows:
      If you want to change the password of your SSH key pair, you can use
      `ssh-keygen -p <keyname>`.
 
+## Adding a SSH key to your GitLab account
+
 1. The next step is to copy the public SSH key as we will need it afterwards.
 
     To copy your public SSH key to the clipboard, use the appropriate code below:

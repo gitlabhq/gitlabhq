@@ -1,8 +1,9 @@
 require 'spec_helper'
 
 describe EnvironmentEntity do
+  let(:request) { double('request') }
   let(:entity) do
-    described_class.new(environment, request: double)
+    described_class.new(environment, request: spy('request'))
   end
 
   let(:environment) { create(:environment) }

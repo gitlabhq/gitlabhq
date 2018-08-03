@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Project < ActiveRecord::Base
@@ -31,6 +33,7 @@ class Project < ActiveRecord::Base
 
   BoardLimitExceeded = Class.new(StandardError)
 
+  STATISTICS_ATTRIBUTE = 'repositories_count'.freeze
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -78,6 +81,10 @@ class Project < ActiveRecord::Base
   after_save :create_import_state, if: ->(project) { project.import? && project.import_state.nil? }
 
   after_create :create_project_feature, unless: :project_feature
+
+  after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
+  before_destroy ->(project) { project.project_feature.untrack_statistics_for_deletion! }
+  after_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -154,6 +161,7 @@ class Project < ActiveRecord::Base
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
   has_one :packagist_service
+  has_one :hangouts_chat_service
 
   # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
@@ -186,6 +194,7 @@ class Project < ActiveRecord::Base
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :protected_tags
+  has_many :repository_languages, -> { order "share DESC" }
 
   has_many :project_authorizations
   has_many :authorized_users, through: :project_authorizations, source: :user, class_name: 'User'
@@ -269,7 +278,8 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_maintainer, :add_role, to: :team
+  delegate :add_master, to: :team # @deprecated
   delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :ci_cd_settings
 
   # Validations
@@ -325,6 +335,7 @@ class Project < ActiveRecord::Base
   scope :joined, ->(user) { where('namespace_id != ?', user.namespace_id) }
   scope :starred_by, ->(user) { joins(:users_star_projects).where('users_star_projects.user_id': user.id) }
   scope :visible_to_user, ->(user) { where(id: user.authorized_projects.select(:id).reorder(nil)) }
+  scope :visible_to_user_and_access_level, ->(user, access_level) { where(id: user.authorized_projects.where('project_authorizations.access_level >= ?', access_level).select(:id).reorder(nil)) }
   scope :archived, -> { where(archived: true) }
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
@@ -367,8 +378,10 @@ class Project < ActiveRecord::Base
   chronic_duration_attr :build_timeout_human_readable, :build_timeout, default: 3600
 
   validates :build_timeout, allow_nil: true,
-                            numericality: { greater_than_or_equal_to: 600,
-                                            message: 'needs to be at least 10 minutes' }
+                            numericality: { greater_than_or_equal_to: 10.minutes,
+                                            less_than: 1.month,
+                                            only_integer: true,
+                                            message: 'needs to be beetween 10 minutes and 1 month' }
 
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
@@ -536,6 +549,10 @@ class Project < ActiveRecord::Base
 
   def commit_by(oid:)
     repository.commit_by(oid: oid)
+  end
+
+  def commits_by(oids:)
+    repository.commits_by(oids: oids)
   end
 
   # ref can't be HEAD, can only be branch/tag name or SHA
@@ -1228,8 +1245,6 @@ class Project < ActiveRecord::Base
     return true if skip_disk_validation
     return false unless repository_storage
 
-    expires_full_path_cache # we need to clear cache to validate renames correctly
-
     # Check if repository with same path already exists on disk we can
     # skip this for the hashed storage because the path does not change
     if legacy_storage? && repository_with_same_path_already_exists?
@@ -1608,7 +1623,6 @@ class Project < ActiveRecord::Base
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
     send_move_instructions(full_path_was) unless import_started?
-    expires_full_path_cache
 
     self.old_path_with_namespace = full_path_was
     SystemHooksService.new.execute_hooks_for(self, :rename)
@@ -1647,10 +1661,10 @@ class Project < ActiveRecord::Base
       params = {
         name: default_branch,
         push_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_PUSH ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }],
         merge_access_levels_attributes: [{
-          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MASTER
+          access_level: Gitlab::CurrentSettings.default_branch_protection == Gitlab::Access::PROTECTION_DEV_CAN_MERGE ? Gitlab::Access::DEVELOPER : Gitlab::Access::MAINTAINER
         }]
       }
 
@@ -2168,10 +2182,13 @@ class Project < ActiveRecord::Base
       merge_requests = source_of_merge_requests.opened
                          .where(allow_collaboration: true)
 
-      if branch_name
-        merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
-      else
-        merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+      # Issue for N+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/49322
+      Gitlab::GitalyClient.allow_n_plus_1_calls do
+        if branch_name
+          merge_requests.find_by(source_branch: branch_name)&.can_be_merged_by?(user)
+        else
+          merge_requests.any? { |merge_request| merge_request.can_be_merged_by?(user) }
+        end
       end
     end
 

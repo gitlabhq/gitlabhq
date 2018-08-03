@@ -17,7 +17,7 @@ class Member < ActiveRecord::Base
   scope :guests, -> { where(access_level: GUEST) }
   scope :reporters, -> { where(access_level: REPORTER) }
   scope :developers, -> { where(access_level: DEVELOPER) }
-  scope :masters,  -> { where(access_level: MASTER) }
+  scope :maintainers,  -> { where(access_level: MAINTAINER) }
   scope :owners,  -> { where(access_level: OWNER) }
 
   delegate :name, :username, :email, to: :user, prefix: true

@@ -175,6 +175,7 @@ export default {
       <span
         :aria-label="stage.title"
         aria-hidden="true"
+        class="no-pointer-events"
       >
         <icon :name="borderlessIcon" />
       </span>

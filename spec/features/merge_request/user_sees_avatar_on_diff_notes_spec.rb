@@ -19,7 +19,7 @@ describe 'Merge request > User sees avatars on diff notes', :js do
   let!(:note) { create(:diff_note_on_merge_request, project: project, noteable: merge_request, position: position) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in user
 
     set_cookie('sidebar_collapsed', 'true')

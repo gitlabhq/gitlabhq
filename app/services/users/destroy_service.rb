@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class DestroyService
     attr_accessor :current_user

@@ -117,7 +117,7 @@ describe 'Profile > Password' do
     before do
       sign_in(user)
 
-      user.update_attributes(password_expires_at: 1.hour.ago)
+      user.update(password_expires_at: 1.hour.ago)
       user.identities.delete
       expect(user.ldap_user?).to eq false
     end

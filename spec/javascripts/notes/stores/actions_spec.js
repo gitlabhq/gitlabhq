@@ -128,6 +128,19 @@ describe('Actions Notes Store', () => {
     });
   });
 
+  describe('collapseDiscussion', () => {
+    it('should commit collapse discussion', done => {
+      testAction(
+        actions.collapseDiscussion,
+        { discussionId: discussionMock.id },
+        { notes: [discussionMock] },
+        [{ type: 'COLLAPSE_DISCUSSION', payload: { discussionId: discussionMock.id } }],
+        [],
+        done,
+      );
+    });
+  });
+
   describe('async methods', () => {
     const interceptor = (request, next) => {
       next(

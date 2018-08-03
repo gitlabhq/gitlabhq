@@ -724,7 +724,7 @@ describe MergeRequest do
     subject { merge_request }
 
     before do
-      subject.source_project.add_master(user)
+      subject.source_project.add_maintainer(user)
     end
 
     it "can't be removed when its a protected branch" do
@@ -1199,7 +1199,7 @@ describe MergeRequest do
         end
 
         before do
-          project.add_master(current_user)
+          project.add_maintainer(current_user)
 
           ProcessCommitWorker.new.perform(project.id,
                                           current_user.id,
@@ -1569,8 +1569,8 @@ describe MergeRequest do
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     before do
-      merge_request.source_project.add_master(user)
-      merge_request.target_project.add_master(user)
+      merge_request.source_project.add_maintainer(user)
+      merge_request.target_project.add_maintainer(user)
     end
 
     context 'with multiple environments' do
@@ -1891,7 +1891,7 @@ describe MergeRequest do
         end
 
         it 'returns false if the merge request is merged' do
-          merge_request.update_attributes(state: 'merged')
+          merge_request.update(state: 'merged')
 
           expect(merge_request.reload.reopenable?).to be_falsey
         end

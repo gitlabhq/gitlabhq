@@ -144,7 +144,7 @@ module Gitlab
 
       def table_columns_and_values_for_insert(file_paths)
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend, Metrics/LineLength
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend
         end.join(', ')
 
         "#{UntrackedFile.table_name} (path) VALUES #{values}"

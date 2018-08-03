@@ -1,4 +1,3 @@
-# rubocop:disable all
 class MigrateCiToProject < ActiveRecord::Migration
   def up
     migrate_project_id_for_table('ci_runner_projects')

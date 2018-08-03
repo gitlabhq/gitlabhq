@@ -78,15 +78,15 @@ production: &base
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme ID
     ##   1 - Indigo
-    ##   2 - Light Indigo
-    ##   3 - Blue
-    ##   4 - Light Blue
+    ##   2 - Dark
+    ##   3 - Light
+    ##   4 - Blue
     ##   5 - Green
-    ##   6 - Light Green
-    ##   7 - Red
-    ##   8 - Light Red
-    ##   9 - Dark
-    ##   10 - Light
+    ##   6 - Light Indigo
+    ##   7 - Light Blue
+    ##   8 - Light Green
+    ##   9 - Red
+    ##   10 - Light Red
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing
@@ -160,6 +160,9 @@ production: &base
     #     aws_access_key_id: AWS_ACCESS_KEY_ID
     #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
     #     region: us-east-1
+    #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+    #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+
 
   ## Git LFS
   lfs:
@@ -180,6 +183,7 @@ production: &base
         # Use the following options to configure an AWS compatible host
         # host: 'localhost' # default: s3.amazonaws.com
         # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## Uploads (attachments, avatars, etc...)
@@ -197,6 +201,7 @@ production: &base
         provider: AWS
         aws_access_key_id: AWS_ACCESS_KEY_ID
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
         region: us-east-1
         # host: 'localhost' # default: s3.amazonaws.com
         # endpoint: 'http://127.0.0.1:9000' # default: nil

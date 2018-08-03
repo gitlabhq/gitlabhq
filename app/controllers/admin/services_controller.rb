@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
@@ -16,7 +18,7 @@ class Admin::ServicesController < Admin::ApplicationController
   end
 
   def update
-    if service.update_attributes(service_params[:service])
+    if service.update(service_params[:service])
       PropagateServiceTemplateWorker.perform_async(service.id) if service.active?
 
       redirect_to admin_application_settings_services_path,
@@ -30,7 +32,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def services_templates
     Service.available_services_names.map do |service_name|
-      service_template = service_name.concat("_service").camelize.constantize
+      service_template = "#{service_name}_service".camelize.constantize
       service_template.where(template: true).first_or_create
     end
   end

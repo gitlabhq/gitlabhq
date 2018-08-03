@@ -220,6 +220,7 @@ describe API::Jobs do
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
         expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
         expect(json_response['duration']).to eq(job.duration)
+        expect(json_response['web_url']).to be_present
       end
 
       it 'returns pipeline data' do
@@ -535,12 +536,14 @@ describe API::Jobs do
     context 'authorized user' do
       context 'when trace is in ObjectStorage' do
         let!(:job) { create(:ci_build, :trace_artifact, pipeline: pipeline) }
+        let(:url) { 'http://object-storage/trace' }
+        let(:file_path) { expand_fixture_path('trace/sample_trace') }
 
         before do
-          stub_remote_trace_206
+          stub_remote_url_206(url, file_path)
           allow_any_instance_of(JobArtifactUploader).to receive(:file_storage?) { false }
-          allow_any_instance_of(JobArtifactUploader).to receive(:url) { remote_trace_url }
-          allow_any_instance_of(JobArtifactUploader).to receive(:size) { remote_trace_size }
+          allow_any_instance_of(JobArtifactUploader).to receive(:url) { url }
+          allow_any_instance_of(JobArtifactUploader).to receive(:size) { File.size(file_path) }
         end
 
         it 'returns specific job trace' do
@@ -643,7 +646,7 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
-    let(:role) { :master }
+    let(:role) { :maintainer }
 
     before do
       project.add_role(user, role)
@@ -652,13 +655,15 @@ describe API::Jobs do
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
+        expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
+        expect(job.has_test_reports?).to be_falsy
       end
 
       it 'updates job' do

@@ -60,7 +60,7 @@ describe 'Dashboard > Activity' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
 
       visit activity_dashboard_path
       wait_for_requests

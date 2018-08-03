@@ -112,7 +112,7 @@ describe 'Issue Sidebar' do
 
     context 'editing issue labels', :js do
       before do
-        issue.update_attributes(labels: [label])
+        issue.update(labels: [label])
         page.within('.block.labels') do
           find('.edit-link').click
         end

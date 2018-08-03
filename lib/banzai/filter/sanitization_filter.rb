@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # Sanitize HTML
@@ -11,7 +13,7 @@ module Banzai
 
       def whitelist
         strong_memoize(:whitelist) do
-          customize_whitelist(super.dup)
+          customize_whitelist(super.deep_dup)
         end
       end
 

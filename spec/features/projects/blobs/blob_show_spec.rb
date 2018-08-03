@@ -144,7 +144,7 @@ describe 'File blob', :js do
 
   context 'Markdown file (stored in LFS)' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,
@@ -237,7 +237,7 @@ describe 'File blob', :js do
 
   context 'PDF file' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,
@@ -350,7 +350,7 @@ describe 'File blob', :js do
 
   context 'empty file' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,
@@ -418,7 +418,7 @@ describe 'File blob', :js do
 
   context '.gitlab-ci.yml' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,
@@ -446,7 +446,7 @@ describe 'File blob', :js do
 
   context '.gitlab/route-map.yml' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,
@@ -494,7 +494,7 @@ describe 'File blob', :js do
 
   context '*.gemspec' do
     before do
-      project.add_master(project.creator)
+      project.add_maintainer(project.creator)
 
       Files::CreateService.new(
         project,

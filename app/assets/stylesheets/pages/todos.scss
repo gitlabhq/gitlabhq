@@ -174,18 +174,6 @@
   }
 }
 
-@include media-breakpoint-down(lg) {
-  .todos-filters {
-    .filter-categories {
-      width: 75%;
-
-      .filter-item {
-        margin-bottom: 10px;
-      }
-    }
-  }
-}
-
 @include media-breakpoint-down(xs) {
   .todo {
     .avatar {
@@ -211,10 +199,6 @@
   }
 
   .todos-filters {
-    .filter-categories {
-      width: auto;
-    }
-
     .dropdown-menu-toggle {
       width: 100%;
     }

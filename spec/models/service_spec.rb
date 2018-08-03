@@ -280,7 +280,7 @@ describe Service do
         service.save!
 
         expect do
-          service.update_attributes(active: false)
+          service.update(active: false)
         end.to change { service.project.has_external_issue_tracker }.from(true).to(false)
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
@@ -38,8 +40,6 @@ class Group < Namespace
 
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
-
-  has_many :todos
 
   accepts_nested_attributes_for :variables, allow_destroy: true
 
@@ -82,12 +82,6 @@ class Group < Namespace
 
     def visible_to_user(user)
       where(id: user.authorized_groups.select(:id).reorder(nil))
-    end
-
-    def public_or_visible_to_user(user)
-      where('id IN (?) OR namespaces.visibility_level IN (?)',
-        user.authorized_groups.select(:id),
-        Gitlab::VisibilityLevel.levels_for_user(user))
     end
 
     def select_for_project_authorization
@@ -186,9 +180,12 @@ class Group < Namespace
     add_user(user, :developer, current_user: current_user)
   end
 
-  def add_master(user, current_user = nil)
-    add_user(user, :master, current_user: current_user)
+  def add_maintainer(user, current_user = nil)
+    add_user(user, :maintainer, current_user: current_user)
   end
+
+  # @deprecated
+  alias_method :add_master, :add_maintainer
 
   def add_owner(user, current_user = nil)
     add_user(user, :owner, current_user: current_user)
@@ -206,11 +203,14 @@ class Group < Namespace
     members_with_parents.owners.where(user_id: user).any?
   end
 
-  def has_master?(user)
+  def has_maintainer?(user)
     return false unless user
 
-    members_with_parents.masters.where(user_id: user).any?
+    members_with_parents.maintainers.where(user_id: user).any?
   end
+
+  # @deprecated
+  alias_method :has_master?, :has_maintainer?
 
   # Check if user is a last owner of the group.
   # Parent owners are ignored for nested groups.

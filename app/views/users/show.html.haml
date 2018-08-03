@@ -23,8 +23,9 @@
           = link_to new_abuse_report_path(user_id: @user.id, ref_url: request.referrer), class: 'btn',
             title: 'Report abuse', data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
             = icon('exclamation-circle')
-      = link_to user_path(@user, rss_url_options), class: 'btn btn-default has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
-        = icon('rss')
+      - if can?(current_user, :read_user_profile, @user)
+        = link_to user_path(@user, rss_url_options), class: 'btn btn-default has-tooltip', title: 'Subscribe', 'aria-label': 'Subscribe' do
+          = icon('rss')
       - if current_user && current_user.admin?
         = link_to [:admin, @user], class: 'btn btn-default', title: 'View user in admin area',
           data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
@@ -39,11 +40,18 @@
         .cover-title
           = @user.name
 
+        - if @user.status
+          .cover-status
+            = emoji_icon(@user.status.emoji)
+            = markdown_field(@user.status, :message)
+
         .cover-desc.member-date
-          %span.middle-dot-divider
-            @#{@user.username}
-          %span.middle-dot-divider
-            Member since #{@user.created_at.to_date.to_s(:long)}
+          %p
+            %span.middle-dot-divider
+              @#{@user.username}
+            - if can?(current_user, :read_user_profile, @user)
+              %span.middle-dot-divider
+                Member since #{@user.created_at.to_date.to_s(:long)}
 
         .cover-desc
           - unless @user.public_email.blank?
@@ -78,30 +86,31 @@
         %p.profile-user-bio
           = @user.bio
 
-    .scrolling-tabs-container
-      .fade-left= icon('angle-left')
-      .fade-right= icon('angle-right')
-      %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
-        - if profile_tab?(:activity)
-          %li.js-activity-tab
-            = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
-              Activity
-        - if profile_tab?(:groups)
-          %li.js-groups-tab
-            = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
-              Groups
-        - if profile_tab?(:contributed)
-          %li.js-contributed-tab
-            = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
-              Contributed projects
-        - if profile_tab?(:projects)
-          %li.js-projects-tab
-            = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
-              Personal projects
-        - if profile_tab?(:snippets)
-          %li.js-snippets-tab
-            = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
-              Snippets
+    - unless profile_tabs.empty?
+      .scrolling-tabs-container
+        .fade-left= icon('angle-left')
+        .fade-right= icon('angle-right')
+        %ul.nav-links.user-profile-nav.scrolling-tabs.nav.nav-tabs
+          - if profile_tab?(:activity)
+            %li.js-activity-tab
+              = link_to user_path, data: { target: 'div#activity', action: 'activity', toggle: 'tab' } do
+                Activity
+          - if profile_tab?(:groups)
+            %li.js-groups-tab
+              = link_to user_groups_path, data: { target: 'div#groups', action: 'groups', toggle: 'tab', endpoint: user_groups_path(format: :json) } do
+                Groups
+          - if profile_tab?(:contributed)
+            %li.js-contributed-tab
+              = link_to user_contributed_projects_path, data: { target: 'div#contributed', action: 'contributed', toggle: 'tab', endpoint: user_contributed_projects_path(format: :json) } do
+                Contributed projects
+          - if profile_tab?(:projects)
+            %li.js-projects-tab
+              = link_to user_projects_path, data: { target: 'div#projects', action: 'projects', toggle: 'tab', endpoint: user_projects_path(format: :json) } do
+                Personal projects
+          - if profile_tab?(:snippets)
+            %li.js-snippets-tab
+              = link_to user_snippets_path, data: { target: 'div#snippets', action: 'snippets', toggle: 'tab', endpoint: user_snippets_path(format: :json) } do
+                Snippets
 
   %div{ class: container_class }
     .tab-content
@@ -137,3 +146,13 @@
 
     .loading-status
       = spinner
+
+  - if profile_tabs.empty?
+    .row
+      .col-12
+        .svg-content
+          = image_tag 'illustrations/profile_private_mode.svg'
+      .col-12.text-center
+        .text-content
+          %h4
+            This user has a private profile

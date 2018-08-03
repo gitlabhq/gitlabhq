@@ -1,5 +1,5 @@
 - @no_container = true
-- page_title "Groups"
+- page_title _("Groups")
 
 %div{ class: container_class }
   .top-area
@@ -13,7 +13,7 @@
             = icon("search", class: "search-icon")
           = render "shared/groups/dropdown", options_hash: admin_groups_sort_options_hash
           = link_to new_admin_group_path, class: "btn btn-new" do
-            New group
+            = _('New group')
   %ul.content-list
     = render @groups
 

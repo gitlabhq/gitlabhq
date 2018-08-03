@@ -46,7 +46,7 @@ describe 'Issuables Close/Reopen/Report toggle' do
     let(:issuable) { create(:issue, project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       login_as user
     end
 
@@ -83,7 +83,7 @@ describe 'Issuables Close/Reopen/Report toggle' do
     let(:issuable) { create(:merge_request, source_project: project) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       login_as user
     end
 

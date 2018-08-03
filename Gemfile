@@ -104,7 +104,7 @@ gem 'hashie-forbidden_attributes'
 gem 'kaminari', '~> 1.0'
 
 # HAML
-gem 'hamlit', '~> 2.6.1'
+gem 'hamlit', '~> 2.8.8'
 
 # Files attachments
 gem 'carrierwave', '~> 1.2'
@@ -220,6 +220,9 @@ gem 'gemnasium-gitlab-service', '~> 0.2'
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
 
+# Hangouts Chat integration
+gem 'hangouts-chat', '~> 0.0.5'
+
 # Asana integration
 gem 'asana', '~> 0.6.0'
 
@@ -230,7 +233,7 @@ gem 'ruby-fogbugz', '~> 0.2.1'
 gem 'kubeclient', '~> 3.1.0'
 
 # Sanitize user input
-gem 'sanitize', '~> 4.6.5'
+gem 'sanitize', '~> 4.6'
 gem 'babosa', '~> 1.0.2'
 
 # Sanitizes SVG input
@@ -303,7 +306,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.9.3'
+  gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -323,6 +326,7 @@ group :development do
 end
 
 group :development, :test do
+  gem 'bootsnap', '~> 1.3'
   gem 'bullet', '~> 5.5.0', require: !!ENV['ENABLE_BULLET']
   gem 'pry-byebug', '~> 3.4.1', platform: :mri
   gem 'pry-rails', '~> 0.3.4'
@@ -351,9 +355,9 @@ group :development, :test do
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
 
-  gem 'gitlab-styles', '~> 2.3', require: false
+  gem 'gitlab-styles', '~> 2.4', require: false
   # Pin these dependencies, otherwise a new rule could break the CI pipelines
-  gem 'rubocop', '~> 0.52.1'
+  gem 'rubocop', '~> 0.54.0'
   gem 'rubocop-rspec', '~> 1.22.1'
 
   gem 'scss_lint', '~> 0.56.0', require: false
@@ -396,6 +400,7 @@ gem 'email_reply_trimmer', '~> 0.1'
 gem 'html2text'
 
 gem 'ruby-prof', '~> 0.17.0'
+gem 'rbtrace', '~> 0.4', require: false
 
 # OAuth
 gem 'oauth2', '~> 1.4'
@@ -418,7 +423,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.105.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.109.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

@@ -14,6 +14,7 @@ class LabelsFinder < UnionFinder
     @skip_authorization = skip_authorization
     items = find_union(label_ids, Label) || Label.none
     items = with_title(items)
+    items = by_search(items)
     sort(items)
   end
 
@@ -63,6 +64,12 @@ class LabelsFinder < UnionFinder
     items.where(title: title)
   end
 
+  def by_search(labels)
+    return labels unless search?
+
+    labels.search(params[:search])
+  end
+
   # Gets redacted array of group ids
   # which can include the ancestors and descendants of the requested group.
   def group_ids_for(group)
@@ -104,6 +111,10 @@ class LabelsFinder < UnionFinder
 
   def only_group_labels?
     params[:only_group_labels]
+  end
+
+  def search?
+    params[:search].present?
   end
 
   def title

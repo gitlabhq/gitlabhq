@@ -4,6 +4,7 @@ rbac:
 hub:
   extraEnv:
     JUPYTER_ENABLE_LAB: 1
+    SINGLEUSER_IMAGE: 'registry.gitlab.com/gitlab-org/jupyterhub-user-image:latest'
   extraConfig: |
     c.KubeSpawner.cmd = ['jupyter-labhub']
 

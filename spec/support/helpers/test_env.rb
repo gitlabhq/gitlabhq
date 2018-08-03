@@ -49,7 +49,9 @@ module TestEnv
     'add-pdf-file'                       => 'e774ebd',
     'squash-large-files'                 => '54cec52',
     'add-pdf-text-binary'                => '79faa7b',
-    'add_images_and_changes'             => '010d106'
+    'add_images_and_changes'             => '010d106',
+    'update-gitlab-shell-v-6-0-1'        => '2f61d70',
+    'update-gitlab-shell-v-6-0-3'        => 'de78448'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily
@@ -239,6 +241,14 @@ module TestEnv
     FileUtils.cp_r("#{File.expand_path(bare_repo)}/.", target_repo_path)
     FileUtils.chmod_R 0755, target_repo_path
     set_repo_refs(target_repo_path, refs)
+  end
+
+  def create_bare_repository(path)
+    FileUtils.mkdir_p(path)
+
+    system(git_env, *%W(#{Gitlab.config.git.bin_path} -C #{path} init --bare),
+           out: '/dev/null',
+           err: '/dev/null')
   end
 
   def repos_path

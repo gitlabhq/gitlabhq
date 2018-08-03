@@ -139,4 +139,20 @@ describe Label do
       end
     end
   end
+
+  describe '.search' do
+    let(:label) { create(:label, title: 'bug', description: 'incorrect behavior') }
+
+    it 'returns labels with a partially matching title' do
+      expect(described_class.search(label.title[0..2])).to eq([label])
+    end
+
+    it 'returns labels with a partially matching description' do
+      expect(described_class.search(label.description[0..5])).to eq([label])
+    end
+
+    it 'returns nothing' do
+      expect(described_class.search('feature')).to be_empty
+    end
+  end
 end

@@ -9,6 +9,7 @@ module Clusters
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       default_value_for :version, VERSION
@@ -19,6 +20,14 @@ module Clusters
             project.find_or_initialize_service('prometheus').update(active: true)
           end
         end
+      end
+
+      def ready_status
+        [:installed]
+      end
+
+      def ready?
+        ready_status.include?(status_name)
       end
 
       def chart
@@ -36,8 +45,8 @@ module Clusters
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
           name,
+          version: VERSION,
           chart: chart,
-          version: version,
           values: values
         )
       end

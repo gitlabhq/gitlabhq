@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
@@ -48,22 +50,22 @@ class RemoteMirror < ActiveRecord::Base
     state :failed
 
     after_transition any => :started do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_running, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_running)
 
       remote_mirror.update(last_update_started_at: Time.now)
     end
 
     after_transition started: :finished do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_finished, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_finished)
 
       timestamp = Time.now
-      remote_mirror.update_attributes!(
+      remote_mirror.update!(
         last_update_at: timestamp, last_successful_update_at: timestamp, last_error: nil
       )
     end
 
     after_transition started: :failed do |remote_mirror, _|
-      Gitlab::Metrics.add_event(:remote_mirrors_failed, path: remote_mirror.project.full_path)
+      Gitlab::Metrics.add_event(:remote_mirrors_failed)
 
       remote_mirror.update(last_update_at: Time.now)
     end

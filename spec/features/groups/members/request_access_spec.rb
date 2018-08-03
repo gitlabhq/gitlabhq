@@ -13,7 +13,7 @@ describe 'Groups > Members > Request access' do
   end
 
   it 'request access feature is disabled' do
-    group.update_attributes(request_access_enabled: false)
+    group.update(request_access_enabled: false)
     visit group_path(group)
 
     expect(page).not_to have_content 'Request Access'

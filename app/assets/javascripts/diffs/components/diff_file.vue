@@ -18,22 +18,18 @@ export default {
       type: Object,
       required: true,
     },
-    currentUser: {
-      type: Object,
+    canCurrentUserFork: {
+      type: Boolean,
       required: true,
     },
   },
   data() {
     return {
-      isActive: false,
       isLoadingCollapsedDiff: false,
       forkMessageVisible: false,
     };
   },
   computed: {
-    isDiscussionsExpanded() {
-      return true; // TODO: @fatihacet - Fix this.
-    },
     isCollapsed() {
       return this.file.collapsed || false;
     },
@@ -47,15 +43,12 @@ export default {
         false,
       );
     },
-  },
-  mounted() {
-    document.addEventListener('scroll', this.handleScroll);
-  },
-  beforeDestroy() {
-    document.removeEventListener('scroll', this.handleScroll);
+    showExpandMessage() {
+      return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
+    },
   },
   methods: {
-    ...mapActions(['loadCollapsedDiff']),
+    ...mapActions('diffs', ['loadCollapsedDiff']),
     handleToggle() {
       const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
 
@@ -64,36 +57,6 @@ export default {
       } else {
         this.file.collapsed = !this.file.collapsed;
       }
-    },
-    handleScroll() {
-      if (!this.updating) {
-        requestAnimationFrame(this.scrollUpdate.bind(this));
-        this.updating = true;
-      }
-    },
-    scrollUpdate() {
-      const header = document.querySelector('.js-diff-files-changed');
-      if (!header) {
-        this.updating = false;
-        return;
-      }
-
-      const { top, bottom } = this.$el.getBoundingClientRect();
-      const { top: topOfFixedHeader, bottom: bottomOfFixedHeader } = header.getBoundingClientRect();
-
-      const headerOverlapsContent = top < topOfFixedHeader && bottom > bottomOfFixedHeader;
-      const fullyAboveHeader = bottom < bottomOfFixedHeader;
-      const fullyBelowHeader = top > topOfFixedHeader;
-
-      if (headerOverlapsContent && !this.isActive) {
-        this.$emit('setActive');
-        this.isActive = true;
-      } else if (this.isActive && (fullyAboveHeader || fullyBelowHeader)) {
-        this.$emit('unsetActive');
-        this.isActive = false;
-      }
-
-      this.updating = false;
     },
     handleLoadCollapsedDiff() {
       this.isLoadingCollapsedDiff = true;
@@ -124,11 +87,10 @@ export default {
     class="diff-file file-holder"
   >
     <diff-file-header
-      :current-user="currentUser"
+      :can-current-user-fork="canCurrentUserFork"
       :diff-file="file"
       :collapsible="true"
       :expanded="!isCollapsed"
-      :discussions-expanded="isDiscussionsExpanded"
       :add-merge-request-buttons="true"
       class="js-file-title file-title"
       @toggleFile="handleToggle"
@@ -159,7 +121,7 @@ export default {
     </div>
 
     <diff-content
-      v-show="!isCollapsed"
+      v-if="!isCollapsed"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
@@ -168,7 +130,7 @@ export default {
       class="diff-content loading"
     />
     <div
-      v-show="isCollapsed && !isLoadingCollapsedDiff && !file.tooLarge"
+      v-if="showExpandMessage"
       class="nothing-here-block diff-collapsed"
     >
       {{ __('This diff is collapsed.') }}

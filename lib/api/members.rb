@@ -28,6 +28,23 @@ module API
           present members, with: Entities::Member
         end
 
+        desc 'Gets a list of group or project members viewable by the authenticated user, including those who gained membership through ancestor group.' do
+          success Entities::Member
+        end
+        params do
+          optional :query, type: String, desc: 'A query string to search for members'
+          use :pagination
+        end
+        get ":id/members/all" do
+          source = find_source(source_type, params[:id])
+
+          members = find_all_members(source_type, source)
+          members = members.includes(:user).references(:user).merge(User.search(params[:query])) if params[:query].present?
+          members = paginate(members)
+
+          present members, with: Entities::Member
+        end
+
         desc 'Gets a member of a group or project.' do
           success Entities::Member
         end
@@ -58,7 +75,10 @@ module API
           member = source.members.find_by(user_id: params[:user_id])
           conflict!('Member already exists') if member
 
-          member = source.add_user(params[:user_id], params[:access_level], current_user: current_user, expires_at: params[:expires_at])
+          user = User.find_by_id(params[:user_id])
+          not_found!('User') unless user
+
+          member = source.add_user(user, params[:access_level], current_user: current_user, expires_at: params[:expires_at])
 
           if !member
             not_allowed! # This currently can only be reached in EE

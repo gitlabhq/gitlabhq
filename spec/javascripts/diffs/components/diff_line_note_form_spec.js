@@ -15,7 +15,7 @@ describe('DiffLineNoteForm', () => {
     diffLines = diffFile.highlightedDiffLines;
 
     component = createComponentWithStore(Vue.extend(DiffLineNoteForm), store, {
-      diffFile,
+      diffFileHash: diffFile.fileHash,
       diffLines,
       line: diffLines[0],
       noteTargetLine: diffLines[0],

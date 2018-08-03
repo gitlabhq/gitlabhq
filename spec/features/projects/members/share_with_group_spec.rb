@@ -4,7 +4,7 @@ describe 'Project > Members > Share with Group', :js do
   include Select2Helper
   include ActionView::Helpers::DateHelper
 
-  let(:master) { create(:user) }
+  let(:maintainer) { create(:user) }
 
   describe 'Share with group lock' do
     shared_examples 'the project can be shared with groups' do
@@ -27,8 +27,8 @@ describe 'Project > Members > Share with Group', :js do
       let(:project) { create(:project, namespace: create(:group)) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
       end
 
       context 'when the group has "Share with group lock" disabled' do
@@ -65,8 +65,8 @@ describe 'Project > Members > Share with Group', :js do
       let(:project) { create(:project, namespace: subgroup) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
       end
 
       context 'when the root_group has "Share with group lock" disabled' do
@@ -112,8 +112,8 @@ describe 'Project > Members > Share with Group', :js do
     end
 
     before do
-      project.add_master(master)
-      sign_in(master)
+      project.add_maintainer(maintainer)
+      sign_in(maintainer)
 
       visit project_settings_members_path(project)
 
@@ -142,11 +142,11 @@ describe 'Project > Members > Share with Group', :js do
       let(:project) { create(:project) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
 
-        create(:group).add_owner(master)
-        create(:group).add_owner(master)
+        create(:group).add_owner(maintainer)
+        create(:group).add_owner(maintainer)
 
         visit project_settings_members_path(project)
 
@@ -174,10 +174,10 @@ describe 'Project > Members > Share with Group', :js do
       let!(:project) { create(:project, namespace: nested_group) }
 
       before do
-        project.add_master(master)
-        sign_in(master)
-        group.add_master(master)
-        group_to_share_with.add_master(master)
+        project.add_maintainer(maintainer)
+        sign_in(maintainer)
+        group.add_maintainer(maintainer)
+        group_to_share_with.add_maintainer(maintainer)
       end
 
       it 'the groups dropdown does not show ancestors', :nested_groups do

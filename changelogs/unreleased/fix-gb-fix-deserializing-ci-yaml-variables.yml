@@ -1,0 +1,5 @@
+---
+title: Fix accessing imported pipeline builds
+merge_request: 20713
+author:
+type: fixed

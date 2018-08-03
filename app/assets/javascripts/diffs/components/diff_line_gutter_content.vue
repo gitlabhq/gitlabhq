@@ -108,7 +108,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['loadMoreLines', 'showCommentForm']),
+    ...mapActions('diffs', ['loadMoreLines', 'showCommentForm']),
     handleCommentButton() {
       this.showCommentForm({ lineCode: this.lineCode });
     },
@@ -189,6 +189,7 @@ export default {
       </button>
       <a
         v-if="lineNumber"
+        v-once
         :data-linenumber="lineNumber"
         :href="lineHref"
       >

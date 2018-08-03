@@ -8,7 +8,7 @@ describe 'Edit Project Settings' do
 
   describe 'project features visibility selectors', :js do
     before do
-      project.add_master(member)
+      project.add_maintainer(member)
       sign_in(member)
     end
 
@@ -165,7 +165,7 @@ describe 'Edit Project Settings' do
 
   describe 'repository visibility', :js do
     before do
-      project.add_master(member)
+      project.add_maintainer(member)
       sign_in(member)
       visit edit_project_path(project)
     end

@@ -5,7 +5,7 @@ describe 'Multi-file editor new directory', :js do
   let(:project) { create(:project, :repository) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_tree_path(project, :master)
@@ -22,9 +22,7 @@ describe 'Multi-file editor new directory', :js do
   end
 
   it 'creates directory in current directory' do
-    find('.add-to-tree').click
-
-    click_link('New directory')
+    all('.ide-tree-header button').last.click
 
     page.within('.modal') do
       find('.form-control').set('folder name')
@@ -32,9 +30,7 @@ describe 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
-    find('.add-to-tree').click
-
-    click_link('New file')
+    first('.ide-tree-header button').click
 
     page.within('.modal-dialog') do
       find('.form-control').set('file name')

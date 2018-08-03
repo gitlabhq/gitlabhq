@@ -22,7 +22,7 @@
 
             %br
             Go to
-            = link_to project_runners_path(@build.project) do
+            = link_to project_runners_path(@build.project, anchor: 'js-runners-settings') do
               Runners page
 
     - if @build.starts_environment?

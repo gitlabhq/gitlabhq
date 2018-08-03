@@ -13,12 +13,8 @@ export default {
       type: Object,
       required: true,
     },
-    diffFile: {
-      type: Object,
-      required: true,
-    },
-    diffLines: {
-      type: Array,
+    diffFileHash: {
+      type: String,
       required: true,
     },
     lineIndex: {
@@ -31,21 +27,8 @@ export default {
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
     ...mapGetters(['discussionsByLineCode']),
-    isDiscussionExpanded() {
-      if (!this.discussions.length) {
-        return false;
-      }
-
-      return this.discussions.every(discussion => discussion.expanded);
-    },
-    hasCommentForm() {
-      return this.diffLineCommentForms[this.line.lineCode];
-    },
     discussions() {
       return this.discussionsByLineCode[this.line.lineCode] || [];
-    },
-    shouldRender() {
-      return this.isDiscussionExpanded || this.hasCommentForm;
     },
     className() {
       return this.discussions.length ? '' : 'js-temp-notes-holder';
@@ -56,7 +39,6 @@ export default {
 
 <template>
   <tr
-    v-if="shouldRender"
     :class="className"
     class="notes_holder"
   >
@@ -67,14 +49,14 @@ export default {
     <td class="notes_content">
       <div class="content">
         <diff-discussions
+          v-if="discussions.length"
           :discussions="discussions"
         />
         <diff-line-note-form
           v-if="diffLineCommentForms[line.lineCode]"
-          :diff-file="diffFile"
-          :diff-lines="diffLines"
+          :diff-file-hash="diffFileHash"
           :line="line"
-          :note-target-line="diffLines[lineIndex]"
+          :note-target-line="line"
         />
       </div>
     </td>

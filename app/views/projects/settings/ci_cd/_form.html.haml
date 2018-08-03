@@ -4,7 +4,7 @@
       = form_errors(@project)
       %fieldset.builds-feature
         .form-group.append-bottom-default.js-secret-runner-token
-          = f.label :runners_token, _("Runner token"), class: 'label-light'
+          = f.label :runners_token, _("Runner token"), class: 'label-bold'
           .form-control.js-secret-value-placeholder
             = '*' * 20
           = f.text_field :runners_token, class: "form-control hide js-secret-value", placeholder: 'xEeFCaDAB89'
@@ -36,7 +36,7 @@
 
         %hr
         .form-group
-          = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-light'
+          = f.label :build_timeout_human_readable, _('Timeout'), class: 'label-bold'
           = f.text_field :build_timeout_human_readable, class: 'form-control'
           %p.form-text.text-muted
             = _("Per job. If a job passes this threshold, it will be marked as failed")
@@ -44,7 +44,7 @@
 
         %hr
         .form-group
-          = f.label :ci_config_path, _('Custom CI config path'), class: 'label-light'
+          = f.label :ci_config_path, _('Custom CI config path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
             = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>")
@@ -83,7 +83,7 @@
 
         %hr
         .form-group
-          = f.label :build_coverage_regex, _("Test coverage parsing"), class: 'label-light'
+          = f.label :build_coverage_regex, _("Test coverage parsing"), class: 'label-bold'
           .input-group
             %span.input-group-prepend
               .input-group-text /

@@ -424,7 +424,9 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
                'untracked' => false,
                'paths' => %w(out/),
                'when' => 'always',
-               'expire_in' => '7d' }]
+               'expire_in' => '7d',
+               "artifact_type" => "archive",
+               "artifact_format" => "zip" }]
           end
 
           let(:expected_cache) do
@@ -1417,6 +1419,56 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
               it 'does not store metadata' do
                 expect(stored_metadata_file).to be_nil
+              end
+            end
+          end
+
+          context 'when artifact_type is archive' do
+            context 'when artifact_format is zip' do
+              let(:params) { { artifact_type: :archive, artifact_format: :zip } }
+
+              it 'stores junit test report' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(job.reload.job_artifacts_archive).not_to be_nil
+              end
+            end
+
+            context 'when artifact_format is gzip' do
+              let(:params) { { artifact_type: :archive, artifact_format: :gzip } }
+
+              it 'returns an error' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(400)
+                expect(job.reload.job_artifacts_archive).to be_nil
+              end
+            end
+          end
+
+          context 'when artifact_type is junit' do
+            context 'when artifact_format is gzip' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/junit.xml.gz') }
+              let(:params) { { artifact_type: :junit, artifact_format: :gzip } }
+
+              it 'stores junit test report' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(201)
+                expect(job.reload.job_artifacts_junit).not_to be_nil
+              end
+            end
+
+            context 'when artifact_format is raw' do
+              let(:file_upload) { fixture_file_upload('spec/fixtures/junit.xml.gz') }
+              let(:params) { { artifact_type: :junit, artifact_format: :raw } }
+
+              it 'returns an error' do
+                upload_artifacts(file_upload, headers_with_token, params)
+
+                expect(response).to have_gitlab_http_status(400)
+                expect(job.reload.job_artifacts_junit).to be_nil
               end
             end
           end

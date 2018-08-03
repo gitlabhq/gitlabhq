@@ -70,7 +70,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def todo_params
-    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
+    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state)
   end
 
   def redirect_out_of_range(todos)

@@ -15,7 +15,7 @@ module Gitlab
           user.projects.select_for_project_authorization,
 
           # Personal projects
-          user.personal_projects.select_as_master_for_project_authorization,
+          user.personal_projects.select_as_maintainer_for_project_authorization,
 
           # Projects of groups the user is a member of
           user.groups_projects.select_for_project_authorization,

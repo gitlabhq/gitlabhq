@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class DestroyService < BaseService
     include Gitlab::ShellAdapter
@@ -124,7 +126,7 @@ module Projects
       # It's possible that the project was destroyed, but some after_commit
       # hook failed and caused us to end up here. A destroyed model will be a frozen hash,
       # which cannot be altered.
-      project.update_attributes(delete_error: message, pending_delete: false) unless project.destroyed?
+      project.update(delete_error: message, pending_delete: false) unless project.destroyed?
 
       log_error("Deletion failed on #{project.full_path} with the following message: #{message}")
     end

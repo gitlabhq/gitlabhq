@@ -7,7 +7,7 @@ describe 'Groups > Members > Filter members' do
 
   before do
     group.add_owner(user)
-    group.add_master(user_with_2fa)
+    group.add_maintainer(user_with_2fa)
 
     sign_in(user)
   end

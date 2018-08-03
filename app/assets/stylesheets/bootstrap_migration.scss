@@ -110,7 +110,7 @@ code {
   padding: 2px 4px;
   color: $red-600;
   background-color: $red-100;
-  border-radius: 3px;
+  border-radius: $border-radius-default;
 
   .code > & {
     background-color: inherit;
@@ -128,7 +128,8 @@ table {
   border-spacing: 0;
 }
 
-.tooltip {
+.tooltip,
+.no-pointer-events {
   // Fix bootstrap4 bug whereby tooltips flicker when they are hovered over their borders
   pointer-events: none;
 }

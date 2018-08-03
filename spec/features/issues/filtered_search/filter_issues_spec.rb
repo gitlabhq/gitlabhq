@@ -24,7 +24,7 @@ describe 'Filter issues', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     create(:issue, project: project, author: user2, title: "Bug report 1")
     create(:issue, project: project, author: user2, title: "Bug report 2")

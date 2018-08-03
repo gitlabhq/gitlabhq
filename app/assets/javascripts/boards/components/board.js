@@ -2,6 +2,9 @@
 
 import Sortable from 'sortablejs';
 import Vue from 'vue';
+import { n__ } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
+import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list.vue';
 import BoardBlankState from './board_blank_state.vue';
@@ -17,6 +20,10 @@ gl.issueBoards.Board = Vue.extend({
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
     BoardBlankState,
+    Icon,
+  },
+  directives: {
+    Tooltip,
   },
   props: {
     list: {
@@ -45,6 +52,12 @@ gl.issueBoards.Board = Vue.extend({
       detailIssue: Store.detail,
       filter: Store.filter,
     };
+  },
+  computed: {
+    counterTooltip() {
+      const { issuesSize } = this.list;
+      return `${n__('%d issue', '%d issues', issuesSize)}`;
+    },
   },
   watch: {
     filter: {

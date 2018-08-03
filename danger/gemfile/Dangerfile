@@ -1,0 +1,24 @@
+GEMFILE_LOCK_NOT_UPDATED_MESSAGE = <<~MSG.freeze
+**%<gemfile>s was updated but %<gemfile_lock>s wasn't updated.**
+
+Usually, when %<gemfile>s is updated, you should run
+```
+bundle install && \
+  BUNDLE_GEMFILE=Gemfile.rails5 bundle install
+```
+
+or
+
+```
+bundle update <the-added-or-updated-gem>
+```
+
+and commit the %<gemfile_lock>s changes.
+MSG
+
+gemfile_modified = git.modified_files.include?("Gemfile")
+gemfile_lock_modified = git.modified_files.include?("Gemfile.lock")
+
+if gemfile_modified && !gemfile_lock_modified
+  warn format(GEMFILE_LOCK_NOT_UPDATED_MESSAGE, gemfile: gitlab.html_link("Gemfile"), gemfile_lock: gitlab.html_link("Gemfile.lock"))
+end

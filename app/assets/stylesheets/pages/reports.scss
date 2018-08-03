@@ -1,0 +1,155 @@
+.split-report-section {
+  border-bottom: 1px solid $gray-darker;
+
+  .report-block-container {
+    max-height: 500px;
+    overflow: auto;
+  }
+
+  .space-children,
+  .space-children > span {
+    display: flex;
+    align-self: center;
+  }
+
+  .media {
+    align-items: center;
+    padding: 10px;
+    line-height: 20px;
+
+    /*
+    This fixes the wrapping div of the icon in the report header.
+    Apparently the borderless status icons are half the size of the status icons with border.
+    This means we have to double the size of the wrapping div for borderless icons.
+    */
+    .space-children:first-child {
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      margin-right: 5px;
+      margin-left: 1px;
+    }
+  }
+
+  .code-text {
+    width: 100%;
+    flex: 1;
+  }
+}
+
+.mr-widget-grouped-section {
+  .report-block-container {
+    max-height: 170px;
+    overflow: auto;
+  }
+
+  .report-block-list-issue-parent {
+    padding: $gl-padding-top $gl-padding;
+    border-top: 1px solid $border-color;
+  }
+
+  .report-block-list-icon .loading-container {
+    position: relative;
+    left: -2px;
+    // needed to make the next element align with the
+    // elements below that have a svg with 16px width
+    .fa-spinner {
+      width: 16px;
+    }
+  }
+}
+
+.report-block-container {
+  border-top: 1px solid $border-color;
+  padding: $gl-padding-top;
+  background-color: $gray-light;
+
+  // Clean MR widget CSS
+  line-height: 20px;
+}
+
+.report-block-list {
+  list-style: none;
+  padding: 0 1px;
+  margin: 0;
+
+  .license-item {
+    line-height: $gl-padding-32;
+
+    .license-packages {
+      font-size: $label-font-size;
+    }
+
+  }
+}
+
+.report-block-list-icon {
+  display: flex;
+
+  &.failed svg {
+    color: $red-500;
+  }
+
+  &.success svg {
+    color: $green-500;
+  }
+
+  &.neutral svg {
+    color: $theme-gray-700;
+  }
+
+  .ci-status-icon {
+    svg {
+      width: 16px;
+      height: 16px;
+      left: -2px;
+    }
+  }
+}
+
+.report-block-list-issue {
+  display: flex;
+  align-items: flex-start;
+  align-content: flex-start;
+}
+
+.is-dismissed .report-block-list-issue-description,
+.is-dismissed .vulnerability-name-button {
+  text-decoration: line-through;
+}
+
+.report-block-list-issue-description-text::after {
+  content: '\00a0';
+}
+
+.report-block-list-issue-description {
+  align-content: space-around;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  display: flex;
+  align-self: center;
+}
+
+.report-block {
+  .break-link {
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+}
+
+.report-block-issue-code {
+  width: 600px;
+}
+
+.modal-security-report-dast {
+  .modal-dialog {
+    width: $modal-lg;
+    max-width: $modal-lg;
+  }
+
+  // This is temporary till we get the new modals hooked up
+  &.modal-hide-footer .modal-footer {
+    display: none;
+  }
+}

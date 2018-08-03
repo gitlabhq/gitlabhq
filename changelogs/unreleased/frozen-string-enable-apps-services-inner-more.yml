@@ -1,0 +1,5 @@
+---
+title: Enable more frozen string in app/services/**/*.rb
+merge_request: 20677
+author: gfyoung
+type: performance

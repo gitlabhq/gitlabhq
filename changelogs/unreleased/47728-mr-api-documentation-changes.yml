@@ -1,0 +1,5 @@
+---
+title: Remove changes_count from MR API documentation where necessary
+merge_request: 19745
+author: Jan Beckmann
+type: fixed

@@ -20,7 +20,7 @@ module Gitlab
         define_histogram :gitlab_sql_duration_seconds do
           docstring 'SQL time'
           base_labels Transaction::BASE_LABELS
-          buckets [0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
+          buckets [0.01, 0.05, 0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
         end
 
         def current_transaction

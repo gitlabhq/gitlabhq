@@ -21,8 +21,8 @@ describe 'Projects > Settings > Integration settings' do
     end
   end
 
-  context 'for master' do
-    let(:role) { :master }
+  context 'for maintainer' do
+    let(:role) { :maintainer }
 
     context 'Webhooks' do
       let(:hook) { create(:project_hook, :all_events_enabled, enable_ssl_verification: true, project: project) }

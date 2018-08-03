@@ -14,7 +14,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm install #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -42,7 +42,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
          helm init --client-only >/dev/null
          helm repo add #{application.name} #{application.repository}
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm install #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -56,7 +56,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
          helm init --client-only >/dev/null
          helm repo add #{application.name} #{application.repository}
-         helm install #{application.chart} --name #{application.name} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
+         helm install #{application.chart} --name #{application.name} --version #{application.version} --namespace #{namespace} -f /data/helm/#{application.name}/config/values.yaml >/dev/null
         EOS
       end
     end

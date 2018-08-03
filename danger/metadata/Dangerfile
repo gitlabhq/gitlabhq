@@ -1,0 +1,25 @@
+# rubocop:disable Style/SignalException
+
+if gitlab.mr_body.size < 5
+  fail "Please provide a proper merge request description."
+end
+
+if gitlab.mr_labels.empty?
+  fail "Please add labels to this merge request."
+end
+
+unless gitlab.mr_json["assignee"]
+  warn "This merge request does not have any assignee yet. Setting an assignee clarifies who needs to take action on the merge request at any given time."
+end
+
+has_milestone = !gitlab.mr_json["milestone"].nil?
+
+unless has_milestone
+  warn "This merge request does not refer to an existing milestone.", sticky: false
+end
+
+has_pick_into_stable_label = gitlab.mr_labels.find { |label| label.start_with?('Pick into') }
+
+if gitlab.branch_for_base != "master" && !has_pick_into_stable_label
+  warn "Most of the time, all merge requests should target `master`. Otherwise, please set the relevant `Pick into X.Y` label."
+end

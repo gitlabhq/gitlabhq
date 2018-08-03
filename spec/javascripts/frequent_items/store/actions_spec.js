@@ -205,7 +205,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
         actions.setSearchQuery,
         { query: 'test' },
         mockedState,
-        [{ type: types.SET_SEARCH_QUERY }],
+        [{ type: types.SET_SEARCH_QUERY, payload: { query: 'test' } }],
         [{ type: 'fetchSearchedItems', payload: { query: 'test' } }],
         done,
       );
@@ -216,7 +216,7 @@ describe('Frequent Items Dropdown Store Actions', () => {
         actions.setSearchQuery,
         null,
         mockedState,
-        [{ type: types.SET_SEARCH_QUERY }],
+        [{ type: types.SET_SEARCH_QUERY, payload: null }],
         [{ type: 'fetchFrequentItems' }],
         done,
       );

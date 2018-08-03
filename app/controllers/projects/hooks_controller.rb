@@ -29,7 +29,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def update
-    if hook.update_attributes(hook_params)
+    if hook.update(hook_params)
       flash[:notice] = 'Hook was successfully updated.'
       redirect_to project_settings_integrations_path(@project)
     else
@@ -48,7 +48,7 @@ class Projects::HooksController < Projects::ApplicationController
   def destroy
     hook.destroy
 
-    redirect_to project_settings_integrations_path(@project), status: 302
+    redirect_to project_settings_integrations_path(@project), status: :found
   end
 
   private

@@ -4,7 +4,7 @@ describe 'User updates wiki page' do
   shared_examples 'wiki page user update' do
     let(:user) { create(:user) }
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 

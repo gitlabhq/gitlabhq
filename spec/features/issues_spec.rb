@@ -398,7 +398,7 @@ describe 'Issues' do
 
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
-        project1.add_master(user)
+        project1.add_maintainer(user)
         visit namespace_project_issues_path(user.namespace, project1)
       end
 

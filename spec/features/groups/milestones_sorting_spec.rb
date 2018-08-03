@@ -9,7 +9,7 @@ describe 'Milestones sorting', :js do
   let!(:project_milestone2) { create(:milestone, project: project, title: 'v2.0', due_date: 5.days.from_now) }
   let!(:other_project_milestone2) { create(:milestone, project: other_project, title: 'v2.0', due_date: 5.days.from_now) }
   let!(:group_milestone) { create(:milestone, group: group, title: 'v3.0', due_date: 7.days.from_now) }
-  let(:user) { create(:group_member, :master, user: create(:user), group: group ).user }
+  let(:user) { create(:group_member, :maintainer, user: create(:user), group: group ).user }
 
   before do
     sign_in(user)
