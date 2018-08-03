@@ -89,19 +89,6 @@ FactoryBot.define do
       end
     end
 
-    trait :with_test_reports do
-      after(:create) do |merge_request|
-        create(:ci_pipeline,
-          :success,
-          :test_reports,
-          project: merge_request.source_project,
-          ref: merge_request.source_branch,
-          sha: merge_request.diff_head_sha).tap do |pipeline|
-          merge_request.update!(head_pipeline_id: pipeline.id)
-        end
-      end
-    end
-
     after(:build) do |merge_request|
       target_project = merge_request.target_project
       source_project = merge_request.source_project

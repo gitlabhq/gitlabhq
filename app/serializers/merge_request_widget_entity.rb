@@ -231,12 +231,6 @@ class MergeRequestWidgetEntity < IssuableEntity
     end
   end
 
-  expose :test_reports_path do |merge_request|
-    if merge_request.has_test_reports?
-      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
-    end
-  end
-
   private
 
   delegate :current_user, to: :request

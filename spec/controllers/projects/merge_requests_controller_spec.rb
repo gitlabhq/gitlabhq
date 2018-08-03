@@ -580,64 +580,6 @@ describe Projects::MergeRequestsController do
     end
   end
 
-  describe 'GET test_reports' do
-    subject do
-      get :test_reports,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
-          format: :json
-    end
-
-    before do
-      allow_any_instance_of(MergeRequest)
-        .to receive(:compare_test_reports).and_return(comparison_status)
-    end
-
-    context 'when comparison is being processed' do
-      let(:comparison_status) { { status: :parsing } }
-
-      it 'returns 204 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:no_content)
-      end
-    end
-
-    context 'when comparison is done' do
-      let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
-
-      it 'returns 200 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response).to eq({ 'summary' => 1 })
-      end
-    end
-
-    context 'when user created corrupted test reports' do
-      let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
-
-      it 'returns 400 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:bad_request)
-        expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
-      end
-    end
-
-    context 'when something went wrong on our system' do
-      let(:comparison_status) { {} }
-
-      it 'returns 500 HTTP status' do
-        subject
-
-        expect(response).to have_gitlab_http_status(:internal_server_error)
-        expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
-      end
-    end
-  end
-
   describe 'POST remove_wip' do
     before do
       merge_request.title = merge_request.wip_title
