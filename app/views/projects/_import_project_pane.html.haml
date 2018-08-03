@@ -25,7 +25,6 @@
         %div
           = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket" do
             = icon('bitbucket-square', text: 'Bitbucket Server')
-            = render 'bitbucket_import_modal'
         %div
       - if gitlab_import_enabled?
         %div
