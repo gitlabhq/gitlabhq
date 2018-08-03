@@ -247,7 +247,7 @@ Before accepting a merge request, select `rebase before merge`.
 ![Merge request widget](merge_request_widget.png)
 
 GitLab will attempt to cleanly rebase before merging branches. If clean rebase is not possible, regular merge will be performed.
-If clean rebase is possible and history of the target branch will be altered with the the merge.
+If clean rebase is possible, the history of the target branch will be altered with the the merge.
 
 In conclusion, we can say that you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean but your history should represent what actually happened.
