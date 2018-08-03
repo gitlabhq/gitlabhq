@@ -24,7 +24,6 @@ class ApplicationController < ActionController::Base
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
-
   around_action :set_locale
 
   after_action :set_page_title_header, if: -> { request.format == :json }

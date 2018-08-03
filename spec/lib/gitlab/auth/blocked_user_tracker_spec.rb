@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Gitlab::Auth::BlockedUserTracker do
   describe '#log_blocked_user_activity!' do
     context 'when user is not blocked' do
-      it 'does not blocked user activity' do
+      it 'does not log blocked user activity' do
         expect_any_instance_of(SystemHooksService)
           .not_to receive(:execute_hooks_for)
         expect(Gitlab::AppLogger).not_to receive(:info)

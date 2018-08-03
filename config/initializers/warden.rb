@@ -40,7 +40,12 @@ Rails.application.configure do |config|
     # multiple times during the request lifecycle. We want to increment
     # metrics and write logs only once in that case.
     #
-    next if (auth.env['warden.auth.trackers'] ||= {}).push(activity).many?
+    # 'warden.auth.trackers' is our custom hash key that follows usual
+    # convention of naming keys in the Rack env hash. If there is more
+    # than one tracker in the hash it means that we have already recorded
+    # an event.
+    #
+    next if (auth.env['warden.auth.trackers'] ||= []).push(activity).many?
 
     if user.blocked?
       activity.user_blocked!
