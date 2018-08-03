@@ -1,5 +1,4 @@
 import Visibility from 'visibilityjs';
-import $ from 'jquery';
 import axios from '../../lib/utils/axios_utils';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
@@ -63,14 +62,6 @@ export const receiveReportsSuccess = ({ commit }, response) =>
   commit(types.RECEIVE_REPORTS_SUCCESS, response);
 
 export const receiveReportsError = ({ commit }) => commit(types.RECEIVE_REPORTS_ERROR);
-
-export const openModal = ({ dispatch }, payload) => {
-  dispatch('setModalData', payload);
-
-  $('#modal-mrwidget-reports').modal('show');
-};
-
-export const setModalData = ({ commit }, payload) => commit(types.SET_ISSUE_MODAL_DATA, payload);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
