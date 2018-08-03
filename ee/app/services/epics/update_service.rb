@@ -8,7 +8,7 @@ module Epics
       update(epic)
 
       if (params.keys.map(&:to_sym) & [:start_date_fixed, :start_date_is_fixed, :due_date_fixed, :due_date_is_fixed]).present?
-        epic.update_dates
+        epic.update_start_and_due_dates
       end
 
       epic

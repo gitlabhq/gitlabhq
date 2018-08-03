@@ -10,7 +10,7 @@ module EE
         result = super
 
         if issue.previous_changes.include?(:milestone_id) && issue.epic
-          issue.epic.update_dates
+          issue.epic.update_start_and_due_dates
         end
 
         result

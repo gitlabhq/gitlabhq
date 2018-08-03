@@ -18,8 +18,8 @@ describe Issues::UpdateService do
       context 'updating milestone' do
         let(:milestone) { create(:milestone) }
 
-        it 'calls epic#update_dates' do
-          expect(epic).to receive(:update_dates).twice
+        it 'calls epic#update_start_and_due_dates' do
+          expect(epic).to receive(:update_start_and_due_dates).twice
 
           update_issue(milestone: milestone)
           update_issue(milestone_id: nil)
@@ -27,8 +27,8 @@ describe Issues::UpdateService do
       end
 
       context 'updating other fields' do
-        it 'does not call epic#update_dates' do
-          expect(epic).not_to receive(:update_dates)
+        it 'does not call epic#update_start_and_due_dates' do
+          expect(epic).not_to receive(:update_start_and_due_dates)
           update_issue(title: 'foo')
         end
       end

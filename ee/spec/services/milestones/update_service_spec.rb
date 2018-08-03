@@ -4,7 +4,7 @@ require 'spec_helper'
 describe Milestones::UpdateService do
   describe '#execute' do
     context 'refresh related epic dates' do
-      it 'calls epic#update_dates' do
+      it 'updates milestone sourced dates' do
         project = create(:project)
         user = build(:user)
         milestone = create(:milestone, project: project)
@@ -13,8 +13,6 @@ describe Milestones::UpdateService do
         due_date = 3.days.from_now.to_date
 
         described_class.new(project, user, { due_date: due_date }).execute(milestone)
-
-        epic.reload
 
         expect(epic.reload).to have_attributes(
           start_date: nil,

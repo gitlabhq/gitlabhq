@@ -82,7 +82,7 @@ module EE
         ::Group
       end
 
-      def update_dates(epics)
+      def update_start_and_due_dates(epics)
         groups = epics.includes(:issues).group_by do |epic|
           milestone_ids = epic.issues.map(&:milestone_id)
           milestone_ids.compact!
@@ -142,7 +142,7 @@ module EE
     # Needed to use EntityDateHelper#remaining_days_in_words
     alias_attribute(:due_date, :end_date)
 
-    def update_dates
+    def update_start_and_due_dates
       results = Epics::DateSourcingMilestonesFinder.execute(id)
 
       self.start_date = start_date_is_fixed? ? start_date_fixed : results.start_date

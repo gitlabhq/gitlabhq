@@ -10,7 +10,7 @@ module EE
         super
 
         if dates_changed?(milestone)
-          ::Epic.update_dates(
+          ::Epic.update_start_and_due_dates(
             ::Epic.joins(:issues).where(issues: { milestone_id: milestone.id })
           )
         end

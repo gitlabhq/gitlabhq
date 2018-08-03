@@ -137,12 +137,12 @@ describe Epic do
     end
   end
 
-  describe '#update_dates' do
+  describe '#update_start_and_due_dates' do
     context 'fixed date is set' do
       subject { create(:epic, :use_fixed_dates, start_date: nil, end_date: nil) }
 
       it 'updates to fixed date' do
-        subject.update_dates
+        subject.update_start_and_due_dates
 
         expect(subject.start_date).to eq(subject.start_date_fixed)
         expect(subject.due_date).to eq(subject.due_date_fixed)
@@ -177,7 +177,7 @@ describe Epic do
 
         context 'complete start and due dates' do
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(milestone1.start_date)
             expect(subject.due_date).to eq(milestone2.due_date)
@@ -201,7 +201,7 @@ describe Epic do
           end
 
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(milestone1.start_date)
             expect(subject.due_date).to eq(nil)
@@ -225,7 +225,7 @@ describe Epic do
           end
 
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(nil)
             expect(subject.due_date).to eq(nil)
@@ -239,7 +239,7 @@ describe Epic do
         end
 
         it 'updates to milestone dates' do
-          subject.update_dates
+          subject.update_start_and_due_dates
 
           expect(subject.start_date).to eq(nil)
           expect(subject.start_date_sourcing_milestone_id).to eq(nil)
@@ -256,7 +256,7 @@ describe Epic do
 
         context 'complete start and due dates' do
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(milestone1.start_date)
             expect(subject.due_date).to eq(milestone1.due_date)
@@ -273,7 +273,7 @@ describe Epic do
           end
 
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(milestone1.start_date)
             expect(subject.due_date).to eq(nil)
@@ -290,7 +290,7 @@ describe Epic do
           end
 
           it 'updates to milestone dates' do
-            subject.update_dates
+            subject.update_start_and_due_dates
 
             expect(subject.start_date).to eq(nil)
             expect(subject.due_date).to eq(nil)
@@ -300,7 +300,7 @@ describe Epic do
     end
   end
 
-  describe '.update_dates' do
+  describe '.update_start_and_due_dates' do
     def link_epic_to_milestone(epic, milestone)
       create(:issue, epic: epic, milestone: milestone)
     end
@@ -322,7 +322,7 @@ describe Epic do
       link_epic_to_milestone(epics[2], milestone1)
       link_epic_to_milestone(epics[2], milestone2)
 
-      described_class.update_dates(described_class.where(id: epics.map(&:id)))
+      described_class.update_start_and_due_dates(described_class.where(id: epics.map(&:id)))
 
       epics.each(&:reload)
 
@@ -350,7 +350,7 @@ describe Epic do
         link_epic_to_milestone(epics[0], milestone)
 
         ActiveRecord::QueryRecorder.new do
-          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+          described_class.update_start_and_due_dates(described_class.where(id: epics.map(&:id)))
         end.count
       end
 
@@ -360,7 +360,7 @@ describe Epic do
         epics << create(:epic)
 
         expect do
-          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+          described_class.update_start_and_due_dates(described_class.where(id: epics.map(&:id)))
         end.not_to exceed_query_limit(control_count)
       end
 
@@ -371,7 +371,7 @@ describe Epic do
         link_epic_to_milestone(epics[1], milestone)
 
         expect do
-          described_class.update_dates(described_class.where(id: epics.map(&:id)))
+          described_class.update_start_and_due_dates(described_class.where(id: epics.map(&:id)))
         end.not_to exceed_query_limit(control_count)
       end
     end

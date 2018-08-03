@@ -2,7 +2,7 @@ module EpicIssues
   class CreateService < IssuableLinks::CreateService
     def execute
       result = super
-      issuable.update_dates
+      issuable.update_start_and_due_dates
       result
     end
 
