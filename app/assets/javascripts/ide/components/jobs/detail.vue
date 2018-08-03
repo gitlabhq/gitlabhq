@@ -131,6 +131,9 @@ export default {
         v-show="detailJob.isLoading"
         class="build-loader-animation"
       >
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
       </div>
     </pre>
   </div>
