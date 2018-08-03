@@ -1,7 +1,22 @@
-Add a description of your merge request here. Merge requests without an adequate
-description will not be reviewed until one is added.
+## What does this MR do?
+
+<!--
+Describe in detail what your merge request does, why it does that, etc. Merge
+requests without an adequate description will not be reviewed until one is
+added.
+
+Please also keep this description up-to-date with any discussion that takes
+place so that reviewers can understand your intent. This is especially
+important if they didn't participate in the discussion.
+
+Make sure to remove this comment when you are done.
+-->
+
+Add a description of your merge request here.
 
 ## Database checklist
+
+- [ ] Conforms to the [database guides](https://docs.gitlab.com/ee/development/README.html#databases-guides)
 
 When adding migrations:
 
@@ -35,16 +50,9 @@ When removing columns, tables, indexes or other structures:
 
 - [ ] [Changelog entry](https://docs.gitlab.com/ee/development/changelog.html) added, if necessary
 - [ ] [Documentation created/updated](https://docs.gitlab.com/ee/development/documentation/index.html#contributing-to-docs)
-- [ ] [API support added](https://docs.gitlab.com/ee/development/api_styleguide.html)
 - [ ] [Tests added for this feature/bug](https://docs.gitlab.com/ee/development/testing_guide/index.html)
-- Conforms to the [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
-  - [ ] Has been reviewed by a Backend [maintainer](https://about.gitlab.com/handbook/engineering/#maintainer)
-  - [ ] Has been reviewed by a Database [specialist](https://about.gitlab.com/team/structure/#specialist)
+- [ ] Conforms to the [code review guidelines](https://docs.gitlab.com/ee/development/code_review.html)
 - [ ] Conforms to the [merge request performance guidelines](https://docs.gitlab.com/ee/development/merge_request_performance_guidelines.html)
 - [ ] Conforms to the [style guides](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/CONTRIBUTING.md#style-guides)
-- [ ] If you have multiple commits, please combine them into a few logically organized commits by [squashing them](https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
-- [ ] [Internationalization required/considered](https://docs.gitlab.com/ee/development/i18n/index.html)
-- [ ] For a paid feature, have we considered GitLab.com plans, how it works for groups, and is there a design for promoting it to users who aren't on the correct plan?
-- [ ] [End-to-end tests](https://docs.gitlab.com/ee/development/testing_guide/end_to_end_tests.html#testing-code-in-merge-requests) pass (`package-and-qa` manual pipeline job)
 
 /label ~database
