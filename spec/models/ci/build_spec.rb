@@ -2845,7 +2845,7 @@ describe Ci::Build do
 
     context 'when build does not have test reports' do
       it 'raises an error' do
-        expect { subject }.to raise_error(ArgumentError)
+        expect { subject }.to raise_error(NoMethodError)
       end
     end
   end

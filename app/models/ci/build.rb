@@ -633,8 +633,6 @@ module Ci
     end
 
     def collect_test_reports!(test_reports)
-      raise ArgumentError, 'build does not have test reports' unless has_test_reports?
-
       test_reports.get_suite(group_name).tap do |test_suite|
         each_test_report do |file_type, blob|
           parse_test_report!(test_suite, file_type, blob)

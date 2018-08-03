@@ -1127,7 +1127,9 @@ describe MergeRequest do
     end
 
     context 'when head pipeline has test reports' do
-      let!(:job_artifact) { create(:ci_job_artifact, :junit, job: head_pipeline.builds.first, project: project) }
+      before do
+        create(:ci_job_artifact, :junit, job: head_pipeline.builds.first, project: project)
+      end
 
       context 'when reactive cache worker is parsing asynchronously' do
         it 'returns status' do
@@ -1141,17 +1143,10 @@ describe MergeRequest do
         end
 
         it 'returns status and data' do
-          expect(subject[:status]).to eq(:parsed)
-          expect(subject[:data]).to be_a(String)
-        end
+          expect_any_instance_of(Ci::CompareTestReportsService)
+            .to receive(:execute).with(base_pipeline.iid, head_pipeline.iid)
 
-        context 'when test reports contains invalid data' do
-          let!(:job_artifact) { create(:ci_job_artifact, :junit_with_corrupted_data, job: head_pipeline.builds.first, project: project) }
-
-          it 'returns status and error message' do
-            expect(subject[:status]).to eq(:error)
-            expect(subject[:status_reason]).to eq('Invalid XML data')
-          end
+          subject
         end
       end
     end
@@ -1159,7 +1154,7 @@ describe MergeRequest do
     context 'when head pipeline does not have test reports' do
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)
-        expect(subject[:status_reason]).to eq('head pipeline does not have test reports')
+        expect(subject[:status_reason]).to eq('This merge request does not have test reports')
       end
     end
   end

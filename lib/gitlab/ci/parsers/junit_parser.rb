@@ -8,8 +8,10 @@ module Gitlab
 
         def initialize(xml_data)
           @data = Hash.from_xml(xml_data)
+        rescue  REXML::ParseException
+          raise JunitParserError, 'Failed to parse XML'
         rescue
-          raise JunitParserError, 'Invalid XML data'
+          raise JunitParserError, 'Unknown error'
         end
 
         def parse!(test_suite)

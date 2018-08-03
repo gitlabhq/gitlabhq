@@ -1022,29 +1022,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def compare_test_reports
-    unless actual_head_pipeline && actual_head_pipeline.has_test_reports?
-      return { status: :error, status_reason: 'head pipeline does not have test reports' }
+    unless has_test_reports?
+      return { status: :error, status_reason: 'This merge request does not have test reports' }
     end
 
-    with_reactive_cache(base_pipeline&.iid, actual_head_pipeline.iid) { |data| data } || { status: :parsing }
+    with_reactive_cache(
+      :compare_test_results,
+      base_pipeline&.iid,
+      actual_head_pipeline.iid) { |data| data } || { status: :parsing }
   end
 
-  def calculate_reactive_cache(base_pipeline_iid, head_pipeline_iid)
-    begin
-      base_pipeline = project.pipelines.find_by_iid(base_pipeline_iid)
-      head_pipeline = project.pipelines.find_by_iid(head_pipeline_iid)
-
-      comparer = Gitlab::Ci::Reports::TestReportsComparer
-        .new(base_pipeline&.test_reports, head_pipeline.test_reports)
-
-      {
-        status: :parsed,
-        data: TestReportsComparerSerializer
-          .new(project: project)
-          .represent(comparer).to_json
-      }
-    rescue => e
-      { status: :error, status_reason: e.message }
+  def calculate_reactive_cache(identifier, *args)
+    case identifier.to_sym
+    when :compare_test_results
+      Ci::CompareTestReportsService.new(project).execute(*args)
+    else
+      raise NotImplementedError, "Unknown identifier: #{identifier}"
     end
   end
 
