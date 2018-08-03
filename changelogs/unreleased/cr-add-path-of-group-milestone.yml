@@ -1,0 +1,5 @@
+---
+title: Adds the project and group name to the return type for project and group milestones.
+merge_request: 20890
+author:
+type: changed
