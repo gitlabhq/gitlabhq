@@ -3444,6 +3444,19 @@ describe Project do
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
       end
 
+      context 'migration to hashed storage' do
+        it 'calls HashedStorageMigrationService with correct options' do
+          project = create(:project, :repository, :legacy_storage)
+          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+
+          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          project.rename_repo
+        end
+      end
+
       it 'renames a repository' do
         stub_container_registry_config(enabled: false)
 
@@ -3490,8 +3503,10 @@ describe Project do
         context 'when not rolled out' do
           let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
-          it 'moves pages folder to new location' do
-            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+          it 'moves pages folder to hashed storage' do
+            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
+              expect(service).to receive(:execute)
+            end
 
             project.rename_repo
           end

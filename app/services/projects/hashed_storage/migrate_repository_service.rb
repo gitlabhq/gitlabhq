@@ -7,28 +7,27 @@ module Projects
 
       prepend ::EE::Projects::HashedStorage::MigrateRepositoryService
 
-      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger
+      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
 
-      def initialize(project, logger = nil)
+      def initialize(project, old_disk_path, logger: nil)
         @project = project
         @logger = logger || Rails.logger
+        @old_disk_path = old_disk_path
+        @old_wiki_disk_path = "#{old_disk_path}.wiki"
+        @move_wiki = has_wiki?
       end
 
       def execute
-        @old_disk_path = project.disk_path
-        has_wiki = project.wiki.repository_exists?
-
         @old_storage_version = project.storage_version
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:repository]
         project.ensure_storage_path_exists
 
         @new_disk_path = project.disk_path
 
-        result = move_repository(@old_disk_path, @new_disk_path)
+        result = move_repository(old_disk_path, new_disk_path)
 
-        if has_wiki
-          @old_wiki_disk_path = "#{@old_disk_path}.wiki"
-          result &&= move_repository("#{@old_wiki_disk_path}", "#{@new_disk_path}.wiki")
+        if move_wiki
+          result &&= move_repository("#{old_wiki_disk_path}", "#{new_disk_path}.wiki")
         end
 
         if result
@@ -50,6 +49,10 @@ module Projects
 
       private
 
+      def has_wiki?
+        gitlab_shell.exists?(project.repository_storage, "#{old_wiki_disk_path}.git")
+      end
+
       def move_repository(from_name, to_name)
         from_exists = gitlab_shell.exists?(project.repository_storage, "#{from_name}.git")
         to_exists = gitlab_shell.exists?(project.repository_storage, "#{to_name}.git")
@@ -68,8 +71,8 @@ module Projects
       end
 
       def rollback_folder_move
-        move_repository(@new_disk_path, @old_disk_path)
-        move_repository("#{@new_disk_path}.wiki", "#{@old_disk_path}.wiki")
+        move_repository(new_disk_path, old_disk_path)
+        move_repository("#{new_disk_path}.wiki", old_wiki_disk_path)
       end
     end
   end

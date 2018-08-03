@@ -2,11 +2,11 @@ require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateAttachmentsService do
   let(:project) { create(:project, storage_version: 1) }
-  let(:service) { described_class.new(project) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
   let(:old_attachments_path) { legacy_storage.disk_path }
   let(:new_attachments_path) { hashed_storage.disk_path }
+  let(:service) { described_class.new(project, old_attachments_path) }
 
   describe '#execute' do
     set(:primary) { create(:geo_node, :primary) }
