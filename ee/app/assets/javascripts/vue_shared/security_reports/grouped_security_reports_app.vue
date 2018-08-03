@@ -216,7 +216,7 @@ export default {
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="true"
-    class="mr-widget-border-top grouped-security-reports"
+    class="mr-widget-border-top grouped-security-reports mr-report"
   >
     <div
       v-if="pipelinePath"
