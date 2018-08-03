@@ -798,7 +798,7 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
-msgid "Bitbucket Server import"
+msgid "Bitbucket Server Import"
 msgstr ""
 
 msgid "Bitbucket import"
