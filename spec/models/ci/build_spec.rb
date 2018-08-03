@@ -2838,7 +2838,7 @@ describe Ci::Build do
         end
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::Ci::Parsers::JunitParser::JunitParserError)
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Junit::JunitParserError)
         end
       end
     end

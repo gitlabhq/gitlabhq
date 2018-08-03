@@ -94,7 +94,7 @@ FactoryBot.define do
         merge_request.head_pipeline = build(
           :ci_pipeline,
           :success,
-          :test_reports,
+          :with_test_reports,
           project: merge_request.source_project,
           ref: merge_request.source_branch,
           sha: merge_request.diff_head_sha)
