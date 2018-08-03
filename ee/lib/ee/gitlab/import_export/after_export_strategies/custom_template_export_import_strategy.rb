@@ -27,6 +27,7 @@ module EE
 
             ::RepositoryImportWorker.new.perform(export_into_project_id)
           ensure
+            export_file.close if export_file.respond_to?(:close)
             project.remove_exported_project_file
           end
 
