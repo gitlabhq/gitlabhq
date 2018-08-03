@@ -166,7 +166,7 @@ module Gitlab
           except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.fast_timeout)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.default_timeout)
 
         raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end

@@ -14,7 +14,7 @@
         %br
         - if @target_url
           - if @reply_by_email
-            = _('Reply to this email directly or %{view_it_on_gitlab}.') % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }
+            = _('Reply to this email directly or %{view_it_on_gitlab}.').html_safe % { view_it_on_gitlab: link_to(_("view it on GitLab"), @target_url) }
           - else
             #{link_to _("View it on GitLab"), @target_url}.
           %br

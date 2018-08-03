@@ -5400,15 +5400,28 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Repair authentication"
+=======
+msgid "Rename"
+msgstr ""
+
+msgid "Rename file"
+msgstr ""
+
+msgid "Rename folder"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Reply to this email directly or %{view_it_on_gitlab}."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Repo by URL"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Reports|%{failedString} and %{resolvedString}"
 msgstr ""
 

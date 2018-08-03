@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model

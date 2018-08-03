@@ -8,7 +8,7 @@ export default {
     });
   },
   getRawFileData(file) {
-    if (file.tempFile) {
+    if (file.tempFile && !file.prevPath) {
       return Promise.resolve(file.content);
     }
 

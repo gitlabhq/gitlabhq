@@ -237,6 +237,7 @@
   max-width: 100%;
 }
 
+<<<<<<< HEAD
 /*
 * Mixin that handles the container for the job logs (CI/CD and kubernetes pod logs)
 */
@@ -327,6 +328,8 @@
   }
 }
 
+=======
+>>>>>>> upstream/master
 @mixin build-loader-animation {
   position: relative;
   white-space: initial;

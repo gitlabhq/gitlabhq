@@ -1,0 +1,5 @@
+---
+title: refactor pipeline job log animation to reduce CPU usage
+merge_request: 20915
+author:
+type: performance

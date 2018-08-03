@@ -40,7 +40,7 @@ module Gitlab
       # Accepts a path in the form of "#{hex_secret}/#{filename}"
       def find_correct_path(upload_path)
         upload = Upload.find_by(uploader: 'FileUploader', path: upload_path)
-        return unless upload && upload.local?
+        return unless upload && upload.local? && upload.model
 
         upload.absolute_path
       rescue => e
