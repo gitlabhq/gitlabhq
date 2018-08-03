@@ -58,7 +58,9 @@ describe('Reports Store Actions', () => {
 
     describe('success', () => {
       it('dispatches requestReports and receiveReportsSuccess ', done => {
-        mock.onGet(`${TEST_HOST}/endpoint.json`).replyOnce(200, { summary: {}, suites: [{ name: 'rspec' }] });
+        mock
+          .onGet(`${TEST_HOST}/endpoint.json`)
+          .replyOnce(200, { summary: {}, suites: [{ name: 'rspec' }] });
 
         testAction(
           fetchReports,
@@ -70,7 +72,7 @@ describe('Reports Store Actions', () => {
               type: 'requestReports',
             },
             {
-              payload: { summary: {}, suites: [{ name: 'rspec' }] },
+              payload: { data: { summary: {}, suites: [{ name: 'rspec' }] }, status: 200 },
               type: 'receiveReportsSuccess',
             },
           ],
@@ -105,12 +107,23 @@ describe('Reports Store Actions', () => {
   });
 
   describe('receiveReportsSuccess', () => {
-    it('should commit RECEIVE_REPORTS_SUCCESS mutation', done => {
+    it('should commit RECEIVE_REPORTS_SUCCESS mutation with 200', done => {
       testAction(
         receiveReportsSuccess,
-        { summary: {} },
+        { data: { summary: {} }, status: 200 },
         mockedState,
         [{ type: types.RECEIVE_REPORTS_SUCCESS, payload: { summary: {} } }],
+        [],
+        done,
+      );
+    });
+
+    it('should not commit RECEIVE_REPORTS_SUCCESS mutation with 204', done => {
+      testAction(
+        receiveReportsSuccess,
+        { data: { summary: {} }, status: 204 },
+        mockedState,
+        [],
         [],
         done,
       );
@@ -155,5 +168,4 @@ describe('Reports Store Actions', () => {
       );
     });
   });
-
 });

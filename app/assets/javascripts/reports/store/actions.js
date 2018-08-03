@@ -43,7 +43,9 @@ export const fetchReports = ({ state, dispatch }) => {
     },
     data: state.endpoint,
     method: 'getReports',
-    successCallback: (response) => dispatch('receiveReportsSuccess', response),
+    successCallback: ({ data, status }) => dispatch('receiveReportsSuccess', {
+      data, status,
+    }),
     errorCallback: () => dispatch('receiveReportsError'),
   });
 
@@ -52,7 +54,7 @@ export const fetchReports = ({ state, dispatch }) => {
   } else {
     axios
       .get(state.endpoint)
-      .then((response) => dispatch('receiveReportsSuccess', response))
+      .then(({ data, status }) => dispatch('receiveReportsSuccess', { data, status }))
       .catch(() => dispatch('receiveReportsError'));
   }
 
