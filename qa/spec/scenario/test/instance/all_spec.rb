@@ -1,4 +1,10 @@
 describe QA::Scenario::Test::Instance::All do
+  subject do
+    Class.new(described_class) do
+      tags :rspec, :foo
+    end
+  end
+
   context '#perform' do
     let(:arguments) { spy('Runtime::Scenario') }
     let(:release) { spy('Runtime::Release') }
@@ -24,7 +30,7 @@ describe QA::Scenario::Test::Instance::All do
         subject.perform("test")
 
         expect(runner).to have_received(:options=)
-          .with(::File.expand_path('../../../../qa/specs/features', __dir__))
+          .with(['--tag', 'rspec,foo', '--', ::File.expand_path('../../../../qa/specs/features', __dir__)])
       end
     end
 
