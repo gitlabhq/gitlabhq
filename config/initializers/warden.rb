@@ -30,11 +30,11 @@ Rails.application.configure do |config|
   end
 
   Warden::Manager.before_logout(scope: :user) do |user, auth, opts|
+    user ||= auth.user
     activity = Gitlab::Auth::Activity.new(opts)
     tracker = Gitlab::Auth::BlockedUserTracker.new(user, auth)
 
-    ActiveSession.destroy(user || auth.user, auth.request.session.id)
-
+    ActiveSession.destroy(user, auth.request.session.id)
     activity.user_session_destroyed!
 
     ##
@@ -42,16 +42,16 @@ Rails.application.configure do |config|
     # multiple times during the request lifecycle. We want to increment
     # metrics and write logs only once in that case.
     #
-    # 'warden.auth.trackers' is our custom hash key that follows usual
-    # convention of naming keys in the Rack env hash. If there is more
-    # than one tracker in the hash it means that we have already recorded
-    # an event.
+    # 'warden.auth.*' is our custom hash key that follows usual convention
+    # of naming keys in the Rack env hash.
     #
-    next if (auth.env['warden.auth.trackers'] ||= []).push(activity).many?
+    next if auth.env['warden.auth.user.blocked']
 
     if user.blocked?
       activity.user_blocked!
       tracker.log_activity!
     end
+
+    auth.env['warden.auth.user.blocked'] = true
   end
 end
