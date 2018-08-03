@@ -4,6 +4,7 @@
     "id",
     "username",
     "email",
+    "secondary_emails",
     "name",
     "state",
     "avatar_url",

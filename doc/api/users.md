@@ -77,6 +77,9 @@ GET /users
     "id": 1,
     "username": "john_smith",
     "email": "john@example.com",
+    "secondary_emails": [
+		  {"id": 1, "email": "john+1@example.com"}
+    ],
     "name": "John Smith",
     "state": "active",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
@@ -112,6 +115,7 @@ GET /users
     "id": 2,
     "username": "jack_smith",
     "email": "jack@example.com",
+    "secondary_emails": [],
     "name": "Jack Smith",
     "state": "blocked",
     "avatar_url": "http://localhost:3000/uploads/user/avatar/2/index.jpg",
@@ -223,6 +227,9 @@ Parameters:
   "id": 1,
   "username": "john_smith",
   "email": "john@example.com",
+  "secondary_emails": [
+    {"id": 1, "email": "john+1@example.com"}
+  ],
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
@@ -364,6 +371,9 @@ GET /user
   "id": 1,
   "username": "john_smith",
   "email": "john@example.com",
+  "secondary_emails": [
+    {"id": 1, "email": "john+1@example.com"}
+  ],
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
@@ -412,6 +422,9 @@ GET /user
   "id": 1,
   "username": "john_smith",
   "email": "john@example.com",
+  "secondary_emails": [
+    {"id": 1, "email": "john+1@example.com"}
+  ],
   "name": "John Smith",
   "state": "active",
   "avatar_url": "http://localhost:3000/uploads/user/avatar/1/index.jpg",
