@@ -9,7 +9,7 @@ module EE
       def execute(issue)
         result = super
 
-        if (params.include?(:milestone) || params.include?(:milestone_id)) && issue.epic
+        if issue.previous_changes.include?(:milestone_id) && issue.epic
           issue.epic.update_dates
         end
 
