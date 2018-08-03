@@ -32,13 +32,6 @@ module Geo
       registry.public_send("resync_#{type}") # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def reverify?
-      # We can have stale checksums in the database, in this case, even resyncing
-      # the project the checksum will not match. This guard clause prevents us to
-      # retry the verification for the same projects over and over.
-      registry.should_be_reverified?(type)
-    end
-
     def primary_checksum
       project.repository_state.public_send("#{type}_verification_checksum") # rubocop:disable GitlabSecurity/PublicSend
     end
@@ -67,7 +60,9 @@ module Geo
       reverify, verification_retry_count =
         if mismatch || failure.present?
           log_error(failure, exception, type: type)
-          [reverify?, registry.verification_retry_count(type) + 1]
+          [true, registry.verification_retry_count(type) + 1]
+        else
+          [false, nil]
         end
 
       resync_retry_at, resync_retry_count =
@@ -80,7 +75,7 @@ module Geo
         "#{type}_checksum_mismatch" => mismatch,
         "last_#{type}_verification_failure" => failure,
         "#{type}_verification_retry_count" => verification_retry_count,
-        "resync_#{type}" => reverify.present?,
+        "resync_#{type}" => reverify,
         "#{type}_retry_at" => resync_retry_at,
         "#{type}_retry_count" => resync_retry_count
       )

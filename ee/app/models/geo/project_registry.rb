@@ -4,7 +4,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   include ::IgnorableColumn
   include ::ShaAttribute
 
-  MAX_VERIFICATION_RETRIES = 5
   REGISTRY_TYPES = %i{repository wiki}.freeze
   RETRIES_BEFORE_REDOWNLOAD = 5
 
@@ -153,10 +152,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     return true if public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
 
     retry_count(type) > RETRIES_BEFORE_REDOWNLOAD
-  end
-
-  def should_be_reverified?(type)
-    verification_retry_count(type) <= MAX_VERIFICATION_RETRIES
   end
 
   def verification_retry_count(type)

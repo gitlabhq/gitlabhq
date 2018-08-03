@@ -94,24 +94,6 @@ describe Geo::RepositoryVerificationSecondaryService, :geo do
         )
       end
 
-      it "does not mark #{type} to be resynced when max retry attempts reached" do
-        stub_const('Geo::ProjectRegistry::MAX_VERIFICATION_RETRIES', 1)
-
-        registry.update("#{type}_verification_retry_count" => 2)
-
-        service.execute
-
-        expect(registry).to have_attributes(
-          "#{type}_verification_checksum_sha" => nil,
-          "#{type}_checksum_mismatch" => true,
-          "last_#{type}_verification_failure" => "#{type.to_s.capitalize} checksum mismatch",
-          "#{type}_verification_retry_count" => 3,
-          "resync_#{type}" => false,
-          "#{type}_retry_at" => nil,
-          "#{type}_retry_count" => nil
-        )
-      end
-
       it 'ensures the next retry time is capped properly' do
         registry.update("#{type}_retry_count" => 30)
 
