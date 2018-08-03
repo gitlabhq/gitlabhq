@@ -19,6 +19,7 @@ export default class GLTerminal {
 
     this.setSocketUrl();
     this.createTerminal();
+
     $(window)
       .off('resize.terminal')
       .on('resize.terminal', () => {
@@ -45,6 +46,7 @@ export default class GLTerminal {
     this.socket.binaryType = 'arraybuffer';
 
     this.terminal.open(this.container);
+    this.terminal.fit();
 
     this.socket.onopen = () => {
       this.runTerminal();
