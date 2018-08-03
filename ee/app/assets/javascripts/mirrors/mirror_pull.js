@@ -29,9 +29,9 @@ export default class MirrorPull {
   }
 
   init() {
-    this.toggleAuthWell(this.$dropdownAuthType.val());
+    this.handleRepositoryUrlInput(true);
 
-    this.$repositoryUrl.on('keyup', e => this.handleRepositoryUrlInput(e));
+    this.$repositoryUrl.on('keyup', () => this.handleRepositoryUrlInput());
     this.$form.find('.js-known-hosts').on('keyup', e => this.handleSSHKnownHostsInput(e));
     this.$dropdownAuthType.on('change', e => this.handleAuthTypeChange(e));
     this.$btnDetectHostKeys.on('click', e => this.handleDetectHostKeys(e));
@@ -44,19 +44,19 @@ export default class MirrorPull {
   /**
    * Method to monitor Git Repository URL input
    */
-  handleRepositoryUrlInput() {
+  handleRepositoryUrlInput(forceMatch) {
     const protocol = this.$repositoryUrl.val().split('://')[0];
     const protRegEx = /http|git/;
 
     // Validate URL and verify if it consists only supported protocols
-    if (this.$form.get(0).checkValidity()) {
+    if (forceMatch || this.$form.get(0).checkValidity()) {
       // Hide/Show SSH Host keys section only for SSH URLs
       this.$sectionSSHHostKeys.collapse(protocol === 'ssh' ? 'show' : 'hide');
       this.$btnDetectHostKeys.enable();
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      const matchesProtocol = protRegEx.test(protocol);
+      const matchesProtocol = forceMatch || protRegEx.test(protocol);
       this.$dropdownAuthType.attr('disabled', matchesProtocol);
 
       if (matchesProtocol) {
@@ -214,7 +214,7 @@ export default class MirrorPull {
    */
   toggleAuthWell(authType) {
     this.$wellPasswordAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'show' : 'hide');
-    this.$wellSSHAuth.collapse(authType === AUTH_METHOD.PASSWORD ? 'hide' : 'show');
+    this.$wellSSHAuth.collapse(authType === AUTH_METHOD.SSH ? 'show' : 'hide');
   }
 
   /**

@@ -60,7 +60,9 @@ export default class EEMirrorRepos extends MirrorRepos {
   updateForm() {
     const direction = this.$mirrorDirectionSelect.val();
 
+    this.$insertionPoint.collapse('hide');
     this.$insertionPoint.html(this.directionFormMap[direction]);
+    this.$insertionPoint.collapse('show');
 
     this.updateUrl();
     this.updateProtectedBranches();
