@@ -36,6 +36,16 @@ export default {
       type: Boolean,
       required: true,
     },
+    reportSectionClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    alwaysOpen: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   computed: {
     ...mapState(['loadLicenseReportError']),
@@ -46,6 +56,14 @@ export default {
     },
     licenseReportStatus() {
       return this.checkReportStatus(this.isLoading, this.loadLicenseReportError);
+    },
+  },
+  watch: {
+    licenseReport() {
+      this.$emit(
+        'updateBadgeCount',
+        this.licenseReport.length,
+      );
     },
   },
   mounted() {
@@ -77,7 +95,9 @@ export default {
       :neutral-issues="licenseReport"
       :has-issues="hasLicenseReportIssues"
       :component="$options.componentNames.LicenseIssueBody"
-      class="license-report-widget mr-widget-border-top"
+      :class="reportSectionClass"
+      :always-open="alwaysOpen"
+      class="license-report-widget"
     />
   </div>
 </template>

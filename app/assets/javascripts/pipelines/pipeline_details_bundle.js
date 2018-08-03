@@ -7,10 +7,6 @@ import pipelineGraph from './components/graph/graph_component.vue';
 import pipelineHeader from './components/header_component.vue';
 import eventHub from './event_hub';
 
-import SecurityReportApp from 'ee/vue_shared/security_reports/split_security_reports_app.vue'; // eslint-disable-line import/first
-import SastSummaryWidget from 'ee/pipelines/components/security_reports/report_summary_widget.vue'; // eslint-disable-line import/first
-import createStore from 'ee/vue_shared/security_reports/store'; // eslint-disable-line import/first
-
 Vue.use(Translate);
 
 export default () => {
@@ -87,103 +83,4 @@ export default () => {
       });
     },
   });
-
-  /**
-   * EE only
-   */
-
-  const securityTab = document.getElementById('js-security-report-app');
-  const sastSummary = document.querySelector('.js-sast-summary');
-
-  const updateBadgeCount = count => {
-    const badge = document.querySelector('.js-sast-counter');
-    if (badge.textContent !== '') {
-      badge.textContent = parseInt(badge.textContent, 10) + count;
-    } else {
-      badge.textContent = count;
-    }
-
-    badge.classList.remove('hidden');
-  };
-
-  // They are being rendered under the same condition
-  if (securityTab && sastSummary) {
-    const datasetOptions = securityTab.dataset;
-    const {
-      endpoint,
-      blobPath,
-      sastHelpPath,
-      dependencyScanningEndpoint,
-      dependencyScanningHelpPath,
-      vulnerabilityFeedbackPath,
-      vulnerabilityFeedbackHelpPath,
-      dastEndpoint,
-      sastContainerEndpoint,
-      dastHelpPath,
-      sastContainerHelpPath,
-    } = datasetOptions;
-    const pipelineId = parseInt(datasetOptions.pipelineId, 10);
-    const { canCreateIssue, canCreateFeedback } = datasetOptions;
-
-    const store = createStore();
-    // Widget summary
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: sastSummary,
-      store,
-      components: {
-        SastSummaryWidget,
-      },
-      methods: {
-        updateBadge(count) {
-          updateBadgeCount(count);
-        },
-      },
-      render(createElement) {
-        return createElement('sast-summary-widget', {
-          on: {
-            updateBadgeCount: this.updateBadge,
-          },
-        });
-      },
-    });
-
-    // Tab content
-    // eslint-disable-next-line no-new
-    new Vue({
-      el: securityTab,
-      store,
-      components: {
-        SecurityReportApp,
-      },
-      methods: {
-        updateBadge(count) {
-          updateBadgeCount(count);
-        },
-      },
-      render(createElement) {
-        return createElement('security-report-app', {
-          props: {
-            headBlobPath: blobPath,
-            sastHeadPath: endpoint,
-            sastHelpPath,
-            dependencyScanningHeadPath: dependencyScanningEndpoint,
-            dependencyScanningHelpPath,
-            vulnerabilityFeedbackPath,
-            vulnerabilityFeedbackHelpPath,
-            pipelineId,
-            dastHeadPath: dastEndpoint,
-            sastContainerHeadPath: sastContainerEndpoint,
-            dastHelpPath,
-            sastContainerHelpPath,
-            canCreateFeedback,
-            canCreateIssue,
-          },
-          on: {
-            updateBadgeCount: this.updateBadge,
-          },
-        });
-      },
-    });
-  }
 };

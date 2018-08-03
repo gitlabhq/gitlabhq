@@ -1,7 +1,2 @@
-import initPipelineDetails from '~/pipelines/pipeline_details_bundle';
-import initPipelines from '~/pages/projects/pipelines/init_pipelines';
-
-document.addEventListener('DOMContentLoaded', () => {
-  initPipelines();
-  initPipelineDetails();
-});
+// /security is an alias for show
+import '../show/index';

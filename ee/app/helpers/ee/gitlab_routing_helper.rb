@@ -2,6 +2,7 @@ module EE
   module GitlabRoutingHelper
     include ::ProjectsHelper
     include ::ApplicationSettingsHelper
+    include ::API::Helpers::RelatedResourcesHelpers
 
     def geo_primary_web_url(project_or_wiki)
       File.join(::Gitlab::Geo.primary_node.url, project_or_wiki.full_path)
@@ -63,6 +64,10 @@ module EE
       raw_project_build_artifacts_url(pipeline.project,
                                       pipeline.license_management_artifact,
                                       path: Ci::Build::LICENSE_MANAGEMENT_FILE)
+    end
+
+    def license_management_api_url(project)
+      api_v4_projects_managed_licenses_path(id: project.id)
     end
   end
 end

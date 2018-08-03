@@ -1,9 +1,14 @@
 - pipeline = local_assigns.fetch(:pipeline)
 - project = local_assigns.fetch(:project)
 
-- return unless pipeline.expose_security_dashboard?
+- if pipeline.expose_security_dashboard?
+  %li.js-security-tab-link
+    = link_to security_project_pipeline_path(project, pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
+      = _("Security")
+      %span.badge.badge-pill.js-sast-counter.hidden
 
-%li.js-security-tab-link
-  = link_to security_project_pipeline_path(project, pipeline), data: { target: '#js-tab-security', action: 'security', toggle: 'tab' }, class: 'security-tab' do
-    = _("Security report")
-    %span.badge.badge-pill.js-sast-counter.hidden
+- if pipeline.expose_license_management_data?
+  %li.js-licenses-tab-link
+    = link_to licenses_project_pipeline_path(project, pipeline), data: { target: '#js-tab-licenses', action: 'licenses', toggle: 'tab' }, class: 'licenses-tab' do
+      = _("Licenses")
+      %span.badge.badge-pill.js-licenses-counter.hidden
