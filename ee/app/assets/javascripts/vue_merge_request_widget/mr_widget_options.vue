@@ -40,7 +40,7 @@ export default {
     },
     shouldRenderLicenseReport() {
       const { licenseManagement } = this.mr;
-      return licenseManagement && licenseManagement.head_path && licenseManagement.base_path;
+      return licenseManagement && licenseManagement.head_path;
     },
     hasCodequalityIssues() {
       return (

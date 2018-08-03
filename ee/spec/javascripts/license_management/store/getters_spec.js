@@ -47,44 +47,76 @@ describe('getters', () => {
   });
 
   describe('licenseSummaryText', () => {
-    const state = {
-      loadLicenseReportError: null,
-    };
+    describe('when licenses exist on both the HEAD and the BASE', () => {
+      const state = {
+        loadLicenseReportError: null,
+        headReport: licenseHeadIssues,
+        baseReport: licenseBaseIssues,
+      };
 
-    it('should be `Loading license management report` text if isLoading', () => {
-      const mockGetters = {};
-      mockGetters.isLoading = true;
-      expect(getters.licenseSummaryText(state, mockGetters)).toBe(
-        'Loading license management report',
-      );
+      it('should be `Loading license management report` text if isLoading', () => {
+        const mockGetters = {};
+        mockGetters.isLoading = true;
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'Loading license management report',
+        );
+      });
+
+      it('should be `Failed to load license management report` text if an error has happened', () => {
+        const mockGetters = {};
+        expect(
+          getters.licenseSummaryText({ loadLicenseReportError: new Error('Test') }, mockGetters),
+        ).toBe('Failed to load license management report');
+      });
+
+      it('should be `License management detected no new licenses`, if the report is empty', () => {
+        const mockGetters = { licenseReport: [] };
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected no new licenses',
+        );
+      });
+
+      it('should be `License management detected 1 new license`, if the report has one element', () => {
+        const mockGetters = { licenseReport: [licenseReportMock[0]] };
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected 1 new license',
+        );
+      });
+
+      it('should be `License management detected 2 new licenses`, if the report has two elements', () => {
+        const mockGetters = { licenseReport: [licenseReportMock[0], licenseReportMock[0]] };
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected 2 new licenses',
+        );
+      });
     });
 
-    it('should be `Failed to load license management report` text if an error has happened', () => {
-      const mockGetters = {};
-      expect(
-        getters.licenseSummaryText({ loadLicenseReportError: new Error('Test') }, mockGetters),
-      ).toBe('Failed to load license management report');
-    });
+    describe('when there are no licences on the BASE', () => {
+      const state = { baseReport: {} };
 
-    it('should be `License management detected no new licenses`, if the report is empty', () => {
-      const mockGetters = { licenseReport: [] };
-      expect(getters.licenseSummaryText(state, mockGetters)).toBe(
-        'License management detected no new licenses',
-      );
-    });
+      it('should be `License management detected no licenses for the source branch only` with no new licences', () => {
+        const mockGetters = { licenseReport: [] };
 
-    it('should be `License management detected 1 new license`, if the report has one element', () => {
-      const mockGetters = { licenseReport: [licenseReportMock[0]] };
-      expect(getters.licenseSummaryText(state, mockGetters)).toBe(
-        'License management detected 1 new license',
-      );
-    });
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected no licenses for the source branch only',
+        );
+      });
 
-    it('should be `License management detected 2 new licenses`, if the report has two elements', () => {
-      const mockGetters = { licenseReport: [licenseReportMock[0], licenseReportMock[0]] };
-      expect(getters.licenseSummaryText(state, mockGetters)).toBe(
-        'License management detected 2 new licenses',
-      );
+      it('should be `License management detected 1 license for the source branch only` with one new licence', () => {
+        const mockGetters = { licenseReport: [licenseReportMock[0]] };
+
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected 1 license for the source branch only',
+        );
+      });
+
+      it('should be `License management detected 2 licenses for the source branch only` with two new licences', () => {
+        const mockGetters = { licenseReport: [licenseReportMock[0], licenseReportMock[0]] };
+
+        expect(getters.licenseSummaryText(state, mockGetters)).toBe(
+          'License management detected 2 licenses for the source branch only',
+        );
+      });
     });
   });
 });
