@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def add_test_case(test_case)
-          @duplicate_cases << test_case unless unique_key?(test_case)
+          @duplicate_cases << test_case if existing_key?(test_case)
 
           @test_cases[test_case.status] ||= {}
           @test_cases[test_case.status][test_case.key] = test_case
@@ -45,7 +45,7 @@ module Gitlab
 
         private
 
-        def unique_key?(test_case)
+        def existing_key?(test_case)
           @test_cases[test_case.status]&.key?(test_case.key)
         end
       end
