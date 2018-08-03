@@ -5,15 +5,10 @@ module Projects
     class MigrateRepositoryService < BaseService
       include Gitlab::ShellAdapter
 
-<<<<<<< HEAD
       prepend ::EE::Projects::HashedStorage::MigrateRepositoryService
 
       attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
 
-=======
-      attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version, :logger, :move_wiki
-
->>>>>>> upstream/master
       def initialize(project, old_disk_path, logger: nil)
         @project = project
         @logger = logger || Rails.logger
