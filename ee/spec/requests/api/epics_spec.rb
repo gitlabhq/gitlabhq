@@ -40,7 +40,7 @@ describe API::Epics do
     end
   end
 
-  shared_examples 'admin_epic permission' do
+  shared_examples 'can admin epics' do
     let(:extra_date_fields) { %w[start_date_is_fixed start_date_fixed due_date_is_fixed due_date_fixed] }
 
     context 'when permission is absent' do
@@ -165,7 +165,7 @@ describe API::Epics do
         expect_array_response([epic2.id])
       end
 
-      it_behaves_like 'admin_epic permission'
+      it_behaves_like 'can admin epics'
     end
   end
 
@@ -191,7 +191,7 @@ describe API::Epics do
         expect(response).to match_response_schema('public_api/v4/epic', dir: 'ee')
       end
 
-      it_behaves_like 'admin_epic permission'
+      it_behaves_like 'can admin epics'
     end
   end
 

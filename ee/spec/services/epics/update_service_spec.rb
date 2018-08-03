@@ -29,12 +29,11 @@ describe Epics::UpdateService do
         update_epic(opts)
 
         expect(epic).to be_valid
-        expect(epic.title).to eq(opts[:title])
-        expect(epic.description).to eq(opts[:description])
-        expect(epic.start_date_fixed).to eq(Date.strptime(opts[:start_date_fixed]))
-        expect(epic.start_date_is_fixed).to eq(opts[:start_date_is_fixed])
-        expect(epic.due_date_fixed).to eq(Date.strptime(opts[:due_date_fixed]))
-        expect(epic.due_date_is_fixed).to eq(opts[:due_date_is_fixed])
+        expect(epic).to have_attributes(opts.except(:due_date_fixed, :start_date_fixed))
+        expect(epic).to have_attributes(
+          start_date_fixed: Date.strptime(opts[:start_date_fixed]),
+          due_date_fixed: Date.strptime(opts[:due_date_fixed])
+        )
       end
 
       it 'updates the last_edited_at value' do
@@ -125,8 +124,7 @@ describe Epics::UpdateService do
         expect { update_epic(start_date: Date.today, end_date: Date.today) }.not_to change { Note.count }
 
         expect(epic).to be_valid
-        expect(epic.start_date).to eq(nil)
-        expect(epic.due_date).to eq(nil)
+        expect(epic).to have_attributes(start_date: nil, due_date: nil)
       end
     end
 
@@ -134,6 +132,7 @@ describe Epics::UpdateService do
       context 'date fields are updated' do
         it 'calls epic#update_dates' do
           expect(epic).to receive(:update_dates)
+
           update_epic(start_date_is_fixed: true, start_date_fixed: Date.today)
         end
       end
@@ -141,6 +140,7 @@ describe Epics::UpdateService do
       context 'date fields are not updated' do
         it 'does not call epic#update_dates' do
           expect(epic).not_to receive(:update_dates)
+
           update_epic(title: 'foo')
         end
       end

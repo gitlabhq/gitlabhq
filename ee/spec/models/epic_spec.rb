@@ -344,7 +344,7 @@ describe Epic do
 
     context 'query count check' do
       let(:milestone) { create(:milestone, start_date: Date.new(2000, 1, 1), due_date: Date.new(2000, 1, 10)) }
-      let!(:epics) { [ create(:epic) ] }
+      let!(:epics) { [create(:epic)] }
 
       def setup_control_group
         link_epic_to_milestone(epics[0], milestone)

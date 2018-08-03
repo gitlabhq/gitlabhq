@@ -18,6 +18,11 @@ FactoryBot.define do
       state "closed"
     end
 
+    trait :with_dates do
+      start_date { Date.new(2000, 1, 1) }
+      due_date { Date.new(2000, 1, 30) }
+    end
+
     after(:build, :stub) do |milestone, evaluator|
       if evaluator.group
         milestone.group = evaluator.group
