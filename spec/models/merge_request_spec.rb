@@ -1127,7 +1127,6 @@ describe MergeRequest do
 
       context 'when reactive cache worker is parsing asynchronously' do
         it 'returns status' do
-          binding.pry
           expect(subject[:status]).to eq(:parsing)
         end
       end
