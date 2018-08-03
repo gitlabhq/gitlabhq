@@ -155,12 +155,12 @@ module EE
 
     # Earliest start date from issues' milestones
     def start_date_from_milestones
-      start_date_is_fixed? ? epic_issues.joins(issue: :milestone).minimum('milestones.start_date') : start_date
+      start_date_is_fixed? ? start_date_sourcing_milestone.start_date : start_date
     end
 
     # Latest end date from issues' milestones
     def due_date_from_milestones
-      due_date_is_fixed? ? epic_issues.joins(issue: :milestone).maximum('milestones.due_date') : due_date
+      due_date_is_fixed? ? due_date_sourcing_milestone.due_date : due_date
     end
 
     def to_reference(from = nil, full: false)

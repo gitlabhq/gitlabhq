@@ -99,76 +99,40 @@ describe Epic do
 
   describe '#start_date_from_milestones' do
     context 'fixed date' do
-      subject { create(:epic, :use_fixed_dates) }
-      let(:date) { Date.new(2017, 3, 4) }
+      it 'returns start date from start date sourcing milestone' do
+        subject = create(:epic, :use_fixed_dates)
+        milestone = create(:milestone, :with_dates)
+        subject.start_date_sourcing_milestone = milestone
 
-      before do
-        milestone1 = create(
-          :milestone,
-          start_date: date,
-          due_date: date + 10.days
-        )
-        epic_issue1 = create(:epic_issue, epic: subject)
-        epic_issue1.issue.update(milestone: milestone1)
-
-        milestone2 = create(
-          :milestone,
-          start_date: date + 5.days,
-          due_date: date + 15.days
-        )
-        epic_issue2 = create(:epic_issue, epic: subject)
-        epic_issue2.issue.update(milestone: milestone2)
-      end
-
-      it 'returns earliest start date from issue milestones' do
-        expect(subject.start_date_from_milestones).to eq(date)
+        expect(subject.start_date_from_milestones).to eq(milestone.start_date)
       end
     end
 
     context 'milestone date' do
-      subject { create(:epic, start_date: date) }
-      let(:date) { Date.new(2017, 3, 4) }
-
       it 'returns start_date' do
-        expect(subject.start_date_from_milestones).to eq(date)
+        subject = create(:epic, start_date: Date.new(2017, 3, 4))
+
+        expect(subject.start_date_from_milestones).to eq(subject.start_date)
       end
     end
   end
 
   describe '#due_date_from_milestones' do
     context 'fixed date' do
-      subject { create(:epic, :use_fixed_dates) }
-      let(:date) { Date.new(2017, 3, 4) }
+      it 'returns due date from due date sourcing milestone' do
+        subject = create(:epic, :use_fixed_dates)
+        milestone = create(:milestone, :with_dates)
+        subject.due_date_sourcing_milestone = milestone
 
-      before do
-        milestone1 = create(
-          :milestone,
-          start_date: date - 30.days,
-          due_date: date - 20.days
-        )
-        epic_issue1 = create(:epic_issue, epic: subject)
-        epic_issue1.issue.update(milestone: milestone1)
-
-        milestone2 = create(
-          :milestone,
-          start_date: date - 10.days,
-          due_date: date
-        )
-        epic_issue2 = create(:epic_issue, epic: subject)
-        epic_issue2.issue.update(milestone: milestone2)
-      end
-
-      it 'returns latest due date from issue milestones' do
-        expect(subject.due_date_from_milestones).to eq(date)
+        expect(subject.due_date_from_milestones).to eq(milestone.due_date)
       end
     end
 
     context 'milestone date' do
-      subject { create(:epic, due_date: date) }
-      let(:date) { Date.new(2017, 3, 4) }
-
       it 'returns due_date' do
-        expect(subject.due_date_from_milestones).to eq(date)
+        subject = create(:epic, due_date: Date.new(2017, 3, 4))
+
+        expect(subject.due_date_from_milestones).to eq(subject.due_date)
       end
     end
   end
