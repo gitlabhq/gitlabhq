@@ -1105,7 +1105,11 @@ describe MergeRequest do
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     let!(:base_pipeline) do
-      create(:ci_pipeline, :with_test_reports, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha)
+      create(:ci_pipeline,
+             :with_test_reports,
+             project: project,
+             ref: merge_request.target_branch,
+             sha: merge_request.diff_base_sha)
     end
 
     before do
@@ -1123,6 +1127,7 @@ describe MergeRequest do
 
       context 'when reactive cache worker is parsing asynchronously' do
         it 'returns status' do
+          binding.pry
           expect(subject[:status]).to eq(:parsing)
         end
       end
