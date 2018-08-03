@@ -712,6 +712,27 @@ describe GeoNodeStatus, :geo do
     end
   end
 
+  describe '#repositories_retrying_verification_count' do
+    before do
+      stub_current_geo_node(secondary)
+    end
+
+    it 'returns the right number of repositories retrying verification' do
+      create(:geo_project_registry, :repository_verification_failed, repository_verification_retry_count: 1)
+      create(:geo_project_registry, :repository_verification_failed, repository_verification_retry_count: nil)
+      create(:geo_project_registry, :repository_verified)
+
+      expect(subject.repositories_retrying_verification_count).to eq(1)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
+
+      expect(subject.repositories_retrying_verification_count).to eq(25)
+    end
+  end
+
   describe '#wikis_verified_count' do
     before do
       stub_current_geo_node(secondary)
@@ -770,6 +791,27 @@ describe GeoNodeStatus, :geo do
       create(:geo_node_status, :healthy, geo_node: secondary)
 
       expect(subject.wikis_verification_failed_count).to eq(99)
+    end
+  end
+
+  describe '#wikis_retrying_verification_count' do
+    before do
+      stub_current_geo_node(secondary)
+    end
+
+    it 'returns the right number of wikis retrying verification' do
+      create(:geo_project_registry, :wiki_verification_failed, wiki_verification_retry_count: 1)
+      create(:geo_project_registry, :wiki_verification_failed, wiki_verification_retry_count: nil)
+      create(:geo_project_registry, :wiki_verified)
+
+      expect(subject.wikis_retrying_verification_count).to eq(1)
+    end
+
+    it 'returns existing value when feature flag if off' do
+      allow(Gitlab::Geo).to receive(:repository_verification_enabled?).and_return(false)
+      create(:geo_node_status, :healthy, geo_node: secondary)
+
+      expect(subject.wikis_retrying_verification_count).to eq(3)
     end
   end
 

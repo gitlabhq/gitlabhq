@@ -77,7 +77,9 @@ class GeoNodeStatus < ActiveRecord::Base
     hashed_storage_migrated_max_id: 'Highest ID present in projects migrated to hashed storage',
     hashed_storage_attachments_max_id: 'Highest ID present in attachments migrated to hashed storage',
     repositories_checked_count: 'Number of repositories checked',
-    repositories_checked_failed_count: 'Number of failed repositories checked'
+    repositories_checked_failed_count: 'Number of failed repositories checked',
+    repositories_retrying_verification_count: 'Number of repositories verification failures that Geo is actively trying to correct on secondary',
+    wikis_retrying_verification_count: 'Number of wikis verification failures that Geo is actively trying to correct on secondary'
   }.freeze
 
   EXPIRATION_IN_MINUTES = 5
@@ -238,6 +240,8 @@ class GeoNodeStatus < ActiveRecord::Base
       self.wikis_verified_count = projects_finder.count_verified_wikis
       self.wikis_verification_failed_count = projects_finder.count_verification_failed_wikis
       self.wikis_checksum_mismatch_count = projects_finder.count_wikis_checksum_mismatch
+      self.repositories_retrying_verification_count = projects_finder.count_repositories_retrying_verification
+      self.wikis_retrying_verification_count = projects_finder.count_wikis_retrying_verification
     end
   end
 
