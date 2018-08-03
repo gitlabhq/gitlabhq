@@ -1105,30 +1105,20 @@ describe MergeRequest do
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     let!(:base_pipeline) do
-      create(:ci_pipeline,
-        :success,
-        project: merge_request.source_project,
-        ref: merge_request.source_branch,
-        sha: merge_request.diff_base_sha).tap do |pipeline|
-        merge_request.update!(head_pipeline_id: pipeline.id)
-        create(:ci_build, name: 'rspec', pipeline: pipeline, project: project)
-      end
+      create(:ci_pipeline, :with_test_reports, project: project, ref: merge_request.target_branch, sha: merge_request.diff_base_sha)
     end
 
-    let!(:head_pipeline) do
-      create(:ci_pipeline,
-        :success,
-        project: merge_request.source_project,
-        ref: merge_request.source_branch,
-        sha: merge_request.diff_head_sha).tap do |pipeline|
-        merge_request.update!(head_pipeline_id: pipeline.id)
-        create(:ci_build, name: 'rspec', pipeline: pipeline, project: project)
-      end
+    before do
+      merge_request.update!(head_pipeline_id: head_pipeline.id)
     end
 
     context 'when head pipeline has test reports' do
-      before do
-        create(:ci_job_artifact, :junit, job: head_pipeline.builds.first, project: project)
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               :with_test_reports,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
       end
 
       context 'when reactive cache worker is parsing asynchronously' do
@@ -1152,6 +1142,13 @@ describe MergeRequest do
     end
 
     context 'when head pipeline does not have test reports' do
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
+      end
+
       it 'returns status and error message' do
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to eq('This merge request does not have test reports')
@@ -2099,7 +2096,7 @@ describe MergeRequest do
       }
     end
 
-    let(:project)       { create(:project, :public, :repository) }
+    let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }

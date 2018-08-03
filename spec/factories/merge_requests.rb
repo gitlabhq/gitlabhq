@@ -90,15 +90,14 @@ FactoryBot.define do
     end
 
     trait :with_test_reports do
-      after(:create) do |merge_request|
-        create(:ci_pipeline,
+      after(:build) do |merge_request|
+        merge_request.head_pipeline = build(
+          :ci_pipeline,
           :success,
           :test_reports,
           project: merge_request.source_project,
           ref: merge_request.source_branch,
-          sha: merge_request.diff_head_sha).tap do |pipeline|
-          merge_request.update!(head_pipeline_id: pipeline.id)
-        end
+          sha: merge_request.diff_head_sha)
       end
     end
 

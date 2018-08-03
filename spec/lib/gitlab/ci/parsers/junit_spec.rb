@@ -1,39 +1,13 @@
 require 'spec_helper'
 
-describe Gitlab::Ci::Parsers::JunitParser do
-  describe '#initialize' do
-    context 'when xml data is given' do
-      let(:data) do
-        <<-EOF.strip_heredoc
-          <testsuite></testsuite>
-        EOF
-      end
-
-      let(:parser) { described_class.new(data) }
-
-      it 'initialize Hash from the given data' do
-        expect { parser }.not_to raise_error
-
-        expect(parser.data).to be_a(Hash)
-      end
-    end
-
-    context 'when json data is given' do
-      let(:data) { { testsuite: 'abc' }.to_json }
-
-      it 'raises an error' do
-        expect { described_class.new(data) }.to raise_error(described_class::JunitParserError)
-      end
-    end
-  end
-
+describe Gitlab::Ci::Parsers::Junit do
   describe '#parse!' do
-    subject { described_class.new(junit).parse!(test_suite) }
+    subject { described_class.new.parse!(junit, test_suite) }
 
     let(:test_suite) { Gitlab::Ci::Reports::TestSuite.new('rspec') }
     let(:test_cases) { flattened_test_cases(test_suite) }
 
-    context 'when XML is formated as JUnit' do
+    context 'when data is JUnit style XML' do
       context 'when there are no test cases' do
         let(:junit) do
           <<-EOF.strip_heredoc
@@ -122,6 +96,16 @@ describe Gitlab::Ci::Parsers::JunitParser do
         end
       end
     end
+
+    context 'when data is not JUnit style XML' do
+      let(:junit) { { testsuite: 'abc' }.to_json }
+
+      it 'raises an error' do
+        expect { subject }.to raise_error(described_class::JunitParserError)
+      end
+    end
+
+    private
 
     def flattened_test_cases(test_suite)
       test_suite.test_cases.map do |status, value|

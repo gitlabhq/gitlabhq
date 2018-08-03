@@ -70,11 +70,11 @@ FactoryBot.define do
         protected true
       end
 
-      trait :test_reports do
+      trait :with_test_reports do
         status :success
 
         after(:build) do |pipeline, evaluator|
-          create(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
+          pipeline.builds << build(:ci_build, :test_reports, pipeline: pipeline, project: pipeline.project)
         end
       end
     end

@@ -1,28 +1,24 @@
 module Gitlab
   module Ci
     module Parsers
-      class JunitParser
+      class Junit
         attr_reader :data
 
         JunitParserError = Class.new(StandardError)
 
-        def initialize(xml_data)
+        def parse!(xml_data, test_suite)
           @data = Hash.from_xml(xml_data)
-        rescue  REXML::ParseException
-          raise JunitParserError, 'Failed to parse XML'
-        rescue
-          raise JunitParserError, 'Unknown error'
-        end
 
-        def parse!(test_suite)
           each_suite do |testcases|
             testcases.each do |testcase|
               test_case = create_test_case(testcase)
               test_suite.add_test_case(test_case)
             end
           end
-        rescue
-          raise JunitParserError, 'Invalid JUnit xml structure'
+        rescue REXML::ParseException => e
+          raise JunitParserError, "XML parsing failed: #{e.message}"
+        rescue => e
+          raise JunitParserError, "JUnit parsing failed: #{e.message}"
         end
 
         private

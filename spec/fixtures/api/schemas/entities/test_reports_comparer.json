@@ -1,11 +1,24 @@
 {
   "type": "object",
+  "required" : [
+    "status",
+    "summary",
+    "suites"
+  ],
   "properties": {
     "status": { "type": "string" },
     "summary": {
-      "total": { "type": "integer" },
-      "resolved": { "type": "integer" },
-      "failed": { "type": "integer" }
+      "type": "object",
+      "properties": {
+        "total": { "type": "integer" },
+        "resolved": { "type": "integer" },
+        "failed": { "type": "integer" }
+      },
+      "required": [
+        "total",
+        "resolved",
+        "failed"
+      ]
     },
     "suites": { "type": "array", "items": { "$ref": "test_suite_comparer.json" } }
   },

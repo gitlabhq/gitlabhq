@@ -1,5 +1,9 @@
 {
   "type": "object",
+  "required" : [
+    "status",
+    "name"
+  ],
   "properties": {
     "status": { "type": "string" },
     "name": { "type": "string" },

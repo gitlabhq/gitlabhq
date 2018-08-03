@@ -635,7 +635,7 @@ module Ci
     def collect_test_reports!(test_reports)
       test_reports.get_suite(group_name).tap do |test_suite|
         each_test_report do |file_type, blob|
-          parse_test_report!(test_suite, file_type, blob)
+          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
         end
       end
     end
@@ -648,11 +648,6 @@ module Ci
           yield file_type, blob
         end
       end
-    end
-
-    def parse_test_report!(test_suite, file_type, blob)
-      "Gitlab::Ci::Parsers::#{file_type.capitalize}Parser".constantize
-        .new(blob).parse!(test_suite)
     end
 
     def update_artifacts_size
