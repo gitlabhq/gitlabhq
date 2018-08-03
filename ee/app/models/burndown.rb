@@ -97,18 +97,27 @@ class Burndown
             ::Issue
               .select("*")
               .from(internal_clause.select('DISTINCT ON (issues.id) issues.id, issues.state, issues.weight, e.created_at AS closed_at'))
+              .order('closed_at ASC')
+              .pluck('closed_at, weight, state')
           else
+            # In rails 5 mysql's `only_full_group_by` option is enabled by default,
+            # this means that `GROUP` clause must include all columns used in `SELECT`
+            # clause. Adding all columns to `GROUP` means that we have now
+            # duplicates (by issue ID) in records. To get rid of these, we unify them
+            # on ruby side by issue id. Finally we drop the issue id attribute from records
+            # because this is not accepted when creating Issue object.
             ::Issue
               .select("*")
               .from(internal_clause.select('issues.id, issues.state, issues.weight, e.created_at AS closed_at'))
-              .group('id')
+              .group(:id, :closed_at, :weight, :state)
               .having('closed_at = MIN(closed_at) OR closed_at IS NULL')
+              .order('closed_at ASC')
+              .pluck('id, closed_at, weight, state')
+              .uniq(&:first)
+              .map { |attrs| attrs.drop(1) }
           end
 
-        rel
-          .order('closed_at ASC')
-          .pluck('closed_at, weight, state')
-          .map { |attrs| Issue.new(*attrs) }
+        rel.map { |attrs| Issue.new(*attrs) }
       end
   end
 end
