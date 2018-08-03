@@ -87,18 +87,6 @@ export default {
     },
 
     /**
-     * Checkes whether the user is allowed to deploy to this environment.
-     * (`can_deploy` currently only set in EE)
-     *
-     * @returns {Boolean}
-     */
-    isDeployableByUser() {
-      return this.model && 'can_deploy' in this.model
-        ? this.model.can_deploy
-        : this.canCreateDeployment;
-    },
-
-    /**
      * Checkes whether the environment is protected.
      * (`is_protected` currently only set in EE)
      *
@@ -635,7 +623,7 @@ export default {
         />
 
         <actions-component
-          v-if="hasManualActions && isDeployableByUser"
+          v-if="hasManualActions && canCreateDeployment"
           :actions="manualActions"
         />
 
@@ -645,7 +633,7 @@ export default {
         />
 
         <rollback-component
-          v-if="canRetry && isDeployableByUser"
+          v-if="canRetry && canCreateDeployment"
           :is-last-deployment="isLastDeployment"
           :retry-url="retryUrl"
         />
