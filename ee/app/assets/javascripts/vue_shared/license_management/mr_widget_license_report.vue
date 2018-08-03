@@ -97,7 +97,7 @@ export default {
       :component="$options.componentNames.LicenseIssueBody"
       :class="reportSectionClass"
       :always-open="alwaysOpen"
-      class="license-report-widget"
+      class="license-report-widget mr-report"
     />
   </div>
 </template>
