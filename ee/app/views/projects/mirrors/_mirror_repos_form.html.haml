@@ -2,14 +2,17 @@
 - is_one_user_option = default_mirror_users.count == 1
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
 - can_push = can?(current_user, :admin_remote_mirror, @project)
-- can_pull = can?(current_user, :admin_mirror, @project) && !@project.mirror
+- can_pull = can?(current_user, :admin_mirror, @project)
 - options = []
-- options.push([_('Pull'), 'pull']) if can_pull
 - options.push([_('Push'), 'push']) if can_push
+- if can_pull
+  - has_existing_pull_mirror = can_pull && @project.mirror
+  - pull_addition_method = has_existing_pull_mirror ? options.method(:push) : options.method(:unshift)
+  - pull_addition_method.call([_('Pull'), 'pull']) if can_pull
 
 .form-group
   = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
-  = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: options.count == 1
+  = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: (options.count == 1) || has_existing_pull_mirror
 
 .js-form-insertion-point
 
