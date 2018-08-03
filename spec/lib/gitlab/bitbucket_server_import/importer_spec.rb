@@ -169,7 +169,7 @@ describe Gitlab::BitbucketServerImport::Importer do
 
       reply_note = notes.last
       # Make sure author and reply context is included
-      expect(reply_note.note).to start_with("*By #{reply.author_username} (#{reply.author_email}) on #{reply.created_at}*\n\n")
+      expect(reply_note.note).to start_with("*By #{reply.author_username} (#{reply.author_email})*\n\n")
       expect(reply_note.note).to end_with("> #{inline_note.note}\n\n#{reply.note}")
       expect(reply_note.author).to eq(project.owner)
       expect(reply_note.created_at).to eq(reply.created_at)

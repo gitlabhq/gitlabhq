@@ -303,7 +303,7 @@ module Gitlab
 
         unless author
           author = project.creator_id
-          note = "*By #{comment.author_username} (#{comment.author_email}) on #{comment.created_at}*\n\n"
+          note = "*By #{comment.author_username} (#{comment.author_email})*\n\n"
         end
 
         note +=
