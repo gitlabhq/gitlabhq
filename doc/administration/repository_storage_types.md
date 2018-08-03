@@ -73,7 +73,7 @@ by another folder with the next 2 characters. They are both stored in a special
 ### How to migrate to Hashed Storage
 
 In GitLab, go to **Admin > Settings**, find the **Repository Storage** section
-and select "_Create new projects using hashed storage paths_".
+and select "_Use hashed storage paths for newly created and renamed projects_".
 
 To migrate your existing projects to the new storage type, check the specific
 [rake tasks].
