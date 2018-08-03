@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module FasterCacheKeys
   # A faster version of Rails' "cache_key" method.
   #
