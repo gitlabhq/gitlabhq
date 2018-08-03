@@ -14,7 +14,7 @@ module Ci
           status: :parsed,
           data: TestReportsComparerSerializer
             .new(project: project)
-            .represent(comparer).to_json
+            .represent(comparer).as_json
         }
       rescue => e
         { status: :error, status_reason: e.message }

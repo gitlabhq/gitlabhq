@@ -108,7 +108,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     when :parsing
       render json: '', status: :no_content
     when :parsed
-      render json: result[:data], status: :ok
+      render json: result[:data].to_json, status: :ok
     when :error
       render json: { status_reason: result[:status_reason] }, status: :bad_request
     else
