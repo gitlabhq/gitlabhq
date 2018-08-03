@@ -8,7 +8,6 @@ describe 'Packages' do
   before do
     sign_in(user)
     project.add_developer(user)
-    stub_packages_config(enabled: true)
   end
 
   context 'when there are no packages' do

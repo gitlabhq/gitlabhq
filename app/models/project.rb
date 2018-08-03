@@ -131,7 +131,6 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit
-  has_many :packages, class_name: 'Packages::Package'
 
   # Project services
   has_one :campfire_service

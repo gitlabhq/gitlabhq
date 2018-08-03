@@ -30,10 +30,6 @@ module StubGitlabCalls
     allow_any_instance_of(Project).to receive(:builds_enabled?).and_return(false)
   end
 
-  def stub_packages_config(settings)
-    allow(Gitlab.config.packages).to receive_messages(settings)
-  end
-
   def stub_container_registry_config(registry_settings)
     allow(Gitlab.config.registry).to receive_messages(registry_settings)
     allow(Auth::ContainerRegistryAuthenticationService)

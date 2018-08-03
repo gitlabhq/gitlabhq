@@ -89,6 +89,7 @@ module EE
         enable :read_deploy_board
         enable :admin_issue_link
         enable :admin_epic_issue
+        enable :read_packages
       end
 
       rule { can?(:developer_access) }.policy do
