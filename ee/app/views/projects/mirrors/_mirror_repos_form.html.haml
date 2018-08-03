@@ -1,6 +1,15 @@
 - import_data = @project.import_data || @project.build_import_data
 - is_one_user_option = default_mirror_users.count == 1
 - protocols = Gitlab::UrlSanitizer::ALLOWED_SCHEMES.join('|')
+- can_push = can?(current_user, :admin_remote_mirror, @project)
+- can_pull = can?(current_user, :admin_mirror, @project) && !@project.mirror
+- options = []
+- options.push([_('Pull'), 'pull']) if can_pull
+- options.push([_('Push'), 'push']) if can_push
+
+.form-group
+  = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
+  = select_tag :mirror_direction, options_for_select(options), class: 'form-control js-mirror-direction', disabled: options.count == 1
 
 .js-form-insertion-point
 
