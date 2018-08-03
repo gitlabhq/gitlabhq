@@ -83,9 +83,6 @@ gem 'net-ldap'
 # Only used to compute wiki page slugs
 gem 'gitlab-gollum-lib', '~> 4.2', require: false
 
-# Language detection
-gem 'github-linguist', '~> 5.3.3', require: 'linguist'
-
 # API
 gem 'grape', '~> 1.1'
 gem 'grape-entity', '~> 0.7.1'
@@ -146,6 +143,7 @@ gem 'rouge', '~> 3.1'
 gem 'truncato', '~> 0.7.9'
 gem 'bootstrap_form', '~> 2.7.0'
 gem 'nokogiri', '~> 1.8.2'
+gem 'escape_utils', '~> 1.1'
 
 # Calendar rendering
 gem 'icalendar'
