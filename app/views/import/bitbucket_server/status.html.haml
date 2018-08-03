@@ -8,7 +8,6 @@
 - if @repos.any?
   %p.light
     = _('Select projects you want to import.')
-  %hr
   .btn-group
     - if @incompatible_repos.any?
       = button_tag class: 'btn btn-import btn-success js-import-all' do
@@ -20,9 +19,8 @@
         = icon('spinner spin', class: 'loading-icon')
   .btn-group
     = link_to('Reconfigure', configure_import_bitbucket_server_path, class: 'btn btn-primary', method: :post)
-  %p
 
-.table-responsive
+.table-responsive.prepend-top-10
   %table.table.import-jobs
     %colgroup.import-jobs-from-col
     %colgroup.import-jobs-to-col
