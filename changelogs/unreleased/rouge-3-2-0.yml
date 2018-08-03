@@ -1,0 +1,5 @@
+---
+title: Update to Rouge 3.2.0, including Terraform and Crystal lexer and bug fixes
+merge_request: 20991
+author:
+type: changed
