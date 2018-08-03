@@ -93,7 +93,7 @@ module EE
         groups.each do |milestone_ids, epics|
           next if milestone_ids.empty?
 
-          data = epics.first.fetch_milestone_date_data
+          results = Epics::DateSourcingMilestonesFinder.execute(epics.first.id)
 
           self.where(id: epics.map(&:id)).update_all(
             [
@@ -103,10 +103,10 @@ module EE
                 end_date = CASE WHEN due_date_is_fixed = true THEN end_date ELSE ? END,
                 due_date_sourcing_milestone_id = ?
               },
-              data[:start_date],
-              data[:start_date_sourcing_milestone_id],
-              data[:due_date],
-              data[:due_date_sourcing_milestone_id]
+              results.start_date,
+              results.start_date_sourcing_milestone_id,
+              results.due_date,
+              results.due_date_sourcing_milestone_id
             ]
           )
         end
@@ -143,12 +143,12 @@ module EE
     alias_attribute(:due_date, :end_date)
 
     def update_dates
-      milestone_data = fetch_milestone_date_data
+      results = Epics::DateSourcingMilestonesFinder.execute(id)
 
-      self.start_date = start_date_is_fixed? ? start_date_fixed : milestone_data[:start_date]
-      self.start_date_sourcing_milestone_id = milestone_data[:start_date_sourcing_milestone_id]
-      self.due_date = due_date_is_fixed? ? due_date_fixed : milestone_data[:due_date]
-      self.due_date_sourcing_milestone_id = milestone_data[:due_date_sourcing_milestone_id]
+      self.start_date = start_date_is_fixed? ? start_date_fixed : results.start_date
+      self.start_date_sourcing_milestone_id = results.start_date_sourcing_milestone_id
+      self.due_date = due_date_is_fixed? ? due_date_fixed : results.due_date
+      self.due_date_sourcing_milestone_id = results.due_date_sourcing_milestone_id
 
       save if changed?
     end
@@ -198,39 +198,6 @@ module EE
 
     def banzai_render_context(field)
       super.merge(label_url_method: :group_epics_url)
-    end
-
-    def fetch_milestone_date_data
-      sql = <<~SQL
-        SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones
-        INNER JOIN issues ON issues.milestone_id = milestones.id
-        INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
-        INNER JOIN (
-          SELECT MIN(milestones.start_date) AS start_date, MAX(milestones.due_date) AS due_date
-          FROM milestones
-          INNER JOIN issues ON issues.milestone_id = milestones.id
-          INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
-          WHERE epic_issues.epic_id = #{id}
-        ) inner_results ON (inner_results.start_date = milestones.start_date OR inner_results.due_date = milestones.due_date)
-        WHERE epic_issues.epic_id = #{id}
-      SQL
-
-      db_results = ActiveRecord::Base.connection.select_all(sql).to_a
-
-      results = {}
-      db_results
-        .reject { |row| row['start_date'].nil? }
-        .min_by { |row| row['start_date'] }&.tap do |row|
-        results[:start_date] = row['start_date']
-        results[:start_date_sourcing_milestone_id] = row['id']
-      end
-      db_results
-        .reject { |row| row['due_date'].nil? }
-        .max_by { |row| row['due_date'] }&.tap do |row|
-        results[:due_date] = row['due_date']
-        results[:due_date_sourcing_milestone_id] = row['id']
-      end
-      results
     end
   end
 end
