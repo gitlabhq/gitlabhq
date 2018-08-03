@@ -71,7 +71,7 @@ describe 'Login' do
       expect(authentication_metrics)
         .to increment(:user_blocked_counter)
         .and increment(:user_unauthenticated_counter)
-        .and increment(:user_session_destroyed_counter)
+        .and increment(:user_session_destroyed_counter).twice
 
       user = create(:user, :blocked)
 
@@ -84,7 +84,7 @@ describe 'Login' do
       expect(authentication_metrics)
         .to increment(:user_blocked_counter)
         .and increment(:user_unauthenticated_counter)
-        .and increment(:user_session_destroyed_counter)
+        .and increment(:user_session_destroyed_counter).twice
 
       user = create(:user, :blocked)
 
