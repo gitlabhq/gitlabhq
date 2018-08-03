@@ -1,0 +1,5 @@
+---
+title: Rails 5 fix alerts controller spec for post json parameters
+merge_request: 6795
+author: Jasper Maes
+type: fixed

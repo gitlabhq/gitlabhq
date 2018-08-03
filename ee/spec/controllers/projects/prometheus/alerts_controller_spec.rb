@@ -100,7 +100,11 @@ describe Projects::Prometheus::AlertsController do
       allow(NotificationService).to receive(:new).and_return(notification_service)
       expect(notification_service).to receive_message_chain(:async, :prometheus_alerts_fired).with(project, [alert_params])
 
-      post :notify, project_params(alerts: [alert])
+      if Gitlab.rails5?
+        post :notify, params: project_params(alerts: [alert.to_param]), as: :json
+      else
+        post :notify, project_params(alerts: [alert]), as: :json
+      end
 
       expect(response).to have_gitlab_http_status(200)
     end
