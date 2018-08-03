@@ -82,7 +82,7 @@
     :loading-text="groupedSummaryText"
     :error-text="groupedSummaryText"
     :has-issues="reports.length > 0"
-    class="mr-widget-border-top grouped-security-reports"
+    class="mr-widget-border-top grouped-security-reports mr-report"
   >
     <div
       slot="body"
