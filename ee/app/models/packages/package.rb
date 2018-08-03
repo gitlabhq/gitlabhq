@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Packages::Package < ActiveRecord::Base
   belongs_to :project
   has_many :package_files

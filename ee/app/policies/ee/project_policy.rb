@@ -84,6 +84,10 @@ module EE
 
       rule { can?(:read_issue) }.enable :read_issue_link
 
+      rule { can?(:public_access) }.policy do
+        enable :read_packages
+      end
+
       rule { can?(:reporter_access) }.policy do
         enable :admin_board
         enable :read_deploy_board
@@ -95,6 +99,7 @@ module EE
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
+        enable :write_packages
       end
 
       rule { can?(:developer_access) & security_reports_feature_available }.enable :read_project_security_dashboard

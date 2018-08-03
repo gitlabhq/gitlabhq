@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreatePackagesPackages < ActiveRecord::Migration
   DOWNTIME = false
 

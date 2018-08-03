@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreatePackagesPackageFiles < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

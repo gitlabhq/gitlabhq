@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CreatePackagesMavenMetadata < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

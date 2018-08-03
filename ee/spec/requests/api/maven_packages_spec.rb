@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 require 'spec_helper'
 
 describe API::MavenPackages do
   let(:user) { create(:user) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :public) }
   let(:personal_access_token) { create(:personal_access_token, user: user) }
   let(:jwt_token) { JWT.encode({ 'iss' => 'gitlab-workhorse' }, Gitlab::Workhorse.secret, 'HS256') }
   let(:headers) { { 'GitLab-Workhorse' => '1.0', Gitlab::Workhorse::INTERNAL_API_REQUEST_HEADER => jwt_token } }
@@ -35,7 +36,32 @@ describe API::MavenPackages do
     end
 
     context 'private project' do
-      # Auth required, read permissions required
+      before do
+        project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+      end
+
+      it 'returns the file' do
+        download_file_with_token(package_file_xml.file_name)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.content_type.to_s).to eq('application/octet-stream')
+      end
+
+      it 'denies download when not enough permissions' do
+        project.add_guest(user)
+
+        download_file_with_token(package_file_xml.file_name)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
+
+      it 'denies download when no private token' do
+        project.add_guest(user)
+
+        download_file(package_file_xml.file_name)
+
+        expect(response).to have_gitlab_http_status(400)
+      end
     end
 
     def download_file(file_name, params = {}, request_headers = headers)
@@ -92,7 +118,7 @@ describe API::MavenPackages do
   end
 
   describe 'PUT /api/v4/projects/:id/packages/maven/*app_group/:app_name/:app_version/:file_name' do
-    let(:file_upload) { fixture_file_upload('spec/fixtures/maven/maven-metadata.xml') }
+    let(:file_upload) { fixture_file_upload('ee/spec/fixtures/maven/maven-metadata.xml') }
 
     before do
       # by configuring this path we allow to pass temp file from any path

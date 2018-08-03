@@ -64,6 +64,7 @@ class License < ActiveRecord::Base
     protected_environments
     system_header_footer
     custom_project_templates
+    packages
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
