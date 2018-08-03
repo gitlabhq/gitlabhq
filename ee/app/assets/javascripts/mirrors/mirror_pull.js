@@ -50,18 +50,22 @@ export default class MirrorPull {
 
     // Validate URL and verify if it consists only supported protocols
     if (forceMatch || this.$form.get(0).checkValidity()) {
+      const isSsh = protocol === 'ssh';
       // Hide/Show SSH Host keys section only for SSH URLs
-      this.$sectionSSHHostKeys.collapse(protocol === 'ssh' ? 'show' : 'hide');
+      this.$sectionSSHHostKeys.collapse(isSsh ? 'show' : 'hide');
       this.$btnDetectHostKeys.enable();
 
       // Verify if URL is http, https or git and hide/show Auth type dropdown
       // as we don't support auth type SSH for non-SSH URLs
-      const matchesProtocol = forceMatch || protRegEx.test(protocol);
+      const matchesProtocol = protRegEx.test(protocol);
       this.$dropdownAuthType.attr('disabled', matchesProtocol);
 
       if (matchesProtocol) {
         this.$dropdownAuthType.val(AUTH_METHOD.PASSWORD);
         this.toggleAuthWell(AUTH_METHOD.PASSWORD);
+      } else if (forceMatch && isSsh) {
+        this.$dropdownAuthType.val(AUTH_METHOD.SSH);
+        this.toggleAuthWell(AUTH_METHOD.SSH);
       }
     }
   }
@@ -260,5 +264,16 @@ export default class MirrorPull {
       .catch(() => {
         Flash(_('Unable to regenerate public ssh key.'));
       });
+  }
+
+  destroy() {
+    this.$repositoryUrl.off('keyup');
+    this.$form.find('.js-known-hosts').off('keyup');
+    this.$dropdownAuthType.off('change');
+    this.$btnDetectHostKeys.off('click');
+    this.$btnSSHHostsShowAdvanced.off('click');
+    this.$regeneratePublicSshKeyButton.off('click');
+    $('.js-confirm', this.$regeneratePublicSshKeyModal).off('click');
+    $('.js-cancel', this.$regeneratePublicSshKeyModal).off('click');
   }
 }

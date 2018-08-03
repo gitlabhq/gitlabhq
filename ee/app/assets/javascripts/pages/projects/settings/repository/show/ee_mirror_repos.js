@@ -68,6 +68,7 @@ export default class EEMirrorRepos extends MirrorRepos {
     this.updateProtectedBranches();
 
     if (direction === 'pull') return this.initMirrorPull();
+    this.mirrorPull.destroy();
     return this.initMirrorPush();
   }
 
@@ -75,10 +76,8 @@ export default class EEMirrorRepos extends MirrorRepos {
     this.$password.off('input.updateUrl');
     this.$password = undefined;
 
-    const mirrorPull = new MirrorPull('.js-mirror-form');
-
-    if (this.$urlInput.val() !== '') mirrorPull.handleRepositoryUrlInput();
-    mirrorPull.init();
+    this.mirrorPull = new MirrorPull('.js-mirror-form');
+    this.mirrorPull.init();
 
     this.initSelect2();
   }
