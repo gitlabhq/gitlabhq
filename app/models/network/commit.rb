@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Network
   class Commit
     include ActionView::Helpers::TagHelper

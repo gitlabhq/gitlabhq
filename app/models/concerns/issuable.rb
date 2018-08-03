@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Issuable concern
 #
 # Contains common functionality shared between Issues and MergeRequests

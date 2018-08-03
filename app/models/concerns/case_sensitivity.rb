@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Concern for querying columns with specific case sensitivity handling.
 module CaseSensitivity
   extend ActiveSupport::Concern

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupDescendant
   # Returns the hierarchy of a project or group in the from of a hash upto a
   # given top.
