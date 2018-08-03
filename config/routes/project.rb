@@ -232,6 +232,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           get :failures
           get :status
           get :security
+          get :licenses
         end
       end
 

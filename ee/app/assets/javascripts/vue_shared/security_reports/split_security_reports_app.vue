@@ -110,6 +110,20 @@ export default {
     dastText() {
       return this.summaryTextBuilder('DAST', this.dast.newIssues.length);
     },
+
+    issuesCount() {
+      return (
+        this.dast.newIssues.length +
+        this.dependencyScanning.newIssues.length +
+        this.sastContainer.newIssues.length +
+        this.sast.newIssues.length
+      );
+    },
+  },
+  watch: {
+    issuesCount() {
+      this.$emit('updateBadgeCount', this.issuesCount);
+    },
   },
   created() {
     // update the store with the received props
@@ -123,33 +137,23 @@ export default {
     if (this.sastHeadPath) {
       this.setSastHeadPath(this.sastHeadPath);
 
-      this.fetchSastReports()
-        .then(() => {
-          this.$emit('updateBadgeCount', this.sast.newIssues.length);
-        })
-        .catch(() => createFlash(s__('ciReport|There was an error loading SAST report')));
+      this.fetchSastReports().catch(() =>
+        createFlash(s__('ciReport|There was an error loading SAST report')),
+      );
     }
 
     if (this.dependencyScanningHeadPath) {
       this.setDependencyScanningHeadPath(this.dependencyScanningHeadPath);
 
-      this.fetchDependencyScanningReports()
-        .then(() => {
-          this.$emit('updateBadgeCount', this.dependencyScanning.newIssues.length);
-        })
-        .catch(() =>
-          createFlash(s__('ciReport|There was an error loading dependency scanning report')),
-        );
+      this.fetchDependencyScanningReports().catch(() =>
+        createFlash(s__('ciReport|There was an error loading dependency scanning report')),
+      );
     }
 
     if (this.sastContainerHeadPath) {
       this.setSastContainerHeadPath(this.sastContainerHeadPath);
 
-      this.fetchSastContainerReports()
-      .then(() => {
-        this.$emit('updateBadgeCount', this.sastContainer.newIssues.length);
-      })
-      .catch(() =>
+      this.fetchSastContainerReports().catch(() =>
         createFlash(s__('ciReport|There was an error loading container scanning report')),
       );
     }
@@ -157,11 +161,7 @@ export default {
     if (this.dastHeadPath) {
       this.setDastHeadPath(this.dastHeadPath);
 
-      this.fetchDastReports()
-      .then(() => {
-        this.$emit('updateBadgeCount', this.dast.newIssues.length);
-      })
-      .catch(() =>
+      this.fetchDastReports().catch(() =>
         createFlash(s__('ciReport|There was an error loading DAST report')),
       );
     }
@@ -184,7 +184,6 @@ export default {
       'setCanCreateIssuePermission',
       'setCanCreateFeedbackPermission',
     ]),
-
     summaryTextBuilder(type, issuesCount = 0) {
       if (issuesCount === 0) {
         return sprintf(s__('ciReport|%{type} detected no vulnerabilities'), {

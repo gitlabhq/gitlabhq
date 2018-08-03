@@ -3934,6 +3934,9 @@ msgstr ""
 msgid "LicenseManagement|You are about to remove the license, %{name}, from this project."
 msgstr ""
 
+msgid "Licenses"
+msgstr ""
+
 msgid "LinkedIn"
 msgstr ""
 
@@ -5645,10 +5648,10 @@ msgstr ""
 msgid "Secret:"
 msgstr ""
 
-msgid "Security Dashboard"
+msgid "Security"
 msgstr ""
 
-msgid "Security report"
+msgid "Security Dashboard"
 msgstr ""
 
 msgid "SecurityDashboard|Monitor vulnerabilities in your code"
