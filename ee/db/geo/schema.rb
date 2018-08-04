@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180802215313) do
+ActiveRecord::Schema.define(version: 20180806020615) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,8 @@ ActiveRecord::Schema.define(version: 20180802215313) do
     t.integer "wiki_verification_retry_count"
   end
 
+  add_index "project_registry", ["last_repository_successful_sync_at"], name: "idx_project_registry_synced_repositories_partial", where: "((resync_repository = false) AND (repository_retry_count IS NULL) AND (repository_verification_checksum_sha IS NOT NULL))", using: :btree
+  add_index "project_registry", ["last_repository_successful_sync_at"], name: "idx_unsynced_repositories_partial", where: "(last_repository_successful_sync_at IS NULL)", using: :btree
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
   add_index "project_registry", ["last_repository_synced_at"], name: "index_project_registry_on_last_repository_synced_at", using: :btree
   add_index "project_registry", ["project_id"], name: "idx_project_registry_on_repo_checksums_and_failure_partial", where: "((repository_verification_checksum_sha IS NULL) AND (last_repository_verification_failure IS NULL))", using: :btree
@@ -94,6 +96,8 @@ ActiveRecord::Schema.define(version: 20180802215313) do
   add_index "project_registry", ["project_id"], name: "idx_wiki_checksum_mismatch", where: "(wiki_checksum_mismatch = true)", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
   add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
+  add_index "project_registry", ["repository_retry_count"], name: "idx_project_registry_failed_repositories_partial", where: "((repository_retry_count > 0) OR (last_repository_verification_failure IS NOT NULL) OR repository_checksum_mismatch)", using: :btree
+  add_index "project_registry", ["repository_retry_count"], name: "idx_project_registry_pending_repositories_partial", where: "((repository_retry_count IS NULL) AND (last_repository_successful_sync_at IS NOT NULL) AND ((resync_repository = true) OR ((repository_verification_checksum_sha IS NULL) AND (last_repository_verification_failure IS NULL))))", using: :btree
   add_index "project_registry", ["repository_verification_checksum_sha"], name: "idx_project_registry_on_repository_checksum_sha_partial", where: "(repository_verification_checksum_sha IS NULL)", using: :btree
   add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
   add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
