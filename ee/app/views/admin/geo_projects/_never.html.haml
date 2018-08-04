@@ -1,9 +1,9 @@
-- @projects.each do |project|
+- @registries.each do |project_registry|
   .card.project-card.prepend-top-15
     .card-header{ id: "project-#{project.id}-header" }
       .d-flex
         %strong.header-text-primary.flex-fill
-          = project.full_name
+          = project_registry.project.full_name
 
     .card-body
       .container
@@ -12,30 +12,30 @@
             .project-status-title.text-muted
               = s_('Geo|Next sync scheduled at')
             .project-status-content
-              - if project.project_registry&.repository_retry_at
-                = distance_of_time_in_words(Time.now, project.project_registry.repository_retry_at)
+              - if project_registry.repository_retry_at
+                = distance_of_time_in_words(Time.now, project_registry.repository_retry_at)
               - else
                 = s_('Geo|Never')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last sync attempt')
             .project-status-content
-              - if project.project_registry&.last_repository_synced_at
-                = distance_of_time_in_words(Time.now, project.project_registry.last_repository_synced_at)
+              - if project_registry.last_repository_synced_at
+                = distance_of_time_in_words(Time.now, project_registry.last_repository_synced_at)
               - else
                 = s_('Geo|Never')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Retry counts')
             .project-status-content
-              = project.project_registry.repository_retry_count if project.project_registry
+              = project_registry.repository_retry_count
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Error message')
             .project-status-content.font-weight-bold
-              - if project.project_registry
-                = project.project_registry.last_repository_sync_failure
+              - if project_registry
+                = project_registry.last_repository_sync_failure
               - else
                 = s_('Geo|No errors')
 
-= paginate @projects, theme: 'gitlab'
+= paginate @registries, theme: 'gitlab'

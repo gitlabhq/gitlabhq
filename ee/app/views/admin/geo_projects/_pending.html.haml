@@ -24,7 +24,7 @@
               - if project_registry.repository_retry_at
                 = distance_of_time_in_words(Time.now, project_registry.repository_retry_at)
               - else
-              = s_('Geo|Never')
+                = s_('Geo|Never')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last sync attempt')

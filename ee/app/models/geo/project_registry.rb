@@ -168,6 +168,18 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
+  def repository_verification_pending?
+    self.repository_verification_checksum_sha.nil?
+  end
+
+  def wiki_verification_pending?
+    self.wiki_verification_checksum_sha.nil?
+  end
+
+  def verification_pending?
+    repository_verification_pending? || wiki_verification_pending?
+  end
+
   def syncs_since_gc
     Gitlab::Redis::SharedState.with { |redis| redis.get(fetches_since_gc_redis_key).to_i }
   end
@@ -203,7 +215,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
 
   # Flag the repository to be re-checked
   def flag_repository_for_recheck!
-    self.update(repository_verification_checksum_sha: nil, last_repository_verification_failure: nil, repository_checksum_mismatch: nil)
+    self.update(repository_verification_checksum_sha: nil, last_repository_verification_failure: nil, repository_checksum_mismatch: false)
   end
 
   # Flag the repository to be re-synced

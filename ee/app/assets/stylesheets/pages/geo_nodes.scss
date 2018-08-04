@@ -221,6 +221,7 @@
         color: $gl-text-red;
       }
     }
+
     @include media-breakpoint-down(xs) {
       .project-status-container + .project-status-container {
         margin-top: 10px;

@@ -17,8 +17,6 @@ describe Geo::ProjectRegistryStatusFinder, :geo do
 
   set(:never_synced_registry) { create(:geo_project_registry) }
   set(:never_synced_registry_with_failure) { create(:geo_project_registry, :repository_sync_failed) }
-  set(:project_without_registry) { create(:project, name: 'project without registry') }
-  let(:project_with_never_synced_registry) { never_synced_registry.project }
 
   subject { described_class.new(current_node: secondary) }
 
@@ -61,13 +59,12 @@ describe Geo::ProjectRegistryStatusFinder, :geo do
   end
 
   describe '#never_synced_projects' do
-    it 'returns only FDW projects without registry or with never synced registries' do
+    it 'returns only never fully synced registries' do
       result = subject.never_synced_projects
 
       expect(result).to contain_exactly(
-        project_without_registry,
-        project_with_never_synced_registry,
-        never_synced_registry_with_failure.project
+        never_synced_registry,
+        never_synced_registry_with_failure
       )
     end
   end

@@ -3262,6 +3262,9 @@ msgstr ""
 msgid "Geo|Next sync scheduled at"
 msgstr ""
 
+msgid "Geo|No errors"
+msgstr ""
+
 msgid "Geo|Pending"
 msgstr ""
 

@@ -20,7 +20,7 @@ module Geo
         no_repository_resync
           .and(no_repository_sync_failure)
           .and(repository_verified)
-      ).includes(:project)
+      ).includes(project: :route)
     end
 
     # Return any project registry which project is pending to update
@@ -40,7 +40,7 @@ module Geo
           .and(flagged_for_resync
             .or(repository_pending_verification
               .and(repository_without_verification_failure_before)))
-      ).includes(:project)
+      ).includes(project: :route)
     end
 
     # Return any project registry which project has a failure
@@ -55,31 +55,15 @@ module Geo
         repository_sync_failed
           .or(repository_verification_failed)
           .or(repository_checksum_mismatch)
-      ).includes(:project)
+      ).includes(project: :route)
     end
 
-    # Return projects that has never been fully synced
+    # Return any project registry that has never been fully synced
     #
-    # We include here both projects without a corresponding ProjectRegistry
-    # or projects that have never successfully synced.
-    #
-    # @yield [ActiveRecord::Relation]
-    # @return [Geo::Fdw::Project] Projects that has never been fully synced
+    # We don't include projects without a corresponding ProjectRegistry
+    # for performance reasons.
     def never_synced_projects
-      no_project_registry = project_registry[:project_id].eq(nil)
-      no_repository_synced = project_registry[:last_repository_successful_sync_at].eq(nil)
-
-      project_ids = Geo::Fdw::Project.select(:id).joins("LEFT OUTER JOIN project_registry ON (project_registry.project_id = #{Geo::Fdw::Project.table_name}.id)")
-        .where(
-          no_project_registry
-            .or(no_repository_synced))
-
-      # This allows us to inject pagination
-      if block_given?
-        project_ids = yield(project_ids)
-      end
-
-      Project.where(id: project_ids.to_a).includes(:project_registry)
+      Geo::ProjectRegistry.where(last_repository_successful_sync_at: nil).includes(project: :route)
     end
 
     private
