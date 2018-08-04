@@ -3,6 +3,7 @@ require 'spec_helper'
 describe MergeRequest do
   include RepoHelpers
   include ProjectForksHelper
+  include ReactiveCachingHelpers
 
   subject { create(:merge_request) }
 
@@ -1295,6 +1296,86 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { merge_request.has_test_reports? }
+
+    let(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has test reports' do
+      let(:merge_request) { create(:merge_request, :with_test_reports, source_project: project) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when head pipeline does not have test reports' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#compare_test_reports' do
+    subject { merge_request.compare_test_reports }
+
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:base_pipeline) do
+      create(:ci_pipeline,
+             :with_test_reports,
+             project: project,
+             ref: merge_request.target_branch,
+             sha: merge_request.diff_base_sha)
+    end
+
+    before do
+      merge_request.update!(head_pipeline_id: head_pipeline.id)
+    end
+
+    context 'when head pipeline has test reports' do
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               :with_test_reports,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
+      end
+
+      context 'when reactive cache worker is parsing asynchronously' do
+        it 'returns status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns status and data' do
+          expect_any_instance_of(Ci::CompareTestReportsService)
+            .to receive(:execute).with(base_pipeline.iid, head_pipeline.iid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when head pipeline does not have test reports' do
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
+      end
+
+      it 'returns status and error message' do
+        expect(subject[:status]).to eq(:error)
+        expect(subject[:status_reason]).to eq('This merge request does not have test reports')
+      end
+    end
+  end
+
   describe '#all_commit_shas' do
     context 'when merge request is persisted' do
       let(:all_commit_shas) do
@@ -2502,6 +2583,26 @@ describe MergeRequest do
     end
 
     let(:project)       { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+
+    it 'returns latest pipeline' do
+      expect(merge_request.base_pipeline).to eq(last_pipeline)
+    end
+  end
+
+  describe '#base_pipeline' do
+    let(:pipeline_arguments) do
+      {
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      }
+    end
+
+    let(:project) { create(:project, :public, :repository) }
     let(:merge_request) { create(:merge_request, source_project: project) }
 
     let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }

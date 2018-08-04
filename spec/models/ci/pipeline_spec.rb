@@ -1861,6 +1861,62 @@ describe Ci::Pipeline, :mailer do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { pipeline.has_test_reports? }
+
+    context 'when pipeline has builds with test reports' do
+      before do
+        create(:ci_build, pipeline: pipeline, project: project).tap do |build|
+          create(:ci_job_artifact, :junit, job: build, project: build.project)
+        end
+      end
+
+      context 'when pipeline status is running' do
+        let(:pipeline) { create(:ci_pipeline, :running, project: project) }
+
+        it { is_expected.to be_falsey }
+      end
+
+      context 'when pipeline status is success' do
+        let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+        it { is_expected.to be_truthy }
+      end
+    end
+
+    context 'when pipeline does not have builds with test reports' do
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#test_reports' do
+    subject { pipeline.test_reports }
+
+    context 'when pipeline has multiple builds with test reports' do
+      before do
+        create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project).tap do |build|
+          create(:ci_job_artifact, :junit, job: build, project: build.project)
+        end
+
+        create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project).tap do |build|
+          create(:ci_job_artifact, :junit_with_ant, job: build, project: build.project)
+        end
+      end
+
+      it 'returns test reports with collected data' do
+        expect(subject.total_count).to be(7)
+        expect(subject.success_count).to be(5)
+        expect(subject.failed_count).to be(2)
+      end
+    end
+
+    context 'when pipeline does not have any builds with test reports' do
+      it 'returns empty test reports' do
+        expect(subject.total_count).to be(0)
+      end
+    end
+  end
+
   describe '#total_size' do
     let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
     let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }

@@ -119,6 +119,7 @@
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
     "squash": { "type": "boolean" },
+<<<<<<< HEAD
 
     // EE-specific
     "approvals_before_merge": { "type": ["integer", "null"] },
@@ -134,6 +135,9 @@
     },
     "vulnerability_feedback_path": { "type": "string" },
     "can_create_feedback": { "type": "boolean" }
+=======
+    "test_reports_path": { "type": ["string", "null"] }
+>>>>>>> upstream/master
   },
   "additionalProperties": false
 }

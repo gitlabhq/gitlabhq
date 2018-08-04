@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-
+# Global Milestones are milestones that can be shared across multiple projects
 class GlobalMilestone
   include Milestoneish
 

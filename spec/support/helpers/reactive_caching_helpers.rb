@@ -14,8 +14,8 @@ module ReactiveCachingHelpers
   end
 
   def synchronous_reactive_cache(subject)
-    allow(service).to receive(:with_reactive_cache) do |*args, &block|
-      block.call(service.calculate_reactive_cache(*args))
+    allow(subject).to receive(:with_reactive_cache) do |*args, &block|
+      block.call(subject.calculate_reactive_cache(*args))
     end
   end
 
