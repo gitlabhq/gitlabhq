@@ -1377,6 +1377,7 @@
 
 .ide-entry-dropdown-toggle {
   padding: $gl-padding-4;
+  color: $gl-text-color;
   background-color: $theme-gray-100;
 
   &:hover {
@@ -1388,6 +1389,10 @@
     color: $white-normal;
     background-color: $blue-500;
     outline: 0;
+  }
+
+  svg {
+    fill: currentColor;
   }
 }
 

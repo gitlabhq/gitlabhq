@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class Cluster < ActiveRecord::Base
     prepend EE::Clusters::Cluster

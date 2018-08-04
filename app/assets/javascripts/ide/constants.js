@@ -53,3 +53,8 @@ export const commitItemIconMap = {
     class: 'ide-file-deletion',
   },
 };
+
+export const modalTypes = {
+  rename: 'rename',
+  tree: 'tree',
+};

@@ -134,8 +134,7 @@ export default {
         .replace(/[/]$/g, '');
 
       // - strip ending "/"
-      const filePath = this.file.path
-        .replace(/[/]$/g, '');
+      const filePath = this.file.path.replace(/[/]$/g, '');
 
       return filePath === routePath;
     },
@@ -194,7 +193,7 @@ export default {
               data-container="body"
               data-placement="right"
               name="file-modified"
-              css-classes="prepend-left-5 multi-file-modified"
+              css-classes="prepend-left-5 ide-file-modified"
             />
           </span>
           <changed-file-icon
@@ -208,7 +207,6 @@ export default {
         </span>
         <new-dropdown
           :type="file.type"
-          :branch="file.branchId"
           :path="file.path"
           :mouse-over="mouseOver"
           class="float-right prepend-left-8"

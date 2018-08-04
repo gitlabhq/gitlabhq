@@ -5400,6 +5400,15 @@ msgstr ""
 msgid "Remove project"
 msgstr ""
 
+msgid "Rename"
+msgstr ""
+
+msgid "Rename file"
+msgstr ""
+
+msgid "Rename folder"
+msgstr ""
+
 msgid "Repair authentication"
 msgstr ""
 
