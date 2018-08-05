@@ -1,7 +1,7 @@
 module EE
   module UsersController
     def available_templates
-      render json: load_custom_project_templates
+      load_custom_project_templates
     end
 
     private

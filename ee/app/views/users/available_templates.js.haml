@@ -1,0 +1,5 @@
+:plain
+  var target = $(".project-templates-buttons#custom-templates");
+  target.empty();
+  target.html("#{escape_javascript(render 'custom_project_templates', custom_project_templates: @custom_project_templates)}");
+  target.trigger("ajax:success");
