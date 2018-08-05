@@ -101,7 +101,9 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-In most or all cases the storage paths below end in `/repositories`. Check the
+> 
+**NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
 Omnibus installations:
@@ -111,8 +113,8 @@ Omnibus installations:
 gitaly['listen_addr'] = '0.0.0.0:9999'
 gitaly['auth_token'] = 'abc123secret'
 gitaly['storage'] = [
-  { 'name' => 'default', 'path' => '/path/to/default/repositories' },
-  { 'name' => 'storage1', 'path' => '/path/to/storage1/repositories' },
+  { 'name' => 'default', 'path' => '/mnt/gitlab/default/repositories' },
+  { 'name' => 'storage1', 'path' => '/mnt/gitlab/storage1/repositories' },
 ]
 ```
 
@@ -127,11 +129,11 @@ token = 'abc123secret'
 
 [[storage]
 name = 'default'
-path = '/path/to/default/repositories'
+path = '/mnt/gitlab/default/repositories'
 
 [[storage]]
 name = 'storage1'
-path = '/path/to/storage1/repositories'
+path = '/mnt/gitlab/storage1/repositories'
 ```
 
 Again, reconfigure (Omnibus) or restart (source).
