@@ -1050,6 +1050,9 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+msgid "Change template"
+msgstr ""
+
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
 msgstr ""
 
@@ -4028,6 +4031,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preview"
+msgstr ""
+
 msgid "Prioritize"
 msgstr ""
 
@@ -5081,6 +5087,9 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
+msgid "Template"
+msgstr ""
+
 msgid "Terms of Service Agreement and Privacy Policy"
 msgstr ""
 
@@ -5653,6 +5662,9 @@ msgid "Use group milestones to manage issues from multiple projects in the same 
 msgstr ""
 
 msgid "Use one line per URI"
+msgstr ""
+
+msgid "Use template"
 msgstr ""
 
 msgid "Use the following registration token during setup:"
