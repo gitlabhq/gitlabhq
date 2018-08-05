@@ -65,7 +65,7 @@ scope(constraints: { username: Gitlab::PathRegex.root_namespace_route_regex }) d
     get '/', to: redirect('%{username}'), as: nil
 
     ## EE-specific
-    get :available_templates, format: :json
+    get :available_templates, format: :js
     ## EE-specific
   end
 

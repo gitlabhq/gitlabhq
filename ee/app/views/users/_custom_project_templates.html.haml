@@ -1,0 +1,19 @@
+.custom-project-templates
+  - custom_project_templates.each do |template|
+    .template-option.d-flex.align-items-center
+      .avatar-container.s40
+        = project_icon(template, alt: template.name, class: 'btn-template-icon avatar s40 avatar-tile', lazy: false)
+      .description
+        %strong
+          = template.title
+        %br
+        .text-muted
+          = template.description
+      .controls.d-flex.align-items-baseline
+        %label.btn.btn-success.custom-template-button.choose-template.append-right-10.append-bottom-0{ for: template.name }
+          %input{ type: "radio",  autocomplete: "off", name: "project[template_name]", id: template.name, value: template.name }
+          %span
+            = _('Use template')
+        %a.btn.btn-default{ href: project_path(template), rel: 'noopener noreferrer', target: '_blank' } Preview
+
+  = paginate custom_project_templates, params: {controller: 'users', action: 'available_templates', username: current_user.username}, theme: 'gitlab', remote: true

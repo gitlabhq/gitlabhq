@@ -1,0 +1,27 @@
+- project_template_count = current_user.available_custom_project_templates.count
+
+- if ::Gitlab::CurrentSettings.custom_project_templates_enabled? && project_template_count > 0
+  .project-templates-buttons.col-sm-12
+    %ul.nav-tabs.nav-links.nav.scrolling-tabs
+      %li.built-in-tab
+        %a.nav-link.active{ href: "#built-in", data: { toggle: 'tab'} }
+          = _('Built-In')
+          %span.badge.badge-pill= Gitlab::ProjectTemplate.all.count
+      %li.custom-templates-tab
+        %a.nav-link{ href: "#custom-templates", data: { toggle: 'tab'} }
+          = _('Custom')
+          %span.badge.badge-pill= project_template_count
+
+  .tab-content
+    .project-templates-buttons.import-buttons.tab-pane.active#built-in
+      = render 'projects/project_templates/built_in_templates'
+    .project-templates-buttons.import-buttons.tab-pane#custom-templates{ data: {initial_templates: user_available_templates_path(current_user)} }
+      = icon("spin spinner 2x")
+
+  .project-fields-form
+    = render 'projects/project_templates/project_fields_form'
+    = f.hidden_field(:use_custom_template, value: false)
+    = render 'projects/new_project_fields', f: f, project_name_id: "template-project-name"
+
+- else
+  = render_ce 'projects/project_templates', f: f

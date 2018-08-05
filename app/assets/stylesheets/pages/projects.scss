@@ -486,34 +486,36 @@
 }
 
 .project-template {
+
   > .form-group {
     margin-bottom: 0;
   }
 
+  .tab-pane {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .template-option {
-    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
-    position: relative;
+    .logo {
+      .btn-template-icon {
+        width: 40px !important;
+      }
+    }
+
+    padding: 16px 0;
 
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
 
-    .btn-template-icon {
-      position: absolute;
-      left: $gl-padding;
-      top: $gl-padding;
+    .controls {
+      margin-left: auto;
     }
+
   }
 
-  .template-title {
-    font-size: 16px;
-  }
-
-  .template-description {
-    margin: 6px 0 12px;
-  }
-
-  .template-button {
+  .choose-template {
     input {
       position: absolute;
       clip: rect(0, 0, 0, 0);
@@ -540,8 +542,6 @@
     }
 
     .selected-icon {
-      padding-right: $gl-padding;
-
       svg {
         display: none;
         top: 7px;

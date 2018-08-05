@@ -157,5 +157,18 @@
   .btn-blank {
     padding: 6px 10px;
   }
+}
 
+.project-template {
+  .template-input-group {
+    .selected-icon {
+      .avatar {
+        width: 20px;
+        height: 20px;
+        line-height: 20px;
+        font-size: $gl-font-size;
+        margin-right: 0;
+      }
+    }
+  }
 }

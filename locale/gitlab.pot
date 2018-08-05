@@ -1157,6 +1157,9 @@ msgstr ""
 msgid "Browse files"
 msgstr ""
 
+msgid "Built-In"
+msgstr ""
+
 msgid "Business metrics (Custom)"
 msgstr ""
 
@@ -1254,6 +1257,9 @@ msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
+msgstr ""
+
+msgid "Change template"
 msgstr ""
 
 msgid "Change this value to influence how frequently the GitLab UI polls for updates."
@@ -2232,6 +2238,9 @@ msgstr ""
 msgid "CurrentUser|Settings"
 msgstr ""
 
+msgid "Custom"
+msgstr ""
+
 msgid "Custom CI config path"
 msgstr ""
 
@@ -2239,6 +2248,9 @@ msgid "Custom notification events"
 msgstr ""
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
+msgstr ""
+
+msgid "Custom project templates"
 msgstr ""
 
 msgid "Customize colors"
@@ -4923,6 +4935,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Preview"
+msgstr ""
+
 msgid "Primary"
 msgstr ""
 
@@ -5708,6 +5723,9 @@ msgstr ""
 msgid "Select target branch"
 msgstr ""
 
+msgid "Select the custom project template source group."
+msgstr ""
+
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
 msgstr ""
 
@@ -6220,6 +6238,9 @@ msgid "Target branch"
 msgstr ""
 
 msgid "Team"
+msgstr ""
+
+msgid "Template"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
@@ -6890,6 +6911,9 @@ msgid "Use group milestones to manage issues from multiple projects in the same 
 msgstr ""
 
 msgid "Use one line per URI"
+msgstr ""
+
+msgid "Use template"
 msgstr ""
 
 msgid "Use the following registration token during setup:"
