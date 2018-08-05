@@ -68,7 +68,7 @@ export default class EEMirrorRepos extends MirrorRepos {
     this.updateProtectedBranches();
 
     if (direction === 'pull') return this.initMirrorPull();
-    this.mirrorPull.destroy();
+    if (this.mirrorPull) this.mirrorPull.destroy();
     return this.initMirrorPush();
   }
 
