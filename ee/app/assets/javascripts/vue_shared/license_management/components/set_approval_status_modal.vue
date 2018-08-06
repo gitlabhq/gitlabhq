@@ -48,10 +48,10 @@ export default {
   >
     <slot v-if="currentLicenseInModal">
       <div class="row prepend-top-10 append-bottom-10 js-license-name">
-        <label class="col-sm-2 text-right font-weight-bold">
+        <label class="col-sm-3 text-right font-weight-bold">
           {{ s__('LicenseManagement|License') }}:
         </label>
-        <div class="col-sm-10 text-secondary">
+        <div class="col-sm-9 text-secondary">
           {{ currentLicenseInModal.name }}
         </div>
       </div>
@@ -59,10 +59,10 @@ export default {
         v-if="currentLicenseInModal.url"
         class="row prepend-top-10 append-bottom-10 js-license-url"
       >
-        <label class="col-sm-2 text-right font-weight-bold">
+        <label class="col-sm-3 text-right font-weight-bold">
           {{ s__('LicenseManagement|URL') }}:
         </label>
-        <div class="col-sm-10 text-secondary">
+        <div class="col-sm-9 text-secondary">
           <a
             :href="currentLicenseInModal.url"
             target="_blank"
@@ -71,12 +71,12 @@ export default {
         </div>
       </div>
       <div class="row prepend-top-10 append-bottom-10 js-license-packages">
-        <label class="col-sm-2 text-right font-weight-bold">
+        <label class="col-sm-3 text-right font-weight-bold">
           {{ s__('LicenseManagement|Packages') }}:
         </label>
         <license-packages
           :packages="currentLicenseInModal.packages"
-          class="col-sm-10 text-secondary"
+          class="col-sm-9 text-secondary"
         />
       </div>
     </slot>

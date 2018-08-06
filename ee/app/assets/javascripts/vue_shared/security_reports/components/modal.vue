@@ -83,10 +83,10 @@
         :key="index"
         class="row prepend-top-10 append-bottom-10"
       >
-        <label class="col-sm-2 text-right font-weight-bold">
+        <label class="col-sm-3 text-right font-weight-bold">
           {{ field.text }}:
         </label>
-        <div class="col-sm-10 text-secondary">
+        <div class="col-sm-9 text-secondary">
           <div
             v-if="hasInstances(field, key)"
             class="info-well"
@@ -180,7 +180,7 @@
       </div>
 
       <div class="row prepend-top-20 append-bottom-10">
-        <div class="col-sm-10 offset-sm-2 text-secondary">
+        <div class="col-sm-9 offset-sm-3 text-secondary">
           <template v-if="hasDismissedBy">
             {{ s__('ciReport|Dismissed by') }}
             <a
