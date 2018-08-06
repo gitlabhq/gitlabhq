@@ -634,6 +634,9 @@ msgstr ""
 msgid "Authentication Log"
 msgstr ""
 
+msgid "Authentication log"
+msgstr ""
+
 msgid "Authentication method"
 msgstr ""
 
@@ -3505,6 +3508,9 @@ msgid "Nav|Sign In / Register"
 msgstr ""
 
 msgid "Nav|Sign out and sign in with a different account"
+msgstr ""
+
+msgid "Network"
 msgstr ""
 
 msgid "Never"
