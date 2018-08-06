@@ -51,6 +51,7 @@ module Gitlab
           redis.zremrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', outdated_timestamp)
 
           gap_ids = redis.zrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', grace_timestamp).map(&:to_i)
+          break if gap_ids.empty?
 
           ::Geo::EventLog.where(id: gap_ids).each_batch do |batch|
             batch.includes_events.each { |event_log| yield event_log }
