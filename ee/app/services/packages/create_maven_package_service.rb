@@ -2,24 +2,22 @@
 module Packages
   class CreateMavenPackageService < BaseService
     def execute
-      package = Packages::Package.create!(
-        project: project,
-        name: full_app_name,
-        version: params[:app_version]
+      package = project.packages.create!(
+        name: params[:name],
+        version: params[:version]
       )
 
-      Packages::MavenMetadatum.create!(
-        package: package,
-        app_group: params[:app_group],
-        app_name: params[:app_name],
-        app_version: params[:app_version]
+      app_group, _, app_name = params[:name].rpartition('/')
+      app_group.tr!('/', '.')
+
+      package.create_maven_metadatum!(
+        path: params[:path],
+        app_group: app_group,
+        app_name: app_name,
+        app_version: params[:version]
       )
-    end
 
-    private
-
-    def full_app_name
-      params[:app_group] + '/' + params[:app_name]
+      package
     end
   end
 end

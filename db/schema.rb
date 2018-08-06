@@ -1923,9 +1923,10 @@ ActiveRecord::Schema.define(version: 20180807153545) do
 
   create_table "packages_maven_metadata", force: :cascade do |t|
     t.integer "package_id", null: false
+    t.string "path", null: false
     t.string "app_group", null: false
     t.string "app_name", null: false
-    t.string "app_version", null: false
+    t.string "app_version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -1949,7 +1950,7 @@ ActiveRecord::Schema.define(version: 20180807153545) do
 
   create_table "packages_packages", force: :cascade do |t|
     t.integer "project_id", null: false
-    t.string "name"
+    t.string "name", null: false
     t.string "version"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
