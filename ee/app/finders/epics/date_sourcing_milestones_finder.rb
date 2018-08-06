@@ -2,22 +2,25 @@
 
 module Epics
   class DateSourcingMilestonesFinder
-    def self.execute(epic_id)
-      sql = <<~SQL
-        SELECT milestones.id, milestones.start_date, milestones.due_date FROM milestones
-        INNER JOIN issues ON issues.milestone_id = milestones.id
-        INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
-        INNER JOIN (
-          SELECT MIN(milestones.start_date) AS start_date, MAX(milestones.due_date) AS due_date
-          FROM milestones
-          INNER JOIN issues ON issues.milestone_id = milestones.id
-          INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
-          WHERE epic_issues.epic_id = #{epic_id}
-        ) inner_results ON (inner_results.start_date = milestones.start_date OR inner_results.due_date = milestones.due_date)
-        WHERE epic_issues.epic_id = #{epic_id}
-      SQL
+    FIELDS = [:id, :start_date, :due_date].freeze
+    ID_INDEX = FIELDS.index(:id)
+    START_DATE_INDEX = FIELDS.index(:start_date)
+    DUE_DATE_INDEX = FIELDS.index(:due_date)
 
-      new(ActiveRecord::Base.connection.select_all(sql).to_a)
+    def self.execute(epic_id)
+      results = Milestone.joins(issues: :epic_issue).where(epic_issues: { epic_id: epic_id }).joins(
+        <<~SQL
+          INNER JOIN (
+            SELECT MIN(milestones.start_date) AS start_date, MAX(milestones.due_date) AS due_date
+            FROM milestones
+            INNER JOIN issues ON issues.milestone_id = milestones.id
+            INNER JOIN epic_issues ON epic_issues.issue_id = issues.id
+            WHERE epic_issues.epic_id = #{epic_id}
+          ) inner_results ON (inner_results.start_date = milestones.start_date OR inner_results.due_date = milestones.due_date)
+        SQL
+      ).pluck(*FIELDS)
+
+      new(results)
     end
 
     def initialize(results)
@@ -25,19 +28,19 @@ module Epics
     end
 
     def start_date
-      cast_as_date(start_date_sourcing_milestone&.fetch('start_date', nil))
+      start_date_sourcing_milestone&.slice(START_DATE_INDEX)
     end
 
     def start_date_sourcing_milestone_id
-      cast_as_id(start_date_sourcing_milestone&.fetch('id', nil))
+      start_date_sourcing_milestone&.slice(ID_INDEX)
     end
 
     def due_date
-      cast_as_date(due_date_sourcing_milestone&.fetch('due_date', nil))
+      due_date_sourcing_milestone&.slice(DUE_DATE_INDEX)
     end
 
     def due_date_sourcing_milestone_id
-      cast_as_id(due_date_sourcing_milestone&.fetch('id', nil))
+      due_date_sourcing_milestone&.slice(ID_INDEX)
     end
 
     private
@@ -46,30 +49,14 @@ module Epics
 
     def start_date_sourcing_milestone
       @start_date_sourcing_milestone ||= results
-        .reject { |row| row['start_date'].nil? }
-        .min_by { |row| row['start_date'] }
+        .reject { |row| row[START_DATE_INDEX].nil? }
+        .min_by { |row| row[START_DATE_INDEX] }
     end
 
     def due_date_sourcing_milestone
       @due_date_sourcing_milestone ||= results
-        .reject { |row| row['due_date'].nil? }
-        .max_by { |row| row['due_date'] }
-    end
-
-    def cast_as_date(result)
-      if result
-        Date.strptime(result, '%Y-%m-%d')
-      else
-        result
-      end
-    end
-
-    def cast_as_id(result)
-      if result
-        result.to_i
-      else
-        result
-      end
+        .reject { |row| row[DUE_DATE_INDEX].nil? }
+        .max_by { |row| row[DUE_DATE_INDEX] }
     end
   end
 end
