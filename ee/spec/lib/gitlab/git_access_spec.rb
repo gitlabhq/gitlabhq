@@ -264,10 +264,21 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
     end
   end
 
+  describe 'Geo system permissions' do
+    let(:actor) { :geo }
+
+    it { expect { pull_changes }.not_to raise_error }
+    it { expect { push_changes }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:upload]) }
+  end
+
   private
 
   def push_changes(changes = '_any')
     access.check('git-receive-pack', changes)
+  end
+
+  def pull_changes(changes = '_any')
+    access.check('git-upload-pack', changes)
   end
 
   def raise_unauthorized(message)
