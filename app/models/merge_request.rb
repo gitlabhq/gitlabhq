@@ -1074,21 +1074,27 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_reverted?(current_user)
     return false unless merge_commit
+    return false unless merged_at
 
-    merged_at = metrics&.merged_at
-    notes_association = notes_with_associations
+    # It is not guaranteed that Note#created_at will be strictly later than
+    # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
+    # comparison, as will a HA environment if clocks are not *precisely*
+    # synchronized. Add a minute's leeway to compensate for both possibilities
+    cutoff = merged_at - 1.minute
 
-    if merged_at
-      # It is not guaranteed that Note#created_at will be strictly later than
-      # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
-      # comparison, as will a HA environment if clocks are not *precisely*
-      # synchronized. Add a minute's leeway to compensate for both possibilities
-      cutoff = merged_at - 1.minute
-
-      notes_association = notes_association.where('created_at >= ?', cutoff)
-    end
+    notes_association = notes_with_associations.where('created_at >= ?', cutoff)
 
     !merge_commit.has_been_reverted?(current_user, notes_association)
+  end
+
+  def merged_at
+    strong_memoize(:merged_at) do
+      next unless merged?
+
+      metrics&.merged_at ||
+        merge_event&.created_at ||
+        notes.system.reorder(nil).find_by(note: 'merged')&.created_at
+    end
   end
 
   def can_be_cherry_picked?
