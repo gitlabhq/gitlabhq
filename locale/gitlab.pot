@@ -3940,9 +3940,6 @@ msgstr ""
 msgid "LicenseManagement|URL"
 msgstr ""
 
-msgid "LicenseManagement|Unapproved"
-msgstr ""
-
 msgid "LicenseManagement|You are about to remove the license, %{name}, from this project."
 msgstr ""
 
