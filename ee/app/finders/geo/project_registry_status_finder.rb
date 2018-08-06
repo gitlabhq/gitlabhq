@@ -20,7 +20,7 @@ module Geo
         no_repository_resync
           .and(no_repository_sync_failure)
           .and(repository_verified)
-      ).includes(project: :route)
+      ).includes(project: :route).includes(project: { namespace: :route })
     end
 
     # Return any project registry which project is pending to update
@@ -40,7 +40,7 @@ module Geo
           .and(flagged_for_resync
             .or(repository_pending_verification
               .and(repository_without_verification_failure_before)))
-      ).includes(project: :route)
+      ).includes(project: :route).includes(project: { namespace: :route })
     end
 
     # Return any project registry which project has a failure
@@ -55,7 +55,7 @@ module Geo
         repository_sync_failed
           .or(repository_verification_failed)
           .or(repository_checksum_mismatch)
-      ).includes(project: :route)
+      ).includes(project: :route).includes(project: { namespace: :route })
     end
 
     # Return any project registry that has never been fully synced
@@ -63,7 +63,9 @@ module Geo
     # We don't include projects without a corresponding ProjectRegistry
     # for performance reasons.
     def never_synced_projects
-      Geo::ProjectRegistry.where(last_repository_successful_sync_at: nil).includes(project: :route)
+      Geo::ProjectRegistry.where(last_repository_successful_sync_at: nil)
+        .includes(project: :route)
+        .includes(project: { namespace: :route })
     end
 
     private

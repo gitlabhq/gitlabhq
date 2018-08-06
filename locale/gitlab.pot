@@ -3268,6 +3268,12 @@ msgstr ""
 msgid "Geo|Pending"
 msgstr ""
 
+msgid "Geo|Pending synchronization"
+msgstr ""
+
+msgid "Geo|Pending verification"
+msgstr ""
+
 msgid "Geo|Projects in certain groups"
 msgstr ""
 
@@ -3284,6 +3290,9 @@ msgid "Geo|Repository sync capacity"
 msgstr ""
 
 msgid "Geo|Resync"
+msgstr ""
+
+msgid "Geo|Retry count"
 msgstr ""
 
 msgid "Geo|Retry counts"
@@ -3304,10 +3313,16 @@ msgstr ""
 msgid "Geo|Synchronization failed - %{error}"
 msgstr ""
 
+msgid "Geo|Unknown state"
+msgstr ""
+
 msgid "Geo|Verification capacity"
 msgstr ""
 
 msgid "Geo|Verification failed - %{error}"
+msgstr ""
+
+msgid "Geo|Waiting for scheduler"
 msgstr ""
 
 msgid "Geo|You need a different license to use Geo replication"

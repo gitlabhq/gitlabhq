@@ -3,7 +3,7 @@
     .card-header{ id: "project-#{project_registry.project.id}-header" }
       .d-flex
         %strong.header-text-primary.flex-fill
-          = project_registry.project.full_name
+          = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
         = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
           = s_('Geo|Recheck')
         = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
@@ -22,15 +22,15 @@
               = s_('Geo|Last successful sync')
             .project-status-content
               - if project_registry.last_repository_successful_sync_at
-                = distance_of_time_in_words(Time.now, project_registry.last_repository_successful_sync_at)
+                = time_ago_with_tooltip(project_registry.last_repository_successful_sync_at, placement: 'bottom')
               - else
-              = s_('Geo|Never')
+                = s_('Geo|Never')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last time verified')
             .project-status-content
               - if project_registry.last_repository_check_at
-                = distance_of_time_in_words(Time.now, project_registry.last_repository_check_at)
+                = time_ago_with_tooltip(project_registry.last_repository_check_at, placement: 'bottom')
               - else
                 = s_('Geo|Never')
           .col-sm.d-sm-none.d-md-block

@@ -1,9 +1,9 @@
 - @registries.each do |project_registry|
   .card.project-card.prepend-top-15
-    .card-header{ id: "project-#{project.id}-header" }
+    .card-header{ id: "project-#{project_registry.project.id}-header" }
       .d-flex
         %strong.header-text-primary.flex-fill
-          = project_registry.project.full_name
+          = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
 
     .card-body
       .container.project-container
@@ -15,15 +15,15 @@
               - if project_registry.repository_retry_at
                 = distance_of_time_in_words(Time.now, project_registry.repository_retry_at)
               - else
-                = s_('Geo|Never')
+                = s_('Geo|Waiting for scheduler')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Last sync attempt')
             .project-status-content
               - if project_registry.last_repository_synced_at
-                = distance_of_time_in_words(Time.now, project_registry.last_repository_synced_at)
+                = time_ago_with_tooltip(project_registry.last_repository_synced_at, placement: 'bottom')
               - else
-                = s_('Geo|Never')
+                = s_('Geo|Waiting for scheduler')
           .col-sm.project-status-container
             .project-status-title.text-muted
               = s_('Geo|Retry counts')
