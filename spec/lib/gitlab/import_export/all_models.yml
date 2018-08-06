@@ -348,6 +348,7 @@ project:
 - software_license_policies
 - repository_languages
 - project_registry
+- packages
 award_emoji:
 - awardable
 - user
