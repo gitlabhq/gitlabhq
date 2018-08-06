@@ -168,14 +168,29 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
+  # Returns whether repository is pending verification check
+  #
+  # This will check for missing verification checksum sha
+  #
+  # @return [Boolean] whether repository is pending verification
   def repository_verification_pending?
     self.repository_verification_checksum_sha.nil?
   end
 
+  # Returns whether wiki is pending verification check
+  #
+  # This will check for missing verification checksum sha
+  #
+  # @return [Boolean] whether wiki is pending verification
   def wiki_verification_pending?
     self.wiki_verification_checksum_sha.nil?
   end
 
+  # Returns wheter verification is pending for either wiki or repository
+  #
+  # This will check for missing verification checksum sha for both wiki and repository
+  #
+  # @return [Boolean] whether verification is pending for either wiki or repository
   def verification_pending?
     repository_verification_pending? || wiki_verification_pending?
   end
@@ -214,16 +229,22 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   end
 
   # Flag the repository to be re-checked
+  #
+  # This operation happens only in the database and the recheck will be triggered after by the cron job
   def flag_repository_for_recheck!
     self.update(repository_verification_checksum_sha: nil, last_repository_verification_failure: nil, repository_checksum_mismatch: false)
   end
 
   # Flag the repository to be re-synced
+  #
+  # This operation happens only in the database and the resync will be triggered after by the cron job
   def flag_repository_for_resync!
     repository_updated!(:repository, Time.now)
   end
 
   # Flag the repository to perform a full re-download
+  #
+  # This operation happens only in the database and the forced re-download will be triggered after by the cron job
   def flag_repository_for_redownload!
     self.update(resync_repository: true, force_to_redownload_repository: true)
   end
@@ -235,7 +256,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   #
   # @return [Boolean] whether the registry is candidate for a re-download
   def candidate_for_redownload?
-    self.repository_retry_count && self.repository_retry_count >= 1
+    self.repository_retry_count && self.repository_retry_count > 1
   end
 
   private
