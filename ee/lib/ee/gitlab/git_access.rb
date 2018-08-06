@@ -52,6 +52,11 @@ module EE
       def geo?
         actor == :geo
       end
+
+      override :authed_via_jwt?
+      def authed_via_jwt?
+        geo?
+      end
     end
   end
 end

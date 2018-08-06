@@ -268,7 +268,7 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
     let(:actor) { :geo }
 
     it { expect { pull_changes }.not_to raise_error }
-    it { expect { push_changes }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:upload]) }
+    it { expect { push_changes }.to raise_unauthorized(Gitlab::GitAccess::ERROR_MESSAGES[:push_code]) }
   end
 
   private
