@@ -64,13 +64,18 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
       discussion.diff_discussion && _.isEqual(discussion.diff_file.file_hash, diff.fileHash),
   ) || [];
 
-export const singleDiscussionByLineCode = (state, getters, rootState, rootGetters) => lineCode => {
+export const singleDiscussionByLineCodeOld = (
+  state,
+  getters,
+  rootState,
+  rootGetters,
+) => lineCode => {
   if (!lineCode || lineCode === undefined) return [];
   const discussions = rootGetters.discussionsByLineCode;
   return discussions[lineCode] || [];
 };
 
-export const shouldRenderParallelCommentRow = (state, getters) => line => {
+export const shouldRenderParallelCommentRowOld = (state, getters) => line => {
   const leftLineCode = line.left.lineCode;
   const rightLineCode = line.right.lineCode;
   const leftDiscussions = getters.singleDiscussionByLineCode(leftLineCode);

@@ -21,35 +21,12 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', [
-      'commitId',
-      'singleDiscussionByLineCode',
-      'shouldRenderParallelCommentRow',
-    ]),
+    ...mapGetters('diffs', ['commitId', 'shouldRenderParallelCommentRow']),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
-    parallelDiffLines() {
-      return this.diffLines.map(line => {
-        const parallelLine = Object.assign({}, line);
-
-        if (line.left) {
-          parallelLine.left = trimFirstCharOfLineContent(line.left);
-        } else {
-          parallelLine.left = { type: EMPTY_CELL_TYPE };
-        }
-
-        if (line.right) {
-          parallelLine.right = trimFirstCharOfLineContent(line.right);
-        } else {
-          parallelLine.right = { type: EMPTY_CELL_TYPE };
-        }
-
-        return parallelLine;
-      });
-    },
     diffLinesLength() {
-      return this.parallelDiffLines.length;
+      return this.diffLines.length;
     },
     userColorScheme() {
       return window.gon.user_color_scheme;
@@ -92,7 +69,7 @@ export default {
             :line-index="index"
             :left-discussions="discussionsByLine(line, 'left')"
             :right-discussions="discussionsByLine(line, 'right')"
-          />
+          />-->
         </template>
       </tbody>
     </table>
