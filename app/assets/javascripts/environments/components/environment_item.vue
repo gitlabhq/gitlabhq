@@ -479,7 +479,6 @@ export default {
         {{ s__("Environments|Environment") }}
       </div>
       <span
-<<<<<<< HEAD
         v-if="model.hasDeployBoard"
         class="deploy-board-icon"
         @click="toggleDeployBoard">
@@ -496,9 +495,7 @@ export default {
           aria-hidden="true">
         </i>
       </span>
-      <a
-=======
->>>>>>> upstream/master
+      <span
         v-if="!model.isFolder"
         class="environment-name table-mobile-content">
         <a
