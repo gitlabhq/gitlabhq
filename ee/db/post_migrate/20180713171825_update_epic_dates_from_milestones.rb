@@ -46,6 +46,15 @@ class UpdateEpicDatesFromMilestones < ActiveRecord::Migration
   end
 
   def up
+    # Fill fixed date columns for remaining eligible records touched after regular migration is run
+    # (20180711014026_update_date_columns_on_epics) but before new app code takes effect.
+    Epic.where(start_date_is_fixed: nil).where.not(start_date: nil).each_batch do |batch|
+      batch.update_all('start_date_is_fixed = true, start_date_fixed = start_date')
+    end
+    Epic.where(due_date_is_fixed: nil).where.not(end_date: nil).each_batch do |batch|
+      batch.update_all('due_date_is_fixed = true, due_date_fixed = end_date')
+    end
+
     Epic.joins(:issues).where('issues.milestone_id IS NOT NULL').each_batch do |epics|
       Epic.update_start_and_due_dates(epics)
     end
