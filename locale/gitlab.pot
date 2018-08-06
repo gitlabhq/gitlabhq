@@ -990,9 +990,6 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
-msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
-msgstr ""
-
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -1005,22 +1002,13 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
+msgid "CICD|Default to Auto DevOps pipeline"
+msgstr ""
+
 msgid "CICD|Deployment strategy"
 msgstr ""
 
 msgid "CICD|Deployment strategy needs a domain name to work correctly."
-msgstr ""
-
-msgid "CICD|Disable Auto DevOps"
-msgstr ""
-
-msgid "CICD|Enable Auto DevOps"
-msgstr ""
-
-msgid "CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}."
-msgstr ""
-
-msgid "CICD|Instance default (%{state})"
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -1029,10 +1017,13 @@ msgstr ""
 msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
+msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "Callback URL"
