@@ -18,7 +18,7 @@ export default {
     environments: {
       type: Array,
       required: true,
-      default: () => ([]),
+      default: () => [],
     },
 
     canReadEnvironment: {
@@ -38,10 +38,7 @@ export default {
       return `${window.location.pathname}/folders/${model.folderName}`;
     },
     shouldRenderFolderContent(env) {
-      return env.isFolder &&
-        env.isOpen &&
-        env.children &&
-        env.children.length > 0;
+      return env.isFolder && env.isOpen && env.children && env.children.length > 0;
     },
   },
 };
@@ -56,7 +53,7 @@ export default {
       role="row"
     >
       <div
-        class="table-section section-10 environments-name"
+        class="table-section section-15 environments-name"
         role="columnheader"
       >
         {{ s__("Environments|Environment") }}
@@ -74,7 +71,7 @@ export default {
         {{ s__("Environments|Job") }}
       </div>
       <div
-        class="table-section section-25 environments-commit"
+        class="table-section section-20 environments-commit"
         role="columnheader"
       >
         {{ s__("Environments|Commit") }}

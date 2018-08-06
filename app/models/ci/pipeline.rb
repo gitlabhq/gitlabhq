@@ -622,6 +622,18 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
+    def has_test_reports?
+      complete? && builds.with_test_reports.any?
+    end
+
+    def test_reports
+      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+        builds.with_test_reports.each do |build|
+          build.collect_test_reports!(test_reports)
+        end
+      end
+    end
+
     private
 
     def ci_yaml_from_repo

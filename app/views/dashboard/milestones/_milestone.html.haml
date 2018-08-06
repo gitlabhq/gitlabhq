@@ -1,5 +1,5 @@
 = render 'shared/milestones/milestone',
-          milestone_path: dashboard_milestone_path(milestone.safe_title, title: milestone.title),
+          milestone_path: group_or_dashboard_milestone_path(milestone),
           issues_path: issues_dashboard_path(milestone_title: milestone.title),
           merge_requests_path: merge_requests_dashboard_path(milestone_title: milestone.title),
           milestone: milestone,

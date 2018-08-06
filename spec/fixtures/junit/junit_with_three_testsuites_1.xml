@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="2" skipped="0" failures="0" errors="0" time="0.001670" timestamp="2018-07-30T10:02:37+00:00" hostname="runner-7661726c-project-14-concurrent-0">
+<properties>
+<property name="seed" value="52549"/>
+</properties>
+<testcase classname="spec.hash_scan_spec" name="HashScan#scan when argument is hash returns the value" file="./spec/hash_scan_spec.rb" time="0.000287"></testcase>
+<testcase classname="spec.hash_scan_spec" name="HashScan#scan when argument is not hash raises and error" file="./spec/hash_scan_spec.rb" time="0.000686"></testcase>
+</testsuite>

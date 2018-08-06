@@ -1454,7 +1454,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           context 'when artifact_type is junit' do
             context 'when artifact_format is gzip' do
-              let(:file_upload) { fixture_file_upload('spec/fixtures/junit.xml.gz') }
+              let(:file_upload) { fixture_file_upload('spec/fixtures/junit/junit.xml.gz') }
               let(:params) { { artifact_type: :junit, artifact_format: :gzip } }
 
               it 'stores junit test report' do
@@ -1466,7 +1466,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             end
 
             context 'when artifact_format is raw' do
-              let(:file_upload) { fixture_file_upload('spec/fixtures/junit.xml.gz') }
+              let(:file_upload) { fixture_file_upload('spec/fixtures/junit/junit.xml.gz') }
               let(:params) { { artifact_type: :junit, artifact_format: :raw } }
 
               it 'returns an error' do
