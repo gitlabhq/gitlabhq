@@ -2,7 +2,6 @@ module Todos
   module Destroy
     class EntityLeaveService < ::Todos::Destroy::BaseService
       extend ::Gitlab::Utils::Override
-      include Gitlab::Utils::StrongMemoize
 
       attr_reader :user, :entity
 
@@ -19,7 +18,7 @@ module Todos
         return unless entity && user
 
         # if at least reporter, all entities including confidential issues can be accessed
-        return if main_group_reporter?
+        return if user_has_reporter_access?
 
         remove_confidential_issue_todos
 
@@ -81,7 +80,7 @@ module Todos
           .where('id NOT IN (?)', user.membership_groups.select(:id))
       end
 
-      def main_group_reporter?
+      def user_has_reporter_access?
         return unless entity.is_a?(Namespace)
 
         entity.member?(User.find(user.id), Gitlab::Access::REPORTER)

@@ -155,11 +155,11 @@ class TodosFinder
   def by_group(items)
     if group?
       groups = group.self_and_descendants
-      items = items.where(
-        'project_id IN (?) OR group_id IN (?)',
-        Project.where(group: groups).select(:id),
-        groups.select(:id)
-      )
+      project_todos = items.where(project_id: Project.where(group: groups).select(:id))
+      group_todos = items.where(group_id: groups.select(:id))
+
+      union = Gitlab::SQL::Union.new([project_todos, group_todos])
+      items = Todo.from("(#{union.to_sql}) #{Todo.table_name}")
     end
 
     items

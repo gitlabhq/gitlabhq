@@ -5,8 +5,14 @@ class AddGroupToTodos < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
+  class Todo < ActiveRecord::Base
+    self.table_name = 'todos'
+
+    include ::EachBatch
+  end
+
   def up
-    add_column :todos, :group_id, :integer
+    add_column(:todos, :group_id, :integer) unless group_id_exists?
     add_concurrent_foreign_key :todos, :namespaces, column: :group_id, on_delete: :cascade
     add_concurrent_index :todos, :group_id
 
@@ -14,13 +20,11 @@ class AddGroupToTodos < ActiveRecord::Migration
   end
 
   def down
-    return unless group_id_exists?
+    remove_foreign_key_without_error(:todos, column: :group_id)
+    remove_concurrent_index(:todos, :group_id)
+    remove_column(:todos, :group_id) if group_id_exists?
 
-    remove_foreign_key :todos, column: :group_id
-    remove_index :todos, :group_id if index_exists?(:todos, :group_id)
-    remove_column :todos, :group_id
-
-    execute "DELETE FROM todos WHERE project_id IS NULL"
+    Todo.where(project_id: nil).each_batch { |batch| batch.delete_all }
     change_column_null :todos, :project_id, false
   end
 

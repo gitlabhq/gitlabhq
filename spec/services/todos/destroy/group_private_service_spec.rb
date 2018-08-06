@@ -33,7 +33,7 @@ describe Todos::Destroy::GroupPrivateService do
         expect(project_member.todos).to match_array([todo_project_member])
       end
 
-      context 'with nested groups' do
+      context 'with nested groups', :nested_groups do
         let(:parent_group) { create(:group) }
         let(:subgroup)     { create(:group, :private, parent: group) }
         let(:subproject)   { create(:project, group: subgroup) }

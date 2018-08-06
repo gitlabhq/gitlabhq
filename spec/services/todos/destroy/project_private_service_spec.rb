@@ -10,7 +10,6 @@ describe Todos::Destroy::ProjectPrivateService do
   let!(:todo_non_member)   { create(:todo, user: user, project: project) }
   let!(:todo2_non_member)  { create(:todo, user: user, project: project) }
   let!(:todo_member)       { create(:todo, user: project_member, project: project) }
-  let!(:todo_member)       { create(:todo, user: project_member, project: project) }
   let!(:todo_group_member) { create(:todo, user: group_member, project: project) }
 
   describe '#execute' do

@@ -84,12 +84,6 @@ class Group < Namespace
       where(id: user.authorized_groups.select(:id).reorder(nil))
     end
 
-    def public_or_visible_to_user(user)
-      where('id IN (?) OR namespaces.visibility_level IN (?)',
-        user.authorized_groups.select(:id),
-        Gitlab::VisibilityLevel.levels_for_user(user))
-    end
-
     def select_for_project_authorization
       if current_scope.joins_values.include?(:shared_projects)
         joins('INNER JOIN namespaces project_namespace ON project_namespace.id = projects.namespace_id')
