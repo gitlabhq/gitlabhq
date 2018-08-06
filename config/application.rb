@@ -166,6 +166,7 @@ module Gitlab
     config.assets.paths << "#{config.root}/node_modules/xterm/src/"
     config.assets.precompile << "xterm.css"
 
+<<<<<<< HEAD
     ## EE-specific assets config START
     %w[images javascripts stylesheets].each do |path|
       config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
@@ -180,6 +181,8 @@ module Gitlab
     config.assets.precompile << LOOSE_EE_APP_ASSETS
     ## EE-specific assets config END
 
+=======
+>>>>>>> upstream/master
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 

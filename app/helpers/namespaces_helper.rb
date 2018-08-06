@@ -11,13 +11,23 @@ module NamespacesHelper
                .includes(:route)
                .order('routes.path')
     users = [current_user.namespace]
+    selected_id = selected
 
     unless extra_group.nil? || extra_group.is_a?(Group)
       extra_group = Group.find(extra_group) if Namespace.find(extra_group).kind == 'group'
     end
 
-    if extra_group && extra_group.is_a?(Group) && (!Group.exists?(name: extra_group.name) || Ability.allowed?(current_user, :read_group, extra_group))
-      groups |= [extra_group]
+    if extra_group && extra_group.is_a?(Group)
+      extra_group = dedup_extra_group(extra_group)
+
+      if Ability.allowed?(current_user, :read_group, extra_group)
+        # Assign the value to an invalid primary ID so that the select box works
+        extra_group.id = -1 unless extra_group.persisted?
+        selected_id = extra_group.id if selected == :extra_group
+        groups |= [extra_group]
+      else
+        selected_id = current_user.namespace.id
+      end
     end
 
     options = []
@@ -27,11 +37,11 @@ module NamespacesHelper
       options << options_for_group(users, display_path: display_path, type: 'user')
 
       if selected == :current_user && current_user.namespace
-        selected = current_user.namespace.id
+        selected_id = current_user.namespace.id
       end
     end
 
-    grouped_options_for_select(options, selected)
+    grouped_options_for_select(options, selected_id)
   end
 
   def namespace_icon(namespace, size = 40)
@@ -43,6 +53,17 @@ module NamespacesHelper
   end
 
   private
+
+  # Many importers create a temporary Group, so use the real
+  # group if one exists by that name to prevent duplicates.
+  def dedup_extra_group(extra_group)
+    unless extra_group.persisted?
+      existing_group = Group.find_by(name: extra_group.name)
+      extra_group = existing_group if existing_group&.persisted?
+    end
+
+    extra_group
+  end
 
   def options_for_group(namespaces, display_path:, type:)
     group_label = type.pluralize

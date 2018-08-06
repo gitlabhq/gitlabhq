@@ -18,10 +18,14 @@
       - if bitbucket_import_enabled?
         %div
           = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}" do
-            = icon('bitbucket', text: 'Bitbucket')
+            = icon('bitbucket', text: 'Bitbucket Cloud')
           - unless bitbucket_import_configured?
             = render 'bitbucket_import_modal'
-
+      - if bitbucket_server_import_enabled?
+        %div
+          = link_to status_import_bitbucket_server_path, class: "btn import_bitbucket" do
+            = icon('bitbucket-square', text: 'Bitbucket Server')
+        %div
       - if gitlab_import_enabled?
         %div
           = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}" do

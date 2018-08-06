@@ -16,6 +16,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+<<<<<<< HEAD
 msgid " and"
 msgstr ""
 
@@ -29,6 +30,11 @@ msgid_plural " improved on %d points"
 msgstr[0] ""
 msgstr[1] ""
 
+=======
+msgid " Status"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -921,6 +927,7 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -985,6 +992,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+=======
+msgid "Bitbucket Server Import"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Bitbucket import"
@@ -1253,12 +1263,15 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Change template"
 msgstr ""
 
@@ -2666,6 +2679,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enter in your Bitbucket Server URL and personal access token below"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -3020,6 +3036,9 @@ msgid "From %{provider_title}"
 msgstr ""
 
 msgid "From Bitbucket"
+msgstr ""
+
+msgid "From Bitbucket Server"
 msgstr ""
 
 msgid "From FogBugz"
@@ -3630,6 +3649,9 @@ msgstr ""
 msgid "Import projects from Bitbucket"
 msgstr ""
 
+msgid "Import projects from Bitbucket Server"
+msgstr ""
+
 msgid "Import projects from FogBugz"
 msgstr ""
 
@@ -3637,6 +3659,9 @@ msgid "Import projects from GitLab.com"
 msgstr ""
 
 msgid "Import projects from Google Code"
+msgstr ""
+
+msgid "Import repositories from Bitbucket Server"
 msgstr ""
 
 msgid "Import repositories from GitHub"
@@ -3956,6 +3981,9 @@ msgid "List Your Gitea Repositories"
 msgstr ""
 
 msgid "List available repositories"
+msgstr ""
+
+msgid "List your Bitbucket Server repositories"
 msgstr ""
 
 msgid "List your GitHub repositories"
@@ -4935,9 +4963,12 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Primary"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Prioritize"
 msgstr ""
 
@@ -7645,6 +7676,9 @@ msgid "for this project"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "https://your-bitbucket-server"
 msgstr ""
 
 msgid "import flow"

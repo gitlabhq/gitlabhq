@@ -53,14 +53,14 @@ describe 'Explore Groups page', :js do
     expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
 
     # Archive project
-    empty_project.archive!
+    ::Projects::UpdateService.new(empty_project, user, archived: true).execute
     visit explore_groups_path
 
     # Check project count
     expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("0")
 
     # Unarchive project
-    empty_project.unarchive!
+    ::Projects::UpdateService.new(empty_project, user, archived: false).execute
     visit explore_groups_path
 
     # Check project count

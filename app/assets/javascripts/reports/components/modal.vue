@@ -36,11 +36,11 @@
         :key="index"
         class="row prepend-top-10 append-bottom-10"
       >
-        <strong class="col-sm-2 text-right">
+        <strong class="col-sm-3 text-right">
           {{ field.text }}:
         </strong>
 
-        <div class="col-sm-10 text-secondary">
+        <div class="col-sm-9 text-secondary">
           <code-block
             v-if="field.type === $options.fieldTypes.codeBock"
             :code="field.value"

@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
   new ShortcutsNavigation(); // eslint-disable-line no-new
   new NotificationsForm(); // eslint-disable-line no-new
   new UserCallout({ // eslint-disable-line no-new
-    setCalloutPerProject: true,
+    setCalloutPerProject: false,
     className: 'js-autodevops-banner',
   });
 

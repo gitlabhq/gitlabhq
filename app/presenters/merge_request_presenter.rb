@@ -208,7 +208,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def closing_issues
-    @closing_issues ||= closes_issues(current_user)
+    @closing_issues ||= visible_closing_issues_for(current_user)
   end
 
   def pipeline

@@ -100,5 +100,9 @@ module Gitlab
           )
       }mx
     end
+
+    def jira_transition_id_regex
+      @jira_transition_id_regex ||= /\d+/
+    end
   end
 end
