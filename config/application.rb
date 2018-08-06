@@ -147,7 +147,6 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "xterm/xterm.css"
     config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
@@ -162,6 +161,10 @@ module Gitlab
     config.assets.precompile << "icons.svg"
     config.assets.precompile << "icons.json"
     config.assets.precompile << "illustrations/*.svg"
+
+    # Import css for xterm
+    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
+    config.assets.precompile << "xterm.css"
 
     ## EE-specific assets config START
     %w[images javascripts stylesheets].each do |path|
