@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Packages::CreatePackageFileService
   attr_reader :package, :params
 

@@ -43,8 +43,9 @@ FactoryBot.define do
 
   factory :maven_metadatum, class: Packages::MavenMetadatum do
     package
-    app_group 'my/company/app'
+    path 'my/company/app/my-app/1.0-SNAPSHOT'
+    app_group 'my.company.app'
     app_name 'my-app'
-    app_version '1-0-SNAPSHOT'
+    app_version '1.0-SNAPSHOT'
   end
 end

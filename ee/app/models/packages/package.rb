@@ -5,4 +5,5 @@ class Packages::Package < ActiveRecord::Base
   has_one :maven_metadatum
 
   validates :project, presence: true
+  validates :name, presence: true
 end

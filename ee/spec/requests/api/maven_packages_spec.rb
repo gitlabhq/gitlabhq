@@ -13,7 +13,7 @@ describe API::MavenPackages do
     project.add_developer(user)
   end
 
-  describe 'GET /api/v4/projects/:id/packages/maven/*app_group/:app_name/:app_version/:file_name' do
+  describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
     let(:package) { create(:maven_package, project: project) }
     let(:maven_metadatum) { package.maven_metadatum }
     let(:package_file_xml) { package.package_files.find_by(file_type: 'xml') }
@@ -64,8 +64,7 @@ describe API::MavenPackages do
 
     def download_file(file_name, params = {}, request_headers = headers)
       get api("/projects/#{project.id}/packages/maven/" \
-              "#{maven_metadatum.app_group}/#{maven_metadatum.app_name}/" \
-              "#{maven_metadatum.app_version}/#{file_name}"), params, request_headers
+              "#{maven_metadatum.path}/#{file_name}"), params, request_headers
     end
 
     def download_file_with_token(file_name, params = {}, request_headers = headers_with_token)
@@ -73,7 +72,7 @@ describe API::MavenPackages do
     end
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/maven/*app_group/:app_name/:app_version/:file_name/authorize' do
+  describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name/authorize' do
     it 'authorizes posting package with a valid token' do
       authorize_upload_with_token
 
@@ -115,7 +114,7 @@ describe API::MavenPackages do
     end
   end
 
-  describe 'PUT /api/v4/projects/:id/packages/maven/*app_group/:app_name/:app_version/:file_name' do
+  describe 'PUT /api/v4/projects/:id/packages/maven/*path/:file_name' do
     let(:file_upload) { fixture_file_upload('ee/spec/fixtures/maven/maven-metadata.xml') }
 
     before do
