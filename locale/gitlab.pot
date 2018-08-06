@@ -16,7 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-<<<<<<< HEAD
+msgid " Status"
+msgstr ""
+
 msgid " and"
 msgstr ""
 
@@ -30,11 +32,6 @@ msgid_plural " improved on %d points"
 msgstr[0] ""
 msgstr[1] ""
 
-=======
-msgid " Status"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -927,7 +924,6 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -992,9 +988,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
+msgstr ""
+
 msgid "Bitbucket Server Import"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Bitbucket import"
@@ -1263,15 +1259,12 @@ msgstr ""
 msgid "Cannot modify managed Kubernetes cluster"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Certificate fingerprint"
 msgstr ""
 
 msgid "Change Weight"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Change template"
 msgstr ""
 
@@ -4963,12 +4956,9 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Primary"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Prioritize"
 msgstr ""
 
