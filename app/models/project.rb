@@ -1320,14 +1320,6 @@ class Project < ActiveRecord::Base
     :visibility_level
   end
 
-  def archive!
-    update_attribute(:archived, true)
-  end
-
-  def unarchive!
-    update_attribute(:archived, false)
-  end
-
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
