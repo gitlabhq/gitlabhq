@@ -10,8 +10,7 @@ import {
   OLD_NO_NEW_LINE_TYPE,
   PARALLEL_DIFF_VIEW_TYPE,
   NEW_NO_NEW_LINE_TYPE,
-  LINE_POSITION_LEFT,
-  LINE_POSITION_RIGHT,
+  EMPTY_CELL_TYPE,
 } from '../constants';
 
 export default {
@@ -36,16 +35,6 @@ export default {
       required: false,
       default: false,
     },
-    leftDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    rightDiscussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   data() {
     return {
@@ -54,29 +43,27 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('diffs', ['isParallelView']),
     isContextLine() {
-      return this.line.left.type === CONTEXT_LINE_TYPE;
+      return this.line.left && this.line.left.type === CONTEXT_LINE_TYPE;
     },
     classNameMap() {
       return {
         [CONTEXT_LINE_CLASS_NAME]: this.isContextLine,
-        [PARALLEL_DIFF_VIEW_TYPE]: this.isParallelView,
+        [PARALLEL_DIFF_VIEW_TYPE]: true,
       };
     },
     parallelViewLeftLineType() {
-      if (this.line.right.type === NEW_NO_NEW_LINE_TYPE) {
+      if (this.line.right && this.line.right.type === NEW_NO_NEW_LINE_TYPE) {
         return OLD_NO_NEW_LINE_TYPE;
       }
 
-      return this.line.left.type;
+      return this.line.left ? this.line.left.type : EMPTY_CELL_TYPE;
     },
   },
   created() {
+    // console.log('LINE : ', this.line);
     this.newLineType = NEW_LINE_TYPE;
     this.oldLineType = OLD_LINE_TYPE;
-    this.linePositionLeft = LINE_POSITION_LEFT;
-    this.linePositionRight = LINE_POSITION_RIGHT;
     this.parallelDiffViewType = PARALLEL_DIFF_VIEW_TYPE;
   },
   methods: {
@@ -116,47 +103,57 @@ export default {
     @mouseover="handleMouseMove"
     @mouseout="handleMouseMove"
   >
-    <diff-table-cell
-      :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
-      :line="line"
-      :line-type="oldLineType"
-      :line-position="linePositionLeft"
-      :is-bottom="isBottom"
-      :is-hover="isLeftHover"
-      :show-comment-button="true"
-      :diff-view-type="parallelDiffViewType"
-      :discussions="leftDiscussions"
-      class="diff-line-num old_line"
-    />
-    <td
-      :id="line.left.lineCode"
-      :class="parallelViewLeftLineType"
-      class="line_content parallel left-side"
-      @mousedown.native="handleParallelLineMouseDown"
-      v-html="line.left.richText"
-    >
-    </td>
-    <diff-table-cell
-      :file-hash="fileHash"
-      :context-lines-path="contextLinesPath"
-      :line="line"
-      :line-type="newLineType"
-      :line-position="linePositionRight"
-      :is-bottom="isBottom"
-      :is-hover="isRightHover"
-      :show-comment-button="true"
-      :diff-view-type="parallelDiffViewType"
-      :discussions="rightDiscussions"
-      class="diff-line-num new_line"
-    />
-    <td
-      :id="line.right.lineCode"
-      :class="line.right.type"
-      class="line_content parallel right-side"
-      @mousedown.native="handleParallelLineMouseDown"
-      v-html="line.right.richText"
-    >
-    </td>
+    <template v-if="line.left">
+      <diff-table-cell
+        :file-hash="fileHash"
+        :context-lines-path="contextLinesPath"
+        :line="line.left"
+        :line-type="oldLineType"
+        :is-bottom="isBottom"
+        :is-hover="isLeftHover"
+        :show-comment-button="true"
+        :diff-view-type="parallelDiffViewType"
+        line-position="left"
+        class="diff-line-num old_line"
+      />
+      <td
+        :id="line.left.lineCode"
+        :class="parallelViewLeftLineType"
+        class="line_content parallel left-side"
+        @mousedown.native="handleParallelLineMouseDown"
+        v-html="line.left.richText"
+      >
+      </td>
+    </template>
+    <template v-else>
+      <td class="diff-line-num old_line empty-cell"></td>
+      <td class="line_content parallel left-side empty-cell"></td>
+    </template>
+    <template v-if="line.right">
+      <diff-table-cell
+        :file-hash="fileHash"
+        :context-lines-path="contextLinesPath"
+        :line="line.right"
+        :line-type="newLineType"
+        :is-bottom="isBottom"
+        :is-hover="isRightHover"
+        :show-comment-button="true"
+        :diff-view-type="parallelDiffViewType"
+        line-position="right"
+        class="diff-line-num new_line"
+      />
+      <td
+        :id="line.right.lineCode"
+        :class="line.right.type"
+        class="line_content parallel right-side"
+        @mousedown.native="handleParallelLineMouseDown"
+        v-html="line.right.richText"
+      >
+      </td>
+    </template>
+    <template v-else>
+      <td class="diff-line-num old_line empty-cell"></td>
+      <td class="line_content parallel right-side empty-cell"></td>
+    </template>
   </tr>
 </template>

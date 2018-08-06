@@ -161,6 +161,8 @@ export function addContextLines(options) {
  * @returns {Object}
  */
 export function trimFirstCharOfLineContent(line = {}) {
+  delete line.text;
+
   const parsedLine = Object.assign({}, line);
 
   if (line.richText) {
