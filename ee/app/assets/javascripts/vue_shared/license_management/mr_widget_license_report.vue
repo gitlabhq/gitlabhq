@@ -1,6 +1,7 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import reportsMixin from 'ee/vue_shared/security_reports/mixins/reports_mixin';
 import SetLicenseApprovalModal from 'ee/vue_shared/license_management/components/set_approval_status_modal.vue';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
@@ -16,6 +17,7 @@ export default {
   components: {
     ReportSection,
     SetLicenseApprovalModal,
+    Icon,
   },
   mixins: [reportsMixin],
   props: {
@@ -110,9 +112,14 @@ export default {
       >
         <a
           :href="licensesTab"
-          class="btn btn-default float-right btn-sm"
+          target="_blank"
+          class="btn btn-default btn-sm float-right"
         >
-          {{ s__("ciReport|View full report") }}
+          <span>{{ s__("ciReport|View full report") }}</span>
+          <icon
+            :size="16"
+            name="external-link"
+          />
         </a>
       </div>
     </report-section>
