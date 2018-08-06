@@ -60,12 +60,12 @@ export default class MirrorPull {
       const matchesProtocol = protRegEx.test(protocol);
       this.$dropdownAuthType.attr('disabled', matchesProtocol);
 
-      if (matchesProtocol) {
-        this.$dropdownAuthType.val(AUTH_METHOD.PASSWORD);
-        this.toggleAuthWell(AUTH_METHOD.PASSWORD);
-      } else if (forceMatch && isSsh) {
+      if (forceMatch && isSsh) {
         this.$dropdownAuthType.val(AUTH_METHOD.SSH);
         this.toggleAuthWell(AUTH_METHOD.SSH);
+      } else {
+        this.$dropdownAuthType.val(AUTH_METHOD.PASSWORD);
+        this.toggleAuthWell(AUTH_METHOD.PASSWORD);
       }
     }
   }

@@ -116,9 +116,6 @@ describe 'Project mirror', :js do
           expect(page).to have_content(import_data.ssh_public_key)
 
           click_without_sidekiq 'Mirror repository'
-
-          fill_in 'Git repository URL', with: 'ssh://user@example.com'
-          select('Pull', from: 'Mirror direction')
         end
 
         # We didn't set any host keys
@@ -132,6 +129,10 @@ describe 'Project mirror', :js do
         expect(import_data.auth_method).to eq('ssh_public_key')
         expect(import_data.password).to be_blank
 
+        find('.js-delete-mirror').click
+        fill_in 'Git repository URL', with: 'ssh://user@example.com'
+        select('Pull', from: 'Mirror direction')
+
         first_key = import_data.ssh_public_key
         expect(page).to have_content(first_key)
 
@@ -139,11 +140,6 @@ describe 'Project mirror', :js do
         click_without_sidekiq 'Regenerate key'
         find('.js-regenerate-public-ssh-key-confirm-modal .js-confirm').click
         wait_for_requests
-
-        page.within('.project-mirror-settings') do
-          fill_in 'Git repository URL', with: 'ssh://user@example.com'
-          select('Pull', from: 'Mirror direction')
-        end
 
         expect(page).not_to have_content(first_key)
         expect(page).to have_content(import_data.reload.ssh_public_key)
@@ -199,6 +195,7 @@ describe 'Project mirror', :js do
           fill_in 'SSH host keys', with: "example.com #{key.key_text}"
           click_without_sidekiq 'Mirror repository'
 
+          find('.js-delete-mirror').click
           fill_in 'Git repository URL', with: 'ssh://example.com'
           select('Pull', from: 'Mirror direction')
 
@@ -216,11 +213,12 @@ describe 'Project mirror', :js do
           fill_in 'Git repository URL', with: 'ssh://example.com'
           select('Pull', from: 'Mirror direction')
 
+          execute_script 'document.querySelector("html").scrollTop = 1000;'
           expect(page).to have_select('Authentication method')
 
           # SSH can use password authentication but needs host keys
-          expect(page).to have_field('Password')
           select 'Password', from: 'Authentication method'
+          expect(page).to have_field('Password')
           expect(page).to have_button('Detect host keys')
           expect(page).to have_button('Input host keys manually')
 
