@@ -77,7 +77,7 @@ export default () => {
           },
           on: {
             updateBadgeCount: (count) => {
-              updateBadgeCount('.js-licenses-counter', count);
+              updateBadgeCount('.js-sast-counter', count);
             },
           },
         });
