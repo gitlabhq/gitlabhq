@@ -42,15 +42,44 @@ describe Projects::MilestonesController do
 
   describe "#index" do
     context "as html" do
-      before do
-        get :index, namespace_id: project.namespace.id, project_id: project.id
+      def render_index(project:, page:)
+        get :index, namespace_id: project.namespace.id,
+                    project_id: project.id,
+                    page: page
       end
 
       it "queries only projects milestones" do
+        render_index project: project, page: 1
+
         milestones = assigns(:milestones)
 
         expect(milestones.count).to eq(1)
         expect(milestones.where(project_id: nil)).to be_empty
+      end
+
+      it 'renders paginated milestones without missing or duplicates' do
+        allow(Milestone).to receive(:default_per_page).and_return(2)
+        create_list(:milestone, 5, project: project)
+
+        render_index project: project, page: 1
+        page_1_milestones = assigns(:milestones)
+        expect(page_1_milestones.size).to eq(2)
+
+        render_index project: project, page: 2
+        page_2_milestones = assigns(:milestones)
+        expect(page_2_milestones.size).to eq(2)
+
+        render_index project: project, page: 3
+        page_3_milestones = assigns(:milestones)
+        expect(page_3_milestones.size).to eq(2)
+
+        rendered_milestone_ids =
+          page_1_milestones.pluck(:id) +
+          page_2_milestones.pluck(:id) +
+          page_3_milestones.pluck(:id)
+
+        expect(rendered_milestone_ids)
+          .to match_array(project.milestones.pluck(:id))
       end
     end
 

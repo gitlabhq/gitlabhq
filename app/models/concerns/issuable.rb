@@ -154,7 +154,7 @@ module Issuable
         end
 
       # Break ties with the ID column for pagination
-      sorted.order(id: :desc)
+      sorted.with_order_id_desc
     end
 
     def order_due_date_and_labels_priority(excluded_labels: [])
