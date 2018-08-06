@@ -8,7 +8,7 @@ class Packages::CreatePackageFileService
 
   def execute
     package.package_files.create!(
-      file:      parmas[:file],
+      file:      params[:file],
       size:      params[:size],
       file_name: params[:file_name],
       file_type: params[:file_type],
