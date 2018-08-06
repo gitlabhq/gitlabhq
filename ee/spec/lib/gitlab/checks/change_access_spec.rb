@@ -262,15 +262,19 @@ describe Gitlab::Checks::ChangeAccess do
 
       context 'max file size rules' do
         let(:push_rule) { create(:push_rule, max_file_size: 1) }
+        # SHA of the 2-mb-file branch
+        let(:newrev)    { 'bf12d2567099e26f59692896f73ac819bae45b00' }
+        let(:ref)       { 'my-branch' }
 
         before do
-          allow_any_instance_of(::Gitlab::Git::RawDiffChange).to receive(:blob_size).and_return(2.megabytes)
+          # Delete branch so Repository#new_blobs can return results
+          project.repository.delete_branch('2-mb-file')
         end
 
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if file exceeds the maximum file size' do
-          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"file.bin\" is larger than the allowed size of 1 MB")
         end
       end
 

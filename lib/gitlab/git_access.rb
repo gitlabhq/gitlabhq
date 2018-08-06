@@ -272,36 +272,13 @@ module Gitlab
         check_single_change_access(change, skip_lfs_integrity_check: !first_change)
 
         if project.size_limit_enabled?
-          push_size_in_bytes += push_size(change)
+          push_size_in_bytes += repository.new_blobs(change[:newrev]).sum(&:size)
         end
       end
 
       if check_size_limit? && project.changes_will_exceed_size_limit?(push_size_in_bytes)
         raise UnauthorizedError, Gitlab::RepositorySizeError.new(project).new_changes_error
       end
-    end
-
-    def push_size(change)
-      old_rev, new_rev = change.values_at(:oldrev, :newrev)
-      current_changes_size = 0
-      old_paths = []
-
-      repository.raw_changes_between(old_rev, new_rev).each do |c|
-        case c.operation
-        when :deleted
-          current_changes_size -= c.blob_size
-        when :added
-          current_changes_size += c.blob_size
-        when :copied, :modified, :renamed, :type_changed
-          current_changes_size += c.blob_size
-
-          old_paths << [old_rev, c.old_path]
-        end
-      end
-
-      old_changes_size = Gitlab::Git::Blob.batch_metadata(repository, old_paths).sum(&:size)
-
-      current_changes_size - old_changes_size
     end
 
     def check_single_change_access(change, skip_lfs_integrity_check: false)

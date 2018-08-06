@@ -1,0 +1,5 @@
+---
+title: Ensure that push size checks only count the size of newly-pushed files
+merge_request: 6767
+author:
+type: fixed

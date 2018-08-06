@@ -19,6 +19,7 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      REV_LIST_COMMIT_LIMIT = 2_000
       # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       # We copied these two prefixes into gitaly-go, so don't change these
       # or things will break! (REBASE_WORKTREE_PREFIX and SQUASH_WORKTREE_PREFIX)
@@ -376,6 +377,16 @@ module Gitlab
             end
 
             Gitlab::Git::Commit.batch_by_oid(self, refs)
+          end
+        end
+      end
+
+      def new_blobs(newrev)
+        return [] if newrev == ::Gitlab::Git::BLANK_SHA
+
+        strong_memoize("new_blobs_#{newrev}") do
+          wrapped_gitaly_errors do
+            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT)
           end
         end
       end

@@ -5,6 +5,7 @@ describe Gitlab::GitAccess do
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
+  let(:repository) { project.repository }
   let(:protocol) { 'web' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
@@ -154,42 +155,44 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
     end
 
     describe "max file size check" do
-      let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-      let(:end_sha)   { 'c84ff944ff4529a70788a5e9003c2b7feae29047' }
-      let(:changes) { "#{start_sha} #{end_sha} refs/heads/master" }
+      let(:start_sha) { ::Gitlab::Git::BLANK_SHA }
+      # SHA of the 2-mb-file branch
+      let(:end_sha)   { 'bf12d2567099e26f59692896f73ac819bae45b00' }
+      let(:changes) { "#{start_sha} #{end_sha} refs/heads/my-branch" }
 
       before do
         project.add_developer(user)
+        # Delete branch so Repository#new_blobs can return results
+        repository.delete_branch('2-mb-file')
       end
 
       it "returns false when size is too large" do
         project.create_push_rule(max_file_size: 1)
 
+        expect(repository.new_blobs(end_sha)).to be_present
         expect { push_changes(changes) }.to raise_error(described_class::UnauthorizedError)
       end
 
       it "returns true when size is allowed" do
-        project.create_push_rule(max_file_size: 2)
+        project.create_push_rule(max_file_size: 3)
 
-        expect { push_changes(changes) }.not_to raise_error
-      end
-
-      it "returns true when size is nil" do
-        allow_any_instance_of(Gitlab::Git::Blob).to receive(:size).and_return(nil)
-        project.create_push_rule(max_file_size: 2)
-
+        expect(repository.new_blobs(end_sha)).to be_present
         expect { push_changes(changes) }.not_to raise_error
       end
     end
   end
 
   describe 'repository size restrictions' do
-    let(:start_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
-    let(:sha_with_2_mb_file) { 'c84ff944ff4529a70788a5e9003c2b7feae29047' }
-    let(:sha_with_smallest_changes) { '33f3729a45c02fc67d00adb1b8bca394b0e761d9' }
+    # SHA for the 2-mb-file branch
+    let(:sha_with_2_mb_file) { 'bf12d2567099e26f59692896f73ac819bae45b00' }
+    # SHA for the wip branch
+    let(:sha_with_smallest_changes) { 'b9238ee5bf1d7359dd3b8c89fd76c1c7f8b75aba' }
 
     before do
       project.add_developer(user)
+      # Delete branch so Repository#new_blobs can return results
+      repository.delete_branch('2-mb-file')
+      repository.delete_branch('wip')
     end
 
     context 'when repository size is over limit' do
@@ -200,17 +203,17 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
       end
 
       it 'rejects the push' do
+        expect(repository.new_blobs(sha_with_smallest_changes)).to be_present
+
         expect do
-          push_changes("#{start_sha} #{sha_with_smallest_changes} refs/heads/master")
+          push_changes("#{Gitlab::Git::BLANK_SHA} #{sha_with_smallest_changes} refs/heads/master")
         end.to raise_error(described_class::UnauthorizedError, /Your push has been rejected/)
       end
 
       context 'when deleting a branch' do
         it 'accepts the operation' do
-          feature_branch_sha = project.commit('feature').id
-
           expect do
-            push_changes("#{feature_branch_sha} #{::Gitlab::Git::BLANK_SHA} refs/heads/feature")
+            push_changes("#{sha_with_smallest_changes} #{::Gitlab::Git::BLANK_SHA} refs/heads/feature")
           end.not_to raise_error
         end
       end
@@ -223,62 +226,33 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
         project.update_attribute(:repository_size_limit, 2.megabytes)
       end
 
+      context 'when pushing a new branch' do
+        it 'accepts the push' do
+          master_sha = project.commit('master').id
+
+          expect do
+            push_changes("#{Gitlab::Git::BLANK_SHA} #{master_sha} refs/heads/my_branch")
+          end.not_to raise_error
+        end
+      end
+
       context 'when new change exceeds the limit' do
         it 'rejects the push' do
+          expect(repository.new_blobs(sha_with_2_mb_file)).to be_present
+
           expect do
-            push_changes("#{start_sha} #{sha_with_2_mb_file} refs/heads/master")
+            push_changes("#{Gitlab::Git::BLANK_SHA} #{sha_with_2_mb_file} refs/heads/my_branch_2")
           end.to raise_error(described_class::UnauthorizedError, /Your push to this repository would cause it to exceed the size limit/)
         end
       end
 
       context 'when new change does not exceeds the limit' do
         it 'accepts the push' do
+          expect(repository.new_blobs(sha_with_smallest_changes)).to be_present
+
           expect do
-            push_changes("#{start_sha} #{sha_with_smallest_changes} refs/heads/master")
+            push_changes("#{Gitlab::Git::BLANK_SHA} #{sha_with_smallest_changes} refs/heads/my_branch_3")
           end.not_to raise_error
-        end
-      end
-
-      context 'when a file is modified' do
-        let(:start_sha) { '281d3a76f31c812dbf48abce82ccf6860adedd81' } # file created
-        let(:end_sha) { 'c347ca2e140aa667b968e51ed0ffe055501fe4f4' } # file modified
-        let(:changes) { "#{start_sha} #{end_sha} refs/heads/master" }
-
-        before do
-          # Substract 10_000 bytes in order to demostrate that the 23 KB are not added to the total
-          allow(project).to receive(:repository_and_lfs_size).and_return(2.megabytes - 10000)
-        end
-
-        it 'just add the difference between the two versions to the total size' do
-          expect { push_changes(changes) }.not_to raise_error
-        end
-      end
-
-      context 'when a file is renamed' do
-        let(:start_sha) { '281d3a76f31c812dbf48abce82ccf6860adedd81' } # file deleted
-        let(:end_sha) { 'c347ca2e140aa667b968e51ed0ffe055501fe4f4' } # file added with different name
-        let(:changes) { "#{start_sha} #{end_sha} refs/heads/master" }
-
-        before do
-          allow(project).to receive(:repository_and_lfs_size).and_return(2.megabytes)
-        end
-
-        it 'does not modify the total size given the content is the same' do
-          expect { push_changes(changes) }.not_to raise_error
-        end
-      end
-
-      context 'when a file is deleted' do
-        let(:start_sha) { 'c1acaa58bbcbc3eafe538cb8274ba387047b69f8' } # file deleted
-        let(:end_sha) { '5937ac0a7beb003549fc5fd26fc247adbce4a52e' } # New changes introduced
-        let(:changes) { "#{start_sha} #{end_sha} refs/heads/master" }
-
-        before do
-          allow(project).to receive(:repository_and_lfs_size).and_return(2.megabytes)
-        end
-
-        it 'subtracts the size of the deleted file before calculate the new total' do
-          expect { push_changes(changes) }.not_to raise_error
         end
       end
     end
