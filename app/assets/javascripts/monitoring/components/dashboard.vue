@@ -147,6 +147,7 @@ export default {
           }
           this.showEmptyState = false;
         })
+        .then(this.resize)
         .catch(() => {
           this.state = 'unableToConnect';
         });
