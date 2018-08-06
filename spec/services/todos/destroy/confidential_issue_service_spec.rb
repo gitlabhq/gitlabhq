@@ -29,12 +29,8 @@ describe Todos::Destroy::ConfidentialIssueService do
         issue.update!(confidential: true)
       end
 
-      it 'removes issue todos for a user who is not a project member' do
+      it 'removes issue todos for users who can not access the confidential issue' do
         expect { subject }.to change { Todo.count }.from(6).to(4)
-
-        expect(user.todos).to match_array([todo_another_non_member])
-        expect(author.todos).to match_array([todo_issue_author])
-        expect(project_member.todos).to match_array([todo_issue_member])
       end
     end
 

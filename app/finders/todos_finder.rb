@@ -95,10 +95,6 @@ class TodosFinder
       @project = Project.find(params[:project_id])
 
       @project = nil if @project.pending_delete?
-
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
     else
       @project = nil
     end
