@@ -654,6 +654,8 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
+
+    project_import_data
   end
 
   def import?
