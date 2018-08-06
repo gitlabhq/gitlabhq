@@ -49,7 +49,7 @@
           - unless milestone.active?
             = link_to 'Reopen Milestone', project_milestone_path(@project, milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
         - if @group
-          - if can?(current_user, :admin_milestones, @group)
+          - if can?(current_user, :admin_milestone, @group)
             - if milestone.closed?
               = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
             - else

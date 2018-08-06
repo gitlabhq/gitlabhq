@@ -204,6 +204,24 @@ shared_examples_for 'group and project milestones' do |route_definition|
     end
   end
 
+  describe "DELETE #{route_definition}/:milestone_id" do
+    it "rejects a member with reporter access from deleting a milestone" do
+      reporter = create(:user)
+      milestone.parent.add_reporter(reporter)
+
+      delete api(resource_route, reporter)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'deletes the milestone when the user has developer access to the project' do
+      delete api(resource_route, user)
+
+      expect(project.milestones.find_by_id(milestone.id)).to be_nil
+      expect(response).to have_gitlab_http_status(204)
+    end
+  end
+
   describe "GET #{route_definition}/:milestone_id/issues" do
     let(:issues_route) { "#{route}/#{milestone.id}/issues" }
 
