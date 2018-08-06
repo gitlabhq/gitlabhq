@@ -7,7 +7,7 @@ module EE
     extend ActiveSupport::Concern
     include AuditorUserHelper
 
-    DEFAULT_ROADMAP_LAYOUT = 'MONTHS'.freeze
+    DEFAULT_ROADMAP_LAYOUT = 'months'.freeze
 
     included do
       EMAIL_OPT_IN_SOURCE_ID_GITLAB_COM = 1
@@ -38,7 +38,7 @@ module EE
 
       scope :excluding_guests, -> { joins(:members).where('members.access_level > ?', ::Gitlab::Access::GUEST).distinct }
 
-      enum roadmap_layout: { WEEKS: 1, MONTHS: 4, QUARTERS: 12 }
+      enum roadmap_layout: { weeks: 1, months: 4, quarters: 12 }
     end
 
     module ClassMethods

@@ -51,12 +51,12 @@ describe Groups::RoadmapController do
 
       context 'specifying layout' do
         it 'persists roadmap_layout if different than current layout' do
-          expect(Users::UpdateService).to receive(:new).with(user, user: user, roadmap_layout: layout).once.and_call_original
+          expect(Users::UpdateService).to receive(:new).with(user, user: user, roadmap_layout: layout.downcase).once.and_call_original
 
           expect do
             get group_roadmap_path(group, layout: layout)
             get group_roadmap_path(group, layout: layout)
-          end.to change { user.reload.roadmap_layout }.to(layout)
+          end.to change { user.reload.roadmap_layout }.to(layout.downcase)
 
           expect(response).to have_gitlab_http_status(200)
         end

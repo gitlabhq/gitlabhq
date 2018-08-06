@@ -229,10 +229,10 @@ describe EE::User do
     end
 
     context 'set' do
-      subject { build(:user, roadmap_layout: 'QUARTERS') }
+      subject { build(:user, roadmap_layout: 'quarters') }
 
       it 'returns set value' do
-        expect(subject.roadmap_layout).to eq('QUARTERS')
+        expect(subject.roadmap_layout).to eq('quarters')
       end
     end
   end

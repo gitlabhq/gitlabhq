@@ -28,7 +28,7 @@ describe RoadmapsHelper do
 
       it 'is sourced from User#roadmap_layout' do
         allow(helper).to receive(:params).and_return(layout: 'WEEKS')
-        expect(user).to receive(:roadmap_layout).and_return('QUARTERS')
+        expect(user).to receive(:roadmap_layout).and_return('quarters')
 
         expect(helper.roadmap_layout).to eq('QUARTERS')
       end
