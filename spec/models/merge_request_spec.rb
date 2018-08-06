@@ -311,6 +311,51 @@ describe MergeRequest do
     end
   end
 
+  describe '#visible_closing_issues_for' do
+    let(:guest) { create(:user) }
+    let(:developer) { create(:user) }
+    let(:issue_1) { create(:issue, project: subject.source_project) }
+    let(:issue_2) { create(:issue, project: subject.source_project) }
+    let(:confidential_issue) { create(:issue, :confidential, project: subject.source_project) }
+
+    before do
+      subject.project.add_developer(subject.author)
+      subject.target_branch = subject.project.default_branch
+      commit = double('commit1', safe_message: "Fixes #{issue_1.to_reference} #{issue_2.to_reference} #{confidential_issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+    end
+
+    it 'shows only allowed issues to guest' do
+      subject.project.add_guest(guest)
+
+      subject.cache_merge_request_closes_issues!
+
+      expect(subject.visible_closing_issues_for(guest)).to match_array([issue_1, issue_2])
+    end
+
+    it 'shows only allowed issues to developer' do
+      subject.project.add_developer(developer)
+
+      subject.cache_merge_request_closes_issues!
+
+      expect(subject.visible_closing_issues_for(developer)).to match_array([issue_1, confidential_issue, issue_2])
+    end
+
+    context 'when external issue tracker is enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.save!
+      end
+
+      it 'calls non #closes_issues to retrieve data' do
+        expect(subject).to receive(:closes_issues)
+        expect(subject).not_to receive(:cached_closes_issues)
+
+        subject.visible_closing_issues_for
+      end
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!' do
     before do
       subject.project.add_developer(subject.author)
@@ -323,6 +368,25 @@ describe MergeRequest do
       allow(subject).to receive(:commits).and_return([commit])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
+    end
+
+    it 'does not cache closed issues when merge request is closed' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+
+      allow(subject).to receive(:commits).and_return([commit])
+      allow(subject).to receive(:state).and_return("closed")
+
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+    end
+
+    it 'does not cache closed issues when merge request is merged' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+      allow(subject).to receive(:state).and_return("merged")
+
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
 
     context 'when both internal and external issue trackers are enabled' do
@@ -633,6 +697,7 @@ describe MergeRequest do
       allow(subject).to receive(:commits).and_return([commit])
       allow(subject.project).to receive(:default_branch)
         .and_return(subject.target_branch)
+      subject.cache_merge_request_closes_issues!
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -650,6 +715,8 @@ describe MergeRequest do
       end
 
       it 'detects issues mentioned in description but not closed' do
+        subject.cache_merge_request_closes_issues!
+
         expect(subject.issues_mentioned_but_not_closing(subject.author).map(&:to_s)).to match_array(['TEST-2'])
       end
     end
@@ -780,9 +847,8 @@ describe MergeRequest do
 
       subject.project.add_developer(subject.author)
       subject.description = "This issue Closes #{issue.to_reference}"
-
-      allow(subject.project).to receive(:default_branch)
-        .and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+      subject.cache_merge_request_closes_issues!
 
       expect(subject.merge_commit_message)
         .to match("Closes #{issue.to_reference}")
