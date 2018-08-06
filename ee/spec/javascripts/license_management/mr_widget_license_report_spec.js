@@ -84,6 +84,23 @@ describe('License Report MR Widget', () => {
         }));
     });
 
+    describe('licensesTab', () => {
+      it('with the pipelinePath prop', done => {
+        const pipelinePath = `${TEST_HOST}/path/to/the/pipeline`;
+
+        vm.pipelinePath = pipelinePath;
+
+        return Vue.nextTick().then(() => {
+          expect(vm.licensesTab).toEqual(`${pipelinePath}/licenses`);
+          done();
+        });
+      });
+
+      it('without the pipelinePath prop', () => {
+        expect(vm.licensesTab).toEqual(null);
+      });
+    });
+
     describe('licenseReportStatus', () => {
       it('should be `LOADING`, if the report is loading', done => {
         store.hotUpdate({
