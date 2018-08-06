@@ -3,6 +3,7 @@ import { mapActions, mapState, mapGetters } from 'vuex';
 import ReportSection from '~/vue_shared/components/reports/report_section.vue';
 import SummaryRow from '~/vue_shared/components/reports/summary_row.vue';
 import IssuesList from '~/vue_shared/components/reports/issues_list.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import IssueModal from './components/modal.vue';
 import securityReportsMixin from './mixins/security_report_mixin';
@@ -15,6 +16,7 @@ export default {
     SummaryRow,
     IssuesList,
     IssueModal,
+    Icon,
   },
   mixins: [securityReportsMixin],
   props: {
@@ -224,9 +226,14 @@ export default {
     >
       <a
         :href="securityTab"
-        class="btn float-right btn-sm"
+        target="_blank"
+        class="btn btn-default btn-sm float-right"
       >
-        {{ s__("ciReport|View full report") }}
+        <span>{{ s__("ciReport|View full report") }}</span>
+        <icon
+          :size="16"
+          name="external-link"
+        />
       </a>
     </div>
 
