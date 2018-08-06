@@ -8,8 +8,9 @@ Milestones allow you to organize issues and merge requests into a cohesive group
 
 ## Project milestones and group milestones
 
-- **Project milestones** can be assigned to issues or merge requests in that project only.
-- **Group milestones** can be assigned to any issue or merge request of any project in that group.
+- **Project milestones** can be assigned to issues or merge requests in that project only. Navigate to **Issues > Milestones** in a project to view the project milestone list.
+- **Group milestones** can be assigned to any issue or merge request of any project in that group. Navigate to **Issues > Milestones** in a group to view the group milestone list.
+- All milestones you have access to can also be viewed in the dashboard milestones list. Click on **Milestones** on the top navigation bar to view both project milestones and group milestones you have access to.
 
 ## Creating milestones
 
