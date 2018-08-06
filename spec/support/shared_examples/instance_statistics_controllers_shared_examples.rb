@@ -9,8 +9,6 @@ shared_examples 'instance statistics availability' do
 
   describe 'GET #index' do
     it 'is available when the feature is available publicly' do
-      stub_application_setting(instance_statistics_visibility_private: false)
-
       get :index
 
       expect(response).to have_gitlab_http_status(:success)
