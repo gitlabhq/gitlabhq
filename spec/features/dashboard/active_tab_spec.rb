@@ -35,6 +35,10 @@ RSpec.describe 'Dashboard Active Tab', :js do
   context 'on instance statistics' do
     subject { visit instance_statistics_root_path }
 
+    before do
+      stub_application_setting(instance_statistics_visibility_private: false)
+    end
+
     it 'shows Instance Statistics` as active' do
       subject
 
