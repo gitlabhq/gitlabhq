@@ -19,6 +19,7 @@ With GitLab merge requests, you can:
 - Build, test, and deploy your code in a per-branch basis with built-in [GitLab CI/CD](../../../ci/README.md)
 - Prevent the merge request from being merged before it's ready with [WIP MRs](#work-in-progress-merge-requests)
 - View the deployment process through [Pipeline Graphs](../../../ci/pipelines.md#pipeline-graphs)
+- View [test reports](test_reports.md) of the new change
 - [Automatically close the issue(s)](../../project/issues/closing_issues.md#via-merge-request) that originated the implementation proposed in the merge request
 - Assign it to any registered user, and change the assignee how many times you need
 - Assign a [milestone](../../project/milestones/index.md) and track the development of a broader implementation
@@ -43,8 +44,7 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html) **[STARTER]**
-1. You build and test your changes with GitLab CI/CD
+1. You verify your changes with [Test reports](test_reports.md) in GitLab CI/CD
 1. You request the approval from your manager
 1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
@@ -203,6 +203,15 @@ completely ready, GitLab blocks the "Accept" button for merge requests that
 have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
+
+## Test reports
+
+> Introduced in GitLab 11.2
+
+To verify whether the merge request do not break anything, you can show test reports
+in merge requests. This is tightly integreated with ["artifacts:reports" keyword in gitlab-ci.yml](https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts)
+
+[Learn more about viewing test reports in a merge request".](test_reports.md)
 
 ## Merge request diff file navigation
 

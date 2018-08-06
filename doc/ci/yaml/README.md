@@ -1092,6 +1092,35 @@ job:
     expire_in: 1 week
 ```
 
+### `artifacts:reports`
+
+> Introduced in GitLab 11.2
+> This feature requires GitLab Runner version 11.2 or above
+
+`reports` keyword allows you to show 
+
+save report-type artifacts (e.g. JUnit XML),
+internally parse & analyze the results, and surface the results.
+
+```yaml
+rspec 0 3:
+  stage: test
+  script:
+  - rspec --format RspecJunitFormatter --out rspec.xml
+  artifacts:
+    reports:
+      junit: rspec.xml
+```
+
+### `artifacts:reports:junit`
+
+`junit` is to specify paths of JUnit style XML test reports 
+
+```
+
+```
+
+
 ## `dependencies`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
