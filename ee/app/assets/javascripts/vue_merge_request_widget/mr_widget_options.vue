@@ -219,7 +219,7 @@ export default {
       :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
       :has-issues="hasCodequalityIssues"
       :component="$options.componentNames.CodequalityIssueBody"
-      class="js-codequality-widget mr-widget-border-top"
+      class="js-codequality-widget mr-widget-border-top mr-report"
     />
     <report-section
       v-if="shouldRenderPerformance"
@@ -232,7 +232,7 @@ export default {
       :neutral-issues="mr.performanceMetrics.neutral"
       :has-issues="hasPerformanceMetrics"
       :component="$options.componentNames.PerformanceIssueBody"
-      class="js-performance-widget mr-widget-border-top"
+      class="js-performance-widget mr-widget-border-top mr-report"
     />
     <grouped-security-reports-app
       v-if="shouldRenderSecurityReport"
