@@ -25,54 +25,6 @@ describe Geo::ProjectRegistryFinder, :geo do
   end
 
   shared_examples 'counts all the things' do
-    describe '#count_repositories' do
-      context 'without selective sync' do
-        it 'returns cached count values' do
-          SiteStatistic.fetch.update(repositories_count: 222)
-
-          expect(subject.count_repositories).to eq(222)
-        end
-      end
-
-      context 'with selective sync' do
-        before do
-          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-        end
-
-        it 'returns only slice of selected repositories' do
-          create(:project, group: synced_group)
-          create(:project, group: synced_group)
-          create(:project)
-
-          expect(subject.count_repositories).to eq(2)
-        end
-      end
-    end
-
-    describe '#count_wikis' do
-      context 'without selective sync' do
-        it 'returns cached count values' do
-          SiteStatistic.fetch.update(wikis_count: 333)
-
-          expect(subject.count_wikis).to eq(333)
-        end
-      end
-
-      context 'with selective sync' do
-        before do
-          secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
-        end
-
-        it 'returns only slice of selected repositories' do
-          create(:project, group: synced_group)
-          create(:project, :wiki_disabled, group: synced_group)
-          create(:project)
-
-          expect(subject.count_wikis).to eq(1)
-        end
-      end
-    end
-
     describe '#count_synced_repositories' do
       it 'delegates to #find_synced_repositories' do
         expect(subject).to receive(:find_synced_repositories).and_call_original
