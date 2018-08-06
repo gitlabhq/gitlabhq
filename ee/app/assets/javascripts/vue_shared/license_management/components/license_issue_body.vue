@@ -1,6 +1,5 @@
 <script>
 import { mapActions } from 'vuex';
-import { s__ } from '~/locale/index';
 
 import LicensePackages from './license_packages.vue';
 

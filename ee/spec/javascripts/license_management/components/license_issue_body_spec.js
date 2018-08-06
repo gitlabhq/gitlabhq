@@ -1,7 +1,6 @@
 import Vue from 'vue';
 
 import LicenseIssueBody from 'ee/vue_shared/license_management/components/license_issue_body.vue';
-import { LICENSE_APPROVAL_STATUS } from 'ee/vue_shared/license_management/constants';
 import { trimText } from 'spec/helpers/vue_component_helper';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import createStore from 'ee/vue_shared/license_management/store';
@@ -20,42 +19,6 @@ describe('LicenseIssueBody', () => {
 
   afterEach(() => {
     vm.$destroy();
-  });
-
-  describe('computed', () => {
-    describe('status', () => {
-      it('returns correct status for Approved licenses', done => {
-        vm.issue = { ...vm.issue, approvalStatus: LICENSE_APPROVAL_STATUS.APPROVED };
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.status).toBe('Approved');
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-      it('returns correct status for Blacklisted licenses', done => {
-        vm.issue = { ...vm.issue, approvalStatus: LICENSE_APPROVAL_STATUS.BLACKLISTED };
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.status).toBe('Blacklisted');
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-
-      it('returns correct status for Unapproved licenses', done => {
-        vm.issue = { ...vm.issue, approvalStatus: undefined };
-
-        Vue.nextTick()
-          .then(() => {
-            expect(vm.status).toBe('Unapproved');
-          })
-          .then(done)
-          .catch(done.fail);
-      });
-    });
   });
 
   describe('interaction', () => {
