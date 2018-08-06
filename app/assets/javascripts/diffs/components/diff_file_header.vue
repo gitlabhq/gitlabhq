@@ -50,7 +50,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('diffs', ['diffHasExpandedDiscussions']),
+    ...mapGetters('diffs', ['diffHasExpandedDiscussions', 'diffHasDiscussions']),
     hasExpandedDiscussions() {
       return this.diffHasExpandedDiscussions(this.diffFile);
     },
@@ -107,6 +107,9 @@ export default {
         },
         false,
       );
+    },
+    gfmCopyText() {
+      return `\`${this.diffFile.filePath}\``;
     },
   },
   methods: {
@@ -191,6 +194,7 @@ export default {
       <clipboard-button
         :title="__('Copy file path to clipboard')"
         :text="diffFile.filePath"
+        :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 
@@ -217,6 +221,7 @@ export default {
         v-if="diffFile.blob && diffFile.blob.readableText"
       >
         <button
+          :disabled="!diffHasDiscussions(diffFile)"
           :class="{ active: hasExpandedDiscussions }"
           :title="s__('MergeRequests|Toggle comments for this file')"
           class="js-btn-vue-toggle-comments btn"

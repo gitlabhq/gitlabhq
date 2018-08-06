@@ -135,6 +135,20 @@ describe 'Jobs', :clean_gitlab_redis_shared_state do
       end
     end
 
+    context 'sidebar' do
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline, name: '<img src=x onerror=alert(document.domain)>') }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'renders escaped tooltip name' do
+        page.within('aside.right-sidebar') do
+          expect(find('.active.build-job a')['data-title']).to eq('<img src="x"> - passed')
+        end
+      end
+    end
+
     context 'when job is not running', :js do
       let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 

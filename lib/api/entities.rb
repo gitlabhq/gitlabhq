@@ -30,7 +30,7 @@ module API
     end
 
     class User < UserBasic
-      expose :created_at
+      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
@@ -55,10 +55,19 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+      expose :private_profile
     end
 
     class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserStatus < Grape::Entity
+      expose :emoji
+      expose :message
+      expose :message_html do |entity|
+        MarkupHelper.markdown_field(entity, :message)
+      end
     end
 
     class Email < Grape::Entity
@@ -1235,7 +1244,13 @@ module API
       end
 
       class Artifacts < Grape::Entity
-        expose :name, :untracked, :paths, :when, :expire_in
+        expose :name
+        expose :untracked
+        expose :paths
+        expose :when
+        expose :expire_in
+        expose :artifact_type
+        expose :artifact_format
       end
 
       class Cache < Grape::Entity

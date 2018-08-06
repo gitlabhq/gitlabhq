@@ -67,9 +67,9 @@ export const someUncommitedChanges = state =>
   !!(state.changedFiles.length || state.stagedFiles.length);
 
 export const getChangesInFolder = state => path => {
-  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f, path)).length;
+  const changedFilesCount = state.changedFiles.filter(f => filePathMatches(f.path, path)).length;
   const stagedFilesCount = state.stagedFiles.filter(
-    f => filePathMatches(f, path) && !getChangedFile(state)(f.path),
+    f => filePathMatches(f.path, path) && !getChangedFile(state)(f.path),
   ).length;
 
   return changedFilesCount + stagedFilesCount;

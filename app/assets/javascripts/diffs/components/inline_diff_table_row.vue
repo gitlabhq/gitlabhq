@@ -33,11 +33,6 @@ export default {
       required: false,
       default: false,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   data() {
     return {
@@ -94,7 +89,6 @@ export default {
       :is-bottom="isBottom"
       :is-hover="isHover"
       :show-comment-button="true"
-      :discussions="discussions"
       class="diff-line-num old_line"
     />
     <diff-table-cell
@@ -104,10 +98,10 @@ export default {
       :line-type="newLineType"
       :is-bottom="isBottom"
       :is-hover="isHover"
-      :discussions="discussions"
       class="diff-line-num new_line"
     />
     <td
+      v-once
       :class="line.type"
       class="line_content"
       v-html="line.richText"

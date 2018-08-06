@@ -233,4 +233,12 @@ module MilestonesHelper
       group_milestone_path(@group, milestone.iid, milestone: params)
     end
   end
+
+  def group_or_dashboard_milestone_path(milestone)
+    if milestone.group_milestone?
+      group_milestone_path(milestone.group, milestone.iid, milestone: { title: milestone.title })
+    else
+      dashboard_milestone_path(milestone.safe_title, title: milestone.title)
+    end
+  end
 end

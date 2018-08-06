@@ -31,3 +31,61 @@
     color: $gl-text-red;
   }
 }
+
+.svg-graph-container {
+  width: 100%;
+
+  .axis-tick {
+    opacity: 0.4;
+  }
+
+  .tick-text {
+    fill: $gl-text-color-secondary;
+  }
+
+  .x-axis-text {
+    fill: $theme-gray-900;
+  }
+
+  .bar-rect {
+    fill: rgba($blue-500, 0.1);
+    stroke: $blue-500;
+  }
+
+  .bar-rect:hover {
+    fill: rgba($blue-700, 0.3);
+  }
+
+  .y-axis-label {
+    line {
+      stroke: $stat-graph-axis-fill;
+    }
+
+    text {
+      font-weight: bold;
+      font-size: 12px;
+      fill: $theme-gray-800;
+    }
+  }
+}
+
+.svg-graph-container-with-grab {
+  cursor: grab;
+  cursor: -webkit-grab;
+}
+
+.svg-graph-container-grabbed {
+  cursor: grabbing;
+  cursor: -webkit-grabbing;
+}
+
+@keyframes flickerAnimation {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-flicker {
+  animation: flickerAnimation 1.5s infinite;
+  fill: $theme-gray-500;
+}

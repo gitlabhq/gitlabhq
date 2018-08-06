@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Build < CommitStatus
     prepend ArtifactMigratable
@@ -8,8 +10,6 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
 
-    MissingDependenciesError = Class.new(StandardError)
-
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -17,14 +17,19 @@ module Ci
 
     has_many :deployments, as: :deployable
 
+    RUNNER_FEATURES = {
+      upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
+    }.freeze
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy, inverse_of: :job # rubocop:disable Cop/ActiveRecordDependent
-    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
-    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
-    has_one :job_artifacts_trace, -> { where(file_type: Ci::JobArtifact.file_types[:trace]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+
+    Ci::JobArtifact.file_types.each do |key, value|
+      has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    end
 
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
@@ -64,6 +69,11 @@ module Ci
 
     scope :without_archived_trace, ->() do
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+    end
+
+    scope :with_test_reports, ->() do
+      includes(:job_artifacts_junit) # Prevent N+1 problem when iterating each ci_job_artifact row
+        .where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').test_reports)
     end
 
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
@@ -171,10 +181,6 @@ module Ci
             Rails.logger.error "Unable to auto-retry job #{build.id}: #{ex}"
           end
         end
-      end
-
-      before_transition any => [:running] do |build|
-        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
 
       after_transition pending: :running do |build|
@@ -386,6 +392,10 @@ module Ci
       trace.exist?
     end
 
+    def has_test_reports?
+      job_artifacts.test_reports.any?
+    end
+
     def has_old_trace?
       old_trace.present?
     end
@@ -453,16 +463,22 @@ module Ci
       save
     end
 
+    def erase_test_reports!
+      # TODO: Use fast_destroy_all in the context of https://gitlab.com/gitlab-org/gitlab-ce/issues/35240
+      job_artifacts_junit&.destroy
+    end
+
     def erase(opts = {})
       return false unless erasable?
 
       erase_artifacts!
+      erase_test_reports!
       erase_trace!
       update_erased!(opts[:erased_by])
     end
 
     def erasable?
-      complete? && (artifacts? || has_trace?)
+      complete? && (artifacts? || has_test_reports? || has_trace?)
     end
 
     def erased?
@@ -539,10 +555,6 @@ module Ci
       Gitlab::Ci::Build::Image.from_services(self)
     end
 
-    def artifacts
-      [options[:artifacts]]
-    end
-
     def cache
       cache = options[:cache]
 
@@ -574,10 +586,10 @@ module Ci
       options[:dependencies]&.empty?
     end
 
-    def validates_dependencies!
-      dependencies.each do |dependency|
-        raise MissingDependenciesError unless dependency.valid_dependency?
-      end
+    def has_valid_build_dependencies?
+      return true if Feature.enabled?('ci_disable_validates_dependencies')
+
+      dependencies.all?(&:valid_dependency?)
     end
 
     def valid_dependency?
@@ -585,6 +597,24 @@ module Ci
       return false if erased?
 
       true
+    end
+
+    def runner_required_feature_names
+      strong_memoize(:runner_required_feature_names) do
+        RUNNER_FEATURES.select do |feature, method|
+          method.call(self)
+        end.keys
+      end
+    end
+
+    def supported_runner?(features)
+      runner_required_feature_names.all? do |feature_name|
+        features&.dig(feature_name)
+      end
+    end
+
+    def publishes_artifacts_reports?
+      options&.dig(:artifacts, :reports)&.any?
     end
 
     def hide_secrets(trace)
@@ -604,7 +634,23 @@ module Ci
       running? && runner_session_url.present?
     end
 
+    def collect_test_reports!(test_reports)
+      test_reports.get_suite(group_name).tap do |test_suite|
+        each_test_report do |file_type, blob|
+          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
+        end
+      end
+    end
+
     private
+
+    def each_test_report
+      Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
+        public_send("job_artifacts_#{file_type}").each_blob do |blob| # rubocop:disable GitlabSecurity/PublicSend
+          yield file_type, blob
+        end
+      end
+    end
 
     def update_artifacts_size
       self.artifacts_size = legacy_artifacts_file&.size

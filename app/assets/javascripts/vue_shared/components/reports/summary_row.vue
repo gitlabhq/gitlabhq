@@ -29,7 +29,8 @@ export default {
     },
     popoverOptions: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -60,7 +61,11 @@ export default {
         {{ summary }}
       </div>
 
-      <popover :options="popoverOptions" />
+      <popover
+        v-if="popoverOptions"
+        :options="popoverOptions"
+      />
+
     </div>
   </div>
 </template>

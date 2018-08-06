@@ -993,6 +993,29 @@ describe Projects::IssuesController do
         expect(json_response.first.keys).to match_array(%w[id reply_id expanded notes diff_discussion discussion_path individual_note resolvable resolved resolved_at resolved_by resolved_by_push commit_id for_commit project_id])
       end
 
+      it 'renders the author status html if there is a status' do
+        create(:user_status, user: discussion.author)
+
+        get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+
+        note_json = json_response.first['notes'].first
+
+        expect(note_json['author']['status_tooltip_html']).to be_present
+      end
+
+      it 'does not cause an extra query for the status' do
+        control = ActiveRecord::QueryRecorder.new do
+          get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid
+        end
+
+        create(:user_status, user: discussion.author)
+        second_discussion = create(:discussion_note_on_issue, noteable: issue, project: issue.project, author: create(:user))
+        create(:user_status, user: second_discussion.author)
+
+        expect { get :discussions, namespace_id: project.namespace, project_id: project, id: issue.iid }
+          .not_to exceed_query_limit(control)
+      end
+
       context 'with cross-reference system note', :request_store do
         let(:new_issue) { create(:issue) }
         let(:cross_reference) { "mentioned in #{new_issue.to_reference(issue.project)}" }

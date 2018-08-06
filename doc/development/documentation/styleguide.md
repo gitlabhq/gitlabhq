@@ -219,28 +219,26 @@ below.
 
 - Every piece of documentation that comes with a new feature should declare the
   GitLab version that feature got introduced. Right below the heading add a
-  note:
+  blockquote:
 
     ```md
     > Introduced in GitLab 8.3.
     ```
 
-- Whenever possible, every feature should have a link to the MR, issue, or epic that introduced it.
-  The above note would be then transformed to:
+- Whenever possible, every feature should have a link to the issue, MR or epic
+  (in that order) that introduced it. The above quote would be then transformed to:
 
     ```md
-    > [Introduced][ce-1242] in GitLab 8.3.
+    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242) in GitLab 8.3.
     ```
-
-    , where the [link identifier](#links) is named after the repository (CE) and
-    the MR number.
 
 - If the feature is only available in GitLab Enterprise Edition, don't forget to mention
   the [paid tier](https://about.gitlab.com/handbook/marketing/product-marketing/#tiers)
   the feature is available in:
 
     ```md
-    > [Introduced][ee-1234] in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
+    > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/1242)
+    in [GitLab Starter](https://about.gitlab.com/pricing/) 8.3.
     ```
 
 ### Product badges

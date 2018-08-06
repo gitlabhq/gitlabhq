@@ -25,6 +25,20 @@ describe Clusters::Applications::Jupyter do
     end
   end
 
+  describe '#make_installing!' do
+    before do
+      application.make_installing!
+    end
+
+    context 'application install previously errored with older version' do
+      let(:application) { create(:clusters_applications_jupyter, :scheduled, version: 'v0.5') }
+
+      it 'updates the application version' do
+        expect(application.reload.version).to eq('v0.6')
+      end
+    end
+  end
+
   describe '#install_command' do
     let!(:ingress) { create(:clusters_applications_ingress, :installed, external_ip: '127.0.0.1') }
     let!(:jupyter) { create(:clusters_applications_jupyter, cluster: ingress.cluster) }
@@ -36,9 +50,17 @@ describe Clusters::Applications::Jupyter do
     it 'should be initialized with 4 arguments' do
       expect(subject.name).to eq('jupyter')
       expect(subject.chart).to eq('jupyter/jupyterhub')
-      expect(subject.version).to be_nil
+      expect(subject.version).to eq('v0.6')
       expect(subject.repository).to eq('https://jupyterhub.github.io/helm-chart/')
       expect(subject.values).to eq(jupyter.values)
+    end
+
+    context 'application failed to install previously' do
+      let(:jupyter) { create(:clusters_applications_jupyter, :errored, version: '0.0.1') }
+
+      it 'should be initialized with the locked version' do
+        expect(subject.version).to eq('v0.6')
+      end
     end
   end
 

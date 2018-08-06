@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PagesDomain < ActiveRecord::Base
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze

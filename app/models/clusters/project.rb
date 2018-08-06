@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   class Project < ActiveRecord::Base
     self.table_name = 'cluster_projects'

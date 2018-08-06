@@ -5,8 +5,8 @@ module QA
         view 'app/views/layouts/nav/sidebar/_project.html.haml' do
           element :settings_item
           element :settings_link, 'link_to edit_project_path'
-          element :repository_link, "title: 'Repository'"
-          element :pipelines_settings_link, "title: 'CI / CD'"
+          element :repository_link, "title: _('Repository')"
+          element :pipelines_settings_link, "title: _('CI / CD')"
           element :operations_kubernetes_link, "title: _('Kubernetes')"
           element :issues_link, /link_to.*shortcuts-issues/
           element :issues_link_text, "Issues"
@@ -14,7 +14,7 @@ module QA
           element :merge_requests_link_text, "Merge Requests"
           element :top_level_items, '.sidebar-top-level-items'
           element :operations_section, "class: 'shortcuts-operations'"
-          element :activity_link, "title: 'Activity'"
+          element :activity_link, "title: _('Activity')"
           element :wiki_link_text, "Wiki"
           element :milestones_link
         end

@@ -1,4 +1,6 @@
 <script>
+import $ from 'jquery';
+
 const buttonVariants = ['danger', 'primary', 'success', 'warning'];
 const sizeVariants = ['sm', 'md', 'lg', 'xl'];
 
@@ -38,6 +40,12 @@ export default {
       return this.modalSize === 'md' ? '' : `modal-${this.modalSize}`;
     },
   },
+  mounted() {
+    $(this.$el).on('shown.bs.modal', this.opened).on('hidden.bs.modal', this.closed);
+  },
+  beforeDestroy() {
+    $(this.$el).off('shown.bs.modal', this.opened).off('hidden.bs.modal', this.closed);
+  },
   methods: {
     emitCancel(event) {
       this.$emit('cancel', event);
@@ -45,10 +53,11 @@ export default {
     emitSubmit(event) {
       this.$emit('submit', event);
     },
-    opened({ propertyName }) {
-      if (propertyName === 'opacity') {
-        this.$emit('open');
-      }
+    opened() {
+      this.$emit('open');
+    },
+    closed() {
+      this.$emit('closed');
     },
   },
 };
@@ -60,7 +69,6 @@ export default {
     class="modal fade"
     tabindex="-1"
     role="dialog"
-    @transitionend="opened"
   >
     <div
       :class="modalSizeClass"

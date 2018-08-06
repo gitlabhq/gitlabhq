@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 class Label < ActiveRecord::Base
   include CacheMarkdownField
   include Referable
   include Subscribable
+  include Gitlab::SQL::Pattern
 
   # Represents a "No Label" state used for filtering Issues and Merge
   # Requests that have no label assigned.
@@ -101,6 +104,17 @@ class Label < ActiveRecord::Base
 
   def self.link_reference_pattern
     nil
+  end
+
+  # Searches for labels with a matching title or description.
+  #
+  # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
+  #
+  # query - The search query as a String.
+  #
+  # Returns an ActiveRecord::Relation.
+  def self.search(query)
+    fuzzy_search(query, [:title, :description])
   end
 
   def open_issues_count(user = nil)

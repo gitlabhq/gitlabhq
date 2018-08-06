@@ -1,4 +1,3 @@
-# rubocop:disable all
 class CiLimitsToMysql < ActiveRecord::Migration
   def change
     return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/

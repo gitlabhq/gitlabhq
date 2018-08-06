@@ -108,6 +108,7 @@ class ApplicationController < ActionController::Base
 
   def append_info_to_payload(payload)
     super
+
     payload[:remote_ip] = request.remote_ip
 
     logged_user = auth_user
@@ -122,12 +123,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  ##
   # Controllers such as GitHttpController may use alternative methods
-  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
+  # (e.g. tokens) to authenticate the user, whereas Devise sets current_user.
+  #
   def auth_user
-    return current_user if current_user.present?
-
-    return try(:authenticated_user)
+    if user_signed_in?
+      current_user
+    else
+      try(:authenticated_user)
+    end
   end
 
   # This filter handles personal access tokens, and atom requests with rss tokens
@@ -397,7 +402,7 @@ class ApplicationController < ActionController::Base
       # actually stored in the session and a token is needed
       # for every request. If you want the token to work as a
       # sign in token, you can simply remove store: false.
-      sign_in user, store: false
+      sign_in(user, store: false, message: :sessionless_sign_in)
     end
   end
 

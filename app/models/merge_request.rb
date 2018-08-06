@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequest < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes
@@ -10,6 +12,12 @@ class MergeRequest < ActiveRecord::Base
   include EachBatch
   include ThrottledTouch
   include Gitlab::Utils::StrongMemoize
+  include LabelEventable
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
+  self.reactive_cache_refresh_interval = 1.hour
+  self.reactive_cache_lifetime = 1.hour
 
   ignore_column :locked_at,
                 :ref_fetched,
@@ -1009,6 +1017,30 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
+  def has_test_reports?
+    actual_head_pipeline&.has_test_reports?
+  end
+
+  def compare_test_reports
+    unless has_test_reports?
+      return { status: :error, status_reason: 'This merge request does not have test reports' }
+    end
+
+    with_reactive_cache(
+      :compare_test_results,
+      base_pipeline&.iid,
+      actual_head_pipeline.iid) { |data| data } || { status: :parsing }
+  end
+
+  def calculate_reactive_cache(identifier, *args)
+    case identifier.to_sym
+    when :compare_test_results
+      Ci::CompareTestReportsService.new(project).execute(*args)
+    else
+      raise NotImplementedError, "Unknown identifier: #{identifier}"
+    end
+  end
+
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
     diffs_relation = if Gitlab::Database.postgresql?
@@ -1119,6 +1151,12 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines
+      .order(id: :desc)
+      .find_by(sha: diff_base_sha)
   end
 
   def discussions_rendered_on_frontend?

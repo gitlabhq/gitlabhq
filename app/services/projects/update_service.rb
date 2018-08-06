@@ -4,39 +4,27 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
+    ValidationError = Class.new(StandardError)
+
     def execute
-      unless valid_visibility_level_change?(project, params[:visibility_level])
-        return error('New visibility level not allowed!')
-      end
-
-      if renaming_project_with_container_registry_tags?
-        return error('Cannot rename project because it contains container registry tags!')
-      end
-
-      if changing_default_branch?
-        return error("Could not set the default branch") unless project.change_head(params[:default_branch])
-      end
+      validate!
 
       ensure_wiki_exists if enabling_wiki?
 
       yield if block_given?
 
       # If the block added errors, don't try to save the project
-      return validation_failed! if project.errors.any?
+      return update_failed! if project.errors.any?
 
       if project.update(params.except(:default_branch))
-        if project.previous_changes.include?('path')
-          project.rename_repo
-        else
-          system_hook_service.execute_hooks_for(project, :update)
-        end
-
-        update_pages_config if changing_pages_https_only?
+        after_update
 
         success
       else
-        validation_failed!
+        update_failed!
       end
+    rescue ValidationError => e
+      error(e.message)
     end
 
     def run_auto_devops_pipeline?
@@ -47,7 +35,45 @@ module Projects
 
     private
 
-    def validation_failed!
+    def validate!
+      unless valid_visibility_level_change?(project, params[:visibility_level])
+        raise ValidationError.new('New visibility level not allowed!')
+      end
+
+      if renaming_project_with_container_registry_tags?
+        raise ValidationError.new('Cannot rename project because it contains container registry tags!')
+      end
+
+      if changing_default_branch?
+        raise ValidationError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
+      end
+    end
+
+    def after_update
+      todos_features_changes = %w(
+        issues_access_level
+        merge_requests_access_level
+        repository_access_level
+      )
+      project_changed_feature_keys = project.project_feature.previous_changes.keys
+
+      if project.previous_changes.include?(:visibility_level) && project.private?
+        # don't enqueue immediately to prevent todos removal in case of a mistake
+        TodosDestroyer::ProjectPrivateWorker.perform_in(1.hour, project.id)
+      elsif (project_changed_feature_keys & todos_features_changes).present?
+        TodosDestroyer::PrivateFeaturesWorker.perform_in(1.hour, project.id)
+      end
+
+      if project.previous_changes.include?('path')
+        project.rename_repo
+      else
+        system_hook_service.execute_hooks_for(project, :update)
+      end
+
+      update_pages_config if changing_pages_https_only?
+    end
+
+    def update_failed!
       model_errors = project.errors.full_messages.to_sentence
       error_message = model_errors.presence || 'Project could not be updated!'
 
@@ -69,7 +95,7 @@ module Projects
     end
 
     def enabling_wiki?
-      return false if @project.wiki_enabled?
+      return false if project.wiki_enabled?
 
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end

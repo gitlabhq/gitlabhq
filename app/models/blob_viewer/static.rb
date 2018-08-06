@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobViewer
   module Static
     extend ActiveSupport::Concern

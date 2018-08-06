@@ -1,0 +1,1402 @@
+@import 'framework/variables';
+@import 'framework/mixins';
+
+.project-refs-form,
+.project-refs-target-form {
+  display: inline-block;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.commit-message {
+  @include str-truncated(250px);
+}
+
+.editable-mode {
+  display: inline-block;
+}
+
+.ide-view {
+  position: relative;
+  display: flex;
+  height: calc(100vh - #{$header-height});
+  margin-top: 0;
+  border-top: 1px solid $white-dark;
+  padding-bottom: $ide-statusbar-height;
+  color: $gl-text-color;
+
+  &.is-collapsed {
+    .ide-file-list {
+      max-width: 250px;
+    }
+  }
+
+  .file-status-icon {
+    width: 10px;
+    height: 10px;
+  }
+}
+
+.ide-file-list {
+  flex: 1;
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
+  padding-bottom: $grid-size;
+
+  .file {
+    height: 32px;
+    cursor: pointer;
+
+    &.file-active {
+      background: $theme-gray-100;
+    }
+
+    .ide-file-name {
+      flex: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      max-width: inherit;
+      line-height: 16px;
+      display: inline-block;
+      height: 18px;
+
+      svg {
+        vertical-align: middle;
+        margin-right: 2px;
+      }
+
+      .loading-container {
+        margin-right: 4px;
+        display: inline-block;
+      }
+    }
+
+    .ide-file-icon-holder {
+      display: flex;
+      align-items: center;
+      color: $theme-gray-700;
+    }
+
+    .ide-file-changed-icon {
+      margin-left: auto;
+
+      > svg {
+        display: block;
+      }
+    }
+
+    .ide-new-btn {
+      display: none;
+
+      .btn {
+        padding: 2px 5px;
+      }
+    }
+
+    &:hover,
+    &:focus {
+      .ide-new-btn {
+        display: block;
+      }
+    }
+
+    .folder-icon {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  a {
+    color: $gl-text-color;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.file-name {
+  display: flex;
+  overflow: visible;
+  align-items: center;
+  width: 100%;
+}
+
+.multi-file-loading-container {
+  margin-top: 10px;
+  padding: 10px;
+}
+
+.multi-file-table-col-commit-message {
+  white-space: nowrap;
+  width: 50%;
+}
+
+.multi-file-edit-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-left: 1px solid $white-dark;
+  overflow: hidden;
+}
+
+.multi-file-tabs {
+  display: flex;
+  background-color: $white-normal;
+  box-shadow: inset 0 -1px $white-dark;
+
+  > ul {
+    display: flex;
+    overflow-x: auto;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    padding: $grid-size $gl-padding;
+    background-color: $gray-normal;
+    border-right: 1px solid $white-dark;
+    border-bottom: 1px solid $white-dark;
+
+    &.active {
+      background-color: $white-light;
+      border-bottom-color: $white-light;
+    }
+
+    &:not(.disabled) {
+      .multi-file-tab {
+        cursor: pointer;
+      }
+    }
+
+    &.disabled {
+      .multi-file-tab-close {
+        cursor: default;
+      }
+    }
+  }
+}
+
+.multi-file-tab {
+  @include str-truncated(141px);
+
+  svg {
+    vertical-align: middle;
+  }
+}
+
+.multi-file-tab-close {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin-left: $grid-size;
+  background: none;
+  border: 0;
+  border-radius: $border-radius-default;
+  color: $theme-gray-900;
+
+  svg {
+    position: relative;
+    top: -2px;
+  }
+
+  .ide-file-changed-icon {
+    display: block;
+    position: relative;
+    top: 1px;
+    right: -2px;
+  }
+
+  &:not([disabled]):hover {
+    background-color: $theme-gray-200;
+  }
+
+  &:not([disabled]):focus {
+    background-color: $blue-500;
+    color: $white-light;
+    outline: 0;
+
+    svg {
+      fill: currentColor;
+    }
+  }
+}
+
+.multi-file-edit-pane-content {
+  flex: 1;
+  height: 0;
+}
+
+.blob-editor-container {
+  flex: 1;
+  height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  .vertical-center {
+    min-height: auto;
+  }
+
+  .monaco-editor .lines-content .cigr {
+    display: none;
+  }
+
+  .is-readonly,
+  .editor.original {
+    .view-lines {
+      cursor: default;
+    }
+
+    .cursors-layer {
+      display: none;
+    }
+  }
+
+  .is-deleted {
+    .editor.modified {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.modified {
+      // !important to override monaco inline styles
+      display: none !important;
+    }
+  }
+
+  .is-added {
+    .editor.original {
+      .margin-view-overlays,
+      .lines-content,
+      .decorationsOverviewRuler {
+        // !important to override monaco inline styles
+        display: none !important;
+      }
+    }
+
+    .diffOverviewRuler.original {
+      // !important to override monaco inline styles
+      display: none !important;
+    }
+  }
+
+  .monaco-diff-editor.vs {
+    .editor.modified {
+      box-shadow: none;
+    }
+
+    .diagonal-fill {
+      display: none !important;
+    }
+
+    .diffOverview {
+      background-color: $white-light;
+      border-left: 1px solid $white-dark;
+      cursor: ns-resize;
+    }
+
+    .diffViewport {
+      display: none;
+    }
+
+    .char-insert {
+      background-color: $line-added-dark;
+    }
+
+    .char-delete {
+      background-color: $line-removed-dark;
+    }
+
+    .line-numbers {
+      color: $black-transparent;
+    }
+
+    .view-overlays {
+      .line-insert {
+        background-color: $line-added;
+      }
+
+      .line-delete {
+        background-color: $line-removed;
+      }
+    }
+
+    .margin {
+      background-color: $white-light;
+      border-right: 1px solid $theme-gray-100;
+
+      .line-insert {
+        border-right: 1px solid $line-added-dark;
+      }
+
+      .line-delete {
+        border-right: 1px solid $line-removed-dark;
+      }
+    }
+
+    .margin-view-overlays .insert-sign,
+    .margin-view-overlays .delete-sign {
+      opacity: 0.4;
+    }
+  }
+}
+
+.multi-file-editor-holder {
+  height: 100%;
+  min-height: 0;
+
+  &.is-readonly,
+  .editor.original {
+    .monaco-editor,
+    .monaco-editor-background,
+    .monaco-editor .inputarea.ime-input {
+      background-color: $theme-gray-50;
+    }
+  }
+}
+
+.preview-container {
+  flex-grow: 1;
+  position: relative;
+
+  .md-previewer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    padding: $gl-padding;
+  }
+
+  .file-container {
+    background-color: $gray-darker;
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    .file-content {
+      padding: $gl-padding;
+      max-width: 100%;
+      max-height: 100%;
+
+      img {
+        max-width: 90%;
+      }
+
+      .isZoomable {
+        cursor: pointer;
+        cursor: zoom-in;
+
+        &.isZoomed {
+          cursor: pointer;
+          cursor: zoom-out;
+          max-width: none;
+          max-height: none;
+          margin-right: $gl-padding;
+        }
+      }
+    }
+
+    .file-info {
+      font-size: $label-font-size;
+      color: $diff-image-info-color;
+    }
+  }
+}
+
+.ide-mode-tabs {
+  border-bottom: 1px solid $white-dark;
+
+  .nav-links {
+    border-bottom: 0;
+
+    li a {
+      padding: $gl-padding-8 $gl-padding;
+      line-height: $gl-btn-line-height;
+    }
+  }
+}
+
+.ide-btn-group {
+  padding: $gl-padding-4 $gl-vert-padding;
+  line-height: 24px;
+}
+
+.ide-status-bar {
+  border-top: 1px solid $white-dark;
+  padding: 2px $gl-padding-8 0;
+  background: $white-light;
+  display: flex;
+  justify-content: space-between;
+  height: $ide-statusbar-height;
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+
+  font-size: 12px;
+  line-height: 22px;
+
+  * {
+    font-size: inherit;
+  }
+
+  > div + div {
+    padding-left: $gl-padding;
+  }
+
+  svg {
+    vertical-align: sub;
+  }
+}
+
+.ide-status-file {
+  text-align: right;
+
+  .ide-status-branch + &,
+  &:first-child {
+    margin-left: auto;
+  }
+}
+// Not great, but this is to deal with our current output
+.multi-file-preview-holder {
+  height: 100%;
+  overflow: scroll;
+
+  .file-content.code {
+    display: flex;
+
+    i {
+      margin-left: -10px;
+    }
+  }
+
+  .line-numbers {
+    min-width: 50px;
+  }
+
+  .file-content,
+  .line-numbers,
+  .blob-content,
+  .code {
+    min-height: 100%;
+  }
+}
+
+.file-content.blob-no-preview {
+  a {
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.multi-file-commit-panel {
+  display: flex;
+  position: relative;
+  width: 340px;
+  padding: 0;
+  background-color: $gray-light;
+  padding-right: 1px;
+
+  .context-header {
+    width: auto;
+    margin-right: 0;
+
+    > a,
+    > button {
+      height: 60px;
+    }
+  }
+
+  .projects-sidebar {
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .multi-file-commit-panel-inner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .multi-file-commit-panel-inner-scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: auto;
+    background-color: $white-light;
+    border-left: 1px solid $white-dark;
+    border-top: 1px solid $white-dark;
+    border-top-left-radius: $border-radius-small;
+  }
+}
+
+.multi-file-commit-panel-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  max-height: 100%;
+  overflow: auto;
+}
+
+.ide-commit-empty-state {
+  padding: 0 $gl-padding;
+}
+
+.ide-commit-empty-state-container {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.multi-file-commit-panel-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0;
+  border-bottom: 1px solid $white-dark;
+  padding: 12px 0;
+}
+
+.multi-file-commit-panel-header-title {
+  display: flex;
+  flex: 1;
+  align-items: center;
+
+  svg {
+    margin-right: $gl-btn-padding;
+    color: $theme-gray-700;
+  }
+}
+
+.multi-file-commit-panel-collapse-btn {
+  border-left: 1px solid $white-dark;
+  margin-left: auto;
+}
+
+.multi-file-commit-list {
+  flex: 1;
+  overflow: auto;
+  padding: $grid-size 0;
+  margin-left: -$grid-size;
+  margin-right: -$grid-size;
+  min-height: 60px;
+
+  &.form-text.text-muted {
+    margin-left: 0;
+    right: 0;
+  }
+}
+
+.ide-file-addition,
+.ide-file-addition-solid {
+  color: $green-500;
+}
+
+.ide-file-modified,
+.ide-file-modified-solid {
+  color: $orange-500;
+}
+
+.ide-file-deletion,
+.ide-file-deletion-solid {
+  color: $red-500;
+}
+
+.multi-file-commit-list-collapsed {
+  display: flex;
+  flex-direction: column;
+  padding: $gl-padding 0;
+
+  svg {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    color: $theme-gray-700;
+  }
+
+  .file-status-icon {
+    width: 10px;
+    height: 10px;
+    margin-left: 3px;
+  }
+}
+
+.multi-file-commit-list-path,
+.ide-file-list .file {
+  display: flex;
+  align-items: center;
+  margin-left: -$grid-size;
+  margin-right: -$grid-size;
+  padding: $grid-size / 2 $grid-size;
+  border-radius: $border-radius-default;
+  text-align: left;
+
+  &:hover,
+  &:focus {
+    background: $theme-gray-100;
+  }
+
+  &:active {
+    background: $theme-gray-200;
+  }
+}
+
+.multi-file-commit-list-path {
+  cursor: pointer;
+
+  &.is-active {
+    background-color: $white-normal;
+  }
+
+  &:hover,
+  &:focus {
+    outline: 0;
+  }
+
+  svg {
+    min-width: 16px;
+    vertical-align: middle;
+    display: inline-block;
+  }
+}
+
+.multi-file-commit-list-file-path {
+  @include str-truncated(calc(100% - 30px));
+
+  &:active {
+    text-decoration: none;
+  }
+}
+
+.multi-file-discard-btn {
+  top: 4px;
+  right: 8px;
+  bottom: 4px;
+
+  svg {
+    top: 0;
+  }
+}
+
+.multi-file-commit-form {
+  position: relative;
+  background-color: $white-light;
+  border-left: 1px solid $white-dark;
+  transition: all 0.3s ease;
+
+  > form,
+  > .commit-form-compact {
+    padding: $gl-padding 0;
+    margin-left: $gl-padding;
+    margin-right: $gl-padding;
+    border-top: 1px solid $white-dark;
+  }
+
+  .btn {
+    font-size: $gl-font-size;
+  }
+
+  .multi-file-commit-panel-success-message {
+    top: 0;
+  }
+}
+
+.multi-file-commit-panel-bottom {
+  position: relative;
+}
+
+.dirty-diff {
+  // !important need to override monaco inline style
+  width: 4px !important;
+  left: 0 !important;
+
+  &-modified {
+    background-color: $blue-500;
+  }
+
+  &-added {
+    background-color: $green-600;
+  }
+
+  &-removed {
+    height: 0 !important;
+    width: 0 !important;
+    bottom: -2px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: transparent transparent transparent $red-500;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 1px;
+      background-color: rgba($red-500, 0.5);
+    }
+  }
+}
+
+.ide-loading {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.ide-empty-state {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.ide {
+  overflow: hidden;
+
+  &.nav-only {
+    padding-top: $header-height;
+
+    .with-performance-bar & {
+      padding-top: $header-height + $performance-bar-height;
+    }
+
+    .flash-container {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .alert-wrapper .flash-container .flash-alert:last-child,
+    .alert-wrapper .flash-container .flash-notice:last-child {
+      margin-bottom: 0;
+    }
+
+    .content-wrapper {
+      margin-top: 0;
+      padding-bottom: 0;
+    }
+
+    &.flash-shown {
+      .content-wrapper {
+        margin-top: 0;
+      }
+
+      .ide-view {
+        height: calc(100vh - #{$header-height + $flash-height});
+      }
+    }
+
+    .projects-sidebar {
+      .multi-file-commit-panel-inner-scroll {
+        flex: 1;
+      }
+    }
+  }
+}
+
+.with-performance-bar .ide.nav-only {
+  .flash-container {
+    margin-top: 0;
+  }
+
+  .content-wrapper {
+    margin-top: 0;
+    padding-bottom: 0;
+  }
+
+  .ide-view {
+    height: calc(100vh - #{$header-height + $performance-bar-height});
+  }
+
+  &.flash-shown {
+    .ide-view {
+      height: calc(100vh - #{$header-height + $performance-bar-height + $flash-height});
+    }
+  }
+}
+
+.drag-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+
+  &:hover {
+    background-color: $white-normal;
+  }
+
+  &.drag-right {
+    right: 0;
+  }
+
+  &.drag-left {
+    left: 0;
+  }
+}
+
+.ide-commit-list-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 140px;
+  margin-left: $gl-padding;
+  margin-right: $gl-padding;
+
+  &.is-first {
+    border-bottom: 1px solid $white-dark;
+  }
+}
+
+.ide-staged-action-btn {
+  width: 22px;
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+
+  > svg {
+    top: 0;
+  }
+}
+
+.ide-commit-file-count {
+  min-width: 22px;
+  background-color: $gray-light;
+  border: 1px solid $white-dark;
+}
+
+.ide-commit-radios {
+  label {
+    font-weight: normal;
+
+    &.is-disabled {
+      .ide-radio-label {
+        text-decoration: line-through;
+      }
+    }
+  }
+
+  .form-text.text-muted {
+    margin-top: 0;
+    line-height: 0;
+  }
+}
+
+.ide-commit-new-branch {
+  margin-left: 25px;
+}
+
+.ide-sidebar-link {
+  display: flex;
+  align-items: center;
+  position: relative;
+  height: 60px;
+  width: 100%;
+  padding: 0 $gl-padding;
+  color: $gl-text-color-secondary;
+  background-color: transparent;
+  border: 0;
+  border-top: 1px solid transparent;
+  border-bottom: 1px solid transparent;
+  outline: 0;
+  cursor: pointer;
+
+  svg {
+    margin: 0 auto;
+  }
+
+  &:hover {
+    color: $gl-text-color;
+    background-color: $theme-gray-100;
+  }
+
+  &:focus {
+    color: $gl-text-color;
+    background-color: $theme-gray-200;
+  }
+
+  &.active {
+    // extend width over border of sidebar section
+    width: calc(100% + 1px);
+    padding-right: $gl-padding + 1px;
+    background-color: $white-light;
+    border-top-color: $white-dark;
+    border-bottom-color: $white-dark;
+
+    &::after {
+      content: '';
+      position: absolute;
+      right: -1px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: $white-light;
+    }
+
+    &.is-right {
+      padding-right: $gl-padding;
+      padding-left: $gl-padding + 1px;
+
+      &::after {
+        right: auto;
+        left: -1px;
+      }
+    }
+  }
+}
+
+.ide-activity-bar {
+  position: relative;
+  flex: 0 0 60px;
+  z-index: 1;
+}
+
+.ide-file-finder-overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.ide-file-finder {
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+
+  .highlighted {
+    color: $blue-500;
+    font-weight: $gl-font-weight-bold;
+  }
+}
+
+.ide-commit-message-field {
+  height: 200px;
+  background-color: $white-light;
+
+  .md-area {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .nav-links {
+    height: 30px;
+  }
+
+  .form-text.text-muted {
+    margin-top: 2px;
+    color: $blue-500;
+    cursor: pointer;
+  }
+}
+
+.ide-commit-message-textarea-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+
+  .note-textarea {
+    font-family: $monospace-font;
+  }
+}
+
+.ide-commit-message-highlights-container {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: -100px;
+  bottom: 0;
+  padding-right: 100px;
+  pointer-events: none;
+  z-index: 1;
+
+  .highlights {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    color: transparent;
+  }
+
+  mark {
+    margin-left: -1px;
+    padding: 0 2px;
+    border-radius: $border-radius-small;
+    background-color: $orange-200;
+    color: transparent;
+    opacity: 0.6;
+  }
+}
+
+.ide-commit-message-textarea {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  background: transparent;
+  resize: none;
+}
+
+.ide-tree-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 12px 0;
+  border-bottom: 1px solid $white-dark;
+
+  .ide-new-btn {
+    margin-left: auto;
+  }
+
+  button {
+    color: $gl-text-color;
+  }
+}
+
+.ide-sidebar-branch-title {
+  font-weight: $gl-font-weight-normal;
+
+  svg {
+    position: relative;
+    top: 3px;
+    margin-top: -1px;
+  }
+}
+
+.commit-form-compact {
+  .btn {
+    margin-bottom: 8px;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+}
+
+.commit-form-slide-up-enter-active,
+.commit-form-slide-up-leave-active {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  transition: all 0.3s ease;
+}
+
+.is-full .commit-form-slide-up-enter,
+.is-compact .commit-form-slide-up-leave-to {
+  transform: translateY(100%);
+}
+
+.is-full .commit-form-slide-up-enter-to,
+.is-compact .commit-form-slide-up-leave {
+  transform: translateY(0);
+}
+
+.commit-form-slide-up-enter,
+.commit-form-slide-up-leave-to {
+  opacity: 0;
+}
+
+.ide-review-header {
+  flex-direction: column;
+  align-items: flex-start;
+
+  .dropdown {
+    margin-left: auto;
+  }
+
+  a {
+    color: $gl-link-color;
+  }
+}
+
+.ide-review-sub-header {
+  color: $gl-text-color-secondary;
+}
+
+.ide-tree-changes {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.multi-file-commit-panel-success-message {
+  position: absolute;
+  top: 61px;
+  left: 1px;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: $white-light;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ide-review-button-holder {
+  display: flex;
+  width: 100%;
+  align-items: center;
+}
+
+.ide-context-header {
+  .avatar {
+    flex: 0 0 38px;
+  }
+
+  .ide-merge-requests-dropdown.dropdown-menu {
+    width: 385px;
+    max-height: initial;
+  }
+}
+
+.ide-sidebar-project-title {
+  min-width: 0;
+
+  .sidebar-context-title {
+    white-space: nowrap;
+  }
+
+  .ide-sidebar-branch-title {
+    min-width: 50px;
+  }
+}
+
+.ide-external-link {
+  position: relative;
+
+  svg {
+    display: none;
+    position: absolute;
+    top: 2px;
+    right: -$gl-padding;
+  }
+
+  &:hover,
+  &:focus {
+    svg {
+      display: inline-block;
+    }
+  }
+}
+
+.ide-right-sidebar {
+  width: auto;
+  min-width: 60px;
+
+  .ide-activity-bar {
+    border-left: 1px solid $white-dark;
+  }
+
+  .multi-file-commit-panel-inner {
+    width: 350px;
+    padding: $grid-size $gl-padding;
+    background-color: $white-light;
+    border-left: 1px solid $white-dark;
+  }
+}
+
+.ide-pipeline {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: -$grid-size;
+  margin-bottom: -$grid-size;
+
+  .empty-state {
+    margin-top: auto;
+    margin-bottom: auto;
+
+    p {
+      margin: $grid-size 0;
+      text-align: center;
+      line-height: 24px;
+    }
+
+    .btn,
+    h4 {
+      margin: 0;
+    }
+  }
+
+  .build-trace,
+  .top-bar {
+    margin-left: -$gl-padding;
+  }
+
+  &.build-page .top-bar {
+    top: 0;
+    font-size: 12px;
+    border-top-right-radius: $border-radius-default;
+  }
+}
+
+.ide-pipeline-list {
+  flex: 1;
+  overflow: auto;
+}
+
+.ide-pipeline-header {
+  min-height: 55px;
+  padding-left: $gl-padding;
+  padding-right: $gl-padding;
+
+  .ci-status-icon {
+    display: flex;
+  }
+}
+
+.ide-job-item {
+  display: flex;
+  padding: 16px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid $border-color;
+  }
+
+  .ci-status-icon {
+    display: flex;
+    justify-content: center;
+    min-width: 24px;
+    overflow: hidden;
+  }
+}
+
+.ide-stage {
+  .card-header {
+    display: flex;
+    cursor: pointer;
+
+    .ci-status-icon {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .card-body {
+    padding: 0;
+  }
+}
+
+.ide-stage-collapse-icon {
+  margin: auto 0 auto auto;
+}
+
+.ide-stage-title {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ide-job-header {
+  min-height: 60px;
+}
+
+.ide-merge-requests-dropdown {
+  .nav-links li {
+    width: 50%;
+    padding-left: 0;
+    padding-right: 0;
+
+    a {
+      text-align: center;
+
+      &:not(.active) {
+        background-color: $gray-light;
+      }
+    }
+  }
+
+  .dropdown-input {
+    padding-left: $gl-padding;
+    padding-right: $gl-padding;
+
+    .fa {
+      right: 26px;
+    }
+  }
+
+  .btn-link {
+    padding-top: $gl-padding;
+    padding-bottom: $gl-padding;
+  }
+}
+
+.ide-merge-request-current-icon {
+  min-width: 18px;
+}
+
+.ide-merge-requests-empty {
+  height: 230px;
+}
+
+.ide-merge-requests-dropdown-content {
+  min-height: 230px;
+  max-height: 470px;
+}
+
+.ide-merge-request-project-path {
+  font-size: 12px;
+  line-height: 16px;
+  color: $gl-text-color-secondary;
+}
+
+.ide-merge-request-info {
+  .detail-page-header {
+    line-height: initial;
+    min-height: 38px;
+  }
+
+  .issuable-details {
+    overflow: auto;
+  }
+}
+
+.ide-entry-dropdown-toggle {
+  padding: $gl-padding-4;
+  color: $gl-text-color;
+  background-color: $theme-gray-100;
+
+  &:hover {
+    background-color: $theme-gray-200;
+  }
+
+  &:active,
+  &:focus {
+    color: $white-normal;
+    background-color: $blue-500;
+    outline: 0;
+  }
+
+  svg {
+    fill: currentColor;
+  }
+}
+
+.ide-new-btn .dropdown.show .ide-entry-dropdown-toggle {
+  color: $white-normal;
+  background-color: $blue-500;
+}

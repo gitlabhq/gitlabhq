@@ -13,7 +13,9 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def update
-    if project.update(mirror_params)
+    result = ::Projects::UpdateService.new(project, current_user, mirror_params).execute
+
+    if result[:status] == :success
       flash[:notice] = 'Mirroring settings were successfully updated.'
     else
       flash[:alert] = project.errors.full_messages.join(', ').html_safe

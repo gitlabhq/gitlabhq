@@ -10,7 +10,7 @@ server {
   listen *:80;
   server_name  registry.gitlab.example.com;
   server_tokens off; ## Don't show the nginx version number, a security best practice
-  return 301 https://$http_host:$request_uri;
+  return 301 https://$http_host$request_uri;
   access_log  /var/log/nginx/gitlab_registry_access.log gitlab_access;
   error_log   /var/log/nginx/gitlab_registry_error.log;
 }

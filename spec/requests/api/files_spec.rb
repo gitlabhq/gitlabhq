@@ -13,12 +13,42 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  let(:helper) do
+    fake_class = Class.new do
+      include ::API::Helpers::HeadersHelpers
+
+      attr_reader :headers
+
+      def initialize
+        @headers = {}
+      end
+
+      def header(key, value)
+        @headers[key] = value
+      end
+    end
+
+    fake_class.new
+  end
+
   before do
     project.add_developer(user)
   end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
+  end
+
+  context 'http headers' do
+    it 'converts value into string' do
+      helper.set_http_headers(test: 1)
+
+      expect(helper.headers).to eq({ 'X-Gitlab-Test' => '1' })
+    end
+
+    it 'raises exception if value is an Enumerable' do
+      expect { helper.set_http_headers(test: [1]) }.to raise_error(ArgumentError)
+    end
   end
 
   describe "HEAD /projects/:id/repository/files/:file_path" do

@@ -81,6 +81,7 @@
         "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_create_note": { "type": "boolean" },
+        "can_create_issue": { "type": "boolean" },
         "can_update": { "type": "boolean" }
       },
       "additionalProperties": false
@@ -116,7 +117,8 @@
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
-    "squash": { "type": "boolean" }
+    "squash": { "type": "boolean" },
+    "test_reports_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Trigger < ActiveRecord::Base
     extend Gitlab::Ci::Model

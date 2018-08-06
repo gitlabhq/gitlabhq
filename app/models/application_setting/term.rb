@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ApplicationSetting
   class Term < ActiveRecord::Base
     include CacheMarkdownField

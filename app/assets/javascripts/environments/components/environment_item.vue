@@ -87,6 +87,16 @@ export default {
     },
 
     /**
+     * Checkes whether the environment is protected.
+     * (`is_protected` currently only set in EE)
+     *
+     * @returns {Boolean}
+     */
+    isProtected() {
+      return this.model && this.model.is_protected;
+    },
+
+    /**
      * Returns whether the environment can be stopped.
      *
      * @returns {Boolean}
@@ -455,7 +465,7 @@ export default {
     class="gl-responsive-table-row"
     role="row">
     <div
-      class="table-section section-10"
+      class="table-section section-wrap section-15"
       role="gridcell"
     >
       <div
@@ -465,16 +475,17 @@ export default {
       >
         {{ s__("Environments|Environment") }}
       </div>
-      <a
+      <span
         v-if="!model.isFolder"
-        :href="environmentPath"
-        class="environment-name flex-truncate-parent table-mobile-content">
-        <span
+        class="environment-name table-mobile-content">
+        <a
           v-tooltip
+          :href="environmentPath"
           :title="model.name"
-          class="flex-truncate-child"
-        >{{ model.name }}</span>
-      </a>
+        >
+          {{ model.name }}
+        </a>
+      </span>
       <span
         v-else
         class="folder-name"
@@ -548,7 +559,7 @@ export default {
 
     <div
       v-if="!model.isFolder"
-      class="table-section section-25"
+      class="table-section section-20"
       role="gridcell"
     >
       <div

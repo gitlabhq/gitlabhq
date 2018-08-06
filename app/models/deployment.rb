@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Deployment < ActiveRecord::Base
   include AtomicInternalId
   include IidRoutes

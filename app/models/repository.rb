@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 class Repository
@@ -235,6 +237,12 @@ class Repository
     false
   end
 
+  def languages
+    return [] if empty?
+
+    raw_repository.languages(root_ref)
+  end
+
   # Makes sure a commit is kept around when Git garbage collection runs.
   # Git GC will delete commits from the repository that are no longer in any
   # branches or tags, but we want to keep some of these commits around, for
@@ -312,6 +320,8 @@ class Repository
   # types - An Array of file types (e.g. `:readme`) used to refresh extra
   #         caches.
   def refresh_method_caches(types)
+    return if types.empty?
+
     to_refresh = []
 
     types.each do |type|
@@ -430,6 +440,8 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
+
+    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
   end
 
   # Runs code after a new commit has been pushed.
@@ -1029,7 +1041,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
+    Gitlab::Metrics.add_event(event, tags)
   end
 
   def initialize_raw_repository

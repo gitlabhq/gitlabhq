@@ -1,44 +1,33 @@
 <script>
-import Icon from '~/vue_shared/components/icon.vue';
+import IssueStatusIcon from '~/vue_shared/components/reports/issue_status_icon.vue';
+import { components, componentNames } from '~/vue_shared/components/reports/issue_body';
 
 export default {
   name: 'ReportIssues',
   components: {
-    Icon,
+    IssueStatusIcon,
+    ...components,
   },
   props: {
     issues: {
       type: Array,
       required: true,
     },
-    type: {
+    component: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
+      validator: value => value === '' || Object.values(componentNames).includes(value),
     },
     // failed || success
     status: {
       type: String,
       required: true,
     },
-  },
-  computed: {
-    iconName() {
-      if (this.isStatusFailed) {
-        return 'status_failed_borderless';
-      } else if (this.isStatusSuccess) {
-        return 'status_success_borderless';
-      }
-
-      return 'status_created_borderless';
-    },
-    isStatusFailed() {
-      return this.status === 'failed';
-    },
-    isStatusSuccess() {
-      return this.status === 'success';
-    },
-    isStatusNeutral() {
-      return this.status === 'neutral';
+    isNew: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 };
@@ -52,20 +41,18 @@ export default {
         :key="index"
         class="report-block-list-issue"
       >
-        <div
-          :class="{
-            failed: isStatusFailed,
-            success: isStatusSuccess,
-            neutral: isStatusNeutral,
-          }"
-          class="report-block-list-icon append-right-5"
-        >
-          <icon
-            :name="iconName"
-            :size="32"
-          />
-        </div>
+        <issue-status-icon
+          :status="issue.status || status"
+          class="append-right-5"
+        />
 
+        <component
+          v-if="component"
+          :is="component"
+          :issue="issue"
+          :status="issue.status || status"
+          :is-new="isNew"
+        />
       </li>
     </ul>
   </div>

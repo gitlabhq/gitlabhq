@@ -113,8 +113,6 @@ hr {
 
 .item-title { font-weight: $gl-font-weight-bold; }
 
-/** FLASH message **/
-.author_link,
 .author-link {
   color: $gl-link-color;
 }
@@ -372,9 +370,12 @@ img.emoji {
   margin-right: 10px;
 }
 
-.alert,
-.progress {
+.alert {
   margin-bottom: $gl-padding;
+}
+
+.progress {
+  height: 4px;
 }
 
 .project-item-select-holder {
@@ -468,3 +469,4 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.flex-align-self-center { align-self: center; }

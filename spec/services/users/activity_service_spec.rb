@@ -28,6 +28,18 @@ describe Users::ActivityService do
       end
     end
 
+    context 'when a bad object is passed' do
+      let(:fake_object) { double(username: 'hello') }
+
+      it 'does not record activity' do
+        service = described_class.new(fake_object, 'pull')
+
+        expect(service).not_to receive(:record_activity)
+
+        service.execute
+      end
+    end
+
     context 'when last activity is today' do
       let(:last_activity_on) { Date.today }
 

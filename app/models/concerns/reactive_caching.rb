@@ -59,6 +59,9 @@ module ReactiveCaching
       raise NotImplementedError
     end
 
+    def reactive_cache_updated(*args)
+    end
+
     def with_reactive_cache(*args, &blk)
       bootstrap = !within_reactive_cache_lifetime?(*args)
       Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
@@ -81,8 +84,11 @@ module ReactiveCaching
       locking_reactive_cache(*args) do
         if within_reactive_cache_lifetime?(*args)
           enqueuing_update(*args) do
-            value = calculate_reactive_cache(*args)
-            Rails.cache.write(full_reactive_cache_key(*args), value)
+            key = full_reactive_cache_key(*args)
+            new_value = calculate_reactive_cache(*args)
+            old_value = Rails.cache.read(key)
+            Rails.cache.write(key, new_value)
+            reactive_cache_updated(*args) if new_value != old_value
           end
         end
       end

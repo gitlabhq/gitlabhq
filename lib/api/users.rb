@@ -42,6 +42,7 @@ module API
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
+          optional :private_profile, type: Boolean, desc: 'Flag indicating the user has a private profile'
           optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
           all_or_none_of :extern_uid, :provider
         end
@@ -97,7 +98,7 @@ module API
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
         users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
-        users, options = with_custom_attributes(users, with: entity)
+        users, options = with_custom_attributes(users, { with: entity, current_user: current_user })
 
         present paginate(users), options
       end
@@ -114,10 +115,21 @@ module API
         user = User.find_by(id: params[:id])
         not_found!('User') unless user && can?(current_user, :read_user, user)
 
-        opts = current_user&.admin? ? { with: Entities::UserWithAdmin } : { with: Entities::User }
+        opts = { with: current_user&.admin? ? Entities::UserWithAdmin : Entities::User, current_user: current_user }
         user, opts = with_custom_attributes(user, opts)
 
         present user, opts
+      end
+
+      desc "Get the status of a user"
+      params do
+        requires :id_or_username, type: String, desc: 'The ID or username of the user'
+      end
+      get ":id_or_username/status" do
+        user = find_user(params[:id_or_username])
+        not_found!('User') unless user && can?(current_user, :read_user, user)
+
+        present user.status || {}, with: Entities::UserStatus
       end
 
       desc 'Create a user. Available only for admins.' do
@@ -140,7 +152,7 @@ module API
         user = ::Users::CreateService.new(current_user, params).execute(skip_authorization: true)
 
         if user.persisted?
-          present user, with: Entities::UserPublic
+          present user, with: Entities::UserPublic, current_user: current_user
         else
           conflict!('Email has already been taken') if User
               .where(email: user.email)
@@ -199,7 +211,7 @@ module API
         result = ::Users::UpdateService.new(current_user, user_params.except(:extern_uid, :provider).merge(user: user)).execute
 
         if result[:status] == :success
-          present user, with: Entities::UserPublic
+          present user, with: Entities::UserPublic, current_user: current_user
         else
           render_validation_error!(user)
         end
@@ -546,7 +558,7 @@ module API
               Entities::UserPublic
             end
 
-          present current_user, with: entity
+          present current_user, with: entity, current_user: current_user
         end
       end
 
@@ -738,6 +750,30 @@ module API
           .reorder(last_activity_on: :asc)
 
         present paginate(activities), with: Entities::UserActivity
+      end
+
+      desc 'Set the status of the current user' do
+        success Entities::UserStatus
+      end
+      params do
+        optional :emoji, type: String, desc: "The emoji to set on the status"
+        optional :message, type: String, desc: "The status message to set"
+      end
+      put "status" do
+        forbidden! unless can?(current_user, :update_user_status, current_user)
+
+        if ::Users::SetStatusService.new(current_user, declared_params).execute
+          present current_user.status, with: Entities::UserStatus
+        else
+          render_validation_error!(current_user.status)
+        end
+      end
+
+      desc 'get the status of the current user' do
+        success Entities::UserStatus
+      end
+      get 'status' do
+        present current_user.status || {}, with: Entities::UserStatus
       end
     end
   end
