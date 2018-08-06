@@ -177,10 +177,10 @@ export default {
         title="Add a comment to this line"
         @click="handleCommentButton"
       >
-        <icon
+        <!--<icon
           :size="12"
           name="comment"
-        />
+        />-->
       </button>
       <a
         v-if="lineNumber"
@@ -190,7 +190,7 @@ export default {
       </a>
       <diff-gutter-avatars
         v-if="shouldShowAvatarsOnGutter"
-        :discussions="discussions"
+        :discussions="line.discussions"
       />
     </template>
   </div>
