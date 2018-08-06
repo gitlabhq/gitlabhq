@@ -73,7 +73,7 @@ export default {
     <table>
       <tbody>
         <template
-          v-for="(line, index) in parallelDiffLines"
+          v-for="(line, index) in diffLines"
         >
           <parallel-diff-table-row
             :file-hash="diffFile.fileHash"
@@ -84,7 +84,7 @@ export default {
             :left-discussions="discussionsByLine(line, 'left')"
             :right-discussions="discussionsByLine(line, 'right')"
           />
-          <parallel-diff-comment-row
+          <!--<parallel-diff-comment-row
             v-if="shouldRenderParallelCommentRow(line)"
             :key="`dcr-${index}`"
             :line="line"
