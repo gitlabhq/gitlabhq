@@ -154,11 +154,11 @@ module EE
     end
 
     def start_date_from_milestones
-      start_date_is_fixed? ? start_date_sourcing_milestone.start_date : start_date
+      start_date_is_fixed? ? start_date_sourcing_milestone&.start_date : start_date
     end
 
     def due_date_from_milestones
-      due_date_is_fixed? ? due_date_sourcing_milestone.due_date : due_date
+      due_date_is_fixed? ? due_date_sourcing_milestone&.due_date : due_date
     end
 
     def to_reference(from = nil, full: false)
