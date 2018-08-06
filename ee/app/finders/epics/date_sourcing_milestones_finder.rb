@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Epics
   class DateSourcingMilestonesFinder
     def self.execute(epic_id)

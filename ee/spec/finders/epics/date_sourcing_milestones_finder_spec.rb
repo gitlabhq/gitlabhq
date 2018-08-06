@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe Epics::DateSourcingMilestonesFinder do
@@ -13,10 +15,12 @@ describe Epics::DateSourcingMilestonesFinder do
 
       results = described_class.execute(epic.id)
 
-      expect(results.start_date).to eq(milestone1.start_date)
-      expect(results.start_date_sourcing_milestone_id).to eq(milestone1.id)
-      expect(results.due_date).to eq(milestone2.due_date)
-      expect(results.due_date_sourcing_milestone_id).to eq(milestone2.id)
+      expect(results).to have_attributes(
+        start_date: milestone1.start_date,
+        start_date_sourcing_milestone_id: milestone1.id,
+        due_date: milestone2.due_date,
+        due_date_sourcing_milestone_id: milestone2.id
+      )
     end
 
     it 'returns date and id from single milestone' do
@@ -26,10 +30,12 @@ describe Epics::DateSourcingMilestonesFinder do
 
       results = described_class.execute(epic.id)
 
-      expect(results.start_date).to eq(milestone1.start_date)
-      expect(results.start_date_sourcing_milestone_id).to eq(milestone1.id)
-      expect(results.due_date).to eq(milestone1.due_date)
-      expect(results.due_date_sourcing_milestone_id).to eq(milestone1.id)
+      expect(results).to have_attributes(
+        start_date: milestone1.start_date,
+        start_date_sourcing_milestone_id: milestone1.id,
+        due_date: milestone1.due_date,
+        due_date_sourcing_milestone_id: milestone1.id
+      )
     end
 
     it 'returns date and id from milestone without date' do
@@ -39,10 +45,12 @@ describe Epics::DateSourcingMilestonesFinder do
 
       results = described_class.execute(epic.id)
 
-      expect(results.start_date).to eq(milestone1.start_date)
-      expect(results.start_date_sourcing_milestone_id).to eq(milestone1.id)
-      expect(results.due_date).to eq(nil)
-      expect(results.due_date_sourcing_milestone_id).to eq(nil)
+      expect(results).to have_attributes(
+        start_date: milestone1.start_date,
+        start_date_sourcing_milestone_id: milestone1.id,
+        due_date: nil,
+        due_date_sourcing_milestone_id: nil
+      )
     end
 
     it 'handles epics without milestone' do
@@ -50,10 +58,12 @@ describe Epics::DateSourcingMilestonesFinder do
 
       results = described_class.execute(epic.id)
 
-      expect(results.start_date).to eq(nil)
-      expect(results.start_date_sourcing_milestone_id).to eq(nil)
-      expect(results.due_date).to eq(nil)
-      expect(results.due_date_sourcing_milestone_id).to eq(nil)
+      expect(results).to have_attributes(
+        start_date: nil,
+        start_date_sourcing_milestone_id: nil,
+        due_date: nil,
+        due_date_sourcing_milestone_id: nil
+      )
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require Rails.root.join('ee', 'db', 'post_migrate', '20180713171825_update_epic_dates_from_milestones.rb')
 
