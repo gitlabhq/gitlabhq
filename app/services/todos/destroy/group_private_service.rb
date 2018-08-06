@@ -18,7 +18,7 @@ module Todos
 
       override :authorized_users
       def authorized_users
-        GroupMember.select(:user_id).where(source: group.id)
+        group.direct_and_indirect_users.select(:id)
       end
 
       override :todos_to_remove?
