@@ -47,6 +47,10 @@ module Geo
       order(id: :desc).first
     end
 
+    def self.includes_events
+      includes(reflections.keys)
+    end
+
     def event
       repository_created_event ||
         repository_updated_event ||

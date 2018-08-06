@@ -50,15 +50,17 @@ module Gitlab
         with_redis do |redis|
           redis.zremrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', outdated_timestamp)
 
-          gap_ids = redis.zrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', grace_timestamp, with_scores: true)
+          gap_ids = redis.zrangebyscore(GEO_EVENT_LOG_GAPS, '-inf', grace_timestamp).map(&:to_i)
+          break if gap_ids.empty?
 
-          gap_ids.each do |event_id, score|
-            handled = yield event_id.to_i
-
-            redis.zrem(GEO_EVENT_LOG_GAPS, event_id) if handled
+          ::Geo::EventLog.where(id: gap_ids).each_batch do |batch|
+            batch.includes_events.each { |event_log| yield event_log }
+            redis.zrem(GEO_EVENT_LOG_GAPS, batch.map(&:id))
           end
         end
       end
+
+      private
 
       def track_gaps(current_id)
         log_info("Event log gap detected", previous_event_id: previous_id, current_event_id: current_id)
@@ -77,8 +79,6 @@ module Gitlab
 
         current_id > (previous_id + 1)
       end
-
-      private
 
       def grace_timestamp
         (Time.now - GAP_GRACE_PERIOD).to_i
