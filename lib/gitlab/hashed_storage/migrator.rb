@@ -30,7 +30,7 @@ module Gitlab
         end
       end
 
-      # Flag a project to me migrated
+      # Flag a project to be migrated
       #
       # @param [Object] project that will be migrated
       def migrate(project)

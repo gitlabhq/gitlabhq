@@ -113,7 +113,7 @@ in the table below.
 | `JIRA API URL` | The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., `https://jira-api.example.com`. |
 | `Username` | The user name created in [configuring JIRA step](#configuring-jira). Using the email address will cause `401 unauthorized`. |
 | `Password` |The password of the user created in [configuring JIRA step](#configuring-jira). |
-| `Transition ID` | This is the ID of a transition that moves issues to the desired state.  **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
+| `Transition ID` | This is the ID of a transition that moves issues to the desired state. It is possible to insert transition ids separated by `,` or `;` which means the issue will be moved to each state after another using the given order.  **Closing JIRA issues via commits or Merge Requests won't work if you don't set the ID correctly.** |
 
 ### Getting a transition ID
 

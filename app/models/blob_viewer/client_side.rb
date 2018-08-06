@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module BlobViewer
   module ClientSide
     extend ActiveSupport::Concern

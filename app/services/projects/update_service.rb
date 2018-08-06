@@ -4,33 +4,27 @@ module Projects
   class UpdateService < BaseService
     include UpdateVisibilityLevel
 
+    ValidationError = Class.new(StandardError)
+
     def execute
-      unless valid_visibility_level_change?(project, params[:visibility_level])
-        return error('New visibility level not allowed!')
-      end
-
-      if renaming_project_with_container_registry_tags?
-        return error('Cannot rename project because it contains container registry tags!')
-      end
-
-      if changing_default_branch?
-        return error("Could not set the default branch") unless project.change_head(params[:default_branch])
-      end
+      validate!
 
       ensure_wiki_exists if enabling_wiki?
 
       yield if block_given?
 
       # If the block added errors, don't try to save the project
-      return validation_failed! if project.errors.any?
+      return update_failed! if project.errors.any?
 
       if project.update(params.except(:default_branch))
         after_update
 
         success
       else
-        validation_failed!
+        update_failed!
       end
+    rescue ValidationError => e
+      error(e.message)
     end
 
     def run_auto_devops_pipeline?
@@ -40,6 +34,20 @@ module Projects
     end
 
     private
+
+    def validate!
+      unless valid_visibility_level_change?(project, params[:visibility_level])
+        raise ValidationError.new('New visibility level not allowed!')
+      end
+
+      if renaming_project_with_container_registry_tags?
+        raise ValidationError.new('Cannot rename project because it contains container registry tags!')
+      end
+
+      if changing_default_branch?
+        raise ValidationError.new("Could not set the default branch") unless project.change_head(params[:default_branch])
+      end
+    end
 
     def after_update
       todos_features_changes = %w(
@@ -65,7 +73,7 @@ module Projects
       update_pages_config if changing_pages_https_only?
     end
 
-    def validation_failed!
+    def update_failed!
       model_errors = project.errors.full_messages.to_sentence
       error_message = model_errors.presence || 'Project could not be updated!'
 
@@ -87,7 +95,7 @@ module Projects
     end
 
     def enabling_wiki?
-      return false if @project.wiki_enabled?
+      return false if project.wiki_enabled?
 
       params.dig(:project_feature_attributes, :wiki_access_level).to_i > ProjectFeature::DISABLED
     end

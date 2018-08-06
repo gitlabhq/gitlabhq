@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Platforms
     class Kubernetes < ActiveRecord::Base

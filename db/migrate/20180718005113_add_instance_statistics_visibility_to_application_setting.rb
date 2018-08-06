@@ -10,7 +10,7 @@ class AddInstanceStatisticsVisibilityToApplicationSetting < ActiveRecord::Migrat
   def up
     add_column_with_default(:application_settings, :instance_statistics_visibility_private,
                             :boolean,
-                            default: false,
+                            default: true,
                             allow_null: false)
   end
 

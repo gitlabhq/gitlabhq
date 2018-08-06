@@ -117,9 +117,9 @@ describe MergeRequestPresenter do
 
     before do
       project.add_developer(user)
-
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
+      resource.cache_merge_request_closes_issues!
     end
 
     describe '#closing_issues_links' do

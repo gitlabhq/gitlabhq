@@ -3,7 +3,7 @@ module Gitlab
     include Gitlab::Utils::StrongMemoize
 
     def prepare_template_environment(file)
-      return unless file&.path.present?
+      return unless file
 
       if Gitlab::ImportExport.object_storage?
         params[:import_export_upload] = ImportExportUpload.new(import_file: file)

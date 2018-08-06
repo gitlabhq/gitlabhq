@@ -2,6 +2,7 @@
 import { __ } from '~/locale';
 import { mapActions, mapState } from 'vuex';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
+import { modalTypes } from '../../constants';
 
 export default {
   components: {
@@ -13,42 +14,58 @@ export default {
     };
   },
   computed: {
-    ...mapState(['newEntryModal']),
+    ...mapState(['entryModal']),
     entryName: {
       get() {
-        return this.name || (this.newEntryModal.path !== '' ? `${this.newEntryModal.path}/` : '');
+        if (this.entryModal.type === modalTypes.rename) {
+          return this.name || this.entryModal.entry.name;
+        }
+
+        return this.name || (this.entryModal.path !== '' ? `${this.entryModal.path}/` : '');
       },
       set(val) {
         this.name = val;
       },
     },
     modalTitle() {
-      if (this.newEntryModal.type === 'tree') {
+      if (this.entryModal.type === modalTypes.tree) {
         return __('Create new directory');
+      } else if (this.entryModal.type === modalTypes.rename) {
+        return this.entryModal.entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create new file');
     },
     buttonLabel() {
-      if (this.newEntryModal.type === 'tree') {
+      if (this.entryModal.type === modalTypes.tree) {
         return __('Create directory');
+      } else if (this.entryModal.type === modalTypes.rename) {
+        return this.entryModal.entry.type === modalTypes.tree ? __('Rename folder') : __('Rename file');
       }
 
       return __('Create file');
     },
   },
   methods: {
-    ...mapActions(['createTempEntry']),
-    createEntryInStore() {
-      this.createTempEntry({
-        name: this.name,
-        type: this.newEntryModal.type,
-      });
+    ...mapActions(['createTempEntry', 'renameEntry']),
+    submitForm() {
+      if (this.entryModal.type === modalTypes.rename) {
+        this.renameEntry({
+          path: this.entryModal.entry.path,
+          name: this.entryName,
+        });
+      } else {
+        this.createTempEntry({
+          name: this.name,
+          type: this.entryModal.type,
+        });
+      }
     },
     focusInput() {
-      setTimeout(() => {
-        this.$refs.fieldName.focus();
-      });
+      this.$refs.fieldName.focus();
+    },
+    closedModal() {
+      this.name = '';
     },
   },
 };
@@ -60,8 +77,9 @@ export default {
     :header-title-text="modalTitle"
     :footer-primary-button-text="buttonLabel"
     footer-primary-button-variant="success"
-    @submit="createEntryInStore"
+    @submit="submitForm"
     @open="focusInput"
+    @closed="closedModal"
   >
     <div
       class="form-group row"

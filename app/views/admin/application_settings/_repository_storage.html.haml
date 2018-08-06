@@ -1,4 +1,4 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-repository-storage-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -7,7 +7,7 @@
         .form-check
           = f.check_box :hashed_storage_enabled, class: 'form-check-input'
           = f.label :hashed_storage_enabled, class: 'form-check-label' do
-            Create new projects using hashed storage paths
+            Use hashed storage paths for newly created and renamed projects
           .form-text.text-muted
             Enable immutable, hash-based paths and repository names to store repositories on disk. This prevents
             repositories from having to be moved or renamed when the Project URL changes and may improve disk I/O performance.
