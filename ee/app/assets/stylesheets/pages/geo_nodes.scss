@@ -212,6 +212,11 @@
   }
 
   .card-body {
+    .project-container {
+      margin-left: 0;
+      padding-left: 0;
+    }
+  
     .project-status-content {
       &.status-type-success {
         color: $gl-text-green;
@@ -224,7 +229,7 @@
 
     @include media-breakpoint-down(xs) {
       .project-status-container + .project-status-container {
-        margin-top: 10px;
+        margin-top: 15px;
       }
     }
   }
