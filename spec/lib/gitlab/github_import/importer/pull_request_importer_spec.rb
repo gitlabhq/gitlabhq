@@ -111,6 +111,16 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         expect(mr).to be_instance_of(MergeRequest)
         expect(exists).to eq(false)
       end
+
+      it 'triggers internal_id functionality to track greatest iids' do
+        mr = build_stubbed(:merge_request, source_project: project, target_project: project)
+        allow(Gitlab::GithubImport).to receive(:insert_and_return_id).and_return(mr.id)
+        allow(project.merge_requests).to receive(:find).with(mr.id).and_return(mr)
+
+        expect(mr).to receive(:ensure_target_project_iid!)
+
+        importer.create_merge_request
+      end
     end
 
     context 'when the author could not be found' do
