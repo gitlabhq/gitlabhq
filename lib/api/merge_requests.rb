@@ -382,7 +382,7 @@ module API
       end
       get ':id/merge_requests/:merge_request_iid/closes_issues' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
-        issues = ::Kaminari.paginate_array(merge_request.closes_issues(current_user))
+        issues = ::Kaminari.paginate_array(merge_request.visible_closing_issues_for(current_user))
         issues = paginate(issues)
 
         external_issues, internal_issues = issues.partition { |issue| issue.is_a?(ExternalIssue) }

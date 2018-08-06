@@ -36,7 +36,7 @@ describe MoveToProjectFinder do
 
       it 'does not return archived projects' do
         reporter_project.add_reporter(user)
-        reporter_project.archive!
+        ::Projects::UpdateService.new(reporter_project, user, archived: true).execute
         other_reporter_project = create(:project)
         other_reporter_project.add_reporter(user)
 

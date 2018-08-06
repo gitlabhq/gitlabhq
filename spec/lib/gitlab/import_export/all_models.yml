@@ -92,6 +92,7 @@ merge_requests:
 - merge_request_diff
 - events
 - merge_requests_closing_issues
+- cached_closes_issues
 - metrics
 - approvals
 - approvers

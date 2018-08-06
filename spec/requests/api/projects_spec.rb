@@ -1743,7 +1743,7 @@ describe API::Projects do
 
     context 'on an archived project' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       it 'remains archived' do
@@ -1779,7 +1779,7 @@ describe API::Projects do
 
     context 'on an archived project' do
       before do
-        project.archive!
+        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       it 'unarchives the project' do

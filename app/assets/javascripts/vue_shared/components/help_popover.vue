@@ -4,15 +4,20 @@ import Icon from '~/vue_shared/components/icon.vue';
 import { inserted } from '~/feature_highlight/feature_highlight_helper';
 import { mouseenter, debouncedMouseleave, togglePopover } from '~/shared/popover';
 
+/**
+ * Render a button with a question mark icon
+ * On hover shows a popover. The popover will be dismissed on mouseleave
+ */
 export default {
-  name: 'ReportsHelpPopover',
+  name: 'HelpPopover',
   components: {
     Icon,
   },
   props: {
     options: {
       type: Object,
-      required: true,
+      required: false,
+      default: () => ({}),
     },
   },
   mounted() {

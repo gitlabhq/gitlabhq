@@ -53,7 +53,7 @@ describe MergeRequests::PostMergeService do
       allow(project).to receive(:default_branch).and_return('foo')
 
       issue = create(:issue, project: project)
-      allow(merge_request).to receive(:closes_issues).and_return([issue])
+      allow(merge_request).to receive(:visible_closing_issues_for).and_return([issue])
       allow_any_instance_of(Issues::CloseService).to receive(:execute).with(issue, commit: merge_request).and_raise
 
       expect { described_class.new(project, user, {}).execute(merge_request) }.to raise_error

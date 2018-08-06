@@ -671,6 +671,8 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
+
+    project_import_data
   end
 
   def import?
@@ -1336,14 +1338,6 @@ class Project < ActiveRecord::Base
 
   def visibility_level_field
     :visibility_level
-  end
-
-  def archive!
-    update_attribute(:archived, true)
-  end
-
-  def unarchive!
-    update_attribute(:archived, false)
   end
 
   def change_head(branch)

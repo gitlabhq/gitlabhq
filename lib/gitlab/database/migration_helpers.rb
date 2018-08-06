@@ -979,8 +979,8 @@ into similar problems in the future (e.g. when new tables are created).
 
         # To not overload the worker too much we enforce a minimum interval both
         # when scheduling and performing jobs.
-        if delay_interval < BackgroundMigrationWorker::MIN_INTERVAL
-          delay_interval = BackgroundMigrationWorker::MIN_INTERVAL
+        if delay_interval < BackgroundMigrationWorker.minimum_interval
+          delay_interval = BackgroundMigrationWorker.minimum_interval
         end
 
         model_class.each_batch(of: batch_size) do |relation, index|

@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " Status"
+msgstr ""
+
 msgid " and"
 msgstr ""
 
@@ -985,6 +988,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Bitbucket Server Import"
 msgstr ""
 
 msgid "Bitbucket import"
@@ -2666,6 +2672,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enter in your Bitbucket Server URL and personal access token below"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -3020,6 +3029,9 @@ msgid "From %{provider_title}"
 msgstr ""
 
 msgid "From Bitbucket"
+msgstr ""
+
+msgid "From Bitbucket Server"
 msgstr ""
 
 msgid "From FogBugz"
@@ -3630,6 +3642,9 @@ msgstr ""
 msgid "Import projects from Bitbucket"
 msgstr ""
 
+msgid "Import projects from Bitbucket Server"
+msgstr ""
+
 msgid "Import projects from FogBugz"
 msgstr ""
 
@@ -3637,6 +3652,9 @@ msgid "Import projects from GitLab.com"
 msgstr ""
 
 msgid "Import projects from Google Code"
+msgstr ""
+
+msgid "Import repositories from Bitbucket Server"
 msgstr ""
 
 msgid "Import repositories from GitHub"
@@ -3956,6 +3974,9 @@ msgid "List Your Gitea Repositories"
 msgstr ""
 
 msgid "List available repositories"
+msgstr ""
+
+msgid "List your Bitbucket Server repositories"
 msgstr ""
 
 msgid "List your GitHub repositories"
@@ -7645,6 +7666,9 @@ msgid "for this project"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "https://your-bitbucket-server"
 msgstr ""
 
 msgid "import flow"

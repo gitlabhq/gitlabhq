@@ -324,7 +324,7 @@ module API
       post ':id/archive' do
         authorize!(:archive_project, user_project)
 
-        user_project.archive!
+        ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
         present user_project, with: Entities::Project
       end
@@ -335,7 +335,7 @@ module API
       post ':id/unarchive' do
         authorize!(:archive_project, user_project)
 
-        user_project.unarchive!
+        ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
         present user_project, with: Entities::Project
       end

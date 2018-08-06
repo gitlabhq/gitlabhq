@@ -975,6 +975,7 @@ describe API::MergeRequests do
       issue = create(:issue, project: project)
       mr = merge_request.tap do |mr|
         mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
+        mr.cache_merge_request_closes_issues!
       end
 
       get api("/projects/#{project.id}/merge_requests/#{mr.iid}/closes_issues", user)

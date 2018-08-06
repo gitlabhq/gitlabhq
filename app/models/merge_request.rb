@@ -64,6 +64,8 @@ class MergeRequest < ActiveRecord::Base
     class_name: 'MergeRequestsClosingIssues',
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
 
+  has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
+
   belongs_to :assignee, class_name: "User"
 
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
@@ -769,8 +771,9 @@ class MergeRequest < ActiveRecord::Base
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user)
+  def cache_merge_request_closes_issues!(current_user = self.author)
     return unless project.issues_enabled?
+    return if closed? || merged?
 
     transaction do
       self.merge_requests_closing_issues.delete_all
@@ -779,6 +782,18 @@ class MergeRequest < ActiveRecord::Base
         next if issue.is_a?(ExternalIssue)
 
         self.merge_requests_closing_issues.create!(issue: issue)
+      end
+    end
+  end
+
+  def visible_closing_issues_for(current_user = self.author)
+    strong_memoize(:visible_closing_issues_for) do
+      if self.target_project.has_external_issue_tracker?
+        closes_issues(current_user)
+      else
+        cached_closes_issues.select do |issue|
+          Ability.allowed?(current_user, :read_issue, issue)
+        end
       end
     end
   end
@@ -802,7 +817,7 @@ class MergeRequest < ActiveRecord::Base
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze("#{title}\n#{description}")
 
-    ext.issues - closes_issues(current_user)
+    ext.issues - visible_closing_issues_for(current_user)
   end
 
   def target_project_path
@@ -850,7 +865,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message(include_description: false)
-    closes_issues_references = closes_issues.map do |issue|
+    closes_issues_references = visible_closing_issues_for.map do |issue|
       issue.to_reference(target_project)
     end
 
