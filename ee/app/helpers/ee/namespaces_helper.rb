@@ -1,5 +1,5 @@
 module EE
-  module NamespaceHelper
+  module NamespacesHelper
     def namespace_shared_runner_limits_quota(namespace)
       used = namespace.shared_runners_minutes.to_i
 
@@ -42,6 +42,15 @@ module EE
       content_tag :div, class: 'progress' do
         content_tag :div, nil, options
       end
+    end
+
+    def namespaces_options_with_developer_maintainer_access(options = {})
+      selected = options.delete(:selected) || :current_user
+      options[:groups] = current_user.manageable_groups(include_groups_with_developer_maintainer_access: true)
+                                     .eager_load(:route)
+                                     .order('routes.path')
+
+      namespaces_options(selected, options)
     end
   end
 end

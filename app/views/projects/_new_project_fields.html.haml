@@ -12,7 +12,13 @@
         .input-group-prepend.has-tooltip{ title: root_url }
           .input-group-text
             = root_url
-        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1}
+        - namespace_id = namespace_id_from(params)
+        = f.select(:namespace_id,
+                   namespaces_options_with_developer_maintainer_access(selected: namespace_id,
+                                                                      display_path: true,
+                                                                      extra_group: namespace_id),
+                   {},
+                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1})
 
       - else
         .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }

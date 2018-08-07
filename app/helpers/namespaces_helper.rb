@@ -1,12 +1,12 @@
 module NamespacesHelper
-  include EE::NamespaceHelper
+  include EE::NamespacesHelper
 
   def namespace_id_from(params)
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end
 
-  def namespaces_options(selected = :current_user, display_path: false, extra_group: nil, groups_only: false)
-    groups = current_user.manageable_groups
+  def namespaces_options(selected = :current_user, display_path: false, groups: nil, extra_group: nil, groups_only: false)
+    groups ||= current_user.manageable_groups
                .joins(:route)
                .includes(:route)
                .order('routes.path')
