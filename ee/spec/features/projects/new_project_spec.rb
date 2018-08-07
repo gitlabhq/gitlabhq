@@ -7,6 +7,25 @@ describe 'New project' do
     sign_in(user)
   end
 
+  context 'Namespace selector' do
+    context 'with group with DEVELOPER_MAINTAINER_PROJECT_ACCESS project_creation_level' do
+      let(:group) { create(:group, project_creation_level: ::EE::Gitlab::Access::DEVELOPER_MAINTAINER_PROJECT_ACCESS) }
+
+      before do
+        group.add_developer(user)
+        visit new_project_path(namespace_id: group.id)
+      end
+
+      it 'selects the group namespace' do
+        page.within('#blank-project-pane') do
+          namespace = find('#project_namespace_id option[selected]')
+
+          expect(namespace.text).to eq group.full_path
+        end
+      end
+    end
+  end
+
   context 'repository mirrors' do
     context 'when licensed' do
       before do
