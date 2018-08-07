@@ -51,7 +51,7 @@
           .form-group
             - if @project.avatar?
               .avatar-container.s160.append-bottom-15
-                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
             - if @project.avatar_in_git
               %p.light
                 = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }

@@ -15,7 +15,7 @@ describe 'User uploads avatar to profile' do
 
     visit user_path(user)
 
-    expect(page).to have_selector(%Q(img[data-src$="/uploads/-/system/user/avatar/#{user.id}/dk.png"]))
+    expect(page).to have_selector(%Q(img[data-src$="/uploads/-/system/user/avatar/#{user.id}/dk.png?width=90"]))
 
     # Cheating here to verify something that isn't user-facing, but is important
     expect(user.reload.avatar.file).to exist
