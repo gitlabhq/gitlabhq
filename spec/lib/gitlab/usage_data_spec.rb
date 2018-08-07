@@ -26,19 +26,9 @@ describe Gitlab::UsageData do
     subject { described_class.data }
 
     it "gathers usage data" do
-      expect(subject.keys).to match_array(%i(
+      expect(subject.keys).to include(*%i(
         active_user_count
         counts
-        historical_max_users
-        license_add_ons
-        license_plan
-        license_expires_at
-        license_starts_at
-        license_user_count
-        license_trial
-        licensee
-        license_md5
-        license_id
         recorded_at
         edition
         version
@@ -53,8 +43,6 @@ describe Gitlab::UsageData do
         reply_by_email_enabled
         container_registry_enabled
         gitlab_shared_runners_enabled
-        elasticsearch_enabled
-        geo_enabled
         gitlab_pages
         git
         database
@@ -68,10 +56,9 @@ describe Gitlab::UsageData do
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(3)
 
-      expect(count_data.keys).to match_array(%i(
+      expect(count_data.keys).to include(*%i(
         boards
         ci_builds
-        projects_mirrored_with_pipelines_enabled
         ci_internal_pipelines
         ci_external_pipelines
         ci_pipeline_config_auto_devops
@@ -84,8 +71,6 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
-        epics
-        geo_nodes
         clusters
         clusters_enabled
         clusters_disabled
@@ -100,16 +85,12 @@ describe Gitlab::UsageData do
         issues
         keys
         labels
-        ldap_group_links
-        ldap_keys
-        ldap_users
         lfs_objects
         merge_requests
         milestones
         notes
         projects
         projects_imported_from_github
-        projects_reporting_ci_cd_back_to_github
         projects_jira_active
         projects_slack_notifications_active
         projects_slack_slash_active
@@ -160,15 +141,6 @@ describe Gitlab::UsageData do
     end
   end
 
-  describe '#features_usage_data_ee' do
-    subject { described_class.features_usage_data_ee }
-
-    it 'gathers feature usage data of EE' do
-      expect(subject[:elasticsearch_enabled]).to eq(Gitlab::CurrentSettings.elasticsearch_search?)
-      expect(subject[:geo_enabled]).to eq(Gitlab::Geo.enabled?)
-    end
-  end
-
   describe '#components_usage_data' do
     subject { described_class.components_usage_data }
 
@@ -185,58 +157,11 @@ describe Gitlab::UsageData do
     subject { described_class.license_usage_data }
 
     it "gathers license data" do
-      license = ::License.current
-
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
-      expect(subject[:license_md5]).to eq(Digest::MD5.hexdigest(license.data))
-      expect(subject[:license_id]).to eq(license.license_id)
       expect(subject[:version]).to eq(Gitlab::VERSION)
-      expect(subject[:licensee]).to eq(license.licensee)
       expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
-      expect(subject[:licensee]).to eq(license.licensee)
-      expect(subject[:license_user_count]).to eq(license.restricted_user_count)
-      expect(subject[:license_starts_at]).to eq(license.starts_at)
-      expect(subject[:license_expires_at]).to eq(license.expires_at)
-      expect(subject[:license_add_ons]).to eq(license.add_ons)
-      expect(subject[:license_trial]).to eq(license.trial?)
       expect(subject[:recorded_at]).to be_a(Time)
-    end
-  end
-
-  describe '.service_desk_counts' do
-    subject { described_class.service_desk_counts }
-
-    before do
-      Project.update_all(service_desk_enabled: true)
-    end
-
-    context 'when Service Desk is disabled' do
-      it 'returns an empty hash' do
-        allow(License).to receive(:feature_available?).with(:service_desk).and_return(false)
-
-        expect(subject).to eq({})
-      end
-    end
-
-    context 'when there is no license' do
-      it 'returns an empty hash' do
-        allow(License).to receive(:current).and_return(nil)
-
-        expect(subject).to eq({})
-      end
-    end
-
-    context 'when Service Desk is enabled' do
-      it 'gathers Service Desk data' do
-        create_list(:issue, 3, confidential: true, author: User.support_bot, project: project)
-
-        allow(License).to receive(:feature_available?).with(:service_desk).and_return(true)
-        allow(::EE::Gitlab::ServiceDesk).to receive(:enabled?).with(anything).and_return(true)
-
-        expect(subject).to eq(service_desk_enabled_projects: 4,
-                              service_desk_issues: 3)
-      end
     end
   end
 end
