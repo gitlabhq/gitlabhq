@@ -1129,6 +1129,15 @@ rspec:
 The collected JUnit report will be persisted in GitLab as well as a general artiafcts (i.e. `artifacts:paths`) will.
 Without any further configuration, GitLab will automatically parse those reports and surface on UI, such as merge requests.
 
+You can also specify multiple test report paths within a sinlge job. GitLab-runner automatically concatenate those files into a single GunZip file.
+
+```yaml
+rspec:
+  artifacts:
+    reports:
+      junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]
+```
+
 ## `dependencies`
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
