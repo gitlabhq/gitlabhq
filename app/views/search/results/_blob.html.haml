@@ -1,4 +1,6 @@
 - project = find_project_for_result_blob(blob)
+- return unless project
+
 - file_name, blob = parse_search_result(blob)
 - blob_link = project_blob_path(project, tree_join(blob.ref, file_name))
 

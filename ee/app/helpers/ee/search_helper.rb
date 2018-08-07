@@ -11,7 +11,7 @@ module EE
 
     override :find_project_for_result_blob
     def find_project_for_result_blob(result)
-      super || ::Project.find(result['_parent'])
+      super || ::Project.find_by(id: result['_parent'])
     end
 
     override :parse_search_result
