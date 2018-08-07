@@ -1,4 +1,9 @@
 /* eslint-disable no-new */
+import ProtectedBranchCreate from 'ee/protected_branches/protected_branch_create';
+import ProtectedBranchEditList from 'ee/protected_branches/protected_branch_edit_list';
+import ProtectedTagCreate from 'ee/protected_tags/protected_tag_create';
+import ProtectedTagEditList from 'ee/protected_tags/protected_tag_edit_list';
+
 import UsersSelect from '~/users_select';
 import UserCallout from '~/user_callout';
 import initSettingsPanels from '~/settings_panels';
@@ -7,13 +12,8 @@ import CEProtectedBranchCreate from '~/protected_branches/protected_branch_creat
 import CEProtectedBranchEditList from '~/protected_branches/protected_branch_edit_list';
 import CEProtectedTagCreate from '~/protected_tags/protected_tag_create';
 import CEProtectedTagEditList from '~/protected_tags/protected_tag_edit_list';
-import MirrorPull from 'ee/mirrors/mirror_pull';
 import DueDateSelectors from '~/due_date_select';
-
-import ProtectedBranchCreate from 'ee/protected_branches/protected_branch_create';
-import ProtectedBranchEditList from 'ee/protected_branches/protected_branch_edit_list';
-import ProtectedTagCreate from 'ee/protected_tags/protected_tag_create';
-import ProtectedTagEditList from 'ee/protected_tags/protected_tag_edit_list';
+import EEMirrorRepos from './ee_mirror_repos';
 
 document.addEventListener('DOMContentLoaded', () => {
   new UsersSelect();
@@ -36,11 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
     new CEProtectedTagEditList();
   }
 
-  const mirrorPull = new MirrorPull('.js-project-mirror-push-form');
-
-  if (mirrorPull) {
-    mirrorPull.init();
-  }
+  const pushPullContainer = document.querySelector('.js-mirror-settings');
+  if (pushPullContainer) new EEMirrorRepos(pushPullContainer).init();
 
   new DueDateSelectors();
 });

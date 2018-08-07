@@ -2,13 +2,13 @@
 - verified_by = import_data.ssh_known_hosts_verified_by
 - verified_at = import_data.ssh_known_hosts_verified_at
 
-.form-group.js-ssh-host-keys-section{ class: ('hidden' unless import_data.ssh_import?) }
-  %button.btn.btn-inverted.btn-success.append-bottom-15.js-detect-host-keys{ type: 'button' }
+.form-group.js-ssh-host-keys-section{ class: ('collapse' unless import_data.ssh_import?) }
+  %button.btn.btn-inverted.btn-success.inline.js-detect-host-keys.append-right-10{ type: 'button' }
     = icon('spinner spin', class: 'detect-host-keys-load-spinner hidden')
-    Detect host keys
-  .fingerprint-ssh-info.js-fingerprint-ssh-info{ class: ('hidden' unless import_data.ssh_import?) }
+    = _('Detect host keys')
+  .fingerprint-ssh-info.js-fingerprint-ssh-info.prepend-top-10.append-bottom-10{ class: ('collapse' unless import_data.ssh_import?) }
     %label.label-bold
-      Fingerprints
+      = _('Fingerprints')
     .fingerprints-list.js-fingerprints-list
       - import_data.ssh_known_hosts_fingerprints.each do |fp|
         %code= fp.fingerprint
@@ -19,16 +19,15 @@
         - if verified_by
           = link_to verified_by.name, user_path(verified_by)
         - else
-          a deleted user
+          = _('a deleted user')
         #{time_ago_in_words(verified_at)} ago
 
-  .js-ssh-hosts-advanced
-    %button.btn.btn-sm.btn-default.prepend-top-10.append-bottom-15.btn-show-advanced.show-advanced{ type: 'button' }
+  .js-ssh-hosts-advanced.inline
+    %button.btn.btn-default.btn-show-advanced.show-advanced{ type: 'button' }
       %span.label-show
-        Show advanced
+        = _('Input host keys manually')
       %span.label-hide
-        Hide advanced
-      = icon('chevron')
-    .js-ssh-known-hosts.hidden
-      = f.label :ssh_known_hosts, 'SSH host keys', class: 'label-bold'
-      = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'
+        = _('Hide host keys manual input')
+  .js-ssh-known-hosts.collapse.prepend-top-default
+    = f.label :ssh_known_hosts, _('SSH host keys'), class: 'label-bold'
+    = f.text_area :ssh_known_hosts, class: 'form-control known-hosts js-known-hosts', rows: '10'

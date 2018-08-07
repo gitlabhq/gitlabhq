@@ -18,7 +18,7 @@ describe 'Project settings > [EE] repository' do
       visit project_settings_repository_path(project)
     end
 
-    it 'does not show pull mirror settings' do
+    it 'does not show pull mirror settings', :js do
       expect(page).to have_no_selector('#project_mirror')
       expect(page).to have_no_selector('#project_import_url')
       expect(page).to have_no_selector('#project_mirror_user_id', visible: false)
