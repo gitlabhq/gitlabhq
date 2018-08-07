@@ -1,0 +1,5 @@
+---
+title: 'Rails5: fix Arel::UpdateManager in MigrateOldElasticsearchSettings migration'
+merge_request: 6815
+author: Jasper Maes
+type: fixed
