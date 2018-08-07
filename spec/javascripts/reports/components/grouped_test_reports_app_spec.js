@@ -154,7 +154,7 @@ describe('Grouped Test Reports App', () => {
         expect(vm.$el.querySelector('.js-mr-code-resolved-issues').textContent).toContain(
           resolvedFailures.suites[0].resolved_failures[1].name,
         );
-        done()
+        done();
       }, 0);
     });
   });
