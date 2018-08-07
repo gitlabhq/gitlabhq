@@ -119,7 +119,7 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 ## Issue Board terminology
 
 - **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
-- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee.
+- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
    - **Label list**: a list based on a label. It shows all opened issues with that label.
    - **Assignee list**: a list which includes all issues assigned to a user.
    - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
