@@ -43,6 +43,10 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
+## Test Reports
+
+[Collect test reports in Verify stage](test_reports.md).
+
 ## Code Quality analysis
 
 **(Starter)** [Analyze your project's Code Quality](code_quality.md).

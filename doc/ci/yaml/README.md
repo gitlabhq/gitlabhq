@@ -1097,29 +1097,33 @@ job:
 > Introduced in GitLab 11.2
 > This feature requires GitLab Runner version 11.2 or above
 
-`reports` keyword allows you to show 
+`reports` keyword is for collecting test reports from jobs and integrate it with GitLab flow,
+such as merge request or Pipeline views.
 
-save report-type artifacts (e.g. JUnit XML),
-internally parse & analyze the results, and surface the results.
+Currently, the following type of reports are supported in GitLab
+
+- [JUnit](link)
+
+### `artifacts:reports:junit`
+
+`junit` is to collect JUnit XML as an artifact. You can see the format specification [here](link).
+Typically, JUnit XML is not only supported in Java, but also there are bunch of thrid party tool to generate JUnit XML from even Ruby, Python or Javascript.
+
+Here is an example of collecting JUnit XML from "rspec" job.
 
 ```yaml
-rspec 0 3:
+rspec:
   stage: test
   script:
+  - bundle install
   - rspec --format RspecJunitFormatter --out rspec.xml
   artifacts:
     reports:
       junit: rspec.xml
 ```
 
-### `artifacts:reports:junit`
-
-`junit` is to specify paths of JUnit style XML test reports 
-
-```
-
-```
-
+The collected JUnit report will be persisted in GitLab as well as a general artiafcts (i.e. `artifacts:paths`) will.
+Without any further configuration, GitLab will automatically parse those reports and surface on UI, such as merge requests.
 
 ## `dependencies`
 
