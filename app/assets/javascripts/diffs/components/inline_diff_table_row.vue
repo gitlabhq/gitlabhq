@@ -101,7 +101,6 @@ export default {
       class="diff-line-num new_line"
     />
     <td
-      v-once
       :class="line.type"
       class="line_content"
       v-html="line.richText"
