@@ -70,6 +70,14 @@ describe Note, :elastic do
     create :note, :system, project: project, noteable: issue
   end
 
+  it 'uses same index for Note subclasses' do
+    Note.subclasses.each do |note_class|
+      expect(note_class.index_name).to eq(Note.index_name)
+      expect(note_class.document_type).to eq(Note.document_type)
+      expect(note_class.mappings.to_hash).to eq(Note.mappings.to_hash)
+    end
+  end
+
   context 'notes to confidential issues' do
     it "does not find note" do
       issue = create :issue, :confidential
