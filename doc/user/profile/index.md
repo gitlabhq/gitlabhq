@@ -30,6 +30,7 @@ You can edit your account settings by navigating from the up-right corner menu b
 From there, you can:
 
 - Update your personal information
+- Set a [custom status](#current-status) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
@@ -89,6 +90,27 @@ To enable private profile:
 
 NOTE: **Note:**
 You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
+## Current status
+
+> Introduced in GitLab 11.2.
+
+You can provide a custom status message for your user profile along with an emoji that describes it.
+This may be helpful when you are out of office or otherwise not available.
+Other users can then take your status into consideration when responding to your issues or assigning work to you.
+Please be aware that your status is publicly visible even if your [profile is private](#private-profile).
+
+To set your current status:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. In the text field below `Your status`, enter your status message.
+1. Select an emoji from the dropdown if you like.
+1. Hit **Update profile settings**.
+
+Status messages are restricted to 100 characters of plain text.
+They may however contain emoji codes such as `I'm on vacation :palm_tree:`.
+
+You can also set your current status [using the API](../../api/users.md#user-status).
 
 ## Troubleshooting
 
