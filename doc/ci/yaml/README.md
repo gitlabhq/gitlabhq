@@ -1104,6 +1104,10 @@ Currently, the following type of reports are supported in GitLab
 
 - [JUnit](link)
 
+NOTE: **Note:**
+> - If you want to leverage expiration dates of test reports, you can control via `artifacts:expire_in` keyword.
+> - Basically, test reports are collected regardless of the job results. This is the same behavior with `artifacts:when: 'always'`
+
 ### `artifacts:reports:junit`
 
 `junit` is to collect JUnit XML as an artifact. You can see the format specification [here](link).

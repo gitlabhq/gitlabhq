@@ -204,12 +204,12 @@ have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
 
-## Test reports
+## Verify your code with Test reports
 
 > Introduced in GitLab 11.2
 
-To verify whether the merge request do not break anything, you can show test reports
-in merge requests. This is tightly integreated with ["artifacts:reports" keyword in gitlab-ci.yml](https://docs.gitlab.com/ee/ci/yaml/README.html#artifacts)
+To verify whether merge requests do not break your product, you can show test reports
+in merge requests. So you can confidently release new changes.
 
 [Learn more about viewing test reports in a merge request".](test_reports.md)
 
