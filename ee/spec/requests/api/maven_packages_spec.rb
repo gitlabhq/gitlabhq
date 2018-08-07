@@ -11,6 +11,7 @@ describe API::MavenPackages do
 
   before do
     project.add_developer(user)
+    stub_licensed_features(packages: true)
   end
 
   describe 'GET /api/v4/projects/:id/packages/maven/*path/:file_name' do
@@ -52,7 +53,7 @@ describe API::MavenPackages do
 
         download_file_with_token(package_file_xml.file_name)
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it 'denies download when no private token' do
@@ -60,6 +61,14 @@ describe API::MavenPackages do
 
         expect(response).to have_gitlab_http_status(404)
       end
+    end
+
+    it 'rejects request if feature is not in the license' do
+      stub_licensed_features(packages: false)
+
+      download_file(package_file_xml.file_name)
+
+      expect(response).to have_gitlab_http_status(403)
     end
 
     def download_file(file_name, params = {}, request_headers = headers)
@@ -94,7 +103,7 @@ describe API::MavenPackages do
 
       authorize_upload_with_token
 
-      expect(response).to have_gitlab_http_status(401)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'rejects requests that did not go through gitlab-workhorse' do
@@ -132,6 +141,14 @@ describe API::MavenPackages do
       upload_file
 
       expect(response).to have_gitlab_http_status(401)
+    end
+
+    it 'rejects request if feature is not in the license' do
+      stub_licensed_features(packages: false)
+
+      upload_file_with_token
+
+      expect(response).to have_gitlab_http_status(403)
     end
 
     context 'when params from workhorse are correct' do
