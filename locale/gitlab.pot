@@ -2911,7 +2911,7 @@ msgstr ""
 msgid "IDE|Edit"
 msgstr ""
 
-msgid "IDE|Go back"
+msgid "IDE|Go to project"
 msgstr ""
 
 msgid "IDE|Open in file view"

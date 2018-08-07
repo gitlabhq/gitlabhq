@@ -59,12 +59,16 @@ export default {
       >
         <slot name="header"></slot>
       </header>
-      <repo-file
-        v-for="file in currentTree.tree"
-        :key="file.key"
-        :file="file"
-        :level="0"
-      />
+      <div
+        class="ide-tree-body"
+      >
+        <repo-file
+          v-for="file in currentTree.tree"
+          :key="file.key"
+          :file="file"
+          :level="0"
+        />
+      </div>
     </template>
   </div>
 </template>
