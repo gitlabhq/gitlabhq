@@ -278,10 +278,6 @@ class Issue < ActiveRecord::Base
     user ? readable_by?(user) : publicly_visible?
   end
 
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
   def check_for_spam?
     project.public? && (title_changed? || description_changed?)
   end

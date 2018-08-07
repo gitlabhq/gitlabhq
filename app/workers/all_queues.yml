@@ -77,6 +77,7 @@
 - todos_destroyer:todos_destroyer_entity_leave
 - todos_destroyer:todos_destroyer_project_private
 - todos_destroyer:todos_destroyer_private_features
+- todos_destroyer:todos_destroyer_group_private
 
 - default
 - mailers # ActionMailer::DeliveryJob.queue_name
