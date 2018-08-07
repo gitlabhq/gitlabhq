@@ -27,7 +27,6 @@ class ListIssue {
     this.referencePath = obj.reference_path;
     this.path = obj.real_path;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
-    this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
 
     if (obj.project) {
@@ -36,6 +35,7 @@ class ListIssue {
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);
+      this.milestone_id = obj.milestone.id;
     }
 
     obj.labels.forEach((label) => {
@@ -83,6 +83,19 @@ class ListIssue {
 
   removeAllAssignees () {
     this.assignees = [];
+  }
+
+  addMilestone (milestone) {
+    const miletoneId = this.milestone ? this.milestone.id : null;
+    if (milestone.id !== miletoneId) {
+      this.milestone = new ListMilestone(milestone);
+    }
+  }
+
+  removeMilestone (removeMilestone) {
+    if (removeMilestone && removeMilestone.id === this.milestone.id) {
+      this.milestone = {};
+    }
   }
 
   getLists () {

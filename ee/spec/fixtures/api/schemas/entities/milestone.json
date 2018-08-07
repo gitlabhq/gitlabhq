@@ -1,0 +1,18 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "project_id": { "type": ["integer", "null"] },
+    "group_id": { "type": ["integer", "null"] },
+    "title": { "type": "string" },
+    "description": { "type": ["string", "null"] },
+    "state": { "type": "string" },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "start_date": { "type": ["date", "null"] },
+    "due_date": { "type": ["date", "null"] },
+    "web_url": { "type": "string" }
+  },
+  "additionalProperties": false
+}

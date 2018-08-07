@@ -723,7 +723,7 @@ msgstr ""
 msgid "Assignee"
 msgstr ""
 
-msgid "Assignee boards not available with your current license"
+msgid "Assignee lists not available with your current license"
 msgstr ""
 
 msgid "Assignee lists show all issues assigned to the selected user."
@@ -4357,6 +4357,12 @@ msgstr ""
 msgid "Milestone"
 msgstr ""
 
+msgid "Milestone lists not available with your current license"
+msgstr ""
+
+msgid "Milestone lists show all issues from the selected milestone."
+msgstr ""
+
 msgid "Milestones"
 msgstr ""
 
@@ -6046,7 +6052,7 @@ msgstr ""
 msgid "Something went wrong while closing the %{issuable}. Please try again later"
 msgstr ""
 
-msgid "Something went wrong while fetching assignees list"
+msgid "Something went wrong while fetching %{listType} list"
 msgstr ""
 
 msgid "Something went wrong while fetching group member contributions"

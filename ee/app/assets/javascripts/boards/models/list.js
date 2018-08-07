@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import List from '~/boards/models/list';
 import ListAssignee from '~/vue_shared/models/assignee';
+import ListMilestone from '~/boards/models/milestone';
 
 const EE_TYPES = {
   promotion: {
@@ -47,7 +48,7 @@ class ListEE extends List {
   }
 
   onNewIssueResponse(issue, data) {
-    issue.milestone = data.milestone;
+    issue.milestone = data.milestone ? new ListMilestone(data.milestone) : data.milestone;
     issue.assignees = Array.isArray(data.assignees)
       ? data.assignees.map(assignee => new ListAssignee(assignee))
       : data.assignees;

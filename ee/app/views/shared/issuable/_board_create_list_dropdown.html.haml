@@ -1,4 +1,7 @@
-- if board.parent.feature_available?(:board_assignee_lists)
+- assignee_lists_available = board.parent.feature_available?(:board_assignee_lists)
+- milestone_lists_available = board.parent.feature_available?(:board_milestone_lists)
+
+- if assignee_lists_available || milestone_lists_available
   .dropdown.prepend-left-10#js-add-list
     %button.btn.btn-create.btn-inverted.d-flex.js-new-board-list{ type: "button", data: board_list_data }
       %span Add list
@@ -7,17 +10,30 @@
       %ul.nav.nav-tabs.dropdown-tabs-list.js-new-board-list-tabs{ role: 'tablist' }
         %li.nav-item.dropdown-tab-item.js-tab-button-labels
           %a.active{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-labels', target: '#tab-labels' } }
-            Label list
-        %li.nav-item.dropdown-tab-item.js-tab-button-assignees
-          %a{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-assignees', target: '#tab-assignees' } }
-            Assignee list
+            Label
+
+        - if assignee_lists_available
+          %li.nav-item.dropdown-tab-item.js-tab-button-assignees
+            %a{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-assignees', target: '#tab-assignees' } }
+              Assignee
+
+        - if milestone_lists_available
+          %li.nav-item.dropdown-tab-item.js-tab-button-milestones
+            %a{ href: '#', role: 'tab', data: { is_link: 'true', toggle: 'tab', action: 'tab-milestones', target: '#tab-milestones' } }
+              Milestone
       .tab-content
         #tab-labels.tab-pane.tab-pane-labels.active.js-tab-container-labels{ role: 'tabpanel' }
           = render partial: "shared/issuable/label_page_default", locals: { show_title: false, show_footer: true, show_create: true, show_boards_content: true, content_title: _('Label lists show all issues with the selected label.') }
           - if can?(current_user, :admin_label, board.parent)
             = render partial: "shared/issuable/label_page_create", locals: { show_close: false }
-        #tab-assignees.tab-pane.tab-pane-assignees.js-tab-container-assignees{ role: 'tabpanel' }
-          = render partial: "shared/issuable/assignee_page_default"
+
+        - if assignee_lists_available
+          #tab-assignees.tab-pane.tab-pane-assignees.js-tab-container-assignees{ role: 'tabpanel' }
+            = render partial: "shared/issuable/assignee_page_default"
+
+        - if milestone_lists_available
+          #tab-milestones.tab-pane.tab-pane-milestones.js-tab-container-milestones{ role: 'tabpanel' }
+            = render partial: "shared/issuable/milestone_page_default"
       = dropdown_loading
 - else
   = render_ce 'shared/issuable/board_create_list_dropdown', board: board

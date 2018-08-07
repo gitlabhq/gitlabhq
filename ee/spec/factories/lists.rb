@@ -4,4 +4,11 @@ FactoryBot.define do
     label nil
     user
   end
+
+  factory :milestone_list, parent: :list do
+    list_type :milestone
+    label nil
+    user nil
+    milestone
+  end
 end

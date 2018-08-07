@@ -5,12 +5,12 @@ module EE
 
       override :list_creation_attrs
       def list_creation_attrs
-        super + %i[assignee_id]
+        super + %i[assignee_id milestone_id]
       end
 
       override :serialization_attrs
       def serialization_attrs
-        super.merge(user: true)
+        super.merge(user: true, milestone: true)
       end
     end
   end

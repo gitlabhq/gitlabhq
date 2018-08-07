@@ -1,22 +1,26 @@
 <script>
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 
-import AssigneesListFilter from './assignees_list_filter.vue';
-import AssigneesListContent from './assignees_list_content.vue';
+import ListFilter from './list_filter.vue';
+import ListContent from './list_content.vue';
 
 export default {
   components: {
     LoadingIcon,
-    AssigneesListFilter,
-    AssigneesListContent,
+    ListFilter,
+    ListContent,
   },
   props: {
     loading: {
       type: Boolean,
       required: true,
     },
-    assignees: {
+    items: {
       type: Array,
+      required: true,
+    },
+    listType: {
+      type: String,
       required: true,
     },
   },
@@ -26,18 +30,18 @@ export default {
     };
   },
   computed: {
-    filteredAssignees() {
-      if (!this.query) {
-        return this.assignees;
-      }
+    filteredItems() {
+      if (!this.query) return this.items;
 
-      // fuzzaldrinPlus doesn't support filtering
-      // on multiple keys hence we're using plain JS.
       const query = this.query.toLowerCase();
-      return this.assignees.filter((assignee) => {
-        const name = assignee.name.toLowerCase();
-        const username = assignee.username.toLowerCase();
+      return this.items.filter((item) => {
+        const name = item.name ? item.name.toLowerCase() : item.title.toLowerCase();
 
+        if (this.listType === 'milestones') {
+          return name.indexOf(query) > -1;
+        }
+
+        const username = item.username.toLowerCase();
         return name.indexOf(query) > -1 || username.indexOf(query) > -1;
       });
     },
@@ -46,8 +50,8 @@ export default {
     handleSearch(query) {
       this.query = query;
     },
-    handleItemClick(assignee) {
-      this.$emit('onItemSelect', assignee);
+    handleItemClick(item) {
+      this.$emit('onItemSelect', item);
     },
   },
 };
@@ -61,12 +65,13 @@ export default {
     >
       <loading-icon />
     </div>
-    <assignees-list-filter
+    <list-filter
       @onSearchInput="handleSearch"
     />
-    <assignees-list-content
+    <list-content
       v-if="!loading"
-      :assignees="filteredAssignees"
+      :items="filteredItems"
+      :list-type="listType"
       @onItemSelect="handleItemClick"
     />
   </div>

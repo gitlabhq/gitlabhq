@@ -1,20 +1,21 @@
 import Vue from 'vue';
 
-import AssigneesListContainerComponent from 'ee/boards/components/assignees_list/assignees_list_container.vue';
+import ListContainerComponent from 'ee/boards/components/boards_list_selector/list_container.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { mockAssigneesList } from 'spec/boards/mock_data';
 
 const createComponent = () => {
-  const Component = Vue.extend(AssigneesListContainerComponent);
+  const Component = Vue.extend(ListContainerComponent);
 
   return mountComponent(Component, {
     loading: false,
-    assignees: mockAssigneesList,
+    items: mockAssigneesList,
+    listType: 'assignees',
   });
 };
 
-describe('AssigneesListContainerComponent', () => {
+describe('ListContainerComponent', () => {
   let vm;
 
   beforeEach(() => {
@@ -26,26 +27,26 @@ describe('AssigneesListContainerComponent', () => {
   });
 
   describe('computed', () => {
-    describe('filteredAssignees', () => {
+    describe('filteredItems', () => {
       it('returns assignees list as it is when `query` is empty', () => {
         vm.query = '';
-        expect(vm.filteredAssignees.length).toBe(mockAssigneesList.length);
+        expect(vm.filteredItems.length).toBe(mockAssigneesList.length);
       });
 
       it('returns filtered assignees list as it is when `query` has name', () => {
         const assignee = mockAssigneesList[0];
 
         vm.query = assignee.name;
-        expect(vm.filteredAssignees.length).toBe(1);
-        expect(vm.filteredAssignees[0].name).toBe(assignee.name);
+        expect(vm.filteredItems.length).toBe(1);
+        expect(vm.filteredItems[0].name).toBe(assignee.name);
       });
 
       it('returns filtered assignees list as it is when `query` has username', () => {
         const assignee = mockAssigneesList[0];
 
         vm.query = assignee.username;
-        expect(vm.filteredAssignees.length).toBe(1);
-        expect(vm.filteredAssignees[0].username).toBe(assignee.username);
+        expect(vm.filteredItems.length).toBe(1);
+        expect(vm.filteredItems[0].username).toBe(assignee.username);
       });
     });
   });
