@@ -218,4 +218,22 @@ describe EE::User do
       end
     end
   end
+
+  describe '#roadmap_layout' do
+    context 'not set' do
+      subject { build(:user, roadmap_layout: nil) }
+
+      it 'returns default value' do
+        expect(subject.roadmap_layout).to eq(EE::User::DEFAULT_ROADMAP_LAYOUT)
+      end
+    end
+
+    context 'set' do
+      subject { build(:user, roadmap_layout: 'quarters') }
+
+      it 'returns set value' do
+        expect(subject.roadmap_layout).to eq('quarters')
+      end
+    end
+  end
 end

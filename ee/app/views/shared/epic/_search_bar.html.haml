@@ -2,7 +2,7 @@
 - hide_sort_dropdown = local_assigns.fetch(:hide_sort_dropdown, false)
 - show_roadmap_presets = local_assigns.fetch(:show_roadmap_presets, false)
 - full_path = @project.present? ? @project.full_path : @group.full_path
-- preset_layout = params[:layout].present? ? params[:layout] : "MONTHS"
+- preset_layout = roadmap_layout
 - is_quarters = preset_layout == "QUARTERS"
 - is_months = preset_layout == "MONTHS"
 - is_weeks = preset_layout == "WEEKS"
