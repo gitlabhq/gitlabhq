@@ -21,7 +21,7 @@ describe('epicHeader', () => {
   });
 
   it('should render author avatar', () => {
-    expect(vm.$el.querySelector('img').src).toEqual(author.src);
+    expect(vm.$el.querySelector('img').src).toEqual(`${author.src}?width=24`);
   });
 
   it('should render author name', () => {
@@ -29,7 +29,9 @@ describe('epicHeader', () => {
   });
 
   it('should render username tooltip', () => {
-    expect(vm.$el.querySelector('.user-avatar-link span').dataset.originalTitle).toEqual(author.username);
+    expect(vm.$el.querySelector('.user-avatar-link span').dataset.originalTitle).toEqual(
+      author.username,
+    );
   });
 
   describe('canDelete', () => {
@@ -37,7 +39,7 @@ describe('epicHeader', () => {
       expect(vm.$el.querySelector('.btn-remove')).toBeNull();
     });
 
-    it('should show loading button if canDelete', (done) => {
+    it('should show loading button if canDelete', done => {
       vm.canDelete = true;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.btn-remove')).toBeDefined();
@@ -49,7 +51,7 @@ describe('epicHeader', () => {
   describe('delete epic', () => {
     let deleteEpic;
 
-    beforeEach((done) => {
+    beforeEach(done => {
       deleteEpic = jasmine.createSpy();
       spyOn(window, 'confirm').and.returnValue(true);
       vm.canDelete = true;
