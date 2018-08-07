@@ -1,6 +1,9 @@
 - subject = local_assigns[:subject]
 - force_priority = local_assigns.fetch(:force_priority, false)
+<<<<<<< HEAD
 - show_label_epics_link = defined?(@group) && @group&.feature_available?(:epics)
+=======
+>>>>>>> upstream/master
 - show_label_issues_link = defined?(@project) && show_label_issuables_link?(label, :issues, project: @project)
 - show_label_merge_requests_link = defined?(@project) && show_label_issuables_link?(label, :merge_requests, project: @project)
 

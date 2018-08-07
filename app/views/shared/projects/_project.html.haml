@@ -19,7 +19,7 @@
           - if project.creator && use_creator_avatar
             = image_tag avatar_icon_for_user(project.creator, 40), class: "avatar s40", alt:''
           - else
-            = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+            = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
     .project-details
       %h3.prepend-top-0.append-bottom-0
         = link_to project_path(project), class: 'text-plain' do

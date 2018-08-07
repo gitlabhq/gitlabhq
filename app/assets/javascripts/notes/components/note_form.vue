@@ -7,7 +7,7 @@ import issuableStateMixin from '../mixins/issuable_state';
 import resolvable from '../mixins/resolvable';
 
 export default {
-  name: 'IssueNoteForm',
+  name: 'NoteForm',
   components: {
     issueWarning,
     markdownField,
