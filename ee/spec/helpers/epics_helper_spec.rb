@@ -50,7 +50,7 @@ describe EpicsHelper do
         meta_data = JSON.parse(data[:meta])
 
         expect(meta_data.keys).to match_array(%w[
-          created author
+          created author epic_id todo_exists todo_path
           start_date start_date_fixed start_date_is_fixed start_date_from_milestones start_date_sourcing_milestone_title
           end_date due_date due_date_fixed due_date_is_fixed due_date_from_milestones due_date_sourcing_milestone_title
         ])
