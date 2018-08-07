@@ -34,16 +34,14 @@ module EE
           return if push_rule.nil? || push_rule.max_file_size.zero?
 
           max_file_size = push_rule.max_file_size
-          raw_changes = project.repository.raw_changes_between(oldrev, newrev)
+          blobs = project.repository.new_blobs(newrev)
 
-          large_file = raw_changes.find do |c|
-            size_in_mb = ::Gitlab::Utils.bytes_to_megabytes(c.blob_size)
-
-            c.operation != :deleted && size_in_mb > max_file_size
+          large_blob = blobs.find do |blob|
+            ::Gitlab::Utils.bytes_to_megabytes(blob.size) > max_file_size
           end
 
-          if large_file
-            raise ::Gitlab::GitAccess::UnauthorizedError, %Q{File "#{large_file.new_path}" is larger than the allowed size of #{max_file_size} MB}
+          if large_blob
+            raise ::Gitlab::GitAccess::UnauthorizedError, %Q{File "#{large_blob.path}" is larger than the allowed size of #{max_file_size} MB}
           end
         end
 
