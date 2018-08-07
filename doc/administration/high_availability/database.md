@@ -436,7 +436,7 @@ Also, check that the check master command works successfully on each node:
 
 ```
 su - gitlab-consul
-gitlab-ctl repmgr-check-master
+gitlab-ctl repmgr-check-master || echo 'This node is a standby repmgr node'
 ```
 
 This command relies on exit codes to tell Consul whether a particular node is a master
