@@ -108,6 +108,8 @@ export default class MergeRequestStore {
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
 
+    this.testResultsPath = data.test_reports_path;
+
     this.setState(data);
   }
 

@@ -147,6 +147,34 @@ describe Ci::JobArtifact do
     end
   end
 
+  describe '#each_blob' do
+    context 'when file format is gzip' do
+      context 'when gzip file contains one file' do
+        let(:artifact) { build(:ci_job_artifact, :junit) }
+
+        it 'iterates blob once' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.once
+        end
+      end
+
+      context 'when gzip file contains three files' do
+        let(:artifact) { build(:ci_job_artifact, :junit_with_three_testsuites) }
+
+        it 'iterates blob three times' do
+          expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(3).times
+        end
+      end
+    end
+
+    context 'when there are no adapters for the file format' do
+      let(:artifact) { build(:ci_job_artifact, :junit, file_format: :zip) }
+
+      it 'raises an error' do
+        expect { |b| artifact.each_blob(&b) }.to raise_error(described_class::NotSupportedAdapterError)
+      end
+    end
+  end
+
   describe '#expire_in' do
     subject { artifact.expire_in }
 

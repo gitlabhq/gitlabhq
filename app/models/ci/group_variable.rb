@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class GroupVariable < ActiveRecord::Base
     extend Gitlab::Ci::Model

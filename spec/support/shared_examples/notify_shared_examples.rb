@@ -87,6 +87,10 @@ shared_examples 'an email starting a new thread with reply-by-email enabled' do
   include_examples 'an email with X-GitLab headers containing project details'
   include_examples 'a new thread email with reply-by-email enabled'
 
+  it 'includes "Reply to this email directly or <View it on GitLab>"' do
+    expect(subject.default_part.body).to include(%(Reply to this email directly or <a href="#{Gitlab::UrlBuilder.build(model)}">view it on GitLab</a>.))
+  end
+
   context 'when reply-by-email is enabled with incoming address with %{key}' do
     it 'has a Reply-To header' do
       is_expected.to have_header 'Reply-To', /<reply+(.*)@#{Gitlab.config.gitlab.host}>\Z/

@@ -148,7 +148,7 @@ class ProjectsController < Projects::ApplicationController
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.archive!
+    ::Projects::UpdateService.new(@project, current_user, archived: true).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -158,7 +158,7 @@ class ProjectsController < Projects::ApplicationController
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.unarchive!
+    ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }

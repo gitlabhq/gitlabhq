@@ -55,7 +55,7 @@ describe LabelsFinder do
     context 'filtering by group_id' do
       it 'returns labels available for any non-archived project within the group' do
         group_1.add_developer(user)
-        project_1.archive!
+        ::Projects::UpdateService.new(project_1, user, archived: true).execute
         finder = described_class.new(user, group_id: group_1.id)
 
         expect(finder.execute).to eq [group_label_2, group_label_1, project_label_5]

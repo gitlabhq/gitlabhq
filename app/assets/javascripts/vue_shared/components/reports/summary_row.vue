@@ -1,7 +1,7 @@
 <script>
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import Popover from './help_popover.vue';
+import Popover from '../help_popover.vue';
 
 /**
  * Renders the summary row for each report
@@ -29,7 +29,8 @@ export default {
     },
     popoverOptions: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -60,7 +61,11 @@ export default {
         {{ summary }}
       </div>
 
-      <popover :options="popoverOptions" />
+      <popover
+        v-if="popoverOptions"
+        :options="popoverOptions"
+      />
+
     </div>
   </div>
 </template>

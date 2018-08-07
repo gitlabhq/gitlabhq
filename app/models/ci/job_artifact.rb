@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 module Ci
   class JobArtifact < ActiveRecord::Base
     include AfterCommitQueue
     include ObjectStorage::BackgroundMove
     extend Gitlab::Ci::Model
+
+    NotSupportedAdapterError = Class.new(StandardError)
 
     TEST_REPORT_FILE_TYPES = %w[junit].freeze
     DEFAULT_FILE_NAMES = { junit: 'junit.xml' }.freeze
@@ -44,6 +48,10 @@ module Ci
       gzip: 3
     }
 
+    FILE_FORMAT_ADAPTERS = {
+      gzip: Gitlab::Ci::Build::Artifacts::GzipFileAdapter
+    }.freeze
+
     def valid_file_format?
       unless TYPE_AND_FORMAT_PAIRS[self.file_type&.to_sym] == self.file_format&.to_sym
         errors.add(:file_format, 'Invalid file format with specified file type')
@@ -75,7 +83,21 @@ module Ci
         end
     end
 
+    def each_blob(&blk)
+      unless file_format_adapter_class
+        raise NotSupportedAdapterError, 'This file format requires a dedicated adapter'
+      end
+
+      file.open do |stream|
+        file_format_adapter_class.new(stream).each_blob(&blk)
+      end
+    end
+
     private
+
+    def file_format_adapter_class
+      FILE_FORMAT_ADAPTERS[file_format.to_sym]
+    end
 
     def set_size
       self.size = file.size

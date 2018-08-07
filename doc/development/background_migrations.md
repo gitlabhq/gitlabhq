@@ -5,6 +5,9 @@ otherwise take a very long time (hours, days, years, etc) to complete. For
 example, you can use background migrations to migrate data so that instead of
 storing data in a single JSON column the data is stored in a separate table.
 
+If the database cluster is considered to be in an unhealthy state, background
+migrations automatically reschedule themselves for a later point in time.
+
 ## When To Use Background Migrations
 
 >**Note:**

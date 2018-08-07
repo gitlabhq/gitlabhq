@@ -15,6 +15,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Chinese Traditional, Hong Kong
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Dutch
+  -  Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
 - French
   - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)

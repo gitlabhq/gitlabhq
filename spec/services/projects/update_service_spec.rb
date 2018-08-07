@@ -248,6 +248,21 @@ describe Projects::UpdateService do
           expect(project.errors.messages).to have_key(:base)
           expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
         end
+
+        context 'when hashed storage enabled' do
+          before do
+            stub_application_setting(hashed_storage_enabled: true)
+          end
+
+          it 'migrates project to a hashed storage instead of renaming the repo to another legacy name' do
+            result = update_project(project, admin, path: 'new-path')
+
+            expect(result).not_to include(status: :error)
+            expect(project).to be_valid
+            expect(project.errors).to be_empty
+            expect(project.reload.hashed_storage?(:repository)).to be_truthy
+          end
+        end
       end
 
       context 'with hashed storage' do

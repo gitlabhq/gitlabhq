@@ -20,7 +20,7 @@ describe Issues::ReopenService do
       end
     end
 
-    context 'when user is authrized to reopen issue' do
+    context 'when user is authorized to reopen issue' do
       let(:user) { create(:user) }
 
       before do

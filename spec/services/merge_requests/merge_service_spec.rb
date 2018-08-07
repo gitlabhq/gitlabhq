@@ -49,6 +49,7 @@ describe MergeRequests::MergeService do
         issue  = create :issue, project: project
         commit = double('commit', safe_message: "Fixes #{issue.to_reference}")
         allow(merge_request).to receive(:commits).and_return([commit])
+        merge_request.cache_merge_request_closes_issues!
 
         service.execute(merge_request)
 

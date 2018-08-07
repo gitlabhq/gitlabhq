@@ -151,6 +151,42 @@ describe Ci::Build do
     end
   end
 
+  describe '.with_test_reports' do
+    subject { described_class.with_test_reports }
+
+    context 'when build has a test report' do
+      let!(:build) { create(:ci_build, :success, :test_reports) }
+
+      it 'selects the build' do
+        is_expected.to eq([build])
+      end
+    end
+
+    context 'when build does not have test reports' do
+      let!(:build) { create(:ci_build, :success, :trace_artifact) }
+
+      it 'does not select the build' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when there are multiple builds with test reports' do
+      let!(:builds) { create_list(:ci_build, 5, :success, :test_reports) }
+
+      it 'does not execute a query for selecting job artifact one by one' do
+        recorded = ActiveRecord::QueryRecorder.new do
+          subject.each do |build|
+            Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
+              build.public_send("job_artifacts_#{file_type}").file.exists?
+            end
+          end
+        end
+
+        expect(recorded.count).to eq(2)
+      end
+    end
+  end
+
   describe '#actionize' do
     context 'when build is a created' do
       before do
@@ -2756,6 +2792,60 @@ describe Ci::Build do
             is_expected.to be_falsey
           end
         end
+      end
+    end
+  end
+
+  describe '#collect_test_reports!' do
+    subject { build.collect_test_reports!(test_reports) }
+
+    let(:test_reports) { Gitlab::Ci::Reports::TestReports.new }
+
+    it { expect(test_reports.get_suite(build.name).total_count).to eq(0) }
+
+    context 'when build has a test report' do
+      context 'when there is a JUnit test report from rspec test suite' do
+        before do
+          create(:ci_job_artifact, :junit, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the test suite' do
+          expect { subject }.not_to raise_error
+
+          expect(test_reports.get_suite(build.name).total_count).to eq(4)
+          expect(test_reports.get_suite(build.name).success_count).to be(2)
+          expect(test_reports.get_suite(build.name).failed_count).to be(2)
+        end
+      end
+
+      context 'when there is a JUnit test report from java ant test suite' do
+        before do
+          create(:ci_job_artifact, :junit_with_ant, job: build, project: build.project)
+        end
+
+        it 'parses blobs and add the results to the test suite' do
+          expect { subject }.not_to raise_error
+
+          expect(test_reports.get_suite(build.name).total_count).to eq(3)
+          expect(test_reports.get_suite(build.name).success_count).to be(3)
+          expect(test_reports.get_suite(build.name).failed_count).to be(0)
+        end
+      end
+
+      context 'when there is a corrupted JUnit test report' do
+        before do
+          create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: build.project)
+        end
+
+        it 'raises an error' do
+          expect { subject }.to raise_error(Gitlab::Ci::Parsers::Junit::JunitParserError)
+        end
+      end
+    end
+
+    context 'when build does not have test reports' do
+      it 'raises an error' do
+        expect { subject }.to raise_error(NoMethodError)
       end
     end
   end

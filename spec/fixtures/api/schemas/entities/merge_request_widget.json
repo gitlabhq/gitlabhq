@@ -117,7 +117,8 @@
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
     "rebase_path": { "type": ["string", "null"] },
-    "squash": { "type": "boolean" }
+    "squash": { "type": "boolean" },
+    "test_reports_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }
