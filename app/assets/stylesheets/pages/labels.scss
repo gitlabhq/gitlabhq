@@ -72,6 +72,9 @@
 }
 
 .manage-labels-list {
+  padding: 0;
+  margin-bottom: 0;
+
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
     margin-bottom: 5px;
@@ -80,6 +83,10 @@
     padding: $gl-padding;
     border-radius: $border-radius-default;
     border: 1px solid $theme-gray-100;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     &.sortable-ghost {
       opacity: 0.3;
@@ -243,7 +250,10 @@
 .label-actions-list {
   list-style: none;
   flex-shrink: 0;
+  text-align: right;
   padding: 0;
+  position: relative;
+  top: -3px;
 }
 
 .label-badge {
@@ -270,6 +280,16 @@
 
 .label-link-item {
   padding: 0;
+}
+
+.label-description {
+  .description-text {
+    margin-bottom: 10px;
+
+    .admin-labels & {
+      margin-bottom: 0;
+    }
+  }
 }
 
 .label-list-item {
@@ -318,6 +338,64 @@
       svg {
         fill: $blue-600;
       }
+    }
+
+    &.remove-row {
+      &:hover {
+        color: $gl-text-red;
+
+        svg {
+          fill: $gl-text-red;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, md)-1) {
+  .manage-labels-list {
+    > li:not(.empty-message):not(.is-not-draggable) {
+      flex-wrap: wrap;
+    }
+
+    .label-name {
+      order: 1;
+      flex-grow: 1;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .label-actions-list {
+      order: 2;
+      flex-shrink: 1;
+      text-align: left;
+    }
+
+    .label-links {
+      white-space: normal;
+    }
+
+    .label-description {
+      order: 3;
+      width: 100%;
+
+      > .append-right-default.prepend-left-default {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 910px) {
+  .priority-badge {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-top: $gl-padding;
+
+    .label-badge {
+      display: inline-block;
     }
   }
 }
