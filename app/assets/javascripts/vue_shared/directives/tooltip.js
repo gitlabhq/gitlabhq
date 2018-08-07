@@ -2,8 +2,10 @@ import $ from 'jquery';
 
 export default {
   bind(el) {
-    $(el).tooltip({
-      trigger: 'hover',
+    requestAnimationFrame(() => {
+      $(el).tooltip({
+        trigger: 'hover',
+      });
     });
   },
 
