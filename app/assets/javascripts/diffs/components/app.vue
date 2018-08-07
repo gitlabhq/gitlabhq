@@ -114,11 +114,16 @@ export default {
     this.adjustView();
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles']),
+    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles', 'startRenderDiffsQueue']),
     fetchData() {
-      this.fetchDiffFiles().catch(() => {
-        createFlash(__('Something went wrong on our end. Please try again!'));
-      });
+      this.fetchDiffFiles()
+        .then(() => {
+          console.log('Done');
+          requestIdleCallback(this.startRenderDiffsQueue, { timeout: 1000 });
+        })
+        .catch(() => {
+          createFlash(__('Something went wrong on our end. Please try again!'));
+        });
 
       if (!this.isNotesFetched) {
         eventHub.$emit('fetchNotesData');

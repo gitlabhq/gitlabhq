@@ -121,12 +121,12 @@ export default {
     </div>
 
     <diff-content
-      v-if="!isCollapsed"
+      v-if="!isCollapsed && file.renderIt"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
     <loading-icon
-      v-if="isLoadingCollapsedDiff"
+      v-if="isLoadingCollapsedDiff || !file.renderIt"
       class="diff-content loading"
     />
     <div

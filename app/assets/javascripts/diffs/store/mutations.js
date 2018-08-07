@@ -15,8 +15,26 @@ export default {
   },
 
   [types.SET_DIFF_DATA](state, data) {
+    const diffData = convertObjectPropsToCamelCase(data, { deep: true });
+    let showingLines = 0;
+    diffData.diffFiles.map(file => {
+      if (file.highlightedDiffLines) {
+        showingLines += file.parallelDiffLines.length;
+        Object.assign(file, {
+          renderIt: showingLines < 200,
+          collapsed: showingLines > 2000,
+        });
+      }
+    });
+
     Object.assign(state, {
-      ...convertObjectPropsToCamelCase(data, { deep: true }),
+      ...diffData,
+    });
+  },
+
+  [types.RENDER_FILE](state, file) {
+    Object.assign(file, {
+      renderIt: true,
     });
   },
 

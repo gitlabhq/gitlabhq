@@ -29,6 +29,26 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+export const startRenderDiffsQueue = ({ state, commit }) => {
+  const checkItem = () => {
+    const nextFile = state.diffFiles.find(file => !file.renderIt && !file.collapsed);
+    if (nextFile) {
+      requestAnimationFrame(() => {
+        commit(types.RENDER_FILE, nextFile);
+      });
+      requestIdleCallback(
+        () => {
+          console.log('CALL NEXT');
+          checkItem();
+        },
+        { timeout: 1000 },
+      );
+    }
+  };
+
+  checkItem();
+};
+
 export const setInlineDiffViewType = ({ commit }) => {
   commit(types.SET_DIFF_VIEW_TYPE, INLINE_DIFF_VIEW_TYPE);
 
