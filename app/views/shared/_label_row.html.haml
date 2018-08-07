@@ -1,15 +1,18 @@
 - subject = local_assigns[:subject]
 - force_priority = local_assigns.fetch(:force_priority, false)
-- show_label_epics_link = @group&.feature_available?(:epics)
-- show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
-- show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
+- show_label_epics_link = defined?(@group) && @group&.feature_available?(:epics)
+- show_label_issues_link = defined?(@project) && show_label_issuables_link?(label, :issues, project: @project)
+- show_label_merge_requests_link = defined?(@project) && show_label_issuables_link?(label, :merge_requests, project: @project)
 
 .label-name
-  = link_to_label(label, subject: @project, tooltip: false)
+  - if defined?(@project)
+    = link_to_label(label, subject: @project, tooltip: false)
+  - else
+    = render_colored_label(label, tooltip: false)
 .label-description
   .append-right-default.prepend-left-default
     - if label.description.present?
-      .description-text.append-bottom-10
+      .description-text
         = markdown_field(label, :description)
     %ul.label-links
       - if show_label_epics_link
@@ -25,5 +28,5 @@
           = link_to_label(label, subject: subject, type: :merge_request) { _('Merge requests') }
           &middot;
       - if force_priority
-        %li.label-link-item.js-priority-badge.inline.prepend-left-10
+        %li.label-link-item.priority-badge.js-priority-badge.inline.prepend-left-10
           .label-badge.label-badge-blue= _('Prioritized label')
