@@ -100,6 +100,15 @@ module EE
         end
       end
 
+      module List
+        extend ActiveSupport::Concern
+
+        prepended do
+          expose :milestone, using: ::API::Entities::Milestone, if: -> (entity, _) { entity.milestone? }
+          expose :user, as: :assignee, using: ::API::Entities::UserSafe, if: -> (entity, _) { entity.assignee? }
+        end
+      end
+
       module ApplicationSetting
         extend ActiveSupport::Concern
 

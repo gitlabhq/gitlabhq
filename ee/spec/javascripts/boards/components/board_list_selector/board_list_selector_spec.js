@@ -2,19 +2,20 @@ import '~/boards/stores/boards_store';
 
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import AssigneesListComponent from 'ee/boards/components/assignees_list/';
+import BoardListSelectorComponent from 'ee/boards/components/boards_list_selector/';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 import { mockAssigneesList } from 'spec/boards/mock_data';
 import { TEST_HOST } from 'spec/test_constants';
 
-describe('AssigneesListComponent', () => {
+describe('BoardListSelectorComponent', () => {
   const dummyEndpoint = `${TEST_HOST}/users.json`;
 
   const createComponent = () =>
-    mountComponent(AssigneesListComponent, {
-      listAssigneesPath: dummyEndpoint,
+    mountComponent(BoardListSelectorComponent, {
+      listPath: dummyEndpoint,
+      listType: 'assignees',
     });
 
   let vm;
@@ -43,13 +44,13 @@ describe('AssigneesListComponent', () => {
   });
 
   describe('methods', () => {
-    describe('loadAssignees', () => {
+    describe('loadList', () => {
       it('calls axios.get and sets response to store.state.assignees', done => {
         mock.onGet(dummyEndpoint).reply(200, mockAssigneesList);
         gl.issueBoards.BoardsStore.state.assignees = [];
 
         vm
-          .loadAssignees()
+          .loadList()
           .then(() => {
             expect(vm.loading).toBe(false);
             expect(vm.store.state.assignees.length).toBe(mockAssigneesList.length);
@@ -63,7 +64,7 @@ describe('AssigneesListComponent', () => {
         gl.issueBoards.BoardsStore.state.assignees = mockAssigneesList;
 
         vm
-          .loadAssignees()
+          .loadList()
           .then(() => {
             expect(axios.get).not.toHaveBeenCalled();
           })
@@ -76,7 +77,7 @@ describe('AssigneesListComponent', () => {
         gl.issueBoards.BoardsStore.state.assignees = [];
 
         vm
-          .loadAssignees()
+          .loadList()
           .then(() => {
             expect(vm.loading).toBe(false);
             expect(document.querySelector('.flash-text').innerText.trim()).toBe(

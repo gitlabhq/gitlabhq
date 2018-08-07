@@ -14,7 +14,7 @@ module EE
             args.delete(:remove_label_ids)
           end
 
-          args.merge(assignee_ids: assignee_ids(issue))
+          args.merge(list_movement_args(issue))
         end
 
         def both_are_list_type?(type)
@@ -25,6 +25,25 @@ module EE
 
         def both_are_same_type?
           moving_from_list.list_type == moving_to_list.list_type
+        end
+
+        def list_movement_args(issue)
+          assignee_ids = assignee_ids(issue)
+          milestone_id = milestone_id(issue)
+
+          {
+            assignee_ids: assignee_ids,
+            milestone_id: milestone_id
+          }
+        end
+
+        def milestone_id(issue)
+          # We want to nullify the issue milestone.
+          return if moving_to_list.backlog?
+
+          # Moving to a list which is not a 'milestone list' will keep
+          # the already existent milestone.
+          [issue.milestone_id, moving_to_list.milestone_id].compact.last
         end
 
         def assignee_ids(issue)

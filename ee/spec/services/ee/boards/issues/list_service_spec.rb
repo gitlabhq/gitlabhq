@@ -20,6 +20,7 @@ describe Boards::Issues::ListService, services: true do
     let(:p3) { create(:group_label, title: 'P3', group: group) }
 
     let(:user_list) { create(:user_list, board: board, position: 2) }
+    let(:milestone_list) { create(:milestone_list, board: board, position: 3) }
     let(:backlog)   { create(:backlog_list, board: board) }
     let(:list1)     { create(:list, board: board, label: development, position: 0) }
     let(:list2)     { create(:list, board: board, label: testing, position: 1) }
@@ -44,9 +45,34 @@ describe Boards::Issues::ListService, services: true do
     let(:parent) { group }
 
     before do
-      stub_licensed_features(board_assignee_lists: true)
+      stub_licensed_features(board_assignee_lists: true, board_milestone_lists: true)
+
       parent.add_developer(user)
       opened_issue3.assignees.push(user_list.user)
+    end
+
+    context 'milestone lists' do
+      let!(:milestone_issue) { create(:labeled_issue, project: project, milestone: milestone_list.milestone, labels: [p3]) }
+
+      it 'returns issues from milestone persisted in the list' do
+        params = { board_id: board.id, id: milestone_list.id }
+
+        issues = described_class.new(parent, user, params).execute
+
+        expect(issues).to contain_exactly(milestone_issue)
+      end
+
+      context 'backlog list context' do
+        it 'returns issues without milestones and without milestones from other lists' do
+          params = { board_id: board.id, id: backlog.id }
+
+          issues = described_class.new(parent, user, params).execute
+
+          expect(issues).to contain_exactly(opened_issue1, # milestone from this issue is not in a list
+                                            opened_issue2, # milestone from this issue is not in a list
+                                            reopened_issue1) # has no milestone
+        end
+      end
     end
 
     context '#metadata' do
@@ -72,7 +98,7 @@ describe Boards::Issues::ListService, services: true do
     end
 
     context 'when list_id is missing' do
-      context 'when board does not have a milestone' do
+      context 'when board is not scoped by milestone' do
         it 'returns opened issues without board labels and assignees applied' do
           params = { board_id: board.id }
 
@@ -82,14 +108,15 @@ describe Boards::Issues::ListService, services: true do
         end
       end
 
-      context 'when board have a milestone' do
+      context 'when board is scoped by milestone' do
         it 'returns opened issues without board labels, assignees, or milestone applied' do
           params = { board_id: board.id }
           board.update_attribute(:milestone, m1)
 
           issues = described_class.new(parent, user, params).execute
 
-          expect(issues).to match_array([opened_issue2, list1_issue2, reopened_issue1, opened_issue1])
+          expect(issues)
+            .to match_array([opened_issue2, list1_issue2, reopened_issue1, opened_issue1])
         end
 
         context 'when milestone is predefined' do

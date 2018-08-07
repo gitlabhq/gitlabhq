@@ -112,12 +112,20 @@ export default {
           if (e.target) {
             const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
             const toBoardType = containerEl.dataset.boardType;
+            const cloneActions = {
+              label: ['milestone', 'assignee'],
+              assignee: ['milestone', 'label'],
+              milestone: ['label', 'assignee'],
+            };
 
             if (toBoardType) {
               const fromBoardType = this.list.type;
+              // For each list we check if the destination list is
+              // a the list were we should clone the issue
+              const shouldClone = Object.entries(cloneActions).some(entry => (
+                 fromBoardType === entry[0] && entry[1].includes(toBoardType)));
 
-              if ((fromBoardType === 'assignee' && toBoardType === 'label') ||
-                  (fromBoardType === 'label' && toBoardType === 'assignee')) {
+              if (shouldClone) {
                 return 'clone';
               }
             }

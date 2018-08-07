@@ -10,10 +10,35 @@ describe Boards::Lists::ListService do
       context 'when the feature is enabled' do
         before do
           allow(board.parent).to receive(:feature_available?).with(:board_assignee_lists).and_return(true)
+          allow(board.parent).to receive(:feature_available?).with(:board_milestone_lists).and_return(false)
         end
 
         it 'returns all lists' do
           expect(service.execute(board)).to match_array [backlog_list, list, assignee_list, board.closed_list]
+        end
+      end
+
+      context 'when the feature is disabled' do
+        it 'filters out assignee lists that might have been created while subscribed' do
+          expect(service.execute(board)).to match_array [backlog_list, list, board.closed_list]
+        end
+      end
+    end
+
+    shared_examples 'list service for board with milestone lists' do
+      let!(:milestone_list) { build(:milestone_list, board: board).tap { |l| l.save(validate: false) } }
+      let!(:backlog_list) { create(:backlog_list, board: board) }
+      let!(:list) { create(:list, board: board, label: label) }
+
+      context 'when the feature is enabled' do
+        before do
+          allow(board.parent).to receive(:feature_available?).with(:board_assignee_lists).and_return(false)
+          allow(board.parent).to receive(:feature_available?).with(:board_milestone_lists).and_return(true)
+        end
+
+        it 'returns all lists' do
+          expect(service.execute(board))
+            .to match_array([backlog_list, list, milestone_list, board.closed_list])
         end
       end
 
@@ -31,6 +56,7 @@ describe Boards::Lists::ListService do
       let(:service) { described_class.new(project, double) }
 
       it_behaves_like 'list service for board with assignee lists'
+      it_behaves_like 'list service for board with milestone lists'
     end
 
     context 'when board parent is a group' do
@@ -40,6 +66,7 @@ describe Boards::Lists::ListService do
       let(:service) { described_class.new(group, double) }
 
       it_behaves_like 'list service for board with assignee lists'
+      it_behaves_like 'list service for board with milestone lists'
     end
   end
 end

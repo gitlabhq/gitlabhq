@@ -1,6 +1,7 @@
 module API
   class Boards < Grape::API
     include BoardsResponses
+    include EE::API::BoardsResponses
     include PaginationParams
 
     before { authenticate! }
@@ -71,12 +72,10 @@ module API
           success Entities::List
         end
         params do
-          requires :label_id, type: Integer, desc: 'The ID of an existing label'
+          use :list_creation_params
         end
         post '/lists' do
-          unless available_labels_for(user_project).exists?(params[:label_id])
-            render_api_error!({ error: 'Label not found!' }, 400)
-          end
+          authorize_list_type_resource!
 
           authorize!(:admin_list, user_project)
 

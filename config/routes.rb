@@ -81,6 +81,7 @@ Rails.application.routes.draw do
       resources :issues, module: :boards, only: [:index, :update]
 
       resources :users, module: :boards, only: [:index]
+      resources :milestones, module: :boards, only: [:index]
     end
 
     # UserCallouts

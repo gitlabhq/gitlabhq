@@ -38,6 +38,7 @@ class License < ActiveRecord::Base
     admin_audit_log
     auditor_user
     board_assignee_lists
+    board_milestone_lists
     cross_project_pipelines
     email_additional_text
     db_load_balancing

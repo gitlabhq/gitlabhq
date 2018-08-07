@@ -12,7 +12,7 @@
 
 .dropdown .dropdown-menu.dropdown-menu-tabs {
   padding-top: 0;
-  width: 240px;
+  min-width: 240px;
 
   .dropdown-tabs-list {
     display: flex;

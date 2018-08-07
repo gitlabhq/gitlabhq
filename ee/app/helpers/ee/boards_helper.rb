@@ -8,7 +8,8 @@ module EE
 
     override :board_list_data
     def board_list_data
-      super.merge(list_assignees_path: board_users_path(board, :json))
+      super.merge(list_milestone_path: board_milestones_path(board, :json),
+                  list_assignees_path: board_users_path(board, :json))
     end
 
     override :board_data
