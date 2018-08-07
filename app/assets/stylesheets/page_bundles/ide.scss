@@ -533,7 +533,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
     min-width: 0;
     width: 100%;
   }
