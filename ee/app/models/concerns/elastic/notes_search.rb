@@ -23,6 +23,14 @@ module Elastic
         indexes :noteable_id,    type: :integer, index: :not_analyzed
       end
 
+      def self.inherited(subclass)
+        super
+
+        subclass.__elasticsearch__.index_name = self.index_name
+        subclass.__elasticsearch__.document_type = self.document_type
+        subclass.__elasticsearch__.instance_variable_set(:@mapping, self.mapping.dup)
+      end
+
       def as_indexed_json(options = {})
         data = {}
 
