@@ -197,7 +197,7 @@ The current team labels are:
 - ~Plan
 - ~Quality
 - ~Release
-- ~"Security Products"
+- ~Secure
 - ~UX
 
 The descriptions on the [labels page][labels-page] explain what falls under the
