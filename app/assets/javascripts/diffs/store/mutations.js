@@ -17,7 +17,7 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
     let showingLines = 0;
-    diffData.diffFiles.map(file => {
+    diffData.diffFiles.forEach(file => {
       if (file.highlightedDiffLines) {
         showingLines += file.parallelDiffLines.length;
         Object.assign(file, {

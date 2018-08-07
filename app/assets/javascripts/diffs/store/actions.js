@@ -38,7 +38,6 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
       });
       requestIdleCallback(
         () => {
-          console.log('CALL NEXT');
           checkItem();
         },
         { timeout: 1000 },

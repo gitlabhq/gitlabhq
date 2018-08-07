@@ -118,7 +118,6 @@ export default {
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
-          console.log('Done');
           requestIdleCallback(this.startRenderDiffsQueue, { timeout: 1000 });
         })
         .catch(() => {
