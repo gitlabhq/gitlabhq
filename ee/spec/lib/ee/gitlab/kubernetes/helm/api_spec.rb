@@ -15,20 +15,18 @@ describe Gitlab::Kubernetes::Helm::Api do
   end
 
   describe '#get_config_map' do
-    let(:command) { Gitlab::Kubernetes::Helm::GetCommand.new(application.name) }
-
     it 'ensures the namespace exists before retrieving the config map' do
       expect(namespace).to receive(:ensure_exists!).once
 
-      subject.get_config_map(command)
+      subject.get_config_map(application.name)
     end
 
     it 'gets the config map on kubeclient' do
       expect(kubeclient).to receive(:get_config_map)
-        .with(command.config_map_name, namespace.name)
+        .with("example-config-map-name", namespace.name)
         .once
 
-      subject.get_config_map(command)
+      subject.get_config_map("example-config-map-name")
     end
   end
 
@@ -37,7 +35,7 @@ describe Gitlab::Kubernetes::Helm::Api do
       Gitlab::Kubernetes::Helm::UpgradeCommand.new(
         application.name,
         chart: application.chart,
-        values: application.values
+        files: application.files
       )
     end
 
@@ -50,7 +48,7 @@ describe Gitlab::Kubernetes::Helm::Api do
 
     it 'updates the config map on kubeclient when one exists' do
       resource = Gitlab::Kubernetes::ConfigMap.new(
-        application.name, application.values
+        application.name, application.files
       ).generate
 
       expect(kubeclient).to receive(:update_config_map).with(resource).once

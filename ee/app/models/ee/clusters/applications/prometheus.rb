@@ -30,18 +30,21 @@ module EE
           status_name == :update_errored
         end
 
-        def get_command
-          ::Gitlab::Kubernetes::Helm::GetCommand.new(name)
-        end
-
-        # TODO allow users to chose which version to upgrade to.
         def upgrade_command(values)
           ::Gitlab::Kubernetes::Helm::UpgradeCommand.new(
             name,
             version: self.class.const_get(:VERSION),
             chart: chart,
-            values: values
+            files: files_with_replaced_values(values)
           )
+        end
+
+        # Returns a copy of files where the values of 'values.yaml'
+        # are replaced by the argument.
+        #
+        # See #values for the data format required
+        def files_with_replaced_values(replaced_values)
+          files.merge('values.yaml': replaced_values)
         end
       end
     end

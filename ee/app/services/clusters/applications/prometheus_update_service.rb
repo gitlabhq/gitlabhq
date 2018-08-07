@@ -11,7 +11,7 @@ module Clusters
       def execute
         app.make_updating!
 
-        response = helm_api.get_config_map(app.get_command)
+        response = helm_api.get_config_map(config_map_name)
         config = extract_config(response)
 
         data =
@@ -31,6 +31,10 @@ module Clusters
       end
 
       private
+
+      def config_map_name
+        ::Gitlab::Kubernetes::ConfigMap.new(app.name, app.files).config_map_name
+      end
 
       def reset_alert_manager(config)
         config = set_alert_manager_enabled(config, false)
@@ -117,7 +121,7 @@ module Clusters
       end
 
       def extract_config(response)
-        YAML.safe_load(response.data.values)
+        YAML.safe_load(response.data[:'values.yaml'])
       end
 
       def has_alerts?
