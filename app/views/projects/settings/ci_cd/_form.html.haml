@@ -1,6 +1,6 @@
 .row.prepend-top-default
   .col-lg-12
-    = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
+    = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature
         .form-group.append-bottom-default.js-secret-runner-token
