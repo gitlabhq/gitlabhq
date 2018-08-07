@@ -43,7 +43,7 @@ describe Members::DestroyService do
   shared_examples 'a service destroying a member with access' do
     it_behaves_like 'a service destroying a member'
 
-    it 'invalidates cached counts for todos and assigned issues and merge requests', :aggregate_failures do
+    it 'invalidates cached counts for assigned issues and merge requests', :aggregate_failures do
       create(:issue, project: group_project, assignees: [member_user])
       create(:merge_request, source_project: group_project, assignee: member_user)
       create(:todo, :pending, project: group_project, user: member_user)
@@ -51,15 +51,11 @@ describe Members::DestroyService do
 
       expect(member_user.assigned_open_merge_requests_count).to be(1)
       expect(member_user.assigned_open_issues_count).to be(1)
-      expect(member_user.todos_pending_count).to be(1)
-      expect(member_user.todos_done_count).to be(1)
 
       described_class.new(current_user).execute(member, opts)
 
       expect(member_user.assigned_open_merge_requests_count).to be(0)
       expect(member_user.assigned_open_issues_count).to be(0)
-      expect(member_user.todos_pending_count).to be(0)
-      expect(member_user.todos_done_count).to be(0)
     end
   end
 

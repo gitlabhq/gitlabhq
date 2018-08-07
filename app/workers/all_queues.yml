@@ -78,6 +78,7 @@
 - todos_destroyer:todos_destroyer_confidential_issue
 - todos_destroyer:todos_destroyer_entity_leave
 - todos_destroyer:todos_destroyer_project_private
+- todos_destroyer:todos_destroyer_group_private
 - todos_destroyer:todos_destroyer_private_features
 
 - default

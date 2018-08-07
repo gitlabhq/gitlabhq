@@ -19,7 +19,26 @@ module EE
       super
     end
 
+    def new_epic(epic, current_user)
+      create_mention_todos(nil, epic, current_user)
+    end
+
+    def update_epic(epic, current_user, skip_users = [])
+      create_mention_todos(nil, epic, current_user, nil, skip_users)
+    end
+
     private
+
+    override :attributes_for_target
+    def attributes_for_target(target)
+      attributes = super
+
+      if target.is_a?(Epic)
+        attributes[:group_id] = target.group_id
+      end
+
+      attributes
+    end
 
     def create_approval_required_todos(merge_request, approvers, author)
       attributes = attributes_for_todo(merge_request.project, merge_request, author, ::Todo::APPROVAL_REQUIRED)
