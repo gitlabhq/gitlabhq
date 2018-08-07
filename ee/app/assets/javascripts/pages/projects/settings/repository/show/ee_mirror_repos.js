@@ -32,7 +32,8 @@ export default class EEMirrorRepos extends MirrorRepos {
         this.updateForm();
         this.showForm();
       })
-      .catch(() => {
+      .catch((error) => {
+        console.log(error);
         Flash(__('Something went wrong on our end.'));
       });
   }

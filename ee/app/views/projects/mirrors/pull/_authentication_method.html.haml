@@ -29,6 +29,6 @@
     = button_tag type: 'button',
       data: { endpoint: project_mirror_path(@project, project: { import_data_attributes: regen_data }) },
       class: "btn btn-inverted btn-warning prepend-top-10 js-btn-regenerate-ssh-key#{ ' collapse' unless ssh_public_key_present }" do
-      %i.fa.fa-spinner.fa-spin.hide.js-spinner
+      %i.fa.fa-spinner.fa-spin.js-spinner
       = _('Regenerate key')
     = render 'projects/mirrors/pull/regenerate_public_ssh_key_confirm_modal'

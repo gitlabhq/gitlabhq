@@ -50,7 +50,7 @@ export default class MirrorRepos {
     this.debouncedUpdateUrl = _.debounce(() => this.updateUrl(), 200);
     this.$urlInput.on('input', () => this.debouncedUpdateUrl());
     this.$protectedBranchesInput.on('change', () => this.updateProtectedBranches());
-    this.$table.on('click', '.js-delete-mirror', this.deleteMirror.bind(this));
+    this.$table.on('click', '.js-delete-mirror', event => this.deleteMirror(event));
   }
 
   togglePassword() {

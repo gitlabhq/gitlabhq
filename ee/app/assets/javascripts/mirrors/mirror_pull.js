@@ -251,13 +251,13 @@ export default class MirrorPull {
     const endpoint = button.data('endpoint');
 
     button.attr('disabled', 'disabled');
-    spinner.removeClass('hide');
+    spinner.removeClass('d-none');
 
     axios
       .patch(endpoint)
       .then(({ data }) => {
         button.removeAttr('disabled');
-        spinner.addClass('hide');
+        spinner.addClass('d-none');
 
         this.setSSHPublicKey(data.import_data_attributes.ssh_public_key);
       })
