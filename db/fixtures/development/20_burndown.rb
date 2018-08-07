@@ -63,9 +63,9 @@ class Gitlab::Seeder::Burndown
     @milestone.start_date.upto(@milestone.due_date) do |date|
       Timecop.travel(date)
 
-      close_number = rand(0..2)
+      close_number = rand(1..3)
       open_issues  = @milestone.issues.opened
-      open_issues  = open_issues.slice(0..close_number)
+      open_issues  = open_issues.limit(close_number)
 
       open_issues.each do |issue|
         Issues::CloseService.new(@project, @project.team.users.sample, {}).execute(issue)
@@ -77,7 +77,7 @@ class Gitlab::Seeder::Burndown
 
   def reopen_issues
     count  = @milestone.issues.closed.count / 3
-    issues = @milestone.issues.closed.slice(0..rand(count))
+    issues = @milestone.issues.closed.limit(rand(count) + 1)
     issues.each { |i| i.update(state: 'reopened') }
   end
 end
