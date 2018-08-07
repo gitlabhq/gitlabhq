@@ -210,7 +210,6 @@ ActiveRecord::Schema.define(version: 20180803001726) do
     t.boolean "hide_third_party_offers", default: false, null: false
     t.boolean "instance_statistics_visibility_private", default: false, null: false
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
-<<<<<<< HEAD
     t.integer "custom_project_templates_group_id"
   end
 
@@ -229,8 +228,6 @@ ActiveRecord::Schema.define(version: 20180803001726) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
->>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
