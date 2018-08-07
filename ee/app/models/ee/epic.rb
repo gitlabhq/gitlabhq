@@ -93,7 +93,7 @@ module EE
         groups.each do |milestone_ids, epics|
           next if milestone_ids.empty?
 
-          results = Epics::DateSourcingMilestonesFinder.execute(epics.first.id)
+          results = Epics::DateSourcingMilestonesFinder.new(epics.first.id)
 
           self.where(id: epics.map(&:id)).update_all(
             [
@@ -143,7 +143,7 @@ module EE
     alias_attribute(:due_date, :end_date)
 
     def update_start_and_due_dates
-      results = Epics::DateSourcingMilestonesFinder.execute(id)
+      results = Epics::DateSourcingMilestonesFinder.new(id)
 
       self.start_date = start_date_is_fixed? ? start_date_fixed : results.start_date
       self.start_date_sourcing_milestone_id = results.start_date_sourcing_milestone_id

@@ -13,7 +13,7 @@ describe Epics::DateSourcingMilestonesFinder do
       create(:issue, epic: epic, milestone: milestone2)
       create(:issue, epic: epic, milestone: milestone3)
 
-      results = described_class.execute(epic.id)
+      results = described_class.new(epic.id)
 
       expect(results).to have_attributes(
         start_date: milestone1.start_date,
@@ -28,7 +28,7 @@ describe Epics::DateSourcingMilestonesFinder do
       milestone1 = create(:milestone, start_date: Date.new(2000, 1, 1), due_date: Date.new(2000, 1, 10))
       create(:issue, epic: epic, milestone: milestone1)
 
-      results = described_class.execute(epic.id)
+      results = described_class.new(epic.id)
 
       expect(results).to have_attributes(
         start_date: milestone1.start_date,
@@ -43,7 +43,7 @@ describe Epics::DateSourcingMilestonesFinder do
       milestone1 = create(:milestone, start_date: Date.new(2000, 1, 1))
       create(:issue, epic: epic, milestone: milestone1)
 
-      results = described_class.execute(epic.id)
+      results = described_class.new(epic.id)
 
       expect(results).to have_attributes(
         start_date: milestone1.start_date,
@@ -56,7 +56,7 @@ describe Epics::DateSourcingMilestonesFinder do
     it 'handles epics without milestone' do
       epic = create(:epic)
 
-      results = described_class.execute(epic.id)
+      results = described_class.new(epic.id)
 
       expect(results).to have_attributes(
         start_date: nil,
