@@ -75,6 +75,12 @@ export default {
       required: false,
       default: null,
     },
+
+    tabIndex: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   computed: {
@@ -98,6 +104,7 @@ export default {
     :height="height"
     :x="x"
     :y="y"
+    :tabindex="tabIndex"
   >
     <use v-bind="{ 'xlink:href':spriteHref }"/>
   </svg>
