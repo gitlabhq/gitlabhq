@@ -82,16 +82,16 @@ module SearchHelper
       ref = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: project_tree_path(@project, ref) },
-        { category: "Current Project", label: "Commits",        url: project_commits_path(@project, ref) },
-        { category: "Current Project", label: "Network",        url: project_network_path(@project, ref) },
-        { category: "Current Project", label: "Graph",          url: project_graph_path(@project, ref) },
-        { category: "Current Project", label: "Issues",         url: project_issues_path(@project) },
-        { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
-        { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
-        { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
-        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
-        { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
+        { category: "In this project", label: "Files",          url: project_tree_path(@project, ref) },
+        { category: "In this project", label: "Commits",        url: project_commits_path(@project, ref) },
+        { category: "In this project", label: "Network",        url: project_network_path(@project, ref) },
+        { category: "In this project", label: "Graph",          url: project_graph_path(@project, ref) },
+        { category: "In this project", label: "Issues",         url: project_issues_path(@project) },
+        { category: "In this project", label: "Merge Requests", url: project_merge_requests_path(@project) },
+        { category: "In this project", label: "Milestones",     url: project_milestones_path(@project) },
+        { category: "In this project", label: "Snippets",       url: project_snippets_path(@project) },
+        { category: "In this project", label: "Members",        url: project_project_members_path(@project) },
+        { category: "In this project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else
       []

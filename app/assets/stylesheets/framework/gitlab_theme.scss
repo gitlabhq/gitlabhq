@@ -3,7 +3,6 @@
  */
 
 @mixin gitlab-theme(
-  $location-badge-color,
   $search-and-nav-links,
   $active-tab-border,
   $border-and-box-shadow,
@@ -119,12 +118,6 @@
       }
     }
 
-    .location-badge {
-      color: $location-badge-color;
-      background-color: rgba($search-and-nav-links, 0.1);
-      border-right: 1px solid $sidebar-text;
-    }
-
     .search-input::placeholder {
       color: rgba($search-and-nav-links, 0.8);
     }
@@ -139,10 +132,6 @@
     &.search-active {
       form {
         background-color: $white-light;
-      }
-
-      .location-badge {
-        color: $gl-text-color;
       }
 
       .search-input-wrap {
@@ -200,7 +189,6 @@
 body {
   &.ui-indigo {
     @include gitlab-theme(
-      $indigo-100,
       $indigo-200,
       $indigo-500,
       $indigo-700,
@@ -212,7 +200,6 @@ body {
 
   &.ui-light-indigo {
     @include gitlab-theme(
-      $indigo-100,
       $indigo-200,
       $indigo-500,
       $indigo-500,
@@ -224,7 +211,6 @@ body {
 
   &.ui-blue {
     @include gitlab-theme(
-      $theme-blue-100,
       $theme-blue-200,
       $theme-blue-500,
       $theme-blue-700,
@@ -236,7 +222,6 @@ body {
 
   &.ui-light-blue {
     @include gitlab-theme(
-      $theme-light-blue-100,
       $theme-light-blue-200,
       $theme-light-blue-500,
       $theme-light-blue-500,
@@ -248,7 +233,6 @@ body {
 
   &.ui-green {
     @include gitlab-theme(
-      $theme-green-100,
       $theme-green-200,
       $theme-green-500,
       $theme-green-700,
@@ -260,7 +244,6 @@ body {
 
   &.ui-light-green {
     @include gitlab-theme(
-      $theme-green-100,
       $theme-green-200,
       $theme-green-500,
       $theme-green-500,
@@ -272,7 +255,6 @@ body {
 
   &.ui-red {
     @include gitlab-theme(
-      $theme-red-100,
       $theme-red-200,
       $theme-red-500,
       $theme-red-700,
@@ -284,7 +266,6 @@ body {
 
   &.ui-light-red {
     @include gitlab-theme(
-      $theme-light-red-100,
       $theme-light-red-200,
       $theme-light-red-500,
       $theme-light-red-500,
@@ -296,7 +277,6 @@ body {
 
   &.ui-dark {
     @include gitlab-theme(
-      $theme-gray-100,
       $theme-gray-200,
       $theme-gray-500,
       $theme-gray-700,
@@ -308,7 +288,6 @@ body {
 
   &.ui-light {
     @include gitlab-theme(
-      $theme-gray-900,
       $theme-gray-700,
       $theme-gray-800,
       $theme-gray-700,
@@ -357,10 +336,6 @@ body {
         &:hover {
           background-color: $white-light;
           box-shadow: inset 0 0 0 1px $blue-200;
-
-          .location-badge {
-            box-shadow: inset 0 0 0 1px $blue-200;
-          }
         }
       }
 
@@ -372,13 +347,6 @@ body {
         .search-input {
           color: $gl-text-color;
         }
-      }
-
-      .location-badge {
-        color: $theme-gray-700;
-        box-shadow: inset 0 0 0 1px $border-color;
-        background-color: $nav-badge-bg;
-        border-right: 0;
       }
     }
 
