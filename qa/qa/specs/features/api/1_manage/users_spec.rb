@@ -1,19 +1,21 @@
-module QA
-  describe 'API users' do
-    before(:context) do
-      @api_client = Runtime::API::Client.new(:gitlab)
-    end
+# frozen_string_literal: true
 
-    context 'when authenticated' do
+module QA
+  context :manage do
+    describe 'Users API' do
+      before(:context) do
+        @api_client = Runtime::API::Client.new(:gitlab)
+      end
+
       let(:request) { Runtime::API::Request.new(@api_client, '/users') }
 
-      it 'get list of users' do
+      it 'GET /users' do
         get request.url
 
         expect_status(200)
       end
 
-      it 'submit request with a valid user name' do
+      it 'GET /users/:username with a valid username' do
         get request.url, { params: { username: Runtime::User.username } }
 
         expect_status(200)
@@ -22,20 +24,12 @@ module QA
         )
       end
 
-      it 'submit request with an invalid user name' do
+      it 'GET /users/:username with an invalid username' do
         get request.url, { params: { username: SecureRandom.hex(10) } }
 
         expect_status(200)
         expect(json_body).to eq([])
       end
-    end
-
-    it 'submit request with an invalid token' do
-      request = Runtime::API::Request.new(@api_client, '/users', private_token: 'invalid')
-
-      get request.url
-
-      expect_status(401)
     end
   end
 end

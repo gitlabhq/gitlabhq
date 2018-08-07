@@ -1,64 +1,67 @@
+# frozen_string_literal: true
+
 require 'digest/sha1'
 
 module QA
-  describe 'cloning code using a deploy key', :docker do
-    def login
-      Runtime::Browser.visit(:gitlab, Page::Main::Login)
-      Page::Main::Login.act { sign_in_using_credentials }
-    end
-
-    before(:all) do
-      login
-
-      @runner_name = "qa-runner-#{Time.now.to_i}"
-
-      @project = Factory::Resource::Project.fabricate! do |resource|
-        resource.name = 'deploy-key-clone-project'
+  context :release, :docker do
+    describe 'Git clone using a deploy key' do
+      def login
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
+        Page::Main::Login.act { sign_in_using_credentials }
       end
 
-      @repository_location = @project.repository_ssh_location
-
-      Factory::Resource::Runner.fabricate! do |resource|
-        resource.project = @project
-        resource.name = @runner_name
-        resource.tags = %w[qa docker]
-        resource.image = 'gitlab/gitlab-runner:ubuntu'
-      end
-
-      Page::Menu::Main.act { sign_out }
-    end
-
-    after(:all) do
-      Service::Runner.new(@runner_name).remove!
-    end
-
-    keys = [
-      [Runtime::Key::RSA, 8192],
-      [Runtime::Key::ECDSA, 521],
-      [Runtime::Key::ED25519]
-    ]
-
-    keys.each do |(key_class, bits)|
-      it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
-        key = key_class.new(*bits)
-
+      before(:all) do
         login
 
-        Factory::Resource::DeployKey.fabricate! do |resource|
-          resource.project = @project
-          resource.title = "deploy key #{key.name}(#{key.bits})"
-          resource.key = key.public_key
+        @runner_name = "qa-runner-#{Time.now.to_i}"
+
+        @project = Factory::Resource::Project.fabricate! do |resource|
+          resource.name = 'deploy-key-clone-project'
         end
 
-        deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
+        @repository_location = @project.repository_ssh_location
 
-        Factory::Resource::SecretVariable.fabricate! do |resource|
+        Factory::Resource::Runner.fabricate! do |resource|
           resource.project = @project
-          resource.key = deploy_key_name
-          resource.value = key.private_key
+          resource.name = @runner_name
+          resource.tags = %w[qa docker]
+          resource.image = 'gitlab/gitlab-runner:ubuntu'
         end
 
-        gitlab_ci = <<~YAML
+        Page::Menu::Main.act { sign_out }
+      end
+
+      after(:all) do
+        Service::Runner.new(@runner_name).remove!
+      end
+
+      keys = [
+        [Runtime::Key::RSA, 8192],
+        [Runtime::Key::ECDSA, 521],
+        [Runtime::Key::ED25519]
+      ]
+
+      keys.each do |(key_class, bits)|
+        it "user sets up a deploy key with #{key_class}(#{bits}) to clone code using pipelines" do
+          key = key_class.new(*bits)
+
+          login
+
+          Factory::Resource::DeployKey.fabricate! do |resource|
+            resource.project = @project
+            resource.title = "deploy key #{key.name}(#{key.bits})"
+            resource.key = key.public_key
+          end
+
+          deploy_key_name = "DEPLOY_KEY_#{key.name}_#{key.bits}"
+
+          Factory::Resource::SecretVariable.fabricate! do |resource|
+            resource.project = @project
+            resource.key = deploy_key_name
+            resource.value = key.private_key
+          end
+
+          gitlab_ci = <<~YAML
           cat-config:
             script:
               - mkdir -p ~/.ssh
@@ -73,31 +76,32 @@ module QA
             tags:
               - qa
               - docker
-        YAML
+          YAML
 
-        Factory::Repository::ProjectPush.fabricate! do |resource|
-          resource.project = @project
-          resource.file_name = '.gitlab-ci.yml'
-          resource.commit_message = 'Add .gitlab-ci.yml'
-          resource.file_content = gitlab_ci
-          resource.branch_name = deploy_key_name
-          resource.new_branch = true
-        end
-
-        sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
-
-        Page::Project::Show.act { wait_for_push }
-        Page::Menu::Side.act { click_ci_cd_pipelines }
-        Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
-        Page::Project::Pipeline::Show.act { go_to_first_job }
-
-        Page::Project::Job::Show.perform do |job|
-          job.wait(reload: false) do
-            job.completed? && !job.trace_loading?
+          Factory::Repository::ProjectPush.fabricate! do |resource|
+            resource.project = @project
+            resource.file_name = '.gitlab-ci.yml'
+            resource.commit_message = 'Add .gitlab-ci.yml'
+            resource.file_content = gitlab_ci
+            resource.branch_name = deploy_key_name
+            resource.new_branch = true
           end
 
-          expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
-          expect(job.output).to include(sha1sum)
+          sha1sum = Digest::SHA1.hexdigest(gitlab_ci)
+
+          Page::Project::Show.act { wait_for_push }
+          Page::Menu::Side.act { click_ci_cd_pipelines }
+          Page::Project::Pipeline::Index.act { go_to_latest_pipeline }
+          Page::Project::Pipeline::Show.act { go_to_first_job }
+
+          Page::Project::Job::Show.perform do |job|
+            job.wait(reload: false) do
+              job.completed? && !job.trace_loading?
+            end
+
+            expect(job.passed?).to be_truthy, "Job status did not become \"passed\"."
+            expect(job.output).to include(sha1sum)
+          end
         end
       end
     end
