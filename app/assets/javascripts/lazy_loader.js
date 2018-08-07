@@ -1,6 +1,7 @@
 import _ from 'underscore';
 
-export const placeholderImage = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
+export const placeholderImage =
+  'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 const SCROLL_THRESHOLD = 300;
 
 export default class LazyLoader {
@@ -48,7 +49,7 @@ export default class LazyLoader {
     const visHeight = scrollTop + window.innerHeight + SCROLL_THRESHOLD;
 
     // Loading Images which are in the current viewport or close to them
-    this.lazyImages = this.lazyImages.filter((selectedImage) => {
+    this.lazyImages = this.lazyImages.filter(selectedImage => {
       if (selectedImage.getAttribute('data-src')) {
         const imgBoundRect = selectedImage.getBoundingClientRect();
         const imgTop = scrollTop + imgBoundRect.top;
@@ -66,7 +67,18 @@ export default class LazyLoader {
   }
   static loadImage(img) {
     if (img.getAttribute('data-src')) {
-      img.setAttribute('src', img.getAttribute('data-src'));
+      let imgUrl = img.getAttribute('data-src');
+      // Only adding width + height for avatars for now
+      if (imgUrl.indexOf('/avatar/') > -1 && imgUrl.indexOf('?') === -1) {
+        let targetWidth = null;
+        if (img.getAttribute('width')) {
+          targetWidth = img.getAttribute('width');
+        } else {
+          targetWidth = img.width;
+        }
+        if (targetWidth) imgUrl += `?width=${targetWidth}`;
+      }
+      img.setAttribute('src', imgUrl);
       img.removeAttribute('data-src');
       img.classList.remove('lazy');
       img.classList.add('js-lazy-loaded');
