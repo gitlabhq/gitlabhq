@@ -35,7 +35,6 @@ export default {
 
 <template>
   <ide-tree-list
-    header-class="d-flex w-100"
     viewer-type="editor"
   >
     <template
