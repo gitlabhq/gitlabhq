@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe 'GPG signed commits', :js do
+  set(:ref) { :'2d1096e3a0ecf1d2baf6dee036cc80775d4940ba' }
   let(:project) { create(:project, :repository) }
 
   it 'changes from unverified to verified when the user changes his email to match the gpg key' do
@@ -13,7 +14,7 @@ describe 'GPG signed commits', :js do
 
     sign_in(user)
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -26,7 +27,7 @@ describe 'GPG signed commits', :js do
       user.update!(email: GpgHelpers::User1.emails.first)
     end
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -40,7 +41,7 @@ describe 'GPG signed commits', :js do
 
     sign_in(user)
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -52,7 +53,7 @@ describe 'GPG signed commits', :js do
       create :gpg_key, key: GpgHelpers::User1.public_key, user: user
     end
 
-    visit project_commits_path(project, :'signed-commits')
+    visit project_commits_path(project, ref)
 
     within '#commits-list' do
       expect(page).to have_content 'Unverified'
@@ -92,7 +93,7 @@ describe 'GPG signed commits', :js do
     end
 
     it 'unverified signature' do
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
@@ -107,7 +108,7 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email, but is the same user' do
       user_2_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed and authored commit by bette cartwright, different email')) do
         click_on 'Unverified'
@@ -124,7 +125,7 @@ describe 'GPG signed commits', :js do
     it 'unverified signature: user email does not match the committer email' do
       user_2_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed commit by bette cartwright')) do
         click_on 'Unverified'
@@ -141,7 +142,7 @@ describe 'GPG signed commits', :js do
     it 'verified and the gpg user has a gitlab profile' do
       user_1_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do
         click_on 'Verified'
@@ -158,7 +159,7 @@ describe 'GPG signed commits', :js do
     it "verified and the gpg user's profile doesn't exist anymore" do
       user_1_key
 
-      visit project_commits_path(project, :'signed-commits')
+      visit project_commits_path(project, ref)
 
       # wait for the signature to get generated
       within(find('.commit', text: 'signed and authored commit by nannie bernhard')) do

@@ -14,9 +14,15 @@
             = root_url
         - namespace_id = namespace_id_from(params)
         = f.select(:namespace_id,
+<<<<<<< HEAD
                    namespaces_options_with_developer_maintainer_access(selected: namespace_id,
                                                                       display_path: true,
                                                                       extra_group: namespace_id),
+=======
+                   namespaces_options(namespace_id || :current_user,
+                                      display_path: true,
+                                      extra_group: namespace_id),
+>>>>>>> upstream/master
                    {},
                    { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1})
 

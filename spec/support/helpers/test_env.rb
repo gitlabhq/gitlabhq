@@ -8,7 +8,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'signed-commits'                     => '2d1096e',
+    'signed-commits'                     => '6101e87',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',

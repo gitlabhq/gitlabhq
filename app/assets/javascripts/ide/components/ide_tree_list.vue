@@ -3,14 +3,14 @@ import { mapActions, mapGetters, mapState } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import SkeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 import RepoFile from './repo_file.vue';
-import NewDropdown from './new_dropdown/index.vue';
+import NavDropdown from './nav_dropdown.vue';
 
 export default {
   components: {
     Icon,
     RepoFile,
     SkeletonLoadingContainer,
-    NewDropdown,
+    NavDropdown,
   },
   props: {
     viewerType: {
@@ -57,14 +57,19 @@ export default {
         :class="headerClass"
         class="ide-tree-header"
       >
+        <nav-dropdown />
         <slot name="header"></slot>
       </header>
-      <repo-file
-        v-for="file in currentTree.tree"
-        :key="file.key"
-        :file="file"
-        :level="0"
-      />
+      <div
+        class="ide-tree-body"
+      >
+        <repo-file
+          v-for="file in currentTree.tree"
+          :key="file.key"
+          :file="file"
+          :level="0"
+        />
+      </div>
     </template>
   </div>
 </template>

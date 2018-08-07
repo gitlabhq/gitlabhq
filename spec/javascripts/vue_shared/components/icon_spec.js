@@ -13,6 +13,7 @@ describe('Sprite Icon Component', function () {
         name: 'commit',
         size: 32,
         cssClasses: 'extraclasses',
+        tabIndex: '0',
       });
     });
 
@@ -57,6 +58,10 @@ describe('Sprite Icon Component', function () {
 
     it('`name` validator should return false for existing icons', () => {
       expect(Icon.props.name.validator('commit')).toBe(true);
+    });
+
+    it('should contain `tabindex` attribute on svg element when `tabIndex` prop is defined', () => {
+      expect(icon.$el.getAttribute('tabindex')).toBe('0');
     });
   });
 });

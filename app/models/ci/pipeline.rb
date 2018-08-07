@@ -623,12 +623,12 @@ module Ci
     end
 
     def has_test_reports?
-      complete? && builds.with_test_reports.any?
+      complete? && builds.latest.with_test_reports.any?
     end
 
     def test_reports
       Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
-        builds.with_test_reports.each do |build|
+        builds.latest.with_test_reports.each do |build|
           build.collect_test_reports!(test_reports)
         end
       end

@@ -1866,9 +1866,7 @@ describe Ci::Pipeline, :mailer do
 
     context 'when pipeline has builds with test reports' do
       before do
-        create(:ci_build, pipeline: pipeline, project: project).tap do |build|
-          create(:ci_job_artifact, :junit, job: build, project: build.project)
-        end
+        create(:ci_build, :test_reports, pipeline: pipeline, project: project)
       end
 
       context 'when pipeline status is running' do
@@ -1885,6 +1883,22 @@ describe Ci::Pipeline, :mailer do
     end
 
     context 'when pipeline does not have builds with test reports' do
+      before do
+        create(:ci_build, :artifacts, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+
+    context 'when retried build has test reports' do
+      before do
+        create(:ci_build, :retried, :test_reports, pipeline: pipeline, project: project)
+      end
+
+      let(:pipeline) { create(:ci_pipeline, :success, project: project) }
+
       it { is_expected.to be_falsey }
     end
   end
@@ -1893,20 +1907,29 @@ describe Ci::Pipeline, :mailer do
     subject { pipeline.test_reports }
 
     context 'when pipeline has multiple builds with test reports' do
-      before do
-        create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project).tap do |build|
-          create(:ci_job_artifact, :junit, job: build, project: build.project)
-        end
+      let!(:build_rspec) { create(:ci_build, :success, name: 'rspec', pipeline: pipeline, project: project) }
+      let!(:build_java) { create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project) }
 
-        create(:ci_build, :success, name: 'java', pipeline: pipeline, project: project).tap do |build|
-          create(:ci_job_artifact, :junit_with_ant, job: build, project: build.project)
-        end
+      before do
+        create(:ci_job_artifact, :junit, job: build_rspec, project: project)
+        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
       end
 
       it 'returns test reports with collected data' do
         expect(subject.total_count).to be(7)
         expect(subject.success_count).to be(5)
         expect(subject.failed_count).to be(2)
+      end
+
+      context 'when builds are retried' do
+        let!(:build_rspec) { create(:ci_build, :retried, :success, name: 'rspec', pipeline: pipeline, project: project) }
+        let!(:build_java) { create(:ci_build, :retried, :success, name: 'java', pipeline: pipeline, project: project) }
+
+        it 'does not take retried builds into account' do
+          expect(subject.total_count).to be(0)
+          expect(subject.success_count).to be(0)
+          expect(subject.failed_count).to be(0)
+        end
       end
     end
 

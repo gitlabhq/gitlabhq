@@ -59,9 +59,18 @@ left.
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19318) [GitLab Core][ce] 11.0.
 
 Switching between your authored and assigned merge requests can be done without
-leaving the Web IDE. Click the project name in the top left to open a list of
-merge requests. You will need to commit or discard all your changes before
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+of merge requests. You will need to commit or discard all your changes before
 switching to a different merge request.
+
+## Switching branches
+
+> [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20850) [GitLab Core][ce] 11.2.
+
+Switching between branches of the current project repository can be done without
+leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list 
+of branches. You will need to commit or discard all your changes before
+switching to a different branch.
 
 [ce]: https://about.gitlab.com/pricing/
 [ee]: https://about.gitlab.com/pricing/

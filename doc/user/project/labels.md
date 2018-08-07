@@ -82,7 +82,11 @@ top-right:
 
 GitLab will consider the label title and description for the search.
 
+<<<<<<< HEAD
 ## Filtering issues, merge requests and epics by label
+=======
+## Filtering issues and merge requests by label
+>>>>>>> upstream/master
 
 ### Filtering in list pages
 

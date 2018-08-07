@@ -7,9 +7,14 @@ module NamespacesHelper
 
   def namespaces_options(selected = :current_user, display_path: false, groups: nil, extra_group: nil, groups_only: false)
     groups ||= current_user.manageable_groups
+<<<<<<< HEAD
                .joins(:route)
                .includes(:route)
                .order('routes.path')
+=======
+                 .eager_load(:route)
+                 .order('routes.path')
+>>>>>>> upstream/master
     users = [current_user.namespace]
     selected_id = selected
 
