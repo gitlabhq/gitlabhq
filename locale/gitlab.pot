@@ -1202,29 +1202,16 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "CICD|Default to Auto DevOps pipeline"
+msgstr ""
+
 msgid "CICD|Deployment strategy"
 msgstr ""
 
 msgid "CICD|Deployment strategy needs a domain name to work correctly."
-msgstr ""
-
-msgid "CICD|Disable Auto DevOps"
 msgstr ""
 
 msgid "CICD|Do not set up a domain here if you are setting up multiple Kubernetes clusters with Auto DevOps."
-msgstr ""
-
-msgid "CICD|Enable Auto DevOps"
-=======
-msgid "CICD|Default to Auto DevOps pipeline"
->>>>>>> upstream/master
-msgstr ""
-
-msgid "CICD|Deployment strategy"
-msgstr ""
-
-msgid "CICD|Deployment strategy needs a domain name to work correctly."
 msgstr ""
 
 msgid "CICD|Jobs"
