@@ -31,7 +31,9 @@ export const fetchDiffFiles = ({ state, commit }) => {
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
   const checkItem = () => {
-    const nextFile = state.diffFiles.find(file => !file.renderIt && !file.collapsed);
+    const nextFile = state.diffFiles.find(
+      file => !file.renderIt && (!file.collapsed || !file.text),
+    );
     if (nextFile) {
       requestAnimationFrame(() => {
         commit(types.RENDER_FILE, nextFile);

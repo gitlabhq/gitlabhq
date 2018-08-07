@@ -52,10 +52,16 @@ export default {
     handleToggle() {
       const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
 
-      if (collapsed && !highlightedDiffLines && !parallelDiffLines.length) {
+      if (
+        collapsed &&
+        !highlightedDiffLines &&
+        parallelDiffLines !== undefined &&
+        !parallelDiffLines.length
+      ) {
         this.handleLoadCollapsedDiff();
       } else {
         this.file.collapsed = !this.file.collapsed;
+        this.file.renderIt = true;
       }
     },
     handleLoadCollapsedDiff() {
@@ -65,6 +71,7 @@ export default {
         .then(() => {
           this.isLoadingCollapsedDiff = false;
           this.file.collapsed = false;
+          this.file.renderIt = true;
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;

@@ -21,13 +21,6 @@ export default {
       if (file.parallelDiffLines) {
         file.parallelDiffLines.forEach(line => {
           // eslint-disable-next-line no-param-reassign
-          delete line.text;
-        });
-      }
-
-      if (file.highlightedDiffLines) {
-        file.highlightedDiffLines.forEach(line => {
-          // eslint-disable-next-line no-param-reassign
           if (line.left) delete line.left.text;
           // eslint-disable-next-line no-param-reassign
           if (line.right) delete line.right.text;
@@ -35,12 +28,19 @@ export default {
       }
 
       if (file.highlightedDiffLines) {
-        showingLines += file.parallelDiffLines.length;
-        Object.assign(file, {
-          renderIt: showingLines < 200,
-          collapsed: showingLines > 2000,
+        file.highlightedDiffLines.forEach(line => {
+          // eslint-disable-next-line no-param-reassign
+          delete line.text;
         });
       }
+
+      if (file.highlightedDiffLines) {
+        showingLines += file.parallelDiffLines.length;
+      }
+      Object.assign(file, {
+        renderIt: showingLines < 200,
+        collapsed: file.text && showingLines > 2000,
+      });
     });
 
     Object.assign(state, {
