@@ -66,7 +66,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.performanceMetrics = {
       improved: [],
       degraded: [],
-      neutral: [],
     };
   }
 
@@ -92,7 +91,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
     const improved = [];
     const degraded = [];
-    const neutral = [];
 
     Object.keys(headMetricsIndexed).forEach(subject => {
       const subjectMetrics = headMetricsIndexed[subject];
@@ -110,24 +108,18 @@ export default class MergeRequestStore extends CEMergeRequestStore {
             delta: headMetricData.value - baseMetricData.value,
           };
 
-          if (metricData.delta === 0) {
-            neutral.push(metricData);
-          } else if (metricData.delta * metricDirection > 0) {
-            improved.push(metricData);
-          } else {
-            degraded.push(metricData);
+          if (metricData.delta !== 0) {
+            if (metricDirection > 0) {
+              improved.push(metricData);
+            } else {
+              degraded.push(metricData);
+            }
           }
-        } else {
-          neutral.push({
-            name: metric,
-            path: subject,
-            score: headMetricData.value,
-          });
         }
       });
     });
 
-    this.performanceMetrics = { improved, degraded, neutral };
+    this.performanceMetrics = { improved, degraded };
   }
 
   // normalize performance metrics by indexing on performance subject and metric name

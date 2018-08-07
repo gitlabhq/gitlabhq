@@ -55,8 +55,7 @@ export default {
       return (
         this.mr.performanceMetrics &&
         ((this.mr.performanceMetrics.degraded && this.mr.performanceMetrics.degraded.length > 0) ||
-          (this.mr.performanceMetrics.improved && this.mr.performanceMetrics.improved.length > 0) ||
-          (this.mr.performanceMetrics.neutral && this.mr.performanceMetrics.neutral.length > 0))
+          (this.mr.performanceMetrics.improved && this.mr.performanceMetrics.improved.length > 0))
       );
     },
     shouldRenderPerformance() {
@@ -229,7 +228,6 @@ export default {
       :success-text="performanceText"
       :unresolved-issues="mr.performanceMetrics.degraded"
       :resolved-issues="mr.performanceMetrics.improved"
-      :neutral-issues="mr.performanceMetrics.neutral"
       :has-issues="hasPerformanceMetrics"
       :component="$options.componentNames.PerformanceIssueBody"
       class="js-performance-widget mr-widget-border-top mr-report"
