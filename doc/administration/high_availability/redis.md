@@ -402,7 +402,7 @@ multiple machines with the Sentinel daemon.
     redis['master_name'] = 'gitlab-redis'
 
     # The same password for Redis authentication you set up for the master node.
-    redis['password'] = 'redis-password-goes-here'
+    redis['master_password'] = 'redis-password-goes-here'
 
     # The IP of the master Redis node.
     redis['master_ip'] = '10.0.0.1'
