@@ -115,13 +115,20 @@ export default {
   },
   [types.SET_EMPTY_STATE_SVGS](
     state,
-    { emptyStateSvgPath, noChangesStateSvgPath, committedStateSvgPath, pipelinesEmptyStateSvgPath },
+    {
+      emptyStateSvgPath,
+      noChangesStateSvgPath,
+      committedStateSvgPath,
+      pipelinesEmptyStateSvgPath,
+      promotionSvgPath,
+    },
   ) {
     Object.assign(state, {
       emptyStateSvgPath,
       noChangesStateSvgPath,
       committedStateSvgPath,
       pipelinesEmptyStateSvgPath,
+      promotionSvgPath,
     });
   },
   [types.TOGGLE_FILE_FINDER](state, fileFindVisible) {

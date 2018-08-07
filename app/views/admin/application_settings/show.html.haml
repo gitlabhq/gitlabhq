@@ -338,4 +338,27 @@
 
 = render_if_exists 'admin/application_settings/custom_templates_form', expanded: expanded
 
+%section.settings.no-animate#js-web-ide-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Web IDE')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Manage Web IDE features')
+  .settings-content
+    = form_for @application_setting, url: admin_application_settings_path(anchor: "#js-web-ide-settings"), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :web_ide_clientside_preview_enabled, class: 'form-check-input'
+            = f.label :web_ide_clientside_preview_enabled, class: 'form-check-label' do
+              = s_('IDE|Client side evaluation')
+            %span.form-text.text-muted
+              = s_('IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation.')
+
+      = f.submit _('Save changes'), class: "btn btn-success"
+
 = render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded

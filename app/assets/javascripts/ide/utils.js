@@ -1,6 +1,5 @@
 import { commitItemIconMap } from './constants';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getCommitIconMap = file => {
   if (file.deleted) {
     return commitItemIconMap.deleted;
@@ -9,4 +8,10 @@ export const getCommitIconMap = file => {
   }
 
   return commitItemIconMap.modified;
+};
+
+export const createPathWithExt = p => {
+  const ext = p.lastIndexOf('.') >= 0 ? p.substring(p.lastIndexOf('.') + 1) : '';
+
+  return `${p.substring(1, p.lastIndexOf('.') + 1 || p.length)}${ext || '.js'}`;
 };
