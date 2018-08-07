@@ -100,7 +100,7 @@ Notes:
   number of times you have to resolve conflicts.
 - Please remember to
   [always have your EE merge request merged before the CE version](#always-merge-ee-merge-requests-before-their-ce-counterparts).
-- You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
+- You can use [`git rerere`](https://git-scm.com/docs/git-rerere)
   to avoid resolving the same conflicts multiple times.
 
 ### Cherry-picking from CE to EE
