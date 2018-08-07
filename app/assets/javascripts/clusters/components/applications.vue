@@ -3,7 +3,7 @@ import _ from 'underscore';
 import { s__, sprintf } from '../../locale';
 import applicationRow from './application_row.vue';
 import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-import { APPLICATION_INSTALLED, INGRESS } from '../constants';
+import { APPLICATION_STATUS, INGRESS } from '../constants';
 
 export default {
   components: {
@@ -58,7 +58,7 @@ export default {
       return INGRESS;
     },
     ingressInstalled() {
-      return this.applications.ingress.status === APPLICATION_INSTALLED;
+      return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
     },
     ingressExternalIp() {
       return this.applications.ingress.externalIp;
@@ -122,7 +122,7 @@ export default {
       );
     },
     jupyterInstalled() {
-      return this.applications.jupyter.status === APPLICATION_INSTALLED;
+      return this.applications.jupyter.status === APPLICATION_STATUS.INSTALLED;
     },
     jupyterHostname() {
       return this.applications.jupyter.hostname;
