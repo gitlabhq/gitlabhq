@@ -18,6 +18,22 @@ export default {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
     let showingLines = 0;
     diffData.diffFiles.forEach(file => {
+      if (file.parallelDiffLines) {
+        file.parallelDiffLines.forEach(line => {
+          // eslint-disable-next-line no-param-reassign
+          delete line.text;
+        });
+      }
+
+      if (file.highlightedDiffLines) {
+        file.highlightedDiffLines.forEach(line => {
+          // eslint-disable-next-line no-param-reassign
+          if (line.left) delete line.left.text;
+          // eslint-disable-next-line no-param-reassign
+          if (line.right) delete line.right.text;
+        });
+      }
+
       if (file.highlightedDiffLines) {
         showingLines += file.parallelDiffLines.length;
         Object.assign(file, {
