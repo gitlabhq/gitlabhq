@@ -8,6 +8,7 @@ const defaultViewType = INLINE_DIFF_VIEW_TYPE;
 
 export default () => ({
   isLoading: true,
+  loadingMessage: '',
   endpoint: '',
   basePath: '',
   commit: null,
