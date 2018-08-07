@@ -51,6 +51,16 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     canRemove() {
       return !this.list.preset;
     },
+    hasLabels() {
+      return this.issue.labels && this.issue.labels.length;
+    },
+    labelDropdownTitle() {
+      return this.hasLabels ?
+        `${this.issue.labels[0].title} ${this.issue.labels.length - 1}+ more` : 'Label';
+    },
+    selectedLabels() {
+      return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
+    }
   },
   watch: {
     detail: {

@@ -616,7 +616,11 @@ GitLabDropdown = (function() {
     }
 
     if (this.options.opened) {
-      this.options.opened.call(this, e);
+      if (this.options.preserveContext) {
+        this.options.opened(e);
+      } else {
+        this.options.opened.call(this, e);
+      }
     }
 
     return this.dropdown.trigger('shown.gl.dropdown');
