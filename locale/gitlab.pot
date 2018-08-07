@@ -1930,6 +1930,9 @@ msgstr ""
 msgid "Cron syntax"
 msgstr ""
 
+msgid "Current Branch"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 
@@ -2407,6 +2410,9 @@ msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading branches."
 msgstr ""
 
 msgid "Error loading last commit."
@@ -3603,6 +3609,9 @@ msgid "No"
 msgstr ""
 
 msgid "No assignee"
+msgstr ""
+
+msgid "No branches found"
 msgstr ""
 
 msgid "No changes"
@@ -6045,9 +6054,6 @@ msgstr ""
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
-msgid "You do not have any assigned merge requests"
-msgstr ""
-
 msgid "You don't have any applications"
 msgstr ""
 
@@ -6055,9 +6061,6 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
-msgstr ""
-
-msgid "You have not created any merge requests"
 msgstr ""
 
 msgid "You have reached your project limit"

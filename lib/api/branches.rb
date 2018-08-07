@@ -19,6 +19,7 @@ module API
 
       params :filter_params do
         optional :search, type: String, desc: 'Return list of branches matching the search criteria'
+        optional :sort, type: String, desc: 'Return list of branches sorted by the given field'
       end
     end
 

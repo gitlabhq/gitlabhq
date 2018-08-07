@@ -22,7 +22,7 @@ describe 'Multi-file editor new file', :js do
   end
 
   it 'creates file in current directory' do
-    first('.ide-tree-header button').click
+    first('.ide-tree-actions button').click
 
     page.within('.modal') do
       find('.form-control').set('file name')

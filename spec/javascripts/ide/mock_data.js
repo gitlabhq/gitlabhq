@@ -165,3 +165,33 @@ export const mergeRequests = [
     web_url: `${gl.TEST_HOST}/namespace/project-path/merge_requests/1`,
   },
 ];
+
+export const branches = [
+  {
+    id: 1,
+    name: 'master',
+    commit: {
+      message: 'Update master branch',
+      committed_date: '2018-08-01T00:20:05Z',
+    },
+    can_push: true,
+  },
+  {
+    id: 2,
+    name: 'feature/lorem-ipsum',
+    commit: {
+      message: 'Update some stuff',
+      committed_date: '2018-08-02T00:00:05Z',
+    },
+    can_push: true,
+  },
+  {
+    id: 3,
+    name: 'feature/dolar-amit',
+    commit: {
+      message: 'Update some more stuff',
+      committed_date: '2018-06-30T00:20:05Z',
+    },
+    can_push: true,
+  },
+];
