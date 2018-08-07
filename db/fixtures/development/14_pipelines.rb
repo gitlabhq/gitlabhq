@@ -64,7 +64,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def create_running_pipeline_with_test_reports(ref, rspec_pattern:, ant_pattern:)
-    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(rspec_pattern)
+    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3 corrupted].include?(rspec_pattern)
     raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(ant_pattern)
 
     last_commit = @project.repository.commit(ref)
@@ -74,7 +74,11 @@ class Gitlab::Seeder::Pipelines
 
     (0...3).each do |index|
       Ci::Build.create!(name: "rspec:pg #{index} 3", stage: 'test', status: :running, project: @project, pipeline: pipeline, ref: ref).tap do |build|
-        path = Rails.root + "spec/fixtures/junit/#{rspec_pattern}-rspec-#{index}-3.xml.gz"
+        path = if rspec_pattern == 'corrupted'
+                 Rails.root + "spec/fixtures/junit/junit_with_corrupted_data.xml.gz"
+               else
+                 Rails.root + "spec/fixtures/junit/#{rspec_pattern}-rspec-#{index}-3.xml.gz"
+               end
 
         artifacts_cache_file(path) do |file|
           build.job_artifacts.create!(project: build.project, file_type: :junit, file_format: :gzip, file: file)
