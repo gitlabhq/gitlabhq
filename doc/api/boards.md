@@ -404,7 +404,14 @@ POST /projects/:id/boards/:board_id/lists
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
-| `label_id` | integer | yes | The ID of a label |
+| `label_id` | integer | no | The ID of a label |
+| `assignee_id` | integer | no | The ID of an user |
+| `milestone_id` | integer | no | The ID of a milestone |
+
+>**Note**: Label, assignee and milestone arguments are mutually exclusive,
+that is, only one of them are accepted in a request.
+Check the [Issue Board docs](../user/project/issue_board.md) for more
+information regarding the required license for each list type.
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/boards/1/lists?label_id=5
