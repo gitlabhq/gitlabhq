@@ -1,7 +1,7 @@
 - @no_container = true
 - breadcrumb_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
-- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.path, project_id: @project.path, id: @ref)
+- signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit)
 
 - page_title @path.presence || _("Files"), @ref
 = content_for :meta_tags do
