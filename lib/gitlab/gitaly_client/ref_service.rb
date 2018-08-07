@@ -82,6 +82,23 @@ module Gitlab
         commits
       end
 
+      def list_new_blobs(newrev, limit = 0)
+        request = Gitaly::ListNewBlobsRequest.new(
+          repository: @gitaly_repo,
+          commit_id: newrev,
+          limit: limit
+        )
+
+        response = GitalyClient
+          .call(@storage, :ref_service, :list_new_blobs, request, timeout: GitalyClient.medium_timeout)
+
+        response.flat_map do |msg|
+          # Returns an Array of Gitaly::NewBlobObject objects
+          # Available methods are: #size, #oid and #path
+          msg.new_blob_objects
+        end
+      end
+
       def count_tag_names
         tag_names.count
       end
