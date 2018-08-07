@@ -2,8 +2,6 @@
 import { mapState, mapGetters } from 'vuex';
 import parallelDiffTableRow from './parallel_diff_table_row.vue';
 import parallelDiffCommentRow from './parallel_diff_comment_row.vue';
-import { EMPTY_CELL_TYPE } from '../constants';
-import { trimFirstCharOfLineContent } from '../store/utils';
 
 export default {
   components: {
