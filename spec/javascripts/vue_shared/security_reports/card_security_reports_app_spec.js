@@ -95,7 +95,9 @@ describe('Card security reports app', () => {
 
       expect(userAvatarLink).not.toBeNull();
       expect(userAvatarLink.getAttribute('href')).toBe(`${TEST_HOST}/user`);
-      expect(userAvatarLink.querySelector('img').getAttribute('src')).toBe(`${TEST_HOST}/img`);
+      expect(userAvatarLink.querySelector('img').getAttribute('src')).toBe(
+        `${TEST_HOST}/img?width=24`,
+      );
       expect(userAvatarLink.textContent).toBe('TestUser');
     });
 

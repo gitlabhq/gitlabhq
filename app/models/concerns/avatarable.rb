@@ -19,7 +19,7 @@ module Avatarable
       # We use avatar_path instead of overriding avatar_url because of carrierwave.
       # See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11001/diffs#note_28659864
 
-      avatar_path(only_path: args.fetch(:only_path, true)) || super
+      avatar_path(only_path: args.fetch(:only_path, true), size: args[:size]) || super
     end
 
     def retrieve_upload(identifier, paths)
@@ -40,12 +40,13 @@ module Avatarable
     end
   end
 
-  def avatar_path(only_path: true)
+  def avatar_path(only_path: true, size: nil)
     return unless self[:avatar].present?
 
     asset_host = ActionController::Base.asset_host
     use_asset_host = asset_host.present?
     use_authentication = respond_to?(:public?) && !public?
+    query_params = size&.nonzero? ? "?width=#{size}" : ""
 
     # Avatars for private and internal groups and projects require authentication to be viewed,
     # which means they can only be served by Rails, on the regular GitLab host.
@@ -64,7 +65,7 @@ module Avatarable
       url_base << gitlab_config.relative_url_root
     end
 
-    url_base + avatar.local_url
+    url_base + avatar.local_url + query_params
   end
 
   # Path that is persisted in the tracking Upload model. Used to fetch the
