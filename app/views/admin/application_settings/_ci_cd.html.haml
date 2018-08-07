@@ -3,13 +3,15 @@
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :auto_devops_enabled, class: 'form-check-input'
-        = f.label :auto_devops_enabled, class: 'form-check-label' do
-          Enabled Auto DevOps for projects by default
-      .form-text.text-muted
-        It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
-        = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
+      .card.auto-devops-card
+        .card-body
+          .form-check
+            = f.check_box :auto_devops_enabled, class: 'form-check-input'
+            = f.label :auto_devops_enabled, class: 'form-check-label' do
+              Default to Auto DevOps pipeline for all projects
+            .form-text.text-muted
+              = s_('CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
+              = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
     .form-group
       = f.label :auto_devops_domain, class: 'label-bold'
       = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
