@@ -1,11 +1,22 @@
 # Analyze your project's Code Quality
 
+CAUTION: **Caution:**
+The job definition shown below is supported on GitLab 10.4 and later versions.
+For earlier versions, use the [old job definition](#old-job-definition).
+
+CAUTION: **Caution:**
+Code Quality was previously using `codeclimate` and `codequality` for job name and
+`codeclimate.json` for the artifact name. While these old names
+are still maintained they have been deprecated with GitLab 11.0 and may be removed
+in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
+configuration to reflect that change.
+
 This example shows how to run Code Quality on your code by using GitLab CI/CD
 and Docker.
 
 First, you need GitLab Runner with [docker-in-docker executor][dind].
 
-Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `code_quality`:
+Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `code_quality`.
 
 ```yaml
 code_quality:
@@ -15,8 +26,7 @@ code_quality:
   allow_failure: true
   services:
     - docker:stable-dind
-  script:
-    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+  script: - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
@@ -37,12 +47,24 @@ so, the CI/CD job must be named `code_quality` and the artifact path must be
 `gl-code-quality-report.json`.
 [Learn more on Code Quality in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html).
 
-CAUTION: **Caution:**
-Code Quality was previously using `codeclimate` and `codequality` for job name and
-`codeclimate.json` for the artifact name. While these old names
-are still maintained they have been deprecated with GitLab 11.0 and may be removed
-in next major release, GitLab 12.0. You are advised to update your current `.gitlab-ci.yml`
-configuration to reflect that change.
+## Old job definition
+
+For GitLab 10.3 and earlier, the job should look like:
+
+```yaml
+codequality:
+  image: docker:latest
+  variables:
+    DOCKER_DRIVER: overlay
+  services:
+    - docker:dind
+  script:
+    - docker pull codeclimate/codeclimate:0.69.0
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 init
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json || true
+  artifacts:
+    paths: [codeclimate.json]
+```
 
 [cli]: https://github.com/codeclimate/codeclimate
 [dind]: ../docker/using_docker_build.md#use-docker-in-docker-executor
