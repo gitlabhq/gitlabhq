@@ -1,13 +1,14 @@
 <script>
-import IssuesBlock from '~/vue_shared/components/reports/report_issues.vue';
+import IssuesBlock from './report_issues.vue';
 import {
   STATUS_SUCCESS,
   STATUS_FAILED,
   STATUS_NEUTRAL,
-} from '~/vue_shared/components/reports/constants';
+} from '../constants';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 
 import SastContainerInfo from 'ee/vue_shared/security_reports/components/sast_container_info.vue';
+
 
 /**
  * Renders block of issues
