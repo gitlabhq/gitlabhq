@@ -5,7 +5,7 @@ describe Ci::CompareTestReportsService do
   let(:project) { create(:project, :repository) }
 
   describe '#execute' do
-    subject { service.execute(base_pipeline&.iid, head_pipeline.iid) }
+    subject { service.execute(base_pipeline, head_pipeline) }
 
     context 'when head pipeline has test reports' do
       let!(:base_pipeline) { nil }
@@ -40,6 +40,36 @@ describe Ci::CompareTestReportsService do
         expect(subject[:status]).to eq(:error)
         expect(subject[:status_reason]).to include('XML parsing failed')
       end
+    end
+  end
+
+  describe '#latest?' do
+    subject { service.latest?(base_pipeline, head_pipeline, data) }
+
+    let!(:base_pipeline) { nil }
+    let!(:head_pipeline) { create(:ci_pipeline, :with_test_reports, project: project) }
+    let!(:key) { service.send(:key, base_pipeline, head_pipeline) }
+
+    context 'when cache key is latest' do
+      let(:data) { { key: key } }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when cache key is outdated' do
+      before do
+        head_pipeline.update_column(:updated_at, 10.minutes.ago)
+      end
+
+      let(:data) { { key: key } }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when cache key is empty' do
+      let(:data) { { key: nil } }
+
+      it { is_expected.to be_falsy }
     end
   end
 end

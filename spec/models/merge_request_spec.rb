@@ -1204,9 +1204,20 @@ describe MergeRequest do
 
         it 'returns status and data' do
           expect_any_instance_of(Ci::CompareTestReportsService)
-            .to receive(:execute).with(base_pipeline.iid, head_pipeline.iid)
+            .to receive(:execute).with(base_pipeline, head_pipeline).and_call_original
 
           subject
+        end
+
+        context 'when cached results is not latest' do
+          before do
+            allow_any_instance_of(Ci::CompareTestReportsService)
+              .to receive(:latest?).and_return(false)
+          end
+
+          it 'raises and InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
         end
       end
     end

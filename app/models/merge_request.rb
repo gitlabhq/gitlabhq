@@ -16,8 +16,8 @@ class MergeRequest < ActiveRecord::Base
   include ReactiveCaching
 
   self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
-  self.reactive_cache_refresh_interval = 1.hour
-  self.reactive_cache_lifetime = 1.hour
+  self.reactive_cache_refresh_interval = 10.minutes
+  self.reactive_cache_lifetime = 10.minutes
 
   ignore_column :locked_at,
                 :ref_fetched,
@@ -1041,16 +1041,21 @@ class MergeRequest < ActiveRecord::Base
       return { status: :error, status_reason: 'This merge request does not have test reports' }
     end
 
-    with_reactive_cache(
-      :compare_test_results,
-      base_pipeline&.iid,
-      actual_head_pipeline.iid) { |data| data } || { status: :parsing }
+    with_reactive_cache(:compare_test_results) do |data|
+      unless Ci::CompareTestReportsService.new(project)
+        .latest?(base_pipeline, actual_head_pipeline, data)
+        raise InvalidateReactiveCache
+      end
+
+      data
+    end || { status: :parsing }
   end
 
   def calculate_reactive_cache(identifier, *args)
     case identifier.to_sym
     when :compare_test_results
-      Ci::CompareTestReportsService.new(project).execute(*args)
+      Ci::CompareTestReportsService.new(project).execute(
+        base_pipeline, actual_head_pipeline)
     else
       raise NotImplementedError, "Unknown identifier: #{identifier}"
     end
