@@ -8,7 +8,7 @@ Labels allow you to categorize issues or merge requests using descriptive titles
 
 In GitLab, you can create project and group labels:
 
-- **Project labels** can be assigned to issues or merge requests in that project only. 
+- **Project labels** can be assigned to issues or merge requests in that project only.
 - **Group labels** can be assigned to any issue or merge request of any project in that group or any subgroups of the group.
 
 ## Creating labels
@@ -35,7 +35,7 @@ GitLab will add the following default labels to the project:
 To create a **group label**, follow similar steps from above to project labels. Navigate to **Issues > Labels** in the group and create it from there.
 Alternatively, you can create group labels also from Epic sidebar. Please note that the created label will belong to the immediate group to which epic belongs.
 
-![Create Labels from Epic](img/labels_epic_sidebar.png) 
+![Create Labels from Epic](img/labels_epic_sidebar.png)
 
 Group labels appear in every label list page of the group's child projects.
 
@@ -71,6 +71,16 @@ Every issue and merge request can be assigned any number of labels. The labels a
 | View labels in sidebar | Assign labels from sidebar |
 |:---:|:---:|
 | ![Labels sidebar](img/labels_sidebar.png) | ![Labels sidebar assign](img/labels_sidebar_assign.png) |
+
+## Searching for project labels
+
+You can search for project labels by navigating from the left sidebar to your
+project's **Issues > Labels** and entering your query to the search bar on the
+top-right:
+
+![Labels project list search](img/labels_project_list_search.png)
+
+GitLab will consider the label title and description for the search.
 
 ## Filtering issues, merge requests and epics by label
 
