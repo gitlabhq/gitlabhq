@@ -1,6 +1,8 @@
 module Gitlab
   class UsageData
     class << self
+      prepend EE::Gitlab::UsageData
+
       def data(force_refresh: false)
         Rails.cache.fetch('usage_data', force: force_refresh, expires_in: 2.weeks) { uncached_data }
       end
@@ -27,23 +29,6 @@ module Gitlab
           edition: 'EE'
         }
 
-        license = ::License.current
-
-        usage_data[:edition] = license_edition(license)
-
-        if license
-          usage_data[:license_md5] = license.md5
-          usage_data[:license_id] = license.license_id
-          usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
-          usage_data[:licensee] = license.licensee
-          usage_data[:license_user_count] = license.restricted_user_count
-          usage_data[:license_starts_at] = license.starts_at
-          usage_data[:license_expires_at] = license.expires_at
-          usage_data[:license_plan] = license.plan
-          usage_data[:license_add_ons] = license.add_ons
-          usage_data[:license_trial] = license.trial?
-        end
-
         usage_data
       end
 
@@ -65,8 +50,6 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: ::Environment.count,
-            epics: ::Epic.count,
-            geo_nodes: GeoNode.count,
             clusters: ::Clusters::Cluster.count,
             clusters_enabled: ::Clusters::Cluster.enabled.count,
             clusters_disabled: ::Clusters::Cluster.disabled.count,
@@ -81,9 +64,6 @@ module Gitlab
             issues: Issue.count,
             keys: Key.count,
             labels: Label.count,
-            ldap_group_links: LdapGroupLink.count,
-            ldap_keys: LDAPKey.count,
-            ldap_users: User.ldap.count,
             lfs_objects: LfsObject.count,
             merge_requests: MergeRequest.count,
             milestones: Milestone.count,
@@ -91,8 +71,6 @@ module Gitlab
             pages_domains: PagesDomain.count,
             projects: Project.count,
             projects_imported_from_github: Project.where(import_type: 'github').count,
-            projects_reporting_ci_cd_back_to_github: GithubService.without_defaults.active.count,
-            projects_mirrored_with_pipelines_enabled: projects_mirrored_with_pipelines_enabled,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
             remote_mirrors: RemoteMirror.count,
@@ -100,20 +78,7 @@ module Gitlab
             todos: Todo.count,
             uploads: Upload.count,
             web_hooks: WebHook.count
-          }.merge(service_desk_counts).merge(services_usage)
-        }
-      end
-
-      def service_desk_counts
-        return {} unless ::License.feature_available?(:service_desk)
-
-        projects_with_service_desk = Project.where(service_desk_enabled: true)
-
-        {
-          service_desk_enabled_projects: projects_with_service_desk.count,
-          service_desk_issues: Issue.where(project: projects_with_service_desk,
-                                           author: User.support_bot,
-                                           confidential: true).count
+          }.merge(services_usage)
         }
       end
 
@@ -122,7 +87,7 @@ module Gitlab
       end
 
       def features_usage_data
-        features_usage_data_ce.merge(features_usage_data_ee)
+        features_usage_data_ce
       end
 
       def features_usage_data_ce
@@ -138,34 +103,12 @@ module Gitlab
         }
       end
 
-      def features_usage_data_ee
-        {
-          elasticsearch_enabled: Gitlab::CurrentSettings.elasticsearch_search?,
-          geo_enabled: Gitlab::Geo.enabled?
-        }
-      end
-
       def components_usage_data
         {
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
           git: { version: Gitlab::Git.version },
           database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
         }
-      end
-
-      def license_edition(license)
-        return 'EE Free' unless license
-
-        case license.plan
-        when 'ultimate'
-          'EEU'
-        when 'premium'
-          'EEP'
-        when 'starter'
-          'EES'
-        else # Older licenses
-          'EE'
-        end
       end
 
       def services_usage
@@ -178,16 +121,6 @@ module Gitlab
 
         results = Service.unscoped.where(type: types.keys, active: true).group(:type).count
         results.each_with_object({}) { |(key, value), response| response[types[key.to_sym]] = value  }
-      end
-
-      def projects_mirrored_with_pipelines_enabled
-        Project.joins(:project_feature).where(
-          mirror: true,
-          mirror_trigger_builds: true,
-          project_features: {
-            builds_access_level: ProjectFeature::ENABLED
-          }
-        ).count
       end
     end
   end

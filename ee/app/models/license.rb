@@ -307,6 +307,19 @@ class License < ActiveRecord::Base
     restricted_attr(:plan).presence || STARTER_PLAN
   end
 
+  def edition
+    case restricted_attr(:plan)
+    when 'ultimate'
+      'EEU'
+    when 'premium'
+      'EEP'
+    when 'starter'
+      'EES'
+    else # Older licenses
+      'EE'
+    end
+  end
+
   def current_active_users_count
     @current_active_users_count ||= begin
       if exclude_guests_from_active_count?
