@@ -1354,6 +1354,16 @@ describe MergeRequest do
                                           project.default_branch == branch)
         end
 
+        context 'but merged at timestamp cannot be found' do
+          before do
+            allow(subject).to receive(:merged_at) { nil }
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
         context 'when the revert commit is mentioned in a note after the MR was merged' do
           it 'returns false' do
             expect(subject.can_be_reverted?(current_user)).to be_falsey
@@ -1389,6 +1399,63 @@ describe MergeRequest do
             expect(subject.can_be_reverted?(current_user)).to be_truthy
           end
         end
+      end
+    end
+  end
+
+  describe '#merged_at' do
+    context 'when MR is not merged' do
+      let(:merge_request) { create(:merge_request, :closed) }
+
+      it 'returns nil' do
+        expect(merge_request.merged_at).to be_nil
+      end
+    end
+
+    context 'when metrics has merged_at data' do
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        merge_request.metrics.update!(merged_at: 1.day.ago)
+      end
+
+      it 'returns metrics merged_at' do
+        expect(merge_request.merged_at).to eq(merge_request.metrics.merged_at)
+      end
+    end
+
+    context 'when merged event is persisted, but no metrics merged_at is persisted' do
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        EventCreateService.new.merge_mr(merge_request, user)
+      end
+
+      it 'returns merged event creation date' do
+        expect(merge_request.merge_event).to be_persisted
+        expect(merge_request.merged_at).to eq(merge_request.merge_event.created_at)
+      end
+    end
+
+    context 'when merging note is persisted, but no metrics or merge event exists' do
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        merge_request.metrics.destroy!
+
+        SystemNoteService.change_status(merge_request,
+                                        merge_request.target_project,
+                                        user,
+                                        merge_request.state, nil)
+      end
+
+      it 'returns merging note creation date' do
+        expect(merge_request.reload.metrics).to be_nil
+        expect(merge_request.merge_event).to be_nil
+        expect(merge_request.notes.count).to eq(1)
+        expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
       end
     end
   end
