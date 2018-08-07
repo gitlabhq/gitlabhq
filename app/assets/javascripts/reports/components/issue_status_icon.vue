@@ -1,11 +1,10 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
-
 import {
   STATUS_FAILED,
   STATUS_NEUTRAL,
   STATUS_SUCCESS,
-} from '~/vue_shared/components/reports/constants';
+} from '../constants';
 
 export default {
   name: 'IssueStatusIcon',

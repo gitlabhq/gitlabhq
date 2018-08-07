@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import component from '~/vue_shared/components/reports/summary_row.vue';
+import component from '~/reports/components/summary_row.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('Summary row', () => {
