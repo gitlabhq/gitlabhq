@@ -138,6 +138,14 @@ namespace :admin do
     end
   end
 
+  resources :geo_projects, only: [:index] do
+    member do
+      post :recheck
+      post :resync
+      post :force_redownload
+    end
+  end
+
   get '/dashboard/stats', to: 'dashboard#stats'
   ## EE-specific
 

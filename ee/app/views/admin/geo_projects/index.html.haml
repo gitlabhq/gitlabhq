@@ -1,0 +1,31 @@
+- page_title 'Projects'
+- @no_container = true
+- @content_class = "geo-admin-container geo-admin-projects"
+- params[:sync_status] ||= []
+
+%div{ class: container_class }
+  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
+    %ul.nav-links.nav.nav-tabs
+      - opts = params[:sync_status].present? ? {} : { page: admin_geo_projects_path }
+      = nav_link(opts) do
+        = link_to admin_geo_projects_path do
+          = s_('Geo|Synced')
+      = nav_link(html_options: { class: active_when(params[:sync_status] == 'pending') }) do
+        = link_to admin_geo_projects_path(sync_status: 'pending') do
+          = s_('Geo|Pending')
+      = nav_link(html_options: { class: active_when(params[:sync_status] == 'failed') }) do
+        = link_to admin_geo_projects_path(sync_status: 'failed') do
+          = s_('Geo|Failed')
+      = nav_link(html_options: { class: active_when(params[:sync_status] == 'never') }) do
+        = link_to admin_geo_projects_path(sync_status: 'never') do
+          = s_('Geo|Never')
+
+  - case params[:sync_status]
+  - when 'never'
+    = render(partial: 'never')
+  - when 'failed'
+    = render(partial: 'failed')
+  - when 'pending'
+    = render(partial: 'pending')
+  - else
+    = render(partial: 'synced')

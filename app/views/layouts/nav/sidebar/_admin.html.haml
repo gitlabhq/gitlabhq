@@ -170,17 +170,27 @@
               %strong.fly-out-top-item-name
                 #{ _('Push Rules') }
 
-      = nav_link(controller: :geo_nodes) do
+      = nav_link(controller: [:geo_nodes, :geo_projects]) do
         = link_to admin_geo_nodes_path do
           .nav-icon-container
             = sprite_icon('location-dot')
           %span.nav-item-name
-            Geo Nodes
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(controller: :geo_nodes, html_options: { class: "fly-out-top-item" } ) do
-            = link_to admin_geo_nodes_path do
-              %strong.fly-out-top-item-name
-                #{ _('Geo Nodes') }
+            #{ _('Geo Nodes') }
+        - if Gitlab::Geo.secondary?
+          %ul.sidebar-sub-level-items
+            = nav_link(controller: :geo_nodes, html_options: { class: "fly-out-top-item" } ) do
+              = link_to admin_geo_nodes_path do
+                %strong.fly-out-top-item-name
+                  #{ _('Geo Nodes') }
+            %li.divider.fly-out-top-item
+            = nav_link(path: 'geo_nodes#index') do
+              = link_to admin_geo_nodes_path, title: 'Nodes' do
+                %span
+                  #{ _('Nodes') }
+            = nav_link(path: 'geo_projects#index') do
+              = link_to admin_geo_projects_path, title: 'Projects' do
+                %span
+                  #{ _('Projects') }
 
       = nav_link(controller: :deploy_keys) do
         = link_to admin_deploy_keys_path do

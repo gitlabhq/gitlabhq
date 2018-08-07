@@ -699,7 +699,7 @@ describe Geo::ProjectRegistry do
                         repository_retry_count: 1,
                         repository_verification_retry_count: 1)
 
-        subject.repository_updated!(event, Time.now)
+        subject.repository_updated!(event.source, Time.now)
       end
 
       it 'resets sync state' do
@@ -737,7 +737,7 @@ describe Geo::ProjectRegistry do
                         wiki_retry_count: 1,
                         wiki_verification_retry_count: 1)
 
-        subject.repository_updated!(event, Time.now)
+        subject.repository_updated!(event.source, Time.now)
       end
 
       it 'resets sync state' do
@@ -760,6 +760,119 @@ describe Geo::ProjectRegistry do
           wiki_verification_retry_count: nil
         )
       end
+    end
+  end
+
+  describe '#repository_verification_pending?' do
+    it 'returns true when outdated' do
+      registry = create(:geo_project_registry, :repository_verification_outdated)
+
+      expect(registry.repository_verification_pending?).to be_truthy
+    end
+
+    it 'returns true when we are missing checksum sha' do
+      registry = create(:geo_project_registry, :repository_verification_failed)
+
+      expect(registry.repository_verification_pending?).to be_truthy
+    end
+
+    it 'returns false when checksum is present' do
+      registry = create(:geo_project_registry, :repository_verified)
+
+      expect(registry.repository_verification_pending?).to be_falsey
+    end
+  end
+
+  describe '#wiki_verification_pending?' do
+    it 'returns true when outdated' do
+      registry = create(:geo_project_registry, :wiki_verification_outdated)
+
+      expect(registry.wiki_verification_pending?).to be_truthy
+    end
+
+    it 'returns true when we are missing checksum sha' do
+      registry = create(:geo_project_registry, :wiki_verification_failed)
+
+      expect(registry.wiki_verification_pending?).to be_truthy
+    end
+
+    it 'returns false when checksum is present' do
+      registry = create(:geo_project_registry, :wiki_verified)
+
+      expect(registry.wiki_verification_pending?).to be_falsey
+    end
+  end
+
+  describe 'verification_pending?' do
+    it 'returns true when either wiki or repository verification is pending' do
+      repo_registry = create(:geo_project_registry, :repository_verification_outdated)
+      wiki_registry = create(:geo_project_registry, :wiki_verification_failed)
+
+      expect(repo_registry.verification_pending?).to be_truthy
+      expect(wiki_registry.verification_pending?).to be_truthy
+    end
+
+    it 'returns false when both wiki and repository verification is present' do
+      registry = create(:geo_project_registry, :repository_verified, :wiki_verified)
+
+      expect(registry.verification_pending?).to be_falsey
+    end
+  end
+
+  describe '#flag_repository_for_recheck!' do
+    it 'modified record to a recheck state' do
+      registry = create(:geo_project_registry, :repository_verified)
+      registry.flag_repository_for_recheck!
+
+      expect(registry).to have_attributes(
+        repository_verification_checksum_sha: nil,
+        last_repository_verification_failure: nil,
+        repository_checksum_mismatch: false
+      )
+    end
+  end
+
+  describe '#flag_repository_for_resync!' do
+    it 'modified record to a resync state' do
+      registry = create(:geo_project_registry, :synced)
+      registry.flag_repository_for_resync!
+
+      expect(registry).to have_attributes(
+        resync_repository: true,
+        repository_verification_checksum_sha: nil,
+        last_repository_verification_failure: nil,
+        repository_checksum_mismatch: false,
+        repository_verification_retry_count: nil,
+        repository_retry_count: nil,
+        repository_retry_at: nil
+
+      )
+    end
+  end
+
+  describe '#flag_repository_for_redownload!' do
+    it 'modified record to a recheck state' do
+      registry = create(:geo_project_registry, :repository_verified)
+      registry.flag_repository_for_redownload!
+
+      expect(registry).to have_attributes(
+        resync_repository: true,
+        force_to_redownload_repository: true
+      )
+    end
+  end
+
+  describe '#candidate_for_redownload?' do
+    it 'returns false when repository_retry_count is 1 or less' do
+      registry = create(:geo_project_registry, :sync_failed)
+
+      expect(registry.candidate_for_redownload?).to be_falsey
+    end
+
+    it 'returns true when repository_retry_count is > 1' do
+      registry = create(:geo_project_registry, :sync_failed, repository_retry_count: 2)
+
+      expect(registry.candidate_for_redownload?).to be_truthy
     end
   end
 end

@@ -1,0 +1,45 @@
+- @registries.each do |project_registry|
+  .card.project-card.prepend-top-15
+    .card-header{ id: "project-#{project_registry.project.id}-header" }
+      .d-flex
+        %strong.header-text-primary.flex-fill
+          = link_to project_registry.project.full_name, admin_namespace_project_path(project_registry.project.namespace, project_registry.project)
+        - unless project_registry.verification_pending?
+          = link_to(recheck_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline btn-sm mr-2') do
+            = s_('Geo|Recheck')
+        - unless project_registry.resync_repository?
+          = link_to(resync_admin_geo_project_path(project_registry), method: :post, class: 'btn btn-outline-primary btn-sm') do
+            = s_('Geo|Resync')
+
+    .card-body
+      .container.project-container
+        .row
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Status')
+            .project-status-content
+              - if project_registry.resync_repository?
+                = s_('Geo|Pending synchronization')
+              - elsif project_registry.verification_pending?
+                = s_('Geo|Pending verification')
+              - else
+                = s_('Geo|Unknown state') # should never reach this state, unless we introduce new behavior
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Next sync scheduled at')
+            .project-status-content
+              - if project_registry.repository_retry_at
+                = distance_of_time_in_words(Time.now, project_registry.repository_retry_at)
+              - else
+                = s_('Geo|Waiting for scheduler')
+          .col-sm.project-status-container
+            .project-status-title.text-muted
+              = s_('Geo|Last sync attempt')
+            .project-status-content
+              - if project_registry.last_repository_synced_at
+                = time_ago_with_tooltip(project_registry.last_repository_synced_at, placement: 'bottom')
+              - else
+                = s_('Geo|Never')
+          .col-sm.d-sm-none.d-md-block
+
+= paginate @registries, theme: 'gitlab'

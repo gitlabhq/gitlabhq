@@ -6,7 +6,7 @@ module Gitlab
           include BaseEvent
 
           def process
-            registry.repository_updated!(event, scheduled_at)
+            registry.repository_updated!(event.source, scheduled_at)
 
             job_id = enqueue_job_if_shard_healthy(event) do
               ::Geo::ProjectSyncWorker.perform_async(event.project_id, scheduled_at)

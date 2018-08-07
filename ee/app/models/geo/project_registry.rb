@@ -21,6 +21,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
 
   validates :project, presence: true, uniqueness: true
 
+  scope :never_synced, -> { where(last_repository_synced_at: nil) }
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
   scope :synced_repos, -> { where(resync_repository: false) }
   scope :synced_wikis, -> { where(resync_wiki: false) }
@@ -77,7 +78,12 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   end
 
   # Must be run before fetching the repository to avoid a race condition
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @see REGISTRY_TYPES
   def start_sync!(type)
+    ensure_valid_type!(type)
+
     new_count = retry_count(type) + 1
 
     update!(
@@ -86,7 +92,12 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       "#{type}_retry_at" => next_retry_time(new_count))
   end
 
+  # Is called when synchronization finishes without any issue
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @see REGISTRY_TYPES
   def finish_sync!(type, missing_on_primary = false)
+    ensure_valid_type!(type)
     update!(
       # Indicate that the sync succeeded (but separately mark as synced atomically)
       "last_#{type}_successful_sync_at" => Time.now,
@@ -104,7 +115,16 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     mark_synced_atomically(type)
   end
 
+  # Is called when synchronization fails with an exception
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @param [String] message with a human readable description of the failure
+  # @param [Exception] error the exception
+  # @param [Hash] attrs attributes to update the database with
+  # @see REGISTRY_TYPES
   def fail_sync!(type, message, error, attrs = {})
+    ensure_valid_type!(type)
+
     attrs["resync_#{type}"] = true
     attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
     attrs["#{type}_retry_count"] = retry_count(type) + 1
@@ -120,9 +140,13 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   # Marks the project as dirty.
   #
   # resync_#{type}_was_scheduled_at tracks scheduled_at to avoid a race condition.
-  # See the method #mark_synced_atomically.
-  def repository_updated!(repository_updated_event, scheduled_at)
-    type = repository_updated_event.source
+  # @see #mark_synced_atomically
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @param [Time] scheduled_at when it was scheduled
+  # @see REGISTRY_TYPES
+  def repository_updated!(type, scheduled_at)
+    ensure_valid_type!(type)
 
     update!(
       "resync_#{type}" => true,
@@ -144,6 +168,33 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
   end
 
+  # Returns whether repository is pending verification check
+  #
+  # This will check for missing verification checksum sha
+  #
+  # @return [Boolean] whether repository is pending verification
+  def repository_verification_pending?
+    self.repository_verification_checksum_sha.nil?
+  end
+
+  # Returns whether wiki is pending verification check
+  #
+  # This will check for missing verification checksum sha
+  #
+  # @return [Boolean] whether wiki is pending verification
+  def wiki_verification_pending?
+    self.wiki_verification_checksum_sha.nil?
+  end
+
+  # Returns wheter verification is pending for either wiki or repository
+  #
+  # This will check for missing verification checksum sha for both wiki and repository
+  #
+  # @return [Boolean] whether verification is pending for either wiki or repository
+  def verification_pending?
+    repository_verification_pending? || wiki_verification_pending?
+  end
+
   def syncs_since_gc
     Gitlab::Redis::SharedState.with { |redis| redis.get(fetches_since_gc_redis_key).to_i }
   end
@@ -162,7 +213,12 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     Gitlab::Redis::SharedState.with { |redis| redis.set(fetches_since_gc_redis_key, value) }
   end
 
+  # Check if we should re-download *type*
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @see REGISTRY_TYPES
   def should_be_redownloaded?(type)
+    ensure_valid_type!(type)
     return true if public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
 
     retry_count(type) > RETRIES_BEFORE_REDOWNLOAD
@@ -170,6 +226,37 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
 
   def verification_retry_count(type)
     public_send("#{type}_verification_retry_count").to_i # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  # Flag the repository to be re-checked
+  #
+  # This operation happens only in the database and the recheck will be triggered after by the cron job
+  def flag_repository_for_recheck!
+    self.update(repository_verification_checksum_sha: nil, last_repository_verification_failure: nil, repository_checksum_mismatch: false)
+  end
+
+  # Flag the repository to be re-synced
+  #
+  # This operation happens only in the database and the resync will be triggered after by the cron job
+  def flag_repository_for_resync!
+    repository_updated!(:repository, Time.now)
+  end
+
+  # Flag the repository to perform a full re-download
+  #
+  # This operation happens only in the database and the forced re-download will be triggered after by the cron job
+  def flag_repository_for_redownload!
+    self.update(resync_repository: true, force_to_redownload_repository: true)
+  end
+
+  # A registry becomes candidate for re-download after first failed retries
+  #
+  # This is used by the Admin > Geo Nodes > Projects UI interface to choose
+  # when to display the re-download button
+  #
+  # @return [Boolean] whether the registry is candidate for a re-download
+  def candidate_for_redownload?
+    self.repository_retry_count && self.repository_retry_count > 1
   end
 
   private
@@ -200,11 +287,19 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     last_wiki_synced_at && timestamp > last_wiki_synced_at
   end
 
+  # How many times have we retried syncing it?
+  #
+  # @param [String] type must be one of the values in TYPES
+  # @see REGISTRY_TYPES
   def retry_count(type)
     public_send("#{type}_retry_count") || -1 # rubocop:disable GitlabSecurity/PublicSend
   end
 
+  # Mark repository as synced using atomic conditions
+  #
   # @return [Boolean] whether the update was successful
+  # @param [String] type must be one of the values in TYPES
+  # @see REGISTRY_TYPES
   def mark_synced_atomically(type)
     # Indicates whether the project is dirty (needs to be synced).
     #
@@ -232,5 +327,13 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
                    .update_all(sync_column => false)
 
     num_rows > 0
+  end
+
+  # Make sure informed type is one of the allowed values
+  #
+  # @param [String] type must be one of the values in TYPES otherwise it will fail
+  # @see REGISTRY_TYPES
+  def ensure_valid_type!(type)
+    raise ArgumentError, "Invalid type: '#{type.inspect}' informed. Must be one of the following: #{REGISTRY_TYPES.map { |type| "'#{type}'" }.join(', ')}" unless REGISTRY_TYPES.include?(type.to_sym)
   end
 end
