@@ -8,7 +8,6 @@ describe "Projects > Settings > Pipelines settings" do
   before do
     sign_in(user)
     project.add_role(user, role)
-    create(:project_auto_devops, project: project)
   end
 
   context 'for developer' do
@@ -61,19 +60,58 @@ describe "Projects > Settings > Pipelines settings" do
     end
 
     describe 'Auto DevOps' do
-      it 'update auto devops settings' do
-        visit project_settings_ci_cd_path(project)
-
-        page.within '#autodevops-settings' do
-          fill_in('project_auto_devops_attributes_domain', with: 'test.com')
-          page.choose('project_auto_devops_attributes_enabled_false')
-          click_on 'Save changes'
+      context 'when auto devops is turned on instance-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
         end
 
-        expect(page.status_code).to eq(200)
-        expect(project.auto_devops).to be_present
-        expect(project.auto_devops).not_to be_enabled
-        expect(project.auto_devops.domain).to eq('test.com')
+        it 'auto devops is on by default and can be manually turned off' do
+          visit project_settings_ci_cd_path(project)
+
+          page.within '#autodevops-settings' do
+            expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            expect(page).to have_content('instance enabled')
+            uncheck 'Default to Auto DevOps pipeline'
+            click_on 'Save changes'
+          end
+
+          expect(page.status_code).to eq(200)
+          expect(project.auto_devops).to be_present
+          expect(project.auto_devops).not_to be_enabled
+
+          page.within '#autodevops-settings' do
+            expect(find_field('project_auto_devops_attributes_enabled')).not_to be_checked
+            expect(page).not_to have_content('instance enabled')
+          end
+        end
+      end
+
+      context 'when auto devops is not turned on instance-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it 'auto devops is off by default and can be manually turned on' do
+          visit project_settings_ci_cd_path(project)
+
+          page.within '#autodevops-settings' do
+            expect(page).not_to have_content('instance enabled')
+            expect(find_field('project_auto_devops_attributes_enabled')).not_to be_checked
+            check 'Default to Auto DevOps pipeline'
+            fill_in('project_auto_devops_attributes_domain', with: 'test.com')
+            click_on 'Save changes'
+          end
+
+          expect(page.status_code).to eq(200)
+          expect(project.auto_devops).to be_present
+          expect(project.auto_devops).to be_enabled
+          expect(project.auto_devops.domain).to eq('test.com')
+
+          page.within '#autodevops-settings' do
+            expect(find_field('project_auto_devops_attributes_enabled')).to be_checked
+            expect(page).not_to have_content('instance enabled')
+          end
+        end
       end
 
       context 'when there is a cluster with ingress and external_ip' do

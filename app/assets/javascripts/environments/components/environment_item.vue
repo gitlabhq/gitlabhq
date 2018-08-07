@@ -116,7 +116,8 @@ export default {
         this.model &&
         this.hasLastDeploymentKey &&
         this.model.last_deployment &&
-        this.model.last_deployment.deployable
+        this.model.last_deployment.deployable &&
+        this.model.last_deployment.deployable.retry_path
       );
     },
 

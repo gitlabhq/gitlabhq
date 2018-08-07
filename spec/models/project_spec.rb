@@ -3644,6 +3644,50 @@ describe Project do
     end
   end
 
+  describe '#has_auto_devops_implicitly_enabled?' do
+    set(:project) { create(:project) }
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_enabled
+      end
+    end
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_enabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: true)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
+        end
+      end
+    end
+  end
+
   describe '#has_auto_devops_implicitly_disabled?' do
     set(:project) { create(:project) }
 
@@ -3678,7 +3722,7 @@ describe Project do
 
       context 'when explicitly enabled' do
         before do
-          create(:project_auto_devops, project: project)
+          create(:project_auto_devops, project: project, enabled: true)
         end
 
         it 'does not have auto devops implicitly disabled' do
