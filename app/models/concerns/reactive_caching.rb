@@ -42,6 +42,8 @@
 module ReactiveCaching
   extend ActiveSupport::Concern
 
+  InvalidateReactiveCache = Class.new(StandardError)
+
   included do
     class_attribute :reactive_cache_lease_timeout
 
@@ -63,15 +65,19 @@ module ReactiveCaching
     end
 
     def with_reactive_cache(*args, &blk)
-      bootstrap = !within_reactive_cache_lifetime?(*args)
-      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
+      unless within_reactive_cache_lifetime?(*args)
+        refresh_reactive_cache!(*args)
+        return nil
+      end
 
-      if bootstrap
-        ReactiveCachingWorker.perform_async(self.class, id, *args)
-        nil
-      else
+      keep_alive_reactive_cache!(*args)
+
+      begin
         data = Rails.cache.read(full_reactive_cache_key(*args))
         yield data if data.present?
+      rescue InvalidateReactiveCache
+        refresh_reactive_cache!(*args)
+        nil
       end
     end
 
@@ -95,6 +101,16 @@ module ReactiveCaching
     end
 
     private
+
+    def refresh_reactive_cache!(*args)
+      clear_reactive_cache!(*args)
+      keep_alive_reactive_cache!(*args)
+      ReactiveCachingWorker.perform_async(self.class, id, *args)
+    end
+
+    def keep_alive_reactive_cache!(*args)
+      Rails.cache.write(alive_reactive_cache_key(*args), true, expires_in: self.class.reactive_cache_lifetime)
+    end
 
     def full_reactive_cache_key(*qualifiers)
       prefix = self.class.reactive_cache_key

@@ -85,6 +85,14 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
         it { is_expected.to be_nil }
       end
+
+      context 'when cache was invalidated' do
+        it 'refreshes cache' do
+          expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+
+          instance.with_reactive_cache { raise described_class::InvalidateReactiveCache }
+        end
+      end
     end
   end
 
