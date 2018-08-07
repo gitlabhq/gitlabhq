@@ -495,6 +495,9 @@ msgstr ""
 msgid "Alternatively, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to import."
 msgstr ""
 
+msgid "An SSH key will be automatically generated when the form is submitted. For more information, please refer to the documentation."
+msgstr ""
+
 msgid "An application called %{link_to_client} is requesting access to your GitLab account."
 msgstr ""
 
@@ -666,6 +669,9 @@ msgstr ""
 msgid "Are you sure you want to lose unsaved changes?"
 msgstr ""
 
+msgid "Are you sure you want to regenerate the public key? You will have to update the public key on the remote server before mirroring will work again."
+msgstr ""
+
 msgid "Are you sure you want to remove %{group_name}?"
 msgstr ""
 
@@ -748,6 +754,9 @@ msgid "Authentication Log"
 msgstr ""
 
 msgid "Authentication log"
+msgstr ""
+
+msgid "Authentication method"
 msgstr ""
 
 msgid "Author"
@@ -1176,6 +1185,9 @@ msgid "CI / CD"
 msgstr ""
 
 msgid "CI / CD Settings"
+msgstr ""
+
+msgid "CI will run using the credentials assigned above."
 msgstr ""
 
 msgid "CI/CD"
@@ -2480,10 +2492,16 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+msgid "Detect host keys"
+msgstr ""
+
 msgid "Diffs|No file name available"
 msgstr ""
 
 msgid "Diffs|Something went wrong while fetching diff lines."
+msgstr ""
+
+msgid "Direction"
 msgstr ""
 
 msgid "Directory name"
@@ -2762,6 +2780,9 @@ msgstr ""
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
+msgid "Error"
+msgstr ""
+
 msgid "Error Reporting and Logging"
 msgstr ""
 
@@ -2912,6 +2933,9 @@ msgstr ""
 msgid "Failed to remove issue from board, please try again."
 msgstr ""
 
+msgid "Failed to remove mirror."
+msgstr ""
+
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
@@ -2958,6 +2982,9 @@ msgid "Find the downloaded ZIP file and decompress it."
 msgstr ""
 
 msgid "Find the newly extracted <code>Takeout/Google Code Project Hosting/GoogleCodeProjectHosting.json</code> file."
+msgstr ""
+
+msgid "Fingerprints"
 msgstr ""
 
 msgid "Finished"
@@ -3616,6 +3643,12 @@ msgstr ""
 msgid "Help page text and support page url."
 msgstr ""
 
+msgid "Here is the public SSH key that needs to be added to the remote server. For more information, please refer to the documentation."
+msgstr ""
+
+msgid "Hide host keys manual input"
+msgstr ""
+
 msgid "Hide value"
 msgid_plural "Hide values"
 msgstr[0] ""
@@ -3682,6 +3715,9 @@ msgid "Identities"
 msgstr ""
 
 msgid "Identity provider single sign on URL"
+msgstr ""
+
+msgid "If disabled, a diverged local branch will not be automatically updated with commits from its remote counterpart, to prevent local data loss. If the default branch (%{default_branch}) has diverged and cannot be updated, mirroring will fail. Other diverged branches are silently ignored."
 msgstr ""
 
 msgid "If disabled, the access level will depend on the user's permissions in the project."
@@ -3780,10 +3816,19 @@ msgstr ""
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr ""
 
+msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
 msgid "Incompatible Project"
 msgstr ""
 
 msgid "Inline"
+msgstr ""
+
+msgid "Input host keys manually"
+msgstr ""
+
+msgid "Input your repository URL"
 msgstr ""
 
 msgid "Install GitLab Runner"
@@ -4393,6 +4438,24 @@ msgstr ""
 msgid "Milestones|This action cannot be reversed."
 msgstr ""
 
+msgid "Mirror a repository"
+msgstr ""
+
+msgid "Mirror direction"
+msgstr ""
+
+msgid "Mirror repository"
+msgstr ""
+
+msgid "Mirror user"
+msgstr ""
+
+msgid "Mirrored repositories"
+msgstr ""
+
+msgid "Mirroring repositories"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
@@ -4460,6 +4523,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Never"
 msgstr ""
 
 msgid "New"
@@ -4755,6 +4821,9 @@ msgstr ""
 msgid "Only comments from the following commit are shown below"
 msgstr ""
 
+msgid "Only mirror protected branches"
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
@@ -4816,6 +4885,9 @@ msgid "Outbound requests"
 msgstr ""
 
 msgid "Overview"
+msgstr ""
+
+msgid "Overwrite diverged branches"
 msgstr ""
 
 msgid "Owner"
@@ -5112,7 +5184,13 @@ msgstr ""
 msgid "Profiles|Add key"
 msgstr ""
 
+msgid "Profiles|Add status emoji"
+msgstr ""
+
 msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
@@ -5142,7 +5220,7 @@ msgstr ""
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
-msgid "Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too."
+msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -5160,6 +5238,9 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|What's your status?"
+msgstr ""
+
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
@@ -5167,6 +5248,9 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|e.g. My MacBook key"
@@ -5457,6 +5541,12 @@ msgstr ""
 msgid "Public pipelines"
 msgstr ""
 
+msgid "Pull"
+msgstr ""
+
+msgid "Push"
+msgstr ""
+
 msgid "Push Rules"
 msgstr ""
 
@@ -5500,6 +5590,9 @@ msgid "Reference:"
 msgstr ""
 
 msgid "Refresh"
+msgstr ""
+
+msgid "Regenerate key"
 msgstr ""
 
 msgid "Register / Sign In"
@@ -5729,6 +5822,12 @@ msgstr ""
 msgid "SSH Keys"
 msgstr ""
 
+msgid "SSH host keys"
+msgstr ""
+
+msgid "SSH public key"
+msgstr ""
+
 msgid "SSL Verification"
 msgstr ""
 
@@ -5943,6 +6042,9 @@ msgid "Set up Koding"
 msgstr ""
 
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
+msgstr ""
+
+msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
@@ -6423,6 +6525,9 @@ msgstr ""
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
+msgid "The Git LFS objects will <strong>not</strong> be synced."
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -6493,6 +6598,9 @@ msgid "The repository for this project is empty"
 msgstr ""
 
 msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> and <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -6670,6 +6778,12 @@ msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "This user has no identities"
+msgstr ""
+
+msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
+msgstr ""
+
+msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
 msgstr ""
 
 msgid "This will delete the custom metric, Are you sure?"
@@ -6964,6 +7078,12 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
+msgid "Trigger pipelines for mirror updates"
+msgstr ""
+
+msgid "Trigger pipelines when branches or tags are updated from the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load."
+msgstr ""
+
 msgid "Trigger this manual action"
 msgstr ""
 
@@ -7033,7 +7153,13 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update now"
+msgstr ""
+
 msgid "Update your group name, description, avatar, and other general settings."
+msgstr ""
+
+msgid "Updating"
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."
@@ -7108,7 +7234,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-msgid "User|Current Status"
+msgid "User|Current status"
 msgstr ""
 
 msgid "Variables"
@@ -7541,6 +7667,9 @@ msgid "Your name"
 msgstr ""
 
 msgid "Your projects"
+msgstr ""
+
+msgid "a deleted user"
 msgstr ""
 
 msgid "ago"

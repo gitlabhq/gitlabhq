@@ -342,3 +342,17 @@
     margin-bottom: 0;
   }
 }
+
+.mirror-error-badge {
+  background-color: $error-bg;
+  border-radius: $border-radius-default;
+  color: $white-light;
+}
+
+.push-pull-table {
+  margin-top: 1em;
+
+  .mirror-action-buttons {
+    padding-right: 0;
+  }
+}

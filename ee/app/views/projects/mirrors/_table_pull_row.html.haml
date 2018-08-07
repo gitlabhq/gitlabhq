@@ -1,0 +1,17 @@
+- if @project.mirror
+  %tr
+    %td= @project.username_only_import_url
+    %td= _('Pull')
+    %td= @project.mirror_last_update_at.present? ? time_ago_with_tooltip(@project.mirror_last_update_at) : _('Never')
+    %td
+      - if @project.import_error.present?
+        .badge.mirror-error-badge{ data: { toggle: 'tooltip', html: 'true' }, title: html_escape(@project.import_error.try(:strip)) }= _('Error')
+    %td.mirror-action-buttons
+      .btn-group.mirror-actions-group.pull-right{ role: 'group' }
+        - if @project.mirror?
+          - if @project.mirror_about_to_update? || @project.updating_mirror?
+            %button.btn.disabled{ type: 'button', data: { container: 'body', toggle: 'tooltip' }, title: _('Updating') }= icon("refresh spin")
+          - else
+            = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn js-force-update-mirror', data: { container: 'body', toggle: 'tooltip' }, title: _('Update now') do
+              = icon("refresh")
+        %button.js-delete-mirror.js-delete-pull-mirror.btn.btn-danger{ type: 'button', data: { toggle: 'tooltip', container: 'body' }, title: _('Remove') }= icon('trash-o')

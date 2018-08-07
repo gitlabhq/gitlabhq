@@ -1,9 +1,10 @@
-.form-group
-  = f.check_box :mirror_trigger_builds, class: "float-left"
-  .prepend-left-20
-    = f.label :mirror_trigger_builds, "Trigger pipelines for mirror updates", class: "label-bold"
-    %p.light.append-bottom-0
-      Trigger pipelines when branches or tags are updated from the upstream repository.
-      Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners.
-      Only enable this if you know they can handle the load.
-      <strong>CI will run using the credentials assigned above.</strong>
+- checked = local_assigns.fetch(:checked, nil)
+- check_box_options = {}
+- check_box_options[:checked] = checked unless checked.nil?
+
+.form-check.append-bottom-10
+  = f.check_box :mirror_trigger_builds, check_box_options.merge(class: "form-check-input")
+  = f.label :mirror_trigger_builds, _("Trigger pipelines for mirror updates"), class: "form-check-label"
+  .form-text.text-muted
+    = _('Trigger pipelines when branches or tags are updated from the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load.')
+    %strong= _('CI will run using the credentials assigned above.')
