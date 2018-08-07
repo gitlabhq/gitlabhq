@@ -4118,7 +4118,13 @@ msgstr ""
 msgid "Profiles|Add key"
 msgstr ""
 
+msgid "Profiles|Add status emoji"
+msgstr ""
+
 msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
@@ -4148,7 +4154,7 @@ msgstr ""
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
-msgid "Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too."
+msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -4166,6 +4172,9 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|What's your status?"
+msgstr ""
+
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
@@ -4173,6 +4182,9 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|e.g. My MacBook key"
@@ -5763,7 +5775,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-msgid "User|Current Status"
+msgid "User|Current status"
 msgstr ""
 
 msgid "Variables"

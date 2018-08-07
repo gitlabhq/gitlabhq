@@ -31,17 +31,37 @@
         %hr
         = link_to _('Remove avatar'), profile_avatar_path, data: { confirm: _('Avatar will be removed. Are you sure?') }, method: :delete, class: 'btn btn-danger btn-inverted'
 
-  - if show_user_status_field?
-    %hr
-    .row
-      .col-lg-4.profile-settings-sidebar
-        %h4.prepend-top-0= s_("User|Current Status")
-        %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too.")
-      .col-lg-8
-        .row
-          = f.fields_for :status, @user.status do |status_form|
-            = status_form.text_field :emoji
-            = status_form.text_field :message, maxlength: 100
+  %hr
+  .row
+    .col-lg-4.profile-settings-sidebar
+      %h4.prepend-top-0= s_("User|Current status")
+      %p= s_("Profiles|This emoji and message will appear on your profile and throughout the interface.")
+    .col-lg-8
+      = f.fields_for :status, @user.status do |status_form|
+        - emoji_button = button_tag type: :button,
+          class: 'js-toggle-emoji-menu emoji-menu-toggle-button btn has-tooltip',
+          title: s_("Profiles|Add status emoji") do
+          - if @user.status
+            = emoji_icon @user.status.emoji
+          %span#js-no-emoji-placeholder.no-emoji-placeholder{ class: ('hidden' if @user.status) }
+            = sprite_icon('emoji_slightly_smiling_face', css_class: 'award-control-icon-neutral')
+            = sprite_icon('emoji_smiley', css_class: 'award-control-icon-positive')
+            = sprite_icon('emoji_smile', css_class: 'award-control-icon-super-positive')
+        - reset_message_button = button_tag type: :button,
+          id: 'js-clear-user-status-button',
+          class: 'clear-user-status btn has-tooltip',
+          title: s_("Profiles|Clear status") do
+          = sprite_icon("close")
+
+        = status_form.hidden_field :emoji, id: 'js-status-emoji-field'
+        = status_form.text_field :message,
+          id: 'js-status-message-field',
+          class: 'form-control input-lg',
+          label: s_("Profiles|Your status"),
+          prepend: emoji_button,
+          append: reset_message_button,
+          placeholder: s_("Profiles|What's your status?")
+
   %hr
   .row
     .col-lg-4.profile-settings-sidebar
