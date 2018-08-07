@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module QA
-  describe 'clone code from the repository' do
-    context 'with regular account over http' do
+  context :create do
+    describe 'Git clone over HTTP' do
       let(:location) do
         Page::Project::Show.act do
           choose_repository_clone_http

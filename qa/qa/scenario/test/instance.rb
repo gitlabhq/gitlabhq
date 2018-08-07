@@ -31,7 +31,7 @@ module QA
               if rspec_options.any?
                 rspec_options
               else
-                ['--tag', self.class.focus.join(','), '--', ::File.expand_path('../../specs/features', __dir__)]
+                ['--', ::File.expand_path('../../specs/features', __dir__)]
               end
           end
         end
