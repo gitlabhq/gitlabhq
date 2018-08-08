@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Sortable concern
 #
 # Set default scope for ordering objects

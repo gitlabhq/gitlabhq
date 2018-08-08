@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Milestoneish
   def closed_items_count(user)
     memoize_per_user(user, :closed_items_count) do

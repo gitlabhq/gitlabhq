@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Avatarable
   extend ActiveSupport::Concern
 
@@ -57,7 +59,8 @@ module Avatarable
       only_path = false
     end
 
-    url_base = ""
+    url_base = []
+
     if use_asset_host
       url_base << asset_host unless only_path
     else
@@ -65,7 +68,7 @@ module Avatarable
       url_base << gitlab_config.relative_url_root
     end
 
-    url_base + avatar.local_url + query_params
+    url_base.join + avatar.local_url + query_params
   end
 
   # Path that is persisted in the tracking Upload model. Used to fetch the

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Referable concern
 #
 # Contains functionality related to making a model referable in Markdown, such

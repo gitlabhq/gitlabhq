@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Returns and caches in thread max member access for a resource
 #
 module BulkMemberAccessLoad

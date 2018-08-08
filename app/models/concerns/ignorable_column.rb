@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module that can be included into a model to make it easier to ignore database
 # columns.
 #

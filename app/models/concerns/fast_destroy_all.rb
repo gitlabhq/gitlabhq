@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # This module is for replacing `dependent: :destroy` and `before_destroy` hooks.
 #
