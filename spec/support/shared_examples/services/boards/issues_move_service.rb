@@ -4,15 +4,8 @@ shared_examples 'issues move service' do |group|
     let(:params) { { board_id: board1.id, from_list_id: list1.id, to_list_id: list2.id } }
 
     it 'delegates the label changes to Issues::UpdateService' do
-<<<<<<< HEAD
-      service = instance_double('Issues::UpdateService', :service)
-
-      allow(Issues::UpdateService).to receive(:new).and_return(service)
-
-=======
       service = double(:service)
       expect(Issues::UpdateService).to receive(:new).and_return(service)
->>>>>>> upstream/master
       expect(service).to receive(:execute).with(issue).once
 
       described_class.new(parent, user, params).execute(issue)
