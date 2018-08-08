@@ -226,6 +226,12 @@ For more information: #{EE::Gitlab::GeoGitAccess::GEO_SERVER_DOCS_URL}"
         project.update_attribute(:repository_size_limit, 2.megabytes)
       end
 
+      context 'when trying to authenticate the user' do
+        it 'does not raise an error' do
+          expect { push_changes }.not_to raise_error
+        end
+      end
+
       context 'when pushing a new branch' do
         it 'accepts the push' do
           master_sha = project.commit('master').id
