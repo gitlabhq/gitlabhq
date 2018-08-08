@@ -48,6 +48,8 @@ Naming/FileName:
     - 'qa/bin/*'
     - 'config/**/*'
     - 'lib/generators/**/*'
+    - 'locale/unfound_translations.rb'
+    - 'ee/locale/unfound_translations.rb'
     - 'ee/lib/generators/**/*'
   IgnoreExecutableScripts: true
   AllowedAcronyms:

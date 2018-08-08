@@ -45,6 +45,7 @@ class NotificationSetting < ActiveRecord::Base
     :success_pipeline
   ].freeze
 
+  # Update unfound_translations.rb when events are changed
   def self.email_events(source = nil)
     EMAIL_EVENTS
   end
