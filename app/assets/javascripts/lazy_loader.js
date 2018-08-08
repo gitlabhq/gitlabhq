@@ -19,11 +19,17 @@ export default class LazyLoader {
     scrollContainer.addEventListener('load', () => this.loadCheck());
   }
   searchLazyImages() {
-    this.lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
+    const that = this;
+    requestIdleCallback(
+      () => {
+        that.lazyImages = [].slice.call(document.querySelectorAll('.lazy'));
 
-    if (this.lazyImages.length) {
-      this.checkElementsInView();
-    }
+        if (that.lazyImages.length) {
+          that.checkElementsInView();
+        }
+      },
+      { timeout: 500 },
+    );
   }
   startContentObserver() {
     const contentNode = document.querySelector(this.observerNode) || document.querySelector('body');
@@ -56,7 +62,9 @@ export default class LazyLoader {
         const imgBound = imgTop + imgBoundRect.height;
 
         if (scrollTop < imgBound && visHeight > imgTop) {
-          LazyLoader.loadImage(selectedImage);
+          requestAnimationFrame(() => {
+            LazyLoader.loadImage(selectedImage);
+          });
           return false;
         }
 

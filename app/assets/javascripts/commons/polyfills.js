@@ -19,3 +19,4 @@ import './polyfills/custom_event';
 import './polyfills/element';
 import './polyfills/event';
 import './polyfills/nodelist';
+import './polyfills/request_idle_callback';

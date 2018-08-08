@@ -67,6 +67,11 @@ export default {
       required: false,
       default: false,
     },
+    discussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapGetters(['isLoggedIn']),
@@ -132,10 +137,12 @@ export default {
       :line-number="lineNumber"
       :meta-data="normalizedLine.metaData"
       :show-comment-button="showCommentButton"
+      :is-hover="isHover"
       :is-bottom="isBottom"
       :is-match-line="isMatchLine"
       :is-context-line="isContentLine"
       :is-meta-line="isMetaLine"
+      :discussions="discussions"
     />
   </td>
 </template>
