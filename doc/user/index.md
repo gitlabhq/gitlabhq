@@ -70,6 +70,7 @@ and [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.
 - [Lock files](https://docs.gitlab.com/ee/user/project/file_lock.html) to prevent conflicts
 - View of the current health and status of each CI environment running on Kubernetes with [Deploy Boards](https://docs.gitlab.com/ee/user/project/deploy_boards.html)
 - Leverage your continuous delivery method with [Canary Deployments](https://docs.gitlab.com/ee/user/project/canary_deployments.html)
+- Scan your code for vulnerabilities and [display them in merge requests](project/merge_requests/sast.md).
 
 You can also [integrate](project/integrations/project_services.md) GitLab with numerous third-party applications, such as Mattermost, Microsoft Teams, HipChat, Trello, Slack, Bamboo CI, JIRA, and a lot more.
 

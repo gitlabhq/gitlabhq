@@ -160,6 +160,12 @@ The Postgres exporter allows you to measure various PostgreSQL metrics.
 
 [➔ Read more about the Postgres exporter.](postgres_exporter.md)
 
+### PgBouncer exporter
+
+The PgBouncer exporter allows you to measure various PgBouncer metrics.
+
+[➔ Read more about the PgBouncer exporter.](pgbouncer_exporter.md)
+
 ### GitLab monitor exporter
 
 The GitLab monitor exporter allows you to measure various GitLab metrics, pulled from Redis and the database.

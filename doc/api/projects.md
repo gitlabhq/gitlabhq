@@ -14,7 +14,7 @@ Values for the project visibility level are:
   The project can be cloned by any logged in user.
 
 * `public`:
-  The project can be cloned without any authentication.
+  The project can be accessed without any authentication.
 
 ## Project merge method
 
@@ -149,6 +149,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 37,
       "storage_size": 1038090,
@@ -230,6 +231,7 @@ When the user is authenticated and `simple` is not set this returns something li
     "only_allow_merge_if_all_discussions_are_resolved": false,
     "request_access_enabled": false,
     "merge_method": "merge",
+    "approvals_before_merge": 0,
     "statistics": {
       "commit_count": 12,
       "storage_size": 2066080,
@@ -526,11 +528,13 @@ GET /projects/:id
       "group_access_level": 10
     }
   ],
+  "repository_storage": "default",
   "only_allow_merge_if_pipeline_succeeds": false,
   "only_allow_merge_if_all_discussions_are_resolved": false,
   "printing_merge_requests_link_enabled": true,
   "request_access_enabled": false,
   "merge_method": "merge",
+  "approvals_before_merge": 0,
   "statistics": {
     "commit_count": 37,
     "storage_size": 1038090,
@@ -641,6 +645,7 @@ POST /projects
 | `name` | string | yes if path is not provided | The name of the new project. Equals path if not provided. |
 | `path` | string | yes if name is not provided | Repository name for new project. Generated based on name if not provided (generated lowercased with dashes). |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
+| `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
 | `merge_requests_enabled` | boolean | no | Enable merge requests for this project |
@@ -662,6 +667,14 @@ POST /projects
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `ci_config_path` | string | no | The path to CI config file |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Create project for user
 
@@ -676,7 +689,6 @@ POST /projects/user/:user_id
 | `user_id` | integer | yes | The user ID of the project owner |
 | `name` | string | yes | The name of the new project |
 | `path` | string | no | Custom repository name for new project. By default generated based on name |
-| `default_branch` | string | no | `master` by default |
 | `namespace_id` | integer | no | Namespace for the new project (defaults to the current user's namespace) |
 | `description` | string | no | Short project description |
 | `issues_enabled` | boolean | no | Enable issues for this project |
@@ -699,6 +711,15 @@ POST /projects/user/:user_id
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `printing_merge_request_link_enabled` | boolean | no | Show link to create/view merge request when pushing from the command line |
 | `ci_config_path` | string | no | The path to CI config file |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `external_authorization_classification_label` | string | no | The classification label for the project |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Edit project
 
@@ -734,6 +755,18 @@ PUT /projects/:id
 | `tag_list`    | array   | no       | The list of tags for a project; put array of tags, that should be finally assigned to a project |
 | `avatar`    | mixed   | no      | Image file for avatar of the project                |
 | `ci_config_path` | string | no | The path to CI config file |
+| `repository_storage` | string | no | Which storage shard the repository is on. Available only to admins |
+| `approvals_before_merge` | integer | no | How many approvers should approve merge request by default |
+| `external_authorization_classification_label` | string | no | The classification label for the project |
+| `mirror` | boolean | no | Enables pull mirroring in a project |
+| `mirror_user_id` | integer | no | User responsible for all the activity surrounding a pull mirror event |
+| `mirror_trigger_builds` | boolean | no | Pull mirroring triggers builds |
+| `only_mirror_protected_branches` | boolean | no | Only mirror protected branches |
+| `mirror_overwrites_diverged_branches` | boolean | no | Pull mirror overwrites diverged branches |
+
+>**Note**: If your HTTP repository is not publicly accessible,
+add authentication information to the URL: `https://username:password@gitlab.company.com/group/project.git`
+where `password` is a public access key with the `api` scope enabled.
 
 ## Fork project
 
@@ -1469,6 +1502,91 @@ POST /projects/:id/housekeeping
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+
+## Push Rules **[STARTER]**
+
+### Get project push rules
+
+Get the push rules of a project.
+
+```
+GET /projects/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_message_regex": "Fixes \d +\",
+  "branch_name_regex": "",
+  "deny_delete_tag": false,
+  "created_at": "2012-10-12T17:04:47Z",
+  "member_check": false,
+  "prevent_secrets": false,
+  "author_email_regex": "",
+  "file_name_regex": "",
+  "max_file_size": 5
+}
+```
+
+### Add project push rule
+
+Adds a push rule to a specified project.
+
+```
+POST /projects/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `branch_name_regex` | string | no | All branch names must match this, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
+
+### Edit project push rule
+
+Edits a push rule for a specified project.
+
+```
+PUT /projects/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID of the project or NAMESPACE/PROJECT_NAME |
+| `deny_delete_tag` | boolean | no | Deny deleting a tag |
+| `member_check` | boolean | no | Restrict commits by author (email) to existing GitLab users |
+| `prevent_secrets` | boolean | no | GitLab will reject any files that are likely to contain secrets |
+| `commit_message_regex` | string | no | All commit messages must match this, e.g. `Fixed \d+\..*` |
+| `branch_name_regex` | string | no | All branch names must match this, e.g. `(feature|hotfix)\/*` |
+| `author_email_regex` | string | no | All commit author emails must match this, e.g. `@my-company.com$` |
+| `file_name_regex` | string | no | All commited filenames must **not** match this, e.g. `(jar|exe)$` |
+| `max_file_size` | integer | no | Maximum file size (MB) |
+
+### Delete project push rule
+
+> Introduced in GitLab 9.0.
+
+Removes a push rule from a project. This is an idempotent method and can be called multiple times.
+Either the push rule is available or not.
+
+```
+DELETE /projects/:id/push_rule
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
 ### Transfer a project to a new namespace
@@ -1492,6 +1610,22 @@ Read more in the [Project import/export](project_import_export.md) documentation
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Start the pull mirroring process for a Project **[STARTER]**
+
+> Introduced in [GitLab Starter](https://about.gitlab.com/pricing) 10.3.
+
+```
+POST /projects/:id/mirror/pull
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
+
+```bash
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/:id/mirror/pull
+```
 
 ## Project badges
 

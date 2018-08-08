@@ -184,6 +184,57 @@ tell GitLab which groups are external via the `external_groups:` element:
         } }
 ```
 
+## Required groups
+
+>**Note:**
+This setting is only available on GitLab 10.2 EE and above.
+
+This setting works like `External Groups` setting. Just like there, your IdP has to
+pass Group Information to GitLab, you have to tell GitLab where to look or the
+groups SAML response, and which group membership should be requisite for logging in.
+When `required_groups` is not set or it is empty, anyone with proper authentication
+will be able to use the service.
+
+Example:
+
+```yaml
+{ name: 'saml',
+  label: 'Our SAML Provider',
+  groups_attribute: 'Groups',
+  required_groups: ['Developers', 'Managers', 'Admins'],
+  args: {
+          assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+          idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+          idp_sso_target_url: 'https://login.example.com/idp',
+          issuer: 'https://gitlab.example.com',
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        } }
+```
+
+## Admin Groups
+
+>**Note:**
+This setting is only available on GitLab 8.8 EE and above.
+
+This setting works very similarly to the `External Groups` setting. The requirements
+are the same, your IdP needs to pass Group information to GitLab, you need to tell
+GitLab where to look for the groups in the SAML response, and which group should be
+considered `admin groups`.
+
+```yaml
+{ name: 'saml',
+  label: 'Our SAML Provider',
+  groups_attribute: 'Groups',
+  admin_groups: ['Managers', 'Admins'],
+  args: {
+          assertion_consumer_service_url: 'https://gitlab.example.com/users/auth/saml/callback',
+          idp_cert_fingerprint: '43:51:43:a1:b5:fc:8b:b7:0a:3a:a9:b1:0f:66:73:a8',
+          idp_sso_target_url: 'https://login.example.com/idp',
+          issuer: 'https://gitlab.example.com',
+          name_identifier_format: 'urn:oasis:names:tc:SAML:2.0:nameid-format:transient'
+        } }
+```
+
 ## Bypass two factor authentication
 
 If you want some SAML authentication methods to count as 2FA on a per session basis, you can register them in the

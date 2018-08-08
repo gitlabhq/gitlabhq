@@ -66,9 +66,9 @@ one major version. For example, it is safe to:
 Upgrading the major version requires more attention.
 We cannot guarantee that upgrading between major versions will be seamless. As previously mentioned, major versions are reserved for backwards incompatible changes.
 
-We recommend that you first upgrade to the latest available minor version within
-your major version. By doing this, you can address any deprecation messages
-that could possibly change behaviour in the next major release.
+We recommend that you first upgrade to the latest available version within your
+major version. By doing this, you can address any deprecation messages that
+could possibly change behaviour in the next major release.
 
 Please see the table below for some examples:
 

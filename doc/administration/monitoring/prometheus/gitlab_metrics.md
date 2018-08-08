@@ -48,8 +48,50 @@ The following metrics are available:
 | filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Whether or not the circuit for a certain shard is broken or not |
 | circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
+| upload_file_does_not_exist                    | Counter   | 10.7  | Number of times an upload record could not find its file |
 | failed_login_captcha_total        | Gauge | 11.0 | Counter of failed CAPTCHA attempts during login |
 | successful_login_captcha_total    | Gauge | 11.0 | Counter of successful CAPTCHA attempts during login |
+
+## Sidekiq Metrics available
+
+Sidekiq jobs may also gather metrics, and these metrics can be accessed if the Sidekiq exporter is enabled (e.g. via
+the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
+
+| Metric                                       | Type    | Since | Description | Labels |
+|:-------------------------------------------- |:------- |:----- |:----------- |:------ |
+| geo_db_replication_lag_seconds               | Gauge   | 10.2  | Database replication lag (seconds) | url
+| geo_repositories                             | Gauge   | 10.2  | Total number of repositories available on primary | url
+| geo_repositories_synced                      | Gauge   | 10.2  | Number of repositories synced on secondary | url
+| geo_repositories_failed                      | Gauge   | 10.2  | Number of repositories failed to sync on secondary | url
+| geo_lfs_objects                              | Gauge   | 10.2  | Total number of LFS objects available on primary | url
+| geo_lfs_objects_synced                       | Gauge   | 10.2  | Number of LFS objects synced on secondary | url
+| geo_lfs_objects_failed                       | Gauge   | 10.2  | Number of LFS objects failed to sync on secondary | url
+| geo_attachments                              | Gauge   | 10.2  | Total number of file attachments available on primary | url
+| geo_attachments_synced                       | Gauge   | 10.2  | Number of attachments synced on secondary | url
+| geo_attachments_failed                       | Gauge   | 10.2  | Number of attachments failed to sync on secondary | url
+| geo_last_event_id                            | Gauge   | 10.2  | Database ID of the latest event log entry on the primary | url
+| geo_last_event_timestamp                     | Gauge   | 10.2  | UNIX timestamp of the latest event log entry on the primary | url
+| geo_cursor_last_event_id                     | Gauge   | 10.2  | Last database ID of the event log processed by the secondary | url
+| geo_cursor_last_event_timestamp              | Gauge   | 10.2  | Last UNIX timestamp of the event log processed by the secondary | url
+| geo_status_failed_total                      | Counter | 10.2  | Number of times retrieving the status from the Geo Node failed | url
+| geo_last_successful_status_check_timestamp   | Gauge   | 10.2  | Last timestamp when the status was successfully updated | url
+| geo_lfs_objects_synced_missing_on_primary    | Gauge   | 10.7  | Number of LFS objects marked as synced due to the file missing on the primary | url
+| geo_job_artifacts_synced_missing_on_primary  | Gauge   | 10.7  | Number of job artifacts marked as synced due to the file missing on the primary | url
+| geo_attachments_synced_missing_on_primary    | Gauge   | 10.7  | Number of attachments marked as synced due to the file missing on the primary | url
+| geo_repositories_checksummed_count           | Gauge   | 10.7  | Number of repositories checksummed on primary | url
+| geo_repositories_checksum_failed_count       | Gauge   | 10.7  | Number of repositories failed to calculate the checksum on primary | url
+| geo_wikis_checksummed_count                  | Gauge   | 10.7  | Number of wikis checksummed on primary | url
+| geo_wikis_checksum_failed_count              | Gauge   | 10.7  | Number of wikis failed to calculate the checksum on primary | url
+| geo_repositories_verified_count              | Gauge   | 10.7  | Number of repositories verified on secondary | url
+| geo_repositories_verification_failed_count   | Gauge   | 10.7  | Number of repositories failed to verify on secondary | url
+| geo_repositories_checksum_mismatch_count     | Gauge   | 10.7  | Number of repositories that checksum mismatch on secondary | url
+| geo_wikis_verified_count                     | Gauge   | 10.7  | Number of wikis verified on secondary | url
+| geo_wikis_verification_failed_count          | Gauge   | 10.7  | Number of wikis failed to verify on secondary | url
+| geo_wikis_checksum_mismatch_count            | Gauge   | 10.7  | Number of wikis that checksum mismatch on secondary | url
+| geo_repositories_checked_count               | Gauge   | 11.1  | Number of repositories that have been checked via `git fsck` | url
+| geo_repositories_checked_failed_count        | Gauge   | 11.1  | Number of repositories that have a failure from `git fsck` | url
+| geo_repositories_retrying_verification_count  | Gauge   | 11.2  | Number of repositories verification failures that Geo is actively trying to correct on secondary  | url
+| geo_wikis_retrying_verification_count         | Gauge   | 11.2  | Number of wikis verification failures that Geo is actively trying to correct on secondary | url
 
 ### Ruby metrics
 

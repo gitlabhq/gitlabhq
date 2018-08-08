@@ -43,17 +43,25 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
-## Code Quality analysis
+## Code Quality analysis **[STARTER]**
 
-**(Starter)** [Analyze your project's Code Quality](code_quality.md).
+[Analyze your project's Code Quality](code_quality.md).
 
-## Static Application Security Testing (SAST)
+## Dependencies license management **[ULTIMATE]**
 
-**(Ultimate)** [Scan your code for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/sast.html)
+[Find and manage the licenses of your dependencies](license_management.md).
 
-## Dependency Scanning
+## Static Application Security Testing (SAST) **[ULTIMATE]**
 
-**(Ultimate)** [Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
+[Scan your code for vulnerabilities](sast.md)
+
+## Dependency Scanning **[ULTIMATE]**
+
+[Scan your dependencies for vulnerabilities](dependency_scanning.md)
+
+## Dependency Scanning **[ULTIMATE]**
+
+[Scan your dependencies for vulnerabilities](https://docs.gitlab.com/ee/ci/examples/dependency_scanning.html)
 
 ## Container Scanning
 

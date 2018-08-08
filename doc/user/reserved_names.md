@@ -61,8 +61,6 @@ Currently the following names are reserved as top level groups:
 - favicon.ico
 - favicon.png
 - groups
-- header_logo_dark.png
-- header_logo_light.png
 - health_check
 - help
 - import

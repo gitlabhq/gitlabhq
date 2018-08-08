@@ -267,4 +267,4 @@ have extended functionalities with LDAP, such as:
 - Updating user permissions
 - Multiple LDAP servers
 
-Read through the article on [LDAP for GitLab EE](https://docs.gitlab.com/ee/administration/auth/how_to_configure_ldap_gitlab_ee/) for an overview.
+Read through the article on [LDAP for GitLab EE](../how_to_configure_ldap_gitlab_ee/index.md) for an overview.

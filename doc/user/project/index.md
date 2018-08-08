@@ -13,7 +13,7 @@ the number of private projects you create.
 When you create a project in GitLab, you'll have access to a large number of
 [features](https://about.gitlab.com/features/):
 
-**Issues and merge requests:**
+**Repositories:**
 
 - [Issue tracker](issues/index.md): Discuss implementations with your team within issues
   - [Issue Boards](issue_board.md): Organize and prioritize your workflow
@@ -28,6 +28,13 @@ integrated platform
   permission to create tags, and prevent accidental update or deletion
   - [Signing commits](gpg_signed_commits/index.md): use GPG to sign your commits
   - [Deploy tokens](deploy_tokens/index.md): Manage project-based deploy tokens that allow permanent access to the repository and Container Registry.
+- [Web IDE](web_ide/index.md)
+
+**Issues and merge requests:**
+
+- [Issue tracker](issues/index.md): Discuss implementations with your team within issues
+  - [Issue Boards](issue_board.md): Organize and prioritize your workflow
+  - [Multiple Issue Boards](issue_board.md#multiple-issue-boards): Allow your teams to create their own workflows (Issue Boards) for the same project **[STARTER]**
 - [Merge Requests](merge_requests/index.md): Apply your branching
 strategy and get reviewed by your team
   - [Merge Request Approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html): Ask for approval before
@@ -75,6 +82,7 @@ website with GitLab Pages
 - [Wiki](wiki/index.md): Document your GitLab project in an integrated Wiki
 - [Snippets](../snippets.md): Store, share and collaborate on code snippets
 - [Cycle Analytics](cycle_analytics.md): Review your development lifecycle
+- [Security Dashboard](security_dashboard.md): Security Dashboard
 - [Syntax highlighting](highlighting.md): An alternative to customize
 your code blocks, overriding GitLab's default choice of language
 - [Badges](badges.md): Badges for the project overview
@@ -112,6 +120,13 @@ Read through the documentation on [project settings](settings/index.md).
   - [FogBugz to GitLab](import/fogbugz.md)
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
+
+## CI/CD for external repositories
+
+Instead of importing a repository directly to GitLab, you can connect your repository
+as a CI/CD project.
+
+Read through the documentation on [CI/CD for external repositories](../../ci/ci_cd_for_external_repos/index.md).
 
 ## Project's members
 

@@ -23,7 +23,7 @@ With GitLab merge requests, you can:
 - Assign it to any registered user, and change the assignee how many times you need
 - Assign a [milestone](../../project/milestones/index.md) and track the development of a broader implementation
 - Organize your issues and merge requests consistently throughout the project with [labels](../../project/labels.md)
-- Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.html#time-tracking)
+- Add a time estimation and the time spent with that merge request with [Time Tracking](../../../workflow/time_tracking.md#time-tracking)
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
@@ -33,9 +33,15 @@ With GitLab merge requests, you can:
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
-- View the deployment process across projects with [Multi-Project Pipeline Graphs](https://docs.gitlab.com/ee/ci/multi_project_pipeline_graphs.html#multi-project-pipeline-graphs) **[PREMIUM]**
-- Request [approvals](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers **[STARTER]**
-- Analyze the impact of your changes with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html) **[STARTER]**
+- View the deployment process across projects with [Multi-Project Pipelines](../../../ci/multi_project_pipelines.md#multi-project-pipeline-graphs) **[PREMIUM]**
+- Request [approvals](merge_request_approvals.md) from your managers **[STARTER]**
+- Analyze the impact of your changes with [Code Quality reports](code_quality.md) **[STARTER]**
+- Manage the licenses of your dependencies with [License Management](#license-management) **[ULTIMATE]**
+- Analyze your source code for vulnerabilities with [Static Application Security Testing](sast.md) **[ULTIMATE]**
+- Analyze your running web applications for vulnerabilities with [Dynamic Application Security Testing](dast.md) **[ULTIMATE]**
+- Analyze your dependencies for vulnerabilities with [Dependency Scanning](dependency_scanning.md) **[ULTIMATE]**
+- Analyze your Docker images for vulnerabilities with [Container Scanning](container_scanning.md) **[ULTIMATE]**
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) **[PREMIUM]**
 
 ## Use cases
 
@@ -43,20 +49,21 @@ A. Consider you are a software developer working in a team:
 
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
-1. You work on the implementation optimizing code with [Code Quality reports](https://docs.gitlab.com/ee/user/project/merge_requests/code_quality.html) **[STARTER]**
+1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **[STARTER]**
+1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **[ULTIMATE]**
 1. You build and test your changes with GitLab CI/CD
-1. You request the approval from your manager
-1. Your manager pushes a commit with his final review, [approves the merge request](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
+1. You request the [approval](#merge-request-approvals) from your manager
+1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
-B. Consider you're a web developer writing a webpage for your company's:
+B. Consider you're a web developer writing a webpage for your company's website:
 
 1. You checkout a new branch, and submit a new page through a merge request
 1. You gather feedback from your reviewers
 1. Your changes are previewed with [Review Apps](../../../ci/review_apps/index.md)
 1. You request your web designers for their implementation
-1. You request the [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your manager **[STARTER]**
+1. You request the [approval](merge_request_approvals.md) from your manager **[STARTER]**
 1. Once approved, your merge request is [squashed and merged](squash_and_merge.md), and [deployed to staging with GitLab Pages](https://about.gitlab.com/2016/08/26/ci-deployment-and-environments/)
 1. Your production team [cherry picks](#cherry-pick-changes) the merge commit into production
 
@@ -142,6 +149,13 @@ you hide discussions that are no longer relevant.
 
 [Read more about resolving discussion comments in merge requests reviews.](../../discussions/index.md)
 
+## Squash and merge
+
+GitLab allows you to squash all changes present in a merge request into a single
+commit when merging, to allow for a neater commit history.
+
+[Learn more about squash and merge.](squash_and_merge.md)
+
 ## Resolve conflicts
 
 When a merge request has conflicts, GitLab may provide the option to resolve
@@ -203,6 +217,95 @@ completely ready, GitLab blocks the "Accept" button for merge requests that
 have been marked as a **Work In Progress**.
 
 [Learn more about settings a merge request as "Work In Progress".](work_in_progress_merge_requests.md)
+
+## Merge request approvals **[STARTER]**
+
+> Included in [GitLab Starter][products].
+
+If you want to make sure every merge request is approved by one or more people,
+you can enforce this workflow by using merge request approvals. Merge request
+approvals allow you to set the number of necessary approvals and predefine a
+list of approvers that will need to approve every merge request in a project.
+
+[Read more about merge request approvals.](merge_request_approvals.md)
+
+## Code Quality **[STARTER]**
+
+> Introduced in [GitLab Starter][products] 9.3.
+
+If you are using [GitLab CI][ci], you can analyze your source code quality using
+the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
+can show the Code Climate report right in the merge request widget area.
+
+[Read more about Code Quality reports.](code_quality.md)
+
+## Browser Performance Testing **[PREMIUM]**
+
+> Introduced in [GitLab Premium][products] 10.3.
+
+If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
+
+GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
+
+[Read more about Browser Performance Testing.](browser_performance_testing.md)
+
+## License Management **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][products] 11.0.
+
+If you are using [GitLab CI/CD][ci], you can search your dependencies for their
+licenses using License Management.
+Going a step further, GitLab can show the licenses report right in the
+merge request widget area.
+
+[Read more about License Management reports.](license_management.md)
+
+## Security reports **[ULTIMATE]**
+
+GitLab can scan and report any vulnerabilities found in your project. The
+following security reports are available:
+
+- [Static Application Security Testing reports](sast.md) - Analyze your source
+  code for known vulnerabilities using Static Application Security Testing (SAST)
+  and see the security report right in your merge requests.
+- [Dynamic Application Security Testing reports](dast.md) - Analyze your running
+  web application(s) for known vulnerabilities using Dynamic Application Security
+  Testing (DAST) and see the security report right in your merge requests.
+- [Dependency Scanning reports](dependency_scanning.md) - Analyze your
+  dependencies for known vulnerabilities using Dependency Scanning and see the
+  security report right in your merge requests.
+- [Container Scanning reports](container_scanning.md) - Analyze your Docker
+  images for known vulnerabilities and see the security report right in your
+  merge requests.
+
+### Interacting with security reports **[ULTIMATE]**
+
+> Introduced in [GitLab Ultimate][products] 10.8.
+
+CAUTION: **Warning:**
+This feature is currently [Alpha](https://about.gitlab.com/handbook/product/#alpha-beta-ga) and while you can start using it, it may receive important changes in the future.
+
+Each security vulnerability in the report is actionable. Clicking on an entry,
+a detailed information will pop up with two different possible options:
+
+- **Dismiss vulnerability** - Dismissing a vulnerability will place a
+  ~~strikethrough~~ styling on it.
+- **Create issue** - The new issue will have the title and description
+  pre-populated with the information of the vulnerability report.
+
+![Interacting with security reports](img/interactive_reports.png)
+
+You can also revert your dismissal or see the linked issue after the action has
+been taken.
+
+## Live preview with Review Apps
+
+If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
+you can preview the changes submitted to a feature-branch through a merge request
+in a per-branch basis. No need to checkout the branch, install and preview locally;
+all your changes will be available to preview by anyone with the Review Apps link.
+
+[Read more about Review Apps.](../../../ci/review_apps/index.md)
 
 ## Merge request diff file navigation
 
@@ -324,5 +427,11 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
+[products]: https://about.gitlab.com/products/ "GitLab products page"
 [protected branches]: ../protected_branches.md
+[ci]: ../../../ci/README.md
+[cc]: https://codeclimate.com/
+[cd]: https://hub.docker.com/r/codeclimate/codeclimate/
+[sitespeed]: https://www.sitespeed.io
+[sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
 [ee]: https://about.gitlab.com/pricing/ "GitLab Enterprise Edition"

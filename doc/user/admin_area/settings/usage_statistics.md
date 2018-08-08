@@ -33,7 +33,8 @@ disable the version check at **Admin area > Settings > Usage statistics**.
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
-8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1.
+8.12. [Moved to GitLab Community Edition][ce-23361] in 9.1. More statistics
+[were added][[ee-6602] in 11.2
 
 GitLab sends a weekly payload containing usage data to GitLab Inc. The usage
 ping uses high-level data to help our product, support, and sales teams. It does
@@ -70,3 +71,4 @@ production: &base
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735
 [ce-23361]: https://gitlab.com/gitlab-org/gitlab-ce/issues/23361
+[ee-6602]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6602

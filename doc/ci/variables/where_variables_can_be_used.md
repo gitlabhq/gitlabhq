@@ -111,3 +111,22 @@ They are:
 - **not supported:**
   - by the definitions [described in the table](#gitlab-ci-yml-file) where the "Expansion place" is "GitLab"
   - in the `only` and `except` [variables expressions](README.md#variables-expressions)
+
+## Variables with an environment scope
+
+Variables defined with an environment scope are supported. Given that
+there is a variable `$STAGING_SECRET` defined in a scope of
+`review/staging/*`, the following job that is using dynamic environments
+is going to be created, based on the matching variable expression:
+
+```yaml
+my-job:
+  stage: staging
+  environment:
+    name: review/$CI_JOB_STAGE/deploy
+  script:
+    - 'deploy staging'
+  only:
+    variables:
+      - $STAGING_SECRET == 'something'
+```

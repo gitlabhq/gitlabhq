@@ -2,8 +2,12 @@
 
 >[Introduced][ce-4981] in GitLab 8.11.
 
+We all know that a properly submitted issue is more likely to be addressed in
+a timely manner by the developers of a project.
+
 Description templates allow you to define context-specific templates for issue
-and merge request description fields for your project.
+and merge request description fields for your project, as well as help filter
+out a lot of unnecessary noise from issues.
 
 ## Overview
 
@@ -17,6 +21,18 @@ are added to the root directory of a GitLab project's repository.
 Description templates must be written in [Markdown](../markdown.md) and stored
 in your project's repository under a directory named `.gitlab`. Only the
 templates of the default branch will be taken into account.
+
+## Use-cases
+
+- Add a template to be used in every issue for a specific project,
+giving instructions and guidelines, requiring for information specific to that subject.
+For example, if you have a project for tracking new blog posts, you can require the
+title, outlines, author name, author social media information, etc.
+- Following the previous example, you can make a template for every MR submitted
+with a new blog post, requiring information about the post date, frontmatter data,
+images guidelines, link to the related issue, reviewer name, etc.
+- You can also create issues and merge request templates for different
+stages of your workflow, e.g., feature proposal, feature improvement, bug report, etc.
 
 ## Creating issue templates
 
@@ -38,6 +54,33 @@ to the issue description field. The 'Reset template' button will discard any
 changes you made after picking the template and return it to its initial status.
 
 ![Description templates](img/description_templates.png)
+
+## Setting a default template for issues and merge requests  **[STARTER]**
+
+>
+**Notes:**
+- This feature was introduced before [description templates](#overview) and is
+  available in [GitLab Starter][products]. It can be enabled
+  in the project's settings.
+- Templates for issues were [introduced][ee-28] in GitLab EE 8.1.
+- Templates for merge requests were [introduced][ee-7478ece] in GitLab EE 6.9.
+
+The visibility of issues and/or merge requests should be set to either "Everyone
+with access" or "Only team members" in your project's **Settings** otherwise the
+template text areas won't show. This is the default behavior so in most cases
+you should be fine.
+
+Go to your project's **Settings** and fill in the "Default description template
+for issues" and "Default description template for merge requests" text areas
+for issues and merge requests respectively. Since GitLab issues and merge
+request support [Markdown](../markdown.md), you can use special markup like
+headings, lists, etc.
+
+![Default description templates](img/description_templates_default_settings.png)
+
+After you add the description, hit **Save changes** for the settings to take
+effect. Now, every time a new issue or merge request is created, it will be
+pre-filled with the text you entered in the template(s).
 
 ## Description template example
 
@@ -93,4 +136,7 @@ Possible fixes
 
 [ce-4981]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4981
 [gitlab-ce-templates]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/.gitlab
+[ee-28]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/28 "Merge Request for adding issues template"
+[ee-7478ece]: https://gitlab.com/gitlab-org/gitlab-ee/commit/7478ece8b48e80782b5465b96c79f85cc91d391b "Commit that introduced merge requests templates"
+[products]: https://about.gitlab.com/pricing/
 

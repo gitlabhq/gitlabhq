@@ -35,10 +35,12 @@ Click on the service links to see further configuration instructions and details
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki |
 | Flowdock | Flowdock is a collaboration web app for technical teams |
 | Gemnasium   _(Has been deprecated in GitLab 11.0)_ | Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities |
+| [GitHub](github.md) | Sends pipeline notifications to GitHub |
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
 | [JIRA](jira.md) | JIRA issue tracker |
+| [Jenkins](../../../integration/jenkins.md) | An extendable open source continuous integration server |
 | JetBrains TeamCity CI | A continuous integration and build server |
 | [Mattermost slash commands](mattermost_slash_commands.md) | Mattermost chat and ChatOps slash commands |
 | [Mattermost Notifications](mattermost.md) | Receive event notifications in Mattermost |
@@ -47,6 +49,7 @@ Click on the service links to see further configuration instructions and details
 | Pipelines emails | Email the pipeline status to a list of recipients |
 | [Slack Notifications](slack.md) | Send GitLab events (e.g. issue created) to Slack as notifications |
 | [Slack slash commands](slack_slash_commands.md) | Use slash commands in Slack to control GitLab |
+| [GitLab Slack application](gitlab_slack_application.md) | Use Slack's official application
 | PivotalTracker | Project Management Software (Source Commits Endpoint) |
 | [Prometheus](prometheus.md) | Monitor the performance of your deployed apps |
 | Pushover | Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop |

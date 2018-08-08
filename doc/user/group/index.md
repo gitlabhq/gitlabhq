@@ -5,9 +5,11 @@ and grant members access to several projects at once.
 
 Groups can also be nested in [subgroups](subgroups/index.md).
 
-Find your groups by expanding the left menu and clicking **Groups**:
+Find your groups by clicking **Groups** in the top navigation.
 
 ![GitLab Groups](img/groups.png)
+
+> The groups dropdown in the top navigation was [introduced][ce-36234] in [GitLab 11.1](https://about.gitlab.com/2018/07/22/gitlab-11-1-released/#groups-dropdown-in-navigation).
 
 The Groups page displays all groups you are a member of, how many projects it holds,
 how many members it has, the group visibility, and, if you have enough permissions,
@@ -69,7 +71,7 @@ together in a single list view.
 
 You can create a group in GitLab from:
 
-1. The Groups page: expand the left menu, click **Groups**, and click the green button **New group**:
+1. The Groups page: from the top menu, click **Groups**, and click the green button **New group**:
 
     ![new group from groups page](img/new_group_from_groups.png)
 
@@ -152,6 +154,21 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
+### Default project creation level **[STARTER]**
+
+> [Introduced][ee-2534] in [GitLab Premium][ee] 10.5.
+> Brought to [GitLab Starter][ee] in 10.7.
+
+Group owners or administrators can set an option that will give users with the
+Developer role the ability to create projects under groups.
+
+By default, `Developers` and `Maintainers` are allowed to create projects under a
+group, but this can be changed either within the group settings for a group, or
+be set globally by a GitLab administrator in the Admin area
+(**Settings > Visibility and Access Controls**).
+
+The setting can set to "None", "Maintainers", or "Developers + Maintainers".
+
 ## Transfer projects into groups
 
 Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
@@ -167,6 +184,16 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
+
+## Epics
+
+> Introduced in [GitLab Ultimate][ee] 10.2.
+
+Epics let you manage your portfolio of projects more efficiently and with less
+effort by tracking groups of issues that share a theme, across projects and
+milestones.
+
+[Learn more about Epics.](epics/index.md)
 
 ## Transfer groups to another group
 
@@ -250,7 +277,22 @@ To enable this feature, navigate to the group settings page. Select
 With **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
+Member Lock lets a group owner to lock down any new project membership to all the
+projects within the group, allowing tighter control over project membership.
 Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock).
+
+For instance, if you want to lock the group for an [Audit Event](../../administration/audit_events.md),
+you enable Member Lock to guarantee that any membership is added or changed
+during the audition.
+
+To enable this feature, navigate to group settings page, select **Member lock**
+and **Save group**.
+
+![Checkbox for membership lock](img/membership_lock.png)
+
+This will disable the option for all users who previously had permissions to
+operate project memberships so no new users can be added. Furthermore, any
+request to add new user to project through API will not be possible.
 
 ### Advanced settings
 
@@ -261,3 +303,12 @@ access each project's settings, and remove any project from the same screen.
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
 for the group. **[STARTER ONLY]**
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+
+## User contribution analysis **[STARTER]**
+
+With [GitLab Contribution Analytics](contribution_analytics/index.md)
+you have an overview of the contributions (pushes, merge requests,
+and issues) performed my your group members.
+
+[ee]: https://about.gitlab.com/pricing/
+[ee-2534]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2534

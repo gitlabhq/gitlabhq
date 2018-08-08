@@ -16,6 +16,62 @@ The following methods of authentication are supported.
 
 A unique trigger token can be obtained when [adding a new trigger](#adding-a-new-trigger).
 
+### CI job token
+
+You can use the `CI_JOB_TOKEN` [variable][predef] (used to authenticate
+with the [GitLab Container Registry][registry]) in the following cases.
+
+#### When used with multi-project pipelines **[PREMIUM]**
+
+> **Note**:
+The use of `CI_JOB_TOKEN` for multi-project pipelines was [introduced][ee-2017]
+in [GitLab Premium][ee] 9.3.
+
+This way of triggering can only be used when invoked inside `.gitlab-ci.yml`,
+and it creates a dependent pipeline relation visible on the
+[pipeline graph](../pipelines.md#multi-project-pipelines-graphs). For example:
+
+```yaml
+build_docs:
+  stage: deploy
+  script:
+  - curl --request POST --form "token=$CI_JOB_TOKEN" --form ref=master https://gitlab.example.com/api/v4/projects/9/trigger/pipeline
+  only:
+  - tags
+```
+
+Pipelines triggered that way also expose a special variable:
+`CI_PIPELINE_SOURCE=pipeline`.
+
+Read more about the [pipelines trigger API][trigapi].
+
+#### When a pipeline depends on the artifacts of another pipeline **[PREMIUM]**
+
+> **Note**:
+The use of `CI_JOB_TOKEN` in the artifacts download API was [introduced][ee-2346]
+in [GitLab Premium][ee] 9.5.
+
+With the introduction of dependencies between different projects, one of
+them may need to access artifacts created by a previous one. This process
+must be granted for authorized accesses, and it can be done using the
+`CI_JOB_TOKEN` variable that identifies a specific job. For example:
+
+```yaml
+build_submodule:
+  stage: test
+  script:
+  - curl --header "JOB-TOKEN: $CI_JOB_TOKEN" "https://gitlab.example.com/api/v4/projects/1/jobs/artifacts/master/download?job=test"
+  - unzip artifacts.zip
+  only:
+  - tags
+```
+
+This allows you to use that for multi-project pipelines and download artifacts
+from any project to which you have access as this follows the same principles
+with the [permission model][permissions].
+
+Read more about the [jobs API].
+
 ## Adding a new trigger
 
 You can add a new trigger by going to your project's
@@ -218,8 +274,12 @@ removed with one of the future versions of GitLab. You are advised to
 [take ownership](#taking-ownership) of any legacy triggers.
 
 [ee-2017]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2017
+[ee-2346]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2346
 [ci-229]: https://gitlab.com/gitlab-org/gitlab-ci/merge_requests/229
 [ee]: https://about.gitlab.com/pricing/
 [variables]: ../variables/README.md
 [predef]: ../variables/README.md#predefined-variables-environment-variables
 [registry]: ../../user/project/container_registry.md
+[permissions]: ../../user/permissions.md#jobs-permissions
+[trigapi]: ../../api/pipeline_triggers.md
+[jobs api]: ../../api/jobs.md

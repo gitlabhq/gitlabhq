@@ -4,7 +4,7 @@ Please read through the [GitLab Issue Documentation](index.md) for an overview o
 
 ## Issues Functionalities
 
-The image bellow illustrates how an issue looks like:
+The image below illustrates how an issue looks like:
 
 ![Issue view](img/issues_main_view_numbered.jpg)
 
@@ -50,7 +50,7 @@ where there is shared ownership of an issue.
 In [GitLab Starter](https://about.gitlab.com/pricing/), you can also
 select multiple assignees to an issue.
 
-Learn more on the [Multiple Assignees documentation](https://docs.gitlab.com/ee/user/project/issues/multiple_assignees_for_issues.html).
+Learn more on the [Multiple Assignees documentation](multiple_assignees_for_issues.md).
 
 #### 4. Milestone
 
@@ -91,7 +91,7 @@ if the label doesn't exist yet, when you click **Edit**, it opens a dropdown men
 - Attribute a weight (in a 0 to 9 range) to that issue. Easy to complete
 should weight 1 and very hard to complete should weight 9.
 
-Learn more on the [Issue Weight documentation](https://docs.gitlab.com/ee/workflow/issue_weight.html).
+Learn more on the [Issue Weight documentation](../../../workflow/issue_weight.md).
 
 #### 9. Participants
 

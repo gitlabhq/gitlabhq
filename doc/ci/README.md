@@ -23,6 +23,7 @@ The first steps towards your GitLab CI/CD journey.
 - [Pipelines and jobs](pipelines.md): configure your GitLab CI/CD pipelines to build, test, and deploy your application.
 - Runners: The [GitLab Runner](https://docs.gitlab.com/runner/) is responsible by running the jobs in your CI/CD pipeline. On GitLab.com, Shared Runners are enabled by default, so
 you don't need to set up anything to start to use them with GitLab CI/CD.
+- [Using GitLab CI/CD with GitHub and other external repositories](ci_cd_for_external_repos/index.md)
 
 ### Introduction to GitLab CI/CD
 
@@ -72,10 +73,14 @@ learn how to leverage its potential even more.
 - [Git submodules](git_submodules.md) - How to run your CI jobs when Git
   submodules are involved
 - [Use SSH keys in your build environment](ssh_keys/README.md)
+  and status of each CI environment running on Kubernetes
 - [Trigger pipelines through the GitLab API](triggers/README.md)
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 - [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
   more Kubernetes clusters to your project
+- [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
+  and status of each CI/CD environment running on Kubernetes
+- [ChatOps](chatops/README.md) - Trigger CI jobs from chat, with results sent back to the channel.
 
 ## GitLab CI/CD for Docker
 

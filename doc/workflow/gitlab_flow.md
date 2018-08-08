@@ -186,7 +186,7 @@ If you have an issue that spans across multiple repositories, the best thing is 
 ![Vim screen showing the rebase view](rebase.png)
 
 With git you can use an interactive rebase (`rebase -i`) to squash multiple commits into one and reorder them.
-In GitLab EE and .com you can also [rebase before merge](http://docs.gitlab.com/ee/workflow/rebase_before_merge.html) from the web interface.
+You can also [rebase before merge](../user/project/merge_requests/fast_forward_merge.md) from the web interface.
 This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
@@ -238,6 +238,16 @@ As for the long running branches that take more than one day there are two strat
 In a CI strategy you can merge in master at the start of the day to prevent painful merges at a later time.
 In a synchronization point strategy you only merge in from well defined points in time, for example a tagged release.
 This strategy is [advocated by Linus Torvalds](https://www.mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html) because the state of the code at these points is better known.
+
+GitLab Enterprise Edition offers a way to rebase before merging a merge request. You can configure this per project basis by navigating to the project settings page and selecting `Merge Requests Rebase` checkbox.
+
+![Merge request settings](merge_request_settings.png)
+
+Before accepting a merge request, select `rebase before merge`.
+![Merge request widget](merge_request_widget.png)
+
+GitLab will attempt to cleanly rebase before merging branches. If clean rebase is not possible, regular merge will be performed.
+If clean rebase is possible, the history of the target branch will be altered with the the merge.
 
 In conclusion, we can say that you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean but your history should represent what actually happened.
@@ -310,6 +320,7 @@ If you have not pushed your commits to a shared location yet you can also rebase
 Do not merge in upstream if your code will work and merge cleanly without doing so, Linus even says that [you should never merge in upstream at random points, only at major releases](https://lwn.net/Articles/328438/).
 Merging only when needed prevents creating merge commits in your feature branch that later end up littering the master history.
 
-### References
+## References
 
 - [Git Flow by Vincent Driessen](http://nvie.com/posts/a-successful-git-branching-model/)
+- [Blog post on GitLab flow](https://about.gitlab.com/2014/09/29/gitlab-flow/)

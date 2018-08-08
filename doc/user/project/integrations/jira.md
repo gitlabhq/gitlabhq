@@ -5,9 +5,6 @@ GitLab can be configured to interact with [JIRA], a project management platform.
 Once your GitLab project is connected to JIRA, you can reference and close the
 issues in JIRA directly from GitLab.
 
-For a use case, check out this article of [How and why to integrate GitLab with
-JIRA](https://www.programmableweb.com/news/how-and-why-to-integrate-gitlab-jira/how-to/2017/04/25).
-
 ## Configuration
 
 Each GitLab project can be configured to connect to a different JIRA instance. That
@@ -56,6 +53,11 @@ We have split this stage in steps so it is easier to follow.
      ![JIRA create new user](img/jira_create_new_user.png)
 
      ---
+
+    NOTE: **Note:**
+    Our integration does not support SSO (such as SAML). You will need to create 
+    an HTTP basic authentication password. You can do this by heading to the user 
+    profile, looking up the username, and setting a password.
 
 1. Now, let's create a `gitlab-developers` group which will have write access
    to projects in JIRA. Go to the **Groups** tab and select **Create group**.
@@ -182,7 +184,7 @@ the same goal:
 
 where `PROJECT-1` is the issue ID of the JIRA project.
 
->**Note:**
+>**Notes:**
 - Only commits and merges into the project's default branch (usually **master**) will
   close an issue in Jira. You can change your projects default branch under
   [project settings](img/jira_project_settings.png).
@@ -239,6 +241,14 @@ your project needs to close a ticket.
 Make sure that the JIRA issue is not already marked as resolved, in other words that
 the JIRA issue resolution field is not set. (It should not be struck through in
 JIRA lists.)
+
+### CAPTCHA 
+
+CAPTCHA may be triggered after several consecutive failed log in attempts 
+which may lead to a `401 unauthorized` error when testing your JIRA integration.
+If CAPTCHA has been triggered, you will not be able to use JIRA’s REST API to 
+authenticate with the JIRA site. You will need to log in to your JIRA instance
+and complete the CAPTCHA.
 
 [services-templates]: services_templates.md
 [jira-repo-old-docs]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/project_services/jira.md

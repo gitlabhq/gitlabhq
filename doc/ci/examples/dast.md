@@ -3,6 +3,9 @@
 [Dynamic Application Security Testing (DAST)](https://en.wikipedia.org/wiki/Dynamic_program_analysis)
 is using the popular open source tool [OWASP ZAProxy](https://github.com/zaproxy/zaproxy)
 to perform an analysis on your running web application.
+Since it is based on [ZAP Baseline](https://github.com/zaproxy/zaproxy/wiki/ZAP-Baseline-Scan)
+DAST will perform passive scanning only;
+it will not actively attack your application.
 
 It can be very useful combined with [Review Apps](../review_apps/index.md).
 
@@ -39,13 +42,15 @@ dast:
   variables:
     website: "https://example.com"
     login_url: "https://example.com/sign-in"
+    username: "john.doe@example.com"
+    password: "john-doe-password"
   allow_failure: true
   script:
     - mkdir /zap/wrk/
     - /zap/zap-baseline.py -J gl-dast-report.json -t $website
         --auth-url $login_url
-        --auth-username "john.doe@example.com"
-        --auth-password "john-doe-password" || true
+        --auth-username $username
+        --auth-password $password || true
     - cp /zap/wrk/gl-dast-report.json .
   artifacts:
     paths: [gl-dast-report.json]
@@ -58,6 +63,6 @@ Starting with [GitLab Ultimate][ee] 10.4, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `dast` and the artifact path must be
 `gl-dast-report.json`.
-[Learn more about DAST results shown in merge requests](https://docs.gitlab.com/ee/user/project/merge_requests/dast.html).
+[Learn more about DAST results shown in merge requests](../../user/project/merge_requests/dast.md).
 
 [ee]: https://about.gitlab.com/pricing/

@@ -47,7 +47,7 @@ provide a list of URLs to test, please consult
 TIP: **Tip:**
 For [GitLab Premium](https://about.gitlab.com/pricing/) users, key metrics are automatically
 extracted and shown right in the merge request widget. Learn more about
-[Browser Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
+[Browser Performance Testing](../../user/project/merge_requests/browser_performance_testing.md).
 
 ## Performance testing on Review Apps
 

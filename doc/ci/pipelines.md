@@ -3,7 +3,7 @@
 > Introduced in GitLab 8.8.
 
 NOTE: **Note:**
-If you have a [mirrored repository where GitLab pulls from](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository),
+If you have a [mirrored repository where GitLab pulls from](../workflow/repository_mirroring.md#pulling-from-a-remote-repository),
 you may need to enable pipeline triggering in your project's
 **Settings > Repository > Pull from a remote repository > Trigger pipelines for mirror updates**.
 
@@ -208,6 +208,11 @@ by name. The order of severity is:
 
 ![Pipeline mini graph sorting](img/pipelines_mini_graph_sorting.png)
 
+### Multi-project pipelines graphs **[PREMIUM]**
+
+With [multi-project pipelines](multi_project_pipelines.md),
+you can visualize cross-project pipelines.
+
 ## How the pipeline duration is calculated
 
 Total running time for a given pipeline would exclude retries and pending
@@ -273,9 +278,9 @@ runners will not use regular runners, they must be tagged accordingly.
 [manual]: yaml/README.md#manual
 [env-manual]: environments.md#manually-deploying-to-environments
 [stages]: yaml/README.md#stages
-[runners]: runners/README.html
+[runners]: runners/README.md
 [pipelines settings]: ../user/project/pipelines/settings.md
-[triggers]: triggers/README.md
+[triggers]: triggers/README.md#ci-job-token
 [ce-5742]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5742
 [ce-6242]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/6242
 [ce-7931]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7931
@@ -283,3 +288,5 @@ runners will not use regular runners, they must be tagged accordingly.
 [ce-17782]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17782
 [ce-17814]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17814
 [regexp]: https://gitlab.com/gitlab-org/gitlab-ce/blob/2f3dc314f42dbd79813e6251792853bc231e69dd/app/models/commit_status.rb#L99
+[eep]: https://about.gitlab.com/pricing/ "GitLab Premium"
+[ee-2121]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2121

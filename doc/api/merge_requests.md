@@ -224,7 +224,8 @@ Parameters:
       "total_time_spent": 0,
       "human_time_estimate": null,
       "human_total_time_spent": null
-    }
+    },
+    "approvals_before_merge": null
   }
 ]
 ```
@@ -416,6 +417,7 @@ Parameters:
     "human_time_estimate": null,
     "human_total_time_spent": null
   },
+  "approvals_before_merge": null,
   "closed_at": "2018-01-19T14:36:11.086Z",
   "latest_build_started_at": null,
   "latest_build_finished_at": null,
@@ -598,7 +600,8 @@ Parameters:
     "renamed_file": false,
     "deleted_file": false
     }
-  ]
+  ],
+  "approvals_before_merge": null
 }
 ```
 
@@ -645,11 +648,20 @@ POST /projects/:id/merge_requests
 | `description`              | string  | no       | Description of MR                                                               |
 | `target_project_id`        | integer | no       | The target project (numeric id)                                                 |
 | `labels`                   | string  | no       | Labels for MR as a comma-separated list                                         |
-| `milestone_id`             | integer | no       | The global ID of a milestone                                                           |
+| `milestone_id`             | integer | no       | The ID of a milestone                                                           |
 | `remove_source_branch`     | boolean | no       | Flag indicating if a merge request should remove the source branch when merging |
 | `allow_collaboration`      | boolean | no       | Allow commits from members who can merge to the target branch                   |
 | `allow_maintainer_to_push` | boolean | no       | Deprecated, see allow_collaboration                                             |
 | `squash`                   | boolean | no       | Squash commits into a single commit when merging                                |
+
+If `approvals_before_merge` is not provided, it inherits the value from the
+target project. If it is provided, then the following conditions must hold in
+order for it to take effect:
+
+1. The target project's `approvals_before_merge` must be greater than zero. (A
+   value of zero disables approvals for that project.)
+2. The provided value of `approvals_before_merge` must be greater than the
+   target project's `approvals_before_merge`.
 
 ```json
 {
@@ -713,7 +725,8 @@ POST /projects/:id/merge_requests
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -732,7 +745,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid
 | `target_branch`            | string  | no       | The target branch                                                               |
 | `title`                    | string  | no       | Title of MR                                                                     |
 | `assignee_id`              | integer | no       | The ID of the user to assign the merge request to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id`             | integer | no       | The global ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id`             | integer | no       | The ID of a milestone to assign the merge request to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`                   | string  | no       | Comma-separated label names for a merge request. Set to an empty string to unassign all labels.                    |
 | `description`              | string  | no       | Description of MR                                                               |
 | `state_event`              | string  | no       | New state (close/reopen)                                                        |
@@ -805,7 +818,8 @@ Must include at least one non-required attribute from above.
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -912,7 +926,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -991,7 +1006,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -1058,8 +1074,9 @@ Example response when the GitLab issue tracker is used:
       "iid" : 6,
       "labels" : [],
       "user_notes_count": 1,
-      "changes_count": "1"
-   },
+      "changes_count": "1",
+      "approvals_before_merge": null
+   }
 ]
 ```
 
@@ -1578,3 +1595,7 @@ Example response:
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
 [ce-15454]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15454
 [ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935
+
+## Approvals
+
+For approvals, please see [Merge Request Approvals](merge_request_approvals.md)

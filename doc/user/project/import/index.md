@@ -11,11 +11,14 @@
 1. [From SVN](svn.md)
 1. [From TFS](tfs.md)
 1. [From repo by URL](repo_by_url.md)
+1. [From Gemnasium](gemnasium.md)
 1. [By uploading a manifest file](manifest.md)
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the
 repository is too large the import can timeout.
+
+There is also the option of [connecting your external repository to get CI/CD benefits](../ci_cd_for_external_repo.md).
 
 ## Migrating from self-hosted GitLab to GitLab.com
 

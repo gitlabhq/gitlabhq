@@ -65,7 +65,7 @@ For an existing project, you can set up mirror pulling by visiting your project'
 section. Check the "Mirror repository" box and hit **Save changes** at the bottom.
 You have a few options to choose from one being the user who will be the author
 of all events in the activity feed that are the result of an update. This user
-needs to have at least [master access][perms] to the project. Another option is
+needs to have at least [maintainer access][perms] to the project. Another option is
 whether you want to trigger builds for mirror updates.
 
 ![Pull settings](repository_mirroring/repository_mirroring_pull_settings.png)
@@ -313,9 +313,77 @@ mitigated by reducing the mirroring delay by using a Push event webhook to
 trigger an immediate pull to GitLab. Push mirroring from GitLab is rate limited
 to once per minute when only push mirroring protected branches.
 
-It may be possible to implement a locking mechanism using the server-side
-`pre-receive` hook to prevent the race condition. Read about [configuring
-custom Git hooks][hooks] on the GitLab server.
+### Preventing conflicts using a `pre-receive` hook
+
+> **Warning:** The solution proposed will negatively impact the performance of
+> Git push operations because they will be proxied to the upstream Git
+> repository.
+
+A server-side `pre-receive` hook can be used to prevent the race condition
+described above by only accepting the push after first pushing the commit to
+the upstream Git repository. In this configuration one Git repository acts as
+the authoritative upstream, and the other as downstream. The `pre-recieve` hook
+will be installed on the downstream repository.
+
+Read about [configuring custom Git hooks][hooks] on the GitLab server.
+
+A sample `pre-recieve` hook is provided below.
+
+```bash
+#!/usr/bin/env bash
+
+# --- Assume only one push mirror target
+# Push mirroring remotes are named `remote_mirror_<id>`, this finds the first remote and uses that.
+TARGET_REPO=$(git remote | grep -m 1 remote_mirror)
+
+proxy_push()
+{
+  # --- Arguments
+  OLDREV=$(git rev-parse $1)
+  NEWREV=$(git rev-parse $2)
+  REFNAME="$3"
+
+  # --- Pattern of branches to proxy pushes
+  whitelisted=$(expr "$branch" : "\(master\)")
+
+  case "$refname" in
+    refs/heads/*)
+      branch=$(expr "$refname" : "refs/heads/\(.*\)")
+
+      if [ "$whitelisted" = "$branch" ]; then
+        error="$(git push --quiet $TARGET_REPO $NEWREV:$REFNAME 2>&1)"
+        fail=$?
+
+        if [ "$fail" != "0" ]; then
+          echo >&2 ""
+          echo >&2 " Error: updates were rejected by upstream server"
+          echo >&2 "   This is usually caused by another repository pushing changes"
+          echo >&2 "   to the same ref. You may want to first integrate remote changes"
+          echo >&2 ""
+          return
+        fi
+      fi
+      ;;
+  esac
+}
+
+# Allow dual mode: run from the command line just like the update hook, or
+# if no arguments are given then run as a hook script
+if [ -n "$1" -a -n "$2" -a -n "$3" ]; then
+  # Output to the terminal in command line mode - if someone wanted to
+  # resend an email; they could redirect the output to sendmail
+  # themselves
+  PAGER= proxy_push $2 $3 $1
+else
+  # Push is proxied upstream one ref at a time. Because of this it is possible
+  # for some refs to succeed, and others to fail. This will result in a failed
+  # push.
+  while read oldrev newrev refname
+  do
+    proxy_push $oldrev $newrev $refname
+  done
+fi
+```
 
 ### Mirroring with Perforce via GitFusion
 
@@ -335,6 +403,17 @@ Perforce will reject any pushes that rewrite history. It is recommended that
 only the fewest number of branches are mirrored due to the performance
 limitations of GitFusion.
 
+When configuring mirroring with Perforce via GitFusion, the following GitFusion
+settings are recommended:
+
+- `change-pusher` should be disabled, otherwise every commit will be rewritten
+as being committed by the mirroring account, rather than being mapped to
+existing Perforce users or the `unknown_git` user.
+- `unknown_git` user will be used as the commit author if the GitLab user does
+not exist in Perforce.
+
+Read about [GitFusion settings on Perforce.com][gitfusion-settings].
+
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
@@ -349,3 +428,4 @@ limitations of GitFusion.
 [webhook]: ../user/project/integrations/webhooks.md#push-events
 [pull-api]: ../api/projects.md#start-the-pull-mirroring-process-for-a-project
 [perforce]: ../user/project/import/perforce.md
+[gitfusion-settings]: https://www.perforce.com/perforce/doc.current/manuals/git-fusion/Content/Git-Fusion/section_zdp_zz1_3l.html

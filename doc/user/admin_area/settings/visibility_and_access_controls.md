@@ -42,5 +42,15 @@ block access to the server itself. The ports used for the protocol, be it SSH or
 HTTP, will still be accessible. What GitLab does is restrict access on the
 application level.
 
+## Allow mirrors to be setup for projects
+
+> [Introduced][ee-3586] in Gitlab 10.3.
+
+This option is enabled by default. By disabling it, both pull and push mirroring will no longer
+work in every repository and can only be re-enabled on a per-project basis by an admin.
+
+![Mirror settings](img/mirror_settings.png)
+
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
 [ce-18021]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18021
+[ee-3586]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3586

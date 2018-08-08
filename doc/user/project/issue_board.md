@@ -122,6 +122,7 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 - **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
    - **Label list**: a list based on a label. It shows all opened issues with that label.
    - **Assignee list**: a list which includes all issues assigned to a user.
+   - **Milestone list**: a list which includes all issues with that milestone.
    - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
    - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
 - **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
@@ -267,6 +268,14 @@ to another list the label changes and a system not is recorded.
 
 ![Issue Board system notes](img/issue_board_system_notes.png)
 
+## Sum of Issue Weights **[STARTER]**
+
+The top of each list indicates the sum of issue weights for the issues that
+belong to that list. This is useful when using boards for capacity allocation,
+especially in combination with [assignee lists](#assignee-lists).
+
+![Issue Board summed weights](img/issue_board_summed_weights.png)
+
 ## Multiple Issue Boards **[STARTER]**
 
 > Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
@@ -340,7 +349,7 @@ You can have a board with both label lists and assignee lists. To add an
 assignee list:
 
 1. Click **Add list**.
-1. Select the **Assignee list** tab.
+1. Select the **Assignee** tab.
 1. Search and click on the user you want to add as an assignee.
 
 Now that the assignee list is added, you can assign or unassign issues to that user
@@ -349,16 +358,35 @@ To remove an assignee list, just as with a label list, click the trash icon.
 
 ![Assignee lists](img/issue_board_assignee_lists.png)
 
+## Milestone lists **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6469) in GitLab 11.2 Premium.
+
+As of 11.2, you're also able to create lists of a milestone. As the name states,
+these are lists that filter issues by the assigned milestone, giving you more
+freedom and visibility on the Issue Board. To do so:
+
+1. Click **Add list**.
+1. Select the **Milestone** tab.
+1. Search and click on the milestone.
+
+Similar to the assignee lists, you're now able to [drag issues](#dragging-issues-between-lists)
+to and/or from a milestone list to manipulate the milestone of the dragged issues.
+As on another list types, click on the trash icon to remove it.
+
+![Milestone lists](img/issue_board_milestone_lists.png)
+
 ## Dragging issues between lists
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
 
-| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list |
-| --- | --- | --- | --- | ---  |
-| From Backlog | - | Issue closed | `B` added | `Bob` assigned |
-| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
-| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
-| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
+| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list | To milestone `2.0` list |
+| --- | --- | --- | --- | ---  | --- |
+| From Backlog | - | Issue closed | `B` added | `Bob` assigned | `2.0`  added |
+| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned | Issue reopened<br/>`2.0` added |
+| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned | `2.0` added |
+| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned | `2.0` added |
+| From milestone `1.0` list | `1.0` removed | Issue closed | `B` added | `Bob` assigned<br/> | `1.0` removed<br/>`2.0` added |
 
 ## Features per tier
 

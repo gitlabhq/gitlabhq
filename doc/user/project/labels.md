@@ -8,7 +8,7 @@ Labels allow you to categorize issues or merge requests using descriptive titles
 
 In GitLab, you can create project and group labels:
 
-- **Project labels** can be assigned to issues or merge requests in that project only. 
+- **Project labels** can be assigned to issues or merge requests in that project only.
 - **Group labels** can be assigned to any issue or merge request of any project in that group or any subgroups of the group.
 
 ## Creating labels
@@ -33,6 +33,9 @@ GitLab will add the following default labels to the project:
 ### New group label
 
 To create a **group label**, follow similar steps from above to project labels. Navigate to **Issues > Labels** in the group and create it from there.
+Alternatively, you can create group labels also from Epic sidebar. Please note that the created label will belong to the immediate group to which epic belongs.
+
+![Create Labels from Epic](img/labels_epic_sidebar.png)
 
 Group labels appear in every label list page of the group's child projects.
 
@@ -79,7 +82,7 @@ top-right:
 
 GitLab will consider the label title and description for the search.
 
-## Filtering issues and merge requests by label
+## Filtering issues, merge requests and epics by label
 
 ### Filtering in list pages
 
@@ -87,11 +90,16 @@ From the project issue list page and the project merge request list page, you ca
 
 From the group issue list page and the group merge request list page, you can [filter](../search/index.md#issues-and-merge-requests) by both group labels (including subgroup ancestors and subgroup descendants) and project labels.
 
+From the group epic list page, you can [filter](../search/index.md#issues-and-merge-requests) by both current group labels as well as decendent group labels.
+
 ![Labels group issues](img/labels_group_issues.png)
 
 ### Filtering in issue boards
 
 - From [project boards](issue_board.md), you can filter by both group labels and project labels in the [search and filter bar](../search/index.md#issue-boards).
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [search and filter bar](../search/index.md#issue-boards). **[PREMIUM]**
+- From [project boards](issue_board.md), you can filter by both group labels and project labels in the [issue board configuration](issue_board.md#board-with-configuration). **[PREMIUM]**
+- From [group issue boards](issue_board.md#group-issue-boards), you can filter by only group labels in the [issue board configuration](issue_board.md#board-with-configuration). **[PREMIUM]**
 
 ## Subscribing to labels
 

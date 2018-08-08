@@ -109,14 +109,15 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/6",
+      "confidential": false,
+      "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -223,14 +224,15 @@ Example response:
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
+      "confidential": false,
+      "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -343,14 +345,15 @@ Example response:
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
+      "confidential": false,
+      "weight": null,
+      "discussion_locked": false,
       "time_stats": {
          "time_estimate": 0,
          "total_time_spent": 0,
          "human_time_estimate": null,
          "human_total_time_spent": null
       },
-      "confidential": false,
-      "discussion_locked": false
    }
 ]
 ```
@@ -438,6 +441,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -464,16 +468,17 @@ POST /projects/:id/issues
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
-| `title`                                   | string  | yes      | The title of an issue |
-| `description`                             | string  | no       | The description of an issue  |
-| `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
-| `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
-| `milestone_id`                            | integer | no       | The global ID of a milestone to assign issue  |
-| `labels`                                  | string  | no       | Comma-separated label names for an issue  |
-| `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
-| `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
-| `merge_request_to_resolve_discussions_of` | integer | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
-| `discussion_to_resolve`                   | string  | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `title`                                   | string         | yes      | The title of an issue |
+| `description`                             | string         | no       | The description of an issue  |
+| `confidential`                            | boolean        | no       | Set an issue to be confidential. Default is `false`.  |
+| `assignee_ids`                            | Array[integer] | no       | The ID of a user to assign issue |
+| `milestone_id`                            | integer        | no       | The global ID of a milestone to assign issue  |
+| `labels`                                  | string         | no       | Comma-separated label names for an issue  |
+| `created_at`                              | string         | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
+| `due_date`                                | string         | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
+| `merge_request_to_resolve_discussions_of` | integer        | no       | The IID of a merge request in which to resolve all issues. This will fill the issue with a default description and mark all discussions as resolved. When passing a description or title, these values will take precedence over the default values.|
+| `discussion_to_resolve`                   | string         | no       | The ID of a discussion to resolve. This will fill in the issue with a default description and mark the discussion as resolved. Use in combination with `merge_request_to_resolve_discussions_of`. |
+| `weight` | integer                                         | no | The weight of the issue in range 0 to 9 |
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues?title=Issues%20with%20auth&labels=bug
@@ -518,6 +523,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -554,8 +560,8 @@ PUT /projects/:id/issues/:issue_iid
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`     | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11`                                           |
+| `weight`       | integer | no       | The weight of the issue in range 0 to 9                                                                    |
 | `discussion_locked` | boolean | no  | Flag indicating if the issue's discussion is locked. If the discussion is locked only project members can add or edit comments. |
-
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/4/issues/85?state_event=close
@@ -607,6 +613,7 @@ Example response:
       "human_total_time_spent": null
    },
    "confidential": false,
+   "weight": null,
    "discussion_locked": false,
    "_links": {
       "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -710,6 +717,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "weight": null,
   "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -792,6 +800,7 @@ Example response:
     "human_total_time_spent": null
   },
   "confidential": false,
+  "weight": null,
   "discussion_locked": false,
   "_links": {
     "self": "http://example.com/api/v4/projects/1/issues/2",
@@ -959,6 +968,7 @@ Example response:
     "due_date": null,
     "web_url": "http://example.com/example/example/issues/110",
     "confidential": false,
+    "weight": null,
     "discussion_locked": false
   },
   "target_url": "https://gitlab.example.com/gitlab-org/gitlab-ci/issues/10",

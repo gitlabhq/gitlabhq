@@ -14,3 +14,4 @@ comments: false
 - [How we manage the CRIME vulnerability](crime_vulnerability.md)
 - [Enforce Two-factor authentication](two_factor_authentication.md)
 - [Send email confirmation on sign-up](user_email_confirmation.md)
+- [Security of running jobs](https://docs.gitlab.com/runner/security/#security-of-running-jobs)

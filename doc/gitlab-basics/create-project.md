@@ -36,6 +36,16 @@
 
 1. Click **Create project**.
 
+## Custom project templates
+
+> **Notes:**
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Edition Premium][ee] 11.2
+
+When you create a new project, creating it based on custom project templates is a convenient option to bootstrap an existing project boilerplate.
+If a custom group is defined on the instance, projects within this group are available as project templates within the "Create from template" section. These templates are shown in the "Custom" tab. In addition, you can click on "Preview" to explore what this project templates includes.
+
+See the [admin area documentation](../user/admin_area/custom_project_templates.md) on how to configure custom project templates.
+
 ## Push to create a new project
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/26388) in GitLab 10.5.

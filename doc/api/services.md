@@ -1143,6 +1143,77 @@ Get JetBrains TeamCity CI service settings for a project.
 GET /projects/:id/services/teamcity
 ```
 
+## Jenkins CI
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI service
+
+Set Jenkins CI service for a project.
+
+
+```
+PUT /projects/:id/services/jenkins
+```
+
+Parameters:
+
+- `jenkins_url` (**required**) - Jenkins URL like http://jenkins.example.com
+- `project_name` (**required**) - The URL-friendly project name. Example: my_project_name
+- `username` (optional) - A user with access to the Jenkins server, if applicable
+- `password` (optional) - The password of the user
+
+### Delete Jenkins CI service
+
+Delete Jenkins CI service for a project.
+
+```
+DELETE /projects/:id/services/jenkins
+```
+
+### Get Jenkins CI service settings
+
+Get Jenkins CI service settings for a project.
+
+```
+GET /projects/:id/services/jenkins
+```
+
+
+## Jenkins CI (Deprecated) Service
+
+A continuous integration and build server
+
+### Create/Edit Jenkins CI (Deprecated) service
+
+Set Jenkins CI (Deprecated) service for a project.
+
+```
+PUT /projects/:id/services/jenkins-deprecated
+```
+
+Parameters:
+
+- `project_url` (**required**) - Jenkins project URL like http://jenkins.example.com/job/my-project/
+- `multiproject_enabled` (optional) - Multi-project mode is configured in Jenkins Gitlab Hook plugin
+- `pass_unstable` (optional) - Unstable builds will be treated as passing
+
+### Delete Jenkins CI (Deprecated) service
+
+Delete Jenkins CI (Deprecated) service for a project.
+
+```
+DELETE /projects/:id/services/jenkins-deprecated
+```
+
+### Get Jenkins CI (Deprecated) service settings
+
+Get Jenkins CI (Deprecated) service settings for a project.
+
+```
+GET /projects/:id/services/jenkins-deprecated
+```
+
 [jira-doc]: ../user/project/integrations/jira.md
 [old-jira-api]: https://gitlab.com/gitlab-org/gitlab-ce/blob/8-13-stable/doc/api/services.md#jira
 

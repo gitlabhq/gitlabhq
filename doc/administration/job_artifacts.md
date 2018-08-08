@@ -313,4 +313,7 @@ memory and disk I/O.
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [gitlab workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse "GitLab Workhorse repository"
+[eep]: https://about.gitlab.com/products/ "GitLab Premium"
+[ee-1762]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1762
+[browsable]: ../user/project/pipelines/job_artifacts.md#browsing-job-artifacts
 [os]: https://docs.gitlab.com/administration/job_artifacts.html#using-object-storage

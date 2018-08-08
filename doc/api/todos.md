@@ -285,7 +285,7 @@ POST /todos/mark_as_done
 ```
 
 ```bash
-curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/donmark_as_donee
+curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/todos/mark_as_done
 ```
 
 
