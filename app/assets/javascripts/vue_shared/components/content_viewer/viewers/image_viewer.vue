@@ -42,6 +42,9 @@ export default {
   },
   methods: {
     onImgLoad() {
+      requestIdleCallback(this.calculateImgSize, { timeout: 1000 });
+    },
+    calculateImgSize() {
       const { contentImg } = this.$refs;
 
       if (contentImg) {

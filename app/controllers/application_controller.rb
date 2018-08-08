@@ -20,13 +20,13 @@ class ApplicationController < ActionController::Base
   before_action :ldap_security_check
   before_action :sentry_context
   before_action :default_headers
-  before_action :add_gon_variables, unless: :peek_request?
+  before_action :add_gon_variables, unless: [:peek_request?, :json_request?]
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :require_email, unless: :devise_controller?
 
   around_action :set_locale
 
-  after_action :set_page_title_header, if: -> { request.format == :json }
+  after_action :set_page_title_header, if: :json_request?
 
   protect_from_forgery with: :exception, prepend: true
 
@@ -430,6 +430,10 @@ class ApplicationController < ActionController::Base
 
   def peek_request?
     request.path.start_with?('/-/peek')
+  end
+
+  def json_request?
+    request.format.json?
   end
 
   def should_enforce_terms?

@@ -1,0 +1,5 @@
+---
+title: Fix missing and duplicates on project milestone listing page
+merge_request: 21058
+author:
+type: fixed

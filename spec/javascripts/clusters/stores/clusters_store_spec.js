@@ -1,5 +1,5 @@
 import ClustersStore from '~/clusters/stores/clusters_store';
-import { APPLICATION_INSTALLING } from '~/clusters/constants';
+import { APPLICATION_STATUS } from '~/clusters/constants';
 import { CLUSTERS_MOCK_DATA } from '../services/mock_data';
 
 describe('Clusters Store', () => {
@@ -35,7 +35,7 @@ describe('Clusters Store', () => {
     it('should store new request status', () => {
       expect(store.state.applications.helm.requestStatus).toEqual(null);
 
-      const newStatus = APPLICATION_INSTALLING;
+      const newStatus = APPLICATION_STATUS.INSTALLING;
       store.updateAppProperty('helm', 'requestStatus', newStatus);
 
       expect(store.state.applications.helm.requestStatus).toEqual(newStatus);

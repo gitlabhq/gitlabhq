@@ -1,0 +1,5 @@
+---
+title: Fix UI error whereby prometheus application status is updated
+merge_request: 21029
+author:
+type: fixed

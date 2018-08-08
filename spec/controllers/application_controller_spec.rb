@@ -56,6 +56,57 @@ describe ApplicationController do
     end
   end
 
+  describe '#add_gon_variables' do
+    before do
+      Gon.clear
+      sign_in user
+    end
+
+    let(:json_response) { JSON.parse(response.body) }
+
+    controller(described_class) do
+      def index
+        render json: Gon.all_variables
+      end
+    end
+
+    shared_examples 'setting gon variables' do
+      it 'sets gon variables' do
+        get :index, format: format
+
+        expect(json_response.size).not_to be_zero
+      end
+    end
+
+    shared_examples 'not setting gon variables' do
+      it 'does not set gon variables' do
+        get :index, format: format
+
+        expect(json_response.size).to be_zero
+      end
+    end
+
+    context 'with html format' do
+      let(:format) { :html }
+
+      it_behaves_like 'setting gon variables'
+
+      context 'for peek requests' do
+        before do
+          request.path = '/-/peek'
+        end
+
+        it_behaves_like 'not setting gon variables'
+      end
+    end
+
+    context 'with json format' do
+      let(:format) { :json }
+
+      it_behaves_like 'not setting gon variables'
+    end
+  end
+
   describe "#authenticate_user_from_personal_access_token!" do
     before do
       stub_authentication_activity_metrics(debug: false)

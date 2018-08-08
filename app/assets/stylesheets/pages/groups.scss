@@ -339,9 +339,8 @@ table.pipeline-project-metrics tr td {
   }
 
   .folder-toggle-wrap {
-    float: left;
-    line-height: $list-text-height;
     font-size: 0;
+    flex-shrink: 0;
 
     span {
       font-size: $gl-font-size;
@@ -357,7 +356,7 @@ table.pipeline-project-metrics tr td {
     width: 15px;
 
     svg {
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
   }
 
@@ -440,9 +439,17 @@ table.pipeline-project-metrics tr td {
       cursor: pointer;
     }
 
-    .avatar-container > a {
-      width: 100%;
-      text-decoration: none;
+    .group-text {
+      min-width: 0; // allows for truncated text within flex children
+    }
+
+    .avatar-container {
+      flex-shrink: 0;
+
+      > a {
+        width: 100%;
+        text-decoration: none;
+      }
     }
 
     &.has-more-items {
@@ -450,9 +457,18 @@ table.pipeline-project-metrics tr td {
       padding: 20px 10px;
     }
 
+    .description {
+      p {
+        @include str-truncated;
+
+        max-width: none;
+      }
+    }
+
     .stats {
       position: relative;
-      line-height: 46px;
+      line-height: normal;
+      flex-shrink: 0;
 
       > span {
         display: inline-flex;
@@ -471,11 +487,17 @@ table.pipeline-project-metrics tr td {
     }
 
     .controls {
-      margin-left: 5px;
+      flex-shrink: 0;
 
       > .btn {
-        margin-right: $btn-margin-5;
+        margin: 0 0 0 $btn-margin-5;
       }
+    }
+  }
+
+  @include media-breakpoint-down(xs) {
+    .group-stats {
+      display: none;
     }
   }
 
@@ -496,18 +518,6 @@ table.pipeline-project-metrics tr td {
       min-width: 250px;
       text-align: right;
       color: $gl-text-color-secondary;
-    }
-  }
-}
-
-ul.group-list-tree {
-  li.group-row {
-    > .group-row-contents .title {
-      line-height: $list-text-height;
-    }
-
-    &.has-description > .group-row-contents .title {
-      line-height: inherit;
     }
   }
 }

@@ -1,6 +1,6 @@
 .row
   .col-lg-12
-    = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
+    = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature.js-auto-devops-settings
         .form-group
