@@ -4,7 +4,7 @@
       .modal-header
         %h3.page-title
           - link_to_client = link_to(@pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer')
-          = _("Authorize %{link_to_client} to use your account?")
+          = _("Authorize %{link_to_client} to use your account?").html_safe % { link_to_client: link_to_client }
 
       .modal-body
         - if current_user.admin?
