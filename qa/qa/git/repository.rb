@@ -28,7 +28,7 @@ module QA
       end
 
       def use_default_credentials
-        self.username = Runtime::User.name
+        self.username = Runtime::User.username
         self.password = Runtime::User.password
       end
 

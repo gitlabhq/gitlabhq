@@ -8,14 +8,12 @@ module QA
         merge_request.fork_branch = 'feature-branch'
       end
 
-      Page::Menu::Main.act { sign_out }
-      Page::Main::Login.act do
-        switch_to_sign_in_tab
-        sign_in_using_credentials
-      end
+      Page::Menu::Main.perform { |main| main.sign_out }
+      Page::Main::Login.perform { |login| login.sign_in_using_credentials }
 
       merge_request.visit!
-      Page::MergeRequest::Show.act { merge! }
+
+      Page::MergeRequest::Show.perform { |show| show.merge! }
 
       expect(page).to have_content('The changes were merged')
     end
