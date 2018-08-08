@@ -72,6 +72,10 @@ describe('Reports Store Mutations', () => {
       expect(stateCopy.isLoading).toEqual(false);
     });
 
+    it('should reset hasError', () => {
+      expect(stateCopy.hasError).toEqual(false);
+    });
+
     it('should set summary counts', () => {
       expect(stateCopy.summary.total).toEqual(mockedResponse.summary.total);
       expect(stateCopy.summary.resolved).toEqual(mockedResponse.summary.resolved);

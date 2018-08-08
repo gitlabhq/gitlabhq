@@ -39,7 +39,7 @@ export default class LabelsSelect {
       showNo = $dropdown.data('showNo');
       showAny = $dropdown.data('showAny');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('defaultLabel');
+      defaultLabel = $dropdown.data('defaultLabel') || 'Label';
       abilityName = $dropdown.data('abilityName');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
@@ -244,21 +244,21 @@ export default class LabelsSelect {
           var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
 
-          var { title } = selected;
+          var title = selected ? selected.title : null;
           var selectedLabels = this.selected;
 
           if ($dropdownInputField.length && $dropdownInputField.val().length) {
             $dropdownParent.find('.dropdown-input-clear').trigger('click');
           }
 
-          if (selected.id === 0) {
+          if (selected && selected.id === 0) {
             this.selected = [];
             return 'No Label';
           }
           else if (isSelected) {
             this.selected.push(title);
           }
-          else {
+          else if (!isSelected && title) {
             var index = this.selected.indexOf(title);
             this.selected.splice(index, 1);
           }
@@ -409,6 +409,14 @@ export default class LabelsSelect {
             }
           }
         },
+        opened: function(e) {
+          if ($dropdown.hasClass('js-issue-board-sidebar')) {
+            const previousSelection = $dropdown.attr('data-selected');
+            this.selected = previousSelection ? previousSelection.split(',') : [];
+            $dropdown.data('glDropdown').updateLabel();
+          }
+        },
+        preserveContext: true,
       });
 
       // Set dropdown data

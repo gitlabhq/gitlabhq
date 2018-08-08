@@ -69,7 +69,7 @@
         return (
           report.existing_failures.length > 0 ||
           report.new_failures.length > 0 ||
-          report.resolved_failures > 0
+          report.resolved_failures.length > 0
         );
       },
     },

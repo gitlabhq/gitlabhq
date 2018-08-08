@@ -36,6 +36,16 @@ export default {
       required: false,
       default: false,
     },
+    leftDiscussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    rightDiscussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -116,10 +126,10 @@ export default {
       :is-hover="isLeftHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
+      :discussions="leftDiscussions"
       class="diff-line-num old_line"
     />
     <td
-      v-once
       :id="line.left.lineCode"
       :class="parallelViewLeftLineType"
       class="line_content parallel left-side"
@@ -137,10 +147,10 @@ export default {
       :is-hover="isRightHover"
       :show-comment-button="true"
       :diff-view-type="parallelDiffViewType"
+      :discussions="rightDiscussions"
       class="diff-line-num new_line"
     />
     <td
-      v-once
       :id="line.right.lineCode"
       :class="line.right.type"
       class="line_content parallel right-side"

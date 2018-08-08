@@ -507,6 +507,10 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def has_auto_devops_implicitly_enabled?
+    auto_devops&.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?
+  end
+
   def has_auto_devops_implicitly_disabled?
     auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
   end
@@ -654,6 +658,8 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
+
+    project_import_data
   end
 
   def import?

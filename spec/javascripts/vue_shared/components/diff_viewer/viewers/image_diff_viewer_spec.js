@@ -170,8 +170,6 @@ describe('ImageDiffViewer', () => {
       vm.$el.querySelector('.view-modes-menu li:nth-child(3)').click();
 
       vm.$nextTick(() => {
-        expect(vm.$el.querySelector('.dragger').style.left).toBe('100px');
-
         dragSlider(vm.$el.querySelector('.dragger'));
 
         vm.$nextTick(() => {

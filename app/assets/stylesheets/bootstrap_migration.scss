@@ -339,3 +339,13 @@ input[type=color].form-control {
     vertical-align: unset;
   }
 }
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:first-child {
+  @extend .input-group-prepend;
+}
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:last-child {
+  @extend .input-group-append;
+}

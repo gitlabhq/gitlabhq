@@ -8,7 +8,7 @@ module TestEnv
 
   # When developing the seed repository, comment out the branch you will modify.
   BRANCH_SHA = {
-    'signed-commits'                     => '2d1096e',
+    'signed-commits'                     => '6101e87',
     'not-merged-branch'                  => 'b83d6e3',
     'branch-merged'                      => '498214d',
     'empty-branch'                       => '7efb185',
@@ -51,7 +51,8 @@ module TestEnv
     'add-pdf-text-binary'                => '79faa7b',
     'add_images_and_changes'             => '010d106',
     'update-gitlab-shell-v-6-0-1'        => '2f61d70',
-    'update-gitlab-shell-v-6-0-3'        => 'de78448'
+    'update-gitlab-shell-v-6-0-3'        => 'de78448',
+    '2-mb-file'                          => 'bf12d25'
   }.freeze
 
   # gitlab-test-fork is a fork of gitlab-fork, but we don't necessarily

@@ -63,7 +63,7 @@ Gitaly network traffic is unencrypted so you should use a firewall to
 restrict access to your Gitaly server.
 
 Below we describe how to configure a Gitaly server at address
-`gitaly.internal:9999` with secret token `abc123secret`. We assume
+`gitaly.internal:8075` with secret token `abc123secret`. We assume
 your GitLab installation has two repository storages, `default` and
 `storage1`.
 
@@ -101,18 +101,42 @@ documentation on configuring Gitaly
 authentication](https://gitlab.com/gitlab-org/gitaly/blob/master/doc/configuration/README.md#authentication)
 .
 
-In most or all cases the storage paths below end in `/repositories`. Check the
+> 
+**NOTE:** In most or all cases the storage paths below end in `/repositories` which is 
+different than `path` in `git_data_dirs` of Omnibus installations. Check the
 directory layout on your Gitaly server to be sure.
 
 Omnibus installations:
 
 ```ruby
 # /etc/gitlab/gitlab.rb
-gitaly['listen_addr'] = '0.0.0.0:9999'
+
+# Avoid running unnecessary services on the gitaly server
+postgresql['enable'] = false
+redis['enable'] = false
+nginx['enable'] = false
+prometheus['enable'] = false
+unicorn['enable'] = false
+sidekiq['enable'] = false
+gitlab_workhorse['enable'] = false
+
+# Prevent database connections during 'gitlab-ctl reconfigure'
+gitlab_rails['rake_cache_clear'] = false
+gitlab_rails['auto_migrate'] = false
+
+# Configure the gitlab-shell API callback URL. Without this, `git push` will
+# fail. This can be your 'front door' GitLab URL or an internal load
+# balancer.
+gitlab_rails['internal_api_url'] = 'https://gitlab.example.com'
+
+# Make Gitaly accept connections on all network interfaces. You must use
+# firewalls to restrict access to this address/port.
+gitaly['listen_addr'] = "0.0.0.0:8075"
 gitaly['auth_token'] = 'abc123secret'
+
 gitaly['storage'] = [
-  { 'name' => 'default', 'path' => '/path/to/default/repositories' },
-  { 'name' => 'storage1', 'path' => '/path/to/storage1/repositories' },
+  { 'name' => 'default', 'path' => '/mnt/gitlab/default/repositories' },
+  { 'name' => 'storage1', 'path' => '/mnt/gitlab/storage1/repositories' },
 ]
 ```
 
@@ -120,18 +144,18 @@ Source installations:
 
 ```toml
 # /home/git/gitaly/config.toml
-listen_addr = '0.0.0.0:9999'
+listen_addr = '0.0.0.0:8075'
 
 [auth]
 token = 'abc123secret'
 
 [[storage]
 name = 'default'
-path = '/path/to/default/repositories'
+path = '/mnt/gitlab/default/repositories'
 
 [[storage]]
 name = 'storage1'
-path = '/path/to/storage1/repositories'
+path = '/mnt/gitlab/storage1/repositories'
 ```
 
 Again, reconfigure (Omnibus) or restart (source).
@@ -146,7 +170,7 @@ server from reaching the Gitaly server then all Gitaly requests will
 fail.
 
 We assume that your Gitaly server can be reached at
-`gitaly.internal:9999` from your GitLab server, and that your GitLab
+`gitaly.internal:8075` from your GitLab server, and that your GitLab
 NFS shares are mounted at `/mnt/gitlab/default` and
 `/mnt/gitlab/storage1` respectively.
 
@@ -155,8 +179,8 @@ Omnibus installations:
 ```ruby
 # /etc/gitlab/gitlab.rb
 git_data_dirs({
-  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tcp://gitlab.internal:9999' },
-  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tcp://gitlab.internal:9999' },
+  'default' => { 'path' => '/mnt/gitlab/default', 'gitaly_address' => 'tcp://gitaly.internal:8075' },
+  'storage1' => { 'path' => '/mnt/gitlab/storage1', 'gitaly_address' => 'tcp://gitaly.internal:8075' },
 })
 
 gitlab_rails['gitaly_token'] = 'abc123secret'
@@ -171,10 +195,10 @@ gitlab:
     storages:
       default:
         path: /mnt/gitlab/default/repositories
-        gitaly_address: tcp://gitlab.internal:9999
+        gitaly_address: tcp://gitaly.internal:8075
       storage1:
         path: /mnt/gitlab/storage1/repositories
-        gitaly_address: tcp://gitlab.internal:9999
+        gitaly_address: tcp://gitaly.internal:8075
 
   gitaly:
     token: 'abc123secret'

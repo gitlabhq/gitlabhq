@@ -1,17 +1,21 @@
 require 'spec_helper'
 
 describe Todos::Destroy::ProjectPrivateService do
-  let(:project)        { create(:project, :public) }
+  let(:group)          { create(:group, :public) }
+  let(:project)        { create(:project, :public, group: group) }
   let(:user)           { create(:user) }
   let(:project_member) { create(:user) }
+  let(:group_member)   { create(:user) }
 
-  let!(:todo_issue_non_member)   { create(:todo, user: user, project: project) }
-  let!(:todo_issue_member)       { create(:todo, user: project_member, project: project) }
-  let!(:todo_another_non_member) { create(:todo, user: user, project: project) }
+  let!(:todo_non_member)   { create(:todo, user: user, project: project) }
+  let!(:todo2_non_member)  { create(:todo, user: user, project: project) }
+  let!(:todo_member)       { create(:todo, user: project_member, project: project) }
+  let!(:todo_group_member) { create(:todo, user: group_member, project: project) }
 
   describe '#execute' do
     before do
       project.add_developer(project_member)
+      group.add_developer(group_member)
     end
 
     subject { described_class.new(project.id).execute }
@@ -22,10 +26,11 @@ describe Todos::Destroy::ProjectPrivateService do
       end
 
       it 'removes issue todos for a user who is not a member' do
-        expect { subject }.to change { Todo.count }.from(3).to(1)
+        expect { subject }.to change { Todo.count }.from(4).to(2)
 
         expect(user.todos).to be_empty
-        expect(project_member.todos).to match_array([todo_issue_member])
+        expect(project_member.todos).to match_array([todo_member])
+        expect(group_member.todos).to match_array([todo_group_member])
       end
     end
 

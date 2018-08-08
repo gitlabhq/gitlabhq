@@ -418,3 +418,23 @@ table.u2f-registrations {
     }
   }
 }
+
+.edit-user {
+  .clear-user-status {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .emoji-menu-toggle-button {
+    @extend .note-action-button;
+
+    .no-emoji-placeholder {
+      position: relative;
+
+      svg {
+        fill: $gl-text-color-secondary;
+      }
+    }
+  }
+}

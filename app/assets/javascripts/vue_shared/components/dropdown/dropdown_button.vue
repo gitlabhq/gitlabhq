@@ -38,9 +38,17 @@ export default {
       v-show="isLoading"
       :inline="true"
     />
-    <span class="dropdown-toggle-text">
-      {{ toggleText }}
-    </span>
+    <template>
+      <slot
+        v-if="$slots.default"
+      ></slot>
+      <span
+        v-else
+        class="dropdown-toggle-text"
+      >
+        {{ toggleText }}
+      </span>
+    </template>
     <span
       v-show="!isLoading"
       class="dropdown-toggle-icon"

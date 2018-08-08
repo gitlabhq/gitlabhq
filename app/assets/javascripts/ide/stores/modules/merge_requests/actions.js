@@ -1,12 +1,10 @@
 import { __ } from '../../../../locale';
 import Api from '../../../../api';
-import router from '../../../ide_router';
 import { scopes } from './constants';
 import * as types from './mutation_types';
-import * as rootTypes from '../../mutation_types';
 
-export const requestMergeRequests = ({ commit }, type) =>
-  commit(types.REQUEST_MERGE_REQUESTS, type);
+export const requestMergeRequests = ({ commit }) =>
+  commit(types.REQUEST_MERGE_REQUESTS);
 export const receiveMergeRequestsError = ({ commit, dispatch }, { type, search }) => {
   dispatch(
     'setErrorMessage',
@@ -21,39 +19,22 @@ export const receiveMergeRequestsError = ({ commit, dispatch }, { type, search }
     },
     { root: true },
   );
-  commit(types.RECEIVE_MERGE_REQUESTS_ERROR, type);
+  commit(types.RECEIVE_MERGE_REQUESTS_ERROR);
 };
-export const receiveMergeRequestsSuccess = ({ commit }, { type, data }) =>
-  commit(types.RECEIVE_MERGE_REQUESTS_SUCCESS, { type, data });
+export const receiveMergeRequestsSuccess = ({ commit }, data) =>
+  commit(types.RECEIVE_MERGE_REQUESTS_SUCCESS, data);
 
 export const fetchMergeRequests = ({ dispatch, state: { state } }, { type, search = '' }) => {
-  const scope = scopes[type];
-  dispatch('requestMergeRequests', type);
-  dispatch('resetMergeRequests', type);
+  dispatch('requestMergeRequests');
+  dispatch('resetMergeRequests');
+
+  const scope = type ? scopes[type] : 'all';
 
   return Api.mergeRequests({ scope, state, search })
-    .then(({ data }) => dispatch('receiveMergeRequestsSuccess', { type, data }))
+    .then(({ data }) => dispatch('receiveMergeRequestsSuccess', data))
     .catch(() => dispatch('receiveMergeRequestsError', { type, search }));
 };
 
-export const resetMergeRequests = ({ commit }, type) => commit(types.RESET_MERGE_REQUESTS, type);
-
-export const openMergeRequest = ({ commit, dispatch }, { projectPath, id }) => {
-  commit(rootTypes.CLEAR_PROJECTS, null, { root: true });
-  commit(rootTypes.SET_CURRENT_MERGE_REQUEST, `${id}`, { root: true });
-  commit(rootTypes.RESET_OPEN_FILES, null, { root: true });
-  dispatch('setCurrentBranchId', '', { root: true });
-  dispatch('pipelines/stopPipelinePolling', null, { root: true })
-    .then(() => {
-      dispatch('pipelines/resetLatestPipeline', null, { root: true });
-      dispatch('pipelines/clearEtagPoll', null, { root: true });
-    })
-    .catch(e => {
-      throw e;
-    });
-  dispatch('setRightPane', null, { root: true });
-
-  router.push(`/project/${projectPath}/merge_requests/${id}`);
-};
+export const resetMergeRequests = ({ commit }) => commit(types.RESET_MERGE_REQUESTS);
 
 export default () => {};

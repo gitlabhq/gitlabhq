@@ -9,6 +9,8 @@ export default {
     state.isLoading = true;
   },
   [types.RECEIVE_REPORTS_SUCCESS](state, response) {
+    // Make sure to clean previous state in case it was an error
+    state.hasError = false;
 
     state.isLoading = false;
 

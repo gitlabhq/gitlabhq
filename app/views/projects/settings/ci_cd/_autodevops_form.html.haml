@@ -1,6 +1,6 @@
 .row
   .col-lg-12
-    = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
+    = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'autodevops-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature.js-auto-devops-settings
         .form-group
@@ -13,23 +13,15 @@
             .card.auto-devops-card
               .card-body
                 .form-check
-                  = form.radio_button :enabled, 'true', class: 'form-check-input js-toggle-extra-settings'
-                  = form.label :enabled_true, class: 'form-check-label' do
-                    %strong= s_('CICD|Enable Auto DevOps')
+                  = form.check_box :enabled, class: 'form-check-input js-toggle-extra-settings', checked: @project.auto_devops_enabled?
+                  = form.label :enabled, class: 'form-check-label' do
+                    %strong= s_('CICD|Default to Auto DevOps pipeline')
+                    - if @project.has_auto_devops_implicitly_enabled?
+                      %span.badge.badge-info.js-instance-default-badge= s_('CICD|instance enabled')
                   .form-text.text-muted
-                    = s_('CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project.').html_safe % { ci_file: ci_file_formatted }
-
-            .card.auto-devops-card
-              .card-body
-                .form-check
-                  = form.radio_button :enabled, '', class: 'form-check-input js-toggle-extra-settings'
-                  = form.label :enabled_, class: 'form-check-label' do
-                    %strong= s_('CICD|Instance default (%{state})') % { state: "#{Gitlab::CurrentSettings.auto_devops_enabled? ? _('enabled') : _('disabled')}" }
-                  .form-text.text-muted
-                    = s_('CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}.').html_safe % { ci_file: ci_file_formatted }
-
-            .card.auto-devops-card.js-extra-settings{ class: form.object&.enabled == false ? 'hidden' : nil }
-              .card-body.bg-light
+                    = s_('CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
+                    = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
+              .card-footer.js-extra-settings{ class: @project.auto_devops_enabled? || 'hidden' }
                 = form.label :domain do
                   %strong= _('Domain')
                 = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
@@ -46,21 +38,12 @@
                 .form-check
                   = form.radio_button :deploy_strategy, 'continuous', class: 'form-check-input'
                   = form.label :deploy_strategy_continuous, class: 'form-check-label' do
-                    %strong= s_('CICD|Continuous deployment to production')
+                    = s_('CICD|Continuous deployment to production')
                     = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md', anchor: 'auto-deploy'), target: '_blank'
                 .form-check
                   = form.radio_button :deploy_strategy, 'manual', class: 'form-check-input'
                   = form.label :deploy_strategy_manual, class: 'form-check-label' do
-                    %strong= s_('CICD|Automatic deployment to staging, manual deployment to production')
+                    = s_('CICD|Automatic deployment to staging, manual deployment to production')
                     = link_to icon('question-circle'), help_page_path('ci/environments.md', anchor: 'manually-deploying-to-environments'), target: '_blank'
-
-            .card.auto-devops-card
-              .card-body
-                .form-check
-                  = form.radio_button :enabled, 'false', class: 'form-check-input js-toggle-extra-settings', data: { hide_extra_settings: true }
-                  = form.label :enabled_false, class: 'form-check-label' do
-                    %strong= s_('CICD|Disable Auto DevOps')
-                  .form-text.text-muted
-                    = s_('CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery.').html_safe % { ci_file: ci_file_formatted }
 
           = f.submit _('Save changes'), class: "btn btn-success prepend-top-15"

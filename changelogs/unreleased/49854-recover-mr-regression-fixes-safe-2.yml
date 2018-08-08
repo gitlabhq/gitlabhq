@@ -1,0 +1,5 @@
+---
+title: Fix autosave and ESC confirmation issues for MR discussions.
+merge_request: 20968
+author:
+type: fixed

@@ -41,6 +41,8 @@ class Group < Namespace
   has_many :boards
   has_many :badges, class_name: 'GroupBadge'
 
+  has_many :todos
+
   accepts_nested_attributes_for :variables, allow_destroy: true
 
   validate :visibility_level_allowed_by_projects

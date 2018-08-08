@@ -8,9 +8,7 @@ import {
   receiveMergeRequestsSuccess,
   fetchMergeRequests,
   resetMergeRequests,
-  openMergeRequest,
 } from '~/ide/stores/modules/merge_requests/actions';
-import router from '~/ide/ide_router';
 import { mergeRequests } from '../../../mock_data';
 import testAction from '../../../../helpers/vuex_action_helper';
 
@@ -28,12 +26,12 @@ describe('IDE merge requests actions', () => {
   });
 
   describe('requestMergeRequests', () => {
-    it('should should commit request', done => {
+    it('should commit request', done => {
       testAction(
         requestMergeRequests,
-        'created',
+        null,
         mockedState,
-        [{ type: types.REQUEST_MERGE_REQUESTS, payload: 'created' }],
+        [{ type: types.REQUEST_MERGE_REQUESTS }],
         [],
         done,
       );
@@ -46,7 +44,7 @@ describe('IDE merge requests actions', () => {
         receiveMergeRequestsError,
         { type: 'created', search: '' },
         mockedState,
-        [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR, payload: 'created' }],
+        [{ type: types.RECEIVE_MERGE_REQUESTS_ERROR }],
         [
           {
             type: 'setErrorMessage',
@@ -67,12 +65,12 @@ describe('IDE merge requests actions', () => {
     it('should commit received data', done => {
       testAction(
         receiveMergeRequestsSuccess,
-        { type: 'created', data: 'data' },
+        mergeRequests,
         mockedState,
         [
           {
             type: types.RECEIVE_MERGE_REQUESTS_SUCCESS,
-            payload: { type: 'created', data: 'data' },
+            payload: mergeRequests,
           },
         ],
         [],
@@ -129,11 +127,11 @@ describe('IDE merge requests actions', () => {
           mockedState,
           [],
           [
-            { type: 'requestMergeRequests', payload: 'created' },
-            { type: 'resetMergeRequests', payload: 'created' },
+            { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
             {
               type: 'receiveMergeRequestsSuccess',
-              payload: { type: 'created', data: mergeRequests },
+              payload: mergeRequests,
             },
           ],
           done,
@@ -149,12 +147,12 @@ describe('IDE merge requests actions', () => {
       it('dispatches error', done => {
         testAction(
           fetchMergeRequests,
-          { type: 'created' },
+          { type: 'created', search: '' },
           mockedState,
           [],
           [
-            { type: 'requestMergeRequests', payload: 'created' },
-            { type: 'resetMergeRequests', payload: 'created' },
+            { type: 'requestMergeRequests' },
+            { type: 'resetMergeRequests' },
             { type: 'receiveMergeRequestsError', payload: { type: 'created', search: '' } },
           ],
           done,
@@ -167,59 +165,12 @@ describe('IDE merge requests actions', () => {
     it('commits reset', done => {
       testAction(
         resetMergeRequests,
-        'created',
+        null,
         mockedState,
-        [{ type: types.RESET_MERGE_REQUESTS, payload: 'created' }],
+        [{ type: types.RESET_MERGE_REQUESTS }],
         [],
         done,
       );
-    });
-  });
-
-  describe('openMergeRequest', () => {
-    beforeEach(() => {
-      spyOn(router, 'push');
-    });
-
-    it('commits reset mutations and actions', done => {
-      const commit = jasmine.createSpy();
-      const dispatch = jasmine.createSpy().and.returnValue(Promise.resolve());
-      openMergeRequest({ commit, dispatch }, { projectPath: 'gitlab-org/gitlab-ce', id: '1' });
-
-      setTimeout(() => {
-        expect(commit.calls.argsFor(0)).toEqual(['CLEAR_PROJECTS', null, { root: true }]);
-        expect(commit.calls.argsFor(1)).toEqual(['SET_CURRENT_MERGE_REQUEST', '1', { root: true }]);
-        expect(commit.calls.argsFor(2)).toEqual(['RESET_OPEN_FILES', null, { root: true }]);
-
-        expect(dispatch.calls.argsFor(0)).toEqual(['setCurrentBranchId', '', { root: true }]);
-        expect(dispatch.calls.argsFor(1)).toEqual([
-          'pipelines/stopPipelinePolling',
-          null,
-          { root: true },
-        ]);
-        expect(dispatch.calls.argsFor(2)).toEqual(['setRightPane', null, { root: true }]);
-        expect(dispatch.calls.argsFor(3)).toEqual([
-          'pipelines/resetLatestPipeline',
-          null,
-          { root: true },
-        ]);
-        expect(dispatch.calls.argsFor(4)).toEqual([
-          'pipelines/clearEtagPoll',
-          null,
-          { root: true },
-        ]);
-
-        done();
-      });
-    });
-
-    it('pushes new route', () => {
-      openMergeRequest(
-        { commit() {}, dispatch: () => Promise.resolve() },
-        { projectPath: 'gitlab-org/gitlab-ce', id: '1' },
-      );
-
-      expect(router.push).toHaveBeenCalledWith('/project/gitlab-org/gitlab-ce/merge_requests/1');
     });
   });
 });

@@ -13,7 +13,7 @@ module Todos
 
       override :todos
       def todos
-        Todo.where(project_id: project_ids)
+        Todo.where(project_id: project.id)
       end
 
       override :project_ids

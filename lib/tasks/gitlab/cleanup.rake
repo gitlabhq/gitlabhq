@@ -116,6 +116,16 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | Cleanup | Clean orphan remote upload files that do not exist in the db'
+    task remote_upload_files: :environment do
+      cleaner = Gitlab::Cleanup::RemoteUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
+
+      if dry_run?
+        logger.info "To cleanup these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
     def remove?
       ENV['REMOVE'] == 'true'
     end

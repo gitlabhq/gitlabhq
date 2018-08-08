@@ -4,12 +4,7 @@
   import eventHub from '../event_hub';
   import loadingButton from '../../vue_shared/components/loading_button.vue';
   import {
-    APPLICATION_NOT_INSTALLABLE,
-    APPLICATION_SCHEDULED,
-    APPLICATION_INSTALLABLE,
-    APPLICATION_INSTALLING,
-    APPLICATION_INSTALLED,
-    APPLICATION_ERROR,
+    APPLICATION_STATUS,
     REQUEST_LOADING,
     REQUEST_SUCCESS,
     REQUEST_FAILURE,
@@ -59,49 +54,57 @@
       },
     },
     computed: {
+      isUnknownStatus() {
+        return !this.isKnownStatus && this.status !== null;
+      },
+      isKnownStatus() {
+        return Object.values(APPLICATION_STATUS).includes(this.status);
+      },
       rowJsClass() {
         return `js-cluster-application-row-${this.id}`;
       },
       installButtonLoading() {
         return !this.status ||
-          this.status === APPLICATION_SCHEDULED ||
-          this.status === APPLICATION_INSTALLING ||
+          this.status === APPLICATION_STATUS.SCHEDULED ||
+          this.status === APPLICATION_STATUS.INSTALLING ||
           this.requestStatus === REQUEST_LOADING;
       },
       installButtonDisabled() {
-        // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
+        // Avoid the potential for the real-time data to say APPLICATION_STATUS.INSTALLABLE but
         // we already made a request to install and are just waiting for the real-time
         // to sync up.
-        return (this.status !== APPLICATION_INSTALLABLE
-          && this.status !== APPLICATION_ERROR) ||
+        return ((this.status !== APPLICATION_STATUS.INSTALLABLE
+          && this.status !== APPLICATION_STATUS.ERROR) ||
           this.requestStatus === REQUEST_LOADING ||
-          this.requestStatus === REQUEST_SUCCESS;
+          this.requestStatus === REQUEST_SUCCESS) && this.isKnownStatus;
       },
       installButtonLabel() {
         let label;
         if (
-          this.status === APPLICATION_NOT_INSTALLABLE ||
-          this.status === APPLICATION_INSTALLABLE ||
-          this.status === APPLICATION_ERROR
+          this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
+          this.status === APPLICATION_STATUS.INSTALLABLE ||
+          this.status === APPLICATION_STATUS.ERROR ||
+          this.isUnknownStatus
         ) {
           label = s__('ClusterIntegration|Install');
-        } else if (this.status === APPLICATION_SCHEDULED ||
-          this.status === APPLICATION_INSTALLING) {
+        } else if (this.status === APPLICATION_STATUS.SCHEDULED ||
+          this.status === APPLICATION_STATUS.INSTALLING) {
           label = s__('ClusterIntegration|Installing');
-        } else if (this.status === APPLICATION_INSTALLED) {
+        } else if (this.status === APPLICATION_STATUS.INSTALLED ||
+          this.status === APPLICATION_STATUS.UPDATED) {
           label = s__('ClusterIntegration|Installed');
         }
 
         return label;
       },
       showManageButton() {
-        return this.manageLink && this.status === APPLICATION_INSTALLED;
+        return this.manageLink && this.status === APPLICATION_STATUS.INSTALLED;
       },
       manageButtonLabel() {
         return s__('ClusterIntegration|Manage');
       },
       hasError() {
-        return this.status === APPLICATION_ERROR ||
+        return this.status === APPLICATION_STATUS.ERROR ||
         this.requestStatus === REQUEST_FAILURE;
       },
       generalErrorDescription() {
@@ -182,7 +185,7 @@
       </div>
     </div>
     <div
-      v-if="hasError"
+      v-if="hasError || isUnknownStatus"
       class="gl-responsive-table-row-layout"
       role="row"
     >

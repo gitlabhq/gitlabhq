@@ -795,28 +795,33 @@ module API
 
     class Todo < Grape::Entity
       expose :id
-      expose :project, using: Entities::BasicProjectDetails
+      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project_id }
+      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type
 
       expose :target do |todo, options|
-        Entities.const_get(todo.target_type).represent(todo.target, options)
+        todo_target_class(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
         target_type   = todo.target_type.underscore
-        target_url    = "namespace_project_#{target_type}_url"
+        target_url    = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
         Gitlab::Routing
           .url_helpers
-          .public_send(target_url, todo.project.namespace, todo.project, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
+          .public_send(target_url, todo.parent, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       expose :body
       expose :state
       expose :created_at
+
+      def todo_target_class(target_type)
+        ::API::Entities.const_get(target_type)
+      end
     end
 
     class NamespaceBasic < Grape::Entity

@@ -1,5 +1,5 @@
 import { getChangesCountForFiles, filePathMatches } from './utils';
-import { activityBarViews } from '../constants';
+import { activityBarViews, packageJsonPath } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -89,6 +89,8 @@ export const lastCommit = (state, getters) => {
 
 export const currentBranch = (state, getters) =>
   getters.currentProject && getters.currentProject.branches[state.currentBranchId];
+
+export const packageJson = state => state.entries[packageJsonPath];
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

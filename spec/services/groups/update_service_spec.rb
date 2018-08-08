@@ -12,13 +12,17 @@ describe Groups::UpdateService do
         let!(:service) { described_class.new(public_group, user, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
 
         before do
-          public_group.add_user(user, Gitlab::Access::MAINTAINER)
+          public_group.add_user(user, Gitlab::Access::OWNER)
           create(:project, :public, group: public_group)
+
+          expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
         end
 
         it "does not change permission level" do
           service.execute
           expect(public_group.errors.count).to eq(1)
+
+          expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
         end
       end
 
@@ -26,13 +30,33 @@ describe Groups::UpdateService do
         let!(:service) { described_class.new(internal_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
 
         before do
-          internal_group.add_user(user, Gitlab::Access::MAINTAINER)
+          internal_group.add_user(user, Gitlab::Access::OWNER)
           create(:project, :internal, group: internal_group)
+
+          expect(TodosDestroyer::GroupPrivateWorker).not_to receive(:perform_in)
         end
 
         it "does not change permission level" do
           service.execute
           expect(internal_group.errors.count).to eq(1)
+        end
+      end
+
+      context "internal group with private project" do
+        let!(:service) { described_class.new(internal_group, user, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
+
+        before do
+          internal_group.add_user(user, Gitlab::Access::OWNER)
+          create(:project, :private, group: internal_group)
+
+          expect(TodosDestroyer::GroupPrivateWorker).to receive(:perform_in)
+            .with(1.hour, internal_group.id)
+        end
+
+        it "changes permission level to private" do
+          service.execute
+          expect(internal_group.visibility_level)
+            .to eq(Gitlab::VisibilityLevel::PRIVATE)
         end
       end
     end

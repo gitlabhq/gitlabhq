@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " Status"
+msgstr ""
+
 msgid "%d changed file"
 msgid_plural "%d changed files"
 msgstr[0] ""
@@ -808,6 +811,9 @@ msgstr ""
 msgid "Below you will find all the groups that are public."
 msgstr ""
 
+msgid "Bitbucket Server Import"
+msgstr ""
+
 msgid "Bitbucket import"
 msgstr ""
 
@@ -984,9 +990,6 @@ msgstr ""
 msgid "CI/CD settings"
 msgstr ""
 
-msgid "CICD|An explicit %{ci_file} needs to be specified before you can begin using Continuous Integration and Delivery."
-msgstr ""
-
 msgid "CICD|Auto DevOps"
 msgstr ""
 
@@ -999,22 +1002,13 @@ msgstr ""
 msgid "CICD|Continuous deployment to production"
 msgstr ""
 
+msgid "CICD|Default to Auto DevOps pipeline"
+msgstr ""
+
 msgid "CICD|Deployment strategy"
 msgstr ""
 
 msgid "CICD|Deployment strategy needs a domain name to work correctly."
-msgstr ""
-
-msgid "CICD|Disable Auto DevOps"
-msgstr ""
-
-msgid "CICD|Enable Auto DevOps"
-msgstr ""
-
-msgid "CICD|Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific %{ci_file}."
-msgstr ""
-
-msgid "CICD|Instance default (%{state})"
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -1023,10 +1017,13 @@ msgstr ""
 msgid "CICD|Learn more about Auto DevOps"
 msgstr ""
 
-msgid "CICD|The Auto DevOps pipeline configuration will be used when there is no %{ci_file} in the project."
+msgid "CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found."
 msgstr ""
 
 msgid "CICD|You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages."
+msgstr ""
+
+msgid "CICD|instance enabled"
 msgstr ""
 
 msgid "Callback URL"
@@ -1933,6 +1930,9 @@ msgstr ""
 msgid "Cron syntax"
 msgstr ""
 
+msgid "Current Branch"
+msgstr ""
+
 msgid "CurrentUser|Profile"
 msgstr ""
 
@@ -2316,6 +2316,9 @@ msgstr ""
 msgid "Ends at (UTC)"
 msgstr ""
 
+msgid "Enter in your Bitbucket Server URL and personal access token below"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -2407,6 +2410,9 @@ msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading branches."
 msgstr ""
 
 msgid "Error loading last commit."
@@ -2616,6 +2622,9 @@ msgid "From %{provider_title}"
 msgstr ""
 
 msgid "From Bitbucket"
+msgstr ""
+
+msgid "From Bitbucket Server"
 msgstr ""
 
 msgid "From FogBugz"
@@ -2902,16 +2911,37 @@ msgstr ""
 msgid "ID"
 msgstr ""
 
+msgid "IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation."
+msgstr ""
+
+msgid "IDE|Back"
+msgstr ""
+
+msgid "IDE|Client side evaluation"
+msgstr ""
+
 msgid "IDE|Commit"
 msgstr ""
 
 msgid "IDE|Edit"
 msgstr ""
 
-msgid "IDE|Go back"
+msgid "IDE|Get started with Live Preview"
+msgstr ""
+
+msgid "IDE|Go to project"
+msgstr ""
+
+msgid "IDE|Live Preview"
 msgstr ""
 
 msgid "IDE|Open in file view"
+msgstr ""
+
+msgid "IDE|Preview your web application using Web IDE client-side evaluation."
+msgstr ""
+
+msgid "IDE|Refresh preview"
 msgstr ""
 
 msgid "IDE|Review"
@@ -2974,6 +3004,9 @@ msgstr ""
 msgid "Import projects from Bitbucket"
 msgstr ""
 
+msgid "Import projects from Bitbucket Server"
+msgstr ""
+
 msgid "Import projects from FogBugz"
 msgstr ""
 
@@ -2981,6 +3014,9 @@ msgid "Import projects from GitLab.com"
 msgstr ""
 
 msgid "Import projects from Google Code"
+msgstr ""
+
+msgid "Import repositories from Bitbucket Server"
 msgstr ""
 
 msgid "Import repositories from GitHub"
@@ -3219,7 +3255,13 @@ msgstr ""
 msgid "List available repositories"
 msgstr ""
 
+msgid "List your Bitbucket Server repositories"
+msgstr ""
+
 msgid "List your GitHub repositories"
+msgstr ""
+
+msgid "Live preview"
 msgstr ""
 
 msgid "Loading the GitLab IDE..."
@@ -3253,6 +3295,9 @@ msgid "Make sure you're logged into the account that owns the projects you'd lik
 msgstr ""
 
 msgid "Manage Git repositories with fine-grained access controls that keep your code secure. Perform code reviews and enhance collaboration with merge requests. Each project can also have an issue tracker and a wiki."
+msgstr ""
+
+msgid "Manage Web IDE features"
 msgstr ""
 
 msgid "Manage access"
@@ -3566,6 +3611,9 @@ msgstr ""
 msgid "No assignee"
 msgstr ""
 
+msgid "No branches found"
+msgstr ""
+
 msgid "No changes"
 msgstr ""
 
@@ -3642,6 +3690,9 @@ msgid "Note: As an administrator you may like to configure %{github_integration_
 msgstr ""
 
 msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgstr ""
+
+msgid "Notes|Are you sure you want to cancel creating this comment?"
 msgstr ""
 
 msgid "Notification events"
@@ -4067,7 +4118,13 @@ msgstr ""
 msgid "Profiles|Add key"
 msgstr ""
 
+msgid "Profiles|Add status emoji"
+msgstr ""
+
 msgid "Profiles|Change username"
+msgstr ""
+
+msgid "Profiles|Clear status"
 msgstr ""
 
 msgid "Profiles|Current path: %{path}"
@@ -4097,7 +4154,7 @@ msgstr ""
 msgid "Profiles|This doesn't look like a public SSH key, are you sure you want to add it?"
 msgstr ""
 
-msgid "Profiles|This emoji and message will appear on your profile and throughout the interface. The message can contain emoji codes, too."
+msgid "Profiles|This emoji and message will appear on your profile and throughout the interface."
 msgstr ""
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
@@ -4115,6 +4172,9 @@ msgstr ""
 msgid "Profiles|Username successfully changed"
 msgstr ""
 
+msgid "Profiles|What's your status?"
+msgstr ""
+
 msgid "Profiles|You don't have access to delete this user."
 msgstr ""
 
@@ -4122,6 +4182,9 @@ msgid "Profiles|You must transfer ownership or delete these groups before you ca
 msgstr ""
 
 msgid "Profiles|Your account is currently an owner in these groups:"
+msgstr ""
+
+msgid "Profiles|Your status"
 msgstr ""
 
 msgid "Profiles|e.g. My MacBook key"
@@ -4594,10 +4657,37 @@ msgstr ""
 msgid "Search milestones"
 msgstr ""
 
+msgid "Search or jump to…"
+msgstr ""
+
 msgid "Search project"
 msgstr ""
 
 msgid "Search users"
+msgstr ""
+
+msgid "SearchAutocomplete|All GitLab"
+msgstr ""
+
+msgid "SearchAutocomplete|Issues I've created"
+msgstr ""
+
+msgid "SearchAutocomplete|Issues assigned to me"
+msgstr ""
+
+msgid "SearchAutocomplete|Merge requests I've created"
+msgstr ""
+
+msgid "SearchAutocomplete|Merge requests assigned to me"
+msgstr ""
+
+msgid "SearchAutocomplete|in all GitLab"
+msgstr ""
+
+msgid "SearchAutocomplete|in this group"
+msgstr ""
+
+msgid "SearchAutocomplete|in this project"
 msgstr ""
 
 msgid "Seconds before reseting failure information"
@@ -5685,7 +5775,7 @@ msgstr ""
 msgid "Users"
 msgstr ""
 
-msgid "User|Current Status"
+msgid "User|Current status"
 msgstr ""
 
 msgid "Variables"
@@ -5976,9 +6066,6 @@ msgstr ""
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
-msgid "You do not have any assigned merge requests"
-msgstr ""
-
 msgid "You don't have any applications"
 msgstr ""
 
@@ -5986,9 +6073,6 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
-msgstr ""
-
-msgid "You have not created any merge requests"
 msgstr ""
 
 msgid "You have reached your project limit"
@@ -6129,6 +6213,9 @@ msgid "for this project"
 msgstr ""
 
 msgid "here"
+msgstr ""
+
+msgid "https://your-bitbucket-server"
 msgstr ""
 
 msgid "import flow"

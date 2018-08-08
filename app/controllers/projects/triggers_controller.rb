@@ -7,7 +7,7 @@ class Projects::TriggersController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
   end
 
   def create
@@ -19,7 +19,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = 'You could not create a new trigger.'
     end
 
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
   end
 
   def take_ownership
@@ -29,7 +29,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = 'You could not take ownership of trigger.'
     end
 
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers')
   end
 
   def edit
@@ -37,7 +37,7 @@ class Projects::TriggersController < Projects::ApplicationController
 
   def update
     if trigger.update(trigger_params)
-      redirect_to project_settings_ci_cd_path(@project), notice: 'Trigger was successfully updated.'
+      redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), notice: 'Trigger was successfully updated.'
     else
       render action: "edit"
     end
@@ -50,7 +50,7 @@ class Projects::TriggersController < Projects::ApplicationController
       flash[:alert] = "Could not remove the trigger."
     end
 
-    redirect_to project_settings_ci_cd_path(@project), status: :found
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-pipeline-triggers'), status: :found
   end
 
   private
