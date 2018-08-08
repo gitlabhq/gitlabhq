@@ -489,7 +489,15 @@ needed to compile the project:
   Artifacts were designed to upload some compiled/generated bits of the build,
   and they can be fetched by any number of concurrent Runners. They are
   guaranteed to be available and are there to pass data between jobs. They are
-  also exposed to be downloaded from the UI.
+  also exposed to be downloaded from the UI. **Artifacts can only exist in
+  directories relative to the build directory** and specifying paths which don't
+  comply to this rule trigger an unintuitive and unlogical error message (an
+  enhancement is discussed at
+  https://gitlab.com/gitlab-org/gitlab-ce/issues/15530). Artifacts need to be
+  uploaded to the GitLab instance (not only the GitLab runner) before the next
+  stage job(s) can start, so you need to evaluate carefully whether your
+  bandwidth allows you to profit from parallelization with stages and shared
+  artifacts before investing time in changes to the setup.
 
 It's sometimes confusing because the name artifact sounds like something that
 is only useful outside of the job, like for downloading a final image. But
