@@ -1,0 +1,5 @@
+---
+title: Add ability to upload and download maven packages from/to GitLab
+merge_request: 6607
+author:
+type: added
