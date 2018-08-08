@@ -265,6 +265,10 @@ export default {
       report-section-class="mr-widget-border-top"
     />
     <div class="mr-section-container">
+      <grouped-test-reports-app
+        v-if="mr.testResultsPath"
+        :endpoint="mr.testResultsPath"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"

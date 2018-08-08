@@ -64,24 +64,6 @@ export default {
     />
 
     <issues-block
-      v-if="newIssues.length"
-      :component="component"
-      :issues="newIssues"
-      class="js-mr-code-new-issues"
-      status="failed"
-      is-new
-    />
-
-    <issues-block
-      v-if="newIssues.length"
-      :component="component"
-      :issues="newIssues"
-      class="js-mr-code-new-issues"
-      status="failed"
-      is-new
-    />
-
-    <issues-block
       v-if="unresolvedIssues.length"
       :component="component"
       :issues="unresolvedIssues"

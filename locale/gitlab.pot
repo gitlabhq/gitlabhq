@@ -2238,6 +2238,9 @@ msgstr ""
 msgid "Cron syntax"
 msgstr ""
 
+msgid "Current Branch"
+msgstr ""
+
 msgid "Current node"
 msgstr ""
 
@@ -2802,6 +2805,9 @@ msgid "Error fetching usage ping data."
 msgstr ""
 
 msgid "Error loading branch data. Please try again."
+msgstr ""
+
+msgid "Error loading branches."
 msgstr ""
 
 msgid "Error loading last commit."
@@ -3684,7 +3690,7 @@ msgstr ""
 msgid "IDE|Get started with Live Preview"
 msgstr ""
 
-msgid "IDE|Go back"
+msgid "IDE|Go to project"
 msgstr ""
 
 msgid "IDE|Live Preview"
@@ -4609,6 +4615,9 @@ msgid "No Label"
 msgstr ""
 
 msgid "No assignee"
+msgstr ""
+
+msgid "No branches found"
 msgstr ""
 
 msgid "No changes"
@@ -7549,9 +7558,6 @@ msgstr ""
 msgid "You cannot write to this read-only GitLab instance."
 msgstr ""
 
-msgid "You do not have any assigned merge requests"
-msgstr ""
-
 msgid "You do not have the correct permissions to override the settings from the LDAP group sync."
 msgstr ""
 
@@ -7562,9 +7568,6 @@ msgid "You don't have any authorized applications"
 msgstr ""
 
 msgid "You have no permissions"
-msgstr ""
-
-msgid "You have not created any merge requests"
 msgstr ""
 
 msgid "You have reached your project limit"

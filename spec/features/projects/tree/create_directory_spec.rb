@@ -22,7 +22,7 @@ describe 'Multi-file editor new directory', :js do
   end
 
   it 'creates directory in current directory' do
-    all('.ide-tree-header button').last.click
+    all('.ide-tree-actions button').last.click
 
     page.within('.modal') do
       find('.form-control').set('folder name')
@@ -30,7 +30,7 @@ describe 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
-    first('.ide-tree-header button').click
+    first('.ide-tree-actions button').click
 
     page.within('.modal-dialog') do
       find('.form-control').set('file name')

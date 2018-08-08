@@ -1,6 +1,13 @@
 @import 'framework/variables';
 @import 'framework/mixins';
 
+$search-list-icon-width: 18px;
+$ide-activity-bar-width: 60px;
+$ide-context-header-padding: 10px;
+$ide-project-avatar-end: $ide-context-header-padding + 48px;
+$ide-tree-padding: $gl-padding;
+$ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
+
 .project-refs-form,
 .project-refs-target-form {
   display: inline-block;
@@ -24,7 +31,6 @@
   display: flex;
   height: calc(100vh - #{$header-height});
   margin-top: 0;
-  border-top: 1px solid $white-dark;
   padding-bottom: $ide-statusbar-height;
   color: $gl-text-color;
 
@@ -41,10 +47,10 @@
 }
 
 .ide-file-list {
+  display: flex;
+  flex-direction: column;
   flex: 1;
-  padding-left: $gl-padding;
-  padding-right: $gl-padding;
-  padding-bottom: $grid-size;
+  min-height: 0;
 
   .file {
     height: 32px;
@@ -517,35 +523,30 @@
 
     > a,
     > button {
-      height: 60px;
+      text-decoration: none;
+      padding-top: $gl-padding-8;
+      padding-bottom: $gl-padding-8;
     }
-  }
-
-  .projects-sidebar {
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-    flex: 1;
   }
 
   .multi-file-commit-panel-inner {
     position: relative;
     display: flex;
     flex-direction: column;
-    height: 100%;
+    min-height: 100%;
     min-width: 0;
     width: 100%;
   }
 
-  .multi-file-commit-panel-inner-scroll {
+  .multi-file-commit-panel-inner-content {
     display: flex;
     flex: 1;
     flex-direction: column;
-    overflow: auto;
     background-color: $white-light;
     border-left: 1px solid $white-dark;
     border-top: 1px solid $white-dark;
     border-top-left-radius: $border-radius-small;
+    min-height: 0;
   }
 }
 
@@ -803,12 +804,6 @@
         height: calc(100vh - #{$header-height + $flash-height});
       }
     }
-
-    .projects-sidebar {
-      .multi-file-commit-panel-inner-scroll {
-        flex: 1;
-      }
-    }
   }
 }
 
@@ -964,7 +959,7 @@
 
 .ide-activity-bar {
   position: relative;
-  flex: 0 0 60px;
+  flex: 0 0 $ide-activity-bar-width;
   z-index: 1;
 }
 
@@ -1060,19 +1055,54 @@
 }
 
 .ide-tree-header {
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  flex-wrap: wrap;
   padding: 12px 0;
+  margin-left: $ide-tree-padding;
+  margin-right: $ide-tree-padding;
   border-bottom: 1px solid $white-dark;
 
   .ide-new-btn {
     margin-left: auto;
   }
 
+  .ide-nav-dropdown {
+    width: 100%;
+    margin-bottom: 12px;
+
+    .dropdown-menu {
+      width: 385px;
+      max-height: initial;
+    }
+
+    .dropdown-menu-toggle {
+      svg {
+        vertical-align: middle;
+      }
+
+      &:hover {
+        background-color: $white-normal;
+      }
+    }
+
+    &.show {
+      .dropdown-menu-toggle {
+        background-color: $white-dark;
+      }
+    }
+  }
+
   button {
     color: $gl-text-color;
   }
+}
+
+.ide-tree-body {
+  overflow: auto;
+  padding-left: $ide-tree-padding;
+  padding-right: $ide-tree-padding;
 }
 
 .ide-sidebar-branch-title {
@@ -1163,14 +1193,23 @@
 }
 
 .ide-context-header {
-  .avatar {
-    flex: 0 0 38px;
-  }
-
   .ide-merge-requests-dropdown.dropdown-menu {
     width: 385px;
     max-height: initial;
   }
+
+  .avatar-container {
+    flex: initial;
+    margin-right: 0;
+  }
+
+  .ide-sidebar-project-title {
+    margin-left: $ide-tree-text-start - $ide-project-avatar-end;
+  }
+}
+
+.ide-context-body {
+  min-height: 0;
 }
 
 .ide-sidebar-project-title {
@@ -1178,10 +1217,11 @@
 
   .sidebar-context-title {
     white-space: nowrap;
-  }
+    display: block;
 
-  .ide-sidebar-branch-title {
-    min-width: 50px;
+    &.text-secondary {
+      font-weight: normal;
+    }
   }
 }
 
@@ -1319,7 +1359,7 @@
   min-height: 60px;
 }
 
-.ide-merge-requests-dropdown {
+.ide-nav-form {
   .nav-links li {
     width: 50%;
     padding-left: 0;
@@ -1338,9 +1378,23 @@
     padding-left: $gl-padding;
     padding-right: $gl-padding;
 
-    .fa {
-      right: 26px;
+    .input-icon {
+      right: auto;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
     }
+  }
+
+  .dropdown-input-field {
+    padding-left: $search-list-icon-width + $gl-padding;
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+
+  .tokens-container {
+    padding-left: $search-list-icon-width + $gl-padding;
+    overflow-x: hidden;
   }
 
   .btn-link {
@@ -1349,11 +1403,11 @@
   }
 }
 
-.ide-merge-request-current-icon {
-  min-width: 18px;
+.ide-search-list-current-icon {
+  min-width: $search-list-icon-width;
 }
 
-.ide-merge-requests-empty {
+.ide-search-list-empty {
   height: 230px;
 }
 

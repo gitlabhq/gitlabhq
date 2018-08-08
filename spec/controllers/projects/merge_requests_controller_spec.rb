@@ -597,6 +597,12 @@ describe Projects::MergeRequestsController do
     context 'when comparison is being processed' do
       let(:comparison_status) { { status: :parsing } }
 
+      it 'sends polling interval' do
+        expect(Gitlab::PollingInterval).to receive(:set_header)
+
+        subject
+      end
+
       it 'returns 204 HTTP status' do
         subject
 
@@ -606,6 +612,12 @@ describe Projects::MergeRequestsController do
 
     context 'when comparison is done' do
       let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
 
       it 'returns 200 HTTP status' do
         subject
@@ -618,6 +630,12 @@ describe Projects::MergeRequestsController do
     context 'when user created corrupted test reports' do
       let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
 
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
       it 'returns 400 HTTP status' do
         subject
 
@@ -628,6 +646,12 @@ describe Projects::MergeRequestsController do
 
     context 'when something went wrong on our system' do
       let(:comparison_status) { {} }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
 
       it 'returns 500 HTTP status' do
         subject
