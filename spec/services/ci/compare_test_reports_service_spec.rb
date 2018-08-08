@@ -33,7 +33,7 @@ describe Ci::CompareTestReportsService do
 
       before do
         build = create(:ci_build, pipeline: head_pipeline, project: head_pipeline.project)
-        create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: project)
+        create(:ci_job_artifact, :junit, file: 'junit_with_corrupted_data.xml.gz', job: build, project: project)
       end
 
       it 'returns status and error message' do

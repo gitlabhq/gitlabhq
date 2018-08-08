@@ -158,7 +158,7 @@ describe Ci::JobArtifact do
       end
 
       context 'when gzip file contains three files' do
-        let(:artifact) { build(:ci_job_artifact, :junit_with_three_testsuites) }
+        let(:artifact) { build(:ci_job_artifact, :junit, file: 'junit_with_three_testsuites.xml.gz') }
 
         it 'iterates blob three times' do
           expect { |b| artifact.each_blob(&b) }.to yield_control.exactly(3).times

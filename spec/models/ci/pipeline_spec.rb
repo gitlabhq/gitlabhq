@@ -1902,7 +1902,7 @@ describe Ci::Pipeline, :mailer do
 
       before do
         create(:ci_job_artifact, :junit, job: build_rspec, project: project)
-        create(:ci_job_artifact, :junit_with_ant, job: build_java, project: project)
+        create(:ci_job_artifact, :junit, file: 'junit_ant.xml.gz', job: build_java, project: project)
       end
 
       it 'returns test reports with collected data' do

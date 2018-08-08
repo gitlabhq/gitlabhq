@@ -370,7 +370,7 @@ describe 'Merge request > User sees merge widget', :js do
       end
 
       context 'when JUnit xml is corrupted' do
-        let!(:job_artifact) { create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: project) }
+        let!(:job_artifact) { create(:ci_job_artifact, :junit, file: 'junit_with_corrupted_data.xml.gz', job: build, project: project) }
 
         before do
           allow_any_instance_of(MergeRequest).to receive(:compare_test_reports).and_return(compared_data)

@@ -2820,7 +2820,7 @@ describe Ci::Build do
 
       context 'when there is a JUnit test report from java ant test suite' do
         before do
-          create(:ci_job_artifact, :junit_with_ant, job: build, project: build.project)
+          create(:ci_job_artifact, :junit, file: 'junit_ant.xml.gz', job: build, project: build.project)
         end
 
         it 'parses blobs and add the results to the test suite' do
@@ -2834,7 +2834,7 @@ describe Ci::Build do
 
       context 'when there is a corrupted JUnit test report' do
         before do
-          create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: build.project)
+          create(:ci_job_artifact, :junit, file: 'junit_with_corrupted_data.xml.gz', job: build, project: build.project)
         end
 
         it 'raises an error' do
