@@ -5,25 +5,20 @@ namespace :gitlab do
       task finish_last_pipeline: "gitlab:quick_actions:base:before"
       task destroy_pipeline: "gitlab:quick_actions:base:before"
 
-      # raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3 corrupted].include?(args[:rspec_pattern])
-      # raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(args[:ant_pattern])
-      # artifacts_cache_file
-
-      desc 'GitLab | Quick actions | Create a new running pipeline with test reports'
-      task :create_running_pipeline, [:project_id, :ref, :rspec_file] do |t, args|
+      desc 'GitLab | Quick actions | Test reports | Create a new running pipeline with test reports'
+      task :create_running_pipeline, [:project_id, :ref, :junit_file] do |t, args|
         project = Project.find(args[:project_id])
         last_commit = project.repository.commit(args[:ref])
 
         Ci::Pipeline.transaction do
-          pipeline = FactoryBot.create(:ci_pipeline, :running, project: project, ref: args[:ref], sha: last_commit)
-          build = FactoryBot.create(:ci_build, :running, name: 'rspec', stage: 'test', project: project)
-          FactoryBot.create(:ci_job_artifact, :archive, project: project, job: build)
+          pipeline = create_pipeline(User.first, project, args[:ref], last_commit.sha)
+          build = create_build(project, pipeline)
+          create_test_report(project, build, args[:junit_file])
           project.merge_requests.find_by_source_branch(args[:ref])&.update!(head_pipeline_id: pipeline.id)
-          binding.pry
         end
       end
 
-      desc 'GitLab | Quick actions | Finish the last pipeline'
+      desc 'GitLab | Quick actions | Test reports | Finish the last pipeline'
       task :finish_last_pipeline, [:project_id, :ref] do |t, args|
         project = Project.find(args[:project_id])
 
@@ -32,11 +27,41 @@ namespace :gitlab do
         last_pipeline.update_status
       end
 
-      desc 'GitLab | Quick actions | Destroy pipelines'
+      desc 'GitLab | Quick actions | Test reports | Destroy pipelines'
       task :destroy_pipeline, [:project_id, :ref] do |t, args|
         project = Project.find(args[:project_id])
 
         project.pipelines.where(ref: args[:ref]).destroy_all
+      end
+
+      def create_pipeline(user, project, ref, sha)
+        FactoryBot.create(
+          :ci_pipeline,
+          :running,
+          project: project,
+          ref: ref,
+          sha: sha,
+          user: User.first,
+          source: :push)
+      end
+
+      def create_build(project, pipeline)
+        FactoryBot.create(
+          :ci_build,
+          :running,
+          name: 'rspec',
+          stage: 'test',
+          project: project,
+          pipeline: pipeline)
+      end
+
+      def create_test_report(project, build, file)
+        FactoryBot.create(
+          :ci_job_artifact,
+          :junit,
+          file: file,
+          project: project,
+          job: build)
       end
     end
   end
