@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import $ from 'jquery';
 import eventHub from '../../event_hub';
 
@@ -17,7 +18,7 @@ export default {
 
   computed: {
     buttonText() {
-      return this.isLocked ? this.__('Unlock') : this.__('Lock');
+      return this.isLocked ? __('Unlock') : __('Lock');
     },
 
     toggleLock() {
