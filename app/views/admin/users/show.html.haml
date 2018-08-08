@@ -138,8 +138,8 @@
             %br
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - if @user.blocked?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             This user is blocked
           .card-body
             %p A blocked user cannot:
