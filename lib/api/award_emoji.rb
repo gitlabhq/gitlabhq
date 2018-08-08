@@ -65,7 +65,7 @@ module API
             requires :name, type: String, desc: 'The name of a award_emoji (without colons)'
           end
           post endpoint do
-            not_found!('Award Emoji') unless can_read_awardable? && can_award_awardable?
+            not_found!('Award Emoji') unless can_read_awardable?
 
             award = awardable.create_award_emoji(params[:name], current_user)
 
@@ -97,10 +97,6 @@ module API
     helpers do
       def can_read_awardable?
         can?(current_user, read_ability(awardable), awardable)
-      end
-
-      def can_award_awardable?
-        awardable.user_can_award?(current_user, params[:name])
       end
 
       def awardable

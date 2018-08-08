@@ -5,16 +5,12 @@ module ToggleAwardEmoji
     authenticate_user!
     name = params.require(:name)
 
-    if awardable.user_can_award?(current_user, name)
-      awardable.toggle_award_emoji(name, current_user)
+    awardable.toggle_award_emoji(name, current_user)
 
-      todoable = to_todoable(awardable)
-      TodoService.new.new_award_emoji(todoable, current_user) if todoable
+    todoable = to_todoable(awardable)
+    TodoService.new.new_award_emoji(todoable, current_user) if todoable
 
-      render json: { ok: true }
-    else
-      render json: { ok: false }
-    end
+    render json: { ok: true }
   end
 
   private

@@ -144,7 +144,6 @@ describe API::AwardEmoji do
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/award_emoji" do
-    let(:issue2)  { create(:issue, project: project, author: user) }
 
     context "on an issue" do
       it "creates a new award emoji" do
@@ -165,12 +164,6 @@ describe API::AwardEmoji do
         post api("/projects/#{project.id}/issues/#{issue.iid}/award_emoji"), name: 'thumbsup'
 
         expect(response).to have_gitlab_http_status(401)
-      end
-
-      it "returns a 404 error if the user authored issue" do
-        post api("/projects/#{project.id}/issues/#{issue2.id}/award_emoji", user), name: 'thumbsup'
-
-        expect(response).to have_gitlab_http_status(404)
       end
 
       it "normalizes +1 as thumbsup award" do
@@ -204,7 +197,6 @@ describe API::AwardEmoji do
   end
 
   describe "POST /projects/:id/awardable/:awardable_id/notes/:note_id/award_emoji" do
-    let(:note2)  { create(:note, project: project, noteable: issue, author: user) }
 
     it 'creates a new award emoji' do
       expect do
@@ -213,12 +205,6 @@ describe API::AwardEmoji do
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['user']['username']).to eq(user.username)
-    end
-
-    it "it returns 404 error when user authored note" do
-      post api("/projects/#{project.id}/issues/#{issue.iid}/notes/#{note2.id}/award_emoji", user), name: 'thumbsup'
-
-      expect(response).to have_gitlab_http_status(404)
     end
 
     it "normalizes +1 as thumbsup award" do
