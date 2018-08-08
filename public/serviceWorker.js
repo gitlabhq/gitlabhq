@@ -1,23 +1,20 @@
-self.addEventListener('install', event => {
+/* global self */
+
+self.addEventListener('install', event => { // eslint-disable-line no-restricted-globals
   event.waitUntil(
-    // TODO: Add useful, cacheable pages in here
     caches.open('gl-offline')
       .then(cache => cache.addAll([
         '/offline.html',
-      ]))
+      ])),
   );
 });
 
-self.addEventListener('fetch', event => {
-  const request = event.request;
+self.addEventListener('fetch', event => { // eslint-disable-line no-restricted-globals
+  const { request } = event;
 
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
-      .catch(() => {
-        if (event.request.mode === 'navigate') {
-          return caches.match('/offline.html');
-        }
-      })
+    caches.match(request)
+      .then(response => response || fetch(request))
+      .catch(() => (request.mode === 'navigate' ? caches.match('/offline.html') : null)),
   );
 });
