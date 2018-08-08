@@ -146,8 +146,18 @@ module API
         end
 
         if format
-          # TODO: Validate our checksum with Maven.
-          no_content!
+          # TODO: Extract in separate method
+          if format == 'sha1'
+            package_file = package.package_files.recent.find_by!(file_name: file_name)
+            stored_sha1 = Digest::SHA256.hexdigest(package_file.file_sha1)
+            expected_sha1 = uploaded_file.sha256
+
+            if stored_sha1 == expected_sha1
+              no_content!
+            else
+              conflict!
+            end
+          end
         else
           file_params = {
             file:      uploaded_file,
