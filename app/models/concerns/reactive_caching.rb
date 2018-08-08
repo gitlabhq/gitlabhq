@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The ReactiveCaching concern is used to fetch some data in the background and
 # store it in the Rails cache, keeping it up-to-date for as long as it is being
 # requested.  If the data hasn't been requested for +reactive_cache_lifetime+,

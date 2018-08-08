@@ -145,10 +145,15 @@ describe Notes::CreateService do
           let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
           it 'saves the note and does not alter the note text' do
+<<<<<<< HEAD
             service = instance_double('Issues::UpdateService', :service)
 
             allow(Issues::UpdateService).to receive(:new).and_return(service)
 
+=======
+            service = double(:service)
+            allow(Issues::UpdateService).to receive(:new).and_return(service)
+>>>>>>> upstream/master
             expect(service).to receive(:execute)
 
             note = described_class.new(project, user, opts.merge(note: note_text)).execute

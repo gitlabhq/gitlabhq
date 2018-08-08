@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mentionable
   module ReferenceRegexes
     def self.reference_pattern(link_patterns, issue_pattern)

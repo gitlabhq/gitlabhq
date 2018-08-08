@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Include atomic internal id generation scheme for a model
 #
 # This allows us to atomically generate internal ids that are

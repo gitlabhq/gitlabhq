@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   class Base
     PARTIAL_PATH_PREFIX = 'projects/diffs/viewers'.freeze

@@ -21,6 +21,6 @@ class Projects::AvatarsController < Projects::ApplicationController
 
     @project.save
 
-    redirect_to edit_project_path(@project), status: :found
+    redirect_to edit_project_path(@project, anchor: 'js-general-project-settings'), status: :found
   end
 end

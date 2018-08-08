@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'.freeze
 

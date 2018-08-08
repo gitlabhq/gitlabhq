@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Network
   class Graph
     attr_reader :days, :commits, :map, :notes, :repo
