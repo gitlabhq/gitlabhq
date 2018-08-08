@@ -12,6 +12,7 @@ module EE
     class_methods do
       extend ::Gitlab::Utils::Override
 
+      # Update unfound_translations.rb when events are changed
       override :email_events
       def email_events(source = nil)
         result = super.dup
