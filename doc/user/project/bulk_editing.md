@@ -1,7 +1,7 @@
 # Bulk editing issues and merge requests
 
 >
-**Note:**
+**Notes:**
 - A permission level of `Reporter` or higher is required in order to manage
 issues.
 - A permission level of `Developer` or higher is required in order to manage
