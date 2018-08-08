@@ -48,39 +48,13 @@ FactoryBot.define do
       file_type :junit
       file_format :gzip
 
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit/junit.xml.gz'), 'application/x-gzip')
+      transient do
+        file 'junit.xml.gz'
       end
-    end
-
-    trait :junit_with_ant do
-      file_type :junit
-      file_format :gzip
 
       after(:build) do |artifact, evaluator|
         artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit/junit_ant.xml.gz'), 'application/x-gzip')
-      end
-    end
-
-    trait :junit_with_three_testsuites do
-      file_type :junit
-      file_format :gzip
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit/junit_with_three_testsuites.xml.gz'), 'application/x-gzip')
-      end
-    end
-
-    trait :junit_with_corrupted_data do
-      file_type :junit
-      file_format :gzip
-
-      after(:build) do |artifact, evaluator|
-        artifact.file = fixture_file_upload(
-          Rails.root.join('spec/fixtures/junit/junit_with_corrupted_data.xml.gz'), 'application/x-gzip')
+          Rails.root.join("spec/fixtures/junit/#{evaluator.file}"), 'application/x-gzip')
       end
     end
 
