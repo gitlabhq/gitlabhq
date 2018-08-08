@@ -1,5 +1,5 @@
 - if ::Gitlab::CurrentSettings.custom_project_templates_enabled?
-  %section.settings.as-custom-project-templates.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+  %section.settings.as-custom-project-templates.no-animate#js-custom-project-templates-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         = _('Custom project templates')
@@ -9,7 +9,7 @@
         = _('Select the custom project template source group.')
     .settings-content
 
-      = form_for @application_setting, url: admin_application_settings_path do |f|
+      = form_for @application_setting, url: admin_application_settings_path(anchor: 'js-custom-project-templates-settings') do |f|
         = form_errors(@application_setting)
 
         %fieldset
