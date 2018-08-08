@@ -10,6 +10,7 @@
         Customize your issue restrictions.
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "issue-settings-form" }, authenticity_token: true do |f|
+        %input{ type: 'hidden', name: 'update_section', value: 'js-issue-settings' }
         .form-group
           = f.label :issues_template, class: 'label-bold' do
             Default description template for issues
