@@ -164,6 +164,8 @@ module EE
       end
 
       class Epic < Grape::Entity
+        can_admin_epic = ->(epic, opts) { Ability.allowed?(opts[:user], :admin_epic, epic) }
+
         expose :id
         expose :iid
         expose :group_id
@@ -171,7 +173,12 @@ module EE
         expose :description
         expose :author, using: ::API::Entities::UserBasic
         expose :start_date
-        expose :end_date
+        expose :start_date_is_fixed?, as: :start_date_is_fixed, if: can_admin_epic
+        expose :start_date_fixed, :start_date_from_milestones, if: can_admin_epic
+        expose :end_date # @deprecated
+        expose :end_date, as: :due_date
+        expose :due_date_is_fixed?, as: :due_date_is_fixed, if: can_admin_epic
+        expose :due_date_fixed, :due_date_from_milestones, if: can_admin_epic
         expose :created_at
         expose :updated_at
         expose :labels do |epic, options|

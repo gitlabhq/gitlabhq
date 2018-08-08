@@ -181,9 +181,11 @@ describe Groups::EpicsController do
     end
 
     describe 'PUT #update' do
+      let(:date) { Date.new(2002, 1, 1)}
+
       before do
         group.add_developer(user)
-        put :update, group_id: group, id: epic.to_param, epic: { title: 'New title', label_ids: [label.id] }, format: :json
+        put :update, group_id: group, id: epic.to_param, epic: { title: 'New title', label_ids: [label.id], start_date_fixed: '2002-01-01', start_date_is_fixed: true }, format: :json
       end
 
       it 'returns status 200' do
@@ -195,6 +197,9 @@ describe Groups::EpicsController do
 
         expect(epic.title).to eq('New title')
         expect(epic.labels).to eq([label])
+        expect(epic.start_date_fixed).to eq(date)
+        expect(epic.start_date).to eq(date)
+        expect(epic.start_date_is_fixed).to eq(true)
       end
     end
 

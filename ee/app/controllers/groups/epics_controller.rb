@@ -66,8 +66,10 @@ class Groups::EpicsController < Groups::ApplicationController
     [
       :title,
       :description,
-      :start_date,
-      :end_date,
+      :start_date_fixed,
+      :start_date_is_fixed,
+      :due_date_fixed,
+      :due_date_is_fixed,
       label_ids: []
     ]
   end

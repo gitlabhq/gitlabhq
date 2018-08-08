@@ -53,7 +53,7 @@ module API
         # For now we return empty body
         # The issues list in the correct order in body will be returned as part of #4250
         if result
-          present epic.issues(current_user),
+          present epic.issues_readable_by(current_user),
             with: EE::API::Entities::EpicIssue,
             current_user: current_user
         else
@@ -70,7 +70,7 @@ module API
       get ':id/(-/)epics/:epic_iid/issues' do
         authorize_can_read!
 
-        present epic.issues(current_user),
+        present epic.issues_readable_by(current_user),
           with: EE::API::Entities::EpicIssue,
           current_user: current_user
       end

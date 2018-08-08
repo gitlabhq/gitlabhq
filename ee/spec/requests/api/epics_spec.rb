@@ -40,6 +40,32 @@ describe API::Epics do
     end
   end
 
+  shared_examples 'can admin epics' do
+    let(:extra_date_fields) { %w[start_date_is_fixed start_date_fixed due_date_is_fixed due_date_fixed] }
+
+    context 'when permission is absent' do
+      RSpec::Matchers.define_negated_matcher :exclude, :include
+
+      it 'returns epic with extra date fields' do
+        get api(url, user), params
+
+        expect(Array.wrap(JSON.parse(response.body))).to all(exclude(*extra_date_fields))
+      end
+    end
+
+    context 'when permission is present' do
+      before do
+        group.add_maintainer(user)
+      end
+
+      it 'returns epic with extra date fields' do
+        get api(url, user), params
+
+        expect(Array.wrap(JSON.parse(response.body))).to all(include(*extra_date_fields))
+      end
+    end
+  end
+
   describe 'GET /groups/:id/epics' do
     let(:url) { "/groups/#{group.path}/epics" }
 
@@ -138,6 +164,8 @@ describe API::Epics do
 
         expect_array_response([epic2.id])
       end
+
+      it_behaves_like 'can admin epics'
     end
   end
 
@@ -149,17 +177,21 @@ describe API::Epics do
     context 'when the request is correct' do
       before do
         stub_licensed_features(epics: true)
-
-        get api(url, user)
       end
 
       it 'returns 200 status' do
+        get api(url, user)
+
         expect(response).to have_gitlab_http_status(200)
       end
 
       it 'matches the response schema' do
+        get api(url, user)
+
         expect(response).to match_response_schema('public_api/v4/epic', dir: 'ee')
       end
+
+      it_behaves_like 'can admin epics'
     end
   end
 
@@ -206,13 +238,26 @@ describe API::Epics do
           expect(epic.description).to eq('epic description')
           expect(epic.labels.first.title).to eq('label1')
         end
+
+        context 'when deprecated start_date and end_date params are present' do
+          let(:start_date) { Date.new(2001, 1, 1) }
+          let(:due_date) { Date.new(2001, 1, 2) }
+          let(:params) { { title: 'new epic', start_date: start_date, end_date: due_date } }
+
+          it 'updates start_date_fixed and due_date_fixed' do
+            result = Epic.last
+
+            expect(result.start_date_fixed).to eq(start_date)
+            expect(result.due_date_fixed).to eq(due_date)
+          end
+        end
       end
     end
   end
 
   describe 'PUT /groups/:id/epics/:epic_iid' do
     let(:url) { "/groups/#{group.path}/epics/#{epic.iid}" }
-    let(:params) { { title: 'new title', description: 'new description', labels: 'label2' } }
+    let(:params) { { title: 'new title', description: 'new description', labels: 'label2', start_date_fixed: "2018-07-17", start_date_is_fixed: true } }
 
     it_behaves_like 'error requests'
 
@@ -260,6 +305,23 @@ describe API::Epics do
           expect(result.title).to eq('new title')
           expect(result.description).to eq('new description')
           expect(result.labels.first.title).to eq('label2')
+          expect(result.start_date).to eq(Date.new(2018, 7, 17))
+          expect(result.start_date_fixed).to eq(Date.new(2018, 7, 17))
+          expect(result.start_date_is_fixed).to eq(true)
+        end
+
+        context 'when deprecated start_date and end_date params are present' do
+          let(:epic) { create(:epic, :use_fixed_dates, group: group) }
+          let(:new_start_date) { epic.start_date + 1.day }
+          let(:new_due_date) { epic.end_date + 1.day }
+          let!(:params) { { start_date: new_start_date, end_date: new_due_date } }
+
+          it 'updates start_date_fixed and due_date_fixed' do
+            result = epic.reload
+
+            expect(result.start_date_fixed).to eq(new_start_date)
+            expect(result.due_date_fixed).to eq(new_due_date)
+          end
         end
       end
     end

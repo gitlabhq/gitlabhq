@@ -13,10 +13,13 @@ module EE
 
       belongs_to :assignee, class_name: "User"
       belongs_to :group
+      belongs_to :start_date_sourcing_milestone, class_name: 'Milestone'
+      belongs_to :due_date_sourcing_milestone, class_name: 'Milestone'
 
       has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.epics&.maximum(:iid) }
 
       has_many :epic_issues
+      has_many :issues, through: :epic_issues
 
       validates :group, presence: true
 
@@ -78,6 +81,36 @@ module EE
       def parent_class
         ::Group
       end
+
+      def update_start_and_due_dates(epics)
+        groups = epics.includes(:issues).group_by do |epic|
+          milestone_ids = epic.issues.map(&:milestone_id)
+          milestone_ids.compact!
+          milestone_ids.uniq!
+          milestone_ids
+        end
+
+        groups.each do |milestone_ids, epics|
+          next if milestone_ids.empty?
+
+          results = Epics::DateSourcingMilestonesFinder.new(epics.first.id)
+
+          self.where(id: epics.map(&:id)).update_all(
+            [
+              %{
+                start_date = CASE WHEN start_date_is_fixed = true THEN start_date ELSE ? END,
+                start_date_sourcing_milestone_id = ?,
+                end_date = CASE WHEN due_date_is_fixed = true THEN end_date ELSE ? END,
+                due_date_sourcing_milestone_id = ?
+              },
+              results.start_date,
+              results.start_date_sourcing_milestone_id,
+              results.due_date,
+              results.due_date_sourcing_milestone_id
+            ]
+          )
+        end
+      end
     end
 
     def assignees
@@ -109,6 +142,25 @@ module EE
     # Needed to use EntityDateHelper#remaining_days_in_words
     alias_attribute(:due_date, :end_date)
 
+    def update_start_and_due_dates
+      results = Epics::DateSourcingMilestonesFinder.new(id)
+
+      self.start_date = start_date_is_fixed? ? start_date_fixed : results.start_date
+      self.start_date_sourcing_milestone_id = results.start_date_sourcing_milestone_id
+      self.due_date = due_date_is_fixed? ? due_date_fixed : results.due_date
+      self.due_date_sourcing_milestone_id = results.due_date_sourcing_milestone_id
+
+      save if changed?
+    end
+
+    def start_date_from_milestones
+      start_date_is_fixed? ? start_date_sourcing_milestone&.start_date : start_date
+    end
+
+    def due_date_from_milestones
+      due_date_is_fixed? ? due_date_sourcing_milestone&.due_date : due_date
+    end
+
     def to_reference(from = nil, full: false)
       reference = "#{self.class.reference_prefix}#{iid}"
 
@@ -125,7 +177,7 @@ module EE
     def update_project_counter_caches
     end
 
-    def issues(current_user)
+    def issues_readable_by(current_user)
       related_issues = ::Issue.select('issues.*, epic_issues.id as epic_issue_id, epic_issues.relative_position')
         .joins(:epic_issue)
         .where("epic_issues.epic_id = #{id}")

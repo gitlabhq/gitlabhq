@@ -58,7 +58,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       get ':id/(-/)epics' do
-        present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic
+        present find_epics(group_id: user_group.id), with: EE::API::Entities::Epic, user: current_user
       end
 
       desc 'Get details of an epic' do
@@ -70,7 +70,7 @@ module API
       get ':id/(-/)epics/:epic_iid' do
         authorize_can_read!
 
-        present epic, with: EE::API::Entities::Epic
+        present epic, with: EE::API::Entities::Epic, user: current_user
       end
 
       desc 'Create a new epic' do
@@ -79,8 +79,10 @@ module API
       params do
         requires :title, type: String, desc: 'The title of an epic'
         optional :description, type: String, desc: 'The description of an epic'
-        optional :start_date, type: String, desc: 'The start date of an epic'
-        optional :end_date, type: String, desc: 'The end date of an epic'
+        optional :start_date, as: :start_date_fixed, type: String, desc: 'The start date of an epic'
+        optional :start_date_is_fixed, type: Boolean, desc: 'Indicates start date should be sourced from start_date_fixed field not the issue milestones'
+        optional :end_date, as: :due_date_fixed, type: String, desc: 'The due date of an epic'
+        optional :due_date_is_fixed, type: Boolean, desc: 'Indicates due date should be sourced from due_date_fixed field not the issue milestones'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
       end
       post ':id/(-/)epics' do
@@ -88,7 +90,7 @@ module API
 
         epic = ::Epics::CreateService.new(user_group, current_user, declared_params(include_missing: false)).execute
         if epic.valid?
-          present epic, with: EE::API::Entities::Epic
+          present epic, with: EE::API::Entities::Epic, user: current_user
         else
           render_validation_error!(epic)
         end
@@ -101,10 +103,12 @@ module API
         requires :epic_iid, type: Integer, desc: 'The internal ID of an epic'
         optional :title, type: String, desc: 'The title of an epic'
         optional :description, type: String, desc: 'The description of an epic'
-        optional :start_date, type: String, desc: 'The start date of an epic'
-        optional :end_date, type: String, desc: 'The end date of an epic'
+        optional :start_date, as: :start_date_fixed, type: String, desc: 'The start date of an epic'
+        optional :start_date_is_fixed, type: Boolean, desc: 'Indicates start date should be sourced from start_date_fixed field not the issue milestones'
+        optional :end_date, as: :due_date_fixed, type: String, desc: 'The due date of an epic'
+        optional :due_date_is_fixed, type: Boolean, desc: 'Indicates due date should be sourced from due_date_fixed field not the issue milestones'
         optional :labels, type: String, desc: 'Comma-separated list of label names'
-        at_least_one_of :title, :description, :start_date, :end_date, :labels
+        at_least_one_of :title, :description, :start_date_fixed, :due_date_fixed, :labels
       end
       put ':id/(-/)epics/:epic_iid' do
         authorize_can_admin!
@@ -114,7 +118,7 @@ module API
         result = ::Epics::UpdateService.new(user_group, current_user, update_params).execute(epic)
 
         if result.valid?
-          present result, with: EE::API::Entities::Epic
+          present result, with: EE::API::Entities::Epic, user: current_user
         else
           render_validation_error!(result)
         end

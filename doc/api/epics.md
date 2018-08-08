@@ -10,6 +10,14 @@ If epics feature is not available a `403` status code will be returned.
 
 The [epic issues API](epic_issues.md) allows you to interact with issues associated with an epic.
 
+# Milestone dates integration
+
+> [Introduced][ee-6448] in GitLab 11.2.
+
+Since start date and due date can be dynamically sourced from related issue milestones, when user has edit permission, additional fields will be shown. These include two boolean fields `start_date_is_fixed` and `due_date_is_fixed`, and four date fields `start_date_fixed`, `start_date_from_milestones`, `due_date_fixed` and `due_date_from_milestones`.
+
+`end_date` has been deprecated in favor of `due_date`.
+
 ## List epics for a group
 
 Gets all epics of the requested group and its subgroups.
@@ -51,11 +59,18 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/018729e129a6f31c80a6327a30196823?s=80&d=identicon",
     "web_url": "http://localhost:3001/kam"
   },
-  "labels": [],
   "start_date": null,
-  "end_date": null,
-  "created_at": "2018-01-21T06:21:13.165Z",
-  "updated_at": "2018-01-22T12:41:41.166Z"
+  "start_date_is_fixed": false,
+  "start_date_fixed": null,
+  "start_date_from_milestones": null,
+  "end_date": "2018-07-31",
+  "due_date": "2018-07-31",
+  "due_date_is_fixed": false,
+  "due_date_fixed": null,
+  "due_date_from_milestones": "2018-07-31",
+  "created_at": "2018-07-17T13:36:22.770Z",
+  "updated_at": "2018-07-18T12:22:05.239Z",
+  "labels": []
   }
 ]
 ```
@@ -95,9 +110,17 @@ Example response:
     "web_url": "http://localhost:3001/arnita"
   },
   "start_date": null,
-  "end_date": null,
-  "created_at": "2018-01-21T06:21:13.165Z",
-  "updated_at": "2018-01-22T12:41:41.166Z"
+  "start_date_is_fixed": false,
+  "start_date_fixed": null,
+  "start_date_from_milestones": null,
+  "end_date": "2018-07-31",
+  "due_date": "2018-07-31",
+  "due_date_is_fixed": false,
+  "due_date_fixed": null,
+  "due_date_from_milestones": "2018-07-31",
+  "created_at": "2018-07-17T13:36:22.770Z",
+  "updated_at": "2018-07-18T12:22:05.239Z",
+  "labels": []
 }
 ```
 
@@ -139,17 +162,26 @@ Example response:
     "id" : 18,
     "username" : "eileen.lowe"
   },
-  "labels": [],
   "start_date": null,
-  "end_date": null,
-  "created_at": "2018-01-21T06:21:13.165Z",
-  "updated_at": "2018-01-22T12:41:41.166Z"
+  "start_date_is_fixed": false,
+  "start_date_fixed": null,
+  "start_date_from_milestones": null,
+  "end_date": "2018-07-31",
+  "due_date": "2018-07-31",
+  "due_date_is_fixed": false,
+  "due_date_fixed": null,
+  "due_date_from_milestones": "2018-07-31",
+  "created_at": "2018-07-17T13:36:22.770Z",
+  "updated_at": "2018-07-18T12:22:05.239Z",
+  "labels": []
 }
 ```
 
 ## Update epic
 
 Updates an epic
+
+Note that after 11.2, `start_date` and `end_date` should no longer be updated directly, as they are now composite fields. User can configure the `_is_fixed` and `_fixed` fields instead.
 
 ```
 PUT /groups/:id/epics/:epic_iid
@@ -162,8 +194,10 @@ PUT /groups/:id/epics/:epic_iid
 | `title`             | string           | no         | The title of an epic |
 | `description`       | string           | no         | The description of an epic  |
 | `labels`            | string           | no         | The comma separated list of labels |
-| `start_date`        | string           | no         | The start date of an epic  |
-| `end_date`          | string.          | no         | The end date of an epic |
+| `start_date_is_fixed` | boolean        | no         | Whether start date should be sourced from `start_date_fixed` |
+| `start_date_fixed`  | string           | no         | The fixed start date of an epic  |
+| `due_date_is_fixed` | boolean          | no         | Whether due date should be sourced from `due_date_fixed` |
+| `due_date_fixed`    | string           | no         | The fixed due date of an epic |
 
 ```bash
 curl --header PUT "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/groups/1/epics/5?title=New%20Title
@@ -186,11 +220,18 @@ Example response:
     "id" : 18,
     "username" : "eileen.lowe"
   },
-  "labels": [],
   "start_date": null,
-  "end_date": null,
-  "created_at": "2018-01-21T06:21:13.165Z",
-  "updated_at": "2018-01-22T12:41:41.166Z"
+  "start_date_is_fixed": false,
+  "start_date_fixed": null,
+  "start_date_from_milestones": null,
+  "end_date": "2018-07-31",
+  "due_date": "2018-07-31",
+  "due_date_is_fixed": false,
+  "due_date_fixed": null,
+  "due_date_from_milestones": "2018-07-31",
+  "created_at": "2018-07-17T13:36:22.770Z",
+  "updated_at": "2018-07-18T12:22:05.239Z",
+  "labels": []
 }
 ```
 
@@ -278,3 +319,5 @@ Example response:
   "created_at": "2016-07-01T11:09:13.992Z"
 }
 ```
+
+[ee-6448]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6448
