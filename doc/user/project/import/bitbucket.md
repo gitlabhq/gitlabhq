@@ -1,17 +1,18 @@
-# Import your project from Bitbucket to GitLab
+# Import your project from Bitbucket Cloud to GitLab
 
-Import your projects from Bitbucket to GitLab with minimal effort.
+Import your projects from Bitbucket Cloud to GitLab with minimal effort.
 
 ## Overview
 
 >**Note:**
-The [Bitbucket integration][bb-import] must be first enabled in order to be
+The [Bitbucket Cloud integration][bb-import] must be first enabled in order to be
 able to import your projects from Bitbucket. Ask your GitLab administrator
 to enable this if not already.
 
->**Note:**  
-The BitBucket importer currently only works with BitBucket's cloud offering 
-(bitbucket.org) and does not work with BitBucket Server (aka Stash).
+>**Note:**
+The Bitbucket Cloud importer works only with Bitbucket.org, not with Bitbucket
+Server (aka Stash). If you are trying to import projects from Bitbucket Server, use
+[the Bitbucket Server importer](bitbucket_server.md).
 
 - At its current state, the Bitbucket importer can import:
   - the repository description (GitLab 7.7+)
@@ -48,7 +49,7 @@ namespace that started the import process.
 
     ![New project in GitLab](img/bitbucket_import_new_project.png)
 
-1. Click on the "Bitbucket" button
+1. Click on the "Bitbucket Cloud" button.
 
     ![Bitbucket](img/import_projects_from_new_project_page.png)
 
