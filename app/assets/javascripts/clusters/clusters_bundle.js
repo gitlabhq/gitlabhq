@@ -6,7 +6,7 @@ import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
 import {
-  APPLICATION_INSTALLED,
+  APPLICATION_STATUS,
   REQUEST_LOADING,
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
@@ -177,8 +177,8 @@ export default class Clusters {
 
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
     const appTitles = Object.keys(newApplicationMap)
-      .filter(appId => newApplicationMap[appId].status === APPLICATION_INSTALLED &&
-        prevApplicationMap[appId].status !== APPLICATION_INSTALLED &&
+      .filter(appId => newApplicationMap[appId].status === APPLICATION_STATUS.INSTALLED &&
+        prevApplicationMap[appId].status !== APPLICATION_STATUS.INSTALLED &&
         prevApplicationMap[appId].status !== null)
       .map(appId => newApplicationMap[appId].title);
 

@@ -1,0 +1,5 @@
+---
+title: Improve performance and memory footprint of Changes tab of Merge Requests
+merge_request: 21028
+author:
+type: performance

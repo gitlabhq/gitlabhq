@@ -459,6 +459,7 @@ img.emoji {
 .prepend-left-15 { margin-left: 15px; }
 .prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px; }
+.append-right-4 { margin-right: 4px; }
 .append-right-5 { margin-right: 5px; }
 .append-right-8 { margin-right: 8px; }
 .append-right-10 { margin-right: 10px; }
@@ -478,3 +479,5 @@ img.emoji {
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
 .flex-align-self-center { align-self: center; }
+.flex-grow { flex-grow: 1; }
+.flex-no-shrink { flex-shrink: 0; }

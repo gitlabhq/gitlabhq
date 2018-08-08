@@ -48,7 +48,11 @@ describe('DiffLineGutterContent', () => {
 
       it('should return discussions for the given lineCode', () => {
         const { lineCode } = getDiffFileMock().highlightedDiffLines[1];
-        const component = createComponent({ lineCode, showCommentButton: true });
+        const component = createComponent({
+          lineCode,
+          showCommentButton: true,
+          discussions: getDiscussionsMockData(),
+        });
 
         setDiscussions(component);
 
