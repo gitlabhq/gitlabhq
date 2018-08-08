@@ -30,8 +30,6 @@ class Gitlab::Seeder::Pipelines
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
     { name: 'spinach:osx', stage: 'test', status: :failed, allow_failure: true,
       queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
-    { name: 'java ant', stage: 'test', status: :failed, allow_failure: true,
-        queued_at: 8.hour.ago, started_at: 8.hour.ago, finished_at: 7.hour.ago },
 
     # deploy stage
     { name: 'staging', stage: 'deploy', environment: 'staging', status_event: :success,
@@ -61,51 +59,6 @@ class Gitlab::Seeder::Pipelines
       pipeline.update_duration
       pipeline.update_status
     end
-  end
-
-  def create_running_pipeline_with_test_reports(ref, rspec_pattern:, ant_pattern:)
-    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3 corrupted].include?(rspec_pattern)
-    raise 'Unknown result_pattern' unless %w[pass failed-1 failed-2 failed-3].include?(ant_pattern)
-
-    last_commit = @project.repository.commit(ref)
-    pipeline = create_pipeline!(@project, ref, last_commit)
-
-    @project.merge_requests.find_by_source_branch(ref).update!(head_pipeline_id: pipeline.id) if ref != 'master'
-
-    (0...3).each do |index|
-      Ci::Build.create!(name: "rspec:pg #{index} 3", stage: 'test', status: :running, project: @project, pipeline: pipeline, ref: ref).tap do |build|
-        path = if rspec_pattern == 'corrupted'
-                 Rails.root + "spec/fixtures/junit/junit_with_corrupted_data.xml.gz"
-               else
-                 Rails.root + "spec/fixtures/junit/#{rspec_pattern}-rspec-#{index}-3.xml.gz"
-               end
-
-        artifacts_cache_file(path) do |file|
-          build.job_artifacts.create!(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-        end
-      end
-    end
-
-    Ci::Build.create!(name: "java ant", stage: 'test', status: :running, project: @project, pipeline: pipeline, ref: ref).tap do |build|
-      path = Rails.root + "spec/fixtures/junit/#{ant_pattern}-ant-test.xml.gz"
-
-      artifacts_cache_file(path) do |file|
-        build.job_artifacts.create!(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-      end
-    end
-
-    pipeline.update_duration
-    pipeline.update_status
-  end
-
-  def finish_last_pipeline(ref)
-    last_pipeline = @project.pipelines.where(ref: ref).last
-    last_pipeline.builds.update_all(status: :success)
-    last_pipeline.update_status
-  end
-
-  def destroy_pipeline(ref)
-    @project.pipelines.where(ref: ref).destroy_all
   end
 
   private
@@ -153,8 +106,8 @@ class Gitlab::Seeder::Pipelines
       # (id required), that is why we need `#tap` method instead of passing
       # block directly to `Ci::Build#create!`.
 
-      setup_artifacts(build) if %w[build test].include?(build.stage)
-      setup_test_reports(build) if %w[test].include?(build.stage)
+      setup_artifacts(build)
+      setup_test_reports(build)
       setup_build_log(build)
 
       build.project.environments.
@@ -165,6 +118,8 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_artifacts(build)
+    return unless build.stage == "build"
+
     artifacts_cache_file(artifacts_archive_path) do |file|
       build.job_artifacts.build(project: build.project, file_type: :archive, file_format: :zip, file: file)
     end
@@ -175,27 +130,15 @@ class Gitlab::Seeder::Pipelines
   end
 
   def setup_test_reports(build)
+    return unless build.stage == "test" && build.name == "rspec:osx"
+
     if build.ref == build.project.default_branch
-      if build.name.include?('rspec:linux')
-        artifacts_cache_file(artifacts_rspec_junit_master_path(build.name)) do |file|
-          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-        end
-      elsif build.name.include?('java ant')
-        artifacts_cache_file(artifacts_ant_junit_master_path) do |file|
-          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-        end
+      artifacts_cache_file(test_reports_pass_path) do |file|
+        build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
       end
     else
-      if build.name.include?('rspec:linux')
-        artifacts_rspec_junit_feature_path(build.name).try do |path|
-          artifacts_cache_file(path) do |file|
-            build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-          end
-        end
-      elsif build.name.include?('java ant')
-        artifacts_cache_file(artifacts_ant_junit_feature_path) do |file|
-          build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
-        end
+      artifacts_cache_file(test_reports_failed_path) do |file|
+        build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
       end
     end
   end
@@ -239,22 +182,12 @@ class Gitlab::Seeder::Pipelines
     Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz'
   end
 
-  def artifacts_rspec_junit_master_path(build_name)
-    index, total = build_name.scan(/ (\d) (\d)/).first
-    Rails.root + "spec/fixtures/junit/junit_master_rspec_#{index}_#{total}.xml.gz"
+  def test_reports_pass_path
+    Rails.root + 'spec/fixtures/junit/pass-rspec-0-3.xml.gz'
   end
 
-  def artifacts_rspec_junit_feature_path(build_name)
-    index, total = build_name.scan(/ (\d) (\d)/).first
-    Rails.root + "spec/fixtures/junit/junit_feature_rspec_#{index}_#{total}.xml.gz"
-  end
-
-  def artifacts_ant_junit_master_path
-    Rails.root + "spec/fixtures/junit/junit_master_ant.xml.gz"
-  end
-
-  def artifacts_ant_junit_feature_path
-    Rails.root + "spec/fixtures/junit/junit_feature_ant.xml.gz"
+  def test_reports_failed_path
+    Rails.root + 'spec/fixtures/junit/failed-1-rspec-0-3.xml.gz'
   end
 
   def artifacts_cache_file(file_path)
@@ -267,9 +200,9 @@ class Gitlab::Seeder::Pipelines
   end
 end
 
-# Gitlab::Seeder.quiet do
-#   Project.all.sample(5).each do |project|
-#     project_builds = Gitlab::Seeder::Pipelines.new(project)
-#     project_builds.seed!
-#   end
-# end
+Gitlab::Seeder.quiet do
+  Project.all.sample(5).each do |project|
+    project_builds = Gitlab::Seeder::Pipelines.new(project)
+    project_builds.seed!
+  end
+end
