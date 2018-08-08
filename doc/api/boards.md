@@ -405,7 +405,7 @@ POST /projects/:id/boards/:board_id/lists
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `board_id` | integer | yes | The ID of a board |
 | `label_id` | integer | no | The ID of a label |
-| `assignee_id` | integer | no | The ID of an user |
+| `assignee_id` | integer | no | The ID of a user |
 | `milestone_id` | integer | no | The ID of a milestone |
 
 >**Note**: Label, assignee and milestone arguments are mutually exclusive,
