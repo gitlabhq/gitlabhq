@@ -2,7 +2,7 @@
 import { mapActions } from 'vuex';
 import { s__ } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
-import IssueStatusIcon from '~/vue_shared/components/reports/issue_status_icon.vue';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import { getIssueStatusFromLicenseStatus } from 'ee/vue_shared/license_management/store/utils';
 
 import { LICENSE_APPROVAL_STATUS } from '../constants';

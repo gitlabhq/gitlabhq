@@ -1,6 +1,6 @@
 <script>
 import { mapState, mapGetters, mapActions } from 'vuex';
-import ReportSection from '~/vue_shared/components/reports/report_section.vue';
+import ReportSection from '~/reports/components/report_section.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import reportsMixin from 'ee/vue_shared/security_reports/mixins/reports_mixin';
 import SetLicenseApprovalModal from 'ee/vue_shared/license_management/components/set_approval_status_modal.vue';

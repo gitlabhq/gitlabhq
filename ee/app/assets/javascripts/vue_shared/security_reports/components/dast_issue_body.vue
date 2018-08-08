@@ -4,7 +4,7 @@
  * [severity] ([confidence]): [name]
  */
 
-import ModalOpenName from '~/vue_shared/components/reports/modal_open_name.vue';
+import ModalOpenName from '~/reports/components/modal_open_name.vue';
 
 export default {
   name: 'DastIssueBody',

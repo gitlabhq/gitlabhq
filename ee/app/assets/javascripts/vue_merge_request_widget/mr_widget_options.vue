@@ -1,5 +1,5 @@
 <script>
-import ReportSection from '~/vue_shared/components/reports/report_section.vue';
+import ReportSection from '~/reports/components/report_section.vue';
 import GroupedSecurityReportsApp from 'ee/vue_shared/security_reports/grouped_security_reports_app.vue';
 import reportsMixin from 'ee/vue_shared/security_reports/mixins/reports_mixin';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
