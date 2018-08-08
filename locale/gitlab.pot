@@ -2073,6 +2073,9 @@ msgstr ""
 msgid "Configure storage path and circuit breaker settings."
 msgstr ""
 
+msgid "Configure the %{link} integration."
+msgstr ""
+
 msgid "Configure the way a user creates a new account."
 msgstr ""
 

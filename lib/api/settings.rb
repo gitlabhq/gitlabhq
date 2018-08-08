@@ -152,6 +152,12 @@ module API
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
+      optional :snowplow_enabled, type: Boolean, desc: 'Enable Snowplow'
+      given snowplow_enabled: ->(val) { val } do
+        requires :snowplow_collector_uri, type: String, desc: 'Snowplow Collector URI'
+        optional :snowplow_cookie_domain, type: String, desc: 'Snowplow cookie domain'
+        optional :snowplow_site_id, type: String, desc: 'Snowplow Site/Application ID'
+      end
       optional :usage_ping_enabled, type: Boolean, desc: 'Every week GitLab will report license usage back to GitLab, Inc.'
       ## EE-only END
 

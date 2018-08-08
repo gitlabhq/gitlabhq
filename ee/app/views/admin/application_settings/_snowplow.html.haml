@@ -1,0 +1,22 @@
+= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .form-check
+        = f.check_box :snowplow_enabled, class: 'form-check-input'
+        = f.label :snowplow_enabled, class: 'form-check-label' do
+          Enable Snowplow
+    .form-group
+      = f.label :snowplow_collector_uri, 'Collector URI', class: 'label-light'
+      = f.text_field :snowplow_collector_uri, class: 'form-control', placeholder: 'https://snowplow.example.com'
+    .form-group
+      = f.label :snowplow_site_id, class: 'label-light' do
+        Site ID
+      = f.text_field :snowplow_site_id, class: 'form-control'
+    .form-group
+      = f.label :snowplow_cookie_domain, class: 'label-light' do
+        Cookie domain
+      = f.text_field :snowplow_cookie_domain, class: 'form-control'
+
+  = f.submit 'Save changes', class: 'btn btn-success'

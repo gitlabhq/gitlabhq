@@ -12,10 +12,19 @@ describe API::Settings, 'EE Settings' do
 
   describe "PUT /application/settings" do
     it 'sets EE specific settings' do
-      put api("/application/settings", admin), help_text: 'Help text'
+      put api("/application/settings", admin),
+        help_text: 'Help text',
+        snowplow_collector_uri: 'https://snowplow.example.com',
+        snowplow_cookie_domain: '.example.com',
+        snowplow_enabled: true,
+        snowplow_site_id:  'site_id'
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['help_text']).to eq('Help text')
+      expect(json_response['snowplow_collector_uri']).to eq('https://snowplow.example.com')
+      expect(json_response['snowplow_cookie_domain']).to eq('.example.com')
+      expect(json_response['snowplow_enabled']).to be_truthy
+      expect(json_response['snowplow_site_id']).to eq('site_id')
     end
   end
 
@@ -100,5 +109,14 @@ describe API::Settings, 'EE Settings' do
     let(:feature) { :email_additional_text }
 
     it_behaves_like 'settings for licensed features'
+  end
+
+  context "missing snowplow_collector_uri value when snowplow_enabled is true" do
+    it "returns a blank parameter error message" do
+      put api("/application/settings", admin), snowplow_enabled: true
+
+      expect(response).to have_gitlab_http_status(400)
+      expect(json_response['error']).to eq('snowplow_collector_uri is missing')
+    end
   end
 end
