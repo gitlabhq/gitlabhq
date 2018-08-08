@@ -1,0 +1,21 @@
+-# haml-lint:disable InlineJavaScript
+:javascript
+  ;(function(p,l,o,w,i,n,g){if(!p[i]){p.GlobalSnowplowNamespace=p.GlobalSnowplowNamespace||[];
+  p.GlobalSnowplowNamespace.push(i);p[i]=function(){(p[i].q=p[i].q||[]).push(arguments)
+  };p[i].q=p[i].q||[];n=l.createElement(o);g=l.getElementsByTagName(o)[0];n.async=1;
+  n.src=w;g.parentNode.insertBefore(n,g)}}(window,document,"script","#{asset_url('/assets/shared/snowplow/sp.js')}","snowplow"));
+
+  window.snowplow('newTracker', 'cf', '#{Gitlab::CurrentSettings.snowplow_collector_uri}', {
+    appId: '#{Gitlab::CurrentSettings.snowplow_site_id}',
+    cookieDomain: '#{Gitlab::CurrentSettings.snowplow_cookie_domain}',
+    userFingerprint: false,
+    respectDoNotTrack: true,
+    forceSecureTracker: true,
+    post: true,
+    contexts: {
+        webPage: true,
+    }
+  });
+
+  window.snowplow('enableActivityTracking', 30, 30);
+  window.snowplow('trackPageView');
