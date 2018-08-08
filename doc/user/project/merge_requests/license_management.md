@@ -1,4 +1,4 @@
-# License Management
+# License Management **[ULTIMATE]**
 
 > [Introduced][ee-5483] in [GitLab Ultimate][ee] 11.0.
 
