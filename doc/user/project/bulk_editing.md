@@ -1,17 +1,25 @@
-# Bulk Editing
+# Bulk editing issues and merge requests
 
->**Note:**
+>
+**Notes:**
 - A permission level of `Reporter` or higher is required in order to manage
 issues.
 - A permission level of `Developer` or higher is required in order to manage
 merge requests.
 
-Fields across multiple issues or merge requests can be updated simutaneously by using the bulk edit feature.
+Attributes can be updated simultaneously across multiple issues or merge requests
+by using the bulk editing feature.
 
->**Note:**
-- Bulk editing of issues and merge requests is only available at the project level.
+![Bulk editing](img/bulk-editing.png)
 
-To access the feature, navigate to either the issue or merge request list for the project and click 'Edit Issues' or 'Edit Merge Requests'. This will cause a sidebar to be shown on the right-hand side of the screen, where the available, editable fields are displayed. Checkboxes will also appear to the left-hand side of each issue or merge request, ready to be selected.
+NOTE: **Note:**
+Bulk editing of issues and merge requests is only available at the project level.
 
-Once all items have been selected, choose the appropriate fields and their values from the sidebar and click 'Update All' to apply these changes.
+To update multiple project issues or merge requests at the same time, navigate to
+their respective lists and click **Edit issues** or **Edit merge requests** available
+in the tab bar. This will open a sidebar on the right-hand side of your screen
+where editable fields will be displayed. Checkboxes will also appear to the left-hand
+side of eachissue or merge request for you to select the items you want to update.
 
+Once you have selected all relevant items, choose the appropriate fields and their
+values from the sidebar and click **Update all** to apply your changes.
