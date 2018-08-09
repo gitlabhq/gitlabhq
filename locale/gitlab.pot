@@ -3031,6 +3031,9 @@ msgstr ""
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr ""
 
+msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
 msgid "Incompatible Project"
 msgstr ""
 
@@ -5189,6 +5192,9 @@ msgstr ""
 msgid "Test coverage parsing"
 msgstr ""
 
+msgid "The Git LFS objects will <strong>not</strong> be synced."
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -5244,6 +5250,9 @@ msgid "The repository for this project is empty"
 msgstr ""
 
 msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> and <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -5406,6 +5415,9 @@ msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
 msgid "This user has no identities"
+msgstr ""
+
+msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
