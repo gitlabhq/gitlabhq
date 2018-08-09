@@ -1,5 +1,5 @@
 class Projects::AutocompleteSourcesController < Projects::ApplicationController
-  before_action :load_autocomplete_service
+  before_action :load_autocomplete_service, except: [:members]
 
   def members
     render json: ::Projects::ParticipantsService.new(@project, current_user).execute(target)
@@ -32,6 +32,8 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def target
-    @autocomplete_service.target(params[:type], params[:type_id])
+    QuickActions::TargetService
+      .new(project, current_user)
+      .execute(params[:type], params[:type_id])
   end
 end
