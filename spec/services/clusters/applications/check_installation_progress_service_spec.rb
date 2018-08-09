@@ -14,6 +14,12 @@ describe Clusters::Applications::CheckInstallationProgressService do
 
       service.execute
     end
+
+    it 'removes the config maps' do
+      expect(service).to receive(:remove_config_map).once
+
+      service.execute
+    end
   end
 
   shared_examples 'a not yet terminated installation' do |a_phase|
@@ -24,6 +30,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
         it 'reschedule a new check' do
           expect(ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
           expect(service).not_to receive(:remove_installation_pod)
+          expect(service).not_to receive(:remove_config_map)
 
           service.execute
 
@@ -54,6 +61,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
 
     allow(service).to receive(:installation_errors).and_return(errors)
     allow(service).to receive(:remove_installation_pod).and_return(nil)
+    allow(service).to receive(:remove_config_map).and_return(nil)
   end
 
   describe '#execute' do

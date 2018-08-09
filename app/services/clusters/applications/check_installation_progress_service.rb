@@ -24,12 +24,14 @@ module Clusters
         app.make_installed!
       ensure
         remove_installation_pod
+        remove_config_map
       end
 
       def on_failed
         app.make_errored!(installation_errors || 'Installation silently failed')
       ensure
         remove_installation_pod
+        remove_config_map
       end
 
       def check_timeout
@@ -38,6 +40,7 @@ module Clusters
             app.make_errored!('Installation timed out')
           ensure
             remove_installation_pod
+            remove_config_map
           end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
@@ -47,6 +50,12 @@ module Clusters
 
       def timeouted?
         Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
+      end
+
+      # FIXME Prometheus relies on config maps!
+      def remove_config_map
+        config_map_name = ::Gitlab::Kubernetes::ConfigMap.new(app.name, app.files).config_map_name
+        helm_api.delete_config_map(config_map_name)
       end
 
       def remove_installation_pod

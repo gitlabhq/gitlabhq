@@ -78,4 +78,13 @@ describe Gitlab::Kubernetes::Helm::Api do
       subject.delete_pod!(command.pod_name)
     end
   end
+
+  describe '#delete_config_map' do
+    it 'deletes the ConfigMap from the kubernetes cluster' do
+      config_map_name = 'values-content-configuration-helm'
+      expect(client).to receive(:delete_config_map).with(config_map_name, gitlab_namespace).once
+
+      subject.delete_config_map(config_map_name)
+    end
+  end
 end

@@ -32,6 +32,10 @@ module Gitlab
           kubeclient.delete_pod(pod_name, namespace.name)
         end
 
+        def delete_config_map(config_map_name)
+          kubeclient.delete_config_map(config_map_name, namespace.name)
+        end
+
         private
 
         attr_reader :kubeclient, :namespace
