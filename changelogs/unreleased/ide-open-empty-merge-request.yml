@@ -1,0 +1,5 @@
+---
+title: Fix empty merge requests not opening in the Web IDE
+merge_request:
+author:
+type: fixed
