@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class RefreshService < MergeRequests::BaseService
     def execute(oldrev, newrev, ref)

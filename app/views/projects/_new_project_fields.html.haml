@@ -4,7 +4,7 @@
 .row{ id: project_name_id }
   = f.hidden_field :ci_cd_only, value: ci_cd_only
   .form-group.project-path.col-sm-6
-    = f.label :namespace_id, class: 'label-light' do
+    = f.label :namespace_id, class: 'label-bold' do
       %span
         Project path
     .input-group
@@ -12,7 +12,13 @@
         .input-group-prepend.has-tooltip{ title: root_url }
           .input-group-text
             = root_url
-        = f.select :namespace_id, namespaces_options(namespace_id_from(params) || :current_user, display_path: true, extra_group: namespace_id_from(params)), {}, { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1}
+        - namespace_id = namespace_id_from(params)
+        = f.select(:namespace_id,
+                   namespaces_options(namespace_id || :current_user,
+                                      display_path: true,
+                                      extra_group: namespace_id),
+                   {},
+                   { class: 'select2 js-select-namespace qa-project-namespace-select', tabindex: 1})
 
       - else
         .input-group-prepend.static-namespace.has-tooltip{ title: user_url(current_user.username) + '/' }
@@ -20,7 +26,7 @@
             #{user_url(current_user.username)}/
         = f.hidden_field :namespace_id, value: current_user.namespace_id
   .form-group.project-path.col-sm-6
-    = f.label :path, class: 'label-light' do
+    = f.label :path, class: 'label-bold' do
       %span
         Project name
     = f.text_field :path, placeholder: "my-awesome-project", class: "form-control", tabindex: 2, autofocus: true, required: true
@@ -30,12 +36,12 @@
     = link_to "Create a group", new_group_path
 
 .form-group
-  = f.label :description, class: 'label-light' do
+  = f.label :description, class: 'label-bold' do
     Project description
     %span (optional)
   = f.text_area :description, placeholder: 'Description format',  class: "form-control", rows: 3, maxlength: 250
 
-= f.label :visibility_level, class: 'label-light' do
+= f.label :visibility_level, class: 'label-bold' do
   Visibility Level
   = link_to icon('question-circle'), help_page_path("public_access/public_access"), aria: { label: 'Documentation for Visibility Level' }, target: '_blank', rel: 'noopener noreferrer'
 = render 'shared/visibility_level', f: f, visibility_level: visibility_level.to_i, can_change_visibility_level: true, form_model: @project, with_label: false

@@ -85,6 +85,14 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
         it { is_expected.to be_nil }
       end
+
+      context 'when cache was invalidated' do
+        it 'refreshes cache' do
+          expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+
+          instance.with_reactive_cache { raise described_class::InvalidateReactiveCache }
+        end
+      end
     end
   end
 
@@ -123,6 +131,13 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         expect_reactive_cache_update_queued(instance)
 
         go!
+      end
+
+      it "calls a reactive_cache_updated only once if content did not change on subsequent update" do
+        expect(instance).to receive(:calculate_reactive_cache).twice
+        expect(instance).to receive(:reactive_cache_updated).once
+
+        2.times { instance.exclusively_update_reactive_cache! }
       end
 
       context 'and #calculate_reactive_cache raises an exception' do

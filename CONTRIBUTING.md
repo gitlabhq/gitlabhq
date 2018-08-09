@@ -56,10 +56,10 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 
 ---
 
-## Contributing Documentation has been moved 
-As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location. 
-[view the new documentation](doc/development/contributing/index.md) to find the latest information. 
+## Contributing Documentation has been moved
 
+As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
+[view the new documentation](doc/development/contributing/index.md) to find the latest information.
 
 ## Contribute to GitLab
 
@@ -158,7 +158,6 @@ learn how to communicate with GitLab. If you're looking for a Gitter or Slack ch
 please consider we favor
 [asynchronous communication](https://about.gitlab.com/handbook/communication/#internal-communication) over real time communication. Thanks for your contribution!
 
-
 ## Contribution Flow
 
 When contributing to GitLab, your merge request is subject to review by merge request maintainers of a particular specialty.
@@ -217,7 +216,7 @@ This [documentation](doc/development/contributing/issue_workflow.md) has been mo
 
 ### Type labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Subject labels
@@ -227,96 +226,96 @@ This [documentation](doc/development/contributing/issue_workflow.md) has been mo
 
 ### Team labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Release Scoping labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Priority labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Severity labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 #### Severity impact guidance
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
-          
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+
 
 ### Label for community contributors
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ## Implement design & UI elements
 
-This [documentation](doc/development/contributing/design.md) has been moved. 
+This [documentation](doc/development/contributing/design.md) has been moved.
 
 
 ## Issue tracker
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 ### Issue triaging
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Feature proposals
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 ### Issue tracker guidelines
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Issue weight
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Regression issues
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Technical and UX debt
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ### Stewardship
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
 
 
 ## Merge requests
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
 
 
 ### Merge request guidelines
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
 
 
 ### Contribution acceptance criteria
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
 
 
 ## Definition of done
 
-This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved. 
+This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved.
 
 
 ## Style guides
 
-This [documentation](doc/development/contributing/design.md) has been moved. 
+This [documentation](doc/development/contributing/design.md) has been moved.

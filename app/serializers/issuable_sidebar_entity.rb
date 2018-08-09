@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuableSidebarEntity < Grape::Entity
   include TimeTrackableEntity
   include RequestAwareEntity

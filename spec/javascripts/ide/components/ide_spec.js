@@ -45,6 +45,33 @@ describe('ide component', () => {
     });
   });
 
+  describe('onBeforeUnload', () => {
+    it('returns undefined when no staged files or changed files', () => {
+      expect(vm.onBeforeUnload()).toBe(undefined);
+    });
+
+    it('returns warning text when their are changed files', () => {
+      vm.$store.state.changedFiles.push(file());
+
+      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+    });
+
+    it('returns warning text when their are staged files', () => {
+      vm.$store.state.stagedFiles.push(file());
+
+      expect(vm.onBeforeUnload()).toBe('Are you sure you want to lose unsaved changes?');
+    });
+
+    it('updates event object', () => {
+      const event = {};
+      vm.$store.state.stagedFiles.push(file());
+
+      vm.onBeforeUnload(event);
+
+      expect(event.returnValue).toBe('Are you sure you want to lose unsaved changes?');
+    });
+  });
+
   describe('file finder', () => {
     beforeEach(done => {
       spyOn(vm, 'toggleFileFinder');

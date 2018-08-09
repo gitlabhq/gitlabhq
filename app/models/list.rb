@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 class List < ActiveRecord::Base
   belongs_to :board
   belongs_to :label
 
-  enum list_type: { backlog: 0, label: 1, closed: 2, assignee: 3 }
+  enum list_type: { backlog: 0, label: 1, closed: 2, assignee: 3, milestone: 4 }
 
   validates :board, :list_type, presence: true
   validates :label, :position, presence: true, if: :label?
@@ -25,11 +27,11 @@ class List < ActiveRecord::Base
   end
 
   def destroyable?
-    label?
+    self.class.destroyable_types.include?(list_type&.to_sym)
   end
 
   def movable?
-    label?
+    self.class.movable_types.include?(list_type&.to_sym)
   end
 
   def title

@@ -35,6 +35,7 @@ Click on the service links to see further configuration instructions and details
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki |
 | Flowdock | Flowdock is a collaboration web app for technical teams |
 | Gemnasium   _(Has been deprecated in GitLab 11.0)_ | Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities |
+| [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
 | [JIRA](jira.md) | JIRA issue tracker |

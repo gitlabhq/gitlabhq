@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Gitlab::Ci::Model
@@ -601,6 +603,18 @@ module Ci
       # rows if there are more than 0 this prevents us from having to run two
       # queries: one to get the count and one to get the rows.
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
+    end
+
+    def has_test_reports?
+      complete? && builds.latest.with_test_reports.any?
+    end
+
+    def test_reports
+      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+        builds.latest.with_test_reports.each do |build|
+          build.collect_test_reports!(test_reports)
+        end
+      end
     end
 
     private

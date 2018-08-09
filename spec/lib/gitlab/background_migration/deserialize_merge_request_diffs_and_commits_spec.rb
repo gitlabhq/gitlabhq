@@ -9,6 +9,11 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
     let(:merge_request) { merge_requests.create!(iid: 1, target_project_id: project.id, source_project_id: project.id, target_branch: 'feature', source_branch: 'master').becomes(MergeRequest) }
     let(:merge_request_diff) { MergeRequest.find(merge_request.id).create_merge_request_diff }
     let(:updated_merge_request_diff) { MergeRequestDiff.find(merge_request_diff.id) }
+    let(:rugged) do
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        project.repository.rugged
+      end
+    end
 
     before do
       allow_any_instance_of(MergeRequestDiff)
@@ -299,11 +304,7 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
-      let(:diffs) do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          first_commit.rugged_diff_from_parent.patches
-        end
-      end
+      let(:diffs) { rugged_diff(first_commit.sha).patches }
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'
@@ -313,14 +314,15 @@ describe Gitlab::BackgroundMigration::DeserializeMergeRequestDiffsAndCommits, :m
       let(:commits) { merge_request_diff.commits.map(&:to_hash) }
       let(:first_commit) { project.repository.commit(merge_request_diff.head_commit_sha) }
       let(:expected_commits) { commits }
-      let(:diffs) do
-        Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-          first_commit.rugged_diff_from_parent.deltas
-        end
-      end
+      let(:diffs) { rugged_diff(first_commit.sha).deltas }
       let(:expected_diffs) { [] }
 
       include_examples 'updated MR diff'
+    end
+
+    def rugged_diff(commit_sha)
+      rugged_commit = rugged.lookup(commit_sha)
+      rugged_commit.parents[0].diff(rugged_commit)
     end
   end
 end

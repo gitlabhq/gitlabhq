@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedRefAccess
   extend ActiveSupport::Concern
 
@@ -17,6 +19,11 @@ module ProtectedRefAccess
     scope :master, -> { maintainer } # @deprecated
     scope :maintainer, -> { where(access_level: Gitlab::Access::MAINTAINER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
+    scope :by_user, -> (user) { where(user_id: user ) }
+    scope :by_group, -> (group) { where(group_id: group ) }
+    scope :for_role, -> { where(user_id: nil, group_id: nil) }
+    scope :for_user, -> { where.not(user_id: nil) }
+    scope :for_group, -> { where.not(group_id: nil) }
 
     validates :access_level, presence: true, if: :role?, inclusion: {
       in: ALLOWED_ACCESS_LEVELS

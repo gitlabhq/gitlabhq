@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class MoveNotificationSettingsService < BaseMoveRelationsService
     def execute(source_project, remove_remaining_elements: true)

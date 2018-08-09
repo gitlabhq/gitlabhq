@@ -28,6 +28,7 @@ class MigrateStagesStatuses < ActiveRecord::Migration
   def down
     disable_statement_timeout
 
+    # rubocop:disable Migration/UpdateLargeTable
     update_column_in_batches(:ci_stages, :status, nil)
   end
 end

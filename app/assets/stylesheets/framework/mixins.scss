@@ -3,13 +3,13 @@
  * Mixins with fixed values
  */
 
-@mixin str-truncated($max_width: 82%) {
+@mixin str-truncated($max-width: 82%) {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
   white-space: nowrap;
-  max-width: $max_width;
+  max-width: $max-width;
 }
 
 /*
@@ -22,7 +22,7 @@
   border: 0;
   border-color: $md-area-border;
 
-  @supports(width: fit-content) {
+  @supports (width: fit-content) {
     display: block;
     width: fit-content;
   }
@@ -116,7 +116,7 @@
 
 /* http://phrappe.com/css/conditional-css-for-webkit-based-browsers/ */
 @mixin on-webkit-only {
-  @media screen and (-webkit-min-device-pixel-ratio:0) {
+  @media screen and (-webkit-min-device-pixel-ratio: 0) {
     @content;
   }
 }
@@ -164,14 +164,18 @@
   bottom: 12px;
   width: 43px;
   height: 30px;
-  transition-duration: .3s;
+  transition-duration: 0.3s;
   -webkit-transform: translateZ(0);
-  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
+  background: linear-gradient(
+    to $gradient-direction,
+    $gradient-color 45%,
+    rgba($gradient-color, 0.4)
+  );
 
   &.scrolling {
     visibility: visible;
     opacity: 1;
-    transition-duration: .3s;
+    transition-duration: 0.3s;
   }
 
   .fa {
@@ -231,6 +235,29 @@
   word-wrap: break-word;
   word-break: break-word;
   max-width: 100%;
+}
+
+@mixin build-loader-animation {
+  position: relative;
+  white-space: initial;
+
+  .dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    margin: auto auto 12px;
+    border-radius: 50%;
+    animation: blinking-dot 1s linear infinite;
+    background: $white-light;
+
+    &:nth-child(2) {
+      animation-delay: 0.33s;
+    }
+
+    &:nth-child(3) {
+      animation-delay: 0.66s;
+    }
+  }
 }
 
 @mixin borderless-status-icon($color) {

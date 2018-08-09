@@ -24,6 +24,13 @@ namespace :import do
     get :jobs
   end
 
+  resource :bitbucket_server, only: [:create, :new], controller: :bitbucket_server do
+    post :configure
+    get :status
+    get :callback
+    get :jobs
+  end
+
   resource :google_code, only: [:create, :new], controller: :google_code do
     get :status
     post :callback

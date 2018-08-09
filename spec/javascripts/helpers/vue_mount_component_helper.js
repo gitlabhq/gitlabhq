@@ -15,4 +15,14 @@ export const mountComponentWithStore = (Component, { el, props, store }) =>
     propsData: props || {},
   }).$mount(el);
 
+export const mountComponentWithSlots = (Component, { props, slots }) => {
+  const component = new Component({
+    propsData: props || {},
+  });
+
+  component.$slots = slots;
+
+  return component.$mount();
+};
+
 export default mountComponent;

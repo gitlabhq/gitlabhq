@@ -26,6 +26,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:hangouts_chat_service) }
     it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
@@ -68,6 +69,7 @@ describe Project do
     it { is_expected.to have_many(:pages_domains) }
     it { is_expected.to have_many(:labels).class_name('ProjectLabel') }
     it { is_expected.to have_many(:users_star_projects) }
+    it { is_expected.to have_many(:repository_languages) }
     it { is_expected.to have_many(:environments) }
     it { is_expected.to have_many(:deployments) }
     it { is_expected.to have_many(:todos) }
@@ -98,6 +100,22 @@ describe Project do
 
         expect(project.ci_cd_settings).to be_an_instance_of(ProjectCiCdSetting)
         expect(project.ci_cd_settings).to be_persisted
+      end
+    end
+
+    context 'Site Statistics' do
+      context 'when creating a new project' do
+        it 'tracks project in SiteStatistic' do
+          expect { create(:project) }.to change { SiteStatistic.fetch.repositories_count }.by(1)
+        end
+      end
+
+      context 'when deleting a project' do
+        it 'untracks project in SiteStatistic' do
+          project = create(:project)
+
+          expect { project.destroy }.to change { SiteStatistic.fetch.repositories_count }.by(-1)
+        end
       end
     end
 
@@ -2941,8 +2959,6 @@ describe Project do
 
         expect(project).to receive(:expire_caches_before_rename)
 
-        expect(project).to receive(:expires_full_path_cache)
-
         project.rename_repo
       end
 
@@ -3091,6 +3107,19 @@ describe Project do
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
       end
 
+      context 'migration to hashed storage' do
+        it 'calls HashedStorageMigrationService with correct options' do
+          project = create(:project, :repository, :legacy_storage)
+          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+
+          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          project.rename_repo
+        end
+      end
+
       it 'renames a repository' do
         stub_container_registry_config(enabled: false)
 
@@ -3101,8 +3130,6 @@ describe Project do
             .with(project, :rename)
 
         expect(project).to receive(:expire_caches_before_rename)
-
-        expect(project).to receive(:expires_full_path_cache)
 
         project.rename_repo
       end
@@ -3139,8 +3166,10 @@ describe Project do
         context 'when not rolled out' do
           let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
-          it 'moves pages folder to new location' do
-            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+          it 'moves pages folder to hashed storage' do
+            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
+              expect(service).to receive(:execute)
+            end
 
             project.rename_repo
           end
@@ -3278,6 +3307,50 @@ describe Project do
     end
   end
 
+  describe '#has_auto_devops_implicitly_enabled?' do
+    set(:project) { create(:project) }
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_enabled
+      end
+    end
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_enabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: true)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
+        end
+      end
+    end
+  end
+
   describe '#has_auto_devops_implicitly_disabled?' do
     set(:project) { create(:project) }
 
@@ -3312,7 +3385,7 @@ describe Project do
 
       context 'when explicitly enabled' do
         before do
-          create(:project_auto_devops, project: project)
+          create(:project_auto_devops, project: project, enabled: true)
         end
 
         it 'does not have auto devops implicitly disabled' do
@@ -3861,6 +3934,16 @@ describe Project do
       let(:model_object) { create(:project, :with_avatar) }
       let(:upload_attribute) { :avatar }
       let(:uploader_class) { AttachmentUploader }
+    end
+  end
+
+  context '#commits_by' do
+    let(:project) { create(:project, :repository) }
+    let(:commits) { project.repository.commits('HEAD', limit: 3).commits }
+    let(:commit_shas) { commits.map(&:id) }
+
+    it 'retrieves several commits from the repository by oid' do
+      expect(project.commits_by(oids: commit_shas)).to eq commits
     end
   end
 

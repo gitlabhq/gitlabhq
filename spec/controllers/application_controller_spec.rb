@@ -56,7 +56,62 @@ describe ApplicationController do
     end
   end
 
+  describe '#add_gon_variables' do
+    before do
+      Gon.clear
+      sign_in user
+    end
+
+    let(:json_response) { JSON.parse(response.body) }
+
+    controller(described_class) do
+      def index
+        render json: Gon.all_variables
+      end
+    end
+
+    shared_examples 'setting gon variables' do
+      it 'sets gon variables' do
+        get :index, format: format
+
+        expect(json_response.size).not_to be_zero
+      end
+    end
+
+    shared_examples 'not setting gon variables' do
+      it 'does not set gon variables' do
+        get :index, format: format
+
+        expect(json_response.size).to be_zero
+      end
+    end
+
+    context 'with html format' do
+      let(:format) { :html }
+
+      it_behaves_like 'setting gon variables'
+
+      context 'for peek requests' do
+        before do
+          request.path = '/-/peek'
+        end
+
+        it_behaves_like 'not setting gon variables'
+      end
+    end
+
+    context 'with json format' do
+      let(:format) { :json }
+
+      it_behaves_like 'not setting gon variables'
+    end
+  end
+
   describe "#authenticate_user_from_personal_access_token!" do
+    before do
+      stub_authentication_activity_metrics(debug: false)
+    end
+
     controller(described_class) do
       def index
         render text: 'authenticated'
@@ -67,7 +122,13 @@ describe ApplicationController do
 
     context "when the 'personal_access_token' param is populated with the personal access token" do
       it "logs the user in" do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+          .and increment(:user_sessionless_authentication_counter)
+
         get :index, private_token: personal_access_token.token
+
         expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq('authenticated')
       end
@@ -75,17 +136,53 @@ describe ApplicationController do
 
     context "when the 'PERSONAL_ACCESS_TOKEN' header is populated with the personal access token" do
       it "logs the user in" do
+        expect(authentication_metrics)
+          .to increment(:user_authenticated_counter)
+          .and increment(:user_session_override_counter)
+          .and increment(:user_sessionless_authentication_counter)
+
         @request.headers["PRIVATE-TOKEN"] = personal_access_token.token
         get :index
+
         expect(response).to have_gitlab_http_status(200)
         expect(response.body).to eq('authenticated')
       end
     end
 
     it "doesn't log the user in otherwise" do
+      expect(authentication_metrics)
+        .to increment(:user_unauthenticated_counter)
+
       get :index, private_token: "token"
+
       expect(response.status).not_to eq(200)
       expect(response.body).not_to eq('authenticated')
+    end
+  end
+
+  describe 'session expiration' do
+    controller(described_class) do
+      def index
+        render text: 'authenticated'
+      end
+    end
+
+    context 'authenticated user' do
+      it 'does not set the expire_after option' do
+        sign_in(create(:user))
+
+        get :index
+
+        expect(request.env['rack.session.options'][:expire_after]).to be_nil
+      end
+    end
+
+    context 'unauthenticated user' do
+      it 'sets the expire_after option' do
+        get :index
+
+        expect(request.env['rack.session.options'][:expire_after]).to eq(Settings.gitlab['unauthenticated_session_expire_delay'])
+      end
     end
   end
 
@@ -148,6 +245,10 @@ describe ApplicationController do
   end
 
   describe '#authenticate_sessionless_user!' do
+    before do
+      stub_authentication_activity_metrics(debug: false)
+    end
+
     describe 'authenticating a user from a feed token' do
       controller(described_class) do
         def index
@@ -158,7 +259,13 @@ describe ApplicationController do
       context "when the 'feed_token' param is populated with the feed token" do
         context 'when the request format is atom' do
           it "logs the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_session_override_counter)
+              .and increment(:user_sessionless_authentication_counter)
+
             get :index, feed_token: user.feed_token, format: :atom
+
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
@@ -166,7 +273,13 @@ describe ApplicationController do
 
         context 'when the request format is ics' do
           it "logs the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_authenticated_counter)
+              .and increment(:user_session_override_counter)
+              .and increment(:user_sessionless_authentication_counter)
+
             get :index, feed_token: user.feed_token, format: :ics
+
             expect(response).to have_gitlab_http_status 200
             expect(response.body).to eq 'authenticated'
           end
@@ -174,7 +287,11 @@ describe ApplicationController do
 
         context 'when the request format is neither atom nor ics' do
           it "doesn't log the user in" do
+            expect(authentication_metrics)
+              .to increment(:user_unauthenticated_counter)
+
             get :index, feed_token: user.feed_token
+
             expect(response.status).not_to have_gitlab_http_status 200
             expect(response.body).not_to eq 'authenticated'
           end
@@ -183,7 +300,11 @@ describe ApplicationController do
 
       context "when the 'feed_token' param is populated with an invalid feed token" do
         it "doesn't log the user" do
+          expect(authentication_metrics)
+            .to increment(:user_unauthenticated_counter)
+
           get :index, feed_token: 'token', format: :atom
+
           expect(response.status).not_to eq 200
           expect(response.body).not_to eq 'authenticated'
         end

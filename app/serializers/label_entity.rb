@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LabelEntity < Grape::Entity
   expose :id, if: ->(label, _) { !label.is_a?(GlobalLabel) }
 

@@ -4,12 +4,10 @@ require 'spec_helper'
 require Rails.root.join('db', 'migrate', '20161124141322_migrate_process_commit_worker_jobs.rb')
 
 describe MigrateProcessCommitWorkerJobs do
-  let(:project) { create(:project, :legacy_storage, :repository) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
-  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  set(:project) { create(:project, :legacy_storage, :repository) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  set(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
   let(:commit) do
-    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      project.commit.raw.rugged_commit
-    end
+    Gitlab::Git::Commit.last(project.repository.raw)
   end
 
   describe 'Project' do
@@ -28,32 +26,13 @@ describe MigrateProcessCommitWorkerJobs do
       end
     end
 
-    describe '#repository_storage_path' do
-      it 'returns the storage path for the repository' do
-        migration_project = described_class::Project
-          .find_including_path(project.id)
-
-        expect(File.directory?(migration_project.repository_storage_path))
-          .to eq(true)
-      end
-    end
-
-    describe '#repository_path' do
-      it 'returns the path to the repository' do
-        migration_project = described_class::Project
-          .find_including_path(project.id)
-
-        expect(File.directory?(migration_project.repository_path)).to eq(true)
-      end
-    end
-
     describe '#repository' do
-      it 'returns a Rugged::Repository' do
+      it 'returns a mock implemention of ::Repository' do
         migration_project = described_class::Project
           .find_including_path(project.id)
 
-        expect(migration_project.repository)
-          .to be_an_instance_of(Rugged::Repository)
+        expect(migration_project.repository).to respond_to(:storage)
+        expect(migration_project.repository).to respond_to(:gitaly_repository)
       end
     end
   end
@@ -71,7 +50,7 @@ describe MigrateProcessCommitWorkerJobs do
 
     before do
       Sidekiq.redis do |redis|
-        job = JSON.dump(args: [project.id, user.id, commit.oid])
+        job = JSON.dump(args: [project.id, user.id, commit.id])
         redis.lpush('queue:process_commit', job)
       end
     end
@@ -87,9 +66,10 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'skips jobs using commits that no longer exist' do
-      allow_any_instance_of(Rugged::Repository).to receive(:lookup)
-        .with(commit.oid)
-        .and_raise(Rugged::OdbError)
+      allow_any_instance_of(Gitlab::GitalyClient::CommitService)
+        .to receive(:find_commit)
+        .with(commit.id)
+        .and_return(nil)
 
       migration.up
 
@@ -103,11 +83,7 @@ describe MigrateProcessCommitWorkerJobs do
     end
 
     it 'encodes data to UTF-8' do
-      allow_any_instance_of(Rugged::Repository).to receive(:lookup)
-        .with(commit.oid)
-        .and_return(commit)
-
-      allow(commit).to receive(:message)
+      allow(commit).to receive(:body)
         .and_return('김치'.force_encoding('BINARY'))
 
       migration.up
@@ -139,7 +115,7 @@ describe MigrateProcessCommitWorkerJobs do
       end
 
       it 'includes the commit ID' do
-        expect(commit_hash['id']).to eq(commit.oid)
+        expect(commit_hash['id']).to eq(commit.id)
       end
 
       it 'includes the commit message' do
@@ -151,27 +127,27 @@ describe MigrateProcessCommitWorkerJobs do
       end
 
       it 'includes the author date' do
-        expect(commit_hash['authored_date']).to eq(commit.author[:time].to_s)
+        expect(commit_hash['authored_date']).to eq(commit.authored_date.to_s)
       end
 
       it 'includes the author name' do
-        expect(commit_hash['author_name']).to eq(commit.author[:name])
+        expect(commit_hash['author_name']).to eq(commit.author_name)
       end
 
       it 'includes the author Email' do
-        expect(commit_hash['author_email']).to eq(commit.author[:email])
+        expect(commit_hash['author_email']).to eq(commit.author_email)
       end
 
       it 'includes the commit date' do
-        expect(commit_hash['committed_date']).to eq(commit.committer[:time].to_s)
+        expect(commit_hash['committed_date']).to eq(commit.committed_date.to_s)
       end
 
       it 'includes the committer name' do
-        expect(commit_hash['committer_name']).to eq(commit.committer[:name])
+        expect(commit_hash['committer_name']).to eq(commit.committer_name)
       end
 
       it 'includes the committer Email' do
-        expect(commit_hash['committer_email']).to eq(commit.committer[:email])
+        expect(commit_hash['committer_email']).to eq(commit.committer_email)
       end
     end
   end
@@ -185,7 +161,7 @@ describe MigrateProcessCommitWorkerJobs do
 
     before do
       Sidekiq.redis do |redis|
-        job = JSON.dump(args: [project.id, user.id, commit.oid])
+        job = JSON.dump(args: [project.id, user.id, commit.id])
         redis.lpush('queue:process_commit', job)
 
         migration.up
@@ -214,7 +190,7 @@ describe MigrateProcessCommitWorkerJobs do
       end
 
       it 'includes the commit SHA' do
-        expect(job['args'][2]).to eq(commit.oid)
+        expect(job['args'][2]).to eq(commit.id)
       end
     end
   end

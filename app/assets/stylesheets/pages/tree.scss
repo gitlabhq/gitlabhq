@@ -109,24 +109,6 @@
         line-height: 21px;
       }
 
-      .last-commit {
-        @include str-truncated(506px);
-
-        .fa-angle-right {
-          margin-left: 5px;
-        }
-
-        @include media-breakpoint-only(md) {
-          @include str-truncated(450px);
-        }
-
-      }
-
-      .commit-history-link-spacer {
-        margin: 0 10px;
-        color: $white-normal;
-      }
-
       &:hover:not(.tree-truncated-warning) {
         td {
           background-color: $row-hover;

@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddDefaultSnippetVisibilityToAppSettings < ActiveRecord::Migration
   def up
     add_column :application_settings, :default_snippet_visibility, :integer

@@ -4,7 +4,7 @@
     .header-content
       .title-container
         %h1.title
-          = link_to root_path, title: 'Dashboard', id: 'logo' do
+          = link_to root_path, title: _('Dashboard'), id: 'logo' do
             = brand_header_logo
             - logo_text = brand_header_logo_type
             - if logo_text.present?
@@ -24,26 +24,26 @@
             %li.nav-item.d-none.d-sm-none.d-md-block.m-auto
               = render 'layouts/search' unless current_controller?(:search)
             %li.nav-item.d-inline-block.d-sm-none.d-md-none
-              = link_to search_path, title: 'Search', aria: { label: "Search" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to search_path, title: _('Search'), aria: { label: _("Search") }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('search', size: 16)
 
           - if header_link?(:issues)
             = nav_link(path: 'dashboard#issues', html_options: { class: "user-counter" }) do
-              = link_to assigned_issues_dashboard_path, title: 'Issues', class: 'dashboard-shortcuts-issues', aria: { label: "Issues" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_issues_dashboard_path, title: _('Issues'), class: 'dashboard-shortcuts-issues', aria: { label: _("Issues") }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('issues', size: 16)
                 - issues_count = assigned_issuables_count(:issues)
                 %span.badge.badge-pill.issues-count{ class: ('hidden' if issues_count.zero?) }
                   = number_with_delimiter(issues_count)
           - if header_link?(:merge_requests)
             = nav_link(path: 'dashboard#merge_requests', html_options: { class: "user-counter" }) do
-              = link_to assigned_mrs_dashboard_path, title: 'Merge requests', class: 'dashboard-shortcuts-merge_requests', aria: { label: "Merge requests" }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to assigned_mrs_dashboard_path, title: _('Merge requests'), class: 'dashboard-shortcuts-merge_requests', aria: { label: _("Merge requests") }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('git-merge', size: 16)
                 - merge_requests_count = assigned_issuables_count(:merge_requests)
                 %span.badge.badge-pill.merge-requests-count{ class: ('hidden' if merge_requests_count.zero?) }
                   = number_with_delimiter(merge_requests_count)
           - if header_link?(:todos)
             = nav_link(controller: 'dashboard/todos', html_options: { class: "user-counter" }) do
-              = link_to dashboard_todos_path, title: 'Todos', aria: { label: "Todos" }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+              = link_to dashboard_todos_path, title: _('Todos'), aria: { label: _("Todos") }, class: 'shortcuts-todos', data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
                 = sprite_icon('todo-done', size: 16)
                 %span.badge.badge-pill.todos-count{ class: ('hidden' if todos_pending_count.zero?) }
                   = todos_count_format(todos_pending_count)
@@ -56,16 +56,16 @@
                 = render 'layouts/header/current_user_dropdown'
           - if header_link?(:admin_impersonation)
             %li.nav-item.impersonation
-              = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
+              = link_to admin_impersonation_path, class: 'nav-link impersonation-btn', method: :delete, title: _("Stop impersonation"), aria: { label: _('Stop impersonation') }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
                 = icon('user-secret')
           - if header_link?(:sign_in)
             %li.nav-item
               %div
-                - sign_in_text = allow_signup? ? 'Sign in / Register' : 'Sign in'
+                - sign_in_text = allow_signup? ? _('Sign in / Register') : _('Sign in')
                 = link_to sign_in_text, new_session_path(:user, redirect_to_referer: 'yes'), class: 'btn btn-sign-in'
 
 
       %button.navbar-toggler.d-block.d-sm-none{ type: 'button' }
-        %span.sr-only Toggle navigation
-        = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
+        %span.sr-only= _("Toggle navigation")
+        = sprite_icon('ellipsis_h', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')

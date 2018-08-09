@@ -1,5 +1,0 @@
----
-title: Fixes an issue where migrations instead of schema loading were run
-merge_request: 20227
-author:
-type: changed

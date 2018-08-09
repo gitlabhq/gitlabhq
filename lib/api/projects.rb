@@ -9,6 +9,56 @@ module API
     before { authenticate_non_get! }
 
     helpers do
+      params :optional_filter_params_ee do
+        # EE::API::Projects would override this helper
+      end
+
+      params :optional_update_params_ee do
+        # EE::API::Projects would override this helper
+      end
+
+      # EE::API::Projects would override this method
+      def apply_filters(projects)
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+
+        projects
+      end
+
+      def verify_update_project_attrs!(project, attrs)
+      end
+    end
+
+    def self.update_params_at_least_one_of
+      [
+        :jobs_enabled,
+        :resolve_outdated_diff_discussions,
+        :ci_config_path,
+        :container_registry_enabled,
+        :default_branch,
+        :description,
+        :issues_enabled,
+        :lfs_enabled,
+        :merge_requests_enabled,
+        :merge_method,
+        :name,
+        :only_allow_merge_if_all_discussions_are_resolved,
+        :only_allow_merge_if_pipeline_succeeds,
+        :path,
+        :printing_merge_request_link_enabled,
+        :public_builds,
+        :request_access_enabled,
+        :shared_runners_enabled,
+        :snippets_enabled,
+        :tag_list,
+        :visibility,
+        :wiki_enabled,
+        :avatar
+      ]
+    end
+
+    helpers do
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
@@ -39,6 +89,9 @@ module API
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+
+        use :optional_filter_params_ee
       end
 
       params :create_params do
@@ -52,9 +105,7 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-        projects = projects.with_statistics if params[:statistics]
+        projects = apply_filters(projects)
         projects = paginate(projects)
         projects, options = with_custom_attributes(projects, options)
 
@@ -236,39 +287,13 @@ module API
         success Entities::Project
       end
       params do
-        # CE
-        at_least_one_of_ce =
-          [
-            :jobs_enabled,
-            :resolve_outdated_diff_discussions,
-            :ci_config_path,
-            :container_registry_enabled,
-            :default_branch,
-            :description,
-            :issues_enabled,
-            :lfs_enabled,
-            :merge_requests_enabled,
-            :merge_method,
-            :name,
-            :only_allow_merge_if_all_discussions_are_resolved,
-            :only_allow_merge_if_pipeline_succeeds,
-            :path,
-            :printing_merge_request_link_enabled,
-            :public_builds,
-            :request_access_enabled,
-            :shared_runners_enabled,
-            :snippets_enabled,
-            :tag_list,
-            :visibility,
-            :wiki_enabled,
-            :avatar
-          ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
         use :optional_project_params
-        at_least_one_of(*at_least_one_of_ce)
+
+        at_least_one_of(*::API::Projects.update_params_at_least_one_of)
       end
       put ':id' do
         authorize_admin_project
@@ -277,6 +302,8 @@ module API
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
         attrs = translate_params_for_compatibility(attrs)
+
+        verify_update_project_attrs!(user_project, attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
@@ -294,7 +321,7 @@ module API
       post ':id/archive' do
         authorize!(:archive_project, user_project)
 
-        user_project.archive!
+        ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
         present user_project, with: Entities::Project
       end
@@ -305,7 +332,7 @@ module API
       post ':id/unarchive' do
         authorize!(:archive_project, user_project)
 
-        user_project.unarchive!
+        ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
         present user_project, with: Entities::Project
       end

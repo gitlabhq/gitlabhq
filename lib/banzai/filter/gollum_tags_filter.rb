@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML Filter for parsing Gollum's tags in HTML. It's only parses the

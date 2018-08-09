@@ -11,10 +11,10 @@
     = form_errors(@environment)
 
     .form-group
-      = f.label :name, 'Name', class: 'label-light'
+      = f.label :name, 'Name', class: 'label-bold'
       = f.text_field :name, required: true, class: 'form-control'
     .form-group
-      = f.label :external_url, 'External URL', class: 'label-light'
+      = f.label :external_url, 'External URL', class: 'label-bold'
       = f.url_field :external_url, class: 'form-control'
 
     .form-actions

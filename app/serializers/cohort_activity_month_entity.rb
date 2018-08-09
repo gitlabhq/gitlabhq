@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CohortActivityMonthEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
 

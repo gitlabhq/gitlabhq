@@ -328,7 +328,7 @@ ul.notes {
   }
 
   .notes_holder {
-    font-family: $regular_font;
+    font-family: $regular-font;
 
     td {
       border: 1px solid $white-normal;
@@ -403,7 +403,7 @@ ul.notes {
     }
   }
 
-  .author_link {
+  .author-link {
     color: $gl-text-color;
   }
 }
@@ -546,6 +546,7 @@ ul.notes {
 
   svg {
     @include btn-svg;
+    margin: 0;
   }
 
   .award-control-icon-positive,

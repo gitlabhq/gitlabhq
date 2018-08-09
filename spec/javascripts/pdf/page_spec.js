@@ -30,7 +30,7 @@ describe('Page component', () => {
         done();
       })
       .catch((error) => {
-        console.error(error);
+        done.fail(error);
       });
   });
 

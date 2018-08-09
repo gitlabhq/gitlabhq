@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 class Repository
@@ -154,12 +156,9 @@ class Repository
 
   # Returns a list of commits that are not present in any reference
   def new_commits(newrev)
-    # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
-    refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-      ::Gitlab::Git::RevList.new(raw, newrev: newrev).new_refs
-    end
+    commits = raw.new_commits(newrev)
 
-    refs.map { |sha| commit(sha.strip) }
+    ::Commit.decorate(commits, project)
   end
 
   # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/384
@@ -236,6 +235,12 @@ class Repository
     !!raw_repository&.ref_exists?(ref)
   rescue ArgumentError
     false
+  end
+
+  def languages
+    return [] if empty?
+
+    raw_repository.languages(root_ref)
   end
 
   # Makes sure a commit is kept around when Git garbage collection runs.
@@ -315,6 +320,8 @@ class Repository
   # types - An Array of file types (e.g. `:readme`) used to refresh extra
   #         caches.
   def refresh_method_caches(types)
+    return if types.empty?
+
     to_refresh = []
 
     types.each do |type|
@@ -433,6 +440,8 @@ class Repository
   # Runs code after a repository has been forked/imported.
   def after_import
     expire_content_cache
+
+    DetectRepositoryLanguagesWorker.perform_async(project.id, project.owner.id)
   end
 
   # Runs code after a new commit has been pushed.
@@ -1032,7 +1041,7 @@ class Repository
   end
 
   def repository_event(event, tags = {})
-    Gitlab::Metrics.add_event(event, { path: full_path }.merge(tags))
+    Gitlab::Metrics.add_event(event, tags)
   end
 
   def initialize_raw_repository

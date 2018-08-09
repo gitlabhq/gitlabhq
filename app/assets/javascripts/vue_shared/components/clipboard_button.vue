@@ -13,16 +13,28 @@
  * />
  */
 import tooltip from '../directives/tooltip';
+import Icon from '../components/icon.vue';
 
 export default {
   name: 'ClipboardButton',
+
   directives: {
     tooltip,
   },
+
+  components: {
+    Icon,
+  },
+
   props: {
     text: {
       type: String,
       required: true,
+    },
+    gfm: {
+      type: String,
+      required: false,
+      default: null,
     },
     title: {
       type: String,
@@ -44,6 +56,14 @@ export default {
       default: 'btn-default',
     },
   },
+  computed: {
+    clipboardText() {
+      if (this.gfm !== null) {
+        return JSON.stringify({ text: this.text, gfm: this.gfm });
+      }
+      return this.text;
+    },
+  },
 };
 </script>
 
@@ -52,16 +72,12 @@ export default {
     v-tooltip
     :class="cssClass"
     :title="title"
-    :data-clipboard-text="text"
+    :data-clipboard-text="clipboardText"
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     type="button"
     class="btn"
   >
-    <i
-      aria-hidden="true"
-      class="fa fa-clipboard"
-    >
-    </i>
+    <icon name="duplicate" />
   </button>
 </template>

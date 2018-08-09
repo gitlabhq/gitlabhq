@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # A note on the root of an issue, merge request, commit, or snippet.
 #
 # A note of this type is never resolvable.
@@ -101,7 +103,7 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, -> { includes(:project, :author) }
   scope :inc_author, -> { includes(:author) }
   scope :inc_relations_for_view, -> do
-    includes(:project, :author, :updated_by, :resolved_by, :award_emoji,
+    includes(:project, { author: :status }, :updated_by, :resolved_by, :award_emoji,
              :system_note_metadata, :note_diff_file)
   end
 
@@ -227,6 +229,10 @@ class Note < ActiveRecord::Base
 
   def for_project_noteable?
     !for_personal_snippet?
+  end
+
+  def for_issuable?
+    for_issue? || for_merge_request?
   end
 
   def skip_project_check?

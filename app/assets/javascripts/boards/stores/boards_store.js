@@ -108,6 +108,16 @@ gl.issueBoards.BoardsStore = {
           issue.findAssignee(listTo.assignee)) {
         const targetIssue = listTo.findIssue(issue.id);
         targetIssue.removeAssignee(listFrom.assignee);
+      } else if (listTo.type === 'milestone') {
+        const currentMilestone = issue.milestone;
+        const currentLists = this.state.lists
+            .filter(list => (list.type === 'milestone' && list.id !== listTo.id))
+            .filter(list => list.issues.some(listIssue => issue.id === listIssue.id));
+
+        issue.removeMilestone(currentMilestone);
+        issue.addMilestone(listTo.milestone);
+        currentLists.forEach(currentList => currentList.removeIssue(issue));
+        listTo.addIssue(issue, listFrom, newIndex);
       } else {
         // Add to new lists issues if it doesn't already exist
         listTo.addIssue(issue, listFrom, newIndex);
@@ -125,10 +135,19 @@ gl.issueBoards.BoardsStore = {
     } else if (listTo.type === 'backlog' && listFrom.type === 'assignee') {
       issue.removeAssignee(listFrom.assignee);
       listFrom.removeIssue(issue);
-    } else if ((listTo.type !== 'label' && listFrom.type === 'assignee') ||
-               (listTo.type !== 'assignee' && listFrom.type === 'label')) {
+    } else if (listTo.type === 'backlog' && listFrom.type === 'milestone') {
+      issue.removeMilestone(listFrom.milestone);
+      listFrom.removeIssue(issue);
+    } else if (this.shouldRemoveIssue(listFrom, listTo)) {
       listFrom.removeIssue(issue);
     }
+  },
+  shouldRemoveIssue(listFrom, listTo) {
+    return (
+      (listTo.type !== 'label' && listFrom.type === 'assignee') ||
+      (listTo.type !== 'assignee' && listFrom.type === 'label') ||
+      (listFrom.type === 'backlog')
+    );
   },
   moveIssueInList (list, issue, oldIndex, newIndex, idArray) {
     const beforeId = parseInt(idArray[newIndex - 1], 10) || null;
@@ -138,7 +157,7 @@ gl.issueBoards.BoardsStore = {
   },
   findList (key, val, type = 'label') {
     const filteredList = this.state.lists.filter((list) => {
-      const byType = type ? (list.type === type) || (list.type === 'assignee') : true;
+      const byType = type ? (list.type === type) || (list.type === 'assignee') || (list.type === 'milestone') : true;
 
       return list[key] === val && byType;
     });

@@ -166,7 +166,7 @@
     border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
-    width: $gutter_inner_width;
+    width: $gutter-inner-width;
     // --
 
     &.issuable-sidebar-header {
@@ -197,7 +197,7 @@
     }
 
     &.assignee {
-      .author_link {
+      .author-link {
         display: block;
         padding-left: 42px;
         position: relative;
@@ -290,7 +290,7 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter_width;
+    width: $gutter-width;
 
     .value {
       line-height: 1;
@@ -377,11 +377,11 @@
       display: block;
     }
 
-    width: $gutter_collapsed_width;
+    width: $gutter-collapsed-width;
     padding: 0;
 
     .block {
-      width: $gutter_collapsed_width - 2px;
+      width: $gutter-collapsed-width - 2px;
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;
@@ -449,6 +449,7 @@
 
       .todo-undone {
         color: $gl-link-color;
+        fill: $gl-link-color;
       }
 
       .author {
@@ -486,7 +487,7 @@
       padding-bottom: 0;
       margin-bottom: 10px;
 
-      .author_link {
+      .author-link {
         padding-left: 0;
 
         .avatar {
@@ -595,7 +596,7 @@
   margin: 16px 0 0;
   font-size: 85%;
 
-  .author_link {
+  .author-link {
     color: $gray-darkest;
   }
 }
@@ -620,7 +621,7 @@
     padding-right: 0;
   }
 
-  .author_link {
+  .author-link {
     display: block;
   }
 
@@ -834,33 +835,11 @@
   }
 
   .compare-meter {
-    &.within_estimate {
-      .meter-fill {
-        background: $gl-primary;
-      }
-    }
-
     &.over_estimate {
-      .meter-fill {
-        background: $red-500;
-      }
-
       .time-remaining,
       .compare-value.spent {
         color: $red-500;
       }
-    }
-  }
-
-  .meter-container {
-    background: $border-gray-light;
-    border-radius: 3px;
-
-    .meter-fill {
-      max-width: 100%;
-      height: 5px;
-      border-radius: 3px;
-      background: $gl-primary;
     }
   }
 

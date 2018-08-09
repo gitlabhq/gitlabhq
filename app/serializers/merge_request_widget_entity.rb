@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MergeRequestWidgetEntity < IssuableEntity
   expose :state
   expose :in_progress_merge_commit_sha
@@ -130,6 +132,10 @@ class MergeRequestWidgetEntity < IssuableEntity
       can?(request.current_user, :create_note, merge_request)
     end
 
+    expose :can_create_issue do |merge_request|
+      can?(current_user, :create_issue, merge_request.project)
+    end
+
     expose :can_update do |merge_request|
       can?(request.current_user, :update_merge_request, merge_request)
     end
@@ -222,6 +228,12 @@ class MergeRequestWidgetEntity < IssuableEntity
   expose :merge_commit_path do |merge_request|
     if merge_request.merge_commit_sha
       project_commit_path(merge_request.project, merge_request.merge_commit_sha)
+    end
+  end
+
+  expose :test_reports_path do |merge_request|
+    if merge_request.has_test_reports?
+      test_reports_project_merge_request_path(merge_request.project, merge_request, format: :json)
     end
   end
 

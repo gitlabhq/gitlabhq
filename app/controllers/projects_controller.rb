@@ -61,7 +61,7 @@ class ProjectsController < Projects::ApplicationController
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
 
         format.html do
-          redirect_to(edit_project_path(@project))
+          redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
         end
       else
         flash.now[:alert] = result[:message]
@@ -148,7 +148,7 @@ class ProjectsController < Projects::ApplicationController
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.archive!
+    ::Projects::UpdateService.new(@project, current_user, archived: true).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -158,7 +158,7 @@ class ProjectsController < Projects::ApplicationController
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.unarchive!
+    ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -174,7 +174,7 @@ class ProjectsController < Projects::ApplicationController
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(
-      edit_project_path(@project),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: ex.to_s
     )
   end
@@ -183,7 +183,7 @@ class ProjectsController < Projects::ApplicationController
     @project.add_export_job(current_user: current_user)
 
     redirect_to(
-      edit_project_path(@project),
+      edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email.")
     )
   end
@@ -195,7 +195,7 @@ class ProjectsController < Projects::ApplicationController
       send_file export_project_path, disposition: 'attachment'
     else
       redirect_to(
-        edit_project_path(@project),
+        edit_project_path(@project, anchor: 'js-export-project'),
         alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
@@ -208,7 +208,7 @@ class ProjectsController < Projects::ApplicationController
       flash[:alert] = _("Project export could not be deleted.")
     end
 
-    redirect_to(edit_project_path(@project))
+    redirect_to(edit_project_path(@project, anchor: 'js-export-project'))
   end
 
   def generate_new_export
@@ -216,7 +216,7 @@ class ProjectsController < Projects::ApplicationController
       export
     else
       redirect_to(
-        edit_project_path(@project),
+        edit_project_path(@project, anchor: 'js-export-project'),
         alert: _("Project export could not be deleted.")
       )
     end

@@ -1,4 +1,5 @@
 = form_for [@project.namespace.becomes(Namespace), @project, @protected_tag], html: { class: 'new-protected-tag js-new-protected-tag' } do |f|
+  %input{ type: 'hidden', name: 'update_section', value: 'js-protected-tags-settings' }
   .card
     .card-header
       %h3.card-title

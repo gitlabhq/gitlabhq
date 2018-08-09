@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Spammable
   extend ActiveSupport::Concern
 

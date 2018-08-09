@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Given a list of oids, this services links the existent Lfs Objects to the project
 module Projects
   module LfsPointers

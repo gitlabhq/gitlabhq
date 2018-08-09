@@ -220,6 +220,7 @@ describe API::Jobs do
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
         expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
         expect(json_response['duration']).to eq(job.duration)
+        expect(json_response['web_url']).to be_present
       end
 
       it 'returns pipeline data' do
@@ -654,13 +655,15 @@ describe API::Jobs do
     end
 
     context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :success, project: project, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, :success, project: project, pipeline: pipeline) }
 
       it 'erases job content' do
         expect(response).to have_gitlab_http_status(201)
+        expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
         expect(job.artifacts_metadata.exists?).to be_falsy
+        expect(job.has_test_reports?).to be_falsy
       end
 
       it 'updates job' do

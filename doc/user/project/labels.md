@@ -69,6 +69,16 @@ Every issue and merge request can be assigned any number of labels. The labels a
 |:---:|:---:|
 | ![Labels sidebar](img/labels_sidebar.png) | ![Labels sidebar assign](img/labels_sidebar_assign.png) |
 
+## Searching for project labels
+
+You can search for project labels by navigating from the left sidebar to your
+project's **Issues > Labels** and entering your query to the search bar on the
+top-right:
+
+![Labels project list search](img/labels_project_list_search.png)
+
+GitLab will consider the label title and description for the search.
+
 ## Filtering issues and merge requests by label
 
 ### Filtering in list pages

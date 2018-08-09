@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   # Service class for caching and retrieving the last push event of a user.
   class LastPushEventService

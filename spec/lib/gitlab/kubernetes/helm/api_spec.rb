@@ -39,7 +39,7 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
 
     context 'with a ConfigMap' do
-      let(:resource) { Gitlab::Kubernetes::ConfigMap.new(application.name, application.values).generate }
+      let(:resource) { Gitlab::Kubernetes::ConfigMap.new(application.name, application.files).generate }
 
       it 'creates a ConfigMap on kubeclient' do
         expect(client).to receive(:create_config_map).with(resource).once
@@ -49,33 +49,33 @@ describe Gitlab::Kubernetes::Helm::Api do
     end
   end
 
-  describe '#installation_status' do
+  describe '#status' do
     let(:phase) { Gitlab::Kubernetes::Pod::RUNNING }
     let(:pod) { Kubeclient::Resource.new(status: { phase: phase }) } # partial representation
 
     it 'fetches POD phase from kubernetes cluster' do
       expect(client).to receive(:get_pod).with(command.pod_name, gitlab_namespace).once.and_return(pod)
 
-      expect(subject.installation_status(command.pod_name)).to eq(phase)
+      expect(subject.status(command.pod_name)).to eq(phase)
     end
   end
 
-  describe '#installation_log' do
+  describe '#log' do
     let(:log) { 'some output' }
     let(:response) { RestClient::Response.new(log) }
 
     it 'fetches POD phase from kubernetes cluster' do
       expect(client).to receive(:get_pod_log).with(command.pod_name, gitlab_namespace).once.and_return(response)
 
-      expect(subject.installation_log(command.pod_name)).to eq(log)
+      expect(subject.log(command.pod_name)).to eq(log)
     end
   end
 
-  describe '#delete_installation_pod!' do
+  describe '#delete_pod!' do
     it 'deletes the POD from kubernetes cluster' do
       expect(client).to receive(:delete_pod).with(command.pod_name, gitlab_namespace).once
 
-      subject.delete_installation_pod!(command.pod_name)
+      subject.delete_pod!(command.pod_name)
     end
   end
 end

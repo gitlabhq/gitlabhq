@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Gitlab::GitalyClient::OperationService do
-  let(:project) { create(:project) }
+  set(:project) { create(:project, :repository) }
   let(:repository) { project.repository.raw }
   let(:client) { described_class.new(repository) }
-  let(:user) { create(:user) }
+  set(:user) { create(:user) }
   let(:gitaly_user) { Gitlab::Git::User.from_gitlab(user).to_gitaly }
 
   describe '#user_create_branch' do
@@ -151,18 +151,104 @@ describe Gitlab::GitalyClient::OperationService do
     end
     let(:response) { Gitaly::UserFFBranchResponse.new(branch_update: branch_update) }
 
-    subject { client.user_ff_branch(user, source_sha, target_branch) }
-
-    it 'sends a user_ff_branch message and returns a BranchUpdate object' do
+    before do
       expect_any_instance_of(Gitaly::OperationService::Stub)
         .to receive(:user_ff_branch).with(request, kind_of(Hash))
         .and_return(response)
+    end
 
+    subject { client.user_ff_branch(user, source_sha, target_branch) }
+
+    it 'sends a user_ff_branch message and returns a BranchUpdate object' do
       expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
       expect(subject.newrev).to eq(source_sha)
       expect(subject.repo_created).to be(false)
       expect(subject.branch_created).to be(false)
     end
+
+    context 'when the response has no branch_update' do
+      let(:response) { Gitaly::UserFFBranchResponse.new }
+
+      it { expect(subject).to be_nil }
+    end
+  end
+
+  shared_examples 'cherry pick and revert errors' do
+    context 'when a pre_receive_error is present' do
+      let(:response) { response_class.new(pre_receive_error: "something failed") }
+
+      it 'raises a PreReceiveError' do
+        expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
+      end
+    end
+
+    context 'when a commit_error is present' do
+      let(:response) { response_class.new(commit_error: "something failed") }
+
+      it 'raises a CommitError' do
+        expect { subject }.to raise_error(Gitlab::Git::CommitError, "something failed")
+      end
+    end
+
+    context 'when a create_tree_error is present' do
+      let(:response) { response_class.new(create_tree_error: "something failed") }
+
+      it 'raises a CreateTreeError' do
+        expect { subject }.to raise_error(Gitlab::Git::Repository::CreateTreeError, "something failed")
+      end
+    end
+
+    context 'when branch_update is nil' do
+      let(:response) { response_class.new }
+
+      it { expect(subject).to be_nil }
+    end
+  end
+
+  describe '#user_cherry_pick' do
+    let(:response_class) { Gitaly::UserCherryPickResponse }
+
+    subject do
+      client.user_cherry_pick(
+        user: user,
+        commit: repository.commit,
+        branch_name: 'master',
+        message: 'Cherry-pick message',
+        start_branch_name: 'master',
+        start_repository: repository
+      )
+    end
+
+    before do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_cherry_pick).with(kind_of(Gitaly::UserCherryPickRequest), kind_of(Hash))
+        .and_return(response)
+    end
+
+    it_behaves_like 'cherry pick and revert errors'
+  end
+
+  describe '#user_revert' do
+    let(:response_class) { Gitaly::UserRevertResponse }
+
+    subject do
+      client.user_revert(
+        user: user,
+        commit: repository.commit,
+        branch_name: 'master',
+        message: 'Revert message',
+        start_branch_name: 'master',
+        start_repository: repository
+      )
+    end
+
+    before do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_revert).with(kind_of(Gitaly::UserRevertRequest), kind_of(Hash))
+        .and_return(response)
+    end
+
+    it_behaves_like 'cherry pick and revert errors'
   end
 
   describe '#user_squash' do
@@ -203,13 +289,49 @@ describe Gitlab::GitalyClient::OperationService do
         Gitaly::UserSquashResponse.new(git_error: "something failed")
       end
 
-      it "throws a PreReceive exception" do
+      it "raises a GitError exception" do
         expect_any_instance_of(Gitaly::OperationService::Stub)
           .to receive(:user_squash).with(request, kind_of(Hash))
           .and_return(response)
 
         expect { subject }.to raise_error(
           Gitlab::Git::Repository::GitError, "something failed")
+      end
+    end
+
+    describe '#user_commit_files' do
+      subject do
+        client.user_commit_files(
+          gitaly_user, 'my-branch', 'Commit files message', [], 'janedoe@example.com', 'Jane Doe',
+          'master', repository)
+      end
+
+      before do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_commit_files).with(kind_of(Enumerator), kind_of(Hash))
+          .and_return(response)
+      end
+
+      context 'when a pre_receive_error is present' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new(pre_receive_error: "something failed") }
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error(Gitlab::Git::PreReceiveError, "something failed")
+        end
+      end
+
+      context 'when an index_error is present' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new(index_error: "something failed") }
+
+        it 'raises a PreReceiveError' do
+          expect { subject }.to raise_error(Gitlab::Git::Index::IndexError, "something failed")
+        end
+      end
+
+      context 'when branch_update is nil' do
+        let(:response) { Gitaly::UserCommitFilesResponse.new }
+
+        it { expect(subject).to be_nil }
       end
     end
   end

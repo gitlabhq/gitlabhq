@@ -17,13 +17,13 @@
     - if can?(current_user, :admin_label, @project)
       %li.inline.js-toggle-priority{ data: { url: remove_priority_project_label_path(@project, label),
         dom_id: dom_id(label), type: label.type } }
-        %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'top' }, aria_label: _('Prioritize label') }
+        %button.label-action.add-priority.btn.btn-transparent.has-tooltip{ title: _('Prioritize'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Prioritize label') }
           = sprite_icon('star-o')
-        %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'top' }, aria_label: _('Deprioritize label') }
+        %button.label-action.remove-priority.btn.btn-transparent.has-tooltip{ title: _('Remove priority'), type: 'button', data: { placement: 'bottom' }, aria_label: _('Deprioritize label') }
           = sprite_icon('star')
     - if can?(current_user, :admin_label, label)
       %li.inline
-        = link_to edit_label_path(label), class: 'btn btn-transparent label-action edit', aria_label: 'Edit label' do
+        = link_to edit_label_path(label), class: 'btn btn-transparent label-action edit has-tooltip', title: _('Edit'), data: { placement: 'bottom' }, aria_label: _('Edit') do
           = sprite_icon('pencil')
     %li.inline
       .dropdown

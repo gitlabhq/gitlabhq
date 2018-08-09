@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Noteable
   # Names of all implementers of `Noteable` that support resolvable notes.
   RESOLVABLE_TYPES = %w(MergeRequest).freeze

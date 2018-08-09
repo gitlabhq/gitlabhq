@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
@@ -12,6 +14,7 @@ class Issue < ActiveRecord::Base
   include TimeTrackable
   include ThrottledTouch
   include IgnorableColumn
+  include LabelEventable
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
@@ -273,10 +276,6 @@ class Issue < ActiveRecord::Base
     return false unless project && project.feature_available?(:issues, user)
 
     user ? readable_by?(user) : publicly_visible?
-  end
-
-  def overdue?
-    due_date.try(:past?) || false
   end
 
   def check_for_spam?

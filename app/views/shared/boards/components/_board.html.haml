@@ -6,12 +6,13 @@
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
           "aria-hidden": "true" }
+        = render_if_exists "shared/boards/components/list_milestone"
 
         %a.user-avatar-link.js-no-trigger{ "v-if": "list.type === \"assignee\"", ":href": "list.assignee.path" }
           -# haml-lint:disable AltText
           %img.avatar.s20.has-tooltip{ height: "20", width: "20", ":src": "list.assignee.avatar", ":alt": "list.assignee.name" }
 
-        %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
+        %span.board-title-text.has-tooltip.block-truncated{ "v-if": "list.type !== \"label\"",
           ":title" => '((list.label && list.label.description) || list.title || "")', data: { container: "body" } }
           {{ list.title }}
 
@@ -32,17 +33,21 @@
             "v-if" => "!list.preset && list.id" }
             %button.board-delete.has-tooltip.float-right{ type: "button", title: _("Delete list"), "aria-label" => _("Delete list"), data: { placement: "bottom" }, "@click.stop" => "deleteBoard" }
               = icon("trash")
-        .issue-count-badge.clearfix{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"' }
-          %span.issue-count-badge-count.float-left{ ":class" => '{ "has-btn": list.type !== "closed" && !disabled }' }
+        .issue-count-badge.text-secondary{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"', ":title": "counterTooltip", "v-tooltip": true, data: { placement: "top" } }
+          %span.issue-count-badge-count
+            %icon.mr-1{ name: "issues" }
             {{ list.issuesSize }}
-          - if can?(current_user, :admin_list, current_board_parent)
-            %button.issue-count-badge-add-button.btn.btn-sm.btn-default.has-tooltip.js-no-trigger-collapse{ type: "button",
-              "@click" => "showNewIssueForm",
-              "v-if" => 'list.type !== "closed"',
-              "aria-label" => _("New issue"),
-              "title" => _("New issue"),
-              data: { placement: "top", container: "body" } }
-              = icon("plus", class: "js-no-trigger-collapse")
+          = render_if_exists "shared/boards/components/list_weight"
+
+        - if can?(current_user, :admin_list, current_board_parent)
+          %button.issue-count-badge-add-button.btn.btn-sm.btn-default.ml-1.has-tooltip.js-no-trigger-collapse{ type: "button",
+            "@click" => "showNewIssueForm",
+            "v-if" => 'list.type !== "closed"',
+            "aria-label" => _("New issue"),
+            "title" => _("New issue"),
+            data: { placement: "top", container: "body" } }
+            = icon("plus", class: "js-no-trigger-collapse")
+
     %board-list{ "v-if" => 'list.type !== "blank" && list.type !== "promotion"',
       ":list" => "list",
       ":issues" => "list.issues",

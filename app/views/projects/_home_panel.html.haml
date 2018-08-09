@@ -3,7 +3,7 @@
 .project-home-panel.text-center{ class: ("empty-project" if empty_repo) }
   .limit-container-width{ class: container_class }
     .avatar-container.s70.project-avatar
-      = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile')
+      = project_icon(@project, alt: @project.name, class: 'avatar s70 avatar-tile', width: 70, height: 70)
     %h1.project-title.qa-project-name
       = @project.name
       %span.visibility-icon.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@project) }
@@ -12,6 +12,9 @@
     .project-home-desc
       - if @project.description.present?
         = markdown_field(@project, :description)
+      - if can?(current_user, :read_project, @project)
+        .text-secondary.prepend-top-8
+          = s_('ProjectPage|Project ID: %{project_id}') % { project_id: @project.id }
 
       - if @project.forked?
         %p

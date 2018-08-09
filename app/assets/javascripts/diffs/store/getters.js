@@ -46,6 +46,14 @@ export const diffHasExpandedDiscussions = (state, getters) => diff => {
 };
 
 /**
+ * Checks if the diff has any discussion
+ * @param {Boolean} diff
+ * @returns {Boolean}
+ */
+export const diffHasDiscussions = (state, getters) => diff =>
+  getters.getDiffFileDiscussions(diff).length > 0;
+
+/**
  * Returns an array with the discussions of the given diff
  * @param {Object} diff
  * @returns {Array}
@@ -55,6 +63,47 @@ export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) =
     discussion =>
       discussion.diff_discussion && _.isEqual(discussion.diff_file.file_hash, diff.fileHash),
   ) || [];
+
+export const singleDiscussionByLineCode = (state, getters, rootState, rootGetters) => lineCode => {
+  if (!lineCode || lineCode === undefined) return [];
+  const discussions = rootGetters.discussionsByLineCode;
+  return discussions[lineCode] || [];
+};
+
+export const shouldRenderParallelCommentRow = (state, getters) => line => {
+  const leftLineCode = line.left.lineCode;
+  const rightLineCode = line.right.lineCode;
+  const leftDiscussions = getters.singleDiscussionByLineCode(leftLineCode);
+  const rightDiscussions = getters.singleDiscussionByLineCode(rightLineCode);
+  const hasDiscussion = leftDiscussions.length || rightDiscussions.length;
+
+  const hasExpandedDiscussionOnLeft = leftDiscussions.length
+    ? leftDiscussions.every(discussion => discussion.expanded)
+    : false;
+  const hasExpandedDiscussionOnRight = rightDiscussions.length
+    ? rightDiscussions.every(discussion => discussion.expanded)
+    : false;
+
+  if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
+    return true;
+  }
+
+  const hasCommentFormOnLeft = state.diffLineCommentForms[leftLineCode];
+  const hasCommentFormOnRight = state.diffLineCommentForms[rightLineCode];
+
+  return hasCommentFormOnLeft || hasCommentFormOnRight;
+};
+
+export const shouldRenderInlineCommentRow = (state, getters) => line => {
+  if (state.diffLineCommentForms[line.lineCode]) return true;
+
+  const lineDiscussions = getters.singleDiscussionByLineCode(line.lineCode);
+  if (lineDiscussions.length === 0) {
+    return false;
+  }
+
+  return lineDiscussions.every(discussion => discussion.expanded);
+};
 
 // prevent babel-plugin-rewire from generating an invalid default during karma∂ tests
 export const getDiffFileByHash = state => fileHash =>

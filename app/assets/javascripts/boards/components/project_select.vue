@@ -46,7 +46,7 @@ export default {
       selectable: true,
       data: (term, callback) => {
         this.loading = true;
-        return Api.groupProjects(this.groupId, term, projects => {
+        return Api.groupProjects(this.groupId, term, {}, projects => {
           this.loading = false;
           callback(projects);
         });
@@ -68,7 +68,7 @@ export default {
 
 <template>
   <div>
-    <label class="label-light prepend-top-10">
+    <label class="label-bold prepend-top-10">
       Project
     </label>
     <div

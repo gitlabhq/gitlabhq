@@ -1,0 +1,5 @@
+---
+title: fix height of full-width Metrics charts on large screens
+merge_request: 20866
+author:
+type: fixed

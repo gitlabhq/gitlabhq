@@ -1,9 +1,9 @@
-= form_for @application_setting, url: admin_application_settings_path do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-mirror-settings') do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      = f.label :mirror_available, 'Enable mirror configuration', class: 'label-light'
+      = f.label :mirror_available, 'Enable mirror configuration', class: 'label-bold'
       .form-check
         = f.check_box :mirror_available, class: 'form-check-input'
         = f.label :mirror_available, class: 'form-check-label' do

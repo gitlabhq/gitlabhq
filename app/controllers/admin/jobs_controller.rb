@@ -2,7 +2,7 @@ class Admin::JobsController < Admin::ApplicationController
   def index
     @scope = params[:scope]
     @all_builds = Ci::Build
-    @builds = @all_builds.order('created_at DESC')
+    @builds = @all_builds.order('id DESC')
     @builds =
       case @scope
       when 'pending'

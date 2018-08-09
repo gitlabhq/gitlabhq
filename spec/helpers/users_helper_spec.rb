@@ -25,8 +25,20 @@ describe UsersHelper do
       allow(helper).to receive(:can?).and_return(true)
     end
 
-    it 'includes all the expected tabs' do
-      expect(tabs).to include(:activity, :groups, :contributed, :projects, :snippets)
+    context 'with public profile' do
+      it 'includes all the expected tabs' do
+        expect(tabs).to include(:activity, :groups, :contributed, :projects, :snippets)
+      end
+    end
+
+    context 'with private profile' do
+      before do
+        allow(helper).to receive(:can?).with(user, :read_user_profile, nil).and_return(false)
+      end
+
+      it 'is empty' do
+        expect(tabs).to be_empty
+      end
     end
   end
 

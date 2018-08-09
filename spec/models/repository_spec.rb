@@ -296,24 +296,40 @@ describe Repository do
   end
 
   describe '#new_commits' do
-    let(:new_refs) do
-      double(:git_rev_list, new_refs: %w[
-        c1acaa58bbcbc3eafe538cb8274ba387047b69f8
-        5937ac0a7beb003549fc5fd26fc247adbce4a52e
-      ])
+    shared_examples 'finding unreferenced commits' do
+      set(:project) { create(:project, :repository) }
+      let(:repository) { project.repository }
+
+      subject { repository.new_commits(rev) }
+
+      context 'when there are no new commits' do
+        let(:rev) { repository.commit.id }
+
+        it 'returns an empty array' do
+          expect(subject).to eq([])
+        end
+      end
+
+      context 'when new commits are found' do
+        let(:branch) { 'orphaned-branch' }
+        let!(:rev) { repository.commit(branch).id }
+
+        it 'returns the commits' do
+          repository.delete_branch(branch)
+
+          expect(subject).not_to be_empty
+          expect(subject).to all( be_a(::Commit) )
+          expect(subject.size).to eq(1)
+        end
+      end
     end
 
-    it 'delegates to Gitlab::Git::RevList' do
-      expect(Gitlab::Git::RevList).to receive(:new).with(
-        repository.raw,
-        newrev: 'aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj').and_return(new_refs)
+    context 'when Gitaly handles the request' do
+      it_behaves_like 'finding unreferenced commits'
+    end
 
-      commits = repository.new_commits('aaaabbbbccccddddeeeeffffgggghhhhiiiijjjj')
-
-      expect(commits).to eq([
-        repository.commit('c1acaa58bbcbc3eafe538cb8274ba387047b69f8'),
-        repository.commit('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-      ])
+    context 'when Gitaly is disabled', :disable_gitaly do
+      it_behaves_like 'finding unreferenced commits'
     end
   end
 
@@ -1113,16 +1129,12 @@ describe Repository do
       end
 
       it 'raises Rugged::ReferenceError' do
-        raise_reference_error = raise_error(Rugged::ReferenceError) do |err|
-          expect(err.cause).to be_nil
-        end
-
         expect do
           Gitlab::Git::OperationService.new(git_user, target_project.repository.raw_repository)
             .with_branch('feature',
                          start_repository: project.repository.raw_repository,
                          &:itself)
-        end.to raise_reference_error
+        end.to raise_error(Gitlab::Git::CommandError)
       end
     end
 
@@ -2206,20 +2218,6 @@ describe Repository do
 
       expect(repository.local_branches.any? { |branch| branch.name == 'remote_branch' }).to eq(false)
       expect(repository.local_branches.any? { |branch| branch.name == 'local_branch' }).to eq(true)
-    end
-  end
-
-  describe '#remote_branches' do
-    it 'returns the remote branches' do
-      masterrev = repository.find_branch('master').dereferenced_target
-      create_remote_branch('joe', 'remote_branch', masterrev)
-      repository.add_branch(user, 'local_branch', masterrev.id)
-
-      # TODO: move this test to gitaly https://gitlab.com/gitlab-org/gitaly/issues/1243
-      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'local_branch' }).to eq(false)
-        expect(repository.remote_branches('joe').any? { |branch| branch.name == 'remote_branch' }).to eq(true)
-      end
     end
   end
 

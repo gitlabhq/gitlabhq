@@ -1,0 +1,5 @@
+---
+title: Solves group dashboard line height is too tall for group names.
+merge_request: 21033
+author:
+type: fixed

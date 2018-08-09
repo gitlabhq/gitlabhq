@@ -1,21 +1,21 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-visibility-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      = f.label :default_branch_protection, class: 'label-light'
+      = f.label :default_branch_protection, class: 'label-bold'
       = f.select :default_branch_protection, options_for_select(Gitlab::Access.protection_options, @application_setting.default_branch_protection), {}, class: 'form-control'
     .form-group.visibility-level-setting
-      = f.label :default_project_visibility, class: 'label-light'
+      = f.label :default_project_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_project_visibility, form: f, selected_level: @application_setting.default_project_visibility, form_model: Project.new)
     .form-group.visibility-level-setting
-      = f.label :default_snippet_visibility, class: 'label-light'
+      = f.label :default_snippet_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_snippet_visibility, form: f, selected_level: @application_setting.default_snippet_visibility, form_model: ProjectSnippet.new)
     .form-group.visibility-level-setting
-      = f.label :default_group_visibility, class: 'label-light'
+      = f.label :default_group_visibility, class: 'label-bold'
       = render('shared/visibility_radios', model_method: :default_group_visibility, form: f, selected_level: @application_setting.default_group_visibility, form_model: Group.new)
     .form-group
-      = f.label :restricted_visibility_levels, class: 'label-light'
+      = f.label :restricted_visibility_levels, class: 'label-bold'
       - checkbox_name = 'application_setting[restricted_visibility_levels][]'
       = hidden_field_tag(checkbox_name)
       - restricted_level_checkboxes('restricted-visibility-help', checkbox_name, class: 'form-check-input').each do |level|
@@ -25,7 +25,7 @@
         Selected levels cannot be used by non-admin users for groups, projects or snippets.
         If the public level is restricted, user profiles are only visible to logged in users.
     .form-group
-      = f.label :import_sources, class: 'label-light'
+      = f.label :import_sources, class: 'label-bold'
       = hidden_field_tag 'application_setting[import_sources][]'
       - import_sources_checkboxes('import-sources-help', class: 'form-check-input').each do |source|
         .form-check= source
@@ -44,7 +44,7 @@
           Project export enabled
 
     .form-group
-      %label.label-light Enabled Git access protocols
+      %label.label-bold Enabled Git access protocols
       = select(:application_setting, :enabled_git_access_protocol, [['Both SSH and HTTP(S)', nil], ['Only SSH', 'ssh'], ['Only HTTP(S)', 'http']], {}, class: 'form-control')
       %span.form-text.text-muted#clone-protocol-help
         Allow only the selected protocols to be used for Git access.
@@ -52,7 +52,7 @@
     - ApplicationSetting::SUPPORTED_KEY_TYPES.each do |type|
       - field_name = :"#{type}_key_restriction"
       .form-group
-        = f.label field_name, "#{type.upcase} SSH keys", class: 'label-light'
+        = f.label field_name, "#{type.upcase} SSH keys", class: 'label-bold'
         = f.select field_name, key_restriction_options_for_select(type), {}, class: 'form-control'
 
   = f.submit 'Save changes', class: "btn btn-success"

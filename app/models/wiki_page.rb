@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   PageChangedError = Class.new(StandardError)

@@ -32,9 +32,32 @@ export const rightSidebarViews = {
   pipelines: 'pipelines-list',
   jobsDetail: 'jobs-detail',
   mergeRequestInfo: 'merge-request-info',
+  clientSidePreview: 'clientside',
 };
 
 export const stageKeys = {
   unstaged: 'unstaged',
   staged: 'staged',
 };
+
+export const commitItemIconMap = {
+  addition: {
+    icon: 'file-addition',
+    class: 'ide-file-addition',
+  },
+  modified: {
+    icon: 'file-modified',
+    class: 'ide-file-modified',
+  },
+  deleted: {
+    icon: 'file-deletion',
+    class: 'ide-file-deletion',
+  },
+};
+
+export const modalTypes = {
+  rename: 'rename',
+  tree: 'tree',
+};
+
+export const packageJsonPath = 'package.json';

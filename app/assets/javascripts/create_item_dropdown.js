@@ -12,6 +12,7 @@ export default class CreateItemDropdown {
     this.fieldName = options.fieldName;
     this.onSelect = options.onSelect || (() => {});
     this.getDataOption = options.getData;
+    this.getDataRemote = !!options.filterRemote;
     this.createNewItemFromValueOption = options.createNewItemFromValue;
     this.$dropdown = options.$dropdown;
     this.$dropdownContainer = this.$dropdown.parent();
@@ -29,7 +30,7 @@ export default class CreateItemDropdown {
     this.$dropdown.glDropdown({
       data: this.getData.bind(this),
       filterable: true,
-      remote: false,
+      filterRemote: this.getDataRemote,
       search: {
         fields: ['text'],
       },

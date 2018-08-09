@@ -30,7 +30,7 @@ module API
     end
 
     class User < UserBasic
-      expose :created_at
+      expose :created_at, if: ->(user, opts) { Ability.allowed?(opts[:current_user], :read_user_profile, user) }
       expose :bio, :location, :skype, :linkedin, :twitter, :website_url, :organization
     end
 
@@ -55,10 +55,19 @@ module API
       expose :can_create_project?, as: :can_create_project
       expose :two_factor_enabled?, as: :two_factor_enabled
       expose :external
+      expose :private_profile
     end
 
     class UserWithAdmin < UserPublic
       expose :admin?, as: :is_admin
+    end
+
+    class UserStatus < Grape::Entity
+      expose :emoji
+      expose :message
+      expose :message_html do |entity|
+        MarkupHelper.markdown_field(entity, :message)
+      end
     end
 
     class Email < Grape::Entity
@@ -132,6 +141,7 @@ module API
       expose :star_count, :forks_count
       expose :last_activity_at
 
+      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
@@ -194,7 +204,6 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -529,6 +538,10 @@ module API
 
     class PipelineBasic < Grape::Entity
       expose :id, :sha, :ref, :status
+
+      expose :web_url do |pipeline, _options|
+        Gitlab::Routing.url_helpers.project_pipeline_url(pipeline.project, pipeline)
+      end
     end
 
     class MergeRequestSimple < ProjectEntity
@@ -701,7 +714,7 @@ module API
       expose :system?, as: :system
       expose :noteable_id, :noteable_type
 
-      expose :position, if: ->(note, options) { note.diff_note? } do |note|
+      expose :position, if: ->(note, options) { note.is_a?(DiffNote) } do |note|
         note.position.to_h
       end
 
@@ -782,28 +795,33 @@ module API
 
     class Todo < Grape::Entity
       expose :id
-      expose :project, using: Entities::BasicProjectDetails
+      expose :project, using: Entities::ProjectIdentity, if: -> (todo, _) { todo.project_id }
+      expose :group, using: 'API::Entities::NamespaceBasic', if: -> (todo, _) { todo.group_id }
       expose :author, using: Entities::UserBasic
       expose :action_name
       expose :target_type
 
       expose :target do |todo, options|
-        Entities.const_get(todo.target_type).represent(todo.target, options)
+        todo_target_class(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
         target_type   = todo.target_type.underscore
-        target_url    = "namespace_project_#{target_type}_url"
+        target_url    = "#{todo.parent.class.to_s.underscore}_#{target_type}_url"
         target_anchor = "note_#{todo.note_id}" if todo.note_id?
 
         Gitlab::Routing
           .url_helpers
-          .public_send(target_url, todo.project.namespace, todo.project, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
+          .public_send(target_url, todo.parent, todo.target, anchor: target_anchor) # rubocop:disable GitlabSecurity/PublicSend
       end
 
       expose :body
       expose :state
       expose :created_at
+
+      def todo_target_class(target_type)
+        ::API::Entities.const_get(target_type)
+      end
     end
 
     class NamespaceBasic < Grape::Entity
@@ -1069,6 +1087,10 @@ module API
       expose :user, with: User
       expose :commit, with: Commit
       expose :pipeline, with: PipelineBasic
+
+      expose :web_url do |job, _options|
+        Gitlab::Routing.url_helpers.project_job_url(job.project, job)
+      end
     end
 
     class Job < JobBasic
@@ -1227,7 +1249,13 @@ module API
       end
 
       class Artifacts < Grape::Entity
-        expose :name, :untracked, :paths, :when, :expire_in
+        expose :name
+        expose :untracked
+        expose :paths
+        expose :when
+        expose :expire_in
+        expose :artifact_type
+        expose :artifact_format
       end
 
       class Cache < Grape::Entity

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class UpdatePagesConfigurationService < BaseService
     attr_reader :project

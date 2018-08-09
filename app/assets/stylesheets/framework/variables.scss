@@ -2,9 +2,9 @@
  * Layout
  */
 $grid-size: 8px;
-$gutter_collapsed_width: 62px;
-$gutter_width: 290px;
-$gutter_inner_width: 250px;
+$gutter-collapsed-width: 62px;
+$gutter-width: 290px;
+$gutter-inner-width: 250px;
 $sidebar-transition-duration: 0.3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: 0.15s;
@@ -233,8 +233,8 @@ $md-area-border: #ddd;
 /*
  * Code
  */
-$code_font_size: 90%;
-$code_line_height: 1.6;
+$code-font-size: 90%;
+$code-line-height: 1.6;
 
 /*
  * Tooltips
@@ -371,9 +371,9 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 /*
  * Fonts
  */
-$monospace_font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
+$monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
-$regular_font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
+$regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
   'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 
 /*
@@ -467,7 +467,8 @@ $award-emoji-positive-add-lines: #bb9c13;
  */
 $search-input-border-color: rgba($blue-400, 0.8);
 $search-input-focus-shadow-color: $dropdown-input-focus-shadow;
-$search-input-width: 220px;
+$search-input-width: 240px;
+$search-input-active-width: 320px;
 $location-badge-active-bg: $blue-500;
 $location-icon-color: #e7e9ed;
 
@@ -485,6 +486,18 @@ $note-icon-gutter-width: 55px;
 * Zen
 */
 $zen-control-color: #555;
+
+/*
+* Identicon
+*/
+$identicon-red: #ffebee;
+$identicon-purple: #f3e5f5;
+$identicon-indigo: #e8eaf6;
+$identicon-blue: #e3f2fd;
+$identicon-teal: #e0f2f1;
+$identicon-orange: #fbe9e7;
+$identicon-gray: $gray-darker;
+$identicon-fg-color: #555555;
 
 /*
 * Calendar
@@ -526,7 +539,7 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 /*
 * Avatar
 */
-$avatar_radius: 50%;
+$avatar-radius: 50%;
 $avatar-border: $gray-normal;
 $avatar-border-hover: $gray-darker;
 $avatar-background: $gray-lightest;
@@ -830,8 +843,10 @@ $secondary: $gray-light;
 $input-disabled-bg: $gray-light;
 $input-border-color: $theme-gray-200;
 $input-color: $gl-text-color;
-$font-family-sans-serif: $regular_font;
-$font-family-monospace: $monospace_font;
+$font-family-sans-serif: $regular-font;
+$font-family-monospace: $monospace-font;
 $input-line-height: 20px;
 $btn-line-height: 20px;
 $table-accent-bg: $gray-light;
+$card-border-color: $border-color;
+$card-cap-bg: $gray-light;

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::ServicesController < Admin::ApplicationController
   include ServiceParams
 
@@ -30,7 +32,7 @@ class Admin::ServicesController < Admin::ApplicationController
 
   def services_templates
     Service.available_services_names.map do |service_name|
-      service_template = service_name.concat("_service").camelize.constantize
+      service_template = "#{service_name}_service".camelize.constantize
       service_template.where(template: true).first_or_create
     end
   end

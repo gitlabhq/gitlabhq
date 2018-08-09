@@ -166,6 +166,122 @@ describe('Diffs Module Getters', () => {
     });
   });
 
+  describe('diffHasDiscussions', () => {
+    it('returns true when getDiffFileDiscussions returns discussions', () => {
+      expect(
+        getters.diffHasDiscussions(localState, {
+          getDiffFileDiscussions: () => [discussionMock],
+        })(diffFileMock),
+      ).toEqual(true);
+    });
+
+    it('returns false when getDiffFileDiscussions returns no discussions', () => {
+      expect(
+        getters.diffHasDiscussions(localState, {
+          getDiffFileDiscussions: () => [],
+        })(diffFileMock),
+      ).toEqual(false);
+    });
+  });
+
+  describe('singleDiscussionByLineCode', () => {
+    it('returns found discussion per line Code', () => {
+      const discussionsMock = {};
+      discussionsMock.ABC = discussionMock;
+
+      expect(
+        getters.singleDiscussionByLineCode(localState, {}, null, {
+          discussionsByLineCode: () => discussionsMock,
+        })('DEF'),
+      ).toEqual([]);
+    });
+
+    it('returns empty array when no discussions match', () => {
+      expect(
+        getters.singleDiscussionByLineCode(localState, {}, null, {
+          discussionsByLineCode: () => {},
+        })('DEF'),
+      ).toEqual([]);
+    });
+  });
+
+  describe('shouldRenderParallelCommentRow', () => {
+    let line;
+
+    beforeEach(() => {
+      line = {};
+
+      line.left = {
+        lineCode: 'ABC',
+      };
+
+      line.right = {
+        lineCode: 'DEF',
+      };
+    });
+
+    it('returns true when discussion is expanded', () => {
+      discussionMock.expanded = true;
+
+      expect(
+        getters.shouldRenderParallelCommentRow(localState, {
+          singleDiscussionByLineCode: () => [discussionMock],
+        })(line),
+      ).toEqual(true);
+    });
+
+    it('returns false when no discussion was found', () => {
+      localState.diffLineCommentForms.ABC = false;
+      localState.diffLineCommentForms.DEF = false;
+
+      expect(
+        getters.shouldRenderParallelCommentRow(localState, {
+          singleDiscussionByLineCode: () => [],
+        })(line),
+      ).toEqual(false);
+    });
+
+    it('returns true when discussionForm was found', () => {
+      localState.diffLineCommentForms.ABC = {};
+
+      expect(
+        getters.shouldRenderParallelCommentRow(localState, {
+          singleDiscussionByLineCode: () => [discussionMock],
+        })(line),
+      ).toEqual(true);
+    });
+  });
+
+  describe('shouldRenderInlineCommentRow', () => {
+    it('returns true when diffLineCommentForms has form', () => {
+      localState.diffLineCommentForms.ABC = {};
+
+      expect(
+        getters.shouldRenderInlineCommentRow(localState)({
+          lineCode: 'ABC',
+        }),
+      ).toEqual(true);
+    });
+
+    it('returns false when no line discussions were found', () => {
+      expect(
+        getters.shouldRenderInlineCommentRow(localState, {
+          singleDiscussionByLineCode: () => [],
+        })('DEF'),
+      ).toEqual(false);
+    });
+
+    it('returns true if all found discussions are expanded', () => {
+      discussionMock.expanded = true;
+
+      expect(
+        getters.shouldRenderInlineCommentRow(localState, {
+          singleDiscussionByLineCode: () => [discussionMock],
+        })('ABC'),
+      ).toEqual(true);
+    });
+  });
+
   describe('getDiffFileDiscussions', () => {
     it('returns an array with discussions when fileHash matches and the discussion belongs to a diff', () => {
       discussionMock.diff_file.file_hash = diffFileMock.fileHash;

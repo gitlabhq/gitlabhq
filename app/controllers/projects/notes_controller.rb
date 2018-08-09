@@ -1,4 +1,5 @@
 class Projects::NotesController < Projects::ApplicationController
+  include RendersNotes
   include NotesActions
   include NotesHelper
   include ToggleAwardEmoji
@@ -53,7 +54,7 @@ class Projects::NotesController < Projects::ApplicationController
   private
 
   def render_json_with_notes_serializer
-    Notes::RenderService.new(current_user).execute([note])
+    prepare_notes_for_rendering([note])
 
     render json: note_serializer.represent(note)
   end

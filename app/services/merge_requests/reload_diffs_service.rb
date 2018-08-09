@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   class ReloadDiffsService
     def initialize(merge_request, current_user)

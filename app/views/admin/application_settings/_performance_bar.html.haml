@@ -1,4 +1,4 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-performance-bar-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
@@ -8,7 +8,7 @@
         = f.label :performance_bar_enabled, class: 'form-check-label' do
           Enable the Performance Bar
     .form-group
-      = f.label :performance_bar_allowed_group_path, 'Allowed group', class: 'label-light'
+      = f.label :performance_bar_allowed_group_path, 'Allowed group', class: 'label-bold'
       = f.text_field :performance_bar_allowed_group_path, class: 'form-control', placeholder: 'my-org/my-group', value: @application_setting.performance_bar_allowed_group&.full_path
 
   = f.submit 'Save changes', class: "btn btn-success"

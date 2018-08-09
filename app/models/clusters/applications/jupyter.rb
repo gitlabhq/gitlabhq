@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class Jupyter < ActiveRecord::Base
-      VERSION = '0.0.1'.freeze
+      VERSION = 'v0.6'.freeze
 
       self.table_name = 'clusters_applications_jupyter'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       belongs_to :oauth_application, class_name: 'Doorkeeper::Application'
@@ -35,9 +38,10 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
+          version: VERSION,
           chart: chart,
-          values: values,
+          files: files,
           repository: repository
         )
       end

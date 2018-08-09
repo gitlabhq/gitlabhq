@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class User < ActiveRecord::Base
@@ -14,7 +16,6 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include FeatureGate
   include CreatedAtFilterable
-  include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
   include WithUploads
@@ -129,7 +130,7 @@ class User < ActiveRecord::Base
   has_many :builds,                   dependent: :nullify, class_name: 'Ci::Build' # rubocop:disable Cop/ActiveRecordDependent
   has_many :pipelines,                dependent: :nullify, class_name: 'Ci::Pipeline' # rubocop:disable Cop/ActiveRecordDependent
   has_many :todos
-  has_many :notification_settings,    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :notification_settings
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 dependent: :destroy, class_name: 'Ci::Trigger', foreign_key: :owner_id # rubocop:disable Cop/ActiveRecordDependent
 
@@ -141,6 +142,8 @@ class User < ActiveRecord::Base
   has_many :callouts, class_name: 'UserCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
+
+  has_one :status, class_name: 'UserStatus'
 
   #
   # Validations
@@ -249,6 +252,7 @@ class User < ActiveRecord::Base
   scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
 
   def self.with_two_factor_indistinct
     joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
@@ -294,14 +298,17 @@ class User < ActiveRecord::Base
     end
 
     # Find a User by their primary email or any associated secondary email
-    def find_by_any_email(email)
-      by_any_email(email).take
+    def find_by_any_email(email, confirmed: false)
+      by_any_email(email, confirmed: confirmed).take
     end
 
     # Returns a relation containing all the users for the given Email address
-    def by_any_email(email)
+    def by_any_email(email, confirmed: false)
       users = where(email: email)
+      users = users.confirmed if confirmed
+
       emails = joins(:emails).where(emails: { email: email })
+      emails = emails.confirmed if confirmed
       union = Gitlab::SQL::Union.new([users, emails])
 
       from("(#{union.to_sql}) #{table_name}")

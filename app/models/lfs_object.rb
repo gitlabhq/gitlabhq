@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class LfsObject < ActiveRecord::Base
   include AfterCommitQueue
   include ObjectStorage::BackgroundMove

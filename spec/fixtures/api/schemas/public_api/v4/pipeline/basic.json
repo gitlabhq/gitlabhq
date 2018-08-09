@@ -4,13 +4,15 @@
     "id",
     "sha",
     "ref",
-    "status"
+    "status",
+    "web_url"
   ],
   "properties" : {
     "id": { "type": "integer" },
     "sha": { "type": "string" },
     "ref": { "type": "string" },
-    "status": { "type": "string" }
+    "status": { "type": "string" },
+    "web_url": { "type": "string" }
   },
   "additionalProperties": false
 }

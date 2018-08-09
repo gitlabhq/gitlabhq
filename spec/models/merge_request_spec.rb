@@ -3,6 +3,7 @@ require 'spec_helper'
 describe MergeRequest do
   include RepoHelpers
   include ProjectForksHelper
+  include ReactiveCachingHelpers
 
   subject { create(:merge_request) }
 
@@ -310,6 +311,51 @@ describe MergeRequest do
     end
   end
 
+  describe '#visible_closing_issues_for' do
+    let(:guest) { create(:user) }
+    let(:developer) { create(:user) }
+    let(:issue_1) { create(:issue, project: subject.source_project) }
+    let(:issue_2) { create(:issue, project: subject.source_project) }
+    let(:confidential_issue) { create(:issue, :confidential, project: subject.source_project) }
+
+    before do
+      subject.project.add_developer(subject.author)
+      subject.target_branch = subject.project.default_branch
+      commit = double('commit1', safe_message: "Fixes #{issue_1.to_reference} #{issue_2.to_reference} #{confidential_issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+    end
+
+    it 'shows only allowed issues to guest' do
+      subject.project.add_guest(guest)
+
+      subject.cache_merge_request_closes_issues!
+
+      expect(subject.visible_closing_issues_for(guest)).to match_array([issue_1, issue_2])
+    end
+
+    it 'shows only allowed issues to developer' do
+      subject.project.add_developer(developer)
+
+      subject.cache_merge_request_closes_issues!
+
+      expect(subject.visible_closing_issues_for(developer)).to match_array([issue_1, confidential_issue, issue_2])
+    end
+
+    context 'when external issue tracker is enabled' do
+      before do
+        subject.project.has_external_issue_tracker = true
+        subject.project.save!
+      end
+
+      it 'calls non #closes_issues to retrieve data' do
+        expect(subject).to receive(:closes_issues)
+        expect(subject).not_to receive(:cached_closes_issues)
+
+        subject.visible_closing_issues_for
+      end
+    end
+  end
+
   describe '#cache_merge_request_closes_issues!' do
     before do
       subject.project.add_developer(subject.author)
@@ -322,6 +368,25 @@ describe MergeRequest do
       allow(subject).to receive(:commits).and_return([commit])
 
       expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change(subject.merge_requests_closing_issues, :count).by(1)
+    end
+
+    it 'does not cache closed issues when merge request is closed' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+
+      allow(subject).to receive(:commits).and_return([commit])
+      allow(subject).to receive(:state).and_return("closed")
+
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
+    end
+
+    it 'does not cache closed issues when merge request is merged' do
+      issue  = create :issue, project: subject.project
+      commit = double('commit1', safe_message: "Fixes #{issue.to_reference}")
+      allow(subject).to receive(:commits).and_return([commit])
+      allow(subject).to receive(:state).and_return("merged")
+
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.not_to change(subject.merge_requests_closing_issues, :count)
     end
 
     context 'when both internal and external issue trackers are enabled' do
@@ -632,6 +697,7 @@ describe MergeRequest do
       allow(subject).to receive(:commits).and_return([commit])
       allow(subject.project).to receive(:default_branch)
         .and_return(subject.target_branch)
+      subject.cache_merge_request_closes_issues!
 
       expect(subject.issues_mentioned_but_not_closing(subject.author)).to match_array([mentioned_issue])
     end
@@ -649,6 +715,8 @@ describe MergeRequest do
       end
 
       it 'detects issues mentioned in description but not closed' do
+        subject.cache_merge_request_closes_issues!
+
         expect(subject.issues_mentioned_but_not_closing(subject.author).map(&:to_s)).to match_array(['TEST-2'])
       end
     end
@@ -779,9 +847,8 @@ describe MergeRequest do
 
       subject.project.add_developer(subject.author)
       subject.description = "This issue Closes #{issue.to_reference}"
-
-      allow(subject.project).to receive(:default_branch)
-        .and_return(subject.target_branch)
+      allow(subject.project).to receive(:default_branch).and_return(subject.target_branch)
+      subject.cache_merge_request_closes_issues!
 
       expect(subject.merge_commit_message)
         .to match("Closes #{issue.to_reference}")
@@ -1079,6 +1146,97 @@ describe MergeRequest do
     end
   end
 
+  describe '#has_test_reports?' do
+    subject { merge_request.has_test_reports? }
+
+    let(:project) { create(:project, :repository) }
+
+    context 'when head pipeline has test reports' do
+      let(:merge_request) { create(:merge_request, :with_test_reports, source_project: project) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when head pipeline does not have test reports' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+
+      it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#compare_test_reports' do
+    subject { merge_request.compare_test_reports }
+
+    let(:project) { create(:project, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:base_pipeline) do
+      create(:ci_pipeline,
+             :with_test_reports,
+             project: project,
+             ref: merge_request.target_branch,
+             sha: merge_request.diff_base_sha)
+    end
+
+    before do
+      merge_request.update!(head_pipeline_id: head_pipeline.id)
+    end
+
+    context 'when head pipeline has test reports' do
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               :with_test_reports,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
+      end
+
+      context 'when reactive cache worker is parsing asynchronously' do
+        it 'returns status' do
+          expect(subject[:status]).to eq(:parsing)
+        end
+      end
+
+      context 'when reactive cache worker is inline' do
+        before do
+          synchronous_reactive_cache(merge_request)
+        end
+
+        it 'returns status and data' do
+          expect_any_instance_of(Ci::CompareTestReportsService)
+            .to receive(:execute).with(base_pipeline, head_pipeline).and_call_original
+
+          subject
+        end
+
+        context 'when cached results is not latest' do
+          before do
+            allow_any_instance_of(Ci::CompareTestReportsService)
+              .to receive(:latest?).and_return(false)
+          end
+
+          it 'raises and InvalidateReactiveCache error' do
+            expect { subject }.to raise_error(ReactiveCaching::InvalidateReactiveCache)
+          end
+        end
+      end
+    end
+
+    context 'when head pipeline does not have test reports' do
+      let!(:head_pipeline) do
+        create(:ci_pipeline,
+               project: project,
+               ref: merge_request.source_branch,
+               sha: merge_request.diff_head_sha)
+      end
+
+      it 'returns status and error message' do
+        expect(subject[:status]).to eq(:error)
+        expect(subject[:status_reason]).to eq('This merge request does not have test reports')
+      end
+    end
+  end
+
   describe '#all_commit_shas' do
     context 'when merge request is persisted' do
       let(:all_commit_shas) do
@@ -1207,6 +1365,16 @@ describe MergeRequest do
                                           project.default_branch == branch)
         end
 
+        context 'but merged at timestamp cannot be found' do
+          before do
+            allow(subject).to receive(:merged_at) { nil }
+          end
+
+          it 'returns false' do
+            expect(subject.can_be_reverted?(current_user)).to be_falsey
+          end
+        end
+
         context 'when the revert commit is mentioned in a note after the MR was merged' do
           it 'returns false' do
             expect(subject.can_be_reverted?(current_user)).to be_falsey
@@ -1242,6 +1410,63 @@ describe MergeRequest do
             expect(subject.can_be_reverted?(current_user)).to be_truthy
           end
         end
+      end
+    end
+  end
+
+  describe '#merged_at' do
+    context 'when MR is not merged' do
+      let(:merge_request) { create(:merge_request, :closed) }
+
+      it 'returns nil' do
+        expect(merge_request.merged_at).to be_nil
+      end
+    end
+
+    context 'when metrics has merged_at data' do
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        merge_request.metrics.update!(merged_at: 1.day.ago)
+      end
+
+      it 'returns metrics merged_at' do
+        expect(merge_request.merged_at).to eq(merge_request.metrics.merged_at)
+      end
+    end
+
+    context 'when merged event is persisted, but no metrics merged_at is persisted' do
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        EventCreateService.new.merge_mr(merge_request, user)
+      end
+
+      it 'returns merged event creation date' do
+        expect(merge_request.merge_event).to be_persisted
+        expect(merge_request.merged_at).to eq(merge_request.merge_event.created_at)
+      end
+    end
+
+    context 'when merging note is persisted, but no metrics or merge event exists' do
+      let(:user) { create(:user) }
+      let(:merge_request) { create(:merge_request, :merged) }
+
+      before do
+        merge_request.metrics.destroy!
+
+        SystemNoteService.change_status(merge_request,
+                                        merge_request.target_project,
+                                        user,
+                                        merge_request.state, nil)
+      end
+
+      it 'returns merging note creation date' do
+        expect(merge_request.reload.metrics).to be_nil
+        expect(merge_request.merge_event).to be_nil
+        expect(merge_request.notes.count).to eq(1)
+        expect(merge_request.merged_at).to eq(merge_request.notes.first.created_at)
       end
     end
   end
@@ -2007,6 +2232,26 @@ describe MergeRequest do
           expect(merge_request.mergeable_with_quick_action?(developer, last_diff_sha: mr_sha)).to be_truthy
         end
       end
+    end
+  end
+
+  describe '#base_pipeline' do
+    let(:pipeline_arguments) do
+      {
+        project: project,
+        ref: merge_request.target_branch,
+        sha: merge_request.diff_base_sha
+      }
+    end
+
+    let(:project) { create(:project, :public, :repository) }
+    let(:merge_request) { create(:merge_request, source_project: project) }
+
+    let!(:first_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+    let!(:last_pipeline) { create(:ci_pipeline_without_jobs, pipeline_arguments) }
+
+    it 'returns latest pipeline' do
+      expect(merge_request.base_pipeline).to eq(last_pipeline)
     end
   end
 

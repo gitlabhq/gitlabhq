@@ -9,18 +9,20 @@ class Projects::MirrorsController < Projects::ApplicationController
   layout "project_settings"
 
   def show
-    redirect_to_repository_settings(project)
+    redirect_to_repository_settings(project, anchor: 'js-push-remote-settings')
   end
 
   def update
-    if project.update(mirror_params)
+    result = ::Projects::UpdateService.new(project, current_user, mirror_params).execute
+
+    if result[:status] == :success
       flash[:notice] = 'Mirroring settings were successfully updated.'
     else
       flash[:alert] = project.errors.full_messages.join(', ').html_safe
     end
 
     respond_to do |format|
-      format.html { redirect_to_repository_settings(project) }
+      format.html { redirect_to_repository_settings(project, anchor: 'js-push-remote-settings') }
       format.json do
         if project.errors.present?
           render json: project.errors, status: :unprocessable_entity
@@ -37,7 +39,7 @@ class Projects::MirrorsController < Projects::ApplicationController
       flash[:notice] = "The remote repository is being updated..."
     end
 
-    redirect_to_repository_settings(project)
+    redirect_to_repository_settings(project, anchor: 'js-push-remote-settings')
   end
 
   private

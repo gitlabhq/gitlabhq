@@ -72,7 +72,7 @@ The current team labels are:
 - ~Plan
 - ~Quality
 - ~Release
-- ~"Security Products"
+- ~Secure
 - ~UX
 
 The descriptions on the [labels page][labels-page] explain what falls under the
@@ -201,15 +201,14 @@ on those issues. Please select someone with relevant experience from the
 the commit history for the affected files to find someone.
 
 We also use [GitLab Triage] to automate some triaging policies. This is
-currently setup as a [scheduled pipeline] running on the [`gl-triage`] branch.
-
+currently setup as a [scheduled pipeline] running on [quality/triage-ops]
+project.
 
 [described in our handbook]: https://about.gitlab.com/handbook/engineering/issue-triage/
 [issue bash events]: https://gitlab.com/gitlab-org/gitlab-ce/issues/17815
 [GitLab Triage]: https://gitlab.com/gitlab-org/gitlab-triage
-[scheduled pipeline]: https://gitlab.com/gitlab-org/gitlab-ce/pipeline_schedules/3732/edit
-[`gl-triage`]: https://gitlab.com/gitlab-org/gitlab-ce/tree/gl-triage
-
+[scheduled pipeline]: https://gitlab.com/gitlab-org/quality/triage-ops/pipeline_schedules/10512/edit
+[quality/triage-ops]: https://gitlab.com/gitlab-org/quality/triage-ops
 
 ### Feature proposals
 
@@ -228,7 +227,7 @@ code snippet right after your description in a new line: `~"feature proposal"`.
 Please keep feature proposals as small and simple as possible, complex ones
 might be edited to make them small and simple.
 
-Please submit Feature Proposals using the ['Feature Proposal' issue template](.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
+Please submit Feature Proposals using the ['Feature Proposal' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Feature Proposal.md) provided on the issue tracker.
 
 For changes in the interface, it is helpful to include a mockup. Issues that add to, or change, the interface should
 be given the ~"UX" label. This will allow the UX team to provide input and guidance. You may
@@ -244,7 +243,7 @@ submitting your own, there's a good chance somebody else had the same issue or
 feature proposal. Show your support with an award emoji and/or join the
 discussion.
 
-Please submit bugs using the ['Bug' issue template](.gitlab/issue_templates/Bug.md) provided on the issue tracker.
+Please submit bugs using the ['Bug' issue template](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab/issue_templates/Bug.md) provided on the issue tracker.
 The text in the parenthesis is there to help you with what to include. Omit it
 when submitting the actual issue. You can copy-paste it and then edit as you
 see fit.
@@ -329,3 +328,7 @@ A recent example of this was the issue for
 [bringing the time tracking API to GitLab CE][time-tracking-issue].
 
 [time-tracking-issue]: https://gitlab.com/gitlab-org/gitlab-ce/issues/25517#note_20019084
+
+---
+
+[Return to Contributing documentation](index.md)

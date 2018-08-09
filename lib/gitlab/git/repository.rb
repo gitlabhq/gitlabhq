@@ -1,4 +1,3 @@
-# Gitlab::Git::Repository is a wrapper around native Rugged::Repository object
 require 'tempfile'
 require 'forwardable'
 require "rubygems/package"
@@ -20,6 +19,7 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      REV_LIST_COMMIT_LIMIT = 2_000
       # In https://gitlab.com/gitlab-org/gitaly/merge_requests/698
       # We copied these two prefixes into gitaly-go, so don't change these
       # or things will break! (REBASE_WORKTREE_PREFIX and SQUASH_WORKTREE_PREFIX)
@@ -40,19 +40,6 @@ module Gitlab
       ChecksumError = Class.new(StandardError)
 
       class << self
-        # Unlike `new`, `create` takes the repository path
-        def create(repo_path, bare: true, symlink_hooks_to: nil)
-          FileUtils.mkdir_p(repo_path, mode: 0770)
-
-          # Equivalent to `git --git-path=#{repo_path} init [--bare]`
-          repo = Rugged::Repository.init_at(repo_path, bare)
-          repo.close
-
-          create_hooks(repo_path, symlink_hooks_to) if symlink_hooks_to.present?
-
-          true
-        end
-
         def create_hooks(repo_path, global_hooks_path)
           local_hooks_path = File.join(repo_path, 'hooks')
           real_local_hooks_path = :not_found
@@ -252,14 +239,6 @@ module Gitlab
         end
       end
 
-      def batch_existence(object_ids, existing: true)
-        filter_method = existing ? :select : :reject
-
-        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
-          rugged.exists?(oid)
-        end
-      end
-
       # Returns an Array of branch and tag names
       def ref_names
         branch_names + tag_names
@@ -362,8 +341,6 @@ module Gitlab
       #     offset: 5,
       #     after: Time.new(2016, 4, 21, 14, 32, 10)
       #   )
-      #
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/446
       def log(options)
         default_options = {
           limit: 10,
@@ -389,6 +366,31 @@ module Gitlab
         end
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
+      def new_commits(newrev)
+        gitaly_migrate(:new_commits) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.list_new_commits(newrev)
+          else
+            refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+              rev_list(including: newrev, excluding: :all).split("\n").map(&:strip)
+            end
+
+            Gitlab::Git::Commit.batch_by_oid(self, refs)
+          end
+        end
+      end
+
+      def new_blobs(newrev)
+        return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
+
+        strong_memoize("new_blobs_#{newrev}") do
+          wrapped_gitaly_errors do
+            gitaly_ref_client.list_new_blobs(newrev, REV_LIST_COMMIT_LIMIT)
+          end
+        end
+      end
+
       def count_commits(options)
         options = process_count_commits_options(options.dup)
 
@@ -407,13 +409,6 @@ module Gitlab
             gitaly_commit_client.commit_count(options[:ref], options)
           end
         end
-      end
-
-      # Return the object that +revspec+ points to.  If +revspec+ is an
-      # annotated tag, then return the tag's target instead.
-      def rev_parse_target(revspec)
-        obj = rugged.rev_parse(revspec)
-        Ref.dereference_object(obj)
       end
 
       # Counts the amount of commits between `from` and `to`.
@@ -561,7 +556,9 @@ module Gitlab
           if is_enabled
             gitaly_operation_client.user_update_branch(branch_name, user, newrev, oldrev)
           else
-            OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+              OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
+            end
           end
         end
       end
@@ -673,33 +670,15 @@ module Gitlab
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
       def add_remote(remote_name, url, mirror_refmap: nil)
-        gitaly_migrate(:remote_add_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
-          else
-            rugged_add_remote(remote_name, url, mirror_refmap)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
         end
       end
 
       def remove_remote(remote_name)
-        gitaly_migrate(:remote_remove_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.remove_remote(remote_name)
-          else
-            rugged_remove_remote(remote_name)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.remove_remote(remote_name)
         end
-      end
-
-      # Update the specified remote using the values in the +options+ hash
-      #
-      # Example
-      # repo.update_remote("origin", url: "path/to/repo")
-      def remote_update(remote_name, url:)
-        # TODO: Implement other remote options
-        rugged.remotes.set_url(remote_name, url)
-        nil
       end
 
       AUTOCRLF_VALUES = {
@@ -845,22 +824,17 @@ module Gitlab
         end
       end
 
+      # This method, fetch_ref, is used from within
+      # Gitlab::Git::OperationService. OperationService will eventually only
+      # exist in gitaly-ruby. When we delete OperationService from gitlab-ce
+      # we can also remove fetch_ref.
       def fetch_ref(source_repository, source_ref:, target_ref:)
         Gitlab::Git.check_namespace!(source_repository)
         source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
 
-        message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
-          if is_enabled
-            gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
-          else
-            # When removing this code, also remove source_repository#path
-            # to remove deprecated method calls
-            local_fetch_ref(source_repository.path, source_ref: source_ref, target_ref: target_ref)
-          end
-        end
-
-        # Make sure ref was created, and raise Rugged::ReferenceError when not
-        raise Rugged::ReferenceError, message if status != 0
+        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
+        message, status = run_git(args, env: source_repository.fetch_env)
+        raise Gitlab::Git::CommandError, message if status != 0
 
         target_ref
       end
@@ -875,12 +849,8 @@ module Gitlab
       end
 
       def fetch_repository_as_mirror(repository)
-        gitaly_migrate(:remote_fetch_internal_remote) do |is_enabled|
-          if is_enabled
-            gitaly_remote_client.fetch_internal_remote(repository)
-          else
-            rugged_fetch_repository_as_mirror(repository)
-          end
+        wrapped_gitaly_errors do
+          gitaly_remote_client.fetch_internal_remote(repository)
         end
       end
 
@@ -1048,8 +1018,8 @@ module Gitlab
       end
 
       def clean_stale_repository_files
-        gitaly_migrate(:repository_cleanup, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
-          gitaly_repository_client.cleanup if is_enabled && exists?
+        wrapped_gitaly_errors do
+          gitaly_repository_client.cleanup if exists?
         end
       rescue Gitlab::Git::CommandError => e # Don't fail if we can't cleanup
         Rails.logger.error("Unable to clean repository on storage #{storage} with relative path #{relative_path}: #{e.message}")
@@ -1132,33 +1102,6 @@ module Gitlab
         run_git!(args, lazy_block: block)
       end
 
-      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
-        base_args = %w(worktree add --detach)
-
-        # Note that we _don't_ want to test for `.present?` here: If the caller
-        # passes an non nil empty value it means it still wants sparse checkout
-        # but just isn't interested in any file, perhaps because it wants to
-        # checkout files in by a changeset but that changeset only adds files.
-        if sparse_checkout_files
-          # Create worktree without checking out
-          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
-          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path).chomp
-
-          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
-
-          # After sparse checkout configuration, checkout `branch` in worktree
-          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
-        else
-          # Create worktree and checkout `branch` in it
-          run_git!(base_args + [worktree_path, branch], env: env)
-        end
-
-        yield
-      ensure
-        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
-        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
-      end
-
       def checksum
         # The exists? RPC is much cheaper, so we perform this request first
         raise NoRepository, "Repository does not exists" unless exists?
@@ -1202,38 +1145,6 @@ module Gitlab
         circuit_breaker.perform do
           popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
         end
-      end
-
-      # Adding a worktree means checking out the repository. For large repos,
-      # this can be very expensive, so set up sparse checkout for the worktree
-      # to only check out the files we're interested in.
-      def configure_sparse_checkout(worktree_git_path, files)
-        run_git!(%w(config core.sparseCheckout true))
-
-        return if files.empty?
-
-        worktree_info_path = File.join(worktree_git_path, 'info')
-        FileUtils.mkdir_p(worktree_info_path)
-        File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
-      end
-
-      def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
-        with_repo_branch_commit(source_repository, source_branch) do |commit|
-          if commit
-            write_ref(local_ref, commit.sha)
-            true
-          else
-            false
-          end
-        end
-      end
-
-      def worktree_path(prefix, id)
-        id = id.to_s
-        raise ArgumentError, "worktree id can't be empty" unless id.present?
-        raise ArgumentError, "worktree id can't contain slashes " if id.include?("/")
-
-        File.join(path, 'gitlab-worktree', "#{prefix}-#{id}")
       end
 
       def git_env_for_user(user)
@@ -1296,17 +1207,6 @@ module Gitlab
         Gitlab::Git::HookEnv.all(gl_repository).values_at(*ALLOWED_OBJECT_RELATIVE_DIRECTORIES_VARIABLES).flatten.compact
       end
 
-      # Return the Rugged patches for the diff between +from+ and +to+.
-      def diff_patches(from, to, options = {}, *paths)
-        options ||= {}
-        break_rewrites = options[:break_rewrites]
-        actual_options = Gitlab::Git::Diff.filter_diff_options(options.merge(paths: paths))
-
-        diff = rugged.diff(from, to, actual_options)
-        diff.find_similar!(break_rewrites: break_rewrites)
-        diff.each_patch
-      end
-
       def sort_branches(branches, sort_by)
         case sort_by
         when 'name'
@@ -1335,56 +1235,8 @@ module Gitlab
         gitaly_repository_client.apply_gitattributes(revision)
       end
 
-      def local_fetch_ref(source_path, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f #{source_path} #{source_ref}:#{target_ref})
-        run_git(args)
-      end
-
-      def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
-
-        run_git(args, env: source_repository.fetch_env)
-      end
-
-      def rugged_add_remote(remote_name, url, mirror_refmap)
-        rugged.remotes.create(remote_name, url)
-
-        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
-      rescue Rugged::ConfigError
-        remote_update(remote_name, url: url)
-      end
-
       def gitaly_delete_refs(*ref_names)
         gitaly_ref_client.delete_refs(refs: ref_names) if ref_names.any?
-      end
-
-      def rugged_remove_remote(remote_name)
-        # When a remote is deleted all its remote refs are deleted too, but in
-        # the case of mirrors we map its refs (that would usualy go under
-        # [remote_name]/) to the top level namespace. We clean the mapping so
-        # those don't get deleted.
-        if rugged.config["remote.#{remote_name}.mirror"]
-          rugged.config.delete("remote.#{remote_name}.fetch")
-        end
-
-        rugged.remotes.delete(remote_name)
-        true
-      rescue Rugged::ConfigError
-        false
-      end
-
-      def rugged_fetch_repository_as_mirror(repository)
-        remote_name = "tmp-#{SecureRandom.hex}"
-        repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
-
-        add_remote(remote_name, GITALY_INTERNAL_URL, mirror_refmap: :all_refs)
-        fetch_remote(remote_name, env: repository.fetch_env)
-      ensure
-        remove_remote(remote_name)
-      end
-
-      def fetch_remote(remote_name = 'origin', env: nil)
-        run_git(['fetch', remote_name], env: env).last.zero?
       end
 
       def gitlab_projects_error
@@ -1393,10 +1245,6 @@ module Gitlab
 
       def rev_list_param(spec)
         spec == :all ? ['--all'] : spec
-      end
-
-      def sha_from_ref(ref)
-        rev_parse_target(ref).oid
       end
     end
   end

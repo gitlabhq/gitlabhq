@@ -30,6 +30,10 @@ describe JiraService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
+    it { is_expected.to allow_value(nil).for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value("1,2,3").for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value("1;2;3").for(:jira_issue_transition_id) }
+    it { is_expected.not_to allow_value("a,b,cd").for(:jira_issue_transition_id) }
   end
 
   describe 'Validations' do
@@ -124,7 +128,7 @@ describe JiraService do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        jira_issue_transition_id: "custom-id"
+        jira_issue_transition_id: "999"
       )
 
       # These stubs are needed to test JiraService#close_issue.
@@ -226,12 +230,49 @@ describe JiraService do
       ).once
     end
 
-    it "calls the api with jira_issue_transition_id" do
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+    context '#close_issue' do
+      it "logs exception when transition id is not valid" do
+        allow(Rails.logger).to receive(:info)
+        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise("Bad Request")
 
-      expect(WebMock).to have_requested(:post, @transitions_url).with(
-        body: /custom-id/
-      ).once
+        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+        expect(Rails.logger).to have_received(:info).with("JiraService Issue Transition failed message ERROR: http://jira.example.com - Bad Request")
+      end
+
+      it "calls the api with jira_issue_transition_id" do
+        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+        expect(WebMock).to have_requested(:post, @transitions_url).with(
+          body: /999/
+        ).once
+      end
+
+      context "when have multiple transition ids" do
+        it "calls the api with transition ids separated by comma" do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1,2,3")
+
+          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+          1.upto(3) do |transition_id|
+            expect(WebMock).to have_requested(:post, @transitions_url).with(
+              body: /#{transition_id}/
+            ).once
+          end
+        end
+
+        it "calls the api with transition ids separated by semicolon" do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1;2;3")
+
+          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+          1.upto(3) do |transition_id|
+            expect(WebMock).to have_requested(:post, @transitions_url).with(
+              body: /#{transition_id}/
+            ).once
+          end
+        end
+      end
     end
   end
 

@@ -3,7 +3,7 @@
     = form_errors(@gpg_key)
 
     .form-group
-      = f.label :key, class: 'label-light'
+      = f.label :key, class: 'label-bold'
       = f.text_area :key, class: "form-control", rows: 8, required: true, placeholder: "Don't paste the private part of the GPG key. Paste the public part which begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'."
 
     .prepend-top-default

@@ -14,7 +14,7 @@ module API
 
         def create_list
           create_list_service =
-            ::Boards::Lists::CreateService.new(board_parent, current_user, { label_id: params[:label_id] })
+            ::Boards::Lists::CreateService.new(board_parent, current_user, create_list_params)
 
           list = create_list_service.execute(board)
 
@@ -23,6 +23,10 @@ module API
           else
             render_validation_error!(list)
           end
+        end
+
+        def create_list_params
+          params.slice(:label_id)
         end
 
         def move_list(list)
@@ -43,6 +47,16 @@ module API
               render_api_error!({ error: 'List could not be deleted!' }, 400)
             end
           end
+        end
+
+        def authorize_list_type_resource!
+          unless available_labels_for(board_parent).exists?(params[:label_id])
+            render_api_error!({ error: 'Label not found!' }, 400)
+          end
+        end
+
+        params :list_creation_params do
+          requires :label_id, type: Integer, desc: 'The ID of an existing label'
         end
       end
     end

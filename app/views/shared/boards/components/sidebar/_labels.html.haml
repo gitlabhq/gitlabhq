@@ -19,6 +19,7 @@
         ":value" => "label.id" }
       .dropdown
         %button.dropdown-menu-toggle.js-label-select.js-multiselect.js-issue-board-sidebar{ type: "button",
+          "v-bind:data-selected" => "selectedLabels",
           data: { toggle: "dropdown",
             field_name: "issue[label_names][]",
             show_no: "true",
@@ -28,7 +29,7 @@
             namespace_path: @namespace_path,
             project_path: @project.try(:path) } }
           %span.dropdown-toggle-text
-            = _("Label")
+            {{ labelDropdownTitle }}
           = icon('chevron-down')
         .dropdown-menu.dropdown-select.dropdown-menu-paging.dropdown-menu-labels.dropdown-menu-selectable
           = render partial: "shared/issuable/label_page_default"

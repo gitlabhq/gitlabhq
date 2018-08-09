@@ -1,9 +1,9 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-realtime-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'label-light'
+      = f.label :polling_interval_multiplier, 'Polling interval multiplier', class: 'label-bold'
       = f.text_field :polling_interval_multiplier, class: 'form-control'
       .form-text.text-muted
         Change this value to influence how frequently the GitLab UI polls for updates.

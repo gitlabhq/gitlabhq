@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -339,21 +341,21 @@ class Commit
   end
 
   def cherry_pick_description(user)
-    message_body = "(cherry picked from commit #{sha})"
+    message_body = ["(cherry picked from commit #{sha})"]
 
     if merged_merge_request?(user)
       commits_in_merge_request = merged_merge_request(user).commits
 
       if commits_in_merge_request.present?
-        message_body << "\n"
+        message_body << ""
 
         commits_in_merge_request.reverse.each do |commit_in_merge|
-          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+          message_body << "#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end
     end
 
-    message_body
+    message_body.join("\n")
   end
 
   def cherry_pick_message(user)

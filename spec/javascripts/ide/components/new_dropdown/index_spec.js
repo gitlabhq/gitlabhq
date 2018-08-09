@@ -14,6 +14,7 @@ describe('new dropdown component', () => {
       branch: 'master',
       path: '',
       mouseOver: false,
+      type: 'tree',
     });
 
     vm.$store.state.currentProjectId = 'abcproject';
@@ -61,10 +62,22 @@ describe('new dropdown component', () => {
       vm.dropdownOpen = true;
 
       setTimeout(() => {
-        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalled();
+        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
+          block: 'nearest',
+        });
 
         done();
       });
+    });
+  });
+
+  describe('delete entry', () => {
+    it('calls delete action', () => {
+      spyOn(vm, 'deleteEntry');
+
+      vm.$el.querySelectorAll('.dropdown-menu button')[4].click();
+
+      expect(vm.deleteEntry).toHaveBeenCalledWith('');
     });
   });
 });

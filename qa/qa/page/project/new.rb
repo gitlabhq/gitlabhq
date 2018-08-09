@@ -10,7 +10,7 @@ module QA
 
         view 'app/views/projects/_new_project_fields.html.haml' do
           element :project_namespace_select
-          element :project_namespace_field, /select :namespace_id.*class: 'select2/
+          element :project_namespace_field, 'namespaces_options'
           element :project_path, 'text_field :path'
           element :project_description, 'text_area :description'
           element :project_create_button, "submit 'Create project'"

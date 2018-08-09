@@ -1,0 +1,5 @@
+---
+title: Avoid N+1 on MRs page when metrics merging date cannot be found
+merge_request: 21053
+author:
+type: performance

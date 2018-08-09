@@ -18,7 +18,8 @@
     "webpack-prod": "NODE_ENV=production webpack --config config/webpack.config.js"
   },
   "dependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.25.0",
+    "@gitlab-org/gitlab-svgs": "^1.27.0",
+    "@gitlab-org/gitlab-ui": "1.0.5",
     "autosize": "^4.0.0",
     "axios": "^0.17.1",
     "babel-core": "^6.26.3",
@@ -33,10 +34,12 @@
     "chart.js": "1.0.2",
     "classlist-polyfill": "^1.2.0",
     "clipboard": "^1.7.1",
+    "codesandbox-api": "^0.0.18",
     "compression-webpack-plugin": "^1.1.11",
     "core-js": "^2.4.1",
     "cropper": "^2.3.0",
     "css-loader": "^1.0.0",
+    "d3": "4.12.2",
     "d3-array": "^1.2.1",
     "d3-axis": "^1.0.8",
     "d3-brush": "^1.0.4",
@@ -53,6 +56,7 @@
     "emoji-unicode-version": "^0.2.1",
     "exports-loader": "^0.7.0",
     "file-loader": "^1.1.11",
+    "formdata-polyfill": "^3.0.11",
     "fuzzaldrin-plus": "^0.5.0",
     "glob": "^7.1.2",
     "imports-loader": "^0.8.0",
@@ -77,6 +81,7 @@
     "sanitize-html": "^1.16.1",
     "select2": "3.5.2-browserify",
     "sha1": "^1.1.1",
+    "smooshpack": "^0.0.48",
     "sortablejs": "^1.7.0",
     "sql.js": "^0.4.0",
     "stickyfilljs": "^2.0.5",
@@ -100,7 +105,8 @@
     "webpack-bundle-analyzer": "^2.13.1",
     "webpack-cli": "^3.0.8",
     "webpack-stats-plugin": "^0.2.1",
-    "worker-loader": "^2.0.0"
+    "worker-loader": "^2.0.0",
+    "xterm": "^3.5.0"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.15.0",

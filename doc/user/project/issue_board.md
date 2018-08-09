@@ -27,7 +27,7 @@ You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
-With [Multiple Issue Boards](#multiple-issue-boards), available
+With [Multiple Issue Boards](#use-cases-for-multiple-issue-boards), available
 only in [GitLab Enterprise Edition](#features-per-tier),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
@@ -75,7 +75,7 @@ each team can have their own board to organize their workflow individually.
 
 #### Scrum team
 
-With multiple Issue Boards, each team has one board. Now you can move issues through each
+With Multiple Issue Boards, each team has one board. Now you can move issues through each
 part of the process. For instance: **To Do**, **Doing**, and **Done**.
 
 #### Organization of topics
@@ -119,7 +119,7 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 ## Issue Board terminology
 
 - **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
-- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee.
+- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
    - **Label list**: a list based on a label. It shows all opened issues with that label.
    - **Assignee list**: a list which includes all issues assigned to a user.
    - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.

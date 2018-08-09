@@ -1,5 +1,0 @@
----
-title: Fix branch name encoding for dropdown on issue page
-merge_request: 19634
-author:
-type: fixed

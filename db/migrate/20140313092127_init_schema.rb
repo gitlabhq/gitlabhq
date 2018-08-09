@@ -1,6 +1,7 @@
 class InitSchema < ActiveRecord::Migration
   DOWNTIME = true
 
+  # rubocop:disable Metrics/AbcSize
   def up
     create_table "broadcast_messages", force: :cascade do |t|
       t.text "message", null: false
@@ -157,9 +158,9 @@ class InitSchema < ActiveRecord::Migration
     add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
     add_index "notes", ["commit_id"], name: "index_notes_on_commit_id", using: :btree
     add_index "notes", ["created_at"], name: "index_notes_on_created_at", using: :btree
-    add_index "notes", ["noteable_id", "noteable_type"], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
+    add_index "notes", %w[noteable_id noteable_type], name: "index_notes_on_noteable_id_and_noteable_type", using: :btree
     add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
-    add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
+    add_index "notes", %w[project_id noteable_type], name: "index_notes_on_project_id_and_noteable_type", using: :btree
     add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
     create_table "project_group_links", force: :cascade do |t|
       t.integer "project_id", null: false
@@ -241,7 +242,7 @@ class InitSchema < ActiveRecord::Migration
       t.datetime "created_at"
     end
     add_index "taggings", ["tag_id"], name: "index_taggings_on_tag_id", using: :btree
-    add_index "taggings", ["taggable_id", "taggable_type", "context"], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
+    add_index "taggings", %w[taggable_id taggable_type context], name: "index_taggings_on_taggable_id_and_taggable_type_and_context", using: :btree
     create_table "tags", force: :cascade do |t|
       t.string "name"
     end
@@ -292,7 +293,7 @@ class InitSchema < ActiveRecord::Migration
     add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
     add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
     add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-    add_index "users", ["extern_uid", "provider"], name: "index_users_on_extern_uid_and_provider", unique: true, using: :btree
+    add_index "users", %w[extern_uid provider], name: "index_users_on_extern_uid_and_provider", unique: true, using: :btree
     add_index "users", ["name"], name: "index_users_on_name", using: :btree
     add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
     add_index "users", ["username"], name: "index_users_on_username", using: :btree

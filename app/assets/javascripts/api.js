@@ -244,6 +244,18 @@ const Api = {
     });
   },
 
+  branches(id, query = '', options = {}) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        search: query,
+        per_page: 20,
+        ...options,
+      },
+    });
+  },
+
   createBranch(id, { ref, branch }) {
     const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
 

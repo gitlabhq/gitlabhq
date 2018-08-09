@@ -71,13 +71,23 @@ export default {
       required: false,
       default: false,
     },
+    isHover: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    discussions: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   computed: {
     ...mapState({
       diffViewType: state => state.diffs.diffViewType,
       diffFiles: state => state.diffs.diffFiles,
     }),
-    ...mapGetters(['isLoggedIn', 'discussionsByLineCode']),
+    ...mapGetters(['isLoggedIn']),
     lineHref() {
       return this.lineCode ? `#${this.lineCode}` : '#';
     },
@@ -85,26 +95,22 @@ export default {
       return (
         this.isLoggedIn &&
         this.showCommentButton &&
+        this.isHover &&
         !this.isMatchLine &&
         !this.isContextLine &&
-        !this.hasDiscussions &&
-        !this.isMetaLine
+        !this.isMetaLine &&
+        !this.hasDiscussions
       );
-    },
-    discussions() {
-      return this.discussionsByLineCode[this.lineCode] || [];
     },
     hasDiscussions() {
       return this.discussions.length > 0;
     },
     shouldShowAvatarsOnGutter() {
-      let render = this.hasDiscussions && this.showCommentButton;
-
       if (!this.lineType && this.linePosition === LINE_POSITION_RIGHT) {
-        render = false;
+        return false;
       }
 
-      return render;
+      return this.showCommentButton && this.hasDiscussions;
     },
   },
   methods: {
@@ -176,7 +182,7 @@ export default {
       v-else
     >
       <button
-        v-show="shouldShowCommentButton"
+        v-if="shouldShowCommentButton"
         type="button"
         class="add-diff-note js-add-diff-note-button"
         title="Add a comment to this line"
@@ -189,7 +195,6 @@ export default {
       </button>
       <a
         v-if="lineNumber"
-        v-once
         :data-linenumber="lineNumber"
         :href="lineHref"
       >

@@ -1,3 +1,6 @@
+$search-dropdown-max-height: 400px;
+$search-avatar-size: 16px;
+
 .search-results {
   .search-result-row {
     border-bottom: 1px solid $border-color;
@@ -24,8 +27,9 @@
   box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
 }
 
-input[type="checkbox"]:hover {
-  box-shadow: 0 0 2px 2px lighten($search-input-focus-shadow-color, 20%), 0 0 0 1px lighten($search-input-focus-shadow-color, 20%);
+input[type='checkbox']:hover {
+  box-shadow: 0 0 2px 2px lighten($search-input-focus-shadow-color, 20%),
+    0 0 0 1px lighten($search-input-focus-shadow-color, 20%);
 }
 
 .search {
@@ -40,22 +44,13 @@ input[type="checkbox"]:hover {
     height: 32px;
     border: 0;
     border-radius: $border-radius-default;
-    transition: border-color ease-in-out $default-transition-duration, background-color ease-in-out $default-transition-duration;
+    transition: border-color ease-in-out $default-transition-duration,
+      background-color ease-in-out $default-transition-duration,
+      width ease-in-out $default-transition-duration;
 
     &:hover {
       box-shadow: none;
     }
-  }
-
-  .location-badge {
-    white-space: nowrap;
-    height: 32px;
-    font-size: 12px;
-    margin: -4px 4px -4px -4px;
-    line-height: 25px;
-    padding: 4px 8px;
-    border-radius: $border-radius-default 0 0 $border-radius-default;
-    transition: border-color ease-in-out $default-transition-duration;
   }
 
   .search-input {
@@ -104,17 +99,28 @@ input[type="checkbox"]:hover {
     }
 
     .dropdown-header {
-      text-transform: uppercase;
-      font-size: 11px;
+      // Necessary because glDropdown doesn't support a second style of headers
+      font-weight: $gl-font-weight-bold;
+      // .dropdown-menu li has 1px side padding
+      padding: $gl-padding-8 17px;
+      color: $gl-text-color;
+      font-size: $gl-font-size;
+      line-height: 16px;
     }
 
     // Custom dropdown positioning
     .dropdown-menu {
       left: -5px;
+      max-height: $search-dropdown-max-height;
+      overflow: auto;
+
+      @include media-breakpoint-up(xl) {
+        width: $search-input-active-width;
+      }
     }
 
     .dropdown-content {
-      max-height: none;
+      max-height: $search-dropdown-max-height - 18px;
     }
   }
 
@@ -123,6 +129,10 @@ input[type="checkbox"]:hover {
       @extend .form-control:focus;
       border-color: $dropdown-input-focus-border;
       box-shadow: none;
+
+      @include media-breakpoint-up(xl) {
+        width: $search-input-active-width;
+      }
 
       .search-input-wrap {
         .search-icon,
@@ -141,12 +151,6 @@ input[type="checkbox"]:hover {
         color: $gl-text-color-tertiary;
       }
     }
-
-    .location-badge {
-      transition: all $default-transition-duration;
-      background-color: $nav-badge-bg;
-      border-color: $border-color;
-    }
   }
 
   &.has-value {
@@ -160,10 +164,24 @@ input[type="checkbox"]:hover {
     }
   }
 
-  &.has-location-badge {
-    .search-input-wrap {
-      width: 68%;
-    }
+  .inline-search-icon {
+    position: relative;
+    margin-right: 4px;
+    color: $gl-text-color-secondary;
+  }
+
+  .identicon,
+  .search-item-avatar {
+    flex-basis: $search-avatar-size;
+    flex-shrink: 0;
+    margin-right: 4px;
+  }
+
+  .search-item-avatar {
+    width: $search-avatar-size;
+    height: $search-avatar-size;
+    border-radius: 50%;
+    border: 1px solid $avatar-border;
   }
 }
 

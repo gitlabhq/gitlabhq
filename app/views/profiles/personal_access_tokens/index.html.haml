@@ -40,7 +40,7 @@
     %p
       It cannot be used to access any other data.
   .col-lg-8.feed-token-reset
-    = label_tag :feed_token, 'Feed token', class: "label-light"
+    = label_tag :feed_token, 'Feed token', class: "label-bold"
     = text_field_tag :feed_token, current_user.feed_token, class: 'form-control', readonly: true, onclick: 'this.select()'
     %p.form-text.text-muted
       Keep this token secret. Anyone who gets ahold of it can read activity and issue RSS feeds or your calendar feed as if they were you.
@@ -59,7 +59,7 @@
       %p
         It cannot be used to access any other data.
     .col-lg-8.incoming-email-token-reset
-      = label_tag :incoming_email_token, 'Incoming email token', class: "label-light"
+      = label_tag :incoming_email_token, 'Incoming email token', class: "label-bold"
       = text_field_tag :incoming_email_token, current_user.incoming_email_token, class: 'form-control', readonly: true, onclick: 'this.select()'
       %p.form-text.text-muted
         Keep this token secret. Anyone who gets ahold of it can create issues as if they were you.

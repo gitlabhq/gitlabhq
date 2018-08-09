@@ -53,6 +53,23 @@ describe Projects::MergeRequestsController do
     it_behaves_like "loads labels", :show
 
     describe 'as html' do
+      context 'when diff files were cleaned' do
+        render_views
+
+        it 'renders page when diff size is not persisted and diff_refs does not exist' do
+          diff = merge_request.merge_request_diff
+
+          diff.clean!
+          diff.update!(real_size: nil,
+                       start_commit_sha: nil,
+                       base_commit_sha: nil)
+
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
+
       it "renders merge request page" do
         go(format: :html)
 
@@ -560,6 +577,88 @@ describe Projects::MergeRequestsController do
     it 'responds with serialized pipelines' do
       expect(json_response['pipelines']).not_to be_empty
       expect(json_response['count']['all']).to eq 1
+    end
+  end
+
+  describe 'GET test_reports' do
+    subject do
+      get :test_reports,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          format: :json
+    end
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:compare_test_reports).and_return(comparison_status)
+    end
+
+    context 'when comparison is being processed' do
+      let(:comparison_status) { { status: :parsing } }
+
+      it 'sends polling interval' do
+        expect(Gitlab::PollingInterval).to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 204 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when comparison is done' do
+      let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 200 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'summary' => 1 })
+      end
+    end
+
+    context 'when user created corrupted test reports' do
+      let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 400 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
+      end
+    end
+
+    context 'when something went wrong on our system' do
+      let(:comparison_status) { {} }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 500 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
+      end
     end
   end
 

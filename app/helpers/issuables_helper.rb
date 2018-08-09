@@ -131,6 +131,19 @@ module IssuablesHelper
     end
   end
 
+  def group_dropdown_label(group_id, default_label)
+    return default_label if group_id.nil?
+    return "Any group" if group_id == "0"
+
+    group = ::Group.find_by(id: group_id)
+
+    if group
+      group.full_name
+    else
+      default_label
+    end
+  end
+
   def milestone_dropdown_label(milestone_title, default_label = "Milestone")
     title =
       case milestone_title
@@ -159,6 +172,12 @@ module IssuablesHelper
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
+
+      if status = user_status(issuable.author)
+        author_output << "&ensp; #{status}".html_safe
+      end
+
+      author_output
     end
 
     output << "&ensp;".html_safe

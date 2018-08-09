@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DiscussionEntity < Grape::Entity
   include RequestAwareEntity
   include NotesHelper

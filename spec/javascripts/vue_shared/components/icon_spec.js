@@ -10,9 +10,10 @@ describe('Sprite Icon Component', function () {
       const IconComponent = Vue.extend(Icon);
 
       icon = mountComponent(IconComponent, {
-        name: 'test',
+        name: 'commit',
         size: 32,
         cssClasses: 'extraclasses',
+        tabIndex: '0',
       });
     });
 
@@ -30,7 +31,7 @@ describe('Sprite Icon Component', function () {
 
     it('should have <use> as a child element with the correct href', function () {
       expect(icon.$el.firstChild.tagName).toBe('use');
-      expect(icon.$el.firstChild.getAttribute('xlink:href')).toBe(`${gon.sprite_icons}#test`);
+      expect(icon.$el.firstChild.getAttribute('xlink:href')).toBe(`${gon.sprite_icons}#commit`);
     });
 
     it('should properly compute iconSizeClass', function () {
@@ -49,6 +50,18 @@ describe('Sprite Icon Component', function () {
       const containsCustomClass = classList.contains('extraclasses');
       expect(containsSizeClass).toBe(true);
       expect(containsCustomClass).toBe(true);
+    });
+
+    it('`name` validator should return false for non existing icons', () => {
+      expect(Icon.props.name.validator('non_existing_icon_sprite')).toBe(false);
+    });
+
+    it('`name` validator should return false for existing icons', () => {
+      expect(Icon.props.name.validator('commit')).toBe(true);
+    });
+
+    it('should contain `tabindex` attribute on svg element when `tabIndex` prop is defined', () => {
+      expect(icon.$el.getAttribute('tabindex')).toBe('0');
     });
   });
 });

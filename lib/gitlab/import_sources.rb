@@ -9,36 +9,41 @@ module Gitlab
 
     # We exclude `bare_repository` here as it has no import class associated
     ImportTable = [
-      ImportSource.new('github',         'GitHub',        Gitlab::GithubImport::ParallelImporter),
-      ImportSource.new('bitbucket',      'Bitbucket',     Gitlab::BitbucketImport::Importer),
-      ImportSource.new('gitlab',         'GitLab.com',    Gitlab::GitlabImport::Importer),
-      ImportSource.new('google_code',    'Google Code',   Gitlab::GoogleCodeImport::Importer),
-      ImportSource.new('fogbugz',        'FogBugz',       Gitlab::FogbugzImport::Importer),
-      ImportSource.new('git',            'Repo by URL',   nil),
-      ImportSource.new('gitlab_project', 'GitLab export', Gitlab::ImportExport::Importer),
-      ImportSource.new('gitea',          'Gitea',         Gitlab::LegacyGithubImport::Importer),
-      ImportSource.new('manifest',       'Manifest file', nil)
+      ImportSource.new('github',           'GitHub',           Gitlab::GithubImport::ParallelImporter),
+      ImportSource.new('bitbucket',        'Bitbucket Cloud',  Gitlab::BitbucketImport::Importer),
+      ImportSource.new('bitbucket_server', 'Bitbucket Server', Gitlab::BitbucketServerImport::Importer),
+      ImportSource.new('gitlab',           'GitLab.com',       Gitlab::GitlabImport::Importer),
+      ImportSource.new('google_code',      'Google Code',      Gitlab::GoogleCodeImport::Importer),
+      ImportSource.new('fogbugz',          'FogBugz',          Gitlab::FogbugzImport::Importer),
+      ImportSource.new('git',              'Repo by URL',      nil),
+      ImportSource.new('gitlab_project',   'GitLab export',    Gitlab::ImportExport::Importer),
+      ImportSource.new('gitea',            'Gitea',            Gitlab::LegacyGithubImport::Importer),
+      ImportSource.new('manifest',         'Manifest file',    nil)
     ].freeze
 
     class << self
       def options
-        @options ||= Hash[ImportTable.map { |importer| [importer.title, importer.name] }]
+        Hash[import_table.map { |importer| [importer.title, importer.name] }]
       end
 
       def values
-        @values ||= ImportTable.map(&:name)
+        import_table.map(&:name)
       end
 
       def importer_names
-        @importer_names ||= ImportTable.select(&:importer).map(&:name)
+        import_table.select(&:importer).map(&:name)
       end
 
       def importer(name)
-        ImportTable.find { |import_source| import_source.name == name }.importer
+        import_table.find { |import_source| import_source.name == name }.importer
       end
 
       def title(name)
         options.key(name)
+      end
+
+      def import_table
+        ImportTable
       end
     end
   end

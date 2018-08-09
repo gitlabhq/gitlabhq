@@ -571,7 +571,8 @@
   margin-bottom: 10px;
   padding: 0 10px;
 
-  .fa {
+  .fa,
+  .input-icon {
     position: absolute;
     top: 10px;
     right: 20px;
@@ -822,7 +823,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
   display: flex;
   flex-direction: row;
   width: 500px;
-  height: 334px;
+  height: 354px;
 
   .frequent-items-dropdown-sidebar,
   .frequent-items-dropdown-content {
@@ -868,6 +869,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
   }
 
   .frequent-items-list-container {
+    height: 304px;
     padding: 8px 0;
     overflow-y: auto;
 
@@ -895,10 +897,6 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
   .section-header {
     font-weight: 700;
     margin-top: 8px;
-  }
-
-  .frequent-items-search-container {
-    height: 284px;
   }
 
   @include media-breakpoint-down(xs) {

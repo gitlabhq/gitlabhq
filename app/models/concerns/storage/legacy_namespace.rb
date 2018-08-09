@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Storage
   module LegacyNamespace
     extend ActiveSupport::Concern
@@ -10,8 +12,6 @@ module Storage
       parent_was = if parent_changed? && parent_id_was.present?
                      Namespace.find(parent_id_was) # raise NotFound early if needed
                    end
-
-      expires_full_path_cache
 
       move_repositories
 
@@ -34,13 +34,12 @@ module Storage
       begin
         send_update_instructions
         write_projects_repository_config
-
-        true
-      rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
-        false
+      rescue => e
+        # Raise if development/test environment, else just notify Sentry
+        Gitlab::Sentry.track_exception(e, extra: { full_path_was: full_path_was, full_path: full_path, action: 'move_dir' })
       end
+
+      true # false would cancel later callbacks but not rollback
     end
 
     # Hooks

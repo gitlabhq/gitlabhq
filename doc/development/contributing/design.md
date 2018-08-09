@@ -40,9 +40,9 @@ issues for implementation in an upcoming milestone.
 1.  [Testing][testing]
 1.  [JavaScript styleguide][js-styleguide]
 1.  [SCSS styleguide][scss-styleguide]
-1.  [Shell commands](doc/development/shell_commands.md) created by GitLab
+1.  [Shell commands](../shell_commands.md) created by GitLab
     contributors to enhance security
-1.  [Database Migrations](doc/development/migration_style_guide.md)
+1.  [Database Migrations](../migration_style_guide.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 1.  [Documentation styleguide](https://docs.gitlab.com/ee/development/documentation/styleguide.html)
 1.  Interface text should be written subjectively instead of objectively. It
@@ -55,3 +55,7 @@ issues for implementation in an upcoming milestone.
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
 [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
+
+---
+
+[Return to Contributing documentation](index.md)
