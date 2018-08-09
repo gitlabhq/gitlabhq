@@ -43,6 +43,17 @@ module API
           [file_name, nil]
         end
       end
+
+      def verify_package_file(package_file, uploaded_file)
+        stored_sha1 = Digest::SHA256.hexdigest(package_file.file_sha1)
+        expected_sha1 = uploaded_file.sha256
+
+        if stored_sha1 == expected_sha1
+          no_content!
+        else
+          conflict!
+        end
+      end
     end
 
     params do
@@ -64,7 +75,8 @@ module API
         package = ::Packages::MavenPackageFinder
           .new(user_project, params[:path]).execute!
 
-        package_file = package.package_files.recent.find_by!(file_name: file_name)
+        package_file = ::Packages::PackageFileFinder
+          .new(package, file_name).execute!
 
         case format
         when 'md5'
@@ -142,23 +154,20 @@ module API
             version: version
           }
 
-          package = ::Packages::CreateMavenPackageService.new(user_project, current_user, package_params).execute
+          package = ::Packages::CreateMavenPackageService
+            .new(user_project, current_user, package_params).execute
         end
 
-        if format
-          # TODO: Extract in separate method
-          if format == 'sha1'
-            package_file = package.package_files.recent.find_by!(file_name: file_name)
-            stored_sha1 = Digest::SHA256.hexdigest(package_file.file_sha1)
-            expected_sha1 = uploaded_file.sha256
+        case format
+        when 'sha1'
+          # After uploading a file, Maven tries to upload a sha1 and md5 version of it.
+          # Since we store md5/sha1 in database we simply need to validate our hash
+          # against one uploaded by Maven. We do this for `sha1` format.
+          package_file = ::Packages::PackageFileFinder
+            .new(package, file_name).execute!
 
-            if stored_sha1 == expected_sha1
-              no_content!
-            else
-              conflict!
-            end
-          end
-        else
+          verify_package_file(package_file, uploaded_file)
+        when nil
           file_params = {
             file:      uploaded_file,
             size:      params['file.size'],
