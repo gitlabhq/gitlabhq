@@ -1,5 +1,8 @@
 # Import your project from Bitbucket Server to GitLab
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20164)
+in GitLab 11.2.
+
 NOTE: **Note:**
 The Bitbucket Server importer does not work with Bitbucket Cloud (aka bitbucket.org).
 Use the [Bitbucket Cloud importer](bitbucket.md) for that.
