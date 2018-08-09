@@ -51,16 +51,5 @@ module Projects
 
       QuickActions::InterpretService.new(project, current_user).available_commands(noteable)
     end
-
-    def target(type, type_id)
-      case type&.downcase
-      when 'issue'
-        IssuesFinder.new(current_user, project_id: project.id).find_by(iid: type_id) || project.issues.build
-      when 'mergerequest'
-        MergeRequestsFinder.new(current_user, project_id: project.id).find_by(iid: type_id) || project.merge_requests.build
-      when 'commit'
-        project.commit(type_id)
-      end
-    end
   end
 end

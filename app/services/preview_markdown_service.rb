@@ -29,9 +29,9 @@ class PreviewMarkdownService < BaseService
   end
 
   def find_commands_target
-    Projects::AutocompleteService
+    QuickActions::TargetService
       .new(project, current_user)
-      .target(commands_target_type, commands_target_id)
+      .execute(commands_target_type, commands_target_id)
   end
 
   def commands_target_type
