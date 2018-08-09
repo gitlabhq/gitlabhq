@@ -80,7 +80,7 @@
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
-    padding: $gl-padding;
+    padding: $gl-padding $gl-padding 9px;
     border-radius: $border-radius-default;
     border: 1px solid $theme-gray-100;
 
@@ -254,6 +254,7 @@
   padding: 0;
   position: relative;
   top: -3px;
+  margin: 0;
 }
 
 .label-badge {
