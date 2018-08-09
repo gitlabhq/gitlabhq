@@ -68,10 +68,12 @@ describe "Admin::Users" do
   end
 
   describe "GET /admin/users/new" do
+    let(:user_username) { 'bang' }
+
     before do
       visit new_admin_user_path
       fill_in "user_name", with: "Big Bang"
-      fill_in "user_username", with: "bang"
+      fill_in "user_username", with: user_username
       fill_in "user_email", with: "bigbang@mail.com"
     end
 
@@ -111,6 +113,17 @@ describe "Admin::Users" do
       expect(email.subject).to have_content('Account was created')
       expect(email.text_part.body).to have_content(user.email)
       expect(email.text_part.body).to have_content('password')
+    end
+
+    context 'username contains spaces' do
+      let(:user_username) { 'Bing bang' }
+
+      it "doesn't create the user and shows an error message" do
+        expect { click_button "Create user" }.to change {User.count}.by(0)
+
+        expect(page).to have_content('The form contains the following error')
+        expect(page).to have_content('Username can contain only letters, digits')
+      end
     end
   end
 
