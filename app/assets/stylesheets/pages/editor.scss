@@ -37,10 +37,6 @@
     padding-top: 7px;
     padding-bottom: 7px;
     display: flex;
-
-    .float-right {
-      height: 20px;
-    }
   }
 
   .editor-ref {
@@ -50,7 +46,6 @@
     display: block;
     float: left;
     margin-right: 10px;
-    flex: 1;
   }
 
   .editor-file-name {
@@ -71,7 +66,9 @@
   }
 
   .file-buttons {
-    font-size: 0;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
   }
 
   .select2 {
@@ -113,10 +110,6 @@
   .file-editor {
     .file-title {
       display: block;
-
-      .float-right {
-        height: auto;
-      }
     }
 
     .new-file-name {
