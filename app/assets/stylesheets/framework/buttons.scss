@@ -350,7 +350,7 @@
   &:focus {
     cursor: text;
     box-shadow: none;
-    border-color: lighten($dropdown-input-focus-border, 20%);
+    border-color: lighten($blue-300, 20%);
     color: $gray-darkest;
     background-color: $gray-light;
   }
