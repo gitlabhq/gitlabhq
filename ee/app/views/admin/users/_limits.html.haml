@@ -1,3 +1,5 @@
+- return unless @user.persisted?
+
 = f.fields_for :namespace do |namespace_form|
   = namespace_form.hidden_field :id
   %fieldset

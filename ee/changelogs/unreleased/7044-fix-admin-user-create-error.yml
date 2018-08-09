@@ -1,0 +1,5 @@
+---
+title: Fixes 500 error on user creation from admin panel with spaced username
+merge_request: 6804
+author: Jacopo Beschi @jacopo-beschi
+type: fixed
