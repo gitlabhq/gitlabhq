@@ -279,6 +279,12 @@ describe Geo::FileDownloadService do
       end
     end
 
+    context 'with a favicon' do
+      it_behaves_like "a service that downloads the file and registers the sync result", 'favicon' do
+        let(:file) { create(:upload, :favicon_upload) }
+      end
+    end
+
     context 'with a snippet' do
       it_behaves_like "a service that downloads the file and registers the sync result", 'personal_file' do
         let(:file) { create(:upload, :personal_snippet_upload) }

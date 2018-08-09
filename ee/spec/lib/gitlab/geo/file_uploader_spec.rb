@@ -106,6 +106,12 @@ describe Gitlab::Geo::FileUploader, :geo do
       end
     end
 
+    context 'with favicon upload' do
+      it_behaves_like "returns necessary params for sending a file from an API endpoint" do
+        let(:upload) { create(:upload, :favicon_upload) }
+      end
+    end
+
     context 'with namespace file upload' do
       it_behaves_like "returns necessary params for sending a file from an API endpoint" do
         let(:upload) { create(:upload, :namespace_upload) }
