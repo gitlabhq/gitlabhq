@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module DiffViewer
   module Rich
     extend ActiveSupport::Concern

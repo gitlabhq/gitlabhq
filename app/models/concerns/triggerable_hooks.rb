@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module TriggerableHooks
   AVAILABLE_TRIGGERS = {
     repository_update_hooks:  :repository_update_events,

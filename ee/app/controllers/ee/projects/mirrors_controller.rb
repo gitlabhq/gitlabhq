@@ -38,7 +38,7 @@ module EE
         end
 
         respond_to do |format|
-          format.html { redirect_to_repository_settings(project) }
+          format.html { redirect_to_repository_settings(project, anchor: 'js-push-remote-settings') }
           format.json do
             if project.errors.present?
               render json: project.errors, status: :unprocessable_entity

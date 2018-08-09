@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Participable concern
 #
 # Contains functionality related to objects that can have participants, such as

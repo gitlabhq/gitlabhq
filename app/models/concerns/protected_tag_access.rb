@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedTagAccess
   extend ActiveSupport::Concern
 
