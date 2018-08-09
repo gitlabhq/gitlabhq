@@ -33,7 +33,7 @@ module Gitlab
         end
 
         def script_command
-          init_flags = "--name #{name}#{optional_tls_flags}#{optional_version_flag}" \
+          init_flags = "--name #{name}#{optional_version_flag}" \
             " --namespace #{Gitlab::Kubernetes::Helm::NAMESPACE}" \
             " -f /data/helm/#{name}/config/values.yaml"
 
@@ -42,15 +42,6 @@ module Gitlab
 
         def optional_version_flag
           " --version #{version}" if version
-        end
-
-        def optional_tls_flags
-          return unless files.key?(:'ca.pem')
-
-          " --tls" \
-            " --tls-ca-cert #{files_dir}/ca.pem" \
-            " --tls-cert #{files_dir}/cert.pem" \
-            " --tls-key #{files_dir}/key.pem"
         end
       end
     end

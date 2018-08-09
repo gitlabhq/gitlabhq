@@ -21,7 +21,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       <<~EOS
       helm init --client-only >/dev/null
       helm repo add app-name https://repository.example.com
-      helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+      helm install chart-name --name app-name --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
       EOS
     end
   end
@@ -33,7 +33,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
       let(:commands) do
         <<~EOS
          helm init --client-only >/dev/null
-         helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+         helm install chart-name --name app-name --version 1.2.3 --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
         EOS
       end
     end
@@ -61,7 +61,7 @@ describe Gitlab::Kubernetes::Helm::InstallCommand do
         <<~EOS
          helm init --client-only >/dev/null
          helm repo add app-name https://repository.example.com
-         helm install chart-name --name app-name --tls --tls-ca-cert /data/helm/app-name/config/ca.pem --tls-cert /data/helm/app-name/config/cert.pem --tls-key /data/helm/app-name/config/key.pem --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
+         helm install chart-name --name app-name --namespace gitlab-managed-apps -f /data/helm/app-name/config/values.yaml >/dev/null
         EOS
       end
     end
