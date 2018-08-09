@@ -31,15 +31,13 @@ import initPerformanceBar from './performance_bar';
 import initSearchAutocomplete from './search_autocomplete';
 import GlFieldErrors from './gl_field_errors';
 
-// Register a service worker if we're on prod and our browser allows it
-if (process.env.NODE_ENV === 'production') {
-  if (navigator.serviceWorker) {
-    navigator.serviceWorker.register(
-      '/serviceWorker.js', {
-        scope: '/',
-      },
-    );
-  }
+// Register a service worker if our browser allows it
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.register(
+    '/serviceWorker.js', {
+      scope: '/',
+    },
+  );
 }
 
 // expose jQuery as global (TODO: remove these)

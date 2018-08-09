@@ -13,8 +13,7 @@ self.addEventListener('fetch', event => { // eslint-disable-line no-restricted-g
   const { request } = event;
 
   event.respondWith(
-    caches.match(request)
-      .then(response => response || fetch(request))
-      .catch(() => (request.mode === 'navigate' ? caches.match('/offline.html') : null)),
+    fetch(request)
+      .catch(() => (request.mode === 'navigate' ? caches.match('/offline.html') : null))
   );
 });
