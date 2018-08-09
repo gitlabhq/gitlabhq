@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import component from '~/vue_shared/components/reports/report_link.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import component from '~/reports/components/report_link.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('report link', () => {
   let vm;
