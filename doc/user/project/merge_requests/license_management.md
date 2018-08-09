@@ -62,7 +62,8 @@ need a decision from you.
 
 ![License Management Widget](img/license_management.png)
 
-You can click on a license to be given the choice to approve it or blacklist it.
+If you are a project or group Maintainer, you can click on a license to be given
+the choice to approve it or blacklist it.
 
 ![License approval decision](img/license_management_decision.png)
 
@@ -70,7 +71,18 @@ The list of licenses and their status can also be managed from the project setti
 
 ![License Management Settings](img/license_management_settings.png)
 
+## License Management report under pipelines
+
+> [Introduced][ee-5491] in [GitLab Ultimate][ee] 11.2.
+
+From your project's left sidebar, navigate to **CI/CD > Pipelines** and click on the
+pipeline ID that has a `license_management` job to see the Licenses tab with the listed
+licenses (if any).
+
+![License Management Pipeline Tab](img/license_management_pipeline_tab.png)
+
 [ee-5483]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5483
+[ee-5491]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5491
 [ee]: https://about.gitlab.com/pricing/
 [ci]: ../../../ci/README.md
 [cc-docs]: ../../../ci/examples/license_management.md
