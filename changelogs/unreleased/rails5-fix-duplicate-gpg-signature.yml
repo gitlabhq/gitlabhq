@@ -1,0 +1,5 @@
+---
+title: Rails5 fix specs duplicate key value violates unique constraint 'index_gpg_signatures_on_commit_sha'
+merge_request: 21119
+author: Jasper Maes
+type: fixed
