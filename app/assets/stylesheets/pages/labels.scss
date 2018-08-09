@@ -80,7 +80,7 @@
     margin-bottom: 5px;
     display: flex;
     justify-content: space-between;
-    padding: $gl-padding $gl-padding 9px;
+    padding: $gl-padding;
     border-radius: $border-radius-default;
     border: 1px solid $theme-gray-100;
 
@@ -253,7 +253,6 @@
   text-align: right;
   padding: 0;
   position: relative;
-  top: -3px;
   margin: 0;
 }
 
@@ -275,6 +274,7 @@
 
 .label-links {
   list-style: none;
+  margin: 0;
   padding: 0;
   white-space: nowrap;
 }
