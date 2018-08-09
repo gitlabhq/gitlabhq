@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Merge requests](#merge-requests)
+  - [Merge request guidelines](#merge-request-guidelines)
+  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+- [Definition of done](#definition-of-done)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests,
