@@ -139,6 +139,8 @@ enable mirroring (if not already enabled) and enter an `ssh://` URL.
 
 > **NOTE**: SCP-style URLs, e.g., `git@example.com:group/project.git`, are not
 supported at this time.
+>
+These URLs must be converted to the format `scheme://git@domain/group/project.git`
 
 Entering the URL adds two features to the page - `Fingerprints` and
 `SSH public key authentication`:
