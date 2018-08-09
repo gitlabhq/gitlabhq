@@ -1,18 +1,18 @@
 # Import your project from Bitbucket Server to GitLab
 
+NOTE: **Note:**
+The Bitbucket Server importer does not work with Bitbucket Cloud (aka bitbucket.org).
+Use the [Bitbucket Cloud importer](bitbucket.md) for that.
+
 Import your projects from Bitbucket Server to GitLab with minimal effort.
 
 ## Overview
-
->**Note:**
-The BitBucket Server importer does not work with Bitbucket Cloud (aka bitbucket.org). Use the [Bitbucket Cloud importer](bitbucket.md) for that.
 
 - In its current state, the Bitbucket importer can import:
   - the repository description (GitLab 11.2+)
   - the Git repository data (GitLab 11.2+)
   - the pull requests (GitLab 11.2+)
   - the pull request comments (GitLab 11.2+)
-
 - Repository public access is retained. If a repository is private in Bitbucket
   it will be created as private in GitLab as well.
 
@@ -56,11 +56,8 @@ namespace that started the import process.
 
 1. Sign in to GitLab and go to your dashboard.
 1. Click on **New project**.
-
-    ![New project in GitLab](img/bitbucket_import_new_project.png)
-
 1. Click on the "Bitbucket Server" button. If the button is not present, enable the importer in
-    `Admin` -> `Application Settings` -> `Visbility and access controls` -> `Import sources`.
+    **Admin > Application Settings > Visibility and access controls > Import sources**.
 
     ![Bitbucket](img/import_projects_from_new_project_page.png)
 
