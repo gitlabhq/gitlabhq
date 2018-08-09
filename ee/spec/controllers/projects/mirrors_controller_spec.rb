@@ -199,7 +199,7 @@ describe Projects::MirrorsController do
       it 'processes a successful update' do
         do_put(project, username_only_import_url: "https://updated.example.com")
 
-        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
         expect(flash[:notice]).to match(/successfully updated/)
       end
     end
@@ -208,7 +208,7 @@ describe Projects::MirrorsController do
       it 'processes an unsuccessful update' do
         do_put(project, username_only_import_url: "ftp://invalid.invalid'")
 
-        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-push-remote-settings'))
         expect(flash[:alert]).to match(/is blocked/)
       end
     end
