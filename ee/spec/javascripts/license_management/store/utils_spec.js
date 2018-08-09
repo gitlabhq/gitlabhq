@@ -10,7 +10,7 @@ import {
   STATUS_FAILED,
   STATUS_NEUTRAL,
   STATUS_SUCCESS,
-} from '~/vue_shared/components/reports/constants';
+} from '~/reports/constants';
 import {
   approvedLicense,
   blacklistedLicense,

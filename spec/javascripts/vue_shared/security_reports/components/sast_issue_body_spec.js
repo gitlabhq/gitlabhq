@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import component from 'ee/vue_shared/security_reports/components/sast_issue_body.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { STATUS_FAILED } from '~/vue_shared/components/reports/constants';
+import { STATUS_FAILED } from '~/reports/constants';
 
 describe('sast issue body', () => {
   let vm;

@@ -1,4 +1,4 @@
-import TestIssueBody from '~/reports/components/test_issue_body.vue';
+import TestIssueBody from './test_issue_body.vue';
 
 export const components = {
   TestIssueBody,

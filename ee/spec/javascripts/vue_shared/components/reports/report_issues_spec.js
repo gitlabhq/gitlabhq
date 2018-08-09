@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import reportIssues from '~/vue_shared/components/reports/report_issues.vue';
-import { STATUS_FAILED, STATUS_SUCCESS } from '~/vue_shared/components/reports/constants';
+import reportIssues from '~/reports/components/report_issues.vue';
+import { STATUS_FAILED, STATUS_SUCCESS } from '~/reports/constants';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import store from 'ee/vue_shared/security_reports/store';
 import mountComponent, { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';

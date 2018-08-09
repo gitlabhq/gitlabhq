@@ -2,7 +2,7 @@
 import { mapActions, mapState } from 'vuex';
 import { s__, sprintf, n__ } from '~/locale';
 import createFlash from '~/flash';
-import ReportSection from '~/vue_shared/components/reports/report_section.vue';
+import ReportSection from '~/reports/components/report_section.vue';
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import IssueModal from './components/modal.vue';
 import mixin from './mixins/security_report_mixin';

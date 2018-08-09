@@ -1,7 +1,7 @@
 import {
   components as componentsCE,
   componentNames as componentNamesCE,
-} from '~/vue_shared/components/reports/issue_body';
+} from '~/reports/components/issue_body';
 import PerformanceIssueBody from 'ee/vue_merge_request_widget/components/performance_issue_body.vue';
 import CodequalityIssueBody from 'ee/vue_merge_request_widget/components/codequality_issue_body.vue';
 import LicenseIssueBody from 'ee/vue_shared/license_management/components/license_issue_body.vue';

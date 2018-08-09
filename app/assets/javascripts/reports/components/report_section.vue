@@ -1,8 +1,8 @@
 <script>
 import { __ } from '~/locale';
 import StatusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon.vue';
+import Popover from '~/vue_shared/components/help_popover.vue';
 import IssuesList from './issues_list.vue';
-import Popover from '../help_popover.vue';
 
 const LOADING = 'LOADING';
 const ERROR = 'ERROR';
