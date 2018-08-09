@@ -1,13 +1,12 @@
 namespace :gitlab do
   namespace :gitaly do
     desc "GitLab | Install or upgrade gitaly"
-    task :install, [:dir, :repo] => :gitlab_environment do |t, args|
-      require 'toml-rb'
-
+    task :install, [:dir, :storage_path, :repo] => :gitlab_environment do |t, args|
       warn_user_is_not_gitlab
 
-      unless args.dir.present?
-        abort %(Please specify the directory where you want to install gitaly:\n  rake "gitlab:gitaly:install[/home/git/gitaly]")
+      unless args.dir.present? && args.storage_path.present?
+        abort %(Please specify the directory where you want to install gitaly and the path for the default storage
+Usage: rake "gitlab:gitaly:install[/installation/dir,/storage/path]")
       end
 
       args.with_defaults(repo: 'https://gitlab.com/gitlab-org/gitaly.git')
@@ -27,25 +26,14 @@ namespace :gitlab do
           "BUNDLE_PATH=#{Bundler.bundle_path}")
       end
 
-      Gitlab::SetupHelper.create_gitaly_configuration(args.dir)
+      storage_paths = { 'default' => args.storage_path }
+      Gitlab::SetupHelper.create_gitaly_configuration(args.dir, storage_paths)
       Dir.chdir(args.dir) do
         # In CI we run scripts/gitaly-test-build instead of this command
         unless ENV['CI'].present?
           Bundler.with_original_env { run_command!(command) }
         end
       end
-    end
-
-    desc "GitLab | Print storage configuration in TOML format"
-    task storage_config: :environment do
-      require 'toml-rb'
-
-      puts "# Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}"
-      puts "# This is in TOML format suitable for use in Gitaly's config.toml file."
-
-      # Exclude gitaly-ruby configuration because that depends on the gitaly
-      # installation directory.
-      puts Gitlab::SetupHelper.gitaly_configuration_toml('', gitaly_ruby: false)
     end
   end
 end
