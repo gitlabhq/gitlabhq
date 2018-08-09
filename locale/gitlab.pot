@@ -2729,6 +2729,9 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+msgid "Go to"
+msgstr ""
+
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
@@ -4628,6 +4631,9 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
+msgstr ""
+
+msgid "Runners page"
 msgstr ""
 
 msgid "Running"
