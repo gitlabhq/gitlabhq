@@ -25,6 +25,14 @@ describe('epicSidebar', () => {
     todoExists,
     todoPath,
     todoDeletePath,
+    startDateIsFixed,
+    startDateFixed,
+    startDateFromMilestones,
+    dueDateIsFixed,
+    dueDateFixed,
+    dueDateFromMilestones,
+    startDateSourcingMilestoneTitle,
+    dueDateSourcingMilestoneTitle,
   } = props;
 
   const defaultPropsData = {
@@ -34,7 +42,15 @@ describe('epicSidebar', () => {
     initialParticipants: participants,
     initialSubscribed: subscribed,
     initialTodoExists: todoExists,
+    initialStartDateIsFixed: startDateIsFixed,
+    initialStartDateFixed: startDateFixed,
+    startDateFromMilestones,
+    initialDueDateIsFixed: dueDateIsFixed,
+    initialDueDateFixed: dueDateFixed,
+    dueDateFromMilestones,
     updatePath: updateEndpoint,
+    startDateSourcingMilestoneTitle,
+    dueDateSourcingMilestoneTitle,
     toggleSubscriptionPath,
     labelsPath,
     labelsWebUrl,
@@ -64,18 +80,6 @@ describe('epicSidebar', () => {
     expect(vm.$el.classList.contains('right-sidebar-expanded')).toEqual(true);
   });
 
-  it('should render min date sidebar-date-picker', () => {
-    vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, { initialStartDate: '2017-01-01' }));
-
-    expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
-  });
-
-  it('should render max date sidebar-date-picker', () => {
-    vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, { initialEndDate: '2018-01-01' }));
-
-    expect(vm.$el.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
-  });
-
   it('should render both sidebar-date-picker', () => {
     vm = mountComponent(EpicSidebar, Object.assign({}, defaultPropsData, {
       initialStartDate: '2017-01-01',
@@ -84,8 +88,52 @@ describe('epicSidebar', () => {
 
     const startDatePicker = vm.$el.querySelector('.block.start-date');
     const endDatePicker = vm.$el.querySelector('.block.end-date');
-    expect(startDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2017');
-    expect(endDatePicker.querySelector('.value-content strong').innerText.trim()).toEqual('Jan 1, 2018');
+    expect(startDatePicker.querySelector('.value-type-fixed .value-content').innerText.trim()).toEqual('Jan 1, 2017');
+    expect(endDatePicker.querySelector('.value-type-fixed .value-content').innerText.trim()).toEqual('Jan 1, 2018');
+  });
+
+  describe('computed prop', () => {
+    const getComponent = (customPropsData = {
+      initialStartDateIsFixed: true,
+      startDateFromMilestones: '2018-01-01',
+      initialStartDate: '2017-01-01',
+      initialDueDateIsFixed: true,
+      dueDateFromMilestones: '2018-11-31',
+      initialEndDate: '2018-01-01',
+    }) => new EpicSidebar({
+      propsData: Object.assign({}, defaultPropsData, customPropsData),
+    });
+
+    describe('isDateValid', () => {
+      it('returns true when fixed start and end dates are valid', () => {
+        const component = getComponent();
+        expect(component.isDateValid).toBe(true);
+      });
+
+      it('returns false when fixed start and end dates are invalid', () => {
+        const component = getComponent({
+          initialStartDate: '2018-01-01',
+          initialEndDate: '2017-01-01',
+        });
+        expect(component.isDateValid).toBe(false);
+      });
+
+      it('returns true when milestone start date and fixed end date is valid', () => {
+        const component = getComponent({
+          initialStartDateIsFixed: false,
+          initialEndDate: '2018-11-31',
+        });
+        expect(component.isDateValid).toBe(true);
+      });
+
+      it('returns true when milestone start date and milestone end date is valid', () => {
+        const component = getComponent({
+          initialStartDateIsFixed: false,
+          initialDueDateIsFixed: false,
+        });
+        expect(component.isDateValid).toBe(true);
+      });
+    });
   });
 
   describe('when collapsed', () => {
@@ -104,6 +152,12 @@ describe('epicSidebar', () => {
 
     it('should render collapsed labels picker', () => {
       expect(vm.$el.querySelector('.js-labels-block .sidebar-collapsed-icon span').innerText.trim()).toEqual('1');
+    });
+  });
+
+  describe('getDateFromMilestonesTooltip', () => {
+    it('returns tooltip string for milestone', () => {
+      expect(vm.getDateFromMilestonesTooltip('start')).toBe('To schedule your epic\'s start date based on milestones, assign a milestone with a due date to any issue in the epic.');
     });
   });
 
@@ -165,7 +219,35 @@ describe('epicSidebar', () => {
         .catch(done.fail);
     });
 
-    it('should handle errors gracefully', () => {});
+    it('should change start date type', (done) => {
+      spyOn(component.service, 'updateStartDate').and.callThrough();
+      const dateValue = '2017-01-01';
+      component.saveDate('start', dateValue, false);
+      Vue.nextTick()
+        .then(() => {
+          expect(component.service.updateStartDate).toHaveBeenCalledWith({
+            dateValue,
+            isFixed: false,
+          });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('should change end date type', (done) => {
+      spyOn(component.service, 'updateEndDate').and.callThrough();
+      const dateValue = '2017-01-01';
+      component.saveDate('end', dateValue, false);
+      Vue.nextTick()
+        .then(() => {
+          expect(component.service.updateEndDate).toHaveBeenCalledWith({
+            dateValue,
+            isFixed: false,
+          });
+        })
+        .then(done)
+        .catch(done.fail);
+    });
   });
 
   describe('handleLabelClick', () => {

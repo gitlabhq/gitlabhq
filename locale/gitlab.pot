@@ -2400,6 +2400,9 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+msgid "Date picker"
+msgstr ""
+
 msgid "Dec"
 msgstr ""
 
@@ -2879,6 +2882,27 @@ msgstr ""
 msgid "Epics let you manage your portfolio of projects more efficiently and with less effort"
 msgstr ""
 
+msgid "Epics|An error occurred while saving %{epicDateType} date"
+msgstr ""
+
+msgid "Epics|How can I solve this?"
+msgstr ""
+
+msgid "Epics|More information"
+msgstr ""
+
+msgid "Epics|These dates affect how your epics appear in the roadmap. Dates from milestones come from the milestones assigned to issues in the epic. You can also set fixed dates or remove them entirely."
+msgstr ""
+
+msgid "Epics|To schedule your epic's %{epicDateType} date based on milestones, assign a milestone with a due date to any issue in the epic."
+msgstr ""
+
+msgid "Epics|finish"
+msgstr ""
+
+msgid "Epics|start"
+msgstr ""
+
 msgid "Error"
 msgstr ""
 
@@ -3095,6 +3119,18 @@ msgstr ""
 msgid "FirstPushedBy|pushed by"
 msgstr ""
 
+msgid "Fixed date"
+msgstr ""
+
+msgid "Fixed finish date"
+msgstr ""
+
+msgid "Fixed start date"
+msgstr ""
+
+msgid "Fixed:"
+msgstr ""
+
 msgid "FogBugz Email"
 msgstr ""
 
@@ -3170,6 +3206,9 @@ msgid "From issue creation until deploy to production"
 msgstr ""
 
 msgid "From merge request merge until deploy to production"
+msgstr ""
+
+msgid "From milestones:"
 msgstr ""
 
 msgid "From the Kubernetes cluster details view, install Runner from the applications list"
@@ -6887,6 +6926,12 @@ msgstr ""
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
 msgstr ""
 
+msgid "This date is after the planned finish date, so this epic won't appear in the roadmap."
+msgstr ""
+
+msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
+msgstr ""
+
 msgid "This diff is collapsed."
 msgstr ""
 
@@ -8463,6 +8508,9 @@ msgid "private key does not match certificate."
 msgstr ""
 
 msgid "remaining"
+msgstr ""
+
+msgid "remove"
 msgstr ""
 
 msgid "remove due date"

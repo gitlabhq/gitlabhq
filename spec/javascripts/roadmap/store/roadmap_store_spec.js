@@ -22,9 +22,9 @@ describe('RoadmapStore', () => {
   });
 
   describe('setEpics', () => {
-    it('sets Epics list to state', () => {
+    it('sets Epics list to state while filtering out Epics with invalid dates', () => {
       store.setEpics(rawEpics);
-      expect(store.getEpics().length).toBe(rawEpics.length);
+      expect(store.getEpics().length).toBe(rawEpics.length - 2); // 2 epics have invalid dates
     });
   });
 

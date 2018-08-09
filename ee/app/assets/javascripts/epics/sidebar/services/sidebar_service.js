@@ -7,12 +7,28 @@ export default class SidebarService {
     this.todoPath = todoPath;
   }
 
-  updateStartDate(startDate) {
-    return axios.put(this.endpoint, { start_date: startDate });
+  updateStartDate({ dateValue, isFixed }) {
+    const requestBody = {
+      start_date_is_fixed: isFixed,
+    };
+
+    if (isFixed) {
+      requestBody.start_date_fixed = dateValue;
+    }
+
+    return axios.put(this.endpoint, requestBody);
   }
 
-  updateEndDate(endDate) {
-    return axios.put(this.endpoint, { end_date: endDate });
+  updateEndDate({ dateValue, isFixed }) {
+    const requestBody = {
+      due_date_is_fixed: isFixed,
+    };
+
+    if (isFixed) {
+      requestBody.due_date_fixed = dateValue;
+    }
+
+    return axios.put(this.endpoint, requestBody);
   }
 
   toggleSubscribed() {
