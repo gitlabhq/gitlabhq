@@ -1,27 +1,7 @@
-## Developer Certificate of Origin + License
-
-By contributing to GitLab B.V., You accept and agree to the following terms and
-conditions for Your present and future Contributions submitted to GitLab B.V.
-Except for the license granted herein to GitLab B.V. and recipients of software
-distributed by GitLab B.V., You reserve all right, title, and interest in and to
-Your Contributions. All Contributions are subject to the following DCO + License
-terms.
-
-[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
-
-All Documentation content that resides under the [doc/ directory](/doc) of this
-repository is licensed under Creative Commons:
-[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
-
-_This notice should stay as the first item in the CONTRIBUTING.md file._
-
----
-
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Contributing Documentation has been moved](#contributing-documentation-has-been-moved)
 - [Contribute to GitLab](#contribute-to-gitlab)
 - [Security vulnerability disclosure](#security-vulnerability-disclosure)
 - [Code of conduct](#code-of-conduct)
@@ -33,9 +13,9 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
   - [Type labels](#type-labels)
   - [Subject labels](#subject-labels)
   - [Team labels](#team-labels)
-  - [Release Scoping labels](#release-scoping-labels)
-  - [Priority labels](#priority-labels)
-  - [Severity labels](#severity-labels)
+  - [Milestone labels](#milestone-labels)
+  - [Bug Priority labels](#bug-priority-labels)
+  - [Bug Severity labels](#bug-severity-labels)
     - [Severity impact guidance](#severity-impact-guidance)
   - [Label for community contributors](#label-for-community-contributors)
 - [Implement design & UI elements](#implement-design--ui-elements)
@@ -55,13 +35,6 @@ _This notice should stay as the first item in the CONTRIBUTING.md file._
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
----
-
-## Contributing Documentation has been moved
-
-As of July 2018, all the documentation for contributing to the GitLab project has been moved to a new location.
-[view the new documentation](doc/development/contributing/index.md) to find the latest information.
-
 ## Contribute to GitLab
 
 For a first-time step-by-step guide to the contribution process, see
@@ -78,7 +51,7 @@ edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
 If you have read this guide and want to know how the GitLab [core team]
-operates please see [the GitLab contributing process](PROCESS.md).
+operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
@@ -177,146 +150,97 @@ When submitting code to GitLab, you may feel that your contribution requires the
 
 When your code contains more than 500 changes, any major breaking changes, or an external library, `@mention` a maintainer in the merge request. If you are not sure who to mention, the reviewer will add one early in the merge request process.
 
-[core team]: https://about.gitlab.com/core-team/
-[team]: https://about.gitlab.com/team/
-[getting-help]: https://about.gitlab.com/getting-help/
-[codetriage]: http://www.codetriage.com/gitlabhq/gitlabhq
-[accepting-mrs-weight]: https://gitlab.com/gitlab-org/gitlab-ce/issues?assignee_id=0&label_name[]=Accepting%20Merge%20Requests&sort=weight_asc
-[ce-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/issues
-[ee-tracker]: https://gitlab.com/gitlab-org/gitlab-ee/issues
-[google-group]: https://groups.google.com/forum/#!forum/gitlabhq
-[stackoverflow]: https://stackoverflow.com/questions/tagged/gitlab
-[fpl]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=feature+proposal
-[accepting-mrs-ce]: https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=Accepting+Merge+Requests
-[accepting-mrs-ee]: https://gitlab.com/gitlab-org/gitlab-ee/issues?label_name=Accepting+Merge+Requests
-[gitlab-mr-tracker]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests
-[gdk]: https://gitlab.com/gitlab-org/gitlab-development-kit
-[git-squash]: https://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits
-[closed-merge-requests]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed
-[definition-of-done]: http://guide.agilealliance.org/guide/definition-of-done.html
-[contributor-covenant]: http://contributor-covenant.org
-[rss-source]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#source-code-layout
-[rss-naming]: https://github.com/bbatsov/ruby-style-guide/blob/master/README.md#naming
-[changelog]: doc/development/changelog.md "Generate a changelog entry"
-[doc-guidelines]: doc/development/documentation/index.md "Documentation guidelines"
-[js-styleguide]: doc/development/fe_guide/style_guide_js.md "JavaScript styleguide"
-[scss-styleguide]: doc/development/fe_guide/style_guide_scss.md "SCSS styleguide"
-[newlines-styleguide]: doc/development/newlines_styleguide.md "Newlines styleguide"
-[UX Guide for GitLab]: http://docs.gitlab.com/ce/development/ux_guide/
-[license-finder-doc]: doc/development/licensing.md
-[GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
-[polling-etag]: https://docs.gitlab.com/ce/development/polling.html
-[testing]: doc/development/testing_guide/index.md
-[us-english]: https://en.wikipedia.org/wiki/American_English
-
-
 ## Workflow labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.  
-
+This [documentation](./issue_workflow.md) outlines the current workflow labels.
 
 ### Type labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_worfklow.md) outlines the current type labels.
 
 ### Subject labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_worfklow.md) outlines the current subject labels.
 
 ### Team labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+This [documentation](./issue_worfklow.md) outlines the current team labels.
 
+### Milestone labels
 
-### Release Scoping labels
+This [documentation](./issue_worfklow.md) outlines the current milestone labels.
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+### Bug Priority labels
 
+This [documentation](./issue_worfklow.md) outlines the current bug priority  labels.
 
-### Priority labels
+### Bug Severity labels
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
-
-### Severity labels
-
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+This [documentation](./issue_workflow.md) outlines the current severity labels.
 
 #### Severity impact guidance
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the current severity impact guidance.
 
 ### Label for community contributors
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the current policy regarding community contributor issues.
 
 ## Implement design & UI elements
 
-This [documentation](doc/development/contributing/design.md) has been moved.
-
+This [documentation](./design.md) outlines the current design and UI guidelines.
 
 ## Issue tracker
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+This [documentation](./issue_workflow.md) outlines the issue tracker process.
 
 ### Issue triaging
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the current issue triaging process.
 
 ### Feature proposals
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
+This [documentation](./issue_workflow.md) outlines the feature proposal process.
 
 ### Issue tracker guidelines
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](issue_workflow.md) outlines the issue tracker guidelines.
 
 ### Issue weight
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the issue weight guidelines.
 
 ### Regression issues
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the regression issue process.
 
 ### Technical and UX debt
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) about technical and UX debt has been moved.
 
 ### Stewardship
 
-This [documentation](doc/development/contributing/issue_workflow.md) has been moved.
-
+This [documentation](./issue_workflow.md) outlines the stewardship process.
 
 ## Merge requests
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
-
+This [documentation](./merge_request_workflow.md) outlines the current merge request process.
 
 ### Merge request guidelines
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
-
+This [documentation](./merge_request_workflow.md) outlines the current merge request guidelines.
 
 ### Contribution acceptance criteria
 
-This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
-
+This [documentation](./merge_request_workflow.md) outlines the current acceptance criteria for contributions.
 
 ## Definition of done
 
-This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved.
-
+This [documentation](./merge_request_workflow.md) outlines the definition of done.
 
 ## Style guides
+This [documentation](./design.md) outlines the current style guidelines.
 
-This [documentation](doc/development/contributing/design.md) has been moved.
+---
+
+[Return to Development documentation](../README.md)
