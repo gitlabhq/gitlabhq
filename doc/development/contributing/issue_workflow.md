@@ -1,3 +1,26 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Workflow labels](#workflow-labels)
+  - [Type labels](#type-labels)
+  - [Subject labels](#subject-labels)
+  - [Team labels](#team-labels)
+  - [Release Scoping labels](#release-scoping-labels)
+  - [Priority labels](#priority-labels)
+  - [Severity labels](#severity-labels)
+    - [Severity impact guidance](#severity-impact-guidance)
+  - [Label for community contributors](#label-for-community-contributors)
+  - [Issue triaging](#issue-triaging)
+  - [Feature proposals](#feature-proposals)
+  - [Issue tracker guidelines](#issue-tracker-guidelines)
+  - [Issue weight](#issue-weight)
+  - [Regression issues](#regression-issues)
+  - [Technical and UX debt](#technical-and-ux-debt)
+  - [Stewardship](#stewardship)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Workflow labels
 
 To allow for asynchronous issue handling, we use [milestones][milestones-page]

@@ -1,3 +1,40 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Contribute to GitLab](#contribute-to-gitlab)
+- [Security vulnerability disclosure](#security-vulnerability-disclosure)
+- [Code of conduct](#code-of-conduct)
+- [Closing policy for issues and merge requests](#closing-policy-for-issues-and-merge-requests)
+- [Helping others](#helping-others)
+- [I want to contribute!](#i-want-to-contribute)
+- [Contribution Flow](#contribution-flow)
+- [Workflow labels](#workflow-labels)
+  - [Type labels](#type-labels)
+  - [Subject labels](#subject-labels)
+  - [Team labels](#team-labels)
+  - [Milestone labels](#milestone-labels)
+  - [Bug Priority labels](#bug-priority-labels)
+  - [Bug Severity labels](#bug-severity-labels)
+    - [Severity impact guidance](#severity-impact-guidance)
+  - [Label for community contributors](#label-for-community-contributors)
+- [Implement design & UI elements](#implement-design--ui-elements)
+- [Issue tracker](#issue-tracker)
+  - [Issue triaging](#issue-triaging)
+  - [Feature proposals](#feature-proposals)
+  - [Issue tracker guidelines](#issue-tracker-guidelines)
+  - [Issue weight](#issue-weight)
+  - [Regression issues](#regression-issues)
+  - [Technical and UX debt](#technical-and-ux-debt)
+  - [Stewardship](#stewardship)
+- [Merge requests](#merge-requests)
+  - [Merge request guidelines](#merge-request-guidelines)
+  - [Contribution acceptance criteria](#contribution-acceptance-criteria)
+- [Definition of done](#definition-of-done)
+- [Style guides](#style-guides)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Contribute to GitLab
 
 For a first-time step-by-step guide to the contribution process, see
