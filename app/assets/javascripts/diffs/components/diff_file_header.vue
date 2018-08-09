@@ -229,7 +229,10 @@ export default {
           type="button"
           @click="handleToggleDiscussions"
         >
-          <icon name="comment" class="svg-icon" />
+          <icon
+            name="comment"
+            class="svg-icon"
+          />
         </button>
 
         <edit-button

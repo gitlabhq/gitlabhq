@@ -83,6 +83,9 @@ export default {
     type="button"
     class="btn"
   >
-    <icon name="duplicate" :class="svgCssClass" />
+    <icon
+      :class="svgCssClass"
+      name="duplicate"
+    />
   </button>
 </template>
