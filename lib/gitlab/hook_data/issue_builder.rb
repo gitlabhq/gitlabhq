@@ -1,34 +1,38 @@
 module Gitlab
   module HookData
     class IssueBuilder < BaseBuilder
-      SAFE_HOOK_ATTRIBUTES = %i[
-        assignee_id
-        author_id
-        closed_at
-        confidential
-        created_at
-        description
-        due_date
-        id
-        iid
-        last_edited_at
-        last_edited_by_id
-        milestone_id
-        moved_to_id
-        project_id
-        relative_position
-        state
-        time_estimate
-        title
-        updated_at
-        updated_by_id
-      ].freeze
+      prepend ::EE::Gitlab::HookData::IssueBuilder
 
       SAFE_HOOK_RELATIONS = %i[
         assignees
         labels
         total_time_spent
       ].freeze
+
+      def self.safe_hook_attributes
+        %i[
+          assignee_id
+          author_id
+          closed_at
+          confidential
+          created_at
+          description
+          due_date
+          id
+          iid
+          last_edited_at
+          last_edited_by_id
+          milestone_id
+          moved_to_id
+          project_id
+          relative_position
+          state
+          time_estimate
+          title
+          updated_at
+          updated_by_id
+        ].freeze
+      end
 
       alias_method :issue, :object
 
@@ -43,7 +47,7 @@ module Gitlab
           assignee_id: issue.assignee_ids.first # This key is deprecated
         }
 
-        issue.attributes.with_indifferent_access.slice(*SAFE_HOOK_ATTRIBUTES)
+        issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
           .merge!(attrs)
       end
     end
