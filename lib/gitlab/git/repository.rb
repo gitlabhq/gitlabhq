@@ -382,7 +382,7 @@ module Gitlab
       end
 
       def new_blobs(newrev)
-        return [] if newrev == ::Gitlab::Git::BLANK_SHA
+        return [] if newrev.blank? || newrev == ::Gitlab::Git::BLANK_SHA
 
         strong_memoize("new_blobs_#{newrev}") do
           wrapped_gitaly_errors do
