@@ -92,7 +92,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.18.0.tar.gz
+    curl --remote-name --location --progress https://www.kernel.org/pub/software/scm/git/git-2.18.0.tar.gz
     echo '94faf2c0b02a7920b0b46f4961d8e9cad08e81418614102898a55f980fa3e7e4  git-2.18.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.18.0.tar.gz
     cd git-2.18.0/
     ./configure
