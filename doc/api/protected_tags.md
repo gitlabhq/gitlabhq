@@ -1,6 +1,6 @@
 # Protected tags API
 
->**Note:** This feature was introduced in GitLab 11.2
+>**Note:** This feature was introduced in GitLab 11.3
 
 **Valid access levels**
 

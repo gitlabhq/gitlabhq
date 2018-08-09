@@ -21,7 +21,7 @@ class DropDuplicateProtectedTags < ActiveRecord::Migration
   def up
     Project.each_batch(of: BATCH_SIZE) do |projects|
       ids = ProtectedTag
-        .where(project_id: projects.select(:id))
+        .where(project_id: projects)
         .group(:name, :project_id)
         .select('max(id)')
 

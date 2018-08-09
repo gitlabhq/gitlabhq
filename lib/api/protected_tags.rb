@@ -11,7 +11,7 @@ module API
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc "Get a project's protected tags" do
-        detail 'This feature was introduced in GitLab 11.2.'
+        detail 'This feature was introduced in GitLab 11.3.'
         success Entities::ProtectedTag
       end
       params do
@@ -24,7 +24,7 @@ module API
       end
 
       desc 'Get a single protected tag' do
-        detail 'This feature was introduced in GitLab 11.2.'
+        detail 'This feature was introduced in GitLab 11.3.'
         success Entities::ProtectedTag
       end
       params do
@@ -37,7 +37,7 @@ module API
       end
 
       desc 'Protect a single tag or wildcard' do
-        detail 'This feature was introduced in GitLab 11.2.'
+        detail 'This feature was introduced in GitLab 11.3.'
         success Entities::ProtectedTag
       end
       params do
@@ -64,7 +64,7 @@ module API
       end
 
       desc 'Unprotect a single tag' do
-        detail 'This feature was introduced in GitLab 11.2.'
+        detail 'This feature was introduced in GitLab 11.3.'
       end
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
