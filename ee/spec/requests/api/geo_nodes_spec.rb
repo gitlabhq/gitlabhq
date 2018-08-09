@@ -89,7 +89,7 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
       expect(links['node']).to end_with("/api/v4/geo_nodes/#{secondary.id}")
     end
 
-    it 'fetches the current node status' do
+    it 'fetches the current node status from redis' do
       stub_current_geo_node(secondary)
 
       expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(secondary_status)
@@ -101,9 +101,23 @@ describe API::GeoNodes, :geo, :prometheus, api: true do
       expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
     end
 
-    it 'shows 404 response if current node status does not exist yet' do
+    it 'shows the database-held response if current node status exists in the database, but not redis'  do
       stub_current_geo_node(secondary)
 
+      expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(nil)
+      expect(GeoNode).to receive(:find).and_return(secondary)
+
+      get api("/geo_nodes/#{secondary.id}/status", admin)
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/geo_node_status', dir: 'ee')
+    end
+
+    it 'shows 404 response if current node status does not exist in database or redis yet' do
+      stub_current_geo_node(secondary)
+      secondary_status.destroy!
+
+      expect(GeoNodeStatus).to receive(:fast_current_node_status).and_return(nil)
       expect(GeoNode).to receive(:find).and_return(secondary)
 
       get api("/geo_nodes/#{secondary.id}/status", admin)
