@@ -145,7 +145,7 @@ export default {
         :name="collapseIcon"
         :size="16"
         aria-hidden="true"
-        class="diff-toggle-caret append-right-5"
+        class="svg-icon diff-toggle-caret append-right-5"
         @click.stop="handleToggle"
       />
       <a
@@ -158,7 +158,7 @@ export default {
           :file-name="filePath"
           :size="18"
           aria-hidden="true"
-          css-classes="js-file-icon append-right-5"
+          css-classes="svg-icon js-file-icon append-right-5"
         />
         <span v-if="diffFile.renamedFile">
           <strong
@@ -196,6 +196,7 @@ export default {
         :text="diffFile.filePath"
         :gfm="gfmCopyText"
         css-class="btn-default btn-transparent btn-clipboard"
+        svg-css-class="svg-icon"
       />
 
       <small
@@ -228,7 +229,7 @@ export default {
           type="button"
           @click="handleToggleDiscussions"
         >
-          <icon name="comment" />
+          <icon name="comment" class="svg-icon" />
         </button>
 
         <edit-button

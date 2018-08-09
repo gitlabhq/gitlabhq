@@ -55,6 +55,11 @@ export default {
       required: false,
       default: 'btn-default',
     },
+    svgCssClass: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   computed: {
     clipboardText() {
@@ -78,6 +83,6 @@ export default {
     type="button"
     class="btn"
   >
-    <icon name="duplicate" />
+    <icon name="duplicate" :class="svgCssClass" />
   </button>
 </template>

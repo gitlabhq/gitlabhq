@@ -14,11 +14,11 @@
       background-color: $gray-normal;
     }
 
-    svg {
+    .svg-icon {
       vertical-align: middle;
     }
 
-    .file-actions svg {
+    .file-actions .svg-icon {
       top: -1px;
     }
   }
