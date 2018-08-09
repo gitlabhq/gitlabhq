@@ -34,7 +34,7 @@ If you are new to GitLab development (or web development in general), see the
 some potentially easy issues.
 
 To start with GitLab development download the [GitLab Development Kit][gdk] and
-see the [Development section](doc/development/README.md) for some guidelines.
+see the [Development section](../README.md) for some guidelines.
 
 ### Merge request guidelines
 
@@ -81,9 +81,9 @@ request is as follows:
     beneath it to mark it resolved.
 1. If your MR touches code that executes shell commands, reads or opens files or
    handles paths to files on disk, make sure it adheres to the
-   [shell command guidelines](doc/development/shell_commands.md)
+   [shell command guidelines](../shell_commands.md)
 1. If your code creates new files on disk please read the
-   [shared files guidelines](doc/development/shared_files.md).
+   [shared files guidelines](../shared_files.md).
 1. When writing commit messages please follow
    [these](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
    [guidelines](http://chris.beams.io/posts/git-commit/).
@@ -92,7 +92,7 @@ request is as follows:
    to large changes in the MR, do this again once the review is complete.
 1. For more complex migrations, write tests.
 1. Merge requests **must** adhere to the [merge request performance
-   guidelines](doc/development/merge_request_performance_guidelines.md).
+   guidelines](../merge_request_performance_guidelines.md).
 1. For tests that use Capybara or PhantomJS, see this [article on how
    to write reliable asynchronous tests](https://robots.thoughtbot.com/write-reliable-asynchronous-integration-tests-with-capybara).
 
@@ -112,8 +112,7 @@ of the [Merge request coaches][team].
 Please ensure that your merge request meets the contribution acceptance criteria.
 
 When having your code reviewed and when reviewing merge requests please take the
-[code review guidelines](doc/development/code_review.md) into account.
-
+[code review guidelines](../code_review.md) into account.
 
 ### Contribution acceptance criteria
 
@@ -186,3 +185,7 @@ merge request:
 1. GitLab Development Kit https://gitlab.com/gitlab-org/gitlab-development-kit
 1. Test suite https://gitlab.com/gitlab-org/gitlab-ce/blob/master/scripts/prepare_build.sh
 1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
+
+---
+
+[Return to Contributing documentation](index.md)

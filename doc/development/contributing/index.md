@@ -51,7 +51,7 @@ edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
 If you have read this guide and want to know how the GitLab [core team]
-operates please see [the GitLab contributing process](PROCESS.md).
+operates please see [the GitLab contributing process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md).
 
 - [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
@@ -138,9 +138,9 @@ When contributing to GitLab, your merge request is subject to review by merge re
 
 When you submit code to GitLab, we really want it to get merged, but there will be times when it will not be merged.
 
-When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLabâ€™s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
+When maintainers are reading through a merge request they may request guidance from other maintainers. If merge request maintainers conclude that the code should not be merged, our reasons will be fully disclosed. If it has been decided that the code quality is not up to GitLab’s standards, the merge request maintainer will refer the author to our docs and code style guides, and provide some guidance.
 
-Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the codeâ€™s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
+Sometimes style guides will be followed but the code will lack structural integrity, or the maintainer will have reservations about the code’s overall quality. When there is a reservation the maintainer will inform the author and provide some guidance.  The author may then choose to update the merge request. Once the merge request has been updated and reassigned to the maintainer, they will review the code again. Once the code has been resubmitted any number of times, the maintainer may choose to close the merge request with a summary of why it will not be merged, as well as some guidance. If the merge request is closed the maintainer will be open to discussion as to how to improve the code so it can be approved in the future.
 
 GitLab will do its best to review community contributions as quickly as possible. Specially appointed developers review community contributions daily. You may take a look at the [team page](https://about.gitlab.com/team/) for the merge request coach who specializes in the type of code you have written and mention them in the merge request.  For example, if you have written some JavaScript in your code then you should mention the frontend merge request coach. If your code has multiple disciplines you may mention multiple merge request coaches.
 
@@ -156,23 +156,23 @@ This [documentation](issue_workflow.md) outlines the current workflow labels.
 
 ### Type labels
 
-This [documentation](issue_worfklow.md) outlines the current type labels.
+This [documentation](issue_workflow.md) outlines the current type labels.
 
 ### Subject labels
 
-This [documentation](issue_worfklow.md) outlines the current subject labels.
+This [documentation](issue_workflow.md) outlines the current subject labels.
 
 ### Team labels
 
-This [documentation](issue_worfklow.md) outlines the current team labels.
+This [documentation](issue_workflow.md) outlines the current team labels.
 
 ### Milestone labels
 
-This [documentation](issue_worfklow.md) outlines the current milestone labels.
+This [documentation](issue_workflow.md) outlines the current milestone labels.
 
 ### Bug Priority labels
 
-This [documentation](issue_worfklow.md) outlines the current bug priority  labels.
+This [documentation](issue_workflow.md) outlines the current bug priority  labels.
 
 ### Bug Severity labels
 
@@ -236,7 +236,11 @@ This [documentation](merge_request_workflow.md) outlines the current acceptance 
 
 ## Definition of done
 
-This [documentation](merge_request_workflow.md) outlines the defintion of done.
+This [documentation](merge_request_workflow.md) outlines the definition of done.
 
 ## Style guides
 This [documentation](design.md) outlines the current style guidelines.
+
+---
+
+[Return to Development documentation](../README.md)
