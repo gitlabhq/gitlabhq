@@ -16,6 +16,7 @@ describe('clipboard button', () => {
         text: 'copy me',
         title: 'Copy this value into Clipboard!',
         cssClass: 'btn-danger',
+        svgCssClass: 'svg-icon',
       });
     });
 
@@ -31,8 +32,9 @@ describe('clipboard button', () => {
       expect(vm.$el.getAttribute('data-container')).toEqual(null);
     });
 
-    it('should render provided classname', () => {
+    it('should render provided classnames', () => {
       expect(vm.$el.classList).toContain('btn-danger');
+      expect(vm.$el.firstChild.classList).toContain('svg-icon');
     });
   });
 
@@ -43,6 +45,7 @@ describe('clipboard button', () => {
         gfm: '`path/to/file`',
         title: 'Copy this value into Clipboard!',
         cssClass: 'btn-danger',
+
       });
       expect(vm.$el.getAttribute('data-clipboard-text')).toEqual(
         '{"text":"copy me","gfm":"`path/to/file`"}',
