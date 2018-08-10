@@ -129,9 +129,8 @@ describe 'Projects > Settings > Repository settings' do
         visit project_settings_repository_path(project)
       end
 
-      it 'shows push mirror settings' do
-        expect(page).to have_selector('#project_remote_mirrors_attributes_0_enabled')
-        expect(page).to have_selector('#project_remote_mirrors_attributes_0_url')
+      it 'shows push mirror settings', :js do
+        expect(page).to have_selector('#mirror_direction')
       end
     end
   end
