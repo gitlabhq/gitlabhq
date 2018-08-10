@@ -1,6 +1,6 @@
 <script>
-import IssueStatusIcon from './issue_status_icon.vue';
-import { components, componentNames } from './issue_body';
+import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
+import { components, componentNames } from '~/reports/components/issue_body';
 
 export default {
   name: 'ReportIssues',
