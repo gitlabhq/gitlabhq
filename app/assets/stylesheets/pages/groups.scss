@@ -419,6 +419,7 @@
     .stats {
       position: relative;
       line-height: normal;
+      text-align: right;
       flex-shrink: 0;
 
       > span {
@@ -464,7 +465,7 @@
     }
 
     .last-updated {
-      position: absolute;
+      position: relative;
       right: 12px;
       min-width: 250px;
       text-align: right;
