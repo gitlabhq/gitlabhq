@@ -1122,7 +1122,6 @@ X-Gitlab-Event: Build Hook
   },
   "repository": {
     "name": "gitlab_test",
-    "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",
     "description": "Atque in sunt eos similique dolores voluptatem.",
     "homepage": "http://192.168.64.1:3005/gitlab-org/gitlab-test",
     "git_ssh_url": "git@192.168.64.1:gitlab-org/gitlab-test.git",

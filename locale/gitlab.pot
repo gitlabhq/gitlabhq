@@ -640,6 +640,9 @@ msgstr ""
 msgid "Authentication log"
 msgstr ""
 
+msgid "Authentication method"
+msgstr ""
+
 msgid "Author"
 msgstr ""
 
@@ -2169,6 +2172,9 @@ msgstr ""
 msgid "Diffs|Something went wrong while fetching diff lines."
 msgstr ""
 
+msgid "Direction"
+msgstr ""
+
 msgid "Directory name"
 msgstr ""
 
@@ -2391,6 +2397,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Error"
+msgstr ""
+
 msgid "Error Reporting and Logging"
 msgstr ""
 
@@ -2515,6 +2524,9 @@ msgid "Failed to check related branches."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
+msgstr ""
+
+msgid "Failed to remove mirror."
 msgstr ""
 
 msgid "Failed to remove the pipeline schedule"
@@ -3040,6 +3052,9 @@ msgstr ""
 msgid "Inline"
 msgstr ""
 
+msgid "Input your repository URL"
+msgstr ""
+
 msgid "Install GitLab Runner"
 msgstr ""
 
@@ -3471,6 +3486,21 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
+msgid "Mirror a repository"
+msgstr ""
+
+msgid "Mirror direction"
+msgstr ""
+
+msgid "Mirror repository"
+msgstr ""
+
+msgid "Mirrored repositories"
+msgstr ""
+
+msgid "Mirroring repositories"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
@@ -3529,6 +3559,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Never"
 msgstr ""
 
 msgid "New"
@@ -3792,6 +3825,9 @@ msgid "Only admins"
 msgstr ""
 
 msgid "Only comments from the following commit are shown below"
+msgstr ""
+
+msgid "Only mirror protected branches"
 msgstr ""
 
 msgid "Only project members can comment."
@@ -4382,6 +4418,9 @@ msgstr ""
 msgid "Public pipelines"
 msgstr ""
 
+msgid "Push"
+msgstr ""
+
 msgid "Push events"
 msgstr ""
 
@@ -4781,6 +4820,9 @@ msgid "Set up CI/CD"
 msgstr ""
 
 msgid "Set up Koding"
+msgstr ""
+
+msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
@@ -5279,6 +5321,9 @@ msgstr ""
 msgid "The time taken by each data entry gathered by that stage."
 msgstr ""
 
+msgid "The update action will time out after 15 minutes. For big repositories, use a clone/push combination."
+msgstr ""
+
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
 msgstr ""
 
@@ -5733,7 +5778,13 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update now"
+msgstr ""
+
 msgid "Update your group name, description, avatar, and other general settings."
+msgstr ""
+
+msgid "Updating"
 msgstr ""
 
 msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"

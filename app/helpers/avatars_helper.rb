@@ -1,28 +1,10 @@
 module AvatarsHelper
   def project_icon(project_id, options = {})
-    project =
-      if project_id.respond_to?(:avatar_url)
-        project_id
-      else
-        Project.find_by_full_path(project_id)
-      end
-
-    if project.avatar_url
-      image_tag project.avatar_url, options
-    else # generated icon
-      project_identicon(project, options)
-    end
+    source_icon(Project, project_id, options)
   end
 
-  def project_identicon(project, options = {})
-    bg_key = (project.id % 7) + 1
-    options[:class] ||= ''
-    options[:class] << ' identicon'
-    options[:class] << " bg#{bg_key}"
-
-    content_tag(:div, class: options[:class]) do
-      project.name[0, 1].upcase
-    end
+  def group_icon(group_id, options = {})
+    source_icon(Group, group_id, options)
   end
 
   # Takes both user and email and returns the avatar_icon by
@@ -121,6 +103,34 @@ module AvatarsHelper
       link_to(avatar, user_path(options[:user]))
     elsif options[:user_email]
       mail_to(options[:user_email], avatar)
+    end
+  end
+
+  private
+
+  def source_icon(klass, source_id, options = {})
+    source =
+      if source_id.respond_to?(:avatar_url)
+        source_id
+      else
+        klass.find_by_full_path(source_id)
+      end
+
+    if source.avatar_url
+      image_tag source.avatar_url, options
+    else
+      source_identicon(source, options)
+    end
+  end
+
+  def source_identicon(source, options = {})
+    bg_key = (source.id % 7) + 1
+    options[:class] ||= ''
+    options[:class] << ' identicon'
+    options[:class] << " bg#{bg_key}"
+
+    content_tag(:div, class: options[:class].strip) do
+      source.name[0, 1].upcase
     end
   end
 end

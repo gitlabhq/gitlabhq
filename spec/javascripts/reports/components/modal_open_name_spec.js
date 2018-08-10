@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import component from '~/vue_shared/components/reports/modal_open_name.vue';
+import component from '~/reports/components/modal_open_name.vue';
 import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 
 describe('Modal open name', () => {

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "flowdock-git-hook"
 
 # Flow dock depends on Grit to compute the number of commits between two given

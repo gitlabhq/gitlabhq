@@ -36,6 +36,7 @@ module Banzai
       def self.reference_filters
         [
           Filter::UserReferenceFilter,
+          Filter::ProjectReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
           Filter::MergeRequestReferenceFilter,
