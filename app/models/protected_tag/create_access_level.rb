@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProtectedTag::CreateAccessLevel < ActiveRecord::Base
   include ProtectedTagAccess
 

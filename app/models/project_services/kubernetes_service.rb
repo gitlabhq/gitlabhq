@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # NOTE:
 # We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.

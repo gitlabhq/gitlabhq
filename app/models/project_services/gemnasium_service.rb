@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require "gemnasium/gitlab_service"
 
 class GemnasiumService < Service
