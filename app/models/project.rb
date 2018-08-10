@@ -500,11 +500,8 @@ class Project < ActiveRecord::Base
   end
 
   def auto_devops_enabled?
-    if auto_devops&.enabled.nil?
-      Gitlab::CurrentSettings.auto_devops_enabled?
-    else
-      auto_devops.enabled?
-    end
+    auto_devops&.enabled? ||
+      has_auto_devops_implicitly_enabled?
   end
 
   def has_auto_devops_implicitly_enabled?
