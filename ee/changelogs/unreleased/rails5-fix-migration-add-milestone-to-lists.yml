@@ -1,0 +1,5 @@
+---
+title: Rails5 fix AddMilestoneToLists migration rollback deleting wrong foreign key
+merge_request: 6865
+author: Jasper Maes
+type: fixed
