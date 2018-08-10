@@ -3,6 +3,8 @@ module Gitlab
     module Status
       module Build
         class Failed < Status::Extended
+          prepend ::EE::Gitlab::Ci::Status::Build::Failed
+
           REASONS = {
             unknown_failure: 'unknown failure',
             script_failure: 'script failure',
@@ -11,7 +13,7 @@ module Gitlab
             runner_system_failure: 'runner system failure',
             missing_dependency_failure: 'missing dependency failure',
             runner_unsupported: 'unsupported runner'
-          }.freeze
+          }.merge(EE_REASONS).freeze
 
           def status_tooltip
             base_message

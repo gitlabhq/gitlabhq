@@ -1,0 +1,9 @@
+= f.hidden_field(:name)
+
+= dropdown_tag(s_('ProtectedEnvironment|Select an environment'),
+               options: { toggle_class: 'js-protected-environment-select js-filter-submit wide',
+                          filter: true, dropdown_class: 'dropdown-menu-selectable', placeholder: 'Search environments',
+                          footer_content: true,
+                          data: { show_no: true, show_any: true, show_upcoming: true,
+                                  selected: params[:protected_environment_name],
+                                  project_id: project.id } })

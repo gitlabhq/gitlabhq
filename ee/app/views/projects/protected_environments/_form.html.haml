@@ -1,0 +1,19 @@
+= form_for [@project.namespace.becomes(Namespace), @project, @protected_environment], html: { class: 'new-protected-environment js-new-protected-environment' } do |f|
+  .card
+    .card-header
+      %h3.card-title
+        = s_('ProtectedEnvironment|Protect an environment')
+    .card-body
+      = form_errors(@protected_environment)
+      .form-group
+        = f.label :name, class: 'label-bold' do
+          = s_('ProtectedEnvironment|Environment')
+        = render partial: 'projects/protected_environments/environments_dropdown', locals: { f: f, project: @project }
+
+      .form-group
+        = f.label :deploy_access_levels_attributes, class: 'label-bold' do
+          = s_('ProtectedEnvironment|Allowed to deploy')
+        = render partial: 'projects/protected_environments/deploy_access_levels_dropdown', locals: { f: f }
+
+    .card-footer
+      = f.submit s_('ProtectedEnvironment|Protect'), class: 'btn-create btn', disabled: true

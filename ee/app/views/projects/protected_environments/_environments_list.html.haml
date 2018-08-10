@@ -1,0 +1,19 @@
+.protected-environments-list.js-protected-environments-list
+  - if @protected_environments.empty?
+    %p.settings-message.text-center
+      = s_('ProtectedEnvironment|There are currently no protected environments, protect an environment with the form above.')
+  - else
+    %table.table.table-bordered
+      %colgroup
+        %col{ width: '30%' }
+        %col
+        - if can_admin_project
+          %col{ width: '10%' }
+      %thead
+        %tr
+          %th= s_('ProtectedEnvironment|Protected Environment (%{protected_environments_count})') % { protected_environments_count: @protected_environments_count }
+          %th= s_('ProtectedEnvironment|Allowed to deploy')
+          - if can_admin_project
+            %th
+      %tbody
+        = render partial: 'projects/protected_environments/protected_environment', collection: @protected_environments, locals: { can_admin_project: can_admin_project }

@@ -920,6 +920,7 @@ ActiveRecord::Schema.define(version: 20180807153545) do
     t.string "slug", null: false
   end
 
+  add_index "environments", ["name"], name: "index_environments_on_name_varchar_pattern_ops", using: :btree, opclasses: {"name"=>"varchar_pattern_ops"}
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
   add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
 
@@ -2283,6 +2284,29 @@ ActiveRecord::Schema.define(version: 20180807153545) do
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
 
+  create_table "protected_environment_deploy_access_levels", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "access_level", default: 40
+    t.integer "protected_environment_id", null: false
+    t.integer "user_id"
+    t.integer "group_id"
+  end
+
+  add_index "protected_environment_deploy_access_levels", ["group_id"], name: "index_protected_environment_deploy_access_levels_on_group_id", using: :btree
+  add_index "protected_environment_deploy_access_levels", ["protected_environment_id"], name: "index_protected_environment_deploy_access", using: :btree
+  add_index "protected_environment_deploy_access_levels", ["user_id"], name: "index_protected_environment_deploy_access_levels_on_user_id", using: :btree
+
+  create_table "protected_environments", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+  end
+
+  add_index "protected_environments", ["project_id", "name"], name: "index_protected_environments_on_project_id_and_name", unique: true, using: :btree
+  add_index "protected_environments", ["project_id"], name: "index_protected_environments_on_project_id", using: :btree
+
   create_table "protected_tag_create_access_levels", force: :cascade do |t|
     t.integer "protected_tag_id", null: false
     t.integer "access_level", default: 40
@@ -3089,6 +3113,10 @@ ActiveRecord::Schema.define(version: 20180807153545) do
   add_foreign_key "protected_branch_unprotect_access_levels", "protected_branches", on_delete: :cascade
   add_foreign_key "protected_branch_unprotect_access_levels", "users", on_delete: :cascade
   add_foreign_key "protected_branches", "projects", name: "fk_7a9c6d93e7", on_delete: :cascade
+  add_foreign_key "protected_environment_deploy_access_levels", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "protected_environment_deploy_access_levels", "protected_environments", on_delete: :cascade
+  add_foreign_key "protected_environment_deploy_access_levels", "users", on_delete: :cascade
+  add_foreign_key "protected_environments", "projects", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "namespaces", column: "group_id", name: "fk_b4eb82fe3c", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "protected_tags", name: "fk_f7dfda8c51", on_delete: :cascade
   add_foreign_key "protected_tag_create_access_levels", "users"

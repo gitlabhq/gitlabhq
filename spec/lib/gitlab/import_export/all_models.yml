@@ -179,6 +179,13 @@ protected_branches:
 - merge_access_levels
 - push_access_levels
 - unprotect_access_levels
+protected_environments:
+- project
+- deploy_access_levels
+deploy_access_levels:
+- protected_environment
+- user
+- group
 protected_tags:
 - project
 - create_access_levels
@@ -266,6 +273,7 @@ project:
 - snippets
 - hooks
 - protected_branches
+- protected_environments
 - protected_tags
 - project_members
 - users

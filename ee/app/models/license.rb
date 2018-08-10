@@ -61,6 +61,7 @@ class License < ActiveRecord::Base
     commit_committer_check
     external_authorization_service
     ci_cd_projects
+    protected_environments
     system_header_footer
     custom_project_templates
   ].freeze

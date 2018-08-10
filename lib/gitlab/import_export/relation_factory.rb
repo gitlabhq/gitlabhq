@@ -1,6 +1,8 @@
 module Gitlab
   module ImportExport
     class RelationFactory
+      prepend ::EE::Gitlab::ImportExport::RelationFactory
+
       OVERRIDES = { snippets: :project_snippets,
                     pipelines: 'Ci::Pipeline',
                     stages: 'Ci::Stage',
@@ -11,7 +13,6 @@ module Gitlab
                     hooks: 'ProjectHook',
                     merge_access_levels: 'ProtectedBranch::MergeAccessLevel',
                     push_access_levels: 'ProtectedBranch::PushAccessLevel',
-                    unprotect_access_levels: 'ProtectedBranch::UnprotectAccessLevel',
                     create_access_levels: 'ProtectedTag::CreateAccessLevel',
                     labels: :project_labels,
                     priorities: :label_priorities,
@@ -48,7 +49,7 @@ module Gitlab
       end
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
-        @relation_name = OVERRIDES[relation_sym] || relation_sym
+        @relation_name = self.class.overrides[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
@@ -75,6 +76,10 @@ module Gitlab
         setup_models
 
         generate_imported_object
+      end
+
+      def self.overrides
+        OVERRIDES
       end
 
       private

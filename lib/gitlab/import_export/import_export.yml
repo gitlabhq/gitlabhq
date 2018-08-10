@@ -61,6 +61,8 @@ project_tree:
     - :merge_access_levels
     - :push_access_levels
     - :unprotect_access_levels
+  - protected_environments:
+    - :deploy_access_levels
   - protected_tags:
     - :create_access_levels
   - :project_feature

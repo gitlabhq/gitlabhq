@@ -285,6 +285,14 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         end
       end
 
+      ## EE-specific
+      resources :protected_environments, only: [:create, :update, :destroy], constraints: { id: /\d+/ } do
+        collection do
+          get 'search'
+        end
+      end
+      ## EE-specific
+
       resource :cycle_analytics, only: [:show]
 
       namespace :cycle_analytics do

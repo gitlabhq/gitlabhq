@@ -7,6 +7,8 @@ class CommitStatus < ActiveRecord::Base
   include Presentable
   include EnumWithNil
 
+  prepend ::EE::CommitStatus
+
   self.table_name = 'ci_builds'
 
   belongs_to :user
@@ -50,7 +52,7 @@ class CommitStatus < ActiveRecord::Base
     runner_system_failure: 4,
     missing_dependency_failure: 5,
     runner_unsupported: 6
-  }
+  }.merge(EE_FAILURE_REASONS)
 
   ##
   # We still create some CommitStatuses outside of CreatePipelineService.

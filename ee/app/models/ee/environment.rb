@@ -1,6 +1,7 @@
 module EE
   module Environment
     extend ActiveSupport::Concern
+    include ::Gitlab::Utils::StrongMemoize
 
     prepended do
       has_many :prometheus_alerts, inverse_of: :environment
@@ -20,6 +21,14 @@ module EE
 
     def cluster_prometheus_adapter
       @cluster_prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).cluster_prometheus_adapter
+    end
+
+    def protected?
+      project.protected_environment_by_name(name).present?
+    end
+
+    def protected_deployable_by_user?(user)
+      project.protected_environment_accessible_to?(name, user)
     end
   end
 end

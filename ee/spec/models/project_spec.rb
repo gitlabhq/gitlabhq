@@ -21,6 +21,7 @@ describe Project do
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
     it { is_expected.to have_many(:audit_events).dependent(false) }
+    it { is_expected.to have_many(:protected_environments) }
   end
 
   describe 'validations' do
@@ -1526,6 +1527,117 @@ describe Project do
 
     it "returns the latest pipeline with security reports" do
       expect(project.latest_pipeline_with_security_reports).to eq(pipeline_2)
+    end
+  end
+
+  describe '#protected_environment_by_name' do
+    let(:project) { create(:project) }
+
+    subject { project.protected_environment_by_name('production') }
+
+    before do
+      stub_feature_flags(protected_environments: enabled)
+    end
+
+    context 'when Protected Environments feature is not on' do
+      let(:enabled) { false }
+
+      it { is_expected.to be_nil }
+
+      context 'when Protected Environments feature is available on the project' do
+        before do
+          allow(project).to receive(:feature_available?)
+            .with(:protected_environments).and_return(true)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+
+    context 'when Protected Environments feature is on' do
+      let(:enabled) { true }
+
+      context 'when Protected Environments feature is not available on the project' do
+        it { is_expected.to be_nil }
+      end
+
+      context 'when Protected Environments feature is available on the project' do
+        let(:environment) { create(:environment, name: 'production') }
+        let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }
+
+        before do
+          allow(project).to receive(:feature_available?)
+            .with(:protected_environments).and_return(true)
+        end
+
+        context 'when the project environment exists' do
+          before do
+            protected_environment
+          end
+
+          it { is_expected.to eq(protected_environment) }
+        end
+
+        context 'when the project environment does not exists' do
+          it { is_expected.to be_nil }
+        end
+      end
+    end
+  end
+
+  describe '#protected_environment_accessible_to?' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let(:environment) { create(:environment, project: project) }
+    let(:protected_environment) { create(:protected_environment, project: project, name: environment.name) }
+
+    subject { project.protected_environment_accessible_to?(environment.name, user) }
+
+    before do
+      stub_feature_flags(protected_environments: enabled)
+    end
+
+    context 'when Protected Environments feature is not on' do
+      let(:enabled) { false }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when Protected Environments feature is on' do
+      let(:enabled) { true }
+
+      context 'when Protected Environments feature is not available on the project' do
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when Protected Environments feature is available on the project' do
+        before do
+          allow(project).to receive(:feature_available?)
+            .with(:protected_environments).and_return(true)
+        end
+
+        context 'when project does not have protected environments' do
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when project has protected environments' do
+          context 'when user has the right access' do
+            before do
+              protected_environment.deploy_access_levels.create(user_id: user.id)
+            end
+
+            it { is_expected.to be_truthy }
+          end
+
+          context 'when user does not have the right access' do
+            before do
+              protected_environment.deploy_access_levels.create
+            end
+
+            it { is_expected.to be_falsy }
+          end
+        end
+      end
     end
   end
 

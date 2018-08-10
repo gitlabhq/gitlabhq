@@ -2,6 +2,8 @@
 
 module Ci
   class BuildPolicy < CommitStatusPolicy
+    prepend EE::Ci::BuildPolicy
+
     condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 

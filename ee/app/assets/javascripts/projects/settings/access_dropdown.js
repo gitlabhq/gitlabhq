@@ -49,23 +49,25 @@ export default class AccessDropdown {
         e.preventDefault();
 
         if ($el.is('.is-active')) {
-          if (item.id === this.noOneObj.id) {
-            // remove all others selected items
-            this.accessLevelsData.forEach(level => {
-              if (level.id !== item.id) {
-                this.removeSelectedItem(level);
-              }
-            });
+          if (this.noOneObj) {
+            if (item.id === this.noOneObj.id) {
+              // remove all others selected items
+              this.accessLevelsData.forEach(level => {
+                if (level.id !== item.id) {
+                  this.removeSelectedItem(level);
+                }
+              });
 
-            // remove selected item visually
-            this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
-          } else {
-            const $noOne = this.$wrap.find(
-              `.is-active.item-${item.type}[data-role-id="${this.noOneObj.id}"]`,
-            );
-            if ($noOne.length) {
-              $noOne.removeClass('is-active');
-              this.removeSelectedItem(this.noOneObj);
+              // remove selected item visually
+              this.$wrap.find(`.item-${item.type}`).removeClass('is-active');
+            } else {
+              const $noOne = this.$wrap.find(
+                `.is-active.item-${item.type}[data-role-id="${this.noOneObj.id}"]`,
+              );
+              if ($noOne.length) {
+                $noOne.removeClass('is-active');
+                this.removeSelectedItem(this.noOneObj);
+              }
             }
           }
 

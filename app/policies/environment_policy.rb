@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class EnvironmentPolicy < BasePolicy
+  prepend EE::EnvironmentPolicy
+
   delegate { @subject.project }
 
   condition(:stop_with_deployment_allowed) do

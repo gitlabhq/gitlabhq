@@ -1,0 +1,17 @@
+- expanded = Rails.env.test?
+- can_admin_project = can?(current_user, :admin_project, @project)
+
+- if protected_environments_enabled?
+  %section.protected-environments-settings.settings.no-animate{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Protected Environments')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = s_('ProtectedEnvironment|Protect Environments in order to restrict who can execute deployments.')
+    .settings-content
+      = render 'projects/protected_environments/form'
+
+    .settings-content
+      = render partial: 'projects/protected_environments/environments_list', locals: { can_admin_project: can_admin_project }

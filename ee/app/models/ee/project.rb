@@ -35,6 +35,7 @@ module EE
       has_many :audit_events, as: :entity
       has_many :path_locks
       has_many :vulnerability_feedback
+      has_many :protected_environments
       has_many :software_license_policies, inverse_of: :project, class_name: 'SoftwareLicensePolicy'
       accepts_nested_attributes_for :software_license_policies, allow_destroy: true
 
@@ -503,6 +504,18 @@ module EE
     end
     request_cache(:any_path_locks?) { self.id }
 
+    def protected_environment_accessible_to?(environment_name, user)
+      protected_environment = protected_environment_by_name(environment_name)
+
+      !protected_environment || protected_environment.accessible_to?(user)
+    end
+
+    def protected_environment_by_name(environment_name)
+      return nil unless protected_environments_feature_available?
+
+      protected_environments.find_by(name: environment_name)
+    end
+
     override :after_import
     def after_import
       super
@@ -517,6 +530,10 @@ module EE
     def gitlab_custom_project_template_import?
       import_type == 'gitlab_custom_project_template' &&
         ::Gitlab::CurrentSettings.custom_project_templates_enabled?
+    end
+
+    def protected_environments_feature_available?
+      Feature.enabled?('protected_environments') && feature_available?(:protected_environments)
     end
 
     private

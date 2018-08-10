@@ -2867,6 +2867,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Environments|protected"
+msgstr ""
+
 msgid "Epic"
 msgstr ""
 
@@ -5720,6 +5723,51 @@ msgid "Promotions|This feature is locked."
 msgstr ""
 
 msgid "Promotions|Upgrade plan"
+msgstr ""
+
+msgid "Protected Environments"
+msgstr ""
+
+msgid "ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?"
+msgstr ""
+
+msgid "ProtectedEnvironment|Allowed to deploy"
+msgstr ""
+
+msgid "ProtectedEnvironment|Choose who is allowed to deploy"
+msgstr ""
+
+msgid "ProtectedEnvironment|Environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|Protect"
+msgstr ""
+
+msgid "ProtectedEnvironment|Protect Environments in order to restrict who can execute deployments."
+msgstr ""
+
+msgid "ProtectedEnvironment|Protect an environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|Protected Environment (%{protected_environments_count})"
+msgstr ""
+
+msgid "ProtectedEnvironment|Select an environment"
+msgstr ""
+
+msgid "ProtectedEnvironment|There are currently no protected environments, protect an environment with the form above."
+msgstr ""
+
+msgid "ProtectedEnvironment|Unprotect"
+msgstr ""
+
+msgid "ProtectedEnvironment|Your environment can't be unprotected"
+msgstr ""
+
+msgid "ProtectedEnvironment|Your environment has been protected."
+msgstr ""
+
+msgid "ProtectedEnvironment|Your environment has been unprotected"
 msgstr ""
 
 msgid "Protip:"
