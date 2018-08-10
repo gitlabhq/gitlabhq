@@ -35,11 +35,6 @@ module GroupsHelper
       .count
   end
 
-  def group_icon(group, options = {})
-    img_path = group_icon_url(group, options)
-    image_tag img_path, options
-  end
-
   def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)

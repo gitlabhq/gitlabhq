@@ -54,9 +54,6 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 
   commit(types.SET_FILE_ACTIVE, { path, active: true });
   dispatch('scrollToTab');
-
-  commit(types.SET_CURRENT_PROJECT, file.projectId);
-  commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
 export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
