@@ -119,11 +119,11 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 ## Issue Board terminology
 
 - **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
-- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
+- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Open' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
    - **Label list**: a list based on a label. It shows all opened issues with that label.
    - **Assignee list**: a list which includes all issues assigned to a user.
    - **Milestone list**: a list which includes all issues with that milestone.
-   - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
+   - **Open** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
    - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
 - **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
 
@@ -380,9 +380,9 @@ As on another list types, click on the trash icon to remove it.
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
 
-| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list | To milestone `2.0` list |
+| | To Open | To Closed | To label `B` list | To assignee `Bob` list | To milestone `2.0` list |
 | --- | --- | --- | --- | ---  | --- |
-| From Backlog | - | Issue closed | `B` added | `Bob` assigned | `2.0`  added |
+| From Open | - | Issue closed | `B` added | `Bob` assigned | `2.0`  added |
 | From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned | Issue reopened<br/>`2.0` added |
 | From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned | `2.0` added |
 | From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned | `2.0` added |
