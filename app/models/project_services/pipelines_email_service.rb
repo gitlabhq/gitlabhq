@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PipelinesEmailService < Service
   prop_accessor :recipients
   boolean_accessor :notify_only_broken_pipelines

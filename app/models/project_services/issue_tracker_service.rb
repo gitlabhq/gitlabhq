@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssueTrackerService < Service
   validate :one_issue_tracker, if: :activated?, on: :manual_change
 

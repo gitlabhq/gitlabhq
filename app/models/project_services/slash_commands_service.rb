@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for Chat services
 # This class is not meant to be used directly, but only to inherrit from.
 class SlashCommandsService < Service
