@@ -32,5 +32,15 @@ describe 'Commit > User uses quick actions', :js do
       expect(page).to have_content tag_message
       expect(page).to have_content truncated_commit_sha
     end
+
+    describe 'preview', :js do
+      it 'removes quick action from note and explains it' do
+        preview_note("/tag #{tag_name} #{tag_message}")
+
+        expect(page).not_to have_content '/tag'
+        expect(page).to have_content %{Tags this commit to #{tag_name} with "#{tag_message}"}
+        expect(page).to have_content tag_name
+      end
+    end
   end
 end
