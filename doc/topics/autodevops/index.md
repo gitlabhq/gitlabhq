@@ -233,11 +233,6 @@ in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that
 all the projects that haven't explicitly set an option will have Auto DevOps
 enabled by default.
 
-NOTE: **Note:**
-There is also a feature flag to enable Auto DevOps to a percentage of projects
-which can be enabled from the console with
-`Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(10)`.
-
 ### Deployment strategy
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/38542) in GitLab 11.0.
