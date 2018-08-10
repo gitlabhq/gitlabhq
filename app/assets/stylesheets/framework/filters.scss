@@ -205,7 +205,7 @@
 
   &.focus,
   &.focus:hover {
-    border-color: $dropdown-input-focus-border;
+    border-color: $blue-300;
     box-shadow: 0 0 4px $search-input-focus-shadow-color;
   }
 
@@ -294,7 +294,7 @@
   &:hover,
   &:focus {
     color: $gl-text-color;
-    border-color: $dropdown-input-focus-border;
+    border-color: $blue-300;
     outline: none;
   }
 

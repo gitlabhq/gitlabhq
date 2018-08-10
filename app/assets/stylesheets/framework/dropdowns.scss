@@ -615,7 +615,7 @@
 
   &:focus {
     color: $dropdown-link-color;
-    border-color: $dropdown-input-focus-border;
+    border-color: $blue-300;
     box-shadow: 0 0 4px $dropdown-input-focus-shadow;
 
     ~ .fa {
