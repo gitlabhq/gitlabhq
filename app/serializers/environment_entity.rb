@@ -47,10 +47,13 @@ class EnvironmentEntity < Grape::Entity
     request.current_user
   end
 
+<<<<<<< HEAD
   def can_read_deploy_board?
     can?(current_user, :read_deploy_board, environment.project)
   end
 
+=======
+>>>>>>> upstream/master
   def can_access_terminal?
     can?(request.current_user, :create_environment_terminal, environment)
   end

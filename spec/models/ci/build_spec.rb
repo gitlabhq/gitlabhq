@@ -1104,6 +1104,12 @@ describe Ci::Build do
 
           it { is_expected.to be_cancelable }
         end
+
+        context 'when build is created' do
+          let(:build) { create(:ci_build, :created) }
+
+          it { is_expected.to be_cancelable }
+        end
       end
 
       context 'when build is not cancelable' do

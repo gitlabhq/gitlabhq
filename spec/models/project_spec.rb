@@ -399,6 +399,15 @@ describe Project do
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
+  describe '#to_reference_with_postfix' do
+    it 'returns the full path with reference_postfix' do
+      namespace = create(:namespace, path: 'sample-namespace')
+      project = create(:project, path: 'sample-project', namespace: namespace)
+
+      expect(project.to_reference_with_postfix).to eq 'sample-namespace/sample-project>'
+    end
+  end
+
   describe '#to_reference' do
     let(:owner)     { create(:user, name: 'Gitlab') }
     let(:namespace) { create(:namespace, path: 'sample-namespace', owner: owner) }

@@ -2867,6 +2867,7 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Environments|protected"
 msgstr ""
 
@@ -2906,6 +2907,8 @@ msgstr ""
 msgid "Epics|start"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Error"
 msgstr ""
 
@@ -3966,9 +3969,12 @@ msgstr ""
 msgid "Inline"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Input host keys manually"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Input your repository URL"
 msgstr ""
 
@@ -4618,6 +4624,21 @@ msgid "Mirror repository"
 msgstr ""
 
 msgid "Mirror user"
+msgstr ""
+
+msgid "Mirrored repositories"
+msgstr ""
+
+msgid "Mirroring repositories"
+msgstr ""
+
+msgid "Mirror a repository"
+msgstr ""
+
+msgid "Mirror direction"
+msgstr ""
+
+msgid "Mirror repository"
 msgstr ""
 
 msgid "Mirrored repositories"
@@ -5788,6 +5809,7 @@ msgstr ""
 msgid "Public pipelines"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Pull"
 msgstr ""
 
@@ -5797,6 +5819,11 @@ msgstr ""
 msgid "Push Rules"
 msgstr ""
 
+=======
+msgid "Push"
+msgstr ""
+
+>>>>>>> upstream/master
 msgid "Push events"
 msgstr ""
 
@@ -6304,9 +6331,12 @@ msgstr ""
 msgid "Set up Koding"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Set up assertions/attributes/claims (email, first_name, last_name) and NameID according to %{docsLinkStart}the documentation %{icon}%{docsLinkEnd}"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
@@ -6791,12 +6821,15 @@ msgstr ""
 msgid "Test coverage parsing"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "The Git LFS objects will <strong>not</strong> be synced."
 msgstr ""
 
@@ -6906,6 +6939,9 @@ msgid "The time in seconds between storage checks. If a check did not complete y
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
+msgstr ""
+
+msgid "The update action will time out after 15 minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
@@ -7076,6 +7112,7 @@ msgstr ""
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches. Upon creation or when reassigning you can only assign yourself to be the mirror user."
 msgstr ""
 
@@ -7085,6 +7122,8 @@ msgstr ""
 msgid "Those emails automatically become issues (with the comments becoming the email conversation) listed here."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Time before an issue gets scheduled"
 msgstr ""
 
@@ -7458,6 +7497,7 @@ msgstr ""
 msgid "Updating"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
@@ -7473,6 +7513,8 @@ msgstr ""
 msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
 msgstr ""
 

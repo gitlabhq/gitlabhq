@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Blob shortcuts' do
+describe 'Blob shortcuts', :js do
   include TreeHelper
   let(:project) { create(:project, :public, :repository) }
   let(:path) { project.repository.ls_files(project.repository.root_ref)[0] }

@@ -11,7 +11,11 @@
 
 .form-group
   = label_tag :auth_method, _('Authentication method'), class: 'label-bold'
+<<<<<<< HEAD
   = select_tag :auth_method, options_for_select([[[_('None'), 'none'], [_('Password'), 'password']], 'none'), { class: "form-control js-auth-method" }
+=======
+  = select_tag :auth_method, options_for_select([[_('None'), 'none'], [_('Password'), 'password']], 'none'), { class: "form-control js-auth-method" }
+>>>>>>> upstream/master
 
 .form-group.js-password-group.collapse
   = label_tag :password, _('Password'), class: 'label-bold'

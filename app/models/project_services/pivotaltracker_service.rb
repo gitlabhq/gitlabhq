@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PivotaltrackerService < Service
   API_ENDPOINT = 'https://www.pivotaltracker.com/services/v5/source_commits'.freeze
 
