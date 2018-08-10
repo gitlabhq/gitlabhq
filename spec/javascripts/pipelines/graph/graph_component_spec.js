@@ -2,7 +2,7 @@ import Vue from 'vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 import graphComponent from '~/pipelines/components/graph/graph_component.vue';
 import pipelineJSON from 'spec/pipelines/graph/mock_data';
-import linkedPipelineJSON from 'spec/pipelines/graph/linked_pipelines_mock_data';
+import linkedPipelineJSON from 'ee_spec/pipelines/graph/linked_pipelines_mock_data';
 
 const graphJSON = Object.assign(pipelineJSON, {
   triggered: linkedPipelineJSON.triggered,

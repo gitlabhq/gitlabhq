@@ -3,7 +3,7 @@ import Vue from 'vue';
 import WeeksHeaderSubItemComponent from 'ee/roadmap/components/preset_weeks/weeks_header_sub_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframeWeeks } from '../../mock_data';
+import { mockTimeframeWeeks } from 'ee_spec/roadmap/mock_data';
 
 const createComponent = ({
   currentDate = mockTimeframeWeeks[0],

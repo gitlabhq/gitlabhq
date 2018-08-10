@@ -5,7 +5,7 @@ import {
   getEpicsPathForPreset,
 } from 'ee/roadmap/utils/roadmap_utils';
 
-import { PRESET_TYPES } from 'ee//roadmap/constants';
+import { PRESET_TYPES } from 'ee/roadmap/constants';
 
 describe('getTimeframeForQuartersView', () => {
   let timeframe;

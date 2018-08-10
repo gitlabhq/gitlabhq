@@ -3,7 +3,7 @@ import store from 'ee/vue_shared/security_reports/store';
 import state from 'ee/vue_shared/security_reports/store/state';
 import reportSummary from 'ee/pipelines/components/security_reports/report_summary_widget.vue';
 import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
-import { sastIssues, dast, dockerReport } from '../../vue_shared/security_reports/mock_data';
+import { sastIssues, dast, dockerReport } from 'ee_spec/vue_shared/security_reports/mock_data';
 
 describe('Report summary widget', () => {
   const Component = Vue.extend(reportSummary);

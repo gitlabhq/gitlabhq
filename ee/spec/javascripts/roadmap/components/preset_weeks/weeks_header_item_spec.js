@@ -3,7 +3,7 @@ import Vue from 'vue';
 import WeeksHeaderItemComponent from 'ee/roadmap/components/preset_weeks/weeks_header_item.vue';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
-import { mockTimeframeWeeks, mockShellWidth, mockItemWidth } from '../../mock_data';
+import { mockTimeframeWeeks, mockShellWidth, mockItemWidth } from 'ee_spec/roadmap/mock_data';
 
 const mockTimeframeIndex = 0;
 

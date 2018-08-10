@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from 'ee/vue_shared/security_reports/components/dast_issue_body.vue';
-import mountComponent from '../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 describe('dast issue body', () => {
   let vm;
