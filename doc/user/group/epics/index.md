@@ -77,7 +77,7 @@ It will display a dropdown menu, from which you can add an author. You can also 
 text to search by epic title or description. When done, press <kbd>Enter</kbd> on your
 keyboard to filter the list.
 
-You can also sort epics list by **Created date** or **Last updated**.
+You can also sort epics list by **Created date**, **Last updated**, **Planned start date**, or **Planned finish date**.
 
 ![epics sort](img/epics_sort.png)
 

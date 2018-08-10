@@ -6,7 +6,7 @@ describe EpicsFinder do
   let(:group) { create(:group, :private) }
   let(:another_group) { create(:group) }
   let!(:epic1) { create(:epic, group: group, title: 'This is awesome epic', created_at: 1.week.ago) }
-  let!(:epic2) { create(:epic, group: group, created_at: 4.days.ago, author: user, start_date: 2.days.ago) }
+  let!(:epic2) { create(:epic, group: group, created_at: 4.days.ago, author: user, start_date: 2.days.ago, end_date: 3.days.from_now) }
   let!(:epic3) { create(:epic, group: group, description: 'not so awesome', start_date: 5.days.ago, end_date: 3.days.ago) }
   let!(:epic4) { create(:epic, group: another_group) }
 
@@ -59,6 +59,16 @@ describe EpicsFinder do
           amount = ActiveRecord::QueryRecorder.new { epics.to_a }.count
 
           expect(amount).to be <= 7
+        end
+
+        context 'sorting' do
+          it 'sorts correctly when supported sorting param provided' do
+            expect(epics(sort: :start_date_asc)).to eq([epic3, epic2, epic1])
+          end
+
+          it 'sorts by id when not supported sorting param provided' do
+            expect(epics(sort: :not_supported_param)).to eq([epic3, epic2, epic1])
+          end
         end
 
         context 'by created_at' do
