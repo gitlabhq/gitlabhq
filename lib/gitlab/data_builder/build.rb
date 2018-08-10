@@ -28,6 +28,7 @@ module Gitlab
           build_finished_at: build.finished_at,
           build_duration: build.duration,
           build_allow_failure: build.allow_failure,
+          build_failure_reason: build.failure_reason,
 
           # TODO: do we still need it?
           project_id: project.id,
