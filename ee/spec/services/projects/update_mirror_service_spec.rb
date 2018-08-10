@@ -218,7 +218,7 @@ describe Projects::UpdateMirrorService do
       it "success" do
         expect(project.mirror?).to eq(false)
 
-        result = described_class.new(project, build_stubbed(:user)).execute
+        result = described_class.new(project, create(:user)).execute
 
         expect(result[:status]).to eq(:success)
       end
