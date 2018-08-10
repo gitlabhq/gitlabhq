@@ -470,6 +470,24 @@ class Project < ActiveRecord::Base
       }x
     end
 
+    def reference_postfix
+      '>'
+    end
+
+    def reference_postfix_escaped
+      '&gt;'
+    end
+
+    # Pattern used to extract `namespace/project>` project references from text.
+    # '>' or its escaped form ('&gt;') are checked for because '>' is sometimes escaped
+    # when the reference comes from an external source.
+    def markdown_reference_pattern
+      %r{
+        #{reference_pattern}
+        (#{reference_postfix}|#{reference_postfix_escaped})
+      }x
+    end
+
     def trending
       joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
         .reorder('trending_projects.id ASC')
@@ -906,6 +924,10 @@ class Project < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def to_reference_with_postfix
+    "#{to_reference(full: true)}#{self.class.reference_postfix}"
   end
 
   # `from` argument can be a Namespace or Project.
