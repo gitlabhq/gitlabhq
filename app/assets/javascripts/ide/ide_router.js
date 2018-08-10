@@ -117,7 +117,7 @@ router.beforeEach((to, from, next) => {
               mergeRequestId: to.params.mrid,
             })
             .then(mr => {
-              store.dispatch('updateActivityBarView', activityBarViews.review);
+              store.dispatch('setCurrentBranchId', mr.source_branch);
 
               store.dispatch('getBranchData', {
                 projectId: fullProjectId,
@@ -144,6 +144,10 @@ router.beforeEach((to, from, next) => {
               }),
             )
             .then(mrChanges => {
+              if (mrChanges.changes.length) {
+                store.dispatch('updateActivityBarView', activityBarViews.review);
+              }
+
               mrChanges.changes.forEach((change, ind) => {
                 const changeTreeEntry = store.state.entries[change.new_path];
 

@@ -1,4 +1,4 @@
-# Integrate your GitLab server with Bitbucket
+# Integrate your GitLab server with Bitbucket Cloud
 
 NOTE: **Note:**
 You need to [enable OmniAuth](omniauth.md) in order to use this.

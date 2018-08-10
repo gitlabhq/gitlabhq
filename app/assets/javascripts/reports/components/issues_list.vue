@@ -1,13 +1,21 @@
 <script>
+<<<<<<< HEAD:app/assets/javascripts/reports/components/issues_list.vue
 import IssuesBlock from '~/reports/components/report_issues.vue';
+=======
+import IssuesBlock from './report_issues.vue';
+>>>>>>> upstream/master:app/assets/javascripts/reports/components/issues_list.vue
 import {
   STATUS_SUCCESS,
   STATUS_FAILED,
   STATUS_NEUTRAL,
+<<<<<<< HEAD:app/assets/javascripts/reports/components/issues_list.vue
 } from '~/reports/constants';
 
 import { componentNames } from 'ee/vue_shared/components/reports/issue_body';
 import SastContainerInfo from 'ee/vue_shared/security_reports/components/sast_container_info.vue';
+=======
+} from '../constants';
+>>>>>>> upstream/master:app/assets/javascripts/reports/components/issues_list.vue
 
 /**
  * Renders block of issues

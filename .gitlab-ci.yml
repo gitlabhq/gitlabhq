@@ -587,6 +587,7 @@ danger-review:
       - master
     variables:
       - $CI_COMMIT_REF_NAME =~ /^ce-to-ee-.*/
+      - $CI_COMMIT_REF_NAME =~ /.*-stable(-ee)?-prepare-.*/
   script:
     - git version
     - danger --fail-on-errors=true
