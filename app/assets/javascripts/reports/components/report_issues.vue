@@ -1,11 +1,6 @@
 <script>
-<<<<<<< HEAD:app/assets/javascripts/reports/components/report_issues.vue
 import IssueStatusIcon from '~/reports/components/issue_status_icon.vue';
 import { components, componentNames } from 'ee/vue_shared/components/reports/issue_body';
-=======
-import IssueStatusIcon from './issue_status_icon.vue';
-import { components, componentNames } from './issue_body';
->>>>>>> upstream/master:app/assets/javascripts/reports/components/report_issues.vue
 
 export default {
   name: 'ReportIssues',
