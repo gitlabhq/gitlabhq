@@ -57,13 +57,19 @@ describe QuickActions::TargetService do
 
     context 'for commit' do
       let(:project) { create(:project, :repository) }
-      let(:target) { project.commit }
+      let(:target) { project.commit.parent }
       let(:target_id) { target.sha }
       let(:type) { 'Commit' }
 
       it_behaves_like 'find target'
       it_behaves_like 'no target', type_id: 'invalid_sha'
-      it_behaves_like 'no target', type_id: nil
+
+      context 'with nil target_id' do
+        let(:target) { project.commit }
+        let(:target_id) { nil }
+
+        it_behaves_like 'find target'
+      end
     end
 
     context 'for unknown type' do

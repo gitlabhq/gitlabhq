@@ -24,8 +24,6 @@ module QuickActions
     end
 
     def commit(type_id)
-      return nil unless type_id
-
       project.commit(type_id)
     end
   end
