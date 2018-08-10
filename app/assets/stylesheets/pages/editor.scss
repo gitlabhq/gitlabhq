@@ -36,10 +36,7 @@
     line-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
-
-    .float-right {
-      height: 20px;
-    }
+    display: flex;
   }
 
   .editor-ref {
@@ -60,20 +57,18 @@
 
   .new-file-name {
     display: inline-block;
-    max-width: 450px;
+    max-width: 420px;
     float: left;
 
     @media(max-width: map-get($grid-breakpoints, lg)-1) {
-      width: 280px;
-    }
-
-    @media(max-width: map-get($grid-breakpoints, md)-1) {
       width: 180px;
     }
   }
 
   .file-buttons {
-    font-size: 0;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
   }
 
   .select2 {
@@ -110,12 +105,11 @@
   }
 }
 
-@include media-breakpoint-down(xs) {
+
+@include media-breakpoint-down(sm) {
   .file-editor {
     .file-title {
-      .float-right {
-        height: auto;
-      }
+      display: block;
     }
 
     .new-file-name {
@@ -142,6 +136,10 @@
           width: 100%;
         }
       }
+    }
+
+    .editor-ref {
+      max-width: 250px;
     }
   }
 }
@@ -205,7 +203,6 @@
   .template-type-selector {
     display: inline-block;
     vertical-align: top;
-    font-family: $regular-font;
     margin-top: -5px;
 
     @media(max-width: map-get($grid-breakpoints, md)-1) {
