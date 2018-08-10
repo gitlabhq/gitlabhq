@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180807153545) do
+ActiveRecord::Schema.define(version: 20180810155213) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1922,38 +1922,40 @@ ActiveRecord::Schema.define(version: 20180807153545) do
   end
 
   create_table "packages_maven_metadata", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "package_id", null: false
     t.string "path", null: false
     t.string "app_group", null: false
     t.string "app_name", null: false
     t.string "app_version"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_index "packages_maven_metadata", ["package_id"], name: "index_packages_maven_metadata_on_package_id", using: :btree
+  add_index "packages_maven_metadata", ["path"], name: "index_packages_maven_metadata_on_path", using: :btree
 
   create_table "packages_package_files", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "package_id", null: false
-    t.string "file"
-    t.string "file_name", null: false
     t.integer "file_type"
     t.integer "file_store"
     t.integer "size"
     t.binary "file_md5"
     t.binary "file_sha1"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.string "file"
+    t.string "file_name", null: false
   end
 
+  add_index "packages_package_files", ["package_id", "file_name"], name: "index_packages_package_files_on_package_id_and_file_name", using: :btree
   add_index "packages_package_files", ["package_id"], name: "index_packages_package_files_on_package_id", using: :btree
 
   create_table "packages_packages", force: :cascade do |t|
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
     t.string "name", null: false
     t.string "version"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   add_index "packages_packages", ["project_id"], name: "index_packages_packages_on_project_id", using: :btree
@@ -3119,6 +3121,8 @@ ActiveRecord::Schema.define(version: 20180807153545) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
+  add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"

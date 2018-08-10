@@ -8,16 +8,18 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
 
   def up
     create_table :packages_package_files do |t|
+      t.timestamps_with_timezone null: false
       t.references :package, index: true, null: false
-      t.string :file
-      t.string :file_name, null: false
+
       t.integer :file_type
       t.integer :file_store
       t.integer :size
+
       t.binary :file_md5
       t.binary :file_sha1
 
-      t.timestamps_with_timezone null: false
+      t.string :file
+      t.string :file_name, null: false
     end
 
     add_concurrent_foreign_key :packages_package_files, :packages_packages,

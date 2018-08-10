@@ -8,13 +8,13 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
 
   def up
     create_table :packages_maven_metadata do |t|
+      t.timestamps_with_timezone null: false
       t.references :package, index: true, null: false
+
       t.string :path, null: false
       t.string :app_group, null: false
       t.string :app_name, null: false
       t.string :app_version
-
-      t.timestamps_with_timezone null: false
     end
 
     add_concurrent_foreign_key :packages_maven_metadata, :packages_packages,
