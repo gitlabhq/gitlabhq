@@ -78,7 +78,7 @@ class RemoveSoftRemovedObjects < ActiveRecord::Migration
   MODELS = [Issue, MergeRequest, CiPipelineSchedule, CiTrigger].freeze
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       remove_personal_routes
       remove_personal_namespaces
       remove_group_namespaces

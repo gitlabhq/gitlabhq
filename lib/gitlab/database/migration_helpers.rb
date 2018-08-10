@@ -65,7 +65,7 @@ module Gitlab
           return
         end
 
-        disable_statement_timeout(transaction: false) do
+        disable_statement_timeout do
           add_index(table_name, column_name, options)
         end
       end
@@ -95,7 +95,7 @@ module Gitlab
           return
         end
 
-        disable_statement_timeout(transaction: false) do
+        disable_statement_timeout do
           remove_index(table_name, options.merge({ column: column_name }))
         end
       end
@@ -125,7 +125,7 @@ module Gitlab
           return
         end
 
-        disable_statement_timeout(transaction: false) do
+        disable_statement_timeout do
           remove_index(table_name, options.merge({ name: index_name }))
         end
       end
@@ -200,7 +200,7 @@ module Gitlab
         # while running.
         #
         # Note this is a no-op in case the constraint is VALID already
-        disable_statement_timeout(transaction: false) do
+        disable_statement_timeout do
           execute("ALTER TABLE #{source} VALIDATE CONSTRAINT #{key_name};")
         end
       end
@@ -233,13 +233,11 @@ module Gitlab
       # - Per transaction (this is the preferred and default mode)
       # - Per connection (requires a cleanup after the execution)
       #
-      # When using a per connection disable statement, code must be inside a block
-      # so we can automatically `RESET ALL` after it has executed otherwise the statement
-      # will still be disabled until connection is dropped or `RESET ALL` is executed
-      #
-      # - +transaction:+ true to disable for current transaction only *(default)*
-      # - +transaction:+ false to disable for current session (requires block)
-      def disable_statement_timeout(transaction: true)
+      # When using a per connection disable statement, code must be inside
+      # a block so we can automatically execute `RESET ALL` after block finishes
+      # otherwise the statement will still be disabled until connection is dropped
+      # or `RESET ALL` is executed
+      def disable_statement_timeout
         # bypass disabled_statement logic when not using postgres, but still execute block when one is given
         unless Database.postgresql?
           if block_given?
@@ -249,26 +247,27 @@ module Gitlab
           return
         end
 
-        if transaction
+        if block_given?
+          begin
+            execute('SET statement_timeout TO 0')
+
+            yield
+          ensure
+            execute('RESET ALL')
+          end
+        else
           unless transaction_open?
-            raise 'disable_statement_timeout() cannot be run without a transaction, ' \
-              'use it inside a transaction block. Alternatively you can use: ' \
-              'disable_statement_timeout(transaction: false) { #code here } to make sure ' \
-              'statement_timeout is reset after the block execution is finished.'
+            raise <<~ERROR
+              Cannot call disable_statement_timeout() without a transaction open or outside of a transaction block.
+              If you don't want to use a transaction wrap your code in a block call:
+
+              disable_statement_timeout { # code that requires disabled statement here }
+
+              This will make sure statement_timeout is disabled before and reset after the block execution is finished.
+            ERROR
           end
 
           execute('SET LOCAL statement_timeout TO 0')
-        else
-          unless block_given?
-            raise ArgumentError, 'disable_statement_timeout(transaction: false) requires a block encapsulating' \
-              'code that will be executed with the statement_timeout disabled.'
-          end
-
-          execute('SET statement_timeout TO 0')
-
-          yield
-
-          execute('RESET ALL')
         end
       end
 
@@ -411,7 +410,7 @@ module Gitlab
             'in the body of your migration class'
         end
 
-        disable_statement_timeout(transaction: false) do
+        disable_statement_timeout do
           transaction do
             if limit
               add_column(table, column, type, default: nil, limit: limit)

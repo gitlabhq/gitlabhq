@@ -106,7 +106,7 @@ class ProjectForeignKeysWithCascadingDeletes < ActiveRecord::Migration
             # Disables statement timeouts for the current connection. This is
             # necessary as removing of orphaned data might otherwise exceed the
             # statement timeout.
-            disable_statement_timeout(transaction: false) do
+            disable_statement_timeout do
               remove_orphans(*queue.pop) until queue.empty?
 
               steal_from_queues(queues - [queue])

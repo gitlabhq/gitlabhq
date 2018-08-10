@@ -13,7 +13,7 @@ class MigrateBuildStageReferenceAgain < ActiveRecord::Migration
            AND ci_stages.name = ci_builds.stage)
     SQL
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       update_column_in_batches(:ci_builds, :stage_id, stage_id) do |table, query|
         query.where(table[:stage_id].eq(nil))
       end
@@ -21,7 +21,7 @@ class MigrateBuildStageReferenceAgain < ActiveRecord::Migration
   end
 
   def down
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       update_column_in_batches(:ci_builds, :stage_id, nil)
     end
   end

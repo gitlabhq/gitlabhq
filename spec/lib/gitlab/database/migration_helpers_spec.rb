@@ -296,52 +296,43 @@ describe Gitlab::Database::MigrationHelpers do
 
   describe '#disable_statement_timeout' do
     context 'using PostgreSQL' do
-      context 'with transaction: true' do
-        it 'disables statement timeouts to current transaction only' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+      it 'disables statement timeouts to current transaction only' do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
-          expect(model).to receive(:execute).with('SET LOCAL statement_timeout TO 0')
+        expect(model).to receive(:execute).with('SET LOCAL statement_timeout TO 0')
 
-          model.disable_statement_timeout
+        model.disable_statement_timeout
+      end
+
+      # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
+      context 'with real environment', :postgresql, :delete do
+        before do
+          model.execute("SET statement_timeout TO '20000'")
         end
 
-        # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
-        context 'with real environment', :postgresql, :delete do
-          before do
-            model.execute("SET statement_timeout TO '20000'")
+        after do
+          model.execute('RESET ALL')
+        end
+
+        it 'defines statement to 0 only for current transaction' do
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+
+          model.connection.transaction do
+            model.disable_statement_timeout
+            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
           end
 
-          after do
-            model.execute('RESET ALL')
-          end
-
-          it 'defines statement to 0 only for current transaction' do
-            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
-
-            model.connection.transaction do
-              model.disable_statement_timeout
-              expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
-            end
-
-            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
-          end
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
         end
       end
 
-      context 'with transaction: false' do
-        it 'disables statement timeouts on session level' do
+      context 'when passing a blocks' do
+        it 'disables statement timeouts on session level and executes the block' do
           expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
           expect(model).to receive(:execute).with('SET statement_timeout TO 0')
           expect(model).to receive(:execute).with('RESET ALL')
 
-          model.disable_statement_timeout(transaction: false) do
-            # no-op
-          end
-        end
-
-        it 'raises error when no block is given' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
-          expect { model.disable_statement_timeout(transaction: false) }.to raise_error(ArgumentError)
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
         end
 
         # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
@@ -354,10 +345,10 @@ describe Gitlab::Database::MigrationHelpers do
             model.execute('RESET ALL')
           end
 
-          it 'defines statement to 0 for any code run inside block' do
+          it 'defines statement to 0 for any code run inside the block' do
             expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
 
-            model.disable_statement_timeout(transaction: false) do
+            model.disable_statement_timeout do
               model.connection.transaction do
                 expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
               end
@@ -370,23 +361,21 @@ describe Gitlab::Database::MigrationHelpers do
     end
 
     context 'using MySQL' do
-      context 'with transaction: true' do
-        it 'does nothing' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+      it 'does nothing' do
+        expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
-          expect(model).not_to receive(:execute)
+        expect(model).not_to receive(:execute)
 
-          model.disable_statement_timeout
-        end
+        model.disable_statement_timeout
       end
 
-      context 'with transaction: false' do
-        it 'executes yielded code' do
+      context 'when passing a blocks' do
+        it 'executes the block of code' do
           expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
 
           expect(model).not_to receive(:execute)
 
-          expect { |block| model.disable_statement_timeout(transaction: false, &block) }.to yield_control
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
         end
       end
     end

@@ -18,7 +18,7 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration
   OLD_INDEX_NAME_PATH_LOWER = "index_on_redirect_routes_lower_path"
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       # this is a plain btree on a single boolean column. It'll never be
       # selective enough to be valuable. This class is called by
       # setup_postgresql.rake so it needs to be able to handle this
@@ -29,7 +29,7 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration
 
       # If we're on MySQL then the existing index on path is ok. But on
       # Postgres we need to clean things up:
-      return unless Gitlab::Database.postgresql?
+      break unless Gitlab::Database.postgresql?
 
       if_not_exists = Gitlab::Database.version.to_f >= 9.5 ? "IF NOT EXISTS" : ""
 
@@ -52,10 +52,10 @@ class ReworkRedirectRoutesIndexes < ActiveRecord::Migration
   end
 
   def down
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       add_concurrent_index(:redirect_routes, :permanent)
 
-      return unless Gitlab::Database.postgresql?
+      break unless Gitlab::Database.postgresql?
 
       execute("CREATE INDEX CONCURRENTLY #{OLD_INDEX_NAME_PATH_TPOPS} ON redirect_routes (path varchar_pattern_ops);")
       execute("CREATE INDEX CONCURRENTLY #{OLD_INDEX_NAME_PATH_LOWER} ON redirect_routes (LOWER(path));")

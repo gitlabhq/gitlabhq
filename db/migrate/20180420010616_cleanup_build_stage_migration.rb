@@ -14,7 +14,7 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
   end
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       ##
       # We steal from the background migrations queue to catch up with the
       # scheduled migrations set.
@@ -55,7 +55,7 @@ class CleanupBuildStageMigration < ActiveRecord::Migration
 
   def down
     if index_exists_by_name?(:ci_builds, TMP_INDEX)
-      disable_statement_timeout(transaction: false) do
+      disable_statement_timeout do
         remove_concurrent_index_by_name(:ci_builds, TMP_INDEX)
       end
     end

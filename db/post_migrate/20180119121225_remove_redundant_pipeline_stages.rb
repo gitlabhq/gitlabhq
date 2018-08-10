@@ -38,7 +38,7 @@ class RemoveRedundantPipelineStages < ActiveRecord::Migration
   end
 
   def remove_redundant_pipeline_stages!
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       redundant_stages_ids = <<~SQL
         SELECT id FROM ci_stages WHERE (pipeline_id, name) IN (
           SELECT pipeline_id, name FROM ci_stages

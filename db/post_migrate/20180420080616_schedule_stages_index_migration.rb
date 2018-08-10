@@ -13,7 +13,7 @@ class ScheduleStagesIndexMigration < ActiveRecord::Migration
   end
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       Stage.all.tap do |relation|
         queue_background_migration_jobs_by_range_at_intervals(relation,
                                                               MIGRATION,

@@ -13,7 +13,7 @@ class ProjectNameLowerIndex < ActiveRecord::Migration
   def up
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       execute "CREATE INDEX CONCURRENTLY #{INDEX_NAME} ON projects (LOWER(name))"
     end
   end
@@ -21,7 +21,7 @@ class ProjectNameLowerIndex < ActiveRecord::Migration
   def down
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       if supports_drop_index_concurrently?
         execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME}"
       else

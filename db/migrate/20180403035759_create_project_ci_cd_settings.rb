@@ -13,7 +13,7 @@ class CreateProjectCiCdSettings < ActiveRecord::Migration
       end
     end
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       # This particular INSERT will take between 10 and 20 seconds.
       execute 'INSERT INTO project_ci_cd_settings (project_id) SELECT id FROM projects'
 

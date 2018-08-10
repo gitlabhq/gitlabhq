@@ -29,7 +29,7 @@ class CompositePrimaryKeysMigration < ActiveRecord::Migration
   def up
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       TABLES.each do |index|
         add_primary_key(index)
       end
@@ -39,7 +39,7 @@ class CompositePrimaryKeysMigration < ActiveRecord::Migration
   def down
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       TABLES.each do |index|
         remove_primary_key(index)
       end

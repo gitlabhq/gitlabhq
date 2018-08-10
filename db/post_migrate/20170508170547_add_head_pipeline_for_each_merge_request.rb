@@ -10,7 +10,7 @@ class AddHeadPipelineForEachMergeRequest < ActiveRecord::Migration
     pipelines = Arel::Table.new(:ci_pipelines)
     merge_requests = Arel::Table.new(:merge_requests)
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       head_id = pipelines
         .project(Arel::Nodes::NamedFunction.new('max', [pipelines[:id]]))
         .from(pipelines)

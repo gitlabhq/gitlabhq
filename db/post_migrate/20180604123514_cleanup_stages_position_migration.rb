@@ -12,7 +12,7 @@ class CleanupStagesPositionMigration < ActiveRecord::Migration
   end
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       Gitlab::BackgroundMigration.steal('MigrateStageIndex')
 
       unless index_exists_by_name?(:ci_stages, TMP_INDEX_NAME)
@@ -37,7 +37,7 @@ class CleanupStagesPositionMigration < ActiveRecord::Migration
 
   def down
     if index_exists_by_name?(:ci_stages, TMP_INDEX_NAME)
-      disable_statement_timeout(transaction: false) do
+      disable_statement_timeout do
         remove_concurrent_index_by_name(:ci_stages, TMP_INDEX_NAME)
       end
     end

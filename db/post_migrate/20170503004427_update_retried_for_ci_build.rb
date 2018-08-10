@@ -10,7 +10,7 @@ class UpdateRetriedForCiBuild < ActiveRecord::Migration
     if Gitlab::Database.mysql?
       up_mysql
     else
-      disable_statement_timeout(transaction: false) do
+      disable_statement_timeout do
         up_postgres
       end
     end

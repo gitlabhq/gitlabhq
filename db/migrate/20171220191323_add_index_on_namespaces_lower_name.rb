@@ -8,7 +8,7 @@ class AddIndexOnNamespacesLowerName < ActiveRecord::Migration
   def up
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       if Gitlab::Database.version.to_f >= 9.5
         # Allow us to hot-patch the index manually ahead of the migration
         execute "CREATE INDEX CONCURRENTLY IF NOT EXISTS #{INDEX_NAME} ON namespaces (lower(name));"
@@ -21,7 +21,7 @@ class AddIndexOnNamespacesLowerName < ActiveRecord::Migration
   def down
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       if Gitlab::Database.version.to_f >= 9.2
         execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME};"
       else

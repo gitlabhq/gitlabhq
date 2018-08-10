@@ -20,7 +20,7 @@ class AddPathIndexToRedirectRoutes < ActiveRecord::Migration
   def up
     return unless Gitlab::Database.postgresql?
 
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       unless index_exists_by_name?(:redirect_routes, INDEX_NAME)
         execute("CREATE UNIQUE INDEX CONCURRENTLY #{INDEX_NAME} ON redirect_routes (lower(path) varchar_pattern_ops);")
       end

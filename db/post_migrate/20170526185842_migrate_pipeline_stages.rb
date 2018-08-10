@@ -6,7 +6,7 @@ class MigratePipelineStages < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    disable_statement_timeout(transaction: false) do
+    disable_statement_timeout do
       execute <<-SQL.strip_heredoc
         INSERT INTO ci_stages (project_id, pipeline_id, name)
           SELECT project_id, commit_id, stage FROM ci_builds
