@@ -4,14 +4,14 @@
   = label_tag :mirror_direction, _('Mirror direction'), class: 'label-light'
   = select_tag :mirror_direction, options_for_select([[_('Push'), 'push']]), class: 'form-control js-mirror-direction', disabled: true
 
-= f.fields_for :remote_mirrors, @remote_mirror do |rm_f|
+= f.fields_for :remote_mirrors, @project.remote_mirrors.build do |rm_f|
   = rm_f.hidden_field :enabled, value: '1'
   = rm_f.hidden_field :url, class: 'js-mirror-url-hidden', required: true, pattern: "(#{protocols}):\/\/.+"
   = rm_f.hidden_field :only_protected_branches, class: 'js-mirror-protected-hidden'
 
 .form-group
   = label_tag :auth_method, _('Authentication method'), class: 'label-bold'
-  = select_tag :auth_method, options_for_select([[[_('None'), 'none'], [_('Password'), 'password']], 'none'), { class: "form-control js-auth-method", disabled: true }
+  = select_tag :auth_method, options_for_select([[[_('None'), 'none'], [_('Password'), 'password']], 'none'), { class: "form-control js-auth-method" }
 
 .form-group.js-password-group.collapse
   = label_tag :password, _('Password'), class: 'label-bold'
