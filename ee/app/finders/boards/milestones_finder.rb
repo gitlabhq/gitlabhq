@@ -17,12 +17,12 @@ module Boards
       finder_params =
         if parent.is_a?(Group)
           {
-            group_ids: parent.self_and_ancestors
+            group_ids: parent.self_and_ancestors_ids
           }
         else
           {
             project_ids: [parent.id],
-            group_ids: parent.group&.self_and_ancestors
+            group_ids: parent.group&.self_and_ancestors_ids
           }
         end
 
