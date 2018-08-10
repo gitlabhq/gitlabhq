@@ -3,10 +3,12 @@ require 'spec_helper'
 describe API::V3::Github do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository, creator: user) }
+  let!(:project2) { create(:project, :repository, creator: user) }
 
   before do
     allow(Gitlab::Jira::Middleware).to receive(:jira_dvcs_connector?) { true }
     project.add_maintainer(user)
+    project2.add_maintainer(user)
   end
 
   describe 'GET /orgs/:namespace/repos' do
@@ -37,91 +39,125 @@ describe API::V3::Github do
     end
   end
 
-  describe 'GET /repos/-/jira/events' do
-    it 'returns an empty array' do
-      get v3_api('/repos/-/jira/events', user)
+  shared_examples_for 'Jira-specific mimicked GitHub endpoints' do
+    describe 'GET /repos/.../events' do
+      it 'returns an empty array' do
+        get v3_api("/repos/#{path}/events", user)
 
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to eq([])
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to eq([])
+      end
+    end
+
+    describe 'GET /.../issues/:id/comments' do
+      context 'when user has access to the merge request' do
+        let(:merge_request) do
+          create(:merge_request, source_project: project, target_project: project)
+        end
+        let!(:note) do
+          create(:note, project: project, noteable: merge_request)
+        end
+
+        it 'returns an array of notes' do
+          stub_licensed_features(jira_dev_panel_integration: true)
+
+          get v3_api("/repos/#{path}/issues/#{merge_request.id}/comments", user)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an(Array)
+          expect(json_response.size).to eq(1)
+        end
+      end
+
+      context 'when user has no access to the merge request' do
+        let(:private_project) { create(:project, :private) }
+        let(:merge_request) do
+          create(:merge_request, source_project: private_project, target_project: private_project)
+        end
+        let!(:note) do
+          create(:note, project: private_project, noteable: merge_request)
+        end
+
+        before do
+          private_project.add_guest(user)
+        end
+
+        it 'returns 404' do
+          stub_licensed_features(jira_dev_panel_integration: true)
+
+          get v3_api("/repos/#{path}/issues/#{merge_request.id}/comments", user)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    describe 'GET /.../pulls/:id/commits' do
+      it 'returns an empty array' do
+        get v3_api("/repos/#{path}/pulls/xpto/commits", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to eq([])
+      end
+    end
+
+    describe 'GET /.../pulls/:id/comments' do
+      it 'returns an empty array' do
+        get v3_api("/repos/#{path}/pulls/xpto/comments", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to eq([])
+      end
     end
   end
 
-  describe 'GET /-/jira/pulls' do
+  # Here we test that using /-/jira as namespace/project still works,
+  # since that is how old Jira setups will talk to us
+  context 'old /-/jira endpoints' do
+    it_behaves_like 'Jira-specific mimicked GitHub endpoints' do
+      let(:path) { '-/jira' }
+    end
+  end
+
+  context 'new :namespace/:project jira endpoints' do
+    it_behaves_like 'Jira-specific mimicked GitHub endpoints' do
+      let(:path) { "#{project.namespace.path}/#{project.path}" }
+    end
+  end
+
+  describe 'repo pulls' do
     let(:assignee) { create(:user) }
     let!(:merge_request) do
       create(:merge_request, source_project: project, target_project: project, author: user, assignee: assignee)
     end
-
-    it 'returns an array of merge requests with github format' do
-      stub_licensed_features(jira_dev_panel_integration: true)
-
-      get v3_api('/repos/-/jira/pulls', user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to be_an(Array)
-      expect(json_response.size).to eq(1)
-      expect(response).to match_response_schema('entities/github/pull_requests', dir: 'ee')
+    let!(:merge_request_2) do
+      create(:merge_request, source_project: project2, target_project: project2, author: user, assignee: assignee)
     end
-  end
 
-  describe 'GET /-/jira/issues/:id/comments' do
-    context 'when user has access to the merge request' do
-      let(:merge_request) do
-        create(:merge_request, source_project: project, target_project: project)
-      end
-      let!(:note) do
-        create(:note, project: project, noteable: merge_request)
-      end
-
-      it 'returns an array of notes' do
+    describe 'GET /-/jira/pulls' do
+      it 'returns an array of merge requests with github format' do
         stub_licensed_features(jira_dev_panel_integration: true)
 
-        get v3_api("/repos/-/jira/issues/#{merge_request.id}/comments", user)
+        get v3_api('/repos/-/jira/pulls', user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an(Array)
+        expect(json_response.size).to eq(2)
+        expect(response).to match_response_schema('entities/github/pull_requests', dir: 'ee')
+      end
+    end
+
+    describe 'GET /repos/:namespace/:project/pulls' do
+      it 'returns an array of merge requests for the proper project in github format' do
+        stub_licensed_features(jira_dev_panel_integration: true)
+
+        get v3_api("/repos/#{project.namespace.path}/#{project.path}/pulls", user)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an(Array)
         expect(json_response.size).to eq(1)
+        expect(response).to match_response_schema('entities/github/pull_requests', dir: 'ee')
       end
-    end
-
-    context 'when user has no access to the merge request' do
-      let(:private_project) { create(:project, :private) }
-      let(:merge_request) do
-        create(:merge_request, source_project: private_project, target_project: private_project)
-      end
-      let!(:note) do
-        create(:note, project: private_project, noteable: merge_request)
-      end
-
-      before do
-        private_project.add_guest(user)
-      end
-
-      it 'returns 404' do
-        stub_licensed_features(jira_dev_panel_integration: true)
-
-        get v3_api("/repos/-/jira/issues/#{merge_request.id}/comments", user)
-
-        expect(response).to have_gitlab_http_status(404)
-      end
-    end
-  end
-
-  describe 'GET /-/jira/pulls/:id/commits' do
-    it 'returns an empty array' do
-      get v3_api("/repos/-/jira/pulls/xpto/commits", user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to eq([])
-    end
-  end
-
-  describe 'GET /-/jira/pulls/:id/comments' do
-    it 'returns an empty array' do
-      get v3_api("/repos/-/jira/pulls/xpto/comments", user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response).to eq([])
     end
   end
 
