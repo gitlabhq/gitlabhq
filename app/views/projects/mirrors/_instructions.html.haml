@@ -4,11 +4,7 @@
       = _('The repository must be accessible over <code>http://</code>,
       <code>https://</code>, <code>ssh://</code> and <code>git://</code>.').html_safe
     %li= _('Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>.').html_safe
-<<<<<<< HEAD
     %li= _("The update action will time out after #{import_will_timeout_message(Gitlab.config.gitlab_shell.git_timeout)} minutes. For big repositories, use a clone/push combination.")
-=======
-    %li= _('The update action will time out after 15 minutes. For big repositories, use a clone/push combination.')
->>>>>>> upstream/master
     %li= _('The Git LFS objects will <strong>not</strong> be synced.').html_safe
     %li
       = _('This user will be the author of all events in the activity feed that are the result of an update,
