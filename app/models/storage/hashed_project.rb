@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Storage
   class HashedProject
     attr_accessor :project

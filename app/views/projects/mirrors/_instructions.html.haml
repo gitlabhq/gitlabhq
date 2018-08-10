@@ -1,10 +1,11 @@
 .account-well.prepend-top-default.append-bottom-default
   %ul
     %li
-      The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> or <code>git://</code>.
+      = _('The repository must be accessible over <code>http://</code>,
+      <code>https://</code>, <code>ssh://</code> and <code>git://</code>.').html_safe
+    %li= _('Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>.').html_safe
+    %li= _('The update action will time out after 15 minutes. For big repositories, use a clone/push combination.')
+    %li= _('The Git LFS objects will <strong>not</strong> be synced.').html_safe
     %li
-      Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>.
-    %li
-      The update action will time out after 10 minutes. For big repositories, use a clone/push combination.
-    %li
-      The Git LFS objects will <strong>not</strong> be synced.
+      = _('This user will be the author of all events in the activity feed that are the result of an update,
+      like new branches being created or new commits being pushed to existing branches.')

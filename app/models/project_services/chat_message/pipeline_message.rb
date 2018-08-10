@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatMessage
   class PipelineMessage < BaseMessage
     attr_reader :ref_type

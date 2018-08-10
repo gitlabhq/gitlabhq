@@ -1,7 +1,7 @@
 <script>
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
-import Popover from '../help_popover.vue';
+import Popover from '~/vue_shared/components/help_popover.vue';
 
 /**
  * Renders the summary row for each report
