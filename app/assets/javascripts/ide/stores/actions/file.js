@@ -71,12 +71,15 @@ export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive 
   return service
     .getFileData(`${gon.relative_url_root ? gon.relative_url_root : ''}${url.replace('/-/', '/')}`)
     .then(({ data, headers }) => {
-      const normalizedHeaders = normalizeHeaders(headers);
-      setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
+      if (makeFileActive) {
+        const normalizedHeaders = normalizeHeaders(headers);
+        setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
+
+        commit(types.TOGGLE_FILE_OPEN, path);
+        dispatch('setFileActive', path);
+      }
 
       commit(types.SET_FILE_DATA, { data, file });
-      if (makeFileActive) commit(types.TOGGLE_FILE_OPEN, path);
-      if (makeFileActive) dispatch('setFileActive', path);
       commit(types.TOGGLE_LOADING, { entry: file });
     })
     .catch(() => {

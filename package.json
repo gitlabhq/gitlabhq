@@ -69,6 +69,7 @@
     "jszip-utils": "^0.0.2",
     "katex": "^0.8.3",
     "marked": "^0.3.12",
+    "minimatch": "^3.0.4",
     "monaco-editor": "0.13.1",
     "monaco-editor-webpack-plugin": "^1.4.0",
     "mousetrap": "^1.4.6",

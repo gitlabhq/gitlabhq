@@ -61,3 +61,8 @@ export const modalTypes = {
 };
 
 export const packageJsonPath = 'package.json';
+
+export const encodingTypes = {
+  text: 'text',
+  binary: 'binary',
+};

@@ -1,5 +1,6 @@
+import minimatch from 'minimatch';
 import { getChangesCountForFiles, filePathMatches } from './utils';
-import { activityBarViews, packageJsonPath } from '../constants';
+import { activityBarViews, packageJsonPath, encodingTypes } from '../constants';
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
@@ -91,6 +92,41 @@ export const currentBranch = (state, getters) =>
   getters.currentProject && getters.currentProject.branches[state.currentBranchId];
 
 export const packageJson = state => state.entries[packageJsonPath];
+
+export const parsedGitattributes = state => {
+  const gitattributes = state.entries['.gitattributes'];
+
+  if (!gitattributes || (gitattributes && !gitattributes.raw)) return {};
+
+  const extensionRegex = new RegExp('(.*)\\s');
+  const encodingRegex = new RegExp('(-text|text|binary)');
+
+  return (gitattributes.content || gitattributes.raw).split('\n').reduce((acc, line) => {
+    const pathMatch = line.match(extensionRegex);
+    const encodingMatch = line.match(encodingRegex);
+
+    if (!pathMatch || !encodingMatch) return acc;
+
+    const encoding =
+      encodingMatch.pop() === encodingTypes.text ? encodingTypes.text : encodingTypes.binary;
+
+    return {
+      ...acc,
+      [pathMatch[0]]: {
+        encoding,
+      },
+    };
+  }, {});
+};
+
+export const isPathBinary = (state, getters) => path =>
+  Object.keys(getters.parsedGitattributes).reduce((acc, key) => {
+    if (minimatch(path, key)) {
+      return getters.parsedGitattributes[key].encoding === encodingTypes.binary;
+    }
+
+    return acc;
+  }, false);
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};

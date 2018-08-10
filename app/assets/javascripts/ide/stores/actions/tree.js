@@ -60,6 +60,12 @@ export const getFiles = ({ state, commit, dispatch }, { projectId, branchId } = 
               forceValue: false,
             });
 
+            if (entries['.gitattributes']) {
+              dispatch('getFileData', { path: '.gitattributes', makeFileActive: false })
+                .then(() => dispatch('getRawFileData', { path: '.gitattributes' }))
+                .catch(() => {});
+            }
+
             worker.terminate();
 
             resolve();

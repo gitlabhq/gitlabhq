@@ -8,6 +8,8 @@ import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 Vue.use(Translate);
 
+window.store = store;
+
 export function initIde(el) {
   if (!el) return null;
 
