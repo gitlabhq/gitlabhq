@@ -47,7 +47,7 @@ module Gitlab
       end
 
       def initialize(relation_sym:, relation_hash:, members_mapper:, user:, project:, excluded_keys: [])
-        @relation_name = OVERRIDES[relation_sym] || relation_sym
+        @relation_name = self.class.overrides[relation_sym] || relation_sym
         @relation_hash = relation_hash.except('noteable_id')
         @members_mapper = members_mapper
         @user = user
@@ -74,6 +74,10 @@ module Gitlab
         setup_models
 
         generate_imported_object
+      end
+
+      def self.overrides
+        OVERRIDES
       end
 
       private
