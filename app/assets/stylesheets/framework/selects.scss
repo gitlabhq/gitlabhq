@@ -153,7 +153,7 @@
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
     &:focus {
-      border-color: $input-border-focus;
+      border-color: $blue-300;
     }
 
     &.select2-active {
