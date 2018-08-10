@@ -132,8 +132,8 @@
   .col-md-6
     - unless @user == current_user
       - unless @user.confirmed?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             Confirm user
           .card-body
             - if @user.unconfirmed_email.present?
@@ -143,14 +143,14 @@
             = link_to 'Confirm user', confirm_admin_user_path(@user), method: :put, class: "btn btn-info", data: { confirm: 'Are you sure?' }
       - if @user.note.present?
         - text = @user.note
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             Admin Note
           .card-body
             %p= text
       - if @user.blocked?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             This user is blocked
           .card-body
             %p A blocked user cannot:
@@ -173,8 +173,8 @@
             %br
             = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-warning"
       - if @user.access_locked?
-        .card.bg-info
-          .card-header
+        .card.border-info
+          .card-header.bg-info.text-white
             This account has been locked
           .card-body
             %p This user has been temporarily locked due to excessive number of failed logins. You may manually unlock the account.
