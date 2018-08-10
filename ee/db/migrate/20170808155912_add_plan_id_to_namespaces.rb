@@ -17,7 +17,7 @@ class AddPlanIdToNamespaces < ActiveRecord::Migration
   end
 
   def up
-    add_reference :namespaces, :plan
+    add_reference :namespaces, :plan # rubocop:disable Migration/AddReference
     add_concurrent_foreign_key :namespaces, :plans, column: :plan_id, on_delete: :nullify
     add_concurrent_index :namespaces, :plan_id
 
