@@ -46,7 +46,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'creates default lists' do
-      lists = ['Backlog', 'To Do', 'Doing', 'Closed']
+      lists = ['Open', 'To Do', 'Doing', 'Closed']
 
       page.within(find('.board-blank-state')) do
         click_button('Add default lists')
