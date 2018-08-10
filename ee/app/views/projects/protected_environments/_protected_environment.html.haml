@@ -1,0 +1,9 @@
+%tr.js-protected-environment-edit-form{ data: { url: namespace_project_protected_environment_path(@project.namespace, @project, protected_environment) } }
+  %td
+    %span.ref-name= link_to protected_environment.name, namespace_project_environment_path(@project.namespace, @project, protected_environment.name)
+  %td
+    = render partial: 'projects/protected_environments/update_deploy_access_level_dropdown', locals: { protected_environment: protected_environment, access_levels: protected_environment.deploy_access_levels, disabled: !can_admin_project }
+
+  - if can_admin_project
+    %td
+      = link_to s_('ProtectedEnvironment|Unprotect'), [@project.namespace.becomes(Namespace), @project, protected_environment], disabled: local_assigns[:disabled], data: { confirm: s_('ProtectedEnvironment|%{environment_name} will be writable for developers. Are you sure?') % { environment_name: protected_environment.name } }, method: :delete, class: 'btn btn-warning'

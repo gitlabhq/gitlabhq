@@ -1,0 +1,4 @@
+- default_label = s_('RepositorySettingsAccessLevel|Select')
+
+.deploy_access_levels-container
+  = dropdown_tag(default_label, options: { toggle_class: 'js-allowed-to-deploy wide js-multiselect', disabled: local_assigns[:disabled], dropdown_class: 'dropdown-menu-selectable dropdown-menu-user', filter: true, data: { field_name: "allowed_to_deploy_#{protected_environment.id}", preselected_items: access_levels_data(access_levels) }})

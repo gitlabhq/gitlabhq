@@ -1,6 +1,7 @@
 # frozen_string_literal: true
-
 class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
+  prepend ::EE::CommitStatusPresenter
+
   CALLOUT_FAILURE_MESSAGES = {
     unknown_failure: 'There is an unknown failure, please try again',
     script_failure: nil,
@@ -9,7 +10,7 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     runner_system_failure: 'There has been a runner system failure, please try again',
     missing_dependency_failure: 'There has been a missing dependency failure',
     runner_unsupported: 'Your runner is outdated, please upgrade your runner'
-  }.freeze
+  }.merge(EE_CALLOUT_FAILURE_MESSAGES).freeze
 
   presents :build
 

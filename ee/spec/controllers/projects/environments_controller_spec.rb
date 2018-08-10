@@ -120,6 +120,49 @@ describe Projects::EnvironmentsController do
     end
   end
 
+  describe '#GET terminal' do
+    let(:protected_environment) { create(:protected_environment, name: environment.name, project: project) }
+
+    before do
+      allow(License).to receive(:feature_available?).and_call_original
+      allow(License).to receive(:feature_available?).with(:protected_environments).and_return(true)
+    end
+
+    context 'when environment is protected' do
+      context 'when user does not have access to it' do
+        before do
+          protected_environment
+
+          get :terminal, environment_params
+        end
+
+        it 'should response with access denied' do
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when user has access to it' do
+        before do
+          protected_environment.deploy_access_levels.create(user: user)
+
+          get :terminal, environment_params
+        end
+
+        it 'should be successful' do
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+    end
+
+    context 'when environment is not protected' do
+      it 'should be successful' do
+        get :terminal, environment_params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+  end
+
   def environment_params(opts = {})
     opts.reverse_merge(namespace_id: project.namespace,
                        project_id: project,

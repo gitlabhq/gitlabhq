@@ -506,6 +506,12 @@ export default {
         >
           {{ model.name }}
         </a>
+        <span
+          v-if="isProtected"
+          class="badge badge-success"
+        >
+          {{ s__("Environments|protected") }}
+        </span>
       </span>
       <span
         v-else

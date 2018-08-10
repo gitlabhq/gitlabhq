@@ -603,3 +603,17 @@ Badge:
 - type
 ProjectCiCdSetting:
 - group_runners_enabled
+ProtectedEnvironment:
+- id
+- project_id
+- name
+- created_at
+- updated_at
+ProtectedEnvironment::DeployAccessLevel:
+- id
+- protected_environment_id
+- access_level
+- created_at
+- updated_at
+- user_id
+- group_id

@@ -6,6 +6,7 @@ module EE
       prepended do
         before_action :authorize_read_pod_logs!, only: [:logs]
         before_action :environment_ee, only: [:logs]
+        before_action :authorize_create_environment_terminal!, only: [:terminal]
       end
 
       def logs
@@ -30,6 +31,10 @@ module EE
 
       def pod_logs
         environment.deployment_platform.read_pod_logs(params[:pod_name])
+      end
+
+      def authorize_create_environment_terminal!
+        return render_404 unless can?(current_user, :create_environment_terminal, environment)
       end
     end
   end

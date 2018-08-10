@@ -1,0 +1,6 @@
+.deploy_access_levels-container
+  = dropdown_tag(s_('ProtectedEnvironment|Choose who is allowed to deploy'),
+    options: { toggle_class: 'js-allowed-to-deploy wide js-multiselect',
+    dropdown_class: 'dropdown-menu-user dropdown-menu-selectable',
+    filter: true,
+    data: { field_name: 'protected_environments[deploy_access_levels_attributes][0][access_level]', input_id: 'deploy_access_levels_attributes' }})

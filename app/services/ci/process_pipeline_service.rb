@@ -37,7 +37,7 @@ module Ci
 
     def process_build(build, current_status)
       if valid_statuses_for_when(build.when).include?(current_status)
-        build.action? ? build.actionize : build.enqueue
+        build.action? ? build.actionize : enqueue_build(build)
         true
       else
         build.skip
@@ -92,6 +92,10 @@ module Ci
         .where(name: latest_statuses.map(&:second))
         .where.not(id: latest_statuses.map(&:first))
         .update_all(retried: true) if latest_statuses.any?
+    end
+
+    def enqueue_build(build)
+      Ci::EnqueueBuildService.new(project, @user).execute(build)
     end
   end
 end
