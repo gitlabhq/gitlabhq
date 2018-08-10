@@ -12,26 +12,15 @@
 
   .settings-content
     = form_for @project, url: project_mirror_path(@project), html: { class: 'gl-show-field-errors js-mirror-form', autocomplete: 'false', data: mirrors_form_data_attributes } do |f|
-<<<<<<< HEAD
       .card
         .card-header
           %h3.card-title= _('Mirror a repository')
         .card-body
-=======
-      .panel.panel-default
-        .panel-heading
-          %h3.panel-title= _('Mirror a repository')
-        .panel-body
->>>>>>> upstream/master
           %div= form_errors(@project)
 
           .form-group.has-feedback
             = label_tag :url, _('Git repository URL'), class: 'label-light'
-<<<<<<< HEAD
             = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+", title: 'A valid repository URL is required'
-=======
-            = text_field_tag :url, nil, class: 'form-control js-mirror-url js-repo-url', placeholder: _('Input your repository URL'), required: true, pattern: "(#{protocols}):\/\/.+"
->>>>>>> upstream/master
 
           = render 'projects/mirrors/instructions'
 
@@ -40,21 +29,12 @@
           .form-check.append-bottom-10
             = check_box_tag :only_protected_branches, '1', false, class: 'js-mirror-protected form-check-input'
             = label_tag :only_protected_branches, _('Only mirror protected branches'), class: 'form-check-label'
-<<<<<<< HEAD
             = link_to icon('question-circle'), help_page_path('user/project/protected_branches'), target: '_blank'
 
         .card-footer
           = f.submit _('Mirror repository'), class: 'btn btn-create', name: :update_remote_mirror
 
     .card
-=======
-            = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
-
-        .panel-footer
-          = f.submit _('Mirror repository'), class: 'btn btn-create', name: :update_remote_mirror
-
-    .panel.panel-default
->>>>>>> upstream/master
       .table-responsive
         %table.table.push-pull-table
           %thead
