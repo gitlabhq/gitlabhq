@@ -1,0 +1,5 @@
+---
+title: Fixed persistent XSS rendering/escaping of diff location lines
+merge_request:
+author:
+type: security
