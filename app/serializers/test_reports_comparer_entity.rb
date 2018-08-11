@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestReportsComparerEntity < Grape::Entity
   expose :total_status, as: :status
 
