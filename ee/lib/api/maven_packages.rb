@@ -5,8 +5,6 @@ module API
       file_name: API::NO_SLASH_URL_PART_REGEX
     }.freeze
 
-    MAVEN_METADATA_FILE = 'maven-metadata.xml'.freeze
-
     content_type :md5, 'text/plain'
     content_type :sha1, 'text/plain'
     content_type :binary, 'application/octet-stream'
@@ -122,7 +120,6 @@ module API
       end
       put ':id/packages/maven/*path/:file_name', requirements: MAVEN_ENDPOINT_REQUIREMENTS do
         authorize_create_package!
-
         require_gitlab_workhorse!
 
         file_name, format = extract_format(params[:file_name])
@@ -130,33 +127,8 @@ module API
         uploaded_file = UploadedFile.from_params(params, :file, ::Packages::PackageFileUploader.workhorse_local_upload_path)
         bad_request!('Missing package file!') unless uploaded_file
 
-        package = ::Packages::MavenPackageFinder
-          .new(user_project, params[:path]).execute
-
-        unless package
-          if file_name == MAVEN_METADATA_FILE
-            # Maven uploads several files during `mvn deploy` in next order:
-            #   - my-company/my-app/1.0-SNAPSHOT/my-app.jar
-            #   - my-company/my-app/1.0-SNAPSHOT/my-app.pom
-            #   - my-company/my-app/1.0-SNAPSHOT/maven-metadata.xml
-            #   - my-company/my-app/maven-metadata.xml
-            #
-            # The last xml file does not have VERSION in URL because it contains
-            # information about all versions.
-            package_name, version = params[:path], nil
-          else
-            package_name, _, version = params[:path].rpartition('/')
-          end
-
-          package_params = {
-            name: package_name,
-            path: params[:path],
-            version: version
-          }
-
-          package = ::Packages::CreateMavenPackageService
-            .new(user_project, current_user, package_params).execute
-        end
+        package = ::Packages::FindOrCreateMavenPackageService
+          .new(user_project, current_user, params).execute
 
         case format
         when 'sha1'
