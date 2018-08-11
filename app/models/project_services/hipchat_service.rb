@@ -183,20 +183,12 @@ class HipchatService < Service
     state = obj_attr[:state]
     description = obj_attr[:description]
     title = render_line(obj_attr[:title])
-<<<<<<< HEAD
     action = obj_attr[:action]
     state_or_action_text = action == 'approved' ? action : state
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_iid}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_iid}</a>"
-    message = "#{user_name} #{state_or_action_text} #{merge_request_link} in " \
-      "#{project_link}: <b>#{title}</b>"
-=======
-
-    merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
-    merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
-    message = ["#{user_name} #{state} #{merge_request_link} in " \
+    message = ["#{user_name} #{state_or_action_text} #{merge_request_link} in " \
       "#{project_link}: <b>#{title}</b>"]
->>>>>>> upstream/master
 
     message << "<pre>#{markdown(description)}</pre>"
     message.join
