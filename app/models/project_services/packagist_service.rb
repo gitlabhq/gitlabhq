@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PackagistService < Service
   prop_accessor :username, :token, :server
 

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatMessage
   class MergeMessage < BaseMessage
     attr_reader :merge_request_iid

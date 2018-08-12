@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Projects > Files > User edits files' do
+describe 'Projects > Files > User edits files', :js do
   include ProjectForksHelper
   let(:project) { create(:project, :repository, name: 'Shop') }
   let(:project2) { create(:project, :repository, name: 'Another Project', path: 'another-project') }

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MockMonitoringService < MonitoringService
   def title
     'Mock monitoring'

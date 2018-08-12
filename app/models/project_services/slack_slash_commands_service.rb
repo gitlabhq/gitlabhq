@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SlackSlashCommandsService < SlashCommandsService
   prepend EE::SlackSlashCommandsService
   include TriggersHelper
