@@ -18,6 +18,7 @@ describe 'Blob shortcuts', :js do
     describe 'pressing "y"' do
       it 'redirects to permalink with commit sha' do
         visit_blob
+        wait_for_requests
 
         find('body').native.send_key('y')
 
@@ -27,6 +28,7 @@ describe 'Blob shortcuts', :js do
       it 'maintains fragment hash when redirecting' do
         fragment = "L1"
         visit_blob(fragment)
+        wait_for_requests
 
         find('body').native.send_key('y')
 
