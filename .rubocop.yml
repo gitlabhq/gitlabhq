@@ -31,6 +31,10 @@ Style/MutableConstant:
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
 
+# TODO: Move this to gitlab-styles
+Style/SafeNavigation:
+  Enabled: false
+
 Naming/FileName:
   ExpectMatchingDefinition: true
   Exclude:

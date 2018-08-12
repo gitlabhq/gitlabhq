@@ -1,5 +1,9 @@
 ---
 title: Fix blocked user card style
+<<<<<<< HEAD
 merge_request: 6849
+=======
+merge_request: 21095
+>>>>>>> upstream/master
 author:
 type: fixed
