@@ -1,5 +1,4 @@
----
-title: Hey DZ, I added a feature to GitLab!
-merge_request:
+title: Incremental rendering with Vue on merge request page
+merge_request: 21063
 author:
 type: performance
