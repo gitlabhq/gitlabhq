@@ -11,7 +11,6 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :limit_unauthenticated_session_times
   before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :enforce_terms!, if: :should_enforce_terms?
@@ -27,6 +26,7 @@ class ApplicationController < ActionController::Base
   around_action :set_locale
 
   after_action :set_page_title_header, if: :json_request?
+  after_action :limit_unauthenticated_session_times
 
   protect_from_forgery with: :exception, prepend: true
 
