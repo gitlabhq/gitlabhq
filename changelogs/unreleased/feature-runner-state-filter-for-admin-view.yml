@@ -1,0 +1,5 @@
+---
+title: Add a filter bar to the admin runners view and add a state filter
+merge_request: 19625
+author: Alexis Reigel
+type: added
