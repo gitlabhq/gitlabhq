@@ -2,6 +2,7 @@
 import { mapActions, mapGetters, mapState } from 'vuex';
 import _ from 'underscore';
 import { Manager } from 'smooshpack';
+import { listen } from 'codesandbox-api';
 import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
 import Navigator from './navigator.vue';
 import { packageJsonPath } from '../../constants';
@@ -16,6 +17,7 @@ export default {
     return {
       manager: {},
       loading: false,
+      sandpackReady: false,
     };
   },
   computed: {
@@ -81,6 +83,10 @@ export default {
     }
     this.manager = {};
 
+    if (this.listener) {
+      this.listener();
+    }
+
     clearTimeout(this.timeout);
     this.timeout = null;
   },
@@ -96,17 +102,29 @@ export default {
 
       return this.loadFileContent(this.mainEntry)
         .then(() => this.$nextTick())
-        .then(() =>
+        .then(() => {
           this.initManager('#ide-preview', this.sandboxOpts, {
             fileResolver: {
               isFile: p => Promise.resolve(!!this.entries[createPathWithExt(p)]),
               readFile: p => this.loadFileContent(createPathWithExt(p)).then(content => content),
             },
-          }),
-        );
+          });
+
+          this.listener = listen(e => {
+            switch (e.type) {
+              case 'done':
+                this.sandpackReady = true;
+                break;
+              default:
+                break;
+            }
+          });
+        });
     },
     update() {
-      if (this.timeout) return;
+      if (!this.sandpackReady) return;
+
+      clearTimeout(this.timeout);
 
       this.timeout = setTimeout(() => {
         if (_.isEmpty(this.manager)) {
@@ -116,10 +134,7 @@ export default {
         }
 
         this.manager.updatePreview(this.sandboxOpts);
-
-        clearTimeout(this.timeout);
-        this.timeout = null;
-      }, 500);
+      }, 250);
     },
     initManager(el, opts, resolver) {
       this.manager = new Manager(el, opts, resolver);
