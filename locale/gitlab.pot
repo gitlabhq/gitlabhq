@@ -2403,11 +2403,10 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Date picker"
-=======
+msgstr ""
+
 msgid "Debug"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Dec"
@@ -3302,14 +3301,7 @@ msgstr ""
 msgid "GeoNodes|Learn more about Wiki verification"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GeoNodes|Loading nodes"
-=======
-msgid "Go to"
-msgstr ""
-
-msgid "Go to %{link_to_google_takeout}."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Local LFS objects"
@@ -3589,6 +3581,9 @@ msgid "Go Back"
 msgstr ""
 
 msgid "Go back"
+msgstr ""
+
+msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
@@ -4070,6 +4065,9 @@ msgid "Job has been erased"
 msgstr ""
 
 msgid "Jobs"
+msgstr ""
+
+msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
@@ -6073,14 +6071,13 @@ msgstr ""
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Runners page"
+msgstr ""
+
 msgid "Runners page."
 msgstr ""
 
 msgid "Runners|You have used all your shared Runners pipeline minutes."
-=======
-msgid "Runners page"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Running"
@@ -7062,6 +7059,12 @@ msgid "This job has not started yet"
 msgstr ""
 
 msgid "This job is in pending state and is waiting to be picked by a runner"
+msgstr ""
+
+msgid "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:"
+msgstr ""
+
+msgid "This job is stuck, because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "This job requires a manual action"
