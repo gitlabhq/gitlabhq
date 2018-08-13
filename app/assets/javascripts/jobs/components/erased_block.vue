@@ -32,24 +32,17 @@ export default {
     <div class="erased alert alert-warning">
       <template v-if="erasedByUser">
         {{ s__("Job|Job has been erased by") }}
-
-        <a
-          :href="linkToUser"
-        >
+        <a :href="linkToUser">
           {{ username }}
         </a>
-
-        <timeago-tooltip
-          :time="erasedAt"
-        />
-
       </template>
       <template v-else>
         {{ s__("Job|Job has been erased") }}
-        <timeago-tooltip
-          :time="erasedAt"
-        />
       </template>
+
+      <timeago-tooltip
+        :time="erasedAt"
+      />
     </div>
   </div>
 </template>
