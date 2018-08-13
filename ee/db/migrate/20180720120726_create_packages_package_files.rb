@@ -7,19 +7,19 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    create_table :packages_package_files do |t|
+    create_table :packages_package_files, id: :bigserial do |t|
       t.timestamps_with_timezone null: false
-      t.references :package, index: true, null: false
 
+      t.bigint :size
+
+      t.references :package, index: true, null: false
       t.integer :file_type
       t.integer :file_store
-      t.integer :size
-
       t.binary :file_md5
       t.binary :file_sha1
 
-      t.string :file
       t.string :file_name, null: false
+      t.text :file, null: false
     end
 
     add_concurrent_foreign_key :packages_package_files, :packages_packages,

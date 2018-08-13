@@ -7,7 +7,7 @@ class CreatePackagesPackages < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def change
-    create_table :packages_packages do |t|
+    create_table :packages_packages, id: :bigserial do |t|
       t.timestamps_with_timezone null: false
       t.references :project, index: true, foreign_key: { on_delete: :cascade }, null: false
 

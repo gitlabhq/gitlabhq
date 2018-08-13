@@ -7,14 +7,15 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    create_table :packages_maven_metadata do |t|
+    create_table :packages_maven_metadata, id: :bigserial do |t|
       t.timestamps_with_timezone null: false
       t.references :package, index: true, null: false
 
-      t.string :path, null: false
       t.string :app_group, null: false
       t.string :app_name, null: false
       t.string :app_version
+
+      t.text :path, null: false
     end
 
     add_concurrent_foreign_key :packages_maven_metadata, :packages_packages,
