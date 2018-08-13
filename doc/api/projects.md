@@ -1589,7 +1589,9 @@ DELETE /projects/:id/push_rule
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 
-### Transfer a project to a new namespace
+## Transfer a project to a new namespace
+
+> Introduced in GitLab 11.1.
 
 ```
 PUT /projects/:id/transfer
