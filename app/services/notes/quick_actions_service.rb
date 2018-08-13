@@ -4,7 +4,8 @@ module Notes
   class QuickActionsService < BaseService
     UPDATE_SERVICES = {
       'Issue' => Issues::UpdateService,
-      'MergeRequest' => MergeRequests::UpdateService
+      'MergeRequest' => MergeRequests::UpdateService,
+      'Commit' => Commits::TagService
     }.freeze
 
     def self.noteable_update_service(note)

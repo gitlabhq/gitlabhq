@@ -61,7 +61,8 @@ module QuickActions
       "Closes this #{issuable.to_ability_name.humanize(capitalize: false)}."
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.open? &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
@@ -76,7 +77,8 @@ module QuickActions
       "Reopens this #{issuable.to_ability_name.humanize(capitalize: false)}."
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.closed? &&
         current_user.can?(:"update_#{issuable.to_ability_name}", issuable)
     end
@@ -150,7 +152,8 @@ module QuickActions
       issuable.allows_multiple_assignees? ? '@user1 @user2' : ''
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.assignees.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -189,7 +192,8 @@ module QuickActions
       "Removes #{issuable.milestone.to_reference(format: :name)} milestone."
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.milestone_id? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -232,7 +236,8 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.labels.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -258,7 +263,8 @@ module QuickActions
     end
     params '~label1 ~"label 2"'
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.labels.any? &&
         current_user.can?(:"admin_#{issuable.to_ability_name}", project)
     end
@@ -296,7 +302,8 @@ module QuickActions
     desc 'Add a todo'
     explanation 'Adds a todo.'
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         !TodoService.new.todo_exist?(issuable, current_user)
     end
     command :todo do
@@ -318,7 +325,8 @@ module QuickActions
       "Subscribes to this #{issuable.to_ability_name.humanize(capitalize: false)}."
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         !issuable.subscribed?(current_user, project)
     end
     command :subscribe do
@@ -330,7 +338,8 @@ module QuickActions
       "Unsubscribes from this #{issuable.to_ability_name.humanize(capitalize: false)}."
     end
     condition do
-      issuable.persisted? &&
+      issuable.is_a?(Issuable) &&
+        issuable.persisted? &&
         issuable.subscribed?(current_user, project)
     end
     command :unsubscribe do
@@ -386,7 +395,8 @@ module QuickActions
     end
     params ':emoji:'
     condition do
-      issuable.persisted?
+      issuable.is_a?(Issuable) &&
+        issuable.persisted?
     end
     parse_params do |emoji_param|
       match = emoji_param.match(Banzai::Filter::EmojiFilter.emoji_pattern)
@@ -573,6 +583,23 @@ module QuickActions
     end
     command :confidential do
       @updates[:confidential] = true
+    end
+
+    desc 'Tag this commit.'
+    explanation do |tag_name, message|
+      with_message = %{ with "#{message}"} if message.present?
+      "Tags this commit to #{tag_name}#{with_message}."
+    end
+    params 'v1.2.3 <message>'
+    parse_params do |tag_name_and_message|
+      tag_name_and_message.split(' ', 2)
+    end
+    condition do
+      issuable.is_a?(Commit) && current_user.can?(:push_code, project)
+    end
+    command :tag do |tag_name, message|
+      @updates[:tag_name] = tag_name
+      @updates[:tag_message] = message
     end
 
     def extract_users(params)

@@ -9,12 +9,13 @@ module EE
       end
       params '@user1 @user2'
       condition do
-        issuable.allows_multiple_assignees? &&
+        issuable.is_a?(::Issuable) &&
+          issuable.allows_multiple_assignees? &&
           issuable.persisted? &&
           current_user.can?(:"admin_#{issuable.to_ability_name}", project)
       end
-      command :reassign do |unassign_param|
-        @updates[:assignee_ids] = extract_users(unassign_param).map(&:id)
+      command :reassign do |reassign_param|
+        @updates[:assignee_ids] = extract_users(reassign_param).map(&:id)
       end
 
       desc 'Set weight'
@@ -23,7 +24,8 @@ module EE
       end
       params "0, 1, 2, …"
       condition do
-        issuable.supports_weight? &&
+        issuable.is_a?(::Issuable) &&
+          issuable.supports_weight? &&
           current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
       end
       parse_params do |weight|
@@ -36,7 +38,8 @@ module EE
       desc 'Clear weight'
       explanation 'Clears weight.'
       condition do
-        issuable.persisted? &&
+        issuable.is_a?(::Issuable) &&
+          issuable.persisted? &&
           issuable.supports_weight? &&
           issuable.weight? &&
           current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
