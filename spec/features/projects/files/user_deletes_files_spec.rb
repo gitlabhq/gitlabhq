@@ -19,6 +19,7 @@ describe 'Projects > Files > User deletes files', :js do
     before do
       project.add_maintainer(user)
       visit(project_tree_path_root_ref)
+      wait_for_requests
     end
 
     it 'deletes the file', :js do
@@ -35,10 +36,11 @@ describe 'Projects > Files > User deletes files', :js do
     end
   end
 
-  context 'when an user does not have write access' do
+  context 'when an user does not have write access', :js do
     before do
       project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
+      wait_for_requests
     end
 
     it 'deletes the file in a forked project', :js do

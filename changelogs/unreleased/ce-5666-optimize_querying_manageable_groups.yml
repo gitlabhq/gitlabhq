@@ -1,0 +1,5 @@
+---
+title: Optimize querying User#manageable_groups
+merge_request: 21050
+author:
+type: performance

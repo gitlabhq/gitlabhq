@@ -2403,7 +2403,11 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Date picker"
+=======
+msgid "Debug"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Dec"
@@ -2963,6 +2967,9 @@ msgstr ""
 msgid "Error updating todo status."
 msgstr ""
 
+msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
 msgid "Estimated"
 msgstr ""
 
@@ -3295,7 +3302,14 @@ msgstr ""
 msgid "GeoNodes|Learn more about Wiki verification"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GeoNodes|Loading nodes"
+=======
+msgid "Go to"
+msgstr ""
+
+msgid "Go to %{link_to_google_takeout}."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GeoNodes|Local LFS objects"
@@ -6059,10 +6073,14 @@ msgstr ""
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Runners page."
 msgstr ""
 
 msgid "Runners|You have used all your shared Runners pipeline minutes."
+=======
+msgid "Runners page"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Running"
