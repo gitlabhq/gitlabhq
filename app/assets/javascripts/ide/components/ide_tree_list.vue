@@ -61,7 +61,7 @@ export default {
         <slot name="header"></slot>
       </header>
       <div
-        class="ide-tree-body"
+        class="ide-tree-body h-100"
       >
         <repo-file
           v-for="file in currentTree.tree"
