@@ -101,6 +101,10 @@ class User < ActiveRecord::Base
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
+  has_many :owned_or_maintainers_groups,
+           -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+           through: :group_members,
+           source: :group
   alias_attribute :masters_groups, :maintainers_groups
 
   # Projects
@@ -982,15 +986,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    union_sql = Gitlab::SQL::Union.new([owned_groups.select(:id), maintainers_groups.select(:id)]).to_sql
-
-    # Update this line to not use raw SQL when migrated to Rails 5.2.
-    # Either ActiveRecord or Arel constructions are fine.
-    # This was replaced with the raw SQL construction because of bugs in the arel gem.
-    # Bugs were fixed in arel 9.0.0 (Rails 5.2).
-    owned_and_maintainer_groups = Group.where("namespaces.id IN (#{union_sql})") # rubocop:disable GitlabSecurity/SqlInjection
-
-    Gitlab::GroupHierarchy.new(owned_and_maintainer_groups).base_and_descendants
+    Gitlab::GroupHierarchy.new(owned_or_maintainers_groups).base_and_descendants
   end
 
   def namespaces
@@ -1242,11 +1238,6 @@ class User < ActiveRecord::Base
   def required_terms_not_accepted?
     Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
       !terms_accepted?
-  end
-
-  def owned_or_maintainers_groups
-    union = Gitlab::SQL::Union.new([owned_groups, maintainers_groups])
-    Group.from("(#{union.to_sql}) namespaces")
   end
 
   # @deprecated
