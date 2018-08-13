@@ -64,8 +64,7 @@ module SubmoduleHelper
   end
 
   def relative_self_url?(url)
-    # (./)?(../repo.git) || (./)?(../../project/repo.git) )
-    url =~ %r{\A((\./)?(\.\./))(?!(\.\.)|(.*/)).*(\.git)?\z} || url =~ %r{\A((\./)?(\.\./){2})(?!(\.\.))([^/]*)/(?!(\.\.)|(.*/)).*(\.git)?\z}
+    url.start_with?('../', './')
   end
 
   def standard_links(host, namespace, project, commit)
@@ -73,25 +72,29 @@ module SubmoduleHelper
     [base, [base, '/tree/', commit].join('')]
   end
 
-  def relative_self_links(url, commit, project)
-    url.rstrip!
-    # Map relative links to a namespace and project
-    # For example:
-    # ../bar.git -> same namespace, repo bar
-    # ../foo/bar.git -> namespace foo, repo bar
-    # ../../foo/bar/baz.git -> namespace bar, repo baz
-    components = url.split('/')
-    base = components.pop.gsub(/.git$/, '')
-    namespace = components.pop.gsub(/^\.\.$/, '')
+  def relative_self_links(relative_path, commit, project)
+    relative_path.rstrip!
+    absolute_project_path = "/" + project.full_path
 
-    if namespace.empty?
-      namespace = project.namespace.full_path
+    # Resolve `relative_path` to target path
+    # Assuming `absolute_project_path` is `/g1/p1`:
+    # ../p2.git -> /g1/p2
+    # ../g2/p3.git -> /g1/g2/p3
+    # ../../g3/g4/p4.git -> /g3/g4/p4
+    submodule_project_path = File.absolute_path(relative_path, absolute_project_path)
+    target_namespace_path = File.dirname(submodule_project_path)
+
+    if target_namespace_path == '/' || target_namespace_path.start_with?(absolute_project_path)
+      return [nil, nil]
     end
+
+    target_namespace_path.sub!(%r{^/}, '')
+    submodule_base = File.basename(submodule_project_path, '.git')
 
     begin
       [
-        namespace_project_path(namespace, base),
-        namespace_project_tree_path(namespace, base, commit)
+        namespace_project_path(target_namespace_path, submodule_base),
+        namespace_project_tree_path(target_namespace_path, submodule_base, commit)
       ]
     rescue ActionController::UrlGenerationError
       [nil, nil]
