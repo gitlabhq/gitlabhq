@@ -21,9 +21,8 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
 
     # This needs to be loaded before DB connection is made
-    # to make sure that all connections have NO_ZERO_DATE
-    # setting disabled
-    require_dependency Rails.root.join('lib/mysql_zero_date')
+    # to make sure that all connections have session options set
+    require_dependency Rails.root.join('lib/mysql_session_options')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
