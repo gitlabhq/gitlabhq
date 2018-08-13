@@ -1990,6 +1990,9 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+msgid "Debug"
+msgstr ""
+
 msgid "Dec"
 msgstr ""
 
