@@ -30,7 +30,6 @@ module API
     helpers do
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
-
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
         args[:scope] = args[:scope].underscore if args[:scope]
@@ -93,6 +92,7 @@ module API
         optional :source_branch, type: String, desc: 'Return merge requests with the given source branch'
         optional :target_branch, type: String, desc: 'Return merge requests with the given target branch'
         optional :search, type: String, desc: 'Search merge requests for text present in the title or description'
+        optional :wip, type: String, values: %w[yes no], desc: 'Search merge requests for WIP in the title'
         use :pagination
       end
     end

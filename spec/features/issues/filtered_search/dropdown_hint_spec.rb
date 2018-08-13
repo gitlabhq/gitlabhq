@@ -15,6 +15,7 @@ describe 'Dropdown hint', :js do
   before do
     project.add_maintainer(user)
     create(:issue, project: project)
+    create(:merge_request, source_project: project, target_project: project)
   end
 
   context 'when user not logged in' do
@@ -222,6 +223,23 @@ describe 'Dropdown hint', :js do
         expect_tokens([{ name: 'my-reaction' }])
         expect_filtered_search_input_empty
       end
+    end
+  end
+
+  context 'merge request page' do
+    before do
+      sign_in(user)
+      visit project_merge_requests_path(project)
+      filtered_search.click
+    end
+
+    it 'shows the WIP menu item and opens the WIP options dropdown' do
+      click_hint('wip')
+
+      expect(page).to have_css(js_dropdown_hint, visible: false)
+      expect(page).to have_css('#js-dropdown-wip', visible: true)
+      expect_tokens([{ name: 'wip' }])
+      expect_filtered_search_input_empty
     end
   end
 end

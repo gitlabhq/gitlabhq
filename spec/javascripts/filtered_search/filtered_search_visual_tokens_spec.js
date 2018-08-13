@@ -240,11 +240,15 @@ describe('Filtered Search Visual Tokens', () => {
     beforeEach(() => {
       setFixtures(`
         <div class="test-area">
-        ${subject.createVisualTokenElementHTML()}
+        ${subject.createVisualTokenElementHTML('custom-token')}
         </div>
       `);
 
       tokenElement = document.querySelector('.test-area').firstElementChild;
+    });
+
+    it('should add class name to token element', () => {
+      expect(document.querySelector('.test-area .custom-token')).toBeDefined();
     });
 
     it('contains name div', () => {
