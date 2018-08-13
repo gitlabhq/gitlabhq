@@ -4,6 +4,8 @@ module Users
   class DestroyService
     prepend ::EE::Users::DestroyService
 
+    DestroyError = Class.new(StandardError)
+
     attr_accessor :current_user
 
     def initialize(current_user)
@@ -48,9 +50,8 @@ module Users
       namespace.prepare_for_destroy
 
       user.personal_projects.each do |project|
-        # Skip repository removal because we remove directory with namespace
-        # that contain all this repositories
-        ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
+        success = ::Projects::DestroyService.new(project, current_user).execute
+        raise DestroyError, "Project #{project.id} can't be deleted" unless success
       end
 
       yield(user) if block_given?

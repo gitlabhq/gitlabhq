@@ -84,9 +84,6 @@ module Projects
     end
 
     def remove_repository(path)
-      # Skip repository removal. We use this flag when remove user or group
-      return true if params[:skip_repo] == true
-
       # There is a possibility project does not have repository or wiki
       return true unless repo_exists?(path)
 
