@@ -5,6 +5,7 @@ import {
   showBranchNotFoundError,
   createNewBranchFromDefault,
   getBranchData,
+  openBranch,
 } from '~/ide/stores/actions';
 import store from '~/ide/stores';
 import service from '~/ide/services';
@@ -222,6 +223,57 @@ describe('IDE store project actions', () => {
             done();
           });
       });
+    });
+  });
+
+  describe('openBranch', () => {
+    const branch = {
+      projectId: 'feature/lorem-ipsum',
+      branchId: '123-lorem',
+    };
+
+    beforeEach(() => {
+      store.state.entries = {
+        foo: { pending: false },
+        'foo/bar-pending': { pending: true },
+        'foo/bar': { pending: false },
+      };
+
+      spyOn(store, 'dispatch').and.returnValue(Promise.resolve());
+    });
+
+    it('dispatches branch actions', done => {
+      openBranch(store, branch)
+        .then(() => {
+          expect(store.dispatch.calls.allArgs()).toEqual([
+            ['setCurrentBranchId', branch.branchId],
+            ['getBranchData', branch],
+            ['getFiles', branch],
+          ]);
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('handles tree entry action, if basePath is given', done => {
+      openBranch(store, { ...branch, basePath: 'foo/bar/' })
+        .then(() => {
+          expect(store.dispatch).toHaveBeenCalledWith(
+            'handleTreeEntryAction',
+            store.state.entries['foo/bar'],
+          );
+        })
+        .then(done)
+        .catch(done.fail);
+    });
+
+    it('does not handle tree entry action, if entry is pending', done => {
+      openBranch(store, { ...branch, basePath: 'foo/bar-pending' })
+        .then(() => {
+          expect(store.dispatch).not.toHaveBeenCalledWith('handleTreeEntryAction', jasmine.anything());
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

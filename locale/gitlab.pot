@@ -2451,6 +2451,9 @@ msgstr ""
 msgid "Error updating todo status."
 msgstr ""
 
+msgid "Error while loading the merge request. Please try again."
+msgstr ""
+
 msgid "Estimated"
 msgstr ""
 
