@@ -1,6 +1,6 @@
-# Working with Merge Request diffs
+# Working with diffs
 
-Currently we rely on different sources to present merge request diffs, these include:
+Currently we rely on different sources to present diffs, these include:
 
 - Rugged gem
 - Gitaly service
@@ -10,6 +10,8 @@ Currently we rely on different sources to present merge request diffs, these inc
 We're constantly moving Rugged calls to Gitaly and the progress can be followed through [Gitaly repo](https://gitlab.com/gitlab-org/gitaly).
 
 ## Architecture overview
+
+### Merge request diffs
 
 When refreshing a Merge Request (pushing to a source branch, force-pushing to target branch, or if the target branch now contains any commits from the MR)
 we fetch the comparison information using `Gitlab::Git::Compare`, which fetches `base` and `head` data using Gitaly and diff between them through
@@ -31,6 +33,17 @@ In order to present diffs information on the Merge Request diffs page, we:
   5. Know if it had storage errors
 3. If the diff file is cacheable (text-based), it's cached on Redis
 using `Gitlab::Diff::FileCollection::MergeRequestDiff`
+
+### Note diffs
+
+When commenting on a diff (any comparison), we persist a truncated diff version
+on `NoteDiffFile` (which is associated with the actual `DiffNote`). So instead
+of hitting the repository every time we need the diff of the file, we:
+
+1. Check whether we have the `NoteDiffFile#diff` persisted and use it
+2. Otherwise, if it's a current MR revision, use the persisted
+`MergeRequestDiffFile#diff`
+3. In the last scenario, go the the repository and fetch the diff
 
 ## Diff limits
 
