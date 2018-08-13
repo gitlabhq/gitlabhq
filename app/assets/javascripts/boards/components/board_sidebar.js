@@ -4,7 +4,7 @@ import $ from 'jquery';
 import Vue from 'vue';
 import Weight from 'ee/sidebar/components/weight/weight.vue';
 import Flash from '../../flash';
-import { __ } from '../../locale';
+import { sprintf, __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
@@ -57,8 +57,10 @@ gl.issueBoards.BoardSidebar = Vue.extend({
       return this.issue.labels && this.issue.labels.length;
     },
     labelDropdownTitle() {
-      return this.hasLabels ?
-        `${this.issue.labels[0].title} ${this.issue.labels.length - 1}+ more` : 'Label';
+      return this.hasLabels ? sprintf(__('%{firstLabel} +%{labelCount} more'), {
+        firstLabel: this.issue.labels[0].title,
+        labelCount: this.issue.labels.length - 1
+      }) : __('Label');
     },
     selectedLabels() {
       return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';

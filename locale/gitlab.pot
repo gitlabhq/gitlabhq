@@ -119,6 +119,9 @@ msgstr[1] ""
 msgid "%{filePath} deleted"
 msgstr ""
 
+msgid "%{firstLabel} +%{labelCount} more"
+msgstr ""
+
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 

@@ -6,8 +6,9 @@
       = sprite_icon('fork', size: 12)
       = ref
     - if current_action?(:edit) || current_action?(:update)
-      = text_field_tag 'file_path', (params[:file_path] || @path),
-                                    class: 'form-control new-file-path js-file-path-name-input'
+      %span.editor-file-name
+        = text_field_tag 'file_path', (params[:file_path] || @path),
+                                      class: 'form-control new-file-path js-file-path-name-input'
 
     - if current_action?(:new) || current_action?(:create)
       %span.editor-file-name

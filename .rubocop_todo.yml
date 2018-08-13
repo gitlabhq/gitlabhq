@@ -706,12 +706,6 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: false
 
-# Offense count: 92
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil.
-Style/SafeNavigation:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/SelfAssignment:
