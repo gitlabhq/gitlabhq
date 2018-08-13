@@ -1,6 +1,8 @@
-import { __ } from '../../../locale';
+import flash from '~/flash';
+import { __ } from '~/locale';
 import service from '../../services';
 import * as types from '../mutation_types';
+import { activityBarViews } from '../../constants';
 
 export const getMergeRequestData = (
   { commit, dispatch, state },
@@ -103,4 +105,68 @@ export const getMergeRequestVersions = (
     } else {
       resolve(state.projects[projectId].mergeRequests[mergeRequestId].versions);
     }
+  });
+
+export const openMergeRequest = (
+  { dispatch, state },
+  { projectId, targetProjectId, mergeRequestId } = {},
+) =>
+  dispatch('getMergeRequestData', {
+    projectId,
+    targetProjectId,
+    mergeRequestId,
+  })
+  .then(mr => {
+    dispatch('setCurrentBranchId', mr.source_branch);
+
+    dispatch('getBranchData', {
+      projectId,
+      branchId: mr.source_branch,
+    });
+
+    return dispatch('getFiles', {
+      projectId,
+      branchId: mr.source_branch,
+    });
+  })
+  .then(() =>
+    dispatch('getMergeRequestVersions', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    }),
+  )
+  .then(() =>
+    dispatch('getMergeRequestChanges', {
+      projectId,
+      targetProjectId,
+      mergeRequestId,
+    }),
+  )
+  .then(mrChanges => {
+    if (mrChanges.changes.length) {
+      dispatch('updateActivityBarView', activityBarViews.review);
+    }
+
+    mrChanges.changes.forEach((change, ind) => {
+      const changeTreeEntry = state.entries[change.new_path];
+
+      if (changeTreeEntry) {
+        dispatch('setFileMrChange', {
+          file: changeTreeEntry,
+          mrChange: change,
+        });
+
+        if (ind < 10) {
+          dispatch('getFileData', {
+            path: change.new_path,
+            makeFileActive: ind === 0,
+          });
+        }
+      }
+    });
+  })
+  .catch(e => {
+    flash(__('Error while loading the merge request. Please try again.'));
+    throw e;
   });

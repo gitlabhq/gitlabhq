@@ -9,7 +9,6 @@ import {
   receiveBranchesSuccess,
   fetchBranches,
   resetBranches,
-  openBranch,
 } from '~/ide/stores/modules/branches/actions';
 import { branches, projectData } from '../../../mock_data';
 
@@ -170,21 +169,6 @@ describe('IDE branches actions', () => {
           mockedContext.state,
           [{ type: types.RESET_BRANCHES }],
           [],
-          done,
-        );
-      });
-    });
-
-    describe('openBranch', () => {
-      it('dispatches goToRoute action with path', done => {
-        const branchId = branches[0].name;
-        const expectedPath = `/project/${projectData.name_with_namespace}/edit/${branchId}`;
-        testAction(
-          openBranch,
-          branchId,
-          mockedState,
-          [],
-          [{ type: 'goToRoute', payload: expectedPath }],
           done,
         );
       });
