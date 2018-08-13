@@ -2,6 +2,7 @@ import Vue from 'vue';
 import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } from './utils';
+import { LINES_TO_BE_RENDERED_DIRECTLY, MAX_LINES_TO_BE_RENDERED } from '../constants';
 import * as types from './mutation_types';
 
 export default {
@@ -17,31 +18,40 @@ export default {
   [types.SET_DIFF_DATA](state, data) {
     const diffData = convertObjectPropsToCamelCase(data, { deep: true });
     let showingLines = 0;
-    diffData.diffFiles.forEach(file => {
+    const filesLength = diffData.diffFiles.length;
+    let i;
+    for (i = 0; i < filesLength; i += 1) {
+      const file = diffData.diffFiles[i];
       if (file.parallelDiffLines) {
-        file.parallelDiffLines.forEach(line => {
+        const linesLength = file.parallelDiffLines.length;
+        let u = 0;
+        for (u = 0; u < linesLength; u += 1) {
+          const line = file.parallelDiffLines[u];
           // eslint-disable-next-line no-param-reassign
           if (line.left) delete line.left.text;
           // eslint-disable-next-line no-param-reassign
           if (line.right) delete line.right.text;
-        });
+        }
       }
 
       if (file.highlightedDiffLines) {
-        file.highlightedDiffLines.forEach(line => {
+        const linesLength = file.highlightedDiffLines.length;
+        let u = 0;
+        for (u = 0; u < linesLength; u += 1) {
+          const line = file.highlightedDiffLines[u];
           // eslint-disable-next-line no-param-reassign
           delete line.text;
-        });
+        }
       }
 
       if (file.highlightedDiffLines) {
         showingLines += file.parallelDiffLines.length;
       }
       Object.assign(file, {
-        renderIt: showingLines < 200,
-        collapsed: file.text && showingLines > 2000,
+        renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
+        collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
       });
-    });
+    }
 
     Object.assign(state, {
       ...diffData,
