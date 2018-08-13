@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestSuiteComparerEntity < Grape::Entity
   expose :name
   expose :total_status, as: :status

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class TestCaseEntity < Grape::Entity
   expose :status
   expose :name
