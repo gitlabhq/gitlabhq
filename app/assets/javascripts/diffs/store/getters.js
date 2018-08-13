@@ -75,26 +75,63 @@ export const singleDiscussionByLineCodeOld = (
   return discussions[lineCode] || [];
 };
 
-export const shouldRenderParallelCommentRowOld = (state, getters) => line => {
-  const leftLineCode = line.left.lineCode;
-  const rightLineCode = line.right.lineCode;
-  const leftDiscussions = getters.singleDiscussionByLineCode(leftLineCode);
-  const rightDiscussions = getters.singleDiscussionByLineCode(rightLineCode);
-  const hasDiscussion = leftDiscussions.length || rightDiscussions.length;
+/**
+ * Returns an Object with discussions by their diff line code
+ * To avoid rendering outdated discussions on the Changes tab we should do a bunch of SHA
+ * comparisions. `note.position.formatter` have the current version diff refs but
+ * `note.original_position.formatter` will have the first version's diff refs.
+ * If line diff refs matches with one of them, we should render it as a discussion on Changes tab.
+ *
+ * @param {Object} diff
+ * @returns {Array}
+ */
+export const discussionsByLineCode = (state, getters, rootState, rootGetters) => {
+  const diffRefsByLineCode = getDiffRefsByLineCode(state.diffFiles);
 
-  const hasExpandedDiscussionOnLeft = leftDiscussions.length
-    ? leftDiscussions.every(discussion => discussion.expanded)
-    : false;
-  const hasExpandedDiscussionOnRight = rightDiscussions.length
-    ? rightDiscussions.every(discussion => discussion.expanded)
-    : false;
+  return rootGetters.discussions.reduce((acc, note) => {
+    const isDiffDiscussion = note.diff_discussion;
+    const hasLineCode = note.line_code;
+    const isResolvable = note.resolvable;
+    const diffRefs = diffRefsByLineCode[note.line_code];
+
+    if (isDiffDiscussion && hasLineCode && isResolvable && diffRefs) {
+      const refs = convertObjectPropsToCamelCase(note.position.formatter);
+      const originalRefs = convertObjectPropsToCamelCase(note.original_position.formatter);
+
+      if (_.isEqual(refs, diffRefs) || _.isEqual(originalRefs, diffRefs)) {
+        const lineCode = note.line_code;
+
+        if (acc[lineCode]) {
+          acc[lineCode].push(note);
+        } else {
+          acc[lineCode] = [note];
+        }
+      }
+    }
+
+    return acc;
+  }, {});
+};
+
+export const shouldRenderParallelCommentRow = (state, getters) => line => {
+  const hasDiscussion =
+    (line.left && line.left.discussions.length) || (line.right && line.right.discussions.length);
+
+  const hasExpandedDiscussionOnLeft =
+    line.left && line.left.discussions.length
+      ? line.left.discussions.every(discussion => discussion.expanded)
+      : false;
+  const hasExpandedDiscussionOnRight =
+    line.right && line.right.discussions.length
+      ? line.right.discussions.every(discussion => discussion.expanded)
+      : false;
 
   if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
     return true;
   }
 
-  const hasCommentFormOnLeft = state.diffLineCommentForms[leftLineCode];
-  const hasCommentFormOnRight = state.diffLineCommentForms[rightLineCode];
+  const hasCommentFormOnLeft = line.left && state.diffLineCommentForms[line.left.lineCode];
+  const hasCommentFormOnRight = line.right && state.diffLineCommentForms[line.right.lineCode];
 
   return hasCommentFormOnLeft || hasCommentFormOnRight;
 };

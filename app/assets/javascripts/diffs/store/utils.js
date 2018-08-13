@@ -162,6 +162,7 @@ export function addContextLines(options) {
  */
 export function trimFirstCharOfLineContent(line = {}) {
   delete line.text;
+  line.discussions = [];
 
   const parsedLine = Object.assign({}, line);
 

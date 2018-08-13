@@ -59,7 +59,7 @@ export default {
       emailPatchPath: state => state.diffs.emailPatchPath,
     }),
     ...mapGetters('diffs', ['isParallelView']),
-    ...mapGetters(['isNotesFetched']),
+    ...mapGetters(['isNotesFetched', 'discussionsStructuredByLineCode']),
     targetBranch() {
       return {
         branchName: this.targetBranchName,
@@ -112,13 +112,32 @@ export default {
   },
   created() {
     this.adjustView();
+    eventHub.$once('renderedFiles', this.assignDiscussionsToDiff);
   },
   methods: {
-    ...mapActions('diffs', ['setBaseConfig', 'fetchDiffFiles', 'startRenderDiffsQueue']),
+    ...mapActions('diffs', [
+      'setBaseConfig',
+      'fetchDiffFiles',
+      'startRenderDiffsQueue',
+      'assignDiscussionsToDiff',
+    ]),
+
     fetchData() {
       this.fetchDiffFiles()
         .then(() => {
-          requestIdleCallback(this.startRenderDiffsQueue, { timeout: 1000 });
+          requestIdleCallback(
+            () => {
+              this.startRenderDiffsQueue()
+                .then(() => {
+                  console.log('Done rendering Que');
+                  this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+                })
+                .catch(() => {
+                  createFlash(__('Something went wrong on our end. Please try again!'));
+                });
+            },
+            { timeout: 1000 },
+          );
         })
         .catch(() => {
           createFlash(__('Something went wrong on our end. Please try again!'));
