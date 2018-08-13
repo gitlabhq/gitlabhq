@@ -41,6 +41,10 @@
   = render partial: 'ci/runner/how_to_setup_shared_runner',
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
+  .bs-callout
+    %p
+      Runners currently online: #{@active_runners_cnt}
+
   .row-content-block.second-block
     = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
       .filtered-search-wrapper
@@ -84,12 +88,6 @@
             = icon('times')
         .filter-dropdown-container
           = render 'sort_dropdown'
-  .clearfix
-    .float-right.light
-      .prepend-top-10
-        Runners currently online: #{@active_runners_cnt}
-
-  %br
 
   - if @runners.any?
     .runners-content.content-list
