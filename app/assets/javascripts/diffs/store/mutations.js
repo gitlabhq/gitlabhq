@@ -27,9 +27,7 @@ export default {
         let u = 0;
         for (u = 0; u < linesLength; u += 1) {
           const line = file.parallelDiffLines[u];
-          // eslint-disable-next-line no-param-reassign
           if (line.left) delete line.left.text;
-          // eslint-disable-next-line no-param-reassign
           if (line.right) delete line.right.text;
         }
       }
@@ -39,7 +37,6 @@ export default {
         let u = 0;
         for (u = 0; u < linesLength; u += 1) {
           const line = file.highlightedDiffLines[u];
-          // eslint-disable-next-line no-param-reassign
           delete line.text;
         }
       }
