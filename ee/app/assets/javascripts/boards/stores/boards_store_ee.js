@@ -34,6 +34,7 @@ class BoardsStoreEE {
     };
 
     this.store.updateFiltersUrl = (replaceState = false) => {
+      if (!this.store.filter.path) return;
       if (replaceState) {
         window.history.replaceState(null, null, `?${this.store.filter.path}`);
       } else {

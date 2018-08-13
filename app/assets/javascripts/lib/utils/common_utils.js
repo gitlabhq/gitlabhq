@@ -138,6 +138,7 @@ export const getUrlParamsArray = () =>
   window.location.search
     .slice(1)
     .split('&')
+    .filter(param => param.length > 0)
     .map(param => {
       const split = param.split('=');
       return [decodeURI(split[0]), split[1]].join('=');

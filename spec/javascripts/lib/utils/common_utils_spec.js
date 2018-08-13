@@ -30,8 +30,10 @@ describe('common_utils', () => {
   });
 
   describe('getUrlParamsArray', () => {
-    it('should return params array', () => {
-      expect(commonUtils.getUrlParamsArray() instanceof Array).toBe(true);
+    it('returns empty array for empty querystring', () => {
+      expect(
+        commonUtils.getUrlParamsArray()
+      ).toEqual([]);
     });
 
     it('should remove the question mark from the search params', () => {
