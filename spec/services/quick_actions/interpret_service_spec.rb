@@ -829,7 +829,6 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
-<<<<<<< HEAD
     context 'issuable weights licensed' do
       before do
         stub_licensed_features(issue_weights: true)
@@ -864,8 +863,6 @@ describe QuickActions::InterpretService do
       end
     end
 
-=======
->>>>>>> upstream/master
     context '/todo' do
       let(:content) { '/todo' }
 
@@ -1486,7 +1483,6 @@ describe QuickActions::InterpretService do
         end
       end
     end
-<<<<<<< HEAD
 
     # EE-specific tests
 
@@ -1508,7 +1504,5 @@ describe QuickActions::InterpretService do
         expect(explanations).to eq(["Moves this issue to test/project."])
       end
     end
-=======
->>>>>>> upstream/master
   end
 end
