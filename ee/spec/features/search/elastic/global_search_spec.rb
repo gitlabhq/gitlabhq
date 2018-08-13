@@ -36,6 +36,8 @@ describe 'Global elastic search' do
   end
 
   describe 'I search through the blobs' do
+    let(:project_2) { create(:project, :repository, :wiki_repo) }
+
     before do
       project.repository.index_blobs
 
@@ -53,6 +55,28 @@ describe 'Global elastic search' do
       expect(page).to have_selector('.file-content .code')
 
       expect(page).to have_selector("span.line[lang='javascript']")
+    end
+
+    it 'Ignores nonexistent projects from stale index' do
+      stub_ee_application_setting(elasticsearch_search: true, elasticsearch_indexing: true)
+
+      project_2.repository.create_file(
+        user,
+        'thing.txt',
+        ' function application.js ',
+        message: 'supercalifragilisticexpialidocious',
+        branch_name: 'master')
+
+      project_2.repository.index_blobs
+      Gitlab::Elastic::Helper.refresh_index
+      project_2.destroy
+
+      visit dashboard_projects_path
+
+      fill_in "search", with: "application.js"
+      click_button "Go"
+
+      expect(page).not_to have_content 'supercalifragilisticexpialidocious'
     end
   end
 

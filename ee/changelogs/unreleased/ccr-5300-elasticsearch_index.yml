@@ -1,0 +1,5 @@
+---
+title: Don't show search results for projects that have been deleted when using elastic search
+merge_request: 6830
+author:
+type: fixed
