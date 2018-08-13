@@ -72,28 +72,30 @@ leaving the Web IDE. Click the dropdown in the top of the sidebar to open a list
 of branches. You will need to commit or discard all your changes before
 switching to a different branch.
 
-## Clientside Evaluation
+## Client Side Evaluation
 
 > [Introduced in](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/19764) [GitLab Core][ce] 11.2.
 
-The Web IDE can be used to preview JavaScript projects right in the browser. This
-feature uses CodeSandbox to compile and bundle the JavaScript used to preview.
-On public projects, a `Open in CodeSandbox` button visible which will take
-the files and contents of the project and load it into a CodeSandbox project.
+The Web IDE can be used to preview JavaScript projects right in the browser.
+This feature uses CodeSandbox to compile and bundle the JavaScript used to
+preview the web application. On public projects, an `Open in CodeSandbox`
+button is visible which will transfer the contents of the project into a
+CodeSandbox project to share with others.
 **Note** this button is not visible on private or internal projects.
 
-![Web IDE Clientside Evaluation](img/clientside_evaluation.png)
+![Web IDE Client Side Evaluation](img/clientside_evaluation.png)
 
-### Enabling Clientside Evaluation
+### Enabling Client Side Evaluation
 
-The Clientside Evaluation feature needs to be enabled inside of the GitLab instances
-admin settings.
+The Client Side Evaluation feature needs to be enabled in the GitLab instances
+admin settings. Client Side Evaluation is enabled for all projects on
+GitLab.com
 
-![Admin Clientside Evaluation setting](img/admin_clientside_evaluation.png)
+![Admin Client Side Evaluation setting](img/admin_clientside_evaluation.png)
 
-Once it has been enabled in application settings, projects with a `package.json` file
-and a `main` entry point can be previewed inside of the Web IDE. An example `package.json`
-is below.
+Once it has been enabled in application settings, projects with a
+`package.json` file and a `main` entry point can be previewed inside of the Web
+IDE. An example `package.json` is below.
 
 ```json
 {
