@@ -46,4 +46,20 @@ describe('IDE new entry dropdown button component', () => {
       done();
     });
   });
+
+  describe('tooltipTitle', () => {
+    it('returns empty string when showLabel is true', () => {
+      expect(vm.tooltipTitle).toBe('');
+    });
+
+    it('returns label', done => {
+      vm.showLabel = false;
+
+      vm.$nextTick(() => {
+        expect(vm.tooltipTitle).toBe('Testing');
+
+        done();
+      });
+    });
+  });
 });
