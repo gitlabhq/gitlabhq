@@ -143,7 +143,9 @@ export default class DropdownUtils {
     const dataValue = selected.getAttribute('data-value');
 
     if (dataValue) {
-      FilteredSearchDropdownManager.addWordToInput(filter, dataValue, true);
+      FilteredSearchDropdownManager.addWordToInput(filter, dataValue, true, {
+        capitalizeTokenValue: selected.hasAttribute('data-capitalize'),
+      });
     }
 
     // Return boolean based on whether it was set

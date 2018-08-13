@@ -88,6 +88,16 @@ export default class FilteredSearchTokenKeys {
     return conditions;
   }
 
+  static shouldUppercaseTokenName(tokenKey) {
+    const token = FilteredSearchTokenKeys.searchByKey(tokenKey.toLowerCase());
+    return token && token.uppercaseTokenName;
+  }
+
+  static shouldCapitalizeTokenValue(tokenKey) {
+    const token = FilteredSearchTokenKeys.searchByKey(tokenKey.toLowerCase());
+    return token && token.capitalizeTokenValue;
+  }
+
   static searchByKey(key) {
     return tokenKeys.find(tokenKey => tokenKey.key === key) || null;
   }
@@ -130,6 +140,8 @@ export default class FilteredSearchTokenKeys {
       icon: 'wrench',
       tag: 'Yes or No',
       lowercaseValueOnSubmit: true,
+      uppercaseTokenName: true,
+      capitalizeTokenValue: true,
     };
 
     tokenKeys.push(wipToken);
