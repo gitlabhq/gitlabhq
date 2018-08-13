@@ -24,13 +24,18 @@ export default {
     let i;
     for (i = 0; i < filesLength; i += 1) {
       const file = diffData.diffFiles[i];
+
       if (file.parallelDiffLines) {
         const linesLength = file.parallelDiffLines.length;
         let u = 0;
         for (u = 0; u < linesLength; u += 1) {
           const line = file.parallelDiffLines[u];
-          if (line.left) delete line.left.text;
-          if (line.right) delete line.right.text;
+          if (line.left) {
+            line.left = trimFirstCharOfLineContent(line.left);
+          }
+          if (line.right) {
+            line.right = trimFirstCharOfLineContent(line.right);
+          }
         }
       }
 
@@ -38,14 +43,11 @@ export default {
         const linesLength = file.highlightedDiffLines.length;
         let u;
         for (u = 0; u < linesLength; u += 1) {
-          const line = file.highlightedDiffLines[u];
-          delete line.text;
+          trimFirstCharOfLineContent(file.highlightedDiffLines[u]);
         }
-      }
-
-      if (file.highlightedDiffLines) {
         showingLines += file.parallelDiffLines.length;
       }
+
       Object.assign(file, {
         renderIt: showingLines < LINES_TO_BE_RENDERED_DIRECTLY,
         collapsed: file.text && showingLines > MAX_LINES_TO_BE_RENDERED,
