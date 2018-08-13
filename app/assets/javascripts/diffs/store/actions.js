@@ -29,25 +29,64 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
+export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+  console.log('DIFF : ', state.diffFiles);
+  console.log('STATE : ', allLineDiscussions);
+
+  Object.values(allLineDiscussions).forEach(discussions => {
+    if (discussions.length > 0) {
+      console.log('KE : ', discussions);
+      const fileHash = discussions[0].fileHash;
+      const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
+      console.log('FILE : ', selectedFile);
+      if (selectedFile) {
+        const targetLine = selectedFile.parallelDiffLines.find(line => {
+          return (
+            (line.left && line.left.lineCode === discussions[0].line_code) ||
+            (line.right && line.right.lineCode === discussions[0].line_code)
+          );
+        });
+
+        if (targetLine) {
+          console.log('TARGET LINE : ', targetLine);
+          Object.assign(targetLine.right, { discussions });
+        }
+      }
+    }
+  });
+};
+
 export const startRenderDiffsQueue = ({ state, commit }) => {
   const checkItem = () => {
-    const nextFile = state.diffFiles.find(
-      file => !file.renderIt && (!file.collapsed || !file.text),
-    );
-    if (nextFile) {
-      requestAnimationFrame(() => {
-        commit(types.RENDER_FILE, nextFile);
-      });
-      requestIdleCallback(
-        () => {
-          checkItem();
-        },
-        { timeout: 1000 },
+    return new Promise(resolve => {
+      const nextFile = state.diffFiles.find(
+        file => !file.renderIt && (!file.collapsed || !file.text),
       );
-    }
+
+      if (nextFile) {
+        requestAnimationFrame(() => {
+          commit(types.RENDER_FILE, nextFile);
+        });
+        requestIdleCallback(
+          () => {
+            checkItem()
+              .then(resolve)
+              .catch(() => {});
+          },
+          { timeout: 1000 },
+        );
+      } else {
+        console.log('No more items found -> Done');
+        resolve();
+      }
+    });
   };
 
-  checkItem();
+  return new Promise(resolve => {
+    checkItem()
+      .then(resolve)
+      .catch(() => {});
+  });
 };
 
 export const setInlineDiffViewType = ({ commit }) => {

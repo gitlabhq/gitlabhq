@@ -32,8 +32,9 @@ export default {
   },
   methods: {
     discussionsByLine(line, leftOrRight) {
-      return line[leftOrRight] && line[leftOrRight].lineCode !== undefined ?
-            this.singleDiscussionByLineCode(line[leftOrRight].lineCode) : [];
+      return line[leftOrRight] && line[leftOrRight].lineCode !== undefined
+        ? this.singleDiscussionByLineCode(line[leftOrRight].lineCode)
+        : [];
     },
   },
 };
@@ -56,18 +57,14 @@ export default {
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
             :key="index"
-            :left-discussions="discussionsByLine(line, 'left')"
-            :right-discussions="discussionsByLine(line, 'right')"
           />
-          <!--<parallel-diff-comment-row
+          <parallel-diff-comment-row
             v-if="shouldRenderParallelCommentRow(line)"
             :key="`dcr-${index}`"
             :line="line"
             :diff-file-hash="diffFile.fileHash"
             :line-index="index"
-            :left-discussions="discussionsByLine(line, 'left')"
-            :right-discussions="discussionsByLine(line, 'right')"
-          />-->
+          />
         </template>
       </tbody>
     </table>

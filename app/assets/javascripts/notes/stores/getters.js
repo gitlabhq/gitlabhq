@@ -28,11 +28,16 @@ export const notesById = state =>
     return acc;
   }, {});
 
-export const discussionsByLineCode = state =>
+export const discussionsStructuredByLineCode = state =>
   state.discussions.reduce((acc, note) => {
     if (note.diff_discussion && note.line_code && note.resolvable) {
       // For context about line notes: there might be multiple notes with the same line code
       const items = acc[note.line_code] || [];
+      if (note.diff_file) {
+        Object.assign(note, { fileHash: note.diff_file.file_hash });
+        // delete note.diff_file;
+      }
+
       items.push(note);
 
       Object.assign(acc, { [note.line_code]: items });
