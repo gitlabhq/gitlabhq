@@ -112,7 +112,6 @@ export default {
   },
   created() {
     this.adjustView();
-    eventHub.$once('renderedFiles', this.assignDiscussionsToDiff);
   },
   methods: {
     ...mapActions('diffs', [
@@ -130,7 +129,12 @@ export default {
               this.startRenderDiffsQueue()
                 .then(() => {
                   console.log('Done rendering Que');
-                  this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+                  requestIdleCallback(
+                    () => {
+                      this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);
+                    },
+                    { timeout: 1000 },
+                  );
                 })
                 .catch(() => {
                   createFlash(__('Something went wrong on our end. Please try again!'));
