@@ -31,6 +31,7 @@ module Gitlab
 
         validate_localhost!(addrs_info) unless allow_localhost
         validate_local_network!(addrs_info) unless allow_local_network
+        validate_link_local!(addrs_info) unless allow_local_network
 
         true
       end
@@ -87,6 +88,13 @@ module Gitlab
         return unless addrs_info.any? { |addr| addr.ipv4_private? || addr.ipv6_sitelocal? }
 
         raise BlockedUrlError, "Requests to the local network are not allowed"
+      end
+
+      def validate_link_local!(addrs_info)
+        netmask = IPAddr.new('169.254.0.0/16')
+        return unless addrs_info.any? { |addr| addr.ipv6_linklocal? || netmask.include?(addr.ip_address) }
+
+        raise BlockedUrlError, "Requests to the link local network are not allowed"
       end
 
       def internal?(uri)
