@@ -104,6 +104,14 @@
                     %gl-emoji
                     %span.js-data-value.prepend-left-10
                       {{name}}
+            #js-dropdown-wip.filtered-search-input-dropdown-menu.dropdown-menu
+              %ul.filter-dropdown{ data: { dropdown: true } }
+                %li.filter-dropdown-item{ data: { value: 'yes' } }
+                  %button.btn.btn-link
+                    Yes
+                %li.filter-dropdown-item{ data: { value: 'no' } }
+                  %button.btn.btn-link
+                    No
 
             = render_if_exists 'shared/issuable/filter_weight', type: type
 

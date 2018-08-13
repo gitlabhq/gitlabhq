@@ -47,6 +47,7 @@ Parameters:
 | `source_branch`     | string   | no       | Return merge requests with the given source branch                                                                     |
 | `target_branch`     | string   | no       | Return merge requests with the given target branch                                                                     |
 | `search`            | string   | no       | Search merge requests against their `title` and `description`                                                          |
+| `wip`            | string   | no       | Filter merge requests against their `wip` status. `yes` to return *only* WIP merge requests, `no` to return *non* WIP merge requests                                                        |
 
 ```json
 [

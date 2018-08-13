@@ -561,15 +561,17 @@ export default class FilteredSearchManager {
 
     this.saveCurrentSearchQuery();
 
-    const { tokens, searchToken }
-      = this.tokenizer.processTokens(searchQuery, this.filteredSearchTokenKeys.getKeys());
+    const tokenKeys = this.filteredSearchTokenKeys.getKeys();
+    const { tokens, searchToken } = this.tokenizer.processTokens(searchQuery, tokenKeys);
     const currentState = state || getParameterByName('state') || 'opened';
     paths.push(`state=${currentState}`);
 
     tokens.forEach((token) => {
       const condition = this.filteredSearchTokenKeys
         .searchByConditionKeyValue(token.key, token.value.toLowerCase());
-      const { param } = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
+      const tokenConfig = this.filteredSearchTokenKeys.searchByKey(token.key) || {};
+      const { param } = tokenConfig;
+
       // Replace hyphen with underscore to use as request parameter
       // e.g. 'my-reaction' => 'my_reaction'
       const underscoredKey = token.key.replace('-', '_');
@@ -580,6 +582,10 @@ export default class FilteredSearchManager {
         tokenPath = condition.url;
       } else {
         let tokenValue = token.value;
+
+        if (tokenConfig.lowercaseValueOnSubmit) {
+          tokenValue = tokenValue.toLowerCase();
+        }
 
         if ((tokenValue[0] === '\'' && tokenValue[tokenValue.length - 1] === '\'') ||
           (tokenValue[0] === '"' && tokenValue[tokenValue.length - 1] === '"')) {

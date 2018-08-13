@@ -55,9 +55,9 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static createVisualTokenElementHTML(canEdit = true) {
+  static createVisualTokenElementHTML(name, canEdit = true) {
     return `
-      <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
+      <div class="${canEdit ? 'selectable' : 'hidden'} ${name.toLowerCase()}" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
@@ -184,11 +184,11 @@ export default class FilteredSearchVisualTokens {
 
   static addVisualTokenElement(name, value, isSearchTerm, canEdit) {
     const li = document.createElement('li');
-    li.classList.add('js-visual-token');
+    li.classList.add('js-visual-token', name.toLowerCase().replace(' ', '-'));
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');
 
     if (value) {
-      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML(canEdit);
+      li.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML(name, canEdit);
       FilteredSearchVisualTokens.renderVisualTokenValue(li, name, value);
     } else {
       li.innerHTML = '<div class="name"></div>';
@@ -206,7 +206,7 @@ export default class FilteredSearchVisualTokens {
 
     if (!isLastVisualTokenValid && lastVisualToken.classList.contains('filtered-search-token')) {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
-      lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML();
+      lastVisualToken.innerHTML = FilteredSearchVisualTokens.createVisualTokenElementHTML(name);
       lastVisualToken.querySelector('.name').innerText = name;
       FilteredSearchVisualTokens.renderVisualTokenValue(lastVisualToken, name, value);
     }

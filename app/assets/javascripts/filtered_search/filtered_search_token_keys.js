@@ -120,4 +120,19 @@ export default class FilteredSearchTokenKeys {
     return conditions
       .find(condition => condition.tokenKey === key && condition.value === value) || null;
   }
+
+  static addExtraTokensForMergeRequests() {
+    const wipToken = {
+      key: 'wip',
+      type: 'string',
+      param: '',
+      symbol: '',
+      icon: 'wrench',
+      tag: 'Yes or No',
+      lowercaseValueOnSubmit: true,
+    };
+
+    tokenKeys.push(wipToken);
+    tokenKeysWithAlternative.push(wipToken);
+  }
 }

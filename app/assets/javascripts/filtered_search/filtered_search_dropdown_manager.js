@@ -90,6 +90,11 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
+      wip: {
+        reference: null,
+        gl: DropdownNonUser,
+        element: this.container.querySelector('#js-dropdown-wip'),
+      },
     };
 
     supportedTokens.forEach((type) => {
