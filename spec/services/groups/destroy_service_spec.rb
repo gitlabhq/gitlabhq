@@ -135,6 +135,17 @@ describe Groups::DestroyService do
     it_behaves_like 'group destruction', false
   end
 
+  context 'repository removal status is taken into account' do
+    it 'raises exception' do
+      expect_next_instance_of(::Projects::DestroyService) do |destroy_service|
+        expect(destroy_service).to receive(:execute).and_return(false)
+      end
+
+      expect { destroy_group(group, user, false) }
+        .to raise_error(Groups::DestroyService::DestroyError, "Project #{project.id} can't be deleted" )
+    end
+  end
+
   describe 'repository removal' do
     before do
       destroy_group(group, user, false)
