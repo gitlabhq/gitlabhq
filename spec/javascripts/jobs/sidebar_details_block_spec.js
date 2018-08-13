@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import sidebarDetailsBlock from '~/jobs/components/sidebar_details_block.vue';
 import job from './mock_data';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Sidebar details block', () => {
   let SidebarComponent;
@@ -20,39 +21,53 @@ describe('Sidebar details block', () => {
 
   describe('when it is loading', () => {
     it('should render a loading spinner', () => {
-      vm = new SidebarComponent({
-        propsData: {
-          job: {},
-          isLoading: true,
-        },
-      }).$mount();
-
+      vm = mountComponent(SidebarComponent, {
+        job: {},
+        isLoading: true,
+      });
       expect(vm.$el.querySelector('.fa-spinner')).toBeDefined();
     });
   });
 
-  describe("when user can't retry", () => {
+  describe('when there is no retry path retry', () => {
     it('should not render a retry button', () => {
-      vm = new SidebarComponent({
-        propsData: {
-          job: {},
-          canUserRetry: false,
-          isLoading: true,
-        },
-      }).$mount();
+      vm = mountComponent(SidebarComponent, {
+        job: {},
+        isLoading: false,
+      });
 
       expect(vm.$el.querySelector('.js-retry-job')).toBeNull();
     });
   });
 
-  beforeEach(() => {
-    vm = new SidebarComponent({
-      propsData: {
+  describe('without terminal path', () => {
+    it('does not render terminal link', () => {
+      vm = mountComponent(SidebarComponent, {
         job,
-        canUserRetry: true,
         isLoading: false,
-      },
-    }).$mount();
+      });
+
+      expect(vm.$el.querySelector('.js-terminal-link')).toBeNull();
+    });
+  });
+
+  describe('with terminal path', () => {
+    it('renders terminal link', () => {
+      vm = mountComponent(SidebarComponent, {
+        job,
+        isLoading: false,
+        terminalPath: 'job/43123/terminal',
+      });
+
+      expect(vm.$el.querySelector('.js-terminal-link')).not.toBeNull();
+    });
+  });
+
+  beforeEach(() => {
+    vm = mountComponent(SidebarComponent, {
+      job,
+      isLoading: false,
+    });
   });
 
   describe('actions', () => {
@@ -102,13 +117,15 @@ describe('Sidebar details block', () => {
     });
 
     it('should render runner ID', () => {
-      expect(trimWhitespace(vm.$el.querySelector('.js-job-runner'))).toEqual('Runner: local ci runner (#1)');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-runner'))).toEqual(
+        'Runner: local ci runner (#1)',
+      );
     });
 
     it('should render timeout information', () => {
-      expect(
-        trimWhitespace(vm.$el.querySelector('.js-job-timeout')),
-      ).toEqual('Timeout: 1m 40s (from runner)');
+      expect(trimWhitespace(vm.$el.querySelector('.js-job-timeout'))).toEqual(
+        'Timeout: 1m 40s (from runner)',
+      );
     });
 
     it('should render coverage', () => {
