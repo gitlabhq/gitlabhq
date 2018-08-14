@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin Runners", :js do
+describe "Admin Runners" do
   include StubENV
   include FilteredSearchHelpers
   include SortingHelper
@@ -23,7 +23,7 @@ describe "Admin Runners", :js do
         expect(page).to have_text "Runners currently online: 1"
       end
 
-      describe 'search' do
+      describe 'search', :js do
         before do
           FactoryBot.create :ci_runner, description: 'runner-foo'
           FactoryBot.create :ci_runner, description: 'runner-bar'
@@ -45,7 +45,7 @@ describe "Admin Runners", :js do
         end
       end
 
-      describe 'filter by status' do
+      describe 'filter by status', :js do
         it 'shows correct runner when status matches' do
           FactoryBot.create :ci_runner, description: 'runner-active', active: true
           FactoryBot.create :ci_runner, description: 'runner-paused', active: false
@@ -75,7 +75,7 @@ describe "Admin Runners", :js do
         end
       end
 
-      it 'shows correct runner when status is selected and search term is entered' do
+      it 'shows correct runner when status is selected and search term is entered', :js do
         FactoryBot.create :ci_runner, description: 'runner-a-1', active: true
         FactoryBot.create :ci_runner, description: 'runner-a-2', active: false
         FactoryBot.create :ci_runner, description: 'runner-b-1', active: true
@@ -93,7 +93,7 @@ describe "Admin Runners", :js do
         expect(page).not_to have_content 'runner-a-2'
       end
 
-      it 'sorts by last contact date' do
+      it 'sorts by last contact date', :js do
         FactoryBot.create :ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37'
         FactoryBot.create :ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37'
 
