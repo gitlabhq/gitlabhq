@@ -32,6 +32,8 @@ module Gitlab
                      merge_requests.page(page).per(per_page)
                    when 'milestones'
                      milestones.page(page).per(per_page)
+                   when 'users'
+                     users.page(page).per(per_page)
                    else
                      Kaminari.paginate_array([]).page(page).per(per_page)
                    end
@@ -70,6 +72,12 @@ module Gitlab
       @limited_milestones_count ||= milestones.limit(count_limit).count
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    # rubocop:disable CodeReuse/ActiveRecord
+    def limited_users_count
+      @limited_users_count ||= users.limit(count_limit).count
+    end
+    # rubocop:enable CodeReuse/ActiveRecord
 
     def single_commit_result?
       false
@@ -128,6 +136,12 @@ module Gitlab
       merge_requests.reorder('updated_at DESC')
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def users
+      return [] unless Ability.allowed?(current_user, :read_users_list)
+
+      UsersFinder.new(current_user, search: query).execute
+    end
 
     def default_scope
       'projects'

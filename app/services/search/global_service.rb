@@ -23,7 +23,7 @@ module Search
 
     def allowed_scopes
       strong_memoize(:allowed_scopes) do
-        %w[issues merge_requests milestones]
+        %w[issues merge_requests milestones users]
       end
     end
 

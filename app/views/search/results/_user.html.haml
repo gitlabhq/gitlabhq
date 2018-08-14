@@ -1,0 +1,8 @@
+%ul.content-list
+  %li
+    .avatar-cell.d-none.d-sm-block
+      = user_avatar(user: user, user_name: user.name, css_class: 'd-none d-sm-inline avatar s40')
+    .user-info
+      = link_to user_path(user), class: 'd-none d-sm-inline' do
+        .item-title= user.name
+        .cgray= user.to_reference

@@ -25,4 +25,22 @@ describe 'Global search' do
       expect(page).to have_selector('.gl-pagination .next')
     end
   end
+
+  describe 'users search' do
+    it 'shows the found user under the Users tab' do
+      create(:user, username: 'gob_bluth', name: 'Gob Bluth')
+
+      visit dashboard_projects_path
+
+      fill_in 'search', with: 'gob'
+      click_button 'Go'
+
+      expect(page).to have_content('Users 1')
+
+      click_on('Users 1')
+
+      expect(page).to have_content('Gob Bluth')
+      expect(page).to have_content('@gob_bluth')
+    end
+  end
 end
