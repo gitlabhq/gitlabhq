@@ -19,8 +19,8 @@ module Gitlab
 
         [:created_at, :updated_at].each do |column_name|
           if options[:default] && transaction_open?
-            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction. ' \
-              'You can disable transactions by calling `disable_ddl_transaction!` ' \
+            raise '`add_timestamps_with_timezone` with default value cannot be run inside a transaction block. ' \
+              'You can disable single-transaction mode by calling `disable_ddl_transaction!` ' \
               'in the body of your migration class'
           end
 
@@ -51,8 +51,8 @@ module Gitlab
       # See Rails' `add_index` for more info on the available arguments.
       def add_concurrent_index(table_name, column_name, options = {})
         if transaction_open?
-          raise 'add_concurrent_index can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
+          raise 'add_concurrent_index cannot run inside a transaction block, ' \
+            'you can disable single-transaction mode by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
@@ -62,8 +62,7 @@ module Gitlab
         end
 
         if index_exists?(table_name, column_name, options)
-          Rails.logger.warn "Index not created because it already exists (this may be due to an aborted migration or similar): table_name: #{table_name}, column_name: #{column_name}"
-          return
+          remove_concurrent_index(table_name, column_name, options)
         end
 
         add_index(table_name, column_name, options)
@@ -80,8 +79,8 @@ module Gitlab
       # See Rails' `remove_index` for more info on the available arguments.
       def remove_concurrent_index(table_name, column_name, options = {})
         if transaction_open?
-          raise 'remove_concurrent_index can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
+          raise 'remove_concurrent_index cannot run inside a transaction block, ' \
+            'you can disable single-transaction mode by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
@@ -109,8 +108,8 @@ module Gitlab
       # See Rails' `remove_index` for more info on the available arguments.
       def remove_concurrent_index_by_name(table_name, index_name, options = {})
         if transaction_open?
-          raise 'remove_concurrent_index_by_name can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
+          raise 'remove_concurrent_index_by_name cannot run inside a transaction block, ' \
+            'you can disable single-transaction mode by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
@@ -150,7 +149,7 @@ module Gitlab
         # Transactions would result in ALTER TABLE locks being held for the
         # duration of the transaction, defeating the purpose of this method.
         if transaction_open?
-          raise 'add_concurrent_foreign_key can not be run inside a transaction'
+          raise 'add_concurrent_foreign_key cannot run inside a transaction block'
         end
 
         # While MySQL does allow disabling of foreign keys it has no equivalent
@@ -279,8 +278,8 @@ module Gitlab
       # rubocop: disable Metrics/AbcSize
       def update_column_in_batches(table, column, value)
         if transaction_open?
-          raise 'update_column_in_batches can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
+          raise 'update_column_in_batches cannot run inside a transaction block, ' \
+            'you can disable single-transaction mode by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
@@ -362,8 +361,8 @@ module Gitlab
       # `update_column_in_batches` method.
       def add_column_with_default(table, column, type, default:, limit: nil, allow_null: false, &block)
         if transaction_open?
-          raise 'add_column_with_default can not be run inside a transaction, ' \
-            'you can disable transactions by calling disable_ddl_transaction! ' \
+          raise 'add_column_with_default cannot run inside a transaction block, ' \
+            'you can disable single-transaction mode by calling disable_ddl_transaction! ' \
             'in the body of your migration class'
         end
 
@@ -409,7 +408,7 @@ module Gitlab
       #        type is used.
       def rename_column_concurrently(table, old, new, type: nil)
         if transaction_open?
-          raise 'rename_column_concurrently can not be run inside a transaction'
+          raise 'rename_column_concurrently cannot run inside a transaction block'
         end
 
         check_trigger_permissions!(table)
