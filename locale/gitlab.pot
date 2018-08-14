@@ -4067,14 +4067,13 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
-=======
 msgid "Job|Job has been erased"
 msgstr ""
 
 msgid "Job|Job has been erased by"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
