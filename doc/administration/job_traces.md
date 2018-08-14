@@ -63,6 +63,30 @@ job traces are automatically migrated to it along with the other job artifacts.
 
 See [Data flow](#data-flow) to learn about the process.
 
+## How to manually migrate job traces to Object storage
+
+1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
+1. Execute the following command
+
+      ```bash
+      gitlab-rake gitlab:traces:archive
+      ```
+
+      After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
+      for migrating job trace files from local storage to object storage. 
+      It could take time to complete the all migration jobs. You can check the progress by the following command
+
+      ```bash
+      sudo gitlab-rails console
+      ```
+
+      ```bash
+      [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
+      => 100
+      ```
+
+      If the count becomes zero, that means the migration is done
+
 ## New live trace architecture
 
 > [Introduced][ce-18169] in GitLab 10.4.
