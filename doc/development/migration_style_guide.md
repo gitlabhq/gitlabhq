@@ -134,9 +134,9 @@ should be more than enough.
 When removing an index make sure to use the method `remove_concurrent_index` instead
 of the regular `remove_index` method. The `remove_concurrent_index` method
 automatically drops concurrent indexes when using PostgreSQL, removing the
-need for downtime. To use this method you must disable transactions by calling
-the method `disable_ddl_transaction!` in the body of your migration class like
-so:
+need for downtime. To use this method you must disable single-transaction mode
+by calling the method `disable_ddl_transaction!` in the body of your migration
+class like so:
 
 ```ruby
 class MyMigration < ActiveRecord::Migration
