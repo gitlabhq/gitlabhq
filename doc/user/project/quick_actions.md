@@ -47,6 +47,8 @@ do.
 | `/shrug`                   | Append the comment with `¯\＿(ツ)＿/¯` |
 | <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request |
 | `/confidential`            | Makes the issue confidential |
+| `/epic <group&epic | Epic URL>` | Adds an issue to an epic |
+| `/remove_epic`             | Removes an issue from an epic |
 
 Note: In GitLab Starter every issue can have more than one assignee, so commands `/assign`, `/unassign` and `/reassign`
 support multiple assignees.
