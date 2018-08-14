@@ -11,7 +11,7 @@
           %col{ width: '10%' }
       %thead
         %tr
-          %th= s_('ProtectedEnvironment|Protected Environment (%{protected_environments_count})') % { protected_environments_count: @protected_environments_count }
+          %th= s_('ProtectedEnvironment|Protected Environment (%{protected_environments_count})') % { protected_environments_count: limited_counter_with_delimiter(@protected_environments) }
           %th= s_('ProtectedEnvironment|Allowed to deploy')
           - if can_admin_project
             %th
