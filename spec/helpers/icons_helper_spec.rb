@@ -80,6 +80,26 @@ describe IconsHelper do
     end
   end
 
+  describe 'audit icon' do
+    it 'returns right icon name for standard auth' do
+      icon_name = 'standard'
+      expect(audit_icon(icon_name).to_s)
+          .to eq '<i class="fa fa-key"></i>'
+      end
+
+    it 'returns right icon name for two-factor auth' do
+      icon_name = 'two-factor'
+      expect(audit_icon(icon_name).to_s)
+        .to eq '<i class="fa fa-key"></i>'
+    end
+
+    it 'returns right icon name for google_oauth2 auth' do
+      icon_name = 'google_oauth2'
+      expect(audit_icon(icon_name).to_s)
+          .to eq '<i class="fa fa-google"></i>'
+    end
+  end
+
   describe 'file_type_icon_class' do
     it 'returns folder class' do
       expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'

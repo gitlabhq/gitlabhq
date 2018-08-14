@@ -62,6 +62,8 @@ module IconsHelper
       names = "key"
     when "two-factor"
       names = "key"
+    when "google_oauth2"
+      names = "google"
     end
 
     options.include?(:base) ? fa_stacked_icon(names, options) : fa_icon(names, options)
