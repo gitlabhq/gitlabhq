@@ -755,8 +755,19 @@
 }
 
 .repository-languages-bar {
-  height: 6px;
-  margin-bottom: 8px;
+  height: 8px;
+  margin-bottom: $gl-padding-8;
+  background-color: $white-light;
+  border-radius: $border-radius-default;
+
+  .progress-bar {
+    margin-right: 2px;
+    padding: 0 $gl-padding-4;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 pre.light-well {

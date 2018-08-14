@@ -133,3 +133,27 @@ afterEach(() => {
   vm.$destroy();
 });
 ```
+## Testing with older browsers
+
+Some regressions only affect a specific browser version. We can install and test in particular browsers with either Firefox or Browserstack using the following steps:
+
+
+### Browserstack
+
+[Browserstack](https://www.browserstack.com/) allows you to test more than 1200 mobile devices and browsers. 
+You can use it directly through the [live app](https://www.browserstack.com/live) or you can install the [chrome extension](https://chrome.google.com/webstore/detail/browserstack/nkihdmlheodkdfojglpcjjmioefjahjb) for easy access.
+You can find the credentials on 1Password, under `frontendteam@gitlab.com`.
+
+### Firefox
+
+#### macOS
+You can download any older version of Firefox from the releases FTP server, https://ftp.mozilla.org/pub/firefox/releases/
+
+1. From the website, select a version, in this case `50.0.1`.
+2. Go to the mac folder.
+3. Select your preferred language, you will find the dmg package inside, download it.
+4. Drag and drop the application to any other folder but the `Applications` folder.
+5. Rename the application to something like `Firefox_Old`.
+6. Move the application to the `Applications` folder.
+7. Open up a terminal and run `/Applications/Firefox_Old.app/Contents/MacOS/firefox-bin -profilemanager` to create a new profile specific to that Firefox version.
+8. Once the profile has been created, quit the app, and run it again like normal. You now have a working older Firefox version.

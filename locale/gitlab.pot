@@ -2406,6 +2406,9 @@ msgstr ""
 msgid "Date picker"
 msgstr ""
 
+msgid "Debug"
+msgstr ""
+
 msgid "Dec"
 msgstr ""
 
@@ -2961,6 +2964,9 @@ msgid "Error updating status for all todos."
 msgstr ""
 
 msgid "Error updating todo status."
+msgstr ""
+
+msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
 msgid "Estimated"
@@ -3577,6 +3583,9 @@ msgstr ""
 msgid "Go back"
 msgstr ""
 
+msgid "Go to"
+msgstr ""
+
 msgid "Go to %{link_to_google_takeout}."
 msgstr ""
 
@@ -4056,6 +4065,9 @@ msgid "Job has been erased"
 msgstr ""
 
 msgid "Jobs"
+msgstr ""
+
+msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
@@ -6062,6 +6074,9 @@ msgstr ""
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
 msgstr ""
 
+msgid "Runners page"
+msgstr ""
+
 msgid "Runners page."
 msgstr ""
 
@@ -7047,6 +7062,12 @@ msgid "This job has not started yet"
 msgstr ""
 
 msgid "This job is in pending state and is waiting to be picked by a runner"
+msgstr ""
+
+msgid "This job is stuck, because you don't have any active runners online with any of these tags assigned to them:"
+msgstr ""
+
+msgid "This job is stuck, because you don't have any active runners that can run this job."
 msgstr ""
 
 msgid "This job requires a manual action"

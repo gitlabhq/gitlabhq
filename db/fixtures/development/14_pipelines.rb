@@ -41,7 +41,7 @@ class Gitlab::Seeder::Pipelines
       when: 'manual', status: :skipped },
 
     # notify stage
-    { name: 'slack', stage: 'notify', when: 'manual', status: :created },
+    { name: 'slack', stage: 'notify', when: 'manual', status: :success },
   ]
   EXTERNAL_JOBS = [
     { name: 'jenkins', stage: 'test', status: :success,
@@ -54,16 +54,10 @@ class Gitlab::Seeder::Pipelines
 
   def seed!
     pipelines.each do |pipeline|
-      begin
-        BUILDS.each { |opts| build_create!(pipeline, opts) }
-        EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
-        print '.'
-      rescue ActiveRecord::RecordInvalid
-        print 'F'
-      ensure
-        pipeline.update_duration
-        pipeline.update_status
-      end
+      BUILDS.each { |opts| build_create!(pipeline, opts) }
+      EXTERNAL_JOBS.each { |opts| commit_status_create!(pipeline, opts) }
+      pipeline.update_duration
+      pipeline.update_status
     end
   end
 
@@ -95,7 +89,9 @@ class Gitlab::Seeder::Pipelines
       branch = merge_request.source_branch
 
       merge_request.commits.last(4).map do |commit|
-        create_pipeline!(project, branch, commit)
+        create_pipeline!(project, branch, commit).tap do |pipeline|
+          merge_request.update!(head_pipeline_id: pipeline.id)
+        end
       end
     end
 
@@ -105,7 +101,7 @@ class Gitlab::Seeder::Pipelines
   end
 
   def create_pipeline!(project, ref, commit)
-    project.pipelines.create(sha: commit.id, ref: ref, source: :push)
+    project.pipelines.create!(sha: commit.id, ref: ref, source: :push)
   end
 
   def build_create!(pipeline, opts = {})
@@ -118,24 +114,39 @@ class Gitlab::Seeder::Pipelines
       # block directly to `Ci::Build#create!`.
 
       setup_artifacts(build)
+      setup_test_reports(build)
       setup_build_log(build)
 
       build.project.environments.
         find_or_create_by(name: build.expanded_environment_name)
 
-      build.save
+      build.save!
     end
   end
 
   def setup_artifacts(build)
-    return unless %w[build test].include?(build.stage)
+    return unless build.stage == "build"
 
     artifacts_cache_file(artifacts_archive_path) do |file|
-      build.job_artifacts.build(project: build.project, file_type: :archive, file: file)
+      build.job_artifacts.build(project: build.project, file_type: :archive, file_format: :zip, file: file)
     end
 
     artifacts_cache_file(artifacts_metadata_path) do |file|
-      build.job_artifacts.build(project: build.project, file_type: :metadata, file: file)
+      build.job_artifacts.build(project: build.project, file_type: :metadata, file_format: :gzip, file: file)
+    end
+  end
+
+  def setup_test_reports(build)
+    return unless build.stage == "test" && build.name == "rspec:osx"
+
+    if build.ref == build.project.default_branch
+      artifacts_cache_file(test_reports_pass_path) do |file|
+        build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+      end
+    else
+      artifacts_cache_file(test_reports_failed_path) do |file|
+        build.job_artifacts.build(project: build.project, file_type: :junit, file_format: :gzip, file: file)
+      end
     end
   end
 
@@ -182,13 +193,21 @@ class Gitlab::Seeder::Pipelines
     Rails.root + 'spec/fixtures/ci_build_artifacts_metadata.gz'
   end
 
-  def artifacts_cache_file(file_path)
-    cache_path = file_path.to_s.gsub('ci_', "p#{@project.id}_")
+  def test_reports_pass_path
+    Rails.root + 'spec/fixtures/junit/junit_ant.xml.gz'
+  end
 
-    FileUtils.copy(file_path, cache_path)
-    File.open(cache_path) do |file|
-      yield file
-    end
+  def test_reports_failed_path
+    Rails.root + 'spec/fixtures/junit/junit.xml.gz'
+  end
+
+  def artifacts_cache_file(file_path)
+    file = Tempfile.new("artifacts")
+    file.close
+
+    FileUtils.copy(file_path, file.path)
+
+    yield(UploadedFile.new(file.path, filename: File.basename(file_path)))
   end
 end
 
