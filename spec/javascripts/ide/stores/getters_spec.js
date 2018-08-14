@@ -189,4 +189,105 @@ describe('IDE store getters', () => {
       });
     });
   });
+
+  describe('parsedGitattributes', () => {
+    describe('without .gitattributes file', () => {
+      it('returns empty object', () => {
+        expect(getters.parsedGitattributes(localState)).toEqual({});
+      });
+    });
+
+    describe('with .gitattributes file', () => {
+      beforeEach(() => {
+        localState.entries['.gitattributes'] = {
+          raw: '',
+          content: '',
+        };
+      });
+
+      it('returns empty object when raw is empty', () => {
+        expect(getters.parsedGitattributes(localState)).toEqual({});
+      });
+
+      ['raw', 'content'].forEach(key => {
+        describe(`${key} key in file object`, () => {
+          beforeEach(() => {
+            const content =
+              '*.png -text\n*.svg binary\nDockerfile text\n*.vue      text\nREADME.md testing';
+
+            if (key === 'content') {
+              localState.entries['.gitattributes'].raw = content;
+            }
+
+            localState.entries['.gitattributes'][key] = content;
+          });
+
+          it('returns parsed .gitattributes', () => {
+            expect(getters.parsedGitattributes(localState)).toEqual({
+              '*.png': {
+                encoding: 'binary',
+              },
+              '*.svg': {
+                encoding: 'binary',
+              },
+              '*.vue': {
+                encoding: 'text',
+              },
+              Dockerfile: {
+                encoding: 'text',
+              },
+            });
+          });
+
+          it('does not include key when encoding is not recognised', () => {
+            expect(getters.parsedGitattributes(localState)).not.toEqual(
+              jasmine.objectContaining({
+                'README.md': {},
+              }),
+            );
+          });
+        });
+      });
+    });
+  });
+
+  describe('isFileBinary', () => {
+    let localGetters;
+
+    beforeEach(() => {
+      localState.entries['.gitattributes'] = {
+        raw: '*.svg binary\n*.vue text',
+      };
+
+      localGetters = {
+        parsedGitattributes: getters.parsedGitattributes(localState),
+      };
+    });
+
+    it('returns true when gitattributes has binary path', () => {
+      expect(
+        getters.isFileBinary(localState, localGetters)({
+          name: 'test.svg',
+        }),
+      ).toBe(true);
+    });
+
+    it('returns false when gitattributes has text path', () => {
+      expect(
+        getters.isFileBinary(localState, localGetters)({
+          name: 'test.vue',
+          binary: false,
+        }),
+      ).toBe(false);
+    });
+
+    it('uses binary key if parsed gittatributes returns false', () => {
+      expect(
+        getters.isFileBinary(localState, localGetters)({
+          name: 'test.vue',
+          binary: true,
+        }),
+      ).toBe(true);
+    });
+  });
 });

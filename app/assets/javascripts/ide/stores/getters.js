@@ -112,7 +112,7 @@ export const parsedGitattributes = state => {
 
     return {
       ...acc,
-      [pathMatch[0]]: {
+      [pathMatch[0].trim()]: {
         encoding,
       },
     };
