@@ -3133,6 +3133,12 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Job has been erased"
+msgstr ""
+
+msgid "Job|Job has been erased by"
+msgstr ""
+
 msgid "Jul"
 msgstr ""
 
