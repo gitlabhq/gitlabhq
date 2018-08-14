@@ -286,19 +286,19 @@ span.idiff {
 
   .new-file {
     a {
-      color: $gl-text-green;
+      color: $green-600;
     }
   }
 
   .renamed-file {
     a {
-      color: $gl-text-orange;
+      color: $orange-600;
     }
   }
 
   .deleted-file {
     a {
-      color: $gl-text-red;
+      color: $red-500;
     }
   }
 

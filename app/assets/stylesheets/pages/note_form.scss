@@ -306,7 +306,7 @@
 
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    color: $blue-600;
     outline: 0;
   }
 
@@ -424,7 +424,7 @@
 
 .uploading-error-icon,
 .uploading-error-message {
-  color: $gl-text-red;
+  color: $red-500;
 }
 
 .uploading-error-message {
@@ -443,7 +443,7 @@
 .attach-new-file,
 .button-attach-file,
 .retry-uploading-link {
-  color: $gl-link-color;
+  color: $blue-600;
   padding: 0;
   background: none;
   border: 0;
@@ -452,5 +452,5 @@
 }
 
 .markdown-selector {
-  color: $gl-link-color;
+  color: $blue-600;
 }
