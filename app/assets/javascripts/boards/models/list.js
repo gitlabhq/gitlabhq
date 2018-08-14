@@ -1,6 +1,7 @@
 /* eslint-disable no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len */
 /* global ListIssue */
 
+import { __ } from '~/locale';
 import ListLabel from '~/vue_shared/models/label';
 import ListAssignee from '~/vue_shared/models/assignee';
 import queryData from '../utils/query_data';
@@ -31,7 +32,7 @@ class List {
     this.id = obj.id;
     this._uid = this.guid();
     this.position = obj.position;
-    this.title = obj.title;
+    this.title = obj.list_type === 'backlog' ? __('Open') : obj.title;
     this.type = obj.list_type;
 
     const typeInfo = this.getTypeInfo(this.type);

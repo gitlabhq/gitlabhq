@@ -387,7 +387,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://git
 ## List board lists
 
 Get a list of the board's lists.
-Does not include `backlog` and `closed` lists
+Does not include `open` and `closed` lists
 
 ```
 GET /groups/:id/boards/:board_id/lists
