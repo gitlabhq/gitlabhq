@@ -32,7 +32,11 @@ Import `spriteIcon` from [common_utils.js][common-utils]. Calling `spriteIcon(ic
 
 ## Illustrations
 
-Illustrations are also stored in the `gitlab-svgs` project. They can be referenced in HAML by using the `image_tag` or `image_path` helpers.
+Illustrations are also stored in the `gitlab-svgs` project.
+
+### In HAML
+
+Illustrations can be referenced in HAML by using the `image_tag` or `image_path` helpers.
 
 ```
 # Renders the merge request illustration
@@ -40,6 +44,26 @@ Illustrations are also stored in the `gitlab-svgs` project. They can be referenc
 
 # An alternative to rendering the illustration
 = image_path 'illustrations/merge_requests.svg'
+```
+
+### In Vue
+
+In Vue, SVGs can be imported and added to templates using the `v-html` directive. We don't need change detection for the SVG, so we add it in the `created` hook rather than using `data`.
+
+```
+<script>
+import svg from 'images/illustrations/todos_empty.svg';
+
+export default {
+  created() {
+    this.todosEmptySvg = svg;
+  },
+};
+</script>
+
+<template>
+  <div v-html="todosEmptySvg"></div>
+</template>
 ```
 
 ## Dropdowns
