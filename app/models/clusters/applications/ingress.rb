@@ -33,7 +33,7 @@ module Clusters
         end
       end
 
-      def derived_domain
+      def default_domain
         "#{external_ip}.#{WILDCARD_DNS_DOMAIN}" if external_ip
       end
 

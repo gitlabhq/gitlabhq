@@ -1852,7 +1852,7 @@ class Project < ActiveRecord::Base
     platform = deployment_platform(environment: environment)
     return unless platform.respond_to?(:cluster)
 
-    platform&.cluster&.application_ingress&.derived_domain
+    platform&.cluster&.application_ingress&.default_domain
   end
 
   def append_or_update_attribute(name, value)

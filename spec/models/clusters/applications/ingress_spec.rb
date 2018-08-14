@@ -79,8 +79,8 @@ describe Clusters::Applications::Ingress do
     end
   end
 
-  describe '#derived_domain' do
-    subject { ingress.derived_domain }
+  describe '#default_domain' do
+    subject { ingress.default_domain }
 
     it { is_expected.to be_nil }
 
