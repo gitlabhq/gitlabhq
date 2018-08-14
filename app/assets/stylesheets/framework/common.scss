@@ -117,6 +117,10 @@ hr {
   color: $blue-600;
 }
 
+.author-link:hover {
+  text-decoration: none;
+}
+
 .back-link {
   font-size: 14px;
 }
