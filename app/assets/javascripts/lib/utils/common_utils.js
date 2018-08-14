@@ -132,21 +132,23 @@ export const parseUrlPathname = url => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-export const urlParamsToArray = (path = '') => {
+function splitPath(path) {
   return path
-    .slice(1) // Remove the first character of search as it is always ?
-    .split('&')
-    .filter(param => param.length > 0)
-    .map(param => {
-      const split = param.split('=');
-      return [decodeURI(split[0]), split[1]].join('=');
-    });
-};
+    .replace(/^\?/, '')
+    .split('&');
+}
+
+export const urlParamsToArray = (path = '') => splitPath(path)
+  .filter(param => param.length > 0)
+  .map(param => {
+    const split = param.split('=');
+    return [decodeURI(split[0]), split[1]].join('=');
+  });
 
 export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
 
-export const urlParamsToObject = (path = '') => {
-  return path.split('&').reduce((dataParam, filterParam) => {
+export const urlParamsToObject = (path = '') => splitPath(path)
+  .reduce((dataParam, filterParam) => {
     if (filterParam === '') return dataParam;
 
     const data = dataParam;
@@ -167,7 +169,6 @@ export const urlParamsToObject = (path = '') => {
 
     return data;
   }, {});
-};
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
