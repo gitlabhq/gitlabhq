@@ -110,9 +110,9 @@
 js-toggle-container accept-action media space-children"
         >
           <button
+            :disabled="isMakingRequest"
             type="button"
             class="btn btn-sm btn-reopen btn-success qa-mr-rebase-button"
-            :disabled="isMakingRequest"
             @click="rebase"
           >
             <loading-icon v-if="isMakingRequest" />

@@ -1,3 +1,6 @@
+# frozen_string_literal: true
+
+# rubocop:disable Rails/ActiveRecordAliases
 class WikiPage
   PageChangedError = Class.new(StandardError)
   PageRenameError = Class.new(StandardError)
@@ -59,7 +62,7 @@ class WikiPage
   attr_accessor :attributes
 
   def hook_attrs
-    attributes
+    Gitlab::HookData::WikiPageBuilder.new(self).build
   end
 
   def initialize(wiki, page = nil, persisted = false)
@@ -265,6 +268,15 @@ class WikiPage
     title.present? && self.class.unhyphenize(@page.url_path) != title
   end
 
+  # Updates the current @attributes hash by merging a hash of params
+  def update_attributes(attrs)
+    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
+
+    attrs.slice!(:content, :format, :message, :title)
+
+    @attributes.merge!(attrs)
+  end
+
   private
 
   # Process and format the title based on the user input.
@@ -288,15 +300,6 @@ class WikiPage
     components = title.split(File::SEPARATOR).map(&:squish)
 
     File.join(components)
-  end
-
-  # Updates the current @attributes hash by merging a hash of params
-  def update_attributes(attrs)
-    attrs[:title] = process_title(attrs[:title]) if attrs[:title].present?
-
-    attrs.slice!(:content, :format, :message, :title)
-
-    @attributes.merge!(attrs)
   end
 
   def set_attributes

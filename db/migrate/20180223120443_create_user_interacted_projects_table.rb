@@ -3,13 +3,15 @@ class CreateUserInteractedProjectsTable < ActiveRecord::Migration
 
   DOWNTIME = false
 
-  disable_ddl_transaction!
+  INDEX_NAME = 'user_interacted_projects_non_unique_index'
 
   def up
     create_table :user_interacted_projects, id: false do |t|
       t.references :user, null: false
       t.references :project, null: false
     end
+
+    add_index :user_interacted_projects, [:project_id, :user_id], name: INDEX_NAME
   end
 
   def down

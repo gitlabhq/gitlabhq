@@ -54,7 +54,7 @@ namespace :admin do
 
   resources :hooks, only: [:index, :create, :edit, :update, :destroy] do
     member do
-      get :test
+      post :test
     end
 
     resources :hook_logs, only: [:show] do
@@ -75,8 +75,6 @@ namespace :admin do
   resource :background_jobs, controller: 'background_jobs', only: [:show]
   resource :system_info, controller: 'system_info', only: [:show]
   resources :requests_profiles, only: [:index, :show], param: :name, constraints: { name: /.+\.html/ }
-
-  get 'conversational_development_index' => 'conversational_development_index#show'
 
   resources :projects, only: [:index]
 
@@ -102,6 +100,7 @@ namespace :admin do
       get :preview_sign_in
       delete :logo
       delete :header_logos
+      delete :favicon
     end
   end
 
@@ -121,8 +120,6 @@ namespace :admin do
       get :pause
     end
   end
-
-  resources :cohorts, only: :index
 
   resources :jobs, only: :index do
     collection do

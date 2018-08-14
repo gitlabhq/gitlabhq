@@ -1,4 +1,7 @@
 class Import::GitlabController < Import::BaseController
+  MAX_PROJECT_PAGES = 15
+  PER_PAGE_PROJECTS = 100
+
   before_action :verify_gitlab_import_enabled
   before_action :gitlab_auth, except: :callback
 
@@ -10,17 +13,16 @@ class Import::GitlabController < Import::BaseController
   end
 
   def status
-    @repos = client.projects
+    @repos = client.projects(starting_page: 1, page_limit: MAX_PROJECT_PAGES, per_page: PER_PAGE_PROJECTS)
 
-    @already_added_projects = current_user.created_projects.where(import_type: "gitlab")
+    @already_added_projects = find_already_added_projects('gitlab')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos = @repos.to_a.reject { |repo| already_added_projects_names.include? repo["path_with_namespace"] }
   end
 
   def jobs
-    jobs = current_user.created_projects.where(import_type: "gitlab").to_json(only: [:id, :import_status])
-    render json: jobs
+    render json: find_jobs('gitlab')
   end
 
   def create
@@ -33,7 +35,7 @@ class Import::GitlabController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity

@@ -1,5 +1,14 @@
 <script>
+import { __ } from '~/locale';
+
 export default {
+  props: {
+    headerTitle: {
+      type: String,
+      required: false,
+      default: () => __('Create new label'),
+    },
+  },
   created() {
     this.suggestedColors = gon.suggested_label_colors;
   },
@@ -10,9 +19,9 @@ export default {
   <div class="dropdown-page-two dropdown-new-label">
     <div class="dropdown-title">
       <button
+        :aria-label="__('Go back')"
         type="button"
         class="dropdown-title-button dropdown-menu-back"
-        :aria-label="__('Go back')"
       >
         <i
           aria-hidden="true"
@@ -21,11 +30,11 @@ export default {
         >
         </i>
       </button>
-      {{ __('Create new label') }}
+      {{ headerTitle }}
       <button
+        :aria-label="__('Close')"
         type="button"
         class="dropdown-title-button dropdown-menu-close"
-        :aria-label="__('Close')"
       >
         <i
           aria-hidden="true"
@@ -39,19 +48,19 @@ export default {
       <div class="dropdown-labels-error js-label-error"></div>
       <input
         id="new_label_name"
+        :placeholder="__('Name new label')"
         type="text"
         class="default-dropdown-input"
-        :placeholder="__('Name new label')"
       />
       <div class="suggest-colors suggest-colors-dropdown">
         <a
           v-for="(color, index) in suggestedColors"
-          href="#"
           :key="index"
           :data-color="color"
           :style="{
             backgroundColor: color,
           }"
+          href="#"
         >
           &nbsp;
         </a>
@@ -60,21 +69,21 @@ export default {
         <div class="dropdown-label-color-preview js-dropdown-label-color-preview"></div>
         <input
           id="new_label_color"
+          :placeholder="__('Assign custom color like #FF0000')"
           type="text"
           class="default-dropdown-input"
-          :placeholder="__('Assign custom color like #FF0000')"
         />
       </div>
       <div class="clearfix">
         <button
           type="button"
-          class="btn btn-primary pull-left js-new-label-btn disabled"
+          class="btn btn-primary float-left js-new-label-btn disabled"
         >
           {{ __('Create') }}
         </button>
         <button
           type="button"
-          class="btn btn-default pull-right js-cancel-label-btn"
+          class="btn btn-default float-right js-cancel-label-btn"
         >
           {{ __('Cancel') }}
         </button>

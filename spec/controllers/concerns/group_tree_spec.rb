@@ -63,6 +63,17 @@ describe GroupTree do
 
         expect(assigns(:groups)).to contain_exactly(parent, subgroup)
       end
+
+      it 'preloads parents regardless of pagination' do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+        group = create(:group, :public)
+        subgroup = create(:group, :public, parent: group)
+        search_result = create(:group, :public, name: 'result', parent: subgroup)
+
+        get :index, filter: 'resu', format: :json
+
+        expect(assigns(:groups)).to contain_exactly(group, subgroup, search_result)
+      end
     end
 
     context 'json content' do

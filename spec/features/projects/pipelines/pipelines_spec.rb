@@ -125,7 +125,7 @@ describe 'Pipelines', :js do
         context 'when canceling' do
           before do
             find('.js-pipelines-cancel-button').click
-            find('.js-primary-button').click
+            find('.js-modal-primary-action').click
             wait_for_requests
           end
 
@@ -156,7 +156,6 @@ describe 'Pipelines', :js do
         context 'when retrying' do
           before do
             find('.js-pipelines-retry-button').click
-            find('.js-primary-button').click
             wait_for_requests
           end
 
@@ -256,7 +255,7 @@ describe 'Pipelines', :js do
           context 'when canceling' do
             before do
               find('.js-pipelines-cancel-button').click
-              find('.js-primary-button').click
+              find('.js-modal-primary-action').click
             end
 
             it 'indicates that pipeline was canceled' do
@@ -349,6 +348,18 @@ describe 'Pipelines', :js do
 
           it { expect(page).not_to have_selector('.build-artifacts') }
         end
+
+        context 'with trace artifact' do
+          before do
+            create(:ci_build, :success, :trace_artifact, pipeline: pipeline)
+
+            visit_project_pipelines
+          end
+
+          it 'does not show trace artifact as artifacts' do
+            expect(page).not_to have_selector('.build-artifacts')
+          end
+        end
       end
 
       context 'mini pipeline graph' do
@@ -376,10 +387,27 @@ describe 'Pipelines', :js do
 
           it 'should be possible to cancel pending build' do
             find('.js-builds-dropdown-button').click
-            find('a.js-ci-action-icon').click
+            find('.js-ci-action').click
+            wait_for_requests
 
-            expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
+          end
+        end
+
+        context 'for a failed pipeline' do
+          let!(:build) do
+            create(:ci_build, :failed, pipeline: pipeline,
+                                       stage: 'build',
+                                       name: 'build')
+          end
+
+          it 'should display the failure reason' do
+            find('.js-builds-dropdown-button').click
+
+            within('.js-builds-dropdown-list') do
+              build_element = page.find('.mini-pipeline-graph-dropdown-item')
+              expect(build_element['data-original-title']).to eq('build - failed <br> (unknown failure)')
+            end
           end
         end
       end
@@ -493,6 +521,21 @@ describe 'Pipelines', :js do
 
             expect(Ci::Pipeline.last).to be_web
           end
+
+          context 'when variables are specified' do
+            it 'creates a new pipeline with variables' do
+              page.within '.ci-variable-row-body' do
+                fill_in "Input variable key", with: "key_name"
+                fill_in "Input variable value", with: "value"
+              end
+
+              expect { click_on 'Create pipeline' }
+                .to change { Ci::Pipeline.count }.by(1)
+
+              expect(Ci::Pipeline.last.variables.map { |var| var.slice(:key, :secret_value) })
+                .to eq [{ key: "key_name", secret_value: "value" }.with_indifferent_access]
+            end
+          end
         end
 
         context 'without gitlab-ci.yml' do
@@ -552,29 +595,31 @@ describe 'Pipelines', :js do
 
       before do
         create(:ci_empty_pipeline, status: 'success', project: project, sha: project.commit.id, ref: 'master')
-        project.add_master(user)
+        project.add_maintainer(user)
         visit project_pipelines_path(project)
       end
 
       it 'has a clear caches button' do
-        expect(page).to have_link 'Clear Runner Caches'
+        expect(page).to have_button 'Clear Runner Caches'
       end
 
       describe 'user clicks the button' do
         context 'when project already has jobs_cache_index' do
           before do
-            project.update_attributes(jobs_cache_index: 1)
+            project.update(jobs_cache_index: 1)
           end
 
           it 'increments jobs_cache_index' do
-            click_link 'Clear Runner Caches'
+            click_button 'Clear Runner Caches'
+            wait_for_requests
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end
 
         context 'when project does not have jobs_cache_index' do
           it 'sets jobs_cache_index to 1' do
-            click_link 'Clear Runner Caches'
+            click_button 'Clear Runner Caches'
+            wait_for_requests
             expect(page.find('.flash-notice')).to have_content 'Project cache successfully reset.'
           end
         end

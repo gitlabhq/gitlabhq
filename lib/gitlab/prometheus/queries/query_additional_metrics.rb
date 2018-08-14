@@ -2,7 +2,7 @@ module Gitlab
   module Prometheus
     module Queries
       module QueryAdditionalMetrics
-        def query_metrics(project, query_context)
+        def query_metrics(project, environment, query_context)
           matched_metrics(project).map(&query_group(query_context))
             .select(&method(:group_with_any_metrics))
         end
@@ -14,12 +14,16 @@ module Gitlab
 
           lambda do |group|
             metrics = group.metrics.map do |metric|
-              {
+              metric_hsh = {
                 title: metric.title,
                 weight: metric.weight,
                 y_label: metric.y_label,
                 queries: metric.queries.map(&query_processor).select(&method(:query_with_result))
               }
+
+              metric_hsh[:id] = metric.id if metric.id
+
+              metric_hsh
             end
 
             {
@@ -79,7 +83,7 @@ module Gitlab
         def common_query_context(environment, timeframe_start:, timeframe_end:)
           base_query_context(timeframe_start, timeframe_end).merge({
             ci_environment_slug: environment.slug,
-            kube_namespace: environment.project.deployment_platform&.actual_namespace || '',
+            kube_namespace: environment.deployment_platform&.actual_namespace || '',
             environment_filter: %{container_name!="POD",environment="#{environment.slug}"}
           })
         end

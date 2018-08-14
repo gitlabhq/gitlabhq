@@ -1,7 +1,10 @@
 import _ from 'underscore';
 
 function sortMetrics(metrics) {
-  return _.chain(metrics).sortBy('weight').sortBy('title').value();
+  return _.chain(metrics)
+    .sortBy('title')
+    .sortBy('weight')
+    .value();
 }
 
 function normalizeMetrics(metrics) {
@@ -24,6 +27,7 @@ export default class MonitoringStore {
   constructor() {
     this.groups = [];
     this.deploymentData = [];
+    this.environmentsData = [];
   }
 
   storeMetrics(groups = []) {
@@ -35,6 +39,12 @@ export default class MonitoringStore {
 
   storeDeploymentData(deploymentData = []) {
     this.deploymentData = deploymentData;
+  }
+
+  storeEnvironmentsData(environmentsData = []) {
+    this.environmentsData = environmentsData.filter(
+      environment => !!environment.latest.last_deployment,
+    );
   }
 
   getMetricsCount() {

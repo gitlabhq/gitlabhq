@@ -1,4 +1,8 @@
-# Administrator documentation
+---
+description: 'Learn how to install, configure, update, and maintain your GitLab instance.'
+---
+
+# Administrator documentation **[CORE ONLY]**
 
 Learn how to administer your GitLab instance (Community Edition and
 Enterprise Edition).
@@ -7,12 +11,12 @@ Regular users don't have access to GitLab administration tools and settings.
 GitLab has two product distributions: the open source
 [GitLab Community Edition (CE)](https://gitlab.com/gitlab-org/gitlab-ce),
 and the open core [GitLab Enterprise Edition (EE)](https://gitlab.com/gitlab-org/gitlab-ee),
-available through [different subscriptions](https://about.gitlab.com/products/).
+available through [different subscriptions](https://about.gitlab.com/pricing/).
 
 You can [install GitLab CE or GitLab EE](https://about.gitlab.com/installation/ce-or-ee/),
 but the features you'll have access to depend on the subscription you choose
-(Libre, Starter, Premium, or Ultimate). GitLab Community Edition installations
-only have access to Libre features.
+(Core, Starter, Premium, or Ultimate). GitLab Community Edition installations
+only have access to Core features.
 
 GitLab.com is administered by GitLab, Inc., therefore, only GitLab team members have
 access to its admin configurations. If you're a GitLab.com user, please check the
@@ -39,10 +43,14 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
+- [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
+- [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
+- [Third party offers](../user/admin_area/settings/third_party_offers.md)
 
 #### Customizing GitLab's appearance
 
 - [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Favicon](../customization/favicon.md): Change the default favicon to your own logo.
 - [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
 - [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
@@ -85,7 +93,6 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
@@ -99,6 +106,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
 - [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
+- [Custom project templates](https://docs.gitlab.com/ee/user/admin_area/custom_project_templates.html): Configure a set of projects to be used as custom templates when creating a new project. **[PREMIUM ONLY]**
 
 ### Repository settings
 
@@ -111,6 +119,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Enable/disable GitLab CI/CD](../ci/enable_or_disable_ci.md#site-wide-admin-setting): Enable or disable GitLab CI/CD for your instance.
 - [GitLab CI/CD admin settings](../user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
 - [Job artifacts](job_artifacts.md): Enable, disable, and configure job artifacts (a set of files and directories which are outputted by a job when it completes successfully).
+- [Job traces](job_traces.md): Information about the job traces (logs).
 - [Artifacts size and expiration](../user/admin_area/settings/continuous_integration.md#maximum-artifacts-size): Define maximum artifacts limits and expiration date.
 - [Register Shared and specific Runners](../ci/runners/README.md#registering-a-shared-runner): Learn how to register and configure Shared and specific Runners to your own instance.
 - [Shared Runners pipelines quota](../user/admin_area/settings/continuous_integration.md#shared-runners-pipeline-minutes-quota): Limit the usage of pipeline minutes for Shared Runners.

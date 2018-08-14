@@ -1,14 +1,14 @@
+import $ from 'jquery';
 import '~/behaviors/quick_submit';
 
-describe('Quick Submit behavior', () => {
+describe('Quick Submit behavior', function () {
   const keydownEvent = (options = { keyCode: 13, metaKey: true }) => $.Event('keydown', options);
 
-  preloadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+  preloadFixtures('snippets/show.html.raw');
 
   beforeEach(() => {
-    loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-    $('body').attr('data-page', 'projects:merge_requests:show');
-    $('form').submit((e) => {
+    loadFixtures('snippets/show.html.raw');
+    $('form').submit(e => {
       // Prevent a form submit from moving us off the testing page
       e.preventDefault();
     });
@@ -25,24 +25,30 @@ describe('Quick Submit behavior', () => {
   });
 
   it('does not respond to other keyCodes', () => {
-    this.textarea.trigger(keydownEvent({
-      keyCode: 32,
-    }));
+    this.textarea.trigger(
+      keydownEvent({
+        keyCode: 32,
+      }),
+    );
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
   it('does not respond to Enter alone', () => {
-    this.textarea.trigger(keydownEvent({
-      ctrlKey: false,
-      metaKey: false,
-    }));
+    this.textarea.trigger(
+      keydownEvent({
+        ctrlKey: false,
+        metaKey: false,
+      }),
+    );
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
   it('does not respond to repeated events', () => {
-    this.textarea.trigger(keydownEvent({
-      repeat: true,
-    }));
+    this.textarea.trigger(
+      keydownEvent({
+        repeat: true,
+      }),
+    );
     expect(this.spies.submit).not.toHaveBeenTriggered();
   });
 
@@ -82,15 +88,21 @@ describe('Quick Submit behavior', () => {
       });
 
       it('excludes other modifier keys', () => {
-        this.textarea.trigger(keydownEvent({
-          altKey: true,
-        }));
-        this.textarea.trigger(keydownEvent({
-          ctrlKey: true,
-        }));
-        this.textarea.trigger(keydownEvent({
-          shiftKey: true,
-        }));
+        this.textarea.trigger(
+          keydownEvent({
+            altKey: true,
+          }),
+        );
+        this.textarea.trigger(
+          keydownEvent({
+            ctrlKey: true,
+          }),
+        );
+        this.textarea.trigger(
+          keydownEvent({
+            shiftKey: true,
+          }),
+        );
         return expect(this.spies.submit).not.toHaveBeenTriggered();
       });
     });
@@ -101,15 +113,21 @@ describe('Quick Submit behavior', () => {
     });
 
     it('excludes other modifier keys', () => {
-      this.textarea.trigger(keydownEvent({
-        altKey: true,
-      }));
-      this.textarea.trigger(keydownEvent({
-        metaKey: true,
-      }));
-      this.textarea.trigger(keydownEvent({
-        shiftKey: true,
-      }));
+      this.textarea.trigger(
+        keydownEvent({
+          altKey: true,
+        }),
+      );
+      this.textarea.trigger(
+        keydownEvent({
+          metaKey: true,
+        }),
+      );
+      this.textarea.trigger(
+        keydownEvent({
+          shiftKey: true,
+        }),
+      );
       return expect(this.spies.submit).not.toHaveBeenTriggered();
     });
   }

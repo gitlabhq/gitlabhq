@@ -1,26 +1,42 @@
 <script>
-  export default {
-    name: 'PipelineNavControls',
-    props: {
-      newPipelinePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
+import LoadingButton from '../../vue_shared/components/loading_button.vue';
 
-      resetCachePath: {
-        type: String,
-        required: false,
-        default: null,
-      },
-
-      ciLintPath: {
-        type: String,
-        required: false,
-        default: null,
-      },
+export default {
+  name: 'PipelineNavControls',
+  components: {
+    LoadingButton,
+  },
+  props: {
+    newPipelinePath: {
+      type: String,
+      required: false,
+      default: null,
     },
-  };
+
+    resetCachePath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    ciLintPath: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    isResetCacheButtonLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+  methods: {
+    onClickResetCache() {
+      this.$emit('resetRunnersCache', this.resetCachePath);
+    },
+  },
+};
 </script>
 <template>
   <div class="nav-controls">
@@ -32,14 +48,13 @@
       {{ s__('Pipelines|Run Pipeline') }}
     </a>
 
-    <a
+    <loading-button
       v-if="resetCachePath"
-      data-method="post"
-      :href="resetCachePath"
+      :loading="isResetCacheButtonLoading"
+      :label="s__('Pipelines|Clear Runner Caches')"
       class="btn btn-default js-clear-cache"
-    >
-      {{ s__('Pipelines|Clear Runner Caches') }}
-    </a>
+      @click="onClickResetCache"
+    />
 
     <a
       v-if="ciLintPath"

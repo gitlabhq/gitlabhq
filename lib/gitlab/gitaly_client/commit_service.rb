@@ -3,10 +3,6 @@ module Gitlab
     class CommitService
       include Gitlab::EncodingHelper
 
-      # The ID of empty tree.
-      # See http://stackoverflow.com/a/40884093/1856239 and https://github.com/git/git/blob/3ad8b5bf26362ac67c9020bf8c30eee54a84f56d/cache.h#L1011-L1012
-      EMPTY_TREE_ID = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'.freeze
-
       def initialize(repository)
         @gitaly_repo = repository.gitaly_repository
         @repository = repository
@@ -37,7 +33,7 @@ module Gitlab
       def diff(from, to, options = {})
         from_id = case from
                   when NilClass
-                    EMPTY_TREE_ID
+                    Gitlab::Git::EMPTY_TREE_ID
                   else
                     if from.respond_to?(:oid)
                       # This is meant to match a Rugged::Commit. This should be impossible in
@@ -50,7 +46,7 @@ module Gitlab
 
         to_id = case to
                 when NilClass
-                  EMPTY_TREE_ID
+                  Gitlab::Git::EMPTY_TREE_ID
                 else
                   if to.respond_to?(:oid)
                     # This is meant to match a Rugged::Commit. This should be impossible in
@@ -74,15 +70,22 @@ module Gitlab
 
       def commit_deltas(commit)
         request = Gitaly::CommitDeltaRequest.new(diff_from_parent_request_params(commit))
-        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request)
+        response = GitalyClient.call(@repository.storage, :diff_service, :commit_delta, request, timeout: GitalyClient.fast_timeout)
 
         response.flat_map { |msg| msg.deltas }
       end
 
       def tree_entry(ref, path, limit = nil)
+        if Pathname.new(path).cleanpath.to_s.start_with?('../')
+          # The TreeEntry RPC should return an empty reponse in this case but in
+          # Gitaly 0.107.0 and earlier we get an exception instead. This early return
+          # saves us a Gitaly roundtrip while also avoiding the exception.
+          return
+        end
+
         request = Gitaly::TreeEntryRequest.new(
           repository: @gitaly_repo,
-          revision: ref,
+          revision: encode_binary(ref),
           path: encode_binary(path),
           limit: limit.to_i
         )
@@ -183,6 +186,8 @@ module Gitlab
       end
 
       def list_commits_by_oid(oids)
+        return [] if oids.empty?
+
         request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
 
         response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
@@ -297,7 +302,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum)
+        response = GitalyClient.call(@repository.storage, :commit_service, :filter_shas_with_signatures, enum, timeout: GitalyClient.fast_timeout)
 
         response.flat_map do |msg|
           msg.shas.map { |sha| EncodingHelper.encode!(sha) }
@@ -319,11 +324,13 @@ module Gitlab
         return if signature.blank? && signed_text.blank?
 
         [signature, signed_text]
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
       end
 
       def get_commit_signatures(commit_ids)
         request = Gitaly::GetCommitSignaturesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
-        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_signatures, request, timeout: GitalyClient.fast_timeout)
 
         signatures = Hash.new { |h, k| h[k] = [''.b, ''.b] }
         current_commit_id = nil
@@ -336,6 +343,24 @@ module Gitlab
         end
 
         signatures
+      rescue GRPC::InvalidArgument => ex
+        raise ArgumentError, ex
+      end
+
+      def get_commit_messages(commit_ids)
+        request = Gitaly::GetCommitMessagesRequest.new(repository: @gitaly_repo, commit_ids: commit_ids)
+        response = GitalyClient.call(@repository.storage, :commit_service, :get_commit_messages, request, timeout: GitalyClient.fast_timeout)
+
+        messages = Hash.new { |h, k| h[k] = ''.b }
+        current_commit_id = nil
+
+        response.each do |rpc_message|
+          current_commit_id = rpc_message.commit_id if rpc_message.commit_id.present?
+
+          messages[current_commit_id] << rpc_message.message
+        end
+
+        messages
       end
 
       private
@@ -343,7 +368,7 @@ module Gitlab
       def call_commit_diff(request_params, options = {})
         request_params[:ignore_whitespace_change] = options.fetch(:ignore_whitespace_change, false)
         request_params[:enforce_limits] = options.fetch(:limits, true)
-        request_params[:collapse_diffs] = request_params[:enforce_limits] || !options.fetch(:expanded, true)
+        request_params[:collapse_diffs] = !options.fetch(:expanded, true)
         request_params.merge!(Gitlab::Git::DiffCollection.collection_limits(options).to_h)
 
         request = Gitaly::CommitDiffRequest.new(request_params)
@@ -352,7 +377,7 @@ module Gitlab
       end
 
       def diff_from_parent_request_params(commit, options = {})
-        parent_id = commit.parent_ids.first || EMPTY_TREE_ID
+        parent_id = commit.parent_ids.first || Gitlab::Git::EMPTY_TREE_ID
 
         diff_between_commits_request_params(parent_id, commit.id, options)
       end
@@ -374,8 +399,8 @@ module Gitlab
         end
       end
 
-      def encode_repeated(a)
-        Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| encode_binary(s) } )
+      def encode_repeated(array)
+        Google::Protobuf::RepeatedField.new(:bytes, array.map { |s| encode_binary(s) } )
       end
 
       def call_find_commit(revision)

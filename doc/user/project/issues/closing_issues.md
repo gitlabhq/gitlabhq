@@ -48,12 +48,12 @@ link to each other, but the MR will NOT close the issue(s) when merged.
 
 ## From the Issue Board
 
-You can close an issue from [Issue Boards](../issue_board.md) by draging an issue card
+You can close an issue from [Issue Boards](../issue_board.md) by dragging an issue card
 from its list and dropping into **Closed**.
 
 ![close issue from the Issue Board](img/close_issue_from_board.gif)
 
-## Customizing the issue closing patern
+## Customizing the issue closing pattern
 
 Alternatively, a GitLab **administrator** can
-[customize the issue closing patern](../../../administration/issue_closing_pattern.md).
+[customize the issue closing pattern](../../../administration/issue_closing_pattern.md).

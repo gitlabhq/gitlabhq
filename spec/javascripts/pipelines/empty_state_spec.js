@@ -29,7 +29,7 @@ describe('Pipelines Empty State', () => {
 
     expect(
       component.$el.querySelector('p').innerHTML.trim().replace(/\n+\s+/m, ' ').replace(/\s\s+/g, ' '),
-    ).toContain('Continous Integration can help catch bugs by running your tests automatically,');
+    ).toContain('Continuous Integration can help catch bugs by running your tests automatically,');
 
     expect(
       component.$el.querySelector('p').innerHTML.trim().replace(/\n+\s+/m, ' ').replace(/\s\s+/g, ' '),

@@ -65,11 +65,11 @@
     <div class="cron-preset-radio-input">
       <input
         id="custom"
-        class="label-light"
-        type="radio"
         :name="inputNameAttribute"
         :value="cronInterval"
         :checked="isEditable"
+        class="label-bold"
+        type="radio"
         @click="toggleCustomInput(true)"
       />
 
@@ -90,16 +90,16 @@
     <div class="cron-preset-radio-input">
       <input
         id="every-day"
-        class="label-light"
-        type="radio"
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyDay"
+        class="label-bold"
+        type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-day"
       >
         {{ __('Every day (at 4:00am)') }}
@@ -109,16 +109,16 @@
     <div class="cron-preset-radio-input">
       <input
         id="every-week"
-        class="label-light"
-        type="radio"
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyWeek"
+        class="label-bold"
+        type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-week"
       >
         {{ __('Every week (Sundays at 4:00am)') }}
@@ -128,16 +128,16 @@
     <div class="cron-preset-radio-input">
       <input
         id="every-month"
-        class="label-light"
-        type="radio"
         v-model="cronInterval"
         :name="inputNameAttribute"
         :value="cronIntervalPresets.everyMonth"
+        class="label-bold"
+        type="radio"
         @click="toggleCustomInput(false)"
       />
 
       <label
-        class="label-light"
+        class="label-bold"
         for="every-month"
       >
         {{ __('Every month (on the 1st at 4:00am)') }}
@@ -147,13 +147,13 @@
     <div class="cron-interval-input-wrapper">
       <input
         id="schedule_cron"
-        class="form-control inline cron-interval-input"
-        type="text"
         :placeholder="__('Define a custom pattern with cron syntax')"
-        required="true"
         v-model="cronInterval"
         :name="inputNameAttribute"
         :disabled="!isEditable"
+        class="form-control inline cron-interval-input"
+        type="text"
+        required="true"
       />
     </div>
   </div>

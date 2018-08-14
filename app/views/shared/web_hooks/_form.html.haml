@@ -1,82 +1,79 @@
 = form_errors(hook)
 
 .form-group
-  = form.label :url, 'URL', class: 'label-light'
+  = form.label :url, 'URL', class: 'label-bold'
   = form.text_field :url, class: 'form-control', placeholder: 'http://example.com/trigger-ci.json'
 .form-group
-  = form.label :token, 'Secret Token', class: 'label-light'
+  = form.label :token, 'Secret Token', class: 'label-bold'
   = form.text_field :token, class: 'form-control', placeholder: ''
-  %p.help-block
+  %p.form-text.text-muted
     Use this token to validate received payloads. It will be sent with the request in the X-Gitlab-Token HTTP header.
 .form-group
-  = form.label :url, 'Trigger', class: 'label-light'
-  %ul.list-unstyled
+  = form.label :url, 'Trigger', class: 'label-bold'
+  %ul.list-unstyled.prepend-left-20
     %li
-      = form.check_box :push_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :push_events, class: 'list-label' do
-          %strong Push events
-        %p.light
-          This URL will be triggered by a push to the repository
+      = form.check_box :push_events, class: 'form-check-input'
+      = form.label :push_events, class: 'list-label form-check-label ml-1' do
+        %strong Push events
+      %p.light.ml-1
+        This URL will be triggered by a push to the repository
     %li
-      = form.check_box :tag_push_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :tag_push_events, class: 'list-label' do
-          %strong Tag push events
-        %p.light
-          This URL will be triggered when a new tag is pushed to the repository
+      = form.check_box :tag_push_events, class: 'form-check-input'
+      = form.label :tag_push_events, class: 'list-label form-check-label ml-1' do
+        %strong Tag push events
+      %p.light.ml-1
+        This URL will be triggered when a new tag is pushed to the repository
     %li
-      = form.check_box :note_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :note_events, class: 'list-label' do
-          %strong Comments
-        %p.light
-          This URL will be triggered when someone adds a comment
+      = form.check_box :note_events, class: 'form-check-input'
+      = form.label :note_events, class: 'list-label form-check-label ml-1' do
+        %strong Comments
+      %p.light.ml-1
+        This URL will be triggered when someone adds a comment
     %li
-      = form.check_box :issues_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :issues_events, class: 'list-label' do
-          %strong Issues events
-        %p.light
-          This URL will be triggered when an issue is created/updated/merged
+      = form.check_box :confidential_note_events, class: 'form-check-input'
+      = form.label :confidential_note_events, class: 'list-label form-check-label ml-1' do
+        %strong Confidential Comments
+      %p.light.ml-1
+        This URL will be triggered when someone adds a comment on a confidential issue
     %li
-      = form.check_box :confidential_issues_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :confidential_issues_events, class: 'list-label' do
-          %strong Confidential Issues events
-        %p.light
-          This URL will be triggered when a confidential issue is created/updated/merged
+      = form.check_box :issues_events, class: 'form-check-input'
+      = form.label :issues_events, class: 'list-label form-check-label ml-1' do
+        %strong Issues events
+      %p.light.ml-1
+        This URL will be triggered when an issue is created/updated/merged
     %li
-      = form.check_box :merge_requests_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :merge_requests_events, class: 'list-label' do
-          %strong Merge request events
-        %p.light
-          This URL will be triggered when a merge request is created/updated/merged
+      = form.check_box :confidential_issues_events, class: 'form-check-input'
+      = form.label :confidential_issues_events, class: 'list-label form-check-label ml-1' do
+        %strong Confidential Issues events
+      %p.light.ml-1
+        This URL will be triggered when a confidential issue is created/updated/merged
     %li
-      = form.check_box :job_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :job_events, class: 'list-label' do
-          %strong Job events
-        %p.light
-          This URL will be triggered when the job status changes
+      = form.check_box :merge_requests_events, class: 'form-check-input'
+      = form.label :merge_requests_events, class: 'list-label form-check-label ml-1' do
+        %strong Merge request events
+      %p.light.ml-1
+        This URL will be triggered when a merge request is created/updated/merged
     %li
-      = form.check_box :pipeline_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :pipeline_events, class: 'list-label' do
-          %strong Pipeline events
-        %p.light
-          This URL will be triggered when the pipeline status changes
+      = form.check_box :job_events, class: 'form-check-input'
+      = form.label :job_events, class: 'list-label form-check-label ml-1' do
+        %strong Job events
+      %p.light.ml-1
+        This URL will be triggered when the job status changes
     %li
-      = form.check_box :wiki_page_events, class: 'pull-left'
-      .prepend-left-20
-        = form.label :wiki_page_events, class: 'list-label' do
-          %strong Wiki Page events
-        %p.light
-          This URL will be triggered when a wiki page is created/updated
+      = form.check_box :pipeline_events, class: 'form-check-input'
+      = form.label :pipeline_events, class: 'list-label form-check-label ml-1' do
+        %strong Pipeline events
+      %p.light.ml-1
+        This URL will be triggered when the pipeline status changes
+    %li
+      = form.check_box :wiki_page_events, class: 'form-check-input'
+      = form.label :wiki_page_events, class: 'list-label form-check-label ml-1' do
+        %strong Wiki Page events
+      %p.light.ml-1
+        This URL will be triggered when a wiki page is created/updated
 .form-group
-  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-light checkbox'
-  .checkbox
-    = form.label :enable_ssl_verification do
-      = form.check_box :enable_ssl_verification
+  = form.label :enable_ssl_verification, 'SSL verification', class: 'label-bold checkbox'
+  .form-check
+    = form.check_box :enable_ssl_verification, class: 'form-check-input'
+    = form.label :enable_ssl_verification, class: 'form-check-label ml-1' do
       %strong Enable SSL verification

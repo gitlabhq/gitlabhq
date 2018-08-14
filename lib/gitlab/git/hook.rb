@@ -11,7 +11,7 @@ module Gitlab
       def initialize(name, repository)
         @name = name
         @repository = repository
-        @path = File.join(repo_path.strip, 'hooks', name)
+        @path = File.join(repo_path, 'hooks', name)
       end
 
       def repo_path
@@ -95,13 +95,13 @@ module Gitlab
         args = [ref, oldrev, newrev]
 
         stdout, stderr, status = Open3.capture3(env, path, *args, options)
-        [status.success?, (stderr.presence || stdout).gsub(/\R/, "<br>").html_safe]
+        [status.success?, stderr.presence || stdout]
       end
 
       def retrieve_error_message(stderr, stdout)
         err_message = stderr.read
         err_message = err_message.blank? ? stdout.read : err_message
-        err_message.gsub(/\R/, "<br>").html_safe
+        err_message
       end
     end
   end

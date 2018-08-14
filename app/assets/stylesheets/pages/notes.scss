@@ -3,9 +3,17 @@
  */
 
 @-webkit-keyframes targe3-note {
-  from { background: $note-targe3-outside; }
-  50% { background: $note-targe3-inside; }
-  to { background: $note-targe3-outside; }
+  from {
+    background: $note-targe3-outside;
+  }
+
+  50% {
+    background: $note-targe3-inside;
+  }
+
+  to {
+    background: $note-targe3-outside;
+  }
 }
 
 ul.notes {
@@ -16,13 +24,13 @@ ul.notes {
 
   .note-created-ago,
   .note-updated-at {
-    white-space: nowrap;
+    white-space: normal;
   }
 
   .discussion-body {
     padding-top: 8px;
 
-    .panel {
+    .card {
       margin-bottom: 0;
     }
   }
@@ -33,16 +41,18 @@ ul.notes {
 
     .diff-content {
       overflow: visible;
+      padding: 0;
     }
   }
 
-  > li { // .timeline-entry
+  > li {
+    // .timeline-entry
     padding: 0;
     display: block;
     position: relative;
     border-bottom: 0;
 
-    @include notes-media('min', $screen-sm-min) {
+    @include notes-media('min', map-get($grid-breakpoints, sm)) {
       padding-left: $note-icon-gutter-width;
     }
 
@@ -66,7 +76,7 @@ ul.notes {
     }
 
     .timeline-icon {
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: -$note-icon-gutter-width;
       }
     }
@@ -74,7 +84,7 @@ ul.notes {
     .timeline-content {
       margin-left: $note-icon-gutter-width;
 
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 0;
       }
     }
@@ -140,12 +150,6 @@ ul.notes {
         @include bulleted-list;
         word-wrap: break-word;
 
-        ul.task-list {
-          ul:not(.task-list) {
-            padding-left: 1.3em;
-          }
-        }
-
         table {
           @include markdown-table;
         }
@@ -159,8 +163,7 @@ ul.notes {
     }
 
     .note-header {
-
-      @include notes-media('max', $screen-xs-min) {
+      @include notes-media('max', map-get($grid-breakpoints, xs)) {
         .inline {
           display: block;
         }
@@ -223,7 +226,7 @@ ul.notes {
     .timeline-icon {
       float: left;
 
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 0;
         width: auto;
       }
@@ -237,7 +240,7 @@ ul.notes {
     }
 
     .timeline-content {
-      @include notes-media('min', $screen-sm-min) {
+      @include notes-media('min', map-get($grid-breakpoints, sm)) {
         margin-left: 30px;
       }
     }
@@ -251,7 +254,6 @@ ul.notes {
 
       .system-note-commit-list-toggler {
         color: $gl-link-color;
-        display: none;
         padding: 10px 0 0;
         cursor: pointer;
         position: relative;
@@ -326,7 +328,7 @@ ul.notes {
   }
 
   .notes_holder {
-    font-family: $regular_font;
+    font-family: $regular-font;
 
     td {
       border: 1px solid $white-normal;
@@ -401,7 +403,7 @@ ul.notes {
     }
   }
 
-  .author_link {
+  .author-link {
     color: $gl-text-color;
   }
 }
@@ -413,10 +415,6 @@ ul.notes {
 .note-header {
   display: flex;
   justify-content: space-between;
-
-  @include notes-media('max', $screen-xs-max) {
-    flex-flow: row wrap;
-  }
 }
 
 .note-header-info {
@@ -433,7 +431,7 @@ ul.notes {
 }
 
 .note-header-author-name {
-  @include notes-media('max', $screen-xs-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     display: none;
   }
 }
@@ -441,7 +439,7 @@ ul.notes {
 .note-headline-light {
   display: inline;
 
-  @include notes-media('max', $screen-xs-min) {
+  @include notes-media('max', map-get($grid-breakpoints, xs)) {
     display: block;
   }
 }
@@ -465,6 +463,10 @@ ul.notes {
     white-space: normal;
   }
 
+  .system-note-separator {
+    color: $gl-text-color-disabled;
+  }
+
   a:hover {
     text-decoration: underline;
   }
@@ -479,11 +481,6 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', $screen-md-max) {
-    float: none;
-    margin-left: 0;
-  }
-
   .btn-group > .discussion-next-btn {
     margin-left: -1px;
   }
@@ -497,7 +494,7 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  @include notes-media('max', $screen-xs-max) {
+  @include notes-media('max', map-get($grid-breakpoints, sm) - 1) {
     float: none;
     margin-left: 0;
   }
@@ -549,6 +546,7 @@ ul.notes {
 
   svg {
     @include btn-svg;
+    margin: 0;
   }
 
   .award-control-icon-positive,
@@ -635,15 +633,17 @@ ul.notes {
 .line_holder .is-over:not(.no-comment-btn) {
   .add-diff-note {
     opacity: 1;
+    z-index: 101;
   }
 }
 
 .add-diff-note {
   @include btn-comment-icon;
   opacity: 0;
-  margin-top: -2px;
   margin-left: -55px;
   position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
   z-index: 10;
 }
 
@@ -672,14 +672,13 @@ ul.notes {
     background-color: $white-light;
   }
 
-
   a {
     color: $gl-link-color;
   }
 }
 
 .line-resolve-all-container {
-  @include notes-media('min', $screen-sm-min) {
+  @include notes-media('min', map-get($grid-breakpoints, sm)) {
     margin-right: 0;
     padding-left: $gl-padding;
   }
@@ -723,7 +722,7 @@ ul.notes {
 .line-resolve-all {
   vertical-align: middle;
   display: inline-block;
-  padding: 6px 10px;
+  padding: 5px 10px 6px;
   background-color: $gray-light;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
@@ -779,6 +778,43 @@ ul.notes {
   }
 }
 
-.line-resolve-text {
-  vertical-align: middle;
+// Vue refactored diff discussion adjustments
+.files {
+  .diff-discussions {
+    .note-discussion.timeline-entry {
+      padding-left: 0;
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      > .timeline-entry-inner {
+        padding: 0;
+
+        > .timeline-content {
+          margin-left: 0;
+        }
+
+        > .timeline-icon {
+          display: none;
+        }
+      }
+
+      .discussion-body {
+        padding-top: 0;
+
+        .discussion-wrapper {
+          border-color: transparent;
+        }
+      }
+    }
+  }
+
+  .diff-comment-form {
+    display: block;
+  }
+
+  .add-diff-note svg {
+    margin-top: 4px;
+  }
 }

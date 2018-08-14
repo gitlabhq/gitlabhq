@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class InstallService < BaseHelmService
@@ -10,10 +12,10 @@ module Clusters
 
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-        rescue KubeException => ke
+        rescue Kubeclient::HttpError => ke
           app.make_errored!("Kubernetes error: #{ke.message}")
-        rescue StandardError
-          app.make_errored!("Can't start installation process")
+        rescue StandardError => e
+          app.make_errored!("Can't start installation process. #{e.message}")
         end
       end
     end

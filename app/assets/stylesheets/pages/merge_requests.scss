@@ -15,21 +15,84 @@
   }
 }
 
+.mr-widget-border-top {
+  border-top: 1px solid $border-color;
+}
+
+.media-section {
+  @include media-breakpoint-down(md) {
+    align-items: flex-start;
+
+    .media-body {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .code-text {
+    @include media-breakpoint-up(lg) {
+      align-self: center;
+      flex: 1;
+    }
+  }
+}
+
+.mr-widget-section {
+  .media {
+    align-items: center;
+  }
+
+  .code-text {
+    flex: 1;
+  }
+}
+
+
+.mr-widget-heading {
+  position: relative;
+  border: 1px solid $border-color;
+  border-radius: 4px;
+
+  &:not(.deploy-heading)::before {
+    content: '';
+    border-left: 1px solid $theme-gray-200;
+    position: absolute;
+    left: 32px;
+    top: -17px;
+    height: 16px;
+  }
+}
+
+.mr-section-container {
+  border: 1px solid $border-color;
+  border-radius: $border-radius-default;
+  border-top: 0;
+}
+
+.mr-widget-heading,
+.mr-widget-section,
+.mr-widget-footer {
+  padding: $gl-padding;
+}
+
 .mr-state-widget {
   color: $gl-text-color;
-  border: 1px solid $border-color;
-  border-radius: 2px;
-  line-height: 28px;
 
-  .mr-widget-heading,
   .mr-widget-section,
   .mr-widget-footer {
-    padding: $gl-padding;
     border-top: solid 1px $border-color;
   }
 
   .mr-widget-footer {
     padding: 0;
+  }
+
+  .mr-report {
+    padding: 0;
+
+    > .media {
+      padding: $gl-padding;
+    }
   }
 
   form {
@@ -49,12 +112,6 @@
 
     &[disabled] {
       opacity: 0.3;
-    }
-
-    &.btn-xs {
-      line-height: 1;
-      padding: 5px 10px;
-      margin-top: 1px;
     }
 
     &.dropdown-toggle {
@@ -100,10 +157,8 @@
 
       .modify-merge-commit-link {
         padding: 0;
-
         background-color: transparent;
         border: 0;
-
         color: $gl-text-color;
 
         &:hover,
@@ -130,9 +185,16 @@
   .ci-widget {
     color: $gl-text-color;
     display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       flex-wrap: wrap;
+    }
+
+    .ci-widget-content {
+      display: flex;
+      align-items: center;
     }
   }
 
@@ -142,8 +204,6 @@
   }
 
   .ci-status-icon svg {
-    width: $status-icon-size;
-    height: $status-icon-size;
     margin: 3px 0;
     position: relative;
     overflow: visible;
@@ -151,14 +211,8 @@
   }
 
   .mr-widget-pipeline-graph {
-    padding: 0 4px;
-
     .dropdown-menu {
       z-index: 300;
-    }
-
-    .ci-action-icon-wrapper {
-      line-height: 16px;
     }
   }
 
@@ -167,7 +221,7 @@
   }
 
   .normal {
-    line-height: 28px;
+    flex: 1;
   }
 
   .capitalize {
@@ -178,7 +232,7 @@
     @extend .ref-name;
 
     color: $gl-text-color;
-    font-weight: $gl-font-weight-bold;
+    font-weight: normal;
     overflow: hidden;
     word-break: break-all;
 
@@ -195,13 +249,19 @@
         position: absolute;
         content: '...';
         right: 0;
-        font-family: $regular_font;
+        font-family: $regular-font;
         background-color: $gray-light;
       }
     }
   }
 
+  .widget-status-icon {
+    align-self: flex-start;
+  }
+
   .mr-widget-body {
+    line-height: 28px;
+
     @include clearfix;
 
     &.media > *:first-child {
@@ -286,7 +346,7 @@
       display: inline-block;
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       p {
         font-size: 13px;
       }
@@ -453,8 +513,7 @@
   }
 }
 
-.mr-links,
-.mr-maintainer-edit {
+.mr-links {
   padding-left: $status-icon-size + $status-icon-margin;
 }
 
@@ -488,29 +547,74 @@
 .mr-source-target {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: center;
-  background-color: $gray-light;
-  border-radius: $border-radius-default $border-radius-default 0 0;
-  padding: $gl-padding / 2 $gl-padding;
+  border-radius: $border-radius-default;
+  padding: $gl-padding;
+  border: 1px solid $border-color;
+  min-height: 69px;
+
+  @include media-breakpoint-up(md) {
+    align-items: center;
+  }
 
   .dropdown-toggle .fa {
     color: $gl-text-color;
   }
+
+  .git-merge-icon-container {
+    border: 1px solid $theme-gray-400;
+    border-radius: 50%;
+    height: 32px;
+    width: 32px;
+    color: $theme-gray-700;
+    line-height: 28px;
+
+    .ic-git-merge {
+      vertical-align: middle;
+      width: 31px;
+    }
+  }
+
+  .git-merge-container {
+    justify-content: space-between;
+    flex: 1;
+    flex-direction: row;
+    align-items: center;
+
+    @include media-breakpoint-down(md) {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .branch-actions {
+        margin-top: 16px;
+      }
+    }
+
+    @include media-breakpoint-up(lg) {
+      .branch-actions {
+        align-self: center;
+        margin-left: $gl-padding;
+      }
+    }
+  }
+
+  .diverged-commits-count {
+    color: $gl-text-color-secondary;
+    font-size: 12px;
+  }
 }
 
-.panel-new-merge-request {
-  .panel-heading {
+.card-new-merge-request {
+  .card-header {
     padding: 5px 10px;
     font-weight: $gl-font-weight-bold;
     line-height: 25px;
   }
 
-  .panel-body {
+  .card-body {
     padding: 10px 5px;
   }
 
-  .panel-footer {
+  .card-footer {
     padding: 0;
 
     .btn {
@@ -524,7 +628,7 @@
     }
 
     .item-title {
-      @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         width: 45%;
       }
     }
@@ -555,7 +659,7 @@
     margin-bottom: 0;
   }
 
-  @media (min-width: $screen-xs-min) {
+  @include media-breakpoint-up(xs) {
     float: left;
     width: 50%;
     margin-bottom: 0;
@@ -610,14 +714,12 @@
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
-  z-index: 199;
 
   .mr-version-menus-container {
-    display: -webkit-flex;
     display: flex;
-    -webkit-align-items: center;
     align-items: center;
     padding: 16px;
+    z-index: 199;
   }
 
   .content-block {
@@ -653,7 +755,7 @@
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     position: sticky;
     position: -webkit-sticky;
   }
@@ -662,7 +764,7 @@
     left: 0;
     transition: right .15s;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       right: 0;
     }
 
@@ -683,6 +785,7 @@
 
 .merge-request-tabs {
   display: flex;
+  flex-wrap: nowrap;
   margin-bottom: 0;
   padding: 0;
 }
@@ -705,7 +808,7 @@
   display: flex;
   justify-content: space-between;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column-reverse;
   }
 }
@@ -719,6 +822,8 @@
 }
 
 .mr-memory-usage {
+  width: 100%;
+
   p.usage-info-loading .usage-info-load-spinner {
     margin-right: 10px;
     font-size: 16px;
@@ -727,4 +832,113 @@
 
 .fork-sprite {
   margin-right: -5px;
+}
+
+.deploy-heading {
+  margin-top: -19px;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  background-color: $gray-light;
+
+  @include media-breakpoint-up(md) {
+    padding: $gl-padding-8 $gl-padding;
+  }
+
+  .media-body {
+    min-width: 0;
+    font-size: 12px;
+    margin-left: 48px;
+  }
+}
+
+.deploy-body {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+
+  @include media-breakpoint-up(xs) {
+    flex-wrap: nowrap;
+    white-space: nowrap;
+  }
+
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+    align-items: flex-start;
+
+    .deployment-info {
+      margin-bottom: $gl-padding;
+    }
+  }
+
+  > *:not(:last-child) {
+    margin-right: .3em;
+  }
+
+  svg {
+    vertical-align: text-top;
+  }
+
+  .deployment-info {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 100px;
+
+    @include media-breakpoint-up(xs) {
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
+  .btn svg {
+    fill: $theme-gray-700;
+  }
+}
+
+// Hack alert: we've rewritten `btn` class in a way that
+// we've broken it and it is not possible to use with `btn-link`
+// which causes a blank button when it's disabled and hovering
+// The css in here is the boostrap one
+.btn-link-retry {
+  &[disabled] {
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .65;
+
+    &:hover {
+      color: $file-mode-changed;
+      text-decoration: none;
+    }
+  }
+}
+
+.ci-widget-container {
+  justify-content: space-between;
+  flex: 1;
+  flex-direction: row;
+
+  @include media-breakpoint-down(md) {
+    flex-direction: column;
+
+    .stage-cell .stage-container {
+      margin-top: 16px;
+    }
+
+    .dropdown .mini-pipeline-graph-dropdown-menu.dropdown-menu {
+      transform: initial;
+    }
+  }
+
+  .coverage {
+    font-size: 12px;
+    color: $theme-gray-700;
+    line-height: initial;
+  }
+
+  .mini-pipeline-graph-dropdown-toggle,
+  .stage-cell .mini-pipeline-graph-dropdown-toggle svg {
+    height: $ci-action-icon-size-lg;
+    width: $ci-action-icon-size-lg;
+  }
 }

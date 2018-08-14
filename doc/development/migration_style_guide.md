@@ -23,10 +23,6 @@ When downtime is necessary the migration has to be approved by:
 An up-to-date list of people holding these titles can be found at
 <https://about.gitlab.com/team/>.
 
-The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
-various database operations, whether they require downtime and how to
-work around that whenever possible.
-
 When writing your migrations, also consider that databases might have stale data
 or inconsistencies and guard for that. Try to make as few assumptions as
 possible about the state of the database.
@@ -40,6 +36,18 @@ compatible.
 Migrations that make changes to the database schema (e.g. adding a column) can
 only be added in the monthly release, patch releases may only contain data
 migrations _unless_ schema changes are absolutely required to solve a problem.
+
+## What Requires Downtime?
+
+The document ["What Requires Downtime?"](what_requires_downtime.md) specifies
+various database operations, such as 
+
+- [adding, dropping, and renaming columns](what_requires_downtime.md#adding-columns)
+- [changing column constraints and types](what_requires_downtime.md#changing-column-constraints)
+- [adding and dropping indexes, tables, and foreign keys](what_requires_downtime.md#adding-indexes)
+
+and whether they require downtime and how to work around that whenever possible.
+
 
 ## Downtime Tagging
 
@@ -136,10 +144,13 @@ class MyMigration < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    remove_concurrent_index :table_name, :column_name if index_exists?(:table_name, :column_name)
+    remove_concurrent_index :table_name, :column_name
   end
 end
 ```
+
+Note that it is not necessary to check if the index exists prior to
+removing it.
 
 ## Adding indexes
 
@@ -170,6 +181,34 @@ class MyMigration < ActiveRecord::Migration
   end
 end
 ```
+
+## Adding foreign-key constraints
+
+When adding a foreign-key constraint to either an existing or new
+column remember to also add a index on the column.
+
+This is _required_ if the foreign-key constraint specifies
+`ON DELETE CASCADE` or `ON DELETE SET NULL` behavior. On a cascading
+delete, the [corresponding record needs to be retrieved using an
+index](https://www.cybertec-postgresql.com/en/postgresql-indexes-and-foreign-keys/)
+(otherwise, we'd need to scan the whole table) for subsequent update or
+deletion.
+
+Here's an example where we add a new column with a foreign key
+constraint. Note it includes `index: true` to create an index for it.
+
+```ruby
+class Migration < ActiveRecord::Migration
+
+  def change
+    add_reference :model, :other_model, index: true, foreign_key: { on_delete: :cascade }
+  end
+end
+```
+
+When adding a foreign-key constraint to an existing column, we
+have to employ `add_concurrent_foreign_key` and `add_concurrent_index`
+instead of `add_reference`.
 
 ## Adding Columns With Default Values
 

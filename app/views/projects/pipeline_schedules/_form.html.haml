@@ -1,26 +1,26 @@
-= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "form-horizontal js-pipeline-schedule-form" } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @schedule], as: :schedule, html: { id: "new-pipeline-schedule-form", class: "js-pipeline-schedule-form" } do |f|
   = form_errors(@schedule)
-  .form-group
+  .form-group.row
     .col-md-9
-      = f.label :description, _('Description'), class: 'label-light'
+      = f.label :description, _('Description'), class: 'label-bold'
       = f.text_field :description, class: 'form-control', required: true, autofocus: true, placeholder: s_('PipelineSchedules|Provide a short description for this pipeline')
-  .form-group
+  .form-group.row
     .col-md-9
-      = f.label :cron, _('Interval Pattern'), class: 'label-light'
+      = f.label :cron, _('Interval Pattern'), class: 'label-bold'
       #interval-pattern-input{ data: { initial_interval: @schedule.cron } }
-  .form-group
+  .form-group.row
     .col-md-9
-      = f.label :cron_timezone, _('Cron Timezone'), class: 'label-light'
+      = f.label :cron_timezone, _('Cron Timezone'), class: 'label-bold'
       = dropdown_tag(_("Select a timezone"), options: { toggle_class: 'btn js-timezone-dropdown', title: _("Select a timezone"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: timezone_data } } )
       = f.text_field :cron_timezone, value: @schedule.cron_timezone, id: 'schedule_cron_timezone', class: 'hidden', name: 'schedule[cron_timezone]', required: true
-  .form-group
+  .form-group.row
     .col-md-9
-      = f.label :ref, _('Target Branch'), class: 'label-light'
+      = f.label :ref, _('Target Branch'), class: 'label-bold'
       = dropdown_tag(_("Select target branch"), options: { toggle_class: 'btn js-target-branch-dropdown', dropdown_class: 'git-revision-dropdown', title: _("Select target branch"), filter: true, placeholder: s_("OfSearchInADropdown|Filter"), data: { data: @project.repository.branch_names, default_branch: @project.default_branch } } )
       = f.text_field :ref, value: @schedule.ref, id: 'schedule_ref', class: 'hidden', name: 'schedule[ref]', required: true
-  .form-group.js-ci-variable-list-section
+  .form-group.row.js-ci-variable-list-section
     .col-md-9
-      %label.label-light
+      %label.label-bold
         #{ s_('PipelineSchedules|Variables') }
       %ul.ci-variable-list
         - @schedule.variables.each do |variable|
@@ -32,9 +32,9 @@
             = n_('Hide value', 'Hide values', @schedule.variables.size)
           - else
             = n_('Reveal value', 'Reveal values', @schedule.variables.size)
-  .form-group
+  .form-group.row
     .col-md-9
-      = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-light'
+      = f.label  :active, s_('PipelineSchedules|Activated'), class: 'label-bold'
       %div
         = f.check_box :active, required: false, value: @schedule.active?
         = _('Active')

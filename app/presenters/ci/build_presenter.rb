@@ -1,7 +1,7 @@
-module Ci
-  class BuildPresenter < Gitlab::View::Presenter::Delegated
-    presents :build
+# frozen_string_literal: true
 
+module Ci
+  class BuildPresenter < CommitStatusPresenter
     def erased_by_user?
       # Build can be erased through API, therefore it does not have
       # `erased_by` user assigned in that case.
@@ -15,6 +15,8 @@ module Ci
     def status_title
       if auto_canceled?
         "Job is redundant and is auto-canceled by Pipeline ##{auto_canceled_by_id}"
+      else
+        tooltip_for_badge
       end
     end
 
@@ -27,6 +29,20 @@ module Ci
         else
           trigger_request.user_variables
         end
+    end
+
+    def tooltip_message
+      "#{subject.name} - #{detailed_status.status_tooltip}"
+    end
+
+    private
+
+    def tooltip_for_badge
+      detailed_status.badge_tooltip.capitalize
+    end
+
+    def detailed_status
+      @detailed_status ||= subject.detailed_status(user)
     end
   end
 end

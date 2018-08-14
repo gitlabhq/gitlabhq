@@ -2,7 +2,6 @@ import Vue from 'vue';
 
 import axios from '~/lib/utils/axios_utils';
 import stopJobsModal from '~/pages/admin/jobs/index/components/stop_jobs_modal.vue';
-import * as urlUtility from '~/lib/utils/url_utility';
 
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
@@ -24,7 +23,7 @@ describe('stop_jobs_modal.vue', () => {
   describe('onSubmit', () => {
     it('stops jobs and redirects to overview page', (done) => {
       const responseURL = `${gl.TEST_HOST}/stop_jobs_modal.vue/jobs`;
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
+      const redirectSpy = spyOnDependency(stopJobsModal, 'redirectTo');
       spyOn(axios, 'post').and.callFake((url) => {
         expect(url).toBe(props.url);
         return Promise.resolve({
@@ -44,7 +43,7 @@ describe('stop_jobs_modal.vue', () => {
 
     it('displays error if stopping jobs failed', (done) => {
       const dummyError = new Error('stopping jobs failed');
-      const redirectSpy = spyOn(urlUtility, 'redirectTo');
+      const redirectSpy = spyOnDependency(stopJobsModal, 'redirectTo');
       spyOn(axios, 'post').and.callFake((url) => {
         expect(url).toBe(props.url);
         return Promise.reject(dummyError);

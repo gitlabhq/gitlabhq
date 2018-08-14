@@ -1,5 +1,0 @@
----
-title: Release libgit2 cache and open file descriptors after `git gc` run
-merge_request:
-author:
-type: fixed

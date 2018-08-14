@@ -7,13 +7,27 @@
 # * creating a review app for each topic branch,
 # * and continuous deployment to production
 #
+# Test jobs may be disabled by setting environment variables:
+# * test: TEST_DISABLED
+# * code_quality: CODE_QUALITY_DISABLED
+# * license_management: LICENSE_MANAGEMENT_DISABLED
+# * performance: PERFORMANCE_DISABLED
+# * sast: SAST_DISABLED
+# * dependency_scanning: DEPENDENCY_SCANNING_DISABLED
+# * container_scanning: CONTAINER_SCANNING_DISABLED
+# * dast: DAST_DISABLED
+# * review: REVIEW_DISABLED
+# * stop_review: REVIEW_DISABLED
+#
 # In order to deploy, you must have a Kubernetes cluster configured either
 # via a project integration, or via group/project variables.
 # AUTO_DEVOPS_DOMAIN must also be set as a variable at the group or project
 # level, or manually added below.
 #
-# If you want to deploy to staging first, or enable canary deploys,
-# uncomment the relevant jobs in the pipeline below.
+# Continuous deployment to production is enabled by default.
+# If you want to deploy to staging first, or enable incremental rollouts,
+# set STAGING_ENABLED or INCREMENTAL_ROLLOUT_ENABLED environment variables.
+# If you want to use canary deployments, set CANARY_ENABLED environment variable.
 #
 # If Auto DevOps fails to detect the proper buildpack, or if you want to
 # specify a custom buildpack, set a project variable `BUILDPACK_URL` to the
@@ -36,7 +50,6 @@ variables:
 
   KUBERNETES_VERSION: 1.8.6
   HELM_VERSION: 2.6.1
-  CODECLIMATE_VERSION: 0.69.0
 
 stages:
   - build
@@ -51,9 +64,9 @@ stages:
 
 build:
   stage: build
-  image: docker:git
+  image: docker:stable-git
   services:
-  - docker:dind
+  - docker:stable-dind
   variables:
     DOCKER_DRIVER: overlay2
   script:
@@ -75,28 +88,56 @@ test:
     - /bin/herokuish buildpack test
   only:
     - branches
+  except:
+    variables:
+      - $TEST_DISABLED
 
-codequality:
-  image: docker:latest
+code_quality:
+  stage: test
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
-    - codeclimate
+    - code_quality
   artifacts:
-    paths: [codeclimate.json]
+    paths: [gl-code-quality-report.json]
+  only:
+    - branches
+  except:
+    variables:
+      - $CODE_QUALITY_DISABLED
+
+license_management:
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - license_management
+  artifacts:
+    paths: [gl-license-management-report.json]
+  only:
+    - branches
+  except:
+    variables:
+      - $LICENSE_MANAGEMENT_DISABLED
 
 performance:
   stage: performance
-  image: docker:latest
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
     - performance
@@ -108,37 +149,71 @@ performance:
     refs:
       - branches
     kubernetes: active
+  except:
+    variables:
+      - $PERFORMANCE_DISABLED
 
 sast:
-  image: docker:latest
+  stage: test
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
     - sast
   artifacts:
     paths: [gl-sast-report.json]
+  only:
+    - branches
+  except:
+    variables:
+      - $SAST_DISABLED
 
-sast:container:
-  image: docker:latest
+dependency_scanning:
+  stage: test
+  image: docker:stable
   variables:
     DOCKER_DRIVER: overlay2
   allow_failure: true
   services:
-    - docker:dind
+    - docker:stable-dind
   script:
     - setup_docker
-    - sast_container
+    - dependency_scanning
   artifacts:
-    paths: [gl-sast-container-report.json]
+    paths: [gl-dependency-scanning-report.json]
+  only:
+    - branches
+  except:
+    variables:
+      - $DEPENDENCY_SCANNING_DISABLED
+
+container_scanning:
+  stage: test
+  image: docker:stable
+  variables:
+    DOCKER_DRIVER: overlay2
+  allow_failure: true
+  services:
+    - docker:stable-dind
+  script:
+    - setup_docker
+    - container_scanning
+  artifacts:
+    paths: [gl-container-scanning-report.json]
+  only:
+    - branches
+  except:
+    variables:
+      - $CONTAINER_SCANNING_DISABLED
 
 dast:
   stage: dast
   allow_failure: true
-  image: owasp/zap2docker-stable
+  image: registry.gitlab.com/gitlab-org/security-products/zaproxy
   variables:
     POSTGRES_DB: "false"
   script:
@@ -150,7 +225,10 @@ dast:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $DAST_DISABLED
 
 review:
   stage: review
@@ -174,7 +252,10 @@ review:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $REVIEW_DISABLED
 
 stop_review:
   stage: cleanup
@@ -193,7 +274,10 @@ stop_review:
       - branches
     kubernetes: active
   except:
-    - master
+    refs:
+      - master
+    variables:
+      - $REVIEW_DISABLED
 
 # Keys that start with a dot (.) will not be processed by GitLab CI.
 # Staging and canary jobs are disabled by default, to enable them
@@ -203,10 +287,10 @@ stop_review:
 # Staging deploys are disabled by default since
 # continuous deployment to production is enabled by default
 # If you prefer to automatically deploy to staging and
-# only manually promote to production, enable this job by removing the dot (.),
-# and uncomment the `when: manual` line in the `production` job.
+# only manually promote to production, enable this job by setting
+# STAGING_ENABLED.
 
-.staging:
+staging:
   stage: staging
   script:
     - check_kube_domain
@@ -223,12 +307,14 @@ stop_review:
     refs:
       - master
     kubernetes: active
+    variables:
+      - $STAGING_ENABLED
 
-# Canaries are disabled by default, but if you want them,
-# and know what the downsides are, enable this job by removing the dot (.),
-# and uncomment the `when: manual` line in the `production` job.
+# Canaries are also disabled by default, but if you want them,
+# and know what the downsides are, you can enable this by setting
+# CANARY_ENABLED.
 
-.canary:
+canary:
   stage: canary
   script:
     - check_kube_domain
@@ -246,13 +332,10 @@ stop_review:
     refs:
       - master
     kubernetes: active
+    variables:
+      - $CANARY_ENABLED
 
-# This job continuously deploys to production on every push to `master`.
-# To make this a manual process, either because you're enabling `staging`
-# or `canary` deploys, or you simply want more control over when you deploy
-# to production, uncomment the `when: manual` line in the `production` job.
-
-production:
+.production: &production_template
   stage: production
   script:
     - check_kube_domain
@@ -263,17 +346,108 @@ production:
     - create_secret
     - deploy
     - delete canary
+    - delete rollout
     - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
   artifacts:
     paths: [environment_url.txt]
-#  when: manual
+
+production:
+  <<: *production_template
   only:
     refs:
       - master
     kubernetes: active
+  except:
+    variables:
+      - $STAGING_ENABLED
+      - $CANARY_ENABLED
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+production_manual:
+  <<: *production_template
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $STAGING_ENABLED
+      - $CANARY_ENABLED
+  except:
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+# This job implements incremental rollout on for every push to `master`.
+
+.rollout: &rollout_template
+  stage: production
+  script:
+    - check_kube_domain
+    - install_dependencies
+    - download_chart
+    - ensure_namespace
+    - install_tiller
+    - create_secret
+    - deploy rollout $ROLLOUT_PERCENTAGE
+    - scale stable $((100-ROLLOUT_PERCENTAGE))
+    - delete canary
+    - persist_environment_url
+  environment:
+    name: production
+    url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
+
+rollout 10%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 10
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 25%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 25
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 50%:
+  <<: *rollout_template
+  variables:
+    ROLLOUT_PERCENTAGE: 50
+  when: manual
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
+
+rollout 100%:
+  <<: *production_template
+  when: manual
+  allow_failure: false
+  only:
+    refs:
+      - master
+    kubernetes: active
+    variables:
+      - $INCREMENTAL_ROLLOUT_ENABLED
 
 # ---------------------------------------------------------------------------
 
@@ -286,8 +460,10 @@ production:
   export CI_APPLICATION_TAG=$CI_COMMIT_SHA
   export CI_CONTAINER_NAME=ci_job_build_${CI_JOB_ID}
   export TILLER_NAMESPACE=$KUBE_NAMESPACE
+  # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable" for Security Products
+  export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
-  function sast_container() {
+  function container_scanning() {
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -295,31 +471,41 @@ production:
     fi
 
     docker run -d --name db arminc/clair-db:latest
-    docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
+    docker run -p 6060:6060 --link db:postgres -d --name clair --restart on-failure arminc/clair-local-scan:v2.0.1
     apk add -U wget ca-certificates
     docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
     wget https://github.com/arminc/clair-scanner/releases/download/v8/clair-scanner_linux_amd64
     mv clair-scanner_linux_amd64 clair-scanner
     chmod +x clair-scanner
     touch clair-whitelist.yml
-    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-container-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    retries=0
+    echo "Waiting for clair daemon to start"
+    while( ! wget -T 10 -q -O /dev/null http://docker:6060/v1/namespaces ) ; do sleep 1 ; echo -n "." ; if [ $retries -eq 10 ] ; then echo " Timeout, aborting." ; exit 1 ; fi ; retries=$(($retries+1)) ; done
+    ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-container-scanning-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   }
 
-  function codeclimate() {
-    cc_opts="--env CODECLIMATE_CODE="$PWD" \
-             --volume "$PWD":/code \
-             --volume /var/run/docker.sock:/var/run/docker.sock \
-             --volume /tmp/cc:/tmp/cc"
+  function code_quality() {
+    docker run --env SOURCE_CODE="$PWD" \
+               --volume "$PWD":/code \
+               --volume /var/run/docker.sock:/var/run/docker.sock \
+               "registry.gitlab.com/gitlab-org/security-products/codequality:$SP_VERSION" /code
+  }
 
-    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" init
-    docker run ${cc_opts} "codeclimate/codeclimate:${CODECLIMATE_VERSION}" analyze -f json > codeclimate.json
+  function license_management() {
+    if echo $GITLAB_FEATURES |grep license_management > /dev/null ; then
+      # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
+      LICENSE_MANAGEMENT_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+
+      docker run --volume "$PWD:/code" \
+                 "registry.gitlab.com/gitlab-org/security-products/license-management:$LICENSE_MANAGEMENT_VERSION" analyze /code
+    else
+      echo "License management is not available in your subscription"
+    fi
   }
 
   function sast() {
     case "$CI_SERVER_VERSION" in
       *-ee)
-        # Extract "MAJOR.MINOR" from CI_SERVER_VERSION and generate "MAJOR-MINOR-stable"
-        SAST_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
 
         # Deprecation notice for CONFIDENCE_LEVEL variable
         if [ -z "$SAST_CONFIDENCE_LEVEL" -a "$CONFIDENCE_LEVEL" ]; then
@@ -328,10 +514,9 @@ production:
         fi
 
         docker run --env SAST_CONFIDENCE_LEVEL="${SAST_CONFIDENCE_LEVEL:-3}" \
-                   --env SAST_DISABLE_REMOTE_CHECKS="${SAST_DISABLE_REMOTE_CHECKS:-false}" \
                    --volume "$PWD:/code" \
                    --volume /var/run/docker.sock:/var/run/docker.sock \
-                   "registry.gitlab.com/gitlab-org/security-products/sast:$SAST_VERSION" /app/bin/run /code
+                   "registry.gitlab.com/gitlab-org/security-products/sast:$SP_VERSION" /app/bin/run /code
         ;;
       *)
         echo "GitLab EE is required"
@@ -339,34 +524,70 @@ production:
     esac
   }
 
-  function deploy() {
-    track="${1-stable}"
-    name="$CI_ENVIRONMENT_SLUG"
+  function dependency_scanning() {
+    case "$CI_SERVER_VERSION" in
+      *-ee)
+        docker run --env DEP_SCAN_DISABLE_REMOTE_CHECKS="${DEP_SCAN_DISABLE_REMOTE_CHECKS:-false}" \
+                   --volume "$PWD:/code" \
+                   --volume /var/run/docker.sock:/var/run/docker.sock \
+                   "registry.gitlab.com/gitlab-org/security-products/dependency-scanning:$SP_VERSION" /code
+        ;;
+      *)
+        echo "GitLab EE is required"
+        ;;
+    esac
+  }
 
-    if [[ "$track" != "stable" ]]; then
-      name="$name-$track"
-    fi
-
-    replicas="1"
-    service_enabled="false"
-    postgres_enabled="$POSTGRES_ENABLED"
-    # canary uses stable db
-    [[ "$track" == "canary" ]] && postgres_enabled="false"
+  function get_replicas() {
+    track="${1:-stable}"
+    percentage="${2:-100}"
 
     env_track=$( echo $track | tr -s  '[:lower:]'  '[:upper:]' )
     env_slug=$( echo ${CI_ENVIRONMENT_SLUG//-/_} | tr -s  '[:lower:]'  '[:upper:]' )
 
-    if [[ "$track" == "stable" ]]; then
+    if [[ "$track" == "stable" ]] || [[ "$track" == "rollout" ]]; then
       # for stable track get number of replicas from `PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_slug}_REPLICAS
-      service_enabled="true"
+      if [[ -z "$new_replicas" ]]; then
+        new_replicas=$REPLICAS
+      fi
     else
       # for all tracks get number of replicas from `CANARY_PRODUCTION_REPLICAS`
       eval new_replicas=\$${env_track}_${env_slug}_REPLICAS
+      if [[ -z "$new_replicas" ]]; then
+        eval new_replicas=\${env_track}_REPLICAS
+      fi
     fi
-    if [[ -n "$new_replicas" ]]; then
-      replicas="$new_replicas"
+
+    replicas="${new_replicas:-1}"
+    replicas="$(($replicas * $percentage / 100))"
+
+    # always return at least one replicas
+    if [[ $replicas -gt 0 ]]; then
+      echo "$replicas"
+    else
+      echo 1
     fi
+  }
+
+  function deploy() {
+    track="${1-stable}"
+    percentage="${2:-100}"
+    name="$CI_ENVIRONMENT_SLUG"
+
+    replicas="1"
+    service_enabled="true"
+    postgres_enabled="$POSTGRES_ENABLED"
+
+    # if track is different than stable,
+    # re-use all attached resources
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+      service_enabled="false"
+      postgres_enabled="false"
+    fi
+
+    replicas=$(get_replicas "$track" "$percentage")
 
     if [[ "$CI_PROJECT_VISIBILITY" != "public" ]]; then
       secret_name='gitlab-registry'
@@ -395,6 +616,27 @@ production:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
+  }
+
+  function scale() {
+    track="${1-stable}"
+    percentage="${2-100}"
+    name="$CI_ENVIRONMENT_SLUG"
+
+    if [[ "$track" != "stable" ]]; then
+      name="$name-$track"
+    fi
+
+    replicas=$(get_replicas "$track" "$percentage")
+
+    if [[ -n "$(helm ls -q "^$name$")" ]]; then
+      helm upgrade --reuse-values \
+        --wait \
+        --set replicaCount="$replicas" \
+        --namespace="$KUBE_NAMESPACE" \
+        "$name" \
+        chart/
+    fi
   }
 
   function install_dependencies() {
@@ -435,6 +677,7 @@ production:
       auto_chart=${AUTO_DEVOPS_CHART:-gitlab/auto-deploy-app}
       auto_chart_name=$(basename $auto_chart)
       auto_chart_name=${auto_chart_name%.tgz}
+      auto_chart_name=${auto_chart_name%.tar.gz}
     else
       auto_chart="chart"
       auto_chart_name="chart"
@@ -460,7 +703,7 @@ production:
   function check_kube_domain() {
     if [ -z ${AUTO_DEVOPS_DOMAIN+x} ]; then
       echo "In order to deploy or use Review Apps, AUTO_DEVOPS_DOMAIN variable must be set"
-      echo "You can do it in Auto DevOps project settings or defining a secret variable at group or project level"
+      echo "You can do it in Auto DevOps project settings or defining a variable at group or project level"
       echo "You can also manually add it in .gitlab-ci.yml"
       false
     else
@@ -469,7 +712,6 @@ production:
   }
 
   function build() {
-
     if [[ -n "$CI_REGISTRY_USER" ]]; then
       echo "Logging to GitLab Container Registry with CI credentials..."
       docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
@@ -478,10 +720,29 @@ production:
 
     if [[ -f Dockerfile ]]; then
       echo "Building Dockerfile-based application..."
-      docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
+      docker build \
+        --build-arg HTTP_PROXY="$HTTP_PROXY" \
+        --build-arg http_proxy="$http_proxy" \
+        --build-arg HTTPS_PROXY="$HTTPS_PROXY" \
+        --build-arg https_proxy="$https_proxy" \
+        --build-arg FTP_PROXY="$FTP_PROXY" \
+        --build-arg ftp_proxy="$ftp_proxy" \
+        --build-arg NO_PROXY="$NO_PROXY" \
+        --build-arg no_proxy="$no_proxy" \
+        -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
     else
       echo "Building Heroku-based application using gliderlabs/herokuish docker image..."
-      docker run -i --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
+      docker run -i \
+        -e BUILDPACK_URL \
+        -e HTTP_PROXY \
+        -e http_proxy \
+        -e HTTPS_PROXY \
+        -e https_proxy \
+        -e FTP_PROXY \
+        -e ftp_proxy \
+        -e NO_PROXY \
+        -e no_proxy \
+        --name="$CI_CONTAINER_NAME" -v "$(pwd):/tmp/app:ro" gliderlabs/herokuish /bin/herokuish buildpack build
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
       echo ""
@@ -518,8 +779,8 @@ production:
     kubectl create secret -n "$KUBE_NAMESPACE" \
       docker-registry gitlab-registry \
       --docker-server="$CI_REGISTRY" \
-      --docker-username="$CI_REGISTRY_USER" \
-      --docker-password="$CI_REGISTRY_PASSWORD" \
+      --docker-username="${CI_DEPLOY_USER:-$CI_REGISTRY_USER}" \
+      --docker-password="${CI_DEPLOY_PASSWORD:-$CI_REGISTRY_PASSWORD}" \
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
   }

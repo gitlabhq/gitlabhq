@@ -9,7 +9,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
     let!(:project) { setup_project }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       allow_any_instance_of(MergeRequest).to receive(:source_branch_sha).and_return('ABCD')
       allow_any_instance_of(MergeRequest).to receive(:target_branch_sha).and_return('DCBA')
@@ -29,8 +29,17 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         project_json(project_tree_saver.full_path)
       end
 
+      context 'with description override' do
+        let(:params) { { description: 'Foo Bar' } }
+        let(:project_tree_saver) { described_class.new(project: project, current_user: user, shared: shared, params: params) }
+
+        it 'overrides the project description' do
+          expect(saved_project_json).to include({ 'description' => params[:description] })
+        end
+      end
+
       it 'saves the correct json' do
-        expect(saved_project_json).to include({ "visibility_level" => 20 })
+        expect(saved_project_json).to include({ 'description' => 'description', 'visibility_level' => 20 })
       end
 
       it 'has milestones' do
@@ -208,8 +217,8 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
           expect(member_emails).not_to include('group@member.com')
         end
 
-        it 'does not export group members as master' do
-          Group.first.add_master(user)
+        it 'does not export group members as maintainer' do
+          Group.first.add_maintainer(user)
 
           expect(member_emails).not_to include('group@member.com')
         end
@@ -236,10 +245,6 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
       end
 
       context 'project attributes' do
-        it 'contains the html description' do
-          expect(saved_project_json).to include("description_html" => 'description')
-        end
-
         it 'does not contain the runners token' do
           expect(saved_project_json).not_to include("runners_token" => 'token')
         end
@@ -259,12 +264,12 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
                      :issues_disabled,
                      :wiki_enabled,
                      :builds_private,
+                     description: 'description',
                      issues: [issue],
                      snippets: [snippet],
                      releases: [release],
                      group: group
                     )
-    project.update_column(:description_html, 'description')
     project_label = create(:label, project: project)
     group_label = create(:group_label, group: group)
     create(:label_link, label: project_label, target: issue)

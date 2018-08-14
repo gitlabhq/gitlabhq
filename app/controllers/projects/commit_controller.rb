@@ -22,9 +22,15 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html  { render }
-      format.diff  { render text: @commit.to_diff }
-      format.patch { render text: @commit.to_patch }
+      format.html  do
+        render
+      end
+      format.diff  do
+        send_git_diff(@project.repository, @commit.diff_refs)
+      end
+      format.patch do
+        send_git_patch(@project.repository, @commit.diff_refs)
+      end
     end
   end
 
@@ -34,6 +40,7 @@ class Projects::CommitController < Projects::ApplicationController
 
   def pipelines
     @pipelines = @commit.pipelines.order(id: :desc)
+    @pipelines = @pipelines.where(ref: params[:ref]) if params[:ref]
 
     respond_to do |format|
       format.html
@@ -119,7 +126,10 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit_by(oid: params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id]).tap do |commit|
+      # preload author and their status for rendering
+      commit&.author&.status
+    end
   end
 
   def define_commit_vars

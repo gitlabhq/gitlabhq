@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ResolvableNote
   extend ActiveSupport::Concern
 
@@ -32,7 +34,7 @@ module ResolvableNote
 
   # Keep this method in sync with the `potentially_resolvable` scope
   def potentially_resolvable?
-    RESOLVABLE_TYPES.include?(self.class.name) && noteable.supports_resolvable_notes?
+    RESOLVABLE_TYPES.include?(self.class.name) && noteable&.supports_resolvable_notes?
   end
 
   # Keep this method in sync with the `resolvable` scope

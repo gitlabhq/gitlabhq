@@ -14,6 +14,7 @@ describe('Markdown component', () => {
   beforeEach((done) => {
     json = getJSONFixture('blob/notebook/basic.json');
 
+    // eslint-disable-next-line prefer-destructuring
     cell = json.cells[1];
 
     vm = new Component({

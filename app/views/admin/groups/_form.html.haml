@@ -1,30 +1,37 @@
-= form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
+= form_for [:admin, @group] do |f|
   = form_errors(@group)
   = render 'shared/group_form', f: f
 
-  .form-group.group-description-holder
-    = f.label :avatar, "Group avatar", class: 'control-label'
+  = render_if_exists 'shared/repository_size_limit_setting', form: f, type: :group
+  = render_if_exists 'admin/namespace_plan', f: f
+
+  .form-group.row.group-description-holder
+    = f.label :avatar, _("Group avatar"), class: 'col-form-label col-sm-2'
     .col-sm-10
       = render 'shared/choose_group_avatar_button', f: f
 
   = render 'shared/visibility_level', f: f, visibility_level: visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
 
-  .form-group
-    .col-sm-offset-2.col-sm-10
+  .form-group.row
+    .offset-sm-2.col-sm-10
       = render 'shared/allow_request_access', form: f
 
   = render 'groups/group_admin_settings', f: f
 
+  = render_if_exists 'namespaces/shared_runners_minutes_settings', group: @group, form: f
+
   - if @group.new_record?
-    .form-group
-      .col-sm-offset-2.col-sm-10
+    .form-group.row
+      .offset-sm-2.col-sm-10
         .alert.alert-info
           = render 'shared/group_tips'
     .form-actions
-      = f.submit 'Create group', class: "btn btn-create"
-      = link_to  'Cancel', admin_groups_path, class: "btn btn-cancel"
+      = f.submit _('Create group'), class: "btn btn-create"
+      = link_to  _('Cancel'), admin_groups_path, class: "btn btn-cancel"
 
   - else
     .form-actions
-      = f.submit 'Save changes', class: "btn btn-save"
-      = link_to  'Cancel', admin_group_path(@group), class: "btn btn-cancel"
+      = f.submit _('Save changes'), class: "btn btn-save"
+      = link_to  _('Cancel'), admin_group_path(@group), class: "btn btn-cancel"
+
+= render_if_exists 'ldap_group_links/ldap_syncrhonizations', group: @group

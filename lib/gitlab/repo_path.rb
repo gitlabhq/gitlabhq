@@ -4,7 +4,8 @@ module Gitlab
 
     def self.parse(repo_path)
       wiki = false
-      project_path = strip_storage_path(repo_path.sub(/\.git\z/, ''), fail_on_not_found: false)
+      project_path = repo_path.sub(/\.git\z/, '').sub(%r{\A/}, '')
+
       project, was_redirected = find_project(project_path)
 
       if project_path.end_with?('.wiki') && project.nil?
@@ -15,22 +16,6 @@ module Gitlab
       redirected_path = project_path if was_redirected
 
       [project, wiki, redirected_path]
-    end
-
-    def self.strip_storage_path(repo_path, fail_on_not_found: true)
-      result = repo_path
-
-      storage = Gitlab.config.repositories.storages.values.find do |params|
-        repo_path.start_with?(params['path'])
-      end
-
-      if storage
-        result = result.sub(storage['path'], '')
-      elsif fail_on_not_found
-        raise NotFoundError.new("No known storage path matches #{repo_path.inspect}")
-      end
-
-      result.sub(%r{\A/*}, '')
     end
 
     def self.find_project(project_path)

@@ -1,10 +1,10 @@
 module QA
-  feature 'activity page', :core do
-    scenario 'push creates an event in the activity page' do
+  describe 'activity page', :core do
+    it 'push creates an event in the activity page' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.file_name = 'README.md'
         push.file_content = '# This is a test project'
         push.commit_message = 'Add README.md'

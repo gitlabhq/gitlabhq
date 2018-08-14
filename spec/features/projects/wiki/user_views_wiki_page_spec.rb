@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'User views a wiki page' do
   shared_examples 'wiki page user view' do
     let(:user) { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
     let(:wiki_page) do
       create(:wiki_page,
         wiki: project.wiki,
@@ -11,13 +11,14 @@ describe 'User views a wiki page' do
     end
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
 
         click_on('New page')
 
@@ -136,10 +137,31 @@ describe 'User views a wiki page' do
       end
     end
 
+    context 'when page has invalid content encoding' do
+      let(:content) { 'whatever'.force_encoding('ISO-8859-1') }
+
+      before do
+        allow(Gitlab::EncodingHelper).to receive(:encode!).and_return(content)
+
+        visit(project_wiki_path(project, wiki_page))
+      end
+
+      it 'does not show "Edit" button' do
+        expect(page).not_to have_selector('a.btn', text: 'Edit')
+      end
+
+      it 'shows error' do
+        page.within(:css, '.flash-notice') do
+          expect(page).to have_content('The content of this page is not encoded in UTF-8. Edits can only be made via the Git repository.')
+        end
+      end
+    end
+
     it 'opens a default wiki page', :js do
       visit(project_path(project))
 
       find('.shortcuts-wiki').click
+      click_link "Create your first page"
 
       expect(page).to have_content('Home · Create Page')
     end

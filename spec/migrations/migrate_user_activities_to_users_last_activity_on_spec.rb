@@ -5,8 +5,8 @@ require Rails.root.join('db', 'post_migrate', '20170324160416_migrate_user_activ
 
 describe MigrateUserActivitiesToUsersLastActivityOn, :clean_gitlab_redis_shared_state, :delete do
   let(:migration) { described_class.new }
-  let!(:user_active_1) { create(:user) }
-  let!(:user_active_2) { create(:user) }
+  let!(:user_active_1) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let!(:user_active_2) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   def record_activity(user, time)
     Gitlab::Redis::SharedState.with do |redis|

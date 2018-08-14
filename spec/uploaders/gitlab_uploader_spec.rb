@@ -27,7 +27,7 @@ describe GitlabUploader do
   describe '#file_cache_storage?' do
     context 'when file storage is used' do
       before do
-        uploader_class.cache_storage(:file)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::File }
       end
 
       it { is_expected.to be_file_cache_storage }
@@ -35,7 +35,7 @@ describe GitlabUploader do
 
     context 'when is remote storage' do
       before do
-        uploader_class.cache_storage(:fog)
+        expect(uploader_class).to receive(:cache_storage) { CarrierWave::Storage::Fog }
       end
 
       it { is_expected.not_to be_file_cache_storage }
@@ -62,10 +62,72 @@ describe GitlabUploader do
       expect(FileUtils).to receive(:mv).with(anything, /^#{subject.work_dir}/).and_call_original
       expect(FileUtils).to receive(:mv).with(/^#{subject.work_dir}/, /#{subject.cache_dir}/).and_call_original
 
-      fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
+      fixture = File.join('spec', 'fixtures', 'rails_sample.jpg')
       subject.cache!(fixture_file_upload(fixture))
 
       expect(subject.file.path).to match(/#{subject.cache_dir}/)
+    end
+  end
+
+  describe '#open' do
+    context 'when trace is stored in File storage' do
+      context 'when file exists' do
+        let(:file) do
+          fixture_file_upload('spec/fixtures/trace/sample_trace', 'text/plain')
+        end
+
+        before do
+          subject.store!(file)
+        end
+
+        it 'returns io stream' do
+          expect(subject.open).to be_a(IO)
+        end
+
+        it 'when passing block it yields' do
+          expect { |b| subject.open(&b) }.to yield_control
+        end
+      end
+
+      context 'when file does not exist' do
+        it 'returns nil' do
+          expect(subject.open).to be_nil
+        end
+
+        it 'when passing block it does not yield' do
+          expect { |b| subject.open(&b) }.not_to yield_control
+        end
+      end
+    end
+
+    context 'when trace is stored in Object storage' do
+      before do
+        allow(subject).to receive(:file_storage?) { false }
+      end
+
+      context 'when file exists' do
+        before do
+          allow(subject).to receive(:url) { 'http://object_storage.com/trace' }
+        end
+
+        it 'returns http io stream' do
+          expect(subject.open).to be_a(Gitlab::HttpIO)
+        end
+
+        it 'when passing block it yields' do
+          expect { |b| subject.open(&b) }.to yield_control.once
+        end
+      end
+
+      context 'when file does not exist' do
+        it 'returns nil' do
+          expect(subject.open).to be_nil
+        end
+
+        it 'when passing block it does not yield' do
+          expect { |b| subject.open(&b) }.not_to yield_control
+        end
+      end
     end
   end
 end

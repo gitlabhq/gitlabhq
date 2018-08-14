@@ -1,4 +1,4 @@
-class ListLabel {
+export default class ListLabel {
   constructor(obj) {
     this.id = obj.id;
     this.title = obj.title;

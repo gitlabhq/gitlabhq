@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   ##
   # We call this service everytime we persist a CI/CD job.
@@ -42,6 +44,7 @@ module Ci
 
     def create_stage
       Ci::Stage.create!(name: @build.stage,
+                        position: @build.stage_idx,
                         pipeline: @build.pipeline,
                         project: @build.project)
     end

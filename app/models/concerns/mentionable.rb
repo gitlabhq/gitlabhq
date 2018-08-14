@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Mentionable concern
 #
 # Contains functionality related to objects that can mention Users, Issues, MergeRequests, Commits or Snippets by

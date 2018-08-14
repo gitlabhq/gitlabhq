@@ -1,8 +1,7 @@
 # rubocop:disable Lint/RescueException
 
-# This patch fixes https://github.com/rails/rails/issues/26024
-# TODO: Remove it when it's no longer necessary
-
+# Remove this monkey-patch when all lock_version values are converted from NULLs to zeros.
+# See https://gitlab.com/gitlab-org/gitlab-ce/issues/25228
 module ActiveRecord
   module Locking
     module Optimistic
@@ -18,7 +17,7 @@ module ActiveRecord
 
         lock_col = self.class.locking_column
 
-        previous_lock_value = send(lock_col).to_i # rubocop:disable GitlabSecurity/PublicSend
+        previous_lock_value = send(lock_col).to_i
 
         # This line is added as a patch
         previous_lock_value = nil if previous_lock_value == '0' || previous_lock_value == 0
@@ -48,7 +47,7 @@ module ActiveRecord
 
         # If something went wrong, revert the version.
         rescue Exception
-          send(lock_col + '=', previous_lock_value)  # rubocop:disable GitlabSecurity/PublicSend
+          send(lock_col + '=', previous_lock_value)
           raise
         end
       end
@@ -65,9 +64,21 @@ module ActiveRecord
 
     # This is patched because we want `lock_version` default to `NULL`
     # rather than `0`
-    class LockingType < SimpleDelegator
-      def type_cast_from_database(value)
-        super
+    if Gitlab.rails5?
+      class LockingType
+        def deserialize(value)
+          super
+        end
+
+        def serialize(value)
+          super
+        end
+      end
+    else
+      class LockingType < SimpleDelegator
+        def type_cast_from_database(value)
+          super
+        end
       end
     end
   end

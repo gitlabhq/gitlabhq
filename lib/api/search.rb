@@ -34,9 +34,7 @@ module API
 
       def process_results(results)
         case params[:scope]
-        when 'wiki_blobs'
-          paginate(results).map { |blob| Gitlab::ProjectSearchResults.parse_search_result(blob, user_project) }
-        when 'blobs'
+        when 'blobs', 'wiki_blobs'
           paginate(results).map { |blob| blob[1] }
         else
           paginate(results)
@@ -84,7 +82,7 @@ module API
           values: %w(projects issues merge_requests milestones)
         use :pagination
       end
-      get ':id/-/search' do
+      get ':id/(-/)search' do
         present search(group_id: user_group.id), with: entity
       end
     end
@@ -103,7 +101,7 @@ module API
           values: %w(issues merge_requests milestones notes wiki_blobs commits blobs)
         use :pagination
       end
-      get ':id/-/search' do
+      get ':id/(-/)search' do
         present search(project_id: user_project.id), with: entity
       end
     end

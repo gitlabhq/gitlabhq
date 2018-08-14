@@ -31,13 +31,13 @@ label {
     margin: 0;
   }
 
-  &.label-light {
+  &.label-bold {
     font-weight: $gl-font-weight-bold;
   }
 }
 
-.control-label {
-  @extend .col-sm-2;
+.form-control-label {
+  @extend .col-md-2;
 }
 
 .inline-input-group {
@@ -48,21 +48,21 @@ label {
   width: 150px;
 }
 
-@media (min-width: $screen-sm-min) {
+@include media-breakpoint-up(sm) {
   .custom-form-control {
     width: 150px;
   }
 }
 
 /* Medium devices (desktops, 992px and up) */
-@media (min-width: $screen-md-min) {
+@include media-breakpoint-up(md) {
   .custom-form-control {
     width: 170px;
   }
 }
 
 /* Large devices (large desktops, 1200px and up) */
-@media (min-width: $screen-lg-min) {
+@include media-breakpoint-up(lg) {
   .custom-form-control {
     width: 200px;
   }
@@ -72,7 +72,7 @@ label {
   margin-left: 0;
   margin-right: 0;
 
-  .control-label {
+  .form-control-label {
     font-weight: $gl-font-weight-bold;
     padding-top: 4px;
   }
@@ -80,10 +80,11 @@ label {
   .form-control {
     height: 29px;
     background: $white-light;
-    font-family: $monospace_font;
+    font-family: $monospace-font;
   }
 
-  .input-group-btn .btn {
+  .input-group-prepend .btn,
+  .input-group-append .btn {
     padding: 3px $gl-btn-padding;
     background-color: $gray-light;
     border: 1px solid $border-color;
@@ -102,10 +103,10 @@ label {
     }
   }
 
-  @media(max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     padding: 0 $gl-padding;
 
-    .control-label,
+    .form-control-label,
     .text-block {
       padding-left: 0;
     }
@@ -120,6 +121,14 @@ label {
   @include box-shadow(none);
   border-radius: 2px;
   padding: $gl-vert-padding $gl-input-padding;
+
+  &.input-short {
+    width: $input-short-width;
+
+    @include media-breakpoint-up(md) {
+      width: $input-short-md-width;
+    }
+  }
 }
 
 .select-wrapper {
@@ -155,13 +164,13 @@ label {
   margin-top: 35px;
 }
 
-.form-group .control-label,
-.form-group .control-label-full-width {
+.form-group .form-control-label,
+.form-group .form-control-label-full-width {
   font-weight: $gl-font-weight-normal;
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $gl-text-color-secondary;
+  color: $placeholder-text-color;
 }
 
 .input-group {
@@ -170,17 +179,19 @@ label {
     max-width: 180px;
   }
 
-  .input-group-addon {
+  .input-group-prepend,
+  .input-group-append {
     background-color: $input-group-addon-bg;
   }
 
-  .input-group-addon:not(:first-child):not(:last-child) {
+  .input-group-prepend:not(:first-child):not(:last-child),
+  .input-group-append:not(:first-child):not(:last-child) {
     border-left: 0;
     border-right: 0;
   }
 }
 
-.help-block {
+.form-text.text-muted {
   margin-bottom: 0;
   margin-top: #{$grid-size / 2};
 }
@@ -190,6 +201,10 @@ label {
 }
 
 .gl-show-field-errors {
+  .form-control:not(textarea) {
+    height: 34px;
+  }
+
   .gl-field-success-outline {
     border: 1px solid $green-600;
 
@@ -221,10 +236,27 @@ label {
   }
 }
 
-@media(max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .remember-me {
     .remember-me-checkbox {
       margin-top: 0;
     }
   }
+}
+
+.input-icon-wrapper {
+  position: relative;
+
+  .input-icon-right {
+    position: absolute;
+    right: 0.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    color: $theme-gray-600;
+  }
+}
+
+.input-lg {
+  max-width: 320px;
+  width: 100%;
 }

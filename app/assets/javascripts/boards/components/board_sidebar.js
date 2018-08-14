@@ -1,17 +1,18 @@
-/* eslint-disable comma-dangle, space-before-function-paren, no-new */
+/* eslint-disable comma-dangle, no-new */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Flash from '../../flash';
-import { __ } from '../../locale';
+import { sprintf, __ } from '../../locale';
 import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
-import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
-import assignees from '../../sidebar/components/assignees/assignees.vue';
+import AssigneeTitle from '../../sidebar/components/assignees/assignee_title.vue';
+import Assignees from '../../sidebar/components/assignees/assignees.vue';
 import DueDateSelectors from '../../due_date_select';
-import './sidebar/remove_issue';
+import RemoveBtn from './sidebar/remove_issue.vue';
 import IssuableContext from '../../issuable_context';
 import LabelsSelect from '../../labels_select';
-import subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
+import Subscriptions from '../../sidebar/components/subscriptions/subscriptions.vue';
 import MilestoneSelect from '../../milestone_select';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -20,8 +21,17 @@ window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.BoardSidebar = Vue.extend({
+  components: {
+    AssigneeTitle,
+    Assignees,
+    RemoveBtn,
+    Subscriptions,
+  },
   props: {
-    currentUser: Object
+    currentUser: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -41,6 +51,18 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     canRemove() {
       return !this.list.preset;
     },
+    hasLabels() {
+      return this.issue.labels && this.issue.labels.length;
+    },
+    labelDropdownTitle() {
+      return this.hasLabels ? sprintf(__('%{firstLabel} +%{labelCount} more'), {
+        firstLabel: this.issue.labels[0].title,
+        labelCount: this.issue.labels.length - 1
+      }) : __('Label');
+    },
+    selectedLabels() {
+      return this.hasLabels ? this.issue.labels.map(l => l.title).join(',') : '';
+    }
   },
   watch: {
     detail: {
@@ -59,13 +81,29 @@ gl.issueBoards.BoardSidebar = Vue.extend({
 
         this.issue = this.detail.issue;
         this.list = this.detail.list;
-
-        this.$nextTick(() => {
-          this.endpoint = this.$refs.assigneeDropdown.dataset.issueUpdate;
-        });
       },
       deep: true
     },
+  },
+  created () {
+    // Get events from glDropdown
+    eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
+    eventHub.$on('sidebar.addAssignee', this.addAssignee);
+    eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);
+    eventHub.$on('sidebar.saveAssignees', this.saveAssignees);
+  },
+  beforeDestroy() {
+    eventHub.$off('sidebar.removeAssignee', this.removeAssignee);
+    eventHub.$off('sidebar.addAssignee', this.addAssignee);
+    eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
+    eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
+  },
+  mounted () {
+    new IssuableContext(this.currentUser);
+    new MilestoneSelect();
+    new DueDateSelectors();
+    new LabelsSelect();
+    new Sidebar();
   },
   methods: {
     closeSidebar () {
@@ -90,7 +128,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     saveAssignees () {
       this.loadingAssignees = true;
 
-      gl.issueBoards.BoardsStore.detail.issue.update(this.endpoint)
+      gl.issueBoards.BoardsStore.detail.issue.update()
         .then(() => {
           this.loadingAssignees = false;
         })
@@ -99,31 +137,5 @@ gl.issueBoards.BoardSidebar = Vue.extend({
           Flash(__('An error occurred while saving assignees'));
         });
     },
-  },
-  created () {
-    // Get events from glDropdown
-    eventHub.$on('sidebar.removeAssignee', this.removeAssignee);
-    eventHub.$on('sidebar.addAssignee', this.addAssignee);
-    eventHub.$on('sidebar.removeAllAssignees', this.removeAllAssignees);
-    eventHub.$on('sidebar.saveAssignees', this.saveAssignees);
-  },
-  beforeDestroy() {
-    eventHub.$off('sidebar.removeAssignee', this.removeAssignee);
-    eventHub.$off('sidebar.addAssignee', this.addAssignee);
-    eventHub.$off('sidebar.removeAllAssignees', this.removeAllAssignees);
-    eventHub.$off('sidebar.saveAssignees', this.saveAssignees);
-  },
-  mounted () {
-    new IssuableContext(this.currentUser);
-    new MilestoneSelect();
-    new DueDateSelectors();
-    new LabelsSelect();
-    new Sidebar();
-  },
-  components: {
-    assigneeTitle,
-    assignees,
-    removeBtn: gl.issueBoards.RemoveIssueBtn,
-    subscriptions,
   },
 });

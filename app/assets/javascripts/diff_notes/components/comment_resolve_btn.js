@@ -1,11 +1,15 @@
 /* eslint-disable comma-dangle, object-shorthand, func-names, no-else-return, quotes, no-lonely-if, max-len */
 /* global CommentsStore */
 
+import $ from 'jquery';
 import Vue from 'vue';
 
 const CommentAndResolveBtn = Vue.extend({
   props: {
-    discussionId: String,
+    discussionId: {
+      type: String,
+      required: true,
+    },
   },
   data() {
     return {

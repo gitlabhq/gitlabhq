@@ -14,7 +14,7 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def labels
-    render json: @autocomplete_service.labels(target)
+    render json: @autocomplete_service.labels_as_hash(target)
   end
 
   def milestones
@@ -32,13 +32,8 @@ class Projects::AutocompleteSourcesController < Projects::ApplicationController
   end
 
   def target
-    case params[:type]&.downcase
-    when 'issue'
-      IssuesFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
-    when 'mergerequest'
-      MergeRequestsFinder.new(current_user, project_id: @project.id).find_by(iid: params[:type_id])
-    when 'commit'
-      @project.commit(params[:type_id])
-    end
+    QuickActions::TargetService
+      .new(project, current_user)
+      .execute(params[:type], params[:type_id])
   end
 end

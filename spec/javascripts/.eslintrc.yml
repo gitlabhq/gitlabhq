@@ -1,0 +1,37 @@
+---
+env:
+  jasmine: true
+extends: plugin:jasmine/recommended
+globals:
+  appendLoadFixtures: false
+  appendLoadStyleFixtures: false
+  appendSetFixtures: false
+  appendSetStyleFixtures: false
+  getJSONFixture: false
+  loadFixtures: false
+  loadJSONFixtures: false
+  loadStyleFixtures: false
+  preloadFixtures: false
+  preloadStyleFixtures: false
+  readFixtures: false
+  sandbox: false
+  setFixtures: false
+  setStyleFixtures: false
+  spyOnDependency: false
+  spyOnEvent: false
+  ClassSpecHelper: false
+plugins:
+  - jasmine
+rules:
+  func-names: off
+  jasmine/no-suite-dupes:
+    - warn
+    - branch
+  jasmine/no-spec-dupes:
+    - warn
+    - branch
+  prefer-arrow-callback: off
+  import/no-unresolved:
+    - error
+    - ignore:
+      - 'fixtures/blob'

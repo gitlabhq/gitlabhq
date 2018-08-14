@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Setup Mattermost slash commands', :js do
+describe 'Setup Mattermost slash commands', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:service) { project.create_mattermost_slash_commands_service }
@@ -8,7 +8,7 @@ feature 'Setup Mattermost slash commands', :js do
 
   before do
     stub_mattermost_setting(enabled: mattermost_enabled)
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit edit_project_service_path(project, service)
   end
@@ -64,7 +64,7 @@ feature 'Setup Mattermost slash commands', :js do
       click_link 'Add to Mattermost'
 
       expect(page).to have_content('The team where the slash commands will be used in')
-      expect(page).to have_content('This is the only available team.')
+      expect(page).to have_content('This is the only available team that you are a member of.')
     end
 
     it 'shows a disabled prefilled select if user is a member of 1 team' do
@@ -94,7 +94,7 @@ feature 'Setup Mattermost slash commands', :js do
       click_link 'Add to Mattermost'
 
       expect(page).to have_content('Select the team where the slash commands will be used in')
-      expect(page).to have_content('The list shows all available teams.')
+      expect(page).to have_content('The list shows all available teams that you are a member of.')
     end
 
     it 'shows a select with team options user is a member of multiple teams' do

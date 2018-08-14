@@ -1,0 +1,33 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-account-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .form-check
+        = f.check_box :gravatar_enabled, class: 'form-check-input'
+        = f.label :gravatar_enabled, class: 'form-check-label' do
+          Gravatar enabled
+    .form-group
+      = f.label :default_projects_limit, class: 'label-bold'
+      = f.number_field :default_projects_limit, class: 'form-control'
+    .form-group
+      = f.label :max_attachment_size, 'Maximum attachment size (MB)', class: 'label-bold'
+      = f.number_field :max_attachment_size, class: 'form-control'
+    .form-group
+      = f.label :session_expire_delay, 'Session duration (minutes)', class: 'label-bold'
+      = f.number_field :session_expire_delay, class: 'form-control'
+      %span.form-text.text-muted#session_expire_delay_help_block GitLab restart is required to apply changes
+    .form-group
+      = f.label :user_oauth_applications, 'User OAuth applications', class: 'label-bold'
+      .form-check
+        = f.check_box :user_oauth_applications, class: 'form-check-input'
+        = f.label :user_oauth_applications, class: 'form-check-label' do
+          Allow users to register any application to use GitLab as an OAuth provider
+    .form-group
+      = f.label :user_default_external, 'New users set to external', class: 'label-bold'
+      .form-check
+        = f.check_box :user_default_external, class: 'form-check-input'
+        = f.label :user_default_external, class: 'form-check-label' do
+          Newly registered users will by default be external
+
+  = f.submit 'Save changes', class: 'btn btn-success'

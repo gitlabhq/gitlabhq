@@ -3,6 +3,19 @@ require('spec_helper')
 describe ProfilesController, :request_store do
   let(:user) { create(:user) }
 
+  describe 'POST update' do
+    it 'does not update password' do
+      sign_in(user)
+
+      expect do
+        post :update,
+             user: { password: 'hello12345', password_confirmation: 'hello12345' }
+      end.not_to change { user.reload.encrypted_password }
+
+      expect(response.status).to eq(302)
+    end
+  end
+
   describe 'PUT update' do
     it 'allows an email update from a user without an external email address' do
       sign_in(user)
@@ -65,6 +78,15 @@ describe ProfilesController, :request_store do
       expect(ldap_user.name).not_to eq('John')
       expect(ldap_user.location).to eq('City, Country')
     end
+
+    it 'allows setting a user status' do
+      sign_in(user)
+
+      put :update, user: { status: { message: 'Working hard!' } }
+
+      expect(user.reload.status.message).to eq('Working hard!')
+      expect(response).to have_gitlab_http_status(302)
+    end
   end
 
   describe 'PUT update_username' do
@@ -84,6 +106,35 @@ describe ProfilesController, :request_store do
       expect(user.username).to eq(new_username)
     end
 
+    it 'updates a username using JSON request' do
+      sign_in(user)
+
+      put :update_username,
+          user: { username: new_username },
+          format: :json
+
+      expect(response.status).to eq(200)
+      expect(json_response['message']).to eq('Username successfully changed')
+    end
+
+    it 'renders an error message when the username was not updated' do
+      sign_in(user)
+
+      put :update_username,
+          user: { username: 'invalid username.git' },
+          format: :json
+
+      expect(response.status).to eq(422)
+      expect(json_response['message']).to match(/Username change failed/)
+    end
+
+    it 'raises a correct error when the username is missing' do
+      sign_in(user)
+
+      expect { put :update_username, user: { gandalf: 'you shall not pass' } }
+        .to raise_error(ActionController::ParameterMissing)
+    end
+
     context 'with legacy storage' do
       it 'moves dependent projects to new namespace' do
         project = create(:project_empty_repo, :legacy_storage, namespace: namespace)
@@ -96,7 +147,7 @@ describe ProfilesController, :request_store do
         user.reload
 
         expect(response.status).to eq(302)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{new_username}/#{project.path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{new_username}/#{project.path}.git")).to be_truthy
       end
     end
 
@@ -114,7 +165,7 @@ describe ProfilesController, :request_store do
         user.reload
 
         expect(response.status).to eq(302)
-        expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_truthy
+        expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_truthy
         expect(before_disk_path).to eq(project.disk_path)
       end
     end

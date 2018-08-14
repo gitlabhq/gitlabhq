@@ -1,0 +1,71 @@
+---
+env:
+  browser: true
+  es6: true
+extends:
+  - airbnb-base
+  - plugin:vue/recommended
+globals:
+  __webpack_public_path__: true
+  gl: false
+  gon: false
+  localStorage: false
+parserOptions:
+  parser: babel-eslint
+plugins:
+  - filenames
+  - import
+  - html
+  - promise
+settings:
+  html/html-extensions:
+  - ".html"
+  - ".html.raw"
+  import/resolver:
+    webpack:
+      config: "./config/webpack.config.js"
+rules:
+  filenames/match-regex:
+    - error
+    - "^[a-z0-9_]+$"
+  import/no-commonjs: error
+  no-multiple-empty-lines:
+    - error
+    - max: 1
+  promise/catch-or-return: error
+  no-underscore-dangle:
+    - error
+    - allow:
+      - __
+      - _links
+  no-mixed-operators: off
+  vue/html-self-closing:
+    - error
+    - html:
+        void: always
+        normal: never
+        component: always
+      svg: always
+      math: always
+  ## Conflicting rules with prettier:
+  space-before-function-paren: off
+  curly: off
+  arrow-parens: off
+  function-paren-newline: off
+  object-curly-newline: off
+  padded-blocks: off
+  # Disabled for now, to make the eslint 3 -> eslint 4 update smoother
+  ## Indent rule. We are using the old for now: https://eslint.org/docs/user-guide/migrating-to-4.0.0#indent-rewrite
+  indent: off
+  indent-legacy:
+    - error
+    - 2
+    - SwitchCase: 1
+      VariableDeclarator: 1
+      outerIIFEBody: 1
+      FunctionDeclaration:
+        parameters: 1
+        body: 1
+      FunctionExpression:
+        parameters: 1
+        body: 1

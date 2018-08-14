@@ -1,5 +1,3 @@
-/* eslint-disable */
-
 export const mockMetrics = [
   [1493716685, '4.30859375'],
   [1493716745, '4.30859375'],

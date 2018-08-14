@@ -5,8 +5,8 @@
 # Arguments:
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
-#     state: 'open', 'closed', 'merged', or 'all'
+#     scope: 'created_by_me' or 'assigned_to_me' or 'all'
+#     state: 'open', 'closed', 'merged', 'locked', or 'all'
 #     group_id: integer
 #     project_id: integer
 #     milestone_title: string
@@ -55,9 +55,5 @@ class MergeRequestsFinder < IssuableFinder
     return items unless target_branch
 
     items.where(target_branch: target_branch)
-  end
-
-  def item_project_ids(items)
-    items&.reorder(nil)&.select(:target_project_id)
   end
 end

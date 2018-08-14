@@ -2,7 +2,7 @@ module API
   class Issues < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
 
@@ -13,9 +13,10 @@ module API
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
+        args[:scope] = args[:scope].underscore if args[:scope]
 
         issues = IssuesFinder.new(current_user, args).execute
-          .preload(:assignees, :labels, :notes, :timelogs)
+          .preload(:assignees, :labels, :notes, :timelogs, :project, :author)
 
         issues.reorder(args[:order_by] => args[:sort])
       end
@@ -36,8 +37,8 @@ module API
         optional :updated_before, type: DateTime, desc: 'Return issues updated before the specified time'
         optional :author_id, type: Integer, desc: 'Return issues which are authored by the user with the given ID'
         optional :assignee_id, type: Integer, desc: 'Return issues which are assigned to the user with the given ID'
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all],
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all],
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
         optional :my_reaction_emoji, type: String, desc: 'Return issues reacted by the authenticated user by the given emoji'
         use :pagination
       end
@@ -66,10 +67,11 @@ module API
         optional :state, type: String, values: %w[opened closed all], default: 'all',
                          desc: 'Return opened, closed, or all issues'
         use :issues_params
-        optional :scope, type: String, values: %w[created-by-me assigned-to-me all], default: 'created-by-me',
-                         desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
+        optional :scope, type: String, values: %w[created-by-me assigned-to-me created_by_me assigned_to_me all], default: 'created_by_me',
+                         desc: 'Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`'
       end
       get do
+        authenticate! unless params[:scope] == 'all'
         issues = paginate(find_issues)
 
         options = {
@@ -97,7 +99,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = paginate(find_issues(group_id: group.id))
+        issues = paginate(find_issues(group_id: group.id, include_subgroups: true))
 
         options = {
           with: Entities::IssueBasic,
@@ -160,6 +162,9 @@ module API
                                                            desc: 'The IID of a merge request for which to resolve discussions'
         optional :discussion_to_resolve, type: String,
                                          desc: 'The ID of a discussion to resolve, also pass `merge_request_to_resolve_discussions_of`'
+        optional :iid, type: Integer,
+                       desc: 'The internal ID of a project issue. Available only for admins and project owners.'
+
         use :issue_params
       end
       post ':id/issues' do
@@ -167,9 +172,10 @@ module API
 
         authorize! :create_issue, user_project
 
-        # Setting created_at time only allowed for admins and project owners
+        # Setting created_at time or iid only allowed for admins and project owners
         unless current_user.admin? || user_project.owner == current_user
           params.delete(:created_at)
+          params.delete(:iid)
         end
 
         issue_params = declared_params(include_missing: false)
@@ -310,7 +316,7 @@ module API
 
         issue = find_project_issue(params[:issue_iid])
 
-        return not_found!('UserAgentDetail') unless issue.user_agent_detail
+        break not_found!('UserAgentDetail') unless issue.user_agent_detail
 
         present issue.user_agent_detail, with: Entities::UserAgentDetail
       end

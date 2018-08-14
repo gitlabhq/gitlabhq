@@ -1,4 +1,6 @@
 /* eslint-disable func-names, prefer-arrow-callback */
+
+import $ from 'jquery';
 import Api from './api';
 import { humanize } from './lib/utils/text_utility';
 

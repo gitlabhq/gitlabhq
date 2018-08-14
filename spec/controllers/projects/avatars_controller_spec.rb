@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Projects::AvatarsController do
-  let(:project) { create(:project, :repository, avatar: fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "image/png")) }
+  let(:project) { create(:project, :repository, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
   let(:user)    { create(:user) }
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 

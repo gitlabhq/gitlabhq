@@ -89,7 +89,7 @@ A [copy](https://git-scm.com/docs/git-clone) of a repository stored on your mach
 
 ### Code Review
 
-Examination of a progam's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
+Examination of a program's code. The main aim is to maintain high quality standards of code that is being shipped. Merge requests [serve as a code review tool](https://about.gitlab.com/2014/09/29/gitlab-flow/) in GitLab.
 
 ### Code Snippet
 
@@ -556,10 +556,6 @@ Software that is hosted centrally and accessed on-demand (i.e. whenever you want
 ### Software Configuration Management (SCM)
 
 This term is often used by people when they mean "Version Control."
-
-#### SCLAU
-
-Abbreviation for SQO Count [Large And Up](https://about.gitlab.com/handbook/sales/#market-segmentation). This is the number of opportunities in large and strategic organizations passed from marketing to sales.
 
 ### Scrum 
 

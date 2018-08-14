@@ -47,9 +47,7 @@ describe EmailsHelper do
   describe '#header_logo' do
     context 'there is a brand item with a logo' do
       it 'returns the brand header logo' do
-        appearance = create :appearance, header_logo: fixture_file_upload(
-          Rails.root.join('spec/fixtures/dk.png')
-        )
+        appearance = create :appearance, header_logo: fixture_file_upload('spec/fixtures/dk.png')
 
         expect(header_logo).to eq(
           %{<img style="height: 50px" src="/uploads/-/system/appearance/header_logo/#{appearance.id}/dk.png" alt="Dk" />}

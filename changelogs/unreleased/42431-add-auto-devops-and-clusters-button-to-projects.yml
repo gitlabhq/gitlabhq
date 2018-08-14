@@ -1,6 +1,0 @@
----
-title: Add a button on the project page to set up a Kubernetes cluster and enable
-  Auto DevOps
-merge_request: 16900
-author:
-type: added

@@ -1,159 +1,165 @@
 <script>
-  import { mapGetters, mapActions } from 'vuex';
-  import { escape } from 'underscore';
-  import Flash from '../../flash';
-  import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import noteHeader from './note_header.vue';
-  import noteActions from './note_actions.vue';
-  import noteBody from './note_body.vue';
-  import eventHub from '../event_hub';
-  import noteable from '../mixins/noteable';
-  import resolvable from '../mixins/resolvable';
+import $ from 'jquery';
+import { mapGetters, mapActions } from 'vuex';
+import { escape } from 'underscore';
+import Flash from '../../flash';
+import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import noteHeader from './note_header.vue';
+import noteActions from './note_actions.vue';
+import noteBody from './note_body.vue';
+import eventHub from '../event_hub';
+import noteable from '../mixins/noteable';
+import resolvable from '../mixins/resolvable';
 
-  export default {
-    components: {
-      userAvatarLink,
-      noteHeader,
-      noteActions,
-      noteBody,
+export default {
+  name: 'NoteableNote',
+  components: {
+    userAvatarLink,
+    noteHeader,
+    noteActions,
+    noteBody,
+  },
+  mixins: [noteable, resolvable],
+  props: {
+    note: {
+      type: Object,
+      required: true,
     },
-    mixins: [
-      noteable,
-      resolvable,
-    ],
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
+  },
+  data() {
+    return {
+      isEditing: false,
+      isDeleting: false,
+      isRequesting: false,
+      isResolving: false,
+    };
+  },
+  computed: {
+    ...mapGetters(['targetNoteHash', 'getNoteableData', 'getUserData']),
+    author() {
+      return this.note.author;
     },
-    data() {
+    classNameBindings() {
       return {
-        isEditing: false,
-        isDeleting: false,
-        isRequesting: false,
-        isResolving: false,
+        [`note-row-${this.note.id}`]: true,
+        'is-editing': this.isEditing && !this.isRequesting,
+        'is-requesting being-posted': this.isRequesting,
+        'disabled-content': this.isDeleting,
+        target: this.isTarget,
       };
     },
-    computed: {
-      ...mapGetters([
-        'targetNoteHash',
-        'getUserData',
-      ]),
-      author() {
-        return this.note.author;
-      },
-      classNameBindings() {
-        return {
-          'is-editing': this.isEditing && !this.isRequesting,
-          'is-requesting being-posted': this.isRequesting,
-          'disabled-content': this.isDeleting,
-          target: this.targetNoteHash === this.noteAnchorId,
-        };
-      },
-      canReportAsAbuse() {
-        return this.note.report_abuse_path && this.author.id !== this.getUserData.id;
-      },
-      noteAnchorId() {
-        return `note_${this.note.id}`;
-      },
+    canResolve() {
+      return this.note.resolvable && !!this.getUserData.id;
     },
-
-    created() {
-      eventHub.$on('enterEditMode', ({ noteId }) => {
-        if (noteId === this.note.id) {
-          this.isEditing = true;
-          this.scrollToNoteIfNeeded($(this.$el));
-        }
-      });
+    canReportAsAbuse() {
+      return this.note.report_abuse_path && this.author.id !== this.getUserData.id;
     },
+    noteAnchorId() {
+      return `note_${this.note.id}`;
+    },
+    isTarget() {
+      return this.targetNoteHash === this.noteAnchorId;
+    },
+  },
 
-    methods: {
-      ...mapActions([
-        'deleteNote',
-        'updateNote',
-        'toggleResolveNote',
-        'scrollToNoteIfNeeded',
-      ]),
-      editHandler() {
+  created() {
+    eventHub.$on('enterEditMode', ({ noteId }) => {
+      if (noteId === this.note.id) {
         this.isEditing = true;
-      },
-      deleteHandler() {
-        // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to delete this comment?')) {
-          this.isDeleting = true;
+        this.scrollToNoteIfNeeded($(this.$el));
+      }
+    });
+  },
 
-          this.deleteNote(this.note)
-            .then(() => {
-              this.isDeleting = false;
-            })
-            .catch(() => {
-              Flash('Something went wrong while deleting your note. Please try again.');
-              this.isDeleting = false;
-            });
-        }
-      },
-      formUpdateHandler(noteText, parentElement, callback) {
-        const data = {
-          endpoint: this.note.path,
-          note: {
-            target_type: this.noteableType,
-            target_id: this.note.noteable_id,
-            note: { note: noteText },
-          },
-        };
-        this.isRequesting = true;
-        this.oldContent = this.note.note_html;
-        this.note.note_html = escape(noteText);
+  mounted() {
+    if (this.isTarget) {
+      this.scrollToNoteIfNeeded($(this.$el));
+    }
+  },
 
-        this.updateNote(data)
+  methods: {
+    ...mapActions(['deleteNote', 'updateNote', 'toggleResolveNote', 'scrollToNoteIfNeeded']),
+    editHandler() {
+      this.isEditing = true;
+    },
+    deleteHandler() {
+      // eslint-disable-next-line no-alert
+      if (window.confirm('Are you sure you want to delete this comment?')) {
+        this.isDeleting = true;
+
+        this.deleteNote(this.note)
           .then(() => {
-            this.isEditing = false;
-            this.isRequesting = false;
-            this.oldContent = null;
-            $(this.$refs.noteBody.$el).renderGFM();
-            this.$refs.noteBody.resetAutoSave();
-            callback();
+            this.isDeleting = false;
           })
           .catch(() => {
-            this.isRequesting = false;
-            this.isEditing = true;
-            this.$nextTick(() => {
-              const msg = 'Something went wrong while editing your comment. Please try again.';
-              Flash(msg, 'alert', this.$el);
-              this.recoverNoteContent(noteText);
-              callback();
-            });
+            Flash('Something went wrong while deleting your note. Please try again.');
+            this.isDeleting = false;
           });
-      },
-      formCancelHandler(shouldConfirm, isDirty) {
-        if (shouldConfirm && isDirty) {
-          // eslint-disable-next-line no-alert
-          if (!confirm('Are you sure you want to cancel editing this comment?')) return;
-        }
-        this.$refs.noteBody.resetAutoSave();
-        if (this.oldContent) {
-          this.note.note_html = this.oldContent;
-          this.oldContent = null;
-        }
-        this.isEditing = false;
-      },
-      recoverNoteContent(noteText) {
-        // we need to do this to prevent noteForm inconsistent content warning
-        // this is something we intentionally do so we need to recover the content
-        this.note.note = noteText;
-        this.$refs.noteBody.$refs.noteForm.note.note = noteText;
-      },
+      }
     },
-  };
+    formUpdateHandler(noteText, parentElement, callback) {
+      const data = {
+        endpoint: this.note.path,
+        note: {
+          target_type: this.getNoteableData.targetType,
+          target_id: this.note.noteable_id,
+          note: { note: noteText },
+        },
+      };
+      this.isRequesting = true;
+      this.oldContent = this.note.note_html;
+      this.note.note_html = escape(noteText);
+
+      this.updateNote(data)
+        .then(() => {
+          this.isEditing = false;
+          this.isRequesting = false;
+          this.oldContent = null;
+          $(this.$refs.noteBody.$el).renderGFM();
+          this.$refs.noteBody.resetAutoSave();
+          callback();
+        })
+        .catch(() => {
+          this.isRequesting = false;
+          this.isEditing = true;
+          this.$nextTick(() => {
+            const msg = 'Something went wrong while editing your comment. Please try again.';
+            Flash(msg, 'alert', this.$el);
+            this.recoverNoteContent(noteText);
+            callback();
+          });
+        });
+    },
+    formCancelHandler(shouldConfirm, isDirty) {
+      if (shouldConfirm && isDirty) {
+        // eslint-disable-next-line no-alert
+        if (!window.confirm('Are you sure you want to cancel editing this comment?')) return;
+      }
+      this.$refs.noteBody.resetAutoSave();
+      if (this.oldContent) {
+        this.note.note_html = this.oldContent;
+        this.oldContent = null;
+      }
+      this.isEditing = false;
+    },
+    recoverNoteContent(noteText) {
+      // we need to do this to prevent noteForm inconsistent content warning
+      // this is something we intentionally do so we need to recover the content
+      this.note.note = noteText;
+      this.$refs.noteBody.note.note = noteText;
+    },
+  },
+};
 </script>
 
 <template>
   <li
-    class="note timeline-entry"
     :id="noteAnchorId"
     :class="classNameBindings"
-    :data-award-url="note.toggle_award_path">
+    :data-award-url="note.toggle_award_path"
+    :data-note-id="note.id"
+    class="note timeline-entry"
+  >
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link
@@ -169,15 +175,17 @@
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
-            action-text="commented"
           />
           <note-actions
             :author-id="author.id"
             :note-id="note.id"
+            :note-url="note.noteable_note_url"
             :access-level="note.human_access"
             :can-edit="note.current_user.can_edit"
+            :can-award-emoji="note.current_user.can_award_emoji"
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
+            :can-resolve="note.current_user.can_resolve"
             :report-abuse-path="note.report_abuse_path"
             :resolvable="note.resolvable"
             :is-resolved="note.resolved"
@@ -189,12 +197,12 @@
           />
         </div>
         <note-body
+          ref="noteBody"
           :note="note"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
           @handleFormUpdate="formUpdateHandler"
-          @cancelFormEdition="formCancelHandler"
-          ref="noteBody"
+          @cancelForm="formCancelHandler"
         />
       </div>
     </div>

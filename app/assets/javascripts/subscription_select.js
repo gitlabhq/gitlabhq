@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function subscriptionSelect() {
   $('.js-subscription-event').each((i, element) => {
     const fieldName = $(element).data('fieldName');

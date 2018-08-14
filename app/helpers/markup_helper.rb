@@ -107,6 +107,7 @@ module MarkupHelper
 
   def markup(file_name, text, context = {})
     context[:project] ||= @project
+    context[:markdown_engine] ||= :redcarpet
     html = context.delete(:rendered) || markup_unsafe(file_name, text, context)
     prepare_for_rendering(html, context)
   end
@@ -120,7 +121,8 @@ module MarkupHelper
       project: @project,
       project_wiki: @project_wiki,
       page_slug: wiki_page.slug,
-      issuable_state_filter_enabled: true
+      issuable_state_filter_enabled: true,
+      markdown_engine: :redcarpet
     }
 
     html =
@@ -256,7 +258,7 @@ module MarkupHelper
     return '' unless html.present?
 
     context.merge!(
-      current_user:   (current_user if defined?(current_user)),
+      current_user: (current_user if defined?(current_user)),
 
       # RelativeLinkFilter
       commit:         @commit,

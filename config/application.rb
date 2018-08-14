@@ -1,10 +1,16 @@
-require File.expand_path('../boot', __FILE__)
+require File.expand_path('boot', __dir__)
 
 require 'rails/all'
 
 Bundler.require(:default, Rails.env)
 
 module Gitlab
+  # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
+  # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
+  def self.rails5?
+    ENV["RAILS5"].in?(%w[1 true])
+  end
+
   class Application < Rails::Application
     require_dependency Rails.root.join('lib/gitlab/redis/wrapper')
     require_dependency Rails.root.join('lib/gitlab/redis/cache')
@@ -12,6 +18,12 @@ module Gitlab
     require_dependency Rails.root.join('lib/gitlab/redis/shared_state')
     require_dependency Rails.root.join('lib/gitlab/request_context')
     require_dependency Rails.root.join('lib/gitlab/current_settings')
+    require_dependency Rails.root.join('lib/gitlab/middleware/read_only')
+
+    # This needs to be loaded before DB connection is made
+    # to make sure that all connections have NO_ZERO_DATE
+    # setting disabled
+    require_dependency Rails.root.join('lib/mysql_zero_date')
 
     # Settings in config/environments/* take precedence over those specified here.
     # Application configuration should go into files in config/initializers
@@ -31,9 +43,12 @@ module Gitlab
                                      #{config.root}/app/models/members
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
+                                     #{config.root}/app/policies/concerns
                                      #{config.root}/app/services/concerns
                                      #{config.root}/app/serializers/concerns
-                                     #{config.root}/app/finders/concerns])
+                                     #{config.root}/app/finders/concerns
+                                     #{config.root}/app/graphql/resolvers/concerns
+                                     #{config.root}/app/graphql/mutations/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
@@ -56,6 +71,13 @@ module Gitlab
     # Configure the default encoding used in templates for Ruby 1.9.
     config.encoding = "utf-8"
 
+    # ActionCable mount point.
+    # The default Rails' mount point is `/cable` which may conflict with existing
+    # namespaces/users.
+    # https://github.com/rails/rails/blob/5-0-stable/actioncable/lib/action_cable.rb#L38
+    # Please change this value when configuring ActionCable for real usage.
+    config.action_cable.mount_path = "/-/cable" if rails5?
+
     # Configure sensitive parameters which will be filtered from the log file.
     #
     # Parameters filtered:
@@ -70,7 +92,7 @@ module Gitlab
     # - Webhook URLs (:hook)
     # - Sentry DSN (:sentry_dsn)
     # - Deploy keys (:key)
-    # - Secret variable values (:value)
+    # - File content from Web Editor (:content)
     config.filter_parameters += [/token$/, /password/, /secret/]
     config.filter_parameters += %i(
       certificate
@@ -82,7 +104,7 @@ module Gitlab
       sentry_dsn
       trace
       variables
-      value
+      content
     )
 
     # Enable escaping HTML in JSON.
@@ -111,16 +133,33 @@ module Gitlab
     config.assets.precompile << "print.css"
     config.assets.precompile << "notify.css"
     config.assets.precompile << "mailers/*.css"
-    config.assets.precompile << "xterm/xterm.css"
+    config.assets.precompile << "page_bundles/ide.css"
     config.assets.precompile << "performance_bar.css"
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "test.css"
+    config.assets.precompile << "snippets.css"
     config.assets.precompile << "locale/**/app.js"
+    config.assets.precompile << "emoji_sprites.css"
+    config.assets.precompile << "errors.css"
+
+    # Import gitlab-svgs directly from vendored directory
+    config.assets.paths << "#{config.root}/node_modules/@gitlab-org/gitlab-svgs/dist"
+    config.assets.precompile << "icons.svg"
+    config.assets.precompile << "icons.json"
+    config.assets.precompile << "illustrations/*.svg"
+
+    # Import css for xterm
+    config.assets.paths << "#{config.root}/node_modules/xterm/src/"
+    config.assets.precompile << "xterm.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
+
+    # This middleware needs to precede ActiveRecord::QueryCache and other middlewares that
+    # connect to the database.
+    config.middleware.insert_after "Rails::Rack::Logger", "Gitlab::Middleware::BasicHealthCheck"
 
     config.middleware.insert_after Warden::Manager, Rack::Attack
 
@@ -166,7 +205,7 @@ module Gitlab
     ENV['GIT_TERMINAL_PROMPT'] = '0'
 
     # Gitlab Read-only middleware support
-    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
+    config.middleware.insert_after ActionDispatch::Flash, ::Gitlab::Middleware::ReadOnly
 
     config.generators do |g|
       g.factory_bot false
@@ -182,7 +221,7 @@ module Gitlab
           next unless name.include?('namespace_project')
 
           define_method(name.sub('namespace_project', 'project')) do |project, *args|
-            send(name, project&.namespace, project, *args) # rubocop:disable GitlabSecurity/PublicSend
+            send(name, project&.namespace, project, *args)
           end
         end
       end

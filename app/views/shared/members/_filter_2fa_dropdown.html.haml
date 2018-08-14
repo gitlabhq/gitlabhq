@@ -1,0 +1,11 @@
+- filter = params[:two_factor] || 'everyone'
+- filter_options = { 'everyone' => 'Everyone', 'enabled' => 'Enabled', 'disabled' => 'Disabled' }
+.dropdown.inline.member-filter-2fa-dropdown
+  = dropdown_toggle('2FA: ' + filter_options[filter], { toggle: 'dropdown' })
+  %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+    %li.dropdown-header
+      Filter by two-factor authentication
+    - filter_options.each do |value, title|
+      %li
+        = link_to filter_group_project_member_path(two_factor: value), class: ("is-active" if filter == value) do
+          = title

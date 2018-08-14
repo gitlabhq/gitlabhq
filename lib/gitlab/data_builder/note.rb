@@ -9,6 +9,7 @@ module Gitlab
       #
       # data = {
       #   object_kind: "note",
+      #   event_type: "confidential_note",
       #   user: {
       #     name: String,
       #     username: String,
@@ -51,8 +52,11 @@ module Gitlab
       end
 
       def build_base_data(project, user, note)
+        event_type = note.confidential? ? 'confidential_note' : 'note'
+
         base_data = {
           object_kind: "note",
+          event_type: event_type,
           user: user.hook_attrs,
           project_id: project.id,
           project: project.hook_attrs,

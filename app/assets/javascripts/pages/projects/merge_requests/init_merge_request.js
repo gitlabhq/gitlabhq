@@ -1,5 +1,6 @@
 /* eslint-disable no-new */
 
+import $ from 'jquery';
 import Diff from '~/diff';
 import ShortcutsNavigation from '~/shortcuts_navigation';
 import GLForm from '~/gl_form';
@@ -11,7 +12,7 @@ import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
 export default () => {
   new Diff();
   new ShortcutsNavigation();
-  new GLForm($('.merge-request-form'), true);
+  new GLForm($('.merge-request-form'));
   new IssuableForm($('.merge-request-form'));
   new LabelsSelect();
   new MilestoneSelect();

@@ -1,7 +1,7 @@
 import MonitoringStore from '~/monitoring/stores/monitoring_store';
-import MonitoringMock, { deploymentData } from './mock_data';
+import MonitoringMock, { deploymentData, environmentData } from './mock_data';
 
-describe('MonitoringStore', () => {
+describe('MonitoringStore', function () {
   this.store = new MonitoringStore();
   this.store.storeMetrics(MonitoringMock.data);
 
@@ -20,5 +20,10 @@ describe('MonitoringStore', () => {
     expect(this.store.deploymentData).toBeDefined();
     expect(this.store.deploymentData.length).toEqual(3);
     expect(typeof this.store.deploymentData[0]).toEqual('object');
+  });
+
+  it('only stores environment data that contains deployments', () => {
+    this.store.storeEnvironmentsData(environmentData);
+    expect(this.store.environmentsData.length).toEqual(2);
   });
 });

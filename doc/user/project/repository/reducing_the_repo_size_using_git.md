@@ -1,6 +1,6 @@
 # Reducing the repository size using Git
 
-A GitLab Entrerprise Edition administrator can set a [repository size limit][admin-repo-size]
+A GitLab Enterprise Edition administrator can set a [repository size limit][admin-repo-size]
 which will prevent you to exceed it.
 
 When a project has reached its size limit, you will not be able to push to it,

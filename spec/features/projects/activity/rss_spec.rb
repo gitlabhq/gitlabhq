@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-feature 'Project Activity RSS' do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+describe 'Project Activity RSS' do
+  let(:project) { create(:project, :public) }
+  let(:user) { project.owner }
   let(:path) { activity_project_path(project) }
 
   before do
@@ -11,12 +11,11 @@ feature 'Project Activity RSS' do
 
   context 'when signed in' do
     before do
-      project.add_developer(user)
-      sign_in(user)
+      sign_in(project.owner)
       visit path
     end
 
-    it_behaves_like "it has an RSS button with current_user's RSS token"
+    it_behaves_like "it has an RSS button with current_user's feed token"
   end
 
   context 'when signed out' do
@@ -24,6 +23,6 @@ feature 'Project Activity RSS' do
       visit path
     end
 
-    it_behaves_like "it has an RSS button without an RSS token"
+    it_behaves_like "it has an RSS button without a feed token"
   end
 end

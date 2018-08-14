@@ -15,11 +15,19 @@ export default class MergeRequestStore {
     const currentUser = data.current_user;
     const pipelineStatus = data.pipeline ? data.pipeline.details.status : null;
 
+    this.squash = data.squash;
+    this.squashBeforeMergeHelpPath =
+      this.squashBeforeMergeHelpPath || data.squash_before_merge_help_path;
+    this.enableSquashBeforeMerge = this.enableSquashBeforeMerge || true;
+
+    this.iid = data.iid;
     this.title = data.title;
     this.targetBranch = data.target_branch;
     this.sourceBranch = data.source_branch;
     this.mergeStatus = data.merge_status;
     this.commitMessage = data.merge_commit_message;
+    this.shortMergeCommitSha = data.short_merge_commit_sha;
+    this.mergeCommitSha = data.merge_commit_sha;
     this.commitMessageWithDescription = data.merge_commit_message_with_description;
     this.commitsCount = data.commits_count;
     this.divergedCommitsCount = data.diverged_commits_count;
@@ -65,6 +73,7 @@ export default class MergeRequestStore {
     this.createIssueToResolveDiscussionsPath = data.create_issue_to_resolve_discussions_path;
     this.mergeCheckPath = data.merge_check_path;
     this.mergeActionsContentPath = data.commit_change_content_path;
+    this.mergeCommitPath = data.merge_commit_path;
     this.isRemovingSourceBranch = this.isRemovingSourceBranch || false;
     this.isOpen = data.state === 'opened';
     this.hasMergeableDiscussionsState = data.mergeable_discussions_state === false;
@@ -76,7 +85,9 @@ export default class MergeRequestStore {
     this.canBeMerged = data.can_be_merged || false;
     this.isMergeAllowed = data.mergeable || false;
     this.mergeOngoing = data.merge_ongoing;
-    this.maintainerEditAllowed = data.allow_maintainer_to_push;
+    this.allowCollaboration = data.allow_collaboration;
+    this.targetProjectFullPath = data.target_project_full_path;
+    this.sourceProjectFullPath = data.source_project_full_path;
 
     // Cherry-pick and Revert actions related
     this.canCherryPickInCurrentMR = currentUser.can_cherry_pick_on_current_merge_request || false;
@@ -89,12 +100,15 @@ export default class MergeRequestStore {
     this.hasCI = data.has_ci;
     this.ciStatus = data.ci_status;
     this.isPipelineFailed = this.ciStatus === 'failed' || this.ciStatus === 'canceled';
-    this.isPipelinePassing = this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
+    this.isPipelinePassing =
+      this.ciStatus === 'success' || this.ciStatus === 'success_with_warnings';
     this.isPipelineSkipped = this.ciStatus === 'skipped';
     this.pipelineDetailedStatus = pipelineStatus;
     this.isPipelineActive = data.pipeline ? data.pipeline.active : false;
     this.isPipelineBlocked = pipelineStatus ? pipelineStatus.group === 'manual' : false;
     this.ciStatusFaviconPath = pipelineStatus ? pipelineStatus.favicon : null;
+
+    this.testResultsPath = data.test_reports_path;
 
     this.setState(data);
   }
@@ -123,6 +137,10 @@ export default class MergeRequestStore {
 
   get isNothingToMergeState() {
     return this.state === stateKey.nothingToMerge;
+  }
+
+  get isMergedState() {
+    return this.state === stateKey.merged;
   }
 
   initRebase(data) {

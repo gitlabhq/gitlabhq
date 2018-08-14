@@ -1,5 +1,0 @@
----
-title: Revert Project.public_or_visible_to_user changes and only apply to snippets
-merge_request:
-author:
-type: fixed

@@ -1,5 +1,6 @@
 /* eslint-disable comma-dangle, object-shorthand, no-param-reassign, camelcase, no-nested-ternary, no-continue, max-len */
 
+import $ from 'jquery';
 import Vue from 'vue';
 import Cookies from 'js-cookie';
 
@@ -155,7 +156,7 @@ import Cookies from 'js-cookie';
         return 0;
       }
 
-      const files = this.state.conflictsData.files;
+      const { files } = this.state.conflictsData;
       let count = 0;
 
       files.forEach((file) => {
@@ -312,7 +313,7 @@ import Cookies from 'js-cookie';
     },
 
     isReadyToCommit() {
-      const files = this.state.conflictsData.files;
+      const { files } = this.state.conflictsData;
       const hasCommitMessage = $.trim(this.state.conflictsData.commitMessage).length;
       let unresolved = 0;
 
@@ -350,7 +351,7 @@ import Cookies from 'js-cookie';
     },
 
     getCommitButtonText() {
-      const initial = 'Commit conflict resolution';
+      const initial = 'Commit to source branch';
       const inProgress = 'Committing...';
 
       return this.state ? this.state.isSubmitting ? inProgress : initial : initial;

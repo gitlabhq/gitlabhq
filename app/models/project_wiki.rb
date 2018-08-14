@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectWiki
   include Gitlab::ShellAdapter
   include Storage::LegacyProjectWiki
@@ -9,6 +11,7 @@ class ProjectWiki
   }.freeze unless defined?(MARKUPS)
 
   CouldNotCreateWikiError = Class.new(StandardError)
+  SIDEBAR = '_sidebar'
 
   # Returns a string describing what went wrong after
   # an operation fails.
@@ -20,8 +23,7 @@ class ProjectWiki
     @user = user
   end
 
-  delegate :empty?, to: :pages
-  delegate :repository_storage_path, :hashed_storage?, to: :project
+  delegate :repository_storage, :hashed_storage?, to: :project
 
   def path
     @project.path + '.wiki'
@@ -74,9 +76,13 @@ class ProjectWiki
     !!find_page('home')
   end
 
+  def empty?
+    pages(limit: 1).empty?
+  end
+
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages(limit: nil)
+  def pages(limit: 0)
     wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
   end
 
@@ -95,6 +101,10 @@ class ProjectWiki
     end
   end
 
+  def find_sidebar(version = nil)
+    find_page(SIDEBAR, version)
+  end
+
   def find_file(name, version = nil)
     wiki.file(name, version)
   end
@@ -107,7 +117,7 @@ class ProjectWiki
     update_project_activity
   rescue Gitlab::Git::Wiki::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
-    return false
+    false
   end
 
   def update_page(page, content:, title: nil, format: :markdown, message: nil)
@@ -140,10 +150,6 @@ class ProjectWiki
     [title, title_array.join("/")]
   end
 
-  def search_files(query)
-    repository.search_files_by_content(query, default_branch)
-  end
-
   def repository
     @repository ||= Repository.new(full_path, @project, disk_path: disk_path, is_wiki: true)
   end
@@ -169,7 +175,7 @@ class ProjectWiki
   private
 
   def create_repo!(raw_repository)
-    gitlab_shell.add_repository(project.repository_storage, disk_path)
+    gitlab_shell.create_repository(project.repository_storage, disk_path)
 
     raise CouldNotCreateWikiError unless raw_repository.exists?
 
@@ -179,7 +185,11 @@ class ProjectWiki
   def commit_details(action, message = nil, title = nil)
     commit_message = message || default_message(action, title)
 
-    Gitlab::Git::Wiki::CommitDetails.new(@user.name, @user.email, commit_message)
+    Gitlab::Git::Wiki::CommitDetails.new(@user.id,
+                                         @user.username,
+                                         @user.name,
+                                         @user.email,
+                                         commit_message)
   end
 
   def default_message(action, title)

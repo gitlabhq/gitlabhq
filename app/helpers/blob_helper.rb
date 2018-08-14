@@ -17,7 +17,9 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
+    segments = [ide_path, 'project', project.full_path, 'edit', ref]
+    segments.concat(['-', path]) if path.present?
+    File.join(segments)
   end
 
   def edit_blob_button(project = @project, ref = @ref, path = @path, options = {})
@@ -29,6 +31,17 @@ module BlobHelper
                     common_classes,
                     _('Edit'),
                     edit_blob_path(project, ref, path, options),
+                    project,
+                    ref)
+  end
+
+  def ide_edit_button(project = @project, ref = @ref, path = @path, options = {})
+    return unless blob = readable_blob(options, path, project, ref)
+
+    edit_button_tag(blob,
+                    'btn btn-default',
+                    _('Web IDE'),
+                    ide_edit_path(project, ref, path, options),
                     project,
                     ref)
   end
@@ -48,7 +61,7 @@ module BlobHelper
       button_tag label, class: "#{common_classes} disabled has-tooltip", title: "It is not possible to #{action} files that are stored in LFS using the web interface", data: { container: 'body' }
     elsif can_modify_blob?(blob, project, ref)
       button_tag label, class: "#{common_classes}", 'data-target' => "#modal-#{modal_type}-blob", 'data-toggle' => 'modal'
-    elsif can?(current_user, :fork_project, project)
+    elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
       edit_fork_button_tag(common_classes, project, label, edit_modify_file_fork_params(action), action)
     end
   end
@@ -101,22 +114,22 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_url(only_path: false)
+  def blob_raw_url(**kwargs)
     if @build && @entry
-      raw_project_job_artifacts_url(@project, @build, path: @entry.path, only_path: only_path)
+      raw_project_job_artifacts_url(@project, @build, path: @entry.path, **kwargs)
     elsif @snippet
       if @snippet.project_id
-        raw_project_snippet_url(@project, @snippet, only_path: only_path)
+        raw_project_snippet_url(@project, @snippet, **kwargs)
       else
-        raw_snippet_url(@snippet, only_path: only_path)
+        raw_snippet_url(@snippet, **kwargs)
       end
     elsif @blob
-      project_raw_url(@project, @id, only_path: only_path)
+      project_raw_url(@project, @id, **kwargs)
     end
   end
 
-  def blob_raw_path
-    blob_raw_url(only_path: true)
+  def blob_raw_path(**kwargs)
+    blob_raw_url(**kwargs, only_path: true)
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted
@@ -213,16 +226,17 @@ module BlobHelper
 
   def open_raw_blob_button(blob)
     return if blob.empty?
+    return if blob.raw_binary? || blob.stored_externally?
 
-    if blob.raw_binary? || blob.stored_externally?
-      icon = sprite_icon('download')
-      title = 'Download'
-    else
-      icon = icon('file-code-o')
-      title = 'Open raw'
-    end
+    title = 'Open raw'
+    link_to icon('file-code-o'), blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+  end
 
-    link_to icon, blob_raw_path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
+  def download_blob_button(blob)
+    return if blob.empty?
+
+    title = 'Download'
+    link_to sprite_icon('download'), blob_raw_path(inline: false), download: @path, class: 'btn btn-sm has-tooltip', target: '_blank', rel: 'noopener noreferrer', title: title, data: { container: 'body' }
   end
 
   def blob_render_error_reason(viewer)
@@ -248,7 +262,7 @@ module BlobHelper
     options = []
 
     if error == :collapsed
-      options << link_to('load it anyway', url_for(params.merge(viewer: viewer.type, expanded: true, format: nil)))
+      options << link_to('load it anyway', url_for(safe_params.merge(viewer: viewer.type, expanded: true, format: nil)))
     end
 
     # If the error is `:server_side_but_stored_externally`, the simple viewer will show the same error,
@@ -269,7 +283,7 @@ module BlobHelper
       options << link_to("submit an issue", new_project_issue_path(project))
     end
 
-    merge_project = can?(current_user, :create_merge_request, project) ? project : (current_user && current_user.fork_of(project))
+    merge_project = merge_request_source_project_for_project(@project)
     if merge_project
       options << link_to("create a merge request", project_new_merge_request_path(project))
     end
@@ -320,10 +334,9 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       edit_disabled_button_tag(text, common_classes)
       # This condition only applies to users who are logged in
-      # Web IDE (Beta) requires the user to have this feature enabled
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       edit_link_tag(text, edit_path, common_classes)
-    elsif current_user && can?(current_user, :fork_project, project)
+    elsif can?(current_user, :fork_project, project) && can?(current_user, :create_merge_request_in, project)
       edit_fork_button_tag(common_classes, project, text, edit_blob_fork_params(edit_path))
     end
   end

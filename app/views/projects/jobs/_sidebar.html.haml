@@ -1,17 +1,7 @@
-- builds = @build.pipeline.builds.to_a
-
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
-      .block
-        %strong.inline.prepend-top-8
-          = @build.name
-        - if can?(current_user, :update_build, @build) && @build.retryable?
-          = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button pull-right btn btn-inverted-secondary btn-retry visible-md-block visible-lg-block', method: :post
-        %a.gutter-toggle.pull-right.visible-xs-block.visible-sm-block.js-sidebar-build-toggle{ href: "#", 'aria-label': 'Toggle Sidebar', role: 'button' }
-          = icon('angle-double-right')
-
-      #js-details-block-vue
+      #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
       - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
         .block
@@ -23,11 +13,11 @@
               #{time_ago_with_tooltip(@build.artifacts_expire_at)}
           - elsif @build.has_expiring_artifacts?
             %p.build-detail-row
-              The artifacts will be removed in
-              %span= time_ago_in_words @build.artifacts_expire_at
+              The artifacts will be removed
+              #{time_ago_with_tooltip(@build.artifacts_expire_at)}
 
           - if @build.artifacts?
-            .btn-group.btn-group-justified{ role: :group }
+            .btn-group.d-flex{ role: :group }
               - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
                 = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
                   Keep
@@ -35,7 +25,7 @@
               = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
                 Download
 
-              - if @build.artifacts_metadata?
+              - if @build.browsable_artifacts?
                 = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                   Browse
 
@@ -51,7 +41,7 @@
 
           - if @build.trigger_variables.any?
             %p
-              %button.btn.group.btn-group-justified.js-reveal-variables Reveal Variables
+              %button.btn.group.js-reveal-variables Reveal Variables
 
             %dl.js-build-variables.trigger-build-variables.hide
               - @build.trigger_variables.each do |trigger_variable|
@@ -91,7 +81,8 @@
       - HasStatus::ORDERED_STATUSES.each do |build_status|
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
-            = link_to project_job_path(@project, build) do
+            - tooltip = sanitize(build.tooltip_message.dup)
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: 'true', title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)
@@ -101,5 +92,4 @@
                 - else
                   = build.id
               - if build.retried?
-                %span.has-tooltip{ data: { container: 'body', placement: 'bottom' }, title: 'Job was retried' }
-                  = sprite_icon('retry', size:16, css_class: 'icon-retry')
+                = sprite_icon('retry', size:16, css_class: 'icon-retry')

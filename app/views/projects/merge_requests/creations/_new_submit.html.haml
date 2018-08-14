@@ -7,10 +7,10 @@
   %span into
   %strong.ref-name= target_title
 
-  %span.pull-right
+  %span.float-right
     = link_to 'Change branches', mr_change_branches_path(@merge_request)
 %hr
-= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form form-horizontal common-note-form js-requires-input js-quick-submit' } do |f|
+= form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: 'merge-request-form common-note-form js-requires-input js-quick-submit' } do |f|
   = render 'shared/issuable/form', f: f, issuable: @merge_request, commits: @commits
   = f.hidden_field :source_project_id
   = f.hidden_field :source_branch
@@ -24,29 +24,34 @@
         There are no commits yet.
       = custom_icon ('illustration_no_commits')
   - else
-    %ul.merge-request-tabs.nav-links.no-top.no-bottom
-      %li.commits-tab.active
-        = link_to url_for(params), data: {target: 'div#commits', action: 'new', toggle: 'tab'} do
-          Commits
-          %span.badge= @commits.size
-      - if @pipelines.any?
-        %li.builds-tab
-          = link_to url_for(params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tab'} do
-            Pipelines
-            %span.badge= @pipelines.size
-      %li.diffs-tab
-        = link_to url_for(params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tab'} do
-          Changes
-          %span.badge= @merge_request.diff_size
+    .merge-request-tabs-holder{ class: ("js-tabs-affix" unless ENV['RAILS_ENV'] == 'test') }
+      .merge-request-tabs-container
+        .scrolling-tabs-container.inner-page-scroll-tabs.is-smaller
+          .fade-left= icon('angle-left')
+          .fade-right= icon('angle-right')
+          %ul.merge-request-tabs.nav.nav-tabs.nav-links.no-top.no-bottom.js-tabs-affix
+            %li.commits-tab.new-tab
+              = link_to url_for(safe_params), data: {target: 'div#commits', action: 'new', toggle: 'tabvue'} do
+                Commits
+                %span.badge.badge-pill= @commits.size
+            - if @pipelines.any?
+              %li.builds-tab
+                = link_to url_for(safe_params.merge(action: 'pipelines')), data: {target: 'div#pipelines', action: 'pipelines', toggle: 'tabvue'} do
+                  Pipelines
+                  %span.badge.badge-pill= @pipelines.size
+            %li.diffs-tab
+              = link_to url_for(safe_params.merge(action: 'diffs')), data: {target: 'div#diffs', action: 'diffs', toggle: 'tabvue'} do
+                Changes
+                %span.badge.badge-pill= @merge_request.diff_size
 
-    .tab-content
-      #commits.commits.tab-pane.active
+    #diff-notes-app.tab-content
+      #new.commits.tab-pane.active
         = render "projects/merge_requests/commits"
       #diffs.diffs.tab-pane
         -# This tab is always loaded via AJAX
       - if @pipelines.any?
         #pipelines.pipelines.tab-pane
-          = render 'projects/merge_requests/pipelines', endpoint: url_for(params.merge(action: 'pipelines', format: :json)), disable_initialization: true
+          = render 'projects/merge_requests/pipelines', endpoint: url_for(safe_params.merge(action: 'pipelines', format: :json)), disable_initialization: true
 
   .mr-loading-status
     = spinner

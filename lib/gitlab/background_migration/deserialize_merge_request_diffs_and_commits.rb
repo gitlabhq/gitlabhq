@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 # rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/LineLength
 # rubocop:disable Metrics/AbcSize
 # rubocop:disable Style/Documentation
 
@@ -96,7 +95,7 @@ module Gitlab
           commit_hash.merge(
             merge_request_diff_id: merge_request_diff.id,
             relative_order: index,
-            sha: sha_attribute.type_cast_for_database(sha)
+            sha: sha_attribute.serialize(sha)
           )
         end
 

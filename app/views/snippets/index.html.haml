@@ -1,12 +1,12 @@
 - page_title "By #{@user.name}", "Snippets"
 
 %ol.breadcrumb
-  %li
+  %li.breadcrumb-item
     = link_to snippets_path do
       Snippets
-  %li
+  %li.breadcrumb-item
     = @user.name
-  .pull-right.hidden-xs
+  .float-right.d-none.d-sm-block
     = link_to user_path(@user) do
       #{@user.name} profile page
 

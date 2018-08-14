@@ -12,9 +12,8 @@ Since installations from source don't have Runit, Sidekiq can't be terminated an
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the tag (version) of GitLab you would like to install.
-In most cases this should be the highest numbered production tag (without rc in it).
-You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install (e.g., `11-2-stable`).
+You can select the branch in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -93,9 +92,9 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.16.2.tar.gz
-    echo '9acc4339b7a2ab484eea69d705923271682b7058015219cf5a7e6ed8dee5b5fb  git-2.16.2.tar.gz' | shasum -a256 -c - && tar -xzf git-2.16.2.tar.gz
-    cd git-2.16.2/
+    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.18.0.tar.gz
+    echo '94faf2c0b02a7920b0b46f4961d8e9cad08e81418614102898a55f980fa3e7e4  git-2.18.0.tar.gz' | shasum -a256 -c - && tar -xzf git-2.18.0.tar.gz
+    cd git-2.18.0/
     ./configure
     make prefix=/usr/local all
 
@@ -133,9 +132,10 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.6.tar.gz
-    echo '4e6a0f828819e15d274ae58485585fc8b7caace0  ruby-2.3.6.tar.gz' | shasum -c - && tar xzf ruby-2.3.6.tar.gz
-    cd ruby-2.3.6
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.4/ruby-2.4.4.tar.gz
+    echo 'ec82b0d53bd0adad9b19e6b45e44d54e9ec3f10c  ruby-2.4.4.tar.gz' | shasum -c - && tar xzf ruby-2.4.4.tar.gz
+    cd ruby-2.4.4
+
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -153,22 +153,23 @@ page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
-
-    curl --remote-name --progress https://storage.googleapis.com/golang/go1.8.3.linux-amd64.tar.gz
-    echo '1862f4c3d3907e59b04a757cfda0ea7aa9ef39274af99a784f5be843c80c6772  go1.8.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
-      sudo tar -C /usr/local -xzf go1.8.3.linux-amd64.tar.gz
+    
+    curl --remote-name --progress https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
+    echo 'fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  go1.10.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
+      sudo tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
     sudo ln -sf /usr/local/go/bin/{go,godoc,gofmt} /usr/local/bin/
-    rm go1.8.3.linux-amd64.tar.gz
+    rm go1.10.3.linux-amd64.tar.gz
 
 ## 4. Node
 
-Since GitLab 8.17, GitLab requires the use of node >= v4.3.0 to compile
-javascript assets, and yarn >= v0.17.0 to manage javascript dependencies.
-In many distros the versions provided by the official package  repositories
-are out of date, so we'll need to install through the following commands:
+Since GitLab 8.17, GitLab requires the use of Node to compile javascript
+assets, and Yarn to manage javascript dependencies. The current minimum
+requirements for these are node >= v6.0.0 and yarn >= v1.2.0. In many distros
+the versions provided by the official package repositories are out of date, so
+we'll need to install through the following commands:
 
-    # install node v7.x
-    curl --location https://deb.nodesource.com/setup_7.x | sudo bash -
+    # install node v8.x
+    curl --location https://deb.nodesource.com/setup_8.x | sudo bash -
     sudo apt-get install -y nodejs
 
     curl --silent --show-error https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
@@ -299,9 +300,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-5-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 11-2-stable gitlab
 
-**Note:** You can change `10-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `11-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -446,6 +447,15 @@ You can specify a different Git repository by providing it as an extra parameter
 
     sudo -u git -H bundle exec rake "gitlab:workhorse:install[/home/git/gitlab-workhorse,https://example.com/gitlab-workhorse.git]" RAILS_ENV=production
 
+### Install gitlab-pages
+
+GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is optional and only needed if you wish to host static sites from within GitLab. The following commands will install GitLab-Pages in `/home/git/gitlab-pages`. For additional setup steps, please consult the [administration guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/administration/pages/source.md) for your version of GitLab as the GitLab Pages daemon can be ran several different ways.
+
+    cd /home/git
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-pages.git
+    cd gitlab-pages
+    sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
+    sudo -u git -H make
 
 ### Initialize Database and Activate Advanced Features
 

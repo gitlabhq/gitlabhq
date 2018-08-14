@@ -1,4 +1,4 @@
-@media (max-width: $screen-md-max) {
+@include media-breakpoint-down(md) {
   .deployments-container {
     width: 100%;
     overflow: auto;
@@ -23,8 +23,7 @@
     }
 
     .btn-group {
-
-      > a {
+      > .btn:not(.btn-danger) {
         color: $gl-text-color-secondary;
       }
 
@@ -138,7 +137,7 @@
   border-left: 0;
   border-right: 0;
 
-  @media (min-width: $screen-sm-max) {
+  @media (min-width: map-get($grid-breakpoints, md)-1) {
     border-top: 0;
   }
 }
@@ -223,6 +222,23 @@
   }
 }
 
+.prometheus-graphs {
+  .environments {
+    .dropdown-menu-toggle {
+      svg {
+        position: absolute;
+        right: 5%;
+        top: 25%;
+      }
+    }
+
+    .dropdown-menu-toggle,
+    .dropdown-menu {
+      width: 240px;
+    }
+  }
+}
+
 .environments-actions {
   .external-url,
   .monitoring-url,
@@ -245,14 +261,26 @@
 .prometheus-graph {
   flex: 1 0 auto;
   min-width: 450px;
+  max-width: 100%;
   padding: $gl-padding / 2;
 
   h5 {
     font-size: 16px;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     min-width: 100%;
+  }
+}
+
+.prometheus-graph-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: $gl-padding-8;
+
+  h5 {
+    margin: 0;
   }
 }
 
@@ -265,27 +293,14 @@
 .prometheus-graph-flag {
   display: block;
   min-width: 160px;
+  border: 0;
+  box-shadow: 0 1px 4px 0 $black-transparent;
 
   h5 {
     padding: 0;
     margin: 0;
     font-size: 14px;
     line-height: 1.2;
-  }
-
-  table {
-    border-collapse: collapse;
-    padding: 0;
-    margin: 0;
-  }
-
-  td {
-    vertical-align: middle;
-
-    + td {
-      padding-left: 5px;
-      vertical-align: top;
-    }
   }
 
   .deploy-meta-content {
@@ -298,28 +313,103 @@
   }
 
   &.popover {
+    padding: 0;
+
     &.left {
       left: auto;
       right: 0;
       margin-right: 10px;
+
+      > .arrow {
+        right: -14px;
+        border-left-color: $border-color;
+      }
+
+      > .arrow::after {
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-left: 4px solid $theme-gray-50;
+      }
+
+      .arrow-shadow {
+        right: -3px;
+        box-shadow: 1px 0 9px 0 $black-transparent;
+      }
     }
 
     &.right {
       left: 0;
       right: auto;
       margin-left: 10px;
+
+      > .arrow {
+        left: -7px;
+        border-right-color: $border-color;
+      }
+
+      > .arrow::after {
+        border-top: 6px solid transparent;
+        border-bottom: 6px solid transparent;
+        border-right: 4px solid $theme-gray-50;
+      }
+
+      .arrow-shadow {
+        left: -3px;
+        box-shadow: 1px 0 8px 0 $black-transparent;
+      }
     }
 
     > .arrow {
-      top: 40px;
+      top: 10px;
+      margin: 0;
+    }
+
+    .arrow-shadow {
+      content: "";
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      background-color: transparent;
+      transform: rotate(45deg);
+      top: 13px;
     }
 
     > .popover-title,
     > .popover-content {
-      padding: 5px 8px;
+      padding: 8px;
       font-size: 12px;
       white-space: nowrap;
+      position: relative;
     }
+
+    > .popover-title {
+      background-color: $theme-gray-50;
+      border-radius: $border-radius-default $border-radius-default 0 0;
+    }
+  }
+
+  strong {
+    font-weight: 600;
+  }
+}
+
+.prometheus-table {
+  border-collapse: collapse;
+  padding: 0;
+  margin: 0;
+
+  td {
+    vertical-align: middle;
+
+    + td {
+      padding-left: 8px;
+      vertical-align: top;
+    }
+  }
+
+  .legend-metric-title {
+    font-size: 12px;
+    vertical-align: middle;
   }
 }
 
@@ -330,8 +420,7 @@
   padding: 0;
   padding-bottom: 100%;
 
-  .text-metric-usage,
-  .legend-metric-title {
+  .text-metric-usage {
     fill: $black;
     font-weight: $gl-font-weight-normal;
     font-size: 12px;
@@ -374,10 +463,6 @@
       }
     }
 
-    .text-metric-title {
-      font-size: 12px;
-    }
-
     .y-label-text,
     .x-label-text {
       fill: $gray-darkest;
@@ -393,7 +478,7 @@
     }
 
     .deploy-info-text-link {
-      font-family: $monospace_font;
+      font-family: $monospace-font;
       fill: $gl-link-color;
 
       &:hover {
@@ -401,7 +486,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       .label-axis-text,
       .text-metric-usage,
       .legend-axis-text {
@@ -413,4 +498,8 @@
       }
     }
   }
+}
+
+.prometheus-table-row-highlight {
+  background-color: $prometheus-table-row-highlight-color;
 }

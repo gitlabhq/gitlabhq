@@ -1,5 +1,5 @@
 /** Common mobile (screen XS, SM) styles **/
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .container .content {
     margin-top: 20px;
   }
@@ -14,7 +14,7 @@
     font-size: 12px;
     margin-right: 3px;
 
-    .badge {
+    .badge.badge-pill {
       display: none;
     }
   }
@@ -39,10 +39,6 @@
 
   .project-home-panel {
     padding-left: 0 !important;
-
-    .project-avatar {
-      display: block;
-    }
 
     .project-repo-buttons,
     .git-clone-holder {
@@ -90,7 +86,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   .issues-filters {
     .milestone-filter {
       display: none;

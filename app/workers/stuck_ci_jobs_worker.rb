@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class StuckCiJobsWorker
   include ApplicationWorker
   include CronjobQueue
@@ -38,7 +40,7 @@ class StuckCiJobsWorker
 
   def drop_stuck(status, timeout)
     search(status, timeout) do |build|
-      return unless build.stuck?
+      break unless build.stuck?
 
       drop_build :stuck, build, status, timeout
     end

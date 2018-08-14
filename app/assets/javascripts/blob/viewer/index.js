@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Flash from '../../flash';
 import { handleLocationHash } from '../../lib/utils/common_utils';
 import axios from '../../lib/utils/axios_utils';
@@ -69,7 +70,7 @@ export default class BlobViewer {
     const initialViewer = this.$fileHolder[0].querySelector('.blob-viewer:not(.hidden)');
     let initialViewerName = initialViewer.getAttribute('data-type');
 
-    if (this.switcher && location.hash.indexOf('#L') === 0) {
+    if (this.switcher && window.location.hash.indexOf('#L') === 0) {
       initialViewerName = 'simple';
     }
 
@@ -115,7 +116,7 @@ export default class BlobViewer {
       this.copySourceBtn.classList.add('disabled');
     }
 
-    $(this.copySourceBtn).tooltip('fixTitle');
+    $(this.copySourceBtn).tooltip('_fixTitle');
   }
 
   switchToViewer(name) {

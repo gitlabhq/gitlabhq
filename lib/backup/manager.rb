@@ -4,6 +4,12 @@ module Backup
     FOLDERS_TO_BACKUP = %w[repositories db].freeze
     FILE_NAME_SUFFIX = '_gitlab_backup.tar'.freeze
 
+    attr_reader :progress
+
+    def initialize(progress)
+      @progress = progress
+    end
+
     def pack
       # Make sure there is a connection
       ActiveRecord::Base.connection.reconnect!
@@ -14,14 +20,14 @@ module Backup
         end
 
         # create archive
-        $progress.print "Creating backup archive: #{tar_file} ... "
+        progress.print "Creating backup archive: #{tar_file} ... "
         # Set file permissions on open to prevent chmod races.
         tar_system_options = { out: [tar_file, 'w', Gitlab.config.backup.archive_permissions] }
         if Kernel.system('tar', '-cf', '-', *backup_contents, tar_system_options)
-          $progress.puts "done".color(:green)
+          progress.puts "done".color(:green)
         else
           puts "creating archive #{tar_file} failed".color(:red)
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
 
         upload
@@ -29,11 +35,11 @@ module Backup
     end
 
     def upload
-      $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
+      progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
       connection_settings = Gitlab.config.backup.upload.connection
       if connection_settings.blank?
-        $progress.puts "skipped".color(:yellow)
+        progress.puts "skipped".color(:yellow)
         return
       end
 
@@ -43,31 +49,31 @@ module Backup
                                 multipart_chunk_size: Gitlab.config.backup.upload.multipart_chunk_size,
                                 encryption: Gitlab.config.backup.upload.encryption,
                                 storage_class: Gitlab.config.backup.upload.storage_class)
-        $progress.puts "done".color(:green)
+        progress.puts "done".color(:green)
       else
         puts "uploading backup to #{remote_directory} failed".color(:red)
-        abort 'Backup failed'
+        raise Backup::Error, 'Backup failed'
       end
     end
 
     def cleanup
-      $progress.print "Deleting tmp directories ... "
+      progress.print "Deleting tmp directories ... "
 
       backup_contents.each do |dir|
         next unless File.exist?(File.join(backup_path, dir))
 
         if FileUtils.rm_rf(File.join(backup_path, dir))
-          $progress.puts "done".color(:green)
+          progress.puts "done".color(:green)
         else
           puts "deleting tmp directory '#{dir}' failed".color(:red)
-          abort 'Backup failed'
+          raise Backup::Error, 'Backup failed'
         end
       end
     end
 
     def remove_old
       # delete backups
-      $progress.print "Deleting old backups ... "
+      progress.print "Deleting old backups ... "
       keep_time = Gitlab.config.backup.keep_time.to_i
 
       if keep_time > 0
@@ -88,31 +94,32 @@ module Backup
                 FileUtils.rm(file)
                 removed += 1
               rescue => e
-                $progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
+                progress.puts "Deleting #{file} failed: #{e.message}".color(:red)
               end
             end
           end
         end
 
-        $progress.puts "done. (#{removed} removed)".color(:green)
+        progress.puts "done. (#{removed} removed)".color(:green)
       else
-        $progress.puts "skipping".color(:yellow)
+        progress.puts "skipping".color(:yellow)
       end
     end
 
+    # rubocop: disable Metrics/AbcSize
     def unpack
       Dir.chdir(backup_path) do
         # check for existing backups in the backup dir
         if backup_file_list.empty?
-          $progress.puts "No backups found in #{backup_path}"
-          $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+          progress.puts "No backups found in #{backup_path}"
+          progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
           exit 1
         elsif backup_file_list.many? && ENV["BACKUP"].nil?
-          $progress.puts 'Found more than one backup:'
+          progress.puts 'Found more than one backup:'
           # print list of available backups
-          $progress.puts " " + available_timestamps.join("\n ")
-          $progress.puts 'Please specify which one you want to restore:'
-          $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          progress.puts " " + available_timestamps.join("\n ")
+          progress.puts 'Please specify which one you want to restore:'
+          progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
           exit 1
         end
 
@@ -123,31 +130,31 @@ module Backup
                    end
 
         unless File.exist?(tar_file)
-          $progress.puts "The backup file #{tar_file} does not exist!"
+          progress.puts "The backup file #{tar_file} does not exist!"
           exit 1
         end
 
-        $progress.print 'Unpacking backup ... '
+        progress.print 'Unpacking backup ... '
 
         unless Kernel.system(*%W(tar -xf #{tar_file}))
-          $progress.puts 'unpacking backup failed'.color(:red)
+          progress.puts 'unpacking backup failed'.color(:red)
           exit 1
         else
-          $progress.puts 'done'.color(:green)
+          progress.puts 'done'.color(:green)
         end
 
         ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
         # restoring mismatching backups can lead to unexpected problems
         if settings[:gitlab_version] != Gitlab::VERSION
-          $progress.puts(<<~HEREDOC.color(:red))
+          progress.puts(<<~HEREDOC.color(:red))
             GitLab version mismatch:
               Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
               Please switch to the following version and try again:
               version: #{settings[:gitlab_version]}
           HEREDOC
-          $progress.puts
-          $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
+          progress.puts
+          progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
           exit 1
         end
       end

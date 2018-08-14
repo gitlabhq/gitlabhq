@@ -11,11 +11,11 @@ module Gitlab
       end
 
       def msgid
-        entry_data[:msgid]
+        @msgid ||= Array(entry_data[:msgid]).join
       end
 
       def plural_id
-        entry_data[:msgid_plural]
+        @plural_id ||= Array(entry_data[:msgid_plural]).join
       end
 
       def has_plural?
@@ -23,12 +23,11 @@ module Gitlab
       end
 
       def singular_translation
-        all_translations.first if has_singular_translation?
+        all_translations.first.to_s if has_singular_translation?
       end
 
       def all_translations
-        @all_translations ||= entry_data.fetch_values(*translation_keys)
-                                .reject(&:empty?)
+        @all_translations ||= translation_entries.map { |translation| Array(translation).join }
       end
 
       def translated?
@@ -54,16 +53,16 @@ module Gitlab
         nplurals > 1 || !has_plural?
       end
 
-      def msgid_contains_newlines?
-        msgid.is_a?(Array)
+      def msgid_has_multiple_lines?
+        entry_data[:msgid].is_a?(Array)
       end
 
-      def plural_id_contains_newlines?
-        plural_id.is_a?(Array)
+      def plural_id_has_multiple_lines?
+        entry_data[:msgid_plural].is_a?(Array)
       end
 
-      def translations_contain_newlines?
-        all_translations.any? { |translation| translation.is_a?(Array) }
+      def translations_have_multiple_lines?
+        translation_entries.any? { |translation| translation.is_a?(Array) }
       end
 
       def msgid_contains_unescaped_chars?
@@ -83,6 +82,11 @@ module Gitlab
       end
 
       private
+
+      def translation_entries
+        @translation_entries ||= entry_data.fetch_values(*translation_keys)
+                                   .reject(&:empty?)
+      end
 
       def translation_keys
         @translation_keys ||= entry_data.keys.select { |key| key.to_s =~ /\Amsgstr(\[\d+\])?\z/ }

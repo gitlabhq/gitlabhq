@@ -4,36 +4,61 @@ module API
   class Projects < Grape::API
     include PaginationParams
     include Helpers::CustomAttributes
+    include Helpers::ProjectsHelpers
 
     before { authenticate_non_get! }
 
     helpers do
-      params :optional_params_ce do
-        optional :description, type: String, desc: 'The description of the project'
-        optional :ci_config_path, type: String, desc: 'The path to CI config file. Defaults to `.gitlab-ci.yml`'
-        optional :issues_enabled, type: Boolean, desc: 'Flag indication if the issue tracker is enabled'
-        optional :merge_requests_enabled, type: Boolean, desc: 'Flag indication if merge requests are enabled'
-        optional :wiki_enabled, type: Boolean, desc: 'Flag indication if the wiki is enabled'
-        optional :jobs_enabled, type: Boolean, desc: 'Flag indication if jobs are enabled'
-        optional :snippets_enabled, type: Boolean, desc: 'Flag indication if snippets are enabled'
-        optional :shared_runners_enabled, type: Boolean, desc: 'Flag indication if shared runners are enabled for that project'
-        optional :resolve_outdated_diff_discussions, type: Boolean, desc: 'Automatically resolve merge request diffs discussions on lines changed with a push'
-        optional :container_registry_enabled, type: Boolean, desc: 'Flag indication if the container registry is enabled for that project'
-        optional :lfs_enabled, type: Boolean, desc: 'Flag indication if Git LFS is enabled for that project'
-        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values, desc: 'The visibility of the project.'
-        optional :public_builds, type: Boolean, desc: 'Perform public builds'
-        optional :request_access_enabled, type: Boolean, desc: 'Allow users to request member access'
-        optional :only_allow_merge_if_pipeline_succeeds, type: Boolean, desc: 'Only allow to merge if builds succeed'
-        optional :only_allow_merge_if_all_discussions_are_resolved, type: Boolean, desc: 'Only allow to merge if all discussions are resolved'
-        optional :tag_list, type: Array[String], desc: 'The list of tags for a project'
-        optional :avatar, type: File, desc: 'Avatar image for project'
-        optional :printing_merge_request_link_enabled, type: Boolean, desc: 'Show link to create/view merge request when pushing from the command line'
+      params :optional_filter_params_ee do
+        # EE::API::Projects would override this helper
       end
 
-      params :optional_params do
-        use :optional_params_ce
+      params :optional_update_params_ee do
+        # EE::API::Projects would override this helper
       end
 
+      # EE::API::Projects would override this method
+      def apply_filters(projects)
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = projects.with_statistics if params[:statistics]
+
+        projects
+      end
+
+      def verify_update_project_attrs!(project, attrs)
+      end
+    end
+
+    def self.update_params_at_least_one_of
+      [
+        :jobs_enabled,
+        :resolve_outdated_diff_discussions,
+        :ci_config_path,
+        :container_registry_enabled,
+        :default_branch,
+        :description,
+        :issues_enabled,
+        :lfs_enabled,
+        :merge_requests_enabled,
+        :merge_method,
+        :name,
+        :only_allow_merge_if_all_discussions_are_resolved,
+        :only_allow_merge_if_pipeline_succeeds,
+        :path,
+        :printing_merge_request_link_enabled,
+        :public_builds,
+        :request_access_enabled,
+        :shared_runners_enabled,
+        :snippets_enabled,
+        :tag_list,
+        :visibility,
+        :wiki_enabled,
+        :avatar
+      ]
+    end
+
+    helpers do
       params :statistics_params do
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
@@ -55,7 +80,7 @@ module API
       end
 
       params :filter_params do
-        optional :archived, type: Boolean, default: false, desc: 'Limit by archived status'
+        optional :archived, type: Boolean, desc: 'Limit by archived status'
         optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
                               desc: 'Limit by visibility'
         optional :search, type: String, desc: 'Return list of projects matching the search criteria'
@@ -64,6 +89,9 @@ module API
         optional :membership, type: Boolean, default: false, desc: 'Limit by projects that the current user is a member of'
         optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
         optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Limit by minimum access level of authenticated user'
+
+        use :optional_filter_params_ee
       end
 
       params :create_params do
@@ -77,27 +105,23 @@ module API
 
       def present_projects(projects, options = {})
         projects = reorder_projects(projects)
-        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
-        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
-        projects = projects.with_statistics if params[:statistics]
+        projects = apply_filters(projects)
         projects = paginate(projects)
         projects, options = with_custom_attributes(projects, options)
-
-        if current_user
-          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
-          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
-        end
 
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          project_members: project_members,
-          group_members: group_members,
           current_user: current_user
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
         present options[:with].prepare_relation(projects, options), options
+      end
+
+      def translate_params_for_compatibility(params)
+        params[:builds_enabled] = params.delete(:jobs_enabled) if params.key?(:jobs_enabled)
+        params
       end
     end
 
@@ -143,12 +167,12 @@ module API
         optional :name, type: String, desc: 'The name of the project'
         optional :path, type: String, desc: 'The path of the repository'
         at_least_one_of :name, :path
-        use :optional_params
+        use :optional_project_params
         use :create_params
       end
       post do
         attrs = declared_params(include_missing: false)
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
+        attrs = translate_params_for_compatibility(attrs)
         project = ::Projects::CreateService.new(current_user, attrs).execute
 
         if project.saved?
@@ -171,7 +195,7 @@ module API
         requires :user_id, type: Integer, desc: 'The ID of a user'
         optional :path, type: String, desc: 'The path of the repository'
         optional :default_branch, type: String, desc: 'The default branch of the project'
-        use :optional_params
+        use :optional_project_params
         use :create_params
       end
       post "user/:user_id" do
@@ -180,6 +204,7 @@ module API
         not_found!('User') unless user
 
         attrs = declared_params(include_missing: false)
+        attrs = translate_params_for_compatibility(attrs)
         project = ::Projects::CreateService.new(user, attrs).execute
 
         if project.saved?
@@ -228,11 +253,7 @@ module API
         namespace_id = fork_params[:namespace]
 
         if namespace_id.present?
-          fork_params[:namespace] = if namespace_id =~ /^\d+$/
-                                      Namespace.find_by(id: namespace_id)
-                                    else
-                                      Namespace.find_by_path_or_name(namespace_id)
-                                    end
+          fork_params[:namespace] = find_namespace(namespace_id)
 
           unless fork_params[:namespace] && can?(current_user, :create_projects, fork_params[:namespace])
             not_found!('Target Namespace')
@@ -266,37 +287,13 @@ module API
         success Entities::Project
       end
       params do
-        # CE
-        at_least_one_of_ce =
-          [
-            :jobs_enabled,
-            :resolve_outdated_diff_discussions,
-            :ci_config_path,
-            :container_registry_enabled,
-            :default_branch,
-            :description,
-            :issues_enabled,
-            :lfs_enabled,
-            :merge_requests_enabled,
-            :name,
-            :only_allow_merge_if_all_discussions_are_resolved,
-            :only_allow_merge_if_pipeline_succeeds,
-            :path,
-            :printing_merge_request_link_enabled,
-            :public_builds,
-            :request_access_enabled,
-            :shared_runners_enabled,
-            :snippets_enabled,
-            :tag_list,
-            :visibility,
-            :wiki_enabled
-          ]
         optional :name, type: String, desc: 'The name of the project'
         optional :default_branch, type: String, desc: 'The default branch of the project'
         optional :path, type: String, desc: 'The path of the repository'
 
-        use :optional_params
-        at_least_one_of(*at_least_one_of_ce)
+        use :optional_project_params
+
+        at_least_one_of(*::API::Projects.update_params_at_least_one_of)
       end
       put ':id' do
         authorize_admin_project
@@ -304,7 +301,9 @@ module API
         authorize! :rename_project, user_project if attrs[:name].present?
         authorize! :change_visibility_level, user_project if attrs[:visibility].present?
 
-        attrs[:builds_enabled] = attrs.delete(:jobs_enabled) if attrs.key?(:jobs_enabled)
+        attrs = translate_params_for_compatibility(attrs)
+
+        verify_update_project_attrs!(user_project, attrs)
 
         result = ::Projects::UpdateService.new(user_project, current_user, attrs).execute
 
@@ -322,7 +321,7 @@ module API
       post ':id/archive' do
         authorize!(:archive_project, user_project)
 
-        user_project.archive!
+        ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
         present user_project, with: Entities::Project
       end
@@ -333,7 +332,7 @@ module API
       post ':id/unarchive' do
         authorize!(:archive_project, user_project)
 
-        user_project.unarchive!
+        ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
         present user_project, with: Entities::Project
       end
@@ -364,6 +363,11 @@ module API
         else
           not_modified!
         end
+      end
+
+      desc 'Get languages in project repository'
+      get ':id/languages' do
+        user_project.repository.languages.map { |language| language.values_at(:label, :value) }.to_h
       end
 
       desc 'Remove a project'
@@ -425,7 +429,7 @@ module API
         end
 
         unless user_project.allowed_to_share_with_group?
-          return render_api_error!("The project sharing with group is disabled", 400)
+          break render_api_error!("The project sharing with group is disabled", 400)
         end
 
         link = user_project.project_group_links.new(declared_params(include_missing: false))
@@ -481,6 +485,23 @@ module API
           ::Projects::HousekeepingService.new(user_project).execute
         rescue ::Projects::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
+        end
+      end
+
+      desc 'Transfer a project to a new namespace'
+      params do
+        requires :namespace, type: String, desc: 'The ID or path of the new namespace'
+      end
+      put ":id/transfer" do
+        authorize! :change_namespace, user_project
+
+        namespace = find_namespace!(params[:namespace])
+        result = ::Projects::TransferService.new(user_project, current_user).execute(namespace)
+
+        if result
+          present user_project, with: Entities::Project
+        else
+          render_api_error!("Failed to transfer project #{user_project.errors.messages}", 400)
         end
       end
     end

@@ -1,13 +1,13 @@
 - if local_assigns.has_key?(:contributed_projects) && contributed_projects.present?
-  .panel.panel-default.contributed-projects
-    .panel-heading Projects contributed to
+  .card.contributed-projects
+    .card-header Projects contributed to
     = render 'shared/projects/list',
       projects: contributed_projects.sort_by(&:star_count).reverse,
       projects_limit: 5, stars: true, avatar: false
 
 - if local_assigns.has_key?(:projects) && projects.present?
-  .panel.panel-default
-    .panel-heading Personal projects
+  .card
+    .card-header Personal projects
     = render 'shared/projects/list',
       projects: projects.sort_by(&:star_count).reverse,
       projects_limit: 10, stars: true, avatar: false

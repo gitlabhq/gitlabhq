@@ -6,6 +6,7 @@
     .mobile-overlay
     .alert-wrapper
       = render "layouts/broadcast"
+      = render 'layouts/header/read_only_banner'
       = yield :flash_message
       - unless @hide_breadcrumbs
         = render "layouts/nav/breadcrumbs"

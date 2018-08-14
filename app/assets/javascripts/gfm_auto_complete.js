@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import glRegexp from './lib/utils/regexp';
 import AjaxCache from './lib/utils/ajax_cache';
@@ -6,6 +7,16 @@ function sanitize(str) {
   return str.replace(/<(?:.|\n)*?>/gm, '');
 }
 
+export const defaultAutocompleteConfig = {
+  emojis: true,
+  members: true,
+  issues: true,
+  mergeRequests: true,
+  epics: true,
+  milestones: true,
+  labels: true,
+};
+
 class GfmAutoComplete {
   constructor(dataSources) {
     this.dataSources = dataSources || {};
@@ -13,14 +24,7 @@ class GfmAutoComplete {
     this.isLoadingData = {};
   }
 
-  setup(input, enableMap = {
-    emojis: true,
-    members: true,
-    issues: true,
-    milestones: true,
-    mergeRequests: true,
-    labels: true,
-  }) {
+  setup(input, enableMap = defaultAutocompleteConfig) {
     // Add GFM auto-completion to all input fields, that accept GFM input.
     this.input = input || $('.js-gfm-input');
     this.enableMap = enableMap;
@@ -53,6 +57,7 @@ class GfmAutoComplete {
       alias: 'commands',
       searchKey: 'search',
       skipSpecialCharacterTest: true,
+      skipMarkdownCharacterTest: true,
       data: GfmAutoComplete.defaultLoadingData,
       displayTpl(value) {
         if (GfmAutoComplete.isLoading(value)) return GfmAutoComplete.Loading.template;
@@ -75,7 +80,7 @@ class GfmAutoComplete {
         let tpl = '/${name} ';
         let referencePrefix = null;
         if (value.params.length > 0) {
-          referencePrefix = value.params[0][0];
+          [[referencePrefix]] = value.params;
           if (/^[@%~]/.test(referencePrefix)) {
             tpl += '<%- referencePrefix %>';
           }
@@ -131,9 +136,8 @@ class GfmAutoComplete {
       callbacks: {
         ...this.getDefaultCallbacks(),
         matcher(flag, subtext) {
-          const relevantText = subtext.trim().split(/\s/).pop();
           const regexp = new RegExp(`(?:[^${glRegexp.unicodeLetters}0-9:]|\n|^):([^:]*)$`, 'gi');
-          const match = regexp.exec(relevantText);
+          const match = regexp.exec(subtext);
 
           return match && match.length ? match[1] : null;
         },
@@ -376,15 +380,23 @@ class GfmAutoComplete {
         return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
       },
       beforeInsert(value) {
-        let resultantValue = value;
+        let withoutAt = value.substring(1);
+        const at = value.charAt();
+
         if (value && !this.setting.skipSpecialCharacterTest) {
-          const withoutAt = value.substring(1);
-          const regex = value.charAt() === '~' ? /\W|^\d+$/ : /\W/;
+          const regex = at === '~' ? /\W|^\d+$/ : /\W/;
           if (withoutAt && regex.test(withoutAt)) {
-            resultantValue = `${value.charAt()}"${withoutAt}"`;
+            withoutAt = `"${withoutAt}"`;
           }
         }
-        return resultantValue;
+
+        // We can ignore this for quick actions because they are processed
+        // before Markdown.
+        if (!this.setting.skipMarkdownCharacterTest) {
+          withoutAt = withoutAt.replace(/([~\-_*`])/g, '\\$&');
+        }
+
+        return `${at}${withoutAt}`;
       },
       matcher(flag, subtext) {
         const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
@@ -399,7 +411,10 @@ class GfmAutoComplete {
 
   fetchData($input, at) {
     if (this.isLoadingData[at]) return;
+
     this.isLoadingData[at] = true;
+    const dataSource = this.dataSources[GfmAutoComplete.atTypeMap[at]];
+
     if (this.cachedData[at]) {
       this.loadData($input, at, this.cachedData[at]);
     } else if (GfmAutoComplete.atTypeMap[at] === 'emojis') {
@@ -409,12 +424,14 @@ class GfmAutoComplete {
           GfmAutoComplete.glEmojiTag = glEmojiTag;
         })
         .catch(() => { this.isLoadingData[at] = false; });
-    } else {
-      AjaxCache.retrieve(this.dataSources[GfmAutoComplete.atTypeMap[at]], true)
+    } else if (dataSource) {
+      AjaxCache.retrieve(dataSource, true)
         .then((data) => {
           this.loadData($input, at, data);
         })
         .catch(() => { this.isLoadingData[at] = false; });
+    } else {
+      this.isLoadingData[at] = false;
     }
   }
 
@@ -441,7 +458,7 @@ class GfmAutoComplete {
   static isLoading(data) {
     let dataToInspect = data;
     if (data && data.length > 0) {
-      dataToInspect = data[0];
+      [dataToInspect] = data;
     }
 
     const loadingState = GfmAutoComplete.defaultLoadingData[0];
@@ -476,6 +493,7 @@ GfmAutoComplete.atTypeMap = {
   '@': 'members',
   '#': 'issues',
   '!': 'mergeRequests',
+  '&': 'epics',
   '~': 'labels',
   '%': 'milestones',
   '/': 'commands',

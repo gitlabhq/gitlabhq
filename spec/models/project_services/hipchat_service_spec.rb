@@ -253,6 +253,21 @@ describe HipchatService do
               "<b>#{title}</b>" \
               "<pre>issue <strong>note</strong></pre>")
         end
+
+        context 'with confidential issue' do
+          before do
+            issue.update!(confidential: true)
+          end
+
+          it 'calls Hipchat API with issue comment' do
+            data = Gitlab::DataBuilder::Note.build(issue_note, user)
+            hipchat.execute(data)
+
+            message = hipchat.send(:create_message, data)
+
+            expect(message).to include("<pre>issue <strong>note</strong></pre>")
+          end
+        end
       end
 
       context 'when snippet comment event triggered' do

@@ -27,18 +27,18 @@ describe NormalizeLdapExternUids, :migration, :sidekiq do
         migrate!
 
         expect(BackgroundMigrationWorker.jobs[0]['args']).to eq([described_class::MIGRATION, [1, 2]])
-        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(5.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[0]['at']).to eq(2.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[1]['args']).to eq([described_class::MIGRATION, [3, 4]])
-        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(10.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[1]['at']).to eq(4.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs[2]['args']).to eq([described_class::MIGRATION, [5, 5]])
-        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(15.minutes.from_now.to_f)
+        expect(BackgroundMigrationWorker.jobs[2]['at']).to eq(6.minutes.from_now.to_f)
         expect(BackgroundMigrationWorker.jobs.size).to eq 3
       end
     end
   end
 
   it 'migrates the LDAP identities' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       migrate!
       identities.where(id: 1..4).each do |identity|
         expect(identity.extern_uid).to eq("uid=foo #{identity.id},ou=people,dc=example,dc=com")
@@ -47,7 +47,7 @@ describe NormalizeLdapExternUids, :migration, :sidekiq do
   end
 
   it 'does not modify non-LDAP identities' do
-    Sidekiq::Testing.inline! do
+    perform_enqueued_jobs do
       migrate!
       identity = identities.last
       expect(identity.extern_uid).to eq(" uid = foo 5, ou = People, dc = example, dc = com ")

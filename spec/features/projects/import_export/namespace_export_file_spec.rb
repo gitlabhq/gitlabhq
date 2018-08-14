@@ -5,6 +5,7 @@ describe 'Import/Export - Namespace export file cleanup', :js do
 
   before do
     allow(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    stub_feature_flags(import_export_object_storage: false)
   end
 
   after do

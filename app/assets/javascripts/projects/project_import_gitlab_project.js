@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { getParameterValues } from '../lib/utils/url_utility';
 
 export default () => {

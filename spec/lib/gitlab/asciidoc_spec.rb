@@ -48,7 +48,7 @@ module Gitlab
           },
           'images' => {
             input: 'image:https://localhost.com/image.png[Alt text" onerror="alert(7)]',
-            output: "<img src=\"https://localhost.com/image.png\" alt=\"Alt text\">"
+            output: "<div>\n<p><span><img src=\"https://localhost.com/image.png\" alt='Alt text\" onerror=\"alert(7)'></span></p>\n</div>"
           },
           'pre' => {
             input: '```mypre"><script>alert(3)</script>',

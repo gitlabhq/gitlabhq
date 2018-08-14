@@ -100,14 +100,14 @@ As it's pointed out before, you will need public access to this machine that
 you've installed Koding and GitLab on. Better to use a domain but a static IP
 is also fine.
 
-For IP based installation you can use [xip.io](https://xip.io) service which is
+For IP based installation you can use [nip.io](https://nip.io) service which is
 free and provides DNS resolution to IP based requests like following;
 
-  - 127.0.0.1.xip.io              -> resolves to 127.0.0.1
-  - foo.bar.baz.127.0.0.1.xip.io  -> resolves to 127.0.0.1
+  - 127.0.0.1.nip.io              -> resolves to 127.0.0.1
+  - foo.bar.baz.127.0.0.1.nip.io  -> resolves to 127.0.0.1
   - and so on...
 
-As Koding needs subdomains for team names; `foo.127.0.0.1.xip.io` requests for
+As Koding needs subdomains for team names; `foo.127.0.0.1.nip.io` requests for
 a running koding instance on `127.0.0.1` server will be handled as `foo` team
 requests.
 
@@ -127,8 +127,8 @@ your Koding installation. Team called `gitlab` has integration on Koding out
 of the box, so if you didn't change anything your team on Koding should be
 `gitlab`.
 
-So, if your Koding is running on `http://1.2.3.4.xip.io:8090` your URL needs
-to be `http://gitlab.1.2.3.4.xip.io:8090`. You need to provide the same host
+So, if your Koding is running on `http://1.2.3.4.nip.io:8090` your URL needs
+to be `http://gitlab.1.2.3.4.nip.io:8090`. You need to provide the same host
 with your Koding installation here.
 
 
@@ -192,7 +192,7 @@ cd koding
 docker-compose run                              \
   --service-ports backend                       \
   /opt/koding/scripts/bootstrap-container build \
-  --host=**YOUR_IP**.xip.io                     \
+  --host=**YOUR_IP**.nip.io                     \
   --gitlabHost=**GITLAB_IP**                    \
   --gitlabPort=**GITLAB_PORT**                  \
   --gitlabToken=**SECRET_TOKEN**                \
@@ -224,7 +224,7 @@ cd koding
 docker-compose run                              \
   --service-ports backend                       \
   /opt/koding/scripts/bootstrap-container build \
-  --host=**YOUR_IP**.xip.io                     \
+  --host=**YOUR_IP**.nip.io                     \
 ```
 
 #### Enable Single Sign On
@@ -233,7 +233,7 @@ Once you restarted your Koding and logged in with your username and password
 you need to activate oauth authentication for your user. To do that
 
  - Navigate to Dashboard on Koding from;
-   `http://gitlab.**YOUR_IP**.xip.io:8090/Home/my-account`
+   `http://gitlab.**YOUR_IP**.nip.io:8090/Home/my-account`
  - Scroll down to Integrations section
  - Click on toggle to turn On integration in GitLab integration section
 

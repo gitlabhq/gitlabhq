@@ -1,76 +1,39 @@
 - breadcrumb_title "General Settings"
-.panel.panel-default.prepend-top-default
-  .panel-heading
-    Group settings
-  .panel-body
-    = form_for @group, html: { multipart: true, class: "form-horizontal gl-show-field-errors" }, authenticity_token: true do |f|
-      = form_errors(@group)
-      = render 'shared/group_form', f: f
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
 
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          .avatar-container.s160
-            = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
-          %p.light
-            - if @group.avatar?
-              You can change the group avatar here
-            - else
-              You can upload a group avatar here
-          = render 'shared/choose_group_avatar_button', f: f
-          - if @group.avatar?
-            %hr
-            = link_to _('Remove avatar'), group_avatar_path(@group.to_param), data: { confirm: _("Avatar will be removed. Are you sure?")}, method: :delete, class: "btn btn-danger btn-inverted"
 
-      = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+%section.settings.gs-general.no-animate#js-general-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('General')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Update your group name, description, avatar, and other general settings.')
+  .settings-content
+    = render 'groups/settings/general'
 
-      .form-group
-        .col-sm-offset-2.col-sm-10
-          = render 'shared/allow_request_access', form: f
+%section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Permissions')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable or disable certain group features and choose access levels.')
+  .settings-content
+    = render 'groups/settings/permissions'
 
-      .form-group
-        %label.control-label
-          = s_("GroupSettings|Share with group lock")
-        .col-sm-10
-          .checkbox
-            = f.label :share_with_group_lock do
-              = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
-              %strong
-                - group_link = link_to @group.name, group_path(@group)
-                = s_("GroupSettings|Prevent sharing a project within %{group} with other groups").html_safe % { group: group_link }
-              %br
-              %span.descr= share_with_group_lock_help_text(@group)
-
-      = render 'group_admin_settings', f: f
-
-      .form-actions
-        = f.submit 'Save group', class: "btn btn-save"
-
-.panel.panel-danger
-  .panel-heading Remove group
-  .panel-body
-    = form_tag(@group, method: :delete) do
-      %p
-        Removing group will cause all child projects and resources to be removed.
-        %br
-        %strong Removed group can not be restored!
-
-      .form-actions
-        = button_to 'Remove group', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_group_message(@group) }
-
-- if supports_nested_groups?
-  .panel.panel-warning
-    .panel-heading Transfer group
-    .panel-body
-      = form_for @group, url: transfer_group_path(@group), method: :put do |f|
-        .form-group
-          = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: "Search groups", data: { data: parent_group_options(@group) } })
-          = hidden_field_tag 'new_parent_group_id'
-
-        %ul
-          %li Be careful. Changing a group's parent can have unintended #{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}.
-          %li You can only transfer the group to a group you manage.
-          %li You will need to update your local repositories to point to the new location.
-          %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
-        = f.submit 'Transfer group', class: "btn btn-warning"
+%section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Advanced')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Perform advanced options such as changing path, transferring, or removing the group.')
+  .settings-content
+    = render 'groups/settings/advanced'
 
 = render 'shared/confirm_modal', phrase: @group.path

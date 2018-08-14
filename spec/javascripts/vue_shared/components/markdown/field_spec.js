@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
 

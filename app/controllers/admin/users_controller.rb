@@ -4,7 +4,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     @users = User.order_name_asc.filter(params[:filter])
     @users = @users.search_with_secondary_emails(params[:search_query]) if params[:search_query].present?
-    @users = @users.sort(@sort = params[:sort])
+    @users = @users.sort_by_attribute(@sort = params[:sort])
     @users = @users.page(params[:page])
   end
 
@@ -163,7 +163,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.json { head :ok }
       else
         format.html { redirect_back_or_admin_user(alert: 'There was an error removing the e-mail.') }
-        format.json { render json: 'There was an error removing the e-mail.', status: 400 }
+        format.json { render json: 'There was an error removing the e-mail.', status: :bad_request }
       end
     end
   end
@@ -187,10 +187,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(user_params_ce)
+    params.require(:user).permit(allowed_user_params)
   end
 
-  def user_params_ce
+  def allowed_user_params
     [
       :access_level,
       :avatar,

@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 module TestHooks
   class ProjectService < TestHooks::BaseService
-    private
+    attr_writer :project
 
     def project
       @project ||= hook.project
     end
+
+    private
 
     def push_events_data
       throw(:validation_error, 'Ensure the project has at least one commit.') if project.empty_repo?

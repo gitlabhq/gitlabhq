@@ -6,7 +6,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 
 ## Requirements
 
-[Prometheus integration](../prometheus/index.md) must be active.
+[Prometheus integration](../prometheus.md) must be active.
 
 ## Metrics supported
 
@@ -14,7 +14,7 @@ GitLab has support for automatically detecting and monitoring the Kubernetes NGI
 | ---- | ----- |
 | Throughput (req/sec) | sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code) |
 | Latency (ms) | avg(nginx_upstream_response_msecs_avg{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}) |
-| HTTP Error Rate (HTTP Errors / sec) | sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) |
+| HTTP Error Rate (%) | sum(rate(nginx_upstream_responses_total{status_code="5xx", upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) / sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) * 100 |
 
 ## Configuring NGINX ingress monitoring
 
@@ -27,7 +27,7 @@ For other deployments, there is [some configuration](#manually-setting-up-nginx-
 
 ### About managed NGINX Ingress deployments
 
-NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's IP](https://docs.gitlab.com/ce/user/project/clusters/index.html#getting-the-external-ip-address).
+NGINX Ingress is deployed into the `gitlab-managed-apps` namespace, using the [official Helm chart](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress). NGINX Ingress will be [externally reachable via the Load Balancer's IP](../../clusters/index.md#getting-the-external-ip-address).
 
 NGINX is configured for Prometheus monitoring, by setting:
 * `enable-vts-status: "true"`, to export Prometheus metrics
@@ -51,4 +51,4 @@ Managing these settings depends on how NGINX ingress has been deployed. If you h
 
 In order to isolate and only display relevant metrics for a given environment, GitLab needs a method to detect which labels are associated. To do this, GitLab will search for metrics with appropriate labels. In this case, the `upstream` label must be of the form `<KUBE_NAMESPACE>-<CI_ENVIRONMENT_SLUG>-*`.
 
-If you have used [Auto Deploy](https://docs.gitlab.com/ee/ci/autodeploy/index.html) to deploy your app, this format will be used automatically and metrics will be detected with no action on your part.
+If you have used [Auto Deploy](../../../../topics/autodevops/index.md#auto-deploy) to deploy your app, this format will be used automatically and metrics will be detected with no action on your part.

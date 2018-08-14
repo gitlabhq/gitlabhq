@@ -1,11 +1,13 @@
 - project = @target_project || @project
 - extra_class = extra_class || ''
 - show_menu_above = show_menu_above || false
+- selected = local_assigns.fetch(:selected, nil)
+
 - selected_text = selected.try(:title) || params[:milestone_title]
 - dropdown_title = local_assigns.fetch(:dropdown_title, "Filter by milestone")
 - if selected.present? || params[:milestone_title].present?
   = hidden_field_tag(name, name == :milestone_title ? selected_text : selected.id)
-= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: dropdown_title, toggle_class: "js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "dropdown-menu-selectable dropdown-menu-milestone",
+= dropdown_tag(milestone_dropdown_label(selected_text), options: { title: dropdown_title, toggle_class: "qa-issuable-milestone-dropdown js-milestone-select js-filter-submit #{extra_class}", filter: true, dropdown_class: "qa-issuable-dropdown-menu-milestone dropdown-menu-selectable dropdown-menu-milestone",
   placeholder: "Search milestones", footer_content: project.present?, data: { show_no: true, show_menu_above: show_menu_above, show_any: show_any, show_upcoming: show_upcoming, show_started: show_started, field_name: name, selected: selected_text, project_id: project.try(:id), milestones: milestones_filter_dropdown_path, default_label: "Milestone" } }) do
   - if project
     %ul.dropdown-footer-list

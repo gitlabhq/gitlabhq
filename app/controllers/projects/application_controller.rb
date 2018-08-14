@@ -1,5 +1,6 @@
 class Projects::ApplicationController < ApplicationController
   include RoutableActions
+  include ChecksCollaboration
 
   skip_before_action :authenticate_user!
   before_action :project
@@ -24,19 +25,11 @@ class Projects::ApplicationController < ApplicationController
     params[:namespace_id] = project.namespace.to_param
     params[:project_id] = project.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 
   def repository
     @repository ||= project.repository
-  end
-
-  def can_collaborate_with_project?(project = nil, ref: nil)
-    project ||= @project
-
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project)) ||
-      user_access(project).can_push_to_branch?(ref)
   end
 
   def authorize_action!(action)
@@ -68,7 +61,7 @@ class Projects::ApplicationController < ApplicationController
   def require_non_empty_project
     # Be sure to return status code 303 to avoid a double DELETE:
     # http://api.rubyonrails.org/classes/ActionController/Redirecting.html
-    redirect_to project_path(@project), status: 303 if @project.empty_repo?
+    redirect_to project_path(@project), status: :see_other if @project.empty_repo?
   end
 
   def require_branch_head
@@ -90,10 +83,5 @@ class Projects::ApplicationController < ApplicationController
 
   def check_issues_available!
     return render_404 unless @project.feature_available?(:issues, current_user)
-  end
-
-  def user_access(project)
-    @user_access ||= {}
-    @user_access[project] ||= Gitlab::UserAccess.new(current_user, project: project)
   end
 end

@@ -1,7 +1,11 @@
+# frozen_string_literal: true
+
 class CommitStatus < ActiveRecord::Base
   include HasStatus
   include Importable
   include AfterCommitQueue
+  include Presentable
+  include EnumWithNil
 
   self.table_name = 'ci_builds'
 
@@ -38,13 +42,14 @@ class CommitStatus < ActiveRecord::Base
   scope :retried_ordered, -> { retried.ordered.includes(project: :namespace) }
   scope :after_stage, -> (index) { where('stage_idx > ?', index) }
 
-  enum failure_reason: {
+  enum_with_nil failure_reason: {
     unknown_failure: nil,
     script_failure: 1,
     api_failure: 2,
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4,
-    missing_dependency_failure: 5
+    missing_dependency_failure: 5,
+    runner_unsupported: 6
   }
 
   ##
@@ -87,7 +92,7 @@ class CommitStatus < ActiveRecord::Base
       transition [:created, :pending, :running, :manual] => :canceled
     end
 
-    before_transition created: [:pending, :running] do |commit_status|
+    before_transition [:created, :skipped, :manual] => :pending do |commit_status|
       commit_status.queued_at = Time.now
     end
 
@@ -141,7 +146,7 @@ class CommitStatus < ActiveRecord::Base
   end
 
   def group_name
-    name.to_s.gsub(%r{\d+[\.\s:/\\]+\d+\s*}, '').strip
+    name.to_s.gsub(%r{\d+[\s:/\\]+\d+\s*}, '').strip
   end
 
   def failed_but_allowed?

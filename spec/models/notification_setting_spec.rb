@@ -40,7 +40,12 @@ RSpec.describe NotificationSetting do
         expect(notification_setting.new_issue).to eq(true)
         expect(notification_setting.close_issue).to eq(true)
         expect(notification_setting.merge_merge_request).to eq(true)
-        expect(notification_setting.close_merge_request).to eq(false)
+
+        # In Rails 5 assigning a value which is not explicitly `true` or `false` ("nil" in this case)
+        # to a boolean column transforms it to `true`.
+        # In Rails 4 it transforms the value to `false` with deprecation warning.
+        # Replace `eq(Gitlab.rails5?)` with `eq(true)` when removing rails5? code.
+        expect(notification_setting.close_merge_request).to eq(Gitlab.rails5?)
         expect(notification_setting.reopen_merge_request).to eq(false)
       end
     end
@@ -53,7 +58,7 @@ RSpec.describe NotificationSetting do
       1.upto(4) do |i|
         setting = create(:notification_setting, user: user)
 
-        setting.project.update_attributes(pending_delete: true) if i.even?
+        setting.project.update(pending_delete: true) if i.even?
       end
     end
 
@@ -86,6 +91,12 @@ RSpec.describe NotificationSetting do
       it 'returns false' do
         expect(subject.event_enabled?(:foo_event)).to be(false)
       end
+    end
+  end
+
+  context 'email events' do
+    it 'includes EXCLUDED_WATCHER_EVENTS in EMAIL_EVENTS' do
+      expect(described_class::EMAIL_EVENTS).to include(*described_class::EXCLUDED_WATCHER_EVENTS)
     end
   end
 end

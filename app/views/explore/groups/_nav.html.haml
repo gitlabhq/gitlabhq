@@ -1,8 +1,8 @@
 .top-area
-  %ul.nav-links
+  %ul.nav-links.nav.nav-tabs
     = nav_link(page: explore_groups_path) do
       = link_to explore_groups_path do
-        Explore Groups
+        = _("Explore Groups")
   .nav-controls
     = render 'shared/groups/search_form'
     = render 'shared/groups/dropdown'

@@ -21,7 +21,7 @@ export default {
       </i>
       <button
         type="button"
-        class="edit-link btn btn-blank pull-right js-sidebar-dropdown-toggle"
+        class="edit-link btn btn-blank float-right js-sidebar-dropdown-toggle"
       >
         {{ __('Edit') }}
       </button>

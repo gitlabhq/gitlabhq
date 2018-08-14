@@ -175,16 +175,16 @@
   <div>
     <div class="project-visibility-setting">
       <project-setting-row
-        label="Project visibility"
         :help-path="visibilityHelpPath"
+        label="Project visibility"
       >
         <div class="project-feature-controls">
           <div class="select-wrapper">
             <select
-              name="project[visibility_level]"
               v-model="visibilityLevel"
-              class="form-control select-control"
               :disabled="!canChangeVisibilityLevel"
+              name="project[visibility_level]"
+              class="form-control select-control"
             >
               <option
                 :value="visibilityOptions.PRIVATE"
@@ -213,36 +213,36 @@
             </i>
           </div>
         </div>
-        <span class="help-block">{{ visibilityLevelDescription }}</span>
+        <span class="form-text text-muted">{{ visibilityLevelDescription }}</span>
         <label
           v-if="visibilityLevel !== visibilityOptions.PRIVATE"
           class="request-access"
         >
           <input
+            :value="requestAccessEnabled"
             type="hidden"
             name="project[request_access_enabled]"
-            :value="requestAccessEnabled"
           />
           <input
-            type="checkbox"
             v-model="requestAccessEnabled"
+            type="checkbox"
           />
           Allow users to request access
         </label>
       </project-setting-row>
     </div>
     <div
-      class="project-feature-settings"
       :class="{ 'highlight-changes': highlightChangesClass }"
+      class="project-feature-settings"
     >
       <project-setting-row
         label="Issues"
         help-text="Lightweight issue tracking system for this project"
       >
         <project-feature-setting
-          name="project[project_feature_attributes][issues_access_level]"
           :options="featureAccessLevelOptions"
           v-model="issuesAccessLevel"
+          name="project[project_feature_attributes][issues_access_level]"
         />
       </project-setting-row>
       <project-setting-row
@@ -250,9 +250,9 @@
         help-text="View and edit files in this project"
       >
         <project-feature-setting
-          name="project[project_feature_attributes][repository_access_level]"
           :options="featureAccessLevelOptions"
           v-model="repositoryAccessLevel"
+          name="project[project_feature_attributes][repository_access_level]"
         />
       </project-setting-row>
       <div class="project-feature-setting-group">
@@ -261,10 +261,10 @@
           help-text="Submit changes to be merged upstream"
         >
           <project-feature-setting
-            name="project[project_feature_attributes][merge_requests_access_level]"
             :options="repoFeatureAccessLevelOptions"
             v-model="mergeRequestsAccessLevel"
             :disabled-input="!repositoryEnabled"
+            name="project[project_feature_attributes][merge_requests_access_level]"
           />
         </project-setting-row>
         <project-setting-row
@@ -272,34 +272,34 @@
           help-text="Build, test, and deploy your changes"
         >
           <project-feature-setting
-            name="project[project_feature_attributes][builds_access_level]"
             :options="repoFeatureAccessLevelOptions"
             v-model="buildsAccessLevel"
             :disabled-input="!repositoryEnabled"
+            name="project[project_feature_attributes][builds_access_level]"
           />
         </project-setting-row>
         <project-setting-row
           v-if="registryAvailable"
-          label="Container registry"
           :help-path="registryHelpPath"
+          label="Container registry"
           help-text="Every project can have its own space to store its Docker images"
         >
           <project-feature-toggle
-            name="project[container_registry_enabled]"
             v-model="containerRegistryEnabled"
             :disabled-input="!repositoryEnabled"
+            name="project[container_registry_enabled]"
           />
         </project-setting-row>
         <project-setting-row
           v-if="lfsAvailable"
-          label="Git Large File Storage"
           :help-path="lfsHelpPath"
+          label="Git Large File Storage"
           help-text="Manages large files such as audio, video, and graphics files"
         >
           <project-feature-toggle
-            name="project[lfs_enabled]"
             v-model="lfsEnabled"
             :disabled-input="!repositoryEnabled"
+            name="project[lfs_enabled]"
           />
         </project-setting-row>
       </div>
@@ -308,9 +308,9 @@
         help-text="Pages for project documentation"
       >
         <project-feature-setting
-          name="project[project_feature_attributes][wiki_access_level]"
           :options="featureAccessLevelOptions"
           v-model="wikiAccessLevel"
+          name="project[project_feature_attributes][wiki_access_level]"
         />
       </project-setting-row>
       <project-setting-row
@@ -318,9 +318,9 @@
         help-text="Share code pastes with others out of Git repository"
       >
         <project-feature-setting
-          name="project[project_feature_attributes][snippets_access_level]"
           :options="featureAccessLevelOptions"
           v-model="snippetsAccessLevel"
+          name="project[project_feature_attributes][snippets_access_level]"
         />
       </project-setting-row>
     </div>

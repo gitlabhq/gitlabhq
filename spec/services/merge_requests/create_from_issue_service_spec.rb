@@ -125,9 +125,14 @@ describe MergeRequests::CreateFromIssueService do
       end
 
       context 'when ref branch does not exist' do
-        it 'does not create a merge request' do
-          expect { described_class.new(project, user, issue_iid: issue.iid, ref: 'nobr').execute }
-            .not_to change { project.merge_requests.count }
+        subject { described_class.new(project, user, issue_iid: issue.iid, ref: 'no-such-branch').execute }
+
+        it 'creates a merge request' do
+          expect { subject }.to change(project.merge_requests, :count).by(1)
+        end
+
+        it 'sets the merge request target branch to the project default branch' do
+          expect(subject[:merge_request].target_branch).to eq(project.default_branch)
         end
       end
     end

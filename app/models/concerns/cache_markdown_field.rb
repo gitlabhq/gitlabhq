@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module takes care of updating cache columns for Markdown-containing
 # fields. Use like this in the body of your class:
 #
@@ -11,7 +13,9 @@ module CacheMarkdownField
   extend ActiveSupport::Concern
 
   # Increment this number every time the renderer changes its output
-  CACHE_VERSION = 3
+  CACHE_REDCARPET_VERSION         = 3
+  CACHE_COMMONMARK_VERSION_START  = 10
+  CACHE_COMMONMARK_VERSION        = 11
 
   # changes to these attributes cause the cache to be invalidates
   INVALIDATED_BY = %w[author project].freeze
@@ -38,6 +42,18 @@ module CacheMarkdownField
     end
   end
 
+  class MarkdownEngine
+    def self.from_version(version = nil)
+      return :common_mark if version.nil? || version == 0
+
+      if version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+        :redcarpet
+      else
+        :common_mark
+      end
+    end
+  end
+
   def skip_project_check?
     false
   end
@@ -49,11 +65,13 @@ module CacheMarkdownField
 
     # Always include a project key, or Banzai complains
     project = self.project if self.respond_to?(:project)
-    group = self.group if self.respond_to?(:group)
+    group   = self.group if self.respond_to?(:group)
     context = cached_markdown_fields[field].merge(project: project, group: group)
 
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
+
+    context[:markdown_engine] = MarkdownEngine.from_version(latest_cached_markdown_version)
 
     context
   end
@@ -69,7 +87,7 @@ module CacheMarkdownField
         Banzai::Renderer.cacheless_render_field(self, markdown_field, options)
       ]
     end.to_h
-    updates['cached_markdown_version'] = CacheMarkdownField::CACHE_VERSION
+    updates['cached_markdown_version'] = latest_cached_markdown_version
 
     updates.each {|html_field, data| write_attribute(html_field, data) }
   end
@@ -90,7 +108,7 @@ module CacheMarkdownField
     markdown_changed = attribute_changed?(markdown_field) || false
     html_changed = attribute_changed?(html_field) || false
 
-    CacheMarkdownField::CACHE_VERSION == cached_markdown_version &&
+    latest_cached_markdown_version == cached_markdown_version &&
       (html_changed || markdown_changed == html_changed)
   end
 
@@ -107,6 +125,16 @@ module CacheMarkdownField
       cached_markdown_fields.markdown_fields.include?(markdown_field)
 
     __send__(cached_markdown_fields.html_field(markdown_field)) # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def latest_cached_markdown_version
+    return CacheMarkdownField::CACHE_COMMONMARK_VERSION unless cached_markdown_version
+
+    if cached_markdown_version < CacheMarkdownField::CACHE_COMMONMARK_VERSION_START
+      CacheMarkdownField::CACHE_REDCARPET_VERSION
+    else
+      CacheMarkdownField::CACHE_COMMONMARK_VERSION
+    end
   end
 
   included do

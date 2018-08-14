@@ -32,6 +32,12 @@ module QA
       end
 
       def self.configure!
+        RSpec.configure do |config|
+          config.define_derived_metadata(file_path: %r{/qa/specs/features/}) do |metadata|
+            metadata[:type] = :feature
+          end
+        end
+
         return if Capybara.drivers.include?(:chrome)
 
         Capybara.register_driver :chrome do |app|
@@ -66,6 +72,7 @@ module QA
           Capybara::Selenium::Driver.new(
             app,
             browser: :chrome,
+            clear_local_storage: true,
             desired_capabilities: capabilities,
             options: options
           )
@@ -79,12 +86,16 @@ module QA
           driver.browser.save_screenshot(path)
         end
 
+        Capybara::Screenshot.register_filename_prefix_formatter(:rspec) do |example|
+          ::File.join(QA::Runtime::Namespace.name, example.file_path.sub('./qa/specs/features/', ''))
+        end
+
         Capybara.configure do |config|
           config.default_driver = :chrome
           config.javascript_driver = :chrome
           config.default_max_wait_time = 10
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
-          config.save_path = File.expand_path('../../tmp', __dir__)
+          config.save_path = ::File.expand_path('../../tmp', __dir__)
         end
       end
 
@@ -102,19 +113,7 @@ module QA
         def perform(&block)
           visit(url)
 
-          yield if block_given?
-        rescue
-          raise if block.nil?
-
-          # RSpec examples will take care of screenshots on their own
-          #
-          unless block.binding.receiver.is_a?(RSpec::Core::ExampleGroup)
-            screenshot_and_save_page
-          end
-
-          raise
-        ensure
-          clear! if block_given?
+          yield.tap { clear! } if block_given?
         end
 
         ##

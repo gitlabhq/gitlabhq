@@ -62,7 +62,7 @@ module API
         authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find(params.delete(:trigger_id))
-        return not_found!('Trigger') unless trigger
+        break not_found!('Trigger') unless trigger
 
         present trigger, with: Entities::Trigger
       end
@@ -99,7 +99,7 @@ module API
         authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find(params.delete(:trigger_id))
-        return not_found!('Trigger') unless trigger
+        break not_found!('Trigger') unless trigger
 
         if trigger.update(declared_params(include_missing: false))
           present trigger, with: Entities::Trigger
@@ -119,7 +119,7 @@ module API
         authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find(params.delete(:trigger_id))
-        return not_found!('Trigger') unless trigger
+        break not_found!('Trigger') unless trigger
 
         if trigger.update(owner: current_user)
           status :ok
@@ -140,7 +140,7 @@ module API
         authorize! :admin_build, user_project
 
         trigger = user_project.triggers.find(params.delete(:trigger_id))
-        return not_found!('Trigger') unless trigger
+        break not_found!('Trigger') unless trigger
 
         destroy_conditionally!(trigger)
       end

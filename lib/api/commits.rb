@@ -6,6 +6,18 @@ module API
 
     before { authorize! :download_code, user_project }
 
+    helpers do
+      def user_access
+        @user_access ||= Gitlab::UserAccess.new(current_user, project: user_project)
+      end
+
+      def authorize_push_to_branch!(branch)
+        unless user_access.can_push_to_branch?(branch)
+          forbidden!("You are not allowed to push into this branch")
+        end
+      end
+    end
+
     params do
       requires :id, type: String, desc: 'The ID of a project'
     end
@@ -15,19 +27,21 @@ module API
       end
       params do
         optional :ref_name, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
-        optional :since,    type: DateTime, desc: 'Only commits after or on this date will be returned'
-        optional :until,    type: DateTime, desc: 'Only commits before or on this date will be returned'
-        optional :path,     type: String, desc: 'The file path'
-        optional :all,      type: Boolean, desc: 'Every commit will be returned'
+        optional :since, type: DateTime, desc: 'Only commits after or on this date will be returned'
+        optional :until, type: DateTime, desc: 'Only commits before or on this date will be returned'
+        optional :path, type: String, desc: 'The file path'
+        optional :all, type: Boolean, desc: 'Every commit will be returned'
+        optional :with_stats, type: Boolean, desc: 'Stats about each commit will be added to the response'
         use :pagination
       end
       get ':id/repository/commits' do
-        path   = params[:path]
+        path = params[:path]
         before = params[:until]
-        after  = params[:since]
-        ref    = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
+        after = params[:since]
+        ref = params[:ref_name] || user_project.try(:default_branch) || 'master' unless params[:all]
         offset = (params[:page] - 1) * params[:per_page]
-        all    = params[:all]
+        all = params[:all]
+        with_stats = params[:with_stats]
 
         commits = user_project.repository.commits(ref,
                                                   path: path,
@@ -47,7 +61,9 @@ module API
 
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-        present paginate(paginated_commits), with: Entities::Commit
+        serializer = with_stats ? Entities::CommitWithStats : Entities::Commit
+
+        present paginate(paginated_commits), with: serializer
       end
 
       desc 'Commit multiple file changes as one commit' do
@@ -63,7 +79,7 @@ module API
         optional :author_name, type: String, desc: 'Author name for commit'
       end
       post ':id/repository/commits' do
-        authorize! :push_code, user_project
+        authorize_push_to_branch!(params[:branch])
 
         attrs = declared_params
         attrs[:branch_name] = attrs.delete(:branch)
@@ -138,7 +154,7 @@ module API
         requires :branch, type: String, desc: 'The name of the branch'
       end
       post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
-        authorize! :push_code, user_project
+        authorize_push_to_branch!(params[:branch])
 
         commit = user_project.commit(params[:sha])
         not_found!('Commit') unless commit
@@ -230,6 +246,20 @@ module API
         else
           render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
+      end
+
+      desc 'Get Merge Requests associated with a commit' do
+        success Entities::MergeRequestBasic
+      end
+      params do
+        requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag on which to find Merge Requests'
+        use :pagination
+      end
+      get ':id/repository/commits/:sha/merge_requests', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
+        commit = user_project.commit(params[:sha])
+        not_found! 'Commit' unless commit
+
+        present paginate(commit.merge_requests), with: Entities::MergeRequestBasic
       end
     end
   end

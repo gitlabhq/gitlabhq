@@ -90,6 +90,30 @@ describe RootController do
         end
       end
 
+      context 'who has customized their dashboard setting for assigned issues' do
+        before do
+          user.dashboard = 'issues'
+        end
+
+        it 'redirects to their assigned issues' do
+          get :index
+
+          expect(response).to redirect_to issues_dashboard_path(assignee_id: user.id)
+        end
+      end
+
+      context 'who has customized their dashboard setting for assigned merge requests' do
+        before do
+          user.dashboard = 'merge_requests'
+        end
+
+        it 'redirects to their assigned merge requests' do
+          get :index
+
+          expect(response).to redirect_to merge_requests_dashboard_path(assignee_id: user.id)
+        end
+      end
+
       context 'who uses the default dashboard setting' do
         it 'renders the default dashboard' do
           get :index

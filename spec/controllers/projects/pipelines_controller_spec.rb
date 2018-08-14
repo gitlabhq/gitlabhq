@@ -4,7 +4,7 @@ describe Projects::PipelinesController do
   include ApiHelpers
 
   set(:user) { create(:user) }
-  set(:project) { create(:project, :public, :repository) }
+  let(:project) { create(:project, :public, :repository) }
   let(:feature) { ProjectFeature::DISABLED }
 
   before do
@@ -17,38 +17,125 @@ describe Projects::PipelinesController do
 
   describe 'GET index.json' do
     before do
-      %w(pending running created success).each_with_index do |status, index|
-        sha = project.commit("HEAD~#{index}")
-        create(:ci_empty_pipeline, status: status, project: project, sha: sha)
+      %w(pending running success failed canceled).each_with_index do |status, index|
+        create_pipeline(status, project.commit("HEAD~#{index}"))
       end
     end
 
-    subject do
-      get :index, namespace_id: project.namespace, project_id: project, format: :json
+    context 'when using persisted stages', :request_store do
+      before do
+        stub_feature_flags(ci_pipeline_persisted_stages: true)
+      end
+
+      it 'returns serialized pipelines', :request_store do
+        queries = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('pipeline')
+
+        expect(json_response).to include('pipelines')
+        expect(json_response['pipelines'].count).to eq 5
+        expect(json_response['count']['all']).to eq '5'
+        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['count']['pending']).to eq '1'
+        expect(json_response['count']['finished']).to eq '3'
+
+        json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
+          expect(stages.count).to eq 3
+        end
+
+        expect(queries.count).to be
+      end
     end
 
-    it 'returns JSON with serialized pipelines' do
-      subject
+    context 'when using legacy stages', :request_store  do
+      before do
+        stub_feature_flags(ci_pipeline_persisted_stages: false)
+      end
 
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to match_response_schema('pipeline')
+      it 'returns JSON with serialized pipelines' do
+        get_pipelines_index_json
 
-      expect(json_response).to include('pipelines')
-      expect(json_response['pipelines'].count).to eq 4
-      expect(json_response['count']['all']).to eq 4
-      expect(json_response['count']['running']).to eq 1
-      expect(json_response['count']['pending']).to eq 1
-      expect(json_response['count']['finished']).to eq 1
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('pipeline')
+
+        expect(json_response).to include('pipelines')
+        expect(json_response['pipelines'].count).to eq 5
+        expect(json_response['count']['all']).to eq '5'
+        expect(json_response['count']['running']).to eq '1'
+        expect(json_response['count']['pending']).to eq '1'
+        expect(json_response['count']['finished']).to eq '3'
+
+        json_response.dig('pipelines', 0, 'details', 'stages').tap do |stages|
+          expect(stages.count).to eq 3
+        end
+      end
+
+      it 'does not execute N+1 queries' do
+        queries = ActiveRecord::QueryRecorder.new do
+          get_pipelines_index_json
+        end
+
+        expect(queries.count).to be <= 36
+      end
+    end
+
+    it 'does not include coverage data for the pipelines' do
+      get_pipelines_index_json
+
+      expect(json_response['pipelines'][0]).not_to include('coverage')
     end
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
-        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(3)
+        expect { get_pipelines_index_json }
+          .to change { Gitlab::GitalyClient.get_request_count }.by(2)
       end
+    end
+
+    context 'when the project is private' do
+      let(:project) { create(:project, :private, :repository) }
+
+      it 'returns `not_found` when the user does not have access' do
+        sign_in(create(:user))
+
+        get_pipelines_index_json
+
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'returns the pipelines when the user has access' do
+        get_pipelines_index_json
+
+        expect(json_response['pipelines'].size).to eq(5)
+      end
+    end
+
+    def get_pipelines_index_json
+      get :index, namespace_id: project.namespace,
+                  project_id: project,
+                  format: :json
+    end
+
+    def create_pipeline(status, sha)
+      pipeline = create(:ci_empty_pipeline, status: status,
+                                            project: project,
+                                            sha: sha)
+
+      create_build(pipeline, 'build', 1, 'build')
+      create_build(pipeline, 'test', 2, 'test')
+      create_build(pipeline, 'deploy', 3, 'deploy')
+    end
+
+    def create_build(pipeline, stage, stage_idx, name)
+      status = %w[created running pending success failed canceled].sample
+      create(:ci_build, pipeline: pipeline, stage: stage, stage_idx: stage_idx, name: name, status: status)
     end
   end
 
-  describe 'GET show JSON' do
+  describe 'GET show.json' do
     let(:pipeline) { create(:ci_pipeline_with_one_job, project: project) }
 
     it 'returns the pipeline' do
@@ -61,16 +148,19 @@ describe Projects::PipelinesController do
     end
 
     context 'when the pipeline has multiple stages and groups', :request_store do
+      let(:project) { create(:project, :repository) }
+
+      let(:pipeline) do
+        create(:ci_empty_pipeline, project: project,
+                                   user: user,
+                                   sha: project.commit.id)
+      end
+
       before do
         create_build('build', 0, 'build')
         create_build('test', 1, 'rspec 0')
         create_build('deploy', 2, 'production')
         create_build('post deploy', 3, 'pages 0')
-      end
-
-      let(:project) { create(:project, :repository) }
-      let(:pipeline) do
-        create(:ci_empty_pipeline, project: project, user: user, sha: project.commit.id)
       end
 
       it 'does not perform N + 1 queries' do
@@ -84,6 +174,7 @@ describe Projects::PipelinesController do
         create_build('post deploy', 3, 'pages 2')
 
         new_count = ActiveRecord::QueryRecorder.new { get_pipeline_json }.count
+
         expect(new_count).to be_within(12).of(control_count)
       end
     end
@@ -109,8 +200,7 @@ describe Projects::PipelinesController do
 
       it 'returns html source for stage dropdown' do
         expect(response).to have_gitlab_http_status(:ok)
-        expect(response).to render_template('projects/pipelines/_stage')
-        expect(json_response).to include('html')
+        expect(response).to match_response_schema('pipeline_stage')
       end
     end
 
@@ -133,6 +223,42 @@ describe Projects::PipelinesController do
     end
   end
 
+  describe 'GET stages_ajax.json' do
+    let(:pipeline) { create(:ci_pipeline, project: project) }
+
+    context 'when accessing existing stage' do
+      before do
+        create(:ci_build, pipeline: pipeline, stage: 'build')
+
+        get_stage_ajax('build')
+      end
+
+      it 'returns html source for stage dropdown' do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to render_template('projects/pipelines/_stage')
+        expect(json_response).to include('html')
+      end
+    end
+
+    context 'when accessing unknown stage' do
+      before do
+        get_stage_ajax('test')
+      end
+
+      it 'responds with not found' do
+        expect(response).to have_gitlab_http_status(:not_found)
+      end
+    end
+
+    def get_stage_ajax(name)
+      get :stage_ajax, namespace_id: project.namespace,
+                       project_id: project,
+                       id: pipeline.id,
+                       stage: name,
+                       format: :json
+    end
+  end
+
   describe 'GET status.json' do
     let(:pipeline) { create(:ci_pipeline, project: project) }
     let(:status) { pipeline.detailed_status(double('user')) }
@@ -149,7 +275,7 @@ describe Projects::PipelinesController do
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
-      expect(json_response['favicon']).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
+      expect(json_response['favicon']).to match_asset_path("/assets/ci_favicons/#{status.favicon}.png")
     end
   end
 

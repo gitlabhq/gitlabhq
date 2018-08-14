@@ -2,9 +2,10 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %a.close{ href: "#", "data-dismiss" => "modal" } ×
         %h3.page-title
           Confirmation required
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
 
       .modal-body
         %p.text-danger.js-confirm-text

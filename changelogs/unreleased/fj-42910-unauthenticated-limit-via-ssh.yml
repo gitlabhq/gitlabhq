@@ -1,5 +1,0 @@
----
-title: Fixed bug with unauthenticated requests through git ssh
-merge_request: 17149
-author:
-type: fixed

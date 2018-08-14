@@ -15,7 +15,7 @@ describe Gitlab::BitbucketImport::ProjectCreator do
            has_wiki?: false)
   end
 
-  let(:namespace) { create(:group, owner: user) }
+  let(:namespace) { create(:group) }
   let(:token) { "asdasd12345" }
   let(:secret) { "sekrettt" }
   let(:access_params) { { bitbucket_access_token: token, bitbucket_access_token_secret: secret } }
@@ -25,7 +25,9 @@ describe Gitlab::BitbucketImport::ProjectCreator do
   end
 
   it 'creates project' do
-    allow_any_instance_of(Project).to receive(:add_import_job)
+    expect_next_instance_of(Project) do |project|
+      expect(project).to receive(:add_import_job)
+    end
 
     project_creator = described_class.new(repo, 'vim', namespace, user, access_params)
     project = project_creator.execute

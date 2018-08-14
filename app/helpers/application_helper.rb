@@ -2,6 +2,11 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  # See https://docs.gitlab.com/ee/development/ee_features.html#code-in-app-views
+  def render_if_exists(partial, locals = {})
+    render(partial, locals) if lookup_context.exists?(partial, [], true)
+  end
+
   # Check if a particular controller is the current one
   #
   # args - One or more controller names to check
@@ -30,80 +35,6 @@ module ApplicationHelper
   #   current_action?(:new, :create)  # => true
   def current_action?(*args)
     args.any? { |v| v.to_s.downcase == action_name }
-  end
-
-  def project_icon(project_id, options = {})
-    project =
-      if project_id.respond_to?(:avatar_url)
-        project_id
-      else
-        Project.find_by_full_path(project_id)
-      end
-
-    if project.avatar_url
-      image_tag project.avatar_url, options
-    else # generated icon
-      project_identicon(project, options)
-    end
-  end
-
-  def project_identicon(project, options = {})
-    allowed_colors = {
-      red: 'FFEBEE',
-      purple: 'F3E5F5',
-      indigo: 'E8EAF6',
-      blue: 'E3F2FD',
-      teal: 'E0F2F1',
-      orange: 'FBE9E7',
-      gray: 'EEEEEE'
-    }
-
-    options[:class] ||= ''
-    options[:class] << ' identicon'
-    bg_key = project.id % 7
-    style = "background-color: ##{allowed_colors.values[bg_key]}; color: #555"
-
-    content_tag(:div, class: options[:class], style: style) do
-      project.name[0, 1].upcase
-    end
-  end
-
-  # Takes both user and email and returns the avatar_icon by
-  # user (preferred) or email.
-  def avatar_icon_for(user = nil, email = nil, size = nil, scale = 2, only_path: true)
-    if user
-      avatar_icon_for_user(user, size, scale, only_path: only_path)
-    elsif email
-      avatar_icon_for_email(email, size, scale, only_path: only_path)
-    else
-      default_avatar
-    end
-  end
-
-  def avatar_icon_for_email(email = nil, size = nil, scale = 2, only_path: true)
-    user = User.find_by_any_email(email.try(:downcase))
-    if user
-      avatar_icon_for_user(user, size, scale, only_path: only_path)
-    else
-      gravatar_icon(email, size, scale)
-    end
-  end
-
-  def avatar_icon_for_user(user = nil, size = nil, scale = 2, only_path: true)
-    if user
-      user.avatar_url(size: size, only_path: only_path) || default_avatar
-    else
-      gravatar_icon(nil, size, scale)
-    end
-  end
-
-  def gravatar_icon(user_email = '', size = nil, scale = 2)
-    GravatarService.new.execute(user_email, size, scale) ||
-      default_avatar
-  end
-
-  def default_avatar
-    asset_path('no_avatar.png')
   end
 
   def last_commit(project)
@@ -228,9 +159,7 @@ module ApplicationHelper
       scope: params[:scope],
       milestone_title: params[:milestone_title],
       assignee_id: params[:assignee_id],
-      assignee_username: params[:assignee_username],
       author_id: params[:author_id],
-      author_username: params[:author_username],
       search: params[:search],
       label_name: params[:label_name]
     }
@@ -285,6 +214,10 @@ module ApplicationHelper
     class_names
   end
 
+  # EE feature: System header and footer, unavailable in CE
+  def system_message_class
+  end
+
   # Returns active css class when condition returns true
   # otherwise returns nil.
   #
@@ -300,7 +233,7 @@ module ApplicationHelper
 
   def linkedin_url(user)
     name = user.linkedin
-    if name =~ %r{\Ahttps?:\/\/(www\.)?linkedin\.com\/in\/}
+    if name =~ %r{\Ahttps?://(www\.)?linkedin\.com/in/}
       name
     else
       "https://www.linkedin.com/in/#{name}"
@@ -309,10 +242,10 @@ module ApplicationHelper
 
   def twitter_url(user)
     name = user.twitter
-    if name =~ %r{\Ahttps?:\/\/(www\.)?twitter\.com\/}
+    if name =~ %r{\Ahttps?://(www\.)?twitter\.com/}
       name
     else
-      "https://www.twitter.com/#{name}"
+      "https://twitter.com/#{name}"
     end
   end
 
@@ -322,5 +255,25 @@ module ApplicationHelper
 
   def locale_path
     asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
+
+  # Overridden in EE
+  def read_only_message
+    return unless Gitlab::Database.read_only?
+
+    _('You are on a read-only GitLab instance.')
+  end
+
+  def autocomplete_data_sources(object, noteable_type)
+    return {} unless object && noteable_type
+
+    {
+      members: members_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+      issues: issues_project_autocomplete_sources_path(object),
+      mergeRequests: merge_requests_project_autocomplete_sources_path(object),
+      labels: labels_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id]),
+      milestones: milestones_project_autocomplete_sources_path(object),
+      commands: commands_project_autocomplete_sources_path(object, type: noteable_type, type_id: params[:id])
+    }
   end
 end

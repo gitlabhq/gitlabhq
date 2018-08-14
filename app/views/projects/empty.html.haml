@@ -1,12 +1,13 @@
+- @content_class = "limit-container-width" unless fluid_layout
 - @no_container = true
-- breadcrumb_title "Details"
+- breadcrumb_title _("Details")
 
 = render partial: 'flash_messages', locals: { project: @project }
 
 = render "home_panel"
 
 .project-empty-note-panel
-  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
     %h4
       = _('The repository for this project is empty')
@@ -22,7 +23,7 @@
 
       %hr
       %p
-        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps (Beta)'), project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings'))
+        - link_to_auto_devops_settings = link_to(s_('AutoDevOps|enable Auto DevOps'), project_settings_ci_cd_path(@project, anchor: 'autodevops-settings'))
         - link_to_add_kubernetes_cluster = link_to(s_('AutoDevOps|add a Kubernetes cluster'), new_project_cluster_path(@project))
         = s_('AutoDevOps|You can automatically build and test your application if you %{link_to_auto_devops_settings} for this project. You can automatically deploy it as well, if you %{link_to_add_kubernetes_cluster}.').html_safe % { link_to_auto_devops_settings: link_to_auto_devops_settings, link_to_add_kubernetes_cluster: link_to_add_kubernetes_cluster }
 
@@ -36,7 +37,7 @@
   = render 'stat_anchor_list', anchors: @project.empty_repo_statistics_buttons
 
 - if can?(current_user, :push_code, @project)
-  %div{ class: [container_class, ("limit-container-width-sm" unless fluid_layout)] }
+  %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
     .prepend-top-20
     .empty_wrapper
       %h3#repo-command-line-instructions.page-title-empty
@@ -44,43 +45,49 @@
       .git-empty
         %fieldset
           %h5 Git global setup
-          %pre.light-well
+          %pre.bg-light
             :preserve
               git config --global user.name "#{h git_user_name}"
               git config --global user.email "#{h git_user_email}"
 
         %fieldset
           %h5 Create a new repository
-          %pre.light-well
+          %pre.bg-light
             :preserve
               git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               cd #{h @project.path}
               touch README.md
               git add README.md
               git commit -m "add README"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing folder
-          %pre.light-well
+          %pre.bg-light
             :preserve
               cd existing_folder
               git init
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
               git add .
               git commit -m "Initial commit"
-              git push -u origin master
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin master
 
         %fieldset
           %h5 Existing Git repository
-          %pre.light-well
+          %pre.bg-light
             :preserve
               cd existing_repo
               git remote rename origin old-origin
               git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-              git push -u origin --all
-              git push -u origin --tags
+            - if @project.can_current_user_push_to_default_branch?
+              %span><
+                git push -u origin --all
+                git push -u origin --tags
 
           - if can? current_user, :remove_project, @project
             .prepend-top-20
-              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove pull-right"
+              = link_to 'Remove project', [@project.namespace.becomes(Namespace), @project], data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-inverted btn-remove float-right"

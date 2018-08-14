@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request button' do
+describe 'Merge Request button' do
   shared_examples 'Merge request button only shown when allowed' do
     let(:user) { create(:user) }
     let(:project) { create(:project, :public, :repository) }
@@ -41,6 +41,18 @@ feature 'Merge Request button' do
           visit url
 
           within('#content-body') do
+            expect(page).not_to have_link(label)
+          end
+        end
+      end
+
+      context 'when the project is archived' do
+        it 'hides the link' do
+          project.update!(archived: true)
+
+          visit url
+
+          within("#content-body") do
             expect(page).not_to have_link(label)
           end
         end

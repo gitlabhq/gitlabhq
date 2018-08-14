@@ -11,6 +11,12 @@ Rails.application.routes.draw do
     post :toggle_award_emoji, on: :member
   end
 
+  favicon_redirect = redirect do |_params, _request|
+    ActionController::Base.helpers.asset_url(Gitlab::Favicon.main)
+  end
+  get 'favicon.png', to: favicon_redirect
+  get 'favicon.ico', to: favicon_redirect
+
   draw :sherlock
   draw :development
   draw :ci
@@ -40,11 +46,12 @@ Rails.application.routes.draw do
   get 'health_check(/:checks)' => 'health_check#index', as: :health_check
 
   scope path: '-' do
+    # '/-/health' implemented by BasicHealthMiddleware
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
     post 'storage_check' => 'health#storage_check'
     resources :metrics, only: [:index]
-    mount Peek::Railtie => '/peek'
+    mount Peek::Railtie => '/peek', as: 'peek_routes'
 
     # Boards resources shared between group and projects
     resources :boards, only: [] do
@@ -61,6 +68,11 @@ Rails.application.routes.draw do
 
     # UserCallouts
     resources :user_callouts, only: [:create]
+
+    get 'ide' => 'ide#index'
+    get 'ide/*vueroute' => 'ide#index', format: false
+
+    draw :instance_statistics
   end
 
   # Koding route

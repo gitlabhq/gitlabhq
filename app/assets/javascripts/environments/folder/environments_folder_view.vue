@@ -1,12 +1,18 @@
 <script>
   import environmentsMixin from '../mixins/environments_mixin';
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
+  import StopEnvironmentModal from '../components/stop_environment_modal.vue';
 
   export default {
+    components: {
+      StopEnvironmentModal,
+    },
+
     mixins: [
       environmentsMixin,
       CIPaginationMixin,
     ],
+
     props: {
       endpoint: {
         type: String,
@@ -38,9 +44,11 @@
 </script>
 <template>
   <div :class="cssContainerClass">
+    <stop-environment-modal :environment="environmentInStopModal" />
+
     <div
-      class="top-area"
       v-if="!isLoading"
+      class="top-area"
     >
 
       <h4 class="js-folder-name environments-folder-name">
@@ -49,8 +57,8 @@
 
       <tabs
         :tabs="tabs"
-        @onChangeTab="onChangeTab"
         scope="environments"
+        @onChangeTab="onChangeTab"
       />
     </div>
 

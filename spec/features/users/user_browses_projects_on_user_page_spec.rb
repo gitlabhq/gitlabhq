@@ -4,19 +4,19 @@ describe 'Users > User browses projects on user page', :js do
   let!(:user) { create :user }
   let!(:private_project) do
     create :project, :private, name: 'private', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 
   let!(:internal_project) do
     create :project, :internal, name: 'internal', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 
   let!(:public_project) do
     create :project, :public, name: 'public', namespace: user.namespace do |project|
-      project.add_master(user)
+      project.add_maintainer(user)
     end
   end
 
@@ -26,26 +26,31 @@ describe 'Users > User browses projects on user page', :js do
     end
   end
 
-  it 'paginates projects', :js do
-    project = create(:project, namespace: user.namespace)
-    project2 = create(:project, namespace: user.namespace)
-    allow(Project).to receive(:default_per_page).and_return(1)
-
-    sign_in(user)
-
+  it 'hides loading spinner after load', :js do
     visit user_path(user)
-
-    page.within('.user-profile-nav') do
-      click_link('Personal projects')
-    end
+    click_nav_link('Personal projects')
 
     wait_for_requests
 
-    expect(page).to have_content(project2.name)
+    expect(page).not_to have_selector('.loading-status .loading', visible: true)
+  end
+
+  it 'paginates projects', :js do
+    project = create(:project, namespace: user.namespace, updated_at: 2.minutes.since)
+    project2 = create(:project, namespace: user.namespace, updated_at: 1.minute.since)
+    allow(Project).to receive(:default_per_page).and_return(1)
+
+    sign_in(user)
+    visit user_path(user)
+    click_nav_link('Personal projects')
+
+    wait_for_requests
+
+    expect(page).to have_content(project.name)
 
     click_link('Next')
 
-    expect(page).to have_content(project.name)
+    expect(page).to have_content(project2.name)
   end
 
   context 'when not signed in' do
@@ -92,7 +97,6 @@ describe 'Users > User browses projects on user page', :js do
         click_nav_link('Personal projects')
 
         expect(title).to start_with(user.name)
-
         expect(page).to have_content(private_project.name)
         expect(page).to have_content(public_project.name)
         expect(page).to have_content(internal_project.name)

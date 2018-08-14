@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'User visits the notifications tab', :js do
+describe 'User visits the notifications tab', :js do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit(profile_notifications_path)
   end
@@ -16,6 +16,6 @@ feature 'User visits the notifications tab', :js do
     first('#notifications-button').click
     click_link('On mention')
 
-    expect(page).to have_content('On mention')
+    expect(page).to have_selector('#notifications-button', text: 'On mention')
   end
 end

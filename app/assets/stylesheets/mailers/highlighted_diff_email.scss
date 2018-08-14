@@ -77,13 +77,13 @@ $highlighted-gc-bg: #eaf2f5;
 .code {
   background-color: $white-light;
   font-family: monospace;
-  font-size: $code_font_size;
+  font-size: $code-font-size;
   -premailer-cellpadding: 0;
   -premailer-cellspacing: 0;
   -premailer-width: 100%;
 
   > tr {
-    line-height: $code_line_height;
+    line-height: $code-line-height;
   }
 }
 
@@ -138,7 +138,8 @@ pre {
   margin: 0;
 }
 
-blockquote {
+blockquote,
+.blockquote {
   color: $gl-grayish-blue;
   padding: 0 0 0 15px;
   margin: 0;

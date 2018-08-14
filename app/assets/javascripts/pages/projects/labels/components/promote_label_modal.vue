@@ -1,4 +1,5 @@
 <script>
+  import _ from 'underscore';
   import axios from '~/lib/utils/axios_utils';
   import createFlash from '~/flash';
   import GlModal from '~/vue_shared/components/gl_modal.vue';
@@ -27,19 +28,26 @@
         type: String,
         required: true,
       },
+      groupName: {
+        type: String,
+        required: true,
+      },
     },
     computed: {
       text() {
-        return s__(`Milestones|Promoting this label will make it available for all projects inside the group. 
-        Existing project labels with the same title will be merged. This action cannot be reversed.`);
+        return sprintf(s__(`Labels|Promoting %{labelTitle} will make it available for all projects inside %{groupName}. 
+        Existing project labels with the same title will be merged. This action cannot be reversed.`), {
+          labelTitle: this.labelTitle,
+          groupName: this.groupName,
+        });
       },
       title() {
         const label = `<span
           class="label color-label"
           style="background-color: ${this.labelColor}; color: ${this.labelTextColor};"
-        >${this.labelTitle}</span>`;
+        >${_.escape(this.labelTitle)}</span>`;
 
-        return sprintf(s__('Labels|Promote label %{labelTitle} to Group Label?'), {
+        return sprintf(s__('Labels|<span>Promote label</span> %{labelTitle} <span>to Group Label?</span>'), {
           labelTitle: label,
         }, false);
       },
@@ -63,12 +71,13 @@
 <template>
   <gl-modal
     id="promote-label-modal"
-    footer-primary-button-variant="warning"
     :footer-primary-button-text="s__('Labels|Promote Label')"
+    footer-primary-button-variant="warning"
     @submit="onSubmit"
   >
     <div
       slot="title"
+      class="modal-title-with-label"
       v-html="title"
     >
       {{ title }}

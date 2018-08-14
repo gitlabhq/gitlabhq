@@ -7,7 +7,7 @@ describe Projects::MergeRequestsController do
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
   let(:merge_request_with_conflicts) do
-    create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project) do |mr|
+    create(:merge_request, source_branch: 'conflict-resolvable', target_branch: 'conflict-start', source_project: project, merge_status: :unchecked) do |mr|
       mr.mark_as_unmergeable
     end
   end
@@ -53,6 +53,23 @@ describe Projects::MergeRequestsController do
     it_behaves_like "loads labels", :show
 
     describe 'as html' do
+      context 'when diff files were cleaned' do
+        render_views
+
+        it 'renders page when diff size is not persisted and diff_refs does not exist' do
+          diff = merge_request.merge_request_diff
+
+          diff.clean!
+          diff.update!(real_size: nil,
+                       start_commit_sha: nil,
+                       base_commit_sha: nil)
+
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
+
       it "renders merge request page" do
         go(format: :html)
 
@@ -80,6 +97,16 @@ describe Projects::MergeRequestsController do
                                                                 ))
         end
       end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :html)
+
+          expect(response).to be_success
+        end
+      end
     end
 
     describe 'as json' do
@@ -104,6 +131,16 @@ describe Projects::MergeRequestsController do
           go(serializer: nil, format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
+
+      context "that is invalid" do
+        let(:merge_request) { create(:invalid_merge_request, target_project: project, source_project: project) }
+
+        it "renders merge request page" do
+          go(format: :json)
+
+          expect(response).to be_success
         end
       end
     end
@@ -214,7 +251,7 @@ describe Projects::MergeRequestsController do
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
-          .to match_array(%w(name username avatar_url))
+          .to match_array(%w(name username avatar_url id state web_url))
       end
     end
 
@@ -275,6 +312,7 @@ describe Projects::MergeRequestsController do
         namespace_id: project.namespace,
         project_id: project,
         id: merge_request.iid,
+        squash: false,
         format: 'json'
       }
     end
@@ -294,7 +332,7 @@ describe Projects::MergeRequestsController do
 
     context 'when the merge request is not mergeable' do
       before do
-        merge_request.update_attributes(title: "WIP: #{merge_request.title}")
+        merge_request.update(title: "WIP: #{merge_request.title}")
 
         post :merge, base_params
       end
@@ -315,8 +353,13 @@ describe Projects::MergeRequestsController do
     end
 
     context 'when the sha parameter matches the source SHA' do
-      def merge_with_sha
-        post :merge, base_params.merge(sha: merge_request.diff_head_sha)
+      def merge_with_sha(params = {})
+        post_params = base_params.merge(sha: merge_request.diff_head_sha).merge(params)
+        if Gitlab.rails5?
+          post :merge, params: post_params, as: :json
+        else
+          post :merge, post_params
+        end
       end
 
       it 'returns :success' do
@@ -325,10 +368,28 @@ describe Projects::MergeRequestsController do
         expect(json_response).to eq('status' => 'success')
       end
 
-      it 'starts the merge immediately' do
-        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, anything)
+      it 'starts the merge immediately with permitted params' do
+        expect(MergeWorker).to receive(:perform_async).with(merge_request.id, anything, { 'squash' => false })
 
         merge_with_sha
+      end
+
+      context 'when squash is passed as 1' do
+        it 'updates the squash attribute on the MR to true' do
+          merge_request.update(squash: false)
+          merge_with_sha(squash: '1')
+
+          expect(merge_request.reload.squash).to be_truthy
+        end
+      end
+
+      context 'when squash is passed as 0' do
+        it 'updates the squash attribute on the MR to false' do
+          merge_request.update(squash: true)
+          merge_with_sha(squash: '0')
+
+          expect(merge_request.reload.squash).to be_falsey
+        end
       end
 
       context 'when the pipeline succeeds is passed' do
@@ -519,6 +580,88 @@ describe Projects::MergeRequestsController do
     end
   end
 
+  describe 'GET test_reports' do
+    subject do
+      get :test_reports,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: merge_request.iid,
+          format: :json
+    end
+
+    before do
+      allow_any_instance_of(MergeRequest)
+        .to receive(:compare_test_reports).and_return(comparison_status)
+    end
+
+    context 'when comparison is being processed' do
+      let(:comparison_status) { { status: :parsing } }
+
+      it 'sends polling interval' do
+        expect(Gitlab::PollingInterval).to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 204 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:no_content)
+      end
+    end
+
+    context 'when comparison is done' do
+      let(:comparison_status) { { status: :parsed, data: { summary: 1 } } }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 200 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to eq({ 'summary' => 1 })
+      end
+    end
+
+    context 'when user created corrupted test reports' do
+      let(:comparison_status) { { status: :error, status_reason: 'Failed to parse test reports' } }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 400 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:bad_request)
+        expect(json_response).to eq({ 'status_reason' => 'Failed to parse test reports' })
+      end
+    end
+
+    context 'when something went wrong on our system' do
+      let(:comparison_status) { {} }
+
+      it 'does not send polling interval' do
+        expect(Gitlab::PollingInterval).not_to receive(:set_header)
+
+        subject
+      end
+
+      it 'returns 500 HTTP status' do
+        subject
+
+        expect(response).to have_gitlab_http_status(:internal_server_error)
+        expect(json_response).to eq({ 'status_reason' => 'Unknown error' })
+      end
+    end
+  end
+
   describe 'POST remove_wip' do
     before do
       merge_request.title = merge_request.wip_title
@@ -662,7 +805,7 @@ describe Projects::MergeRequestsController do
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.png"
       end
     end
 

@@ -1,9 +1,10 @@
 require "spec_helper"
 
 describe 'Git HTTP requests' do
+  include ProjectForksHelper
+  include TermsHelper
   include GitHttpHelpers
   include WorkhorseHelpers
-  include UserActivitiesHelpers
 
   shared_examples 'pulls require Basic HTTP Authentication' do
     context "when no credentials are provided" do
@@ -163,7 +164,7 @@ describe 'Git HTTP requests' do
             download(path) do |response|
               json_body = ActiveSupport::JSON.decode(response.body)
 
-              expect(json_body['RepoPath']).to include(wiki.repository.disk_path)
+              expect(json_body['Repository']['relative_path']).to eq(wiki.repository.relative_path)
             end
           end
         end
@@ -304,6 +305,22 @@ describe 'Git HTTP requests' do
                 expect(response.body).to eq(change_access_error(:push_code))
               end
             end
+
+            context 'when merge requests are open that allow maintainer access' do
+              let(:canonical_project) { create(:project, :public, :repository) }
+              let(:project) { fork_project(canonical_project, nil, repository: true) }
+
+              before do
+                canonical_project.add_maintainer(user)
+                create(:merge_request,
+                       source_project: project,
+                       target_project:  canonical_project,
+                       source_branch: 'fixes',
+                       allow_collaboration: true)
+              end
+
+              it_behaves_like 'pushes are allowed'
+            end
           end
         end
 
@@ -344,20 +361,11 @@ describe 'Git HTTP requests' do
         context 'and the user requests a redirected path' do
           let!(:redirect) { project.route.create_redirect('foo/bar') }
           let(:path) { "#{redirect.path}.git" }
-          let(:project_moved_message) do
-            <<-MSG.strip_heredoc
-              Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-              Please update your Git remote:
-
-                git remote set-url origin #{project.http_url_to_repo} and try again.
-            MSG
-          end
-
-          it 'downloads get status 404 with "project was moved" message' do
+          it 'downloads get status 200 for redirects' do
             clone_get(path, {})
-            expect(response).to have_gitlab_http_status(:not_found)
-            expect(response.body).to match(project_moved_message)
+
+            expect(response).to have_gitlab_http_status(:ok)
           end
         end
       end
@@ -373,6 +381,10 @@ describe 'Git HTTP requests' do
 
           context "when authentication fails" do
             context "when the user is IP banned" do
+              before do
+                Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+              end
+
               it "responds with status 401" do
                 expect(Rack::Attack::Allow2Ban).to receive(:filter).and_return(true)
                 allow_any_instance_of(Rack::Request).to receive(:ip).and_return('1.2.3.4')
@@ -389,13 +401,13 @@ describe 'Git HTTP requests' do
 
             context "when the user has access to the project" do
               before do
-                project.add_master(user)
+                project.add_maintainer(user)
               end
 
               context "when the user is blocked" do
                 it "rejects pulls with 401 Unauthorized" do
                   user.block
-                  project.add_master(user)
+                  project.add_maintainer(user)
 
                   download(path, env) do |response|
                     expect(response).to have_gitlab_http_status(:unauthorized)
@@ -412,6 +424,10 @@ describe 'Git HTTP requests' do
               end
 
               context "when the user isn't blocked" do
+                before do
+                  Gitlab.config.rack_attack.git_basic_auth['enabled'] = true
+                end
+
                 it "resets the IP in Rack Attack on download" do
                   expect(Rack::Attack::Allow2Ban).to receive(:reset).twice
 
@@ -431,10 +447,10 @@ describe 'Git HTTP requests' do
                 end
 
                 it 'updates the user last activity', :clean_gitlab_redis_shared_state do
-                  expect(user_activity(user)).to be_nil
+                  expect(user.last_activity_on).to be_nil
 
                   download(path, env) do |response|
-                    expect(user_activity(user)).to be_present
+                    expect(user.reload.last_activity_on).to eql(Date.today)
                   end
                 end
               end
@@ -458,7 +474,7 @@ describe 'Git HTTP requests' do
                 let(:path) { "#{project.full_path}.git" }
 
                 before do
-                  project.add_master(user)
+                  project.add_maintainer(user)
                 end
 
                 context 'when username and password are provided' do
@@ -559,20 +575,19 @@ describe 'Git HTTP requests' do
 
                     Please update your Git remote:
 
-                      git remote set-url origin #{project.http_url_to_repo} and try again.
+                      git remote set-url origin #{project.http_url_to_repo}.
                   MSG
                 end
 
-                it 'downloads get status 404 with "project was moved" message' do
+                it 'downloads get status 200' do
                   clone_get(path, env)
-                  expect(response).to have_gitlab_http_status(:not_found)
-                  expect(response.body).to match(project_moved_message)
+
+                  expect(response).to have_gitlab_http_status(:ok)
                 end
 
                 it 'uploads get status 404 with "project was moved" message' do
                   upload(path, env) do |response|
-                    expect(response).to have_gitlab_http_status(:not_found)
-                    expect(response.body).to match(project_moved_message)
+                    expect(response).to have_gitlab_http_status(:ok)
                   end
                 end
               end
@@ -819,7 +834,7 @@ describe 'Git HTTP requests' do
 
         context 'and the user is on the team' do
           before do
-            project.add_master(user)
+            project.add_maintainer(user)
           end
 
           it "responds with status 200" do
@@ -832,6 +847,58 @@ describe 'Git HTTP requests' do
           it_behaves_like 'pushes are allowed'
         end
       end
+    end
+  end
+
+  context 'when terms are enforced' do
+    let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+    let(:path) { "#{project.full_path}.git" }
+    let(:env) { { user: user.username, password: user.password } }
+
+    before do
+      project.add_maintainer(user)
+      enforce_terms
+    end
+
+    it 'blocks git access when the user did not accept terms', :aggregate_failures do
+      clone_get(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      download(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+
+      upload(path, env) do |response|
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
+    context 'when the user accepted the terms' do
+      before do
+        accept_terms(user)
+      end
+
+      it 'allows clones' do
+        clone_get(path, env) do |response|
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
+
+      it_behaves_like 'pulls are allowed'
+      it_behaves_like 'pushes are allowed'
+    end
+
+    context 'from CI' do
+      let(:build) { create(:ci_build, :running) }
+      let(:env) { { user: 'gitlab-ci-token', password: build.token } }
+
+      before do
+        build.update!(user: user, project: project)
+      end
+
+      it_behaves_like 'pulls are allowed'
     end
   end
 end

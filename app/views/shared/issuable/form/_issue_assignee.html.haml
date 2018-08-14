@@ -11,7 +11,7 @@
     Assignee
     = icon('spinner spin', class: 'hidden block-loading', 'aria-hidden': 'true')
     - if can_edit_issuable
-      = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
+      = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link float-right'
   .value.hide-collapsed
     - if assignees.any?
       - assignees.each do |assignee|

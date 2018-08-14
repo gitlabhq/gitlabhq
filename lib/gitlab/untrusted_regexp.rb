@@ -9,9 +9,15 @@ module Gitlab
   # there is a strict limit on total execution time. See the RE2 documentation
   # at https://github.com/google/re2/wiki/Syntax for more details.
   class UntrustedRegexp
-    delegate :===, to: :regexp
+    require_dependency 're2'
 
-    def initialize(pattern)
+    delegate :===, :source, to: :regexp
+
+    def initialize(pattern, multiline: false)
+      if multiline
+        pattern = "(?m)#{pattern}"
+      end
+
       @regexp = RE2::Regexp.new(pattern, log_errors: false)
 
       raise RegexpError.new(regexp.error) unless regexp.ok?
@@ -29,6 +35,41 @@ module Gitlab
 
     def replace(text, rewrite)
       RE2.Replace(text, regexp, rewrite)
+    end
+
+    def ==(other)
+      self.source == other.source
+    end
+
+    # Handles regular expressions with the preferred RE2 library where possible
+    # via UntustedRegex. Falls back to Ruby's built-in regular expression library
+    # when the syntax would be invalid in RE2.
+    #
+    # One difference between these is `(?m)` multi-line mode. Ruby regex enables
+    # this by default, but also handles `^` and `$` differently.
+    # See: https://www.regular-expressions.info/modifiers.html
+    def self.with_fallback(pattern, multiline: false)
+      UntrustedRegexp.new(pattern, multiline: multiline)
+    rescue RegexpError
+      Regexp.new(pattern)
+    end
+
+    def self.valid?(pattern)
+      !!self.fabricate(pattern)
+    rescue RegexpError
+      false
+    end
+
+    def self.fabricate(pattern)
+      matches = pattern.match(%r{^/(?<regexp>.+)/(?<flags>[ismU]*)$})
+
+      raise RegexpError, 'Invalid regular expression!' if matches.nil?
+
+      expression = matches[:regexp]
+      flags = matches[:flags]
+      expression.prepend("(?#{flags})") if flags.present?
+
+      self.new(expression, multiline: false)
     end
 
     private

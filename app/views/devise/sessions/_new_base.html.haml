@@ -6,11 +6,15 @@
     = f.label :password
     = f.password_field :password, class: "form-control bottom", required: true, title: "This field is required."
   - if devise_mapping.rememberable?
-    .remember-me.checkbox
+    .remember-me
       %label{ for: "user_remember_me" }
         = f.check_box :remember_me, class: 'remember-me-checkbox'
         %span Remember me
-      .pull-right.forgot-password
+      .float-right.forgot-password
         = link_to "Forgot your password?", new_password_path(:user)
+    %div
+    - if captcha_enabled?
+      = recaptcha_tags
+
   .submit-container.move-submit-down
     = f.submit "Sign in", class: "btn btn-save"

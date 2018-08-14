@@ -12,7 +12,7 @@
     - if @namespaces.present?
       .fork-thumbnail-container.js-fork-content
         %h5.prepend-top-0.append-bottom-0.prepend-left-default.append-right-default
-          Click to fork the project
+          = _("Select a namespace to fork the project")
         - @namespaces.each do |namespace|
           = render 'fork_button', namespace: namespace
     - else

@@ -2,7 +2,7 @@
 
 You can find the available integrations under your project's
 **Settings ➔ Integrations** page. You need to have at least
-[master permission][permissions] on the project.
+[maintainer permission][permissions] on the project.
 
 ## Project services
 

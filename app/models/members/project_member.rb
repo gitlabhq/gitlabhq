@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class ProjectMember < Member
   SOURCE_TYPE = 'Project'.freeze
 
@@ -13,25 +15,23 @@ class ProjectMember < Member
 
   scope :in_project, ->(project) { where(source_id: project.id) }
 
-  before_destroy :delete_member_todos
-
   class << self
     # Add users to projects with passed access option
     #
     # access can be an integer representing a access code
-    # or symbol like :master representing role
+    # or symbol like :maintainer representing role
     #
     # Ex.
     #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
-    #     ProjectMember::MASTER
+    #     ProjectMember::MAINTAINER
     #   )
     #
     #   add_users_to_projects(
     #     project_ids,
     #     user_ids,
-    #     :master
+    #     :maintainer
     #   )
     #
     def add_users_to_projects(project_ids, users, access_level, current_user: nil, expires_at: nil)
@@ -93,12 +93,8 @@ class ProjectMember < Member
 
   private
 
-  def delete_member_todos
-    user.todos.where(project_id: source_id).destroy_all if user
-  end
-
   def send_invite
-    notification_service.invite_project_member(self, @raw_invite_token)
+    run_after_commit_or_now { notification_service.invite_project_member(self, @raw_invite_token) }
 
     super
   end
@@ -106,7 +102,7 @@ class ProjectMember < Member
   def post_create_hook
     unless owner?
       event_service.join_project(self.project, self.user)
-      notification_service.new_project_member(self)
+      run_after_commit_or_now { notification_service.new_project_member(self) }
     end
 
     super
@@ -114,7 +110,7 @@ class ProjectMember < Member
 
   def post_update_hook
     if access_level_changed?
-      notification_service.update_project_member(self)
+      run_after_commit { notification_service.update_project_member(self) }
     end
 
     super

@@ -349,7 +349,7 @@ describe 'Rack Attack global throttles' do
   end
 
   def rss_url(user)
-    "/dashboard/projects.atom?rss_token=#{user.rss_token}"
+    "/dashboard/projects.atom?feed_token=#{user.feed_token}"
   end
 
   def private_token_headers(user)

@@ -15,6 +15,7 @@
 class TodosFinder
   prepend FinderWithCrossProjectAccess
   include FinderMethods
+  include Gitlab::Utils::StrongMemoize
 
   requires_cross_project_access unless: -> { project? }
 
@@ -34,6 +35,7 @@ class TodosFinder
     items = by_author(items)
     items = by_state(items)
     items = by_type(items)
+    items = by_group(items)
     # Filtering by project HAS TO be the last because we use
     # the project IDs yielded by the todos query thus far
     items = by_project(items)
@@ -82,6 +84,10 @@ class TodosFinder
     params[:project_id].present?
   end
 
+  def group?
+    params[:group_id].present?
+  end
+
   def project
     return @project if defined?(@project)
 
@@ -89,10 +95,6 @@ class TodosFinder
       @project = Project.find(params[:project_id])
 
       @project = nil if @project.pending_delete?
-
-      unless Ability.allowed?(current_user, :read_project, @project)
-        @project = nil
-      end
     else
       @project = nil
     end
@@ -100,18 +102,14 @@ class TodosFinder
     @project
   end
 
-  def project_ids(items)
-    ids = items.except(:order).select(:project_id)
-    if Gitlab::Database.mysql?
-      # To make UPDATE work on MySQL, wrap it in a SELECT with an alias
-      ids = Todo.except(:order).select('*').from("(#{ids.to_sql}) AS t")
+  def group
+    strong_memoize(:group) do
+      Group.find(params[:group_id])
     end
-
-    ids
   end
 
   def type?
-    type.present? && %w(Issue MergeRequest).include?(type)
+    type.present? && %w(Issue MergeRequest Epic).include?(type)
   end
 
   def type
@@ -119,7 +117,7 @@ class TodosFinder
   end
 
   def sort(items)
-    params[:sort] ? items.sort(params[:sort]) : items.order_id_desc
+    params[:sort] ? items.sort_by_attribute(params[:sort]) : items.order_id_desc
   end
 
   def by_action(items)
@@ -148,12 +146,23 @@ class TodosFinder
 
   def by_project(items)
     if project?
-      items.where(project: project)
-    else
-      projects = Project.public_or_visible_to_user(current_user)
-
-      items.joins(:project).merge(projects)
+      items = items.where(project: project)
     end
+
+    items
+  end
+
+  def by_group(items)
+    if group?
+      groups = group.self_and_descendants
+      project_todos = items.where(project_id: Project.where(group: groups).select(:id))
+      group_todos = items.where(group_id: groups.select(:id))
+
+      union = Gitlab::SQL::Union.new([project_todos, group_todos])
+      items = Todo.from("(#{union.to_sql}) #{Todo.table_name}")
+    end
+
+    items
   end
 
   def by_state(items)

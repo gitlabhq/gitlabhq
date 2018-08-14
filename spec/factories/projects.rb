@@ -1,4 +1,4 @@
-require_relative '../support/test_env'
+require_relative '../support/helpers/test_env'
 
 FactoryBot.define do
   # Project without repository
@@ -15,14 +15,18 @@ FactoryBot.define do
     namespace
     creator { group ? create(:user) : namespace&.owner }
 
-    # Nest Project Feature attributes
     transient do
+      # Nest Project Feature attributes
       wiki_access_level ProjectFeature::ENABLED
       builds_access_level ProjectFeature::ENABLED
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
+
+      # we can't assign the delegated `#ci_cd_settings` attributes directly, as the
+      # `#ci_cd_settings` relation needs to be created first
+      group_runners_enabled nil
     end
 
     after(:create) do |project, evaluator|
@@ -30,7 +34,7 @@ FactoryBot.define do
       builds_access_level = [evaluator.builds_access_level, evaluator.repository_access_level].min
       merge_requests_access_level = [evaluator.merge_requests_access_level, evaluator.repository_access_level].min
 
-      project.project_feature.update_columns(
+      project.project_feature.update(
         wiki_access_level: evaluator.wiki_access_level,
         builds_access_level: builds_access_level,
         snippets_access_level: evaluator.snippets_access_level,
@@ -43,10 +47,13 @@ FactoryBot.define do
       # user have access to the project. Our specs don't use said service class,
       # thus we must manually refresh things here.
       unless project.group || project.pending_delete
-        project.add_master(project.owner)
+        project.add_maintainer(project.owner)
       end
 
       project.group&.refresh_members_authorized_projects
+
+      # assign the delegated `#ci_cd_settings` attributes after create
+      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do
@@ -96,6 +103,22 @@ FactoryBot.define do
     end
 
     trait :with_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { false }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { false }
+      end
+
+      after(:create) do |project, _evaluator|
+        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      end
+    end
+
+    trait :with_object_export do
+      before(:create) do |_project, _evaluator|
+        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { true }
+        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { true }
+      end
+
       after(:create) do |project, evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
@@ -144,10 +167,24 @@ FactoryBot.define do
     trait :empty_repo do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
+      end
+    end
 
-        # We delete hooks so that gitlab-shell will not try to authenticate with
-        # an API that isn't running
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'hooks'))
+    trait :remote_mirror do
+      transient do
+        remote_name "remote_mirror_#{SecureRandom.hex}"
+        url "http://foo.com"
+        enabled true
+      end
+      after(:create) do |project, evaluator|
+        project.remote_mirrors.create!(url: evaluator.url, enabled: evaluator.enabled)
+      end
+    end
+
+    trait :stubbed_repository do
+      after(:build) do |project|
+        allow(project).to receive(:empty_repo?).and_return(false)
+        allow(project.repository).to receive(:empty?).and_return(false)
       end
     end
 
@@ -165,7 +202,8 @@ FactoryBot.define do
       after(:create) do |project|
         raise "Failed to create repository!" unless project.create_repository
 
-        FileUtils.rm_r(File.join(project.repository_storage_path, "#{project.disk_path}.git", 'refs'))
+        project.gitlab_shell.rm_directory(project.repository_storage,
+                                          File.join("#{project.disk_path}.git", 'refs'))
       end
     end
 

@@ -1,9 +1,13 @@
+# frozen_string_literal: true
+
 module Clusters
   module Concerns
     module ApplicationStatus
       extend ActiveSupport::Concern
 
       included do
+        scope :installed, -> { where(status: self.state_machines[:status].states[:installed].value) }
+
         state_machine :status, initial: :not_installable do
           state :not_installable, value: -2
           state :errored, value: -1

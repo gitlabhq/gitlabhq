@@ -1,39 +1,48 @@
 @keyframes fade-out-status {
-  0%, 50% { opacity: 1; }
-  100% { opacity: 0; }
-}
-
-@keyframes blinking-dots {
-  0% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
-  }
-
-  25% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 2),
-                24px 0 0 0 rgba($white-light, 0.2);
-  }
-
-  75% {
-    background-color: rgba($white-light, 0.4);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 1);
+  0%,
+  50% {
+    opacity: 1;
   }
 
   100% {
-    background-color: rgba($white-light, 1);
-    box-shadow: 12px 0 0 0 rgba($white-light, 0.2),
-                24px 0 0 0 rgba($white-light, 0.2);
+    opacity: 0;
+  }
+}
+
+@keyframes blinking-dot {
+  0% {
+    opacity: 1;
+  }
+
+  25% {
+    opacity: 0.4;
+  }
+
+  75% {
+    opacity: 0.4;
+  }
+
+  100% {
+    opacity: 1;
   }
 }
 
 @keyframes blinking-scroll-button {
-  0% { opacity: 0.2; }
-  25% { opacity: 0.5; }
-  50% { opacity: 0.7; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 0.2;
+  }
+
+  25% {
+    opacity: 0.5;
+  }
+
+  50% {
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
 
 .build-page {
@@ -54,10 +63,15 @@
     .bash {
       display: block;
     }
+
+    &.build-trace-rounded {
+      border-radius: $border-radius-base;
+    }
   }
 
   .top-bar {
     height: 35px;
+    min-height: 35px;
     background: $gray-light;
     border: 1px solid $border-color;
     color: $gl-text-color;
@@ -125,12 +139,12 @@
       .btn-scroll.animate {
         .first-triangle {
           animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: .3s;
+          animation-delay: 0.3s;
         }
 
         .second-triangle {
           animation: blinking-scroll-button 1s ease infinite;
-          animation-delay: .2s;
+          animation-delay: 0.2s;
         }
 
         .third-triangle {
@@ -164,12 +178,7 @@
   }
 
   .build-loader-animation {
-    position: relative;
-    width: 6px;
-    height: 6px;
-    margin: auto auto 12px 2px;
-    border-radius: 50%;
-    animation: blinking-dots 1s linear infinite;
+    @include build-loader-animation;
   }
 }
 
@@ -198,7 +207,7 @@
   }
 
   .header-action-buttons {
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       .sidebar-toggle-btn {
         margin-top: 0;
         margin-left: 10px;
@@ -252,6 +261,7 @@
 
   .block {
     width: 100%;
+    word-break: break-word;
 
     &:last-child {
       border-bottom: 1px solid $border-gray-normal;
@@ -259,10 +269,6 @@
 
     &.coverage {
       padding: 0 16px 11px;
-    }
-
-    .btn-group-justified {
-      margin-top: 5px;
     }
   }
 
@@ -288,7 +294,7 @@
     background-color: $white-light;
   }
 
-  .label {
+  .badge.badge-pill {
     margin-left: 2px;
   }
 
@@ -303,7 +309,7 @@
       }
     }
 
-    @media (max-width: $screen-sm-max) {
+    @include media-breakpoint-down(sm) {
       display: block;
 
       .btn {
@@ -391,7 +397,7 @@
       }
 
       &:hover {
-        background-color: $row-hover;
+        background-color: $dropdown-item-hover-bg;
       }
 
       .icon-retry {

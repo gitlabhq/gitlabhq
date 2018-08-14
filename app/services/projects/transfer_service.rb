@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Projects::TransferService class
 #
 # Used for transfer project to another namespace
@@ -23,6 +25,8 @@ module Projects
       end
 
       transfer(project)
+
+      current_user.invalidate_personal_projects_count
 
       true
     rescue Projects::TransferService::TransferError => ex
@@ -73,7 +77,6 @@ module Projects
         Gitlab::PagesTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
 
         project.old_path_with_namespace = @old_path
-        project.expires_full_path_cache
 
         write_repository_config(@new_path)
 
@@ -125,7 +128,7 @@ module Projects
     end
 
     def move_repo_folder(from_name, to_name)
-      gitlab_shell.mv_repository(project.repository_storage_path, from_name, to_name)
+      gitlab_shell.mv_repository(project.repository_storage, from_name, to_name)
     end
 
     def execute_system_hooks

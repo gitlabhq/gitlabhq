@@ -6,7 +6,7 @@ const PipelineSchedulesCalloutComponent = Vue.extend(PipelineSchedulesCallout);
 const cookieKey = 'pipeline_schedules_callout_dismissed';
 const docsUrl = 'help/ci/scheduled_pipelines';
 
-describe('Pipeline Schedule Callout', () => {
+describe('Pipeline Schedule Callout', function () {
   beforeEach(() => {
     setFixtures(`
       <div id='pipeline-schedules-callout' data-docs-url=${docsUrl}></div>

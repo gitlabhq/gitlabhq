@@ -21,15 +21,16 @@ module Gitlab
           uuid: Gitlab::CurrentSettings.uuid,
           hostname: Gitlab.config.gitlab.host,
           version: Gitlab::VERSION,
+          installation_type: Gitlab::INSTALLATION_TYPE,
           active_user_count: User.active.count,
           recorded_at: Time.now,
-          mattermost_enabled: Gitlab.config.mattermost.enabled,
           edition: 'CE'
         }
 
         usage_data
       end
 
+      # rubocop:disable Metrics/AbcSize
       def system_usage_data
         {
           counts: {
@@ -50,6 +51,12 @@ module Gitlab
             clusters: ::Clusters::Cluster.count,
             clusters_enabled: ::Clusters::Cluster.enabled.count,
             clusters_disabled: ::Clusters::Cluster.disabled.count,
+            clusters_platforms_gke: ::Clusters::Cluster.gcp_installed.enabled.count,
+            clusters_platforms_user: ::Clusters::Cluster.user_provided.enabled.count,
+            clusters_applications_helm: ::Clusters::Applications::Helm.installed.count,
+            clusters_applications_ingress: ::Clusters::Applications::Ingress.installed.count,
+            clusters_applications_prometheus: ::Clusters::Applications::Prometheus.installed.count,
+            clusters_applications_runner: ::Clusters::Applications::Runner.installed.count,
             in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,
@@ -64,6 +71,7 @@ module Gitlab
             projects_imported_from_github: Project.where(import_type: 'github').count,
             protected_branches: ProtectedBranch.count,
             releases: Release.count,
+            remote_mirrors: RemoteMirror.count,
             snippets: Snippet.count,
             todos: Todo.count,
             uploads: Upload.count,
@@ -82,13 +90,14 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          signup: Gitlab::CurrentSettings.allow_signup?,
-          ldap: Gitlab.config.ldap.enabled,
-          gravatar: Gitlab::CurrentSettings.gravatar_enabled?,
-          omniauth: Gitlab.config.omniauth.enabled,
-          reply_by_email: Gitlab::IncomingEmail.enabled?,
-          container_registry: Gitlab.config.registry.enabled,
-          gitlab_shared_runners: Gitlab.config.gitlab_ci.shared_runners_enabled
+          container_registry_enabled: Gitlab.config.registry.enabled,
+          gitlab_shared_runners_enabled: Gitlab.config.gitlab_ci.shared_runners_enabled,
+          gravatar_enabled: Gitlab::CurrentSettings.gravatar_enabled?,
+          ldap_enabled: Gitlab.config.ldap.enabled,
+          mattermost_enabled: Gitlab.config.mattermost.enabled,
+          omniauth_enabled: Gitlab::Auth.omniauth_enabled?,
+          reply_by_email_enabled: Gitlab::IncomingEmail.enabled?,
+          signup_enabled: Gitlab::CurrentSettings.allow_signup?
         }
       end
 

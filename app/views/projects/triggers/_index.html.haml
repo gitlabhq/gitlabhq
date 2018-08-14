@@ -1,11 +1,11 @@
 .row.prepend-top-default.append-bottom-default.triggers-container
   .col-lg-12
     = render "projects/triggers/content"
-    .panel.panel-default
-      .panel-heading
-        %h4.panel-title
+    .card
+      .card-header
+        %h4.card-title
           Manage your project's triggers
-      .panel-body
+      .card-body
         = render "projects/triggers/form", btn_text: "Add trigger"
         %hr
         - if @triggers.any?
@@ -26,7 +26,7 @@
           %p.settings-message.text-center.append-bottom-default
             No triggers have been created yet. Add one using the form above.
 
-      .panel-footer
+      .card-footer
 
         %p
           In the following examples, you can see the exact API call you need to

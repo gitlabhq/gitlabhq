@@ -1,7 +1,9 @@
+import $ from 'jquery';
 import 'vendor/jquery.endless-scroll';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import CommitsList from '~/commits';
+import Pager from '~/pager';
 
 describe('Commits List', () => {
   let commitsList;
@@ -13,6 +15,7 @@ describe('Commits List', () => {
       </form>
       <ol id="commits-list"></ol>
       `);
+    spyOn(Pager, 'init').and.stub();
     commitsList = new CommitsList(25);
   });
 
@@ -53,7 +56,7 @@ describe('Commits List', () => {
     beforeEach(() => {
       commitsList.searchField.val('');
 
-      spyOn(history, 'replaceState').and.stub();
+      spyOn(window.history, 'replaceState').and.stub();
       mock = new MockAdapter(axios);
 
       mock.onGet('/h5bp/html5-boilerplate/commits/master').reply(200, {
@@ -67,9 +70,10 @@ describe('Commits List', () => {
       mock.restore();
     });
 
-    it('should save the last search string', (done) => {
+    it('should save the last search string', done => {
       commitsList.searchField.val('GitLab');
-      commitsList.filterResults()
+      commitsList
+        .filterResults()
         .then(() => {
           expect(ajaxSpy).toHaveBeenCalled();
           expect(commitsList.lastSearch).toEqual('GitLab');
@@ -79,8 +83,9 @@ describe('Commits List', () => {
         .catch(done.fail);
     });
 
-    it('should not make ajax call if the input does not change', (done) => {
-      commitsList.filterResults()
+    it('should not make ajax call if the input does not change', done => {
+      commitsList
+        .filterResults()
         .then(() => {
           expect(ajaxSpy).not.toHaveBeenCalled();
           expect(commitsList.lastSearch).toEqual('');

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Participable concern
 #
 # Contains functionality related to objects that can have participants, such as
@@ -98,6 +100,10 @@ module Participable
 
     participants.merge(ext.users)
 
+    filter_by_ability(participants)
+  end
+
+  def filter_by_ability(participants)
     case self
     when PersonalSnippet
       Ability.users_that_can_read_personal_snippet(participants.to_a, self)

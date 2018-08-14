@@ -9,9 +9,7 @@ describe Events::RenderService do
     context 'when the request format is atom' do
       it 'renders the note inside events' do
         expect(Banzai::ObjectRenderer).to receive(:new)
-          .with(event.project, user,
-                only_path: false,
-                xhtml: true)
+          .with(user: user, redaction_context: { only_path: false, xhtml: true })
           .and_call_original
 
         expect_any_instance_of(Banzai::ObjectRenderer)
@@ -24,7 +22,7 @@ describe Events::RenderService do
     context 'when the request format is not atom' do
       it 'renders the note inside events' do
         expect(Banzai::ObjectRenderer).to receive(:new)
-          .with(event.project, user, {})
+          .with(user: user, redaction_context: {})
           .and_call_original
 
         expect_any_instance_of(Banzai::ObjectRenderer)

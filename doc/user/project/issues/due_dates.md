@@ -35,5 +35,17 @@ Due dates also appear in your [todos list](../../../workflow/todos.md).
 
 ![Issues with due dates in the todos](img/due_dates_todos.png)
 
+The day before an open issue is due, an email will be sent to all participants
+of the issue. Both the due date and the day before are calculated using the
+server's timezone.
+
+Issues with due dates can also be exported as an iCalendar feed. The URL of the
+feed can be added to calendar applications. The feed is accessible by clicking
+on the _Subscribe to calendar_ button on the following pages:
+- on the **Assigned Issues** page that is linked on the right-hand side of the
+  GitLab header
+- on the **Project Issues** page
+- on the **Group Issues** page
+
 [ce-3614]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/3614
 [permissions]: ../../permissions.md#project

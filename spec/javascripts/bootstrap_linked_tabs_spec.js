@@ -36,7 +36,7 @@ import LinkedTabs from '~/lib/utils/bootstrap_linked_tabs';
 
     describe('on click', () => {
       it('should change the url according to the clicked tab', () => {
-        const historySpy = spyOn(history, 'replaceState').and.callFake(() => {});
+        const historySpy = spyOn(window.history, 'replaceState').and.callFake(() => {});
 
         const linkedTabs = new LinkedTabs({
           action: 'show',

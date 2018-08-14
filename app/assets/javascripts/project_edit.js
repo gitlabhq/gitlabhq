@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function setupProjectEdit() {
   const $transferForm = $('.js-project-transfer-form');
   const $selectNamespace = $transferForm.find('select.select2');

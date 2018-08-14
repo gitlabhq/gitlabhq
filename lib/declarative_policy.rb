@@ -1,6 +1,8 @@
 require_dependency 'declarative_policy/cache'
 require_dependency 'declarative_policy/condition'
-require_dependency 'declarative_policy/dsl'
+require_dependency 'declarative_policy/delegate_dsl'
+require_dependency 'declarative_policy/policy_dsl'
+require_dependency 'declarative_policy/rule_dsl'
 require_dependency 'declarative_policy/preferred_scope'
 require_dependency 'declarative_policy/rule'
 require_dependency 'declarative_policy/runner'
@@ -19,7 +21,17 @@ module DeclarativePolicy
       cache = opts[:cache] || {}
       key = Cache.policy_key(user, subject)
 
-      cache[key] ||= class_for(subject).new(user, subject, opts)
+      cache[key] ||=
+        if Gitlab.rails5?
+          # to avoid deadlocks in multi-threaded environment when
+          # autoloading is enabled, we allow concurrent loads,
+          # https://gitlab.com/gitlab-org/gitlab-ce/issues/48263
+          ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+            class_for(subject).new(user, subject, opts)
+          end
+        else
+          class_for(subject).new(user, subject, opts)
+        end
     end
 
     def class_for(subject)

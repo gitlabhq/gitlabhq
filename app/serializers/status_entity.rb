@@ -1,16 +1,15 @@
+# frozen_string_literal: true
+
 class StatusEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :icon, :text, :label, :group
-
+  expose :status_tooltip, as: :tooltip
   expose :has_details?, as: :has_details
   expose :details_path
 
   expose :favicon do |status|
-    dir = 'ci_favicons'
-    dir = File.join(dir, 'dev') if Rails.env.development?
-
-    ActionController::Base.helpers.image_path(File.join(dir, "#{status.favicon}.ico"))
+    Gitlab::Favicon.status_overlay(status.favicon)
   end
 
   expose :action, if: -> (status, _) { status.has_action? } do

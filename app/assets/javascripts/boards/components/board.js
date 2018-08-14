@@ -1,9 +1,13 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var */
-import Sortable from 'vendor/Sortable';
+/* eslint-disable comma-dangle */
+
+import Sortable from 'sortablejs';
 import Vue from 'vue';
+import { n__ } from '~/locale';
+import Icon from '~/vue_shared/components/icon.vue';
+import Tooltip from '~/vue_shared/directives/tooltip';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list.vue';
-import boardBlankState from './board_blank_state';
+import BoardBlankState from './board_blank_state.vue';
 import './board_delete';
 
 const Store = gl.issueBoards.BoardsStore;
@@ -12,17 +16,32 @@ window.gl = window.gl || {};
 window.gl.issueBoards = window.gl.issueBoards || {};
 
 gl.issueBoards.Board = Vue.extend({
-  template: '#js-board-template',
   components: {
     boardList,
     'board-delete': gl.issueBoards.BoardDelete,
-    boardBlankState,
+    BoardBlankState,
+    Icon,
+  },
+  directives: {
+    Tooltip,
   },
   props: {
-    list: Object,
-    disabled: Boolean,
-    issueLinkBase: String,
-    rootPath: String,
+    list: {
+      type: Object,
+      default: () => ({}),
+    },
+    disabled: {
+      type: Boolean,
+      required: true,
+    },
+    issueLinkBase: {
+      type: String,
+      required: true,
+    },
+    rootPath: {
+      type: String,
+      required: true,
+    },
     boardId: {
       type: String,
       required: true,
@@ -34,6 +53,12 @@ gl.issueBoards.Board = Vue.extend({
       filter: Store.filter,
     };
   },
+  computed: {
+    counterTooltip() {
+      const { issuesSize } = this.list;
+      return `${n__('%d issue', '%d issues', issuesSize)}`;
+    },
+  },
   watch: {
     filter: {
       handler() {
@@ -44,55 +69,7 @@ gl.issueBoards.Board = Vue.extend({
           });
       },
       deep: true,
-    },
-    detailIssue: {
-      handler () {
-        if (!Object.keys(this.detailIssue.issue).length) return;
-
-        const issue = this.list.findIssue(this.detailIssue.issue.id);
-
-        if (issue) {
-          const offsetLeft = this.$el.offsetLeft;
-          const boardsList = document.querySelectorAll('.boards-list')[0];
-          const left = boardsList.scrollLeft - offsetLeft;
-          let right = (offsetLeft + this.$el.offsetWidth);
-
-          if (window.innerWidth > 768 && boardsList.classList.contains('is-compact')) {
-            // -290 here because width of boardsList is animating so therefore
-            // getting the width here is incorrect
-            // 290 is the width of the sidebar
-            right -= (boardsList.offsetWidth - 290);
-          } else {
-            right -= boardsList.offsetWidth;
-          }
-
-          if (right - boardsList.scrollLeft > 0) {
-            $(boardsList).animate({
-              scrollLeft: right
-            }, this.sortableOptions.animation);
-          } else if (left > 0) {
-            $(boardsList).animate({
-              scrollLeft: offsetLeft
-            }, this.sortableOptions.animation);
-          }
-        }
-      },
-      deep: true
     }
-  },
-  methods: {
-    showNewIssueForm() {
-      this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
-    },
-    toggleExpanded(e) {
-      if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
-        this.list.isExpanded = !this.list.isExpanded;
-
-        if (AccessorUtilities.isLocalStorageAccessSafe()) {
-          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
-        }
-      }
-    },
   },
   mounted () {
     this.sortableOptions = gl.issueBoards.getBoardSortableDefaultOptions({
@@ -123,4 +100,19 @@ gl.issueBoards.Board = Vue.extend({
       this.list.isExpanded = !isCollapsed;
     }
   },
+  methods: {
+    showNewIssueForm() {
+      this.$refs['board-list'].showIssueForm = !this.$refs['board-list'].showIssueForm;
+    },
+    toggleExpanded(e) {
+      if (this.list.isExpandable && !e.target.classList.contains('js-no-trigger-collapse')) {
+        this.list.isExpanded = !this.list.isExpanded;
+
+        if (AccessorUtilities.isLocalStorageAccessSafe()) {
+          localStorage.setItem(`boards.${this.boardId}.${this.list.type}.expanded`, this.list.isExpanded);
+        }
+      }
+    },
+  },
+  template: '#js-board-template',
 });

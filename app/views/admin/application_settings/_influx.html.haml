@@ -1,0 +1,60 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-influx-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    %p
+      Setup InfluxDB to measure a wide variety of statistics like the time spent
+      in running SQL queries. These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/introduction')
+    .form-group
+      .form-check
+        = f.check_box :metrics_enabled, class: 'form-check-input'
+        = f.label :metrics_enabled, class: 'form-check-label' do
+          Enable InfluxDB Metrics
+    .form-group
+      = f.label :metrics_host, 'InfluxDB host', class: 'label-bold'
+      = f.text_field :metrics_host, class: 'form-control', placeholder: 'influxdb.example.com'
+    .form-group
+      = f.label :metrics_port, 'InfluxDB port', class: 'label-bold'
+      = f.text_field :metrics_port, class: 'form-control', placeholder: '8089'
+      .form-text.text-muted
+        The UDP port to use for connecting to InfluxDB. InfluxDB requires that
+        your server configuration specifies a database to store data in when
+        sending messages to this port, without it metrics data will not be
+        saved.
+    .form-group
+      = f.label :metrics_pool_size, 'Connection pool size', class: 'label-bold'
+      = f.number_field :metrics_pool_size, class: 'form-control'
+      .form-text.text-muted
+        The amount of InfluxDB connections to open. Connections are opened
+        lazily. Users using multi-threaded application servers should ensure
+        enough connections are available (at minimum the amount of application
+        server threads).
+    .form-group
+      = f.label :metrics_timeout, 'Connection timeout', class: 'label-bold'
+      = f.number_field :metrics_timeout, class: 'form-control'
+      .form-text.text-muted
+        The amount of seconds after which an InfluxDB connection will time
+        out.
+    .form-group
+      = f.label :metrics_method_call_threshold, 'Method Call Threshold (ms)', class: 'label-bold'
+      = f.number_field :metrics_method_call_threshold, class: 'form-control'
+      .form-text.text-muted
+        A method call is only tracked when it takes longer to complete than
+        the given amount of milliseconds.
+    .form-group
+      = f.label :metrics_sample_interval, 'Sampler Interval (sec)', class: 'label-bold'
+      = f.number_field :metrics_sample_interval, class: 'form-control'
+      .form-text.text-muted
+        The sampling interval in seconds. Sampled data includes memory usage,
+        retained Ruby objects, file descriptors and so on.
+    .form-group
+      = f.label :metrics_packet_size, 'Metrics per packet', class: 'label-bold'
+      = f.number_field :metrics_packet_size, class: 'form-control'
+      .form-text.text-muted
+        The amount of points to store in a single UDP packet. More points
+        results in fewer but larger UDP packets being sent.
+
+  = f.submit 'Save changes', class: "btn btn-success"

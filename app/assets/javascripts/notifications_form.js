@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import flash from './flash';
@@ -14,7 +15,7 @@ export default class NotificationsForm {
 
   toggleCheckbox(e) {
     const $checkbox = $(e.currentTarget);
-    const $parent = $checkbox.closest('.checkbox');
+    const $parent = $checkbox.closest('.form-check');
 
     this.saveEvent($checkbox, $parent);
   }

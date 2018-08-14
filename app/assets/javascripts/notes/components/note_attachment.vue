@@ -1,13 +1,13 @@
 <script>
-  export default {
-    name: 'NoteAttachment',
-    props: {
-      attachment: {
-        type: Object,
-        required: true,
-      },
+export default {
+  name: 'NoteAttachment',
+  props: {
+    attachment: {
+      type: Object,
+      required: true,
     },
-  };
+  },
+};
 </script>
 
 <template>

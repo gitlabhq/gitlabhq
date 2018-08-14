@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Namespace < ActiveRecord::Base
   include CacheMarkdownField
   include Sortable
@@ -20,6 +22,9 @@ class Namespace < ActiveRecord::Base
 
   has_many :projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :project_statistics
+
+  has_many :runner_namespaces, inverse_of: :namespace, class_name: 'Ci::RunnerNamespace'
+  has_many :runners, through: :runner_namespaces, source: :runner, class_name: 'Ci::Runner'
 
   # This should _not_ be `inverse_of: :namespace`, because that would also set
   # `user.namespace` when this user creates a group with themselves as `owner`.
@@ -119,6 +124,7 @@ class Namespace < ActiveRecord::Base
   def to_param
     full_path
   end
+  alias_method :flipper_id, :to_param
 
   def human_name
     owner_name
@@ -161,6 +167,13 @@ class Namespace < ActiveRecord::Base
 
   def shared_runners_enabled?
     projects.with_shared_runners.any?
+  end
+
+  # Returns all ancestors, self, and descendants of the current namespace.
+  def self_and_hierarchy
+    Gitlab::GroupHierarchy
+      .new(self.class.where(id: id))
+      .all_groups
   end
 
   # Returns all the ancestors of the current namespaces.
@@ -218,6 +231,10 @@ class Namespace < ActiveRecord::Base
     parent.present?
   end
 
+  def root_ancestor
+    ancestors.reorder(nil).find_by(parent_id: nil)
+  end
+
   def subgroup?
     has_parent?
   end
@@ -248,8 +265,8 @@ class Namespace < ActiveRecord::Base
     all_projects.with_storage_feature(:repository).find_each(&:remove_exports)
   end
 
-  def features
-    []
+  def refresh_project_authorizations
+    owner.refresh_authorized_projects
   end
 
   private
@@ -290,7 +307,6 @@ class Namespace < ActiveRecord::Base
 
   def write_projects_repository_config
     all_projects.find_each do |project|
-      project.expires_full_path_cache # we need to clear cache to validate renames correctly
       project.write_repository_config
     end
   end

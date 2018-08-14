@@ -56,21 +56,21 @@ describe 'Profile account page', :js do
     end
   end
 
-  describe 'when I reset RSS token' do
+  describe 'when I reset feed token' do
     before do
       visit profile_personal_access_tokens_path
     end
 
-    it 'resets RSS token' do
-      within('.rss-token-reset') do
-        previous_token = find("#rss_token").value
+    it 'resets feed token' do
+      within('.feed-token-reset') do
+        previous_token = find("#feed_token").value
 
         accept_confirm { click_link('reset it') }
 
-        expect(find('#rss_token').value).not_to eq(previous_token)
+        expect(find('#feed_token').value).not_to eq(previous_token)
       end
 
-      expect(page).to have_content 'RSS token was successfully reset'
+      expect(page).to have_content 'Feed token was successfully reset'
     end
   end
 
@@ -97,9 +97,13 @@ describe 'Profile account page', :js do
     end
 
     it 'changes my username' do
-      fill_in 'user_username', with: 'new-username'
+      fill_in 'username-change-input', with: 'new-username'
 
-      click_button('Update username')
+      page.find('[data-target="#username-change-confirmation-modal"]').click
+
+      page.within('.modal') do
+        find('.js-modal-primary-action').click
+      end
 
       expect(page).to have_content('new-username')
     end

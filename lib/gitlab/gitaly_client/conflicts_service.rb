@@ -25,10 +25,12 @@ module Gitlab
 
       def conflicts?
         list_conflict_files.any?
-      rescue GRPC::FailedPrecondition
-        # The server raises this exception when it encounters ConflictSideMissing, which
-        # means a conflict exists but its `theirs` or `ours` data is nil due to a non-existent
-        # file in one of the trees.
+      rescue GRPC::FailedPrecondition, GRPC::Unknown
+        # The server raises FailedPrecondition when it encounters
+        # ConflictSideMissing, which means a conflict exists but its `theirs` or
+        # `ours` data is nil due to a non-existent file in one of the trees.
+        #
+        # GRPC::Unknown comes from Rugged::ReferenceError and Rugged::OdbError.
         true
       end
 
@@ -46,7 +48,7 @@ module Gitlab
           end
         end
 
-        response = GitalyClient.call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage)
+        response = GitalyClient.call(@repository.storage, :conflicts_service, :resolve_conflicts, req_enum, remote_storage: target_repository.storage, timeout: GitalyClient.medium_timeout)
 
         if response.resolution_error.present?
           raise Gitlab::Git::Conflict::Resolver::ResolutionError, response.resolution_error

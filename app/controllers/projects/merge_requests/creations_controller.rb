@@ -5,7 +5,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   skip_before_action :merge_request
   before_action :whitelist_query_limiting, only: [:create]
-  before_action :authorize_create_merge_request!
+  before_action :authorize_create_merge_request_from!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
@@ -79,13 +79,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @ref = params[:ref]
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
-
-    render layout: false
-  end
-
-  def update_branches
-    @target_project = selected_target_project
-    @target_branches = @target_project ? @target_project.repository.branch_names : []
 
     render layout: false
   end

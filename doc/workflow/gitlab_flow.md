@@ -131,7 +131,7 @@ There is room for more feedback and after the assigned person feels comfortable 
 If the assigned person does not feel comfortable they can close the merge request without merging.
 
 In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](http://docs.gitlab.com/ce/permissions/permissions.html).
-So if you want to merge it into a protected branch you assign it to someone with master authorizations.
+So if you want to merge it into a protected branch you assign it to someone with maintainer authorizations.
 
 ## Issue tracking with GitLab flow
 

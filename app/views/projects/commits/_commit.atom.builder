@@ -10,5 +10,5 @@ xml.entry do
     xml.email commit.author_email
   end
 
-  xml.summary markdown(commit.description, pipeline: :single_line), type: 'html'
+  xml.summary markdown_field(commit, :description), type: 'html'
 end

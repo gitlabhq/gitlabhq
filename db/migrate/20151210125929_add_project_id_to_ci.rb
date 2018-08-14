@@ -1,4 +1,3 @@
-# rubocop:disable all
 class AddProjectIdToCi < ActiveRecord::Migration
   def change
     add_column :ci_builds, :gl_project_id, :integer

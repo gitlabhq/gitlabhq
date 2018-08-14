@@ -6,7 +6,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   private
 
   def merge_request
-    @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+    @issuable = @merge_request ||= @project.merge_requests.includes(author: :status).find_by!(iid: params[:id])
   end
 
   def merge_request_params
@@ -15,7 +15,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   def merge_request_params_attributes
     [
-      :allow_maintainer_to_push,
+      :allow_collaboration,
       :assignee_id,
       :description,
       :force_remove_source_branch,
@@ -24,6 +24,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :source_branch,
       :source_project_id,
       :state_event,
+      :squash,
       :target_branch,
       :target_project_id,
       :task_num,

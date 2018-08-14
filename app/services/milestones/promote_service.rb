@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Milestones
   class PromoteService < Milestones::BaseService
     PromoteMilestoneError = Class.new(StandardError)

@@ -1,5 +1,7 @@
-/* eslint-disable comma-dangle, class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, consistent-return, func-names, space-before-function-paren, max-len */
-import Sortable from 'vendor/Sortable';
+/* eslint-disable  class-methods-use-this, no-underscore-dangle, no-param-reassign, no-unused-vars, func-names, max-len */
+
+import $ from 'jquery';
+import Sortable from 'sortablejs';
 
 import flash from './flash';
 import axios from './lib/utils/axios_utils';
@@ -11,6 +13,7 @@ export default class LabelManager {
     this.otherLabels = otherLabels || $('.js-other-labels');
     this.errorMessage = 'Unable to update label prioritization at this time';
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
+    this.$badgeItemTemplate = $('#js-badge-item-template');
     this.sortable = Sortable.create(this.prioritizedLabels.get(0), {
       filter: '.empty-message',
       forceFallback: true,
@@ -33,7 +36,7 @@ export default class LabelManager {
     const $label = $(`#${$btn.data('domId')}`);
     const action = $btn.parents('.js-prioritized-labels').length ? 'remove' : 'add';
     const $tooltip = $(`#${$btn.find('.has-tooltip:visible').attr('aria-describedby')}`);
-    $tooltip.tooltip('destroy');
+    $tooltip.tooltip('dispose');
     _this.toggleLabelPriority($label, action);
     _this.toggleEmptyState($label, $btn, action);
   }
@@ -61,7 +64,11 @@ export default class LabelManager {
       $target = this.otherLabels;
       $from = this.prioritizedLabels;
     }
-    $label.detach().appendTo($target);
+
+    const $detachedLabel = $label.detach();
+    this.toggleLabelPriorityBadge($detachedLabel, action);
+    $detachedLabel.appendTo($target);
+
     if ($from.find('li').length) {
       $from.find('.empty-message').removeClass('hidden');
     }
@@ -83,6 +90,14 @@ export default class LabelManager {
     } else {
       this.savePrioritySort($label, action)
         .catch(rollbackLabelPosition);
+    }
+  }
+
+  toggleLabelPriorityBadge($label, action) {
+    if (action === 'remove') {
+      $('.js-priority-badge', $label).remove();
+    } else {
+      $('.label-links', $label).append(this.$badgeItemTemplate.clone().html());
     }
   }
 

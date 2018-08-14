@@ -8,9 +8,11 @@ module Gitlab
 
         attr_reader :stream
 
-        delegate :close, :tell, :seek, :size, :path, :truncate, to: :stream, allow_nil: true
+        delegate :close, :tell, :seek, :size, :url, :truncate, to: :stream, allow_nil: true
 
-        delegate :valid?, to: :stream, as: :present?, allow_nil: true
+        delegate :valid?, to: :stream, allow_nil: true
+
+        alias_method :present?, :valid?
 
         def initialize
           @stream = yield
@@ -25,6 +27,10 @@ module Gitlab
           self.path.present?
         end
 
+        def path
+          self.stream.path if self.stream.respond_to?(:path)
+        end
+
         def limit(last_bytes = LIMIT_SIZE)
           if last_bytes < size
             stream.seek(-last_bytes, IO::SEEK_END)
@@ -33,6 +39,8 @@ module Gitlab
         end
 
         def append(data, offset)
+          data = data.force_encoding(Encoding::BINARY)
+
           stream.truncate(offset)
           stream.seek(0, IO::SEEK_END)
           stream.write(data)
@@ -40,8 +48,11 @@ module Gitlab
         end
 
         def set(data)
-          truncate(0)
+          data = data.force_encoding(Encoding::BINARY)
+
+          stream.seek(0, IO::SEEK_SET)
           stream.write(data)
+          stream.truncate(data.bytesize)
           stream.flush()
         end
 
@@ -81,7 +92,7 @@ module Gitlab
 
             match = matches.flatten.last
             coverage = match.gsub(/\d+(\.\d+)?/).first
-            return coverage if coverage.present?
+            return coverage if coverage.present? # rubocop:disable Cop/AvoidReturnFromBlocks
           end
 
           nil
@@ -121,11 +132,11 @@ module Gitlab
             buf += debris
             debris, *lines = buf.each_line.to_a
             lines.reverse_each do |line|
-              yield(line.force_encoding('UTF-8'))
+              yield(line.force_encoding(Encoding.default_external))
             end
           end
 
-          yield(debris.force_encoding('UTF-8')) unless debris.empty?
+          yield(debris.force_encoding(Encoding.default_external)) unless debris.empty?
         end
 
         def read_backward(length)

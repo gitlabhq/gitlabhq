@@ -25,6 +25,14 @@ module Gitlab
           end
         end
 
+        def reset_registry!
+          clear_memoization(:registry)
+
+          REGISTRY_MUTEX.synchronize do
+            ::Prometheus::Client.reset!
+          end
+        end
+
         def registry
           strong_memoize(:registry) do
             REGISTRY_MUTEX.synchronize do

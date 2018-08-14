@@ -1,13 +1,13 @@
 require 'spec_helper'
 
-feature 'Clusters', :js do
+describe 'Clusters', :js do
   include GoogleApi::CloudPlatformHelpers
 
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     gitlab_sign_in(user)
   end
 
@@ -83,7 +83,7 @@ feature 'Clusters', :js do
       visit project_clusters_path(project)
 
       click_link 'Add Kubernetes cluster'
-      click_link 'Create on GKE'
+      click_link 'Create new Cluster on GKE'
     end
 
     it 'user sees a login page' do

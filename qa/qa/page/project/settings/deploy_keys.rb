@@ -42,9 +42,25 @@ module QA
             end
           end
 
+          def key_titles
+            within_project_deploy_keys do
+              all_elements(:key_title)
+            end
+          end
+
+          def key_fingerprints
+            within_project_deploy_keys do
+              all_elements(:key_fingerprint)
+            end
+          end
+
           private
 
           def within_project_deploy_keys
+            wait(reload: false) do
+              has_css?(element_selector_css(:project_deploy_keys))
+            end
+
             within_element(:project_deploy_keys) do
               yield
             end

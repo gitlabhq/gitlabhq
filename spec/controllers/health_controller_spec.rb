@@ -69,8 +69,7 @@ describe HealthController do
         expect(json_response['cache_check']['status']).to eq('ok')
         expect(json_response['queues_check']['status']).to eq('ok')
         expect(json_response['shared_state_check']['status']).to eq('ok')
-        expect(json_response['fs_shards_check']['status']).to eq('ok')
-        expect(json_response['fs_shards_check']['labels']['shard']).to eq('default')
+        expect(json_response['gitaly_check']['status']).to eq('ok')
       end
     end
 
@@ -122,7 +121,6 @@ describe HealthController do
         expect(json_response['cache_check']['status']).to eq('ok')
         expect(json_response['queues_check']['status']).to eq('ok')
         expect(json_response['shared_state_check']['status']).to eq('ok')
-        expect(json_response['fs_shards_check']['status']).to eq('ok')
       end
     end
 

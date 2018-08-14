@@ -20,4 +20,21 @@ To use reCAPTCHA, first you must create a site and private key.
 
 6. Check the `Enable reCAPTCHA` checkbox
 
-7.  Save the configuration.
+7. Save the configuration.
+
+## Enabling reCAPTCHA for user logins via passwords
+
+By default, reCAPTCHA is only enabled for user registrations. To enable it for
+user logins via passwords, the `X-GitLab-Show-Login-Captcha` HTTP header must
+be set. For example, in NGINX, this can be done via the `proxy_set_header`
+configuration variable:
+
+```
+proxy_set_header X-GitLab-Show-Login-Captcha 1;
+```
+
+In GitLab Omnibus, this can be configured via `/etc/gitlab/gitlab.rb`:
+
+```ruby
+nginx['proxy_set_headers'] = { 'X-GitLab-Show-Login-Captcha' => 1 }
+```

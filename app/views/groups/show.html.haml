@@ -1,5 +1,5 @@
 - @no_container = true
-- breadcrumb_title "Details"
+- breadcrumb_title _("Details")
 - can_create_subgroups = can?(current_user, :create_subgroup, @group)
 
 = content_for :meta_tags do
@@ -18,9 +18,9 @@
         - if can_create_subgroups
           .btn-group.new-project-subgroup.droplab-dropdown.js-new-project-subgroup{ data: { project_path: new_project_path(namespace_id: @group.id), subgroup_path: new_group_path(parent_id: @group.id) } }
             %input.btn.btn-success.dropdown-primary.js-new-group-child{ type: "button", value: new_project_label, data: { action: "new-project" } }
-            %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown" } }
+            %button.btn.btn-success.dropdown-toggle.js-dropdown-toggle{ type: "button", data: { "dropdown-trigger" => "#new-project-or-subgroup-dropdown", 'display' => 'static' } }
               = icon("caret-down", class: "dropdown-btn-icon")
-            %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-align-right{ data: { dropdown: true } }
+            %ul#new-project-or-subgroup-dropdown.dropdown-menu.dropdown-menu-right{ data: { dropdown: true } }
               %li.droplab-item-selected{ role: "button", data: { value: "new-project", text: new_project_label } }
                 .menu-item
                   .icon-container

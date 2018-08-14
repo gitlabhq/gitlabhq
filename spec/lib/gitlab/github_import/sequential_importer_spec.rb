@@ -30,7 +30,6 @@ describe Gitlab::GithubImport::SequentialImporter do
         expect(instance).to receive(:execute)
       end
 
-      expect(repository).to receive(:after_import)
       expect(importer.execute).to eq(true)
     end
   end

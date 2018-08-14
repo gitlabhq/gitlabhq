@@ -4,20 +4,29 @@ include ImportExport::CommonUtil
 describe Gitlab::ImportExport::ProjectTreeRestorer do
   describe 'restore project tree' do
     before(:context) do
-      @user = create(:user)
+      # Using an admin for import, so we can check assignment of existing members
+      @user = create(:admin)
+      @existing_members = [
+        create(:user, username: 'bernard_willms'),
+        create(:user, username: 'saul_will')
+      ]
 
       RSpec::Mocks.with_temporary_scope do
         @project = create(:project, :builds_disabled, :issues_disabled, name: 'project', path: 'project')
         @shared = @project.import_export_shared
         allow(@shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
 
-        allow_any_instance_of(Repository).to receive(:fetch_ref).and_return(true)
+        allow_any_instance_of(Repository).to receive(:fetch_source_branch!).and_return(true)
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:branch_exists?).and_return(false)
 
         expect_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch).with('feature', 'DCBA')
         allow_any_instance_of(Gitlab::Git::Repository).to receive(:create_branch)
 
         project_tree_restorer = described_class.new(user: @user, shared: @shared, project: @project)
+
+        expect(Gitlab::ImportExport::RelationFactory).to receive(:create).with(hash_including(excluded_keys: ['whatever'])).and_call_original.at_least(:once)
+        allow(project_tree_restorer).to receive(:excluded_keys_for_relation).and_return(['whatever'])
+
         @restored_project_json = project_tree_restorer.restore
       end
     end
@@ -37,8 +46,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(project.project_feature.merge_requests_access_level).to eq(ProjectFeature::ENABLED)
       end
 
-      it 'has the project html description' do
-        expect(Project.find_by_path('project').description_html).to eq('description')
+      it 'has the project description' do
+        expect(Project.find_by_path('project').description).to eq('Nisi et repellendus ut enim quo accusamus vel magnam.')
       end
 
       it 'has the same label associated to two issues' do
@@ -63,8 +72,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
       end
 
-      it 'has issue assignees' do
-        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
+      it 'has multiple issue assignees' do
+        expect(Issue.find_by(title: 'Voluptatem').assignees).to contain_exactly(@user, *@existing_members)
+        expect(Issue.find_by(title: 'Issue without assignees').assignees).to be_empty
       end
 
       it 'contains the merge access levels on a protected branch' do
@@ -179,8 +189,8 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
           @project.pipelines.zip([2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
-              expect(pipeline.statuses.size).to eq(expected_status_size)
-            end
+            expect(pipeline.statuses.size).to eq(expected_status_size)
+          end
         end
       end
 
@@ -236,11 +246,9 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       expect(project.issues.size).to eq(results.fetch(:issues, 0))
     end
 
-    it 'has issue with group label and project label' do
-      labels = project.issues.first.labels
-
-      expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
-      expect(labels.where(type: "ProjectLabel").where.not(group_id: nil).count).to eq(0)
+    it 'does not set params that are excluded from import_export settings' do
+      expect(project.import_type).to be_nil
+      expect(project.creator_id).not_to eq 123
     end
   end
 
@@ -252,12 +260,6 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     it 'has group milestone' do
       expect(project.group.milestones.size).to eq(results.fetch(:milestones, 0))
-    end
-
-    it 'has issue with group label' do
-      labels = project.issues.first.labels
-
-      expect(labels.where(type: "GroupLabel").count).to eq(results.fetch(:first_issue_labels, 0))
     end
   end
 
@@ -307,6 +309,24 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
     end
 
+    context 'when the project has overriden params in import data' do
+      it 'overwrites the params stored in the JSON' do
+        project.create_import_data(data: { override_params: { description: "Overridden" } })
+
+        restored_project_json
+
+        expect(project.description).to eq("Overridden")
+      end
+
+      it 'does not allow setting params that are excluded from import_export settings' do
+        project.create_import_data(data: { override_params: { lfs_enabled: true } })
+
+        restored_project_json
+
+        expect(project.lfs_enabled).to be_nil
+      end
+    end
+
     context 'with a project that has a group' do
       let!(:project) do
         create(:project,
@@ -327,13 +347,72 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       it_behaves_like 'restores project correctly',
                       issues: 2,
                       labels: 1,
-                      milestones: 1,
+                      milestones: 2,
                       first_issue_labels: 1
 
       it_behaves_like 'restores group correctly',
-                      labels: 1,
-                      milestones: 1,
+                      labels: 0,
+                      milestones: 0,
                       first_issue_labels: 1
+    end
+
+    context 'with existing group models' do
+      let!(:project) do
+        create(:project,
+               :builds_disabled,
+               :issues_disabled,
+               name: 'project',
+               path: 'project',
+               group: create(:group))
+      end
+
+      before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+      end
+
+      it 'imports labels' do
+        create(:group_label, name: 'Another label', group: project.group)
+
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.labels.count).to eq(1)
+      end
+
+      it 'imports milestones' do
+        create(:milestone, name: 'A milestone', group: project.group)
+
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.group.milestones.count).to eq(1)
+        expect(project.milestones.count).to eq(0)
+      end
+    end
+
+    context 'with clashing milestones on IID' do
+      let!(:project) do
+        create(:project,
+               :builds_disabled,
+               :issues_disabled,
+               name: 'project',
+               path: 'project',
+               group: create(:group))
+      end
+
+      it 'preserves the project milestone IID' do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.milestone-iid.json")
+
+        expect_any_instance_of(Gitlab::ImportExport::Shared).not_to receive(:error)
+
+        restored_project_json
+
+        expect(project.milestones.count).to eq(2)
+        expect(Milestone.find_by_title('Another milestone').iid).to eq(1)
+        expect(Milestone.find_by_title('Group-level milestone').iid).to eq(2)
+      end
     end
   end
 end

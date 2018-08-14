@@ -29,7 +29,7 @@ The merge conflict resolution editor allows for more complex merge conflicts,
 which require the user to manually modify a file in order to resolve a conflict,
 to be solved right form the GitLab interface. Use the **Edit inline** button
 to open the editor. Once you're sure about your changes, hit the
-**Commit conflict resolution** button.
+**Commit to source branch** button.
 
 ![Merge conflict editor](img/merge_conflict_editor.png)
 

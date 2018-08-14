@@ -32,6 +32,7 @@ contains some settings that are common for all providers.
 - [Auth0](auth0.md)
 - [Authentiq](../administration/auth/authentiq.md)
 - [OAuth2Generic](oauth2_generic.md)
+- [JWT](../administration/auth/jwt.md)
 
 ## Initial OmniAuth Configuration
 
@@ -167,7 +168,7 @@ want their accounts to be upgraded to full internal accounts.
 >**Note:**
 The following information only applies for installations from source.
 
-GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships
+GitLab uses [Omniauth](https://github.com/omniauth/omniauth) for authentication and already ships
 with a few providers pre-installed (e.g. LDAP, GitHub, Twitter). But sometimes that
 is not enough and you need to integrate with other authentication solutions. For
 these cases you can use the Omniauth provider.

@@ -1,7 +1,7 @@
-.checkbox
+.form-check.prepend-top-8
   - nonce = SecureRandom.hex
-  = label_tag "create_merge_request-#{nonce}" do
-    = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request', id: "create_merge_request-#{nonce}"
+  = check_box_tag 'create_merge_request', 1, true, class: 'js-create-merge-request form-check-input', id: "create_merge_request-#{nonce}"
+  = label_tag "create_merge_request-#{nonce}", class: 'form-check-label' do
     - translation_variables = { new_merge_request: "<strong>#{_('new merge request')}</strong>" }
     - translation = _('Start a %{new_merge_request} with these changes') % translation_variables
     #{ translation.html_safe }

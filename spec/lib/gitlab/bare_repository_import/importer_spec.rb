@@ -1,9 +1,11 @@
 require 'spec_helper'
 
-describe Gitlab::BareRepositoryImport::Importer, repository: true do
+describe Gitlab::BareRepositoryImport::Importer, :seed_helper do
   let!(:admin) { create(:admin) }
   let!(:base_dir) { Dir.mktmpdir + '/' }
   let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(base_dir, File.join(base_dir, "#{project_path}.git")) }
+  let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:source_project) { TEST_REPO_PATH }
 
   subject(:importer) { described_class.new(admin, bare_repository) }
 
@@ -16,6 +18,8 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
 
   after do
     FileUtils.rm_rf(base_dir)
+    TestEnv.clean_test_path
+    ensure_seeds
     Rainbow.enabled = @rainbow
   end
 
@@ -78,18 +82,17 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         importer.create_project_if_needed
       end
 
-      it 'creates the Git repo on disk with the proper symlink for hooks' do
-        create_bare_repository("#{project_path}.git")
+      it 'creates the Git repo on disk' do
+        prepare_repository("#{project_path}.git", source_project)
 
         importer.create_project_if_needed
 
         project = Project.find_by_full_path(project_path)
-        repo_path = File.join(project.repository_storage_path, project.disk_path + '.git')
+        repo_path = "#{project.disk_path}.git"
         hook_path = File.join(repo_path, 'hooks')
 
-        expect(File).to exist(repo_path)
-        expect(File.symlink?(hook_path)).to be true
-        expect(File.readlink(hook_path)).to eq(Gitlab.config.gitlab_shell.hooks_path)
+        expect(gitlab_shell.exists?(project.repository_storage, repo_path)).to be(true)
+        expect(gitlab_shell.exists?(project.repository_storage, hook_path)).to be(true)
       end
 
       context 'hashed storage enabled' do
@@ -138,31 +141,33 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     end
 
     it 'creates the Git repo in disk' do
-      create_bare_repository("#{project_path}.git")
+      prepare_repository("#{project_path}.git", source_project)
 
       importer.create_project_if_needed
 
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.git')).to be(true)
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
 
-    it 'moves an existing project to the correct path' do
+    context 'with a repository already on disk' do
+      let!(:base_dir) { TestEnv.repos_path }
       # This is a quick way to get a valid repository instead of copying an
       # existing one. Since it's not persisted, the importer will try to
       # create the project.
-      project = build(:project, :legacy_storage, :repository)
-      original_commit_count = project.repository.commit_count
+      let(:project) { build(:project, :legacy_storage, :repository) }
+      let(:project_path) { project.full_path }
 
-      bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)
-      gitlab_importer = described_class.new(admin, bare_repo)
+      it 'moves an existing project to the correct path' do
+        original_commit_count = project.repository.commit_count
 
-      expect(gitlab_importer).to receive(:create_project).and_call_original
+        expect(importer).to receive(:create_project).and_call_original
 
-      new_project = gitlab_importer.create_project_if_needed
+        new_project = importer.create_project_if_needed
 
-      expect(new_project.repository.commit_count).to eq(original_commit_count)
+        expect(new_project.repository.commit_count).to eq(original_commit_count)
+      end
     end
   end
 
@@ -173,8 +178,8 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it_behaves_like 'importing a repository'
 
     it 'creates the Wiki git repo in disk' do
-      create_bare_repository("#{project_path}.git")
-      create_bare_repository("#{project_path}.wiki.git")
+      prepare_repository("#{project_path}.git", source_project)
+      prepare_repository("#{project_path}.wiki.git", source_project)
 
       expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
                                                                                   import_type: 'bare_repository')).and_call_original
@@ -183,7 +188,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
 
       project = Project.find_by_full_path(project_path)
 
-      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
+      expect(gitlab_shell.exists?(project.repository_storage, project.disk_path + '.wiki.git')).to be(true)
     end
   end
 
@@ -201,8 +206,13 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     end
   end
 
-  def create_bare_repository(project_path)
+  def prepare_repository(project_path, source_project)
     repo_path = File.join(base_dir, project_path)
-    Gitlab::Git::Repository.create(repo_path, bare: true)
+
+    return create_bare_repository(repo_path) unless source_project
+
+    cmd = %W(#{Gitlab.config.git.bin_path} clone --bare #{source_project} #{repo_path})
+
+    system(git_env, *cmd, chdir: SEED_STORAGE_PATH, out: '/dev/null', err: '/dev/null')
   end
 end

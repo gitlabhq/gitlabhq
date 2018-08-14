@@ -1,19 +1,18 @@
-- failed_builds = @pipeline.statuses.latest.failed
-
 .tabs-holder
-  %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator
+  %ul.pipelines-tabs.nav-links.no-top.no-bottom.mobile-separator.nav.nav-tabs
     %li.js-pipeline-tab-link
-      = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' },  class: 'pipeline-tab' do
+      = link_to project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-pipeline', action: 'pipelines', toggle: 'tab' }, class: 'pipeline-tab' do
         = _("Pipeline")
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         = _("Jobs")
-        %span.badge.js-builds-counter= pipeline.total_size
-    - if failed_builds.present?
+        %span.badge.badge-pill.js-builds-counter= pipeline.total_size
+    - if @pipeline.failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: { target: '#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do
           = _("Failed Jobs")
-          %span.badge.js-failures-counter= failed_builds.count
+          %span.badge.badge-pill.js-failures-counter= @pipeline.failed_builds.count
+    = render_if_exists "projects/pipelines/tabs_holder", pipeline: @pipeline, project: @project
 
 .tab-content
   #js-tab-pipeline.tab-pane
@@ -26,7 +25,7 @@
         %ul
           - pipeline.yaml_errors.split(",").each do |error|
             %li= error
-        You can also test your .gitlab-ci.yml in the #{link_to "Lint", ci_lint_path}
+        You can also test your .gitlab-ci.yml in the #{link_to "Lint", project_ci_lint_path(@project)}
 
     - if pipeline.project.builds_enabled? && !pipeline.ci_yaml_file
       .bs-callout.bs-callout-warning
@@ -43,13 +42,38 @@
             %th Coverage
             %th
         = render partial: "projects/stage/stage", collection: pipeline.legacy_stages, as: :stage
-  - if failed_builds.present?
-    #js-tab-failures.build-failures.tab-pane
-      - failed_builds.each_with_index do |build, index|
-        .build-state
-          %span.ci-status-icon-failed= custom_icon('icon_status_failed')
-          %span.stage
-            = build.stage.titleize
-          %span.build-name
-            = link_to build.name, pipeline_job_url(pipeline, build)
-        %pre.build-log= build_summary(build, skip: index >= 10)
+
+  - if @pipeline.failed_builds.present?
+    #js-tab-failures.build-failures.tab-pane.build-page
+      %table.table.responsive-table.ci-table.responsive-table-sm-rounded
+        %thead
+          %th.table-th-transparent
+          %th.table-th-transparent= _("Name")
+          %th.table-th-transparent= _("Stage")
+          %th.table-th-transparent= _("Failure")
+
+        %tbody
+          - @pipeline.failed_builds.each_with_index do |build, index|
+            - job = build.present(current_user: current_user)
+            %tr.build-state.responsive-table-border-start
+              %td.responsive-table-cell.ci-status-icon-failed{ data: { column: "Status"} }
+                .d-none.d-md-block.build-icon
+                  = custom_icon("icon_status_#{build.status}")
+                .d-md-none.build-badge
+                  = render "ci/status/badge", link: false, status: job.detailed_status(current_user)
+              %td.responsive-table-cell.build-name{ data: { column: _("Name")} }
+                = link_to build.name, pipeline_job_url(pipeline, build)
+              %td.responsive-table-cell.build-stage{ data: { column: _("Stage")} }
+                = build.stage.titleize
+              %td.responsive-table-cell.build-failure{ data: { column: _("Failure")} }
+                = build.present.callout_failure_message
+              %td.responsive-table-cell.build-actions
+                = link_to retry_project_job_path(build.project, build, return_to: request.original_url), method: :post, title: _('Retry'), class: 'btn btn-build' do
+                  = icon('repeat')
+            %tr.build-trace-row.responsive-table-border-end
+              %td
+              %td.responsive-table-cell.build-trace-container{ colspan: 4 }
+                %pre.build-trace.build-trace-rounded
+                  %code.bash.js-build-output
+                    = build_summary(build)
+  = render_if_exists "projects/pipelines/tabs_content", pipeline: @pipeline, project: @project

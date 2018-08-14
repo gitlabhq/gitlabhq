@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe ReactiveCaching, :use_clean_rails_memory_store_caching do
+  include ExclusiveLeaseHelpers
   include ReactiveCachingHelpers
 
   class CacheTest
@@ -29,12 +30,6 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
   end
 
-  let(:now) { Time.now.utc }
-
-  around do |example|
-    Timecop.freeze(now) { example.run }
-  end
-
   let(:calculation) { -> { 2 + 2 } }
   let(:cache_key) { "foo:666" }
   let(:instance) { CacheTest.new(666, &calculation) }
@@ -49,13 +44,15 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     context 'when cache is empty' do
       it { is_expected.to be_nil }
 
-      it 'queues a background worker' do
+      it 'enqueues a background worker to bootstrap the cache' do
         expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
 
         go!
       end
 
       it 'updates the cache lifespan' do
+        expect(reactive_cache_alive?(instance)).to be_falsy
+
         go!
 
         expect(reactive_cache_alive?(instance)).to be_truthy
@@ -69,12 +66,32 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
 
       it { is_expected.to eq(2) }
 
+      it 'does not enqueue a background worker' do
+        expect(ReactiveCachingWorker).not_to receive(:perform_async)
+
+        go!
+      end
+
+      it 'updates the cache lifespan' do
+        expect(Rails.cache).to receive(:write).with(alive_reactive_cache_key(instance), true, expires_in: anything)
+
+        go!
+      end
+
       context 'and expired' do
         before do
           invalidate_reactive_cache(instance)
         end
 
         it { is_expected.to be_nil }
+      end
+
+      context 'when cache was invalidated' do
+        it 'refreshes cache' do
+          expect(ReactiveCachingWorker).to receive(:perform_async).with(CacheTest, 666)
+
+          instance.with_reactive_cache { raise described_class::InvalidateReactiveCache }
+        end
       end
     end
   end
@@ -86,6 +103,7 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     it { expect(instance.result).to be_nil }
+    it { expect(reactive_cache_alive?(instance)).to be_falsy }
   end
 
   describe '#exclusively_update_reactive_cache!' do
@@ -97,8 +115,8 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
       end
 
       it 'takes and releases the lease' do
-        expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return("000000")
-        expect(Gitlab::ExclusiveLease).to receive(:cancel).with(cache_key, "000000")
+        expect_to_obtain_exclusive_lease(cache_key, 'uuid')
+        expect_to_cancel_exclusive_lease(cache_key, 'uuid')
 
         go!
       end
@@ -113,6 +131,13 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
         expect_reactive_cache_update_queued(instance)
 
         go!
+      end
+
+      it "calls a reactive_cache_updated only once if content did not change on subsequent update" do
+        expect(instance).to receive(:calculate_reactive_cache).twice
+        expect(instance).to receive(:reactive_cache_updated).once
+
+        2.times { instance.exclusively_update_reactive_cache! }
       end
 
       context 'and #calculate_reactive_cache raises an exception' do
@@ -144,11 +169,9 @@ describe ReactiveCaching, :use_clean_rails_memory_store_caching do
     end
 
     context 'when the lease is already taken' do
-      before do
-        expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain).and_return(nil)
-      end
-
       it 'skips the calculation' do
+        stub_exclusive_lease_taken(cache_key)
+
         expect(instance).to receive(:calculate_reactive_cache).never
 
         go!

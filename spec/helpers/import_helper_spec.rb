@@ -27,23 +27,44 @@ describe ImportHelper do
 
   describe '#provider_project_link' do
     context 'when provider is "github"' do
+      let(:github_server_url) { nil }
+      let(:provider) { OpenStruct.new(name: 'github', url: github_server_url) }
+
+      before do
+        stub_omniauth_setting(providers: [provider])
+      end
+
       context 'when provider does not specify a custom URL' do
         it 'uses default GitHub URL' do
-          allow(Gitlab.config.omniauth).to receive(:providers)
-          .and_return([Settingslogic.new('name' => 'github')])
-
           expect(helper.provider_project_link('github', 'octocat/Hello-World'))
           .to include('href="https://github.com/octocat/Hello-World"')
         end
       end
 
       context 'when provider specify a custom URL' do
-        it 'uses custom URL' do
-          allow(Gitlab.config.omniauth).to receive(:providers)
-          .and_return([Settingslogic.new('name' => 'github', 'url' => 'https://github.company.com')])
+        let(:github_server_url) { 'https://github.company.com' }
 
+        it 'uses custom URL' do
           expect(helper.provider_project_link('github', 'octocat/Hello-World'))
           .to include('href="https://github.company.com/octocat/Hello-World"')
+        end
+      end
+
+      context "when custom URL contains a '/' char at the end" do
+        let(:github_server_url) { 'https://github.company.com/' }
+
+        it "doesn't render double slash" do
+          expect(helper.provider_project_link('github', 'octocat/Hello-World'))
+          .to include('href="https://github.company.com/octocat/Hello-World"')
+        end
+      end
+
+      context 'when provider is missing' do
+        it 'uses the default URL' do
+          allow(Gitlab.config.omniauth).to receive(:providers).and_return([])
+
+          expect(helper.provider_project_link('github', 'octocat/Hello-World'))
+          .to include('href="https://github.com/octocat/Hello-World"')
         end
       end
     end

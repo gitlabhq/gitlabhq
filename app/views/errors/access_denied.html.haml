@@ -1,15 +1,16 @@
-- message = local_assigns.fetch(:message)
-
+- message = local_assigns.fetch(:message, nil)
 - content_for(:title, 'Access Denied')
-%img{ :alt => "GitLab Logo", :src => image_path('logo.svg') }
-  %h1
-    403
+
+= image_tag('illustrations/error-403.svg', alt: '403', lazy: false)
 .container
-  %h3 Access Denied
-  %hr
+  %h3
+    = s_("403|You don't have the permission to access this page.")
   - if message
     %p
       = message
-  - else
-    %p You are not allowed to access this page.
-    %p Read more about project permissions #{link_to "here", help_page_path("user/permissions"), class: "vlink"}
+  %p
+    = s_('403|Please contact your GitLab administrator to get the permission.')
+  .action-container.js-go-back{ style: 'display: none' }
+    %a{ href: 'javascript:history.back()', class: 'btn btn-success' }
+      = s_('Go Back')
+= render "errors/footer"

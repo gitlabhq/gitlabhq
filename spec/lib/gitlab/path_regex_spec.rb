@@ -90,11 +90,13 @@ describe Gitlab::PathRegex do
   let(:routes_not_starting_in_wildcard) { routes_without_format.select { |p| p !~ %r{^/[:*]} } }
 
   let(:top_level_words) do
-    words = routes_not_starting_in_wildcard.map do |route|
-      route.split('/')[1]
-    end.compact
-
-    (words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)).uniq
+    routes_not_starting_in_wildcard
+      .map { |route| route.split('/')[1] }
+      .concat(ee_top_level_words)
+      .concat(files_in_public)
+      .concat(Array(API::API.prefix.to_s))
+      .compact
+      .uniq
   end
 
   let(:ee_top_level_words) do

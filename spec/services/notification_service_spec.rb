@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe NotificationService, :mailer do
   include EmailSpec::Matchers
+  include NotificationHelpers
 
   let(:notification) { described_class.new }
   let(:assignee) { create(:user) }
@@ -13,12 +14,6 @@ describe NotificationService, :mailer do
   end
 
   shared_examples 'notifications for new mentions' do
-    def send_notifications(*new_mentions)
-      mentionable.description = new_mentions.map(&:to_reference).join(' ')
-
-      notification.send(notification_method, mentionable, new_mentions, @u_disabled)
-    end
-
     it 'sends no emails when no new mentions are present' do
       send_notifications
       should_not_email_anyone
@@ -32,6 +27,12 @@ describe NotificationService, :mailer do
     it 'does not email new mentions with a watch level equal to or less than mention' do
       send_notifications(@u_disabled)
       should_not_email_anyone
+    end
+
+    it 'emails new mentions despite being unsubscribed' do
+      send_notifications(@unsubscribed_mentioned)
+
+      should_only_email(@unsubscribed_mentioned)
     end
 
     it 'sends the proper notification reason header' do
@@ -57,6 +58,20 @@ describe NotificationService, :mailer do
       notification_trigger
 
       should_email(participant)
+    end
+
+    context 'for subgroups', :nested_groups do
+      before do
+        build_group(project)
+      end
+
+      it 'emails the participant' do
+        create(:note_on_issue, noteable: issuable, project_id: project.id, note: 'anything', author: @pg_participant)
+
+        notification_trigger
+
+        should_email_nested_group_user(@pg_participant)
+      end
     end
   end
 
@@ -88,6 +103,37 @@ describe NotificationService, :mailer do
     it_should_behave_like 'participating by note notification'
     it_should_behave_like 'participating by author notification'
     it_should_behave_like 'participating by assignee notification'
+  end
+
+  describe '#async' do
+    let(:async) { notification.async }
+    set(:key) { create(:personal_key) }
+
+    it 'returns an Async object with the correct parent' do
+      expect(async).to be_a(described_class::Async)
+      expect(async.parent).to eq(notification)
+    end
+
+    context 'when receiving a public method' do
+      it 'schedules a MailScheduler::NotificationServiceWorker' do
+        expect(MailScheduler::NotificationServiceWorker)
+          .to receive(:perform_async).with('new_key', key)
+
+        async.new_key(key)
+      end
+    end
+
+    context 'when receiving a private method' do
+      it 'raises NoMethodError' do
+        expect { async.notifiable?(key) }.to raise_error(NoMethodError)
+      end
+    end
+
+    context 'when recieving a non-existent method' do
+      it 'raises NoMethodError' do
+        expect { async.foo(key) }.to raise_error(NoMethodError)
+      end
+    end
   end
 
   describe 'Keys' do
@@ -122,13 +168,13 @@ describe NotificationService, :mailer do
       let(:project) { create(:project, :private) }
       let(:issue) { create(:issue, project: project, assignees: [assignee]) }
       let(:mentioned_issue) { create(:issue, assignees: issue.assignees) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @outsider also') }
+      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced, @unsubscribed_mentioned and @outsider also') }
 
       before do
         build_team(note.project)
-        project.add_master(issue.author)
-        project.add_master(assignee)
-        project.add_master(note.author)
+        project.add_maintainer(issue.author)
+        project.add_maintainer(assignee)
+        project.add_maintainer(note.author)
 
         @u_custom_off = create_user_with_notification(:custom, 'custom_off')
         project.add_guest(@u_custom_off)
@@ -150,7 +196,7 @@ describe NotificationService, :mailer do
           add_users_with_subscription(note.project, issue)
           reset_delivered_emails!
 
-          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(9).times
+          expect(SentNotification).to receive(:record).with(issue, any_args).exactly(10).times
 
           notification.new_note(note)
 
@@ -163,6 +209,7 @@ describe NotificationService, :mailer do
           should_email(@watcher_and_subscriber)
           should_email(@subscribed_participant)
           should_email(@u_custom_off)
+          should_email(@unsubscribed_mentioned)
           should_not_email(@u_guest_custom)
           should_not_email(@u_guest_watcher)
           should_not_email(note.author)
@@ -206,34 +253,56 @@ describe NotificationService, :mailer do
       end
 
       describe 'new note on issue in project that belongs to a group' do
-        let(:group) { create(:group) }
-
         before do
           note.project.namespace_id = group.id
-          note.project.group.add_user(@u_watcher, GroupMember::MASTER)
-          note.project.group.add_user(@u_custom_global, GroupMember::MASTER)
+          group.add_user(@u_watcher, GroupMember::MAINTAINER)
+          group.add_user(@u_custom_global, GroupMember::MAINTAINER)
           note.project.save
 
           @u_watcher.notification_settings_for(note.project).participating!
-          @u_watcher.notification_settings_for(note.project.group).global!
+          @u_watcher.notification_settings_for(group).global!
           update_custom_notification(:new_note, @u_custom_global)
           reset_delivered_emails!
         end
 
-        it do
-          notification.new_note(note)
+        shared_examples 'new note notifications' do
+          it do
+            notification.new_note(note)
 
-          should_email(note.noteable.author)
-          should_email(note.noteable.assignees.first)
-          should_email(@u_mentioned)
-          should_email(@u_custom_global)
-          should_not_email(@u_guest_custom)
-          should_not_email(@u_guest_watcher)
-          should_not_email(@u_watcher)
-          should_not_email(note.author)
-          should_not_email(@u_participating)
-          should_not_email(@u_disabled)
-          should_not_email(@u_lazy_participant)
+            should_email(note.noteable.author)
+            should_email(note.noteable.assignees.first)
+            should_email(@u_mentioned)
+            should_email(@u_custom_global)
+            should_not_email(@u_guest_custom)
+            should_not_email(@u_guest_watcher)
+            should_not_email(@u_watcher)
+            should_not_email(note.author)
+            should_not_email(@u_participating)
+            should_not_email(@u_disabled)
+            should_not_email(@u_lazy_participant)
+          end
+        end
+
+        let(:group) { create(:group) }
+
+        it_behaves_like 'new note notifications'
+
+        context 'which is a subgroup', :nested_groups do
+          let!(:parent) { create(:group) }
+          let!(:group) { create(:group, parent: parent) }
+
+          it_behaves_like 'new note notifications'
+
+          it 'overrides child objects with global level' do
+            user = create(:user)
+            parent.add_developer(user)
+            user.notification_settings_for(parent).watch!
+            reset_delivered_emails!
+
+            notification.new_note(note)
+
+            should_email(user)
+          end
         end
       end
     end
@@ -268,6 +337,31 @@ describe NotificationService, :mailer do
         should_email(member)
         should_email(admin)
       end
+
+      context 'on project that belongs to subgroup', :nested_groups do
+        let(:group_reporter) { create(:user) }
+        let(:group_guest) { create(:user) }
+        let(:parent_group) { create(:group) }
+        let(:child_group) { create(:group, parent: parent_group) }
+        let(:project) { create(:project, namespace: child_group) }
+
+        context 'when user is group guest member' do
+          before do
+            parent_group.add_reporter(group_reporter)
+            parent_group.add_guest(group_guest)
+            group_guest.notification_settings_for(parent_group).watch!
+            group_reporter.notification_settings_for(parent_group).watch!
+            reset_delivered_emails!
+          end
+
+          it 'does not email guest user' do
+            notification.new_note(note)
+
+            should_email(group_reporter)
+            should_not_email(group_guest)
+          end
+        end
+      end
     end
 
     context 'issue note mention' do
@@ -278,13 +372,18 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
-        note.project.add_master(note.author)
+        build_group(note.project)
+        note.project.add_maintainer(note.author)
+        add_users_with_subscription(note.project, issue)
         reset_delivered_emails!
       end
 
       describe '#new_note' do
         it 'notifies the team members' do
           notification.new_note(note)
+
+          # Make sure @unsubscribed_mentioned is part of the team
+          expect(note.project.team.members).to include(@unsubscribed_mentioned)
 
           # Notify all team members
           note.project.team.members.each do |member|
@@ -299,10 +398,20 @@ describe NotificationService, :mailer do
           should_email(@u_guest_watcher)
           should_email(note.noteable.author)
           should_email(note.noteable.assignees.first)
-          should_not_email(note.author)
+          should_email_nested_group_user(@pg_watcher)
           should_email(@u_mentioned)
-          should_not_email(@u_disabled)
           should_email(@u_not_mentioned)
+          should_not_email(note.author)
+          should_not_email(@u_disabled)
+          should_not_email_nested_group_user(@pg_disabled)
+        end
+
+        it 'notifies parent group members with mention level', :nested_groups do
+          note = create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: "@#{@pg_mention.username}")
+
+          notification.new_note(note)
+
+          should_email_nested_group_user(@pg_mention)
         end
 
         it 'filters out "mentioned in" notes' do
@@ -315,25 +424,25 @@ describe NotificationService, :mailer do
     end
 
     context 'project snippet note' do
-      let(:project) { create(:project, :public) }
+      let!(:project) { create(:project, :public) }
       let(:snippet) { create(:project_snippet, project: project, author: create(:user)) }
-      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: snippet.project.id, note: '@all mentioned') }
+      let(:note) { create(:note_on_project_snippet, noteable: snippet, project_id: project.id, note: '@all mentioned') }
 
       before do
-        build_team(note.project)
+        build_team(project)
+        build_group(project)
 
         # make sure these users can read the project snippet!
         project.add_guest(@u_guest_watcher)
         project.add_guest(@u_guest_custom)
-
-        note.project.add_master(note.author)
+        add_member_for_parent_group(@pg_watcher, project)
+        note.project.add_maintainer(note.author)
         reset_delivered_emails!
       end
 
       describe '#new_note' do
         it 'notifies the team members' do
           notification.new_note(note)
-
           # Notify all team members
           note.project.team.members.each do |member|
             # User with disabled notification should not be notified
@@ -412,6 +521,7 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
+        build_group(project)
         reset_delivered_emails!
         allow(note.noteable).to receive(:author).and_return(@u_committer)
         update_custom_notification(:new_note, @u_guest_custom, resource: project)
@@ -426,11 +536,13 @@ describe NotificationService, :mailer do
           should_email(@u_guest_custom)
           should_email(@u_committer)
           should_email(@u_watcher)
+          should_email_nested_group_user(@pg_watcher)
           should_not_email(@u_mentioned)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
           should_not_email(@u_lazy_participant)
+          should_not_email_nested_group_user(@pg_disabled)
         end
 
         it do
@@ -441,10 +553,12 @@ describe NotificationService, :mailer do
           should_email(@u_committer)
           should_email(@u_watcher)
           should_email(@u_mentioned)
+          should_email_nested_group_user(@pg_watcher)
           should_not_email(note.author)
           should_not_email(@u_participating)
           should_not_email(@u_disabled)
           should_not_email(@u_lazy_participant)
+          should_not_email_nested_group_user(@pg_disabled)
         end
 
         it do
@@ -463,8 +577,8 @@ describe NotificationService, :mailer do
 
       before do
         build_team(note.project)
-        project.add_master(merge_request.author)
-        project.add_master(merge_request.assignee)
+        project.add_maintainer(merge_request.author)
+        project.add_maintainer(merge_request.assignee)
       end
 
       describe '#new_note' do
@@ -486,7 +600,7 @@ describe NotificationService, :mailer do
     let(:group) { create(:group) }
     let(:project) { create(:project, :public, namespace: group) }
     let(:another_project) { create(:project, :public, namespace: group) }
-    let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant' }
+    let(:issue) { create :issue, project: project, assignees: [assignee], description: 'cc @participant @unsubscribed_mentioned' }
 
     before do
       build_team(issue.project)
@@ -510,10 +624,14 @@ describe NotificationService, :mailer do
         should_email(@u_participant_mentioned)
         should_email(@g_global_watcher)
         should_email(@g_watcher)
+        should_email(@unsubscribed_mentioned)
+        should_email_nested_group_user(@pg_watcher)
         should_not_email(@u_mentioned)
         should_not_email(@u_participating)
         should_not_email(@u_disabled)
         should_not_email(@u_lazy_participant)
+        should_not_email_nested_group_user(@pg_disabled)
+        should_not_email_nested_group_user(@pg_mention)
       end
 
       it do
@@ -921,6 +1039,46 @@ describe NotificationService, :mailer do
         let(:notification_trigger) { notification.issue_moved(issue, new_issue, @u_disabled) }
       end
     end
+
+    describe '#issue_due' do
+      before do
+        issue.update!(due_date: Date.today)
+
+        update_custom_notification(:issue_due, @u_guest_custom, resource: project)
+        update_custom_notification(:issue_due, @u_custom_global)
+      end
+
+      it 'sends email to issue notification recipients, excluding watchers' do
+        notification.issue_due(issue)
+
+        should_email(issue.assignees.first)
+        should_email(issue.author)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it 'sends the email from the author' do
+        notification.issue_due(issue)
+        email = find_email_for(@subscriber)
+
+        expect(email.header[:from].display_names).to eq([issue.author.name])
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { issue }
+        let(:notification_trigger) { notification.issue_due(issue) }
+      end
+    end
   end
 
   describe 'Merge Requests' do
@@ -930,6 +1088,8 @@ describe NotificationService, :mailer do
     let(:merge_request) { create :merge_request, source_project: project, assignee: create(:user), description: 'cc @participant' }
 
     before do
+      project.add_maintainer(merge_request.author)
+      project.add_maintainer(merge_request.assignee)
       build_team(merge_request.target_project)
       add_users_with_subscription(merge_request.target_project, merge_request)
       update_custom_notification(:new_merge_request, @u_guest_custom, resource: project)
@@ -1041,15 +1201,18 @@ describe NotificationService, :mailer do
     end
 
     describe '#reassigned_merge_request' do
+      let(:current_user) { create(:user) }
+
       before do
         update_custom_notification(:reassign_merge_request, @u_guest_custom, resource: project)
         update_custom_notification(:reassign_merge_request, @u_custom_global)
       end
 
       it do
-        notification.reassigned_merge_request(merge_request, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
 
         should_email(merge_request.assignee)
+        should_email(merge_request.author)
         should_email(@u_watcher)
         should_email(@u_participant_mentioned)
         should_email(@subscriber)
@@ -1064,7 +1227,7 @@ describe NotificationService, :mailer do
       end
 
       it 'adds "assigned" reason for new assignee' do
-        notification.reassigned_merge_request(merge_request, merge_request.author)
+        notification.reassigned_merge_request(merge_request, current_user, merge_request.author)
 
         email = find_email_for(merge_request.assignee)
 
@@ -1074,7 +1237,37 @@ describe NotificationService, :mailer do
       it_behaves_like 'participating notifications' do
         let(:participant) { create(:user, username: 'user-participant') }
         let(:issuable) { merge_request }
-        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, @u_disabled) }
+        let(:notification_trigger) { notification.reassigned_merge_request(merge_request, current_user, merge_request.author) }
+      end
+    end
+
+    describe '#push_to_merge_request' do
+      before do
+        update_custom_notification(:push_to_merge_request, @u_guest_custom, resource: project)
+        update_custom_notification(:push_to_merge_request, @u_custom_global)
+      end
+
+      it do
+        notification.push_to_merge_request(merge_request, @u_disabled)
+
+        should_email(merge_request.assignee)
+        should_email(@u_guest_custom)
+        should_email(@u_custom_global)
+        should_email(@u_participant_mentioned)
+        should_email(@subscriber)
+        should_email(@watcher_and_subscriber)
+        should_not_email(@u_watcher)
+        should_not_email(@u_guest_watcher)
+        should_not_email(@unsubscriber)
+        should_not_email(@u_participating)
+        should_not_email(@u_disabled)
+        should_not_email(@u_lazy_participant)
+      end
+
+      it_behaves_like 'participating notifications' do
+        let(:participant) { create(:user, username: 'user-participant') }
+        let(:issuable) { merge_request }
+        let(:notification_trigger) { notification.push_to_merge_request(merge_request, @u_disabled) }
       end
     end
 
@@ -1108,6 +1301,32 @@ describe NotificationService, :mailer do
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
         should_not_email(@u_lazy_participant)
+      end
+    end
+
+    describe '#merge_request_unmergeable' do
+      it "sends email to merge request author" do
+        notification.merge_request_unmergeable(merge_request)
+
+        should_email(merge_request.author)
+        expect(email_recipients.size).to eq(1)
+      end
+
+      describe 'when merge_when_pipeline_succeeds is true' do
+        before do
+          merge_request.update(
+            merge_when_pipeline_succeeds: true,
+            merge_user: create(:user)
+          )
+        end
+
+        it "sends email to merge request author and merge_user" do
+          notification.merge_request_unmergeable(merge_request)
+
+          should_email(merge_request.author)
+          should_email(merge_request.merge_user)
+          expect(email_recipients.size).to eq(2)
+        end
       end
     end
 
@@ -1310,13 +1529,13 @@ describe NotificationService, :mailer do
     let(:added_user) { create(:user) }
 
     describe '#new_access_request' do
-      let(:master) { create(:user) }
+      let(:maintainer) { create(:user) }
       let(:owner) { create(:user) }
       let(:developer) { create(:user) }
       let!(:group) do
         create(:group, :public, :access_requestable) do |group|
           group.add_owner(owner)
-          group.add_master(master)
+          group.add_maintainer(maintainer)
           group.add_developer(developer)
         end
       end
@@ -1325,11 +1544,11 @@ describe NotificationService, :mailer do
         reset_delivered_emails!
       end
 
-      it 'sends notification to group owners_and_masters' do
+      it 'sends notification to group owners_and_maintainers' do
         group.request_access(added_user)
 
         should_email(owner)
-        should_email(master)
+        should_email(maintainer)
         should_not_email(developer)
       end
     end
@@ -1382,11 +1601,11 @@ describe NotificationService, :mailer do
       context 'for a project in a user namespace' do
         let(:project) do
           create(:project, :public, :access_requestable) do |project|
-            project.add_master(project.owner)
+            project.add_maintainer(project.owner)
           end
         end
 
-        it 'sends notification to project owners_and_masters' do
+        it 'sends notification to project owners_and_maintainers' do
           project.request_access(added_user)
 
           should_only_email(project.owner)
@@ -1402,7 +1621,7 @@ describe NotificationService, :mailer do
           reset_delivered_emails!
         end
 
-        it 'sends notification to group owners_and_masters' do
+        it 'sends notification to group owners_and_maintainers' do
           project.request_access(added_user)
 
           should_only_email(group_owner)
@@ -1540,11 +1759,11 @@ describe NotificationService, :mailer do
       end
 
       before do
-        project.add_master(u_member)
-        project.add_master(u_watcher)
-        project.add_master(u_custom_notification_unset)
-        project.add_master(u_custom_notification_enabled)
-        project.add_master(u_custom_notification_disabled)
+        project.add_maintainer(u_member)
+        project.add_maintainer(u_watcher)
+        project.add_maintainer(u_custom_notification_unset)
+        project.add_maintainer(u_custom_notification_enabled)
+        project.add_maintainer(u_custom_notification_disabled)
 
         reset_delivered_emails!
       end
@@ -1684,15 +1903,15 @@ describe NotificationService, :mailer do
     set(:u_blocked) { create(:user, :blocked) }
     set(:u_silence) { create_user_with_notification(:disabled, 'silent', project) }
     set(:u_owner)   { project.owner }
-    set(:u_master1) { create(:user) }
-    set(:u_master2) { create(:user) }
+    set(:u_maintainer1) { create(:user) }
+    set(:u_maintainer2) { create(:user) }
     set(:u_developer) { create(:user) }
 
     before do
-      project.add_master(u_blocked)
-      project.add_master(u_silence)
-      project.add_master(u_master1)
-      project.add_master(u_master2)
+      project.add_maintainer(u_blocked)
+      project.add_maintainer(u_silence)
+      project.add_maintainer(u_maintainer1)
+      project.add_maintainer(u_maintainer2)
       project.add_developer(u_developer)
 
       reset_delivered_emails!
@@ -1707,12 +1926,12 @@ describe NotificationService, :mailer do
       describe "##{sym}" do
         subject(:notify!) { notification.send(sym, domain) }
 
-        it 'emails current watching masters' do
+        it 'emails current watching maintainers' do
           expect(Notify).to receive(:"#{sym}_email").at_least(:once).and_call_original
 
           notify!
 
-          should_only_email(u_master1, u_master2, u_owner)
+          should_only_email(u_maintainer1, u_maintainer2, u_owner)
         end
 
         it 'emails nobody if the project is missing' do
@@ -1726,26 +1945,26 @@ describe NotificationService, :mailer do
     end
 
     describe '#pages_domain_verification_failed' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_verification_failed(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
 
     describe '#pages_domain_enabled' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_enabled(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
 
     describe '#pages_domain_disabled' do
-      it 'emails current watching masters' do
+      it 'emails current watching maintainers' do
         notification.pages_domain_disabled(domain)
 
-        should_only_email(u_master1, u_master2, u_owner)
+        should_only_email(u_maintainer1, u_maintainer2, u_owner)
       end
     end
   end
@@ -1769,68 +1988,97 @@ describe NotificationService, :mailer do
     @u_guest_watcher = create_user_with_notification(:watch, 'guest_watching')
     @u_guest_custom = create_user_with_notification(:custom, 'guest_custom')
 
-    project.add_master(@u_watcher)
-    project.add_master(@u_participating)
-    project.add_master(@u_participant_mentioned)
-    project.add_master(@u_disabled)
-    project.add_master(@u_mentioned)
-    project.add_master(@u_committer)
-    project.add_master(@u_not_mentioned)
-    project.add_master(@u_lazy_participant)
-    project.add_master(@u_custom_global)
+    project.add_maintainer(@u_watcher)
+    project.add_maintainer(@u_participating)
+    project.add_maintainer(@u_participant_mentioned)
+    project.add_maintainer(@u_disabled)
+    project.add_maintainer(@u_mentioned)
+    project.add_maintainer(@u_committer)
+    project.add_maintainer(@u_not_mentioned)
+    project.add_maintainer(@u_lazy_participant)
+    project.add_maintainer(@u_custom_global)
   end
 
   # Users in the project's group but not part of project's team
   # with different notification settings
   def build_group(project)
-    group = create(:group, :public)
-    project.group = group
+    group = create_nested_group
+    project.update(namespace_id: group.id)
 
     # Group member: global=disabled, group=watch
-    @g_watcher = create_user_with_notification(:watch, 'group_watcher', project.group)
+    @g_watcher ||= create_user_with_notification(:watch, 'group_watcher', project.group)
     @g_watcher.notification_settings_for(nil).disabled!
 
     # Group member: global=watch, group=global
-    @g_global_watcher = create_global_setting_for(create(:user), :watch)
-    group.add_users([@g_watcher, @g_global_watcher], :master)
+    @g_global_watcher ||= create_global_setting_for(create(:user), :watch)
+    group.add_users([@g_watcher, @g_global_watcher], :maintainer)
+
     group
   end
 
-  def create_global_setting_for(user, level)
-    setting = user.global_notification_setting
-    setting.level = level
-    setting.save
+  # Creates a nested group only if supported
+  # to avoid errors on MySQL
+  def create_nested_group
+    if Group.supports_nested_groups?
+      parent_group = create(:group, :public)
+      child_group = create(:group, :public, parent: parent_group)
 
-    user
+      # Parent group member: global=disabled, parent_group=watch, child_group=global
+      @pg_watcher ||= create_user_with_notification(:watch, 'parent_group_watcher', parent_group)
+      @pg_watcher.notification_settings_for(nil).disabled!
+
+      # Parent group member: global=global, parent_group=disabled, child_group=global
+      @pg_disabled ||= create_user_with_notification(:disabled, 'parent_group_disabled', parent_group)
+      @pg_disabled.notification_settings_for(nil).global!
+
+      # Parent group member: global=global, parent_group=mention, child_group=global
+      @pg_mention ||= create_user_with_notification(:mention, 'parent_group_mention', parent_group)
+      @pg_mention.notification_settings_for(nil).global!
+
+      # Parent group member: global=global, parent_group=participating, child_group=global
+      @pg_participant ||= create_user_with_notification(:participating, 'parent_group_participant', parent_group)
+      @pg_mention.notification_settings_for(nil).global!
+
+      child_group
+    else
+      create(:group, :public)
+    end
   end
 
-  def create_user_with_notification(level, username, resource = project)
-    user = create(:user, username: username)
-    setting = user.notification_settings_for(resource)
-    setting.level = level
-    setting.save
+  def add_member_for_parent_group(user, project)
+    return unless Group.supports_nested_groups?
 
-    user
+    project.reload
+
+    project.group.parent.add_maintainer(user)
   end
 
-  # Create custom notifications
-  # When resource is nil it means global notification
-  def update_custom_notification(event, user, resource: nil, value: true)
-    setting = user.notification_settings_for(resource)
-    setting.update!(event => value)
+  def should_email_nested_group_user(user, times: 1, recipients: email_recipients)
+    return unless Group.supports_nested_groups?
+
+    should_email(user, times: 1, recipients: email_recipients)
+  end
+
+  def should_not_email_nested_group_user(user, recipients: email_recipients)
+    return unless Group.supports_nested_groups?
+
+    should_not_email(user, recipients: email_recipients)
   end
 
   def add_users_with_subscription(project, issuable)
     @subscriber = create :user
     @unsubscriber = create :user
+    @unsubscribed_mentioned = create :user, username: 'unsubscribed_mentioned'
     @subscribed_participant = create_global_setting_for(create(:user, username: 'subscribed_participant'), :participating)
     @watcher_and_subscriber = create_global_setting_for(create(:user), :watch)
 
-    project.add_master(@subscribed_participant)
-    project.add_master(@subscriber)
-    project.add_master(@unsubscriber)
-    project.add_master(@watcher_and_subscriber)
+    project.add_maintainer(@subscribed_participant)
+    project.add_maintainer(@subscriber)
+    project.add_maintainer(@unsubscriber)
+    project.add_maintainer(@watcher_and_subscriber)
+    project.add_maintainer(@unsubscribed_mentioned)
 
+    issuable.subscriptions.create(user: @unsubscribed_mentioned, project: project, subscribed: false)
     issuable.subscriptions.create(user: @subscriber, project: project, subscribed: true)
     issuable.subscriptions.create(user: @subscribed_participant, project: project, subscribed: true)
     issuable.subscriptions.create(user: @unsubscriber, project: project, subscribed: false)

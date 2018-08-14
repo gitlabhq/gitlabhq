@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe PipelinesFinder do
-  let(:project) { create(:project, :repository) }
-
-  subject { described_class.new(project, params).execute }
+  let(:project) { create(:project, :public, :repository) }
+  let(:current_user) { nil }
+  let(:params) { {} }
+  subject { described_class.new(project, current_user, params).execute }
 
   describe "#execute" do
     context 'when params is empty' do
@@ -200,6 +201,48 @@ describe PipelinesFinder do
 
         it 'sorts as id: :desc' do
           is_expected.to eq(pipelines.sort_by { |p| -p.id })
+        end
+      end
+    end
+
+    context 'when sha is specified' do
+      let!(:pipeline) { create(:ci_pipeline, project: project, sha: '97de212e80737a608d939f648d959671fb0a0142') }
+
+      context 'when sha exists' do
+        let(:params) { { sha: '97de212e80737a608d939f648d959671fb0a0142' } }
+
+        it 'returns matched pipelines' do
+          is_expected.to eq([pipeline])
+        end
+      end
+
+      context 'when sha does not exist' do
+        let(:params) { { sha: 'invalid-sha' } }
+
+        it 'returns empty' do
+          is_expected.to be_empty
+        end
+      end
+    end
+
+    context 'when the project has limited access to piplines' do
+      let(:project) { create(:project, :private, :repository) }
+      let(:current_user) { create(:user) }
+      let!(:pipelines) { create_list(:ci_pipeline, 2, project: project) }
+
+      context 'when the user has access' do
+        before do
+          project.add_developer(current_user)
+        end
+
+        it 'is expected to return pipelines' do
+          is_expected.to contain_exactly(*pipelines)
+        end
+      end
+
+      context 'the user is not allowed to read pipelines' do
+        it 'returns empty' do
+          is_expected.to be_empty
         end
       end
     end

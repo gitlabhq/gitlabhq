@@ -10,9 +10,9 @@ AllCops:
   Exclude:
     - 'vendor/**/*'
     - 'node_modules/**/*'
-    - 'db/**/*'
     - 'db/fixtures/**/*'
-    - 'ee/db/**/*'
+    - 'db/schema.rb'
+    - 'ee/db/geo/schema.rb'
     - 'tmp/**/*'
     - 'bin/**/*'
     - 'generator_templates/**/*'
@@ -31,6 +31,84 @@ Style/MutableConstant:
     - 'ee/db/post_migrate/**/*'
     - 'ee/db/geo/migrate/**/*'
 
+# TODO: Move this to gitlab-styles
+Style/SafeNavigation:
+  Enabled: false
+
+Naming/FileName:
+  ExpectMatchingDefinition: true
+  Exclude:
+    - 'db/**/*'
+    - 'ee/db/**/*'
+    - 'spec/**/*'
+    - 'features/**/*'
+    - 'ee/spec/**/*'
+    - 'qa/spec/**/*'
+    - 'qa/qa/specs/**/*'
+    - 'qa/bin/*'
+    - 'config/**/*'
+    - 'lib/generators/**/*'
+    - 'ee/lib/generators/**/*'
+  IgnoreExecutableScripts: true
+  AllowedAcronyms:
+    - EE
+    - JSON
+    - LDAP
+    - IO
+    - HMAC
+    - QA
+    - ENV
+    - STL
+    - PDF
+    - SVG
+    - CTE
+    - DN
+    - RSA
+    - CI
+    - CD
+    - OAuth
+    # default ones:
+    - CLI
+    - DSL
+    - ACL
+    - API
+    - ASCII
+    - CPU
+    - CSS
+    - DNS
+    - EOF
+    - GUID
+    - HTML
+    - HTTP
+    - HTTPS
+    - ID
+    - IP
+    - JSON
+    - LHS
+    - QPS
+    - RAM
+    - RHS
+    - RPC
+    - SLA
+    - SMTP
+    - SQL
+    - SSH
+    - TCP
+    - TLS
+    - TTL
+    - UDP
+    - UI
+    - UID
+    - UUID
+    - URI
+    - URL
+    - UTF8
+    - VM
+    - XML
+    - XMPP
+    - XSRF
+    - XSS
+
 # Gitlab ###################################################################
 
 Gitlab/ModuleWithInstanceVariables:
@@ -45,6 +123,9 @@ Gitlab/ModuleWithInstanceVariables:
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb
+
+Gitlab/HTTParty:
+  Enabled: true
 
 GitlabSecurity/PublicSend:
   Enabled: true

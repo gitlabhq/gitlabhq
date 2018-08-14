@@ -1,4 +1,4 @@
-FROM ruby:2.4
+FROM ruby:2.4-stretch
 LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
@@ -27,6 +27,15 @@ RUN apt-get update -q && apt-get install -y google-chrome-stable && apt-get clea
 #
 RUN wget -q https://chromedriver.storage.googleapis.com/$(wget -q -O - https://chromedriver.storage.googleapis.com/LATEST_RELEASE)/chromedriver_linux64.zip
 RUN unzip chromedriver_linux64.zip -d /usr/local/bin
+
+##
+# Install gcloud and kubectl CLI used in Auto DevOps test to create K8s
+# clusters
+#
+RUN export CLOUD_SDK_REPO="cloud-sdk-$(lsb_release -c -s)" && \
+    echo "deb http://packages.cloud.google.com/apt $CLOUD_SDK_REPO main" | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list && \
+    curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add - && \
+    apt-get update -y && apt-get install google-cloud-sdk kubectl -y
 
 WORKDIR /home/qa
 COPY ./Gemfile* ./

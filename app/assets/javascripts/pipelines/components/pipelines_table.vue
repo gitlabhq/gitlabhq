@@ -1,85 +1,82 @@
 <script>
-  import modal from '~/vue_shared/components/modal.vue';
-  import { s__, sprintf } from '~/locale';
-  import pipelinesTableRowComponent from './pipelines_table_row.vue';
-  import eventHub from '../event_hub';
+import Modal from '~/vue_shared/components/gl_modal.vue';
+import { s__, sprintf } from '~/locale';
+import PipelinesTableRowComponent from './pipelines_table_row.vue';
+import eventHub from '../event_hub';
 
-  /**
-   * Pipelines Table Component.
-   *
-   * Given an array of objects, renders a table.
-   */
-  export default {
-    components: {
-      pipelinesTableRowComponent,
-      modal,
+/**
+ * Pipelines Table Component.
+ *
+ * Given an array of objects, renders a table.
+ */
+export default {
+  components: {
+    PipelinesTableRowComponent,
+    Modal,
+  },
+  props: {
+    pipelines: {
+      type: Array,
+      required: true,
     },
-    props: {
-      pipelines: {
-        type: Array,
-        required: true,
-      },
-      updateGraphDropdown: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      autoDevopsHelpPath: {
-        type: String,
-        required: true,
-      },
-      viewType: {
-        type: String,
-        required: true,
-      },
+    updateGraphDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
-    data() {
-      return {
-        pipelineId: '',
-        endpoint: '',
-        type: '',
-      };
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
     },
-    computed: {
-      modalTitle() {
-        return this.type === 'stop' ?
-          sprintf(s__('Pipeline|Stop pipeline #%{pipelineId}?'), {
-            pipelineId: `'${this.pipelineId}'`,
-          }, false) :
-          sprintf(s__('Pipeline|Retry pipeline #%{pipelineId}?'), {
-            pipelineId: `'${this.pipelineId}'`,
-          }, false);
-      },
-      modalText() {
-        return this.type === 'stop' ?
-          sprintf(s__('Pipeline|You’re about to stop pipeline %{pipelineId}.'), {
-            pipelineId: `<strong>#${this.pipelineId}</strong>`,
-          }, false) :
-          sprintf(s__('Pipeline|You’re about to retry pipeline %{pipelineId}.'), {
-            pipelineId: `<strong>#${this.pipelineId}</strong>`,
-          }, false);
-      },
-      primaryButtonLabel() {
-        return this.type === 'stop' ? s__('Pipeline|Stop pipeline') : s__('Pipeline|Retry pipeline');
-      },
+    viewType: {
+      type: String,
+      required: true,
     },
-    created() {
-      eventHub.$on('openConfirmationModal', this.setModalData);
+  },
+  data() {
+    return {
+      pipelineId: '',
+      endpoint: '',
+      cancelingPipeline: null,
+    };
+  },
+  computed: {
+    modalTitle() {
+      return sprintf(
+        s__('Pipeline|Stop pipeline #%{pipelineId}?'),
+        {
+          pipelineId: `${this.pipelineId}`,
+        },
+        false,
+      );
     },
-    beforeDestroy() {
-      eventHub.$off('openConfirmationModal', this.setModalData);
+    modalText() {
+      return sprintf(
+        s__('Pipeline|You’re about to stop pipeline %{pipelineId}.'),
+        {
+          pipelineId: `<strong>#${this.pipelineId}</strong>`,
+        },
+        false,
+      );
     },
-    methods: {
-      setModalData(data) {
-        this.pipelineId = data.pipelineId;
-        this.endpoint = data.endpoint;
-        this.type = data.type;
-      },
-      onSubmit() {
-        eventHub.$emit('postAction', this.endpoint);
-      },
+  },
+  created() {
+    eventHub.$on('openConfirmationModal', this.setModalData);
+  },
+  beforeDestroy() {
+    eventHub.$off('openConfirmationModal', this.setModalData);
+  },
+  methods: {
+    setModalData(data) {
+      this.pipelineId = data.pipelineId;
+      this.endpoint = data.endpoint;
     },
-  };
+    onSubmit() {
+      eventHub.$emit('postAction', this.endpoint);
+      this.cancelingPipeline = this.pipelineId;
+    },
+  },
+};
 </script>
 <template>
   <div class="ci-table">
@@ -119,21 +116,18 @@
       :update-graph-dropdown="updateGraphDropdown"
       :auto-devops-help-path="autoDevopsHelpPath"
       :view-type="viewType"
+      :canceling-pipeline="cancelingPipeline"
     />
+
     <modal
       id="confirmation-modal"
-      :title="modalTitle"
-      :text="modalText"
-      kind="danger"
-      :primary-button-label="primaryButtonLabel"
+      :header-title-text="modalTitle"
+      :footer-primary-button-text="s__('Pipeline|Stop pipeline')"
+      footer-primary-button-variant="danger"
       @submit="onSubmit"
     >
-      <template
-        slot="body"
-        slot-scope="props"
-      >
-        <p v-html="props.text"></p>
-      </template>
+      <span v-html="modalText"></span>
     </modal>
+
   </div>
 </template>

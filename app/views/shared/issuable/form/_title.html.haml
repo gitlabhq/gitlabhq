@@ -6,10 +6,10 @@
 
 %div{ class: div_class }
   = form.text_field :title, required: true, maxlength: 255, autofocus: true,
-      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title'
+      autocomplete: 'off', class: 'form-control pad qa-issuable-form-title', placeholder: _('Title')
 
   - if issuable.respond_to?(:work_in_progress?)
-    %p.help-block
+    %p.form-text.text-muted
       .js-wip-explanation
         %a.js-toggle-wip{ href: '', tabindex: -1 }
           Remove the
@@ -30,7 +30,4 @@
         merge request from being merged before it's ready.
 
   - if no_issuable_templates && can?(current_user, :push_code, issuable.project)
-    %p.help-block
-      Add
-      = link_to 'description templates', help_page_path('user/project/description_templates'), tabindex: -1
-      to help your contributors communicate effectively!
+    = render 'shared/issuable/form/default_templates'

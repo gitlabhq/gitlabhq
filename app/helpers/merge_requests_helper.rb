@@ -86,6 +86,8 @@ module MergeRequestsHelper
   end
 
   def version_index(merge_request_diff)
+    return nil if @merge_request_diffs.empty?
+
     @merge_request_diffs.size - @merge_request_diffs.index(merge_request_diff)
   end
 
@@ -97,15 +99,16 @@ module MergeRequestsHelper
     {
       merge_when_pipeline_succeeds: true,
       should_remove_source_branch: true,
-      sha: merge_request.diff_head_sha
-    }.merge(merge_params_ee(merge_request))
+      sha: merge_request.diff_head_sha,
+      squash: merge_request.squash
+    }
   end
 
   def tab_link_for(merge_request, tab, options = {}, &block)
     data_attrs = {
       action: tab.to_s,
       target: "##{tab}",
-      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+      toggle: options.fetch(:force_link, false) ? '' : 'tabvue'
     }
 
     url = case tab
@@ -125,8 +128,8 @@ module MergeRequestsHelper
     link_to(url[merge_request.project, merge_request], data: data_attrs, &block)
   end
 
-  def allow_maintainer_push_unavailable_reason(merge_request)
-    return if merge_request.can_allow_maintainer_to_push?(current_user)
+  def allow_collaboration_unavailable_reason(merge_request)
+    return if merge_request.can_allow_collaboration?(current_user)
 
     minimum_visibility = [merge_request.target_project.visibility_level,
                           merge_request.source_project.visibility_level].min
@@ -138,7 +141,15 @@ module MergeRequestsHelper
     end
   end
 
-  def merge_params_ee(merge_request)
-    {}
+  def merge_request_source_project_for_project(project = @project)
+    unless can?(current_user, :create_merge_request_in, project)
+      return nil
+    end
+
+    if can?(current_user, :create_merge_request_from, project)
+      project
+    else
+      current_user.fork_of(project)
+    end
   end
 end

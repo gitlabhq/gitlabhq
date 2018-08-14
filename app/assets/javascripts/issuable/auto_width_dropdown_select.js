@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 let instanceCount = 0;
 
 class AutoWidthDropdownSelect {
@@ -8,7 +10,7 @@ class AutoWidthDropdownSelect {
   }
 
   init() {
-    const dropdownClass = this.dropdownClass;
+    const { dropdownClass } = this;
     this.$selectElement.select2({
       dropdownCssClass: dropdownClass,
       ...AutoWidthDropdownSelect.selectOptions(this.dropdownClass),

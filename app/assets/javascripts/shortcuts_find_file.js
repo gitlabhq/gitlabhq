@@ -13,8 +13,8 @@ export default class ShortcutsFindFile extends ShortcutsNavigation {
         element === this.projectFindFile.inputElement[0] &&
         (combo === 'up' || combo === 'down' || combo === 'esc' || combo === 'enter')
       ) {
-        // when press up/down key in textbox, cusor prevent to move to home/end
-        event.preventDefault();
+        // when press up/down key in textbox, cursor prevent to move to home/end
+        e.preventDefault();
         return false;
       }
 

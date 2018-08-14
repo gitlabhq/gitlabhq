@@ -1,15 +1,20 @@
-/* eslint-disable no-param-reassign, comma-dangle */
+/* eslint-disable no-param-reassign */
 
 import Vue from 'vue';
+import actionsMixin from '../mixins/line_conflict_actions';
+import utilsMixin from '../mixins/line_conflict_utils';
 
 ((global) => {
   global.mergeConflicts = global.mergeConflicts || {};
 
   global.mergeConflicts.parallelConflictLines = Vue.extend({
+    mixins: [utilsMixin, actionsMixin],
     props: {
-      file: Object
+      file: {
+        type: Object,
+        required: true,
+      },
     },
-    mixins: [global.mergeConflicts.utils, global.mergeConflicts.actions],
     template: `
       <table>
         <tr class="line_holder parallel" v-for="section in file.parallelLines">

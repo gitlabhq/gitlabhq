@@ -21,15 +21,38 @@ describe Gitlab::Verify::LfsObjects do
       FileUtils.rm_f(lfs_object.file.path)
 
       expect(failures.keys).to contain_exactly(lfs_object)
-      expect(failure).to be_a(Errno::ENOENT)
-      expect(failure.to_s).to include(lfs_object.file.path)
+      expect(failure).to include('No such file or directory')
+      expect(failure).to include(lfs_object.file.path)
     end
 
     it 'fails LFS objects with a mismatched oid' do
       File.truncate(lfs_object.file.path, 0)
 
       expect(failures.keys).to contain_exactly(lfs_object)
-      expect(failure.to_s).to include('Checksum mismatch')
+      expect(failure).to include('Checksum mismatch')
+    end
+
+    context 'with remote files' do
+      let(:file) { double(:file) }
+
+      before do
+        stub_lfs_object_storage
+        lfs_object.update!(file_store: ObjectStorage::Store::REMOTE)
+        expect(CarrierWave::Storage::Fog::File).to receive(:new).and_return(file)
+      end
+
+      it 'passes LFS objects in object storage that exist' do
+        expect(file).to receive(:exists?).and_return(true)
+
+        expect(failures).to eq({})
+      end
+
+      it 'fails LFS objects in object storage that do not exist' do
+        expect(file).to receive(:exists?).and_return(false)
+
+        expect(failures.keys).to contain_exactly(lfs_object)
+        expect(failure).to include('Remote object does not exist')
+      end
     end
   end
 end

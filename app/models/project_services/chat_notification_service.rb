@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Base class for Chat notifications services
 # This class is not meant to be used directly, but only to inherit from.
 class ChatNotificationService < Service
@@ -8,7 +10,7 @@ class ChatNotificationService < Service
   prop_accessor :webhook, :username, :channel
   boolean_accessor :notify_only_broken_pipelines, :notify_only_default_branch
 
-  validates :webhook, presence: true, url: true, if: :activated?
+  validates :webhook, presence: true, public_url: true, if: :activated?
 
   def initialize_properties
     # Custom serialized properties initialization
@@ -21,8 +23,16 @@ class ChatNotificationService < Service
     end
   end
 
+  def confidential_issue_channel
+    properties['confidential_issue_channel'].presence || properties['issue_channel']
+  end
+
+  def confidential_note_channel
+    properties['confidential_note_channel'].presence || properties['note_channel']
+  end
+
   def self.supported_events
-    %w[push issue confidential_issue merge_request note tag_push
+    %w[push issue confidential_issue merge_request note confidential_note tag_push
        pipeline wiki_page]
   end
 
@@ -55,7 +65,9 @@ class ChatNotificationService < Service
 
     return false unless message
 
-    channel_name = get_channel_field(object_kind).presence || channel
+    event_type = data[:event_type] || object_kind
+
+    channel_name = get_channel_field(event_type).presence || channel
 
     opts = {}
     opts[:channel] = channel_name if channel_name
@@ -145,6 +157,7 @@ class ChatNotificationService < Service
   end
 
   def notify_for_ref?(data)
+    return true if data[:object_kind] == 'tag_push'
     return true if data.dig(:object_attributes, :tag)
     return true unless notify_only_default_branch?
 

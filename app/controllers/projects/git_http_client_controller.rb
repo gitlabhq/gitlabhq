@@ -7,6 +7,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
   attr_reader :authentication_result, :redirected_path
 
   delegate :actor, :authentication_abilities, to: :authentication_result, allow_nil: true
+  delegate :type, to: :authentication_result, allow_nil: true, prefix: :auth_result
 
   alias_method :user, :actor
   alias_method :authenticated_user, :actor
@@ -52,7 +53,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     end
 
     send_challenges
-    render plain: "HTTP Basic: Access denied\n", status: 401
+    render plain: "HTTP Basic: Access denied\n", status: :unauthorized
   rescue Gitlab::Auth::MissingPersonalAccessTokenError
     render_missing_personal_access_token
   end
@@ -82,7 +83,7 @@ class Projects::GitHttpClientController < Projects::ApplicationController
     render plain: "HTTP Basic: Access denied\n" \
                   "You must use a personal access token with 'api' scope for Git over HTTP.\n" \
                   "You can generate one at #{profile_personal_access_tokens_url}",
-           status: 401
+           status: :unauthorized
   end
 
   def repository

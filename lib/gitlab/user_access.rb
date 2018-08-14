@@ -51,7 +51,7 @@ module Gitlab
       return false unless can_access_git?
 
       if protected?(ProtectedBranch, project, ref)
-        user.can?(:delete_protected_branch, project)
+        user.can?(:push_to_delete_protected_branch, project)
       else
         user.can?(:push_code, project)
       end
@@ -63,15 +63,14 @@ module Gitlab
 
     request_cache def can_push_to_branch?(ref)
       return false unless can_access_git?
+      return false unless project
+
+      return false if !user.can?(:push_code, project) && !project.branch_allows_collaboration?(user, ref)
 
       if protected?(ProtectedBranch, project, ref)
-        return true if project.user_can_push_to_empty_repo?(user)
-
         protected_branch_accessible_to?(ref, action: :push)
-      elsif user.can?(:push_code, project)
-        true
       else
-        project.branch_allows_maintainer_push?(user, ref)
+        true
       end
     end
 
@@ -104,6 +103,7 @@ module Gitlab
     def protected_branch_accessible_to?(ref, action:)
       ProtectedBranch.protected_ref_accessible_to?(
         ref, user,
+        project: project,
         action: action,
         protected_refs: project.protected_branches)
     end
@@ -111,6 +111,7 @@ module Gitlab
     def protected_tag_accessible_to?(ref, action:)
       ProtectedTag.protected_ref_accessible_to?(
         ref, user,
+        project: project,
         action: action,
         protected_refs: project.protected_tags)
     end

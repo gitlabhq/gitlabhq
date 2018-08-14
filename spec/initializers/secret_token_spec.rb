@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../config/initializers/secret_token'
+require_relative '../../config/initializers/01_secret_token'
 
 describe 'create_tokens' do
   include StubENV

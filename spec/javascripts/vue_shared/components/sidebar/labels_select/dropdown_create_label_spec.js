@@ -2,14 +2,16 @@ import Vue from 'vue';
 
 import dropdownCreateLabelComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_create_label.vue';
 
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+
 import { mockSuggestedColors } from './mock_data';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
-
-const createComponent = () => {
+const createComponent = (headerTitle) => {
   const Component = Vue.extend(dropdownCreateLabelComponent);
 
-  return mountComponent(Component);
+  return mountComponent(Component, {
+    headerTitle,
+  });
 };
 
 describe('DropdownCreateLabelComponent', () => {
@@ -41,9 +43,17 @@ describe('DropdownCreateLabelComponent', () => {
       expect(backButtonEl.querySelector('.fa-arrow-left')).not.toBe(null);
     });
 
-    it('renders component header element', () => {
+    it('renders component header element as `Create new label` when `headerTitle` prop is not provided', () => {
       const headerEl = vm.$el.querySelector('.dropdown-title');
       expect(headerEl.innerText.trim()).toContain('Create new label');
+    });
+
+    it('renders component header element with value of `headerTitle` prop', () => {
+      const headerTitle = 'Create project label';
+      const vmWithHeaderTitle = createComponent(headerTitle);
+      const headerEl = vmWithHeaderTitle.$el.querySelector('.dropdown-title');
+      expect(headerEl.innerText.trim()).toContain(headerTitle);
+      vmWithHeaderTitle.$destroy();
     });
 
     it('renders `Close` button on component header', () => {

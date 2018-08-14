@@ -1,21 +1,22 @@
 .page-with-contextual-sidebar {
   transition: padding-left $sidebar-transition-duration;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 
-  @media (min-width: $screen-lg-min) {
+  @include media-breakpoint-up(lg) {
     padding-left: $contextual-sidebar-width;
   }
 
-  .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
+  .issues-bulk-update.right-sidebar.right-sidebar-expanded
+    .issuable-sidebar-header {
     padding: 10px 0 15px;
   }
 }
 
 .page-with-icon-sidebar {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
 }
@@ -25,19 +26,25 @@
   margin-right: 2px;
   width: $contextual-sidebar-width;
 
-  a {
+  > a,
+  > button {
     transition: padding $sidebar-transition-duration;
     font-weight: $gl-font-weight-bold;
     display: flex;
+    width: 100%;
     align-items: center;
     padding: 10px 16px 10px 10px;
     color: $gl-text-color;
-  }
+    background-color: transparent;
+    border: 0;
+    text-align: left;
 
-  &:hover,
-  a:hover {
-    background-color: $link-hover-background;
-    color: $gl-text-color;
+    &:hover,
+    &:focus {
+      background-color: $link-hover-background;
+      color: $gl-text-color;
+      outline: 0;
+    }
   }
 
   .avatar-container {
@@ -48,6 +55,11 @@
   .sidebar-context-title {
     overflow: hidden;
     text-overflow: ellipsis;
+
+    &.text-secondary {
+      font-weight: normal;
+      font-size: 0.8em;
+    }
   }
 }
 
@@ -69,13 +81,13 @@
   bottom: 0;
   left: 0;
   background-color: $gray-light;
-  box-shadow: inset -2px 0 0 $border-color;
+  box-shadow: inset -1px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
 
   &:not(.sidebar-collapsed-desktop) {
-    @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
-      box-shadow: inset -2px 0 0 $border-color,
-                  2px 1px 3px $dropdown-shadow-color;
+    @media (min-width: map-get($grid-breakpoints, sm)) and (max-width: map-get($grid-breakpoints, sm)) {
+      box-shadow: inset -1px 0 0 $border-color,
+        2px 1px 3px $dropdown-shadow-color;
     }
   }
 
@@ -86,7 +98,7 @@
       overflow-x: hidden;
     }
 
-    .badge:not(.fly-out-badge),
+    .badge.badge-pill:not(.fly-out-badge),
     .sidebar-context-title,
     .nav-item-name {
       display: none;
@@ -140,7 +152,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     left: (-$contextual-sidebar-width);
   }
 
@@ -164,7 +176,7 @@
   width: 100%;
   overflow: auto;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     overflow: hidden;
   }
 }
@@ -205,8 +217,8 @@
 
   > li {
     > a {
-      @media (min-width: $screen-sm-min) {
-        margin-right: 2px;
+      @include media-breakpoint-up(sm) {
+        margin-right: 1px;
       }
 
       &:hover {
@@ -216,11 +228,11 @@
 
     &.is-showing-fly-out {
       > a {
-        margin-right: 2px;
+        margin-right: 1px;
       }
 
       .sidebar-sub-level-items {
-        @media (min-width: $screen-sm-min) {
+        @include media-breakpoint-up(sm) {
           position: fixed;
           top: 0;
           left: 0;
@@ -234,7 +246,7 @@
           border-radius: 0 3px 3px 0;
 
           &::before {
-            content: "";
+            content: '';
             position: absolute;
             top: -30px;
             bottom: -30px;
@@ -275,7 +287,7 @@
       }
     }
 
-    .badge {
+    .badge.badge-pill {
       background-color: $inactive-badge-background;
       color: $gl-text-color-secondary;
     }
@@ -289,7 +301,7 @@
         padding-left: 11px;
       }
 
-      .badge {
+      .badge.badge-pill {
         font-weight: $gl-font-weight-bold;
       }
 
@@ -305,19 +317,18 @@
   }
 }
 
-
 // Collapsed nav
 
 .toggle-sidebar-button,
 .close-nav-button {
-  width: $contextual-sidebar-width - 2px;
+  width: $contextual-sidebar-width - 1px;
   transition: width $sidebar-transition-duration;
   position: fixed;
   bottom: 0;
   padding: $gl-padding;
   background-color: $gray-light;
   border: 0;
-  border-top: 2px solid $border-color;
+  border-top: 1px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
@@ -338,7 +349,7 @@
 }
 
 .toggle-sidebar-button {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: none;
   }
 }
@@ -372,7 +383,7 @@
 
   .toggle-sidebar-button {
     padding: 16px;
-    width: $contextual-sidebar-collapsed-width - 2px;
+    width: $contextual-sidebar-collapsed-width - 1px;
 
     .collapse-text,
     .icon-angle-double-left {
@@ -419,7 +430,7 @@
     color: $gl-text-color-secondary;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: flex;
     align-items: center;
 
@@ -428,7 +439,7 @@
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     + .breadcrumbs-links {
       padding-left: $gl-padding;
       border-left: 1px solid $gl-text-color-quaternary;
@@ -436,7 +447,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .close-nav-button {
     display: flex;
   }
@@ -453,19 +464,4 @@
     width: 100%;
     z-index: 300;
   }
-}
-
-
-// Make issue boards full-height now that sub-nav is gone
-
-.boards-list {
-  height: calc(100vh - #{$header-height});
-
-  @media (min-width: $screen-sm-min) {
-    height: calc(100vh - 180px);
-  }
-}
-
-.with-performance-bar .boards-list {
-  height: calc(100vh - #{$header-height} - #{$performance-bar-height});
 }

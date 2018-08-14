@@ -1,44 +1,76 @@
+# frozen_string_literal: true
+
 module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
     include Gitlab::SQL::Pattern
+    include IgnorableColumn
     include RedisCacheable
+    include ChronicDurationAttribute
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
     UPDATE_DB_RUNNER_INFO_EVERY = 40.minutes
     AVAILABLE_SCOPES = %w[specific shared active paused online].freeze
-    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level].freeze
+    FORM_EDITABLE = %i[description tag_list active run_untagged locked access_level maximum_timeout_human_readable].freeze
+
+    ignore_column :is_shared
 
     has_many :builds
-    has_many :runner_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_many :runner_projects, inverse_of: :runner, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
     has_many :projects, through: :runner_projects
+    has_many :runner_namespaces, inverse_of: :runner
+    has_many :groups, through: :runner_namespaces
 
     has_one :last_build, ->() { order('id DESC') }, class_name: 'Ci::Build'
 
     before_validation :set_default_values
 
-    scope :specific, ->() { where(is_shared: false) }
-    scope :shared, ->() { where(is_shared: true) }
-    scope :active, ->() { where(active: true) }
-    scope :paused, ->() { where(active: false) }
-    scope :online, ->() { where('contacted_at > ?', contact_time_deadline) }
-    scope :ordered, ->() { order(id: :desc) }
+    scope :active, -> { where(active: true) }
+    scope :paused, -> { where(active: false) }
+    scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
+    scope :ordered, -> { order(id: :desc) }
 
-    scope :owned_or_shared, ->(project_id) do
-      joins('LEFT JOIN ci_runner_projects ON ci_runner_projects.runner_id = ci_runners.id')
-        .where("ci_runner_projects.project_id = :project_id OR ci_runners.is_shared = true", project_id: project_id)
+    # BACKWARD COMPATIBILITY: There are needed to maintain compatibility with `AVAILABLE_SCOPES` used by `lib/api/runners.rb`
+    scope :deprecated_shared, -> { instance_type }
+    # this should get replaced with `project_type.or(group_type)` once using Rails5
+    scope :deprecated_specific, -> { where(runner_type: [runner_types[:project_type], runner_types[:group_type]]) }
+
+    scope :belonging_to_project, -> (project_id) {
+      joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
+    }
+
+    scope :belonging_to_parent_group_of_project, -> (project_id) {
+      project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
+      hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
+
+      joins(:groups).where(namespaces: { id: hierarchy_groups })
+    }
+
+    scope :owned_or_instance_wide, -> (project_id) do
+      union = Gitlab::SQL::Union.new(
+        [belonging_to_project(project_id), belonging_to_parent_group_of_project(project_id), instance_type],
+        remove_duplicates: false
+      )
+      from("(#{union.to_sql}) ci_runners")
     end
 
     scope :assignable_for, ->(project) do
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
       where(locked: false)
-        .where.not("id IN (#{project.runners.select(:id).to_sql})").specific
+        .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
+        .project_type
     end
 
     validate :tag_constraints
     validates :access_level, presence: true
+    validates :runner_type, presence: true
+
+    validate :no_projects, unless: :project_type?
+    validate :no_groups, unless: :group_type?
+    validate :any_project, if: :project_type?
+    validate :exactly_one_group, if: :group_type?
 
     acts_as_taggable
 
@@ -49,7 +81,19 @@ module Ci
       ref_protected: 1
     }
 
-    cached_attr_reader :version, :revision, :platform, :architecture, :contacted_at, :ip_address
+    enum runner_type: {
+      instance_type: 1,
+      group_type: 2,
+      project_type: 3
+    }
+
+    cached_attr_reader :version, :revision, :platform, :architecture, :ip_address, :contacted_at
+
+    chronic_duration_attr :maximum_timeout_human_readable, :maximum_timeout
+
+    validates :maximum_timeout, allow_nil: true,
+                                numericality: { greater_than_or_equal_to: 600,
+                                                message: 'needs to be at least 10 minutes' }
 
     # Searches for runners matching the given query.
     #
@@ -76,19 +120,27 @@ module Ci
     end
 
     def assign_to(project, current_user = nil)
-      self.is_shared = false if shared?
-      self.save
-      project.runner_projects.create(runner_id: self.id)
+      if instance_type?
+        self.runner_type = :project_type
+      elsif group_type?
+        raise ArgumentError, 'Transitioning a group runner to a project runner is not supported'
+      end
+
+      begin
+        transaction do
+          self.projects << project
+          self.save!
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        self.errors.add(:assign_to, e.message)
+        false
+      end
     end
 
     def display_name
       return short_sha if description.blank?
 
       description
-    end
-
-    def shared?
-      is_shared
     end
 
     def online?
@@ -109,8 +161,12 @@ module Ci
       runner_projects.count == 1
     end
 
-    def specific?
-      !shared?
+    def assigned_to_group?
+      runner_namespaces.any?
+    end
+
+    def assigned_to_project?
+      runner_projects.any?
     end
 
     def can_pick?(build)
@@ -132,11 +188,10 @@ module Ci
     end
 
     def predefined_variables
-      [
-        { key: 'CI_RUNNER_ID', value: id.to_s, public: true },
-        { key: 'CI_RUNNER_DESCRIPTION', value: description, public: true },
-        { key: 'CI_RUNNER_TAGS', value: tag_list.to_s, public: true }
-      ]
+      Gitlab::Ci::Variables::Collection.new
+        .append(key: 'CI_RUNNER_ID', value: id.to_s)
+        .append(key: 'CI_RUNNER_DESCRIPTION', value: description)
+        .append(key: 'CI_RUNNER_TAGS', value: tag_list.to_s)
     end
 
     def tick_runner_queue
@@ -162,9 +217,13 @@ module Ci
 
       cache_attributes(values)
 
-      if persist_cached_data?
-        self.assign_attributes(values)
-        self.save if self.changed?
+      # We save data without validation, it will always change due to `contacted_at`
+      self.update_columns(values) if persist_cached_data?
+    end
+
+    def pick_build!(build)
+      if can_pick?(build)
+        tick_runner_queue
       end
     end
 
@@ -199,7 +258,31 @@ module Ci
     end
 
     def assignable_for?(project_id)
-      is_shared? || projects.exists?(id: project_id)
+      self.class.owned_or_instance_wide(project_id).where(id: self.id).any?
+    end
+
+    def no_projects
+      if projects.any?
+        errors.add(:runner, 'cannot have projects assigned')
+      end
+    end
+
+    def no_groups
+      if groups.any?
+        errors.add(:runner, 'cannot have groups assigned')
+      end
+    end
+
+    def any_project
+      unless projects.any?
+        errors.add(:runner, 'needs to be assigned to at least one project')
+      end
+    end
+
+    def exactly_one_group
+      unless groups.one?
+        errors.add(:runner, 'needs to be assigned to exactly one group')
+      end
     end
 
     def accepting_tags?(build)

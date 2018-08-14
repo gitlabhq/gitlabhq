@@ -4,7 +4,7 @@ module Gitlab
   module BackgroundMigration
     # This class processes a batch of rows in `untracked_files_for_uploads` by
     # adding each file to the `uploads` table if it does not exist.
-    class PopulateUntrackedUploads # rubocop:disable Metrics/ClassLength
+    class PopulateUntrackedUploads
       def perform(start_id, end_id)
         return unless migrate?
 

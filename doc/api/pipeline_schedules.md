@@ -108,7 +108,7 @@ POST /projects/:id/pipeline_schedules
 | `description` | string  | yes      | The description of pipeline schedule         |
 | `ref` | string  | yes      | The branch/tag name will be triggered         |
 | `cron ` | string  | yes      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
-| `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) (default: `'UTC'`)     |
+| `cron_timezone ` | string  | no      | The timezone supported by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) (default: `'UTC'`)     |
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially (default: `true`) |
 
 ```sh
@@ -153,7 +153,7 @@ PUT /projects/:id/pipeline_schedules/:pipeline_schedule_id
 | `description` | string  | no      | The description of pipeline schedule         |
 | `ref` | string  | no      | The branch/tag name will be triggered         |
 | `cron ` | string  | no      | The cron (e.g. `0 1 * * *`) ([Cron syntax](https://en.wikipedia.org/wiki/Cron))       |
-| `cron_timezone ` | string  | no      | The timezone supproted by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
+| `cron_timezone ` | string  | no      | The timezone supported by `ActiveSupport::TimeZone` (e.g. `Pacific Time (US & Canada)`) or `TZInfo::Timezone` (e.g. `America/Los_Angeles`)      |
 | `active ` | boolean  | no      | The activation of pipeline schedule. If false is set, the pipeline schedule will deactivated initially. |
 
 ```sh

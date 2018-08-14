@@ -10,7 +10,7 @@
     = render "projects/commits/commit_list"
     = render "projects/diffs/diffs", diffs: @diffs, environment: @environment
   - else
-    .light-well
+    .card.bg-light
       .center
         %h4
           = s_("CompareBranches|There isn't anything to compare.")

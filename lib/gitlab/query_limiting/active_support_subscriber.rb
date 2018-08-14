@@ -4,7 +4,7 @@ module Gitlab
       attach_to :active_record
 
       def sql(event)
-        unless event.payload[:name] == 'CACHE'
+        unless event.payload.fetch(:cached, event.payload[:name] == 'CACHE')
           Transaction.current&.increment
         end
       end

@@ -1,12 +1,14 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import mountComponent from '../../helpers/vue_mount_component_helper';
+import createStore from '~/notes/stores';
+import { mountComponentWithStore } from 'spec/helpers';
 
 const discussionFixture = 'merge_requests/diff_discussion.json';
 const imageDiscussionFixture = 'merge_requests/image_diff_discussion.json';
 
 describe('diff_with_note', () => {
+  let store;
   let vm;
   const diffDiscussionMock = getJSONFixture(discussionFixture)[0];
   const diffDiscussion = convertObjectPropsToCamelCase(diffDiscussionMock);
@@ -29,9 +31,21 @@ describe('diff_with_note', () => {
     },
   };
 
+  beforeEach(() => {
+    store = createStore();
+    store.replaceState({
+      ...store.state,
+      notes: {
+        noteableData: {
+          current_user: {},
+        },
+      },
+    });
+  });
+
   describe('text diff', () => {
     beforeEach(() => {
-      vm = mountComponent(Component, props);
+      vm = mountComponentWithStore(Component, { props, store });
     });
 
     it('shows text diff', () => {
@@ -55,7 +69,7 @@ describe('diff_with_note', () => {
     });
 
     it('shows image diff', () => {
-      vm = mountComponent(Component, props);
+      vm = mountComponentWithStore(Component, { props, store });
 
       expect(selectors.container).toHaveClass('js-image-file');
       expect(selectors.diffTable).not.toExist();

@@ -35,7 +35,11 @@ describe 'Explore Groups page', :js do
     fill_in 'filter', with: group.name
     wait_for_requests
 
+    expect(page).to have_content(group.full_name)
+    expect(page).not_to have_content(public_group.full_name)
+
     fill_in 'filter', with: ""
+    page.find('[name="filter"]').send_keys(:enter)
     wait_for_requests
 
     expect(page).to have_content(group.full_name)
@@ -49,14 +53,14 @@ describe 'Explore Groups page', :js do
     expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("1")
 
     # Archive project
-    empty_project.archive!
+    ::Projects::UpdateService.new(empty_project, user, archived: true).execute
     visit explore_groups_path
 
     # Check project count
     expect(find('.js-groups-list-holder .content-list li:first-child .stats .number-projects')).to have_text("0")
 
     # Unarchive project
-    empty_project.unarchive!
+    ::Projects::UpdateService.new(empty_project, user, archived: false).execute
     visit explore_groups_path
 
     # Check project count

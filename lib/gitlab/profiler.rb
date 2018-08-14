@@ -11,6 +11,7 @@ module Gitlab
       lib/gitlab/etag_caching/
       lib/gitlab/metrics/
       lib/gitlab/middleware/
+      ee/lib/gitlab/middleware/
       lib/gitlab/performance_bar/
       lib/gitlab/request_profiler/
       lib/gitlab/profiler.rb
@@ -92,23 +93,25 @@ module Gitlab
 
             if type && time
               @load_times_by_model ||= {}
-              @load_times_by_model[type] ||= 0
-              @load_times_by_model[type] += time.to_f
+              @load_times_by_model[type] ||= []
+              @load_times_by_model[type] << time.to_f
             end
 
             super
 
-            backtrace = Rails.backtrace_cleaner.clean(caller)
-
-            backtrace.each do |caller_line|
-              next if caller_line.match(Regexp.union(IGNORE_BACKTRACES))
-
+            Gitlab::Profiler.clean_backtrace(caller).each do |caller_line|
               stripped_caller_line = caller_line.sub("#{Rails.root}/", '')
 
               super("  ↳ #{stripped_caller_line}")
             end
           end
         end
+      end
+    end
+
+    def self.clean_backtrace(backtrace)
+      Array(Rails.backtrace_cleaner.clean(backtrace)).reject do |line|
+        line.match(Regexp.union(IGNORE_BACKTRACES))
       end
     end
 
@@ -135,9 +138,19 @@ module Gitlab
     def self.log_load_times_by_model(logger)
       return unless logger.respond_to?(:load_times_by_model)
 
-      logger.load_times_by_model.to_a.sort_by(&:last).reverse.each do |(model, time)|
-        logger.info("#{model} total: #{time.round(2)}ms")
+      summarised_load_times = logger.load_times_by_model.to_a.map do |(model, times)|
+        [model, times.count, times.sum]
       end
+
+      summarised_load_times.sort_by(&:last).reverse.each do |(model, query_count, time)|
+        logger.info("#{model} total (#{query_count}): #{time.round(2)}ms")
+      end
+    end
+
+    def self.print_by_total_time(result, options = {})
+      default_options = { sort_method: :total_time }
+
+      Gitlab::Profiler::TotalTimeFlatPrinter.new(result).print(STDOUT, default_options.merge(options))
     end
   end
 end

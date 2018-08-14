@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class NotificationRecipient
+  include Gitlab::Utils::StrongMemoize
+
   attr_reader :user, :type, :reason
   def initialize(user, type, **opts)
     unless NotificationSetting.levels.key?(type) || type == :subscription
@@ -35,7 +39,8 @@ class NotificationRecipient
 
     # check this last because it's expensive
     # nobody should receive notifications if they've specifically unsubscribed
-    return false if unsubscribed?
+    # except if they were mentioned.
+    return false if @type != :mention && unsubscribed?
 
     true
   end
@@ -47,7 +52,7 @@ class NotificationRecipient
     when :custom
       custom_enabled? || %i[participating mention].include?(@type)
     when :watch, :participating
-      !excluded_watcher_action?
+      !action_excluded?
     when :mention
       @type == :mention
     else
@@ -63,7 +68,7 @@ class NotificationRecipient
     return false unless @target
     return false unless @target.respond_to?(:subscriptions)
 
-    subscription = @target.subscriptions.find_by_user_id(@user.id)
+    subscription = @target.subscriptions.find { |subscription| subscription.user_id == @user.id }
     subscription && !subscription.subscribed
   end
 
@@ -82,24 +87,33 @@ class NotificationRecipient
 
   def has_access?
     DeclarativePolicy.subject_scope do
-      return false unless user.can?(:receive_notifications)
-      return true if @skip_read_ability
+      break false unless user.can?(:receive_notifications)
+      break true if @skip_read_ability
 
-      return false if @target && !user.can?(:read_cross_project)
-      return false if @project && !user.can?(:read_project, @project)
+      break false if @target && !user.can?(:read_cross_project)
+      break false if @project && !user.can?(:read_project, @project)
 
-      return true unless read_ability
-      return true unless DeclarativePolicy.has_policy?(@target)
+      break true unless read_ability
+      break true unless DeclarativePolicy.has_policy?(@target)
 
       user.can?(read_ability, @target)
     end
   end
 
+  def action_excluded?
+    excluded_watcher_action? || excluded_participating_action?
+  end
+
   def excluded_watcher_action?
-    return false unless @custom_action
-    return false if notification_level == :custom
+    return false unless @custom_action && notification_level == :watch
 
     NotificationSetting::EXCLUDED_WATCHER_EVENTS.include?(@custom_action)
+  end
+
+  def excluded_participating_action?
+    return false unless @custom_action && notification_level == :participating
+
+    NotificationSetting::EXCLUDED_PARTICIPATING_EVENTS.include?(@custom_action)
   end
 
   private
@@ -132,10 +146,33 @@ class NotificationRecipient
 
     return project_setting unless project_setting.nil? || project_setting.global?
 
-    group_setting = @group && user.notification_settings_for(@group)
+    group_setting = closest_non_global_group_notification_settting
 
-    return group_setting unless group_setting.nil? || group_setting.global?
+    return group_setting unless group_setting.nil?
 
     user.global_notification_setting
+  end
+
+  # Returns the notificaton_setting of the lowest group in hierarchy with non global level
+  def closest_non_global_group_notification_settting
+    return unless @group
+    return if indexed_group_notification_settings.empty?
+
+    notification_setting = nil
+
+    @group.self_and_ancestors_ids.each do |id|
+      notification_setting = indexed_group_notification_settings[id]
+      break if notification_setting
+    end
+
+    notification_setting
+  end
+
+  def indexed_group_notification_settings
+    strong_memoize(:indexed_group_notification_settings) do
+      @group.notification_settings.where(user_id: user.id)
+        .where.not(level: NotificationSetting.levels[:global])
+        .index_by(&:source_id)
+    end
   end
 end

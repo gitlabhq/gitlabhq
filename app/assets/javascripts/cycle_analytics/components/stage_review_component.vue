@@ -74,12 +74,12 @@
           </template>
           <template v-else>
             <span
-              class="merge-request-branch"
               v-if="mergeRequest.branch"
+              class="merge-request-branch"
             >
               <icon
-                name="fork"
                 :size="16"
+                name="fork"
               />
               <a :href="mergeRequest.branch.url">
                 {{ mergeRequest.branch.name }}

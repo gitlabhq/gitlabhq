@@ -54,20 +54,22 @@ describe ::Gitlab::BareRepositoryImport::Repository do
   context 'hashed storage' do
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:repository_storage) { 'default' }
-    let(:root_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+    let(:root_path) { Gitlab.config.repositories.storages[repository_storage].legacy_disk_path }
     let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
     let(:hashed_path) { "@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b" }
     let(:repo_path) { File.join(root_path, "#{hashed_path}.git") }
     let(:wiki_path) { File.join(root_path, "#{hashed_path}.wiki.git") }
 
     before do
-      gitlab_shell.add_repository(repository_storage, hashed_path)
-      repository = Rugged::Repository.new(repo_path)
-      repository.config['gitlab.fullpath'] = 'to/repo'
+      gitlab_shell.create_repository(repository_storage, hashed_path)
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        repository = Rugged::Repository.new(repo_path)
+        repository.config['gitlab.fullpath'] = 'to/repo'
+      end
     end
 
     after do
-      gitlab_shell.remove_repository(root_path, hashed_path)
+      gitlab_shell.remove_repository(repository_storage, hashed_path)
     end
 
     subject { described_class.new(root_path, repo_path) }

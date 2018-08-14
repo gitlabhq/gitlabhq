@@ -1,0 +1,15 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-mirror-settings') do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      = f.label :mirror_available, 'Enable mirror configuration', class: 'label-bold'
+      .form-check
+        = f.check_box :mirror_available, class: 'form-check-input'
+        = f.label :mirror_available, class: 'form-check-label' do
+          Allow mirrors to be setup for projects
+      %span.form-text.text-muted
+        If disabled, only admins will be able to setup mirrors in projects.
+        = link_to icon('question-circle'), help_page_path('workflow/repository_mirroring')
+
+  = f.submit 'Save changes', class: "btn btn-success"

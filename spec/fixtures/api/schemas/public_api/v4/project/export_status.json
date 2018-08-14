@@ -1,7 +1,9 @@
 {
   "type": "object",
   "allOf": [
-    { "$ref": "identity.json" },
+    {
+      "$ref": "identity.json"
+    },
     {
       "required": [
         "export_status"
@@ -9,7 +11,12 @@
       "properties": {
         "export_status": {
           "type": "string",
-          "enum": ["none", "started", "finished"]
+          "enum": [
+            "none",
+            "started",
+            "finished",
+            "after_export_action"
+          ]
         }
       }
     }

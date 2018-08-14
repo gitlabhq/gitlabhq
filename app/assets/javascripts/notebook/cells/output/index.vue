@@ -78,10 +78,10 @@
 <template>
   <component
     :is="componentName"
-    type="output"
     :output-type="outputType"
     :count="count"
     :raw-code="rawCode"
     :code-css-class="codeCssClass"
+    type="output"
   />
 </template>

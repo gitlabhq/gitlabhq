@@ -1,13 +1,13 @@
 <script>
   import Flash from '../../../flash';
   import statusIcon from '../mr_widget_status_icon.vue';
-  import mrWidgetAuthor from '../../components/mr_widget_author.vue';
+  import MrWidgetAuthor from '../../components/mr_widget_author.vue';
   import eventHub from '../../event_hub';
 
   export default {
     name: 'MRWidgetMergeWhenPipelineSucceeds',
     components: {
-      mrWidgetAuthor,
+      MrWidgetAuthor,
       statusIcon,
     },
     props: {
@@ -63,7 +63,7 @@
         };
 
         this.isRemovingSourceBranch = true;
-        this.service.mergeResource.save(options)
+        this.service.merge(options)
           .then(res => res.data)
           .then((data) => {
             if (data.status === 'merge_when_pipeline_succeeds') {
@@ -82,7 +82,7 @@
   <div class="mr-widget-body media">
     <status-icon status="success" />
     <div class="media-body">
-      <h4 class="flex-container-block">
+      <h4 class="d-flex align-items-start">
         <span class="append-right-10">
           {{ s__("mrWidget|Set by") }}
           <mr-widget-author :author="mr.setToMWPSBy" />
@@ -90,11 +90,11 @@
         </span>
         <a
           v-if="mr.canCancelAutomaticMerge"
-          @click.prevent="cancelAutomaticMerge"
           :disabled="isCancellingAutoMerge"
           role="button"
           href="#"
-          class="btn btn-xs btn-default js-cancel-auto-merge">
+          class="btn btn-sm btn-default js-cancel-auto-merge"
+          @click.prevent="cancelAutomaticMerge">
           <i
             v-if="isCancellingAutoMerge"
             class="fa fa-spinner fa-spin"
@@ -119,7 +119,7 @@
         </p>
         <p
           v-else
-          class="flex-container-block"
+          class="d-flex align-items-start"
         >
           <span class="append-right-10">
             {{ s__("mrWidget|The source branch will not be removed") }}
@@ -127,10 +127,10 @@
           <a
             v-if="canRemoveSourceBranch"
             :disabled="isRemovingSourceBranch"
-            @click.prevent="removeSourceBranch"
             role="button"
-            class="btn btn-xs btn-default js-remove-source-branch"
+            class="btn btn-sm btn-default js-remove-source-branch"
             href="#"
+            @click.prevent="removeSourceBranch"
           >
             <i
               v-if="isRemovingSourceBranch"

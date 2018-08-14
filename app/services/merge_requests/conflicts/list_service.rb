@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MergeRequests
   module Conflicts
     class ListService < MergeRequests::Conflicts::BaseService
@@ -17,15 +19,7 @@ module MergeRequests
         return @conflicts_can_be_resolved_in_ui = false unless merge_request.has_complete_diff_refs?
         return @conflicts_can_be_resolved_in_ui = false if merge_request.branch_missing?
 
-        begin
-          # Try to parse each conflict. If the MR's mergeable status hasn't been
-          # updated, ensure that we don't say there are conflicts to resolve
-          # when there are no conflict files.
-          conflicts.files.each(&:lines)
-          @conflicts_can_be_resolved_in_ui = conflicts.files.length > 0
-        rescue Gitlab::Git::CommandError, Gitlab::Git::Conflict::Parser::UnresolvableError, Gitlab::Git::Conflict::Resolver::ConflictSideMissing
-          @conflicts_can_be_resolved_in_ui = false
-        end
+        @conflicts_can_be_resolved_in_ui = conflicts.can_be_resolved_in_ui?
       end
 
       def conflicts

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include MarkupHelper
   include TreeHelper
+  include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
   presents :merge_request
@@ -152,11 +155,11 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_revert_on_current_merge_request?
-    user_can_collaborate_with_project? && cached_can_be_reverted?
+    can_collaborate_with_project?(project) && cached_can_be_reverted?
   end
 
   def can_cherry_pick_on_current_merge_request?
-    user_can_collaborate_with_project? && can_be_cherry_picked?
+    can_collaborate_with_project?(project) && can_be_cherry_picked?
   end
 
   def can_push_to_source_branch?
@@ -165,6 +168,29 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     !!::Gitlab::UserAccess
       .new(current_user, project: source_project)
       .can_push_to_branch?(source_branch)
+  end
+
+  def can_remove_source_branch?
+    source_branch_exists? && merge_request.can_remove_source_branch?(current_user)
+  end
+
+  def mergeable_discussions_state
+    # This avoids calling MergeRequest#mergeable_discussions_state without
+    # considering the state of the MR first. If a MR isn't mergeable, we can
+    # safely short-circuit it.
+    if merge_request.mergeable_state?(skip_ci_check: true, skip_discussions_check: true)
+      merge_request.mergeable_discussions_state?
+    else
+      false
+    end
+  end
+
+  def web_url
+    Gitlab::UrlBuilder.build(merge_request)
+  end
+
+  def subscribed?
+    merge_request.subscribed?(current_user, merge_request.target_project)
   end
 
   private
@@ -180,7 +206,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def closing_issues
-    @closing_issues ||= closes_issues(current_user)
+    @closing_issues ||= visible_closing_issues_for(current_user)
   end
 
   def pipeline
@@ -193,12 +219,6 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
     issues.map do |issue|
       issue.to_reference(project)
     end.sort.to_sentence
-  end
-
-  def user_can_collaborate_with_project?
-    can?(current_user, :push_code, project) ||
-      (current_user && current_user.already_forked?(project)) ||
-      can_push_to_source_branch?
   end
 
   def user_can_fork_project?

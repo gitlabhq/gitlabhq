@@ -1,96 +1,102 @@
 <script>
-  import _ from 'underscore';
-  import { s__, sprintf } from '../../locale';
-  import applicationRow from './application_row.vue';
-  import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
-  import {
-    APPLICATION_INSTALLED,
-    INGRESS,
-  } from '../constants';
+import _ from 'underscore';
+import { s__, sprintf } from '../../locale';
+import applicationRow from './application_row.vue';
+import clipboardButton from '../../vue_shared/components/clipboard_button.vue';
+import { APPLICATION_STATUS, INGRESS } from '../constants';
 
-  export default {
-    components: {
-      applicationRow,
-      clipboardButton,
+export default {
+  components: {
+    applicationRow,
+    clipboardButton,
+  },
+  props: {
+    applications: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    props: {
-      applications: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      helpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      ingressHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      ingressDnsHelpPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
-      managePrometheusPath: {
-        type: String,
-        required: false,
-        default: '',
-      },
+    helpPath: {
+      type: String,
+      required: false,
+      default: '',
     },
-    computed: {
-      generalApplicationDescription() {
-        return sprintf(
-          _.escape(s__(
+    ingressHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    ingressDnsHelpPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    managePrometheusPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
+  computed: {
+    generalApplicationDescription() {
+      return sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|Install applications on your Kubernetes cluster.
             Read more about %{helpLink}`,
-          )), {
-            helpLink: `<a href="${this.helpPath}">
+          ),
+        ),
+        {
+          helpLink: `<a href="${this.helpPath}">
               ${_.escape(s__('ClusterIntegration|installing applications'))}
             </a>`,
-          },
-          false,
-        );
-      },
-      ingressId() {
-        return INGRESS;
-      },
-      ingressInstalled() {
-        return this.applications.ingress.status === APPLICATION_INSTALLED;
-      },
-      ingressExternalIp() {
-        return this.applications.ingress.externalIp;
-      },
-      ingressDescription() {
-        const extraCostParagraph = sprintf(
-          _.escape(s__(
+        },
+        false,
+      );
+    },
+    ingressId() {
+      return INGRESS;
+    },
+    ingressInstalled() {
+      return this.applications.ingress.status === APPLICATION_STATUS.INSTALLED;
+    },
+    ingressExternalIp() {
+      return this.applications.ingress.externalIp;
+    },
+    ingressDescription() {
+      const extraCostParagraph = sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|%{boldNotice} This will add some extra resources
             like a load balancer, which may incur additional costs depending on
-            the hosting provider your Kubernetes cluster is installed on. If you are using GKE,
-            you can %{pricingLink}.`,
-          )), {
-            boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
-            pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
+            the hosting provider your Kubernetes cluster is installed on. If you are using
+            Google Kubernetes Engine, you can %{pricingLink}.`,
+          ),
+        ),
+        {
+          boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
+          pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
               ${_.escape(s__('ClusterIntegration|check the pricing here'))}</a>`,
-          },
-          false,
-        );
+        },
+        false,
+      );
 
-        const externalIpParagraph = sprintf(
-          _.escape(s__(
+      const externalIpParagraph = sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|After installing Ingress, you will need to point your wildcard DNS
             at the generated external IP address in order to view your app after it is deployed. %{ingressHelpLink}`,
-          )), {
-            ingressHelpLink: `<a href="${this.ingressHelpPath}">
+          ),
+        ),
+        {
+          ingressHelpLink: `<a href="${this.ingressHelpPath}">
               ${_.escape(s__('ClusterIntegration|More information'))}
             </a>`,
-          },
-          false,
-        );
+        },
+        false,
+      );
 
-        return `
+      return `
           <p>
             ${extraCostParagraph}
           </p>
@@ -98,22 +104,31 @@
             ${externalIpParagraph}
           </p>
         `;
-      },
-      prometheusDescription() {
-        return sprintf(
-          _.escape(s__(
+    },
+    prometheusDescription() {
+      return sprintf(
+        _.escape(
+          s__(
             `ClusterIntegration|Prometheus is an open-source monitoring system
             with %{gitlabIntegrationLink} to monitor deployed applications.`,
-          )), {
-            gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+          ),
+        ),
+        {
+          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
               target="_blank" rel="noopener noreferrer">
               ${_.escape(s__('ClusterIntegration|GitLab Integration'))}</a>`,
-          },
-          false,
-        );
-      },
+        },
+        false,
+      );
     },
-  };
+    jupyterInstalled() {
+      return this.applications.jupyter.status === APPLICATION_STATUS.INSTALLED;
+    },
+    jupyterHostname() {
+      return this.applications.jupyter.hostname;
+    },
+  },
+};
 </script>
 
 <template>
@@ -137,11 +152,11 @@
         <application-row
           id="helm"
           :title="applications.helm.title"
-          title-link="https://docs.helm.sh/"
           :status="applications.helm.status"
           :status-reason="applications.helm.statusReason"
           :request-status="applications.helm.requestStatus"
           :request-reason="applications.helm.requestReason"
+          title-link="https://docs.helm.sh/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|Helm streamlines installing
@@ -153,11 +168,11 @@
         <application-row
           :id="ingressId"
           :title="applications.ingress.title"
-          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
           :status="applications.ingress.status"
           :status-reason="applications.ingress.statusReason"
           :request-status="applications.ingress.requestStatus"
           :request-reason="applications.ingress.requestReason"
+          title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
         >
           <div slot="description">
             <p>
@@ -176,17 +191,17 @@
                   class="input-group"
                 >
                   <input
-                    type="text"
                     id="ingress-ip-address"
-                    class="form-control js-ip-address"
                     :value="ingressExternalIp"
+                    type="text"
+                    class="form-control js-ip-address"
                     readonly
                   />
-                  <span class="input-group-btn">
+                  <span class="input-group-append">
                     <clipboard-button
                       :text="ingressExternalIp"
                       :title="s__('ClusterIntegration|Copy Ingress IP Address to clipboard')"
-                      class="js-clipboard-btn"
+                      class="input-group-text js-clipboard-btn"
                     />
                   </span>
                 </div>
@@ -205,7 +220,7 @@
               >
                 {{ s__(`ClusterIntegration|The IP address is in
                 the process of being assigned. Please check your Kubernetes
-                cluster or Quotas on GKE if it takes a long time.`) }}
+                cluster or Quotas on Google Kubernetes Engine if it takes a long time.`) }}
 
                 <a
                   :href="ingressHelpPath"
@@ -240,12 +255,12 @@
         <application-row
           id="prometheus"
           :title="applications.prometheus.title"
-          title-link="https://prometheus.io/docs/introduction/overview/"
           :manage-link="managePrometheusPath"
           :status="applications.prometheus.status"
           :status-reason="applications.prometheus.statusReason"
           :request-status="applications.prometheus.requestStatus"
           :request-reason="applications.prometheus.requestReason"
+          title-link="https://prometheus.io/docs/introduction/overview/"
         >
           <div
             slot="description"
@@ -256,11 +271,11 @@
         <application-row
           id="runner"
           :title="applications.runner.title"
-          title-link="https://docs.gitlab.com/runner/"
           :status="applications.runner.status"
           :status-reason="applications.runner.statusReason"
           :request-status="applications.runner.requestStatus"
           :request-reason="applications.runner.requestReason"
+          title-link="https://docs.gitlab.com/runner/"
         >
           <div slot="description">
             {{ s__(`ClusterIntegration|GitLab Runner connects to this
@@ -269,11 +284,67 @@
               applications to production.`) }}
           </div>
         </application-row>
+        <application-row
+          id="jupyter"
+          :title="applications.jupyter.title"
+          :status="applications.jupyter.status"
+          :status-reason="applications.jupyter.statusReason"
+          :request-status="applications.jupyter.requestStatus"
+          :request-reason="applications.jupyter.requestReason"
+          :install-application-request-params="{ hostname: applications.jupyter.hostname }"
+          title-link="https://jupyterhub.readthedocs.io/en/stable/"
+        >
+          <div slot="description">
+            <p>
+              {{ s__(`ClusterIntegration|JupyterHub, a multi-user Hub, spawns,
+                manages, and proxies multiple instances of the single-user
+                Jupyter notebook server. JupyterHub can be used to serve
+                notebooks to a class of students, a corporate data science group,
+                or a scientific research group.`) }}
+            </p>
+
+            <template v-if="ingressExternalIp">
+              <div class="form-group">
+                <label for="jupyter-hostname">
+                  {{ s__('ClusterIntegration|Jupyter Hostname') }}
+                </label>
+
+                <div class="input-group">
+                  <input
+                    v-model="applications.jupyter.hostname"
+                    :readonly="jupyterInstalled"
+                    type="text"
+                    class="form-control js-hostname"
+                  />
+                  <span
+                    class="input-group-btn"
+                  >
+                    <clipboard-button
+                      :text="jupyterHostname"
+                      :title="s__('ClusterIntegration|Copy Jupyter Hostname to clipboard')"
+                      class="js-clipboard-btn"
+                    />
+                  </span>
+                </div>
+              </div>
+              <p v-if="ingressInstalled">
+                {{ s__(`ClusterIntegration|Replace this with your own hostname if you want.
+                If you do so, point hostname to Ingress IP Address from above.`) }}
+                <a
+                  :href="ingressDnsHelpPath"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {{ __('More information') }}
+                </a>
+              </p>
+            </template>
+          </div>
+        </application-row>
         <!--
           NOTE: Don't forget to update `clusters.scss`
           min-height for this block and uncomment `application_spec` tests
         -->
-        <!-- Add GitLab Runner row, all other plumbing is complete -->
       </div>
     </div>
   </section>

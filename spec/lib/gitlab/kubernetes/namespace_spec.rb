@@ -9,7 +9,7 @@ describe Gitlab::Kubernetes::Namespace do
 
   describe '#exists?' do
     context 'when namespace do not exits' do
-      let(:exception) { ::KubeException.new(404, "namespace #{name} not found", nil) }
+      let(:exception) { ::Kubeclient::HttpError.new(404, "namespace #{name} not found", nil) }
 
       it 'returns false' do
         expect(client).to receive(:get_namespace).with(name).once.and_raise(exception)

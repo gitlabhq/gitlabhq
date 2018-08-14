@@ -7,10 +7,8 @@ module QA
 
           view 'app/views/ci/variables/_variable_row.html.haml' do
             element :variable_row, '.ci-variable-row-body'
-            element :variable_key, '.js-ci-variable-input-key'
-            element :variable_value, '.js-ci-variable-input-value'
-            element :key_placeholder, 'Input variable key'
-            element :value_placeholder, 'Input variable value'
+            element :variable_key, '.qa-ci-variable-input-key'
+            element :variable_value, '.qa-ci-variable-input-value'
           end
 
           view 'app/views/ci/variables/_index.html.haml' do
@@ -18,12 +16,14 @@ module QA
             element :reveal_values, '.js-secret-value-reveal-button'
           end
 
-          def fill_variable_key(key)
-            fill_in('Input variable key', with: key, match: :first)
-          end
+          def fill_variable(key, value)
+            keys = all_elements(:ci_variable_input_key)
+            index = keys.size - 1
 
-          def fill_variable_value(value)
-            fill_in('Input variable value', with: value, match: :first)
+            # After we fill the key, JS would generate another field so
+            # we need to use the same index to find the corresponding one.
+            keys[index].set(key)
+            all_elements(:ci_variable_input_value)[index].set(value)
           end
 
           def save_variables
@@ -36,7 +36,7 @@ module QA
 
           def variable_value(key)
             within('.ci-variable-row-body', text: key) do
-              find('.js-ci-variable-input-value').value
+              find('.qa-ci-variable-input-value').value
             end
           end
         end

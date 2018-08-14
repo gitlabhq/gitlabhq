@@ -12,6 +12,14 @@ describe Gitlab::UsageData do
       create(:service, project: projects[0], type: 'SlackSlashCommandsService', active: true)
       create(:service, project: projects[1], type: 'SlackService', active: true)
       create(:service, project: projects[2], type: 'SlackService', active: true)
+
+      gcp_cluster = create(:cluster, :provided_by_gcp)
+      create(:cluster, :provided_by_user)
+      create(:cluster, :provided_by_user, :disabled)
+      create(:clusters_applications_helm, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_ingress, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_prometheus, :installed, cluster: gcp_cluster)
+      create(:clusters_applications_runner, :installed, cluster: gcp_cluster)
     end
 
     subject { described_class.data }
@@ -21,19 +29,20 @@ describe Gitlab::UsageData do
         active_user_count
         counts
         recorded_at
-        mattermost_enabled
         edition
         version
+        installation_type
         uuid
         hostname
-        signup
-        ldap
-        gravatar
-        omniauth
-        reply_by_email
-        container_registry
+        mattermost_enabled
+        signup_enabled
+        ldap_enabled
+        gravatar_enabled
+        omniauth_enabled
+        reply_by_email_enabled
+        container_registry_enabled
+        gitlab_shared_runners_enabled
         gitlab_pages
-        gitlab_shared_runners
         git
         database
         avg_cycle_analytics
@@ -64,6 +73,12 @@ describe Gitlab::UsageData do
         clusters
         clusters_enabled
         clusters_disabled
+        clusters_platforms_gke
+        clusters_platforms_user
+        clusters_applications_helm
+        clusters_applications_ingress
+        clusters_applications_prometheus
+        clusters_applications_runner
         in_review_folder
         groups
         issues
@@ -82,6 +97,7 @@ describe Gitlab::UsageData do
         pages_domains
         protected_branches
         releases
+        remote_mirrors
         snippets
         todos
         uploads
@@ -97,6 +113,15 @@ describe Gitlab::UsageData do
       expect(count_data[:projects_jira_active]).to eq(2)
       expect(count_data[:projects_slack_notifications_active]).to eq(2)
       expect(count_data[:projects_slack_slash_active]).to eq(1)
+
+      expect(count_data[:clusters_enabled]).to eq(6)
+      expect(count_data[:clusters_disabled]).to eq(1)
+      expect(count_data[:clusters_platforms_gke]).to eq(1)
+      expect(count_data[:clusters_platforms_user]).to eq(1)
+      expect(count_data[:clusters_applications_helm]).to eq(1)
+      expect(count_data[:clusters_applications_ingress]).to eq(1)
+      expect(count_data[:clusters_applications_prometheus]).to eq(1)
+      expect(count_data[:clusters_applications_runner]).to eq(1)
     end
   end
 
@@ -104,13 +129,14 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ce }
 
     it 'gathers feature usage data' do
-      expect(subject[:signup]).to eq(Gitlab::CurrentSettings.allow_signup?)
-      expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
-      expect(subject[:gravatar]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
-      expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)
-      expect(subject[:reply_by_email]).to eq(Gitlab::IncomingEmail.enabled?)
-      expect(subject[:container_registry]).to eq(Gitlab.config.registry.enabled)
-      expect(subject[:gitlab_shared_runners]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
+      expect(subject[:mattermost_enabled]).to eq(Gitlab.config.mattermost.enabled)
+      expect(subject[:signup_enabled]).to eq(Gitlab::CurrentSettings.allow_signup?)
+      expect(subject[:ldap_enabled]).to eq(Gitlab.config.ldap.enabled)
+      expect(subject[:gravatar_enabled]).to eq(Gitlab::CurrentSettings.gravatar_enabled?)
+      expect(subject[:omniauth_enabled]).to eq(Gitlab::Auth.omniauth_enabled?)
+      expect(subject[:reply_by_email_enabled]).to eq(Gitlab::IncomingEmail.enabled?)
+      expect(subject[:container_registry_enabled]).to eq(Gitlab.config.registry.enabled)
+      expect(subject[:gitlab_shared_runners_enabled]).to eq(Gitlab.config.gitlab_ci.shared_runners_enabled)
     end
   end
 
@@ -132,6 +158,7 @@ describe Gitlab::UsageData do
     it "gathers license data" do
       expect(subject[:uuid]).to eq(Gitlab::CurrentSettings.uuid)
       expect(subject[:version]).to eq(Gitlab::VERSION)
+      expect(subject[:installation_type]).to eq(Gitlab::INSTALLATION_TYPE)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
     end

@@ -1,4 +1,5 @@
 <script>
+import { roundOffFloat } from '~/lib/utils/common_utils';
 import tooltip from '~/vue_shared/directives/tooltip';
 
 export default {
@@ -70,7 +71,7 @@ export default {
   },
   methods: {
     getPercent(count) {
-      return Math.ceil((count / this.totalCount) * 100);
+      return roundOffFloat((count / this.totalCount) * 100, 1);
     },
     barStyle(percent) {
       return `width: ${percent}%;`;
@@ -84,8 +85,8 @@ export default {
 
 <template>
   <div
-    class="stacked-progress-bar"
     :class="cssClass"
+    class="stacked-progress-bar"
   >
     <span
       v-if="!totalCount"
@@ -96,30 +97,30 @@ export default {
     <span
       v-tooltip
       v-if="successPercent"
-      class="status-green"
-      data-placement="bottom"
       :title="successTooltip"
       :style="successBarStyle"
+      class="status-green"
+      data-placement="bottom"
     >
       {{ successPercent }}%
     </span>
     <span
       v-tooltip
       v-if="neutralPercent"
-      class="status-neutral"
-      data-placement="bottom"
       :title="neutralTooltip"
       :style="neutralBarStyle"
+      class="status-neutral"
+      data-placement="bottom"
     >
       {{ neutralPercent }}%
     </span>
     <span
       v-tooltip
       v-if="failurePercent"
-      class="status-red"
-      data-placement="bottom"
       :title="failureTooltip"
       :style="failureBarStyle"
+      class="status-red"
+      data-placement="bottom"
     >
       {{ failurePercent }}%
     </span>

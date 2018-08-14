@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 require 'carrierwave/orm/activerecord'
 
 class Issue < ActiveRecord::Base
-  include InternalId
+  include AtomicInternalId
+  include IidRoutes
   include Issuable
   include Noteable
   include Referable
@@ -11,18 +14,23 @@ class Issue < ActiveRecord::Base
   include TimeTrackable
   include ThrottledTouch
   include IgnorableColumn
+  include LabelEventable
 
   ignore_column :assignee_id, :branch_name, :deleted_at
 
-  DueDateStruct = Struct.new(:title, :name).freeze
-  NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
-  AnyDueDate    = DueDateStruct.new('Any Due Date', '').freeze
-  Overdue       = DueDateStruct.new('Overdue', 'overdue').freeze
-  DueThisWeek   = DueDateStruct.new('Due This Week', 'week').freeze
-  DueThisMonth  = DueDateStruct.new('Due This Month', 'month').freeze
+  DueDateStruct                   = Struct.new(:title, :name).freeze
+  NoDueDate                       = DueDateStruct.new('No Due Date', '0').freeze
+  AnyDueDate                      = DueDateStruct.new('Any Due Date', '').freeze
+  Overdue                         = DueDateStruct.new('Overdue', 'overdue').freeze
+  DueThisWeek                     = DueDateStruct.new('Due This Week', 'week').freeze
+  DueThisMonth                    = DueDateStruct.new('Due This Month', 'month').freeze
+  DueNextMonthAndPreviousTwoWeeks = DueDateStruct.new('Due Next Month And Previous Two Weeks', 'next_month_and_previous_two_weeks').freeze
 
   belongs_to :project
   belongs_to :moved_to, class_name: 'Issue'
+  belongs_to :closed_by, class_name: 'User'
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.issues&.maximum(:iid) }
 
   has_many :events, as: :target, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
@@ -43,18 +51,22 @@ class Issue < ActiveRecord::Base
   scope :unassigned, -> { where('NOT EXISTS (SELECT TRUE FROM issue_assignees WHERE issue_id = issues.id)') }
   scope :assigned_to, ->(u) { where('EXISTS (SELECT TRUE FROM issue_assignees WHERE user_id = ? AND issue_id = issues.id)', u.id)}
 
+  scope :with_due_date, -> { where.not(due_date: nil) }
   scope :without_due_date, -> { where(due_date: nil) }
   scope :due_before, ->(date) { where('issues.due_date < ?', date) }
   scope :due_between, ->(from_date, to_date) { where('issues.due_date >= ?', from_date).where('issues.due_date <= ?', to_date) }
+  scope :due_tomorrow, -> { where(due_date: Date.tomorrow) }
 
   scope :order_due_date_asc, -> { reorder('issues.due_date IS NULL, issues.due_date ASC') }
   scope :order_due_date_desc, -> { reorder('issues.due_date IS NULL, issues.due_date DESC') }
+  scope :order_closest_future_date, -> { reorder('CASE WHEN issues.due_date >= CURRENT_DATE THEN 0 ELSE 1 END ASC, ABS(CURRENT_DATE - issues.due_date) ASC') }
 
   scope :preload_associations, -> { preload(:labels, project: :namespace) }
 
   scope :public_only, -> { where(confidential: false) }
 
   after_save :expire_etag_cache
+  after_save :ensure_metrics, unless: :imported?
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true
@@ -75,6 +87,11 @@ class Issue < ActiveRecord::Base
 
     before_transition any => :closed do |issue|
       issue.closed_at = Time.zone.now
+    end
+
+    before_transition closed: :opened do |issue|
+      issue.closed_at = nil
+      issue.closed_by = nil
     end
   end
 
@@ -108,8 +125,9 @@ class Issue < ActiveRecord::Base
     'project_id'
   end
 
-  def self.sort(method, excluded_labels: [])
+  def self.sort_by_attribute(method, excluded_labels: [])
     case method.to_s
+    when 'closest_future_date' then order_closest_future_date
     when 'due_date'      then order_due_date_asc
     when 'due_date_asc'  then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
@@ -185,6 +203,15 @@ class Issue < ActiveRecord::Base
     branches_with_iid - branches_with_merge_request
   end
 
+  def suggested_branch_name
+    return to_branch_name unless project.repository.branch_exists?(to_branch_name)
+
+    start_counting_from = 2
+    Uniquify.new(start_counting_from).string(-> (counter) { "#{to_branch_name}-#{counter}" }) do |suggested_branch_name|
+      project.repository.branch_exists?(suggested_branch_name)
+    end
+  end
+
   # Returns boolean if a related branch exists for the current issue
   # ignores merge requests branchs
   def has_related_branch?
@@ -239,11 +266,8 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def can_be_worked_on?(current_user)
-    !self.closed? &&
-      !self.project.forked? &&
-      self.related_branches(current_user).empty? &&
-      self.closed_by_merge_requests(current_user).empty?
+  def can_be_worked_on?
+    !self.closed? && !self.project.forked?
   end
 
   # Returns `true` if the current issue can be viewed by either a logged in User
@@ -254,21 +278,23 @@ class Issue < ActiveRecord::Base
     user ? readable_by?(user) : publicly_visible?
   end
 
-  def overdue?
-    due_date.try(:past?) || false
-  end
-
   def check_for_spam?
     project.public? && (title_changed? || description_changed?)
   end
 
   def as_json(options = {})
     super(options).tap do |json|
-      if options.key?(:sidebar_endpoints) && project
+      if options.key?(:issue_endpoints) && project
         url_helper = Gitlab::Routing.url_helpers
 
-        json.merge!(issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
-                    toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self))
+        issue_reference = options[:include_full_project_path] ? to_reference(full: true) : to_reference
+
+        json.merge!(
+          reference_path: issue_reference,
+          real_path: url_helper.project_issue_path(project, self),
+          issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
+          toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self)
+        )
       end
 
       if options.key?(:labels)
@@ -279,6 +305,10 @@ class Issue < ActiveRecord::Base
         )
       end
     end
+  end
+
+  def etag_caching_enabled?
+    true
   end
 
   def discussions_rendered_on_frontend?

@@ -5,11 +5,11 @@
 .tree-holder
   .nav-block
     %ul.breadcrumb.repo-breadcrumb
-      %li
+      %li.breadcrumb-item
         = link_to 'Artifacts', browse_project_job_artifacts_path(@project, @build)
       - path_breadcrumbs do |title, path|
         - title = truncate(title, length: 40)
-        %li
+        %li.breadcrumb-item
           - if path == @path
             = link_to file_project_job_artifacts_path(@project, @build, path) do
               %strong= title
@@ -22,11 +22,11 @@
     .js-file-title.file-title-flex-parent
       = render 'projects/blob/header_content', blob: blob
 
-      .file-actions.hidden-xs
+      .file-actions.d-none.d-sm-block
         = render 'projects/blob/viewer_switcher', blob: blob
 
         .btn-group{ role: "group" }<
           = copy_blob_source_button(blob)
-          = open_raw_blob_button(blob)
+          = download_blob_button(blob)
 
     = render 'projects/blob/content', blob: blob

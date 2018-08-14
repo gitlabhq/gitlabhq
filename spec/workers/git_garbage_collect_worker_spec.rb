@@ -11,36 +11,69 @@ describe GitGarbageCollectWorker do
   subject { described_class.new }
 
   describe "#perform" do
-    shared_examples 'flushing ref caches' do |gitaly|
-      context 'with active lease_uuid' do
+    context 'with active lease_uuid' do
+      before do
+        allow(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+      end
+
+      it "flushes ref caches when the task if 'gc'" do
+        expect(subject).to receive(:renew_lease).with(lease_key, lease_uuid).and_call_original
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
+          .and_return(nil)
+        expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
+        expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
+        expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
+
+        subject.perform(project.id, :gc, lease_key, lease_uuid)
+      end
+
+      it 'handles gRPC errors' do
+        expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect).and_raise(GRPC::NotFound)
+
+        expect { subject.perform(project.id, :gc, lease_key, lease_uuid) }.to raise_exception(Gitlab::Git::Repository::NoRepository)
+      end
+    end
+
+    context 'with different lease than the active one' do
+      before do
+        allow(subject).to receive(:get_lease_uuid).and_return(SecureRandom.uuid)
+      end
+
+      it 'returns silently' do
+        expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
+        expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
+        expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
+
+        subject.perform(project.id, :gc, lease_key, lease_uuid)
+      end
+    end
+
+    context 'with no active lease' do
+      before do
+        allow(subject).to receive(:get_lease_uuid).and_return(false)
+      end
+
+      context 'when is able to get the lease' do
         before do
-          allow(subject).to receive(:get_lease_uuid).and_return(lease_uuid)
+          allow(subject).to receive(:try_obtain_lease).and_return(SecureRandom.uuid)
         end
 
         it "flushes ref caches when the task if 'gc'" do
-          expect(subject).to receive(:renew_lease).with(lease_key, lease_uuid).and_call_original
-          expect(subject).to receive(:command).with(:gc).and_return([:the, :command])
-
-          if gitaly
-            expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
-              .and_return(nil)
-          else
-            expect(Gitlab::Popen).to receive(:popen)
-              .with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
-          end
-
+          expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
+            .and_return(nil)
           expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
           expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
           expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
 
-          subject.perform(project.id, :gc, lease_key, lease_uuid)
+          subject.perform(project.id)
         end
       end
 
-      context 'with different lease than the active one' do
+      context 'when no lease can be obtained' do
         before do
-          allow(subject).to receive(:get_lease_uuid).and_return(SecureRandom.uuid)
+          expect(subject).to receive(:try_obtain_lease).and_return(false)
         end
 
         it 'returns silently' do
@@ -49,63 +82,9 @@ describe GitGarbageCollectWorker do
           expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
           expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
 
-          subject.perform(project.id, :gc, lease_key, lease_uuid)
+          subject.perform(project.id)
         end
       end
-
-      context 'with no active lease' do
-        before do
-          allow(subject).to receive(:get_lease_uuid).and_return(false)
-        end
-
-        context 'when is able to get the lease' do
-          before do
-            allow(subject).to receive(:try_obtain_lease).and_return(SecureRandom.uuid)
-          end
-
-          it "flushes ref caches when the task if 'gc'" do
-            expect(subject).to receive(:command).with(:gc).and_return([:the, :command])
-
-            if gitaly
-              expect_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:garbage_collect)
-                .and_return(nil)
-            else
-              expect(Gitlab::Popen).to receive(:popen)
-                .with([:the, :command], project.repository.path_to_repo).and_return(["", 0])
-            end
-
-            expect_any_instance_of(Repository).to receive(:after_create_branch).and_call_original
-            expect_any_instance_of(Repository).to receive(:branch_names).and_call_original
-            expect_any_instance_of(Repository).to receive(:has_visible_content?).and_call_original
-            expect_any_instance_of(Gitlab::Git::Repository).to receive(:has_visible_content?).and_call_original
-
-            subject.perform(project.id)
-          end
-        end
-
-        context 'when no lease can be obtained' do
-          before do
-            expect(subject).to receive(:try_obtain_lease).and_return(false)
-          end
-
-          it 'returns silently' do
-            expect(subject).not_to receive(:command)
-            expect_any_instance_of(Repository).not_to receive(:after_create_branch).and_call_original
-            expect_any_instance_of(Repository).not_to receive(:branch_names).and_call_original
-            expect_any_instance_of(Repository).not_to receive(:has_visible_content?).and_call_original
-
-            subject.perform(project.id)
-          end
-        end
-      end
-    end
-
-    context "with Gitaly turned on" do
-      it_should_behave_like 'flushing ref caches', true
-    end
-
-    context "with Gitaly turned off", :skip_gitaly_mock do
-      it_should_behave_like 'flushing ref caches', false
     end
 
     context "repack_full" do
@@ -218,7 +197,9 @@ describe GitGarbageCollectWorker do
 
   # Create a new commit on a random new branch
   def create_objects(project)
-    rugged = project.repository.rugged
+    rugged = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.rugged
+    end
     old_commit = rugged.branches.first.target
     new_commit_sha = Rugged::Commit.create(
       rugged,
@@ -228,16 +209,13 @@ describe GitGarbageCollectWorker do
       tree: old_commit.tree,
       parents: [old_commit]
     )
-    Gitlab::Git::OperationService.new(nil, project.repository.raw_repository).send(
-      :update_ref,
-      "refs/heads/#{SecureRandom.hex(6)}",
-      new_commit_sha,
-      Gitlab::Git::BLANK_SHA
-    )
+    rugged.references.create("refs/heads/#{SecureRandom.hex(6)}", new_commit_sha)
   end
 
   def packs(project)
-    Dir["#{project.repository.path_to_repo}/objects/pack/*.pack"]
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      Dir["#{project.repository.path_to_repo}/objects/pack/*.pack"]
+    end
   end
 
   def packed_refs(project)

@@ -1,4 +1,6 @@
-/* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
+/* eslint-disable class-methods-use-this, no-unneeded-ternary */
+
+import $ from 'jquery';
 import { visitUrl } from '~/lib/utils/url_utility';
 import UsersSelect from '~/users_select';
 import { isMetaClick } from '~/lib/utils/common_utils';
@@ -37,6 +39,7 @@ export default class Todos {
   }
 
   initFilters() {
+    this.initFilterDropdown($('.js-group-search'), 'group_id', ['text']);
     this.initFilterDropdown($('.js-project-search'), 'project_id', ['text']);
     this.initFilterDropdown($('.js-type-search'), 'type');
     this.initFilterDropdown($('.js-action-search'), 'action_id');
@@ -51,7 +54,16 @@ export default class Todos {
       filterable: searchFields ? true : false,
       search: { fields: searchFields },
       data: $dropdown.data('data'),
-      clicked: () => $dropdown.closest('form.filter-form').submit(),
+      clicked: () => {
+        const $formEl = $dropdown.closest('form.filter-form');
+        const mutexDropdowns = {
+          group_id: 'project_id',
+          project_id: 'group_id',
+        };
+
+        $formEl.find(`input[name="${mutexDropdowns[fieldName]}"]`).remove();
+        $formEl.submit();
+      },
     });
   }
 
@@ -59,7 +71,7 @@ export default class Todos {
     e.stopPropagation();
     e.preventDefault();
 
-    const target = e.target;
+    const { target } = e;
     target.setAttribute('disabled', true);
     target.classList.add('disabled');
 

@@ -59,6 +59,47 @@ describe "Admin Runners" do
         expect(page).to have_text 'No runners found'
       end
     end
+
+    context 'group runner' do
+      let(:group) { create(:group) }
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+
+      it 'shows the label and does not show the project count' do
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.badge', text: 'group'
+          expect(page).to have_text 'n/a'
+        end
+      end
+    end
+
+    context 'shared runner' do
+      it 'shows the label and does not show the project count' do
+        runner = create :ci_runner, :instance
+
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.badge', text: 'shared'
+          expect(page).to have_text 'n/a'
+        end
+      end
+    end
+
+    context 'specific runner' do
+      it 'shows the label and the project count' do
+        project = create :project
+        runner = create :ci_runner, :project, projects: [project]
+
+        visit admin_runners_path
+
+        within "#runner_#{runner.id}" do
+          expect(page).to have_selector '.badge', text: 'specific'
+          expect(page).to have_text '1'
+        end
+      end
+    end
   end
 
   describe "Runner show page" do
@@ -108,8 +149,9 @@ describe "Admin Runners" do
       end
 
       context 'with specific runner' do
+        let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
+
         before do
-          @project1.runners << runner
           visit admin_runner_path(runner)
         end
 
@@ -117,9 +159,9 @@ describe "Admin Runners" do
       end
 
       context 'with locked runner' do
+        let(:runner) { create(:ci_runner, :project, projects: [@project1], locked: true) }
+
         before do
-          runner.update(locked: true)
-          @project1.runners << runner
           visit admin_runner_path(runner)
         end
 
@@ -127,9 +169,10 @@ describe "Admin Runners" do
       end
 
       context 'with shared runner' do
+        let(:runner) { create(:ci_runner, :instance) }
+
         before do
           @project1.destroy
-          runner.update(is_shared: true)
           visit admin_runner_path(runner)
         end
 
@@ -138,8 +181,9 @@ describe "Admin Runners" do
     end
 
     describe 'disable/destroy' do
+      let(:runner) { create(:ci_runner, :project, projects: [@project1]) }
+
       before do
-        @project1.runners << runner
         visit admin_runner_path(runner)
       end
 

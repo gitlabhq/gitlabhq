@@ -27,6 +27,7 @@ unless Sidekiq.server?
 
       gitaly_calls = Gitlab::GitalyClient.get_request_count
       payload[:gitaly_calls] = gitaly_calls if gitaly_calls > 0
+      payload[:response] = event.payload[:response] if event.payload[:response]
 
       payload
     end

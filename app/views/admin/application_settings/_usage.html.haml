@@ -1,0 +1,38 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-usage-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    .form-group
+      .form-check
+        = f.check_box :version_check_enabled, class: 'form-check-input'
+        = f.label :version_check_enabled, class: 'form-check-label' do
+          Enable version check
+        .form-text.text-muted
+          GitLab will inform you if a new version is available.
+          = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "version-check")
+          about what information is shared with GitLab Inc.
+    .form-group
+      - can_be_configured = @application_setting.usage_ping_can_be_configured?
+      .form-check
+        = f.check_box :usage_ping_enabled, disabled: !can_be_configured, class: 'form-check-input'
+        = f.label :usage_ping_enabled, class: 'form-check-label' do
+          Enable usage ping
+        .form-text.text-muted
+          - if can_be_configured
+            To help improve GitLab and its user experience, GitLab will
+            periodically collect usage information.
+            = link_to 'Learn more', help_page_path("user/admin_area/settings/usage_statistics", anchor: "usage-ping")
+            about what information is shared with GitLab Inc. Visit
+            = link_to _('Cohorts'), instance_statistics_cohorts_path(anchor: 'usage-ping')
+            to see the JSON payload sent.
+          - else
+            The usage ping is disabled, and cannot be configured through this
+            form. For more information, see the documentation on
+            = succeed '.' do
+              = link_to 'deactivating the usage ping', help_page_path('user/admin_area/settings/usage_statistics', anchor: 'deactivate-the-usage-ping')
+    .form-group
+      = f.label :instance_statistics_visibility_private, _('Instance Statistics visibility')
+      = f.select :instance_statistics_visibility_private, options_for_select({_('All users') => false, _('Only admins') => true}, Gitlab::CurrentSettings.instance_statistics_visibility_private?), {}, class: 'form-control'
+
+  = f.submit 'Save changes', class: "btn btn-success"
+

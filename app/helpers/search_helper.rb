@@ -25,14 +25,22 @@ module SearchHelper
     return unless collection.count > 0
 
     from = collection.offset_value + 1
-    to = collection.offset_value + collection.length
+    to = collection.offset_value + collection.count
     count = collection.total_count
 
     "Showing #{from} - #{to} of #{count} #{scope.humanize(capitalize: false)} for \"#{term}\""
   end
 
+  def find_project_for_result_blob(result)
+    @project
+  end
+
   def parse_search_result(result)
-    Gitlab::ProjectSearchResults.parse_search_result(result)
+    result
+  end
+
+  def search_blob_title(project, filename)
+    filename
   end
 
   private
@@ -74,16 +82,16 @@ module SearchHelper
       ref = @ref || @project.repository.root_ref
 
       [
-        { category: "Current Project", label: "Files",          url: project_tree_path(@project, ref) },
-        { category: "Current Project", label: "Commits",        url: project_commits_path(@project, ref) },
-        { category: "Current Project", label: "Network",        url: project_network_path(@project, ref) },
-        { category: "Current Project", label: "Graph",          url: project_graph_path(@project, ref) },
-        { category: "Current Project", label: "Issues",         url: project_issues_path(@project) },
-        { category: "Current Project", label: "Merge Requests", url: project_merge_requests_path(@project) },
-        { category: "Current Project", label: "Milestones",     url: project_milestones_path(@project) },
-        { category: "Current Project", label: "Snippets",       url: project_snippets_path(@project) },
-        { category: "Current Project", label: "Members",        url: project_project_members_path(@project) },
-        { category: "Current Project", label: "Wiki",           url: project_wikis_path(@project) }
+        { category: "In this project", label: "Files",          url: project_tree_path(@project, ref) },
+        { category: "In this project", label: "Commits",        url: project_commits_path(@project, ref) },
+        { category: "In this project", label: "Network",        url: project_network_path(@project, ref) },
+        { category: "In this project", label: "Graph",          url: project_graph_path(@project, ref) },
+        { category: "In this project", label: "Issues",         url: project_issues_path(@project) },
+        { category: "In this project", label: "Merge Requests", url: project_merge_requests_path(@project) },
+        { category: "In this project", label: "Milestones",     url: project_milestones_path(@project) },
+        { category: "In this project", label: "Snippets",       url: project_snippets_path(@project) },
+        { category: "In this project", label: "Members",        url: project_project_members_path(@project) },
+        { category: "In this project", label: "Wiki",           url: project_wikis_path(@project) }
       ]
     else
       []
@@ -97,7 +105,8 @@ module SearchHelper
         category: "Groups",
         id: group.id,
         label: "#{search_result_sanitize(group.full_name)}",
-        url: group_path(group)
+        url: group_path(group),
+        avatar_url: group.avatar_url || ''
       }
     end
   end
@@ -111,7 +120,8 @@ module SearchHelper
         id: p.id,
         value: "#{search_result_sanitize(p.name)}",
         label: "#{search_result_sanitize(p.full_name)}",
-        url: project_path(p)
+        url: project_path(p),
+        avatar_url: p.avatar_url || ''
       }
     end
   end

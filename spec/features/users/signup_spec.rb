@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'Signup' do
+  include TermsHelper
+
   let(:new_user) { build_stubbed(:user) }
 
   describe 'username validation', :js do
@@ -37,6 +39,15 @@ describe 'Signup' do
       wait_for_requests
 
       expect(find('.username')).to have_css '.gl-field-error-outline'
+    end
+
+    it 'shows an error message on submit if the username contains special characters' do
+      fill_in 'new_user_username', with: 'new$user!username'
+      wait_for_requests
+
+      click_button "Register"
+
+      expect(page).to have_content("Please create a username with only alphanumeric characters.")
     end
   end
 
@@ -130,6 +141,42 @@ describe 'Signup' do
 
       expect(current_path).to eq user_registration_path
       expect(page.body).not_to match(/#{new_user.password}/)
+    end
+  end
+
+  context 'when terms are enforced' do
+    before do
+      enforce_terms
+    end
+
+    it 'requires the user to check the checkbox' do
+      visit root_path
+
+      fill_in 'new_user_name',                with: new_user.name
+      fill_in 'new_user_username',            with: new_user.username
+      fill_in 'new_user_email',               with: new_user.email
+      fill_in 'new_user_email_confirmation',  with: new_user.email
+      fill_in 'new_user_password',            with: new_user.password
+
+      click_button 'Register'
+
+      expect(current_path).to eq new_user_session_path
+      expect(page).to have_content(/you must accept our terms of service/i)
+    end
+
+    it 'asks the user to accept terms before going to the dashboard' do
+      visit root_path
+
+      fill_in 'new_user_name',                with: new_user.name
+      fill_in 'new_user_username',            with: new_user.username
+      fill_in 'new_user_email',               with: new_user.email
+      fill_in 'new_user_email_confirmation',  with: new_user.email
+      fill_in 'new_user_password',            with: new_user.password
+      check :terms_opt_in
+
+      click_button "Register"
+
+      expect(current_path).to eq dashboard_projects_path
     end
   end
 end

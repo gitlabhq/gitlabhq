@@ -1,7 +1,7 @@
 module API
   module Helpers
     module RelatedResourcesHelpers
-      include GrapeRouteHelpers::NamedRouteMatcher
+      include GrapePathHelpers::NamedRouteMatcher
 
       def issues_available?(project, options)
         available?(:issues, project, options[:current_user])
@@ -13,9 +13,14 @@ module API
 
       def expose_url(path)
         url_options = Gitlab::Application.routes.default_url_options
-        protocol, host, port = url_options.slice(:protocol, :host, :port).values
+        protocol, host, port, script_name = url_options.values_at(:protocol, :host, :port, :script_name)
 
-        URI::HTTP.build(scheme: protocol, host: host, port: port, path: path).to_s
+        # Using a blank component at the beginning of the join we ensure
+        # that the resulted path will start with '/'. If the resulted path
+        # does not start with '/', URI::Generic#build will fail
+        path_with_script_name = File.join('', [script_name, path].select(&:present?))
+
+        URI::Generic.build(scheme: protocol, host: host, port: port, path: path_with_script_name).to_s
       end
 
       private

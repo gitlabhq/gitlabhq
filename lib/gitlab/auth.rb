@@ -5,7 +5,7 @@ module Gitlab
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user, :sudo].freeze
+    API_SCOPES = [:api, :read_user, :sudo, :read_repository].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
@@ -14,6 +14,10 @@ module Gitlab
     DEFAULT_SCOPES = [:api].freeze
 
     class << self
+      def omniauth_enabled?
+        Gitlab.config.omniauth.enabled
+      end
+
       def find_for_git_client(login, password, project:, ip:)
         raise "Must provide an IP for rate limiting" if ip.nil?
 
@@ -26,6 +30,7 @@ module Gitlab
           lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
+          deploy_token_check(login, password) ||
           user_with_password_for_git(login, password) ||
           Gitlab::Auth::Result.new
 
@@ -50,7 +55,7 @@ module Gitlab
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
-          return if user && !user.active?
+          break if user && !user.active?
 
           authenticators = []
 
@@ -69,7 +74,11 @@ module Gitlab
 
           authenticators.compact!
 
-          user if authenticators.find { |auth| auth.login(login, password) }
+          # return found user that was authenticated first for given login credentials
+          authenticators.find do |auth|
+            authenticated_user = auth.login(login, password)
+            break authenticated_user if authenticated_user
+          end
         end
       end
 
@@ -159,12 +168,29 @@ module Gitlab
       def abilities_for_scopes(scopes)
         abilities_by_scope = {
           api: full_authentication_abilities,
-          read_registry: [:read_container_image]
+          read_registry: [:read_container_image],
+          read_repository: [:download_code]
         }
 
         scopes.flat_map do |scope|
           abilities_by_scope.fetch(scope.to_sym, [])
         end.uniq
+      end
+
+      def deploy_token_check(login, password)
+        return unless password.present?
+
+        token =
+          DeployToken.active.find_by(token: password)
+
+        return unless token && login
+        return if login != token.username
+
+        scopes = abilities_for_scopes(token.scopes)
+
+        if valid_scoped_token?(token, available_scopes)
+          Gitlab::Auth::Result.new(token, token.project, :deploy_token, scopes)
+        end
       end
 
       def lfs_token_check(login, password, project)
@@ -199,7 +225,7 @@ module Gitlab
         return unless login == 'gitlab-ci-token'
         return unless password
 
-        build = ::Ci::Build.running.find_by_token(password)
+        build = find_build_by_token(password)
         return unless build
         return unless build.project.builds_enabled?
 
@@ -259,6 +285,12 @@ module Gitlab
         return [] unless Gitlab.config.registry.enabled
 
         REGISTRY_SCOPES
+      end
+
+      private
+
+      def find_build_by_token(token)
+        ::Ci::Build.running.find_by_token(token)
       end
     end
   end

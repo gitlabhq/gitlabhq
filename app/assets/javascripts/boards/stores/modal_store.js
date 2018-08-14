@@ -1,6 +1,3 @@
-window.gl = window.gl || {};
-window.gl.issueBoards = window.gl.issueBoards || {};
-
 class ModalStore {
   constructor() {
     this.store = {
@@ -29,7 +26,7 @@ class ModalStore {
 
   toggleIssue(issueObj) {
     const issue = issueObj;
-    const selected = issue.selected;
+    const { selected } = issue;
 
     issue.selected = !selected;
 
@@ -95,4 +92,4 @@ class ModalStore {
   }
 }
 
-gl.issueBoards.ModalStore = new ModalStore();
+export default new ModalStore();

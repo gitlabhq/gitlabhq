@@ -1,5 +1,0 @@
----
-title: Fix duplicate system notes when merging a merge request.
-merge_request: 17035
-author:
-type: fixed

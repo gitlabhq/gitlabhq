@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import GLForm from '~/gl_form';
 import IssuableForm from '~/issuable_form';
 import LabelsSelect from '~/labels_select';
@@ -8,7 +10,7 @@ import IssuableTemplateSelectors from '~/templates/issuable_template_selectors';
 
 export default () => {
   new ShortcutsNavigation();
-  new GLForm($('.issue-form'), true);
+  new GLForm($('.issue-form'));
   new IssuableForm($('.issue-form'));
   new LabelsSelect();
   new MilestoneSelect();

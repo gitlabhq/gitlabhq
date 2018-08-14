@@ -33,7 +33,7 @@ production: &base
     port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
     https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
-    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # Uncomment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
     # Otherwise, ssh host will be set to the `host:` value above
     # ssh_host: ssh.host_example.com
@@ -82,6 +82,11 @@ production: &base
     ##   3 - Light
     ##   4 - Blue
     ##   5 - Green
+    ##   6 - Light Indigo
+    ##   7 - Light Blue
+    ##   8 - Light Green
+    ##   9 - Red
+    ##   10 - Light Red
     # default_theme: 1 # default: 1
 
     ## Automatic issue closing
@@ -145,18 +150,62 @@ production: &base
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts
+    # object_store:
+    #   enabled: false
+    #   remote_directory: artifacts # The bucket name
+    #   background_upload: false # Temporary option to limit automatic upload (Default: true)
+    #   proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+    #   connection:
+    #     provider: AWS # Only AWS supported at the moment
+    #     aws_access_key_id: AWS_ACCESS_KEY_ID
+    #     aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+    #     region: us-east-1
+    #     aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+    #     endpoint: 'https://s3.amazonaws.com' # default: nil - Useful for S3 compliant services such as DigitalOcean Spaces
+
 
   ## Git LFS
   lfs:
     enabled: true
     # The location where LFS objects are stored (default: shared/lfs-objects).
     # storage_path: shared/lfs-objects
+    object_store:
+      enabled: false
+      remote_directory: lfs-objects # Bucket name
+      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
+      # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+        # Use the following options to configure an AWS compatible host
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## Uploads (attachments, avatars, etc...)
   uploads:
     # The location where uploads objects are stored (default: public/).
     # storage_path: public/
     # base_dir: uploads/-/system
+    object_store:
+      enabled: false
+      remote_directory: uploads # Bucket name
+      # direct_upload: false # Use Object Storage directly for uploads instead of background uploads if enabled (Default: false)
+      # background_upload: false # Temporary option to limit automatic upload (Default: true)
+      # proxy_download: false # Passthrough all downloads via GitLab instead of using Redirects to Object Storage
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        aws_signature_version: 4 # For creation of signed URLs. Set to 2 if provider does not support v4.
+        region: us-east-1
+        # host: 'localhost' # default: s3.amazonaws.com
+        # endpoint: 'http://127.0.0.1:9000' # default: nil
+        # path_style: true # Use 'host/bucket_name/object' instead of 'bucket_name.host/object'
 
   ## GitLab Pages
   pages:
@@ -173,6 +222,8 @@ production: &base
     artifacts_server: true
     # external_http: ["1.1.1.1:80", "[2001::1]:80"] # If defined, enables custom domain support in GitLab Pages
     # external_https: ["1.1.1.1:443", "[2001::1]:443"] # If defined, enables custom domain and certificate support in GitLab Pages
+    admin:
+      address: unix:/home/git/gitlab/tmp/sockets/private/pages-admin.socket # TCP connections are supported too (e.g. tcp://host:port)
 
   ## Mattermost
   ## For enabling Add to Mattermost button
@@ -188,6 +239,10 @@ production: &base
     # Gravatar/Libravatar URLs: possible placeholders: %{hash} %{size} %{email} %{username}
     # plain_url: "http://..."     # default: https://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+
+  ## Sidekiq
+  sidekiq:
+    log_format: default # (json is also supported)
 
   ## Auxiliary jobs
   # Periodically executed jobs, to self-heal GitLab, do external synchronizations, etc.
@@ -481,7 +536,17 @@ production: &base
       # - { name: 'twitter',
       #     app_id: 'YOUR_APP_ID',
       #     app_secret: 'YOUR_APP_SECRET' }
-      #
+      # - { name: 'jwt',
+      #     app_secret: 'YOUR_APP_SECRET',
+      #     args: {
+      #             algorithm: 'HS256',
+      #             uid_claim: 'email',
+      #             required_claims: ["name", "email"],
+      #             info_map: { name: "name", email: "email" },
+      #             auth_url: 'https://example.com/',
+      #             valid_within: null,
+      #           }
+      #   }
       # - { name: 'saml',
       #     label: 'Our SAML Provider',
       #     groups_attribute: 'Groups',
@@ -655,10 +720,39 @@ test:
     enabled: true
   lfs:
     enabled: false
+    # The location where LFS objects are stored (default: shared/lfs-objects).
+    # storage_path: shared/lfs-objects
+    object_store:
+      enabled: false
+      remote_directory: lfs-objects # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   artifacts:
     path: tmp/tests/artifacts
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+    object_store:
+      enabled: false
+      remote_directory: artifacts # The bucket name
+      background_upload: false
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   uploads:
     storage_path: tmp/tests/public
+    object_store:
+      enabled: false
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
   gitlab:
     host: localhost
     port: 80
@@ -733,6 +827,17 @@ test:
       - { name: 'twitter',
           app_id: 'YOUR_APP_ID',
           app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'jwt',
+          app_secret: 'YOUR_APP_SECRET',
+          args: {
+                  algorithm: 'HS256',
+                  uid_claim: 'email',
+                  required_claims: ["name", "email"],
+                  info_map: { name: "name", email: "email" },
+                  auth_url: 'https://example.com/',
+                  valid_within: null,
+                }
+        }
       - { name: 'auth0',
           args: {
             client_id: 'YOUR_AUTH0_CLIENT_ID',

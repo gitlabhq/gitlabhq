@@ -48,9 +48,9 @@
       :type="promptType"
       :count="count" />
     <pre
-      class="language-python"
-      :class="codeCssClass"
       ref="code"
+      :class="codeCssClass"
+      class="language-python"
       v-text="code">
     </pre>
   </div>

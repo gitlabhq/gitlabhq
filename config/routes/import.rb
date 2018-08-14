@@ -24,6 +24,13 @@ namespace :import do
     get :jobs
   end
 
+  resource :bitbucket_server, only: [:create, :new], controller: :bitbucket_server do
+    post :configure
+    get :status
+    get :callback
+    get :jobs
+  end
+
   resource :google_code, only: [:create, :new], controller: :google_code do
     get :status
     post :callback
@@ -44,5 +51,11 @@ namespace :import do
 
   resource :gitlab_project, only: [:create, :new] do
     post :create
+  end
+
+  resource :manifest, only: [:create, :new], controller: :manifest do
+    get :status
+    get :jobs
+    post :upload
   end
 end

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'issue move to another project' do
+describe 'issue move to another project' do
   let(:user) { create(:user) }
   let(:old_project) { create(:project, :repository) }
   let(:text) { 'Some issue description' }
@@ -9,16 +9,18 @@ feature 'issue move to another project' do
     create(:issue, description: text, project: old_project, author: user)
   end
 
-  background { sign_in(user) }
+  before do
+    sign_in(user)
+  end
 
   context 'user does not have permission to move issue' do
-    background do
+    before do
       old_project.add_guest(user)
 
       visit issue_path(issue)
     end
 
-    scenario 'moving issue to another project not allowed' do
+    it 'moving issue to another project not allowed' do
       expect(page).to have_no_selector('.js-sidebar-move-issue-block')
     end
   end
@@ -30,14 +32,14 @@ feature 'issue move to another project' do
     let(:text) { "Text with #{mr.to_reference}" }
     let(:cross_reference) { old_project.to_reference(new_project) }
 
-    background do
+    before do
       old_project.add_reporter(user)
       new_project.add_reporter(user)
 
       visit issue_path(issue)
     end
 
-    scenario 'moving issue to another project', :js do
+    it 'moving issue to another project', :js do
       find('.js-move-issue').click
       wait_for_requests
       all('.js-move-issue-dropdown-item')[0].click
@@ -49,7 +51,7 @@ feature 'issue move to another project' do
       expect(page.current_path).to include project_path(new_project)
     end
 
-    scenario 'searching project dropdown', :js do
+    it 'searching project dropdown', :js do
       new_project_search.add_reporter(user)
 
       find('.js-move-issue').click
@@ -66,9 +68,11 @@ feature 'issue move to another project' do
     context 'user does not have permission to move the issue to a project', :js do
       let!(:private_project) { create(:project, :private) }
       let(:another_project) { create(:project) }
-      background { another_project.add_guest(user) }
+      before do
+        another_project.add_guest(user)
+      end
 
-      scenario 'browsing projects in projects select' do
+      it 'browsing projects in projects select' do
         find('.js-move-issue').click
         wait_for_requests
 
@@ -84,7 +88,7 @@ feature 'issue move to another project' do
         create(:issue, project: old_project, author: user, moved_to: new_issue)
       end
 
-      scenario 'user wants to move issue that has already been moved' do
+      it 'user wants to move issue that has already been moved' do
         expect(page).to have_no_selector('#move_to_project_id')
       end
     end

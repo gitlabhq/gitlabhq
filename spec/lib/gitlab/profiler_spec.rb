@@ -94,10 +94,12 @@ describe Gitlab::Profiler do
 
       it 'strips out the private token' do
         expect(custom_logger).to receive(:add) do |severity, _progname, message|
+          next if message.include?('spec/')
+
           expect(severity).to eq(Logger::DEBUG)
           expect(message).to include('public').and include(described_class::FILTERED_STRING)
           expect(message).not_to include(private_token)
-        end
+        end.twice
 
         custom_logger.debug("public #{private_token}")
       end
@@ -108,8 +110,8 @@ describe Gitlab::Profiler do
         custom_logger.debug('User Load (1.3ms)')
         custom_logger.debug('Project Load (10.4ms)')
 
-        expect(custom_logger.load_times_by_model).to eq('User' => 2.5,
-                                                        'Project' => 10.4)
+        expect(custom_logger.load_times_by_model).to eq('User' => [1.2, 1.3],
+                                                        'Project' => [10.4])
       end
 
       it 'logs the backtrace, ignoring lines as appropriate' do
@@ -130,6 +132,51 @@ describe Gitlab::Profiler do
         # file.
         described_class.with_custom_logger(nil) { custom_logger.debug('Foo') }
       end
+    end
+  end
+
+  describe '.clean_backtrace' do
+    it 'uses the Rails backtrace cleaner' do
+      backtrace = []
+
+      expect(Rails.backtrace_cleaner).to receive(:clean).with(backtrace)
+
+      described_class.clean_backtrace(backtrace)
+    end
+
+    it 'removes lines from IGNORE_BACKTRACES' do
+      backtrace = [
+        "lib/gitlab/gitaly_client.rb:294:in `block (2 levels) in migrate'",
+        "lib/gitlab/gitaly_client.rb:331:in `allow_n_plus_1_calls'",
+        "lib/gitlab/gitaly_client.rb:280:in `block in migrate'",
+        "lib/gitlab/metrics/influx_db.rb:103:in `measure'",
+        "lib/gitlab/gitaly_client.rb:278:in `migrate'",
+        "lib/gitlab/git/repository.rb:1451:in `gitaly_migrate'",
+        "lib/gitlab/git/commit.rb:66:in `find'",
+        "app/models/repository.rb:1047:in `find_commit'",
+        "lib/gitlab/metrics/instrumentation.rb:159:in `block in find_commit'",
+        "lib/gitlab/metrics/method_call.rb:36:in `measure'",
+        "lib/gitlab/metrics/instrumentation.rb:159:in `find_commit'",
+        "app/models/repository.rb:113:in `commit'",
+        "lib/gitlab/i18n.rb:50:in `with_locale'",
+        "lib/gitlab/middleware/multipart.rb:95:in `call'",
+        "lib/gitlab/request_profiler/middleware.rb:14:in `call'",
+        "ee/lib/gitlab/database/load_balancing/rack_middleware.rb:37:in `call'",
+        "ee/lib/gitlab/jira/middleware.rb:15:in `call'"
+      ]
+
+      expect(described_class.clean_backtrace(backtrace))
+        .to eq([
+                 "lib/gitlab/gitaly_client.rb:294:in `block (2 levels) in migrate'",
+                 "lib/gitlab/gitaly_client.rb:331:in `allow_n_plus_1_calls'",
+                 "lib/gitlab/gitaly_client.rb:280:in `block in migrate'",
+                 "lib/gitlab/gitaly_client.rb:278:in `migrate'",
+                 "lib/gitlab/git/repository.rb:1451:in `gitaly_migrate'",
+                 "lib/gitlab/git/commit.rb:66:in `find'",
+                 "app/models/repository.rb:1047:in `find_commit'",
+                 "app/models/repository.rb:113:in `commit'",
+                 "ee/lib/gitlab/jira/middleware.rb:15:in `call'"
+               ])
     end
   end
 
@@ -160,6 +207,26 @@ describe Gitlab::Profiler do
           .and not_change { ActionController::Base.logger }
           .and not_change { ActiveSupport::LogSubscriber.colorize_logging }
       end
+    end
+  end
+
+  describe '.log_load_times_by_model' do
+    it 'logs the model, query count, and time by slowest first' do
+      expect(null_logger).to receive(:load_times_by_model).and_return(
+        'User' => [1.2, 1.3],
+        'Project' => [10.4]
+      )
+
+      expect(null_logger).to receive(:info).with('Project total (1): 10.4ms')
+      expect(null_logger).to receive(:info).with('User total (2): 2.5ms')
+
+      described_class.log_load_times_by_model(null_logger)
+    end
+
+    it 'does nothing when called with a logger that does not have load times' do
+      expect(null_logger).not_to receive(:info)
+
+      expect(described_class.log_load_times_by_model(null_logger)).to be_nil
     end
   end
 end

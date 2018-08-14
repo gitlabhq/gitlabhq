@@ -1,0 +1,11 @@
+%nav
+  %ul.error-nav
+    %li
+      = link_to s_('Nav|Home'), root_path
+    %li
+      - if current_user
+        = link_to s_('Nav|Sign out and sign in with a different account'), destroy_user_session_path
+      - else
+        = link_to s_('Nav|Sign In / Register'), new_session_path(:user, redirect_to_referer: 'yes')
+    %li
+      = link_to s_('Nav|Help'), help_path

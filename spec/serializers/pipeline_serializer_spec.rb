@@ -8,6 +8,10 @@ describe PipelineSerializer do
     described_class.new(current_user: user)
   end
 
+  before do
+    stub_feature_flags(ci_pipeline_persisted_stages: true)
+  end
+
   subject { serializer.represent(resource) }
 
   describe '#represent' do
@@ -99,7 +103,8 @@ describe PipelineSerializer do
       end
     end
 
-    context 'number of queries' do
+    describe 'number of queries when preloaded' do
+      subject { serializer.represent(resource, preload: true) }
       let(:resource) { Ci::Pipeline.all }
 
       before do
@@ -107,25 +112,22 @@ describe PipelineSerializer do
         # gitaly calls in this block
         # Issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/37772
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          Ci::Pipeline::AVAILABLE_STATUSES.each do |status|
+          Ci::Pipeline::COMPLETED_STATUSES.each do |status|
             create_pipeline(status)
           end
         end
         Gitlab::GitalyClient.reset_counts
       end
 
-      shared_examples 'no N+1 queries' do
-        it 'verifies number of queries', :request_store do
-          recorded = ActiveRecord::QueryRecorder.new { subject }
-          expect(recorded.count).to be_within(1).of(36)
-          expect(recorded.cached_count).to eq(0)
-        end
-      end
-
       context 'with the same ref' do
         let(:ref) { 'feature' }
 
-        it_behaves_like 'no N+1 queries'
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+
+          expect(recorded.count).to be_within(2).of(31)
+          expect(recorded.cached_count).to eq(0)
+        end
       end
 
       context 'with different refs' do
@@ -135,7 +137,16 @@ describe PipelineSerializer do
           "feature-#{@sequence}"
         end
 
-        it_behaves_like 'no N+1 queries'
+        it 'verifies number of queries', :request_store do
+          recorded = ActiveRecord::QueryRecorder.new { subject }
+
+          # For each ref there is a permission check if maintainer can update
+          # pipeline. With the same ref this check is cached but if refs are
+          # different then there is an extra query per ref
+          # https://gitlab.com/gitlab-org/gitlab-ce/issues/46368
+          expect(recorded.count).to be_within(2).of(34)
+          expect(recorded.cached_count).to eq(0)
+        end
       end
 
       def create_pipeline(status)
@@ -168,7 +179,7 @@ describe PipelineSerializer do
         expect(subject[:text]).to eq(status.text)
         expect(subject[:label]).to eq(status.label)
         expect(subject[:icon]).to eq(status.icon)
-        expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.ico")
+        expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.png")
       end
     end
   end

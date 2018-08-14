@@ -1,26 +1,22 @@
-/* eslint-disable import/first */
-/* global ConfirmDangerModal */
+/* global $ */
 
 import jQuery from 'jquery';
 import Cookies from 'js-cookie';
 import svg4everybody from 'svg4everybody';
 
-// expose common libraries as globals (TODO: remove these)
-window.jQuery = jQuery;
-window.$ = jQuery;
+// bootstrap webpack, common libs, polyfills, and behaviors
+import './webpack';
+import './commons';
+import './behaviors';
 
 // lib/utils
 import { handleLocationHash, addSelectOnFocusBehaviour } from './lib/utils/common_utils';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
-// behaviors
-import './behaviors/';
-
 // everything else
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
@@ -30,11 +26,13 @@ import './feature_highlight/feature_highlight_options';
 import LazyLoader from './lazy_loader';
 import initLogoAnimation from './logo';
 import './milestone_select';
-import './projects_dropdown';
-import './render_gfm';
+import './frequent_items';
 import initBreadcrumbs from './breadcrumb';
-
 import initDispatcher from './dispatcher';
+
+// expose jQuery as global (TODO: remove these)
+window.jQuery = jQuery;
+window.$ = jQuery;
 
 // inject test utilities if necessary
 if (process.env.NODE_ENV !== 'production' && gon && gon.test_env) {
@@ -48,16 +46,20 @@ document.addEventListener('beforeunload', () => {
   // Unbind scroll events
   $(document).off('scroll');
   // Close any open tooltips
-  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('destroy');
+  $('.has-tooltip, [data-toggle="tooltip"]').tooltip('dispose');
   // Close any open popover
-  $('[data-toggle="popover"]').popover('destroy');
+  $('[data-toggle="popover"]').popover('dispose');
 });
 
 window.addEventListener('hashchange', handleLocationHash);
-window.addEventListener('load', function onLoad() {
-  window.removeEventListener('load', onLoad, false);
-  handleLocationHash();
-}, false);
+window.addEventListener(
+  'load',
+  function onLoad() {
+    window.removeEventListener('load', onLoad, false);
+    handleLocationHash();
+  },
+  false,
+);
 
 gl.lazyLoader = new LazyLoader({
   scrollContainer: window,
@@ -91,9 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bootstrapBreakpoint === 'xs') {
     const $rightSidebar = $('aside.right-sidebar, .layout-page');
 
-    $rightSidebar
-      .removeClass('right-sidebar-expanded')
-      .addClass('right-sidebar-collapsed');
+    $rightSidebar.removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
   }
 
   // prevent default action for disabled buttons
@@ -110,7 +110,8 @@ document.addEventListener('DOMContentLoaded', () => {
   addSelectOnFocusBehaviour('.js-select-on-focus');
 
   $('.remove-row').on('ajax:success', function removeRowAjaxSuccessCallback() {
-    $(this).tooltip('destroy')
+    $(this)
+      .tooltip('dispose')
       .closest('li')
       .fadeOut();
   });
@@ -120,7 +121,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   $('.js-remove-tr').on('ajax:success', function removeTRAjaxSuccessCallback() {
-    $(this).closest('tr').fadeOut();
+    $(this)
+      .closest('tr')
+      .fadeOut();
   });
 
   // Initialize select2 selects
@@ -138,9 +141,10 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Initialize tooltips
-  $.fn.tooltip.Constructor.DEFAULTS.trigger = 'hover';
   $body.tooltip({
     selector: '.has-tooltip, [data-toggle="tooltip"]',
+    trigger: 'hover',
+    boundary: 'viewport',
     placement(tip, el) {
       return $(el).data('placement') || 'bottom';
     },
@@ -157,7 +161,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Form submitter
   $('.trigger-submit').on('change', function triggerSubmitCallback() {
-    $(this).parents('form').submit();
+    $(this)
+      .parents('form')
+      .submit();
   });
 
   localTimeAgo($('abbr.timeago, .js-timeago'), true);
@@ -191,7 +197,7 @@ document.addEventListener('DOMContentLoaded', () => {
     $container.remove();
   });
 
-  $('.navbar-toggle').on('click', () => {
+  $('.navbar-toggler').on('click', () => {
     $('.header-content').toggleClass('menu-expanded');
     gl.lazyLoader.loadCheck();
   });
@@ -206,22 +212,18 @@ document.addEventListener('DOMContentLoaded', () => {
     $this.toggleClass('active');
 
     if ($this.hasClass('active')) {
-      notesHolders.show().find('.hide, .content').show();
+      notesHolders
+        .show()
+        .find('.hide, .content')
+        .show();
     } else {
-      notesHolders.hide().find('.content').hide();
+      notesHolders
+        .hide()
+        .find('.content')
+        .hide();
     }
 
     $(document).trigger('toggle.comments');
-  });
-
-  $document.on('click', '.js-confirm-danger', (e) => {
-    const btn = $(e.target);
-    const form = btn.closest('form');
-    const text = btn.data('confirmDangerMessage');
-    e.preventDefault();
-
-    // eslint-disable-next-line no-new
-    new ConfirmDangerModal(form, text);
   });
 
   $document.on('breakpoint:change', (e, breakpoint) => {
@@ -259,9 +261,11 @@ document.addEventListener('DOMContentLoaded', () => {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
-      removeFlashClickListener(flashEl);
-    });
+    flashContainer
+      .querySelectorAll('.flash-alert, .flash-notice, .flash-success')
+      .forEach(flashEl => {
+        removeFlashClickListener(flashEl);
+      });
   }
 
   initDispatcher();

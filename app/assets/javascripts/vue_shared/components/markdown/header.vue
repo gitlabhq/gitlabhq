@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
   import icon from '../icon.vue';
@@ -26,20 +27,22 @@
       $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
     methods: {
-      isMarkdownForm(form) {
-        return form && !form.find('.js-vue-markdown-field').length;
+      isValid(form) {
+        return !form ||
+          form.find('.js-vue-markdown-field').length &&
+          $(this.$el).closest('form')[0] === form[0];
       },
 
       previewMarkdownTab(event, form) {
         if (event.target.blur) event.target.blur();
-        if (this.isMarkdownForm(form)) return;
+        if (!this.isValid(form)) return;
 
         this.$emit('preview-markdown');
       },
 
       writeMarkdownTab(event, form) {
         if (event.target.blur) event.target.blur();
-        if (this.isMarkdownForm(form)) return;
+        if (!this.isValid(form)) return;
 
         this.$emit('write-markdown');
       },
@@ -51,8 +54,8 @@
   <div class="md-header">
     <ul class="nav-links clearfix">
       <li
-        class="md-header-tab"
         :class="{ active: !previewMarkdown }"
+        class="md-header-tab"
       >
         <a
           class="js-write-link"
@@ -64,11 +67,11 @@
         </a>
       </li>
       <li
-        class="md-header-tab"
         :class="{ active: previewMarkdown }"
+        class="md-header-tab"
       >
         <a
-          class="js-preview-link"
+          class="js-preview-link js-md-preview-button"
           href="#md-preview-holder"
           tabindex="-1"
           @click.prevent="previewMarkdownTab($event)"
@@ -77,8 +80,8 @@
         </a>
       </li>
       <li
-        class="md-header-toolbar"
         :class="{ active: !previewMarkdown }"
+        class="md-header-toolbar"
       >
         <toolbar-button
           tag="**"
@@ -91,8 +94,8 @@
           icon="italic"
         />
         <toolbar-button
-          tag="> "
           :prepend="true"
+          tag="> "
           button-title="Insert a quote"
           icon="quote"
         />
@@ -103,20 +106,20 @@
           icon="code"
         />
         <toolbar-button
-          tag="* "
           :prepend="true"
+          tag="* "
           button-title="Add a bullet list"
           icon="list-bulleted"
         />
         <toolbar-button
-          tag="1. "
           :prepend="true"
+          tag="1. "
           button-title="Add a numbered list"
           icon="list-numbered"
         />
         <toolbar-button
-          tag="* [ ] "
           :prepend="true"
+          tag="* [ ] "
           button-title="Add a task list"
           icon="task-done"
         />

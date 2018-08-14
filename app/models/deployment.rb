@@ -1,10 +1,15 @@
+# frozen_string_literal: true
+
 class Deployment < ActiveRecord::Base
-  include InternalId
+  include AtomicInternalId
+  include IidRoutes
 
   belongs_to :project, required: true
   belongs_to :environment, required: true
   belongs_to :user
   belongs_to :deployable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.deployments&.maximum(:iid) }
 
   validates :sha, presence: true
   validates :ref, presence: true
@@ -87,10 +92,6 @@ class Deployment < ActiveRecord::Base
     return unless manual_actions
 
     @stop_action ||= manual_actions.find_by(name: on_stop)
-  end
-
-  def stop_action?
-    stop_action.present?
   end
 
   def formatted_deployment_time

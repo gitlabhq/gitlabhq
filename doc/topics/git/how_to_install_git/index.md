@@ -4,6 +4,7 @@ author_gitlab: SeanPackham
 level: beginner
 article_type: user guide
 date: 2017-05-15
+description: 'This article describes how to install Git on macOS, Ubuntu Linux and Windows.'
 ---
 
 # Installing Git

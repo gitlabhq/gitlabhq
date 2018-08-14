@@ -19,6 +19,10 @@ module Gitlab
             'Play'
           end
 
+          def action_button_title
+            _('Trigger this manual action')
+          end
+
           def action_path
             play_project_job_path(subject.project, subject)
           end

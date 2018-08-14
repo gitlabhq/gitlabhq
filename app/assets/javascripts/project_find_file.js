@@ -1,5 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, object-shorthand, no-param-reassign, comma-dangle, prefer-template, no-unused-vars, no-return-assign */
+/* eslint-disable func-names, no-var, wrap-iife, quotes, consistent-return, one-var, one-var-declaration-per-line, no-cond-assign, max-len, prefer-template, no-unused-vars, no-return-assign */
 
+import $ from 'jquery';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import axios from '~/lib/utils/axios_utils';
 import flash from '~/flash';
@@ -87,10 +88,11 @@ export default class ProjectFindFile {
 
   // render result
   renderList(filePaths, searchText) {
-    var blobItemUrl, filePath, html, i, j, len, matches, results;
+    var blobItemUrl, filePath, html, i, len, matches, results;
     this.element.find(".tree-table > tbody").empty();
     results = [];
-    for (i = j = 0, len = filePaths.length; j < len; i = (j += 1)) {
+
+    for (i = 0, len = filePaths.length; i < len; i += 1) {
       filePath = filePaths[i];
       if (i === 20) {
         break;
@@ -149,7 +151,7 @@ export default class ProjectFindFile {
   }
 
   goToTree() {
-    return location.href = this.options.treeUrl;
+    return window.location.href = this.options.treeUrl;
   }
 
   goToBlob() {

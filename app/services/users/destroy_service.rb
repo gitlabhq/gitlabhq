@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Users
   class DestroyService
     attr_accessor :current_user
@@ -48,6 +50,8 @@ module Users
         # that contain all this repositories
         ::Projects::DestroyService.new(project, current_user, skip_repo: project.legacy_storage?).execute
       end
+
+      yield(user) if block_given?
 
       MigrateToGhostUserService.new(user).execute unless options[:hard_delete]
 

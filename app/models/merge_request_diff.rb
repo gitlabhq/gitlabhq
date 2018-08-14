@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
   include ManualInverseAssociation
   include IgnorableColumn
+  include EachBatch
 
   # Don't display more than 100 commits at once
   COMMITS_SAFE_SIZE = 100
@@ -17,8 +20,14 @@ class MergeRequestDiff < ActiveRecord::Base
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
   state_machine :state, initial: :empty do
+    event :clean do
+      transition any => :without_files
+    end
+
     state :collected
     state :overflow
+    # Diff files have been deleted by the system
+    state :without_files
     # Deprecated states: these are no longer used but these values may still occur
     # in the database.
     state :timeout
@@ -27,6 +36,7 @@ class MergeRequestDiff < ActiveRecord::Base
     state :overflow_diff_lines_limit
   end
 
+  scope :with_files, -> { without_states(:without_files, :empty) }
   scope :viewable, -> { without_state(:empty) }
   scope :by_commit_sha, ->(sha) do
     joins(:merge_request_diff_commits).where(merge_request_diff_commits: { sha: sha }).reorder(nil)
@@ -40,6 +50,10 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def self.find_by_diff_refs(diff_refs)
     find_by(start_commit_sha: diff_refs.start_sha, head_commit_sha: diff_refs.head_sha, base_commit_sha: diff_refs.base_sha)
+  end
+
+  def viewable?
+    collected? || without_files? || overflow?
   end
 
   # Collect information about commits and diff from repository
@@ -170,6 +184,21 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def diffs(diff_options = nil)
+    if without_files? && comparison = diff_refs&.compare_in(project)
+      # It should fetch the repository when diffs are cleaned by the system.
+      # We don't keep these for storage overload purposes.
+      # See https://gitlab.com/gitlab-org/gitlab-ce/issues/37639
+      comparison.diffs(diff_options)
+    else
+      diffs_collection(diff_options)
+    end
+  end
+
+  # Should always return the DB persisted diffs collection
+  # (e.g. Gitlab::Diff::FileCollection::MergeRequestDiff.
+  # It's useful when trying to invalidate old caches through
+  # FileCollection::MergeRequestDiff#clear_cache!
+  def diffs_collection(diff_options = nil)
     Gitlab::Diff::FileCollection::MergeRequestDiff.new(self, diff_options: diff_options)
   end
 
@@ -222,15 +251,13 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def load_diffs(options)
-    raw = merge_request_diff_files.map(&:to_hash)
+    collection = merge_request_diff_files
 
     if paths = options[:paths]
-      raw = raw.select do |diff|
-        paths.include?(diff[:old_path]) || paths.include?(diff[:new_path])
-      end
+      collection = collection.where('old_path IN (?) OR new_path IN (?)', paths, paths)
     end
 
-    Gitlab::Git::DiffCollection.new(raw, options)
+    Gitlab::Git::DiffCollection.new(collection.map(&:to_hash), options)
   end
 
   def load_commits

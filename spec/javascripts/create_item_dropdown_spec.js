@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import CreateItemDropdown from '~/create_item_dropdown';
 
 const DROPDOWN_ITEM_DATA = [{

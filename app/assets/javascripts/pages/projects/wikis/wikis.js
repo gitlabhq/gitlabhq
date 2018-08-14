@@ -1,5 +1,7 @@
 import bp from '../../../breakpoints';
 import { slugify } from '../../../lib/utils/text_utility';
+import { parseQueryStringIntoObject } from '../../../lib/utils/common_utils';
+import { mergeUrlParams, redirectTo } from '../../../lib/utils/url_utility';
 
 export default class Wikis {
   constructor() {
@@ -28,7 +30,12 @@ export default class Wikis {
 
     if (slug.length > 0) {
       const wikisPath = slugInput.getAttribute('data-wikis-path');
-      window.location.href = `${wikisPath}/${slug}`;
+
+      // If the wiki is empty, we need to merge the current URL params to keep the "create" view.
+      const params = parseQueryStringIntoObject(window.location.search.substr(1));
+      const url = mergeUrlParams(params, `${wikisPath}/${slug}`);
+      redirectTo(url);
+
       e.preventDefault();
     }
   }
@@ -41,7 +48,7 @@ export default class Wikis {
 
   static sidebarCanCollapse() {
     const bootstrapBreakpoint = bp.getBreakpointSize();
-    return bootstrapBreakpoint === 'xs' || bootstrapBreakpoint === 'sm';
+    return bootstrapBreakpoint === 'xs';
   }
 
   renderSidebar() {

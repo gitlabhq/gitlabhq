@@ -1,6 +1,8 @@
-- breadcrumb_title "Repository Settings"
-- page_title "Repository"
+- breadcrumb_title _("Repository Settings")
+- page_title _("Repository")
 - @content_class = "limit-container-width" unless fluid_layout
+
+= render "projects/mirrors/show"
 
 -# Protected branches & tags use a lot of nested partials.
 -# The shared parts of the views can be found in the `shared` directory.
@@ -9,3 +11,4 @@
 = render "projects/protected_branches/index"
 = render "projects/protected_tags/index"
 = render @deploy_keys
+= render "projects/deploy_tokens/index"

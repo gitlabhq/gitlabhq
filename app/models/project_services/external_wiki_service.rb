@@ -1,9 +1,9 @@
-class ExternalWikiService < Service
-  include HTTParty
+# frozen_string_literal: true
 
+class ExternalWikiService < Service
   prop_accessor :external_wiki_url
 
-  validates :external_wiki_url, presence: true, url: true, if: :activated?
+  validates :external_wiki_url, presence: true, public_url: true, if: :activated?
 
   def title
     'External Wiki'
@@ -24,7 +24,7 @@ class ExternalWikiService < Service
   end
 
   def execute(_data)
-    @response = HTTParty.get(properties['external_wiki_url'], verify: true) rescue nil
+    @response = Gitlab::HTTP.get(properties['external_wiki_url'], verify: true) rescue nil
     if @response != 200
       nil
     end

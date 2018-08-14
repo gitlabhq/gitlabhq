@@ -1,6 +1,4 @@
 - page_title _("Wiki")
+- @right_sidebar = false
 
-%h3.page-title= s_("Wiki|Empty page")
-%hr
-.error_message
-  = s_("WikiEmptyPageError|You are not allowed to create wiki pages")
+= render 'shared/empty_states/wikis'

@@ -14,6 +14,20 @@ describe WebHookService do
   end
   let(:service_instance) { described_class.new(project_hook, data, :push_hooks) }
 
+  describe '#initialize' do
+    it 'allow_local_requests is true if hook is a SystemHook' do
+      instance = described_class.new(build(:system_hook), data, :system_hook)
+      expect(instance.request_options[:allow_local_requests]).to be_truthy
+    end
+
+    it 'allow_local_requests is false if hook is not a SystemHook' do
+      %i(project_hook service_hook web_hook_log).each do |hook|
+        instance = described_class.new(build(hook), data, hook)
+        expect(instance.request_options[:allow_local_requests]).to be_falsey
+      end
+    end
+  end
+
   describe '#execute' do
     before do
       project.hooks << [project_hook]
@@ -46,6 +60,36 @@ describe WebHookService do
       ).once
     end
 
+    context 'when auth credentials are present' do
+      let(:url)  {'https://example.org'}
+      let(:project_hook) { create(:project_hook, url: 'https://demo:demo@example.org/') }
+
+      it 'uses the credentials' do
+        WebMock.stub_request(:post, url)
+
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, url).with(
+          headers: headers.merge('Authorization' => 'Basic ZGVtbzpkZW1v')
+        ).once
+      end
+    end
+
+    context 'when auth credentials are partial present' do
+      let(:url)  {'https://example.org'}
+      let(:project_hook) { create(:project_hook, url: 'https://demo@example.org/') }
+
+      it 'uses the credentials anyways' do
+        WebMock.stub_request(:post, url)
+
+        service_instance.execute
+
+        expect(WebMock).to have_requested(:post, url).with(
+          headers: headers.merge('Authorization' => 'Basic ZGVtbzo=')
+        ).once
+      end
+    end
+
     it 'catches exceptions' do
       WebMock.stub_request(:post, project_hook.url).to_raise(StandardError.new('Some error'))
 
@@ -53,7 +97,7 @@ describe WebHookService do
     end
 
     it 'handles exceptions' do
-      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout]
+      exceptions = [SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError]
       exceptions.each do |exception_class|
         exception = exception_class.new('Exception message')
 

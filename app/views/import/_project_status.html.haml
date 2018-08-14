@@ -1,0 +1,11 @@
+- case project.import_status
+- when 'finished'
+  = icon('check')
+  = _('Done')
+- when 'started'
+  = icon("spinner spin")
+  = _('Started')
+- when 'failed'
+  = _('Failed')
+- else
+  = project.human_import_status_name

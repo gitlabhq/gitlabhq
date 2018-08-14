@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 class RunnerEntity < Grape::Entity
   include RequestAwareEntity
 
   expose :id, :description
 
   expose :edit_path,
-    if: -> (*) { can?(request.current_user, :admin_build, project) && runner.specific? } do |runner|
+    if: -> (*) { can?(request.current_user, :admin_build, project) && runner.project_type? } do |runner|
     edit_project_runner_path(project, runner)
   end
 

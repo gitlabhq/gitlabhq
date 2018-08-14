@@ -2,10 +2,11 @@
 
 resource :repository, only: [:create] do
   member do
-    get ':ref/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, ref: /.+/ }, action: 'archive', as: 'archive'
-
     # deprecated since GitLab 9.5
-    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative'
+    get 'archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex }, as: 'archive_alternative', defaults: { append_sha: true }
+
+    # deprecated since GitLab 10.7
+    get ':id/archive', constraints: { format: Gitlab::PathRegex.archive_formats_regex, id: /.+/ }, action: 'archive', as: 'archive_deprecated', defaults: { append_sha: true }
   end
 end
 
@@ -17,6 +18,7 @@ scope format: false do
   resources :compare, only: [:index, :create] do
     collection do
       get :diff_for_path
+      get :signatures
     end
   end
 
@@ -81,6 +83,7 @@ scope format: false do
     get '/raw/*id', to: 'raw#show', as: :raw
     get '/blame/*id', to: 'blame#show', as: :blame
 
+    get '/commits', to: 'commits#commits_root', as: :commits_root
     get '/commits/*id/signatures', to: 'commits#signatures', as: :signatures
     get '/commits/*id', to: 'commits#show', as: :commits
 

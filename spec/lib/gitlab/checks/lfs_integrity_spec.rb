@@ -6,7 +6,9 @@ describe Gitlab::Checks::LfsIntegrity do
   let(:project) { create(:project, :repository) }
   let(:repository) { project.repository }
   let(:newrev) do
-    operations = BareRepoOperations.new(repository.path)
+    operations = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      BareRepoOperations.new(repository.path)
+    end
 
     # Create a commit not pointed at by any ref to emulate being in the
     # pre-receive hook so that `--not --all` returns some objects

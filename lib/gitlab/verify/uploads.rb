@@ -11,8 +11,12 @@ module Gitlab
 
       private
 
-      def relation
-        Upload.all
+      def all_relation
+        Upload.all.preload(:model)
+      end
+
+      def local?(upload)
+        upload.local?
       end
 
       def expected_checksum(upload)
@@ -21,6 +25,10 @@ module Gitlab
 
       def actual_checksum(upload)
         Upload.hexdigest(upload.absolute_path)
+      end
+
+      def remote_object_exists?(upload)
+        upload.build_uploader.file.exists?
       end
     end
   end

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Autosave from '~/autosave';
 import AccessorUtilities from '~/lib/utils/accessor';
 
@@ -58,12 +59,10 @@ describe('Autosave', () => {
 
         Autosave.prototype.restore.call(autosave);
 
-        expect(
-          field.trigger,
-        ).toHaveBeenCalled();
+        expect(field.trigger).toHaveBeenCalled();
       });
 
-      it('triggers native event', (done) => {
+      it('triggers native event', done => {
         autosave.field.get(0).addEventListener('change', () => {
           done();
         });
@@ -80,9 +79,7 @@ describe('Autosave', () => {
       it('does not trigger event', () => {
         spyOn(field, 'trigger').and.callThrough();
 
-        expect(
-          field.trigger,
-        ).not.toHaveBeenCalled();
+        expect(field.trigger).not.toHaveBeenCalled();
       });
     });
   });

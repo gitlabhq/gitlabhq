@@ -2,6 +2,7 @@ class ProjectsController < Projects::ApplicationController
   include IssuableCollections
   include ExtractsPath
   include PreviewMarkdown
+  include SendFileUpload
 
   before_action :whitelist_query_limiting, only: [:create]
   before_action :authenticate_user!, except: [:index, :show, :activity, :refs]
@@ -60,10 +61,10 @@ class ProjectsController < Projects::ApplicationController
         flash[:notice] = _("Project '%{project_name}' was successfully updated.") % { project_name: @project.name }
 
         format.html do
-          redirect_to(edit_project_path(@project))
+          redirect_to(edit_project_path(@project, anchor: 'js-general-project-settings'))
         end
       else
-        flash[:alert] = result[:message]
+        flash.now[:alert] = result[:message]
 
         format.html { render 'edit' }
       end
@@ -132,7 +133,7 @@ class ProjectsController < Projects::ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).async_execute
     flash[:notice] = _("Project '%{project_name}' is in the process of being deleted.") % { project_name: @project.full_name }
 
-    redirect_to dashboard_projects_path, status: 302
+    redirect_to dashboard_projects_path, status: :found
   rescue Projects::DestroyService::DestroyError => ex
     redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
@@ -147,7 +148,7 @@ class ProjectsController < Projects::ApplicationController
   def archive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.archive!
+    ::Projects::UpdateService.new(@project, current_user, archived: true).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -157,7 +158,7 @@ class ProjectsController < Projects::ApplicationController
   def unarchive
     return access_denied! unless can?(current_user, :archive_project, @project)
 
-    @project.unarchive!
+    ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
     respond_to do |format|
       format.html { redirect_to project_path(@project) }
@@ -173,7 +174,7 @@ class ProjectsController < Projects::ApplicationController
     )
   rescue ::Projects::HousekeepingService::LeaseTaken => ex
     redirect_to(
-      edit_project_path(@project),
+      edit_project_path(@project, anchor: 'js-project-advanced-settings'),
       alert: ex.to_s
     )
   end
@@ -182,19 +183,19 @@ class ProjectsController < Projects::ApplicationController
     @project.add_export_job(current_user: current_user)
 
     redirect_to(
-      edit_project_path(@project),
+      edit_project_path(@project, anchor: 'js-export-project'),
       notice: _("Project export started. A download link will be sent by email.")
     )
   end
 
   def download_export
-    export_project_path = @project.export_project_path
-
-    if export_project_path
+    if export_project_object_storage?
+      send_upload(@project.import_export_upload.export_file)
+    elsif export_project_path
       send_file export_project_path, disposition: 'attachment'
     else
       redirect_to(
-        edit_project_path(@project),
+        edit_project_path(@project, anchor: 'js-export-project'),
         alert: _("Project export link has expired. Please generate a new export from your project settings.")
       )
     end
@@ -207,7 +208,7 @@ class ProjectsController < Projects::ApplicationController
       flash[:alert] = _("Project export could not be deleted.")
     end
 
-    redirect_to(edit_project_path(@project))
+    redirect_to(edit_project_path(@project, anchor: 'js-export-project'))
   end
 
   def generate_new_export
@@ -215,7 +216,7 @@ class ProjectsController < Projects::ApplicationController
       export
     else
       redirect_to(
-        edit_project_path(@project),
+        edit_project_path(@project, anchor: 'js-export-project'),
         alert: _("Project export could not be deleted.")
       )
     end
@@ -247,13 +248,13 @@ class ProjectsController < Projects::ApplicationController
 
     if find_branches
       branches = BranchesFinder.new(@repository, params).execute.take(100).map(&:name)
-      options[s_('RefSwitcher|Branches')] = branches
+      options['Branches'] = branches
     end
 
     if find_tags && @repository.tag_count.nonzero?
       tags = TagsFinder.new(@repository, params).execute.take(100).map(&:name)
 
-      options[s_('RefSwitcher|Tags')] = tags
+      options['Tags'] = tags
     end
 
     # If reference is commit id - we should add it to branch/tag selectbox
@@ -264,8 +265,6 @@ class ProjectsController < Projects::ApplicationController
 
     render json: options.to_json
   end
-
-  private
 
   # Render project landing depending of which features are available
   # So if page is not availble in the list it renders the next page
@@ -324,7 +323,7 @@ class ProjectsController < Projects::ApplicationController
       :avatar,
       :build_allow_git_fetch,
       :build_coverage_regex,
-      :build_timeout_in_minutes,
+      :build_timeout_human_readable,
       :resolve_outdated_diff_discussions,
       :container_registry_enabled,
       :default_branch,
@@ -347,6 +346,7 @@ class ProjectsController < Projects::ApplicationController
       :visibility_level,
       :template_name,
       :merge_method,
+      :initialize_with_readme,
 
       project_feature_attributes: %i[
         builds_access_level
@@ -404,7 +404,7 @@ class ProjectsController < Projects::ApplicationController
     params[:namespace_id] = project.namespace.to_param
     params[:id] = project.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 
   def project_export_enabled
@@ -422,5 +422,13 @@ class ProjectsController < Projects::ApplicationController
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
+  end
+
+  def export_project_path
+    @export_project_path ||= @project.export_project_path
+  end
+
+  def export_project_object_storage?
+    @project.export_project_object_exists?
   end
 end

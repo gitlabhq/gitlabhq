@@ -5,6 +5,8 @@ class Projects::SnippetsController < Projects::ApplicationController
   include SnippetsActions
   include RendersBlob
 
+  skip_before_action :verify_authenticity_token, only: [:show], if: :js_request?
+
   before_action :check_snippets_available!
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw, :toggle_award_emoji, :mark_as_spam]
 
@@ -71,6 +73,7 @@ class Projects::SnippetsController < Projects::ApplicationController
       format.json do
         render_blob_json(blob)
       end
+      format.js { render 'shared/snippets/show'}
     end
   end
 
@@ -79,13 +82,13 @@ class Projects::SnippetsController < Projects::ApplicationController
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project), status: 302
+    redirect_to project_snippets_path(@project), status: :found
   end
 
   protected
 
   def snippet
-    @snippet ||= @project.snippets.find(params[:id])
+    @snippet ||= @project.snippets.inc_relations_for_view.find(params[:id])
   end
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

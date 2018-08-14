@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 #
 # Used by NotificationService to determine who should receive notification
 #
@@ -10,12 +12,16 @@ module NotificationRecipientService
     NotificationRecipient.new(user, *args).notifiable?
   end
 
-  def self.build_recipients(*a)
-    Builder::Default.new(*a).notification_recipients
+  def self.build_recipients(*args)
+    Builder::Default.new(*args).notification_recipients
   end
 
-  def self.build_new_note_recipients(*a)
-    Builder::NewNote.new(*a).notification_recipients
+  def self.build_new_note_recipients(*args)
+    Builder::NewNote.new(*args).notification_recipients
+  end
+
+  def self.build_merge_request_unmergeable_recipients(*args)
+    Builder::MergeRequestUnmergeable.new(*args).notification_recipients
   end
 
   module Builder
@@ -40,9 +46,12 @@ module NotificationRecipientService
         raise 'abstract'
       end
 
-      # rubocop:disable Rails/Delegate
       def project
         target.project
+      end
+
+      def group
+        project&.group || target.try(:group)
       end
 
       def recipients
@@ -54,8 +63,7 @@ module NotificationRecipientService
           users = users.includes(:notification_settings)
         end
 
-        users = Array(users)
-        users.compact!
+        users = Array(users).compact
         recipients.concat(users.map { |u| make_recipient(u, type, reason) })
       end
 
@@ -68,6 +76,7 @@ module NotificationRecipientService
           user, type,
           reason: reason,
           project: project,
+          group: group,
           custom_action: custom_action,
           target: target,
           acting_user: acting_user
@@ -108,11 +117,11 @@ module NotificationRecipientService
 
         # Users with a notification setting on group or project
         user_ids += user_ids_notifiable_on(project, :custom)
-        user_ids += user_ids_notifiable_on(project.group, :custom)
+        user_ids += user_ids_notifiable_on(group, :custom)
 
         # Users with global level custom
         user_ids_with_project_level_global = user_ids_notifiable_on(project, :global)
-        user_ids_with_group_level_global   = user_ids_notifiable_on(project.group, :global)
+        user_ids_with_group_level_global   = user_ids_notifiable_on(group, :global)
 
         global_users_ids = user_ids_with_project_level_global.concat(user_ids_with_group_level_global)
         user_ids += user_ids_with_global_level_custom(global_users_ids, custom_action)
@@ -122,6 +131,10 @@ module NotificationRecipientService
 
       def add_project_watchers
         add_recipients(project_watchers, :watch, nil)
+      end
+
+      def add_group_watchers
+        add_recipients(group_watchers, :watch, nil)
       end
 
       # Get project users with WATCH notification level
@@ -137,6 +150,14 @@ module NotificationRecipientService
         user_ids_with_group_setting = select_group_members_ids(project.group, project_members_ids, user_ids_with_group_global, user_ids)
 
         user_scope.where(id: user_ids_with_project_setting.concat(user_ids_with_group_setting).uniq)
+      end
+
+      def group_watchers
+        user_ids_with_group_global = user_ids_notifiable_on(group, :global)
+        user_ids = user_ids_with_global_level_watch(user_ids_with_group_global)
+        user_ids_with_group_setting = select_group_members_ids(group, [], user_ids_with_group_global, user_ids)
+
+        user_scope.where(id: user_ids_with_group_setting)
       end
 
       def add_subscribed_users
@@ -204,10 +225,11 @@ module NotificationRecipientService
       attr_reader :action
       attr_reader :previous_assignee
       attr_reader :skip_current_user
-      def initialize(target, current_user, action:, previous_assignee: nil, skip_current_user: true)
+      def initialize(target, current_user, action:, custom_action: nil, previous_assignee: nil, skip_current_user: true)
         @target = target
         @current_user = current_user
         @action = action
+        @custom_action = custom_action
         @previous_assignee = previous_assignee
         @skip_current_user = skip_current_user
       end
@@ -237,7 +259,13 @@ module NotificationRecipientService
           add_mentions(current_user, target: target)
 
           # Add the assigned users, if any
-          assignees = custom_action == :new_issue ? target.assignees : target.assignee
+          assignees = case custom_action
+                      when :new_issue
+                        target.assignees
+                      else
+                        target.assignee
+                      end
+
           # We use the `:participating` notification level in order to match existing legacy behavior as captured
           # in existing specs (notification_service_spec.rb ~ line 507)
           add_recipients(assignees, :participating, NotificationReason::ASSIGNED) if assignees
@@ -275,6 +303,14 @@ module NotificationRecipientService
         note.project
       end
 
+      def group
+        if note.for_project_noteable?
+          project.group
+        else
+          target.try(:group)
+        end
+      end
+
       def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
@@ -283,11 +319,11 @@ module NotificationRecipientService
         if note.for_project_noteable?
           # Merge project watchers
           add_project_watchers
-
-          # Merge project with custom notification
-          add_custom_notifications
+        else
+          add_group_watchers
         end
 
+        add_custom_notifications
         add_subscribed_users
       end
 
@@ -297,6 +333,27 @@ module NotificationRecipientService
 
       def acting_user
         note.author
+      end
+    end
+
+    class MergeRequestUnmergeable < Base
+      attr_reader :target
+      def initialize(merge_request)
+        @target = merge_request
+      end
+
+      def build!
+        target.merge_participants.each do |user|
+          add_recipients(user, :participating, nil)
+        end
+      end
+
+      def custom_action
+        :unmergeable_merge_request
+      end
+
+      def acting_user
+        nil
       end
     end
   end

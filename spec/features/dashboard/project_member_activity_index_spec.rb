@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-feature 'Project member activity', :js do
+describe 'Project member activity', :js do
   let(:user)            { create(:user) }
   let(:project)         { create(:project, :public, name: 'x', namespace: user.namespace) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   def visit_activities_and_wait_with_event(event_type)

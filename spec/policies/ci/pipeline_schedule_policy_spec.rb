@@ -77,9 +77,9 @@ describe Ci::PipelineSchedulePolicy, :models do
       end
     end
 
-    describe 'rules for a master' do
+    describe 'rules for a maintainer' do
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       it 'includes abilities to do do all operations on pipeline schedule' do
@@ -93,8 +93,8 @@ describe Ci::PipelineSchedulePolicy, :models do
       let(:owner) { create(:user) }
 
       before do
-        project.add_master(owner)
-        project.add_master(user)
+        project.add_maintainer(owner)
+        project.add_maintainer(user)
         pipeline_schedule.update(owner: owner)
       end
 

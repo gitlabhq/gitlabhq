@@ -8,34 +8,43 @@ describe "Dashboard Issues Feed"  do
     let!(:project2) { create(:project) }
 
     before do
-      project1.add_master(user)
-      project2.add_master(user)
+      project1.add_maintainer(user)
+      project2.add_maintainer(user)
     end
 
     describe "atom feed" do
-      it "renders atom feed via personal access token" do
+      it "returns 400 if no filter is used" do
         personal_access_token = create(:personal_access_token, user: user)
 
         visit issues_dashboard_path(:atom, private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
+        expect(page.status_code).to eq(400)
+      end
+
+      it "renders atom feed via personal access token" do
+        personal_access_token = create(:personal_access_token, user: user)
+
+        visit issues_dashboard_path(:atom, private_token: personal_access_token.token, assignee_id: user.id)
+
+        expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{user.name} issues")
       end
 
-      it "renders atom feed via RSS token" do
-        visit issues_dashboard_path(:atom, rss_token: user.rss_token)
+      it "renders atom feed via feed token" do
+        visit issues_dashboard_path(:atom, feed_token: user.feed_token, assignee_id: user.id)
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{user.name} issues")
       end
 
       it "renders atom feed with url parameters" do
-        visit issues_dashboard_path(:atom, rss_token: user.rss_token, state: 'opened', assignee_id: user.id)
+        visit issues_dashboard_path(:atom, feed_token: user.feed_token, state: 'opened', assignee_id: user.id)
 
         link = find('link[type="application/atom+xml"]')
         params = CGI.parse(URI.parse(link[:href]).query)
 
-        expect(params).to include('rss_token' => [user.rss_token])
+        expect(params).to include('feed_token' => [user.feed_token])
         expect(params).to include('state' => ['opened'])
         expect(params).to include('assignee_id' => [user.id.to_s])
       end
@@ -44,7 +53,7 @@ describe "Dashboard Issues Feed"  do
         let!(:issue2) { create(:issue, author: user, assignees: [assignee], project: project2, description: 'test desc') }
 
         it "renders issue fields" do
-          visit issues_dashboard_path(:atom, rss_token: user.rss_token)
+          visit issues_dashboard_path(:atom, feed_token: user.feed_token, assignee_id: assignee.id)
 
           entry = find(:xpath, "//feed/entry[contains(summary/text(),'#{issue2.title}')]")
 
@@ -67,7 +76,7 @@ describe "Dashboard Issues Feed"  do
         end
 
         it "renders issue label and milestone info" do
-          visit issues_dashboard_path(:atom, rss_token: user.rss_token)
+          visit issues_dashboard_path(:atom, feed_token: user.feed_token, assignee_id: assignee.id)
 
           entry = find(:xpath, "//feed/entry[contains(summary/text(),'#{issue1.title}')]")
 

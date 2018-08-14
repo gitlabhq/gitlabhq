@@ -9,7 +9,7 @@
       lines: {
         type: Number,
         required: false,
-        default: 6,
+        default: 3,
       },
     },
     computed: {
@@ -22,10 +22,10 @@
 
 <template>
   <div
-    class="animation-container"
     :class="{
       'animation-container-small': small,
     }"
+    class="animation-container"
   >
     <div
       v-for="(css, index) in lineClasses"

@@ -64,12 +64,32 @@ describe API::Issues do
 
   describe "GET /issues" do
     context "when unauthenticated" do
-      it "returns authentication error" do
+      it "returns an array of all issues" do
+        get api("/issues"), scope: 'all'
+
+        expect(response).to have_http_status(200)
+        expect(json_response).to be_an Array
+      end
+
+      it "returns authentication error without any scope" do
         get api("/issues")
 
-        expect(response).to have_gitlab_http_status(401)
+        expect(response).to have_http_status(401)
+      end
+
+      it "returns authentication error when scope is assigned-to-me" do
+        get api("/issues"), scope: 'assigned-to-me'
+
+        expect(response).to have_http_status(401)
+      end
+
+      it "returns authentication error when scope is created-by-me" do
+        get api("/issues"), scope: 'created-by-me'
+
+        expect(response).to have_http_status(401)
       end
     end
+
     context "when authenticated" do
       let(:first_issue) { json_response.first }
 
@@ -104,6 +124,15 @@ describe API::Issues do
       end
 
       it 'returns issues assigned to me' do
+        issue2 = create(:issue, assignees: [user2], project: project)
+
+        get api('/issues', user2), scope: 'assigned_to_me'
+
+        expect_paginated_array_response(size: 1)
+        expect(first_issue['id']).to eq(issue2.id)
+      end
+
+      it 'returns issues assigned to me (kebab-case)' do
         issue2 = create(:issue, assignees: [user2], project: project)
 
         get api('/issues', user2), scope: 'assigned-to-me'
@@ -379,193 +408,239 @@ describe API::Issues do
     end
     let!(:group_note) { create(:note_on_issue, author: user, project: group_project, noteable: group_issue) }
 
-    before do
-      group_project.add_reporter(user)
-    end
     let(:base_url) { "/groups/#{group.id}/issues" }
 
-    it 'returns all group issues (including opened and closed)' do
-      get api(base_url, admin)
+    context 'when group has subgroups', :nested_groups do
+      let(:subgroup_1) { create(:group, parent: group) }
+      let(:subgroup_2) { create(:group, parent: subgroup_1) }
 
-      expect_paginated_array_response(size: 3)
+      let(:subgroup_1_project) { create(:project, namespace: subgroup_1) }
+      let(:subgroup_2_project) { create(:project, namespace: subgroup_2) }
+
+      let!(:issue_1) { create(:issue, project: subgroup_1_project) }
+      let!(:issue_2) { create(:issue, project: subgroup_2_project) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'also returns subgroups projects issues' do
+        get api(base_url, user)
+
+        issue_ids = json_response.map { |issue| issue['id'] }
+
+        expect_paginated_array_response(size: 5)
+        expect(issue_ids).to include(issue_1.id, issue_2.id)
+      end
     end
 
-    it 'returns group issues without confidential issues for non project members' do
-      get api("#{base_url}?state=opened", non_member)
+    context 'when user is unauthenticated' do
+      it 'lists all issues in public projects' do
+        get api(base_url)
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['title']).to eq(group_issue.title)
+        expect_paginated_array_response(size: 2)
+      end
     end
 
-    it 'returns group confidential issues for author' do
-      get api("#{base_url}?state=opened", author)
+    context 'when user is a group member' do
+      before do
+        group_project.add_reporter(user)
+      end
 
-      expect_paginated_array_response(size: 2)
-    end
+      it 'returns all group issues (including opened and closed)' do
+        get api(base_url, admin)
 
-    it 'returns group confidential issues for assignee' do
-      get api("#{base_url}?state=opened", assignee)
+        expect_paginated_array_response(size: 3)
+      end
 
-      expect_paginated_array_response(size: 2)
-    end
+      it 'returns group issues without confidential issues for non project members' do
+        get api("#{base_url}?state=opened", non_member)
 
-    it 'returns group issues with confidential issues for project members' do
-      get api("#{base_url}?state=opened", user)
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['title']).to eq(group_issue.title)
+      end
 
-      expect_paginated_array_response(size: 2)
-    end
+      it 'returns group confidential issues for author' do
+        get api("#{base_url}?state=opened", author)
 
-    it 'returns group confidential issues for admin' do
-      get api("#{base_url}?state=opened", admin)
+        expect_paginated_array_response(size: 2)
+      end
 
-      expect_paginated_array_response(size: 2)
-    end
+      it 'returns group confidential issues for assignee' do
+        get api("#{base_url}?state=opened", assignee)
 
-    it 'returns an array of labeled group issues' do
-      get api("#{base_url}?labels=#{group_label.title}", user)
+        expect_paginated_array_response(size: 2)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['labels']).to eq([group_label.title])
-    end
+      it 'returns group issues with confidential issues for project members' do
+        get api("#{base_url}?state=opened", user)
 
-    it 'returns an array of labeled group issues where all labels match' do
-      get api("#{base_url}?labels=#{group_label.title},foo,bar", user)
+        expect_paginated_array_response(size: 2)
+      end
 
-      expect_paginated_array_response(size: 0)
-    end
+      it 'returns group confidential issues for admin' do
+        get api("#{base_url}?state=opened", admin)
 
-    it 'returns issues matching given search string for title' do
-      get api("#{base_url}?search=#{group_issue.title}", user)
+        expect_paginated_array_response(size: 2)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_issue.id)
-    end
+      it 'returns an array of labeled group issues' do
+        get api("#{base_url}?labels=#{group_label.title}", user)
 
-    it 'returns issues matching given search string for description' do
-      get api("#{base_url}?search=#{group_issue.description}", user)
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['labels']).to eq([group_label.title])
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_issue.id)
-    end
+      it 'returns an array of labeled group issues where all labels match' do
+        get api("#{base_url}?labels=#{group_label.title},foo,bar", user)
 
-    it 'returns an array of labeled issues when all labels matches' do
-      label_b = create(:label, title: 'foo', project: group_project)
-      label_c = create(:label, title: 'bar', project: group_project)
+        expect_paginated_array_response(size: 0)
+      end
 
-      create(:label_link, label: label_b, target: group_issue)
-      create(:label_link, label: label_c, target: group_issue)
+      it 'returns issues matching given search string for title' do
+        get api("#{base_url}?search=#{group_issue.title}", user)
 
-      get api("#{base_url}", user), labels: "#{group_label.title},#{label_b.title},#{label_c.title}"
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_issue.id)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['labels']).to eq([label_c.title, label_b.title, group_label.title])
-    end
+      it 'returns issues matching given search string for description' do
+        get api("#{base_url}?search=#{group_issue.description}", user)
 
-    it 'returns an array of issues found by iids' do
-      get api(base_url, user), iids: [group_issue.iid]
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_issue.id)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_issue.id)
-    end
+      it 'returns an array of labeled issues when all labels matches' do
+        label_b = create(:label, title: 'foo', project: group_project)
+        label_c = create(:label, title: 'bar', project: group_project)
 
-    it 'returns an empty array if iid does not exist' do
-      get api(base_url, user), iids: [99999]
+        create(:label_link, label: label_b, target: group_issue)
+        create(:label_link, label: label_c, target: group_issue)
 
-      expect_paginated_array_response(size: 0)
-    end
+        get api("#{base_url}", user), labels: "#{group_label.title},#{label_b.title},#{label_c.title}"
 
-    it 'returns an empty array if no group issue matches labels' do
-      get api("#{base_url}?labels=foo,bar", user)
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['labels']).to eq([label_c.title, label_b.title, group_label.title])
+      end
 
-      expect_paginated_array_response(size: 0)
-    end
+      it 'returns an array of issues found by iids' do
+        get api(base_url, user), iids: [group_issue.iid]
 
-    it 'returns an empty array if no issue matches milestone' do
-      get api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_issue.id)
+      end
 
-      expect_paginated_array_response(size: 0)
-    end
+      it 'returns an empty array if iid does not exist' do
+        get api(base_url, user), iids: [99999]
 
-    it 'returns an empty array if milestone does not exist' do
-      get api("#{base_url}?milestone=foo", user)
+        expect_paginated_array_response(size: 0)
+      end
 
-      expect_paginated_array_response(size: 0)
-    end
+      it 'returns an empty array if no group issue matches labels' do
+        get api("#{base_url}?labels=foo,bar", user)
 
-    it 'returns an array of issues in given milestone' do
-      get api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
+        expect_paginated_array_response(size: 0)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_issue.id)
-    end
+      it 'returns an empty array if no issue matches milestone' do
+        get api("#{base_url}?milestone=#{group_empty_milestone.title}", user)
 
-    it 'returns an array of issues matching state in milestone' do
-      get api("#{base_url}?milestone=#{group_milestone.title}"\
-              '&state=closed', user)
+        expect_paginated_array_response(size: 0)
+      end
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_closed_issue.id)
-    end
+      it 'returns an empty array if milestone does not exist' do
+        get api("#{base_url}?milestone=foo", user)
 
-    it 'returns an array of issues with no milestone' do
-      get api("#{base_url}?milestone=#{no_milestone_title}", user)
+        expect_paginated_array_response(size: 0)
+      end
 
-      expect(response).to have_gitlab_http_status(200)
+      it 'returns an array of issues in given milestone' do
+        get api("#{base_url}?state=opened&milestone=#{group_milestone.title}", user)
 
-      expect_paginated_array_response(size: 1)
-      expect(json_response.first['id']).to eq(group_confidential_issue.id)
-    end
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_issue.id)
+      end
 
-    it 'sorts by created_at descending by default' do
-      get api(base_url, user)
+      it 'returns an array of issues matching state in milestone' do
+        get api("#{base_url}?milestone=#{group_milestone.title}"\
+                '&state=closed', user)
 
-      response_dates = json_response.map { |issue| issue['created_at'] }
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_closed_issue.id)
+      end
 
-      expect_paginated_array_response(size: 3)
-      expect(response_dates).to eq(response_dates.sort.reverse)
-    end
+      it 'returns an array of issues with no milestone' do
+        get api("#{base_url}?milestone=#{no_milestone_title}", user)
 
-    it 'sorts ascending when requested' do
-      get api("#{base_url}?sort=asc", user)
+        expect(response).to have_gitlab_http_status(200)
 
-      response_dates = json_response.map { |issue| issue['created_at'] }
+        expect_paginated_array_response(size: 1)
+        expect(json_response.first['id']).to eq(group_confidential_issue.id)
+      end
 
-      expect_paginated_array_response(size: 3)
-      expect(response_dates).to eq(response_dates.sort)
-    end
+      it 'sorts by created_at descending by default' do
+        get api(base_url, user)
 
-    it 'sorts by updated_at descending when requested' do
-      get api("#{base_url}?order_by=updated_at", user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
 
-      response_dates = json_response.map { |issue| issue['updated_at'] }
+        expect_paginated_array_response(size: 3)
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
 
-      expect_paginated_array_response(size: 3)
-      expect(response_dates).to eq(response_dates.sort.reverse)
-    end
+      it 'sorts ascending when requested' do
+        get api("#{base_url}?sort=asc", user)
 
-    it 'sorts by updated_at ascending when requested' do
-      get api("#{base_url}?order_by=updated_at&sort=asc", user)
+        response_dates = json_response.map { |issue| issue['created_at'] }
 
-      response_dates = json_response.map { |issue| issue['updated_at'] }
+        expect_paginated_array_response(size: 3)
+        expect(response_dates).to eq(response_dates.sort)
+      end
 
-      expect_paginated_array_response(size: 3)
-      expect(response_dates).to eq(response_dates.sort)
+      it 'sorts by updated_at descending when requested' do
+        get api("#{base_url}?order_by=updated_at", user)
+
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect_paginated_array_response(size: 3)
+        expect(response_dates).to eq(response_dates.sort.reverse)
+      end
+
+      it 'sorts by updated_at ascending when requested' do
+        get api("#{base_url}?order_by=updated_at&sort=asc", user)
+
+        response_dates = json_response.map { |issue| issue['updated_at'] }
+
+        expect_paginated_array_response(size: 3)
+        expect(response_dates).to eq(response_dates.sort)
+      end
     end
   end
 
   describe "GET /projects/:id/issues" do
     let(:base_url) { "/projects/#{project.id}" }
 
+    context 'when unauthenticated' do
+      it 'returns public project issues' do
+        get api("/projects/#{project.id}/issues")
+
+        expect_paginated_array_response(size: 2)
+        expect(json_response.first['title']).to eq(issue.title)
+      end
+    end
+
     it 'avoids N+1 queries' do
-      control_count = ActiveRecord::QueryRecorder.new do
+      get api("/projects/#{project.id}/issues", user)
+
+      control_count = ActiveRecord::QueryRecorder.new(skip_cached: false) do
         get api("/projects/#{project.id}/issues", user)
       end.count
 
-      create(:issue, author: user, project: project)
+      create_list(:issue, 3, project: project)
 
       expect do
         get api("/projects/#{project.id}/issues", user)
-      end.not_to exceed_query_limit(control_count)
+      end.not_to exceed_all_query_limit(control_count)
     end
 
     it 'returns 404 when project does not exist' do
@@ -765,6 +840,14 @@ describe API::Issues do
   end
 
   describe "GET /projects/:id/issues/:issue_iid" do
+    context 'when unauthenticated' do
+      it 'returns public issues' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}")
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}", user)
 
@@ -919,6 +1002,38 @@ describe API::Issues do
       end
     end
 
+    context 'an internal ID is provided' do
+      context 'by an admin' do
+        it 'sets the internal ID on the new issue' do
+          post api("/projects/#{project.id}/issues", admin),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
+      context 'by an owner' do
+        it 'sets the internal ID on the new issue' do
+          post api("/projects/#{project.id}/issues", user),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).to eq 9001
+        end
+      end
+
+      context 'by another user' do
+        it 'ignores the given internal ID' do
+          post api("/projects/#{project.id}/issues", user2),
+            title: 'new issue', iid: 9001
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(json_response['iid']).not_to eq 9001
+        end
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
@@ -1000,7 +1115,7 @@ describe API::Issues do
       let(:project) { merge_request.source_project }
 
       before do
-        project.add_master(user)
+        project.add_maintainer(user)
       end
 
       context 'resolving all discussions in a merge request' do
@@ -1270,19 +1385,25 @@ describe API::Issues do
       expect(json_response['labels']).to eq([label.title])
     end
 
-    it 'removes all labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+    it 'removes all labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user), labels: ''
+      end
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to eq([])
+      expect(json_response['updated_at']).to be > Time.now
     end
 
-    it 'updates labels' do
-      put api("/projects/#{project.id}/issues/#{issue.iid}", user),
+    it 'updates labels and touches the record' do
+      Timecop.travel(1.minute.from_now) do
+        put api("/projects/#{project.id}/issues/#{issue.iid}", user),
           labels: 'foo,bar'
+      end
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['labels']).to include 'foo'
       expect(json_response['labels']).to include 'bar'
+      expect(json_response['updated_at']).to be > Time.now
     end
 
     it 'allows special label names' do
@@ -1557,6 +1678,14 @@ describe API::Issues do
       create(:merge_requests_closing_issues, issue: issue, merge_request: merge_request)
     end
 
+    context 'when unauthenticated' do
+      it 'return public project issues' do
+        get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by")
+
+        expect_paginated_array_response(size: 1)
+      end
+    end
+
     it 'returns merge requests that will close issue on merge' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/closed_by", user)
 
@@ -1581,6 +1710,14 @@ describe API::Issues do
   describe "GET /projects/:id/issues/:issue_iid/user_agent_detail" do
     let!(:user_agent_detail) { create(:user_agent_detail, subject: issue) }
 
+    context 'when unauthenticated' do
+      it "returns unauthorized" do
+        get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail")
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
+
     it 'exposes known attributes' do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", admin)
 
@@ -1590,7 +1727,7 @@ describe API::Issues do
       expect(json_response['akismet_submitted']).to eq(user_agent_detail.submitted)
     end
 
-    it "returns unautorized for non-admin users" do
+    it "returns unauthorized for non-admin users" do
       get api("/projects/#{project.id}/issues/#{issue.iid}/user_agent_detail", user)
 
       expect(response).to have_gitlab_http_status(403)

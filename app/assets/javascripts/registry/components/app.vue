@@ -48,8 +48,8 @@
     />
 
     <collapsible-container
-      v-else-if="!isLoading && repos.length"
       v-for="(item, index) in repos"
+      v-else-if="!isLoading && repos.length"
       :key="index"
       :repo="item"
     />

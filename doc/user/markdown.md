@@ -3,13 +3,15 @@
 ## GitLab Flavored Markdown (GFM)
 
 > **Note:**
-Not all of the GitLab-specific extensions to Markdown that are described in
-this document currently work on our documentation website.
+> Not all of the GitLab-specific extensions to Markdown that are described in
+> this document currently work on our documentation website.
 >
-For the best result, we encourage you to check this document out as rendered
+> For the best result, we encourage you to check this document out as rendered
 by GitLab: [markdown.md]
 
-_GitLab uses the [Redcarpet Ruby library][redcarpet] for Markdown processing._
+_GitLab uses (as of 11.1) the [CommonMark Ruby Library][commonmarker] for Markdown processing of all new issues, merge requests, comments, and other Markdown content in the GitLab system.  Previous content, wiki pages and Markdown files (`.md`) in the repositories are still processed using the [Redcarpet Ruby library][redcarpet]._
+
+_Where there are significant differences, we will try to call them out in this document._
 
 GitLab uses "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality. It was inspired by [GitHub Flavored Markdown](https://help.github.com/articles/basic-writing-and-formatting-syntax/).
 
@@ -20,8 +22,8 @@ You can use GFM in the following areas:
 - merge requests
 - milestones
 - snippets (the snippet must be named with a `.md` extension)
-- wiki pages
-- markdown documents inside the repository
+- wiki pages (currently only rendered by Redcarpet)
+- markdown documents inside the repository (currently only rendered by Redcarpet)
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -34,7 +36,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#newline
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](https://daringfireball.net/projects/markdown/syntax#p).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.
-Line-breaks, or softreturns, are rendered if you end a line with two or more spaces:
+Line-breaks, or soft returns, are rendered if you end a line with two or more spaces:
 
 [//]: # (Do *NOT* remove the two ending whitespaces in the following line.)
 [//]: # (They are needed for the Markdown text to render correctly.)
@@ -197,7 +199,7 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#inline-
 
 With inline diffs tags you can display {+ additions +} or [- deletions -].
 
-The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
+The wrapping tags can be either curly braces or square brackets: [+ additions +] or {- deletions -}.
 
 Examples:
 
@@ -228,9 +230,11 @@ https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#emoji
 
 	You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+	If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 	Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+
+	Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support. On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
 
 Sometimes you want to :monkey: around a bit and add some :star2: to your :speech_balloon:. Well we have a gift for you:
 
@@ -238,9 +242,11 @@ Sometimes you want to :monkey: around a bit and add some :star2: to your :speech
 
 You can use it to point out a :bug: or warn about :speak_no_evil: patches. And if someone improves your really :snail: code, send them some :birthday:. People will :heart: you for that.
 
-If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
+If you are new to this, don't be :fearful:. You can easily join the emoji :family:. All you need to do is to look up one of the supported codes.
 
 Consult the [Emoji Cheat Sheet](https://www.emojicopy.com) for a list of all supported emoji codes. :thumbsup:
+
+Most emoji are natively supported on macOS, Windows, iOS, Android and will fallback to image-based emoji where there is lack of support. On Linux, you can download [Noto Color Emoji](https://www.google.com/get/noto/help/emoji/) to get full native emoji support.
 
 ### Special GitLab References
 
@@ -257,6 +263,7 @@ GFM will recognize the following:
 | `@user_name`               | specific user                   |
 | `@group_name`              | specific group                  |
 | `@all`                     | entire team                     |
+| `namespace/project>`       | project                         |
 | `#12345`                   | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
@@ -394,17 +401,17 @@ Color written inside backticks will be followed by a color "chip".
 
 Examples:
 
-    `#F00`
-    `#F00A`
-    `#FF0000`
-    `#FF0000AA`
-    `RGB(0,255,0)`
-    `RGB(0%,100%,0%)`
-    `RGBA(0,255,0,0.7)`
-    `HSL(540,70%,50%)`
+    `#F00`  
+    `#F00A`  
+    `#FF0000`  
+    `#FF0000AA`  
+    `RGB(0,255,0)`  
+    `RGB(0%,100%,0%)`  
+    `RGBA(0,255,0,0.7)`  
+    `HSL(540,70%,50%)`  
     `HSLA(540,70%,50%,0.7)`
 
-Becomes:
+Become:
 
 `#F00`  
 `#F00A`  
@@ -414,7 +421,7 @@ Becomes:
 `RGB(0%,100%,0%)`  
 `RGBA(0,255,0,0.7)`  
 `HSL(540,70%,50%)`  
-`HSLA(540,70%,50%,0.7)`  
+`HSLA(540,70%,50%,0.7)`
 
 #### Supported formats:
 
@@ -481,14 +488,14 @@ Alt-H2
 
 All Markdown-rendered headers automatically get IDs, except in comments.
 
-On hover a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+On hover, a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
 
 The IDs are generated from the content of the header according to the following rules:
 
-1. All text is converted to lowercase
-1. All non-word text (e.g., punctuation, HTML) is removed
-1. All spaces are converted to hyphens
-1. Two or more hyphens in a row are converted to one
+1. All text is converted to lowercase.
+1. All non-word text (e.g., punctuation, HTML) is removed.
+1. All spaces are converted to hyphens.
+1. Two or more hyphens in a row are converted to one.
 1. If a header with the same ID has already been generated, a unique
    incrementing number is appended, starting at 1.
 
@@ -500,6 +507,7 @@ For example:
 # This header has Unicode in it: 한글
 ## This header has spaces in it
 ### This header has spaces in it
+## This header has 3.5 in it (and parentheses)
 ```
 
 Would generate the following link IDs:
@@ -509,10 +517,13 @@ Would generate the following link IDs:
 1. `this-header-has-unicode-in-it-한글`
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
 ### Emphasis
+
+Examples:
 
 ```no-highlight
 Emphasis, aka italics, with *asterisks* or _underscores_.
@@ -523,6 +534,8 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 ```
+
+Become:
 
 Emphasis, aka italics, with *asterisks* or _underscores_.
 
@@ -534,12 +547,14 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 ### Lists
 
+Examples:
+
 ```no-highlight
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -547,11 +562,13 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 + Or pluses
 ```
 
+Become:
+
 1. First ordered list item
 2. Another item
-  * Unordered sub-list.
+   * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-  1. Ordered sub-list
+   1. Ordered sub-list
 4. And another item.
 
 * Unordered list can use asterisks
@@ -559,33 +576,45 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 + Or pluses
 
 If a list item contains multiple paragraphs,
-each subsequent paragraph should be indented with four spaces.
+each subsequent paragraph should be indented to the same level as the start of the list item text (_Redcarpet: paragraph should be indented with four spaces._)
 
-```no-highlight
-1.  First ordered list item
-
-    Second paragraph of first item.
-2.  Another item
-```
-
-1.  First ordered list item
-
-    Second paragraph of first item.
-2.  Another item
-
-If the second paragraph isn't indented with four spaces,
-the second list item will be incorrectly labeled as `1`.
+Example:
 
 ```no-highlight
 1. First ordered list item
 
    Second paragraph of first item.
+
 2. Another item
 ```
 
+Becomes:
+
+1.  First ordered list item
+
+    Paragraph of first item.
+
+2.  Another item
+
+If the paragraph of the first item is not indented with the proper number of spaces,
+the paragraph will appear outside the list, instead of properly indented under the list item.
+
+Example:
+
+```no-highlight
 1. First ordered list item
 
-   Second paragraph of first item.
+  Paragraph of first item.
+
+2. Another item
+```
+
+Becomes:
+
+1. First ordered list item
+
+  Paragraph of first item.
+
 2. Another item
 
 ### Links
@@ -620,6 +649,8 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
 
 ### Images
 
+Examples:
+
     Here's our logo (hover to see the title text):
 
     Inline-style:
@@ -629,6 +660,8 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
     ![alt text1][logo]
 
     [logo]: img/markdown_logo.png
+
+Become:
 
 Here's our logo:
 
@@ -644,6 +677,8 @@ Reference-style:
 
 ### Blockquotes
 
+Examples:
+
 ```no-highlight
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
@@ -652,6 +687,8 @@ Quote break.
 
 > This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 ```
+
+Become:
 
 > Blockquotes are very handy in email to emulate reply text.
 > This line is part of the same quote.
@@ -666,6 +703,8 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
 See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubydoc.info/gems/html-pipeline/1.11.0/HTML/Pipeline/SanitizationFilter#WHITELIST-constant) class for the list of allowed HTML tags and attributes.  In addition to the default `SanitizationFilter` whitelist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 
+Examples:
+
 ```no-highlight
 <dl>
   <dt>Definition list</dt>
@@ -675,6 +714,8 @@ See the documentation for HTML::Pipeline's [SanitizationFilter](http://www.rubyd
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 ```
+
+Become:
 
 <dl>
   <dt>Definition list</dt>
@@ -691,24 +732,30 @@ Content can be collapsed using HTML's [`<details>`](https://developer.mozilla.or
 <p>
 <details>
 <summary>Click me to collapse/fold.</summary>
-These details will remain hidden until expanded.
+
+These details <em>will</em> remain <strong>hidden</strong> until expanded.
 
 <pre><code>PASTE LOGS HERE</code></pre>
+
 </details>
 </p>
 
-**Note:** Unfortunately Markdown is not supported inside these tags, as described by the [markdown specification](https://daringfireball.net/projects/markdown/syntax#html). You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting).
+**Note:** Markdown inside these tags is supported, as long as you have a blank link after the `</summary>` tag and before the `</details>` tag, as shown in the example.  _Redcarpet does not support Markdown inside these tags.  You can work around this by using HTML, for example you can use `<pre><code>` tags instead of [code fences](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#code-and-syntax-highlighting)._
 
 ```html
 <details>
 <summary>Click me to collapse/fold.</summary>
-These details will remain hidden until expanded.
 
-<pre><code>PASTE LOGS HERE</code></pre>
+These details _will_ remain **hidden** until expanded.
+
+    PASTE LOGS HERE
+
 </details>
 ```
 
 ### Horizontal Rule
+
+Examples:
 
 ```
 Three or more...
@@ -725,6 +772,8 @@ ___
 
 Underscores
 ```
+
+Become:
 
 Three or more...
 
@@ -742,9 +791,11 @@ Underscores
 
 ### Line Breaks
 
-My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend.
+A good way to learn how line breaks work is to experiment and discover -- hit <kbd>Enter</kbd> once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. The "Preview" tab is your friend.
 
 Here are some things to try out:
+
+Examples:
 
 ```
 Here's a line for us to start with.
@@ -759,6 +810,8 @@ This line is *on its own line*, because the previous line ends with two spaces. 
 
 spaces.
 ```
+
+Become:
 
 Here's a line for us to start with.
 
@@ -774,7 +827,9 @@ spaces.
 
 ### Tables
 
-Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
+Tables aren't part of the core Markdown spec, but they are part of GFM.
+
+Example:
 
 ```
 | header 1 | header 2 |
@@ -783,18 +838,18 @@ Tables aren't part of the core Markdown spec, but they are part of GFM and Markd
 | cell 3   | cell 4   |
 ```
 
-Code above produces next output:
+Becomes:
 
 | header 1 | header 2 |
 | -------- | -------- |
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
 
-**Note**
+**Note:** The row of dashes between the table header and body must have at least three dashes in each column.
 
-The row of dashes between the table header and body must have at least three dashes in each column.
+By including colons in the header row, you can align the text within that column.
 
-By including colons in the header row, you can align the text within that column:
+Example:
 
 ```
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
@@ -802,6 +857,8 @@ By including colons in the header row, you can align the text within that column
 | Cell 1       | Cell 2   | Cell 3        | Cell 4       | Cell 5   | Cell 6        |
 | Cell 7       | Cell 8   | Cell 9        | Cell 10      | Cell 11  | Cell 12       |
 ```
+
+Becomes:
 
 | Left Aligned | Centered | Right Aligned | Left Aligned | Centered | Right Aligned |
 | :----------- | :------: | ------------: | :----------- | :------: | ------------: |
@@ -810,12 +867,28 @@ By including colons in the header row, you can align the text within that column
 
 ### Footnotes
 
+Example:
+
 ```
 You can add footnotes to your text as follows.[^2]
 [^2]: This is my awesome footnote.
 ```
 
+Becomes:
+
 You can add footnotes to your text as follows.[^2]
+
+### Superscripts / Subscripts
+
+CommonMark and GFM currently do not support the superscript syntax ( `x^2` ) that Redcarpet does.  You can use the standard HTML syntax for superscripts and subscripts.
+
+```
+The formula for water is H<sub>2</sub>O
+while the equation for the theory of relativity is E = mc<sup>2</sup>.
+```
+
+The formula for water is H<sub>2</sub>O while the equation for the theory of relativity is E = mc<sup>2</sup>.
+
 
 ## Wiki-specific Markdown
 
@@ -908,3 +981,4 @@ A link starting with a `/` is relative to the wiki root.
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"
 [katex-subset]: https://github.com/Khan/KaTeX/wiki/Function-Support-in-KaTeX "Macros supported by KaTeX"
 [asciidoctor-manual]: http://asciidoctor.org/docs/user-manual/#activating-stem-support "Asciidoctor user manual"
+[commonmarker]: https://github.com/gjtorikian/commonmarker

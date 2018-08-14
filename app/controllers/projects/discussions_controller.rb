@@ -4,8 +4,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   before_action :check_merge_requests_available!
   before_action :merge_request
-  before_action :discussion
-  before_action :authorize_resolve_discussion!
+  before_action :discussion, only: [:resolve, :unresolve]
+  before_action :authorize_resolve_discussion!, only: [:resolve, :unresolve]
 
   def resolve
     Discussions::ResolveService.new(project, current_user, merge_request: merge_request).execute(discussion)
@@ -19,15 +19,16 @@ class Projects::DiscussionsController < Projects::ApplicationController
     render_discussion
   end
 
+  def show
+    render json: {
+      truncated_diff_lines: discussion.try(:truncated_diff_lines)
+    }
+  end
+
   private
 
   def render_discussion
     if serialize_notes?
-      # TODO - It is not needed to serialize notes when resolving
-      # or unresolving discussions. We should remove this behavior
-      # passing a parameter to DiscussionEntity to return an empty array
-      # for notes.
-      # Check issue: https://gitlab.com/gitlab-org/gitlab-ce/issues/42853
       prepare_notes_for_rendering(discussion.notes, merge_request)
       render_json_with_discussions_serializer
     else
@@ -37,8 +38,8 @@ class Projects::DiscussionsController < Projects::ApplicationController
 
   def render_json_with_discussions_serializer
     render json:
-      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user)
-      .represent(discussion, context: self)
+      DiscussionSerializer.new(project: project, noteable: discussion.noteable, current_user: current_user, note_entity:  ProjectNoteEntity)
+      .represent(discussion, context: self, render_truncated_diff_lines: true)
   end
 
   # Legacy method used to render discussions notes when not using Vue on views.

@@ -36,10 +36,7 @@
     line-height: 35px;
     padding-top: 7px;
     padding-bottom: 7px;
-
-    .pull-right {
-      height: 20px;
-    }
+    display: flex;
   }
 
   .editor-ref {
@@ -60,20 +57,18 @@
 
   .new-file-name {
     display: inline-block;
-    max-width: 450px;
+    max-width: 420px;
     float: left;
 
-    @media(max-width: $screen-md-max) {
-      width: 280px;
-    }
-
-    @media(max-width: $screen-sm-max) {
+    @media(max-width: map-get($grid-breakpoints, lg)-1) {
       width: 180px;
     }
   }
 
   .file-buttons {
-    font-size: 0;
+    display: flex;
+    flex: 1;
+    justify-content: flex-end;
   }
 
   .select2 {
@@ -84,7 +79,7 @@
   .soft-wrap-toggle {
     display: inline-block;
     vertical-align: top;
-    font-family: $regular_font;
+    font-family: $regular-font;
   }
 
   .soft-wrap-toggle {
@@ -111,12 +106,10 @@
 }
 
 
-@media(max-width: $screen-xs-max){
+@include media-breakpoint-down(sm) {
   .file-editor {
     .file-title {
-      .pull-right {
-        height: auto;
-      }
+      display: block;
     }
 
     .new-file-name {
@@ -144,6 +137,10 @@
         }
       }
     }
+
+    .editor-ref {
+      max-width: 250px;
+    }
   }
 }
 
@@ -153,7 +150,7 @@
   vertical-align: top;
   display: inline-block;
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     margin: 19px 0 12px;
   }
@@ -166,7 +163,7 @@
   padding: 0 0 0 14px;
   border-left: 1px solid $border-color;
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 5px 0;
@@ -181,7 +178,7 @@
   margin-top: 6px;
   line-height: 21px;
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     margin: 5px 0;
   }
@@ -193,7 +190,7 @@
   vertical-align: top;
   margin: 5px 0 0 8px;
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 0 0 16px;
@@ -209,7 +206,7 @@
     font-family: $regular_font;
     margin-top: -5px;
 
-    @media(max-width: $screen-sm-max) {
+    @media(max-width: map-get($grid-breakpoints, md)-1) {
       display: block;
       width: 100%;
       margin: 5px 0;
@@ -223,7 +220,7 @@
       width: 250px;
       vertical-align: top;
 
-      @media(max-width: $screen-sm-max) {
+      @media(max-width: map-get($grid-breakpoints, md)-1) {
         display: block;
         width: 100%;
         margin: 5px 0;
@@ -237,7 +234,7 @@
   display: inline-block;
   margin: 7px 0 0 10px;
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     display: block;
     width: 100%;
     margin: 20px 0;

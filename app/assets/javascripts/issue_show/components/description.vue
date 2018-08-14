@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
   import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
@@ -109,25 +110,25 @@
 <template>
   <div
     v-if="descriptionHtml"
-    class="description"
     :class="{
       'js-task-list-container': canUpdate
     }"
+    class="description"
   >
     <div
-      class="wiki"
+      ref="gfm-content"
       :class="{
         'issue-realtime-pre-pulse': preAnimation,
         'issue-realtime-trigger-pulse': pulseAnimation
       }"
-      v-html="descriptionHtml"
-      ref="gfm-content">
+      class="wiki"
+      v-html="descriptionHtml">
     </div>
     <textarea
-      class="hidden js-task-list-field"
       v-if="descriptionText"
       v-model="descriptionText"
       :data-update-url="updateUrl"
+      class="hidden js-task-list-field"
     >
     </textarea>
 

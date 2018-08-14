@@ -1,9 +1,21 @@
 <script>
+import { __ } from '~/locale';
+
 export default {
   props: {
     labelsWebUrl: {
       type: String,
       required: true,
+    },
+    createLabelTitle: {
+      type: String,
+      required: false,
+      default: () => __('Create new label'),
+    },
+    manageLabelsTitle: {
+      type: String,
+      required: false,
+      default: () => __('Manage labels'),
     },
   },
 };
@@ -17,16 +29,16 @@ export default {
           href="#"
           class="dropdown-toggle-page"
         >
-          {{ __('Create new label') }}
+          {{ createLabelTitle }}
         </a>
       </li>
       <li>
         <a
+          :href="labelsWebUrl"
           data-is-link="true"
           class="dropdown-external-link"
-          :href="labelsWebUrl"
         >
-          {{ __('Manage labels') }}
+          {{ manageLabelsTitle }}
         </a>
       </li>
     </ul>

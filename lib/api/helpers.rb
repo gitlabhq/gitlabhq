@@ -83,12 +83,13 @@ module API
     end
 
     def available_labels_for(label_parent)
-      search_params =
-        if label_parent.is_a?(Project)
-          { project_id: label_parent.id }
-        else
-          { group_id: label_parent.id, only_group_labels: true }
-        end
+      search_params = { include_ancestor_groups: true }
+
+      if label_parent.is_a?(Project)
+        search_params[:project_id] = label_parent.id
+      else
+        search_params.merge!(group_id: label_parent.id, only_group_labels: true)
+      end
 
       LabelsFinder.new(current_user, search_params).execute
     end
@@ -102,9 +103,9 @@ module API
     end
 
     def find_project(id)
-      if id =~ /^\d+$/
+      if id.is_a?(Integer) || id =~ /^\d+$/
         Project.find_by(id: id)
-      else
+      elsif id.include?("/")
         Project.find_by_full_path(id)
       end
     end
@@ -168,6 +169,10 @@ module API
 
     def find_project_merge_request(iid)
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
+    end
+
+    def find_project_commit(id)
+      user_project.commit_by(oid: id)
     end
 
     def find_project_snippet(id)
@@ -267,7 +272,8 @@ module API
           attrs[key] = params_hash[key]
         end
       end
-      ActionController::Parameters.new(attrs).permit!
+      permitted_attrs = ActionController::Parameters.new(attrs).permit!
+      Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
     end
 
     def filter_by_iid(items, iid)
@@ -379,38 +385,17 @@ module API
       finder_params[:non_public] = true if params[:membership].present?
       finder_params[:starred] = true if params[:starred].present?
       finder_params[:visibility_level] = Gitlab::VisibilityLevel.level_value(params[:visibility]) if params[:visibility]
-      finder_params[:archived] = params[:archived]
+      finder_params[:archived] = archived_param unless params[:archived].nil?
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
       finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
+      finder_params[:min_access_level] = params[:min_access_level] if params[:min_access_level]
       finder_params
     end
 
     # file helpers
 
-    def uploaded_file(field, uploads_path)
-      if params[field]
-        bad_request!("#{field} is not a file") unless params[field][:filename]
-        return params[field]
-      end
-
-      return nil unless params["#{field}.path"] && params["#{field}.name"]
-
-      # sanitize file paths
-      # this requires all paths to exist
-      required_attributes! %W(#{field}.path)
-      uploads_path = File.realpath(uploads_path)
-      file_path = File.realpath(params["#{field}.path"])
-      bad_request!('Bad file path') unless file_path.start_with?(uploads_path)
-
-      UploadedFile.new(
-        file_path,
-        params["#{field}.name"],
-        params["#{field}.type"] || 'application/octet-stream'
-      )
-    end
-
-    def present_file!(path, filename, content_type = 'application/octet-stream')
+    def present_disk_file!(path, filename, content_type = 'application/octet-stream')
       filename ||= File.basename(path)
       header['Content-Disposition'] = "attachment; filename=#{filename}"
       header['Content-Transfer-Encoding'] = 'binary'
@@ -426,13 +411,17 @@ module API
       end
     end
 
-    def present_artifacts!(artifacts_file)
-      return not_found! unless artifacts_file.exists?
+    def present_carrierwave_file!(file, supports_direct_download: true)
+      return not_found! unless file.exists?
 
-      if artifacts_file.file_storage?
-        present_file!(artifacts_file.path, artifacts_file.filename)
+      if file.file_storage?
+        present_disk_file!(file.path, file.filename)
+      elsif supports_direct_download && file.class.direct_download_enabled?
+        redirect(file.url)
       else
-        redirect_to(artifacts_file.url)
+        header(*Gitlab::Workhorse.send_url(file.url))
+        status :ok
+        body
       end
     end
 
@@ -485,8 +474,8 @@ module API
       header(*Gitlab::Workhorse.send_git_blob(repository, blob))
     end
 
-    def send_git_archive(repository, ref:, format:)
-      header(*Gitlab::Workhorse.send_git_archive(repository, ref: ref, format: format))
+    def send_git_archive(repository, **kwargs)
+      header(*Gitlab::Workhorse.send_git_archive(repository, **kwargs))
     end
 
     def send_artifacts_entry(build, entry)
@@ -507,6 +496,12 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
+    end
+
+    def archived_param
+      return 'only' if params[:archived]
+
+      params[:archived]
     end
   end
 end

@@ -4,15 +4,15 @@
       %thead
         %tr
           %th= s_('ProjectFileTree|Name')
-          %th.hidden-xs
-            .pull-left= _('Last commit')
+          %th.d-none.d-sm-table-cell
+            .float-left= _('Last commit')
           %th.text-right= _('Last update')
       - if @path.present?
         %tr.tree-item
           %td.tree-item-file-name
             = link_to "..", project_tree_path(@project, up_dir_path), class: 'prepend-left-10'
           %td
-          %td.hidden-xs
+          %td.d-none.d-sm-table-cell
 
       = render_tree(tree)
 

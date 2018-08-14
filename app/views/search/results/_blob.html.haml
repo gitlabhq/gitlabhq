@@ -1,13 +1,5 @@
-- file_name, blob = blob
-.blob-result
-  .file-holder
-    .js-file-title.file-title
-      - ref = @search_results.repository_ref
-      - blob_link = project_blob_path(@project, tree_join(ref, file_name))
-      = link_to blob_link do
-        %i.fa.fa-file
-        %strong
-          = file_name
-    - if blob
-      .file-content.code.term
-        = render 'shared/file_highlight', blob: blob, first_line_number: blob.startline, blob_link: blob_link
+- project = find_project_for_result_blob(blob)
+- file_name, blob = parse_search_result(blob)
+- blob_link = project_blob_path(project, tree_join(blob.ref, file_name))
+
+= render partial: 'search/results/blob_data', locals: { blob: blob, project: project, file_name: file_name, blob_link: blob_link }

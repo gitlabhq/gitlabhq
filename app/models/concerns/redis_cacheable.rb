@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module RedisCacheable
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
@@ -7,7 +9,11 @@ module RedisCacheable
   class_methods do
     def cached_attr_reader(*attributes)
       attributes.each do |attribute|
-        define_method("#{attribute}") do
+        define_method(attribute) do
+          unless self.has_attribute?(attribute)
+            raise ArgumentError, "`cached_attr_reader` requires the #{self.class.name}\##{attribute} attribute to have a database column"
+          end
+
           cached_attribute(attribute) || read_attribute(attribute)
         end
       end
@@ -15,13 +21,16 @@ module RedisCacheable
   end
 
   def cached_attribute(attribute)
-    (cached_attributes || {})[attribute]
+    cached_value = (cached_attributes || {})[attribute]
+    cast_value_from_cache(attribute, cached_value) if cached_value
   end
 
   def cache_attributes(values)
     Gitlab::Redis::SharedState.with do |redis|
       redis.set(cache_attribute_key, values.to_json, ex: CACHED_ATTRIBUTES_EXPIRY_TIME)
     end
+
+    clear_memoization(:cached_attributes)
   end
 
   private
@@ -36,6 +45,14 @@ module RedisCacheable
         data = redis.get(cache_attribute_key)
         JSON.parse(data, symbolize_names: true) if data
       end
+    end
+  end
+
+  def cast_value_from_cache(attribute, value)
+    if Gitlab.rails5?
+      self.class.type_for_attribute(attribute.to_s).cast(value)
+    else
+      self.class.column_for_attribute(attribute).type_cast_from_database(value)
     end
   end
 end

@@ -2,10 +2,10 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ type: "button",  "aria-label": "close", data: { dismiss: "modal" } }
-          %span{ "aria-hidden": "true" } ×
         %h4#custom-notifications-title.modal-title
           #{ _('Custom notification events') }
+        %button.close{ type: "button", "data-dismiss": "modal", "aria-label" => _('Close') }
+          %span{ "aria-hidden": true } &times;
 
       .modal-body
         .container-fluid
@@ -22,9 +22,9 @@
                 - NotificationSetting::EMAIL_EVENTS.each_with_index do |event, index|
                   - field_id = "#{notifications_menu_identifier("modal", notification_setting)}_notification_setting[#{event}]"
                   .form-group
-                    .checkbox{ class: ("prepend-top-0" if index == 0) }
-                      %label{ for: field_id }
-                        = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event", checked: notification_setting.public_send(event))
+                    .form-check{ class: ("prepend-top-0" if index == 0) }
+                      = check_box("notification_setting", event, id: field_id, class: "js-custom-notification-event form-check-input", checked: notification_setting.public_send(event))
+                      %label.form-check-label{ for: field_id }
                         %strong
                           = notification_event_name(event)
                           = icon("spinner spin", class: "custom-notification-event-loading")

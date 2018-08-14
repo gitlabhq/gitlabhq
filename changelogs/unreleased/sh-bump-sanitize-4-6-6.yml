@@ -1,0 +1,5 @@
+---
+title: Bump nokogiri to 1.8.4 and sanitize to 4.6.6 for performance
+merge_request: 20795
+author:
+type: performance

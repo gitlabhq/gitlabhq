@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 shared_examples 'reportable note' do |type|
+  include MobileHelpers
   include NotesHelper
 
   let(:comment) { find("##{ActionView::RecordIdentifier.dom_id(note)}") }
@@ -21,7 +22,7 @@ shared_examples 'reportable note' do |type|
 
     expect(dropdown).to have_link('Report as abuse', href: abuse_report_path)
 
-    if type == 'issue'
+    if type == 'issue' || type == 'merge_request'
       expect(dropdown).to have_button('Delete comment')
     else
       expect(dropdown).to have_link('Delete comment', href: note_url(note, project))
@@ -39,6 +40,9 @@ shared_examples 'reportable note' do |type|
   end
 
   def open_dropdown(dropdown)
+    # make window wide enough that tooltip doesn't trigger horizontal scrollbar
+    resize_window(1200, 800)
+
     dropdown.find('.more-actions-toggle').click
     dropdown.find('.dropdown-menu li', match: :first)
   end

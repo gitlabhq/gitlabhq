@@ -145,7 +145,7 @@ module API
 
         snippet = Snippet.find_by!(id: params[:snippet_id], project_id: params[:id])
 
-        return not_found!('UserAgentDetail') unless snippet.user_agent_detail
+        break not_found!('UserAgentDetail') unless snippet.user_agent_detail
 
         present snippet.user_agent_detail, with: Entities::UserAgentDetail
       end

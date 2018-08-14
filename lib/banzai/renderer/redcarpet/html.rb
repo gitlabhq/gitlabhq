@@ -6,7 +6,7 @@ module Banzai
           lang_attr = lang ? %Q{ lang="#{lang}"} : ''
 
           "\n<pre>" \
-            "<code#{lang_attr}>#{html_escape(code)}</code>" \
+            "<code#{lang_attr}>#{ERB::Util.html_escape(code)}</code>" \
           "</pre>"
         end
       end

@@ -1,5 +1,7 @@
 /* eslint-disable class-methods-use-this */
 
+import $ from 'jquery';
+
 const defaultTimezone = 'UTC';
 
 export default class TimezoneDropdown {

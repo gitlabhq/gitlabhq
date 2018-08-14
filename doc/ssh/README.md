@@ -77,6 +77,8 @@ Note that Public SSH key may also be named as follows:
      If you want to change the password of your SSH key pair, you can use
      `ssh-keygen -p <keyname>`.
 
+## Adding a SSH key to your GitLab account
+
 1. The next step is to copy the public SSH key as we will need it afterwards.
 
     To copy your public SSH key to the clipboard, use the appropriate code below:
@@ -171,7 +173,7 @@ This is really useful for cloning repositories to your Continuous
 Integration (CI) server. By using deploy keys, you don't have to set up a
 dummy user account.
 
-If you are a project master or owner, you can add a deploy key in the
+If you are a project maintainer or owner, you can add a deploy key in the
 project settings under the section 'Repository'. Specify a title for the new
 deploy key and paste a public SSH key. After this, the machine that uses
 the corresponding private SSH key has read-only or read-write (if enabled)
@@ -196,7 +198,7 @@ This is really useful for integrating repositories to secured, shared Continuous
 Integration (CI) services or other shared services. 
 GitLab administrators can set up the Global Shared Deploy key in GitLab and 
 add the private key to any shared systems.  Individual repositories opt into
-exposing their repsitory using these keys when a project masters (or higher)
+exposing their repository using these keys when a project maintainers (or higher)
 authorizes a Global Shared Deploy key to be used with their project. 
 
 Global Shared Keys can provide greater security compared to Per-Project Deploy
@@ -205,7 +207,7 @@ who needs to know and configure the private key.
 
 GitLab administrators set up Global Deploy keys in the Admin area under the
 section **Deploy Keys**. Ensure keys have a meaningful title as that will be
-the primary way for project masters and owners to identify the correct Global
+the primary way for project maintainers and owners to identify the correct Global
 Deploy key to add.  For instance, if the key gives access to a SaaS CI instance,
 use the name of that service in the key name if that is all it is used for.
 When creating Global Shared Deploy keys, give some thought to the granularity
@@ -213,7 +215,7 @@ of keys - they could be of very narrow usage such as just a specific service or
 of broader usage for something like "Anywhere you need to give read access to 
 your repository".
 
-Once a GitLab administrator adds the Global Deployment key, project masters 
+Once a GitLab administrator adds the Global Deployment key, project maintainers 
 and owners can add it in project's **Settings > Repository** section by expanding the 
 **Deploy Key** section and clicking **Enable** next to the appropriate key listed 
 under **Public deploy keys available to any project**.
@@ -224,7 +226,7 @@ if there is at least one Global Deploy Key configured.
 
 CAUTION: **Warning:**
 Defining Global Deploy Keys does not expose any given repository via
-the key until that respository adds the Global Deploy Key to their project.
+the key until that repository adds the Global Deploy Key to their project.
 In this way the Global Deploy Keys enable access by other systems, but do
 not implicitly give any access just by setting them up.
 

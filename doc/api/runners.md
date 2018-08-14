@@ -30,6 +30,7 @@ Example response:
         "description": "test-1-20150125",
         "id": 6,
         "is_shared": false,
+        "ip_address": "127.0.0.1",
         "name": null,
         "online": true,
         "status": "online"
@@ -38,6 +39,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -72,6 +74,7 @@ Example response:
         "active": true,
         "description": "shared-runner-1",
         "id": 1,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": true,
@@ -81,6 +84,7 @@ Example response:
         "active": true,
         "description": "shared-runner-2",
         "id": 3,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": false
@@ -90,6 +94,7 @@ Example response:
         "active": true,
         "description": "test-1-20150125",
         "id": 6,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": true
@@ -99,6 +104,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -131,6 +137,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125",
     "id": 6,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
@@ -153,7 +160,8 @@ Example response:
         "mysql"
     ],
     "version": null,
-    "access_level": "ref_protected"
+    "access_level": "ref_protected",
+    "maximum_timeout": 3600
 }
 ```
 
@@ -174,6 +182,7 @@ PUT /runners/:id
 | `run_untagged`    | boolean   | no       | Flag indicating the runner can execute untagged jobs |
 | `locked`    | boolean   | no       | Flag indicating the runner is locked |
 | `access_level`    | string   | no       | The access_level of the runner; `not_protected` or `ref_protected` |
+| `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
 
 ```
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
@@ -187,6 +196,7 @@ Example response:
     "architecture": null,
     "description": "test-1-20150125-test",
     "id": 6,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "contacted_at": "2016-01-25T16:39:48.066Z",
     "name": null,
@@ -211,7 +221,8 @@ Example response:
         "tag2"
     ],
     "version": null,
-    "access_level": "ref_protected"
+    "access_level": "ref_protected",
+    "maximum_timeout": null
 }
 ```
 
@@ -254,6 +265,7 @@ Example response:
 [
     {
         "id": 2,
+        "ip_address": "127.0.0.1",
         "status": "running",
         "stage": "test",
         "name": "test",
@@ -342,6 +354,7 @@ Example response:
         "active": true,
         "description": "test-2-20150125",
         "id": 8,
+        "ip_address": "127.0.0.1",
         "is_shared": false,
         "name": null,
         "online": false,
@@ -351,6 +364,7 @@ Example response:
         "active": true,
         "description": "development_runner",
         "id": 5,
+        "ip_address": "127.0.0.1",
         "is_shared": true,
         "name": null,
         "online": true
@@ -383,6 +397,7 @@ Example response:
     "active": true,
     "description": "test-2016-02-01",
     "id": 9,
+    "ip_address": "127.0.0.1",
     "is_shared": false,
     "name": null,
     "online": true,
@@ -408,3 +423,86 @@ DELETE /projects/:id/runners/:runner_id
 ```
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/9/runners/9"
 ```
+
+## Register a new Runner
+
+Register a new Runner for the instance.
+
+```
+POST /runners
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Registration token ([Read how to obtain a token](../ci/runners/README.md)) |
+| `description`| string | no       | Runner's description|
+| `info`       | hash   | no       | Runner's metadata   |
+| `active`     | boolean| no       | Whether the Runner is active   |
+| `locked`     | boolean| no       | Whether the Runner should be locked for current project |
+| `run_untagged` | boolean | no | Whether the Runner should handle untagged jobs |
+| `tag_list` | Array[String] | no | List of Runner's tags |
+| `maximum_timeout` | integer | no | Maximum timeout set when this Runner will handle the job |
+
+```
+curl --request POST "https://gitlab.example.com/api/v4/runners" --form "token=ipzXrMhuyyJPifUt6ANz" --form "description=test-1-20150125-test" --form "tag_list=ruby,mysql,tag1,tag2"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 201       | Runner was created              |
+
+Example response:
+
+```json
+{
+    "id": "12345",
+    "token": "6337ff461c94fd3fa32ba3b1ff4125"
+}
+```
+
+## Delete a registered Runner
+
+Deletes a registed Runner.
+
+```
+DELETE /runners
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Runner's authentication token  |
+
+```
+curl --request DELETE "https://gitlab.example.com/api/v4/runners" --form "token=ebb6fc00521627750c8bb750f2490e"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 204       | Runner was deleted              |
+
+## Verify authentication for a registered Runner
+
+Validates authentication credentials for a registered Runner.
+
+```
+POST /runners/verify
+```
+
+| Attribute   | Type    | Required | Description         |
+|-------------|---------|----------|---------------------|
+| `token`     | string  | yes      | Runner's authentication token  |
+
+```
+curl --request POST "https://gitlab.example.com/api/v4/runners/verify" --form "token=ebb6fc00521627750c8bb750f2490e"
+```
+
+Response:
+
+| Status    | Description                     |
+|-----------|---------------------------------|
+| 200       | Credentials are valid           |
+| 403       | Credentials are invalid         |

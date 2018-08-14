@@ -54,6 +54,7 @@ module API
         pipeline = user_project.pipelines.find(params[:pipeline_id])
         builds = pipeline.builds
         builds = filter_builds(builds, params[:scope])
+        builds = builds.preload(:job_artifacts_archive, project: [:namespace])
 
         present paginate(builds), with: Entities::Job
       end
@@ -72,7 +73,7 @@ module API
         present build, with: Entities::Job
       end
 
-      # TODO: We should use `present_file!` and leave this implementation for backward compatibility (when build trace
+      # TODO: We should use `present_disk_file!` and leave this implementation for backward compatibility (when build trace
       #       is saved in the DB instead of file). But before that, we need to consider how to replace the value of
       #       `runners_token` with some mask (like `xxxxxx`) when sending trace file directly by workhorse.
       desc 'Get a trace of a specific job of a project'
@@ -120,7 +121,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        return forbidden!('Job is not retryable') unless build.retryable?
+        break forbidden!('Job is not retryable') unless build.retryable?
 
         build = Ci::Build.retry(build, current_user)
 
@@ -138,7 +139,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:erase_build, build)
-        return forbidden!('Job is not erasable!') unless build.erasable?
+        break forbidden!('Job is not erasable!') unless build.erasable?
 
         build.erase(erased_by: current_user)
         present build, with: Entities::Job

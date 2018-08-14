@@ -14,6 +14,10 @@
   color: $gl-text-color-secondary;
 }
 
+.text-tertiary {
+  color: $gl-text-color-tertiary;
+}
+
 .text-primary,
 .text-primary:hover {
   color: $brand-primary;
@@ -66,7 +70,7 @@ pre {
     padding: 0;
   }
 
-  &.well-pre {
+  &.card.card-body-pre {
     border: 1px solid $well-pre-bg;
     background: $gray-light;
     border-radius: 0;
@@ -109,8 +113,6 @@ hr {
 
 .item-title { font-weight: $gl-font-weight-bold; }
 
-/** FLASH message **/
-.author_link,
 .author-link {
   color: $gl-link-color;
 }
@@ -214,7 +216,7 @@ li.note {
 }
 
 .git_error_tips {
-  @extend .col-md-6;
+  @extend .col-lg-6;
   text-align: left;
   margin-top: 40px;
 
@@ -258,12 +260,7 @@ li.note {
 }
 
 .milestone {
-  &.milestone-closed {
-    background: $gray-light;
-  }
-
   .progress {
-    margin-bottom: 0;
     margin-top: 4px;
     box-shadow: none;
     background-color: $border-gray-light;
@@ -301,14 +298,6 @@ img.emoji {
   margin-bottom: 10px;
 }
 
-.btn-sign-in {
-  text-shadow: none;
-
-  @media (min-width: $screen-sm-min) {
-    margin-top: 8px;
-  }
-}
-
 .side-filters {
   fieldset {
     margin-bottom: 15px;
@@ -323,7 +312,7 @@ img.emoji {
   }
 }
 
-.well {
+.card.card-body {
   margin-bottom: $gl-padding;
 
   hr {
@@ -332,7 +321,7 @@ img.emoji {
 }
 
 .search_box {
-  @extend .well;
+  @extend .card.card-body;
   text-align: center;
 }
 
@@ -381,9 +370,12 @@ img.emoji {
   margin-right: 10px;
 }
 
-.alert,
-.progress {
+.alert {
   margin-bottom: $gl-padding;
+}
+
+.progress {
+  height: 4px;
 }
 
 .project-item-select-holder {
@@ -442,8 +434,13 @@ img.emoji {
   opacity: .5;
 }
 
+.break-word {
+  word-wrap: break-word;
+}
+
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
+.prepend-top-2 { margin-top: 2px; }
 .prepend-top-5 { margin-top: 5px; }
 .prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
@@ -457,6 +454,7 @@ img.emoji {
 .prepend-left-10 { margin-left: 10px; }
 .prepend-left-default { margin-left: $gl-padding; }
 .prepend-left-20 { margin-left: 20px; }
+.append-right-4 { margin-right: 4px; }
 .append-right-5 { margin-right: 5px; }
 .append-right-8 { margin-right: 8px; }
 .append-right-10 { margin-right: 10px; }
@@ -464,6 +462,7 @@ img.emoji {
 .append-right-20 { margin-right: 20px; }
 .append-bottom-0 { margin-bottom: 0; }
 .append-bottom-5 { margin-bottom: 5px; }
+.append-bottom-8 { margin-bottom: $grid-size; }
 .append-bottom-10 { margin-bottom: 10px; }
 .append-bottom-15 { margin-bottom: 15px; }
 .append-bottom-20 { margin-bottom: 20px; }
@@ -471,3 +470,6 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.flex-align-self-center { align-self: center; }
+.flex-grow { flex-grow: 1; }
+.flex-no-shrink { flex-shrink: 0; }

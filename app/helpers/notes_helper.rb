@@ -6,10 +6,6 @@ module NotesHelper
     end
   end
 
-  def note_editable?(note)
-    Ability.can_edit_note?(current_user, note)
-  end
-
   def note_supports_quick_actions?(note)
     Notes::QuickActionsService.supported?(note)
   end
@@ -147,30 +143,39 @@ module NotesHelper
       notesIds: @notes.map(&:id),
       now: Time.now.to_i,
       diffView: diff_view,
-      autocomplete: autocomplete
+      enableGFM: {
+        emojis: true,
+        members: autocomplete,
+        issues: autocomplete,
+        mergeRequests: autocomplete,
+        epics: autocomplete,
+        milestones: autocomplete,
+        labels: autocomplete
+      }
     }
   end
 
-  def notes_data(issuable)
-    discussions_path =
-      if issuable.is_a?(Issue)
-        discussions_project_issue_path(@project, issuable, format: :json)
-      else
-        discussions_project_merge_request_path(@project, issuable, format: :json)
-      end
+  def discussions_path(issuable)
+    if issuable.is_a?(Issue)
+      discussions_project_issue_path(@project, issuable, format: :json)
+    else
+      discussions_project_merge_request_path(@project, issuable, format: :json)
+    end
+  end
 
+  def notes_data(issuable)
     {
-      discussionsPath: discussions_path,
+      discussionsPath: discussions_path(issuable),
       registerPath: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
       newSessionPath: new_session_path(:user, redirect_to_referer: 'yes'),
       markdownDocsPath: help_page_path('user/markdown'),
+      markdownVersion: issuable.cached_markdown_version,
       quickActionsDocsPath: help_page_path('user/project/quick_actions'),
       closePath: close_issuable_path(issuable),
       reopenPath: reopen_issuable_path(issuable),
       notesPath: notes_url,
       totalNotes: issuable.discussions.length,
-      lastFetchedAt: Time.now
-
+      lastFetchedAt: Time.now.to_i
     }.to_json
   end
 
@@ -178,11 +183,11 @@ module NotesHelper
     discussion.resolved_by_push? ? 'Automatically resolved' : 'Resolved'
   end
 
-  def has_vue_discussions_cookie?
-    cookies[:vue_mr_discussions] == 'true'
+  def rendered_for_merge_request?
+    params[:from_merge_request].present?
   end
 
   def serialize_notes?
-    has_vue_discussions_cookie? && !params['html']
+    rendered_for_merge_request? || params['html'].nil?
   end
 end

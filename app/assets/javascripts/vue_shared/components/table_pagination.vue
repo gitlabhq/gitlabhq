@@ -55,7 +55,7 @@
       },
       getItems() {
         const total = this.pageInfo.totalPages;
-        const page = this.pageInfo.page;
+        const { page } = this.pageInfo;
         const items = [];
 
         if (page > 1) {
@@ -124,15 +124,18 @@
             break;
         }
       },
+      hideOnSmallScreen(item) {
+        return !item.first && !item.last && !item.next && !item.prev && !item.active;
+      },
     },
   };
 </script>
 <template>
   <div
     v-if="showPagination"
-    class="gl-pagination"
+    class="gl-pagination prepend-top-default"
   >
-    <ul class="pagination clearfix">
+    <ul class="pagination justify-content-center">
       <li
         v-for="(item, index) in getItems"
         :key="index"
@@ -142,12 +145,17 @@
           'js-next-button': item.next,
           'js-last-button': item.last,
           'js-first-button': item.first,
+          'd-none d-md-block': hideOnSmallScreen(item),
           separator: item.separator,
           active: item.active,
-          disabled: item.disabled
+          disabled: item.disabled || item.separator
         }"
+        class="page-item"
       >
-        <a @click.prevent="changePage(item.title, item.disabled)">
+        <a
+          class="page-link"
+          @click.prevent="changePage(item.title, item.disabled)"
+        >
           {{ item.title }}
         </a>
       </li>

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project' do
+describe 'Project' do
   include ProjectForksHelper
 
   describe 'creating from template' do
@@ -151,8 +151,14 @@ feature 'Project' do
 
     before do
       sign_in(user)
-      project.add_master(user)
+      project.add_maintainer(user)
       visit edit_project_path(project)
+    end
+
+    it 'focuses on the confirmation field' do
+      click_button 'Remove project'
+
+      expect(page).to have_selector '#confirm_name_input:focus'
     end
 
     it 'removes a project' do
@@ -169,7 +175,7 @@ feature 'Project' do
     let(:project) { create(:forked_project_with_submodules) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end
@@ -191,6 +197,49 @@ feature 'Project' do
 
       expect(page.status_code).to eq(200)
     end
+
+    context 'for signed commit on default branch', :js do
+      before do
+        project.change_head('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+      end
+
+      it 'displays a GPG badge' do
+        visit project_path(project)
+        wait_for_requests
+
+        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+        expect(page).to have_selector '.gpg-status-box.invalid'
+      end
+    end
+
+    context 'for subgroups', :js do
+      let(:group) { create(:group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:project) { create(:project, :repository, group: subgroup) }
+
+      it 'renders tree table without errors' do
+        wait_for_requests
+
+        expect(page).to have_selector('.tree-item')
+        expect(page).not_to have_selector('.flash-alert')
+      end
+
+      context 'for signed commit' do
+        before do
+          repository = project.repository
+          repository.write_ref("refs/heads/#{project.default_branch}", '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+          repository.expire_branches_cache
+        end
+
+        it 'displays a GPG badge' do
+          visit project_path(project)
+          wait_for_requests
+
+          expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+          expect(page).to have_selector '.gpg-status-box.invalid'
+        end
+      end
+    end
   end
 
   describe 'activity view' do
@@ -198,7 +247,7 @@ feature 'Project' do
     let(:project) { create(:project, :repository) }
 
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in user
       visit project_path(project)
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class ImportService < BaseService
     include Gitlab::ShellAdapter
@@ -17,23 +19,29 @@ module Projects
     def execute
       add_repository_to_project
 
+      download_lfs_objects
+
       import_data
 
       success
     rescue => e
-      error("Error importing repository #{project.import_url} into #{project.full_path} - #{e.message}")
+      error("Error importing repository #{project.safe_import_url} into #{project.full_path} - #{e.message}")
     end
 
     private
 
     def add_repository_to_project
       if project.external_import? && !unknown_url?
-        raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
+        begin
+          Gitlab::UrlBlocker.validate!(project.import_url, ports: Project::VALID_IMPORT_PORTS)
+        rescue Gitlab::UrlBlocker::BlockedUrlError => e
+          raise Error, "Blocked import URL: #{e.message}"
+        end
       end
 
       # We should skip the repository for a GitHub import or GitLab project import,
       # because these importers fetch the project repositories for us.
-      return if has_importer? && importer_class.try(:imports_repository?)
+      return if importer_imports_repository?
 
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
@@ -57,9 +65,9 @@ module Projects
           project.ensure_repository
           project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
         else
-          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
+          gitlab_shell.import_repository(project.repository_storage, project.disk_path, project.import_url)
         end
-      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
+      rescue Gitlab::Shell::Error => e
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true
@@ -67,6 +75,27 @@ module Projects
 
         raise Error, e.message
       end
+    end
+
+    def download_lfs_objects
+      # In this case, we only want to import issues
+      return if unknown_url?
+
+      # If it has its own repository importer, it has to implements its own lfs import download
+      return if importer_imports_repository?
+
+      return unless project.lfs_enabled?
+
+      oids_to_download = Projects::LfsPointers::LfsImportService.new(project).execute
+      download_service = Projects::LfsPointers::LfsDownloadService.new(project)
+
+      oids_to_download.each do |oid, link|
+        download_service.execute(oid, link)
+      end
+    rescue => e
+      # Right now, to avoid aborting the importing process, we silently fail
+      # if any exception raises.
+      Rails.logger.error("The Lfs import process failed. #{e.message}")
     end
 
     def import_data
@@ -93,6 +122,10 @@ module Projects
 
     def unknown_url?
       project.import_url == Project::UNKNOWN_IMPORT_URL
+    end
+
+    def importer_imports_repository?
+      has_importer? && importer_class.try(:imports_repository?)
     end
   end
 end

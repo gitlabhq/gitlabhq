@@ -1,10 +1,12 @@
-import Mousetrap from 'mousetrap';
+import $ from 'jquery';
 import Dropzone from 'dropzone';
+import Mousetrap from 'mousetrap';
 import ZenMode from '~/zen_mode';
 
 describe('ZenMode', () => {
   let zen;
-  const fixtureName = 'merge_requests/merge_request_with_comment.html.raw';
+  let dropzoneForElementSpy;
+  const fixtureName = 'snippets/show.html.raw';
 
   preloadFixtures(fixtureName);
 
@@ -17,15 +19,17 @@ describe('ZenMode', () => {
   }
 
   function escapeKeydown() {
-    $('.notes-form textarea').trigger($.Event('keydown', {
-      keyCode: 27,
-    }));
+    $('.notes-form textarea').trigger(
+      $.Event('keydown', {
+        keyCode: 27,
+      }),
+    );
   }
 
   beforeEach(() => {
     loadFixtures(fixtureName);
 
-    spyOn(Dropzone, 'forElement').and.callFake(() => ({
+    dropzoneForElementSpy = spyOn(Dropzone, 'forElement').and.callFake(() => ({
       enable: () => true,
     }));
     zen = new ZenMode();
@@ -34,11 +38,29 @@ describe('ZenMode', () => {
     zen.scroll_position = 456;
   });
 
+  describe('enabling dropzone', () => {
+    beforeEach(() => {
+      enterZen();
+    });
+
+    it('should not call dropzone if element is not dropzone valid', () => {
+      $('.div-dropzone').addClass('js-invalid-dropzone');
+      exitZen();
+      expect(dropzoneForElementSpy.calls.count()).toEqual(0);
+    });
+
+    it('should call dropzone if element is dropzone valid', () => {
+      $('.div-dropzone').removeClass('js-invalid-dropzone');
+      exitZen();
+      expect(dropzoneForElementSpy.calls.count()).toEqual(2);
+    });
+  });
+
   describe('on enter', () => {
     it('pauses Mousetrap', () => {
-      spyOn(Mousetrap, 'pause');
+      const mouseTrapPauseSpy = spyOn(Mousetrap, 'pause');
       enterZen();
-      expect(Mousetrap.pause).toHaveBeenCalled();
+      expect(mouseTrapPauseSpy).toHaveBeenCalled();
     });
 
     it('removes textarea styling', () => {
@@ -61,33 +83,15 @@ describe('ZenMode', () => {
     beforeEach(enterZen);
 
     it('unpauses Mousetrap', () => {
-      spyOn(Mousetrap, 'unpause');
+      const mouseTrapUnpauseSpy = spyOn(Mousetrap, 'unpause');
       exitZen();
-      expect(Mousetrap.unpause).toHaveBeenCalled();
+      expect(mouseTrapUnpauseSpy).toHaveBeenCalled();
     });
 
     it('restores the scroll position', () => {
       spyOn(zen, 'scrollTo');
       exitZen();
       expect(zen.scrollTo).toHaveBeenCalled();
-    });
-  });
-
-  describe('enabling dropzone', () => {
-    beforeEach(() => {
-      enterZen();
-    });
-
-    it('should not call dropzone if element is not dropzone valid', () => {
-      $('.div-dropzone').addClass('js-invalid-dropzone');
-      exitZen();
-      expect(Dropzone.forElement).not.toHaveBeenCalled();
-    });
-
-    it('should call dropzone if element is dropzone valid', () => {
-      $('.div-dropzone').removeClass('js-invalid-dropzone');
-      exitZen();
-      expect(Dropzone.forElement).toHaveBeenCalled();
     });
   });
 });

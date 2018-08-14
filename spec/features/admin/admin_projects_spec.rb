@@ -34,7 +34,7 @@ describe "Admin::Projects"  do
 
       expect(page).to have_content(project.name)
       expect(page).to have_content(archived_project.name)
-      expect(page).to have_xpath("//span[@class='label label-warning']", text: 'archived')
+      expect(page).to have_xpath("//span[@class='badge badge-warning']", text: 'archived')
     end
 
     it 'renders only archived projects', :js do
@@ -88,7 +88,7 @@ describe "Admin::Projects"  do
 
   describe 'add admin himself to a project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
     end
 
     it 'adds admin a to a project as developer', :js do
@@ -110,7 +110,7 @@ describe "Admin::Projects"  do
 
   describe 'admin remove himself from a project' do
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       project.add_developer(current_user)
     end
 

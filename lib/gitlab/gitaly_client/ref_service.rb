@@ -12,9 +12,16 @@ module Gitlab
 
       def branches
         request = Gitaly::FindAllBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request, timeout: GitalyClient.fast_timeout)
 
         consume_find_all_branches_response(response)
+      end
+
+      def remote_branches(remote_name)
+        request = Gitaly::FindAllRemoteBranchesRequest.new(repository: @gitaly_repo, remote_name: remote_name)
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_all_remote_branches, request)
+
+        consume_find_all_remote_branches_response(remote_name, response)
       end
 
       def merged_branches(branch_names = [])
@@ -23,26 +30,26 @@ module Gitlab
           merged_only: true,
           merged_branches: branch_names.map { |s| encode_binary(s) }
         )
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branches, request, timeout: GitalyClient.fast_timeout)
 
         consume_find_all_branches_response(response)
       end
 
       def default_branch_name
         request = Gitaly::FindDefaultBranchNameRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_default_branch_name, request, timeout: GitalyClient.fast_timeout)
         Gitlab::Git.branch_name(response.name)
       end
 
       def branch_names
         request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request, timeout: GitalyClient.fast_timeout)
         consume_refs_response(response) { |name| Gitlab::Git.branch_name(name) }
       end
 
       def tag_names
         request = Gitaly::FindAllTagNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_tag_names, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tag_names, request, timeout: GitalyClient.fast_timeout)
         consume_refs_response(response) { |name| Gitlab::Git.tag_name(name) }
       end
 
@@ -56,6 +63,42 @@ module Gitlab
         encode!(response.name.dup)
       end
 
+      def list_new_commits(newrev)
+        request = Gitaly::ListNewCommitsRequest.new(
+          repository: @gitaly_repo,
+          commit_id: newrev
+        )
+
+        response = GitalyClient
+          .call(@storage, :ref_service, :list_new_commits, request, timeout: GitalyClient.medium_timeout)
+
+        commits = []
+        response.each do |msg|
+          msg.commits.each do |c|
+            commits << Gitlab::Git::Commit.new(@repository, c)
+          end
+        end
+
+        commits
+      end
+
+      def list_new_blobs(newrev, limit = 0)
+        request = Gitaly::ListNewBlobsRequest.new(
+          repository: @gitaly_repo,
+          commit_id: newrev,
+          limit: limit
+        )
+
+        response = GitalyClient
+          .call(@storage, :ref_service, :list_new_blobs, request, timeout: GitalyClient.medium_timeout)
+
+        response.flat_map do |msg|
+          # Returns an Array of Gitaly::NewBlobObject objects
+          # Available methods are: #size, #oid and #path
+          msg.new_blob_objects
+        end
+      end
+
       def count_tag_names
         tag_names.count
       end
@@ -67,19 +110,19 @@ module Gitlab
       def local_branches(sort_by: nil)
         request = Gitaly::FindLocalBranchesRequest.new(repository: @gitaly_repo)
         request.sort_by = sort_by_param(sort_by) if sort_by
-        response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_local_branches, request, timeout: GitalyClient.fast_timeout)
         consume_find_local_branches_response(response)
       end
 
       def tags
         request = Gitaly::FindAllTagsRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request)
+        response = GitalyClient.call(@storage, :ref_service, :find_all_tags, request, timeout: GitalyClient.medium_timeout)
         consume_tags_response(response)
       end
 
       def ref_exists?(ref_name)
         request = Gitaly::RefExistsRequest.new(repository: @gitaly_repo, ref: encode_binary(ref_name))
-        response = GitalyClient.call(@storage, :ref_service, :ref_exists, request)
+        response = GitalyClient.call(@storage, :ref_service, :ref_exists, request, timeout: GitalyClient.fast_timeout)
         response.value
       rescue GRPC::InvalidArgument => e
         raise ArgumentError, e.message
@@ -91,7 +134,7 @@ module Gitlab
           name: encode_binary(branch_name)
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :find_branch, request, timeout: GitalyClient.medium_timeout)
         branch = response.branch
         return unless branch
 
@@ -140,7 +183,7 @@ module Gitlab
           except_with_prefix: except_with_prefixes.map { |r| encode_binary(r) }
         )
 
-        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+        response = GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request, timeout: GitalyClient.default_timeout)
 
         raise Gitlab::Git::Repository::GitError, response.git_error if response.git_error.present?
       end
@@ -153,7 +196,7 @@ module Gitlab
           limit: limit
         )
 
-        stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request)
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_tag_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
 
         consume_ref_contains_sha_response(stream, :tag_names)
       end
@@ -166,9 +209,25 @@ module Gitlab
           limit: limit
         )
 
-        stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request)
+        stream = GitalyClient.call(@repository.storage, :ref_service, :list_branch_names_containing_commit, request, timeout: GitalyClient.medium_timeout)
 
         consume_ref_contains_sha_response(stream, :branch_names)
+      end
+
+      def get_tag_messages(tag_ids)
+        request = Gitaly::GetTagMessagesRequest.new(repository: @gitaly_repo, tag_ids: tag_ids)
+        response = GitalyClient.call(@repository.storage, :ref_service, :get_tag_messages, request, timeout: GitalyClient.fast_timeout)
+
+        messages = Hash.new { |h, k| h[k] = ''.b }
+        current_tag_id = nil
+
+        response.each do |rpc_message|
+          current_tag_id = rpc_message.tag_id if rpc_message.tag_id.present?
+
+          messages[current_tag_id] << rpc_message.message
+        end
+
+        messages
       end
 
       private
@@ -208,9 +267,21 @@ module Gitlab
         end
       end
 
+      def consume_find_all_remote_branches_response(remote_name, response)
+        remote_name += '/' unless remote_name.ends_with?('/')
+
+        response.flat_map do |message|
+          message.branches.map do |branch|
+            target_commit = Gitlab::Git::Commit.decorate(@repository, branch.target_commit)
+            branch_name = branch.name.sub(remote_name, '')
+            Gitlab::Git::Branch.new(@repository, branch_name, branch.target_commit.id, target_commit)
+          end
+        end
+      end
+
       def consume_tags_response(response)
         response.flat_map do |message|
-          message.tags.map { |gitaly_tag| Util.gitlab_tag_from_gitaly_tag(@repository, gitaly_tag) }
+          message.tags.map { |gitaly_tag| Gitlab::Git::Tag.new(@repository, gitaly_tag) }
         end
       end
 

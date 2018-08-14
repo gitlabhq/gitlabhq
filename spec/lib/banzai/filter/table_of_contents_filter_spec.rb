@@ -139,5 +139,14 @@ describe Banzai::Filter::TableOfContentsFilter do
         expect(items[5].ancestors).to include(items[4])
       end
     end
+
+    context 'header text contains escaped content' do
+      let(:content) { '&lt;img src="x" onerror="alert(42)"&gt;' }
+      let(:results) { result(header(1, content)) }
+
+      it 'outputs escaped content' do
+        expect(doc.inner_html).to include(content)
+      end
+    end
   end
 end

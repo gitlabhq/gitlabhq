@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Vue from 'vue';
 import GlModal from '~/vue_shared/components/gl_modal.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
@@ -28,7 +29,7 @@ describe('GlModal', () => {
 
     describe('without id', () => {
       beforeEach(() => {
-        vm = mountComponent(modalComponent, { });
+        vm = mountComponent(modalComponent, {});
       });
 
       it('does not add an id attribute to the modal', () => {
@@ -82,7 +83,7 @@ describe('GlModal', () => {
     });
   });
 
-  it('works with data-toggle="modal"', (done) => {
+  it('works with data-toggle="modal"', done => {
     setFixtures(`
       <button id="modal-button" data-toggle="modal" data-target="#my-modal"></button>
       <div id="modal-container"></div>
@@ -90,9 +91,13 @@ describe('GlModal', () => {
 
     const modalContainer = document.getElementById('modal-container');
     const modalButton = document.getElementById('modal-button');
-    vm = mountComponent(modalComponent, {
-      id: 'my-modal',
-    }, modalContainer);
+    vm = mountComponent(
+      modalComponent,
+      {
+        id: 'my-modal',
+      },
+      modalContainer,
+    );
     $(vm.$el).on('shown.bs.modal', () => done());
 
     modalButton.click();
@@ -102,7 +107,7 @@ describe('GlModal', () => {
     const dummyEvent = 'not really an event';
 
     beforeEach(() => {
-      vm = mountComponent(modalComponent, { });
+      vm = mountComponent(modalComponent, {});
       spyOn(vm, '$emit');
     });
 
@@ -121,11 +126,27 @@ describe('GlModal', () => {
         expect(vm.$emit).toHaveBeenCalledWith('submit', dummyEvent);
       });
     });
+
+    describe('opened', () => {
+      it('emits a open event', () => {
+        vm.opened();
+
+        expect(vm.$emit).toHaveBeenCalledWith('open');
+      });
+    });
+
+    describe('closed', () => {
+      it('emits a closed event', () => {
+        vm.closed();
+
+        expect(vm.$emit).toHaveBeenCalledWith('closed');
+      });
+    });
   });
 
   describe('slots', () => {
     const slotContent = 'this should go into the slot';
-    const modalWithSlot = (slotName) => {
+    const modalWithSlot = slotName => {
       let template;
       if (slotName) {
         template = `
@@ -187,6 +208,47 @@ describe('GlModal', () => {
         const modalFooter = vm.$el.querySelector('.modal-footer');
         expect(modalFooter.innerHTML).toBe(slotContent);
       });
+    });
+  });
+
+  describe('handling sizes', () => {
+    it('should render modal-sm', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'sm',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-sm')).toEqual(true);
+    });
+
+    it('should render modal-lg', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'lg',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-lg')).toEqual(true);
+    });
+
+    it('should render modal-xl', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'xl',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-xl')).toEqual(true);
+    });
+
+    it('should not add modal size classes when md size is passed', () => {
+      vm = mountComponent(modalComponent, {
+        modalSize: 'md',
+      });
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-md')).toEqual(false);
+    });
+
+    it('should not add modal size classes by default', () => {
+      vm = mountComponent(modalComponent, {});
+
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-sm')).toEqual(false);
+      expect(vm.$el.querySelector('.modal-dialog').classList.contains('modal-lg')).toEqual(false);
     });
   });
 });

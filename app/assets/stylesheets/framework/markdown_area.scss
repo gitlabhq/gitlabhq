@@ -61,10 +61,6 @@
       padding-top: 0;
       line-height: 19px;
 
-      &.btn.btn-xs {
-        padding: 2px 5px;
-      }
-
       &:focus {
         margin-top: -10px;
         padding-top: 10px;
@@ -74,7 +70,7 @@
 }
 
 .md-header-tab {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex: 1;
     width: 100%;
     border-bottom: 1px solid $border-color;
@@ -90,7 +86,7 @@
     &.active {
       display: block;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         flex: none;
         display: flex;
         justify-content: center;
@@ -105,6 +101,16 @@
 .referenced-users {
   color: $gl-text-color;
   padding-top: 10px;
+}
+
+.referenced-commands {
+  background: $blue-50;
+  padding: $gl-padding-8 $gl-padding;
+  border-radius: $border-radius-default;
+
+  p {
+    margin: 0;
+  }
 }
 
 .md-preview-holder {
@@ -182,7 +188,7 @@
   margin-left: $gl-padding;
   margin-right: -5px;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     margin-left: 0;
     margin-right: 0;
   }
@@ -258,7 +264,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .atwho-view-ul {
     width: 350px;
   }

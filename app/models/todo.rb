@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Todo < ActiveRecord::Base
   include Sortable
 
@@ -22,15 +24,18 @@ class Todo < ActiveRecord::Base
   belongs_to :author, class_name: "User"
   belongs_to :note
   belongs_to :project
+  belongs_to :group
   belongs_to :target, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :user
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
 
-  validates :action, :project, :target_type, :user, presence: true
+  validates :action, :target_type, :user, presence: true
   validates :author, presence: true
   validates :target_id, presence: true, unless: :for_commit?
   validates :commit_id, presence: true, if: :for_commit?
+  validates :project, presence: true, unless: :group_id
+  validates :group, presence: true, unless: :project_id
 
   scope :pending, -> { with_state(:pending) }
   scope :done, -> { with_state(:done) }
@@ -44,13 +49,13 @@ class Todo < ActiveRecord::Base
     state :done
   end
 
-  after_save :keep_around_commit
+  after_save :keep_around_commit, if: :commit_id
 
   class << self
     # Priority sorting isn't displayed in the dropdown, because we don't show
     # milestones, but still show something if the user has a URL with that
     # selected.
-    def sort(method)
+    def sort_by_attribute(method)
       sorted =
         case method.to_s
         when 'priority', 'label_priority' then order_by_labels_priority
@@ -77,6 +82,10 @@ class Todo < ActiveRecord::Base
         .order(Gitlab::Database.nulls_last_order('highest_priority', 'ASC'))
         .order('todos.created_at')
     end
+  end
+
+  def parent
+    project
   end
 
   def unmergeable?

@@ -2,7 +2,7 @@
 
 import './class_spec_helper';
 
-describe('ClassSpecHelper', () => {
+describe('ClassSpecHelper', function () {
   describe('itShouldBeAStaticMethod', () => {
     beforeEach(() => {
       class TestClass {

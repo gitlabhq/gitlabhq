@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Flash from './flash';
 import { __, s__ } from './locale';
 import { spriteIcon } from './lib/utils/common_utils';

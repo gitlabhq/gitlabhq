@@ -3,6 +3,7 @@ FactoryBot.define do
     title { generate(:title) }
     project
     author { project.creator }
+    updated_by { author }
 
     trait :confidential do
       confidential true
@@ -26,7 +27,7 @@ FactoryBot.define do
       end
 
       after(:create) do |issue, evaluator|
-        issue.update_attributes(labels: evaluator.labels)
+        issue.update(labels: evaluator.labels)
       end
     end
   end

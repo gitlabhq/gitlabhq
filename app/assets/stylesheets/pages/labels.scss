@@ -26,9 +26,15 @@
   }
 }
 
+.dropdown-menu-labels {
+  .dropdown-content {
+    max-height: 135px;
+  }
+}
+
 .dropdown-new-label {
   .dropdown-content {
-    max-height: 260px;
+    max-height: 136px;
   }
 }
 
@@ -51,71 +57,11 @@
   border-bottom-left-radius: $border-radius-base;
 }
 
-.label-row {
-  .label-name {
-    display: inline-block;
-    margin-bottom: 10px;
-
-    @media (min-width: $screen-sm-min) {
-      width: 200px;
-      margin-left: $gl-padding * 2;
-      margin-bottom: 0;
-    }
-
-    .label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-    }
-  }
-
-  .label-type {
-    display: block;
-    margin-bottom: 10px;
-    margin-left: 50px;
-
-    @media (min-width: $screen-sm-min) {
-      display: inline-block;
-      width: 100px;
-      margin-left: 10px;
-      margin-bottom: 0;
-      vertical-align: top;
-    }
-  }
-
-  .label-description {
-    display: block;
-    margin-bottom: 10px;
-
-    .description-text {
-      margin-bottom: $gl-padding;
-    }
-
-    a {
-      color: $blue-600;
-    }
-
-    @media (min-width: $screen-sm-min) {
-      display: inline-block;
-      max-width: 50%;
-      margin-left: 10px;
-      margin-bottom: 0;
-      vertical-align: top;
-    }
-  }
-
-  .label {
-    padding: 4px $grid-size;
-    font-size: $label-font-size;
-    position: relative;
-    top: ($grid-size / 2);
-  }
-}
-
 .color-label {
   padding: 0 $grid-size;
   line-height: 16px;
   border-radius: $label-border-radius;
+  color: $white-light;
 }
 
 .dropdown-labels-error {
@@ -126,25 +72,37 @@
 }
 
 .manage-labels-list {
-  @media(min-width: $screen-md-min) {
-    &.content-list li {
-      padding: $gl-padding 0;
-    }
-  }
+  padding: 0;
+  margin-bottom: 0;
 
   > li:not(.empty-message):not(.is-not-draggable) {
     background-color: $white-light;
-    cursor: move;
-    cursor: -webkit-grab;
-    cursor: -moz-grab;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+    padding: $gl-padding;
+    border-radius: $border-radius-default;
+    border: 1px solid $theme-gray-100;
 
-    &:active {
-      cursor: -webkit-grabbing;
-      cursor: -moz-grabbing;
+    &:last-child {
+      margin-bottom: 0;
     }
 
     &.sortable-ghost {
       opacity: 0.3;
+    }
+
+    .prioritized-labels & {
+      box-shadow: 0 1px 2px $issue-boards-card-shadow;
+      cursor: move;
+      cursor: -webkit-grab;
+      cursor: -moz-grab;
+      border: 0;
+
+      &:active {
+        cursor: -webkit-grabbing;
+        cursor: -moz-grabbing;
+      }
     }
   }
 
@@ -164,26 +122,9 @@
     }
   }
 
-  .dropdown {
-    @media (min-width: $screen-sm-min) {
-      float: right;
-    }
+  .color-label {
+    padding: $gl-padding-4 $grid-size;
   }
-
-  @media (max-width: $screen-xs-max) {
-    .dropdown-menu {
-      min-width: 100%;
-    }
-  }
-}
-
-.draggable-handler {
-  display: inline-block;
-  vertical-align: top;
-  margin: 5px 0;
-  opacity: 0;
-  transition: opacity .3s;
-  color: $gray-darkest;
 }
 
 .prioritized-labels {
@@ -205,22 +146,6 @@
 .other-labels {
   .remove-priority {
     display: none;
-  }
-}
-
-.toggle-priority {
-  display: inline-block;
-  vertical-align: top;
-
-  button {
-    border-color: transparent;
-    padding: 5px 8px;
-    vertical-align: top;
-    font-size: 14px;
-
-    &:hover {
-      border-color: transparent;
-    }
   }
 }
 
@@ -277,10 +202,8 @@
 }
 
 .label-subscribe-button {
-  @media(min-width: $screen-md-min) {
-    min-width: 105px;
-    margin-left: $gl-padding;
-  }
+  width: 105px;
+  font-weight: 200;
 
   .label-subscribe-button-icon {
     &[disabled] {
@@ -306,10 +229,178 @@
 
 .label-link {
   display: inline-flex;
-  vertical-align: top;
+  vertical-align: text-bottom;
+
+  &:hover .color-label {
+    text-decoration: underline;
+  }
 
   .label {
     vertical-align: inherit;
     font-size: $label-font-size;
   }
+}
+
+.labels-container {
+  background-color: $gray-light;
+  border-radius: $border-radius-default;
+  padding: $gl-padding $gl-padding-8;
+}
+
+.label-actions-list {
+  list-style: none;
+  flex-shrink: 0;
+  text-align: right;
+  padding: 0;
+  position: relative;
+  margin: 0;
+}
+
+.label-badge {
+  color: $theme-gray-900;
+  font-weight: $gl-font-weight-normal;
+  padding: $gl-padding-4 $gl-padding-8;
+  border-radius: $border-radius-default;
+  font-size: $label-font-size;
+}
+
+.label-badge-blue {
+  background-color: $theme-blue-100;
+}
+
+.label-badge-gray {
+  background-color: $theme-gray-100;
+}
+
+.label-links {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  white-space: nowrap;
+}
+
+.label-link-item {
+  padding: 0;
+}
+
+.label-description {
+  .description-text {
+    margin-bottom: 10px;
+
+    .admin-labels & {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.label-list-item {
+  .content-list &::before,
+  .content-list &::after {
+    content: none;
+  }
+
+  .label-name {
+    width: 150px;
+    flex-shrink: 0;
+
+    .badge {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  }
+
+  .label-description {
+    flex-grow: 1;
+
+    a {
+      color: $blue-600;
+    }
+  }
+
+  .label {
+    padding: 4px $grid-size;
+    font-size: $label-font-size;
+    position: relative;
+    top: $gl-padding-4;
+  }
+
+  .label-action {
+    color: $theme-gray-800;
+    cursor: pointer;
+
+    svg {
+      fill: $theme-gray-800;
+    }
+
+    &:hover {
+      color: $blue-600;
+
+      svg {
+        fill: $blue-600;
+      }
+    }
+
+    &.remove-row {
+      &:hover {
+        color: $gl-text-red;
+
+        svg {
+          fill: $gl-text-red;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: map-get($grid-breakpoints, md)-1) {
+  .manage-labels-list {
+    > li:not(.empty-message):not(.is-not-draggable) {
+      flex-wrap: wrap;
+    }
+
+    .label-name {
+      order: 1;
+      flex-grow: 1;
+      width: auto;
+      max-width: 100%;
+    }
+
+    .label-actions-list {
+      order: 2;
+      flex-shrink: 1;
+      text-align: left;
+    }
+
+    .label-links {
+      white-space: normal;
+    }
+
+    .label-description {
+      order: 3;
+      width: 100%;
+
+      > .append-right-default.prepend-left-default {
+        margin-left: 0;
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+@media (max-width: 910px) {
+  .priority-badge {
+    display: block;
+    width: 100%;
+    margin-left: 0;
+    margin-top: $gl-padding;
+
+    .label-badge {
+      display: inline-block;
+    }
+  }
+}
+
+.priority-labels-empty-state .svg-content img {
+  max-width: $priority-label-empty-state-width;
 }

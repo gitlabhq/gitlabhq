@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
 import axios from './lib/utils/axios_utils';
@@ -84,6 +85,7 @@ export default class Shortcuts {
 
     if ($modal.length) {
       $modal.modal('toggle');
+      return null;
     }
 
     return axios.get(gon.shortcuts_path, {

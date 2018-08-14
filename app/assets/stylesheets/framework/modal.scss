@@ -1,12 +1,21 @@
+.modal-xl {
+  max-width: 98%;
+}
+
 .modal-header {
   background-color: $modal-body-bg;
-  padding: #{3 * $grid-size} #{2 * $grid-size};
 
   .page-title,
   .modal-title {
+    .modal-title-with-label span {
+      vertical-align: middle;
+      display: inline-block;
+    }
+
     .color-label {
       font-size: $gl-font-size;
       padding: $gl-vert-padding $label-padding-modal;
+      vertical-align: middle;
     }
   }
 
@@ -40,7 +49,7 @@
     margin-left: $grid-size;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-direction: column;
 
     .btn + .btn {
@@ -49,7 +58,7 @@
     }
   }
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     .btn:first-of-type {
       margin-left: auto;
     }
@@ -68,17 +77,10 @@ body.modal-open {
   }
 }
 
-@media (min-width: $screen-lg-min) {
-  .modal-full {
-    width: 98%;
-  }
-}
-
 .modal {
   background-color: $black-transparent;
-  z-index: 2100;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     .modal-dialog {
       margin: 30px auto;
     }

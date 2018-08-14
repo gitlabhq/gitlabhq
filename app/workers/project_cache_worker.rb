@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Worker for updating any project specific caches.
 class ProjectCacheWorker
   include ApplicationWorker

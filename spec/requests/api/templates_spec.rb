@@ -65,7 +65,7 @@ describe API::Templates do
       expect(json_response['description']).to include('A short and simple permissive license with conditions')
       expect(json_response['conditions']).to eq(%w[include-copyright])
       expect(json_response['permissions']).to eq(%w[commercial-use modifications distribution private-use])
-      expect(json_response['limitations']).to eq(%w[no-liability])
+      expect(json_response['limitations']).to eq(%w[liability warranty])
       expect(json_response['content']).to include('MIT License')
     end
   end

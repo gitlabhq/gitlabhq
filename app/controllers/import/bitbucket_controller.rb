@@ -22,16 +22,14 @@ class Import::BitbucketController < Import::BaseController
 
     @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
 
-    @already_added_projects = current_user.created_projects.where(import_type: 'bitbucket')
+    @already_added_projects = find_already_added_projects('bitbucket')
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
     @repos.to_a.reject! { |repo| already_added_projects_names.include?(repo.full_name) }
   end
 
   def jobs
-    render json: current_user.created_projects
-                             .where(import_type: 'bitbucket')
-                             .to_json(only: [:id, :import_status])
+    render json: find_jobs('bitbucket')
   end
 
   def create
@@ -57,7 +55,7 @@ class Import::BitbucketController < Import::BaseController
       if project.persisted?
         render json: ProjectSerializer.new.represent(project)
       else
-        render json: { errors: project.errors.full_messages }, status: :unprocessable_entity
+        render json: { errors: project_save_error(project) }, status: :unprocessable_entity
       end
     else
       render json: { errors: 'This namespace has already been taken! Please choose another one.' }, status: :unprocessable_entity

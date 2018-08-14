@@ -5,12 +5,8 @@ class Projects::ProtectedTagsController < Projects::ProtectedRefsController
     @project.repository.tags
   end
 
-  def create_service_class
-    ::ProtectedTags::CreateService
-  end
-
-  def update_service_class
-    ::ProtectedTags::UpdateService
+  def service_namespace
+    ::ProtectedTags
   end
 
   def load_protected_ref

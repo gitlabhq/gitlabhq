@@ -40,7 +40,7 @@ export default {
     :class="cssClass"
     :title="tooltipTitle(time)"
     :data-placement="tooltipPlacement"
-    data-container="body">
-    {{ timeFormated(time) }}
+    data-container="body"
+    v-text="timeFormated(time)">
   </time>
 </template>

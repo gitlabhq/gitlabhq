@@ -9,7 +9,7 @@ describe Projects::ServicesController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#test' do
@@ -20,6 +20,18 @@ describe Projects::ServicesController do
         put :test, namespace_id: project.namespace, project_id: project, id: service.to_param
 
         expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when validations fail' do
+      let(:service_params) { { active: 'true', token: '' } }
+
+      it 'returns error messages in JSON response' do
+        put :test, namespace_id: project.namespace, project_id: project, id: :hipchat, service: service_params
+
+        expect(json_response['message']).to eq "Validations failed."
+        expect(json_response['service_response']).to eq "Token can't be blank"
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -90,7 +102,7 @@ describe Projects::ServicesController do
 
         expect(response.status).to eq(200)
         expect(JSON.parse(response.body))
-          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test')
+          .to eq('error' => true, 'message' => 'Test failed.', 'service_response' => 'Bad test', 'test_failed' => true)
       end
     end
   end

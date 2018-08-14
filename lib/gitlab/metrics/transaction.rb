@@ -140,7 +140,7 @@ module Gitlab
       define_histogram :gitlab_transaction_duration_seconds do
         docstring 'Transaction duration'
         base_labels BASE_LABELS
-        buckets [0.001, 0.01, 0.1, 1.0, 10.0]
+        buckets [0.1, 0.25, 0.5, 1.0, 2.5, 5.0]
       end
 
       define_histogram :gitlab_transaction_allocated_memory_bytes do

@@ -58,7 +58,7 @@ The application is ready to use, but you need some additional steps to deploy it
 1. Log in to Artifactory with your user's credentials.
 1. From the main screen, click on the `libs-release-local` item in the **Set Me Up** panel.
 1. Copy to clipboard the configuration snippet under the **Deploy** paragraph.
-1. Change the `url` value in order to have it configurable via secret variables.
+1. Change the `url` value in order to have it configurable via variables.
 1. Copy the snippet in the `pom.xml` file for your project, just after the
    `dependencies` section. The snippet should look like this:
 
@@ -98,7 +98,7 @@ parameter in `.gitlab-ci.yml` to use the custom location instead of the default 
     </settings>
     ```
 
-    Username and password will be replaced by the correct values using secret variables.
+    Username and password will be replaced by the correct values using variables.
 
 ### Configure GitLab CI/CD for `simple-maven-dep`
 
@@ -107,8 +107,8 @@ Now it's time we set up [GitLab CI/CD](https://about.gitlab.com/features/gitlab-
 GitLab CI/CD uses a file in the root of the repo, named `.gitlab-ci.yml`, to read the definitions for jobs
 that will be executed by the configured GitLab Runners. You can read more about this file in the [GitLab Documentation](https://docs.gitlab.com/ee/ci/yaml/).
 
-First of all, remember to set up secret variables for your deployment. Navigate to your project's **Settings > CI/CD** page
-and add the following secret variables (replace them with your current values, of course):
+First of all, remember to set up variables for your deployment. Navigate to your project's **Settings > CI/CD > Variables** page
+and add the following ones (replace them with your current values, of course):
 
 - **MAVEN_REPO_URL**: `http://artifactory.example.com:8081/artifactory` (your Artifactory URL)
 - **MAVEN_REPO_USER**: `gitlab` (your Artifactory username)
@@ -156,7 +156,7 @@ by running all Maven phases in a sequential order, therefore, executing `mvn tes
 
 Both `build` and `test` jobs leverage the `mvn` command to compile the application and to test it as defined in the test suite that is part of the application.
 
-Deploy to Artifactory is done as defined by the secret variables we have just set up.
+Deploy to Artifactory is done as defined by the variables we have just set up.
 The deployment occurs only if we're pushing or merging to `master` branch, so that the development versions are tested but not published.
 
 Done! Now you have all the changes in the GitLab repo, and a pipeline has already been started for this commit. In the **Pipelines** tab you can see what's happening.

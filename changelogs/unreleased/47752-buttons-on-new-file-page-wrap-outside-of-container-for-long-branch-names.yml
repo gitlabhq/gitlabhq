@@ -1,0 +1,5 @@
+---
+title: Fix buttons on the new file page wrapping outside of the container
+merge_request: 21015
+author:
+type: fixed

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Discussions
   class UpdateDiffPositionService < BaseService
     def execute(discussion)

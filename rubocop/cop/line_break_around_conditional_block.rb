@@ -43,6 +43,8 @@ module RuboCop
     #      end
     #    end
     class LineBreakAroundConditionalBlock < RuboCop::Cop::Cop
+      include RangeHelp
+
       MSG = 'Add a line break around conditional blocks'
 
       def on_if(node)
@@ -95,7 +97,7 @@ module RuboCop
       end
 
       def end_clause_line?(line)
-        line =~ /^\s*(rescue|else|elsif|when)/
+        line =~ /^\s*(#|rescue|else|elsif|when)/
       end
 
       def begin_line?(line)

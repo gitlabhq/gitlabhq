@@ -137,12 +137,22 @@
   z-index: 200;
   overflow: hidden;
 
-  a:not(.btn-retry),
-  .btn-link {
+  a:not(.btn) {
     color: inherit;
+
+    &:hover {
+      color: $gl-link-hover-color;
+
+      .avatar {
+        border-color: rgba($avatar-border, .2);
+      }
+
+    }
+
   }
 
   .btn-link {
+    color: inherit;
     outline: none;
   }
 
@@ -156,7 +166,7 @@
     border-bottom: 1px solid $border-gray-normal;
     // This prevents the mess when resizing the sidebar
     // of elements repositioning themselves..
-    width: $gutter_inner_width;
+    width: $gutter-inner-width;
     // --
 
     &.issuable-sidebar-header {
@@ -177,14 +187,31 @@
       padding-left: 10px;
 
       &:hover {
-        color: $gray-darkest;
+        color: $gl-text-color;
+      }
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
       }
     }
 
     &.assignee {
-      .author_link:hover {
-        .author {
-          text-decoration: underline;
+      .author-link {
+        display: block;
+        padding-left: 42px;
+        position: relative;
+
+        &:hover {
+          .author {
+            text-decoration: underline;
+          }
+        }
+
+        .avatar {
+          left: 0;
+          position: absolute;
+          top: 0;
         }
       }
     }
@@ -214,7 +241,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $md-link-color;
+        color: $gl-link-hover-color;
       }
     }
   }
@@ -263,7 +290,7 @@
   }
 
   &.right-sidebar-expanded {
-    width: $gutter_width;
+    width: $gutter-width;
 
     .value {
       line-height: 1;
@@ -346,18 +373,26 @@
     /* Extra small devices (phones, less than 768px) */
     display: none;
     /* Small devices (tablets, 768px and up) */
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: block;
     }
 
-    width: $gutter_collapsed_width;
+    width: $gutter-collapsed-width;
     padding: 0;
 
     .block {
-      width: $gutter_collapsed_width - 2px;
+      width: $gutter-collapsed-width - 2px;
       padding: 15px 0 0;
       border-bottom: 0;
       overflow: hidden;
+
+      &:hover {
+        background-color: $sidebar-block-hover-color;
+      }
+
+      &.issuable-sidebar-header {
+        padding-top: 0;
+      }
     }
 
     .participants {
@@ -370,8 +405,17 @@
 
     .gutter-toggle {
       width: 100%;
+      height: $sidebar-toggle-height;
       margin-left: 0;
-      padding-left: 25px;
+      padding-left: 0;
+      border-bottom: 1px solid $border-gray-dark;
+    }
+
+    a.gutter-toggle {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
     }
 
     .sidebar-collapsed-icon {
@@ -405,6 +449,7 @@
 
       .todo-undone {
         color: $gl-link-color;
+        fill: $gl-link-color;
       }
 
       .author {
@@ -418,10 +463,10 @@
 
       .btn-clipboard {
         border: 0;
+        background: transparent;
         color: $issuable-sidebar-color;
 
         &:hover {
-          background: transparent;
           color: $gl-text-color;
         }
       }
@@ -441,6 +486,15 @@
     .sidebar-collapsed-user {
       padding-bottom: 0;
       margin-bottom: 10px;
+
+      .author-link {
+        padding-left: 0;
+
+        .avatar {
+          position: static;
+          margin: 0;
+        }
+      }
     }
 
     .issuable-header-btn {
@@ -486,16 +540,6 @@
     }
   }
 
-  a:not(.btn-retry) {
-    &:hover {
-      color: $md-link-color;
-
-      .avatar {
-        border-color: rgba($avatar-border, .2);
-      }
-    }
-  }
-
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;
@@ -503,15 +547,25 @@
 
   .dropdown-menu {
     width: 100%;
+
+    /*
+     * Overwrite hover style for dropdown items, so that they are not blue
+     * This should be removed during dev of https://gitlab.com/gitlab-org/gitlab-ce/issues/44040
+     */
+    li a {
+      &:hover,
+      &:active,
+      &:focus,
+      &.is-focused {
+        @include dropdown-item-hover;
+      }
+    }
+
   }
 }
 
 .with-performance-bar .right-sidebar {
   top: $header-height + $performance-bar-height;
-
-  .issuable-sidebar {
-    height: calc(100% - #{$performance-bar-height});
-  }
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -542,7 +596,7 @@
   margin: 16px 0 0;
   font-size: 85%;
 
-  .author_link {
+  .author-link {
     color: $gray-darkest;
   }
 }
@@ -567,7 +621,7 @@
     padding-right: 0;
   }
 
-  .author_link {
+  .author-link {
     display: block;
   }
 
@@ -612,7 +666,7 @@
 }
 
 .issuable-form-padding-top {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     padding-top: 7px;
   }
 }
@@ -626,7 +680,7 @@
   padding-left: 9px;
   padding-right: 9px;
 
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     display: inline-block;
     height: auto;
     align-self: center;
@@ -634,7 +688,7 @@
 }
 
 .issuable-gutter-toggle {
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-left: $btn-side-margin;
   }
 }
@@ -645,6 +699,8 @@
   font-size: 14px;
   line-height: 24px;
   align-self: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .js-issuable-selector-wrap {
@@ -652,7 +708,7 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     margin-bottom: $gl-padding;
   }
 }
@@ -693,7 +749,7 @@
         }
       }
 
-      @media(max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         .issuable-meta {
           .controls li {
             margin-right: 0;
@@ -728,7 +784,7 @@
       }
     }
 
-    @media(max-width: $screen-md-max) {
+    @media(max-width: map-get($grid-breakpoints, lg)-1) {
       .task-status,
       .issuable-due-date,
       .project-ref-path {
@@ -779,33 +835,11 @@
   }
 
   .compare-meter {
-    &.within_estimate {
-      .meter-fill {
-        background: $gl-primary;
-      }
-    }
-
     &.over_estimate {
-      .meter-fill {
-        background: $red-500;
-      }
-
       .time-remaining,
       .compare-value.spent {
         color: $red-500;
       }
-    }
-  }
-
-  .meter-container {
-    background: $border-gray-light;
-    border-radius: 3px;
-
-    .meter-fill {
-      max-width: 100%;
-      height: 5px;
-      border-radius: 3px;
-      background: $gl-primary;
     }
   }
 

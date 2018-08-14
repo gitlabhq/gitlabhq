@@ -1,25 +1,24 @@
+# frozen_string_literal: true
+
 class WebHookService
   class InternalErrorResponse
     attr_reader :body, :headers, :code
 
     def initialize
-      @headers = HTTParty::Response::Headers.new({})
+      @headers = Gitlab::HTTP::Response::Headers.new({})
       @body = ''
       @code = 'internal error'
     end
   end
 
-  include HTTParty
-
-  # HTTParty timeout
-  default_timeout Gitlab.config.gitlab.webhook_timeout
-
-  attr_accessor :hook, :data, :hook_name
+  attr_accessor :hook, :data, :hook_name, :request_options
 
   def initialize(hook, data, hook_name)
     @hook = hook
     @data = data
     @hook_name = hook_name.to_s
+    @request_options = { timeout: Gitlab.config.gitlab.webhook_timeout }
+    @request_options.merge!(allow_local_requests: true) if @hook.is_a?(SystemHook)
   end
 
   def execute
@@ -44,7 +43,7 @@ class WebHookService
       http_status: response.code,
       message: response.to_s
     }
-  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout => e
+  rescue SocketError, OpenSSL::SSL::SSLError, Errno::ECONNRESET, Errno::ECONNREFUSED, Errno::EHOSTUNREACH, Net::OpenTimeout, Net::ReadTimeout, Gitlab::HTTP::BlockedUrlError => e
     log_execution(
       trigger: hook_name,
       url: hook.url,
@@ -73,18 +72,19 @@ class WebHookService
   end
 
   def make_request(url, basic_auth = false)
-    self.class.post(url,
+    Gitlab::HTTP.post(url,
       body: data.to_json,
       headers: build_headers(hook_name),
       verify: hook.enable_ssl_verification,
-      basic_auth: basic_auth)
+      basic_auth: basic_auth,
+      **request_options)
   end
 
   def make_request_with_auth
     post_url = hook.url.gsub("#{parsed_url.userinfo}@", '')
     basic_auth = {
       username: CGI.unescape(parsed_url.user),
-      password: CGI.unescape(parsed_url.password)
+      password: CGI.unescape(parsed_url.password.presence || '')
     }
     make_request(post_url, basic_auth)
   end

@@ -1,11 +1,10 @@
 require 'spec_helper'
 
-feature 'Find file keyboard shortcuts', :js do
-  let(:user) { create(:user) }
+describe 'Projects > Files > Find file keyboard shortcuts', :js do
   let(:project) { create(:project, :repository) }
+  let(:user) { project.owner }
 
   before do
-    project.add_master(user)
     sign_in user
 
     visit project_find_file_path(project, project.repository.root_ref)

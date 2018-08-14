@@ -1,4 +1,4 @@
-- @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- @content_class = "limit-container-width" unless fluid_layout
 - page_title _("Edit"), @page.title.capitalize, _("Wiki")
 
 = wiki_page_errors(@error)
@@ -28,9 +28,16 @@
       = link_to project_wiki_history_path(@project, @page), class: "btn" do
         = s_("Wiki|Page history")
       - if can?(current_user, :admin_wiki, @project)
-        = link_to project_wiki_path(@project, @page), data: { confirm: s_("WikiPageConfirmDelete|Are you sure you want to delete this page?")}, method: :delete, class: "btn btn-danger" do
-          = _("Delete")
+        %button.btn.btn-danger{ data: { toggle: 'modal',
+          target: '#delete-wiki-modal',
+          delete_wiki_url: project_wiki_path(@project, @page),
+          page_title: @page.title.capitalize },
+          id: 'delete-wiki-button',
+          type: 'button' }
+          = _('Delete')
 
 = render 'form'
 
 = render 'sidebar'
+
+#delete-wiki-modal.modal.fade

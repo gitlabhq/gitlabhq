@@ -1,6 +1,6 @@
+import $ from 'jquery';
 import Vue from 'vue';
 
-import * as utils from '~/lib/utils/url_utility';
 import appComponent from '~/groups/components/app.vue';
 import groupFolderComponent from '~/groups/components/group_folder.vue';
 import groupItemComponent from '~/groups/components/group_item.vue';
@@ -67,7 +67,7 @@ describe('AppComponent', () => {
       it('should return list of groups from store', () => {
         spyOn(vm.store, 'getGroups');
 
-        const groups = vm.groups;
+        const { groups } = vm;
         expect(vm.store.getGroups).toHaveBeenCalled();
         expect(groups).not.toBeDefined();
       });
@@ -77,7 +77,7 @@ describe('AppComponent', () => {
       it('should return pagination info from store', () => {
         spyOn(vm.store, 'getPaginationInfo');
 
-        const pageInfo = vm.pageInfo;
+        const { pageInfo } = vm;
         expect(vm.store.getPaginationInfo).toHaveBeenCalled();
         expect(pageInfo).not.toBeDefined();
       });
@@ -176,7 +176,7 @@ describe('AppComponent', () => {
       it('should fetch groups for provided page details and update window state', (done) => {
         spyOn(vm, 'fetchGroups').and.returnValue(returnServicePromise(mockGroups));
         spyOn(vm, 'updateGroups').and.callThrough();
-        spyOn(utils, 'mergeUrlParams').and.callThrough();
+        const mergeUrlParams = spyOnDependency(appComponent, 'mergeUrlParams').and.callThrough();
         spyOn(window.history, 'replaceState');
         spyOn($, 'scrollTo');
 
@@ -192,7 +192,7 @@ describe('AppComponent', () => {
         setTimeout(() => {
           expect(vm.isLoading).toBe(false);
           expect($.scrollTo).toHaveBeenCalledWith(0);
-          expect(utils.mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
+          expect(mergeUrlParams).toHaveBeenCalledWith({ page: 2 }, jasmine.any(String));
           expect(window.history.replaceState).toHaveBeenCalledWith({
             page: jasmine.any(String),
           }, jasmine.any(String), jasmine.any(String));
@@ -293,7 +293,7 @@ describe('AppComponent', () => {
       beforeEach(() => {
         groupItem = Object.assign({}, mockParentGroupItem);
         groupItem.children = mockChildren;
-        childGroupItem = groupItem.children[0];
+        [childGroupItem] = groupItem.children;
         groupItem.isChildrenLoading = false;
         vm.targetGroup = childGroupItem;
         vm.targetParentGroup = groupItem;

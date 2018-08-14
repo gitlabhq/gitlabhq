@@ -3,7 +3,7 @@
 
 %div{ class: container_class }
   .top-area.adjust
-    %ul.nav-links.issues-state-filters
+    %ul.nav-links.issues-state-filters.nav.nav-tabs
       %li{ class: active_when(@mode == 'overview') }>
         = link_to s_('Branches|Overview'), project_branches_path(@project), title: s_('Branches|Show overview of the branches')
 
@@ -26,7 +26,7 @@
             %span.light
               = branches_sort_options_hash[@sort]
             = icon('chevron-down')
-          %ul.dropdown-menu.dropdown-menu-align-right.dropdown-menu-selectable
+          %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
             %li.dropdown-header
               = s_('Branches|Sort by')
             - branches_sort_options_hash.each do |value, title|

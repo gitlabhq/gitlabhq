@@ -1,5 +1,364 @@
+- breadcrumb_title "Settings"
 - page_title "Settings"
+- @content_class = "limit-container-width" unless fluid_layout
+- expanded = Rails.env.test?
 
-%h3.page-title Settings
-%hr
-= render 'form'
+%section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Visibility and access controls')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set default and restrict visibility levels. Configure import sources and git access protocol.')
+  .settings-content
+    = render 'visibility_and_access'
+
+%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Account and limit')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Session expiration, projects limit and attachment size.')
+  .settings-content
+    = render 'account_and_limit'
+
+%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Sign-up restrictions')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure the way a user creates a new account.')
+  .settings-content
+    = render 'signup'
+
+%section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Sign-in restrictions')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set requirements for a user to sign-in. Enable mandatory two-factor authentication.')
+  .settings-content
+    = render 'signin'
+
+%section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Terms of Service and Privacy Policy')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Include a Terms of Service agreement and Privacy Policy that all users must accept.')
+  .settings-content
+    = render 'terms'
+
+%section.settings.as-help-page.no-animate#js-help-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Help page')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Help page text and support page url.')
+  .settings-content
+    = render 'help_page'
+
+%section.settings.as-pages.no-animate#js-pages-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Pages')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Size and domain settings for static websites')
+  .settings-content
+    = render 'pages'
+
+%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Continuous Integration and Deployment')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Auto DevOps, runners and job artifacts')
+  .settings-content
+    = render 'ci_cd'
+
+%section.settings.as-influx.no-animate#js-influx-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Influx')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable and configure InfluxDB metrics.')
+  .settings-content
+    = render 'influx'
+
+%section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Metrics - Prometheus')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable and configure Prometheus metrics.')
+  .settings-content
+    = render 'prometheus'
+
+%section.settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Profiling - Performance bar')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable the Performance Bar for a given group.')
+      = link_to icon('question-circle'), help_page_path('administration/monitoring/performance/performance_bar')
+  .settings-content
+    = render 'performance_bar'
+
+%section.settings.as-background.no-animate#js-background-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Background jobs')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure Sidekiq job throttling.')
+  .settings-content
+    = render 'background_jobs'
+
+%section.settings.as-spam.no-animate#js-spam-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Spam and Anti-bot Protection')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable reCAPTCHA or Akismet and set IP limits.')
+  .settings-content
+    = render 'spam'
+
+%section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Abuse reports')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set notification email for abuse reports.')
+  .settings-content
+    = render 'abuse'
+
+%section.settings.as-logging.no-animate#js-logging-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Error Reporting and Logging')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable Sentry for error reporting and logging.')
+  .settings-content
+    = render 'logging'
+
+%section.qa-repository-storage-settings.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository storage')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure storage path and circuit breaker settings.')
+  .settings-content
+    = render 'repository_storage'
+
+%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository maintenance')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure automatic git checks and housekeeping on repositories.')
+  .settings-content
+    = render 'repository_check'
+
+- if Gitlab.config.registry.enabled
+  %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Container Registry')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _('Various container registry settings.')
+    .settings-content
+      = render 'registry'
+
+- if koding_enabled?
+  %section.settings.as-koding.no-animate#js-koding-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Koding')
+      %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _('Online IDE integration settings.')
+    .settings-content
+      = render 'koding'
+
+%section.settings.as-plantuml.no-animate#js-plantuml-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('PlantUML')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allow rendering of PlantUML diagrams in Asciidoc documents.')
+  .settings-content
+    = render 'plantuml'
+
+%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded) }
+  .settings-header#usage-statistics
+    %h4
+      = _('Usage statistics')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Enable or disable version check and usage ping.')
+  .settings-content
+    = render 'usage'
+
+%section.settings.as-email.no-animate#js-email-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Email')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Various email settings.')
+  .settings-content
+    = render 'email'
+
+%section.settings.as-gitaly.no-animate#js-gitaly-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Gitaly')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure Gitaly timeouts.')
+  .settings-content
+    = render 'gitaly'
+
+%section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Web terminal')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Set max session time for web terminal.')
+  .settings-content
+    = render 'terminal'
+
+%section.settings.as-realtime.no-animate#js-realtime-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Real-time features')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Change this value to influence how frequently the GitLab UI polls for updates.')
+  .settings-content
+    = render 'realtime'
+
+%section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Performance optimization')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Various settings that affect GitLab performance.')
+  .settings-content
+    = render 'performance'
+
+%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('User and IP Rate Limits')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Configure limits for web and API requests.')
+  .settings-content
+    = render 'ip_limits'
+
+%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Outbound requests')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Allow requests to the local network from hooks and services.')
+  .settings-content
+    = render 'outbound'
+
+%section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Repository mirror')
+    %button.btn.js-settings-toggle{ type: 'button' }
+      = expanded ? 'Collapse' : 'Expand'
+    %p
+      = _('Configure push mirrors.')
+  .settings-content
+    = render partial: 'repository_mirrors_form'
+
+%section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Third party offers')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Control the display of third party offers.')
+  .settings-content
+    = render 'third_party_offers', application_setting: @application_setting
+
+= render_if_exists 'admin/application_settings/custom_templates_form', expanded: expanded
+
+%section.settings.no-animate#js-web-ide-settings{ class: ('expanded' if expanded) }
+  .settings-header
+    %h4
+      = _('Web IDE')
+    %button.btn.btn-default.js-settings-toggle{ type: 'button' }
+      = expanded ? _('Collapse') : _('Expand')
+    %p
+      = _('Manage Web IDE features')
+  .settings-content
+    = form_for @application_setting, url: admin_application_settings_path(anchor: "#js-web-ide-settings"), html: { class: 'fieldset-form' } do |f|
+      = form_errors(@application_setting)
+
+      %fieldset
+        .form-group
+          .form-check
+            = f.check_box :web_ide_clientside_preview_enabled, class: 'form-check-input'
+            = f.label :web_ide_clientside_preview_enabled, class: 'form-check-label' do
+              = s_('IDE|Client side evaluation')
+            %span.form-text.text-muted
+              = s_('IDE|Allow live previews of JavaScript projects in the Web IDE using CodeSandbox client side evaluation.')
+
+      = f.submit _('Save changes'), class: "btn btn-success"
+
+= render_if_exists 'admin/application_settings/pseudonymizer_settings', expanded: expanded

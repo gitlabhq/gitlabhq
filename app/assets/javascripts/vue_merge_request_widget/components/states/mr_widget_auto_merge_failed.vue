@@ -39,10 +39,10 @@
         {{ s__("mrWidget|This merge request failed to be merged automatically") }}
       </span>
       <button
-        @click="refreshWidget"
         :disabled="isRefreshing"
         type="button"
-        class="btn btn-xs btn-default"
+        class="btn btn-sm btn-default"
+        @click="refreshWidget"
       >
         <loading-icon
           v-if="isRefreshing"

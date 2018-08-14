@@ -18,13 +18,13 @@
         \-
   %td
     - if tag.created_at
-      = time_ago_in_words(tag.created_at)
+      = time_ago_with_tooltip tag.created_at
     - else
       .light
         \-
   - if can?(current_user, :update_container_image, @project)
     %td.content
-      .controls.hidden-xs.pull-right
+      .controls.d-none.d-sm-block.float-right
         = link_to project_registry_repository_tag_path(@project, tag.repository, tag.name),
                   method: :delete,
                   class: 'btn btn-remove has-tooltip',

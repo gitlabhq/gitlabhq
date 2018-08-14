@@ -6,8 +6,8 @@
 -#    remote:        data-remote
 -#    paginator:     the paginator that renders the pagination tags inside
 = paginator.render do
-  .gl-pagination
-    %ul.pagination.clearfix
+  .gl-pagination.prepend-top-default
+    %ul.pagination.justify-content-center
       - unless current_page.first?
         = first_page_tag unless total_pages < 5 # As kaminari will always show the first 5 pages
       = prev_page_tag

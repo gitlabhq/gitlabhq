@@ -5,6 +5,7 @@
 
 - link = commit_path(project, commit, merge_request: merge_request)
 - cache_key = [project.full_path,
+               ref,
                commit.id,
                Gitlab::CurrentSettings.current_application_settings,
                @path.presence,
@@ -17,24 +18,24 @@
 = cache(cache_key, expires_in: 1.day) do
   %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
 
-    .avatar-cell.hidden-xs
-      = author_avatar(commit, size: 36)
+    .avatar-cell.d-none.d-sm-block
+      = author_avatar(commit, size: 36, has_tooltip: false)
 
     .commit-detail.flex-list
-      .commit-content
-        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
-        %span.commit-row-message.visible-xs-inline
+      .commit-content.qa-commit-content
+        - if view_details && merge_request
+          = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "commit-row-message item-title"
+        - else
+          = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
+        %span.commit-row-message.d-block.d-sm-none
           &middot;
           = commit.short_id
         - if commit.status(ref)
-          .visible-xs-inline
+          .d-block.d-sm-none
             = render_commit_status(commit, ref: ref)
         - if commit.description?
-          %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
-
-        - if commit.description?
-          %pre.commit-row-description.js-toggle-content
-            = preserve(markdown_field(commit, :description))
+          %button.text-expander.js-toggle-button
+            = sprite_icon('ellipsis_h', size: 12)
 
         .commiter
           - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
@@ -42,7 +43,11 @@
           - commit_text =  _('%{commit_author_link} authored %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
           #{ commit_text.html_safe }
 
-      .commit-actions.flex-row.hidden-xs
+        - if commit.description?
+          %pre.commit-row-description.js-toggle-content.append-bottom-8
+            = preserve(markdown_field(commit, :description))
+
+      .commit-actions.flex-row.d-none.d-sm-flex
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else
@@ -51,10 +56,10 @@
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
 
-        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id) } }
-        = link_to commit.short_id, link, class: "commit-sha btn btn-transparent btn-link"
-        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
-        = link_to_browse_code(project, commit)
+        .js-commit-pipeline-status{ data: { endpoint: pipelines_project_commit_path(project, commit.id, ref: ref) } }
 
-        - if view_details && merge_request
-          = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
+        .commit-sha-group
+          .label.label-monospace
+            = commit.short_id
+          = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"), class: "btn btn-default", container: "body")
+          = link_to_browse_code(project, commit)

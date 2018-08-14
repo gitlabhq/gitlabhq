@@ -33,11 +33,11 @@
 <template>
   <div class="issuable-note-warning">
     <icon
+      v-if="!isLockedAndConfidential"
       :name="warningIcon"
       :size="16"
       class="icon inline"
       aria-hidden="true"
-      v-if="!isLockedAndConfidential"
     />
 
     <span v-if="isLockedAndConfidential">

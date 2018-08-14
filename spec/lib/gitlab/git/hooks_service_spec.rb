@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Git::HooksService, seed_helper: true do
+describe Gitlab::Git::HooksService, :seed_helper do
   let(:gl_id) { 'user-456' }
   let(:gl_username) { 'janedoe' }
   let(:user) { Gitlab::Git::User.new(gl_username, 'Jane Doe', 'janedoe@example.com', gl_id) }
@@ -26,24 +26,24 @@ describe Gitlab::Git::HooksService, seed_helper: true do
 
     context 'when pre-receive hook failed' do
       it 'does not call post-receive hook' do
-        expect(service).to receive(:run_hook).with('pre-receive').and_return([false, ''])
+        expect(service).to receive(:run_hook).with('pre-receive').and_return([false, 'hello world'])
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do
           service.execute(user, repository, blankrev, newrev, ref)
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::PreReceiveError, 'hello world')
       end
     end
 
     context 'when update hook failed' do
       it 'does not call post-receive hook' do
         expect(service).to receive(:run_hook).with('pre-receive').and_return([true, nil])
-        expect(service).to receive(:run_hook).with('update').and_return([false, ''])
+        expect(service).to receive(:run_hook).with('update').and_return([false, 'hello world'])
         expect(service).not_to receive(:run_hook).with('post-receive')
 
         expect do
           service.execute(user, repository, blankrev, newrev, ref)
-        end.to raise_error(Gitlab::Git::HooksService::PreReceiveError)
+        end.to raise_error(Gitlab::Git::PreReceiveError, 'hello world')
       end
     end
   end

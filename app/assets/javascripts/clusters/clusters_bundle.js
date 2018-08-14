@@ -6,7 +6,7 @@ import Poll from '../lib/utils/poll';
 import initSettingsPanels from '../settings_panels';
 import eventHub from './event_hub';
 import {
-  APPLICATION_INSTALLED,
+  APPLICATION_STATUS,
   REQUEST_LOADING,
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
@@ -31,6 +31,7 @@ export default class Clusters {
       installHelmPath,
       installIngressPath,
       installRunnerPath,
+      installJupyterPath,
       installPrometheusPath,
       managePrometheusPath,
       clusterStatus,
@@ -51,6 +52,7 @@ export default class Clusters {
       installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
       installPrometheusEndpoint: installPrometheusPath,
+      installJupyterEndpoint: installJupyterPath,
     });
 
     this.installApplication = this.installApplication.bind(this);
@@ -79,7 +81,7 @@ export default class Clusters {
   }
 
   initApplications() {
-    const store = this.store;
+    const { store } = this;
     const el = document.querySelector('#js-cluster-applications');
 
     this.applications = new Vue({
@@ -160,8 +162,10 @@ export default class Clusters {
 
     if (type === 'password') {
       this.tokenField.setAttribute('type', 'text');
+      this.showTokenButton.textContent = s__('ClusterIntegration|Hide');
     } else {
       this.tokenField.setAttribute('type', 'password');
+      this.showTokenButton.textContent = s__('ClusterIntegration|Show');
     }
   }
 
@@ -173,8 +177,8 @@ export default class Clusters {
 
   checkForNewInstalls(prevApplicationMap, newApplicationMap) {
     const appTitles = Object.keys(newApplicationMap)
-      .filter(appId => newApplicationMap[appId].status === APPLICATION_INSTALLED &&
-        prevApplicationMap[appId].status !== APPLICATION_INSTALLED &&
+      .filter(appId => newApplicationMap[appId].status === APPLICATION_STATUS.INSTALLED &&
+        prevApplicationMap[appId].status !== APPLICATION_STATUS.INSTALLED &&
         prevApplicationMap[appId].status !== null)
       .map(appId => newApplicationMap[appId].title);
 
@@ -209,11 +213,12 @@ export default class Clusters {
     }
   }
 
-  installApplication(appId) {
+  installApplication(data) {
+    const appId = data.id;
     this.store.updateAppProperty(appId, 'requestStatus', REQUEST_LOADING);
     this.store.updateAppProperty(appId, 'requestReason', null);
 
-    this.service.installApplication(appId)
+    this.service.installApplication(appId, data.params)
       .then(() => {
         this.store.updateAppProperty(appId, 'requestStatus', REQUEST_SUCCESS);
       })

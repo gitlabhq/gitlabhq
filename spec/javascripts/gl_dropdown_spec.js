@@ -1,8 +1,8 @@
-/* eslint-disable comma-dangle, no-param-reassign, no-unused-expressions, max-len */
+/* eslint-disable comma-dangle, no-param-reassign */
 
-import '~/gl_dropdown';
+import $ from 'jquery';
+import GLDropdown from '~/gl_dropdown';
 import '~/lib/utils/common_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 
 describe('glDropdown', function describeDropdown() {
   preloadFixtures('static/gl_dropdown.html.raw');
@@ -70,9 +70,9 @@ describe('glDropdown', function describeDropdown() {
 
   it('should open on click', () => {
     initDropDown.call(this, false);
-    expect(this.dropdownContainerElement).not.toHaveClass('open');
+    expect(this.dropdownContainerElement).not.toHaveClass('show');
     this.dropdownButtonElement.click();
-    expect(this.dropdownContainerElement).toHaveClass('open');
+    expect(this.dropdownContainerElement).toHaveClass('show');
   });
 
   it('escapes HTML as text', () => {
@@ -134,28 +134,28 @@ describe('glDropdown', function describeDropdown() {
     });
 
     it('should click the selected item on ENTER keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('open');
+      expect(this.dropdownContainerElement).toHaveClass('show');
       const randomIndex = Math.floor(Math.random() * (this.projectsData.length - 1)) + 0;
       navigateWithKeys('down', randomIndex, () => {
-        spyOn(urlUtils, 'visitUrl').and.stub();
+        const visitUrl = spyOnDependency(GLDropdown, 'visitUrl').and.stub();
         navigateWithKeys('enter', null, () => {
-          expect(this.dropdownContainerElement).not.toHaveClass('open');
+          expect(this.dropdownContainerElement).not.toHaveClass('show');
           const link = $(`${ITEM_SELECTOR}:eq(${randomIndex}) a`, this.$dropdownMenuElement);
           expect(link).toHaveClass('is-active');
           const linkedLocation = link.attr('href');
-          if (linkedLocation && linkedLocation !== '#') expect(urlUtils.visitUrl).toHaveBeenCalledWith(linkedLocation);
+          if (linkedLocation && linkedLocation !== '#') expect(visitUrl).toHaveBeenCalledWith(linkedLocation);
         });
       });
     });
 
     it('should close on ESC keypress', () => {
-      expect(this.dropdownContainerElement).toHaveClass('open');
+      expect(this.dropdownContainerElement).toHaveClass('show');
       this.dropdownContainerElement.trigger({
         type: 'keyup',
         which: ARROW_KEYS.ESC,
         keyCode: ARROW_KEYS.ESC
       });
-      expect(this.dropdownContainerElement).not.toHaveClass('open');
+      expect(this.dropdownContainerElement).not.toHaveClass('show');
     });
   });
 
@@ -255,4 +255,29 @@ describe('glDropdown', function describeDropdown() {
       });
     });
   });
+
+  it('should keep selected item after selecting a second time', () => {
+    const options = {
+      isSelectable(item, $el) {
+        return !$el.hasClass('is-active');
+      },
+      toggleLabel(item) {
+        return item && item.id;
+      },
+    };
+    initDropDown.call(this, false, false, options);
+    const $item = $(`${ITEM_SELECTOR}:first() a`, this.$dropdownMenuElement);
+
+    // select item the first time
+    this.dropdownButtonElement.click();
+    $item.click();
+    expect($item).toHaveClass('is-active');
+    // select item the second time
+    this.dropdownButtonElement.click();
+    $item.click();
+    expect($item).toHaveClass('is-active');
+
+    expect($('.dropdown-toggle-text')).toHaveText(this.projectsData[0].id.toString());
+  });
 });
+

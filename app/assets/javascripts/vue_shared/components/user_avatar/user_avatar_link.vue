@@ -84,8 +84,8 @@ export default {
 
 <template>
   <a
-    class="user-avatar-link"
-    :href="linkHref">
+    :href="linkHref"
+    class="user-avatar-link">
     <user-avatar-image
       :img-src="imgSrc"
       :img-alt="imgAlt"
@@ -94,8 +94,8 @@ export default {
       :tooltip-text="avatarTooltipText"
       :tooltip-placement="tooltipPlacement"
     /><span
-      v-if="shouldShowUsername"
       v-tooltip
+      v-if="shouldShowUsername"
       :title="tooltipText"
       :tooltip-placement="tooltipPlacement"
     >{{ username }}</span>

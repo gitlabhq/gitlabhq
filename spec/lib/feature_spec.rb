@@ -39,18 +39,36 @@ describe Feature do
   end
 
   describe '.persisted?' do
-    it 'returns true for a persisted feature' do
-      Feature::FlipperFeature.create!(key: 'foo')
+    context 'when the feature is persisted' do
+      it 'returns true when feature name is a string' do
+        Feature::FlipperFeature.create!(key: 'foo')
 
-      feature = double(:feature, name: 'foo')
+        feature = double(:feature, name: 'foo')
 
-      expect(described_class.persisted?(feature)).to eq(true)
+        expect(described_class.persisted?(feature)).to eq(true)
+      end
+
+      it 'returns true when feature name is a symbol' do
+        Feature::FlipperFeature.create!(key: 'foo')
+
+        feature = double(:feature, name: :foo)
+
+        expect(described_class.persisted?(feature)).to eq(true)
+      end
     end
 
-    it 'returns false for a feature that is not persisted' do
-      feature = double(:feature, name: 'foo')
+    context 'when the feature is not persisted' do
+      it 'returns false when feature name is a string' do
+        feature = double(:feature, name: 'foo')
 
-      expect(described_class.persisted?(feature)).to eq(false)
+        expect(described_class.persisted?(feature)).to eq(false)
+      end
+
+      it 'returns false when feature name is a symbol' do
+        feature = double(:feature, name: :bar)
+
+        expect(described_class.persisted?(feature)).to eq(false)
+      end
     end
   end
 
@@ -62,6 +80,30 @@ describe Feature do
         .and_return(features)
 
       expect(described_class.all).to eq(features.to_a)
+    end
+  end
+
+  describe '.flipper' do
+    shared_examples 'a memoized Flipper instance' do
+      it 'memoizes the Flipper instance' do
+        expect(Flipper).to receive(:new).once.and_call_original
+
+        2.times do
+          described_class.flipper
+        end
+      end
+    end
+
+    context 'when request store is inactive' do
+      before do
+        described_class.instance_variable_set(:@flipper, nil)
+      end
+
+      it_behaves_like 'a memoized Flipper instance'
+    end
+
+    context 'when request store is inactive', :request_store do
+      it_behaves_like 'a memoized Flipper instance'
     end
   end
 end

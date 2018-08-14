@@ -5,6 +5,9 @@ RSpec.describe Timelog do
   let(:issue) { create(:issue) }
   let(:merge_request) { create(:merge_request) }
 
+  it { is_expected.to belong_to(:issue).touch(true) }
+  it { is_expected.to belong_to(:merge_request).touch(true) }
+
   it { is_expected.to be_valid }
 
   it { is_expected.to validate_presence_of(:time_spent) }

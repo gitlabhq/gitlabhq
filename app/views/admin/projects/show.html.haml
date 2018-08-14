@@ -3,26 +3,26 @@
 - page_title @project.full_name, "Projects"
 %h3.page-title
   Project: #{@project.full_name}
-  = link_to edit_project_path(@project), class: "btn btn-nr pull-right" do
+  = link_to edit_project_path(@project), class: "btn btn-nr float-right" do
     %i.fa.fa-pencil-square-o
     Edit
 %hr
 - if @project.last_repository_check_failed?
   .row
     .col-md-12
-      .panel
-        .panel-heading.alert.alert-danger
+      .card
+        .card-header.alert.alert-danger
           Last repository check
-          = "(#{time_ago_in_words(@project.last_repository_check_at)} ago)"
+          = "(#{time_ago_with_tooltip(@project.last_repository_check_at)})"
           failed. See
           = link_to 'repocheck.log', admin_logs_path
           for error messages.
 .row
   .col-md-6
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Project info:
-      %ul.well-list
+      %ul.content-list
         %li
           %span.light Name:
           %strong
@@ -62,12 +62,16 @@
             = link_to @project.ssh_url_to_repo, project_path(@project)
         - if @project.repository.exists?
           %li
-            %span.light fs:
+            %span.light Gitaly storage name:
             %strong
-              = @project.repository.path_to_repo
+              = @project.repository.storage
+          %li
+            %span.light Gitaly relative path:
+            %strong
+              = @project.repository.relative_path
 
           %li
-            %span.light Storage:
+            %span.light Storage used:
             %strong= storage_counter(@project.statistics.storage_size)
             (
             = storage_counter(@project.statistics.repository_size)
@@ -97,7 +101,7 @@
         - if @project.archived?
           %li
             %span.light archived:
-            %strong repository is read-only
+            %strong project is read-only
 
         %li
           %span.light access:
@@ -106,14 +110,14 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         Transfer project
-      .panel-body
-        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
-          .form-group
-            = f.label :new_namespace_id, "Namespace", class: 'control-label'
-            .col-sm-10
+      .card-body
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
+          .form-group.row
+            = f.label :new_namespace_id, "Namespace", class: 'col-form-label col-sm-3'
+            .col-sm-9
               .dropdown
                 = dropdown_toggle('Search for Namespace', { toggle: 'dropdown', field_name: 'new_namespace_id' }, { toggle_class: 'js-namespace-select large' })
                 .dropdown-menu.dropdown-select
@@ -122,14 +126,14 @@
                   = dropdown_content
                   = dropdown_loading
 
-          .form-group
-            .col-sm-offset-2.col-sm-10
+          .form-group.row
+            .offset-sm-3.col-sm-9
               = f.submit 'Transfer', class: 'btn btn-primary'
 
-    .panel.panel-default.repository-check
-      .panel-heading
+    .card.repository-check
+      .card-header
         Repository check
-      .panel-body
+      .card-body
         = form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
             - if @project.last_repository_check_at.nil?
@@ -154,29 +158,29 @@
 
   .col-md-6
     - if @group
-      .panel.panel-default
-        .panel-heading
+      .card
+        .card-header
           %strong= @group.name
           group members
-          %span.badge= @group_members.size
-          .pull-right
-            = link_to admin_group_path(@group), class: 'btn btn-xs' do
+          %span.badge.badge-pill= @group_members.size
+          .float-right
+            = link_to admin_group_path(@group), class: 'btn btn-sm' do
               = icon('pencil-square-o', text: 'Manage access')
-        %ul.well-list.content-list.members-list
+        %ul.content-list.members-list
           = render partial: 'shared/members/member', collection: @group_members, as: :member, locals: { show_controls: false }
-        .panel-footer
+        .card-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
     = render 'shared/members/requests', membership_source: @project, requesters: @requesters, force_mobile_view: true
 
-    .panel.panel-default
-      .panel-heading
+    .card
+      .card-header
         %strong= @project.name
         project members
-        %span.badge= @project.users.size
-        .pull-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-xs"
-      %ul.well-list.project_members.content-list.members-list
+        %span.badge.badge-pill= @project.users.size
+        .float-right
+          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-sm"
+      %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
-      .panel-footer
+      .card-footer
         = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

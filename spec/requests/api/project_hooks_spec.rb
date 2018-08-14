@@ -13,7 +13,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user3)
   end
 
@@ -33,6 +33,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response.first['merge_requests_events']).to eq(true)
         expect(json_response.first['tag_push_events']).to eq(true)
         expect(json_response.first['note_events']).to eq(true)
+        expect(json_response.first['confidential_note_events']).to eq(true)
         expect(json_response.first['job_events']).to eq(true)
         expect(json_response.first['pipeline_events']).to eq(true)
         expect(json_response.first['wiki_page_events']).to eq(true)
@@ -62,6 +63,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
         expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
         expect(json_response['note_events']).to eq(hook.note_events)
+        expect(json_response['confidential_note_events']).to eq(hook.confidential_note_events)
         expect(json_response['job_events']).to eq(hook.job_events)
         expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
         expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
@@ -104,6 +106,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['merge_requests_events']).to eq(false)
       expect(json_response['tag_push_events']).to eq(false)
       expect(json_response['note_events']).to eq(false)
+      expect(json_response['confidential_note_events']).to eq(nil)
       expect(json_response['job_events']).to eq(true)
       expect(json_response['pipeline_events']).to eq(false)
       expect(json_response['wiki_page_events']).to eq(true)
@@ -152,6 +155,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
       expect(json_response['merge_requests_events']).to eq(hook.merge_requests_events)
       expect(json_response['tag_push_events']).to eq(hook.tag_push_events)
       expect(json_response['note_events']).to eq(hook.note_events)
+      expect(json_response['confidential_note_events']).to eq(hook.confidential_note_events)
       expect(json_response['job_events']).to eq(hook.job_events)
       expect(json_response['pipeline_events']).to eq(hook.pipeline_events)
       expect(json_response['wiki_page_events']).to eq(hook.wiki_page_events)
@@ -210,7 +214,7 @@ describe API::ProjectHooks, 'ProjectHooks' do
     it "returns a 404 if a user attempts to delete project hooks he/she does not own" do
       test_user = create(:user)
       other_project = create(:project)
-      other_project.add_master(test_user)
+      other_project.add_maintainer(test_user)
 
       delete api("/projects/#{other_project.id}/hooks/#{hook.id}", test_user)
       expect(response).to have_gitlab_http_status(404)

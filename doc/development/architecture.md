@@ -2,7 +2,7 @@
 
 ## Software delivery
 
-There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/products/).
+There are two software distributions of GitLab: the open source [Community Edition](https://gitlab.com/gitlab-org/gitlab-ce/) (CE), and the open core [Enterprise Edition](https://gitlab.com/gitlab-org/gitlab-ee/) (EE). GitLab is available under [different subscriptions](https://about.gitlab.com/pricing/).
 
 New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
@@ -197,4 +197,4 @@ Note: It is recommended to log into the `git` user using `sudo -i -u git` or `su
 
 ## GitLab.com
 
-We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.
+We've also detailed [our architecture of GitLab.com](https://about.gitlab.com/handbook/engineering/infrastructure/production-architecture/) but this is probably over the top unless you have millions of users.

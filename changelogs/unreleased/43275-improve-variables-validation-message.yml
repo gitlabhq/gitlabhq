@@ -1,5 +1,0 @@
----
-title: Remove duplicated error message on duplicate variable validation
-merge_request: 17135
-author:
-type: fixed

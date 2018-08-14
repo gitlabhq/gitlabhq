@@ -5,6 +5,7 @@ FactoryBot.define do
     uploader "AvatarUploader"
     mount_point :avatar
     secret nil
+    store ObjectStorage::Store::LOCAL
 
     # we should build a mount agnostic upload by default
     transient do
@@ -25,6 +26,17 @@ FactoryBot.define do
       uploader "FileUploader"
       path { File.join(secret, filename) }
       secret SecureRandom.hex
+    end
+
+    trait :with_file do
+      after(:create) do |upload|
+        FileUtils.mkdir_p(File.dirname(upload.absolute_path))
+        FileUtils.touch(upload.absolute_path)
+      end
+    end
+
+    trait :object_storage do
+      store ObjectStorage::Store::REMOTE
     end
 
     trait :namespace_upload do

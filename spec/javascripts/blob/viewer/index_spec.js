@@ -1,4 +1,6 @@
 /* eslint-disable no-new */
+
+import $ from 'jquery';
 import MockAdapter from 'axios-mock-adapter';
 import BlobViewer from '~/blob/viewer/index';
 import axios from '~/lib/utils/axios_utils';
@@ -30,7 +32,7 @@ describe('Blob viewer', () => {
 
   afterEach(() => {
     mock.restore();
-    location.hash = '';
+    window.location.hash = '';
   });
 
   it('loads source file after switching views', (done) => {
@@ -47,7 +49,7 @@ describe('Blob viewer', () => {
   });
 
   it('loads source file when line number is in hash', (done) => {
-    location.hash = '#L1';
+    window.location.hash = '#L1';
 
     new BlobViewer();
 

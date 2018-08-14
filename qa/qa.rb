@@ -1,5 +1,7 @@
 $: << File.expand_path(File.dirname(__FILE__))
 
+Encoding.default_external = 'UTF-8'
+
 module QA
   ##
   # GitLab QA runtime classes, mostly singletons.
@@ -11,9 +13,19 @@ module QA
     autoload :Scenario, 'qa/runtime/scenario'
     autoload :Browser, 'qa/runtime/browser'
     autoload :Env, 'qa/runtime/env'
-    autoload :RSAKey, 'qa/runtime/rsa_key'
     autoload :Address, 'qa/runtime/address'
-    autoload :API, 'qa/runtime/api'
+
+    module API
+      autoload :Client, 'qa/runtime/api/client'
+      autoload :Request, 'qa/runtime/api/request'
+    end
+
+    module Key
+      autoload :Base, 'qa/runtime/key/base'
+      autoload :RSA, 'qa/runtime/key/rsa'
+      autoload :ECDSA, 'qa/runtime/key/ecdsa'
+      autoload :ED25519, 'qa/runtime/key/ed25519'
+    end
   end
 
   ##
@@ -30,14 +42,25 @@ module QA
       autoload :Issue, 'qa/factory/resource/issue'
       autoload :Project, 'qa/factory/resource/project'
       autoload :MergeRequest, 'qa/factory/resource/merge_request'
+      autoload :ProjectImportedFromGithub, 'qa/factory/resource/project_imported_from_github'
+      autoload :MergeRequestFromFork, 'qa/factory/resource/merge_request_from_fork'
       autoload :DeployKey, 'qa/factory/resource/deploy_key'
+      autoload :Branch, 'qa/factory/resource/branch'
       autoload :SecretVariable, 'qa/factory/resource/secret_variable'
       autoload :Runner, 'qa/factory/resource/runner'
       autoload :PersonalAccessToken, 'qa/factory/resource/personal_access_token'
+      autoload :KubernetesCluster, 'qa/factory/resource/kubernetes_cluster'
+      autoload :User, 'qa/factory/resource/user'
+      autoload :ProjectMilestone, 'qa/factory/resource/project_milestone'
+      autoload :Wiki, 'qa/factory/resource/wiki'
+      autoload :File, 'qa/factory/resource/file'
+      autoload :Fork, 'qa/factory/resource/fork'
     end
 
     module Repository
       autoload :Push, 'qa/factory/repository/push'
+      autoload :ProjectPush, 'qa/factory/repository/project_push'
+      autoload :WikiPush, 'qa/factory/repository/wiki_push'
     end
 
     module Settings
@@ -64,7 +87,9 @@ module QA
       autoload :Instance, 'qa/scenario/test/instance'
 
       module Integration
+        autoload :Github, 'qa/scenario/test/integration/github'
         autoload :LDAP, 'qa/scenario/test/integration/ldap'
+        autoload :Kubernetes, 'qa/scenario/test/integration/kubernetes'
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
 
@@ -88,6 +113,11 @@ module QA
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
+      autoload :SignUp, 'qa/page/main/sign_up'
+    end
+
+    module Settings
+      autoload :Common, 'qa/page/settings/common'
     end
 
     module Menu
@@ -107,10 +137,23 @@ module QA
       autoload :Show, 'qa/page/group/show'
     end
 
+    module File
+      autoload :Form, 'qa/page/file/form'
+      autoload :Show, 'qa/page/file/show'
+
+      module Shared
+        autoload :CommitMessage, 'qa/page/file/shared/commit_message'
+      end
+    end
+
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
       autoload :Activity, 'qa/page/project/activity'
+
+      module Import
+        autoload :Github, 'qa/page/project/import/github'
+      end
 
       module Pipeline
         autoload :Index, 'qa/page/project/pipeline/index'
@@ -128,6 +171,7 @@ module QA
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :CICD, 'qa/page/project/settings/ci_cd'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :ProtectedBranches, 'qa/page/project/settings/protected_branches'
         autoload :SecretVariables, 'qa/page/project/settings/secret_variables'
         autoload :Runners, 'qa/page/project/settings/runners'
         autoload :MergeRequest, 'qa/page/project/settings/merge_request'
@@ -138,10 +182,46 @@ module QA
         autoload :Show, 'qa/page/project/issue/show'
         autoload :Index, 'qa/page/project/issue/index'
       end
+
+      module Fork
+        autoload :New, 'qa/page/project/fork/new'
+      end
+
+      module Milestone
+        autoload :New, 'qa/page/project/milestone/new'
+        autoload :Index, 'qa/page/project/milestone/index'
+      end
+
+      module Operations
+        module Kubernetes
+          autoload :Index, 'qa/page/project/operations/kubernetes/index'
+          autoload :Add, 'qa/page/project/operations/kubernetes/add'
+          autoload :AddExisting, 'qa/page/project/operations/kubernetes/add_existing'
+          autoload :Show, 'qa/page/project/operations/kubernetes/show'
+        end
+      end
+
+      module Wiki
+        autoload :Edit, 'qa/page/project/wiki/edit'
+        autoload :New, 'qa/page/project/wiki/new'
+        autoload :Show, 'qa/page/project/wiki/show'
+      end
+    end
+
+    module Shared
+      autoload :ClonePanel, 'qa/page/shared/clone_panel'
     end
 
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
+    end
+
+    module Issuable
+      autoload :Sidebar, 'qa/page/issuable/sidebar'
+    end
+
+    module Layout
+      autoload :Banner, 'qa/page/layout/banner'
     end
 
     module MergeRequest
@@ -150,7 +230,10 @@ module QA
     end
 
     module Admin
-      autoload :Settings, 'qa/page/admin/settings'
+      module Settings
+        autoload :RepositoryStorage, 'qa/page/admin/settings/repository_storage'
+        autoload :Main, 'qa/page/admin/settings/main'
+      end
     end
 
     module Mattermost
@@ -163,6 +246,7 @@ module QA
     #
     module Component
       autoload :Dropzone, 'qa/page/component/dropzone'
+      autoload :Select2, 'qa/page/component/select2'
     end
   end
 
@@ -180,6 +264,7 @@ module QA
   #
   module Service
     autoload :Shellout, 'qa/service/shellout'
+    autoload :KubernetesCluster, 'qa/service/kubernetes_cluster'
     autoload :Omnibus, 'qa/service/omnibus'
     autoload :Runner, 'qa/service/runner'
   end

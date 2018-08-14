@@ -19,7 +19,9 @@ describe Users::DestroyService do
       end
 
       it 'will delete the project' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_next_instance_of(Projects::DestroyService) do |destroy_service|
+          expect(destroy_service).to receive(:execute).once
+        end
 
         service.execute(user)
       end
@@ -32,7 +34,9 @@ describe Users::DestroyService do
       end
 
       it 'destroys a project in pending_delete' do
-        expect_any_instance_of(Projects::DestroyService).to receive(:execute).once
+        expect_next_instance_of(Projects::DestroyService) do |destroy_service|
+          expect(destroy_service).to receive(:execute).once
+        end
 
         service.execute(user)
 
@@ -169,14 +173,14 @@ describe Users::DestroyService do
 
     describe "user personal's repository removal" do
       before do
-        Sidekiq::Testing.inline! { service.execute(user) }
+        perform_enqueued_jobs { service.execute(user) }
       end
 
       context 'legacy storage' do
         let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
 
         it 'removes repository' do
-          expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+          expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
         end
       end
 
@@ -184,7 +188,7 @@ describe Users::DestroyService do
         let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
 
         it 'removes repository' do
-          expect(gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+          expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
         end
       end
     end

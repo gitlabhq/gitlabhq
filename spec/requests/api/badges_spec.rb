@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe API::Badges do
-  let(:master) { create(:user, username: 'master_user') }
+  let(:maintainer) { create(:user, username: 'maintainer_user') }
   let(:developer) { create(:user) }
   let(:access_requester) { create(:user) }
   let(:stranger) { create(:user) }
@@ -25,7 +25,7 @@ describe API::Badges do
         let(:route) { get api("/#{source_type.pluralize}/#{source.id}/badges", stranger) }
       end
 
-      %i[master developer access_requester stranger].each do |type|
+      %i[maintainer developer access_requester stranger].each do |type|
         context "when authenticated as a #{type}" do
           it 'returns 200' do
             user = public_send(type)
@@ -43,16 +43,16 @@ describe API::Badges do
 
       it 'avoids N+1 queries' do
         # Establish baseline
-        get api("/#{source_type.pluralize}/#{source.id}/badges", master)
+        get api("/#{source_type.pluralize}/#{source.id}/badges", maintainer)
 
         control = ActiveRecord::QueryRecorder.new do
-          get api("/#{source_type.pluralize}/#{source.id}/badges", master)
+          get api("/#{source_type.pluralize}/#{source.id}/badges", maintainer)
         end
 
         project.add_developer(create(:user))
 
         expect do
-          get api("/#{source_type.pluralize}/#{source.id}/badges", master)
+          get api("/#{source_type.pluralize}/#{source.id}/badges", maintainer)
         end.not_to exceed_query_limit(control)
       end
     end
@@ -69,7 +69,7 @@ describe API::Badges do
       end
 
       context 'when authenticated as a non-member' do
-        %i[master developer access_requester stranger].each do |type|
+        %i[maintainer developer access_requester stranger].each do |type|
           let(:badge) { source.badges.first }
 
           context "as a #{type}" do
@@ -122,10 +122,10 @@ describe API::Badges do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         it 'creates a new badge' do
           expect do
-            post api("/#{source_type.pluralize}/#{source.id}/badges", master),
+            post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
                 link_url: example_url, image_url: example_url2
 
             expect(response).to have_gitlab_http_status(201)
@@ -138,21 +138,21 @@ describe API::Badges do
       end
 
       it 'returns 400 when link_url is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/badges", master),
+        post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              link_url: example_url
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when image_url is not given' do
-        post api("/#{source_type.pluralize}/#{source.id}/badges", master),
+        post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              image_url: example_url2
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
-        post api("/#{source_type.pluralize}/#{source.id}/badges", master),
+        post api("/#{source_type.pluralize}/#{source.id}/badges", maintainer),
              link_url: 'whatever', image_url: 'whatever'
 
         expect(response).to have_gitlab_http_status(400)
@@ -192,9 +192,9 @@ describe API::Badges do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         it 'updates the member' do
-          put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", master),
+          put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
               link_url: example_url, image_url: example_url2
 
           expect(response).to have_gitlab_http_status(200)
@@ -205,7 +205,7 @@ describe API::Badges do
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
-        put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", master),
+        put api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer),
             link_url: 'whatever', image_url: 'whatever'
 
         expect(response).to have_gitlab_http_status(400)
@@ -239,22 +239,22 @@ describe API::Badges do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         it 'deletes the badge' do
           expect do
-            delete api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", master)
+            delete api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { source.badges.count }.by(-1)
         end
 
         it_behaves_like '412 response' do
-          let(:request) { api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", master) }
+          let(:request) { api("/#{source_type.pluralize}/#{source.id}/badges/#{badge.id}", maintainer) }
         end
       end
 
       it 'returns 404 if badge does not exist' do
-        delete api("/#{source_type.pluralize}/#{source.id}/badges/123", master)
+        delete api("/#{source_type.pluralize}/#{source.id}/badges/123", maintainer)
 
         expect(response).to have_gitlab_http_status(404)
       end
@@ -289,9 +289,9 @@ describe API::Badges do
         end
       end
 
-      context 'when authenticated as a master/owner' do
+      context 'when authenticated as a maintainer/owner' do
         it 'gets the rendered badge values' do
-          get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}&image_url=#{example_url2}", master)
+          get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}&image_url=#{example_url2}", maintainer)
 
           expect(response).to have_gitlab_http_status(200)
 
@@ -304,19 +304,19 @@ describe API::Badges do
       end
 
       it 'returns 400 when link_url is not given' do
-        get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}", master)
+        get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=#{example_url}", maintainer)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when image_url is not given' do
-        get api("/#{source_type.pluralize}/#{source.id}/badges/render?image_url=#{example_url}", master)
+        get api("/#{source_type.pluralize}/#{source.id}/badges/render?image_url=#{example_url}", maintainer)
 
         expect(response).to have_gitlab_http_status(400)
       end
 
       it 'returns 400 when link_url or image_url is not valid' do
-        get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=whatever&image_url=whatever", master)
+        get api("/#{source_type.pluralize}/#{source.id}/badges/render?link_url=whatever&image_url=whatever", maintainer)
 
         expect(response).to have_gitlab_http_status(400)
       end
@@ -326,7 +326,7 @@ describe API::Badges do
   context 'when deleting a badge' do
     context 'and the source is a project' do
       it 'cannot delete badges owned by the project group' do
-        delete api("/projects/#{project.id}/badges/#{project_group.badges.first.id}", master)
+        delete api("/projects/#{project.id}/badges/#{project_group.badges.first.id}", maintainer)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -345,9 +345,9 @@ describe API::Badges do
   end
 
   def setup_project
-    create(:project, :public, :access_requestable, creator_id: master.id, namespace: project_group) do |project|
+    create(:project, :public, :access_requestable, creator_id: maintainer.id, namespace: project_group) do |project|
       project.add_developer(developer)
-      project.add_master(master)
+      project.add_maintainer(maintainer)
       project.request_access(access_requester)
       project.project_badges << build(:project_badge, project: project)
       project.project_badges << build(:project_badge, project: project)
@@ -358,7 +358,7 @@ describe API::Badges do
   def setup_group
     create(:group, :public, :access_requestable) do |group|
       group.add_developer(developer)
-      group.add_owner(master)
+      group.add_owner(maintainer)
       group.request_access(access_requester)
       group.badges << build(:group_badge, group: group)
       group.badges << build(:group_badge, group: group)

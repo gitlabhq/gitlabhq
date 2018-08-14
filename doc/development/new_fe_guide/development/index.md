@@ -8,7 +8,7 @@ Examples of proven design patterns used in our codebase.
 
 Documentation on existing components and how to best create a new component.
 
-## [Accessiblity](accessibility.md)
+## [Accessibility](accessibility.md)
 
 Learn how to implement an accessible frontend.
 

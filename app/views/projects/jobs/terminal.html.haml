@@ -1,0 +1,11 @@
+- @no_container = true
+- add_to_breadcrumbs 'Jobs', project_jobs_path(@project)
+- add_to_breadcrumbs "##{@build.id}", project_job_path(@project, @build)
+- breadcrumb_title 'Terminal'
+- page_title 'Terminal', "#{@build.name} (##{@build.id})", 'Jobs'
+
+- content_for :page_specific_javascripts do
+  = stylesheet_link_tag "xterm.css"
+
+.terminal-container{ class: container_class }
+  #terminal{ data: { project_path: terminal_project_job_path(@project, @build, format: :ws) } }

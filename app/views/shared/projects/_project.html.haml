@@ -4,7 +4,7 @@
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - user = local_assigns[:user]
-- access = user&.max_member_access_for_project(project.id) unless user.nil?
+- access = max_project_member_access(project)
 - css_class = '' unless local_assigns[:css_class]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && can_show_last_commit_in_list?(project)
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
@@ -19,7 +19,7 @@
           - if project.creator && use_creator_avatar
             = image_tag avatar_icon_for_user(project.creator, 40), class: "avatar s40", alt:''
           - else
-            = project_icon(project, alt: '', class: 'avatar project-avatar s40')
+            = project_icon(project, alt: '', class: 'avatar project-avatar s40', width: 40, height: 40)
     .project-details
       %h3.prepend-top-0.append-bottom-0
         = link_to project_path(project), class: 'text-plain' do
@@ -46,7 +46,7 @@
     .controls
       .prepend-top-0
         - if project.archived
-          %span.prepend-left-10.label.label-warning archived
+          %span.prepend-left-10.badge.badge-warning archived
         - if can?(current_user, :read_cross_project) && project.pipeline_status.has_status?
           %span.prepend-left-10
             = render_project_pipeline_status(project.pipeline_status)

@@ -3,15 +3,6 @@ require 'spec_helper'
 describe Banzai::Filter::EmojiFilter do
   include FilterSpecHelper
 
-  before do
-    @original_asset_host = ActionController::Base.asset_host
-    ActionController::Base.asset_host = 'https://foo.com'
-  end
-
-  after do
-    ActionController::Base.asset_host = @original_asset_host
-  end
-
   it 'replaces supported name emoji' do
     doc = filter('<p>:heart:</p>')
     expect(doc.css('gl-emoji').first.text).to eq '❤'

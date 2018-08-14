@@ -4,12 +4,7 @@
   import eventHub from '../event_hub';
   import loadingButton from '../../vue_shared/components/loading_button.vue';
   import {
-    APPLICATION_NOT_INSTALLABLE,
-    APPLICATION_SCHEDULED,
-    APPLICATION_INSTALLABLE,
-    APPLICATION_INSTALLING,
-    APPLICATION_INSTALLED,
-    APPLICATION_ERROR,
+    APPLICATION_STATUS,
     REQUEST_LOADING,
     REQUEST_SUCCESS,
     REQUEST_FAILURE,
@@ -52,51 +47,64 @@
         type: String,
         required: false,
       },
+      installApplicationRequestParams: {
+        type: Object,
+        required: false,
+        default: () => ({}),
+      },
     },
     computed: {
+      isUnknownStatus() {
+        return !this.isKnownStatus && this.status !== null;
+      },
+      isKnownStatus() {
+        return Object.values(APPLICATION_STATUS).includes(this.status);
+      },
       rowJsClass() {
         return `js-cluster-application-row-${this.id}`;
       },
       installButtonLoading() {
         return !this.status ||
-          this.status === APPLICATION_SCHEDULED ||
-          this.status === APPLICATION_INSTALLING ||
+          this.status === APPLICATION_STATUS.SCHEDULED ||
+          this.status === APPLICATION_STATUS.INSTALLING ||
           this.requestStatus === REQUEST_LOADING;
       },
       installButtonDisabled() {
-        // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
+        // Avoid the potential for the real-time data to say APPLICATION_STATUS.INSTALLABLE but
         // we already made a request to install and are just waiting for the real-time
         // to sync up.
-        return (this.status !== APPLICATION_INSTALLABLE
-          && this.status !== APPLICATION_ERROR) ||
+        return ((this.status !== APPLICATION_STATUS.INSTALLABLE
+          && this.status !== APPLICATION_STATUS.ERROR) ||
           this.requestStatus === REQUEST_LOADING ||
-          this.requestStatus === REQUEST_SUCCESS;
+          this.requestStatus === REQUEST_SUCCESS) && this.isKnownStatus;
       },
       installButtonLabel() {
         let label;
         if (
-          this.status === APPLICATION_NOT_INSTALLABLE ||
-          this.status === APPLICATION_INSTALLABLE ||
-          this.status === APPLICATION_ERROR
+          this.status === APPLICATION_STATUS.NOT_INSTALLABLE ||
+          this.status === APPLICATION_STATUS.INSTALLABLE ||
+          this.status === APPLICATION_STATUS.ERROR ||
+          this.isUnknownStatus
         ) {
           label = s__('ClusterIntegration|Install');
-        } else if (this.status === APPLICATION_SCHEDULED ||
-          this.status === APPLICATION_INSTALLING) {
+        } else if (this.status === APPLICATION_STATUS.SCHEDULED ||
+          this.status === APPLICATION_STATUS.INSTALLING) {
           label = s__('ClusterIntegration|Installing');
-        } else if (this.status === APPLICATION_INSTALLED) {
+        } else if (this.status === APPLICATION_STATUS.INSTALLED ||
+          this.status === APPLICATION_STATUS.UPDATED) {
           label = s__('ClusterIntegration|Installed');
         }
 
         return label;
       },
       showManageButton() {
-        return this.manageLink && this.status === APPLICATION_INSTALLED;
+        return this.manageLink && this.status === APPLICATION_STATUS.INSTALLED;
       },
       manageButtonLabel() {
         return s__('ClusterIntegration|Manage');
       },
       hasError() {
-        return this.status === APPLICATION_ERROR ||
+        return this.status === APPLICATION_STATUS.ERROR ||
         this.requestStatus === REQUEST_FAILURE;
       },
       generalErrorDescription() {
@@ -109,7 +117,10 @@
     },
     methods: {
       installClicked() {
-        eventHub.$emit('installApplication', this.id);
+        eventHub.$emit('installApplication', {
+          id: this.id,
+          params: this.installApplicationRequestParams,
+        });
       },
     },
   };
@@ -117,8 +128,8 @@
 
 <template>
   <div
-    class="gl-responsive-table-row gl-responsive-table-row-col-span"
     :class="rowJsClass"
+    class="gl-responsive-table-row gl-responsive-table-row-col-span"
   >
     <div
       class="gl-responsive-table-row-layout"
@@ -147,8 +158,8 @@
         <slot name="description"></slot>
       </div>
       <div
-        class="table-section table-button-footer section-align-top"
         :class="{ 'section-20': showManageButton, 'section-15': !showManageButton }"
+        class="table-section table-button-footer section-align-top"
         role="gridcell"
       >
         <div
@@ -156,30 +167,30 @@
           class="btn-group table-action-buttons"
         >
           <a
-            class="btn"
             :href="manageLink"
+            class="btn"
           >
             {{ manageButtonLabel }}
           </a>
         </div>
         <div class="btn-group table-action-buttons">
           <loading-button
-            class="js-cluster-application-install-button"
             :loading="installButtonLoading"
             :disabled="installButtonDisabled"
             :label="installButtonLabel"
+            class="js-cluster-application-install-button"
             @click="installClicked"
           />
         </div>
       </div>
     </div>
     <div
-      v-if="hasError"
+      v-if="hasError || isUnknownStatus"
       class="gl-responsive-table-row-layout"
       role="row"
     >
       <div
-        class="alert alert-danger alert-block append-bottom-0 table-section section-100"
+        class="alert alert-danger alert-block append-bottom-0 clusters-error-alert"
         role="gridcell"
       >
         <div>

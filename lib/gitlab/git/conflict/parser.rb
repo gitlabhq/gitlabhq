@@ -4,7 +4,6 @@ module Gitlab
       class Parser
         UnresolvableError = Class.new(StandardError)
         UnmergeableFile = Class.new(UnresolvableError)
-        UnsupportedEncoding = Class.new(UnresolvableError)
 
         # Recoverable errors - the conflict can be resolved in an editor, but not with
         # sections.
@@ -75,10 +74,6 @@ module Gitlab
           def validate_text!(text)
             raise UnmergeableFile if text.blank? # Typically a binary file
             raise UnmergeableFile if text.length > 200.kilobytes
-
-            text.force_encoding('UTF-8')
-
-            raise UnsupportedEncoding unless text.valid_encoding?
           end
 
           def validate_delimiter!(condition)

@@ -83,6 +83,10 @@ module Gitlab
       end
     end
 
+    def self.random_storage
+      Gitlab.config.repositories.storages.keys.sample
+    end
+
     def self.address(storage)
       params = Gitlab.config.repositories.storages[storage]
       raise "storage not found: #{storage.inspect}" if params.nil?
@@ -119,6 +123,9 @@ module Gitlab
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
       start = Gitlab::Metrics::System.monotonic_time
+      request_hash = request.is_a?(Google::Protobuf::MessageExts) ? request.to_h : {}
+      @current_call_id ||= SecureRandom.uuid
+
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
@@ -135,6 +142,10 @@ module Gitlab
       gitaly_controller_action_duration_seconds.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
         duration)
+
+      add_call_details(id: @current_call_id, feature: service, duration: duration, request: request_hash)
+
+      @current_call_id = nil
     end
 
     def self.handle_grpc_unavailable!(ex)
@@ -175,6 +186,8 @@ module Gitlab
       metadata['call_site'] = feature.to_s if feature
       metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
+      metadata.merge!(server_feature_flags)
+
       result = { metadata: metadata }
 
       # nil timeout indicates that we should use the default
@@ -191,6 +204,14 @@ module Gitlab
       result[:deadline] = deadline
 
       result
+    end
+
+    SERVER_FEATURE_FLAGS = %w[gogit_findcommit].freeze
+
+    def self.server_feature_flags
+      SERVER_FEATURE_FLAGS.map do |f|
+        ["gitaly-feature-#{f.tr('_', '-')}", feature_enabled?(f).to_s]
+      end.to_h
     end
 
     def self.token(storage)
@@ -223,10 +244,21 @@ module Gitlab
       when MigrationStatus::OPT_OUT
         true
       when MigrationStatus::OPT_IN
-        opt_into_all_features?
+        opt_into_all_features? && !explicit_opt_in_required.include?(feature_name)
       else
         false
       end
+    rescue => ex
+      # During application startup feature lookups in SQL can fail
+      Rails.logger.warn "exception while checking Gitaly feature status for #{feature_name}: #{ex}"
+      false
+    end
+
+    # We have a mechanism to let GitLab automatically opt in to all Gitaly
+    # features. We want to be able to exclude some features from automatic
+    # opt-in. This function has an override in EE.
+    def self.explicit_opt_in_required
+      []
     end
 
     # opt_into_all_features? returns true when the current environment
@@ -252,12 +284,16 @@ module Gitlab
           feature_stack.unshift(feature)
           begin
             start = Gitlab::Metrics::System.monotonic_time
+            @current_call_id = SecureRandom.uuid
+            call_details = { id: @current_call_id }
             yield is_enabled
           ensure
             total_time = Gitlab::Metrics::System.monotonic_time - start
             gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+
+            add_call_details(call_details.merge(feature: feature, duration: total_time))
           end
         end
       end
@@ -344,18 +380,34 @@ module Gitlab
       end
     end
 
+    def self.add_call_details(details)
+      id = details.delete(:id)
+
+      return unless id && RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] ||= {}
+      RequestStore.store['gitaly_call_details'][id] ||= {}
+      RequestStore.store['gitaly_call_details'][id].merge!(details)
+    end
+
+    def self.list_call_details
+      return {} unless RequestStore.active? && RequestStore.store[:peek_enabled]
+
+      RequestStore.store['gitaly_call_details'] || {}
+    end
+
     def self.expected_server_version
       path = Rails.root.join(SERVER_VERSION_FILE)
       path.read.chomp
     end
 
-    def self.timestamp(t)
-      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    def self.timestamp(time)
+      Google::Protobuf::Timestamp.new(seconds: time.to_i)
     end
 
     # The default timeout on all Gitaly calls
     def self.default_timeout
-      return 0 if Sidekiq.server?
+      return no_timeout if Sidekiq.server?
 
       timeout(:gitaly_timeout_default)
     end
@@ -368,6 +420,10 @@ module Gitlab
       timeout(:gitaly_timeout_medium)
     end
 
+    def self.no_timeout
+      0
+    end
+
     def self.timeout(timeout_name)
       Gitlab::CurrentSettings.current_application_settings[timeout_name]
     end
@@ -377,7 +433,7 @@ module Gitlab
     def self.count_stack
       return unless RequestStore.active?
 
-      stack_string = caller.drop(1).join("\n")
+      stack_string = Gitlab::Profiler.clean_backtrace(caller).drop(1).join("\n")
 
       RequestStore.store[:stack_counter] ||= Hash.new
 

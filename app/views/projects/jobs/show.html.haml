@@ -15,14 +15,14 @@
             - elsif @build.tags.any?
               This job is stuck, because you don't have any active runners online with any of these tags assigned to them:
               - @build.tags.each do |tag|
-                %span.label.label-primary
+                %span.badge.badge-primary
                   = tag
             - else
               This job is stuck, because you don't have any active runners that can run this job.
 
             %br
             Go to
-            = link_to project_runners_path(@build.project) do
+            = link_to project_runners_path(@build.project, anchor: 'js-runners-settings') do
               Runners page
 
     - if @build.starts_environment?
@@ -54,16 +54,17 @@
             Job has been erased by #{link_to(@build.erased_by_name, user_path(@build.erased_by))} #{time_ago_with_tooltip(@build.erased_at)}
           - else
             Job has been erased #{time_ago_with_tooltip(@build.erased_at)}
-    - if @build.started?
+
+    - if @build.running? || @build.has_trace?
       .build-trace-container.prepend-top-default
         .top-bar.js-top-bar
-          .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
+          .js-truncated-info.truncated-info.d-none.d-sm-block.float-left.hidden<
             Showing last
             %span.js-truncated-info-size.truncated-info-size><
             of log -
             %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-          .controllers.pull-right
+          .controllers.float-right
             - if @build.has_trace?
               = link_to raw_project_job_path(@project, @build),
                       title: 'Show complete raw',
@@ -85,30 +86,12 @@
               %button.js-scroll-down.btn-scroll.btn-transparent.btn-blank{ type: 'button', disabled: true }
                 = custom_icon('scroll_down')
 
-        %pre.build-trace#build-trace
-          %code.bash.js-build-output
-          .build-loader-animation.js-build-refresh
-    - elsif @build.playable?
-      = render 'empty_state',
-        illustration: 'illustrations/manual_action.svg',
-        illustration_size: 'svg-394',
-        title: _('This job requires a manual action'),
-        content: _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments'),
-        action: ( link_to _('Trigger this manual action'), play_project_job_path(@project, @build), method: :post, class: 'btn btn-primary', title: _('Trigger this manual action') )
-    - elsif @build.created?
-      = render 'empty_state',
-        illustration: 'illustrations/job_not_triggered.svg',
-        illustration_size: 'svg-306',
-        title: _('This job has not been triggered yet'),
-        content: _('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
+        = render 'shared/builds/build_output'
     - else
-      = render 'empty_state',
-        illustration: 'illustrations/pending_job_empty.svg',
-        illustration_size: 'svg-430',
-        title: _('This job has not started yet'),
-        content: _('This job is in pending state and is waiting to be picked by a runner')
-  = render "sidebar"
+      = render "empty_states"
+
+  = render "sidebar", builds: @builds
 
 .js-build-options{ data: javascript_build_options }
 
-#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json) } }
+#js-job-details-vue{ data: { endpoint: project_job_path(@project, @build, format: :json), runner_help_url: help_page_path('ci/runners/README.html', anchor: 'setting-maximum-job-timeout-for-a-runner') } }

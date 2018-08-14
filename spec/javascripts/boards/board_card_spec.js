@@ -1,15 +1,14 @@
 /* global List */
 /* global ListAssignee */
 /* global ListLabel */
-/* global BoardService */
 
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import '~/boards/models/assignee';
 
 import eventHub from '~/boards/eventhub';
 import '~/vue_shared/models/label';
+import '~/vue_shared/models/assignee';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
 import boardCard from '~/boards/components/board_card.vue';

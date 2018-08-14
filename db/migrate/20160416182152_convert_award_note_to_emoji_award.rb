@@ -1,4 +1,3 @@
-# rubocop:disable all
 class ConvertAwardNoteToEmojiAward < ActiveRecord::Migration
   disable_ddl_transaction!
 

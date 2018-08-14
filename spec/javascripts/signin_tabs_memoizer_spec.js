@@ -4,7 +4,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
 (() => {
   describe('SigninTabsMemoizer', () => {
     const fixtureTemplate = 'static/signin_tabs.html.raw';
-    const tabSelector = 'ul.nav-tabs';
+    const tabSelector = 'ul.new-session-tabs';
     const currentTabKey = 'current_signin_tab';
     let memo;
 
@@ -27,7 +27,7 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
     it('does nothing if no tab was previously selected', () => {
       createMemoizer();
 
-      expect(document.querySelector('li a.active').getAttribute('id')).toEqual('standard');
+      expect(document.querySelector(`${tabSelector} > li.active a`).getAttribute('href')).toEqual('#ldap');
     });
 
     it('shows last selected tab on boot', () => {
@@ -45,12 +45,27 @@ import SigninTabsMemoizer from '~/pages/sessions/new/signin_tabs_memoizer';
       expect(fakeTab.click).toHaveBeenCalled();
     });
 
+    it('clicks the first tab if value in local storage is bad', () => {
+      createMemoizer().saveData('#bogus');
+      const fakeTab = {
+        click: () => {},
+      };
+      spyOn(document, 'querySelector').and.callFake(selector => (selector === `${tabSelector} a[href="#bogus"]` ? null : fakeTab));
+      spyOn(fakeTab, 'click');
+
+      memo.bootstrap();
+
+      // verify that triggers click on stored selector and fallback
+      expect(document.querySelector.calls.allArgs()).toEqual([['ul.new-session-tabs a[href="#bogus"]'], ['ul.new-session-tabs a']]);
+      expect(fakeTab.click).toHaveBeenCalled();
+    });
+
     it('saves last selected tab on change', () => {
       createMemoizer();
 
-      document.getElementById('standard').click();
+      document.querySelector('a[href="#login-pane"]').click();
 
-      expect(memo.readData()).toEqual('#standard');
+      expect(memo.readData()).toEqual('#login-pane');
     });
 
     it('overrides last selected tab with hash tag when given', () => {

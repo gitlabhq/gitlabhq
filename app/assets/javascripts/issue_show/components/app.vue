@@ -108,6 +108,11 @@
         type: String,
         required: true,
       },
+      markdownVersion: {
+        type: Number,
+        required: false,
+        default: 0,
+      },
       projectPath: {
         type: String,
         required: true,
@@ -226,7 +231,7 @@
           .then(res => res.data)
           .then(data => this.checkForSpam(data))
           .then((data) => {
-            if (location.pathname !== data.web_url) {
+            if (window.location.pathname !== data.web_url) {
               visitUrl(data.web_url);
             }
 
@@ -282,6 +287,7 @@
         :issuable-templates="issuableTemplates"
         :markdown-docs-path="markdownDocsPath"
         :markdown-preview-path="markdownPreviewPath"
+        :markdown-version="markdownVersion"
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-delete-button="showDeleteButton"

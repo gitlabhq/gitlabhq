@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ProtectedRef
   extend ActiveSupport::Concern
 
@@ -23,7 +25,7 @@ module ProtectedRef
         # If we don't `protected_branch` or `protected_tag` would be empty and
         # `project` cannot be delegated to it, which in turn would cause validations
         # to fail.
-        has_many :"#{type}_access_levels", inverse_of: self.model_name.singular # rubocop:disable Cop/ActiveRecordDependent
+        has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
 
         validates :"#{type}_access_levels", length: { is: 1, message: "are restricted to a single instance per #{self.model_name.human}." }
 
@@ -31,7 +33,7 @@ module ProtectedRef
       end
     end
 
-    def protected_ref_accessible_to?(ref, user, action:, protected_refs: nil)
+    def protected_ref_accessible_to?(ref, user, project:, action:, protected_refs: nil)
       access_levels_for_ref(ref, action: action, protected_refs: protected_refs).any? do |access_level|
         access_level.check_access(user)
       end

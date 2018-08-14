@@ -1,34 +1,34 @@
-= form_for [:admin, @application], url: @url, html: {class: 'form-horizontal', role: 'form'} do |f|
+= form_for [:admin, @application], url: @url, html: {role: 'form'} do |f|
   = form_errors(application)
 
-  = content_tag :div, class: 'form-group' do
-    = f.label :name, class: 'col-sm-2 control-label'
+  = content_tag :div, class: 'form-group row' do
+    = f.label :name, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_field :name, class: 'form-control'
       = doorkeeper_errors_for application, :name
 
-  = content_tag :div, class: 'form-group' do
-    = f.label :redirect_uri, class: 'col-sm-2 control-label'
+  = content_tag :div, class: 'form-group row' do
+    = f.label :redirect_uri, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_area :redirect_uri, class: 'form-control'
       = doorkeeper_errors_for application, :redirect_uri
-      %span.help-block
+      %span.form-text.text-muted
         Use one line per URI
       - if Doorkeeper.configuration.native_redirect_uri
-        %span.help-block
+        %span.form-text.text-muted
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
 
-  = content_tag :div, class: 'form-group' do
-    = f.label :trusted, class: 'col-sm-2 control-label'
+  = content_tag :div, class: 'form-group row' do
+    = f.label :trusted, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.check_box :trusted
-      %span.help-block
+      %span.form-text.text-muted
         Trusted applications are automatically authorized on GitLab OAuth flow.
 
-  .form-group
-    = f.label :scopes, class: 'col-sm-2 control-label'
+  .form-group.row
+    = f.label :scopes, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = render 'shared/tokens/scopes_form', prefix: 'doorkeeper_application', token: application, scopes: @scopes
 

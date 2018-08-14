@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Blob shortcuts' do
+describe 'Blob shortcuts', :js do
   include TreeHelper
   let(:project) { create(:project, :public, :repository) }
   let(:path) { project.repository.ls_files(project.repository.root_ref)[0] }
@@ -18,6 +18,7 @@ feature 'Blob shortcuts' do
     describe 'pressing "y"' do
       it 'redirects to permalink with commit sha' do
         visit_blob
+        wait_for_requests
 
         find('body').native.send_key('y')
 
@@ -27,6 +28,7 @@ feature 'Blob shortcuts' do
       it 'maintains fragment hash when redirecting' do
         fragment = "L1"
         visit_blob(fragment)
+        wait_for_requests
 
         find('body').native.send_key('y')
 

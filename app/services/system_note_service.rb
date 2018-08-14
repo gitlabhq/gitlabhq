@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # SystemNoteService
 #
 # Used for creating system notes (e.g., when a user references a merge request
@@ -21,11 +23,28 @@ module SystemNoteService
     total_count  = new_commits.length + existing_commits.length
     commits_text = "#{total_count} commit".pluralize(total_count)
 
-    body = "added #{commits_text}\n\n"
-    body << commits_list(noteable, new_commits, existing_commits, oldrev)
-    body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+    text_parts = ["added #{commits_text}"]
+    text_parts << commits_list(noteable, new_commits, existing_commits, oldrev)
+    text_parts << "[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
+
+    body = text_parts.join("\n\n")
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
+  end
+
+  # Called when a commit was tagged
+  #
+  # noteable  - Noteable object
+  # project   - Project owning noteable
+  # author    - User performing the tag
+  # tag_name  - The created tag name
+  #
+  # Returns the created Note object
+  def tag_commit(noteable, project, author, tag_name)
+    link = url_helpers.project_tag_url(project, id: tag_name)
+    body = "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
+
+    create_note(NoteSummary.new(noteable, project, author, body, action: 'tag'))
   end
 
   # Called when the assignee of a Noteable is changed or removed
@@ -103,18 +122,19 @@ module SystemNoteService
     added_labels   = added_labels.map(&references).join(' ')
     removed_labels = removed_labels.map(&references).join(' ')
 
-    body = ''
+    text_parts = []
 
     if added_labels.present?
-      body << "added #{added_labels}"
-      body << ' and ' if removed_labels.present?
+      text_parts << "added #{added_labels}"
+      text_parts << 'and' if removed_labels.present?
     end
 
     if removed_labels.present?
-      body << "removed #{removed_labels}"
+      text_parts << "removed #{removed_labels}"
     end
 
-    body << ' ' << 'label'.pluralize(labels_count)
+    text_parts << 'label'.pluralize(labels_count)
+    body = text_parts.join(' ')
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'label'))
   end
@@ -188,8 +208,10 @@ module SystemNoteService
       spent_at = noteable.spent_at
       parsed_time = Gitlab::TimeTrackingFormatter.output(time_spent.abs)
       action = time_spent > 0 ? 'added' : 'subtracted'
-      body = "#{action} #{parsed_time} of time spent"
-      body << " at #{spent_at}" if spent_at
+
+      text_parts = ["#{action} #{parsed_time} of time spent"]
+      text_parts << "at #{spent_at}" if spent_at
+      body = text_parts.join(' ')
     end
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'time_tracking'))
@@ -268,17 +290,19 @@ module SystemNoteService
     diff_refs = change_position.diff_refs
     version_index = merge_request.merge_request_diffs.viewable.count
 
-    body = "changed this line in"
+    text_parts = ["changed this line in"]
     if version_params = merge_request.version_params_for(diff_refs)
       line_code = change_position.line_code(project.repository)
       url = url_helpers.diffs_project_merge_request_url(project, merge_request, version_params.merge(anchor: line_code))
 
-      body << " [version #{version_index} of the diff](#{url})"
+      text_parts << "[version #{version_index} of the diff](#{url})"
     else
-      body << " version #{version_index} of the diff"
+      text_parts << "version #{version_index} of the diff"
     end
 
+    body = text_parts.join(' ')
     note_attributes = discussion.reply_attributes.merge(project: project, author: author, note: body)
+
     note = Note.create(note_attributes.merge(system: true))
     note.system_note_metadata = SystemNoteMetadata.new(action: 'outdated')
 
@@ -429,7 +453,7 @@ module SystemNoteService
   def cross_reference(noteable, mentioner, author)
     return if cross_reference_disallowed?(noteable, mentioner)
 
-    gfm_reference = mentioner.gfm_reference(noteable.project)
+    gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
     body = cross_reference_note_content(gfm_reference)
 
     if noteable.is_a?(ExternalIssue)
@@ -582,7 +606,7 @@ module SystemNoteService
       text = "#{cross_reference_note_prefix}%#{mentioner.to_reference(nil)}"
       notes.where('(note LIKE ? OR note LIKE ?)', text, text.capitalize)
     else
-      gfm_reference = mentioner.gfm_reference(noteable.project)
+      gfm_reference = mentioner.gfm_reference(noteable.project || noteable.group)
       text = cross_reference_note_content(gfm_reference)
       notes.where(note: [text, text.capitalize])
     end

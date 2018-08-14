@@ -12,51 +12,64 @@ describe('MRWidgetHeader', () => {
 
   afterEach(() => {
     vm.$destroy();
+    gon.relative_url_root = '';
   });
 
   describe('computed', () => {
     describe('shouldShowCommitsBehindText', () => {
       it('return true when there are divergedCommitsCount', () => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 12,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-          targetBranch: 'master',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 12,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
+            targetBranch: 'master',
+            statusPath: 'abc',
+          },
+        });
 
         expect(vm.shouldShowCommitsBehindText).toEqual(true);
       });
 
       it('returns false where there are no divergedComits count', () => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 0,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-          targetBranch: 'master',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 0,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
+            targetBranch: 'master',
+            statusPath: 'abc',
+          },
+        });
         expect(vm.shouldShowCommitsBehindText).toEqual(false);
       });
     });
 
     describe('commitsText', () => {
       it('returns singular when there is one commit', () => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 1,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-          targetBranch: 'master',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 1,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
+            targetBranch: 'master',
+            statusPath: 'abc',
+          },
+        });
 
         expect(vm.commitsText).toEqual('1 commit behind');
       });
 
       it('returns plural when there is more than one commit', () => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 2,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
-          targetBranch: 'master',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 2,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">Link</a>',
+            targetBranch: 'master',
+            statusPath: 'abc',
+          },
+        });
 
         expect(vm.commitsText).toEqual('2 commits behind');
       });
@@ -66,24 +79,27 @@ describe('MRWidgetHeader', () => {
   describe('template', () => {
     describe('common elements', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 12,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-          sourceBranchRemoved: false,
-          targetBranchPath: 'foo/bar/commits-path',
-          targetBranchTreePath: 'foo/bar/tree/path',
-          targetBranch: 'master',
-          isOpen: true,
-          emailPatchesPath: '/mr/email-patches',
-          plainDiffPath: '/mr/plainDiffPath',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 12,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+            sourceBranchRemoved: false,
+            targetBranchPath: 'foo/bar/commits-path',
+            targetBranchTreePath: 'foo/bar/tree/path',
+            targetBranch: 'master',
+            isOpen: true,
+            emailPatchesPath: '/mr/email-patches',
+            plainDiffPath: '/mr/plainDiffPath',
+            statusPath: 'abc',
+          },
+        });
       });
 
       it('renders source branch link', () => {
-        expect(
-          vm.$el.querySelector('.js-source-branch').innerHTML,
-        ).toEqual('<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>');
+        expect(vm.$el.querySelector('.js-source-branch').innerHTML).toEqual(
+          '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+        );
       });
 
       it('renders clipboard button', () => {
@@ -101,18 +117,24 @@ describe('MRWidgetHeader', () => {
       });
 
       beforeEach(() => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 12,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-          sourceBranchRemoved: false,
-          targetBranchPath: 'foo/bar/commits-path',
-          targetBranchTreePath: 'foo/bar/tree/path',
-          targetBranch: 'master',
-          isOpen: true,
-          emailPatchesPath: '/mr/email-patches',
-          plainDiffPath: '/mr/plainDiffPath',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            iid: 1,
+            divergedCommitsCount: 12,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+            sourceBranchRemoved: false,
+            targetBranchPath: 'foo/bar/commits-path',
+            targetBranchTreePath: 'foo/bar/tree/path',
+            targetBranch: 'master',
+            isOpen: true,
+            emailPatchesPath: '/mr/email-patches',
+            plainDiffPath: '/mr/plainDiffPath',
+            statusPath: 'abc',
+            sourceProjectFullPath: 'root/gitlab-ce',
+            targetProjectFullPath: 'gitlab-org/gitlab-ce',
+          },
+        });
       });
 
       it('renders checkout branch button with modal trigger', () => {
@@ -123,39 +145,82 @@ describe('MRWidgetHeader', () => {
         expect(button.getAttribute('data-toggle')).toEqual('modal');
       });
 
+      it('renders web ide button', () => {
+        const button = vm.$el.querySelector('.js-web-ide');
+
+        expect(button.textContent.trim()).toEqual('Open in Web IDE');
+        expect(button.getAttribute('href')).toEqual(
+          '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=gitlab-org%2Fgitlab-ce',
+        );
+      });
+
+      it('renders web ide button with blank query string if target & source project branch', done => {
+        vm.mr.targetProjectFullPath = 'root/gitlab-ce';
+
+        vm.$nextTick(() => {
+          const button = vm.$el.querySelector('.js-web-ide');
+
+          expect(button.textContent.trim()).toEqual('Open in Web IDE');
+          expect(button.getAttribute('href')).toEqual(
+            '/-/ide/project/root/gitlab-ce/merge_requests/1?target_project=',
+          );
+
+          done();
+        });
+      });
+
+      it('renders web ide button with relative URL', done => {
+        gon.relative_url_root = '/gitlab';
+        vm.mr.iid = 2;
+
+        vm.$nextTick(() => {
+          const button = vm.$el.querySelector('.js-web-ide');
+
+          expect(button.textContent.trim()).toEqual('Open in Web IDE');
+          expect(button.getAttribute('href')).toEqual(
+            '/gitlab/-/ide/project/root/gitlab-ce/merge_requests/2?target_project=gitlab-org%2Fgitlab-ce',
+          );
+
+          done();
+        });
+      });
+
       it('renders download dropdown with links', () => {
-        expect(
-          vm.$el.querySelector('.js-download-email-patches').textContent.trim(),
-        ).toEqual('Email patches');
+        expect(vm.$el.querySelector('.js-download-email-patches').textContent.trim()).toEqual(
+          'Email patches',
+        );
 
-        expect(
-          vm.$el.querySelector('.js-download-email-patches').getAttribute('href'),
-        ).toEqual('/mr/email-patches');
+        expect(vm.$el.querySelector('.js-download-email-patches').getAttribute('href')).toEqual(
+          '/mr/email-patches',
+        );
 
-        expect(
-          vm.$el.querySelector('.js-download-plain-diff').textContent.trim(),
-        ).toEqual('Plain diff');
+        expect(vm.$el.querySelector('.js-download-plain-diff').textContent.trim()).toEqual(
+          'Plain diff',
+        );
 
-        expect(
-          vm.$el.querySelector('.js-download-plain-diff').getAttribute('href'),
-        ).toEqual('/mr/plainDiffPath');
+        expect(vm.$el.querySelector('.js-download-plain-diff').getAttribute('href')).toEqual(
+          '/mr/plainDiffPath',
+        );
       });
     });
 
     describe('with a closed merge request', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 12,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-          sourceBranchRemoved: false,
-          targetBranchPath: 'foo/bar/commits-path',
-          targetBranchTreePath: 'foo/bar/tree/path',
-          targetBranch: 'master',
-          isOpen: false,
-          emailPatchesPath: '/mr/email-patches',
-          plainDiffPath: '/mr/plainDiffPath',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 12,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+            sourceBranchRemoved: false,
+            targetBranchPath: 'foo/bar/commits-path',
+            targetBranchTreePath: 'foo/bar/tree/path',
+            targetBranch: 'master',
+            isOpen: false,
+            emailPatchesPath: '/mr/email-patches',
+            plainDiffPath: '/mr/plainDiffPath',
+            statusPath: 'abc',
+          },
+        });
       });
 
       it('does not render checkout branch button with modal trigger', () => {
@@ -165,30 +230,29 @@ describe('MRWidgetHeader', () => {
       });
 
       it('does not render download dropdown with links', () => {
-        expect(
-          vm.$el.querySelector('.js-download-email-patches'),
-        ).toEqual(null);
+        expect(vm.$el.querySelector('.js-download-email-patches')).toEqual(null);
 
-        expect(
-          vm.$el.querySelector('.js-download-plain-diff'),
-        ).toEqual(null);
+        expect(vm.$el.querySelector('.js-download-plain-diff')).toEqual(null);
       });
     });
 
     describe('without diverged commits', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 0,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-          sourceBranchRemoved: false,
-          targetBranchPath: 'foo/bar/commits-path',
-          targetBranchTreePath: 'foo/bar/tree/path',
-          targetBranch: 'master',
-          isOpen: true,
-          emailPatchesPath: '/mr/email-patches',
-          plainDiffPath: '/mr/plainDiffPath',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 0,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+            sourceBranchRemoved: false,
+            targetBranchPath: 'foo/bar/commits-path',
+            targetBranchTreePath: 'foo/bar/tree/path',
+            targetBranch: 'master',
+            isOpen: true,
+            emailPatchesPath: '/mr/email-patches',
+            plainDiffPath: '/mr/plainDiffPath',
+            statusPath: 'abc',
+          },
+        });
       });
 
       it('does not render diverged commits info', () => {
@@ -198,22 +262,27 @@ describe('MRWidgetHeader', () => {
 
     describe('with diverged commits', () => {
       beforeEach(() => {
-        vm = mountComponent(Component, { mr: {
-          divergedCommitsCount: 12,
-          sourceBranch: 'mr-widget-refactor',
-          sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
-          sourceBranchRemoved: false,
-          targetBranchPath: 'foo/bar/commits-path',
-          targetBranchTreePath: 'foo/bar/tree/path',
-          targetBranch: 'master',
-          isOpen: true,
-          emailPatchesPath: '/mr/email-patches',
-          plainDiffPath: '/mr/plainDiffPath',
-        } });
+        vm = mountComponent(Component, {
+          mr: {
+            divergedCommitsCount: 12,
+            sourceBranch: 'mr-widget-refactor',
+            sourceBranchLink: '<a href="/foo/bar/mr-widget-refactor">mr-widget-refactor</a>',
+            sourceBranchRemoved: false,
+            targetBranchPath: 'foo/bar/commits-path',
+            targetBranchTreePath: 'foo/bar/tree/path',
+            targetBranch: 'master',
+            isOpen: true,
+            emailPatchesPath: '/mr/email-patches',
+            plainDiffPath: '/mr/plainDiffPath',
+            statusPath: 'abc',
+          },
+        });
       });
 
       it('renders diverged commits info', () => {
-        expect(vm.$el.querySelector('.diverged-commits-count').textContent.trim()).toEqual('(12 commits behind)');
+        expect(vm.$el.querySelector('.diverged-commits-count').textContent).toMatch(
+          /(mr-widget-refactor[\s\S]+?is 12 commits behind[\s\S]+?master)/,
+        );
       });
     });
   });

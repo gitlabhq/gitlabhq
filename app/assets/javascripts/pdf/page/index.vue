@@ -43,9 +43,9 @@
 
 <template>
   <canvas
-    class="pdf-page"
     ref="canvas"
     :data-page="number"
+    class="pdf-page"
   >
   </canvas>
 </template>

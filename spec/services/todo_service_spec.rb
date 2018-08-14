@@ -721,17 +721,18 @@ describe TodoService do
     end
 
     describe '#merge_request_build_failed' do
-      it 'creates a pending todo for the merge request author' do
-        service.merge_request_build_failed(mr_unassigned)
+      let(:merge_participants) { [mr_unassigned.author, admin] }
 
-        should_create_todo(user: author, target: mr_unassigned, action: Todo::BUILD_FAILED)
+      before do
+        allow(mr_unassigned).to receive(:merge_participants).and_return(merge_participants)
       end
 
-      it 'creates a pending todo for merge_user' do
-        mr_unassigned.update(merge_when_pipeline_succeeds: true, merge_user: admin)
+      it 'creates a pending todo for each merge_participant' do
         service.merge_request_build_failed(mr_unassigned)
 
-        should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::BUILD_FAILED)
+        merge_participants.each do |participant|
+          should_create_todo(user: participant, author: participant, target: mr_unassigned, action: Todo::BUILD_FAILED)
+        end
       end
     end
 
@@ -747,11 +748,19 @@ describe TodoService do
     end
 
     describe '#merge_request_became_unmergeable' do
-      it 'creates a pending todo for a merge_user' do
+      let(:merge_participants) { [admin, create(:user)] }
+
+      before do
+        allow(mr_unassigned).to receive(:merge_participants).and_return(merge_participants)
+      end
+
+      it 'creates a pending todo for each merge_participant' do
         mr_unassigned.update(merge_when_pipeline_succeeds: true, merge_user: admin)
         service.merge_request_became_unmergeable(mr_unassigned)
 
-        should_create_todo(user: admin, author: admin, target: mr_unassigned, action: Todo::UNMERGEABLE)
+        merge_participants.each do |participant|
+          should_create_todo(user: participant, author: participant, target: mr_unassigned, action: Todo::UNMERGEABLE)
+        end
       end
     end
 

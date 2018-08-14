@@ -11,7 +11,7 @@ class Admin::ImpersonationsController < Admin::ApplicationController
 
     session[:impersonator_id] = nil
 
-    redirect_to admin_user_path(original_user), status: 302
+    redirect_to admin_user_path(original_user), status: :found
   end
 
   private

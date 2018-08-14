@@ -15,7 +15,7 @@ describe MergeRequests::RebaseService do
   subject(:service) { described_class.new(project, user, {}) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe '#execute' do
@@ -36,9 +36,9 @@ describe MergeRequests::RebaseService do
       end
     end
 
-    context 'when unexpected error occurs', :disable_gitaly do
+    context 'when unexpected error occurs' do
       before do
-        allow(repository).to receive(:run_git!).and_raise('Something went wrong')
+        allow(repository).to receive(:gitaly_operation_client).and_raise('Something went wrong')
       end
 
       it 'saves a generic error message' do
@@ -53,9 +53,9 @@ describe MergeRequests::RebaseService do
       end
     end
 
-    context 'with git command failure', :disable_gitaly do
+    context 'with git command failure' do
       before do
-        allow(repository).to receive(:run_git!).and_raise(Gitlab::Git::Repository::GitError, 'Something went wrong')
+        allow(repository).to receive(:gitaly_operation_client).and_raise(Gitlab::Git::Repository::GitError, 'Something went wrong')
       end
 
       it 'saves a generic error message' do
@@ -71,7 +71,7 @@ describe MergeRequests::RebaseService do
     end
 
     context 'valid params' do
-      shared_examples 'successful rebase' do
+      describe 'successful rebase' do
         before do
           service.execute(merge_request)
         end
@@ -97,26 +97,8 @@ describe MergeRequests::RebaseService do
         end
       end
 
-      context 'when Gitaly rebase feature is enabled' do
-        it_behaves_like 'successful rebase'
-      end
-
-      context 'when Gitaly rebase feature is disabled', :disable_gitaly do
-        it_behaves_like 'successful rebase'
-      end
-
-      context 'git commands', :disable_gitaly do
-        it 'sets GL_REPOSITORY env variable when calling git commands' do
-          expect(repository).to receive(:popen).exactly(3)
-            .with(anything, anything, hash_including('GL_REPOSITORY'), anything)
-            .and_return(['', 0])
-
-          service.execute(merge_request)
-        end
-      end
-
       context 'fork' do
-        shared_examples 'successful fork rebase' do
+        describe 'successful fork rebase' do
           let(:forked_project) do
             fork_project(project, user, repository: true)
           end
@@ -139,14 +121,6 @@ describe MergeRequests::RebaseService do
             target_branch_sha = project.repository.commit(merge_request_from_fork.target_branch).sha
             expect(parent_sha).to eq(target_branch_sha)
           end
-        end
-
-        context 'when Gitaly rebase feature is enabled' do
-          it_behaves_like 'successful fork rebase'
-        end
-
-        context 'when Gitaly rebase feature is disabled', :disable_gitaly do
-          it_behaves_like 'successful fork rebase'
         end
       end
     end

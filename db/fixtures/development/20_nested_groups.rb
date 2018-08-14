@@ -1,30 +1,5 @@
 require './spec/support/sidekiq'
 
-def create_group_with_parents(user, full_path)
-  parent_path = nil
-  group = nil
-
-  until full_path.blank?
-    path, _, full_path = full_path.partition('/')
-
-    if parent_path
-      parent = Group.find_by_full_path(parent_path)
-
-      parent_path += '/'
-      parent_path += path
-
-      group = Groups::CreateService.new(user, path: path, parent_id: parent.id).execute
-    else
-      parent_path = path
-
-      group = Group.find_by_full_path(parent_path) ||
-        Groups::CreateService.new(user, path: path).execute
-    end
-  end
-
-  group
-end
-
 Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     flag = 'SEED_NESTED_GROUPS'
@@ -48,7 +23,8 @@ Sidekiq::Testing.inline! do
         full_path = url.sub('https://android.googlesource.com/', '')
         full_path = full_path.sub(/\.git\z/, '')
         full_path, _, project_path = full_path.rpartition('/')
-        group = Group.find_by_full_path(full_path) || create_group_with_parents(user, full_path)
+        group = Group.find_by_full_path(full_path) ||
+          Groups::NestedCreateService.new(user, group_path: full_path).execute
 
         params = {
           import_url: url,

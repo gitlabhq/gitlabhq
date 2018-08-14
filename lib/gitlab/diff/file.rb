@@ -27,8 +27,8 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
 
         # Ensure items are collected in the the batch
-        new_blob
-        old_blob
+        new_blob_lazy
+        old_blob_lazy
       end
 
       def position(position_marker, position_type: :text)
@@ -76,6 +76,16 @@ module Gitlab
         line_code(line) if line
       end
 
+      # Returns the raw diff content up to the given line index
+      def diff_hunk(diff_line)
+        diff_line_index = diff_line.index
+        # @@ (match) header is not kept if it's found in the top of the file,
+        # therefore we should keep an extra line on this scenario.
+        diff_line_index += 1 unless diff_lines.first.match?
+
+        diff_lines.select { |line| line.index <= diff_line_index }.map(&:text).join("\n")
+      end
+
       def old_sha
         diff_refs&.base_sha
       end
@@ -101,36 +111,32 @@ module Gitlab
       end
 
       def new_blob
-        return unless new_content_sha
-
-        Blob.lazy(repository.project, new_content_sha, file_path)
+        new_blob_lazy&.itself
       end
 
       def old_blob
-        return unless old_content_sha
-
-        Blob.lazy(repository.project, old_content_sha, old_path)
+        old_blob_lazy&.itself
       end
 
       def content_sha
         new_content_sha || old_content_sha
       end
 
-      # Use #itself to check the value wrapped by a BatchLoader instance, rather
-      # than if the BatchLoader instance itself is falsey.
       def blob
-        new_blob&.itself || old_blob&.itself
+        new_blob || old_blob
       end
 
       attr_writer :highlighted_diff_lines
 
       # Array of Gitlab::Diff::Line objects
       def diff_lines
-        @diff_lines ||= Gitlab::Diff::Parser.new.parse(raw_diff.each_line).to_a
+        @diff_lines ||=
+          Gitlab::Diff::Parser.new.parse(raw_diff.each_line, diff_file: self).to_a
       end
 
       def highlighted_diff_lines
-        @highlighted_diff_lines ||= Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
+        @highlighted_diff_lines ||=
+          Gitlab::Diff::Highlight.new(self, repository: self.repository).highlight
       end
 
       # Array[<Hash>] with right/left keys that contains Gitlab::Diff::Line objects which text is hightlighted
@@ -235,19 +241,42 @@ module Gitlab
         simple_viewer.is_a?(DiffViewer::Text) && (ignore_errors || simple_viewer.render_error.nil?)
       end
 
-      private
+      # This adds the bottom match line to the array if needed. It contains
+      # the data to load more context lines.
+      def diff_lines_for_serializer
+        lines = highlighted_diff_lines
 
-      # The blob instances are instances of BatchLoader, which means calling
-      # &. directly on them won't work. Object#try also won't work, because Blob
-      # doesn't inherit from Object, but from BasicObject (via SimpleDelegator).
-      def try_blobs(meth)
-        old_blob&.itself&.public_send(meth) || new_blob&.itself&.public_send(meth)
+        return if lines.empty?
+        return if blob.nil?
+
+        last_line = lines.last
+
+        if last_line.new_pos < total_blob_lines(blob) && !deleted_file?
+          match_line = Gitlab::Diff::Line.new("", 'match', nil, last_line.old_pos, last_line.new_pos)
+          lines.push(match_line)
+        end
+
+        lines
       end
 
-      # We can't use #compact for the same reason we can't use &., but calling
-      # #nil? explicitly does work because it is proxied to the blob itself.
+      private
+
+      def total_blob_lines(blob)
+        @total_lines ||= begin
+          line_count = blob.lines.size
+          line_count -= 1 if line_count > 0 && blob.lines.last.blank?
+          line_count
+        end
+      end
+
+      # We can't use Object#try because Blob doesn't inherit from Object, but
+      # from BasicObject (via SimpleDelegator).
+      def try_blobs(meth)
+        old_blob&.public_send(meth) || new_blob&.public_send(meth)
+      end
+
       def valid_blobs
-        [old_blob, new_blob].reject(&:nil?)
+        [old_blob, new_blob].compact
       end
 
       def text_position_properties(line)
@@ -260,6 +289,18 @@ module Gitlab
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id
+      end
+
+      def new_blob_lazy
+        return unless new_content_sha
+
+        Blob.lazy(repository.project, new_content_sha, file_path)
+      end
+
+      def old_blob_lazy
+        return unless old_content_sha
+
+        Blob.lazy(repository.project, old_content_sha, old_path)
       end
 
       def simple_viewer_class

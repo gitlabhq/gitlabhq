@@ -34,12 +34,12 @@ class ProfilesController < Profiles::ApplicationController
     redirect_to profile_personal_access_tokens_path
   end
 
-  def reset_rss_token
+  def reset_feed_token
     Users::UpdateService.new(current_user, user: @user).execute! do |user|
-      user.reset_rss_token!
+      user.reset_feed_token!
     end
 
-    flash[:notice] = "RSS token was successfully reset"
+    flash[:notice] = 'Feed token was successfully reset'
 
     redirect_to profile_personal_access_tokens_path
   end
@@ -51,15 +51,21 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def update_username
-    result = Users::UpdateService.new(current_user, user: @user, username: user_params[:username]).execute
+    result = Users::UpdateService.new(current_user, user: @user, username: username_param).execute
 
-    options = if result[:status] == :success
-                { notice: "Username successfully changed" }
-              else
-                { alert: "Username change failed - #{result[:message]}" }
-              end
+    respond_to do |format|
+      if result[:status] == :success
+        message = s_("Profiles|Username successfully changed")
 
-    redirect_back_or_default(default: { action: 'show' }, options: options)
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
+        format.json { render json: { message: message }, status: :ok }
+      else
+        message = s_("Profiles|Username change failed - %{message}") % { message: result[:message] }
+
+        format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: message }) }
+        format.json { render json: { message: message }, status: :unprocessable_entity }
+      end
+    end
   end
 
   private
@@ -70,6 +76,10 @@ class ProfilesController < Profiles::ApplicationController
 
   def authorize_change_username!
     return render_404 unless @user.can_change_username?
+  end
+
+  def username_param
+    @username_param ||= user_params.require(:username)
   end
 
   def user_params
@@ -83,15 +93,15 @@ class ProfilesController < Profiles::ApplicationController
       :linkedin,
       :location,
       :name,
-      :password,
-      :password_confirmation,
       :public_email,
       :skype,
       :twitter,
       :username,
       :website_url,
       :organization,
-      :preferred_language
+      :preferred_language,
+      :private_profile,
+      status: [:emoji, :message]
     )
   end
 end

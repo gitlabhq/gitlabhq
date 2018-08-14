@@ -35,7 +35,7 @@ export default class DropdownUtils {
 
     // Remove the symbol for filter
     if (value[0] === filterSymbol) {
-      symbol = value[0];
+      [symbol] = value;
       value = value.slice(1);
     }
 
@@ -162,7 +162,7 @@ export default class DropdownUtils {
 
   // Determines the full search query (visual tokens + input)
   static getSearchQuery(untilInput = false) {
-    const container = FilteredSearchContainer.container;
+    const { container } = FilteredSearchContainer;
     const tokens = [].slice.call(container.querySelectorAll('.tokens-container li'));
     const values = [];
 
@@ -220,7 +220,7 @@ export default class DropdownUtils {
   }
 
   static getInputSelectionPosition(input) {
-    const selectionStart = input.selectionStart;
+    const { selectionStart } = input;
     let inputValue = input.value;
     // Replace all spaces inside quote marks with underscores
     // (will continue to match entire string until an end quote is found if any)

@@ -4,8 +4,8 @@ require Rails.root.join('db', 'migrate', '20180201110056_add_foreign_keys_to_tod
 describe AddForeignKeysToTodos, :migration do
   let(:todos) { table(:todos) }
 
-  let(:project) { create(:project) }
-  let(:user) { create(:user) }
+  let(:project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
+  let(:user) { create(:user) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   context 'add foreign key on user_id' do
     let!(:todo_with_user) { create_todo(user_id: user.id) }
@@ -34,7 +34,7 @@ describe AddForeignKeysToTodos, :migration do
   end
 
   context 'add foreign key on note_id' do
-    let(:note) { create(:note) }
+    let(:note) { create(:note) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
     let!(:todo_with_note) { create_todo(note_id: note.id) }
     let!(:todo_with_invalid_note) { create_todo(note_id: 4711) }
     let!(:todo_without_note) { create_todo(note_id: nil) }

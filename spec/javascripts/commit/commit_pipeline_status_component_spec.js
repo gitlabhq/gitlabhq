@@ -75,10 +75,7 @@ describe('Commit pipeline status component', () => {
   describe('When polling data was not succesful', () => {
     beforeEach(() => {
       mock = new MockAdapter(axios);
-      mock.onGet('/dummy/endpoint').reply(() => {
-        const res = Promise.reject([502, { }]);
-        return res;
-      });
+      mock.onGet('/dummy/endpoint').reply(502, {});
       vm = new Component({
         props: {
           endpoint: '/dummy/endpoint',

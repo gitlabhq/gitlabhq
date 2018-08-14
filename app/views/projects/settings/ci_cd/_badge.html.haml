@@ -1,0 +1,32 @@
+%div{ class: badge.title.gsub(' ', '-') }
+  .col-lg-12
+    %h4
+      = badge.title.capitalize
+    .card
+      .card-header
+        %b
+          = badge.title.capitalize
+          &middot;
+        = badge.to_html
+        .float-right
+          = render 'shared/ref_switcher', destination: 'badges', align_right: true
+      .card-body
+        .row
+          .col-md-2.text-center
+            Markdown
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.md', badge.to_markdown)
+        .row
+          %hr
+        .row
+          .col-md-2.text-center
+            HTML
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.html', badge.to_html)
+        .row
+          %hr
+        .row
+          .col-md-2.text-center
+            AsciiDoc
+          .col-md-10.code.js-syntax-highlight
+            = highlight('.adoc', badge.to_asciidoc)

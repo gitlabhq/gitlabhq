@@ -3,6 +3,7 @@ require 'spec_helper'
 describe SystemNoteService do
   include Gitlab::Routing
   include RepoHelpers
+  include AssetsHelpers
 
   set(:group)    { create(:group) }
   set(:project)  { create(:project, :repository, group: group) }
@@ -104,6 +105,25 @@ describe SystemNoteService do
           end
         end
       end
+    end
+  end
+
+  describe '.tag_commit' do
+    let(:noteable) do
+      project.commit
+    end
+    let(:tag_name) { 'v1.2.3' }
+
+    subject { described_class.tag_commit(noteable, project, author, tag_name) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'tag' }
+    end
+
+    it 'sets the note text' do
+      link = "http://localhost/#{project.full_path}/tags/#{tag_name}"
+
+      expect(subject.note).to eq "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
     end
   end
 
@@ -743,7 +763,7 @@ describe SystemNoteService do
           expect(cross_reference(type)).to eq("Events for #{type.pluralize.humanize.downcase} are disabled.")
         end
 
-        it "blocks cross reference when #{type.underscore}_events is true" do
+        it "creates cross reference when #{type.underscore}_events is true" do
           jira_tracker.update("#{type}_events" => true)
 
           expect(cross_reference(type)).to eq(success_message)
@@ -769,6 +789,8 @@ describe SystemNoteService do
     end
 
     describe "new reference" do
+      let(:favicon_path) { "http://localhost/assets/#{find_asset('favicon.png').digest_path}" }
+
       before do
         allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
       end
@@ -789,7 +811,7 @@ describe SystemNoteService do
               object: {
                 url: project_commit_url(project, commit),
                 title: "GitLab: Mentioned on commit - #{commit.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -815,7 +837,7 @@ describe SystemNoteService do
               object: {
                 url: project_issue_url(project, issue),
                 title: "GitLab: Mentioned on issue - #{issue.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )
@@ -841,7 +863,7 @@ describe SystemNoteService do
               object: {
                 url: project_snippet_url(project, snippet),
                 title: "GitLab: Mentioned on snippet - #{snippet.title}",
-                icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+                icon: { title: "GitLab", url16x16: favicon_path },
                 status: { resolved: false }
               }
             )

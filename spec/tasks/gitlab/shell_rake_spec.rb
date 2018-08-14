@@ -7,11 +7,17 @@ describe 'gitlab:shell rake tasks' do
     stub_warn_user_is_not_gitlab
   end
 
+  after do
+    TestEnv.create_fake_git_hooks
+  end
+
   describe 'install task' do
     it 'invokes create_hooks task' do
       expect(Rake::Task['gitlab:shell:create_hooks']).to receive(:invoke)
 
-      storages = Gitlab.config.repositories.storages.values.map { |rs| rs['path'] }
+      storages = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        Gitlab.config.repositories.storages.values.map(&:legacy_disk_path)
+      end
       expect(Kernel).to receive(:system).with('bin/install', *storages).and_call_original
       expect(Kernel).to receive(:system).with('bin/compile').and_call_original
 

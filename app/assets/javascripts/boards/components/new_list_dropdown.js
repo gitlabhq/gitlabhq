@@ -1,5 +1,6 @@
-/* eslint-disable func-names, no-new, space-before-function-paren, one-var,
-   promise/catch-or-return */
+/* eslint-disable func-names, no-new, promise/catch-or-return */
+
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import _ from 'underscore';
 import CreateLabelDropdown from '../../create_label';
@@ -55,6 +56,7 @@ gl.issueBoards.newListDropdownInit = () => {
       filterable: true,
       selectable: true,
       multiSelect: true,
+      containerSelector: '.js-tab-container-labels .dropdown-page-one .dropdown-content',
       clicked (options) {
         const { e } = options;
         const label = options.selectedObj;

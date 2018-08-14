@@ -236,7 +236,7 @@ export class Foo {
 }
 ```
 
-On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized oustside of the constructor.
+On the other hand, if a class only needs to extend a third party/add event listeners in some specific cases, they should be initialized outside of the constructor.
 
 1. Prefer `.map`, `.reduce` or `.filter` over `.forEach`
 A forEach will most likely cause side effects, it will be mutating the array being iterated. Prefer using `.map`,
@@ -310,7 +310,7 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     }));
   ```
 
-1. Don not use a singleton for the service or the store
+1. Do not use a singleton for the service or the store
   ```javascript
     // bad
     class Store {
@@ -328,9 +328,11 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
       }
     }
   ```
+1. Use `.vue` for Vue templates. Do not use `%template` in HAML.
 
 #### Naming
-1. **Extensions**: Use `.vue` extension for Vue components.
+
+1. **Extensions**: Use `.vue` extension for Vue components. Do not use `.js` as file extension ([#34371]).
 1. **Reference Naming**: Use PascalCase for their instances:
   ```javascript
     // bad
@@ -363,6 +365,8 @@ Please check this [rules][eslint-plugin-vue-rules] for more documentation.
     // good
     <component my-prop="prop" />
   ```
+
+[#34371]: https://gitlab.com/gitlab-org/gitlab-ce/issues/34371
 
 #### Alignment
 1. Follow these alignment styles for the template method:
@@ -548,6 +552,57 @@ On those a default key should not be provided.
 1. Properties in a Vue Component:
   Check [order of properties in components rule][vue-order].
 
+#### `:key`
+When using `v-for` you need to provide a *unique* `:key` attribute for each item.
+
+1. If the elements of the array being iterated have an unique `id` it is advised to use it:
+    ```html
+      <div
+        v-for="item in items"
+        :key="item.id"
+      >
+        <!-- content -->
+      </div>
+    ```
+
+1. When the elements being iterated don't have a unique id, you can use the array index as the `:key` attribute
+    ```html
+      <div
+        v-for="(item, index) in items"
+        :key="index"
+      >
+        <!-- content -->
+      </div>
+    ```
+
+
+1. When using `v-for` with `template` and there is more than one child element, the `:key` values must be unique. It's advised to use `kebab-case` namespaces.
+    ```html
+      <template v-for="(item, index) in items">
+        <span :key="`span-${index}`"></span>
+        <button :key="`button-${index}`"></button>
+      </template>
+    ```
+
+1. When dealing with nested `v-for` use the same guidelines as above.
+      ```html
+        <div
+          v-for="item in items"
+          :key="item.id"
+        >
+          <span
+            v-for="element in array"
+            :key="element.id"
+          >
+            <!-- content -->
+          </span>
+        </div>
+      ```
+
+
+Useful links:
+1. [`key`](https://vuejs.org/v2/guide/list.html#key)
+1. [Vue Style Guide: Keyed v-for](https://vuejs.org/v2/style-guide/#Keyed-v-for-essential )
 #### Vue and Bootstrap
 
 1. Tooltips: Do not rely on `has-tooltip` class name for Vue components
@@ -577,7 +632,7 @@ On those a default key should not be provided.
     // good
     <span title="tooltip text">Foo</span>
 
-    $('span').tooltip('fixTitle');
+    $('span').tooltip('_fixTitle');
   ```
 
 ### The Javascript/Vue Accord

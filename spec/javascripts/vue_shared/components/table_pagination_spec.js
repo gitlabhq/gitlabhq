@@ -51,7 +51,7 @@ describe('Pagination component', () => {
 
         expect(
           component.$el.querySelector('.js-previous-button').classList.contains('disabled'),
-          ).toEqual(true);
+        ).toEqual(true);
 
         component.$el.querySelector('.js-previous-button a').click();
 

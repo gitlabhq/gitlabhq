@@ -70,7 +70,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
   end
 
   def todo_params
-    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state)
+    params.permit(:action_id, :author_id, :project_id, :type, :sort, :state, :group_id)
   end
 
   def redirect_out_of_range(todos)
@@ -86,7 +86,7 @@ class Dashboard::TodosController < Dashboard::ApplicationController
     out_of_range = todos.current_page > total_pages
 
     if out_of_range
-      redirect_to url_for(params.merge(page: total_pages, only_path: true))
+      redirect_to url_for(safe_params.merge(page: total_pages, only_path: true))
     end
 
     out_of_range

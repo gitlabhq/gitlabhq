@@ -1,8 +1,8 @@
-- @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- @content_class = "limit-container-width" unless fluid_layout
 - page_title s_("WikiClone|Git Access"), _("Wiki")
 
 .wiki-page-header.has-sidebar-toggle
-  %button.btn.btn-default.visible-xs.visible-sm.pull-right.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
+  %button.btn.btn-default.d-block.d-sm-block.d-md-none.float-right.sidebar-toggle.js-sidebar-wiki-toggle{ role: "button", type: "button" }
     = icon('angle-double-left')
 
   .git-access-header

@@ -1,167 +1,162 @@
 // Disabled to use the color map for creating color schemes
 // scss-lint:disable ColorVariable
 $colors: (
-  white_header_head_neutral   : #e1fad7,
-  white_line_head_neutral     : #effdec,
-  white_button_head_neutral   : #9adb84,
+  white-header-head-neutral   : #e1fad7,
+  white-line-head-neutral     : #effdec,
+  white-button-head-neutral   : #9adb84,
 
-  white_header_head_chosen    : #baf0a8,
-  white_line_head_chosen      : #e1fad7,
-  white_button_head_chosen    : #52c22d,
+  white-header-head-chosen    : #baf0a8,
+  white-line-head-chosen      : #e1fad7,
+  white-button-head-chosen    : #52c22d,
 
-  white_header_origin_neutral : #e0f0ff,
-  white_line_origin_neutral   : #f2f9ff,
-  white_button_origin_neutral : #87c2fa,
+  white-header-origin-neutral : #e0f0ff,
+  white-line-origin-neutral   : #f2f9ff,
+  white-button-origin-neutral : #87c2fa,
 
-  white_header_origin_chosen  : #add8ff,
-  white_line_origin_chosen    : #e0f0ff,
-  white_button_origin_chosen  : #268ced,
+  white-header-origin-chosen  : #add8ff,
+  white-line-origin-chosen    : #e0f0ff,
+  white-button-origin-chosen  : #268ced,
 
-  white_header_not_chosen     : #f0f0f0,
-  white_line_not_chosen       : $gray-light,
+  white-header-not-chosen     : #f0f0f0,
+  white-line-not-chosen       : $gray-light,
 
+  dark-header-head-neutral   : rgba(#3f3, .2),
+  dark-line-head-neutral     : rgba(#3f3, .1),
+  dark-button-head-neutral   : #40874f,
 
-  dark_header_head_neutral   : rgba(#3f3, .2),
-  dark_line_head_neutral     : rgba(#3f3, .1),
-  dark_button_head_neutral   : #40874f,
+  dark-header-head-chosen    : rgba(#3f3, .33),
+  dark-line-head-chosen      : rgba(#3f3, .2),
+  dark-button-head-chosen    : #258537,
 
-  dark_header_head_chosen    : rgba(#3f3, .33),
-  dark_line_head_chosen      : rgba(#3f3, .2),
-  dark_button_head_chosen    : #258537,
+  dark-header-origin-neutral : rgba(#2878c9, .4),
+  dark-line-origin-neutral   : rgba(#2878c9, .3),
+  dark-button-origin-neutral : #2a5c8c,
 
-  dark_header_origin_neutral : rgba(#2878c9, .4),
-  dark_line_origin_neutral   : rgba(#2878c9, .3),
-  dark_button_origin_neutral : #2a5c8c,
+  dark-header-origin-chosen  : rgba(#2878c9, .6),
+  dark-line-origin-chosen    : rgba(#2878c9, .4),
+  dark-button-origin-chosen  : #1d6cbf,
 
-  dark_header_origin_chosen  : rgba(#2878c9, .6),
-  dark_line_origin_chosen    : rgba(#2878c9, .4),
-  dark_button_origin_chosen  : #1d6cbf,
+  dark-header-not-chosen     : rgba(#fff, .25),
+  dark-line-not-chosen       : rgba(#fff, .1),
 
-  dark_header_not_chosen     : rgba(#fff, .25),
-  dark_line_not_chosen       : rgba(#fff, .1),
+  monokai-header-head-neutral   : rgba(#a6e22e, .25),
+  monokai-line-head-neutral     : rgba(#a6e22e, .1),
+  monokai-button-head-neutral   : #376b20,
 
+  monokai-header-head-chosen    : rgba(#a6e22e, .4),
+  monokai-line-head-chosen      : rgba(#a6e22e, .25),
+  monokai-button-head-chosen    : #39800d,
 
-  monokai_header_head_neutral   : rgba(#a6e22e, .25),
-  monokai_line_head_neutral     : rgba(#a6e22e, .1),
-  monokai_button_head_neutral   : #376b20,
+  monokai-header-origin-neutral : rgba(#60d9f1, .35),
+  monokai-line-origin-neutral   : rgba(#60d9f1, .15),
+  monokai-button-origin-neutral : #38848c,
 
-  monokai_header_head_chosen    : rgba(#a6e22e, .4),
-  monokai_line_head_chosen      : rgba(#a6e22e, .25),
-  monokai_button_head_chosen    : #39800d,
+  monokai-header-origin-chosen  : rgba(#60d9f1, .5),
+  monokai-line-origin-chosen    : rgba(#60d9f1, .35),
+  monokai-button-origin-chosen  : #3ea4b2,
 
-  monokai_header_origin_neutral : rgba(#60d9f1, .35),
-  monokai_line_origin_neutral   : rgba(#60d9f1, .15),
-  monokai_button_origin_neutral : #38848c,
+  monokai-header-not-chosen     : rgba(#76715d, .24),
+  monokai-line-not-chosen       : rgba(#76715d, .1),
 
-  monokai_header_origin_chosen  : rgba(#60d9f1, .5),
-  monokai_line_origin_chosen    : rgba(#60d9f1, .35),
-  monokai_button_origin_chosen  : #3ea4b2,
+  solarized-light-header-head-neutral   : rgba(#859900, .37),
+  solarized-light-line-head-neutral     : rgba(#859900, .2),
+  solarized-light-button-head-neutral   : #afb262,
 
-  monokai_header_not_chosen     : rgba(#76715d, .24),
-  monokai_line_not_chosen       : rgba(#76715d, .1),
+  solarized-light-header-head-chosen    : rgba(#859900, .5),
+  solarized-light-line-head-chosen      : rgba(#859900, .37),
+  solarized-light-button-head-chosen    : #94993d,
 
+  solarized-light-header-origin-neutral : rgba(#2878c9, .37),
+  solarized-light-line-origin-neutral   : rgba(#2878c9, .15),
+  solarized-light-button-origin-neutral : #60a1bf,
 
-  solarized_light_header_head_neutral   : rgba(#859900, .37),
-  solarized_light_line_head_neutral     : rgba(#859900, .2),
-  solarized_light_button_head_neutral   : #afb262,
+  solarized-light-header-origin-chosen  : rgba(#2878c9, .6),
+  solarized-light-line-origin-chosen    : rgba(#2878c9, .37),
+  solarized-light-button-origin-chosen  : #2482b2,
 
-  solarized_light_header_head_chosen    : rgba(#859900, .5),
-  solarized_light_line_head_chosen      : rgba(#859900, .37),
-  solarized_light_button_head_chosen    : #94993d,
+  solarized-light-header-not-chosen     : rgba(#839496, .37),
+  solarized-light-line-not-chosen       : rgba(#839496, .2),
 
-  solarized_light_header_origin_neutral : rgba(#2878c9, .37),
-  solarized_light_line_origin_neutral   : rgba(#2878c9, .15),
-  solarized_light_button_origin_neutral : #60a1bf,
+  solarized-dark-header-head-neutral   : rgba(#859900, .35),
+  solarized-dark-line-head-neutral     : rgba(#859900, .15),
+  solarized-dark-button-head-neutral   : #376b20,
 
-  solarized_light_header_origin_chosen  : rgba(#2878c9, .6),
-  solarized_light_line_origin_chosen    : rgba(#2878c9, .37),
-  solarized_light_button_origin_chosen  : #2482b2,
+  solarized-dark-header-head-chosen    : rgba(#859900, .5),
+  solarized-dark-line-head-chosen      : rgba(#859900, .35),
+  solarized-dark-button-head-chosen    : #39800d,
 
-  solarized_light_header_not_chosen     : rgba(#839496, .37),
-  solarized_light_line_not_chosen       : rgba(#839496, .2),
+  solarized-dark-header-origin-neutral : rgba(#2878c9, .35),
+  solarized-dark-line-origin-neutral   : rgba(#2878c9, .15),
+  solarized-dark-button-origin-neutral : #086799,
 
+  solarized-dark-header-origin-chosen  : rgba(#2878c9, .6),
+  solarized-dark-line-origin-chosen    : rgba(#2878c9, .35),
+  solarized-dark-button-origin-chosen  : #0082cc,
 
-  solarized_dark_header_head_neutral   : rgba(#859900, .35),
-  solarized_dark_line_head_neutral     : rgba(#859900, .15),
-  solarized_dark_button_head_neutral   : #376b20,
-
-  solarized_dark_header_head_chosen    : rgba(#859900, .5),
-  solarized_dark_line_head_chosen      : rgba(#859900, .35),
-  solarized_dark_button_head_chosen    : #39800d,
-
-  solarized_dark_header_origin_neutral : rgba(#2878c9, .35),
-  solarized_dark_line_origin_neutral   : rgba(#2878c9, .15),
-  solarized_dark_button_origin_neutral : #086799,
-
-  solarized_dark_header_origin_chosen  : rgba(#2878c9, .6),
-  solarized_dark_line_origin_chosen    : rgba(#2878c9, .35),
-  solarized_dark_button_origin_chosen  : #0082cc,
-
-  solarized_dark_header_not_chosen     : rgba(#839496, .25),
-  solarized_dark_line_not_chosen       : rgba(#839496, .15)
+  solarized-dark-header-not-chosen     : rgba(#839496, .25),
+  solarized-dark-line-not-chosen       : rgba(#839496, .15)
 );
 // scss-lint:enable ColorVariable
-
 
 @mixin color-scheme($color) {
   .header.line_content,
   .diff-line-num {
     &.origin {
-      background-color: map-get($colors, #{$color}_header_origin_neutral);
-      border-color: map-get($colors, #{$color}_header_origin_neutral);
+      background-color: map-get($colors, #{$color}-header-origin-neutral);
+      border-color: map-get($colors, #{$color}-header-origin-neutral);
 
       button {
-        background-color: map-get($colors, #{$color}_button_origin_neutral);
-        border-color: darken(map-get($colors, #{$color}_button_origin_neutral), 15);
+        background-color: map-get($colors, #{$color}-button-origin-neutral);
+        border-color: darken(map-get($colors, #{$color}-button-origin-neutral), 15);
       }
 
       &.selected {
-        background-color: map-get($colors, #{$color}_header_origin_chosen);
-        border-color: map-get($colors, #{$color}_header_origin_chosen);
+        background-color: map-get($colors, #{$color}-header-origin-chosen);
+        border-color: map-get($colors, #{$color}-header-origin-chosen);
 
         button {
-          background-color: map-get($colors, #{$color}_button_origin_chosen);
-          border-color: darken(map-get($colors, #{$color}_button_origin_chosen), 15);
+          background-color: map-get($colors, #{$color}-button-origin-chosen);
+          border-color: darken(map-get($colors, #{$color}-button-origin-chosen), 15);
         }
       }
 
       &.unselected {
-        background-color: map-get($colors, #{$color}_header_not_chosen);
-        border-color: map-get($colors, #{$color}_header_not_chosen);
+        background-color: map-get($colors, #{$color}-header-not-chosen);
+        border-color: map-get($colors, #{$color}-header-not-chosen);
 
         button {
-          background-color: lighten(map-get($colors, #{$color}_button_origin_neutral), 15);
-          border-color: map-get($colors, #{$color}_button_origin_neutral);
+          background-color: lighten(map-get($colors, #{$color}-button-origin-neutral), 15);
+          border-color: map-get($colors, #{$color}-button-origin-neutral);
         }
       }
     }
 
     &.head {
-      background-color: map-get($colors, #{$color}_header_head_neutral);
-      border-color: map-get($colors, #{$color}_header_head_neutral);
+      background-color: map-get($colors, #{$color}-header-head-neutral);
+      border-color: map-get($colors, #{$color}-header-head-neutral);
 
       button {
-        background-color: map-get($colors, #{$color}_button_head_neutral);
-        border-color: darken(map-get($colors, #{$color}_button_head_neutral), 15);
+        background-color: map-get($colors, #{$color}-button-head-neutral);
+        border-color: darken(map-get($colors, #{$color}-button-head-neutral), 15);
       }
 
       &.selected {
-        background-color: map-get($colors, #{$color}_header_head_chosen);
-        border-color: map-get($colors, #{$color}_header_head_chosen);
+        background-color: map-get($colors, #{$color}-header-head-chosen);
+        border-color: map-get($colors, #{$color}-header-head-chosen);
 
         button {
-          background-color: map-get($colors, #{$color}_button_head_chosen);
-          border-color: darken(map-get($colors, #{$color}_button_head_chosen), 15);
+          background-color: map-get($colors, #{$color}-button-head-chosen);
+          border-color: darken(map-get($colors, #{$color}-button-head-chosen), 15);
         }
       }
 
       &.unselected {
-        background-color: map-get($colors, #{$color}_header_not_chosen);
-        border-color: map-get($colors, #{$color}_header_not_chosen);
+        background-color: map-get($colors, #{$color}-header-not-chosen);
+        border-color: map-get($colors, #{$color}-header-not-chosen);
 
         button {
-          background-color: lighten(map-get($colors, #{$color}_button_head_neutral), 15);
-          border-color: map-get($colors, #{$color}_button_head_neutral);
+          background-color: lighten(map-get($colors, #{$color}-button-head-neutral), 15);
+          border-color: map-get($colors, #{$color}-button-head-neutral);
         }
       }
     }
@@ -169,31 +164,30 @@ $colors: (
 
   .line_content {
     &.origin {
-      background-color: map-get($colors, #{$color}_line_origin_neutral);
+      background-color: map-get($colors, #{$color}-line-origin-neutral);
 
       &.selected {
-        background-color: map-get($colors, #{$color}_line_origin_chosen);
+        background-color: map-get($colors, #{$color}-line-origin-chosen);
       }
 
       &.unselected {
-        background-color: map-get($colors, #{$color}_line_not_chosen);
+        background-color: map-get($colors, #{$color}-line-not-chosen);
       }
     }
 
     &.head {
-      background-color: map-get($colors, #{$color}_line_head_neutral);
+      background-color: map-get($colors, #{$color}-line-head-neutral);
 
       &.selected {
-        background-color: map-get($colors, #{$color}_line_head_chosen);
+        background-color: map-get($colors, #{$color}-line-head-chosen);
       }
 
       &.unselected {
-        background-color: map-get($colors, #{$color}_line_not_chosen);
+        background-color: map-get($colors, #{$color}-line-not-chosen);
       }
     }
   }
 }
-
 
 #conflicts {
 
@@ -210,11 +204,11 @@ $colors: (
   }
 
   .solarized-light {
-    @include color-scheme('solarized_light')
+    @include color-scheme('solarized-light')
   }
 
   .solarized-dark {
-    @include color-scheme('solarized_dark')
+    @include color-scheme('solarized-dark')
   }
 
   .diff-wrap-lines .line_content {
@@ -286,6 +280,14 @@ $colors: (
   }
 
   .resolve-conflicts-form {
-    padding-top: $gl-padding;
+    h4 {
+      margin-top: 0;
+    }
+
+    .resolve-info {
+      @media(max-width: map-get($grid-breakpoints, lg)-1) {
+        margin-bottom: $gl-padding;
+      }
+    }
   }
 }

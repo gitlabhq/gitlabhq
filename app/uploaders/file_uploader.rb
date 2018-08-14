@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This class breaks the actual CarrierWave concept.
 # Every uploader should use a base_dir that is model agnostic so we can build
 # back URLs from base_dir-relative paths saved in the `Upload` model.
@@ -9,13 +11,17 @@
 class FileUploader < GitlabUploader
   include UploaderHelper
   include RecordsUploads::Concern
+  include ObjectStorage::Concern
+  prepend ObjectStorage::Extension::RecordsUploads
 
   MARKDOWN_PATTERN = %r{\!?\[.*?\]\(/uploads/(?<secret>[0-9a-f]{32})/(?<file>.*?)\)}
-  DYNAMIC_PATH_PATTERN = %r{(?<secret>\h{32})/(?<identifier>.*)}
-
-  storage :file
+  DYNAMIC_PATH_PATTERN = %r{.*(?<secret>\h{32})/(?<identifier>.*)}
 
   after :remove, :prune_store_dir
+
+  # FileUploader do not run in a model transaction, so we can simply
+  # enqueue a job after the :store hook.
+  after :store, :schedule_background_upload
 
   def self.root
     File.join(options.storage_path, 'uploads')
@@ -28,8 +34,11 @@ class FileUploader < GitlabUploader
     )
   end
 
-  def self.base_dir(model)
-    model_path_segment(model)
+  def self.base_dir(model, store = Store::LOCAL)
+    decorated_model = model
+    decorated_model = Storage::HashedProject.new(model) if store == Store::REMOTE
+
+    model_path_segment(decorated_model)
   end
 
   # used in migrations and import/exports
@@ -47,19 +56,26 @@ class FileUploader < GitlabUploader
   #
   # Returns a String without a trailing slash
   def self.model_path_segment(model)
-    if model.hashed_storage?(:attachments)
-      model.disk_path
+    case model
+    when Storage::HashedProject then model.disk_path
     else
-      model.full_path
+      model.hashed_storage?(:attachments) ? model.disk_path : model.full_path
     end
-  end
-
-  def self.upload_path(secret, identifier)
-    File.join(secret, identifier)
   end
 
   def self.generate_secret
     SecureRandom.hex
+  end
+
+  def self.extract_dynamic_path(path)
+    DYNAMIC_PATH_PATTERN.match(path)
+  end
+
+  def upload_paths(identifier)
+    [
+      File.join(secret, identifier),
+      File.join(base_dir(Store::REMOTE), secret, identifier)
+    ]
   end
 
   attr_accessor :model
@@ -71,8 +87,17 @@ class FileUploader < GitlabUploader
     apply_context!(uploader_context)
   end
 
-  def base_dir
-    self.class.base_dir(@model)
+  def initialize_copy(from)
+    super
+
+    @secret = self.class.generate_secret
+    @upload = nil # calling record_upload would delete the old upload if set
+  end
+
+  # enforce the usage of Hashed storage when storing to
+  # remote store as the FileMover doesn't support OS
+  def base_dir(store = nil)
+    self.class.base_dir(@model, store || object_store)
   end
 
   # we don't need to know the actual path, an uploader instance should be
@@ -82,19 +107,23 @@ class FileUploader < GitlabUploader
   end
 
   def upload_path
-    self.class.upload_path(dynamic_segment, identifier)
+    if file_storage?
+      # Legacy path relative to project.full_path
+      File.join(dynamic_segment, identifier)
+    else
+      File.join(store_dir, identifier)
+    end
   end
 
-  def model_path_segment
-    self.class.model_path_segment(@model)
-  end
-
-  def store_dir
-    File.join(base_dir, dynamic_segment)
+  def store_dirs
+    {
+      Store::LOCAL => File.join(base_dir, dynamic_segment),
+      Store::REMOTE => File.join(base_dir(ObjectStorage::Store::REMOTE), dynamic_segment)
+    }
   end
 
   def markdown_link
-    markdown = "[#{markdown_name}](#{secure_url})"
+    markdown = +"[#{markdown_name}](#{secure_url})"
     markdown.prepend("!") if image_or_video? || dangerous?
     markdown
   end
@@ -107,10 +136,6 @@ class FileUploader < GitlabUploader
     }
   end
 
-  def filename
-    self.file.filename
-  end
-
   def upload=(value)
     super
 
@@ -118,7 +143,7 @@ class FileUploader < GitlabUploader
     return if apply_context!(value.uploader_context)
 
     # fallback to the regex based extraction
-    if matches = DYNAMIC_PATH_PATTERN.match(value.path)
+    if matches = self.class.extract_dynamic_path(value.path)
       @secret = matches[:secret]
       @identifier = matches[:identifier]
     end
@@ -126,6 +151,27 @@ class FileUploader < GitlabUploader
 
   def secret
     @secret ||= self.class.generate_secret
+  end
+
+  # return a new uploader with a file copy on another project
+  def self.copy_to(uploader, to_project)
+    moved = uploader.dup.tap do |u|
+      u.model = to_project
+    end
+
+    moved.copy_file(uploader.file)
+    moved
+  end
+
+  def copy_file(file)
+    to_path = if file_storage?
+                File.join(self.class.root, store_path)
+              else
+                store_path
+              end
+
+    self.file = file.copy_to(to_path)
+    record_upload # after_store is not triggered
   end
 
   private

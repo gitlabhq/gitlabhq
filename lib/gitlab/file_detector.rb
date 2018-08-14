@@ -14,6 +14,7 @@ module Gitlab
       avatar: /\Alogo\.(png|jpg|gif)\z/,
       issue_template: %r{\A\.gitlab/issue_templates/[^/]+\.md\z},
       merge_request_template: %r{\A\.gitlab/merge_request_templates/[^/]+\.md\z},
+      xcode_config: %r{\A[^/]*\.(xcodeproj|xcworkspace)(/.+)?\z},
 
       # Configuration files
       gitignore: '.gitignore',

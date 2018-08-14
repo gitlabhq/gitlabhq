@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # TODO:
 # Almost components in this class were copied from app/models/project_services/kubernetes_service.rb
@@ -32,7 +34,7 @@ module Ci
       kubeclient = build_kubeclient!
 
       kubeclient.get_secrets.as_json
-    rescue KubeException => err
+    rescue Kubeclient::HttpError => err
       raise err unless err.error_code == 404
 
       []

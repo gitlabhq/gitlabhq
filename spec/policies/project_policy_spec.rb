@@ -4,17 +4,18 @@ describe ProjectPolicy do
   set(:guest) { create(:user) }
   set(:reporter) { create(:user) }
   set(:developer) { create(:user) }
-  set(:master) { create(:user) }
+  set(:maintainer) { create(:user) }
   set(:owner) { create(:user) }
   set(:admin) { create(:admin) }
   let(:project) { create(:project, :public, namespace: owner.namespace) }
 
   let(:base_guest_permissions) do
     %i[
-      read_project read_board read_list read_wiki read_issue read_label
-      read_milestone read_project_snippet read_project_member
-      read_note create_project create_issue create_note
-      upload_file
+      read_project read_board read_list read_wiki read_issue
+      read_project_for_iids read_issue_iid read_merge_request_iid read_label
+      read_milestone read_project_snippet read_project_member read_note
+      create_project create_issue create_note upload_file create_merge_request_in
+      award_emoji
     ]
   end
 
@@ -35,15 +36,15 @@ describe ProjectPolicy do
     %i[
       admin_milestone admin_merge_request update_merge_request create_commit_status
       update_commit_status create_build update_build create_pipeline
-      update_pipeline create_merge_request create_wiki push_code
+      update_pipeline create_merge_request_from create_wiki push_code
       resolve_note create_container_image update_container_image
       create_environment create_deployment
     ]
   end
 
-  let(:base_master_permissions) do
+  let(:base_maintainer_permissions) do
     %i[
-      delete_protected_branch update_project_snippet update_environment
+      push_to_delete_protected_branch update_project_snippet update_environment
       update_deployment admin_project_snippet
       admin_project_member admin_note admin_wiki admin_project
       admin_commit_status admin_build admin_container_image
@@ -69,15 +70,15 @@ describe ProjectPolicy do
   # Used in EE specs
   let(:additional_guest_permissions)  { [] }
   let(:additional_reporter_permissions) { [] }
-  let(:additional_master_permissions) { [] }
+  let(:additional_maintainer_permissions) { [] }
 
   let(:guest_permissions) { base_guest_permissions + additional_guest_permissions }
   let(:reporter_permissions) { base_reporter_permissions + additional_reporter_permissions }
-  let(:master_permissions) { base_master_permissions + additional_master_permissions }
+  let(:maintainer_permissions) { base_maintainer_permissions + additional_maintainer_permissions }
 
   before do
     project.add_guest(guest)
-    project.add_master(master)
+    project.add_maintainer(maintainer)
     project.add_developer(developer)
     project.add_reporter(reporter)
   end
@@ -120,7 +121,7 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
       end
     end
 
@@ -131,7 +132,98 @@ describe ProjectPolicy do
         project.issues_enabled = false
         project.save!
 
-        expect_disallowed :read_issue, :create_issue, :update_issue, :admin_issue
+        expect_disallowed :read_issue, :read_issue_iid, :create_issue, :update_issue, :admin_issue
+      end
+    end
+  end
+
+  context 'merge requests feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(merge_requests_access_level: ProjectFeature::DISABLED)
+
+      mr_permissions = [:create_merge_request_from, :read_merge_request,
+                        :update_merge_request, :admin_merge_request,
+                        :create_merge_request_in]
+
+      expect_disallowed(*mr_permissions)
+    end
+  end
+
+  context 'builds feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(builds_access_level: ProjectFeature::DISABLED)
+
+      builds_permissions = [
+        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+        :create_build, :read_build, :update_build, :admin_build, :destroy_build,
+        :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
+        :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+      ]
+
+      expect_disallowed(*builds_permissions)
+    end
+  end
+
+  context 'repository feature' do
+    subject { described_class.new(owner, project) }
+
+    it 'disallows all permissions when the feature is disabled' do
+      project.project_feature.update(repository_access_level: ProjectFeature::DISABLED)
+
+      repository_permissions = [
+        :create_pipeline, :update_pipeline, :admin_pipeline, :destroy_pipeline,
+        :create_build, :read_build, :update_build, :admin_build, :destroy_build,
+        :create_pipeline_schedule, :read_pipeline_schedule, :update_pipeline_schedule, :admin_pipeline_schedule, :destroy_pipeline_schedule,
+        :create_environment, :read_environment, :update_environment, :admin_environment, :destroy_environment,
+        :create_cluster, :read_cluster, :update_cluster, :admin_cluster, :destroy_cluster,
+        :create_deployment, :read_deployment, :update_deployment, :admin_deployment, :destroy_deployment
+      ]
+
+      expect_disallowed(*repository_permissions)
+    end
+  end
+
+  shared_examples 'archived project policies' do
+    let(:feature_write_abilities) do
+      described_class::READONLY_FEATURES_WHEN_ARCHIVED.flat_map do |feature|
+        described_class.create_update_admin_destroy(feature)
+      end
+    end
+
+    let(:other_write_abilities) do
+      %i[
+        create_merge_request_in
+        create_merge_request_from
+        push_to_delete_protected_branch
+        push_code
+        request_access
+        upload_file
+        resolve_note
+        award_emoji
+      ]
+    end
+
+    context 'when the project is archived' do
+      before do
+        project.archived = true
+      end
+
+      it 'disables write actions on all relevant project features' do
+        expect_disallowed(*feature_write_abilities)
+      end
+
+      it 'disables some other important write actions' do
+        expect_disallowed(*other_write_abilities)
+      end
+
+      it 'does not disable other other abilities' do
+        expect_allowed(*(regular_abilities - feature_write_abilities - other_write_abilities))
       end
     end
   end
@@ -141,8 +233,8 @@ describe ProjectPolicy do
       context 'when a project has pending invites' do
         let(:group) { create(:group, :public) }
         let(:project) { create(:project, :public, namespace: group) }
-        let(:user_permissions) { [:create_project, :create_issue, :create_note, :upload_file] }
-        let(:anonymous_permissions) { guest_permissions - user_permissions }
+        let(:user_permissions) { [:create_merge_request_in, :create_project, :create_issue, :create_note, :upload_file, :award_emoji] }
+        let(:anonymous_permissions) { guest_permissions - user_permissions  }
 
         subject { described_class.new(nil, project) }
 
@@ -153,6 +245,10 @@ describe ProjectPolicy do
         it 'does not grant owner access' do
           expect_allowed(*anonymous_permissions)
           expect_disallowed(*user_permissions)
+        end
+
+        it_behaves_like 'archived project policies' do
+          let(:regular_abilities) { anonymous_permissions }
         end
       end
     end
@@ -180,8 +276,12 @@ describe ProjectPolicy do
         expect_disallowed(*reporter_public_build_permissions)
         expect_disallowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { guest_permissions }
       end
 
       context 'public builds enabled' do
@@ -224,11 +324,14 @@ describe ProjectPolicy do
       it do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
-        expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_disallowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { reporter_permissions }
       end
     end
   end
@@ -244,25 +347,33 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_disallowed(*master_permissions)
+        expect_disallowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { developer_permissions }
       end
     end
   end
 
-  shared_examples 'project policies as master' do
+  shared_examples 'project policies as maintainer' do
     context 'abilities for non-public projects' do
       let(:project) { create(:project, namespace: owner.namespace) }
 
-      subject { described_class.new(master, project) }
+      subject { described_class.new(maintainer, project) }
 
       it do
         expect_allowed(*guest_permissions)
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_disallowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { maintainer_permissions }
       end
     end
   end
@@ -278,8 +389,12 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_allowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_allowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { owner_permissions }
       end
     end
   end
@@ -295,8 +410,12 @@ describe ProjectPolicy do
         expect_allowed(*reporter_permissions)
         expect_disallowed(*team_member_reporter_permissions)
         expect_allowed(*developer_permissions)
-        expect_allowed(*master_permissions)
+        expect_allowed(*maintainer_permissions)
         expect_allowed(*owner_permissions)
+      end
+
+      it_behaves_like 'archived project policies' do
+        let(:regular_abilities) { owner_permissions }
       end
     end
   end
@@ -305,7 +424,7 @@ describe ProjectPolicy do
   it_behaves_like 'project policies as guest'
   it_behaves_like 'project policies as reporter'
   it_behaves_like 'project policies as developer'
-  it_behaves_like 'project policies as master'
+  it_behaves_like 'project policies as maintainer'
   it_behaves_like 'project policies as owner'
   it_behaves_like 'project policies as admin'
 
@@ -319,11 +438,11 @@ describe ProjectPolicy do
         :merge_request,
         target_project: target_project,
         source_project: project,
-        allow_maintainer_to_push: true
+        allow_collaboration: true
       )
     end
     let(:maintainer_abilities) do
-      %w(create_build update_build create_pipeline update_pipeline)
+      %w(create_build create_pipeline)
     end
 
     subject { described_class.new(user, project) }

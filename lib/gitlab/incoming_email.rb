@@ -57,7 +57,7 @@ module Gitlab
 
         regex = Regexp.escape(wildcard_address)
         regex = regex.sub(Regexp.escape(WILDCARD_PLACEHOLDER), '(.+)')
-        Regexp.new(regex).freeze
+        Regexp.new(/\A#{regex}\z/).freeze
       end
     end
   end

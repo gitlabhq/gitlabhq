@@ -45,44 +45,44 @@
   <div class="stats">
     <item-stats-value
       v-if="isGroup"
-      css-class="number-subgroups"
-      icon-name="folder"
       :title="__('Subgroups')"
       :value="item.subgroupCount"
+      css-class="number-subgroups"
+      icon-name="folder"
     />
     <item-stats-value
       v-if="isGroup"
-      css-class="number-projects"
-      icon-name="bookmark"
       :title="__('Projects')"
       :value="item.projectCount"
+      css-class="number-projects"
+      icon-name="bookmark"
     />
     <item-stats-value
       v-if="isGroup"
-      css-class="number-users"
-      icon-name="users"
       :title="__('Members')"
       :value="item.memberCount"
+      css-class="number-users"
+      icon-name="users"
     />
     <item-stats-value
       v-if="isProject"
+      :value="item.starCount"
       css-class="project-stars"
       icon-name="star"
-      :value="item.starCount"
     />
     <item-stats-value
-      css-class="item-visibility"
-      tooltip-placement="left"
       :icon-name="visibilityIcon"
       :title="visibilityTooltip"
+      css-class="item-visibility"
+      tooltip-placement="left"
     />
     <div
-      class="last-updated"
       v-if="isProject"
+      class="last-updated"
     >
       <time-ago-tooltip
-        tooltip-placement="bottom"
         :time="item.updatedAt"
+        tooltip-placement="bottom"
       />
     </div>
   </div>

@@ -21,119 +21,7 @@ module Gitlab
       attr_accessor :name, :path, :size, :data, :mode, :id, :commit_id, :loaded_size, :binary
 
       class << self
-        def find(repository, sha, path)
-          Gitlab::GitalyClient.migrate(:project_raw_show) do |is_enabled|
-            if is_enabled
-              find_by_gitaly(repository, sha, path)
-            else
-              find_by_rugged(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
-            end
-          end
-        end
-
-        def raw(repository, sha)
-          Gitlab::GitalyClient.migrate(:git_blob_raw) do |is_enabled|
-            if is_enabled
-              repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
-            else
-              rugged_raw(repository, sha, limit: MAX_DATA_DISPLAY_SIZE)
-            end
-          end
-        end
-
-        # Returns an array of Blob instances, specified in blob_references as
-        # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
-        # full blob contents are returned. If blob_size_limit >= 0 then each blob will
-        # contain no more than limit bytes in its data attribute.
-        #
-        # Keep in mind that this method may allocate a lot of memory. It is up
-        # to the caller to limit the number of blobs and blob_size_limit.
-        #
-        # Gitaly migration issue: https://gitlab.com/gitlab-org/gitaly/issues/798
-        def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
-          Gitlab::GitalyClient.migrate(:list_blobs_by_sha_path) do |is_enabled|
-            if is_enabled
-              repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
-            else
-              blob_references.map do |sha, path|
-                find_by_rugged(repository, sha, path, limit: blob_size_limit)
-              end
-            end
-          end
-        end
-
-        # Find LFS blobs given an array of sha ids
-        # Returns array of Gitlab::Git::Blob
-        # Does not guarantee blob data will be set
-        def batch_lfs_pointers(repository, blob_ids)
-          repository.gitaly_migrate(:batch_lfs_pointers) do |is_enabled|
-            if is_enabled
-              repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
-            else
-              blob_ids.lazy
-                      .select { |sha| possible_lfs_blob?(repository, sha) }
-                      .map { |sha| rugged_raw(repository, sha, limit: LFS_POINTER_MAX_SIZE) }
-                      .select(&:lfs_pointer?)
-                      .force
-            end
-          end
-        end
-
-        def binary?(data)
-          EncodingHelper.detect_libgit2_binary?(data)
-        end
-
-        def size_could_be_lfs?(size)
-          size.between?(LFS_POINTER_MIN_SIZE, LFS_POINTER_MAX_SIZE)
-        end
-
-        private
-
-        # Recursive search of blob id by path
-        #
-        # Ex.
-        #   blog/            # oid: 1a
-        #     app/           # oid: 2a
-        #       models/      # oid: 3a
-        #       file.rb      # oid: 4a
-        #
-        #
-        # Blob.find_entry_by_path(repo, '1a', 'app/file.rb') # => '4a'
-        #
-        def find_entry_by_path(repository, root_id, path)
-          root_tree = repository.lookup(root_id)
-          # Strip leading slashes
-          path[%r{^/*}] = ''
-          path_arr = path.split('/')
-
-          entry = root_tree.find do |entry|
-            entry[:name] == path_arr[0]
-          end
-
-          return nil unless entry
-
-          if path_arr.size > 1
-            return nil unless entry[:type] == :tree
-
-            path_arr.shift
-            find_entry_by_path(repository, entry[:oid], path_arr.join('/'))
-          else
-            [:blob, :commit].include?(entry[:type]) ? entry : nil
-          end
-        end
-
-        def submodule_blob(blob_entry, path, sha)
-          new(
-            id: blob_entry[:oid],
-            name: blob_entry[:name],
-            size: 0,
-            data: '',
-            path: path,
-            commit_id: sha
-          )
-        end
-
-        def find_by_gitaly(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
+        def find(repository, sha, path, limit: MAX_DATA_DISPLAY_SIZE)
           return unless path
 
           path = path.sub(%r{\A/*}, '')
@@ -154,82 +42,50 @@ module Gitlab
 
           case entry.type
           when :COMMIT
-            new(
-              id: entry.oid,
-              name: name,
-              size: 0,
-              data: '',
-              path: path,
-              commit_id: sha
-            )
+            new(id: entry.oid, name: name, size: 0, data: '', path: path, commit_id: sha)
           when :BLOB
-            new(
-              id: entry.oid,
-              name: name,
-              size: entry.size,
-              data: entry.data.dup,
-              mode: entry.mode.to_s(8),
-              path: path,
-              commit_id: sha,
-              binary: binary?(entry.data)
-            )
+            new(id: entry.oid, name: name, size: entry.size, data: entry.data.dup, mode: entry.mode.to_s(8),
+                path: path, commit_id: sha, binary: binary?(entry.data))
           end
         end
 
-        def find_by_rugged(repository, sha, path, limit:)
-          return unless path
+        def raw(repository, sha)
+          repository.gitaly_blob_client.get_blob(oid: sha, limit: MAX_DATA_DISPLAY_SIZE)
+        end
 
-          rugged_commit = repository.lookup(sha)
-          root_tree = rugged_commit.tree
+        # Returns an array of Blob instances, specified in blob_references as
+        # [[commit_sha, path], [commit_sha, path], ...]. If blob_size_limit < 0 then the
+        # full blob contents are returned. If blob_size_limit >= 0 then each blob will
+        # contain no more than limit bytes in its data attribute.
+        #
+        # Keep in mind that this method may allocate a lot of memory. It is up
+        # to the caller to limit the number of blobs and blob_size_limit.
+        #
+        def batch(repository, blob_references, blob_size_limit: MAX_DATA_DISPLAY_SIZE)
+          repository.gitaly_blob_client.get_blobs(blob_references, blob_size_limit).to_a
+        end
 
-          blob_entry = find_entry_by_path(repository, root_tree.oid, path)
+        # Returns an array of Blob instances just with the metadata, that means
+        # the data attribute has no content.
+        def batch_metadata(repository, blob_references)
+          batch(repository, blob_references, blob_size_limit: 0)
+        end
 
-          return nil unless blob_entry
-
-          if blob_entry[:type] == :commit
-            submodule_blob(blob_entry, path, sha)
-          else
-            blob = repository.lookup(blob_entry[:oid])
-
-            if blob
-              new(
-                id: blob.oid,
-                name: blob_entry[:name],
-                size: blob.size,
-                # Rugged::Blob#content is expensive; don't call it if we don't have to.
-                data: limit.zero? ? '' : blob.content(limit),
-                mode: blob_entry[:filemode].to_s(8),
-                path: path,
-                commit_id: sha,
-                binary: blob.binary?
-              )
-            end
+        # Find LFS blobs given an array of sha ids
+        # Returns array of Gitlab::Git::Blob
+        # Does not guarantee blob data will be set
+        def batch_lfs_pointers(repository, blob_ids)
+          repository.wrapped_gitaly_errors do
+            repository.gitaly_blob_client.batch_lfs_pointers(blob_ids.to_a)
           end
-        rescue Rugged::ReferenceError
-          nil
         end
 
-        def rugged_raw(repository, sha, limit:)
-          blob = repository.lookup(sha)
-
-          return unless blob.is_a?(Rugged::Blob)
-
-          new(
-            id: blob.oid,
-            size: blob.size,
-            data: blob.content(limit),
-            binary: blob.binary?
-          )
+        def binary?(data)
+          EncodingHelper.detect_libgit2_binary?(data)
         end
 
-        # Efficient lookup to determine if object size
-        # and type make it a possible LFS blob without loading
-        # blob content into memory with repository.lookup(sha)
-        def possible_lfs_blob?(repository, sha)
-          object_header = repository.rugged.read_header(sha)
-
-          object_header[:type] == :blob &&
-            size_could_be_lfs?(object_header[:len])
+        def size_could_be_lfs?(size)
+          size.between?(LFS_POINTER_MIN_SIZE, LFS_POINTER_MAX_SIZE)
         end
       end
 
@@ -262,16 +118,7 @@ module Gitlab
 
         return if @loaded_all_data
 
-        @data = Gitlab::GitalyClient.migrate(:git_blob_load_all_data) do |is_enabled|
-          begin
-            if is_enabled
-              repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
-            else
-              repository.lookup(id).content
-            end
-          end
-        end
-
+        @data = repository.gitaly_blob_client.get_blob(oid: id, limit: -1).data
         @loaded_all_data = true
         @loaded_size = @data.bytesize
       end

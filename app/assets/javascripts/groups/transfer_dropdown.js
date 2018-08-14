@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class TransferDropdown {
   constructor() {
     this.groupDropdown = $('.js-groups-dropdown');

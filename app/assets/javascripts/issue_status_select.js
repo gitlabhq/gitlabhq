@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default function issueStatusSelect() {
   $('.js-issue-status').each((i, el) => {
     const fieldName = $(el).data('fieldName');

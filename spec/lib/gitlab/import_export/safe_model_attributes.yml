@@ -15,6 +15,7 @@ Issue:
 - updated_by_id
 - confidential
 - closed_at
+- closed_by_id
 - due_date
 - moved_to_id
 - lock_version
@@ -164,6 +165,7 @@ MergeRequest:
 - approvals_before_merge
 - rebase_commit_sha
 - time_estimate
+- squash
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
@@ -203,6 +205,19 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
+MergeRequest::Metrics:
+- id
+- created_at
+- updated_at
+- merge_request_id
+- pipeline_id
+- latest_closed_by_id
+- latest_closed_at
+- merged_by_id
+- merged_at
+- latest_build_started_at
+- latest_build_finished_at
+- first_deployed_to_production_at
 Ci::Pipeline:
 - id
 - project_id
@@ -227,10 +242,12 @@ Ci::Pipeline:
 - config_source
 - failure_reason
 - protected
+- iid
 Ci::Stage:
 - id
 - name
 - status
+- position
 - lock_version
 - project_id
 - pipeline_id
@@ -265,7 +282,9 @@ CommitStatus:
 - target_url
 - description
 - artifacts_file
+- artifacts_file_store
 - artifacts_metadata
+- artifacts_metadata_store
 - erased_by_id
 - erased_at
 - artifacts_expire_at
@@ -387,6 +406,7 @@ Service:
 - default
 - wiki_page_events
 - confidential_issues_events
+- confidential_note_events
 ProjectHook:
 - id
 - url
@@ -407,6 +427,7 @@ ProjectHook:
 - token
 - group_id
 - confidential_issues_events
+- confidential_note_events
 - repository_update_events
 ProtectedBranch:
 - id
@@ -458,6 +479,7 @@ Project:
 - merge_requests_ff_only_enabled
 - merge_requests_rebase_enabled
 - jobs_cache_index
+- pages_https_only
 Author:
 - name
 ProjectFeature:
@@ -518,6 +540,7 @@ ProjectAutoDevops:
 - id
 - enabled
 - domain
+- deploy_strategy
 - project_id
 - created_at
 - updated_at
@@ -531,12 +554,6 @@ ProjectCustomAttribute:
 - project_id
 - key
 - value
-LfsFileLock:
-- id
-- path
-- user_id
-- project_id
-- created_at
 Badge:
 - id
 - link_url
@@ -546,3 +563,5 @@ Badge:
 - created_at
 - updated_at
 - type
+ProjectCiCdSetting:
+- group_runners_enabled

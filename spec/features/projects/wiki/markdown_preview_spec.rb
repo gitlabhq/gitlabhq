@@ -1,24 +1,26 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User previews markdown changes', :js do
+describe 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
-  let(:project) { create(:project, namespace: user.namespace) }
+  let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
   let(:wiki_content) do
     <<-HEREDOC
 [regular link](regular)
 [relative link 1](../relative)
 [relative link 2](./relative)
 [relative link 3](./e/f/relative)
+[spaced link](title with spaces)
     HEREDOC
   end
 
-  background do
-    project.add_master(user)
+  before do
+    project.add_maintainer(user)
 
     sign_in(user)
 
     visit project_path(project)
     find('.shortcuts-wiki').click
+    click_link "Create your first page"
   end
 
   context "while creating a new wiki page" do
@@ -41,6 +43,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -63,6 +66,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -85,6 +89,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
   end
@@ -118,6 +123,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a/b/c/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -135,6 +141,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
 
@@ -152,7 +159,31 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/relative\">relative link 1</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/relative\">relative link 2</a>")
         expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/a-page/b-page/c-page/e/f/relative\">relative link 3</a>")
+        expect(page.html).to include("<a href=\"/#{project.full_path}/wikis/title%20with%20spaces\">spaced link</a>")
       end
     end
+  end
+
+  it "does not linkify double brackets inside code blocks as expected" do
+    click_link 'New page'
+    page.within '#modal-new-wiki' do
+      fill_in :new_wiki_path, with: 'linkify_test'
+      click_button 'Create page'
+    end
+
+    page.within '.wiki-form' do
+      fill_in :wiki_content, with: <<-HEREDOC
+        `[[do_not_linkify]]`
+        ```
+        [[also_do_not_linkify]]
+        ```
+      HEREDOC
+      click_on "Preview"
+    end
+
+    expect(page).to have_content("do_not_linkify")
+
+    expect(page.html).to include('[[do_not_linkify]]')
+    expect(page.html).to include('[[also_do_not_linkify]]')
   end
 end

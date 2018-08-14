@@ -21,52 +21,30 @@ module Gitlab
         raise "Unsupported action: #{action}" unless ALLOWED_GIT_HTTP_ACTIONS.include?(action.to_s)
 
         project = repository.project
-        repo_path = repository.path_to_repo
-        params = {
+
+        {
           GL_ID: Gitlab::GlId.gl_id(user),
           GL_REPOSITORY: Gitlab::GlRepository.gl_repository(project, is_wiki),
           GL_USERNAME: user&.username,
-          RepoPath: repo_path,
-          ShowAllRefs: show_all_refs
+          ShowAllRefs: show_all_refs,
+          Repository: repository.gitaly_repository.to_h,
+          RepoPath: 'ignored but not allowed to be empty in gitlab-workhorse',
+          GitalyServer: {
+            address: Gitlab::GitalyClient.address(project.repository_storage),
+            token: Gitlab::GitalyClient.token(project.repository_storage)
+          }
         }
-        server = {
-          address: Gitlab::GitalyClient.address(project.repository_storage),
-          token: Gitlab::GitalyClient.token(project.repository_storage)
-        }
-        params[:Repository] = repository.gitaly_repository.to_h
-        params[:GitalyServer] = server
-
-        params
-      end
-
-      def lfs_upload_ok(oid, size)
-        {
-          StoreLFSPath: LfsObjectUploader.workhorse_upload_path,
-          LfsOid: oid,
-          LfsSize: size
-        }
-      end
-
-      def artifact_upload_ok
-        { TempPath: JobArtifactUploader.workhorse_upload_path }
       end
 
       def send_git_blob(repository, blob)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_raw_show)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'GetBlobRequest' => {
-                       repository: repository.gitaly_repository.to_h,
-                       oid: blob.id,
-                       limit: -1
-                     }
-                   }
-                 else
-                   {
-                     'RepoPath' => repository.path_to_repo,
-                     'BlobId' => blob.id
-                   }
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetBlobRequest' => {
+            repository: repository.gitaly_repository.to_h,
+            oid: blob.id,
+            limit: -1
+          }
+        }
 
         [
           SEND_DATA_HEADER,
@@ -74,18 +52,13 @@ module Gitlab
         ]
       end
 
-      def send_git_archive(repository, ref:, format:)
+      def send_git_archive(repository, ref:, format:, append_sha:)
         format ||= 'tar.gz'
         format.downcase!
-        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format)
+        params = repository.archive_metadata(ref, Gitlab.config.gitlab.repository_downloads_path, format, append_sha: append_sha)
         raise "Repository or ref not found" if params.empty?
 
-        if Gitlab::GitalyClient.feature_enabled?(:workhorse_archive)
-          params.merge!(
-            'GitalyServer' => gitaly_server_hash(repository),
-            'GitalyRepository' => repository.gitaly_repository.to_h
-          )
-        end
+        params['GitalyServer'] = gitaly_server_hash(repository)
 
         # If present DisableCache must be a Boolean. Otherwise workhorse ignores it.
         params['DisableCache'] = true if git_archive_cache_disabled?
@@ -96,17 +69,27 @@ module Gitlab
         ]
       end
 
+      def send_git_snapshot(repository)
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'GetSnapshotRequest' => Gitaly::GetSnapshotRequest.new(
+            repository: repository.gitaly_repository
+          ).to_json
+        }
+
+        [
+          SEND_DATA_HEADER,
+          "git-snapshot:#{encode(params)}"
+        ]
+      end
+
       def send_git_diff(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_diff)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawDiffRequest' => Gitaly::RawDiffRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawDiffRequest' => Gitaly::RawDiffRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
@@ -115,16 +98,12 @@ module Gitlab
       end
 
       def send_git_patch(repository, diff_refs)
-        params = if Gitlab::GitalyClient.feature_enabled?(:workhorse_send_git_patch)
-                   {
-                     'GitalyServer' => gitaly_server_hash(repository),
-                     'RawPatchRequest' => Gitaly::RawPatchRequest.new(
-                       gitaly_diff_or_patch_hash(repository, diff_refs)
-                     ).to_json
-                   }
-                 else
-                   workhorse_diff_or_patch_hash(repository, diff_refs)
-                 end
+        params = {
+          'GitalyServer' => gitaly_server_hash(repository),
+          'RawPatchRequest' => Gitaly::RawPatchRequest.new(
+            gitaly_diff_or_patch_hash(repository, diff_refs)
+          ).to_json
+        }
 
         [
           SEND_DATA_HEADER,
@@ -234,14 +213,6 @@ module Gitlab
         {
           address: Gitlab::GitalyClient.address(repository.project.repository_storage),
           token: Gitlab::GitalyClient.token(repository.project.repository_storage)
-        }
-      end
-
-      def workhorse_diff_or_patch_hash(repository, diff_refs)
-        {
-          'RepoPath'  => repository.path_to_repo,
-          'ShaFrom'   => diff_refs.base_sha,
-          'ShaTo'     => diff_refs.head_sha
         }
       end
 

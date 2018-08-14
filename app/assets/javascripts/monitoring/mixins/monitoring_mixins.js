@@ -52,14 +52,22 @@ const mixins = {
     positionFlag() {
       const timeSeries = this.timeSeries[0];
       const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate, 1);
+
       this.currentData = timeSeries.values[hoveredDataIndex];
-      this.currentDataIndex = hoveredDataIndex;
       this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
-      if (this.currentXCoordinate > (this.graphWidth - 200)) {
-        this.currentFlagPosition = this.currentXCoordinate - 103;
-      } else {
-        this.currentFlagPosition = this.currentXCoordinate;
-      }
+
+      this.currentCoordinates = this.timeSeries.map((series) => {
+        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate, 1);
+        const currentData = series.values[currentDataIndex];
+        const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
+        const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
+
+        return {
+          currentX,
+          currentY,
+          currentDataIndex,
+        };
+      });
 
       if (this.hoverData.currentDeployXPos) {
         this.showFlag = false;

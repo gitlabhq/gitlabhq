@@ -14,7 +14,7 @@ module Gitlab
         end
 
         def can_handle?
-          !incoming_email_token.nil?
+          !incoming_email_token.nil? && !incoming_email_token.include?("+") && !mail_key.include?(Gitlab::IncomingEmail::UNSUBSCRIBE_SUFFIX)
         end
 
         def execute
@@ -36,10 +36,6 @@ module Gitlab
           @project ||= Project.find_by_full_path(project_path)
         end
 
-        def metrics_params
-          super.merge(project: project&.full_path)
-        end
-
         private
 
         def create_issue
@@ -47,7 +43,7 @@ module Gitlab
             project,
             author,
             title:       mail.subject,
-            description: message
+            description: message_including_reply
           ).execute
         end
       end

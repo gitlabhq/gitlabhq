@@ -1,0 +1,27 @@
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-background-settings'), html: { class: 'fieldset-form' } do |f|
+  = form_errors(@application_setting)
+
+  %fieldset
+    %p
+      These settings require a
+      = link_to 'restart', help_page_path('administration/restart_gitlab')
+      to take effect.
+    .form-group
+      .form-check
+        = f.check_box :sidekiq_throttling_enabled, class: 'form-check-input'
+        = f.label :sidekiq_throttling_enabled, class: 'form-check-label' do
+          Enable Sidekiq Job Throttling
+        .form-text.text-muted
+          Limit the amount of resources slow running jobs are assigned.
+    .form-group
+      = f.label :sidekiq_throttling_queues, 'Sidekiq queues to throttle', class: 'label-bold'
+      = f.select :sidekiq_throttling_queues, sidekiq_queue_options_for_select, { include_hidden: false }, multiple: true, class: 'select2 select-wide', data: { field: 'sidekiq_throttling_queues' }
+      .form-text.text-muted
+        Choose which queues you wish to throttle.
+    .form-group
+      = f.label :sidekiq_throttling_factor, 'Throttling Factor', class: 'label-bold'
+      = f.number_field :sidekiq_throttling_factor, class: 'form-control', min: '0.01', max: '0.99', step: '0.01'
+      .form-text.text-muted
+        The factor by which the queues should be throttled. A value between 0.0 and 1.0, exclusive.
+
+  = f.submit 'Save changes', class: "btn btn-success"

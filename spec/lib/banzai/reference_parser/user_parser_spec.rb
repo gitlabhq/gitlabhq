@@ -6,7 +6,7 @@ describe Banzai::ReferenceParser::UserParser do
   let(:group) { create(:group) }
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, group: group, creator: user) }
-  subject { described_class.new(project, user) }
+  subject { described_class.new(Banzai::RenderContext.new(project, user)) }
   let(:link) { empty_html_link }
 
   describe '#referenced_by' do

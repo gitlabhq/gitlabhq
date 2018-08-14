@@ -30,13 +30,14 @@ describe Gitlab::HealthChecks::GitalyCheck do
 
   describe '#metrics' do
     subject { described_class.metrics }
+    let(:server) { double(storage: 'default', read_writeable?: up) }
 
     before do
-      expect(Gitlab::GitalyClient::HealthCheckService).to receive(:new).and_return(gitaly_check)
+      allow(Gitaly::Server).to receive(:new).and_return(server)
     end
 
     context 'Gitaly server is up' do
-      let(:gitaly_check) { double(check: { success: true }) }
+      let(:up) { true }
 
       it 'provides metrics' do
         expect(subject).to all(have_attributes(labels: { shard: 'default' }))
@@ -46,7 +47,7 @@ describe Gitlab::HealthChecks::GitalyCheck do
     end
 
     context 'Gitaly server is down' do
-      let(:gitaly_check) { double(check: { success: false, message: 'Connection refused' }) }
+      let(:up) { false }
 
       it 'provides metrics' do
         expect(subject).to include(an_object_having_attributes(name: 'gitaly_health_check_success', value: 0))

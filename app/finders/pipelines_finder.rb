@@ -1,19 +1,25 @@
 class PipelinesFinder
-  attr_reader :project, :pipelines, :params
+  attr_reader :project, :pipelines, :params, :current_user
 
   ALLOWED_INDEXED_COLUMNS = %w[id status ref user_id].freeze
 
-  def initialize(project, params = {})
+  def initialize(project, current_user, params = {})
     @project = project
+    @current_user = current_user
     @pipelines = project.pipelines
     @params = params
   end
 
   def execute
+    unless Ability.allowed?(current_user, :read_pipeline, project)
+      return Ci::Pipeline.none
+    end
+
     items = pipelines
     items = by_scope(items)
     items = by_status(items)
     items = by_ref(items)
+    items = by_sha(items)
     items = by_name(items)
     items = by_username(items)
     items = by_yaml_errors(items)
@@ -64,6 +70,14 @@ class PipelinesFinder
   def by_ref(items)
     if params[:ref].present?
       items.where(ref: params[:ref])
+    else
+      items
+    end
+  end
+
+  def by_sha(items)
+    if params[:sha].present?
+      items.where(sha: params[:sha])
     else
       items
     end

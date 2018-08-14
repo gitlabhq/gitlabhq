@@ -10,17 +10,23 @@ The variables can be overwritten and they take precedence over each other in
 this order:
 
 1. [Trigger variables][triggers] or [scheduled pipeline variables](../../user/project/pipelines/schedules.md#making-use-of-scheduled-pipeline-variables) (take precedence over all)
-1. Project-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
-1. Group-level [secret variables](#secret-variables) or [protected secret variables](#protected-secret-variables)
-1. YAML-defined [job-level variables](../yaml/README.md#job-variables)
+1. Project-level [variables](#variables) or [protected variables](#protected-variables)
+1. Group-level [variables](#variables) or [protected variables](#protected-variables)
+1. YAML-defined [job-level variables](../yaml/README.md#variables)
 1. YAML-defined [global variables](../yaml/README.md#variables)
 1. [Deployment variables](#deployment-variables)
 1. [Predefined variables](#predefined-variables-environment-variables) (are the
    lowest in the chain)
 
-For example, if you define `API_TOKEN=secure` as a secret variable and
+For example, if you define `API_TOKEN=secure` as a project variable and
 `API_TOKEN=yaml` in your `.gitlab-ci.yml`, the `API_TOKEN` will take the value
-`secure` as the secret variables are higher in the chain.
+`secure` as the project variables are higher in the chain.
+
+## Unsupported variables
+
+There are cases where some variables cannot be used in the context of a
+`.gitlab-ci.yml` definition (for example under `script`). Read more
+about which variables are [not supported](where_variables_can_be_used.md).
 
 ## Predefined variables (Environment variables)
 
@@ -36,13 +42,20 @@ future GitLab releases.**
 
 | Variable                        | GitLab | Runner | Description |
 |-------------------------------- |--------|--------|-------------|
+| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
 | **CI**                          | all    | 0.4    | Mark that job is executed in CI environment |
 | **CI_COMMIT_REF_NAME**          | 9.0    | all    | The branch or tag name for which project is built |
 | **CI_COMMIT_REF_SLUG**          | 9.0    | all    | `$CI_COMMIT_REF_NAME` lowercased, shortened to 63 bytes, and with everything except `0-9` and `a-z` replaced with `-`. No leading / trailing `-`. Use in URLs, host names and domain names. |
 | **CI_COMMIT_SHA**               | 9.0    | all    | The commit revision for which project is built |
+| **CI_COMMIT_BEFORE_SHA**        | 11.2   | all    | The previous latest commit present on a branch before a push request. |
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
+| **CI_COMMIT_MESSAGE**           | 10.8   | all    | The full commit message. |
+| **CI_COMMIT_TITLE**             | 10.8   | all    | The title of the commit - the full first line of the message |
+| **CI_COMMIT_DESCRIPTION**       | 10.8   | all    | The description of the commit: the message without first line, if the title is shorter than 100 characters; full message in other case. |
 | **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **CI_DEPLOY_USER**              | 10.8   | all    | Authentication username of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
+| **CI_DEPLOY_PASSWORD**          | 10.8   | all    | Authentication password of the [GitLab Deploy Token][gitlab-deploy-token], only present if the Project has one related.|
 | **CI_DISPOSABLE_ENVIRONMENT**   | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
@@ -51,7 +64,8 @@ future GitLab releases.**
 | **CI_JOB_MANUAL**               | 8.12   | all    | The flag to indicate that job was manually started |
 | **CI_JOB_NAME**                 | 9.0    | 0.5    | The name of the job as defined in `.gitlab-ci.yml` |
 | **CI_JOB_STAGE**                | 9.0    | 0.5    | The name of the stage as defined in `.gitlab-ci.yml` |
-| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the GitLab Container Registry |
+| **CI_JOB_TOKEN**                | 9.0    | 1.2    | Token used for authenticating with the [GitLab Container Registry][registry] and downloading [dependent repositories][dependent-repositories] |
+| **CI_JOB_URL**                  | 11.1   | 0.5    | Job details URL |
 | **CI_REPOSITORY_URL**           | 9.0    | all    | The URL to clone the Git repository |
 | **CI_RUNNER_DESCRIPTION**       | 8.10   | 0.5    | The description of the runner as saved in GitLab |
 | **CI_RUNNER_ID**                | 8.10   | 0.5    | The unique id of runner being used |
@@ -60,14 +74,16 @@ future GitLab releases.**
 | **CI_RUNNER_REVISION**          | all    | 10.6   | GitLab Runner revision that is executing the current job |
 | **CI_RUNNER_EXECUTABLE_ARCH**   | all    | 10.6   | The OS/architecture of the GitLab Runner executable (note that this is not necessarily the same as the environment of the executor) |
 | **CI_PIPELINE_ID**              | 8.10   | 0.5    | The unique id of the current pipeline that GitLab CI uses internally |
+| **CI_PIPELINE_IID**             | 11.0   | all    | The unique id of the current pipeline scoped to project |
 | **CI_PIPELINE_TRIGGERED**       | all    | all    | The flag to indicate that job was [triggered] |
-| **CI_PIPELINE_SOURCE**          | 10.0   | all    | The source for this pipeline, one of: push, web, trigger, schedule, api, external. Pipelines created before 9.5 will have unknown as source |
+| **CI_PIPELINE_SOURCE**          | 10.0   | all    | Indicates how the pipeline was triggered. Possible options are: `push`, `web`, `trigger`, `schedule`, `api`, and `pipeline`. For pipelines created before GitLab 9.5, this will show as `unknown` |
 | **CI_PROJECT_DIR**              | all    | all    | The full path where the repository is cloned and where the job is run |
 | **CI_PROJECT_ID**               | all    | all    | The unique id of the current project that GitLab CI uses internally |
 | **CI_PROJECT_NAME**             | 8.10   | 0.5    | The project name that is currently being built (actually it is project folder name) |
 | **CI_PROJECT_NAMESPACE**        | 8.10   | 0.5    | The project namespace (username or groupname) that is currently being built |
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
+| **CI_PIPELINE_URL**             | 11.1   | 0.5    | Pipeline details URL |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
 | **CI_PROJECT_VISIBILITY**       | 10.3   | all    | The project visibility (internal, private, public) |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
@@ -79,11 +95,10 @@ future GitLab releases.**
 | **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
 | **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
 | **CI_SHARED_ENVIRONMENT**       | all    | 10.1   | Marks that the job is executed in a shared environment (something that is persisted across CI invocations like `shell` or `ssh` executor). If the environment is shared, it is set to true, otherwise it is not defined at all. |
-| **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
 | **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
-| **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_EMAIL**           | 8.12   | all    | The email of the user who started the job |
+| **GITLAB_USER_ID**              | 8.12   | all    | The id of the user who started the job |
 | **GITLAB_USER_LOGIN**           | 10.0   | all    | The login username of the user who started the job |
 | **GITLAB_USER_NAME**            | 10.0   | all    | The real name of the user who started the job |
 | **RESTORE_CACHE_ATTEMPTS**      | 8.15   | 1.9    | Number of attempts to restore the cache running a job |
@@ -104,6 +119,7 @@ future GitLab releases.**
 | `CI_BUILD_ID`         | `CI_JOB_ID`             |
 | `CI_BUILD_REF`        | `CI_COMMIT_SHA`         |
 | `CI_BUILD_TAG`        | `CI_COMMIT_TAG`         |
+| `CI_BUILD_BEFORE_SHA` | `CI_COMMIT_BEFORE_SHA`  |
 | `CI_BUILD_REF_NAME`   | `CI_COMMIT_REF_NAME`    |
 | `CI_BUILD_REF_SLUG`   | `CI_COMMIT_REF_SLUG`    |
 | `CI_BUILD_NAME`       | `CI_JOB_NAME`           |
@@ -153,49 +169,49 @@ script:
   - 'eval $LS_CMD'  # will execute 'ls -al $TMP_DIR'
 ```
 
-## Secret variables
+## Variables
 
 NOTE: **Note:**
-Group-level secret variables were added in GitLab 9.4.
+Group-level variables were added in GitLab 9.4.
 
 CAUTION: **Important:**
-Be aware that secret variables are not masked, and their values can be shown
+Be aware that variables are not masked, and their values can be shown
 in the job logs if explicitly asked to do so. If your project is public or
 internal, you can set the pipelines private from your [project's Pipelines
 settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
-Follow the discussion in issue [#13784][ce-13784] for masking the secret variables.
+Follow the discussion in issue [#13784][ce-13784] for masking the variables.
 
-GitLab CI allows you to define per-project or per-group secret variables
-that are set in the pipeline environment. The secret variables are stored out of
+GitLab CI allows you to define per-project or per-group variables
+that are set in the pipeline environment. The variables are stored out of
 the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
 making them available during a pipeline run. It's the recommended method to
 use for storing things like passwords, SSH keys and credentials.
 
-Project-level secret variables can be added by going to your project's
-**Settings > CI/CD**, then finding the section called **Secret variables**.
+Project-level variables can be added by going to your project's
+**Settings > CI/CD**, then finding the section called **Variables**.
 
-Likewise, group-level secret variables can be added by going to your group's
-**Settings > CI/CD**, then finding the section called **Secret variables**.
+Likewise, group-level variables can be added by going to your group's
+**Settings > CI/CD**, then finding the section called **Variables**.
 Any variables of [subgroups] will be inherited recursively.
 
-![Secret variables](img/secret_variables.png)
+![Variables](img/secret_variables.png)
 
 Once you set them, they will be available for all subsequent pipelines. You can also
-[protect your variables](#protected-secret-variables).
+[protect your variables](#protected-variables).
 
-### Protected secret variables
+### Protected variables
 
 >**Notes:**
 This feature requires GitLab 9.3 or higher.
 
-Secret variables could be protected. Whenever a secret variable is
+Variables could be protected. Whenever a variable is
 protected, it would only be securely passed to pipelines running on the
 [protected branches] or [protected tags]. The other pipelines would not get any
 protected variables.
 
 Protected variables can be added by going to your project's
 **Settings > CI/CD**, then finding the section called
-**Secret variables**, and check "Protected".
+**Variables**, and check "Protected".
 
 Once you set them, they will be available for all subsequent pipelines.
 
@@ -210,8 +226,8 @@ are set in the build environment. These variables are only defined for
 [deployment jobs](../environments.md). Please consult the documentation of
 the project services that you are using to learn which variables they define.
 
-An example project service that defines deployment variables is
-[Kubernetes Service](../../user/project/integrations/kubernetes.md#deployment-variables).
+An example project service that defines deployment variables is the
+[Kubernetes integration](../../user/project/clusters/index.md#deployment-variables).
 
 ## Debug tracing
 
@@ -219,7 +235,7 @@ An example project service that defines deployment variables is
 
 CAUTION: **Warning:**
 Enabling debug tracing can have severe security implications. The
-output **will** contain the content of all your secret variables and any other
+output **will** contain the content of all your variables and any other
 secrets! The output **will** be uploaded to the GitLab server and made visible
 in job traces!
 
@@ -341,6 +357,8 @@ Running on runner-8a2f473d-project-1796893-concurrent-0 via runner-8a2f473d-mach
 ++ CI_PROJECT_URL=https://example.com/gitlab-examples/ci-debug-trace
 ++ export CI_PIPELINE_ID=52666
 ++ CI_PIPELINE_ID=52666
+++ export CI_PIPELINE_IID=123
+++ CI_PIPELINE_IID=123
 ++ export CI_RUNNER_ID=1337
 ++ CI_RUNNER_ID=1337
 ++ export CI_RUNNER_DESCRIPTION=shared-runners-manager-1.example.com
@@ -405,7 +423,7 @@ job_name:
 ```
 
 You can also list all environment variables with the `export` command,
-but be aware that this will also expose the values of all the secret variables
+but be aware that this will also expose the values of all the variables
 you set, in the job log:
 
 ```yaml
@@ -428,6 +446,7 @@ export CI_JOB_MANUAL="true"
 export CI_JOB_TRIGGERED="true"
 export CI_JOB_TOKEN="abcde-1234ABCD5678ef"
 export CI_PIPELINE_ID="1000"
+export CI_PIPELINE_IID="10"
 export CI_PROJECT_ID="34"
 export CI_PROJECT_DIR="/builds/gitlab-org/gitlab-ce"
 export CI_PROJECT_NAME="gitlab-ce"
@@ -449,8 +468,94 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
-[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
-[eep]: https://about.gitlab.com/products/ "Available only in GitLab Premium"
+## Variables expressions
+
+> Variables expressions were added in GitLab 10.7.
+
+It is possible to use variables expressions with only / except policies in
+`.gitlab-ci.yml`. By using this approach you can limit what jobs are going to
+be created within a pipeline after pushing a code to GitLab.
+
+This is particularly useful in combination with variables and triggered
+pipeline variables.
+
+```yaml
+deploy:
+  script: cap staging deploy
+  environment: staging
+  only:
+    variables:
+      - $RELEASE == "staging"
+      - $STAGING
+```
+
+Each expression provided is going to be evaluated before creating a pipeline.
+
+If any of the conditions in `variables` evaluates to truth when using `only`,
+a new job is going to be created. If any of the expressions evaluates to truth
+when `except` is being used, a job is not going to be created.
+
+This follows usual rules for [`only` / `except` policies][builds-policies].
+
+### Supported syntax
+
+Below you can find supported syntax reference:
+
+1. Equality matching using a string
+
+    > Example: `$VARIABLE == "some value"`
+
+    You can use equality operator `==` to compare a variable content to a
+    string. We support both, double quotes and single quotes to define a string
+    value, so both `$VARIABLE == "some value"` and `$VARIABLE == 'some value'`
+    are supported. `"some value" == $VARIABLE` is correct too.
+
+1. Checking for an undefined value
+
+    > Example: `$VARIABLE == null`
+
+    It sometimes happens that you want to check whether a variable is defined
+    or not. To do that, you can compare a variable to `null` keyword, like
+    `$VARIABLE == null`. This expression is going to evaluate to truth if
+    variable is not defined.
+
+1. Checking for an empty variable
+
+    > Example: `$VARIABLE == ""`
+
+    If you want to check whether a variable is defined, but is empty, you can
+    simply compare it against an empty string, like `$VAR == ''`.
+
+1. Comparing two variables
+
+    > Example: `$VARIABLE_1 == $VARIABLE_2`
+
+    It is possible to compare two variables. This is going to compare values
+    of these variables.
+
+1. Variable presence check
+
+    > Example: `$STAGING`
+
+    If you only want to create a job when there is some variable present,
+    which means that it is defined and non-empty, you can simply use
+    variable name as an expression, like `$STAGING`. If `$STAGING` variable
+    is defined, and is non empty, expression will evaluate to truth.
+    `$STAGING` value needs to a string, with length higher than zero.
+    Variable that contains only whitespace characters is not an empty variable.
+
+1. Pattern matching  _(added in 11.0)_
+
+    > Example: `$VARIABLE =~ /^content.*/`
+
+    It is possible perform pattern matching against a variable and regular
+    expression. Expression like this evaluates to truth if matches are found.
+
+    Pattern matching is case-sensitive by default. Use `i` flag modifier, like
+    `/pattern/i` to make a pattern case-insensitive.
+
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI variables"
+[eep]: https://about.gitlab.com/pricing/ "Available only in GitLab Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md
 [protected tags]: ../../user/project/protected_tags.md
@@ -459,3 +564,7 @@ export CI_REGISTRY_PASSWORD="longalfanumstring"
 [triggered]: ../triggers/README.md
 [triggers]: ../triggers/README.md#pass-job-variables-to-a-trigger
 [subgroups]: ../../user/group/subgroups/index.md
+[builds-policies]: ../yaml/README.md#only-and-except-complex
+[gitlab-deploy-token]: ../../user/project/deploy_tokens/index.md#gitlab-deploy-token
+[registry]: ../../user/project/container_registry.md
+[dependent-repositories]: ../../user/project/new_ci_build_permissions_model.md#dependent-repositories

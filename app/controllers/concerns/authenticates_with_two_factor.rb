@@ -10,7 +10,7 @@ module AuthenticatesWithTwoFactor
     # This action comes from DeviseController, but because we call `sign_in`
     # manually, not skipping this action would cause a "You are already signed
     # in." error message to be shown upon successful login.
-    skip_before_action :require_no_authentication, only: [:create]
+    skip_before_action :require_no_authentication, only: [:create], raise: false
   end
 
   # Store the user's ID in the session for later retrieval and render the
@@ -23,6 +23,9 @@ module AuthenticatesWithTwoFactor
   #
   # Returns nil
   def prompt_for_two_factor(user)
+    # Set @user for Devise views
+    @user = user # rubocop:disable Gitlab/ModuleWithInstanceVariables
+
     return locked_user_redirect(user) unless user.can?(:log_in)
 
     session[:otp_user_id] = user.id
@@ -57,7 +60,7 @@ module AuthenticatesWithTwoFactor
 
       remember_me(user) if user_params[:remember_me] == '1'
       user.save!
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=OTP")
@@ -74,7 +77,7 @@ module AuthenticatesWithTwoFactor
       session.delete(:challenge)
 
       remember_me(user) if user_params[:remember_me] == '1'
-      sign_in(user)
+      sign_in(user, message: :two_factor_authenticated)
     else
       user.increment_failed_attempts!
       Gitlab::AppLogger.info("Failed Login: user=#{user.username} ip=#{request.remote_ip} method=U2F")

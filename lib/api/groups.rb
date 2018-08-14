@@ -32,23 +32,24 @@ module API
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
         optional :search, type: String, desc: 'Search for a specific group'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
-        optional :order_by, type: String, values: %w[name path], default: 'name', desc: 'Order by name or path'
+        optional :order_by, type: String, values: %w[name path id], default: 'name', desc: 'Order by name, path or id'
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
         use :pagination
       end
 
-      def find_groups(params)
-        find_params = {
-          all_available: params[:all_available],
-          custom_attributes: params[:custom_attributes],
-          owned: params[:owned]
-        }
-        find_params[:parent] = find_group!(params[:id]) if params[:id]
+      def find_groups(params, parent_id = nil)
+        find_params = params.slice(:all_available, :custom_attributes, :owned, :min_access_level)
+        find_params[:parent] = find_group!(parent_id) if parent_id
+        find_params[:all_available] =
+          find_params.fetch(:all_available, current_user&.full_private_access?)
 
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
-        groups = groups.reorder(params[:order_by] => params[:sort])
+        order_options = { params[:order_by] => params[:sort] }
+        order_options["id"] ||= "asc"
+        groups = groups.reorder(order_options)
 
         groups
       end
@@ -56,6 +57,8 @@ module API
       def find_group_projects(params)
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = projects.with_issues_available_for_user(current_user) if params[:with_issues_enabled]
+        projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
         projects = reorder_projects(projects)
         paginate(projects)
       end
@@ -85,7 +88,7 @@ module API
         use :with_custom_attributes
       end
       get do
-        groups = find_groups(params)
+        groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end
 
@@ -148,12 +151,13 @@ module API
       end
       params do
         use :with_custom_attributes
+        optional :with_projects, type: Boolean, default: true, desc: 'Omit project details'
       end
       get ":id" do
         group = find_group!(params[:id])
 
         options = {
-          with: Entities::GroupDetail,
+          with: params[:with_projects] ? Entities::GroupDetail : Entities::Group,
           current_user: current_user
         }
 
@@ -167,9 +171,12 @@ module API
         group = find_group!(params[:id])
         authorize! :admin_group, group
 
+        Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/46285')
         destroy_conditionally!(group) do |group|
-          ::Groups::DestroyService.new(group, current_user).execute
+          ::Groups::DestroyService.new(group, current_user).async_execute
         end
+
+        accepted!
       end
 
       desc 'Get a list of projects in this group.' do
@@ -188,6 +195,8 @@ module API
                           desc: 'Return only the ID, URL, name, and path of each project'
         optional :owned, type: Boolean, default: false, desc: 'Limit by owned by authenticated user'
         optional :starred, type: Boolean, default: false, desc: 'Limit by starred status'
+        optional :with_issues_enabled, type: Boolean, default: false, desc: 'Limit by enabled issues feature'
+        optional :with_merge_requests_enabled, type: Boolean, default: false, desc: 'Limit by enabled merge requests feature'
 
         use :pagination
         use :with_custom_attributes
@@ -213,7 +222,7 @@ module API
         use :with_custom_attributes
       end
       get ":id/subgroups" do
-        groups = find_groups(params)
+        groups = find_groups(declared_params(include_missing: false), params[:id])
         present_groups params, groups
       end
 

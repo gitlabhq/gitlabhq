@@ -6,7 +6,7 @@ describe Members::CreateService do
   let(:project_user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   it 'adds user to members' do

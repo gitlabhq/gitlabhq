@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-feature 'Milestones sorting', :js do
-  include SortingHelper
+describe 'Milestones sorting', :js do
   let(:user)    { create(:user) }
   let(:project) { create(:project, name: 'test', namespace: user.namespace) }
 
@@ -18,7 +17,7 @@ feature 'Milestones sorting', :js do
     sign_in(user)
   end
 
-  scenario 'visit project milestones and sort by due_date_asc' do
+  it 'visit project milestones and sort by due_date_asc' do
     visit project_milestones_path(project)
 
     expect(page).to have_button('Due soon')

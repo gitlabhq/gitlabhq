@@ -22,7 +22,7 @@ describe 'Search group member' do
       find('.member-search-btn').click
     end
 
-    group_members_list = find(".panel .content-list")
+    group_members_list = find(".card .content-list")
     expect(group_members_list).to have_content(member.name)
     expect(group_members_list).not_to have_content(user.name)
   end

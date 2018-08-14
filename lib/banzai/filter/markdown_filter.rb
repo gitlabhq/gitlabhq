@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     class MarkdownFilter < HTML::Pipeline::TextFilter
@@ -14,7 +16,7 @@ module Banzai
 
       private
 
-      DEFAULT_ENGINE = :redcarpet
+      DEFAULT_ENGINE = :common_mark
 
       def engine(engine_from_context)
         engine_from_context ||= DEFAULT_ENGINE

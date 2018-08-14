@@ -13,12 +13,125 @@ describe API::Files do
   let(:author_email) { 'user@example.org' }
   let(:author_name) { 'John Doe' }
 
+  let(:helper) do
+    fake_class = Class.new do
+      include ::API::Helpers::HeadersHelpers
+
+      attr_reader :headers
+
+      def initialize
+        @headers = {}
+      end
+
+      def header(key, value)
+        @headers[key] = value
+      end
+    end
+
+    fake_class.new
+  end
+
   before do
     project.add_developer(user)
   end
 
   def route(file_path = nil)
     "/projects/#{project.id}/repository/files/#{file_path}"
+  end
+
+  context 'http headers' do
+    it 'converts value into string' do
+      helper.set_http_headers(test: 1)
+
+      expect(helper.headers).to eq({ 'X-Gitlab-Test' => '1' })
+    end
+
+    it 'raises exception if value is an Enumerable' do
+      expect { helper.set_http_headers(test: [1]) }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe "HEAD /projects/:id/repository/files/:file_path" do
+    shared_examples_for 'repository files' do
+      it 'returns file attributes in headers' do
+        head api(route(file_path), current_user), params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers['X-Gitlab-File-Path']).to eq(CGI.unescape(file_path))
+        expect(response.headers['X-Gitlab-File-Name']).to eq('popen.rb')
+        expect(response.headers['X-Gitlab-Last-Commit-Id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        expect(response.headers['X-Gitlab-Content-Sha256']).to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
+      end
+
+      it 'returns file by commit sha' do
+        # This file is deleted on HEAD
+        file_path = "files%2Fjs%2Fcommit%2Ejs%2Ecoffee"
+        params[:ref] = "6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9"
+
+        head api(route(file_path), current_user), params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response.headers['X-Gitlab-File-Name']).to eq('commit.js.coffee')
+        expect(response.headers['X-Gitlab-Content-Sha256']).to eq('08785f04375b47f81f46e68cc125d5ef368aa20576ddb53f91f4d83f1d04b929')
+      end
+
+      context 'when mandatory params are not given' do
+        it "responds with a 400 status" do
+          head api(route("any%2Ffile"), current_user)
+
+          expect(response).to have_gitlab_http_status(400)
+        end
+      end
+
+      context 'when file_path does not exist' do
+        it "responds with a 404 status" do
+          params[:ref] = 'master'
+
+          head api(route('app%2Fmodels%2Fapplication%2Erb'), current_user), params
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when file_path does not exist' do
+        include_context 'disabled repository'
+
+        it "responds with a 403 status" do
+          head api(route(file_path), current_user), params
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
+    end
+
+    context 'when unauthenticated', 'and project is public' do
+      it_behaves_like 'repository files' do
+        let(:project) { create(:project, :public, :repository) }
+        let(:current_user) { nil }
+      end
+    end
+
+    context 'when unauthenticated', 'and project is private' do
+      it "responds with a 404 status" do
+        current_user = nil
+
+        head api(route(file_path), current_user), params
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when authenticated', 'as a developer' do
+      it_behaves_like 'repository files' do
+        let(:current_user) { user }
+      end
+    end
+
+    context 'when authenticated', 'as a guest' do
+      it_behaves_like '403 response' do
+        let(:request) { head api(route(file_path), guest), params }
+      end
+    end
   end
 
   describe "GET /projects/:id/repository/files/:file_path" do
@@ -30,6 +143,7 @@ describe API::Files do
         expect(json_response['file_path']).to eq(CGI.unescape(file_path))
         expect(json_response['file_name']).to eq('popen.rb')
         expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+        expect(json_response['content_sha256']).to eq('c440cd09bae50c4632cc58638ad33c6aa375b6109d811e76a9cc3a613c1e8887')
         expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
       end
 
@@ -51,6 +165,7 @@ describe API::Files do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['file_name']).to eq('commit.js.coffee')
+        expect(json_response['content_sha256']).to eq('08785f04375b47f81f46e68cc125d5ef368aa20576ddb53f91f4d83f1d04b929')
         expect(Base64.decode64(json_response['content']).lines.first).to eq("class Commit\n")
       end
 

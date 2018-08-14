@@ -1,11 +1,11 @@
 <script>
-  import modal from './modal.vue';
+  import DeprecatedModal from './deprecated_modal.vue';
 
   export default {
     name: 'RecaptchaModal',
 
     components: {
-      modal,
+      DeprecatedModal,
     },
 
     props: {
@@ -65,11 +65,11 @@
 </script>
 
 <template>
-  <modal
-    kind="warning"
-    class="recaptcha-modal js-recaptcha-modal"
+  <deprecated-modal
     :hide-footer="true"
     :title="__('Please solve the reCAPTCHA')"
+    kind="warning"
+    class="recaptcha-modal js-recaptcha-modal"
     @cancel="close"
   >
     <div slot="body">
@@ -82,5 +82,5 @@
       >
       </div>
     </div>
-  </modal>
+  </deprecated-modal>
 </template>

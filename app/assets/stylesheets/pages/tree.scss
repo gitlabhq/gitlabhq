@@ -7,7 +7,7 @@
       color: $gl-text-color-secondary;
     }
 
-    @media (min-width: $screen-sm-min) {
+    @include media-breakpoint-up(sm) {
       display: flex;
 
       .tree-ref-container {
@@ -41,15 +41,10 @@
           position: relative;
         }
       }
-
-      .add-to-tree-dropdown {
-        position: absolute;
-        left: 18px;
-      }
     }
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .repo-breadcrumb {
       margin-top: 10px;
       position: relative;
@@ -112,24 +107,6 @@
       td,
       th {
         line-height: 21px;
-      }
-
-      .last-commit {
-        @include str-truncated(506px);
-
-        .fa-angle-right {
-          margin-left: 5px;
-        }
-
-        @media (min-width: $screen-md-min) and (max-width: $screen-md-max) {
-          @include str-truncated(450px);
-        }
-
-      }
-
-      .commit-history-link-spacer {
-        margin: 0 10px;
-        color: $white-normal;
       }
 
       &:hover:not(.tree-truncated-warning) {

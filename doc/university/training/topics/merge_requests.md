@@ -2,7 +2,7 @@
 comments: false
 ---
 
-# Merge requests
+# Code review and collaboration with Merge Requests
 
 ----------
 

@@ -43,7 +43,19 @@ exclude shibboleth URLs from rewriting, add "RewriteCond %{REQUEST_URI} !/Shibbo
   RequestHeader set X_FORWARDED_PROTO 'https'
 ```
 
-1.  Edit /etc/gitlab/gitlab.rb configuration file, your shibboleth attributes should be in form of "HTTP_ATTRIBUTE" and you should addjust them to your need and environment. Add any other configuration you need.
+1. Edit /etc/gitlab/gitlab.rb configuration file to enable OmniAuth and add
+Shibboleth as an OmniAuth provider. User attributes will be sent from the
+Apache reverse proxy to GitLab as headers with the names from the Shibboleth
+attribute mapping. Therefore the values of the `args` hash
+should be in the form of `"HTTP_ATTRIBUTE"`. The keys in the hash are arguments
+to the [OmniAuth::Strategies::Shibboleth class](https://github.com/toyokazu/omniauth-shibboleth/blob/master/lib/omniauth/strategies/shibboleth.rb)
+and are documented by the [omniauth-shibboleth gem](https://github.com/toyokazu/omniauth-shibboleth)
+(take care to note the version of the gem packaged with GitLab). If some of
+your users appear to be authenticated by Shibboleth and Apache, but GitLab
+rejects their account with a URI that contains "e-mail is invalid" then your
+Shibboleth Identity Provider or Attribute Authority may be asserting multiple
+e-mail addresses. In this instance, you might consider setting the
+`multi_values` argument to `first`.
 
 File should look like this:
 ```
@@ -58,14 +70,15 @@ gitlab_rails['omniauth_block_auto_created_users'] = false
 gitlab_rails['omniauth_enabled'] = true
 gitlab_rails['omniauth_providers'] = [
   {
-    "name" => 'shibboleth',
-        "args" => {
-        "shib_session_id_field" => "HTTP_SHIB_SESSION_ID",
+    "name"  => "'shibboleth"',
+    "label" => "Text for Login Button",
+    "args"  => {
+        "shib_session_id_field"     => "HTTP_SHIB_SESSION_ID",
         "shib_application_id_field" => "HTTP_SHIB_APPLICATION_ID",
-        "uid_field" => 'HTTP_EPPN',
-        "name_field" => 'HTTP_CN',
+        "uid_field"                 => 'HTTP_EPPN',
+        "name_field"                => 'HTTP_CN',
         "info_fields" => { "email" => 'HTTP_MAIL'}
-        }
+    }
   }
 ]
 
@@ -107,7 +120,7 @@ you will not get a shibboleth session!
   RewriteEngine on
 
   #Don't escape encoded characters in api requests
-  RewriteCond %{REQUEST_URI} ^/api/v3/.*
+  RewriteCond %{REQUEST_URI} ^/api/v4/.*
   RewriteCond %{REQUEST_URI} !/Shibboleth.sso
   RewriteCond %{REQUEST_URI} !/shibboleth-sp
   RewriteRule .* http://127.0.0.1:8181%{REQUEST_URI} [P,QSA,NE]

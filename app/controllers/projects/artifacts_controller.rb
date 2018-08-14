@@ -1,20 +1,18 @@
 class Projects::ArtifactsController < Projects::ApplicationController
   include ExtractsPath
   include RendersBlob
+  include SendFileUpload
 
   layout 'project'
   before_action :authorize_read_build!
   before_action :authorize_update_build!, only: [:keep]
   before_action :extract_ref_name_and_path
+  before_action :set_request_format, only: [:file]
   before_action :validate_artifacts!
   before_action :entry, only: [:file]
 
   def download
-    if artifacts_file.file_storage?
-      send_file artifacts_file.path, disposition: 'attachment'
-    else
-      redirect_to artifacts_file.url
-    end
+    send_upload(artifacts_file, attachment: artifacts_file.filename)
   end
 
   def browse
@@ -45,8 +43,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def raw
-    path = Gitlab::Ci::Build::Artifacts::Path
-      .new(params[:path])
+    path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 
     send_artifacts_entry(build, path)
   end
@@ -75,7 +72,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def validate_artifacts!
-    render_404 unless build && build.artifacts?
+    render_404 unless build&.artifacts?
   end
 
   def build
@@ -104,5 +101,13 @@ class Projects::ArtifactsController < Projects::ApplicationController
     @entry = build.artifacts_metadata_entry(params[:path])
 
     render_404 unless @entry.exists?
+  end
+
+  def set_request_format
+    request.format = :html if set_request_format?
+  end
+
+  def set_request_format?
+    request.format != :json
   end
 end

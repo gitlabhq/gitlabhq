@@ -18,15 +18,15 @@
 
       - unless @user.password_automatically_set?
         .form-group
-          = f.label :current_password, class: 'label-light'
+          = f.label :current_password, class: 'label-bold'
           = f.password_field :current_password, required: true, class: 'form-control'
-          %p.help-block
+          %p.form-text.text-muted
             You must provide your current password in order to change it.
       .form-group
-        = f.label :password, 'New password', class: 'label-light'
+        = f.label :password, 'New password', class: 'label-bold'
         = f.password_field :password, required: true, class: 'form-control'
       .form-group
-        = f.label :password_confirmation, class: 'label-light'
+        = f.label :password_confirmation, class: 'label-bold'
         = f.password_field :password_confirmation, required: true, class: 'form-control'
       .prepend-top-default.append-bottom-default
         = f.submit 'Save password', class: "btn btn-create append-right-10"

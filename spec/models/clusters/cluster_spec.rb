@@ -39,6 +39,42 @@ describe Clusters::Cluster do
     it { is_expected.to contain_exactly(cluster) }
   end
 
+  describe '.user_provided' do
+    subject { described_class.user_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_user) }
+
+    before do
+      create(:cluster, :provided_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_provided' do
+    subject { described_class.gcp_provided }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :provided_by_user)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
+  describe '.gcp_installed' do
+    subject { described_class.gcp_installed }
+
+    let!(:cluster) { create(:cluster, :provided_by_gcp) }
+
+    before do
+      create(:cluster, :providing_by_gcp)
+    end
+
+    it { is_expected.to contain_exactly(cluster) }
+  end
+
   describe 'validation' do
     subject { cluster.valid? }
 
@@ -198,9 +234,10 @@ describe Clusters::Cluster do
       let!(:ingress) { create(:clusters_applications_ingress, cluster: cluster) }
       let!(:prometheus) { create(:clusters_applications_prometheus, cluster: cluster) }
       let!(:runner) { create(:clusters_applications_runner, cluster: cluster) }
+      let!(:jupyter) { create(:clusters_applications_jupyter, cluster: cluster) }
 
       it 'returns a list of created applications' do
-        is_expected.to contain_exactly(helm, ingress, prometheus, runner)
+        is_expected.to contain_exactly(helm, ingress, prometheus, runner, jupyter)
       end
     end
   end

@@ -1,3 +1,5 @@
+- can_collaborate = can_collaborate_with_project?(@project)
+
 .page-content-header.js-commit-box{ 'data-commit-path' => branches_project_commit_path(@project, @commit.id) }
   .header-main-content
     = render partial: 'signature', object: @commit.signature
@@ -5,12 +7,13 @@
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha= @commit.short_id
     = clipboard_button(text: @commit.id, title: _("Copy commit SHA to clipboard"))
-    %span.hidden-xs authored
+    %span.d-none.d-sm-inline authored
     #{time_ago_with_tooltip(@commit.authored_date)}
     %span= s_('ByAuthor|by')
-    = author_avatar(@commit, size: 24)
+    = author_avatar(@commit, size: 24, has_tooltip: false)
     %strong
       = commit_author_link(@commit, avatar: true, size: 24)
+    = user_status(@commit.author)
     - if @commit.different_committer?
       %span.light= _('Committed by')
       %strong
@@ -19,25 +22,26 @@
 
   .header-action-buttons
     - if defined?(@notes_count) && @notes_count > 0
-      %span.btn.disabled.btn-grouped.hidden-xs.append-right-10
+      %span.btn.disabled.btn-grouped.d-none.d-sm-block.append-right-10
         = icon('comment')
         = @notes_count
-    = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 hidden-xs hidden-sm" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-default append-right-10 d-none d-sm-none d-md-inline" do
       #{ _('Browse files') }
     .dropdown.inline
       %a.btn.btn-default.dropdown-toggle{ data: { toggle: "dropdown" } }
         %span= _('Options')
         = icon('caret-down')
-      %ul.dropdown-menu.dropdown-menu-align-right
-        %li.visible-xs-block.visible-sm-block
+      %ul.dropdown-menu.dropdown-menu-right
+        %li.d-block.d-sm-none.d-md-none
           = link_to project_tree_path(@project, @commit) do
             #{ _('Browse Files') }
-        - unless @commit.has_been_reverted?(current_user)
+        - if can_collaborate && !@commit.has_been_reverted?(current_user)
           %li.clearfix
             = revert_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
-        %li.clearfix
-          = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
-        - if can_collaborate_with_project?
+        - if can_collaborate
+          %li.clearfix
+            = cherry_pick_commit_link(@commit, project_commit_path(@project, @commit.id), has_tooltip: false)
+        - if can?(current_user, :push_code, @project)
           %li.clearfix
             = link_to s_("CreateTag|Tag"), new_project_tag_path(@project, ref: @commit)
         %li.divider
@@ -49,10 +53,10 @@
 
 .commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
-    = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
+    = markdown_field(@commit, :title)
   - if @commit.description.present?
-    %pre.commit-description
-      = preserve(markdown(@commit.description, pipeline: :single_line, author: @commit.author))
+    %pre.commit-description<
+      = preserve(markdown_field(@commit, :description))
 
 .info-well
   .well-segment.branch-info

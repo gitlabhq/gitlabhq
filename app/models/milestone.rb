@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Milestone < ActiveRecord::Base
   # Represents a "No Milestone" state used for filtering Issues and Merge
   # Requests that have no milestone assigned.
@@ -8,7 +10,8 @@ class Milestone < ActiveRecord::Base
   Started = MilestoneStruct.new('Started', '#started', -3)
 
   include CacheMarkdownField
-  include InternalId
+  include AtomicInternalId
+  include IidRoutes
   include Sortable
   include Referable
   include StripAttribute
@@ -20,6 +23,9 @@ class Milestone < ActiveRecord::Base
 
   belongs_to :project
   belongs_to :group
+
+  has_internal_id :iid, scope: :project, init: ->(s) { s&.project&.milestones&.maximum(:iid) }
+  has_internal_id :iid, scope: :group, init: ->(s) { s&.group&.milestones&.maximum(:iid) }
 
   has_many :issues
   has_many :labels, -> { distinct.reorder('labels.title') },  through: :issues
@@ -34,8 +40,8 @@ class Milestone < ActiveRecord::Base
 
   scope :for_projects_and_groups, -> (project_ids, group_ids) do
     conditions = []
-    conditions << arel_table[:project_id].in(project_ids) if project_ids.compact.any?
-    conditions << arel_table[:group_id].in(group_ids) if group_ids.compact.any?
+    conditions << arel_table[:project_id].in(project_ids) if project_ids&.compact&.any?
+    conditions << arel_table[:group_id].in(group_ids) if group_ids&.compact&.any?
 
     where(conditions.reduce(:or))
   end
@@ -127,9 +133,10 @@ class Milestone < ActiveRecord::Base
       rel.order(:project_id, :due_date).select('DISTINCT ON (project_id) id')
     else
       rel
-        .group(:project_id)
+        .group(:project_id, :due_date, :id)
         .having('due_date = MIN(due_date)')
         .pluck(:id, :project_id, :due_date)
+        .uniq(&:second)
         .map(&:first)
     end
   end
@@ -138,19 +145,26 @@ class Milestone < ActiveRecord::Base
     User.joins(assigned_issues: :milestone).where("milestones.id = ?", id).uniq
   end
 
-  def self.sort(method)
-    case method.to_s
-    when 'due_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
-    when 'due_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
-    when 'start_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
-    when 'start_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
-    else
-      order_by(method)
-    end
+  def self.sort_by_attribute(method)
+    sorted =
+      case method.to_s
+      when 'due_date_asc'
+        reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+      when 'due_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+      when 'name_asc'
+        reorder(Arel::Nodes::Ascending.new(arel_table[:title].lower))
+      when 'name_desc'
+        reorder(Arel::Nodes::Descending.new(arel_table[:title].lower))
+      when 'start_date_asc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+      when 'start_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+      else
+        order_by(method)
+      end
+
+    sorted.with_order_id_desc
   end
 
   ##

@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 class Appearance < ActiveRecord::Base
+  include CacheableAttributes
   include CacheMarkdownField
+  include ObjectStorage::BackgroundMove
+  include WithUploads
 
   cache_markdown_field :description
   cache_markdown_field :new_project_guidelines
@@ -11,19 +16,11 @@ class Appearance < ActiveRecord::Base
 
   mount_uploader :logo,         AttachmentUploader
   mount_uploader :header_logo,  AttachmentUploader
+  mount_uploader :favicon,      FaviconUploader
 
-  has_many :uploads, as: :model, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-
-  CACHE_KEY = 'current_appearance'.freeze
-
-  after_commit :flush_redis_cache
-
-  def self.current
-    Rails.cache.fetch(CACHE_KEY) { first }
-  end
-
-  def flush_redis_cache
-    Rails.cache.delete(CACHE_KEY)
+  # Overrides CacheableAttributes.current_without_cache
+  def self.current_without_cache
+    first
   end
 
   def single_appearance_row

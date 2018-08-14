@@ -1,5 +1,5 @@
 # Full project: https://gitlab.com/pages/hugo
-image: publysher/hugo
+image: dettmering/hugo-build
 
 pages:
   script:

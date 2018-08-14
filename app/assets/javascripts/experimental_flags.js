@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import Cookies from 'js-cookie';
 
 export default () => {

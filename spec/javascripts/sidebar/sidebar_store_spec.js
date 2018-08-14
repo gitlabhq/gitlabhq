@@ -31,7 +31,7 @@ const PARTICIPANT_LIST = [
   { ...PARTICIPANT, id: 3 },
 ];
 
-describe('Sidebar store', () => {
+describe('Sidebar store', function () {
   beforeEach(() => {
     this.store = new SidebarStore({
       currentUser: {

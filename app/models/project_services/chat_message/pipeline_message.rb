@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ChatMessage
   class PipelineMessage < BaseMessage
     attr_reader :ref_type
@@ -21,10 +23,6 @@ module ChatMessage
 
     def pretext
       ''
-    end
-
-    def fallback
-      format(message)
     end
 
     def attachments

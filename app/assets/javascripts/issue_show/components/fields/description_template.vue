@@ -1,4 +1,5 @@
 <script>
+  import $ from 'jquery';
   import IssuableTemplateSelectors from '../../../templates/issuable_template_selectors';
 
   export default {
@@ -47,15 +48,15 @@
     class="dropdown js-issuable-selector-wrap"
     data-issuable-type="issue">
     <button
-      class="dropdown-menu-toggle js-issuable-selector"
-      type="button"
       ref="toggle"
-      data-field-name="issuable_template"
-      data-selected="null"
-      data-toggle="dropdown"
       :data-namespace-path="projectNamespace"
       :data-project-path="projectPath"
-      :data-data="issuableTemplatesJson">
+      :data-data="issuableTemplatesJson"
+      class="dropdown-menu-toggle js-issuable-selector"
+      type="button"
+      data-field-name="issuable_template"
+      data-selected="null"
+      data-toggle="dropdown">
       <span class="dropdown-toggle-text">
         Choose a template
       </span>

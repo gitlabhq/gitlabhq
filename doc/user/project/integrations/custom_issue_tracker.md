@@ -15,8 +15,8 @@ in the table below.
 
 Once you have configured and enabled Custom Issue Tracker Service you'll see a link on the GitLab project pages that takes you to that custom issue tracker.
 
-
 ## Referencing issues
 
-Issues are referenced with `#<ID>`, where `<ID>` is a number (example `#143`). 
-So with the example above, `#143` would refer to `https://customissuetracker.com/project-name/143`.
+- Issues are referenced with `ANYTHING-<ID>`, where `ANYTHING` can be any string and `<ID>` is a number used in the target project of the custom integration (example `PROJECT-143`). 
+- `ANYTHING` is a placeholder to differentiate against GitLab issues, which are referenced with `#<ID>`. You can use a project name or project key to replace it for example.
+- So with the example above, `PROJECT-143` would refer to `https://customissuetracker.com/project-name/143`.

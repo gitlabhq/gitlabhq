@@ -11,7 +11,7 @@ module Rouge
         @tag = tag
       end
 
-      def stream(tokens, &b)
+      def stream(tokens)
         is_first = true
         token_lines(tokens) do |line|
           yield "\n" unless is_first

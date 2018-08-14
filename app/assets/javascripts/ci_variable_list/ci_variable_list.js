@@ -33,7 +33,7 @@ export default class VariableList {
         selector: '.js-ci-variable-input-key',
         default: '',
       },
-      value: {
+      secret_value: {
         selector: '.js-ci-variable-input-value',
         default: '',
       },
@@ -105,7 +105,7 @@ export default class VariableList {
     setupToggleButtons($row[0]);
 
     // Reset the resizable textarea
-    $row.find(this.inputMap.value.selector).css('height', '');
+    $row.find(this.inputMap.secret_value.selector).css('height', '');
 
     const $environmentSelect = $row.find('.js-variable-environment-toggle');
     if ($environmentSelect.length) {
@@ -139,6 +139,11 @@ export default class VariableList {
     Object.keys(this.inputMap).forEach((name) => {
       const entry = this.inputMap[name];
       $rowClone.find(entry.selector).val(entry.default);
+    });
+
+    // Close any dropdowns
+    $rowClone.find('.dropdown-menu.show').each((index, $dropdown) => {
+      $dropdown.classList.remove('show');
     });
 
     this.initRow($rowClone);

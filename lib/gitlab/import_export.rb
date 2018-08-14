@@ -3,7 +3,7 @@ module Gitlab
     extend self
 
     # For every version update, the version history in import_export.md has to be kept up to date.
-    VERSION = '0.2.3'.freeze
+    VERSION = '0.2.4'.freeze
     FILENAME_LIMIT = 50
 
     def export_path(relative_path:)
@@ -38,6 +38,10 @@ module Gitlab
       basename = "#{Time.now.strftime('%Y-%m-%d_%H-%M-%3N')}_#{project.full_path.tr('/', '_')}"
 
       "#{basename[0..FILENAME_LIMIT]}_export.tar.gz"
+    end
+
+    def object_storage?
+      Feature.enabled?(:import_export_object_storage)
     end
 
     def version

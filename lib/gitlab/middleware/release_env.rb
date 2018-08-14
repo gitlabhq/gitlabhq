@@ -1,4 +1,4 @@
-module Gitlab
+module Gitlab # rubocop:disable Naming/FileName
   module Middleware
     # Some of middleware would hold env for no good reason even after the
     # request had already been processed, and we could not garbage collect

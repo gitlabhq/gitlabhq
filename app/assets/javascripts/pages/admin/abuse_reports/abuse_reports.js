@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { truncate } from '../../../lib/utils/text_utility';
 
 const MAX_MESSAGE_LENGTH = 500;

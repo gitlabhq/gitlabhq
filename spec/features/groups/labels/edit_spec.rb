@@ -1,17 +1,17 @@
 require 'spec_helper'
 
-feature 'Edit group label' do
-  given(:user)  { create(:user) }
-  given(:group) { create(:group) }
-  given(:label) { create(:group_label, group: group) }
+describe 'Edit group label' do
+  let(:user)  { create(:user) }
+  let(:group) { create(:group) }
+  let(:label) { create(:group_label, group: group) }
 
-  background do
+  before do
     group.add_owner(user)
     sign_in(user)
     visit edit_group_label_path(group, label)
   end
 
-  scenario 'update label with new title' do
+  it 'update label with new title' do
     fill_in 'label_title', with: 'new label name'
     click_button 'Save changes'
 

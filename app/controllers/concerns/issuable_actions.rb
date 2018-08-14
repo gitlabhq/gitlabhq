@@ -7,6 +7,19 @@ module IssuableActions
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
 
+  def permitted_keys
+    [
+      :issuable_ids,
+      :assignee_id,
+      :milestone_id,
+      :state_event,
+      :subscription_event,
+      label_ids: [],
+      add_label_ids: [],
+      remove_label_ids: []
+    ]
+  end
+
   def show
     respond_to do |format|
       format.html
@@ -18,7 +31,6 @@ module IssuableActions
 
   def update
     @issuable = update_service.execute(issuable) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
     respond_to do |format|
       format.html do
         recaptcha_check_if_spammable { render :edit }
@@ -78,7 +90,7 @@ module IssuableActions
   end
 
   def discussions
-    notes = issuable.notes
+    notes = issuable.discussion_notes
       .inc_relations_for_view
       .includes(:noteable)
       .fresh
@@ -88,10 +100,14 @@ module IssuableActions
 
     discussions = Discussion.build_collection(notes, issuable)
 
-    render json: DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user).represent(discussions, context: self)
+    render json: discussion_serializer.represent(discussions, context: self)
   end
 
   private
+
+  def discussion_serializer
+    DiscussionSerializer.new(project: project, noteable: issuable, current_user: current_user, note_entity: ProjectNoteEntity)
+  end
 
   def recaptcha_check_if_spammable(should_redirect = true, &block)
     return yield unless issuable.is_a? Spammable
@@ -111,7 +127,7 @@ module IssuableActions
           errors: [
             "Someone edited this #{issuable.human_class_name} at the same time you did. Please refresh your browser and make sure your changes will not unintentionally remove theirs."
           ]
-        }, status: 409
+        }, status: :conflict
       end
     end
   end
@@ -137,24 +153,15 @@ module IssuableActions
   end
 
   def bulk_update_params
-    permitted_keys = [
-      :issuable_ids,
-      :assignee_id,
-      :milestone_id,
-      :state_event,
-      :subscription_event,
-      label_ids: [],
-      add_label_ids: [],
-      remove_label_ids: []
-    ]
+    permitted_keys_array = permitted_keys.dup
 
     if resource_name == 'issue'
-      permitted_keys << { assignee_ids: [] }
+      permitted_keys_array << { assignee_ids: [] }
     else
-      permitted_keys.unshift(:assignee_id)
+      permitted_keys_array.unshift(:assignee_id)
     end
 
-    params.require(:update).permit(permitted_keys)
+    params.require(:update).permit(permitted_keys_array)
   end
 
   def resource_name

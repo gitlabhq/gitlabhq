@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 class ProjectPresenter < Gitlab::View::Presenter::Delegated
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::UrlHelper
   include GitlabRoutingHelper
   include StorageHelper
   include TreeHelper
+  include ChecksCollaboration
   include Gitlab::Utils::StrongMemoize
 
   presents :project
@@ -26,6 +29,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
 
   def statistics_buttons(show_auto_devops_callout:)
     [
+      readme_anchor_data,
       changelog_anchor_data,
       license_anchor_data,
       contribution_guide_anchor_data,
@@ -170,9 +174,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def can_current_user_push_to_branch?(branch)
-    return false unless repository.branch_exists?(branch)
+    user_access(project).can_push_to_branch?(branch)
+  end
 
-    ::Gitlab::UserAccess.new(current_user, project: project).can_push_to_branch?(branch)
+  def can_current_user_push_to_default_branch?
+    can_current_user_push_to_branch?(default_branch)
   end
 
   def files_anchor_data
@@ -200,7 +206,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def new_file_anchor_data
-    if current_user && can_current_user_push_code?
+    if current_user && can_current_user_push_to_default_branch?
       OpenStruct.new(enabled: false,
                      label: _('New file'),
                      link: project_new_blob_path(project, default_branch || 'master'),
@@ -209,11 +215,11 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def readme_anchor_data
-    if current_user && can_current_user_push_code? && repository.readme.blank?
+    if current_user && can_current_user_push_to_default_branch? && repository.readme.nil?
       OpenStruct.new(enabled: false,
                      label: _('Add Readme'),
                      link: add_readme_path)
-    elsif repository.readme.present?
+    elsif repository.readme
       OpenStruct.new(enabled: true,
                      label: _('Readme'),
                      link: default_view != 'readme' ? readme_path : '#readme')
@@ -221,7 +227,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def changelog_anchor_data
-    if current_user && can_current_user_push_code? && repository.changelog.blank?
+    if current_user && can_current_user_push_to_default_branch? && repository.changelog.blank?
       OpenStruct.new(enabled: false,
                      label: _('Add Changelog'),
                      link: add_changelog_path)
@@ -233,7 +239,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def license_anchor_data
-    if current_user && can_current_user_push_code? && repository.license_blob.blank?
+    if current_user && can_current_user_push_to_default_branch? && repository.license_blob.blank?
       OpenStruct.new(enabled: false,
                      label: _('Add License'),
                      link: add_license_path)
@@ -245,7 +251,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def contribution_guide_anchor_data
-    if current_user && can_current_user_push_code? && repository.contribution_guide.blank?
+    if current_user && can_current_user_push_to_default_branch? && repository.contribution_guide.blank?
       OpenStruct.new(enabled: false,
                      label: _('Add Contribution guide'),
                      link: add_contribution_guide_path)
@@ -260,7 +266,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
     if current_user && can?(current_user, :admin_pipeline, project) && repository.gitlab_ci_yml.blank? && !show_auto_devops_callout
       OpenStruct.new(enabled: auto_devops_enabled?,
                      label: auto_devops_enabled? ? _('Auto DevOps enabled') : _('Enable Auto DevOps'),
-                     link: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings'))
+                     link: project_settings_ci_cd_path(project, anchor: 'autodevops-settings'))
     elsif auto_devops_enabled?
       OpenStruct.new(enabled: true,
                      label: _('Auto DevOps enabled'),

@@ -3,23 +3,21 @@ module Gitlab
     module Pipeline
       module Expression
         class Statement
-          StatementError = Class.new(StandardError)
+          StatementError = Class.new(Expression::ExpressionError)
 
           GRAMMAR = [
+            %w[variable],
             %w[variable equals string],
             %w[variable equals variable],
             %w[variable equals null],
             %w[string equals variable],
             %w[null equals variable],
-            %w[variable]
+            %w[variable matches pattern]
           ].freeze
 
-          def initialize(statement, pipeline)
+          def initialize(statement, variables = {})
             @lexer = Expression::Lexer.new(statement)
-
-            @variables = pipeline.variables.map do |variable|
-              [variable.key, variable.value]
-            end
+            @variables = variables.with_indifferent_access
           end
 
           def parse_tree
@@ -34,6 +32,18 @@ module Gitlab
 
           def evaluate
             parse_tree.evaluate(@variables.to_h)
+          end
+
+          def truthful?
+            evaluate.present?
+          rescue Expression::ExpressionError
+            false
+          end
+
+          def valid?
+            parse_tree.is_a?(Lexeme::Base)
+          rescue Expression::ExpressionError
+            false
           end
         end
       end

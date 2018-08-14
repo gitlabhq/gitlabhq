@@ -1,6 +1,6 @@
 module GroupsHelper
   def group_nav_link_paths
-    %w[groups#projects groups#edit ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
+    %w[groups#projects groups#edit badges#index ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
   end
 
   def group_sidebar_links
@@ -31,11 +31,6 @@ module GroupsHelper
       .new(current_user, group_id: @group.id, state: state, non_archived: true, include_subgroups: true)
       .execute
       .count
-  end
-
-  def group_icon(group, options = {})
-    img_path = group_icon_url(group, options)
-    image_tag img_path, options
   end
 
   def group_icon_url(group, options = {})
@@ -128,8 +123,10 @@ module GroupsHelper
   def get_group_sidebar_links
     links = [:overview, :group_members]
 
-    if can?(current_user, :read_cross_project)
-      links += [:activity, :issues, :boards, :labels, :milestones, :merge_requests]
+    resources = [:activity, :issues, :boards, :labels, :milestones,
+                 :merge_requests]
+    links += resources.select do |resource|
+      can?(current_user, "read_group_#{resource}".to_sym, @group)
     end
 
     if can?(current_user, :admin_group, @group)

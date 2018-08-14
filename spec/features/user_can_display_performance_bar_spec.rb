@@ -3,7 +3,7 @@ require 'rails_helper'
 describe 'User can display performance bar', :js do
   shared_examples 'performance bar cannot be displayed' do
     it 'does not show the performance bar by default' do
-      expect(page).not_to have_css('#peek')
+      expect(page).not_to have_css('#js-peek')
     end
 
     context 'when user press `pb`' do
@@ -12,14 +12,14 @@ describe 'User can display performance bar', :js do
       end
 
       it 'does not show the performance bar by default' do
-        expect(page).not_to have_css('#peek')
+        expect(page).not_to have_css('#js-peek')
       end
     end
   end
 
   shared_examples 'performance bar can be displayed' do
     it 'does not show the performance bar by default' do
-      expect(page).not_to have_css('#peek')
+      expect(page).not_to have_css('#js-peek')
     end
 
     context 'when user press `pb`' do
@@ -28,7 +28,7 @@ describe 'User can display performance bar', :js do
       end
 
       it 'shows the performance bar' do
-        expect(page).to have_css('#peek')
+        expect(page).to have_css('#js-peek')
       end
     end
   end
@@ -41,7 +41,7 @@ describe 'User can display performance bar', :js do
     it 'shows the performance bar by default' do
       refresh # Because we're stubbing Rails.env after the 1st visit to root_path
 
-      expect(page).to have_css('#peek')
+      expect(page).to have_css('#js-peek')
     end
   end
 

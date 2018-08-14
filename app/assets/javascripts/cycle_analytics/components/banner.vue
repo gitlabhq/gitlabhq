@@ -23,9 +23,9 @@
 <template>
   <div class="landing content-block">
     <button
+      :aria-label="__('Dismiss Cycle Analytics introduction box')"
       class="js-ca-dismiss-button dismiss-button"
       type="button"
-      :aria-label="__('Dismiss Cycle Analytics introduction box')"
       @click="dismissOverviewDialog"
     >
       <i

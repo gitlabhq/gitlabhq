@@ -8,13 +8,33 @@
 
   .flash-notice {
     @extend .alert;
-    @extend .alert-info;
+    background-color: $blue-500;
+    margin: 0;
+
+    &.flash-notice-persistent {
+      background-color: $blue-100;
+      color: $gl-text-color;
+
+      a {
+        color: $gl-link-color;
+
+        &:hover {
+          color: $gl-link-hover-color;
+          text-decoration: none;
+        }
+      }
+    }
+  }
+
+  .flash-warning {
+    @extend .alert;
+    background-color: $orange-500;
     margin: 0;
   }
 
   .flash-alert {
     @extend .alert;
-    @extend .alert-danger;
+    background-color: $red-500;
     margin: 0;
 
     .flash-text,
@@ -22,7 +42,7 @@
       display: inline-block;
     }
 
-    a.flash-action {
+    .flash-action {
       margin-left: 5px;
       text-decoration: none;
       font-weight: $gl-font-weight-normal;
@@ -36,14 +56,16 @@
 
   .flash-success {
     @extend .alert;
-    @extend .alert-success;
+    background-color: $green-500;
     margin: 0;
   }
 
   .flash-notice,
   .flash-alert,
-  .flash-success {
+  .flash-success,
+  .flash-warning {
     border-radius: $border-radius-default;
+    color: $white-light;
 
     .container-fluid,
     .container-fluid.container-limited {
@@ -66,7 +88,7 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@include media-breakpoint-down(sm) {
   ul.notes {
     .flash-container.timeline-content {
       margin-left: 0;

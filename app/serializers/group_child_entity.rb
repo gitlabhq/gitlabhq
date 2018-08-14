@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GroupChildEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
@@ -31,7 +33,7 @@ class GroupChildEntity < Grape::Entity
   end
 
   # Project only attributes
-  expose :star_count,
+  expose :star_count, :archived,
          if: lambda { |_instance, _options| project? }
 
   # Group only attributes

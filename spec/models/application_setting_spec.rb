@@ -3,6 +3,9 @@ require 'spec_helper'
 describe ApplicationSetting do
   let(:setting) { described_class.create_from_defaults }
 
+  it { include(CacheableAttributes) }
+  it { expect(described_class.current_without_cache).to eq(described_class.last) }
+
   it { expect(setting).to be_valid }
   it { expect(setting.uuid).to be_present }
   it { expect(setting).to have_db_column(:auto_devops_enabled) }
@@ -21,15 +24,6 @@ describe ApplicationSetting do
     it { is_expected.to allow_value(http).for(:after_sign_out_path) }
     it { is_expected.to allow_value(https).for(:after_sign_out_path) }
     it { is_expected.not_to allow_value(ftp).for(:after_sign_out_path) }
-
-    describe 'disabled_oauth_sign_in_sources validations' do
-      before do
-        allow(Devise).to receive(:omniauth_providers).and_return([:github])
-      end
-
-      it { is_expected.to allow_value(['github']).for(:disabled_oauth_sign_in_sources) }
-      it { is_expected.not_to allow_value(['test']).for(:disabled_oauth_sign_in_sources) }
-    end
 
     describe 'default_artifacts_expire_in' do
       it 'sets an error if it cannot parse' do
@@ -107,10 +101,9 @@ describe ApplicationSetting do
     # Upgraded databases will have this sort of content
     context 'repository_storages is a String, not an Array' do
       before do
-        setting.__send__(:raw_write_attribute, :repository_storages, 'default')
+        described_class.where(id: setting.id).update_all(repository_storages: 'default')
       end
 
-      it { expect(setting.repository_storages_before_type_cast).to eq('default') }
       it { expect(setting.repository_storages).to eq(['default']) }
     end
 
@@ -191,22 +184,6 @@ describe ApplicationSetting do
           expect(setting).to receive(:repository_storages).and_return(array)
 
           expect(setting.pick_repository_storage).to eq('random')
-        end
-
-        describe '#repository_storage' do
-          it 'returns the first storage' do
-            setting.repository_storages = %w(good bad)
-
-            expect(setting.repository_storage).to eq('good')
-          end
-        end
-
-        describe '#repository_storage=' do
-          it 'overwrites repository_storages' do
-            setting.repository_storage = 'overwritten'
-
-            expect(setting.repository_storages).to eq(['overwritten'])
-          end
         end
       end
     end
@@ -301,31 +278,19 @@ describe ApplicationSetting do
         expect(subject).to be_invalid
       end
     end
-  end
 
-  describe '.current' do
-    context 'redis unavailable' do
-      it 'returns an ApplicationSetting' do
-        allow(Rails.cache).to receive(:fetch).and_call_original
-        allow(described_class).to receive(:last).and_return(:last)
-        expect(Rails.cache).to receive(:fetch).with(ApplicationSetting::CACHE_KEY).and_raise(ArgumentError)
+    describe 'enforcing terms' do
+      it 'requires the terms to present when enforcing users to accept' do
+        subject.enforce_terms = true
 
-        expect(described_class.current).to eq(:last)
+        expect(subject).to be_invalid
       end
-    end
 
-    context 'when an ApplicationSetting is not yet present' do
-      it 'does not cache nil object' do
-        # when missing settings a nil object is returned, but not cached
-        allow(described_class).to receive(:last).and_return(nil).twice
-        expect(described_class.current).to be_nil
+      it 'is valid when terms are created' do
+        create(:term)
+        subject.enforce_terms = true
 
-        # when the settings are set the method returns a valid object
-        allow(described_class).to receive(:last).and_return(:last)
-        expect(described_class.current).to eq(:last)
-
-        # subsequent calls get everything from cache
-        expect(described_class.current).to eq(:last)
+        expect(subject).to be_valid
       end
     end
   end
@@ -337,6 +302,33 @@ describe ApplicationSetting do
 
     it 'raises an record creation violation if already created' do
       expect { described_class.create_from_defaults }.to raise_error(ActiveRecord::RecordNotUnique)
+    end
+  end
+
+  describe '#disabled_oauth_sign_in_sources=' do
+    before do
+      allow(Devise).to receive(:omniauth_providers).and_return([:github])
+    end
+
+    it 'removes unknown sources (as strings) from the array' do
+      subject.disabled_oauth_sign_in_sources = %w[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'removes unknown sources (as symbols) from the array' do
+      subject.disabled_oauth_sign_in_sources = %i[github test]
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to eq ['github']
+    end
+
+    it 'ignores nil' do
+      subject.disabled_oauth_sign_in_sources = nil
+
+      expect(subject).to be_valid
+      expect(subject.disabled_oauth_sign_in_sources).to be_empty
     end
   end
 
@@ -400,68 +392,6 @@ describe ApplicationSetting do
   end
 
   describe 'performance bar settings' do
-    describe 'performance_bar_allowed_group_id=' do
-      context 'with a blank path' do
-        before do
-          setting.performance_bar_allowed_group_id = create(:group).full_path
-        end
-
-        it 'persists nil for a "" path and clears allowed user IDs cache' do
-          expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
-
-          setting.performance_bar_allowed_group_id = ''
-
-          expect(setting.performance_bar_allowed_group_id).to be_nil
-        end
-      end
-
-      context 'with an invalid path' do
-        it 'does not persist an invalid group path' do
-          setting.performance_bar_allowed_group_id = 'foo'
-
-          expect(setting.performance_bar_allowed_group_id).to be_nil
-        end
-      end
-
-      context 'with a path to an existing group' do
-        let(:group) { create(:group) }
-
-        it 'persists a valid group path and clears allowed user IDs cache' do
-          expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
-
-          setting.performance_bar_allowed_group_id = group.full_path
-
-          expect(setting.performance_bar_allowed_group_id).to eq(group.id)
-        end
-
-        context 'when the given path is the same' do
-          context 'with a blank path' do
-            before do
-              setting.performance_bar_allowed_group_id = nil
-            end
-
-            it 'clears the cached allowed user IDs' do
-              expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
-
-              setting.performance_bar_allowed_group_id = ''
-            end
-          end
-
-          context 'with a valid path' do
-            before do
-              setting.performance_bar_allowed_group_id = group.full_path
-            end
-
-            it 'clears the cached allowed user IDs' do
-              expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
-
-              setting.performance_bar_allowed_group_id = group.full_path
-            end
-          end
-        end
-      end
-    end
-
     describe 'performance_bar_allowed_group' do
       context 'with no performance_bar_allowed_group_id saved' do
         it 'returns nil' do
@@ -473,11 +403,11 @@ describe ApplicationSetting do
         let(:group) { create(:group) }
 
         before do
-          setting.performance_bar_allowed_group_id = group.full_path
+          setting.update!(performance_bar_allowed_group_id: group.id)
         end
 
         it 'returns the group' do
-          expect(setting.performance_bar_allowed_group).to eq(group)
+          expect(setting.reload.performance_bar_allowed_group).to eq(group)
         end
       end
     end
@@ -487,67 +417,11 @@ describe ApplicationSetting do
         let(:group) { create(:group) }
 
         before do
-          setting.performance_bar_allowed_group_id = group.full_path
+          setting.update!(performance_bar_allowed_group_id: group.id)
         end
 
         it 'returns true' do
-          expect(setting.performance_bar_enabled).to be_truthy
-        end
-      end
-    end
-
-    describe 'performance_bar_enabled=' do
-      context 'when the performance bar is enabled' do
-        let(:group) { create(:group) }
-
-        before do
-          setting.performance_bar_allowed_group_id = group.full_path
-        end
-
-        context 'when passing true' do
-          it 'does not clear allowed user IDs cache' do
-            expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
-
-            setting.performance_bar_enabled = true
-
-            expect(setting.performance_bar_allowed_group_id).to eq(group.id)
-            expect(setting.performance_bar_enabled).to be_truthy
-          end
-        end
-
-        context 'when passing false' do
-          it 'disables the performance bar and clears allowed user IDs cache' do
-            expect(Gitlab::PerformanceBar).to receive(:expire_allowed_user_ids_cache)
-
-            setting.performance_bar_enabled = false
-
-            expect(setting.performance_bar_allowed_group_id).to be_nil
-            expect(setting.performance_bar_enabled).to be_falsey
-          end
-        end
-      end
-
-      context 'when the performance bar is disabled' do
-        context 'when passing true' do
-          it 'does nothing and does not clear allowed user IDs cache' do
-            expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
-
-            setting.performance_bar_enabled = true
-
-            expect(setting.performance_bar_allowed_group_id).to be_nil
-            expect(setting.performance_bar_enabled).to be_falsey
-          end
-        end
-
-        context 'when passing false' do
-          it 'does nothing and does not clear allowed user IDs cache' do
-            expect(Gitlab::PerformanceBar).not_to receive(:expire_allowed_user_ids_cache)
-
-            setting.performance_bar_enabled = false
-
-            expect(setting.performance_bar_allowed_group_id).to be_nil
-            expect(setting.performance_bar_enabled).to be_falsey
-          end
+          expect(setting.reload.performance_bar_enabled).to be_truthy
         end
       end
     end

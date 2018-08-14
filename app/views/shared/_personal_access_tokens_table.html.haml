@@ -35,7 +35,7 @@
                 = text_field_tag 'impersonation-token-token', token.token, readonly: true, class: "form-control"
                 = clipboard_button(text: token.token)
             - path = impersonation ? revoke_admin_user_impersonation_token_path(token.user, token) : revoke_profile_personal_access_token_path(token)
-            %td= link_to "Revoke", path, method: :put, class: "btn btn-danger pull-right", data: { confirm: "Are you sure you want to revoke this #{type} Token? This action cannot be undone." }
+            %td= link_to "Revoke", path, method: :put, class: "btn btn-danger float-right", data: { confirm: "Are you sure you want to revoke this #{type} Token? This action cannot be undone." }
 - else
   .settings-message.text-center
     This user has no active #{type} Tokens.

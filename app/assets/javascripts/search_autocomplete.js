@@ -1,7 +1,18 @@
-/* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, object-shorthand, prefer-template, class-methods-use-this, no-lonely-if, vars-on-top, max-len */
+
+import $ from 'jquery';
+import { escape, throttle } from 'underscore';
+import { s__, sprintf } from '~/locale';
+import { getIdenticonBackgroundClass, getIdenticonTitle } from '~/helpers/avatar_helper';
 import axios from './lib/utils/axios_utils';
 import DropdownUtils from './filtered_search/dropdown_utils';
-import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
+import {
+  isInGroupsPage,
+  isInProjectPage,
+  getGroupSlug,
+  getProjectSlug,
+  spriteIcon,
+} from './lib/utils/common_utils';
 
 /**
  * Search input in top navigation bar.
@@ -50,6 +61,7 @@ function setSearchOptions() {
 
   if ($dashboardOptionsDataEl.length) {
     gl.dashboardOptions = {
+      name: s__('SearchAutocomplete|All GitLab'),
       issuesPath: $dashboardOptionsDataEl.data('issuesPath'),
       mrPath: $dashboardOptionsDataEl.data('mrPath'),
     };
@@ -67,8 +79,8 @@ export default class SearchAutocomplete {
     this.projectRef = projectRef || (this.optsEl.data('autocompleteProjectRef') || '');
     this.dropdown = this.wrap.find('.dropdown');
     this.dropdownToggle = this.wrap.find('.js-dropdown-search-toggle');
+    this.dropdownMenu = this.dropdown.find('.dropdown-menu');
     this.dropdownContent = this.dropdown.find('.dropdown-content');
-    this.locationBadgeEl = this.getElement('.location-badge');
     this.scopeInputEl = this.getElement('#scope');
     this.searchInput = this.getElement('.search-input');
     this.projectInputEl = this.getElement('#search_project_id');
@@ -76,6 +88,7 @@ export default class SearchAutocomplete {
     this.searchCodeInputEl = this.getElement('#search_code');
     this.repositoryInputEl = this.getElement('#repository_ref');
     this.clearInput = this.getElement('.js-clear-input');
+    this.scrollFadeInitialized = false;
     this.saveOriginalState();
 
     // Only when user is logged in
@@ -96,17 +109,18 @@ export default class SearchAutocomplete {
     this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
     this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
     this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
+    this.setScrollFade = this.setScrollFade.bind(this);
   }
   getElement(selector) {
     return this.wrap.find(selector);
   }
 
   saveOriginalState() {
-    return this.originalState = this.serializeState();
+    return (this.originalState = this.serializeState());
   }
 
   saveTextLength() {
-    return this.lastTextLength = this.searchInput.val().length;
+    return (this.lastTextLength = this.searchInput.val().length);
   }
 
   createAutocomplete() {
@@ -115,6 +129,7 @@ export default class SearchAutocomplete {
       filterable: true,
       filterRemote: true,
       highlight: true,
+      icon: true,
       enterCallback: false,
       filterInput: 'input#search',
       search: {
@@ -135,7 +150,11 @@ export default class SearchAutocomplete {
     if (!term) {
       const contents = this.getCategoryContents();
       if (contents) {
-        this.searchInput.data('glDropdown').filter.options.callback(contents);
+        const glDropdownInstance = this.searchInput.data('glDropdown');
+
+        if (glDropdownInstance) {
+          glDropdownInstance.filter.options.callback(contents);
+        }
         this.enableAutocomplete();
       }
       return;
@@ -148,60 +167,87 @@ export default class SearchAutocomplete {
 
     this.loadingSuggestions = true;
 
-    return axios.get(this.autocompletePath, {
-      params: {
-        project_id: this.projectId,
-        project_ref: this.projectRef,
-        term: term,
-      },
-    }).then((response) => {
-      // Hide dropdown menu if no suggestions returns
-      if (!response.data.length) {
-        this.disableAutocomplete();
-        return;
-      }
+    return axios
+      .get(this.autocompletePath, {
+        params: {
+          project_id: this.projectId,
+          project_ref: this.projectRef,
+          term: term,
+        },
+      })
+      .then(response => {
+        // Hide dropdown menu if no suggestions returns
+        if (!response.data.length) {
+          this.disableAutocomplete();
+          return;
+        }
 
-      const data = [];
-      // List results
-      let firstCategory = true;
-      let lastCategory;
-      for (let i = 0, len = response.data.length; i < len; i += 1) {
-        const suggestion = response.data[i];
-        // Add group header before list each group
-        if (lastCategory !== suggestion.category) {
-          if (!firstCategory) {
-            data.push('separator');
-          }
-          if (firstCategory) {
-            firstCategory = false;
+        const data = [];
+        // List results
+        let firstCategory = true;
+        let lastCategory;
+        for (let i = 0, len = response.data.length; i < len; i += 1) {
+          const suggestion = response.data[i];
+          // Add group header before list each group
+          if (lastCategory !== suggestion.category) {
+            if (!firstCategory) {
+              data.push('separator');
+            }
+            if (firstCategory) {
+              firstCategory = false;
+            }
+            data.push({
+              header: suggestion.category,
+            });
+            lastCategory = suggestion.category;
           }
           data.push({
-            header: suggestion.category,
+            id: `${suggestion.category.toLowerCase()}-${suggestion.id}`,
+            icon: this.getAvatar(suggestion),
+            category: suggestion.category,
+            text: suggestion.label,
+            url: suggestion.url,
           });
-          lastCategory = suggestion.category;
         }
-        data.push({
-          id: `${suggestion.category.toLowerCase()}-${suggestion.id}`,
-          category: suggestion.category,
-          text: suggestion.label,
-          url: suggestion.url,
-        });
-      }
-      // Add option to proceed with the search
-      if (data.length) {
-        data.push('separator');
-        data.push({
-          text: `Result name contains "${term}"`,
-          url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
-        });
-      }
+        // Add option to proceed with the search
+        if (data.length) {
+          const icon = spriteIcon('search', 's16 inline-search-icon');
+          let template;
 
-      callback(data);
+          if (this.projectInputEl.val()) {
+            template = s__('SearchAutocomplete|in this project');
+          }
+          if (this.groupInputEl.val()) {
+            template = s__('SearchAutocomplete|in this group');
+          }
 
-      this.loadingSuggestions = false;
-    }).catch(() => {
-      this.loadingSuggestions = false;
-    });
+          data.unshift('separator');
+          data.unshift({
+            icon,
+            text: term,
+            template: s__('SearchAutocomplete|in all GitLab'),
+            url: `/search?search=${term}`,
+          });
+
+          if (template) {
+            data.unshift({
+              icon,
+              text: term,
+              template,
+              url: `/search?search=${term}&project_id=${this.projectInputEl.val()}&group_id=${this.groupInputEl.val()}`,
+            });
+          }
+        }
+
+        callback(data);
+
+        this.loadingSuggestions = false;
+        this.highlightFirstRow();
+        this.setScrollFade();
+      })
+      .catch(() => {
+        this.loadingSuggestions = false;
+      });
   }
 
   getCategoryContents() {
@@ -230,22 +276,22 @@ export default class SearchAutocomplete {
 
     const issueItems = [
       {
-        text: 'Issues assigned to me',
-        url: `${issuesPath}/?assignee_username=${userName}`,
+        text: s__('SearchAutocomplete|Issues assigned to me'),
+        url: `${issuesPath}/?assignee_id=${userId}`,
       },
       {
-        text: "Issues I've created",
-        url: `${issuesPath}/?author_username=${userName}`,
+        text: s__("SearchAutocomplete|Issues I've created"),
+        url: `${issuesPath}/?author_id=${userId}`,
       },
     ];
     const mergeRequestItems = [
       {
-        text: 'Merge requests assigned to me',
-        url: `${mrPath}/?assignee_username=${userName}`,
+        text: s__('SearchAutocomplete|Merge requests assigned to me'),
+        url: `${mrPath}/?assignee_id=${userId}`,
       },
       {
-        text: "Merge requests I've created",
-        url: `${mrPath}/?author_username=${userName}`,
+        text: s__("SearchAutocomplete|Merge requests I've created"),
+        url: `${mrPath}/?author_id=${userId}`,
       },
     ];
 
@@ -253,7 +299,7 @@ export default class SearchAutocomplete {
     if (issuesDisabled) {
       items = baseItems.concat(mergeRequestItems);
     } else {
-      items = baseItems.concat(...issueItems, 'separator', ...mergeRequestItems);
+      items = baseItems.concat(...issueItems, ...mergeRequestItems);
     }
     return items;
   }
@@ -266,8 +312,6 @@ export default class SearchAutocomplete {
       search_code: this.searchCodeInputEl.val(),
       repository_ref: this.repositoryInputEl.val(),
       scope: this.scopeInputEl.val(),
-      // Location badge
-      _location: this.locationBadgeEl.text(),
     };
   }
 
@@ -277,17 +321,19 @@ export default class SearchAutocomplete {
     this.searchInput.on('focus', this.onSearchInputFocus);
     this.searchInput.on('blur', this.onSearchInputBlur);
     this.clearInput.on('click', this.onClearInputClick);
-    this.locationBadgeEl.on('click', () => this.searchInput.focus());
+    this.dropdownContent.on('scroll', throttle(this.setScrollFade, 250));
   }
 
   enableAutocomplete() {
+    this.setScrollFade();
+
     // No need to enable anything if user is not logged in
     if (!gon.current_user_id) {
       return;
     }
 
     // If the dropdown is closed, we'll open it
-    if (!this.dropdown.hasClass('open')) {
+    if (!this.dropdown.hasClass('show')) {
       this.loadingSuggestions = false;
       this.dropdownToggle.dropdown('toggle');
       return this.searchInput.removeClass('disabled');
@@ -302,10 +348,6 @@ export default class SearchAutocomplete {
   onSearchInputKeyUp(e) {
     switch (e.keyCode) {
       case KEYCODE.BACKSPACE:
-        // when trying to remove the location badge
-        if (this.lastTextLength === 0 && this.badgePresent()) {
-          this.removeLocationBadge();
-        }
         // When removing the last character and no badge is present
         if (this.lastTextLength === 1) {
           this.disableAutocomplete();
@@ -366,37 +408,13 @@ export default class SearchAutocomplete {
     }
   }
 
-  addLocationBadge(item) {
-    var badgeText, category, value;
-    category = item.category != null ? item.category + ": " : '';
-    value = item.value != null ? item.value : '';
-    badgeText = "" + category + value;
-    this.locationBadgeEl.text(badgeText).show();
-    return this.wrap.addClass('has-location-badge');
-  }
-
-  hasLocationBadge() {
-    return this.wrap.is('.has-location-badge');
-  }
-
   restoreOriginalState() {
     var i, input, inputs, len;
     inputs = Object.keys(this.originalState);
     for (i = 0, len = inputs.length; i < len; i += 1) {
       input = inputs[i];
-      this.getElement("#" + input).val(this.originalState[input]);
+      this.getElement('#' + input).val(this.originalState[input]);
     }
-    if (this.originalState._location === '') {
-      return this.locationBadgeEl.hide();
-    } else {
-      return this.addLocationBadge({
-        value: this.originalState._location,
-      });
-    }
-  }
-
-  badgePresent() {
-    return this.locationBadgeEl.length;
   }
 
   resetSearchState() {
@@ -405,26 +423,15 @@ export default class SearchAutocomplete {
     results = [];
     for (i = 0, len = inputs.length; i < len; i += 1) {
       input = inputs[i];
-      // _location isnt a input
-      if (input === '_location') {
-        break;
-      }
-      results.push(this.getElement("#" + input).val(''));
+      results.push(this.getElement('#' + input).val(''));
     }
     return results;
   }
 
-  removeLocationBadge() {
-    this.locationBadgeEl.hide();
-    this.resetSearchState();
-    this.wrap.removeClass('has-location-badge');
-    return this.disableAutocomplete();
-  }
-
   disableAutocomplete() {
-    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
+    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('show')) {
       this.searchInput.addClass('disabled');
-      this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
+      this.dropdown.removeClass('show').trigger('hidden.bs.dropdown');
       this.restoreMenu();
     }
   }
@@ -436,25 +443,59 @@ export default class SearchAutocomplete {
   }
 
   onClick(item, $el, e) {
-    if (location.pathname.indexOf(item.url) !== -1) {
+    if (window.location.pathname.indexOf(item.url) !== -1) {
       if (!e.metaKey) e.preventDefault();
-      if (!this.badgePresent) {
-        if (item.category === 'Projects') {
-          this.projectInputEl.val(item.id);
-          this.addLocationBadge({
-            value: 'This project',
-          });
-        }
-        if (item.category === 'Groups') {
-          this.groupInputEl.val(item.id);
-          this.addLocationBadge({
-            value: 'This group',
-          });
-        }
+      if (item.category === 'Projects') {
+        this.projectInputEl.val(item.id);
+      }
+      if (item.category === 'Groups') {
+        this.groupInputEl.val(item.id);
       }
       $el.removeClass('is-active');
       this.disableAutocomplete();
       return this.searchInput.val('').focus();
     }
+  }
+
+  highlightFirstRow() {
+    this.searchInput.data('glDropdown').highlightRowAtIndex(null, 0);
+  }
+
+  getAvatar(item) {
+    if (!Object.hasOwnProperty.call(item, 'avatar_url')) {
+      return false;
+    }
+
+    const { label, id } = item;
+    const avatarUrl = item.avatar_url;
+    const avatar = avatarUrl
+      ? `<img class="search-item-avatar" src="${avatarUrl}" />`
+      : `<div class="s16 avatar identicon ${getIdenticonBackgroundClass(id)}">${getIdenticonTitle(
+          escape(label),
+        )}</div>`;
+
+    return avatar;
+  }
+
+  isScrolledUp() {
+    const el = this.dropdownContent[0];
+    const currentPosition = this.contentClientHeight + el.scrollTop;
+
+    return currentPosition < this.maxPosition;
+  }
+
+  initScrollFade() {
+    const el = this.dropdownContent[0];
+    this.scrollFadeInitialized = true;
+
+    this.contentClientHeight = el.clientHeight;
+    this.maxPosition = el.scrollHeight;
+    this.dropdownMenu.addClass('dropdown-content-faded-mask');
+  }
+
+  setScrollFade() {
+    this.initScrollFade();
+
+    this.dropdownMenu.toggleClass('fade-out', !this.isScrolledUp());
   }
 }

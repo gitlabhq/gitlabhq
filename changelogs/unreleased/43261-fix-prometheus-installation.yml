@@ -1,5 +1,0 @@
----
-title: Allow Prometheus application to be installed from Cluster applications
-merge_request: 17372
-author:
-type: fixed

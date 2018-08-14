@@ -14,11 +14,12 @@
 </template>
 
 <script>
-  import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
+import skeletonLoadingContainer from '~/vue_shared/components/skeleton_loading_container.vue';
 
-  export default {
-    components: {
-      skeletonLoadingContainer,
-    },
-  };
+export default {
+  name: 'SkeletonNote',
+  components: {
+    skeletonLoadingContainer,
+  },
+};
 </script>

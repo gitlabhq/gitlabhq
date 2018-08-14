@@ -1,6 +1,28 @@
 require 'spec_helper'
 
 describe Milestone do
+  describe 'modules' do
+    context 'with a project' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: build(:project), group: nil) }
+        let(:scope) { :project }
+        let(:scope_attrs) { { project: instance.project } }
+        let(:usage) { :milestones }
+      end
+    end
+
+    context 'with a group' do
+      it_behaves_like 'AtomicInternalId' do
+        let(:internal_id_attribute) { :iid }
+        let(:instance) { build(:milestone, project: nil, group: build(:group)) }
+        let(:scope) { :group }
+        let(:scope_attrs) { { namespace: instance.group } }
+        let(:usage) { :milestones }
+      end
+    end
+  end
+
   describe "Validation" do
     before do
       allow(subject).to receive(:set_iid).and_return(false)
@@ -96,7 +118,9 @@ describe Milestone do
         allow(milestone).to receive(:due_date).and_return(Date.today.prev_year)
       end
 
-      it { expect(milestone.expired?).to be_truthy }
+      it 'returns true when due_date is in the past' do
+        expect(milestone.expired?).to be_truthy
+      end
     end
 
     context "not expired" do
@@ -104,17 +128,19 @@ describe Milestone do
         allow(milestone).to receive(:due_date).and_return(Date.today.next_year)
       end
 
-      it { expect(milestone.expired?).to be_falsey }
+      it 'returns false when due_date is in the future' do
+        expect(milestone.expired?).to be_falsey
+      end
     end
   end
 
   describe '#upcoming?' do
-    it 'returns true' do
+    it 'returns true when start_date is in the future' do
       milestone = build(:milestone, start_date: Time.now + 1.month)
       expect(milestone.upcoming?).to be_truthy
     end
 
-    it 'returns false' do
+    it 'returns false when start_date is in the past' do
       milestone = build(:milestone, start_date: Date.today.prev_year)
       expect(milestone.upcoming?).to be_falsey
     end
@@ -282,6 +308,26 @@ describe Milestone do
       create :issue, project: project, milestone: milestone, assignees: [user]
 
       expect(milestone.participants).to eq [user]
+    end
+  end
+
+  describe '.sort_by_attribute' do
+    set(:milestone_1) { create(:milestone, title: 'Foo') }
+    set(:milestone_2) { create(:milestone, title: 'Bar') }
+    set(:milestone_3) { create(:milestone, title: 'Zoo') }
+
+    context 'ordering by name ascending' do
+      it 'sorts by title ascending' do
+        expect(described_class.sort_by_attribute('name_asc'))
+          .to eq([milestone_2, milestone_1, milestone_3])
+      end
+    end
+
+    context 'ordering by name descending' do
+      it 'sorts by title descending' do
+        expect(described_class.sort_by_attribute('name_desc'))
+          .to eq([milestone_3, milestone_1, milestone_2])
+      end
     end
   end
 end

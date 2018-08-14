@@ -1,15 +1,17 @@
+# frozen_string_literal: true
+
 module Lfs
   class UnlockFileService < BaseService
     def execute
       unless can?(current_user, :push_code, project)
-        raise Gitlab::GitAccess::UnauthorizedError, 'You have no permissions'
+        raise Gitlab::GitAccess::UnauthorizedError, _('You have no permissions')
       end
 
       unlock_file
     rescue Gitlab::GitAccess::UnauthorizedError => ex
       error(ex.message, 403)
     rescue ActiveRecord::RecordNotFound
-      error('Lock not found', 404)
+      error(_('Lock not found'), 404)
     rescue => ex
       error(ex.message, 500)
     end
@@ -24,9 +26,9 @@ module Lfs
 
         success(lock: lock, http_status: :ok)
       elsif forced
-        error('You must have master access to force delete a lock', 403)
+        error(_('You must have maintainer access to force delete a lock'), 403)
       else
-        error("#{lock.path} is locked by GitLab User #{lock.user_id}", 403)
+        error(_("%{lock_path} is locked by GitLab User %{lock_user_id}") % { lock_path: lock.path, lock_user_id: lock.user_id }, 403)
       end
     end
 

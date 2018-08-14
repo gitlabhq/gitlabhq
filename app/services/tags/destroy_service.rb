@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Tags
   class DestroyService < BaseService
     def execute(tag_name)
@@ -21,7 +23,7 @@ module Tags
       else
         error('Failed to remove tag')
       end
-    rescue Gitlab::Git::HooksService::PreReceiveError => ex
+    rescue Gitlab::Git::PreReceiveError => ex
       error(ex.message)
     end
 

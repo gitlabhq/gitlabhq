@@ -10,10 +10,6 @@
 Capybara/CurrentPathExpectation:
   Enabled: false
 
-# Offense count: 956
-Capybara/FeatureMethods:
-  Enabled: false
-
 # Offense count: 23
 FactoryBot/DynamicAttributeDefinedStatically:
   Exclude:
@@ -143,7 +139,7 @@ Lint/MissingCopEnableDirective:
 Lint/NestedPercentLiteral:
   Exclude:
     - 'lib/gitlab/git/repository.rb'
-    - 'spec/support/email_format_shared_examples.rb'
+    - 'spec/support/shared_examples/email_format_shared_examples.rb'
 
 # Offense count: 1
 Lint/ReturnInVoidContext:
@@ -173,7 +169,6 @@ Lint/UriEscapeUnescape:
     - 'spec/requests/api/files_spec.rb'
     - 'spec/requests/api/internal_spec.rb'
     - 'spec/requests/api/issues_spec.rb'
-    - 'spec/requests/api/v3/issues_spec.rb'
 
 # Offense count: 1
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
@@ -195,19 +190,13 @@ Naming/HeredocDelimiterCase:
     - 'spec/lib/gitlab/diff/parser_spec.rb'
     - 'spec/lib/json_web_token/rsa_token_spec.rb'
     - 'spec/models/commit_spec.rb'
-    - 'spec/support/repo_helpers.rb'
-    - 'spec/support/seed_repo.rb'
+    - 'spec/support/helpers/repo_helpers.rb'
+    - 'spec/support/helpers/seed_repo.rb'
 
 # Offense count: 112
 # Configuration parameters: Blacklist.
 # Blacklist: END, (?-mix:EO[A-Z]{1})
 Naming/HeredocDelimiterNaming:
-  Enabled: false
-
-# Offense count: 27
-# Cop supports --auto-correct.
-# Configuration parameters: AutoCorrect.
-Performance/HashEachMethods:
   Enabled: false
 
 # Offense count: 1
@@ -333,8 +322,6 @@ RSpec/ScatteredSetup:
     - 'spec/lib/gitlab/bitbucket_import/importer_spec.rb'
     - 'spec/lib/gitlab/git/env_spec.rb'
     - 'spec/requests/api/jobs_spec.rb'
-    - 'spec/requests/api/v3/builds_spec.rb'
-    - 'spec/requests/api/v3/projects_spec.rb'
     - 'spec/services/projects/create_service_spec.rb'
 
 # Offense count: 1
@@ -490,13 +477,13 @@ Style/EmptyLiteral:
     - 'lib/gitlab/fogbugz_import/importer.rb'
     - 'lib/gitlab/git/diff_collection.rb'
     - 'lib/gitlab/gitaly_client.rb'
-    - 'scripts/trigger-build-omnibus'
+    - 'scripts/trigger-build'
     - 'spec/features/merge_requests/versions_spec.rb'
     - 'spec/helpers/merge_requests_helper_spec.rb'
     - 'spec/lib/gitlab/request_context_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/requests/api/jobs_spec.rb'
-    - 'spec/support/chat_slash_commands_shared_examples.rb'
+    - 'spec/support/shared_examples/chat_slash_commands_shared_examples.rb'
 
 # Offense count: 102
 # Cop supports --auto-correct.
@@ -618,7 +605,6 @@ Style/OrAssignment:
   Exclude:
     - 'app/models/concerns/token_authenticatable.rb'
     - 'lib/api/commit_statuses.rb'
-    - 'lib/api/v3/members.rb'
     - 'lib/gitlab/project_transfer.rb'
 
 # Offense count: 50
@@ -720,12 +706,6 @@ Style/RescueModifier:
 Style/RescueStandardError:
   Enabled: false
 
-# Offense count: 92
-# Cop supports --auto-correct.
-# Configuration parameters: ConvertCodeThatCanStartToReturnNil.
-Style/SafeNavigation:
-  Enabled: false
-
 # Offense count: 8
 # Cop supports --auto-correct.
 Style/SelfAssignment:
@@ -781,7 +761,6 @@ Style/TernaryParentheses:
     - 'app/finders/projects_finder.rb'
     - 'app/helpers/namespaces_helper.rb'
     - 'features/support/capybara.rb'
-    - 'lib/api/v3/projects.rb'
     - 'lib/gitlab/ci/build/artifacts/metadata/entry.rb'
     - 'spec/requests/api/pipeline_schedules_spec.rb'
     - 'spec/support/capybara.rb'

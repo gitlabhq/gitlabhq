@@ -76,4 +76,27 @@ describe QA::Runtime::Env do
       expect { described_class.user_type }.to raise_error(ArgumentError)
     end
   end
+
+  describe '.github_access_token' do
+    it 'returns "" if GITHUB_ACCESS_TOKEN is not defined' do
+      expect(described_class.github_access_token).to eq('')
+    end
+
+    it 'returns stripped string if GITHUB_ACCESS_TOKEN is defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
+      expect(described_class.github_access_token).to eq('abc123')
+    end
+  end
+
+  describe '.require_github_access_token!' do
+    it 'raises ArgumentError if GITHUB_ACCESS_TOKEN is not defined' do
+      expect { described_class.require_github_access_token! }.to raise_error(ArgumentError)
+    end
+
+    it 'does not raise if GITHUB_ACCESS_TOKEN is defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', ' abc123 ')
+
+      expect { described_class.require_github_access_token! }.not_to raise_error
+    end
+  end
 end

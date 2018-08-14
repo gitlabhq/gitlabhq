@@ -32,7 +32,7 @@ module GoogleApi
     private
 
     def config
-      Gitlab.config.omniauth.providers.find { |provider| provider.name == "google_oauth2" }
+      Gitlab::Auth::OAuth::Provider.config_for('google_oauth2')
     end
 
     def client

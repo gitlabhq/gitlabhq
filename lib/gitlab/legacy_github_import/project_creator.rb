@@ -12,9 +12,8 @@ module Gitlab
         @type = type
       end
 
-      def execute
-        ::Projects::CreateService.new(
-          current_user,
+      def execute(extra_attrs = {})
+        attrs = {
           name: name,
           path: name,
           description: repo.description,
@@ -24,7 +23,9 @@ module Gitlab
           import_source: repo.full_name,
           import_url: import_url,
           skip_wiki: skip_wiki
-        ).execute
+        }.merge!(extra_attrs)
+
+        ::Projects::CreateService.new(current_user, attrs).execute
       end
 
       private
@@ -34,7 +35,10 @@ module Gitlab
       end
 
       def visibility_level
-        repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.default_project_visibility
+        visibility_level = repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::VisibilityLevel::PUBLIC
+        visibility_level = Gitlab::CurrentSettings.default_project_visibility if Gitlab::CurrentSettings.restricted_visibility_levels.include?(visibility_level)
+
+        visibility_level
       end
 
       #

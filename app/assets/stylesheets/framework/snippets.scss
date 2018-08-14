@@ -29,8 +29,10 @@
 }
 
 .snippet-title {
-  font-size: 24px;
+  color: $gl-text-color;
+  font-size: 2em;
   font-weight: $gl-font-weight-bold;
+  min-height: $header-height;
 }
 
 .snippet-edited-ago {
@@ -38,11 +40,20 @@
 }
 
 .snippet-actions {
-  @media (min-width: $screen-sm-min) {
+  @include media-breakpoint-up(sm) {
     float: right;
   }
 }
 
 .snippet-scope-menu .btn-new {
   margin-top: 15px;
+}
+
+.embed-snippet {
+  padding-right: 0;
+  padding-top: $gl-padding;
+
+  .embed-toggle-list li button {
+    padding: 8px 40px;
+  }
 }

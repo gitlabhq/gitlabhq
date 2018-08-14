@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Discussions
   class ResolveService < Discussions::BaseService
     def execute(one_or_more_discussions)

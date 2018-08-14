@@ -27,7 +27,7 @@
     "due_date": { "type": "date" },
     "confidential": { "type": "boolean" },
     "discussion_locked": { "type": ["boolean", "null"] },
-    "updated_by_id": { "type": ["string", "null"] },
+    "updated_by_id": { "type": ["integer", "null"] },
     "time_estimate": { "type": "integer" },
     "total_time_spent": { "type": "integer" },
     "human_time_estimate": { "type": ["integer", "null"] },

@@ -51,7 +51,7 @@ module Gitlab
           end
 
           def move_repository(project, old_path, new_path)
-            unless gitlab_shell.mv_repository(project.repository_storage_path,
+            unless gitlab_shell.mv_repository(project.repository_storage,
                                               old_path,
                                               new_path)
               Rails.logger.error "Error moving #{old_path} to #{new_path}"

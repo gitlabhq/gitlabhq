@@ -1,11 +1,13 @@
 class Projects::JobsController < Projects::ApplicationController
-  before_action :build, except: [:index, :cancel_all]
+  include SendFileUpload
 
-  before_action :authorize_read_build!,
-    only: [:index, :show, :status, :raw, :trace]
+  before_action :build, except: [:index, :cancel_all]
+  before_action :authorize_read_build!
   before_action :authorize_update_build!,
     except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
   before_action :authorize_erase_build!, only: [:erase]
+  before_action :authorize_use_build_terminal!, only: [:terminal, :terminal_workhorse_authorize]
+  before_action :verify_api_request!, only: :terminal_websocket_authorize
 
   layout 'project'
 
@@ -43,9 +45,10 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def show
-    @builds = @project.pipelines.find_by_sha(@build.sha).builds.order('id DESC')
-    @builds = @builds.where("id not in (?)", @build.id)
     @pipeline = @build.pipeline
+    @builds = @pipeline.builds
+      .order('id DESC')
+      .present(current_user: current_user)
 
     respond_to do |format|
       format.html
@@ -117,13 +120,28 @@ class Projects::JobsController < Projects::ApplicationController
   end
 
   def raw
-    build.trace.read do |stream|
-      if stream.file?
-        send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
-      else
-        render_404
+    if trace_artifact_file
+      send_upload(trace_artifact_file,
+                  send_params: raw_send_params,
+                  redirect_params: raw_redirect_params)
+    else
+      build.trace.read do |stream|
+        if stream.file?
+          send_file stream.path, type: 'text/plain; charset=utf-8', disposition: 'inline'
+        else
+          send_data stream.raw, type: 'text/plain; charset=utf-8', disposition: 'inline', filename: 'job.log'
+        end
       end
     end
+  end
+
+  def terminal
+  end
+
+  # GET .../terminal.ws : implemented in gitlab-workhorse
+  def terminal_websocket_authorize
+    set_workhorse_internal_api_content_type
+    render json: Gitlab::Workhorse.terminal_websocket(@build.terminal_specification)
   end
 
   private
@@ -134,6 +152,26 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_erase_build!
     return access_denied! unless can?(current_user, :erase_build, build)
+  end
+
+  def authorize_use_build_terminal!
+    return access_denied! unless can?(current_user, :create_build_terminal, build)
+  end
+
+  def verify_api_request!
+    Gitlab::Workhorse.verify_api_request!(request.headers)
+  end
+
+  def raw_send_params
+    { type: 'text/plain; charset=utf-8', disposition: 'inline' }
+  end
+
+  def raw_redirect_params
+    { query: { 'response-content-type' => 'text/plain; charset=utf-8', 'response-content-disposition' => 'inline' } }
+  end
+
+  def trace_artifact_file
+    @trace_artifact_file ||= build.job_artifacts_trace&.file
   end
 
   def build

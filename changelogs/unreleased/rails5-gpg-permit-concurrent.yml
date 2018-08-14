@@ -1,0 +1,5 @@
+---
+title: Permit concurrent loads in gpg keychain mutex
+merge_request: 20894
+author: Jasper Maes
+type: fixed

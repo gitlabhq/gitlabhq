@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'User manages group links' do
+describe 'Projects > Settings > User manages group links' do
   include Select2Helper
 
   let(:user) { create(:user) }
@@ -9,10 +9,10 @@ describe 'User manages group links' do
   let(:group_market) { create(:group, name: 'Market', path: 'market') }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
-    share_link = project.project_group_links.new(group_access: Gitlab::Access::MASTER)
+    share_link = project.project_group_links.new(group_access: Gitlab::Access::MAINTAINER)
     share_link.group_id = group_ops.id
     share_link.save!
 
@@ -30,7 +30,7 @@ describe 'User manages group links' do
     click_link('Share with group')
 
     select2(group_market.id, from: '#link_group_id')
-    select('Master', from: 'link_group_access')
+    select('Maintainer', from: 'link_group_access')
 
     click_button('Share')
 

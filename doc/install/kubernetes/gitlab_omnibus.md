@@ -71,7 +71,7 @@ For most installations, only two parameters are required:
 
 Other common configuration options:
 - `baseIP`: the desired [external IP address](#external-ip-recommended)
-- `gitlab`: Choose the [desired edition](https://about.gitlab.com/products), either `ee` or `ce`. `ce` is the default.
+- `gitlab`: Choose the [desired edition](https://about.gitlab.com/pricing), either `ee` or `ce`. `ce` is the default.
 - `gitlabEELicense`: For Enterprise Edition, the [license](https://docs.gitlab.com/ee/user/admin_area/license.html) can be installed directly via the Chart
 - `provider`: Optimizes the deployment for a cloud provider. The default is `gke` for [Google Kubernetes Engine](https://cloud.google.com/kubernetes-engine/), with `acs` also supported for the [Azure Container Service](https://azure.microsoft.com/en-us/services/container-service/).
 
@@ -120,7 +120,7 @@ gitlabConfigStorageSize: 1Gi
 Ingress routing and SSL are automatically configured within this Chart. An NGINX ingress is provisioned and configured, and will route traffic to any service. SSL certificates are automatically created and configured by [kube-lego](https://github.com/kubernetes/charts/tree/master/stable/kube-lego).
 
 > **Note:**
-Let's Encrypt limits a single TLD to five certificate requests within a single week. This means that common DNS wildcard services like [xip.io](http://xip.io) and [nip.io](http://nip.io) are unlikely to work.
+Let's Encrypt limits a single TLD to five certificate requests within a single week. This means that common DNS wildcard services like [nip.io](http://nip.io) and [nip.io](http://nip.io) are unlikely to work.
 
 ## Installing GitLab using the Helm Chart
 > **Note:**
@@ -129,8 +129,8 @@ You may see a temporary error message `SchedulerPredicates failed due to Persist
 Add the GitLab Helm repository and initialize Helm:
 
 ```bash
-helm repo add gitlab https://charts.gitlab.io
 helm init
+helm repo add gitlab https://charts.gitlab.io
 ```
 
 Once you have reviewed the [configuration settings](#configuring-and-installing-gitlab) you can install the chart. We recommending saving your configuration options in a `values.yaml` file for easier upgrades in the future.
@@ -144,7 +144,7 @@ helm install --name gitlab -f values.yaml gitlab/gitlab-omnibus
 or passing them on the command line:
 
 ```bash
-helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,gitlabEELicense=$LICENSE,legoEmail=email@gitlab.com gitlab/gitlab-omnibus
+helm install --name gitlab --set baseDomain=gitlab.io,baseIP=192.0.2.1,gitlab=ee,gitlabEELicense=$LICENSE,legoEmail=email@gitlab.com gitlab/gitlab-omnibus
 ```
 
 ## Updating GitLab using the Helm Chart

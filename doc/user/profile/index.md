@@ -30,6 +30,7 @@ You can edit your account settings by navigating from the up-right corner menu b
 From there, you can:
 
 - Update your personal information
+- Set a [custom status](#current-status) for your profile
 - Manage [2FA](account/two_factor_authentication.md)
 - Change your username and [delete your account](account/delete_account.md)
 - Manage applications that can
@@ -39,6 +40,7 @@ From there, you can:
 - Manage [SSH keys](../../ssh/README.md#ssh) to access your account via SSH
 - Manage your [preferences](preferences.md#syntax-highlighting-theme)
 to customize your own GitLab experience
+- [View your active sessions](active_sessions.md) and revoke any of them if necessary
 - Access your audit log, a security log of important events involving your account
 
 ## Changing your username
@@ -66,6 +68,49 @@ username, you can create a new group and transfer projects to it.
 Alternatively, you can follow [this detailed procedure from the GitLab Team Handbook](https://about.gitlab.com/handbook/tools-and-tips/#how-to-change-your-username-at-gitlabcom)
 which also covers the case where you have projects hosted with
 [GitLab Pages](../project/pages/index.md).
+
+## Private profile
+
+The following information will be hidden from the user profile page (https://gitlab.example.com/username) if this feature is enabled:
+
+- Atom feed
+- Date when account is created
+- Activity tab
+- Groups tab
+- Contributed projects tab
+- Personal projects tab
+- Snippets tab
+
+To enable private profile:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. Check the "Private profile" option.
+1. Hit **Update profile settings**.
+
+
+NOTE: **Note:**
+You and GitLab admins can see your the abovementioned information on your profile even if it is private.
+
+## Current status
+
+> Introduced in GitLab 11.2.
+
+You can provide a custom status message for your user profile along with an emoji that describes it.
+This may be helpful when you are out of office or otherwise not available.
+Other users can then take your status into consideration when responding to your issues or assigning work to you.
+Please be aware that your status is publicly visible even if your [profile is private](#private-profile).
+
+To set your current status:
+
+1. Navigate to your personal [profile settings](#profile-settings).
+1. In the text field below `Your status`, enter your status message.
+1. Select an emoji from the dropdown if you like.
+1. Hit **Update profile settings**.
+
+Status messages are restricted to 100 characters of plain text.
+They may however contain emoji codes such as `I'm on vacation :palm_tree:`.
+
+You can also set your current status [using the API](../../api/users.md#user-status).
 
 ## Troubleshooting
 

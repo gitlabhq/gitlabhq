@@ -31,7 +31,7 @@ class AddForeignKeysToTodos < ActiveRecord::Migration
   end
 
   def down
-    remove_foreign_key :todos, :users
+    remove_foreign_key :todos, column: :user_id
     remove_foreign_key :todos, column: :author_id
     remove_foreign_key :todos, :notes
   end

@@ -1,4 +1,5 @@
 // ECMAScript polyfills
+import 'core-js/fn/array/fill';
 import 'core-js/fn/array/find';
 import 'core-js/fn/array/find-index';
 import 'core-js/fn/array/from';
@@ -13,7 +14,9 @@ import 'core-js/es6/weak-map';
 
 // Browser polyfills
 import 'classlist-polyfill';
+import 'formdata-polyfill';
 import './polyfills/custom_event';
 import './polyfills/element';
 import './polyfills/event';
 import './polyfills/nodelist';
+import './polyfills/request_idle_callback';

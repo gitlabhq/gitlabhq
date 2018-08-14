@@ -17,6 +17,7 @@ module API
 
       def present_events(events)
         events = events.reorder(created_at: params[:sort])
+                 .with_associations
 
         present paginate(events), with: Entities::Event
       end

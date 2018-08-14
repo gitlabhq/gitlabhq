@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require_relative 'base_service'
 
 class ValidateNewBranchService < BaseService
@@ -13,7 +15,7 @@ class ValidateNewBranchService < BaseService
     end
 
     success
-  rescue Gitlab::Git::HooksService::PreReceiveError => ex
+  rescue Gitlab::Git::PreReceiveError => ex
     error(ex.message)
   end
 end

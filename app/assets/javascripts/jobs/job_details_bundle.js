@@ -4,7 +4,7 @@ import jobHeader from './components/header.vue';
 import detailsBlock from './components/sidebar_details_block.vue';
 
 export default () => {
-  const dataset = document.getElementById('js-job-details-vue').dataset;
+  const { dataset } = document.getElementById('js-job-details-vue');
   const mediator = new JobMediator({ endpoint: dataset.endpoint });
 
   mediator.fetchJob();
@@ -35,9 +35,11 @@ export default () => {
   });
 
   // Sidebar information block
+  const detailsBlockElement = document.getElementById('js-details-block-vue');
+  const detailsBlockDataset = detailsBlockElement.dataset;
   // eslint-disable-next-line
   new Vue({
-    el: '#js-details-block-vue',
+    el: detailsBlockElement,
     components: {
       detailsBlock,
     },
@@ -51,6 +53,8 @@ export default () => {
         props: {
           isLoading: this.mediator.state.isLoading,
           job: this.mediator.store.state.job,
+          runnerHelpUrl: dataset.runnerHelpUrl,
+          terminalPath: detailsBlockDataset.terminalPath,
         },
       });
     },

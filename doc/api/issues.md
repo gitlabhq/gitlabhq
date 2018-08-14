@@ -37,9 +37,9 @@ GET /issues?my_reaction_emoji=star
 | ------------------- | ---------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                                       |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels                         |
-| `milestone`         | string           | no         | The milestone title                                                                                                                                 |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`. Defaults to `created-by-me` _([Introduced][ce-13004] in GitLab 9.5)_ |
-| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned-to-me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                                                |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
+| `author_id`         | integer          | no         | Return issues created by the given user `id`. Combine with `scope=all` or `scope=assigned_to_me`. _([Introduced][ce-13004] in GitLab 9.5)_          |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                                              |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                                      |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                                       |
@@ -100,6 +100,7 @@ Example response:
       },
       "updated_at" : "2016-01-04T15:31:51.081Z",
       "closed_at" : null,
+      "closed_by" : null,
       "id" : 76,
       "title" : "Consequatur vero maxime deserunt laboriosam est voluptas dolorem.",
       "created_at" : "2016-01-04T15:31:51.081Z",
@@ -121,6 +122,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## List group issues
 
@@ -148,8 +151,8 @@ GET /groups/:id/issues?my_reaction_emoji=star
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
 | `iids[]`            | Array[integer]   | no         | Return only the issues having the given `iid`                                                                                 |
-| `milestone`         | string           | no         | The milestone title                                                                                                           |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
@@ -216,6 +219,7 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "closed_at" : null,
+      "closed_by" : null,
       "user_notes_count": 1,
       "due_date": null,
       "web_url": "http://example.com/example/example/issues/1",
@@ -232,6 +236,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## List project issues
 
@@ -259,8 +265,8 @@ GET /projects/:id/issues?my_reaction_emoji=star
 | `iids[]`            | Array[integer]   | no         | Return only the milestone having the given `iid`                                                                              |
 | `state`             | string           | no         | Return all issues or just those that are `opened` or `closed`                                                                 |
 | `labels`            | string           | no         | Comma-separated list of label names, issues must have all labels to be returned. `No+Label` lists all issues with no labels   |
-| `milestone`         | string           | no         | The milestone title                                                                                                           |
-| `scope`             | string           | no         | Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all` _([Introduced][ce-13004] in GitLab 9.5)_        |
+| `milestone`         | string           | no         | The milestone title. `No+Milestone` lists all issues with no milestone                                                                                                           |
+| `scope`             | string           | no         | Return issues for the given scope: `created_by_me`, `assigned_to_me` or `all`.<br> For versions before 11.0, use the now deprecated `created-by-me` or `assigned-to-me` scopes instead.<br> _([Introduced][ce-13004] in GitLab 9.5. [Changed to snake_case][ce-18935] in GitLab 11.0)_ |
 | `author_id`         | integer          | no         | Return issues created by the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                         |
 | `assignee_id`       | integer          | no         | Return issues assigned to the given user `id` _([Introduced][ce-13004] in GitLab 9.5)_                                        |
 | `my_reaction_emoji` | string           | no         | Return issues reacted by the authenticated user by the given `emoji` _([Introduced][ce-14016] in GitLab 10.0)_                |
@@ -326,6 +332,14 @@ Example response:
       "updated_at" : "2016-01-04T15:31:46.176Z",
       "created_at" : "2016-01-04T15:31:46.176Z",
       "closed_at" : "2016-01-05T15:31:46.176Z",
+      "closed_by" : {
+         "state" : "active",
+         "web_url" : "https://gitlab.example.com/root",
+         "avatar_url" : null,
+         "username" : "root",
+         "id" : 1,
+         "name" : "Administrator"
+      },
       "user_notes_count": 1,
       "due_date": "2016-07-22",
       "web_url": "http://example.com/example/example/issues/1",
@@ -342,6 +356,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Single issue
 
@@ -409,6 +425,8 @@ Example response:
    "title" : "Ut commodi ullam eos dolores perferendis nihil sunt.",
    "updated_at" : "2016-01-04T15:31:46.176Z",
    "created_at" : "2016-01-04T15:31:46.176Z",
+   "closed_at" : null,
+   "closed_by" : null,
    "subscribed": false,
    "user_notes_count": 1,
    "due_date": null,
@@ -432,6 +450,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## New issue
 
 Creates a new project issue.
@@ -443,11 +463,12 @@ POST /projects/:id/issues
 | Attribute                                 | Type           | Required | Description  |
 |-------------------------------------------|----------------|----------|--------------|
 | `id`                                      | integer/string | yes      | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `iid`                                     | integer/string | no       | The internal ID of the project's issue (requires admin or project owner rights) |
 | `title`                                   | string  | yes      | The title of an issue |
 | `description`                             | string  | no       | The description of an issue  |
 | `confidential`                            | boolean | no       | Set an issue to be confidential. Default is `false`.  |
 | `assignee_ids`                            | Array[integer] | no       | The ID of the users to assign issue |
-| `milestone_id`                            | integer | no       | The ID of a milestone to assign issue  |
+| `milestone_id`                            | integer | no       | The global ID of a milestone to assign issue  |
 | `labels`                                  | string  | no       | Comma-separated label names for an issue  |
 | `created_at`                              | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
 | `due_date`                                | string  | no       | Date time string in the format YEAR-MONTH-DAY, e.g. `2016-03-11` |
@@ -484,6 +505,7 @@ Example response:
    "description" : null,
    "updated_at" : "2016-01-07T12:44:33.959Z",
    "closed_at" : null,
+   "closed_by" : null,
    "milestone" : null,
    "subscribed" : true,
    "user_notes_count": 0,
@@ -508,6 +530,8 @@ Example response:
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
 
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
+
 ## Edit issue
 
 Updates an existing project issue. This call is also used to mark an issue as
@@ -525,7 +549,7 @@ PUT /projects/:id/issues/:issue_iid
 | `description`  | string  | no       | The description of an issue                                                                                |
 | `confidential` | boolean | no       | Updates an issue to be confidential                                                                        |
 | `assignee_ids`  | Array[integer] | no  | The ID of the user(s) to assign the issue to. Set to `0` or provide an empty value to unassign all assignees.  |
-| `milestone_id` | integer | no       | The ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
+| `milestone_id` | integer | no       | The global ID of a milestone to assign the issue to. Set to `0` or provide an empty value to unassign a milestone.|
 | `labels`       | string  | no       | Comma-separated label names for an issue. Set to an empty string to unassign all labels.                   |
 | `state_event`  | string  | no       | The state event of an issue. Set `close` to close the issue and `reopen` to reopen it                      |
 | `updated_at`   | string  | no       | Date time string, ISO 8601 formatted, e.g. `2016-03-11T03:45:40Z` (requires admin or project owner rights) |
@@ -556,6 +580,14 @@ Example response:
    "description" : null,
    "updated_at" : "2016-01-07T12:55:16.213Z",
    "closed_at" : "2016-01-08T12:55:16.213Z",
+   "closed_by" : {
+      "state" : "active",
+      "web_url" : "https://gitlab.example.com/root",
+      "avatar_url" : null,
+      "username" : "root",
+      "id" : 1,
+      "name" : "Administrator"
+    },
    "iid" : 15,
    "labels" : [
       "bug"
@@ -586,6 +618,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Delete an issue
 
@@ -640,6 +674,7 @@ Example response:
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
   "closed_at": null,
+  "closed_by": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -686,6 +721,8 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Subscribe to an issue
 
@@ -719,6 +756,7 @@ Example response:
   "created_at": "2016-04-05T21:41:45.652Z",
   "updated_at": "2016-04-07T12:20:17.596Z",
   "closed_at": null,
+  "closed_by": null,
   "labels": [],
   "milestone": null,
   "assignees": [{
@@ -765,6 +803,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Unsubscribe from an issue
 
@@ -807,6 +848,8 @@ Example response:
     "avatar_url": "http://www.gravatar.com/avatar/3e6f06a86cf27fa8b56f3f74f7615987?s=80&d=identicon",
     "web_url": "https://gitlab.example.com/keyon"
   },
+  "closed_at": null,
+  "closed_by": null,
   "author": {
     "name": "Vivian Hermann",
     "username": "orville",
@@ -926,6 +969,9 @@ Example response:
 ```
 
 **Note**: `assignee` column is deprecated, now we show it as a single-sized array `assignees` to conform to the GitLab EE API.
+
+
+**Note**: The `closed_by` attribute was [introduced in GitLab 10.6][ce-17042]. This value will only be present for issues which were closed after GitLab 10.6 and when the user account that closed the issue still exists.
 
 ## Set a time estimate for an issue
 
@@ -1112,6 +1158,8 @@ Example response:
     "assignee": null,
     "source_project_id": 1,
     "target_project_id": 1,
+    "closed_at": null,
+    "closed_by": null,
     "labels": [],
     "work_in_progress": false,
     "milestone": null,
@@ -1206,3 +1254,5 @@ Example response:
 
 [ce-13004]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13004
 [ce-14016]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14016
+[ce-17042]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17042
+[ce-18935]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/18935

@@ -27,17 +27,18 @@
         color: $black;
         border-bottom: 2px solid $gray-darkest;
 
-        .badge {
+        .badge.badge-pill {
           color: $black;
         }
       }
     }
 
-    &.active a {
+    &.active a,
+    a.active {
       color: $black;
       font-weight: $gl-font-weight-bold;
 
-      .badge {
+      .badge.badge-pill {
         color: $black;
       }
     }
@@ -56,7 +57,7 @@
     white-space: normal;
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
     }
   }
@@ -80,7 +81,7 @@
     }
 
     /* Small devices (phones, tablets, 768px and lower) */
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       width: 100%;
 
       &.mobile-separator {
@@ -124,21 +125,13 @@
       position: relative;
 
       /* Medium devices (desktops, 992px and up) */
-      @media (min-width: $screen-md-min) { width: 200px; }
+      @include media-breakpoint-up(md) { width: 200px; }
 
       /* Large devices (large desktops, 1200px and up) */
-      @media (min-width: $screen-lg-min) { width: 250px; }
-
-      &.input-short {
-        /* Medium devices (desktops, 992px and up) */
-        @media (min-width: $screen-md-min) { width: 170px; }
-
-        /* Large devices (large desktops, 1200px and up) */
-        @media (min-width: $screen-lg-min) { width: 210px; }
-      }
+      @include media-breakpoint-up(lg) { width: 250px; }
     }
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       padding-bottom: 0;
       width: 100%;
 
@@ -164,10 +157,6 @@
         }
       }
 
-      .input-short {
-        width: 100%;
-      }
-
       .icon-label {
         display: inline-block;
       }
@@ -184,7 +173,7 @@
     .nav-controls {
       width: auto;
 
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         width: 100%;
       }
     }
@@ -204,11 +193,11 @@
     width: 100%;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-flow: row wrap;
 
     .nav-controls {
-      $controls-margin: $btn-xs-side-margin - 2px;
+      $controls-margin: $btn-margin-5 - 2px;
       flex: 0 0 100%;
 
       &.controls-flex {
@@ -272,8 +261,6 @@
 }
 
 .inner-page-scroll-tabs {
-  position: relative;
-
   .fade-right {
     @include fade(left, $white-light);
     right: 0;
@@ -334,10 +321,17 @@
   }
 
   &.activities {
+    display: flex;
     border-bottom: 1px solid $border-color;
+    overflow: hidden;
 
     .nav-links {
       border-bottom: 0;
+    }
+
+    @include media-breakpoint-down(xs) {
+      display: block;
+      overflow: visible;
     }
   }
 }
@@ -360,7 +354,7 @@
 
 .empty-state .project-item-select-holder.btn-group {
   float: none;
-  display: inline-block;
+  justify-content: center;
 
   .btn {
     // overrides styles applied to plain `.empty-state .btn`
@@ -368,7 +362,7 @@
     max-width: 300px;
     width: auto;
 
-    @media(max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       max-width: 250px;
     }
   }

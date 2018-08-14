@@ -161,6 +161,11 @@ describe Gitlab::EncodingHelper do
         'removes invalid bytes from ASCII-8bit encoded multibyte string.',
         "Lorem ipsum\xC3\n dolor sit amet, xy\xC3\xA0y\xC3\xB9abcd\xC3\xB9efg".force_encoding('ASCII-8BIT'),
         "Lorem ipsum\n dolor sit amet, xyàyùabcdùefg"
+      ],
+      [
+        'handles UTF-16BE encoded strings',
+        "\xFE\xFF\x00\x41".force_encoding('ASCII-8BIT'), # An "A" prepended with UTF-16 BOM
+        "\xEF\xBB\xBFA" # An "A" prepended with UTF-8 BOM
       ]
     ].each do |description, test_string, xpect|
       it description do

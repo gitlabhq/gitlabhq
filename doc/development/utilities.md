@@ -135,3 +135,44 @@ We developed a number of utilities to ease development.
 
     Find.new.clear_memoization(:result)
     ```
+
+## [`RequestCache`](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/gitlab/cache/request_cache.rb)
+
+This module provides a simple way to cache values in RequestStore,
+and the cache key would be based on the class name, method name,
+optionally customized instance level values, optionally customized
+method level values, and optional method arguments.
+
+A simple example that only uses the instance level customised values:
+
+``` ruby
+class UserAccess
+  extend Gitlab::Cache::RequestCache
+
+  request_cache_key do
+    [user&.id, project&.id]
+  end
+
+  request_cache def can_push_to_branch?(ref)
+    # ...
+  end
+end
+```
+
+This way, the result of `can_push_to_branch?` would be cached in
+`RequestStore.store` based on the cache key. If `RequestStore` is not
+currently active, then it would be stored in a hash saved in an
+instance variable, so the cache logic would be the same.
+
+We can also set different strategies for different methods:
+
+``` ruby
+class Commit
+  extend Gitlab::Cache::RequestCache
+
+  def author
+    User.find_by_any_email(author_email.downcase)
+  end
+  request_cache(:author) { author_email.downcase }
+end
+```

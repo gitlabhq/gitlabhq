@@ -85,7 +85,7 @@ class GroupsController < Groups::ApplicationController
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
-      redirect_to edit_group_path(@group), notice: "Group '#{@group.name}' was successfully updated."
+      redirect_to edit_group_path(@group, anchor: params[:update_section]), notice: "Group '#{@group.name}' was successfully updated."
     else
       @group.restore_path!
 
@@ -173,7 +173,9 @@ class GroupsController < Groups::ApplicationController
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
 
-    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
+    Events::RenderService
+      .new(current_user)
+      .execute(@events, atom_request: request.format.atom?)
   end
 
   def user_actions
@@ -187,6 +189,6 @@ class GroupsController < Groups::ApplicationController
 
     params[:id] = group.to_param
 
-    url_for(params)
+    url_for(safe_params)
   end
 end

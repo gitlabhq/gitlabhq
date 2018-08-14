@@ -1,6 +1,6 @@
 module QA
-  feature 'merge request rebase', :core do
-    scenario 'rebases source branch of merge request'  do
+  describe 'merge request rebase', :core do
+    it 'rebases source branch of merge request'  do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
@@ -16,7 +16,7 @@ module QA
         merge_request.title = 'Needs rebasing'
       end
 
-      Factory::Repository::Push.fabricate! do |push|
+      Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
         push.file_name = "other.txt"
         push.file_content = "New file added!"

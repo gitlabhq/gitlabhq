@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Project members list' do
+describe 'Project members list' do
   include Select2Helper
 
   let(:user1) { create(:user, name: 'John Doe') }
@@ -8,12 +8,12 @@ feature 'Project members list' do
   let(:group) { create(:group) }
   let(:project) { create(:project, namespace: group) }
 
-  background do
+  before do
     sign_in(user1)
     group.add_owner(user1)
   end
 
-  scenario 'show members from project and group' do
+  it 'show members from project and group' do
     project.add_developer(user2)
 
     visit_members_page
@@ -22,7 +22,7 @@ feature 'Project members list' do
     expect(second_row.text).to include(user2.name)
   end
 
-  scenario 'show user once if member of both group and project' do
+  it 'show user once if member of both group and project' do
     project.add_developer(user1)
 
     visit_members_page
@@ -31,7 +31,7 @@ feature 'Project members list' do
     expect(second_row).to be_blank
   end
 
-  scenario 'update user acess level', :js do
+  it 'update user acess level', :js do
     project.add_developer(user2)
 
     visit_members_page
@@ -44,7 +44,7 @@ feature 'Project members list' do
     end
   end
 
-  scenario 'add user to project', :js do
+  it 'add user to project', :js do
     visit_members_page
 
     add_user(user2.id, 'Reporter')
@@ -55,7 +55,7 @@ feature 'Project members list' do
     end
   end
 
-  scenario 'remove user from project', :js do
+  it 'remove user from project', :js do
     other_user = create(:user)
     project.add_developer(other_user)
 
@@ -71,7 +71,7 @@ feature 'Project members list' do
     expect(project.users).not_to include(other_user)
   end
 
-  scenario 'invite user to project', :js do
+  it 'invite user to project', :js do
     visit_members_page
 
     add_user('test@example.com', 'Reporter')

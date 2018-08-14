@@ -1,24 +1,24 @@
 <script>
-  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
-  import Icon from '~/vue_shared/components/icon.vue';
+import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import Icon from '~/vue_shared/components/icon.vue';
 
-  export default {
-    components: {
-      ClipboardButton,
-      Icon,
+export default {
+  components: {
+    ClipboardButton,
+    Icon,
+  },
+  props: {
+    diffFile: {
+      type: Object,
+      required: true,
     },
-    props: {
-      diffFile: {
-        type: Object,
-        required: true,
-      },
+  },
+  computed: {
+    titleTag() {
+      return this.diffFile.discussionPath ? 'a' : 'span';
     },
-    computed: {
-      titleTag() {
-        return this.diffFile.discussionPath ? 'a' : 'span';
-      },
-    },
-  };
+  },
+};
 </script>
 
 <template>
@@ -29,12 +29,12 @@
       <span>
         <icon name="archive" />
         <strong
-          v-html="diffFile.submoduleLink"
           class="file-title-name"
+          v-html="diffFile.submoduleLink"
         ></strong>
         <clipboard-button
-          title="Copy file path to clipboard"
           :text="diffFile.submoduleLink"
+          title="Copy file path to clipboard"
           css-class="btn-default btn-transparent btn-clipboard"
         />
       </span>
@@ -48,16 +48,16 @@
         <span v-html="diffFile.blobIcon"></span>
         <span v-if="diffFile.renamedFile">
           <strong
-            class="file-title-name has-tooltip"
             :title="diffFile.oldPath"
+            class="file-title-name has-tooltip"
             data-container="body"
           >
             {{ diffFile.oldPath }}
           </strong>
           &rarr;
           <strong
-            class="file-title-name has-tooltip"
             :title="diffFile.newPath"
+            class="file-title-name has-tooltip"
             data-container="body"
           >
             {{ diffFile.newPath }}
@@ -66,8 +66,8 @@
 
         <strong
           v-else
-          class="file-title-name has-tooltip"
           :title="diffFile.oldPath"
+          class="file-title-name has-tooltip"
           data-container="body"
         >
           {{ diffFile.filePath }}
@@ -78,8 +78,8 @@
       </component>
 
       <clipboard-button
-        title="Copy file path to clipboard"
         :text="diffFile.filePath"
+        title="Copy file path to clipboard"
         css-class="btn-default btn-transparent btn-clipboard"
       />
 

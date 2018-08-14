@@ -2,7 +2,7 @@
 - return if note.cross_reference_not_visible_for?(current_user)
 
 - show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)
-- note_editable = note_editable?(note)
+- note_editable = can?(current_user, :admin_note, note)
 - note_counter = local_assigns.fetch(:note_counter, 0)
 
 %li.timeline-entry{ id: dom_id(note),
@@ -25,24 +25,25 @@
             - elsif note_counter == 0
               - counter = badge_counter if local_assigns[:badge_counter]
               - badge_class = "hidden" if @fresh_discussion || counter.nil?
-              %span.badge{ class: badge_class }
+              %span.badge.badge-pill{ class: badge_class }
                 = counter
     .timeline-content
       .note-header
         .note-header-info
           %a{ href: user_path(note.author) }
-            %span.note-header-author-name= sanitize(note.author.name)
+            %span.note-header-author-name
+              = sanitize(note.author.name)
+            = user_status(note.author)
             %span.note-headline-light
               = note.author.to_reference
           %span.note-headline-light
             %span.note-headline-meta
-              - unless note.system
-                commented
               - if note.system
                 %span.system-note-message
                   = markdown_field(note, :note)
-              %a{ href: "##{dom_id(note)}" }
-                = time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
+              %span.system-note-separator
+                &middot;
+              %a.system-note-separator{ href: "##{dom_id(note)}" }= time_ago_with_tooltip(note.created_at, placement: 'bottom', html_class: 'note-created-ago')
         - unless note.system?
           .note-actions
             - if note.for_personal_snippet?
@@ -53,14 +54,14 @@
         .note-text.md
           = markdown_field(note, :note)
         = edited_time_ago_with_tooltip(note, placement: 'bottom', html_class: 'note_edited_ago')
-        .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore } }
+        .original-note-content.hidden{ data: { post_url: note_url(note), target_id: note.noteable.id, target_type: note.noteable.class.name.underscore, markdown_version: note.cached_markdown_version } }
           #{note.note}
         - if note_editable
           = render 'shared/notes/edit', note: note
         .note-awards
           = render 'award_emoji/awards_block', awardable: note, inline: false
         - if note.system
-          .system-note-commit-list-toggler
+          .system-note-commit-list-toggler.hide
             Toggle commit list
             %i.fa.fa-angle-down
       - if note.attachment.url

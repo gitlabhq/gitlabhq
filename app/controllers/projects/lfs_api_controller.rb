@@ -1,6 +1,8 @@
 class Projects::LfsApiController < Projects::GitHttpClientController
   include LfsRequest
 
+  LFS_TRANSFER_CONTENT_TYPE = 'application/octet-stream'.freeze
+
   skip_before_action :lfs_check_access!, only: [:deprecated]
   before_action :lfs_check_batch_operation!, only: [:batch]
 
@@ -25,7 +27,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         message: 'Server supports batch API only, please update your Git LFS client to version 1.0.1 and up.',
         documentation_url: "#{Gitlab.config.gitlab.url}/help"
       },
-      status: 501
+      status: :not_implemented
     )
   end
 
@@ -41,7 +43,7 @@ class Projects::LfsApiController < Projects::GitHttpClientController
 
   def existing_oids
     @existing_oids ||= begin
-      storage_project.lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
+      project.all_lfs_objects.where(oid: objects.map { |o| o['oid'].to_s }).pluck(:oid)
     end
   end
 
@@ -86,14 +88,17 @@ class Projects::LfsApiController < Projects::GitHttpClientController
       upload: {
         href: "#{project.http_url_to_repo}/gitlab-lfs/objects/#{object[:oid]}/#{object[:size]}",
         header: {
-          Authorization: request.headers['Authorization']
+          Authorization: request.headers['Authorization'],
+          # git-lfs v2.5.0 sets the Content-Type based on the uploaded file. This
+          # ensures that Workhorse can intercept the request.
+          'Content-Type': LFS_TRANSFER_CONTENT_TYPE
         }.compact
       }
     }
   end
 
   def lfs_check_batch_operation!
-    if upload_request? && Gitlab::Database.read_only?
+    if batch_operation_disallowed?
       render(
         json: {
           message: lfs_read_only_message
@@ -102,6 +107,11 @@ class Projects::LfsApiController < Projects::GitHttpClientController
         status: 403
       )
     end
+  end
+
+  # Overridden in EE
+  def batch_operation_disallowed?
+    upload_request? && Gitlab::Database.read_only?
   end
 
   # Overridden in EE

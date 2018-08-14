@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe JiraService do
   include Gitlab::Routing
+  include AssetsHelpers
 
   describe '#options' do
     let(:service) do
@@ -29,6 +30,10 @@ describe JiraService do
   describe "Associations" do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
+    it { is_expected.to allow_value(nil).for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value("1,2,3").for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value("1;2;3").for(:jira_issue_transition_id) }
+    it { is_expected.not_to allow_value("a,b,cd").for(:jira_issue_transition_id) }
   end
 
   describe 'Validations' do
@@ -123,7 +128,7 @@ describe JiraService do
         url: 'http://jira.example.com',
         username: 'gitlab_jira_username',
         password: 'gitlab_jira_password',
-        jira_issue_transition_id: "custom-id"
+        jira_issue_transition_id: "999"
       )
 
       # These stubs are needed to test JiraService#close_issue.
@@ -164,6 +169,8 @@ describe JiraService do
     it "creates Remote Link reference in JIRA for comment" do
       @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
 
+      favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
+
       # Creates comment
       expect(WebMock).to have_requested(:post, @comment_url)
       # Creates Remote Link in JIRA issue fields
@@ -173,7 +180,7 @@ describe JiraService do
           object: {
             url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
-            icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+            icon: { title: "GitLab", url16x16: favicon_path },
             status: { resolved: true }
           }
         )
@@ -223,12 +230,49 @@ describe JiraService do
       ).once
     end
 
-    it "calls the api with jira_issue_transition_id" do
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+    context '#close_issue' do
+      it "logs exception when transition id is not valid" do
+        allow(Rails.logger).to receive(:info)
+        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise("Bad Request")
 
-      expect(WebMock).to have_requested(:post, @transitions_url).with(
-        body: /custom-id/
-      ).once
+        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+        expect(Rails.logger).to have_received(:info).with("JiraService Issue Transition failed message ERROR: http://jira.example.com - Bad Request")
+      end
+
+      it "calls the api with jira_issue_transition_id" do
+        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+        expect(WebMock).to have_requested(:post, @transitions_url).with(
+          body: /999/
+        ).once
+      end
+
+      context "when have multiple transition ids" do
+        it "calls the api with transition ids separated by comma" do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1,2,3")
+
+          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+          1.upto(3) do |transition_id|
+            expect(WebMock).to have_requested(:post, @transitions_url).with(
+              body: /#{transition_id}/
+            ).once
+          end
+        end
+
+        it "calls the api with transition ids separated by semicolon" do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1;2;3")
+
+          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+
+          1.upto(3) do |transition_id|
+            expect(WebMock).to have_requested(:post, @transitions_url).with(
+              body: /#{transition_id}/
+            ).once
+          end
+        end
+      end
     end
   end
 
@@ -462,6 +506,20 @@ describe JiraService do
         expect(@service.properties['url']).to eq('http://jira.sample/projects/project_a')
         expect(@service.properties['api_url']).to eq('http://jira.sample/api')
       end
+    end
+  end
+
+  describe 'favicon urls', :request_store do
+    it 'includes the standard favicon' do
+      props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
+      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/assets/favicon(?:-\h+).png$}
+    end
+
+    it 'includes returns the custom favicon' do
+      create :appearance, favicon: fixture_file_upload('spec/fixtures/dk.png')
+
+      props = described_class.new.send(:build_remote_link_props, url: 'http://example.com', title: 'title')
+      expect(props[:object][:icon][:url16x16]).to match %r{^http://localhost/uploads/-/system/appearance/favicon/\d+/dk.png$}
     end
   end
 end

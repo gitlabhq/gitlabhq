@@ -1,44 +1,63 @@
-= form_for @appearance, url: admin_appearances_path, html: { class: 'form-horizontal'} do |f|
+= form_for @appearance, url: admin_appearances_path do |f|
   = form_errors(@appearance)
 
   %fieldset.app_logo
     %legend
       Navigation bar:
-  .form-group
-    = f.label :header_logo, 'Header logo', class: 'control-label'
+  .form-group.row
+    = f.label :header_logo, 'Header logo', class: 'col-sm-2 col-form-label'
     .col-sm-10
       - if @appearance.header_logo?
         = image_tag @appearance.header_logo_url, class: 'appearance-light-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove header logo', header_logos_admin_appearances_path, data: { confirm: "Header logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :header_logo_cache
       = f.file_field :header_logo, class: ""
       .hint
         Maximum file size is 1MB. Pages are optimized for a 28px tall header logo
 
+  %fieldset.app_logo
+    %legend
+      Favicon:
+  .form-group.row
+    = f.label :favicon, 'Favicon', class: 'col-sm-2 col-form-label'
+    .col-sm-10
+      - if @appearance.favicon?
+        = image_tag @appearance.favicon_url, class: 'appearance-light-logo-preview'
+        - if @appearance.persisted?
+          %br
+          = link_to 'Remove favicon', favicon_admin_appearances_path, data: { confirm: "Favicon will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
+        %hr
+      = f.hidden_field :favicon_cache
+      = f.file_field :favicon, class: ''
+      .hint
+        Maximum file size is 1MB. Image size must be 32x32px. Allowed image formats are #{favicon_extension_whitelist}.
+        %br
+        Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.
+
   %fieldset.sign-in
     %legend
       Sign in/Sign up pages:
-  .form-group
-    = f.label :title, class: 'control-label'
+  .form-group.row
+    = f.label :title, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_field :title, class: "form-control"
-  .form-group
-    = f.label :description, class: 'control-label'
+  .form-group.row
+    = f.label :description, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_area :description, class: "form-control", rows: 10
       .hint
         Description parsed with #{link_to "GitLab Flavored Markdown", help_page_path('user/markdown'), target: '_blank'}.
-  .form-group
-    = f.label :logo, class: 'control-label'
+  .form-group.row
+    = f.label :logo, class: 'col-sm-2 col-form-label'
     .col-sm-10
       - if @appearance.logo?
         = image_tag @appearance.logo_url, class: 'appearance-logo-preview'
         - if @appearance.persisted?
           %br
-          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-logo"
+          = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-inverted btn-remove btn-sm remove-logo"
         %hr
       = f.hidden_field :logo_cache
       = f.file_field :logo, class: ""
@@ -48,8 +67,8 @@
   %fieldset
     %legend
       New project pages:
-  .form-group
-    = f.label :new_project_guidelines, class: 'control-label'
+  .form-group.row
+    = f.label :new_project_guidelines, class: 'col-sm-2 col-form-label'
     .col-sm-10
       = f.text_area :new_project_guidelines, class: "form-control", rows: 10
       .hint
@@ -63,5 +82,5 @@
       = link_to 'New project page', new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
     - if @appearance.updated_at
-      %span.pull-right
+      %span.float-right
         Last edit #{time_ago_with_tooltip(@appearance.updated_at)}

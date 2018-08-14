@@ -10,9 +10,9 @@ describe ContributedProjectsFinder do
   let!(:private_project) { create(:project, :private) }
 
   before do
-    private_project.add_master(source_user)
+    private_project.add_maintainer(source_user)
     private_project.add_developer(current_user)
-    public_project.add_master(source_user)
+    public_project.add_maintainer(source_user)
 
     create(:push_event, project: public_project, author: source_user)
     create(:push_event, project: private_project, author: source_user)

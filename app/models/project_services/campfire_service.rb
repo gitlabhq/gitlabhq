@@ -1,6 +1,6 @@
-class CampfireService < Service
-  include HTTParty
+# frozen_string_literal: true
 
+class CampfireService < Service
   prop_accessor :token, :subdomain, :room
   validates :token, presence: true, if: :activated?
 
@@ -31,7 +31,6 @@ class CampfireService < Service
   def execute(data)
     return unless supported_events.include?(data[:object_kind])
 
-    self.class.base_uri base_uri
     message = build_message(data)
     speak(self.room, message, auth)
   end
@@ -69,14 +68,14 @@ class CampfireService < Service
         }
       }
     }
-    res = self.class.post(path, auth.merge(body))
+    res = Gitlab::HTTP.post(path, base_uri: base_uri, **auth.merge(body))
     res.code == 201 ? res : nil
   end
 
   # Returns a list of rooms, or [].
   # https://github.com/basecamp/campfire-api/blob/master/sections/rooms.md#get-rooms
   def rooms(auth)
-    res = self.class.get("/rooms.json", auth)
+    res = Gitlab::HTTP.get("/rooms.json", base_uri: base_uri, **auth)
     res.code == 200 ? res["rooms"] : []
   end
 
@@ -85,7 +84,7 @@ class CampfireService < Service
     before = push[:before]
     after = push[:after]
 
-    message = ""
+    message = []
     message << "[#{project.full_name}] "
     message << "#{push[:user_name]} "
 
@@ -98,6 +97,6 @@ class CampfireService < Service
       message << "#{project.web_url}/compare/#{before}...#{after}"
     end
 
-    message
+    message.join
   end
 end

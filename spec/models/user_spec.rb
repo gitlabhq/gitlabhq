@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe User do
   include ProjectForksHelper
+  include TermsHelper
 
   describe 'modules' do
     subject { described_class }
@@ -19,15 +20,15 @@ describe User do
 
   describe 'associations' do
     it { is_expected.to have_one(:namespace) }
+    it { is_expected.to have_one(:status) }
     it { is_expected.to have_many(:snippets).dependent(:destroy) }
     it { is_expected.to have_many(:members) }
     it { is_expected.to have_many(:project_members) }
     it { is_expected.to have_many(:group_members) }
     it { is_expected.to have_many(:groups) }
     it { is_expected.to have_many(:keys).dependent(:destroy) }
-    it { is_expected.to have_many(:deploy_keys).dependent(:destroy) }
+    it { is_expected.to have_many(:deploy_keys).dependent(:nullify) }
     it { is_expected.to have_many(:events).dependent(:destroy) }
-    it { is_expected.to have_many(:recent_events).class_name('Event') }
     it { is_expected.to have_many(:issues).dependent(:destroy) }
     it { is_expected.to have_many(:notes).dependent(:destroy) }
     it { is_expected.to have_many(:merge_requests).dependent(:destroy) }
@@ -39,7 +40,7 @@ describe User do
     it { is_expected.to have_many(:builds).dependent(:nullify) }
     it { is_expected.to have_many(:pipelines).dependent(:nullify) }
     it { is_expected.to have_many(:chat_names).dependent(:destroy) }
-    it { is_expected.to have_many(:uploads).dependent(:destroy) }
+    it { is_expected.to have_many(:uploads) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:destroy).class_name('AbuseReport') }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
 
@@ -124,23 +125,6 @@ describe User do
           user.username = 'new_path'
           expect(user).to be_invalid
           expect(user.errors.messages[:username].first).to match('cannot be changed if a personal project has container registry tags')
-        end
-      end
-
-      context 'when the username was used by another user before' do
-        let(:username) { 'foo' }
-        let!(:other_user) { create(:user, username: username) }
-
-        before do
-          other_user.username = 'bar'
-          other_user.save!
-        end
-
-        it 'is invalid' do
-          user = build(:user, username: username)
-
-          expect(user).not_to be_valid
-          expect(user.errors.full_messages).to eq(['Username has been taken before'])
         end
       end
 
@@ -400,7 +384,7 @@ describe User do
       let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
 
       it 'allows a verfied secondary email to be used as the primary without needing reconfirmation' do
-        user.update_attributes!(email: secondary.email)
+        user.update!(email: secondary.email)
         user.reload
         expect(user.email).to eq secondary.email
         expect(user.unconfirmed_email).to eq nil
@@ -410,24 +394,6 @@ describe User do
   end
 
   describe 'after commit hook' do
-    describe '.update_invalid_gpg_signatures' do
-      let(:user) do
-        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
-          user.skip_reconfirmation!
-        end
-      end
-
-      it 'does nothing when the name is updated' do
-        expect(user).not_to receive(:update_invalid_gpg_signatures)
-        user.update_attributes!(name: 'Bette')
-      end
-
-      it 'synchronizes the gpg keys when the email is updated' do
-        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
-        user.update_attributes!(email: 'shawnee.ritchie@denesik.com')
-      end
-    end
-
     describe '#update_emails_with_primary_email' do
       before do
         @user = create(:user, email: 'primary@example.com').tap do |user|
@@ -440,11 +406,11 @@ describe User do
       it 'gets called when email updated' do
         expect(@user).to receive(:update_emails_with_primary_email)
 
-        @user.update_attributes!(email: 'new_primary@example.com')
+        @user.update!(email: 'new_primary@example.com')
       end
 
       it 'adds old primary to secondary emails when secondary is a new email ' do
-        @user.update_attributes!(email: 'new_primary@example.com')
+        @user.update!(email: 'new_primary@example.com')
         @user.reload
 
         expect(@user.emails.count).to eq 2
@@ -452,7 +418,7 @@ describe User do
       end
 
       it 'adds old primary to secondary emails if secondary is becoming a primary' do
-        @user.update_attributes!(email: @secondary.email)
+        @user.update!(email: @secondary.email)
         @user.reload
 
         expect(@user.emails.count).to eq 1
@@ -460,11 +426,81 @@ describe User do
       end
 
       it 'transfers old confirmation values into new secondary' do
-        @user.update_attributes!(email: @secondary.email)
+        @user.update!(email: @secondary.email)
         @user.reload
 
         expect(@user.emails.count).to eq 1
         expect(@user.emails.first.confirmed_at).not_to eq nil
+      end
+    end
+
+    describe '#update_notification_email' do
+      # Regression: https://gitlab.com/gitlab-org/gitlab-ce/issues/22846
+      context 'when changing :email' do
+        let(:user) { create(:user) }
+        let(:new_email) { 'new-email@example.com' }
+
+        it 'sets :unconfirmed_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.to change(user, :unconfirmed_email).to(new_email)
+        end
+
+        it 'does not change :notification_email' do
+          expect do
+            user.tap { |u| u.update!(email: new_email) }.reload
+          end.not_to change(user, :notification_email)
+        end
+
+        it 'updates :notification_email to the new email once confirmed' do
+          user.update!(email: new_email)
+
+          expect do
+            user.tap(&:confirm).reload
+          end.to change(user, :notification_email).to eq(new_email)
+        end
+
+        context 'and :notification_email is set to a secondary email' do
+          let!(:email_attrs) { attributes_for(:email, :confirmed, user: user) }
+          let(:secondary) { create(:email, :confirmed, email: 'secondary@example.com', user: user) }
+
+          before do
+            user.emails.create(email_attrs)
+            user.tap { |u| u.update!(notification_email: email_attrs[:email]) }.reload
+          end
+
+          it 'does not change :notification_email to :email' do
+            expect do
+              user.tap { |u| u.update!(email: new_email) }.reload
+            end.not_to change(user, :notification_email)
+          end
+
+          it 'does not change :notification_email to :email once confirmed' do
+            user.update!(email: new_email)
+
+            expect do
+              user.tap(&:confirm).reload
+            end.not_to change(user, :notification_email)
+          end
+        end
+      end
+    end
+
+    describe '#update_invalid_gpg_signatures' do
+      let(:user) do
+        create(:user, email: 'tula.torphy@abshire.ca').tap do |user|
+          user.skip_reconfirmation!
+        end
+      end
+
+      it 'does nothing when the name is updated' do
+        expect(user).not_to receive(:update_invalid_gpg_signatures)
+        user.update!(name: 'Bette')
+      end
+
+      it 'synchronizes the gpg keys when the email is updated' do
+        expect(user).to receive(:update_invalid_gpg_signatures).at_most(:twice)
+        user.update!(email: 'shawnee.ritchie@denesik.com')
       end
     end
   end
@@ -582,13 +618,13 @@ describe User do
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
 
-        user.update_attributes(external: false)
+        user.update(external: false)
       end
 
       it 'ensures correct rights and limits for user' do
         stub_config_setting(default_can_create_group: true)
 
-        expect { user.update_attributes(external: false) }.to change { user.can_create_group }.to(true)
+        expect { user.update(external: false) }.to change { user.can_create_group }.to(true)
           .and change { user.projects_limit }.to(Gitlab::CurrentSettings.default_projects_limit)
       end
     end
@@ -599,23 +635,23 @@ describe User do
       it 'receives callback when external changes' do
         expect(user).to receive(:ensure_user_rights_and_limits)
 
-        user.update_attributes(external: true)
+        user.update(external: true)
       end
 
       it 'ensures correct rights and limits for user' do
-        expect { user.update_attributes(external: true) }.to change { user.can_create_group }.to(false)
+        expect { user.update(external: true) }.to change { user.can_create_group }.to(false)
           .and change { user.projects_limit }.to(0)
       end
     end
   end
 
-  describe 'rss token' do
-    it 'ensures an rss token on read' do
-      user = create(:user, rss_token: nil)
-      rss_token = user.rss_token
+  describe 'feed token' do
+    it 'ensures a feed token on read' do
+      user = create(:user, feed_token: nil)
+      feed_token = user.feed_token
 
-      expect(rss_token).not_to be_blank
-      expect(user.reload.rss_token).to eq rss_token
+      expect(feed_token).not_to be_blank
+      expect(user.reload.feed_token).to eq feed_token
     end
   end
 
@@ -665,7 +701,7 @@ describe User do
 
       @project = create(:project, namespace: @user.namespace)
       @project_2 = create(:project, group: create(:group)) do |project|
-        project.add_master(@user)
+        project.add_maintainer(@user)
       end
       @project_3 = create(:project, group: create(:group)) do |project|
         project.add_developer(@user)
@@ -801,7 +837,7 @@ describe User do
 
     before do
       # add user to project
-      project.add_master(user)
+      project.add_maintainer(user)
 
       # create invite to projet
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
@@ -914,6 +950,7 @@ describe User do
       user = create(:user, email: 'foo@example.com')
 
       expect(described_class.find_by_any_email(user.email)).to eq user
+      expect(described_class.find_by_any_email(user.email, confirmed: true)).to eq user
     end
 
     it 'finds by secondary email' do
@@ -921,10 +958,18 @@ describe User do
       user  = email.user
 
       expect(described_class.find_by_any_email(email.email)).to eq user
+      expect(described_class.find_by_any_email(email.email, confirmed: true)).to eq user
     end
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+
+    it 'returns nil when user is not confirmed' do
+      user = create(:user, email: 'foo@example.com', confirmed_at: nil)
+
+      expect(described_class.find_by_any_email(user.email, confirmed: false)).to eq(user)
+      expect(described_class.find_by_any_email(user.email, confirmed: true)).to be_nil
     end
   end
 
@@ -938,6 +983,12 @@ describe User do
       user = create(:user)
 
       expect(described_class.by_any_email(user.email)).to eq([user])
+    end
+
+    it 'returns a relation of users for confirmed users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email, confirmed: true)).to eq([user])
     end
   end
 
@@ -1182,8 +1233,12 @@ describe User do
     end
 
     context 'with a group route matching the given path' do
+      let!(:group) { create(:group, path: 'group_path') }
+
       context 'when the group namespace has an owner_id (legacy data)' do
-        let!(:group) { create(:group, path: 'group_path', owner: user) }
+        before do
+          group.update!(owner_id: user.id)
+        end
 
         it 'returns nil' do
           expect(described_class.find_by_full_path('group_path')).to eq(nil)
@@ -1191,8 +1246,6 @@ describe User do
       end
 
       context 'when the group namespace does not have an owner_id' do
-        let!(:group) { create(:group, path: 'group_path') }
-
         it 'returns nil' do
           expect(described_class.find_by_full_path('group_path')).to eq(nil)
         end
@@ -1223,7 +1276,7 @@ describe User do
     it 'is false if avatar is html page' do
       user.update_attribute(:avatar, 'uploads/avatar.html')
 
-      expect(user.avatar_type).to eq(['only images allowed'])
+      expect(user.avatar_type).to eq(['file format is not supported. Please try one of the following supported formats: png, jpg, jpeg, gif, bmp, tiff, ico'])
     end
   end
 
@@ -1235,6 +1288,24 @@ describe User do
         expect(user.avatar_url).to eq(user.avatar.url)
         expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
+    end
+  end
+
+  describe '#accept_pending_invitations!' do
+    let(:user) { create(:user, email: 'user@email.com') }
+    let!(:project_member_invite) { create(:project_member, :invited, invite_email: user.email) }
+    let!(:group_member_invite) { create(:group_member, :invited, invite_email: user.email) }
+    let!(:external_project_member_invite) { create(:project_member, :invited, invite_email: 'external@email.com') }
+    let!(:external_group_member_invite) { create(:group_member, :invited, invite_email: 'external@email.com') }
+
+    it 'accepts all the user members pending invitations and returns the accepted_members' do
+      accepted_members = user.accept_pending_invitations!
+
+      expect(accepted_members).to match_array([project_member_invite, group_member_invite])
+      expect(group_member_invite.reload).not_to be_invite
+      expect(project_member_invite.reload).not_to be_invite
+      expect(external_project_member_invite.reload).to be_invite
+      expect(external_group_member_invite.reload).to be_invite
     end
   end
 
@@ -1469,7 +1540,7 @@ describe User do
     end
   end
 
-  describe '#sort' do
+  describe '#sort_by_attribute' do
     before do
       described_class.delete_all
       @user = create :user, created_at: Date.today, current_sign_in_at: Date.today, name: 'Alpha'
@@ -1478,7 +1549,7 @@ describe User do
     end
 
     context 'when sort by recent_sign_in' do
-      let(:users) { described_class.sort('recent_sign_in') }
+      let(:users) { described_class.sort_by_attribute('recent_sign_in') }
 
       it 'sorts users by recent sign-in time' do
         expect(users.first).to eq(@user)
@@ -1491,7 +1562,7 @@ describe User do
     end
 
     context 'when sort by oldest_sign_in' do
-      let(:users) { described_class.sort('oldest_sign_in') }
+      let(:users) { described_class.sort_by_attribute('oldest_sign_in') }
 
       it 'sorts users by the oldest sign-in time' do
         expect(users.first).to eq(@user1)
@@ -1504,15 +1575,15 @@ describe User do
     end
 
     it 'sorts users in descending order by their creation time' do
-      expect(described_class.sort('created_desc').first).to eq(@user)
+      expect(described_class.sort_by_attribute('created_desc').first).to eq(@user)
     end
 
     it 'sorts users in ascending order by their creation time' do
-      expect(described_class.sort('created_asc').first).to eq(@user2)
+      expect(described_class.sort_by_attribute('created_asc').first).to eq(@user2)
     end
 
     it 'sorts users by id in descending order when nil is passed' do
-      expect(described_class.sort(nil).first).to eq(@user2)
+      expect(described_class.sort_by_attribute(nil).first).to eq(@user2)
     end
   end
 
@@ -1526,8 +1597,8 @@ describe User do
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
-      project1.add_master(subject)
-      project2.add_master(subject)
+      project1.add_maintainer(subject)
+      project2.add_maintainer(subject)
     end
 
     it "includes IDs for projects the user has pushed to" do
@@ -1608,8 +1679,8 @@ describe User do
     let!(:project) { create(:project, group: project_group) }
 
     before do
-      private_group.add_user(user, Gitlab::Access::MASTER)
-      project.add_master(user)
+      private_group.add_user(user, Gitlab::Access::MAINTAINER)
+      project.add_maintainer(user)
     end
 
     subject { user.authorized_groups }
@@ -1623,7 +1694,7 @@ describe User do
     let!(:child_group) { create(:group, parent: parent_group) }
 
     before do
-      parent_group.add_user(user, Gitlab::Access::MASTER)
+      parent_group.add_user(user, Gitlab::Access::MAINTAINER)
     end
 
     subject { user.membership_groups }
@@ -1641,7 +1712,7 @@ describe User do
 
     it 'includes projects that belong to a user, but no other projects' do
       owned = create(:project, :private, namespace: user.namespace)
-      member = create(:project, :private).tap { |p| p.add_master(user) }
+      member = create(:project, :private).tap { |p| p.add_maintainer(user) }
       other = create(:project)
 
       expect(subject).to include(owned)
@@ -1671,11 +1742,11 @@ describe User do
           .to contain_exactly(project)
       end
 
-      it 'includes projects for which the user is a master' do
+      it 'includes projects for which the user is a maintainer' do
         user = create(:user)
         project = create(:project, :private)
 
-        project.add_master(user)
+        project.add_maintainer(user)
 
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
@@ -1769,10 +1840,10 @@ describe User do
     it 'includes projects for which the user access level is above or equal to reporter' do
       reporter_project  = create(:project) { |p| p.add_reporter(user) }
       developer_project = create(:project) { |p| p.add_developer(user) }
-      master_project    = create(:project) { |p| p.add_master(user) }
+      maintainer_project = create(:project) { |p| p.add_maintainer(user) }
 
-      expect(user.projects_where_can_admin_issues.to_a).to match_array([master_project, developer_project, reporter_project])
-      expect(user.can?(:admin_issue, master_project)).to eq(true)
+      expect(user.projects_where_can_admin_issues.to_a).to match_array([maintainer_project, developer_project, reporter_project])
+      expect(user.can?(:admin_issue, maintainer_project)).to eq(true)
       expect(user.can?(:admin_issue, developer_project)).to eq(true)
       expect(user.can?(:admin_issue, reporter_project)).to eq(true)
     end
@@ -1801,39 +1872,64 @@ describe User do
     end
   end
 
-  describe '#ci_authorized_runners' do
+  describe '#ci_owned_runners' do
     let(:user) { create(:user) }
-    let(:runner) { create(:ci_runner) }
+    let!(:project) { create(:project) }
+    let(:runner) { create(:ci_runner, :project, projects: [project]) }
 
-    before do
-      project.runners << runner
-    end
-
-    context 'without any projects' do
-      let(:project) { create(:project) }
-
+    context 'without any projects nor groups' do
       it 'does not load' do
-        expect(user.ci_authorized_runners).to be_empty
+        expect(user.ci_owned_runners).to be_empty
       end
     end
 
     context 'with personal projects runners' do
       let(:namespace) { create(:namespace, owner: user) }
-      let(:project) { create(:project, namespace: namespace) }
+      let!(:project) { create(:project, namespace: namespace) }
 
       it 'loads' do
-        expect(user.ci_authorized_runners).to contain_exactly(runner)
+        expect(user.ci_owned_runners).to contain_exactly(runner)
+      end
+    end
+
+    context 'with personal group runner' do
+      let!(:project) { create(:project) }
+      let(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:group) do
+        create(:group).tap do |group|
+          group.add_owner(user)
+        end
+      end
+
+      it 'loads' do
+        expect(user.ci_owned_runners).to contain_exactly(group_runner)
+      end
+    end
+
+    context 'with personal project and group runner' do
+      let(:namespace) { create(:namespace, owner: user) }
+      let!(:project) { create(:project, namespace: namespace) }
+      let!(:group_runner) { create(:ci_runner, :group, groups: [group]) }
+
+      let!(:group) do
+        create(:group).tap do |group|
+          group.add_owner(user)
+        end
+      end
+
+      it 'loads' do
+        expect(user.ci_owned_runners).to contain_exactly(runner, group_runner)
       end
     end
 
     shared_examples :member do
-      context 'when the user is a master' do
+      context 'when the user is a maintainer' do
         before do
-          add_user(:master)
+          add_user(:maintainer)
         end
 
         it 'loads' do
-          expect(user.ci_authorized_runners).to contain_exactly(runner)
+          expect(user.ci_owned_runners).to contain_exactly(runner)
         end
       end
 
@@ -1843,14 +1939,25 @@ describe User do
         end
 
         it 'does not load' do
-          expect(user.ci_authorized_runners).to be_empty
+          expect(user.ci_owned_runners).to be_empty
         end
       end
     end
 
     context 'with groups projects runners' do
       let(:group) { create(:group) }
-      let(:project) { create(:project, group: group) }
+      let!(:project) { create(:project, group: group) }
+
+      def add_user(access)
+        group.add_user(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with groups runners' do
+      let!(:runner) { create(:ci_runner, :group, groups: [group]) }
+      let!(:group) { create(:group) }
 
       def add_user(access)
         group.add_user(user, access)
@@ -1860,10 +1967,25 @@ describe User do
     end
 
     context 'with other projects runners' do
-      let(:project) { create(:project) }
+      let!(:project) { create(:project) }
 
       def add_user(access)
         project.add_role(user, access)
+      end
+
+      it_behaves_like :member
+    end
+
+    context 'with subgroup with different owner for project runner', :nested_groups do
+      let(:group) { create(:group) }
+      let(:another_user) { create(:user) }
+      let(:subgroup) { create(:group, parent: group) }
+      let!(:project) { create(:project, group: subgroup) }
+
+      def add_user(access)
+        group.add_user(user, access)
+        group.add_user(another_user, :owner)
+        subgroup.add_user(another_user, :owner)
       end
 
       it_behaves_like :member
@@ -2089,6 +2211,8 @@ describe User do
 
       expect(ghost).to be_ghost
       expect(ghost).to be_persisted
+      expect(ghost.namespace).not_to be_nil
+      expect(ghost.namespace).to be_persisted
     end
 
     it "does not create a second ghost user if one is already present" do
@@ -2250,6 +2374,20 @@ describe User do
     end
   end
 
+  context '#invalidate_personal_projects_count' do
+    let(:user) { build_stubbed(:user) }
+
+    it 'invalidates cache for personal projects counter' do
+      cache_mock = double
+
+      expect(cache_mock).to receive(:delete).with(['users', user.id, 'personal_projects_count'])
+
+      allow(Rails).to receive(:cache).and_return(cache_mock)
+
+      user.invalidate_personal_projects_count
+    end
+  end
+
   describe '#allow_password_authentication_for_web?' do
     context 'regular user' do
       let(:user) { build(:user) }
@@ -2299,11 +2437,9 @@ describe User do
       user = build(:user)
       projects = double(:projects, count: 1)
 
-      expect(user).to receive(:personal_projects).once.and_return(projects)
+      expect(user).to receive(:personal_projects).and_return(projects)
 
-      2.times do
-        expect(user.personal_projects_count).to eq(1)
-      end
+      expect(user.personal_projects_count).to eq(1)
     end
   end
 
@@ -2341,18 +2477,20 @@ describe User do
 
           it 'changes the namespace (just to compare to when username is not changed)' do
             expect do
-              user.update_attributes!(username: new_username)
+              Timecop.freeze(1.second.from_now) do
+                user.update!(username: new_username)
+              end
             end.to change { user.namespace.updated_at }
           end
 
           it 'updates the namespace name' do
-            user.update_attributes!(username: new_username)
+            user.update!(username: new_username)
 
             expect(user.namespace.name).to eq(new_username)
           end
 
           it 'updates the namespace path' do
-            user.update_attributes!(username: new_username)
+            user.update!(username: new_username)
 
             expect(user.namespace.path).to eq(new_username)
           end
@@ -2361,12 +2499,12 @@ describe User do
             let!(:conflicting_namespace) { create(:group, path: new_username) }
 
             it 'causes the user save to fail' do
-              expect(user.update_attributes(username: new_username)).to be_falsey
+              expect(user.update(username: new_username)).to be_falsey
               expect(user.namespace.errors.messages[:path].first).to eq('has already been taken')
             end
 
             it 'adds the namespace errors to the user' do
-              user.update_attributes(username: new_username)
+              user.update(username: new_username)
 
               expect(user.errors.full_messages.first).to eq('Username has already been taken')
             end
@@ -2376,7 +2514,7 @@ describe User do
         context 'when the username is not changed' do
           it 'does not change the namespace' do
             expect do
-              user.update_attributes!(email: 'asdf@asdf.com')
+              user.update!(email: 'asdf@asdf.com')
             end.not_to change { user.namespace.updated_at }
           end
         end
@@ -2406,7 +2544,7 @@ describe User do
           expect(system_hook_service).to receive(:execute_hooks_for).with(user, :rename)
           expect(user).to receive(:system_hook_service).and_return(system_hook_service)
 
-          user.update_attributes!(username: new_username)
+          user.update!(username: new_username)
         end
       end
 
@@ -2414,7 +2552,7 @@ describe User do
         it 'does not trigger system hook' do
           expect(user).not_to receive(:system_hook_service)
 
-          user.update_attributes!(email: 'asdf@asdf.com')
+          user.update!(email: 'asdf@asdf.com')
         end
       end
     end
@@ -2546,20 +2684,20 @@ describe User do
       let(:user) { create(:user) }
       let(:group) { create(:group) }
       let(:owner_project) { create(:project, group: group) }
-      let(:master_project) { create(:project) }
+      let(:maintainer_project) { create(:project) }
       let(:reporter_project) { create(:project) }
       let(:developer_project) { create(:project) }
       let(:guest_project) { create(:project) }
       let(:no_access_project) { create(:project) }
 
       let(:projects) do
-        [owner_project, master_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
+        [owner_project, maintainer_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
       end
 
       let(:expected) do
         {
           owner_project.id => Gitlab::Access::OWNER,
-          master_project.id => Gitlab::Access::MASTER,
+          maintainer_project.id => Gitlab::Access::MAINTAINER,
           reporter_project.id => Gitlab::Access::REPORTER,
           developer_project.id => Gitlab::Access::DEVELOPER,
           guest_project.id => Gitlab::Access::GUEST,
@@ -2569,7 +2707,7 @@ describe User do
 
       before do
         create(:group_member, user: user, group: group)
-        master_project.add_master(user)
+        maintainer_project.add_maintainer(user)
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
         guest_project.add_guest(user)
@@ -2596,14 +2734,14 @@ describe User do
       end
 
       it 'only requests the extra projects when uncached projects are passed' do
-        second_master_project = create(:project)
+        second_maintainer_project = create(:project)
         second_developer_project = create(:project)
-        second_master_project.add_master(user)
+        second_maintainer_project.add_maintainer(user)
         second_developer_project.add_developer(user)
 
-        all_projects = projects + [second_master_project.id, second_developer_project.id]
+        all_projects = projects + [second_maintainer_project.id, second_developer_project.id]
 
-        expected_all = expected.merge(second_master_project.id => Gitlab::Access::MASTER,
+        expected_all = expected.merge(second_maintainer_project.id => Gitlab::Access::MAINTAINER,
                                       second_developer_project.id => Gitlab::Access::DEVELOPER)
 
         access_levels(projects)
@@ -2611,7 +2749,7 @@ describe User do
         queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
 
         expect(queries.count).to eq(1)
-        expect(queries.log_message).to match(/\W(#{second_master_project.id}, #{second_developer_project.id})\W/)
+        expect(queries.log_message).to match(/\W(#{second_maintainer_project.id}, #{second_developer_project.id})\W/)
         expect(access_levels(all_projects)).to eq(expected_all)
       end
     end
@@ -2625,20 +2763,20 @@ describe User do
     shared_examples 'max member access for groups' do
       let(:user) { create(:user) }
       let(:owner_group) { create(:group) }
-      let(:master_group) { create(:group) }
+      let(:maintainer_group) { create(:group) }
       let(:reporter_group) { create(:group) }
       let(:developer_group) { create(:group) }
       let(:guest_group) { create(:group) }
       let(:no_access_group) { create(:group) }
 
       let(:groups) do
-        [owner_group, master_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
+        [owner_group, maintainer_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
       end
 
       let(:expected) do
         {
           owner_group.id => Gitlab::Access::OWNER,
-          master_group.id => Gitlab::Access::MASTER,
+          maintainer_group.id => Gitlab::Access::MAINTAINER,
           reporter_group.id => Gitlab::Access::REPORTER,
           developer_group.id => Gitlab::Access::DEVELOPER,
           guest_group.id => Gitlab::Access::GUEST,
@@ -2648,7 +2786,7 @@ describe User do
 
       before do
         owner_group.add_owner(user)
-        master_group.add_master(user)
+        maintainer_group.add_maintainer(user)
         reporter_group.add_reporter(user)
         developer_group.add_developer(user)
         guest_group.add_guest(user)
@@ -2675,14 +2813,14 @@ describe User do
       end
 
       it 'only requests the extra groups when uncached groups are passed' do
-        second_master_group = create(:group)
+        second_maintainer_group = create(:group)
         second_developer_group = create(:group)
-        second_master_group.add_master(user)
+        second_maintainer_group.add_maintainer(user)
         second_developer_group.add_developer(user)
 
-        all_groups = groups + [second_master_group.id, second_developer_group.id]
+        all_groups = groups + [second_maintainer_group.id, second_developer_group.id]
 
-        expected_all = expected.merge(second_master_group.id => Gitlab::Access::MASTER,
+        expected_all = expected.merge(second_maintainer_group.id => Gitlab::Access::MAINTAINER,
                                       second_developer_group.id => Gitlab::Access::DEVELOPER)
 
         access_levels(groups)
@@ -2690,7 +2828,7 @@ describe User do
         queries = ActiveRecord::QueryRecorder.new { access_levels(all_groups) }
 
         expect(queries.count).to eq(1)
-        expect(queries.log_message).to match(/\W(#{second_master_group.id}, #{second_developer_group.id})\W/)
+        expect(queries.log_message).to match(/\W(#{second_maintainer_group.id}, #{second_developer_group.id})\W/)
         expect(access_levels(all_groups)).to eq(expected_all)
       end
     end
@@ -2700,27 +2838,67 @@ describe User do
     end
   end
 
-  describe "#username_previously_taken?" do
-    let(:user1) { create(:user, username: 'foo') }
+  context 'changing a username' do
+    let(:user) { create(:user, username: 'foo') }
 
-    context 'when the username has been taken before' do
-      before do
-        user1.username = 'bar'
-        user1.save!
-      end
-
-      it 'should raise an ActiveRecord::RecordInvalid exception' do
-        user2 = build(:user, username: 'foo')
-        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Username has been taken before/)
-      end
+    it 'creates a redirect route' do
+      expect { user.update!(username: 'bar') }
+        .to change { RedirectRoute.where(path: 'foo').count }.by(1)
     end
 
-    context 'when the username has not been taken before' do
-      it 'should be valid' do
-        expect(RedirectRoute.count).to eq(0)
-        user2 = build(:user, username: 'baz')
-        expect(user2).to be_valid
+    it 'deletes the redirect when a user with the old username was created' do
+      user.update!(username: 'bar')
+
+      expect { create(:user, username: 'foo') }
+        .to change { RedirectRoute.where(path: 'foo').count }.by(-1)
+    end
+  end
+
+  describe '#required_terms_not_accepted?' do
+    let(:user) { build(:user) }
+    subject { user.required_terms_not_accepted? }
+
+    context "when terms are not enforced" do
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced and accepted by the user" do
+      before do
+        enforce_terms
+        accept_terms(user)
       end
+
+      it { is_expected.to be_falsy }
+    end
+
+    context "when terms are enforced but the user has not accepted" do
+      before do
+        enforce_terms
+      end
+
+      it { is_expected.to be_truthy }
+    end
+  end
+
+  describe '#increment_failed_attempts!' do
+    subject(:user) { create(:user, failed_attempts: 0) }
+
+    it 'logs failed sign-in attempts' do
+      expect { user.increment_failed_attempts! }.to change(user, :failed_attempts).from(0).to(1)
+    end
+
+    it 'does not log failed sign-in attempts when in a GitLab read-only instance' do
+      allow(Gitlab::Database).to receive(:read_only?) { true }
+
+      expect { user.increment_failed_attempts! }.not_to change(user, :failed_attempts)
+    end
+  end
+
+  context 'with uploads' do
+    it_behaves_like 'model with mounted uploader', false do
+      let(:model_object) { create(:user, :with_avatar) }
+      let(:upload_attribute) { :avatar }
+      let(:uploader_class) { AttachmentUploader }
     end
   end
 end

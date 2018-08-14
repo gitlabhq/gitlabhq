@@ -8,7 +8,7 @@ describe MoveToProjectFinder do
   let(:guest_project) { create(:project) }
   let(:reporter_project) { create(:project) }
   let(:developer_project) { create(:project) }
-  let(:master_project) { create(:project) }
+  let(:maintainer_project) { create(:project) }
 
   subject { described_class.new(user) }
 
@@ -23,9 +23,9 @@ describe MoveToProjectFinder do
       it 'returns projects equal or above Gitlab::Access::REPORTER ordered by id in descending order' do
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
-        master_project.add_master(user)
+        maintainer_project.add_maintainer(user)
 
-        expect(subject.execute(project).to_a).to eq([master_project, developer_project, reporter_project])
+        expect(subject.execute(project).to_a).to eq([maintainer_project, developer_project, reporter_project])
       end
 
       it 'does not include the source project' do
@@ -36,7 +36,7 @@ describe MoveToProjectFinder do
 
       it 'does not return archived projects' do
         reporter_project.add_reporter(user)
-        reporter_project.archive!
+        ::Projects::UpdateService.new(reporter_project, user, archived: true).execute
         other_reporter_project = create(:project)
         other_reporter_project.add_reporter(user)
 
@@ -45,7 +45,7 @@ describe MoveToProjectFinder do
 
       it 'does not return projects for which issues are disabled' do
         reporter_project.add_reporter(user)
-        reporter_project.update_attributes(issues_enabled: false)
+        reporter_project.update(issues_enabled: false)
         other_reporter_project = create(:project)
         other_reporter_project.add_reporter(user)
 
@@ -57,9 +57,9 @@ describe MoveToProjectFinder do
 
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
-        master_project.add_master(user)
+        maintainer_project.add_maintainer(user)
 
-        expect(subject.execute(project).to_a).to eq([master_project, developer_project])
+        expect(subject.execute(project).to_a).to eq([maintainer_project, developer_project])
       end
 
       it 'returns projects after the given offset id' do
@@ -67,9 +67,9 @@ describe MoveToProjectFinder do
 
         reporter_project.add_reporter(user)
         developer_project.add_developer(user)
-        master_project.add_master(user)
+        maintainer_project.add_maintainer(user)
 
-        expect(subject.execute(project, search: nil, offset_id: master_project.id).to_a).to eq([developer_project, reporter_project])
+        expect(subject.execute(project, search: nil, offset_id: maintainer_project.id).to_a).to eq([developer_project, reporter_project])
         expect(subject.execute(project, search: nil, offset_id: developer_project.id).to_a).to eq([reporter_project])
         expect(subject.execute(project, search: nil, offset_id: reporter_project.id).to_a).to be_empty
       end
@@ -84,10 +84,10 @@ describe MoveToProjectFinder do
 
       it 'returns projects matching a search query' do
         foo_project = create(:project)
-        foo_project.add_master(user)
+        foo_project.add_maintainer(user)
 
         wadus_project = create(:project, name: 'wadus')
-        wadus_project.add_master(user)
+        wadus_project.add_maintainer(user)
 
         expect(subject.execute(project).to_a).to eq([wadus_project, foo_project])
         expect(subject.execute(project, search: 'wadus').to_a).to eq([wadus_project])

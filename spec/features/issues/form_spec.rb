@@ -13,8 +13,8 @@ describe 'New/edit issue', :js do
   let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
-    project.add_master(user)
-    project.add_master(user2)
+    project.add_maintainer(user)
+    project.add_maintainer(user2)
     sign_in(user)
   end
 
@@ -143,6 +143,9 @@ describe 'New/edit issue', :js do
         click_link label.title
         click_link label2.title
       end
+
+      find('.js-issuable-form-dropdown.js-label-select').click
+
       page.within '.js-label-select' do
         expect(page).to have_content label.title
       end
@@ -226,6 +229,23 @@ describe 'New/edit issue', :js do
 
       expect(page).to have_selector('.atwho-view')
     end
+
+    describe 'milestone' do
+      let!(:milestone) { create(:milestone, title: '">&lt;img src=x onerror=alert(document.domain)&gt;', project: project) }
+
+      it 'escapes milestone' do
+        click_button 'Milestone'
+
+        page.within '.issue-milestone' do
+          click_link milestone.title
+        end
+
+        page.within '.js-milestone-select' do
+          expect(page).to have_content milestone.title
+          expect(page).not_to have_selector 'img'
+        end
+      end
+    end
   end
 
   context 'edit issue' do
@@ -301,15 +321,15 @@ describe 'New/edit issue', :js do
     let(:sub_group_project) { create(:project, group: nested_group_1) }
 
     before do
-      sub_group_project.add_master(user)
+      sub_group_project.add_maintainer(user)
 
       visit new_project_issue_path(sub_group_project)
     end
 
-    it 'creates new label from dropdown' do
+    it 'creates project label from dropdown' do
       click_button 'Labels'
 
-      click_link 'Create new label'
+      click_link 'Create project label'
 
       page.within '.dropdown-new-label' do
         fill_in 'new_label_name', with: 'test label'

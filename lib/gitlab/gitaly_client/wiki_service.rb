@@ -69,7 +69,7 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request)
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_delete_page, request, timeout: GitalyClient.medium_timeout)
       end
 
       def find_page(title:, version: nil, dir: nil)
@@ -80,14 +80,14 @@ module Gitlab
           directory: encode_binary(dir)
         )
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request, timeout: GitalyClient.fast_timeout)
 
         wiki_page_from_iterator(response)
       end
 
-      def get_all_pages
-        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request)
+      def get_all_pages(limit: 0)
+        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo, limit: limit)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request, timeout: GitalyClient.medium_timeout)
         pages = []
 
         loop do
@@ -113,7 +113,7 @@ module Gitlab
           per_page: options[:per_page] || Gollum::Page.per_page
         )
 
-        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request)
+        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request, timeout: GitalyClient.medium_timeout)
 
         versions = []
         stream.each do |message|
@@ -132,11 +132,11 @@ module Gitlab
           revision: encode_binary(revision)
         )
 
-        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_file, request, timeout: GitalyClient.fast_timeout)
         wiki_file = nil
 
         response.each do |message|
-          next unless message.name.present?
+          next unless message.name.present? || wiki_file
 
           if wiki_file
             wiki_file.raw_data << message.raw_data
@@ -200,6 +200,8 @@ module Gitlab
 
       def gitaly_commit_details(commit_details)
         Gitaly::WikiCommitDetails.new(
+          user_id: commit_details.user_id,
+          user_name: encode_binary(commit_details.username),
           name: encode_binary(commit_details.name),
           email: encode_binary(commit_details.email),
           message: encode_binary(commit_details.message)

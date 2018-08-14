@@ -34,7 +34,7 @@ describe Clusters::Applications::InstallService do
 
     context 'when k8s cluster communication fails' do
       before do
-        error = KubeException.new(500, 'system failure', nil)
+        error = Kubeclient::HttpError.new(500, 'system failure', nil)
         expect(helm_client).to receive(:install).with(install_command).and_raise(error)
       end
 
@@ -47,7 +47,7 @@ describe Clusters::Applications::InstallService do
     end
 
     context 'when application cannot be persisted' do
-      let(:application) { build(:clusters_applications_helm, :scheduled) }
+      let(:application) { create(:clusters_applications_helm, :scheduled) }
 
       it 'make the application errored' do
         expect(application).to receive(:make_installing!).once.and_raise(ActiveRecord::RecordInvalid)

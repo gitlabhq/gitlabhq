@@ -6,10 +6,10 @@
   - if @gitaly_servers.any?
     .table-holder
       %table.table.responsive-table
-        %thead.hidden-sm.hidden-xs
+        %thead
           %tr
             %th= _("Storage")
-            %th= n_("Gitaly|Address")
+            %th= s_("Gitaly|Address")
             %th= _("Server version")
             %th= _("Git version")
             %th= _("Up to date")

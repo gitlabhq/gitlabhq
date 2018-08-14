@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 describe 'Merge request > User sees merge widget', :js do
+  include ProjectForksHelper
+  include TestReportsHelper
+
   let(:project) { create(:project, :repository) }
   let(:project_only_mwps) { create(:project, :repository, only_allow_merge_if_pipeline_succeeds: true) }
   let(:user) { project.creator }
@@ -8,8 +11,8 @@ describe 'Merge request > User sees merge widget', :js do
   let(:merge_request_in_only_mwps_project) { create(:merge_request, source_project: project_only_mwps) }
 
   before do
-    project.add_master(user)
-    project_only_mwps.add_master(user)
+    project.add_maintainer(user)
+    project_only_mwps.add_maintainer(user)
     sign_in(user)
   end
 
@@ -273,7 +276,7 @@ describe 'Merge request > User sees merge widget', :js do
     let(:user2) { create(:user) }
 
     before do
-      project.add_master(user2)
+      project.add_maintainer(user2)
       sign_out(:user)
       sign_in(user2)
       merge_request.update(target_project: fork_project)
@@ -285,7 +288,29 @@ describe 'Merge request > User sees merge widget', :js do
     end
 
     it 'user cannot remove source branch' do
-      expect(page).to have_field('remove-source-branch-input', disabled: true)
+      expect(page).not_to have_field('remove-source-branch-input')
+    end
+  end
+
+  context 'user cannot merge project and cannot push to fork', :js do
+    let(:forked_project) { fork_project(project, nil, repository: true) }
+    let(:user2) { create(:user) }
+
+    before do
+      project.add_developer(user2)
+      sign_out(:user)
+      sign_in(user2)
+      merge_request.update(
+        source_project: forked_project,
+        target_project: project,
+        merge_params: { 'force_remove_source_branch' => '1' }
+      )
+      visit project_merge_request_path(project, merge_request)
+    end
+
+    it 'user cannot remove source branch' do
+      expect(page).not_to have_field('remove-source-branch-input')
+      expect(page).to have_content('Removes source branch')
     end
   end
 
@@ -299,6 +324,231 @@ describe 'Merge request > User sees merge widget', :js do
 
       expect(page).not_to have_button('Merge')
       expect(page).to have_content('This merge request is in the process of being merged')
+    end
+  end
+
+  context 'when merge request has test reports' do
+    let!(:head_pipeline) do
+      create(:ci_pipeline,
+             :success,
+             project: project,
+             ref: merge_request.source_branch,
+             sha: merge_request.diff_head_sha)
+    end
+
+    let!(:build) { create(:ci_build, :success, pipeline: head_pipeline, project: project) }
+
+    before do
+      merge_request.update!(head_pipeline_id: head_pipeline.id)
+    end
+
+    context 'when result has not been parsed yet' do
+      let!(:job_artifact) { create(:ci_job_artifact, :junit, job: build, project: project) }
+
+      before do
+        visit project_merge_request_path(project, merge_request)
+      end
+
+      it 'shows parsing status' do
+        expect(page).to have_content('Test summary results are being parsed')
+      end
+    end
+
+    context 'when result has already been parsed' do
+      context 'when JUnit xml is correctly formatted' do
+        let!(:job_artifact) { create(:ci_job_artifact, :junit, job: build, project: project) }
+
+        before do
+          allow_any_instance_of(MergeRequest).to receive(:compare_test_reports).and_return(compared_data)
+
+          visit project_merge_request_path(project, merge_request)
+        end
+
+        it 'shows parsed results' do
+          expect(page).to have_content('Test summary contained')
+        end
+      end
+
+      context 'when JUnit xml is corrupted' do
+        let!(:job_artifact) { create(:ci_job_artifact, :junit_with_corrupted_data, job: build, project: project) }
+
+        before do
+          allow_any_instance_of(MergeRequest).to receive(:compare_test_reports).and_return(compared_data)
+
+          visit project_merge_request_path(project, merge_request)
+        end
+
+        it 'shows the error state' do
+          expect(page).to have_content('Test summary failed loading results')
+        end
+      end
+
+      def compared_data
+        Ci::CompareTestReportsService.new(project).execute(nil, head_pipeline)
+      end
+    end
+
+    context 'when test reports have been parsed correctly' do
+      let(:serialized_data) do
+        {
+          status: :parsed,
+          data: TestReportsComparerSerializer
+            .new(project: project)
+            .represent(comparer)
+        }
+      end
+
+      before do
+        allow_any_instance_of(MergeRequest)
+          .to receive(:has_test_reports?).and_return(true)
+        allow_any_instance_of(MergeRequest)
+          .to receive(:compare_test_reports).and_return(serialized_data)
+
+        visit project_merge_request_path(project, merge_request)
+      end
+
+      context 'when a new failures exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_failed)
+          end
+        end
+
+        it 'shows test reports summary which includes the new failure' do
+          within(".mr-section-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found no changed test results out of 1 total test')
+              expect(page).to have_content('junit found 1 failed test result out of 1 total test')
+              expect(page).to have_content('New')
+              expect(page).to have_content('subtractTest')
+            end
+          end
+        end
+
+        context 'when user clicks the new failure' do
+          it 'shows the test report detail' do
+            within(".mr-section-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'subtractTest'
+
+                expect(page).to have_content('6.66')
+                expect(page).to have_content(sample_java_failed_message)
+              end
+            end
+          end
+        end
+      end
+
+      context 'when an existing failure exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_failed)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_failed)
+            reports.get_suite('junit').add_test_case(create_test_case_java_success)
+          end
+        end
+
+        it 'shows test reports summary which includes the existing failure' do
+          within(".mr-section-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 failed test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found 1 failed test result out of 1 total test')
+              expect(page).to have_content('junit found no changed test results out of 1 total test')
+              expect(page).not_to have_content('New')
+              expect(page).to have_content('Test#sum when a is 2 and b is 2 returns summary')
+            end
+          end
+        end
+
+        context 'when user clicks the existing failure' do
+          it 'shows test report detail of it' do
+            within(".mr-section-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'Test#sum when a is 2 and b is 2 returns summary'
+
+                expect(page).to have_content('2.22')
+                expect(page).to have_content(sample_rspec_failed_message)
+              end
+            end
+          end
+        end
+      end
+
+      context 'when a resolved failure exists' do
+        let(:base_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_failed)
+          end
+        end
+
+        let(:head_reports) do
+          Gitlab::Ci::Reports::TestReports.new.tap do |reports|
+            reports.get_suite('rspec').add_test_case(create_test_case_rspec_success)
+            reports.get_suite('junit').add_test_case(create_test_case_java_resolved)
+          end
+        end
+
+        let(:create_test_case_java_resolved) do
+          create_test_case_java_failed.tap do |test_case|
+            test_case.instance_variable_set("@status", Gitlab::Ci::Reports::TestCase::STATUS_SUCCESS)
+          end
+        end
+
+        it 'shows test reports summary which includes the resolved failure' do
+          within(".mr-section-container") do
+            click_button 'Expand'
+
+            expect(page).to have_content('Test summary contained 1 fixed test result out of 2 total tests')
+            within(".js-report-section-container") do
+              expect(page).to have_content('rspec found no changed test results out of 1 total test')
+              expect(page).to have_content('junit found 1 fixed test result out of 1 total test')
+              expect(page).to have_content('subtractTest')
+            end
+          end
+        end
+
+        context 'when user clicks the resolved failure' do
+          it 'shows test report detail of it' do
+            within(".mr-section-container") do
+              click_button 'Expand'
+
+              within(".js-report-section-container") do
+                click_button 'subtractTest'
+
+                expect(page).to have_content('6.66')
+              end
+            end
+          end
+        end
+      end
+
+      def comparer
+        Gitlab::Ci::Reports::TestReportsComparer.new(base_reports, head_reports)
+      end
     end
   end
 end

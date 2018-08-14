@@ -23,7 +23,7 @@ describe 'cycle analytics events' do
     it 'lists the issue events' do
       get project_cycle_analytics_issue_path(project, format: :json)
 
-      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)
@@ -32,7 +32,7 @@ describe 'cycle analytics events' do
     it 'lists the plan events' do
       get project_cycle_analytics_plan_path(project, format: :json)
 
-      first_mr_short_sha = project.merge_requests.sort(:created_asc).first.commits.first.short_id
+      first_mr_short_sha = project.merge_requests.sort_by_attribute(:created_asc).first.commits.first.short_id
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['short_sha']).to eq(first_mr_short_sha)
@@ -43,7 +43,7 @@ describe 'cycle analytics events' do
 
       expect(json_response['events']).not_to be_empty
 
-      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
@@ -58,7 +58,7 @@ describe 'cycle analytics events' do
     it 'lists the review events' do
       get project_cycle_analytics_review_path(project, format: :json)
 
-      first_mr_iid = project.merge_requests.sort(:created_desc).pluck(:iid).first.to_s
+      first_mr_iid = project.merge_requests.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
@@ -74,7 +74,7 @@ describe 'cycle analytics events' do
     it 'lists the production events' do
       get project_cycle_analytics_production_path(project, format: :json)
 
-      first_issue_iid = project.issues.sort(:created_desc).pluck(:iid).first.to_s
+      first_issue_iid = project.issues.sort_by_attribute(:created_desc).pluck(:iid).first.to_s
 
       expect(json_response['events']).not_to be_empty
       expect(json_response['events'].first['iid']).to eq(first_issue_iid)

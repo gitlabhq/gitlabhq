@@ -2,7 +2,7 @@ import Vue from 'vue';
 
 import dropdownTitleComponent from '~/vue_shared/components/sidebar/labels_select/dropdown_title.vue';
 
-import mountComponent from '../../../../helpers/vue_mount_component_helper';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
 const createComponent = (canEdit = true) => {
   const Component = Vue.extend(dropdownTitleComponent);

@@ -1,12 +1,12 @@
-/* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
+/* eslint-disable no-unused-expressions, no-var, object-shorthand */
+import $ from 'jquery';
 import _ from 'underscore';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
+import '~/behaviors/markdown/render_gfm';
 import Notes from '~/notes';
 import timeoutPromise from './helpers/set_timeout_promise_helper';
 
@@ -15,15 +15,15 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
   window.gl = window.gl || {};
   gl.utils = gl.utils || {};
 
-  const htmlEscape = (comment) => {
-    const escapedString = comment.replace(/["&'<>]/g, (a) => {
+  const htmlEscape = comment => {
+    const escapedString = comment.replace(/["&'<>]/g, a => {
       const escapedToken = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
         '"': '&quot;',
         "'": '&#x27;',
-        '`': '&#x60;'
+        '`': '&#x60;',
       }[a];
 
       return escapedToken;
@@ -35,11 +35,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
   describe('Notes', function() {
     const FLASH_TYPE_ALERT = 'alert';
     const NOTES_POST_PATH = /(.*)\/notes\?html=true$/;
-    var commentsTemplate = 'merge_requests/merge_request_with_comment.html.raw';
-    preloadFixtures(commentsTemplate);
+    var fixture = 'snippets/show.html.raw';
+    preloadFixtures(fixture);
 
-    beforeEach(function () {
-      loadFixtures(commentsTemplate);
+    beforeEach(function() {
+      loadFixtures(fixture);
       gl.utils.disableButtonIfEmptyField = _.noop;
       window.project_uploads_path = 'http://test.host/uploads';
       $('body').attr('data-page', 'projects:merge_requets:show');
@@ -50,14 +50,24 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       $('body').removeAttr('data-page');
     });
 
+    describe('addBinding', () => {
+      it('calls postComment when comment button is clicked', () => {
+        spyOn(Notes.prototype, 'postComment');
+        this.notes = new Notes('', []);
+
+        $('.js-comment-button').click();
+
+        expect(Notes.prototype.postComment).toHaveBeenCalled();
+      });
+    });
+
     describe('task lists', function() {
       let mock;
 
       beforeEach(function() {
-        spyOn(axios, 'patch').and.callThrough();
+        spyOn(axios, 'patch').and.callFake(() => new Promise(() => {}));
         mock = new MockAdapter(axios);
-
-        mock.onPatch(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`).reply(200, {});
+        mock.onAny().reply(200, {});
 
         $('.js-comment-button').on('click', function(e) {
           e.preventDefault();
@@ -72,7 +82,9 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       it('modifies the Markdown field', function() {
         const changeEvent = document.createEvent('HTMLEvents');
         changeEvent.initEvent('change', true, true);
-        $('input[type=checkbox]').attr('checked', true)[1].dispatchEvent(changeEvent);
+        $('input[type=checkbox]')
+          .attr('checked', true)[0]
+          .dispatchEvent(changeEvent);
 
         expect($('.js-task-list-field.original-task-list').val()).toBe('- [x] Task List Item');
       });
@@ -81,9 +93,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $('.js-task-list-container').trigger('tasklist:changed');
 
         setTimeout(() => {
-          expect(axios.patch).toHaveBeenCalledWith(`${gl.TEST_HOST}/frontend-fixtures/merge-requests-project/merge_requests/1.json`, {
-            note: { note: '' },
-          });
+          expect(axios.patch).toHaveBeenCalled();
           done();
         });
       });
@@ -99,10 +109,10 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         spyOn(this.notes, 'renderNote').and.stub();
 
         $(textarea).data('autosave', {
-          reset: function() {}
+          reset: function() {},
         });
 
-        $('.js-comment-button').on('click', (e) => {
+        $('.js-comment-button').on('click', e => {
           const $form = $(this);
           e.preventDefault();
           this.notes.addNote($form);
@@ -148,7 +158,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
                   <div class="note-text">${sampleComment}</div>
                  </li>`,
           note: sampleComment,
-          valid: true
+          valid: true,
         };
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
@@ -162,7 +172,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mock.restore();
       });
 
-      it('updates note and resets edit form', (done) => {
+      it('updates note and resets edit form', done => {
         spyOn(this.notes, 'revertNoteEditForm');
         spyOn(this.notes, 'setupNewNote');
 
@@ -193,7 +203,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('sets target when hash matches', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue(hash);
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue(hash);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -202,7 +212,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('unsets target when hash does not match', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue('note_doesnotexist');
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue('note_doesnotexist');
 
         Notes.updateNoteTargetSelector($note);
 
@@ -210,7 +220,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
 
       it('unsets target when there is not a hash fragment anymore', () => {
-        spyOn(urlUtils, 'getLocationHash').and.returnValue(null);
+        spyOnDependency(Notes, 'getLocationHash').and.returnValue(null);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -230,17 +240,14 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           note: 'heya',
           html: '<div>heya</div>',
         };
-        $notesList = jasmine.createSpyObj('$notesList', [
-          'find',
-          'append',
-        ]);
+        $notesList = jasmine.createSpyObj('$notesList', ['find', 'append']);
 
         notes = jasmine.createSpyObj('notes', [
           'setupNewNote',
           'refresh',
           'collapseLongCommitList',
           'updateNotesCount',
-          'putConflictEditWarningInPlace'
+          'putConflictEditWarningInPlace',
         ]);
         notes.taskList = jasmine.createSpyObj('tasklist', ['init']);
         notes.note_ids = [];
@@ -310,11 +317,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       it('should consider same note text as the same', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'initial'
+            note: 'initial',
           },
           $(`<div>
             <div class="original-note-content">initial</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(false);
@@ -323,11 +330,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       it('should consider same note with trailing newline as the same', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'initial\n'
+            note: 'initial\n',
           },
           $(`<div>
             <div class="original-note-content">initial\n</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(false);
@@ -336,11 +343,11 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       it('should consider different notes as different', () => {
         const result = Notes.isUpdatedNote(
           {
-            note: 'foo'
+            note: 'foo',
           },
           $(`<div>
             <div class="original-note-content">bar</div>
-          </div>`)
+          </div>`),
         );
 
         expect(result).toEqual(true);
@@ -366,10 +373,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
-        notes = jasmine.createSpyObj('notes', [
-          'isParallelView',
-          'updateNotesCount',
-        ]);
+        notes = jasmine.createSpyObj('notes', ['isParallelView', 'updateNotesCount']);
         notes.note_ids = [];
 
         spyOn(Notes, 'isNewNote');
@@ -396,7 +400,10 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         it('should call Notes.animateAppendNote', () => {
           Notes.prototype.renderDiscussionNote.call(notes, note, $form);
 
-          expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $('.main-notes-list'));
+          expect(Notes.animateAppendNote).toHaveBeenCalledWith(
+            note.discussion_html,
+            $('.main-notes-list'),
+          );
         });
 
         it('should append to row selected with line_code', () => {
@@ -460,9 +467,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       beforeEach(() => {
         noteHTML = '<div></div>';
-        $note = jasmine.createSpyObj('$note', [
-          'replaceWith'
-        ]);
+        $note = jasmine.createSpyObj('$note', ['replaceWith']);
 
         $updatedNote = Notes.animateUpdateNote(noteHTML, $note);
       });
@@ -500,7 +505,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
                 <div class="note-text">${sampleComment}</div>
                </li>`,
         note: sampleComment,
-        valid: true
+        valid: true,
       };
       let $form;
       let $notesContainer;
@@ -536,7 +541,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($notesContainer.find('.note.being-posted').length > 0).toEqual(true);
       });
 
-      it('should remove placeholder note when new comment is done posting', (done) => {
+      it('should remove placeholder note when new comment is done posting', done => {
         mockNotesPost();
 
         $('.js-comment-button').click();
@@ -548,7 +553,30 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
       });
 
-      it('should show actual note element when new comment is done posting', (done) => {
+      describe('postComment', () => {
+        it('disables the submit button', done => {
+          const $submitButton = $form.find('.js-comment-submit-button');
+          expect($submitButton).not.toBeDisabled();
+          const dummyEvent = {
+            preventDefault() {},
+            target: $submitButton,
+          };
+          mock.onPost(NOTES_POST_PATH).replyOnce(() => {
+            expect($submitButton).toBeDisabled();
+            return [200, note];
+          });
+
+          this.notes
+            .postComment(dummyEvent)
+            .then(() => {
+              expect($submitButton).not.toBeDisabled();
+            })
+            .then(done)
+            .catch(done.fail);
+        });
+      });
+
+      it('should show actual note element when new comment is done posting', done => {
         mockNotesPost();
 
         $('.js-comment-button').click();
@@ -560,7 +588,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
       });
 
-      it('should reset Form when new comment is done posting', (done) => {
+      it('should reset Form when new comment is done posting', done => {
         mockNotesPost();
 
         $('.js-comment-button').click();
@@ -572,19 +600,24 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
       });
 
-      it('should show flash error message when new comment failed to be posted', (done) => {
+      it('should show flash error message when new comment failed to be posted', done => {
         mockNotesPostError();
 
         $('.js-comment-button').click();
 
         setTimeout(() => {
-          expect($notesContainer.parent().find('.flash-container .flash-text').is(':visible')).toEqual(true);
+          expect(
+            $notesContainer
+              .parent()
+              .find('.flash-container .flash-text')
+              .is(':visible'),
+          ).toEqual(true);
 
           done();
         });
       });
 
-      it('should show flash error message when comment failed to be updated', (done) => {
+      it('should show flash error message when comment failed to be updated', done => {
         mockNotesPost();
 
         $('.js-comment-button').click();
@@ -605,7 +638,12 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           .then(() => {
             const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`);
             expect($updatedNoteEl.hasClass('.being-posted')).toEqual(false); // Remove being-posted visuals
-            expect($updatedNoteEl.find('.note-text').text().trim()).toEqual(sampleComment); // See if comment reverted back to original
+            expect(
+              $updatedNoteEl
+                .find('.note-text')
+                .text()
+                .trim(),
+            ).toEqual(sampleComment); // See if comment reverted back to original
             expect($('.flash-container').is(':visible')).toEqual(true); // Flash error message shown
 
             done();
@@ -619,12 +657,12 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       const note = {
         commands_changes: {
           assignee_id: 1,
-          emoji_award: '100'
+          emoji_award: '100',
         },
         errors: {
-          commands_only: ['Commands applied']
+          commands_only: ['Commands applied'],
         },
-        valid: false
+        valid: false,
       };
       let $form;
       let $notesContainer;
@@ -639,12 +677,12 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         window.gon.current_user_fullname = 'Administrator';
         gl.awardsHandler = {
           addAwardToEmojiBar: () => {},
-          scrollToAwards: () => {}
+          scrollToAwards: () => {},
         };
         gl.GfmAutoComplete = {
           dataSources: {
-            commands: '/root/test-project/autocomplete_sources/commands'
-          }
+            commands: '/root/test-project/autocomplete_sources/commands',
+          },
         };
         $form = $('form.js-main-target-form');
         $notesContainer = $('ul.main-notes-list');
@@ -655,7 +693,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mock.restore();
       });
 
-      it('should remove slash command placeholder when comment with slash commands is done posting', (done) => {
+      it('should remove slash command placeholder when comment with slash commands is done posting', done => {
         spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();
         $('.js-comment-button').click();
 
@@ -677,7 +715,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
                 <div class="note-text">${sampleComment}</div>
                </li>`,
         note: sampleComment,
-        valid: true
+        valid: true,
       };
       let $form;
       let $notesContainer;
@@ -699,7 +737,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         mock.restore();
       });
 
-      it('should not render a script tag', (done) => {
+      it('should not render a script tag', done => {
         $('.js-comment-button').click();
 
         setTimeout(() => {
@@ -708,8 +746,15 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           $noteEl.find('textarea.js-note-text').html(updatedComment);
           $noteEl.find('.js-comment-save-button').click();
 
-          const $updatedNoteEl = $notesContainer.find(`#note_${note.id}`).find('.js-task-list-container');
-          expect($updatedNoteEl.find('.note-text').text().trim()).toEqual('');
+          const $updatedNoteEl = $notesContainer
+            .find(`#note_${note.id}`)
+            .find('.js-task-list-container');
+          expect(
+            $updatedNoteEl
+              .find('.note-text')
+              .text()
+              .trim(),
+          ).toEqual('');
 
           done();
         });
@@ -806,7 +851,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       const availableQuickActions = [
         { name: 'close', description: 'Close this issue', params: [] },
         { name: 'title', description: 'Change title', params: [{}] },
-        { name: 'estimate', description: 'Set time estimate', params: [{}] }
+        { name: 'estimate', description: 'Set time estimate', params: [{}] },
       ];
 
       beforeEach(() => {
@@ -815,12 +860,16 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
 
       it('should return executing quick action description when note has single quick action', () => {
         const sampleComment = '/close';
-        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying command to close this issue');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
+          'Applying command to close this issue',
+        );
       });
 
       it('should return generic multiple quick action description when note has multiple quick actions', () => {
         const sampleComment = '/close\n/title [Duplicate] Issue foobar';
-        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe('Applying multiple commands');
+        expect(this.notes.getQuickActionDescription(sampleComment, availableQuickActions)).toBe(
+          'Applying multiple commands',
+        );
       });
 
       it('should return generic quick action description when available quick actions list is not populated', () => {
@@ -860,9 +909,24 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         });
         expect($tempNote.find('.timeline-icon .avatar').attr('src')).toEqual(currentUserAvatar);
         expect($tempNote.find('.timeline-content').hasClass('discussion')).toBeFalsy();
-        expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual(currentUserFullname);
-        expect($tempNoteHeader.find('.note-headline-light').text().trim()).toEqual(`@${currentUsername}`);
-        expect($tempNote.find('.note-body .note-text p').text().trim()).toEqual(sampleComment);
+        expect(
+          $tempNoteHeader
+            .find('.d-none.d-sm-inline-block')
+            .text()
+            .trim(),
+        ).toEqual(currentUserFullname);
+        expect(
+          $tempNoteHeader
+            .find('.note-headline-light')
+            .text()
+            .trim(),
+        ).toEqual(`@${currentUsername}`);
+        expect(
+          $tempNote
+            .find('.note-body .note-text p')
+            .text()
+            .trim(),
+        ).toEqual(sampleComment);
       });
 
       it('should return constructed placeholder element for discussion note based on form contents', () => {
@@ -871,7 +935,7 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           uniqueId,
           isDiscussionNote: true,
           currentUsername,
-          currentUserFullname
+          currentUserFullname,
         });
 
         expect($tempNote.prop('nodeName')).toEqual('LI');
@@ -889,7 +953,12 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
           currentUserAvatar,
         });
         const $tempNoteHeader = $tempNote.find('.note-header');
-        expect($tempNoteHeader.find('.hidden-xs').text().trim()).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
+        expect(
+          $tempNoteHeader
+            .find('.d-none.d-sm-inline-block')
+            .text()
+            .trim(),
+        ).toEqual('Foo &lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;');
       });
     });
 
@@ -912,7 +981,12 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
         expect($tempNote.attr('id')).toEqual(uniqueId);
         expect($tempNote.hasClass('being-posted')).toBeTruthy();
         expect($tempNote.hasClass('fade-in-half')).toBeTruthy();
-        expect($tempNote.find('.timeline-content i').text().trim()).toEqual(sampleCommandDescription);
+        expect(
+          $tempNote
+            .find('.timeline-content i')
+            .text()
+            .trim(),
+        ).toEqual(sampleCommandDescription);
       });
     });
 
@@ -943,4 +1017,4 @@ import timeoutPromise from './helpers/set_timeout_promise_helper';
       });
     });
   });
-}).call(window);
+}.call(window));

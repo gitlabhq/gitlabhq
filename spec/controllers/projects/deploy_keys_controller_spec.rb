@@ -5,7 +5,7 @@ describe Projects::DeployKeysController do
   let(:user) { create(:user) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
 
     sign_in(user)
   end
@@ -19,7 +19,7 @@ describe Projects::DeployKeysController do
       it 'redirects to blob' do
         get :index, params
 
-        expect(response).to redirect_to(namespace_project_settings_repository_path(params))
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
       end
     end
 

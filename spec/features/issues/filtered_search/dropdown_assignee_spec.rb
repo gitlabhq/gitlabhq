@@ -20,9 +20,9 @@ describe 'Dropdown assignee', :js do
   end
 
   before do
-    project.add_master(user)
-    project.add_master(user_john)
-    project.add_master(user_jacob)
+    project.add_maintainer(user)
+    project.add_maintainer(user_john)
+    project.add_maintainer(user_jacob)
     sign_in(user)
     create(:issue, project: project)
 
@@ -31,7 +31,7 @@ describe 'Dropdown assignee', :js do
 
   describe 'behavior' do
     it 'opens when the search bar has assignee:' do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
@@ -44,6 +44,7 @@ describe 'Dropdown assignee', :js do
 
     it 'should show loading indicator when opened' do
       slow_requests do
+        # We aren't using `input_filtered_search` because we want to see the loading indicator
         filtered_search.set('assignee:')
 
         expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
@@ -51,19 +52,19 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'should hide loading indicator when loaded' do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 
     it 'should load all the assignees when opened' do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(dropdown_assignee_size).to eq(4)
     end
 
     it 'shows current user at top of dropdown' do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(filter_dropdown.first('.filter-dropdown-item')).to have_content(user.name)
     end
@@ -71,7 +72,7 @@ describe 'Dropdown assignee', :js do
 
   describe 'filtering' do
     before do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
@@ -79,23 +80,21 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by name' do
-      filtered_search.send_keys('j')
+      input_filtered_search('jac', submit: false, extra_space: false)
 
-      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by case insensitive name' do
-      filtered_search.send_keys('J')
+      input_filtered_search('JAC', submit: false, extra_space: false)
 
-      expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_john.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_no_content(user.name)
     end
 
     it 'filters by username with symbol' do
-      filtered_search.send_keys('@ot')
+      input_filtered_search('@ott', submit: false, extra_space: false)
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -103,7 +102,7 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by case insensitive username with symbol' do
-      filtered_search.send_keys('@OT')
+      input_filtered_search('@OTT', submit: false, extra_space: false)
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -111,7 +110,9 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by username without symbol' do
-      filtered_search.send_keys('ot')
+      input_filtered_search('ott', submit: false, extra_space: false)
+
+      wait_for_requests
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -119,7 +120,9 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'filters by case insensitive username without symbol' do
-      filtered_search.send_keys('OT')
+      input_filtered_search('OTT', submit: false, extra_space: false)
+
+      wait_for_requests
 
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user_jacob.name)
       expect(find("#{js_dropdown_assignee} .filter-dropdown")).to have_content(user.name)
@@ -129,7 +132,7 @@ describe 'Dropdown assignee', :js do
 
   describe 'selecting from dropdown' do
     before do
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
     end
 
     it 'fills in the assignee username when the assignee has not been filtered' do
@@ -143,7 +146,7 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'fills in the assignee username when the assignee has been filtered' do
-      filtered_search.send_keys('roo')
+      input_filtered_search('roo', submit: false, extra_space: false)
       click_assignee(user.name)
 
       wait_for_requests
@@ -165,7 +168,7 @@ describe 'Dropdown assignee', :js do
   describe 'selecting from dropdown without Ajax call' do
     before do
       Gitlab::Testing::RequestBlockerMiddleware.block_requests!
-      filtered_search.set('assignee:')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
     end
 
     after do
@@ -183,31 +186,31 @@ describe 'Dropdown assignee', :js do
 
   describe 'input has existing content' do
     it 'opens assignee dropdown with existing search term' do
-      filtered_search.set('searchTerm assignee:')
+      input_filtered_search('searchTerm assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing author' do
-      filtered_search.set('author:@user assignee:')
+      input_filtered_search('author:@user assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing label' do
-      filtered_search.set('label:~bug assignee:')
+      input_filtered_search('label:~bug assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing milestone' do
-      filtered_search.set('milestone:%v1.0 assignee:')
+      input_filtered_search('milestone:%v1.0 assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
 
     it 'opens assignee dropdown with existing my-reaction' do
-      filtered_search.set('my-reaction:star assignee:')
+      input_filtered_search('my-reaction:star assignee:', submit: false, extra_space: false)
 
       expect(page).to have_css(js_dropdown_assignee, visible: true)
     end
@@ -215,17 +218,15 @@ describe 'Dropdown assignee', :js do
 
   describe 'caching requests' do
     it 'caches requests after the first load' do
-      filtered_search.set('assignee')
-      filtered_search.send_keys(':')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
       initial_size = dropdown_assignee_size
 
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.add_master(new_user)
+      project.add_maintainer(new_user)
       find('.filtered-search-box .clear-search').click
-      filtered_search.set('assignee')
-      filtered_search.send_keys(':')
+      input_filtered_search('assignee:', submit: false, extra_space: false)
 
       expect(dropdown_assignee_size).to eq(initial_size)
     end

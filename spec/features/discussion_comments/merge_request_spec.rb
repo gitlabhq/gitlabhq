@@ -6,7 +6,7 @@ describe 'Discussion Comments Merge Request', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
 
     visit project_merge_request_path(project, merge_request)

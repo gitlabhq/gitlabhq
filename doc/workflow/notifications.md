@@ -34,9 +34,14 @@ anything that is set at Global Settings.
 
 ![notification settings](img/notification_group_settings.png)
 
-Group Settings are taking precedence over Global Settings but are on a level below Project Settings.
+Group Settings are taking precedence over Global Settings but are on a level below Project or Subgroup Settings:
+
+```
+Group < Subgroup < Project
+```
+
 This means that you can set a different level of notifications per group while still being able
-to have a finer level setting per project.
+to have a finer level setting per project or subgroup.
 Organization like this is suitable for users that belong to different groups but don't have the
 same need for being notified for every group they are member of.
 These settings can be configured on group page under the name of the group. It will be the dropdown with the bell icon. They can also be configured on the user profile notifications dropdown.
@@ -67,7 +72,7 @@ Below is the table of events users can be notified of:
 
 ### Issue / Merge request events
 
-In all of the below cases, the notification will be sent to:
+In most of the below cases, the notification will be sent to:
 - Participants:
   - the author and assignee of the issue/merge request
   - authors of comments on the issue/merge request
@@ -86,7 +91,9 @@ In all of the below cases, the notification will be sent to:
 | Close issue            | |
 | Reassign issue         | The above, plus the old assignee |
 | Reopen issue           | |
+| Due issue              | Participants and Custom notification level with this event selected |
 | New merge request      | |
+| Push to merge request  | Participants and Custom notification level with this event selected |
 | Reassign merge request | The above, plus the old assignee |
 | Close merge request    | |
 | Reopen merge request   | |
@@ -95,15 +102,18 @@ In all of the below cases, the notification will be sent to:
 | Failed pipeline        | The author of the pipeline |
 | Successful pipeline    | The author of the pipeline, if they have the custom notification setting for successful pipelines set |
 
-
 In addition, if the title or description of an Issue or Merge Request is
 changed, notifications will be sent to any **new** mentions by `@username` as
 if they had been mentioned in the original text.
 
-You won't receive notifications for Issues, Merge Requests or Milestones
-created by yourself. You will only receive automatic notifications when
-somebody else comments or adds changes to the ones that you've created or
-mentions you.
+You won't receive notifications for Issues, Merge Requests or Milestones created
+by yourself (except when an issue is due). You will only receive automatic
+notifications when somebody else comments or adds changes to the ones that
+you've created or mentions you.
+
+If an open merge request becomes unmergeable due to conflict, its author will be notified about the cause.
+If a user has also set the merge request to automatically merge once pipeline succeeds,
+then that user will also be notified.
 
 ### Email Headers
 
@@ -121,7 +131,7 @@ Notification emails include headers that provide extra content about the notific
 | X-GitLab-NotificationReason | The reason for being notified. "mentioned", "assigned", etc             |
 
 #### X-GitLab-NotificationReason
-This header holds the reason for the notification to have been sent out, 
+This header holds the reason for the notification to have been sent out,
 where reason can be `mentioned`, `assigned`, `own_activity`, etc.
 Only one reason is sent out according to its priority:
 - `own_activity`
@@ -129,7 +139,7 @@ Only one reason is sent out according to its priority:
 - `mentioned`
 
 The reason in this header will also be shown in the footer of the notification email.  For example an email with the
-reason `assigned` will have this sentence in the footer: 
+reason `assigned` will have this sentence in the footer:
 `"You are receiving this email because you have been assigned an item on {configured GitLab hostname}"`
 
 **Note: Only reasons listed above have been implemented so far**

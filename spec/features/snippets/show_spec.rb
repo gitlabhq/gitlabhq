@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Snippet', :js do
+describe 'Snippet', :js do
   let(:project) { create(:project, :repository) }
   let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content) }
 
@@ -65,6 +65,26 @@ feature 'Snippet', :js do
 
           # shows a download button
           expect(page).to have_link('Download')
+        end
+      end
+
+      context 'with cached Redcarpet html' do
+        let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION) }
+        let(:file_name) { 'test.md' }
+        let(:content) { "1. one\n  - sublist\n" }
+
+        it 'renders correctly' do
+          expect(page).to have_xpath("//ol//li//ul")
+        end
+      end
+
+      context 'with cached CommonMark html' do
+        let(:snippet) { create(:personal_snippet, :public, file_name: file_name, content: content, cached_markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION) }
+        let(:file_name) { 'test.md' }
+        let(:content) { "1. one\n  - sublist\n" }
+
+        it 'renders correctly' do
+          expect(page).not_to have_xpath("//ol//li//ul")
         end
       end
 
@@ -134,5 +154,13 @@ feature 'Snippet', :js do
         end
       end
     end
+  end
+
+  it_behaves_like 'showing user status' do
+    let(:file_name) { 'popen.rb' }
+    let(:content) { project.repository.blob_at('master', 'files/ruby/popen.rb').data }
+    let(:user_with_status) { snippet.author }
+
+    subject { visit snippet_path(snippet) }
   end
 end

@@ -15,7 +15,7 @@ body {
     background-color: $white-light !important;
   }
 
-  &.card-content {
+  &.board-card-content {
     background-color: $gray-darker;
 
     .content-wrapper {
@@ -54,10 +54,6 @@ body {
   &.limit-container-width {
     max-width: $limited-layout-width;
   }
-
-  &.limit-container-width-sm {
-    max-width: $limited-layout-width-sm;
-  }
 }
 
 .alert-wrapper {
@@ -74,7 +70,7 @@ body {
   }
 
   /* Center alert text and alert action links on smaller screens */
-  @media (max-width: $screen-sm-max) {
+  @include media-breakpoint-down(sm) {
     .alert {
       text-align: center;
     }
@@ -114,10 +110,4 @@ body {
 
 .with-performance-bar .layout-page {
   margin-top: $header-height + $performance-bar-height;
-}
-
-.vertical-center {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
 }

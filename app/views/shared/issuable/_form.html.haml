@@ -11,8 +11,8 @@
     = link_to "the #{issuable.class.model_name.human.downcase}", polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable]), target: "_blank", rel: 'noopener noreferrer'
     and make sure your changes will not unintentionally remove theirs
 
-.form-group
-  = form.label :title, class: 'control-label'
+.form-group.row
+  = form.label :title, class: 'col-form-label col-sm-2'
 
   = render 'shared/issuable/form/template_selector', issuable: issuable
   = render 'shared/issuable/form/title', issuable: issuable, form: form, has_wip_commits: commits && commits.detect(&:work_in_progress?)
@@ -20,14 +20,16 @@
 = render 'shared/form_elements/description', model: issuable, form: form, project: project
 
 - if issuable.respond_to?(:confidential)
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      .checkbox
-        = form.label :confidential do
-          = form.check_box :confidential
+  .form-group.row
+    .offset-sm-2.col-sm-10
+      .form-check
+        = form.check_box :confidential, class: 'form-check-input'
+        = form.label :confidential, class: 'form-check-label' do
           This issue is confidential and should only be visible to team members with at least Reporter access.
 
 = render 'shared/issuable/form/metadata', issuable: issuable, form: form
+
+= render_if_exists 'shared/issuable/approvals', issuable: issuable, form: form
 
 = render 'shared/issuable/form/branch_chooser', issuable: issuable, form: form
 
@@ -36,8 +38,8 @@
 = render 'shared/issuable/form/contribution', issuable: issuable, form: form
 
 - if @merge_request_to_resolve_discussions_of
-  .form-group
-    .col-sm-10.col-sm-offset-2
+  .form-group.row
+    .col-sm-10.offset-sm-2
       = icon('info-circle')
       - if @merge_request_to_resolve_discussions_of.discussions_can_be_resolved_by?(current_user)
         = hidden_field_tag 'merge_request_to_resolve_discussions_of', @merge_request_to_resolve_discussions_of.iid
@@ -57,7 +59,7 @@
 
 - is_footer = !(issuable.is_a?(MergeRequest) && issuable.new_record?)
 .row-content-block{ class: (is_footer ? "footer-block" : "middle-block") }
-  .pull-right
+  .float-right
     - if issuable.new_record?
       = link_to 'Cancel', polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class]), class: 'btn btn-cancel'
     - else
@@ -77,5 +79,6 @@
       %strong= link_to('contribution guidelines', guide_url)
       for this project.
 
+= render_if_exists 'shared/issuable/remove_approver'
 
 = form.hidden_field :lock_version

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Badge < ActiveRecord::Base
   # This structure sets the placeholders that the urls
   # can have. This hash also sets which action to ask when
@@ -18,7 +20,7 @@ class Badge < ActiveRecord::Base
 
   scope :order_created_at_asc, -> { reorder(created_at: :asc) }
 
-  validates :link_url, :image_url, url_placeholder: { protocols: %w(http https), placeholder_regex: PLACEHOLDERS_REGEX }
+  validates :link_url, :image_url, url: { protocols: %w(http https) }
   validates :type, presence: true
 
   def rendered_link_url(project = nil)

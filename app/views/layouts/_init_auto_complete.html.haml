@@ -1,16 +1,11 @@
-- project = @target_project || @project
+- object = @target_project || @project || @group
 - noteable_type = @noteable.class if @noteable.present?
 
-- if project
+- datasources = autocomplete_data_sources(object, noteable_type)
+
+- if object
   -# haml-lint:disable InlineJavaScript
   :javascript
     gl = window.gl || {};
     gl.GfmAutoComplete = gl.GfmAutoComplete || {};
-    gl.GfmAutoComplete.dataSources = {
-      members: "#{members_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}",
-      issues: "#{issues_project_autocomplete_sources_path(project)}",
-      mergeRequests: "#{merge_requests_project_autocomplete_sources_path(project)}",
-      labels: "#{labels_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}",
-      milestones: "#{milestones_project_autocomplete_sources_path(project)}",
-      commands: "#{commands_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}"
-    };
+    gl.GfmAutoComplete.dataSources = #{datasources.to_json};

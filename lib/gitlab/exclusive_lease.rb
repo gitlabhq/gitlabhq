@@ -41,6 +41,16 @@ module Gitlab
       "gitlab:exclusive_lease:#{key}"
     end
 
+    # Removes any existing exclusive_lease from redis
+    # Don't run this in a live system without making sure no one is using the leases
+    def self.reset_all!(scope = '*')
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.scan_each(match: redis_shared_state_key(scope)).each do |key|
+          redis.del(key)
+        end
+      end
+    end
+
     def initialize(key, uuid: nil, timeout:)
       @redis_shared_state_key = self.class.redis_shared_state_key(key)
       @timeout = timeout

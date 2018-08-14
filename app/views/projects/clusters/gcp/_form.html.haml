@@ -1,35 +1,65 @@
+= javascript_include_tag 'https://apis.google.com/js/api.js'
+- external_link_icon = icon('external-link')
+- zones_link_url = 'https://cloud.google.com/compute/docs/regions-zones/regions-zones'
+- machine_type_link_url = 'https://cloud.google.com/compute/docs/machine-types'
+- pricing_link_url = 'https://cloud.google.com/compute/pricing#machinetype'
+- help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe
+- help_link_end = ' %{external_link_icon}</a>'.html_safe % { external_link_icon: external_link_icon }
+
 %p
   - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   = s_('ClusterIntegration|Read our %{link_to_help_page} on Kubernetes cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
-= form_for @cluster, html: { class: 'prepend-top-20' }, url: gcp_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
-  = form_errors(@cluster)
+%p= link_to('Select a different Google account', @authorize_url)
+
+= form_for @gcp_cluster, html: { class: 'js-gke-cluster-creation prepend-top-20', data: { token: token_in_session } }, url:  create_gcp_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
+  = form_errors(@gcp_cluster)
   .form-group
-    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name')
+    = field.label :name, s_('ClusterIntegration|Kubernetes cluster name'), class: 'label-bold'
     = field.text_field :name, class: 'form-control', placeholder: s_('ClusterIntegration|Kubernetes cluster name')
   .form-group
-    = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
+    = field.label :environment_scope, s_('ClusterIntegration|Environment scope'), class: 'label-bold'
     = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
-  = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
+  = field.fields_for :provider_gcp, @gcp_cluster.provider_gcp do |provider_gcp_field|
     .form-group
-      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project ID')
-      = link_to(s_('ClusterIntegration|See your projects'), 'https://console.cloud.google.com/home/dashboard', target: '_blank', rel: 'noopener noreferrer')
-      = provider_gcp_field.text_field :gcp_project_id, class: 'form-control', placeholder: s_('ClusterIntegration|Project ID')
+      = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project'), class: 'label-bold'
+      .js-gcp-project-id-dropdown-entry-point{ data: { docsUrl: 'https://console.cloud.google.com/home/dashboard' } }
+        = provider_gcp_field.hidden_field :gcp_project_id
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project')
+            = icon('chevron-down')
+        %span.form-text.text-muted &nbsp;
 
     .form-group
-      = provider_gcp_field.label :zone, s_('ClusterIntegration|Zone')
-      = link_to(s_('ClusterIntegration|See zones'), 'https://cloud.google.com/compute/docs/regions-zones/regions-zones', target: '_blank', rel: 'noopener noreferrer')
-      = provider_gcp_field.text_field :zone, class: 'form-control', placeholder: 'us-central1-a'
+      = provider_gcp_field.label :zone, s_('ClusterIntegration|Zone'), class: 'label-bold'
+      .js-gcp-zone-dropdown-entry-point
+        = provider_gcp_field.hidden_field :zone
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project to choose zone')
+            = icon('chevron-down')
+      %p.form-text.text-muted
+        = s_('ClusterIntegration|Learn more about %{help_link_start}zones%{help_link_end}.').html_safe % { help_link_start: help_link_start % { url: zones_link_url }, help_link_end: help_link_end }
 
     .form-group
-      = provider_gcp_field.label :num_nodes, s_('ClusterIntegration|Number of nodes')
+      = provider_gcp_field.label :num_nodes, s_('ClusterIntegration|Number of nodes'), class: 'label-bold'
       = provider_gcp_field.text_field :num_nodes, class: 'form-control', placeholder: '3'
 
     .form-group
-      = provider_gcp_field.label :machine_type, s_('ClusterIntegration|Machine type')
-      = link_to(s_('ClusterIntegration|See machine types'), 'https://cloud.google.com/compute/docs/machine-types', target: '_blank', rel: 'noopener noreferrer')
-      = provider_gcp_field.text_field :machine_type, class: 'form-control', placeholder: 'n1-standard-4'
+      = provider_gcp_field.label :machine_type, s_('ClusterIntegration|Machine type'), class: 'label-bold'
+      .js-gcp-machine-type-dropdown-entry-point
+        = provider_gcp_field.hidden_field :machine_type
+        .dropdown
+          %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', disabled: true }
+            %span.dropdown-toggle-text
+              = _('Select project and zone to choose machine type')
+            = icon('chevron-down')
+      %p.form-text.text-muted
+        = s_('ClusterIntegration|Learn more about %{help_link_start_machine_type}machine types%{help_link_end} and %{help_link_start_pricing}pricing%{help_link_end}.').html_safe % { help_link_start_machine_type: help_link_start % { url: machine_type_link_url }, help_link_start_pricing: help_link_start % { url: pricing_link_url }, help_link_end: help_link_end }
 
     .form-group
-      = field.submit s_('ClusterIntegration|Create Kubernetes cluster'), class: 'btn btn-success'
+      = field.submit s_('ClusterIntegration|Create Kubernetes cluster'), class: 'js-gke-cluster-creation-submit btn btn-success', disabled: true

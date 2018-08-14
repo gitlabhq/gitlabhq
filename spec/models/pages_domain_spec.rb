@@ -18,24 +18,63 @@ describe PagesDomain do
       it { is_expected.to validate_uniqueness_of(:domain).case_insensitive }
     end
 
-    {
-      'my.domain.com'    => true,
-      '123.456.789'      => true,
-      '0x12345.com'      => true,
-      '0123123'          => true,
-      '_foo.com'         => false,
-      'reserved.com'     => false,
-      'a.reserved.com'   => false,
-      nil                => false
-    }.each do |value, validity|
-      context "domain #{value.inspect} validity" do
-        before do
-          allow(Settings.pages).to receive(:host).and_return('reserved.com')
+    describe "hostname" do
+      {
+        'my.domain.com'    => true,
+        '123.456.789'      => true,
+        '0x12345.com'      => true,
+        '0123123'          => true,
+        '_foo.com'         => false,
+        'reserved.com'     => false,
+        'a.reserved.com'   => false,
+        nil                => false
+      }.each do |value, validity|
+        context "domain #{value.inspect} validity" do
+          before do
+            allow(Settings.pages).to receive(:host).and_return('reserved.com')
+          end
+
+          let(:domain) { value }
+
+          it { expect(pages_domain.valid?).to eq(validity) }
         end
+      end
+    end
 
-        let(:domain) { value }
+    describe "HTTPS-only" do
+      using RSpec::Parameterized::TableSyntax
 
-        it { expect(pages_domain.valid?).to eq(validity) }
+      let(:domain) { 'my.domain.com' }
+
+      let(:project) do
+        instance_double(Project, pages_https_only?: pages_https_only)
+      end
+
+      let(:pages_domain) do
+        build(:pages_domain, certificate: certificate, key: key).tap do |pd|
+          allow(pd).to receive(:project).and_return(project)
+          pd.valid?
+        end
+      end
+
+      where(:pages_https_only, :certificate, :key, :errors_on) do
+        attributes = attributes_for(:pages_domain)
+        cert, key = attributes.fetch_values(:certificate, :key)
+
+        true  | nil  | nil | %i(certificate key)
+        true  | cert | nil | %i(key)
+        true  | nil  | key | %i(certificate key)
+        true  | cert | key | []
+        false | nil  | nil | []
+        false | cert | nil | %i(key)
+        false | nil  | key | %i(key)
+        false | cert | key | []
+      end
+
+      with_them do
+        it "is adds the expected errors" do
+          expect(pages_domain.errors.keys).to eq errors_on
+        end
       end
     end
   end
@@ -43,26 +82,26 @@ describe PagesDomain do
   describe 'validate certificate' do
     subject { domain }
 
-    context 'when only certificate is specified' do
-      let(:domain) { build(:pages_domain, :with_certificate) }
-
-      it { is_expected.not_to be_valid }
-    end
-
-    context 'when only key is specified' do
-      let(:domain) { build(:pages_domain, :with_key) }
-
-      it { is_expected.not_to be_valid }
-    end
-
     context 'with matching key' do
-      let(:domain) { build(:pages_domain, :with_certificate, :with_key) }
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to be_valid }
     end
 
+    context 'when no certificate is specified' do
+      let(:domain) { build(:pages_domain, :without_certificate) }
+
+      it { is_expected.not_to be_valid }
+    end
+
+    context 'when no key is specified' do
+      let(:domain) { build(:pages_domain, :without_key) }
+
+      it { is_expected.not_to be_valid }
+    end
+
     context 'for not matching key' do
-      let(:domain) { build(:pages_domain, :with_missing_chain, :with_key) }
+      let(:domain) { build(:pages_domain, :with_missing_chain) }
 
       it { is_expected.not_to be_valid }
     end
@@ -103,30 +142,26 @@ describe PagesDomain do
   describe '#url' do
     subject { domain.url }
 
+    let(:domain) { build(:pages_domain) }
+
+    it { is_expected.to eq("https://#{domain.domain}") }
+
     context 'without the certificate' do
-      let(:domain) { build(:pages_domain, certificate: '') }
+      let(:domain) { build(:pages_domain, :without_certificate) }
 
       it { is_expected.to eq("http://#{domain.domain}") }
-    end
-
-    context 'with a certificate' do
-      let(:domain) { build(:pages_domain, :with_certificate) }
-
-      it { is_expected.to eq("https://#{domain.domain}") }
     end
   end
 
   describe '#has_matching_key?' do
     subject { domain.has_matching_key? }
 
-    context 'for matching key' do
-      let(:domain) { build(:pages_domain, :with_certificate, :with_key) }
+    let(:domain) { build(:pages_domain) }
 
-      it { is_expected.to be_truthy }
-    end
+    it { is_expected.to be_truthy }
 
     context 'for invalid key' do
-      let(:domain) { build(:pages_domain, :with_missing_chain, :with_key) }
+      let(:domain) { build(:pages_domain, :with_missing_chain) }
 
       it { is_expected.to be_falsey }
     end
@@ -136,7 +171,7 @@ describe PagesDomain do
     subject { domain.has_intermediates? }
 
     context 'for self signed' do
-      let(:domain) { build(:pages_domain, :with_certificate) }
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to be_truthy }
     end
@@ -162,7 +197,7 @@ describe PagesDomain do
     subject { domain.expired? }
 
     context 'for valid' do
-      let(:domain) { build(:pages_domain, :with_certificate) }
+      let(:domain) { build(:pages_domain) }
 
       it { is_expected.to be_falsey }
     end
@@ -175,7 +210,7 @@ describe PagesDomain do
   end
 
   describe '#subject' do
-    let(:domain) { build(:pages_domain, :with_certificate) }
+    let(:domain) { build(:pages_domain) }
 
     subject { domain.subject }
 
@@ -183,12 +218,24 @@ describe PagesDomain do
   end
 
   describe '#certificate_text' do
-    let(:domain) { build(:pages_domain, :with_certificate) }
+    let(:domain) { build(:pages_domain) }
 
     subject { domain.certificate_text }
 
     # We test only existence of output, since the output is long
     it { is_expected.not_to be_empty }
+  end
+
+  describe "#https?" do
+    context "when a certificate is present" do
+      subject { build(:pages_domain) }
+      it { is_expected.to be_https }
+    end
+
+    context "when no certificate is present" do
+      subject { build(:pages_domain, :without_certificate) }
+      it { is_expected.not_to be_https }
+    end
   end
 
   describe '#update_daemon' do
@@ -267,29 +314,30 @@ describe PagesDomain do
       end
 
       context 'TLS configuration' do
-        set(:domain_with_tls) { create(:pages_domain, :with_key, :with_certificate) }
+        set(:domain_without_tls) { create(:pages_domain, :without_certificate, :without_key) }
+        set(:domain) { create(:pages_domain) }
 
-        let(:cert1) { domain_with_tls.certificate }
+        let(:cert1) { domain.certificate }
         let(:cert2) { cert1 + ' ' }
-        let(:key1) { domain_with_tls.key }
+        let(:key1) { domain.key }
         let(:key2) { key1 + ' ' }
 
         it 'updates when added' do
-          expect(domain).to receive(:update_daemon)
+          expect(domain_without_tls).to receive(:update_daemon)
 
-          domain.update!(key: key1, certificate: cert1)
+          domain_without_tls.update!(key: key1, certificate: cert1)
         end
 
         it 'updates when changed' do
-          expect(domain_with_tls).to receive(:update_daemon)
+          expect(domain).to receive(:update_daemon)
 
-          domain_with_tls.update!(key: key2, certificate: cert2)
+          domain.update!(key: key2, certificate: cert2)
         end
 
         it 'updates when removed' do
-          expect(domain_with_tls).to receive(:update_daemon)
+          expect(domain).to receive(:update_daemon)
 
-          domain_with_tls.update!(key: nil, certificate: nil)
+          domain.update!(key: nil, certificate: nil)
         end
       end
     end

@@ -6,6 +6,8 @@ class SnippetsController < ApplicationController
   include RendersBlob
   include PreviewMarkdown
 
+  skip_before_action :verify_authenticity_token, only: [:show], if: :js_request?
+
   before_action :snippet, only: [:show, :edit, :destroy, :update, :raw]
 
   # Allow read snippet
@@ -77,6 +79,8 @@ class SnippetsController < ApplicationController
       format.json do
         render_blob_json(blob)
       end
+
+      format.js { render 'shared/snippets/show' }
     end
   end
 
@@ -85,13 +89,13 @@ class SnippetsController < ApplicationController
 
     @snippet.destroy
 
-    redirect_to snippets_path, status: 302
+    redirect_to snippets_path, status: :found
   end
 
   protected
 
   def snippet
-    @snippet ||= PersonalSnippet.find_by(id: params[:id])
+    @snippet ||= PersonalSnippet.inc_relations_for_view.find_by(id: params[:id])
   end
 
   alias_method :awardable, :snippet

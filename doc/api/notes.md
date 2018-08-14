@@ -39,7 +39,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 377,
     "noteable_type": "Issue",
-    "noteable_iid": 377
+    "noteable_iid": 377,
+    "resolvable": false
   },
   {
     "id": 305,
@@ -58,7 +59,8 @@ GET /projects/:id/issues/:issue_iid/notes?sort=asc&order_by=updated_at
     "system": true,
     "noteable_id": 121,
     "noteable_type": "Issue",
-    "noteable_iid": 121
+    "noteable_iid": 121,
+    "resolvable": false
   }
 ]
 ```
@@ -216,6 +218,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `snippet_id` (required) - The ID of a snippet
 - `body` (required) - The content of a note
+- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/projects/5/snippet/11/notes?body=note
@@ -314,7 +317,8 @@ Parameters:
   "system": false,
   "noteable_id": 2,
   "noteable_type": "MergeRequest",
-  "noteable_iid": 2
+  "noteable_iid": 2,
+  "resolvable": false
 }
 ```
 
@@ -337,6 +341,7 @@ Parameters:
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding)
 - `merge_request_iid` (required) - The IID of a merge request
 - `body` (required) - The content of a note
+- `created_at` (optional) - Date time string, ISO 8601 formatted, e.g. 2016-03-11T03:45:40Z
 
 ### Modify existing merge request note
 

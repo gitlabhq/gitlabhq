@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-feature 'test coverage badge' do
-  given!(:user) { create(:user) }
-  given!(:project) { create(:project, :private) }
+describe 'test coverage badge' do
+  let!(:user) { create(:user) }
+  let!(:project) { create(:project, :private) }
 
   context 'when user has access to view badge' do
-    background do
+    before do
       project.add_developer(user)
       sign_in(user)
     end
 
-    scenario 'user requests coverage badge image for pipeline' do
+    it 'user requests coverage badge image for pipeline' do
       create_pipeline do |pipeline|
         create_build(pipeline, coverage: 100, name: 'test:1')
         create_build(pipeline, coverage: 90, name: 'test:2')
@@ -21,7 +21,7 @@ feature 'test coverage badge' do
       expect_coverage_badge('95.00%')
     end
 
-    scenario 'user requests coverage badge for specific job' do
+    it 'user requests coverage badge for specific job' do
       create_pipeline do |pipeline|
         create_build(pipeline, coverage: 50, name: 'test:1')
         create_build(pipeline, coverage: 50, name: 'test:2')
@@ -33,7 +33,7 @@ feature 'test coverage badge' do
       expect_coverage_badge('85.00%')
     end
 
-    scenario 'user requests coverage badge for pipeline without coverage' do
+    it 'user requests coverage badge for pipeline without coverage' do
       create_pipeline do |pipeline|
         create_build(pipeline, coverage: nil, name: 'test')
       end
@@ -45,9 +45,11 @@ feature 'test coverage badge' do
   end
 
   context 'when user does not have access to view badge' do
-    background { sign_in(user) }
+    before do
+      sign_in(user)
+    end
 
-    scenario 'user requests test coverage badge image' do
+    it 'user requests test coverage badge image' do
       show_test_coverage_badge
 
       expect(page).to have_gitlab_http_status(404)

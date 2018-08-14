@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Commits
   class CreateService < ::BaseService
     ValidationError = Class.new(StandardError)
@@ -17,7 +19,7 @@ module Commits
       new_commit = create_commit!
 
       success(result: new_commit)
-    rescue ValidationError, ChangeError, Gitlab::Git::Index::IndexError, Gitlab::Git::CommitError, Gitlab::Git::HooksService::PreReceiveError => ex
+    rescue ValidationError, ChangeError, Gitlab::Git::Index::IndexError, Gitlab::Git::CommitError, Gitlab::Git::PreReceiveError => ex
       error(ex.message)
     end
 

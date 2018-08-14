@@ -1,0 +1,29 @@
+= form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+  %input{ type: 'hidden', name: 'update_section', value: 'js-permissions-settings' }
+  = form_errors(@group)
+
+  %fieldset
+    = render 'shared/visibility_level', f: f, visibility_level: @group.visibility_level, can_change_visibility_level: can_change_group_visibility_level?(@group), form_model: @group
+
+    .form-group.row
+      .offset-sm-2.col-sm-10
+        = render 'shared/allow_request_access', form: f
+
+    .form-group.row
+      %label.col-form-label.col-sm-2
+        = s_('GroupSettings|Share with group lock')
+      .col-sm-10
+        .form-check
+          = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group), class: 'form-check-input'
+          = f.label :share_with_group_lock, class: 'form-check-label' do
+            %strong
+              - group_link = link_to @group.name, group_path(@group)
+              = s_('GroupSettings|Prevent sharing a project within %{group} with other groups').html_safe % { group: group_link }
+            %br
+            %span.descr= share_with_group_lock_help_text(@group)
+
+    = render 'groups/group_admin_settings', f: f
+
+    = render_if_exists 'groups/member_lock_setting', f: f, group: @group
+
+  = f.submit 'Save group', class: 'btn btn-success'

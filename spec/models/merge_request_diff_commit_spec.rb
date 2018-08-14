@@ -36,7 +36,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "dmitriy.zaporozhets@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
-          "sha": sha_attribute.type_cast_for_database('5937ac0a7beb003549fc5fd26fc247adbce4a52e')
+          "sha": sha_attribute.serialize("5937ac0a7beb003549fc5fd26fc247adbce4a52e")
         },
         {
           "message": "Change some files\n\nSigned-off-by: Dmitriy Zaporozhets \u003cdmitriy.zaporozhets@gmail.com\u003e\n",
@@ -48,7 +48,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "dmitriy.zaporozhets@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 1,
-          "sha": sha_attribute.type_cast_for_database('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
+          "sha": sha_attribute.serialize("570e7b2abdd848b95f2f578043fc23bd6f6fd24d")
         }
       ]
     end
@@ -79,7 +79,7 @@ describe MergeRequestDiffCommit do
           "committer_email": "alejorro70@gmail.com",
           "merge_request_diff_id": merge_request_diff_id,
           "relative_order": 0,
-          "sha": sha_attribute.type_cast_for_database('ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69')
+          "sha": sha_attribute.serialize("ba3343bc4fa403a8dfbfcab7fc1a8c29ee34bd69")
         }]
       end
 

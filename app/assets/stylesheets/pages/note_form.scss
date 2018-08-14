@@ -42,7 +42,7 @@
   display: block;
   padding: 10px 0;
   color: $gl-text-color;
-  font-family: $regular_font;
+  font-family: $regular-font;
   border: 0;
 
   &:focus {
@@ -51,7 +51,7 @@
 }
 
 .note-image-attach {
-  @extend .col-md-4;
+  @extend .col-lg-4;
   margin-left: 45px;
   float: none;
 }
@@ -69,7 +69,7 @@
 
       .comment-toolbar,
       .nav-links {
-        border-color: $focus-border-color;
+        border-color: $blue-300;
       }
     }
 
@@ -93,7 +93,7 @@
   -webkit-flex-flow: row wrap;
   width: 100%;
 
-  .pull-right {
+  .float-right {
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
@@ -129,7 +129,7 @@
     .icon svg {
       position: relative;
       top: 2px;
-      margin-right: $btn-xs-side-margin;
+      margin-right: $btn-margin-5;
       width: $gl-font-size;
       height: $gl-font-size;
       fill: $orange-600;
@@ -185,12 +185,12 @@
 }
 
 .notes.notes-form > li.timeline-entry {
-  @include notes-media('max', $screen-sm-max) {
+  @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
     padding: 0;
   }
 
   .timeline-content {
-    @include notes-media('max', $screen-sm-max) {
+    @include notes-media('max', map-get($grid-breakpoints, md) - 1) {
       margin: 0;
     }
   }
@@ -247,22 +247,6 @@
 }
 
 .discussion-with-resolve-btn {
-  display: table;
-  width: 100%;
-  border-collapse: separate;
-  table-layout: auto;
-
-  .btn-group {
-    display: table-cell;
-    float: none;
-    width: 1%;
-
-    &:first-child {
-      width: 100%;
-      padding-right: 5px;
-    }
-  }
-
   .discussion-actions {
     display: table;
 
@@ -326,7 +310,7 @@
     outline: 0;
   }
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     float: left;
     margin-right: $gl-padding;
 
@@ -350,13 +334,13 @@
   line-height: 16px;
   margin-top: 2px;
 
-  @media (min-width: $screen-md-min) {
+  @include media-breakpoint-up(md) {
     float: left;
   }
 }
 
 .note-form-actions {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     .btn {
       float: none;
       width: 100%;
@@ -375,7 +359,7 @@
   left: 127px;
   top: 2px;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     position: relative;
     top: 0;
     left: 0;
@@ -410,7 +394,7 @@
     width: 298px;
   }
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     display: flex;
     width: 100%;
     margin-bottom: 10px;
@@ -432,7 +416,7 @@
 .uploading-container {
   float: right;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     float: left;
     margin-top: 5px;
   }
@@ -444,7 +428,7 @@
 }
 
 .uploading-error-message {
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     &::after {
       content: "\a";
       white-space: pre;

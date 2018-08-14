@@ -23,18 +23,22 @@ describe Gitlab::ImportExport::RepoRestorer do
 
     after do
       FileUtils.rm_rf(export_path)
-      FileUtils.rm_rf(project_with_repo.repository.path_to_repo)
-      FileUtils.rm_rf(project.repository.path_to_repo)
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        FileUtils.rm_rf(project_with_repo.repository.path_to_repo)
+        FileUtils.rm_rf(project.repository.path_to_repo)
+      end
     end
 
     it 'restores the repo successfully' do
-      expect(restorer.restore).to be true
+      expect(restorer.restore).to be_truthy
     end
 
     it 'has the webhooks' do
       restorer.restore
 
-      expect(Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository)).to exist
+      Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        expect(Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository)).to exist
+      end
     end
   end
 end

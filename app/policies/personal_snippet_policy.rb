@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PersonalSnippetPolicy < BasePolicy
   condition(:public_snippet, scope: :subject) { @subject.public? }
   condition(:is_author) { @user && @subject.author == @user }
@@ -25,4 +27,6 @@ class PersonalSnippetPolicy < BasePolicy
   end
 
   rule { anonymous }.prevent :comment_personal_snippet
+
+  rule { can?(:comment_personal_snippet) }.enable :award_emoji
 end

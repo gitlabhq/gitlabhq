@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PagesDomain < ActiveRecord::Base
   VERIFICATION_KEY = 'gitlab-pages-verification-code'.freeze
   VERIFICATION_THRESHOLD = 3.days.freeze
@@ -6,8 +8,10 @@ class PagesDomain < ActiveRecord::Base
 
   validates :domain, hostname: { allow_numeric_hostname: true }
   validates :domain, uniqueness: { case_sensitive: false }
-  validates :certificate, certificate: true, allow_nil: true, allow_blank: true
-  validates :key, certificate_key: true, allow_nil: true, allow_blank: true
+  validates :certificate, presence: { message: 'must be present if HTTPS-only is enabled' }, if: ->(domain) { domain.project&.pages_https_only? }
+  validates :certificate, certificate: true, if: ->(domain) { domain.certificate.present? }
+  validates :key, presence: { message: 'must be present if HTTPS-only is enabled' }, if: ->(domain) { domain.project&.pages_https_only? }
+  validates :key, certificate_key: true, if: ->(domain) { domain.key.present? }
   validates :verification_code, presence: true, allow_blank: false
 
   validate :validate_pages_domain
@@ -17,7 +21,7 @@ class PagesDomain < ActiveRecord::Base
   attr_encrypted :key,
     mode: :per_attribute_iv_and_salt,
     insecure_mode: true,
-    key: Gitlab::Application.secrets.db_key_base,
+    key: Settings.attr_encrypted_db_key_base,
     algorithm: 'aes-256-cbc'
 
   after_initialize :set_verification_code
@@ -44,6 +48,10 @@ class PagesDomain < ActiveRecord::Base
 
   def enabled?
     !Gitlab::CurrentSettings.pages_domain_verification_enabled? || enabled_until.present?
+  end
+
+  def https?
+    certificate.present?
   end
 
   def to_param

@@ -1,16 +1,10 @@
-# Issue Board
+# Issue Boards
 
->**Note:**
-[Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
+> [Introduced][ce-5554] in [GitLab 8.11](https://about.gitlab.com/2016/08/22/gitlab-8-11-released/#issue-board).
 
 The GitLab Issue Board is a software project management tool used to plan,
 organize, and visualize a workflow for a feature or product release.
-It can be seen like a light version of a [Kanban] or a [Scrum] board.
-
-Other interesting links:
-
-- [GitLab Issue Board landing page on about.gitlab.com][landing]
-- [YouTube video introduction to Issue Boards][youtube]
+It can be used as a [Kanban] or a [Scrum] board.
 
 ![GitLab Issue Board](img/issue_board.png)
 
@@ -18,7 +12,7 @@ Other interesting links:
 
 The Issue Board builds on GitLab's existing
 [issue tracking functionality](issues/index.md#issue-tracker) and
-leverages the power of [labels] by utilizing them as lists of the scrum board.
+leverages the power of [labels](labels.md) by utilizing them as lists of the scrum board.
 
 With the Issue Board you can have a different view of your issues while
 maintaining the same filtering and sorting abilities you see across the
@@ -33,14 +27,22 @@ You create issues, host code, perform reviews, build, test,
 and deploy from one single platform. Issue Boards help you to visualize
 and manage the entire process _in_ GitLab.
 
-With [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards), available
-only in [GitLab Ultimate](https://about.gitlab.com/products/),
+With [Multiple Issue Boards](#use-cases-for-multiple-issue-boards), available
+only in [GitLab Enterprise Edition](#features-per-tier),
 you go even further, as you can not only keep yourself and your project
 organized from a broader perspective with one Issue Board per project,
 but also allow your team members to organize their own workflow by creating
 multiple Issue Boards within the same project.
 
+For a visual overview, see our [Issue Board feature page](https://about.gitlab.com/features/issueboard/)
+on about.gitlab.com or our [video introduction to Issue Boards](https://www.youtube.com/watch?v=UWsJ8tkHAa8).
+
 ## Use cases
+
+There are many ways to use GitLab Issue Boards tailored to your own preferred workflow.
+Here are some common use cases for Issue Boards.
+
+### Use cases for a single Issue Board
 
 GitLab Workflow allows you to discuss proposals in issues, categorize them
 with labels, and from there organize and prioritize them with Issue Boards.
@@ -65,33 +67,66 @@ beginning of the development lifecycle until deployed to production
 
 ![issue card moving](img/issue_board_move_issue_card_list.png)
 
-> **Notes:**
->
->- For a broader use case, please check the blog post
+### Use cases for Multiple Issue Boards
+
+With [Multiple Issue Boards](#multiple-issue-boards), available only in
+[GitLab Enterprise Edition](https://about.gitlab.com/pricing/),
+each team can have their own board to organize their workflow individually.
+
+#### Scrum team
+
+With Multiple Issue Boards, each team has one board. Now you can move issues through each
+part of the process. For instance: **To Do**, **Doing**, and **Done**.
+
+#### Organization of topics
+
+Create lists to order things by topic and quickly change them between topics or groups,
+such as between **UX**, **Frontend**, and **Backend**. The changes will be reflected across boards,
+as changing lists will update the label accordingly.
+
+#### Advanced team handover
+
+For example, suppose we have a UX team with an Issue Board that contains:
+
+- **To Do**
+- **Doing**
+- **Frontend**
+
+When done with something, they move the card to **Frontend**. The Frontend team's board looks like:
+
+- **Frontend**
+- **Doing**
+- **Done**
+
+Cards finished by the UX team will automatically appear in the **Frontend** column when they're ready for them.
+
+NOTE: **Note:**
+For a broader use case, please see the blog post
 [GitLab Workflow, an Overview](https://about.gitlab.com/2016/10/25/gitlab-workflow-an-overview/#gitlab-workflow-use-case-scenario).
->
->- For a real use case, please check why
+For a real use case example, you can read why
 [Codepen decided to adopt Issue Boards](https://about.gitlab.com/2017/01/27/codepen-welcome-to-gitlab/#project-management-everything-in-one-place)
-to improve their workflow with [multiple boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards).
+to improve their workflow with multiple boards.
+
+#### Quick assignments
+
+Create lists for each of your team members and quickly drag-and-drop issues onto each team member.
+
+## Permissions
+
+[Developers and up](../permissions.md) can use all the functionality of the
+Issue Board, that is, create or delete lists and drag issues from one list to another.
 
 ## Issue Board terminology
 
-Below is a table of the definitions used for GitLab's Issue Board.
+- **Issue Board** - Each board represents a unique view for your issues. It can have multiple lists with each list consisting of issues represented by cards.
+- **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Backlog' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
+   - **Label list**: a list based on a label. It shows all opened issues with that label.
+   - **Assignee list**: a list which includes all issues assigned to a user.
+   - **Backlog** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
+   - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
+- **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
 
-| What we call it  | What it means |
-| --------------  | ------------- |
-| **Issue Board** | It represents a different view for your issues. It can have multiple lists with each list consisting of issues represented by cards. |
-| **List**        | Each label that exists in the issue tracker can have its own dedicated list. Every list is named after the label it is based on and is represented by a column which contains all the issues associated with that label. You can think of a list like the results you get when you filter the issues by a label in your issue tracker. |
-| **Card**        | Every card represents an issue and it is shown under the list for which it has a label. The information you can see on a card consists of the issue number, the issue title, the assignee and the labels associated with it. You can drag cards around from one list to another. You can re-order cards within a list. |
-
-There are two types of lists, the ones you create based on your labels, and
-two defaults:
-
-- Label list: a list based on a label. It shows all opened issues with that label.
-- **Backlog** (default): shows all open issues that does not belong to one of lists. Always appears on the very left.
-- **Closed** (default): shows all closed issues. Always appears on the very right.
-
-In short, here's a list of actions you can take in an Issue Board:
+## Actions you can take on an Issue Board
 
 - [Create a new list](#creating-a-new-list).
 - [Delete an existing list](#deleting-a-list).
@@ -129,7 +164,7 @@ right corner of the Issue Board.
 
 ![Issue Board welcome message](img/issue_board_add_list.png)
 
-Simply choose the label to create the list from. The new list will be inserted
+Simply choose the label or user to create the list from. The new list will be inserted
 at the end of the lists, before **Done**. Moving and reordering lists is as
 easy as dragging them around.
 
@@ -174,17 +209,19 @@ to the system so that anybody who visits the same board later will see the reord
 with some exceptions.
 
 The first time a given issue appears in any board (i.e. the first time a user
-loads a board containing that issue), it will be ordered with 
-respect to other issues in that list according to [Priority order][label-priority].
+loads a board containing that issue), it will be ordered with
+respect to other issues in that list according to [Priority order](labels.md#label-priority).
+
 At that point, that issue will be assigned a relative order value by the system
 representing its relative order with respect to the other issues in the list. Any time
 you drag-and-drop reorder that issue, its relative order value will change accordingly.
+
 Also, any time that issue appears in any board when it is loaded by a user,
 the updated relative order value will be used for the ordering. (It's only the first
 time an issue appears that it takes from the Priority order mentioned above.) This means that
 if issue `A` is drag-and-drop reordered to be above issue `B` by any user in
 a given board inside your GitLab instance, any time those two issues are subsequently
-loaded in any board in the same instance (could be a different project board or a different group board, for example), 
+loaded in any board in the same instance (could be a different project board or a different group board, for example),
 that ordering will be maintained.
 
 ## Filtering issues
@@ -205,8 +242,8 @@ something between lists by changing a label.
 
 A typical workflow of using the Issue Board would be:
 
-1. You have [created][create-labels] and [prioritized][label-priority] labels
-   so that you can easily categorize your issues.
+1. You have [created](labels.md#creating-labels) and [prioritized](labels.md#label-priority)
+   labels so that you can easily categorize your issues.
 1. You have a bunch of issues (ideally labeled).
 1. You visit the Issue Board and start [creating lists](#creating-a-new-list) to
    create a workflow.
@@ -230,30 +267,116 @@ to another list the label changes and a system not is recorded.
 
 ![Issue Board system notes](img/issue_board_system_notes.png)
 
-## Permissions
+## Multiple Issue Boards **[STARTER]**
 
-[Developers and up](../permissions.md) can use all the functionality of the
-Issue Board, that is create/delete lists and drag issues around.
+> Introduced in [GitLab Enterprise Edition 8.13](https://about.gitlab.com/2016/10/22/gitlab-8-13-released/#multiple-issue-boards-ee).
 
-##  Group Issue Board
+Multiple Issue Boards, as the name suggests, allow for more than one Issue Board
+for a given project or group. This is great for large projects with more than one team
+or in situations where a repository is used to host the code of multiple
+products.
 
->Introduced in GitLab 10.6
+Clicking on the current board name in the upper left corner will reveal a
+menu from where you can create another Issue Board and rename or delete the
+existing one.
 
-Group issue board is analogous to project-level issue board and it is accessible at the group
-navigation level. A group-level issue board allows you to view all issues from all projects in that group
-(currently, it does not see issues from projects in subgroups). Similarly, you can only filter by group labels for these
+NOTE: **Note:**
+The Multiple Issue Boards feature is available for
+**projects in GitLab Starter Edition** and for **groups in GitLab Premium Edition**.
+
+![Multiple Issue Boards](img/issue_boards_multiple.png)
+
+## Configurable Issue Boards **[STARTER]**
+
+> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
+
+An Issue Board can be associated with GitLab [Milestone](milestones/index.md#milestones),
+[Labels](labels.md), Assignee and Weight
+which will automatically filter the Board issues according to these fields.
+This allows you to create unique boards according to your team's need.
+
+![Create scoped board](img/issue_board_creation.png)
+
+You can define the scope of your board when creating it or by clicking on the "Edit board" button. Once a milestone, assignee or weight is assigned to an Issue Board, you will no longer be able to filter
+through these in the search bar. In order to do that, you need to remove the desired scope (e.g. milestone, assignee or weight) from the Issue Board.
+
+![Edit board configuration](img/issue_board_edit_button.png)
+
+If you don't have editing permission in a board, you're still able to see the configuration by clicking on "View scope".
+
+![Viewing board configuration](img/issue_board_view_scope.png)
+
+## Focus mode **[STARTER]**
+
+> Introduced in [GitLab Starter 9.1](https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#issue-boards-focus-mode-ees-eep).
+
+Click the button at the top right to toggle focus mode on and off. In focus mode, the navigation UI is hidden, allowing you to focus on issues in the board.
+
+![Board focus mode](img/issue_board_focus_mode.gif)
+
+## Group Issue Boards **[PREMIUM]**
+
+> Introduced in [GitLab Premium 10.0](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards).
+
+Accessible at the group navigation level, a group issue board offers the same features as a project-level board,
+but it can display issues from all projects in that
+group and its descendant subgroups. Similarly, you can only filter by group labels for these
 boards. When updating milestones and labels for an issue through the sidebar update mechanism, again only
 group-level objects are available.
+
+NOTE: **Note:**
+Multiple group issue boards were originally introduced in [GitLab 10.0 Premium](https://about.gitlab.com/2017/09/22/gitlab-10-0-released/#group-issue-boards) and
+one group issue board per group was made available in GitLab 10.6 Core. 
+
+![Group issue board](img/group_issue_board.png)
+
+## Assignee lists **[PREMIUM]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/5784) in GitLab 11.0 Premium.
+
+Like a regular list that shows all issues that have the list label, you can add
+an assignee list that shows all issues assigned to the given user.
+You can have a board with both label lists and assignee lists. To add an
+assignee list:
+
+1. Click **Add list**.
+1. Select the **Assignee list** tab.
+1. Search and click on the user you want to add as an assignee.
+
+Now that the assignee list is added, you can assign or unassign issues to that user
+by [dragging issues](#dragging-issues-between-lists) to and/or from an assignee list.
+To remove an assignee list, just as with a label list, click the trash icon.
+
+![Assignee lists](img/issue_board_assignee_lists.png)
+
+## Dragging issues between lists
+
+When dragging issues between lists, different behavior occurs depending on the source list and the target list.
+
+| | To Backlog | To Closed | To label `B` list | To assignee `Bob` list |
+| --- | --- | --- | --- | ---  |
+| From Backlog | - | Issue closed | `B` added | `Bob` assigned |
+| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
+| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
+| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
+
+## Features per tier
+
+Different issue board features are available in different [GitLab tiers](https://about.gitlab.com/pricing/), as shown in the following table:
+
+| Tier | Number of Project Issue Boards | Number of Group Issue Boards | Configurable Issue Boards | Assignee Lists
+| --- | --- | --- | --- | --- | --- |
+| Core     | 1        | 1        | No  | No  |
+| Starter  | Multiple | 1        | Yes | No  |
+| Premium  | Multiple | Multiple | Yes | Yes |
+| Ultimate | Multiple | Multiple | Yes | Yes |
 
 ## Tips
 
 A few things to remember:
 
-- The label that corresponds to a list is hidden for issues under that list.
 - Moving an issue between lists removes the label from the list it came from
   and adds the label from the list it goes to.
-- When moving a card to **Done**, the label of the list it came from is removed
-  and the issue gets closed.
 - An issue can exist in multiple lists if it has more than one label.
 - Lists are populated with issues automatically if the issues are labeled.
 - Clicking on the issue title inside a card will take you to that issue.
@@ -264,10 +387,5 @@ A few things to remember:
   20 will appear.
 
 [ce-5554]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/5554
-[labels]: ./labels.md
 [scrum]: https://en.wikipedia.org/wiki/Scrum_(software_development)
 [kanban]: https://en.wikipedia.org/wiki/Kanban_(development)
-[create-labels]: ./labels.md#create-new-labels
-[label-priority]: ./labels.md#prioritize-labels
-[landing]: https://about.gitlab.com/solutions/issueboard
-[youtube]: https://www.youtube.com/watch?v=UWsJ8tkHAa8

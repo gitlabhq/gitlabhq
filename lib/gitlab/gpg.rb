@@ -54,7 +54,11 @@ module Gitlab
         fingerprints = CurrentKeyChain.fingerprints_from_key(key)
 
         GPGME::Key.find(:public, fingerprints).flat_map do |raw_key|
-          raw_key.uids.map { |uid| { name: uid.name, email: uid.email.downcase } }
+          raw_key.uids.each_with_object([]) do |uid, arr|
+            name = uid.name.force_encoding('UTF-8')
+            email = uid.email.force_encoding('UTF-8')
+            arr << { name: name, email: email.downcase } if name.valid_encoding? && email.valid_encoding?
+          end
         end
       end
     end
@@ -67,8 +71,16 @@ module Gitlab
       if MUTEX.locked? && MUTEX.owned?
         optimistic_using_tmp_keychain(&block)
       else
-        MUTEX.synchronize do
-          optimistic_using_tmp_keychain(&block)
+        if Gitlab.rails5?
+          ActiveSupport::Dependencies.interlock.permit_concurrent_loads do
+            MUTEX.synchronize do
+              optimistic_using_tmp_keychain(&block)
+            end
+          end
+        else
+          MUTEX.synchronize do
+            optimistic_using_tmp_keychain(&block)
+          end
         end
       end
     end

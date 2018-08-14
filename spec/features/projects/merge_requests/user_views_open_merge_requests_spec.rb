@@ -94,6 +94,18 @@ describe 'User views open merge requests' do
       end
 
       include_examples 'shows merge requests'
+
+      it 'shows the new merge request button' do
+        expect(page).to have_link('New merge request')
+      end
+
+      context 'when the project is archived' do
+        let(:project) { create(:project, :public, :repository, :archived) }
+
+        it 'hides the new merge request button' do
+          expect(page).not_to have_link('New merge request')
+        end
+      end
     end
   end
 

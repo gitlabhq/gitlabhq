@@ -17,7 +17,7 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   context 'when there is active pipeline for merge request' do
@@ -123,6 +123,12 @@ describe 'Merge request > User merges when pipeline succeeds', :js do
       refresh
 
       expect(page).to have_content "canceled the automatic merge"
+    end
+
+    it 'allows to remove source branch' do
+      click_link "Remove source branch"
+
+      expect(page).to have_content "The source branch will be removed"
     end
 
     context 'when pipeline succeeds' do

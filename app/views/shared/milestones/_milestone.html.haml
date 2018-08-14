@@ -1,75 +1,59 @@
 - dashboard = local_assigns[:dashboard]
 - custom_dom_id = dom_id(milestone.try(:milestones) ? milestone.milestones.first : milestone)
+- milestone_type = milestone.group_milestone? ? 'Group Milestone' : 'Project Milestone'
 
 %li{ class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: custom_dom_id }
   .row
     .col-sm-6
-      %strong= link_to truncate(milestone.title, length: 100), milestone_path
-      - if milestone.group_milestone?
-        %span - Group Milestone
-      - else
-        %span - Project Milestone
+      .append-bottom-5
+        %strong= link_to truncate(milestone.title, length: 100), milestone_path
+        - if @group
+          = " - #{milestone_type}"
 
-    .col-sm-6
-      .pull-right.light #{milestone.percent_complete(current_user)}% complete
-  .row
-    .col-sm-6
+      - if @project || milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
+        - if milestone.due_date || milestone.start_date
+          .milestone-range.append-bottom-5
+            = milestone_date_range(milestone)
+        %div
+          = render('shared/milestone_expired', milestone: milestone)
+          - if milestone.legacy_group_milestone?
+            .projects
+              - milestone.milestones.each do |milestone|
+                = link_to milestone_path(milestone) do
+                  %span.label-badge.label-badge-blue.d-inline-block.append-bottom-5
+                    = dashboard ? milestone.project.full_name : milestone.project.name
+
+    .col-sm-4.milestone-progress
+      = milestone_progress_bar(milestone)
       = link_to pluralize(milestone.total_issues_count(current_user), 'Issue'), issues_path
       &middot;
       = link_to pluralize(milestone.merge_requests.size, 'Merge Request'), merge_requests_path
-    .col-sm-6= milestone_progress_bar(milestone)
-  - if milestone.is_a?(GlobalMilestone) || milestone.group_milestone?
-    .row
-      .col-sm-6
-        - if milestone.legacy_group_milestone?
-          .expiration= render('shared/milestone_expired', milestone: milestone)
-          .projects
-            - milestone.milestones.each do |milestone|
-              = link_to milestone_path(milestone) do
-                %span.label.label-gray
-                  = dashboard ? milestone.project.full_name : milestone.project.name
-      - if @group
-        .col-sm-6.milestone-actions
+      .float-lg-right.light #{milestone.percent_complete(current_user)}% complete
+    .col-sm-2
+      .milestone-actions.d-flex.justify-content-sm-start.justify-content-md-end
+        - if @project
+          - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
+            - if @project.group
+              %button.js-promote-project-milestone-button.btn.btn-blank.btn-sm.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
+                disabled: true,
+                type: 'button',
+                data: { url: promote_project_milestone_path(milestone.project, milestone),
+                        milestone_title: milestone.title,
+                        group_name: @project.group.name,
+                        target: '#promote-milestone-modal',
+                        container: 'body',
+                        toggle: 'modal' } }
+                = sprite_icon('level-up', size: 14)
+
+            = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-sm btn-close btn-grouped"
+          - unless milestone.active?
+            = link_to 'Reopen Milestone', project_milestone_path(@project, milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
+        - if @group
           - if can?(current_user, :admin_milestones, @group)
-            - if milestone.group_milestone?
-              = link_to edit_group_milestone_path(@group, milestone), class: "btn btn-xs btn-grouped" do
-                Edit
-              \
             - if milestone.closed?
-              = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-xs btn-grouped btn-reopen"
+              = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-sm btn-grouped btn-reopen"
             - else
-              = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-xs btn-grouped btn-close"
-
-  - if @project
-    .row
-      .col-sm-6
-        = render('shared/milestone_expired', milestone: milestone)
-      .col-sm-6.milestone-actions
-        - if can?(current_user, :admin_milestone, milestone.project) and milestone.active?
-          = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-xs btn-grouped" do
-            Edit
-          \
-
-          - if @project.group
-            %button.js-promote-project-milestone-button.btn.btn-xs.btn-grouped.has-tooltip{ title: _('Promote to Group Milestone'),
-              disabled: true,
-              type: 'button',
-              data: { url: promote_project_milestone_path(milestone.project, milestone),
-                      milestone_title: milestone.title,
-                      target: '#promote-milestone-modal',
-                      container: 'body',
-                      toggle: 'modal' } }
-              = _('Promote')
-
-          = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close btn-grouped"
-
-        %button.js-delete-milestone-button.btn.btn-xs.btn-grouped.btn-danger{ data: { toggle: 'modal',
-          target: '#delete-milestone-modal',
-          milestone_id: milestone.id,
-          milestone_title: markdown_field(milestone, :title),
-          milestone_url: project_milestone_path(milestone.project, milestone),
-          milestone_issue_count: milestone.issues.count,
-          milestone_merge_request_count: milestone.merge_requests.count },
-          disabled: true }
-          = _('Delete')
-          = icon('spin spinner', class: 'js-loading-icon hidden' )
+              = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-sm btn-grouped btn-close"
+        - if dashboard
+          .status-box.status-box-milestone
+            = milestone_type

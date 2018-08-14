@@ -1,4 +1,6 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+/* eslint-disable func-names, wrap-iife, no-var, comma-dangle, object-shorthand, one-var, one-var-declaration-per-line, no-else-return, quotes, max-len */
+
+import $ from 'jquery';
 import Api from './api';
 import ProjectSelectComboButton from './project_select_combo_button';
 
@@ -45,7 +47,10 @@ export default function projectSelect() {
             projectsCallback = finalCallback;
           }
           if (_this.groupId) {
-            return Api.groupProjects(_this.groupId, query.term, projectsCallback);
+            return Api.groupProjects(_this.groupId, query.term, {
+              with_issues_enabled: _this.withIssuesEnabled,
+              with_merge_requests_enabled: _this.withMergeRequestsEnabled,
+            }, projectsCallback);
           } else {
             return Api.projects(query.term, {
               order_by: _this.orderBy,

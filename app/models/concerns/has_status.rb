@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module HasStatus
   extend ActiveSupport::Concern
 
@@ -10,6 +12,8 @@ module HasStatus
   ORDERED_STATUSES = %w[failed pending running manual canceled success skipped created].freeze
   STATUSES_ENUM = { created: 0, pending: 1, running: 2, success: 3,
                     failed: 4, canceled: 5, skipped: 6, manual: 7 }.freeze
+
+  UnknownStatusError = Class.new(StandardError)
 
   class_methods do
     def status_sql

@@ -1,48 +1,55 @@
 <script>
-  import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
+import timeAgoTooltip from '../../vue_shared/components/time_ago_tooltip.vue';
 
-  export default {
-    name: 'EditedNoteText',
-    components: {
-      timeAgoTooltip,
+export default {
+  name: 'EditedNoteText',
+  components: {
+    timeAgoTooltip,
+  },
+  props: {
+    actionText: {
+      type: String,
+      required: true,
     },
-    props: {
-      actionText: {
-        type: String,
-        required: true,
-      },
-      editedAt: {
-        type: String,
-        required: true,
-      },
-      editedBy: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      className: {
-        type: String,
-        required: false,
-        default: 'edited-text',
-      },
+    actionDetailText: {
+      type: String,
+      required: false,
+      default: '',
     },
-  };
+    editedAt: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    editedBy: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+    className: {
+      type: String,
+      required: false,
+      default: 'edited-text',
+    },
+  },
+};
 </script>
 
 <template>
   <div :class="className">
     {{ actionText }}
-    <time-ago-tooltip
-      :time="editedAt"
-      tooltip-placement="bottom"
-    />
     <template v-if="editedBy">
       by
       <a
         :href="editedBy.path"
-        class="js-vue-author author_link">
+        class="js-vue-author author-link">
         {{ editedBy.name }}
       </a>
     </template>
+    {{ actionDetailText }}
+    <time-ago-tooltip
+      :time="editedAt"
+      tooltip-placement="bottom"
+    />
   </div>
 </template>

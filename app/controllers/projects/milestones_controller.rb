@@ -1,4 +1,5 @@
 class Projects::MilestonesController < Projects::ApplicationController
+  include Gitlab::Utils::StrongMemoize
   include MilestoneActions
 
   before_action :check_issuables_available!
@@ -14,7 +15,7 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def index
     @sort = params[:sort] || 'due_date_asc'
-    @milestones = milestones.sort(@sort)
+    @milestones = milestones.sort_by_attribute(@sort)
 
     respond_to do |format|
       format.html do
@@ -42,6 +43,10 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def show
     @project_namespace = @project.namespace.becomes(Namespace)
+
+    respond_to do |format|
+      format.html
+    end
   end
 
   def create
@@ -70,9 +75,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def promote
-    Milestones::PromoteService.new(project, current_user).execute(milestone)
+    promoted_milestone = Milestones::PromoteService.new(project, current_user).execute(milestone)
+    flash[:notice] = flash_notice_for(promoted_milestone, project.group)
 
-    flash[:notice] = "#{milestone.title} promoted to group milestone"
     respond_to do |format|
       format.html do
         redirect_to project_milestones_path(project)
@@ -85,13 +90,22 @@ class Projects::MilestonesController < Projects::ApplicationController
     redirect_to milestone, alert: error.message
   end
 
+  def flash_notice_for(milestone, group)
+    notice = ''.html_safe
+    notice << milestone.title
+    notice << ' promoted to '
+    notice << view_context.link_to('<u>group milestone</u>'.html_safe, group_milestone_path(group, milestone.iid))
+    notice << '.'
+    notice
+  end
+
   def destroy
     return access_denied! unless can?(current_user, :admin_milestone, @project)
 
     Milestones::DestroyService.new(project, current_user).execute(milestone)
 
     respond_to do |format|
-      format.html { redirect_to namespace_project_milestones_path, status: 303 }
+      format.html { redirect_to namespace_project_milestones_path, status: :see_other }
       format.js { head :ok }
     end
   end
@@ -99,7 +113,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   protected
 
   def milestones
-    @milestones ||= begin
+    strong_memoize(:milestones) do
       MilestonesFinder.new(search_params).execute
     end
   end
@@ -117,10 +131,10 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def search_params
-    if @project.group && can?(current_user, :read_group, @project.group)
-      group = @project.group
+    if request.format.json? && @project.group && can?(current_user, :read_group, @project.group)
+      groups = @project.group.self_and_ancestors_ids
     end
 
-    params.permit(:state).merge(project_ids: @project.id, group_ids: group&.id)
+    params.permit(:state).merge(project_ids: @project.id, group_ids: groups)
   end
 end

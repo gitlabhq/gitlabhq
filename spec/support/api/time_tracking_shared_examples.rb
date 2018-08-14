@@ -70,8 +70,12 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     end
 
     it "add spent time for #{issuable_name}" do
-      post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
-           duration: '2h'
+      Timecop.travel(1.minute.from_now) do
+        expect do
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
+            duration: '2h'
+        end.to change { issuable.reload.updated_at }
+      end
 
       expect(response).to have_gitlab_http_status(201)
       expect(json_response['human_total_time_spent']).to eq('2h')
@@ -79,7 +83,11 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
     context 'when subtracting time' do
       it 'subtracts time of the total spent time' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+        Timecop.travel(1.minute.from_now) do
+          expect do
+            issuable.update!(spend_time: { duration: 7200, user_id: user.id })
+          end.to change { issuable.reload.updated_at }
+        end
 
         post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
              duration: '-1h'
@@ -91,10 +99,14 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
     context 'when time to subtract is greater than the total spent time' do
       it 'does not modify the total time spent' do
-        issuable.update_attributes!(spend_time: { duration: 7200, user_id: user.id })
+        issuable.update!(spend_time: { duration: 7200, user_id: user.id })
 
-        post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
-             duration: '-1w'
+        Timecop.travel(1.minute.from_now) do
+          expect do
+            post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/add_spent_time", user),
+              duration: '-1w'
+          end.not_to change { issuable.reload.updated_at }
+        end
 
         expect(response).to have_gitlab_http_status(400)
         expect(json_response['message']['time_spent'].first).to match(/exceeds the total time spent/)
@@ -110,7 +122,11 @@ shared_examples 'time tracking endpoints' do |issuable_name|
     end
 
     it "resets spent time for #{issuable_name}" do
-      post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", user)
+      Timecop.travel(1.minute.from_now) do
+        expect do
+          post api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/reset_spent_time", user)
+        end.to change { issuable.reload.updated_at }
+      end
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['total_time_spent']).to eq(0)
@@ -119,8 +135,8 @@ shared_examples 'time tracking endpoints' do |issuable_name|
 
   describe "GET /projects/:id/#{issuable_collection_name}/:#{issuable_name}_id/time_stats" do
     it "returns the time stats for #{issuable_name}" do
-      issuable.update_attributes!(spend_time: { duration: 1800, user_id: user.id },
-                                  time_estimate: 3600)
+      issuable.update!(spend_time: { duration: 1800, user_id: user.id },
+                       time_estimate: 3600)
 
       get api("/projects/#{project.id}/#{issuable_collection_name}/#{issuable.iid}/time_stats", user)
 

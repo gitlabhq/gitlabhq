@@ -7,12 +7,11 @@ namespace :gitlab do
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :gitlab_environment do
       warn_user_is_not_gitlab
-      remove_flag = ENV['REMOVE']
 
-      namespaces  = Namespace.pluck(:path)
+      namespaces = Namespace.pluck(:path)
       namespaces << HASHED_REPOSITORY_NAME  # add so that it will be ignored
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        git_base_path = repository_storage['path']
+        git_base_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository_storage.legacy_disk_path }
         all_dirs = Dir.glob(git_base_path + '/*')
 
         puts git_base_path.color(:yellow)
@@ -31,7 +30,7 @@ namespace :gitlab do
         end
 
         all_dirs.each do |dir_path|
-          if remove_flag
+          if remove?
             if FileUtils.rm_rf dir_path
               puts "Removed...#{dir_path}".color(:red)
             else
@@ -43,7 +42,7 @@ namespace :gitlab do
         end
       end
 
-      unless remove_flag
+      unless remove?
         puts "To cleanup this directories run this command with REMOVE=true".color(:yellow)
       end
     end
@@ -54,7 +53,8 @@ namespace :gitlab do
 
       move_suffix = "+orphaned+#{Time.now.to_i}"
       Gitlab.config.repositories.storages.each do |name, repository_storage|
-        repo_root = repository_storage['path']
+        repo_root = Gitlab::GitalyClient::StorageSettings.allow_disk_access { repository_storage.legacy_disk_path }
+
         # Look for global repos (legacy, depth 1) and normal repos (depth 2)
         IO.popen(%W(find #{repo_root} -mindepth 1 -maxdepth 2 -name *.git)) do |find|
           find.each_line do |path|
@@ -104,27 +104,46 @@ namespace :gitlab do
       end
     end
 
-    # This is a rake task which removes faulty refs. These refs where only
-    # created in the 8.13.RC cycle, and fixed in the stable builds which were
-    # released. So likely this should only be run once on gitlab.com
-    # Faulty refs are moved so they are kept around, else some features break.
-    desc 'GitLab | Cleanup | Remove faulty deployment refs'
-    task move_faulty_deployment_refs: :gitlab_environment do
-      projects = Project.where(id: Deployment.select(:project_id).distinct)
+    desc "GitLab | Cleanup | Clean orphaned project uploads"
+    task project_uploads: :gitlab_environment do
+      warn_user_is_not_gitlab
 
-      projects.find_each do |project|
-        rugged = project.repository.rugged
+      cleaner = Gitlab::Cleanup::ProjectUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
 
-        max_iid = project.deployments.maximum(:iid)
-
-        rugged.references.each('refs/environments/**/*') do |ref|
-          id = ref.name.split('/').last.to_i
-          next unless id > max_iid
-
-          project.deployments.find(id).create_ref
-          project.repository.delete_refs(ref)
-        end
+      if dry_run?
+        logger.info "To clean up these files run this command with DRY_RUN=false".color(:yellow)
       end
+    end
+
+    desc 'GitLab | Cleanup | Clean orphan remote upload files that do not exist in the db'
+    task remote_upload_files: :environment do
+      cleaner = Gitlab::Cleanup::RemoteUploads.new(logger: logger)
+      cleaner.run!(dry_run: dry_run?)
+
+      if dry_run?
+        logger.info "To cleanup these files run this command with DRY_RUN=false".color(:yellow)
+      end
+    end
+
+    def remove?
+      ENV['REMOVE'] == 'true'
+    end
+
+    def dry_run?
+      ENV['DRY_RUN'] != 'false'
+    end
+
+    def logger
+      return @logger if defined?(@logger)
+
+      @logger = if Rails.env.development? || Rails.env.production?
+                  Logger.new(STDOUT).tap do |stdout_logger|
+                    stdout_logger.extend(ActiveSupport::Logger.broadcast(Rails.logger))
+                  end
+                else
+                  Rails.logger
+                end
     end
   end
 end

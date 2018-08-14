@@ -27,6 +27,7 @@ Example response:
   "size": 1476,
   "encoding": "base64",
   "content": "IyA9PSBTY2hlbWEgSW5mb3...",
+  "content_sha256": "4c294617b60715c1d218e61164a3abd4808a4284cbc30e6728a01ad9aada4481",
   "ref": "master",
   "blob_id": "79f7bbd25901e8334750839545a9bd021f0e4c83",
   "commit_id": "d5a3ff139356ce33e37e73add446f16869741b50",
@@ -38,6 +39,36 @@ Parameters:
 
 - `file_path` (required) - Url encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
+
+NOTE: **Note:**
+`blob_id` is the blob sha, see [repositories - Get a blob from repository](repositories.md#get-a-blob-from-repository)
+
+In addition to the `GET` method, you can also use `HEAD` to get just file metadata.
+
+```
+HEAD /projects/:id/repository/files/:file_path
+```
+
+```bash
+curl --head --header 'PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK' 'https://gitlab.example.com/api/v4/projects/13083/repository/files/app%2Fmodels%2Fkey%2Erb?ref=master'
+```
+
+Example response:
+
+```text
+HTTP/1.1 200 OK
+...
+X-Gitlab-Blob-Id: 79f7bbd25901e8334750839545a9bd021f0e4c83
+X-Gitlab-Commit-Id: d5a3ff139356ce33e37e73add446f16869741b50
+X-Gitlab-Content-Sha256: 4c294617b60715c1d218e61164a3abd4808a4284cbc30e6728a01ad9aada4481
+X-Gitlab-Encoding: base64
+X-Gitlab-File-Name: key.rb
+X-Gitlab-File-Path: app/models/key.rb
+X-Gitlab-Last-Commit-Id: 570e7b2abdd848b95f2f578043fc23bd6f6fd24d
+X-Gitlab-Ref: master
+X-Gitlab-Size: 1476
+...
+```
 
 ## Get raw file from repository
 
@@ -53,6 +84,9 @@ Parameters:
 
 - `file_path` (required) - Url encoded full path to new file. Ex. lib%2Fclass%2Erb
 - `ref` (required) - The name of branch, tag or commit
+
+NOTE: **Note:**
+Like [Get file from repository](repository_files.md#get-file-from-repository) you can use `HEAD` to get just file metadata.
 
 ## Create new file in repository
 

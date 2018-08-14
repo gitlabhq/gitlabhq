@@ -1,9 +1,7 @@
-import _ from 'underscore';
+import $ from 'jquery';
 import ProtectedBranchAccessDropdown from './protected_branch_access_dropdown';
 import CreateItemDropdown from '../create_item_dropdown';
 import AccessorUtilities from '../lib/utils/accessor';
-
-const PB_LOCAL_STORAGE_KEY = 'protected-branches-defaults';
 
 export default class ProtectedBranchCreate {
   constructor() {
@@ -42,8 +40,6 @@ export default class ProtectedBranchCreate {
       onSelect: this.onSelectCallback,
       getData: ProtectedBranchCreate.getProtectedBranches,
     });
-
-    this.loadPreviousSelection($allowedToMergeDropdown.data('glDropdown'), $allowedToPushDropdown.data('glDropdown'));
   }
 
   // This will run after clicked callback
@@ -58,39 +54,10 @@ export default class ProtectedBranchCreate {
       $allowedToPushInput.length
     );
 
-    this.savePreviousSelection($allowedToMergeInput.val(), $allowedToPushInput.val());
     this.$form.find('input[type="submit"]').prop('disabled', completedForm);
   }
 
   static getProtectedBranches(term, callback) {
     callback(gon.open_branches);
-  }
-
-  loadPreviousSelection(mergeDropdown, pushDropdown) {
-    let mergeIndex = 0;
-    let pushIndex = 0;
-    if (this.isLocalStorageAvailable) {
-      const savedDefaults = JSON.parse(window.localStorage.getItem(PB_LOCAL_STORAGE_KEY));
-      if (savedDefaults != null) {
-        mergeIndex = _.findLastIndex(mergeDropdown.fullData.roles, {
-          id: parseInt(savedDefaults.mergeSelection, 0),
-        });
-        pushIndex = _.findLastIndex(pushDropdown.fullData.roles, {
-          id: parseInt(savedDefaults.pushSelection, 0),
-        });
-      }
-    }
-    mergeDropdown.selectRowAtIndex(mergeIndex);
-    pushDropdown.selectRowAtIndex(pushIndex);
-  }
-
-  savePreviousSelection(mergeSelection, pushSelection) {
-    if (this.isLocalStorageAvailable) {
-      const branchDefaults = {
-        mergeSelection,
-        pushSelection,
-      };
-      window.localStorage.setItem(PB_LOCAL_STORAGE_KEY, JSON.stringify(branchDefaults));
-    }
   }
 }

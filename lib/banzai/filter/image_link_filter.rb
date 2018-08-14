@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Banzai
   module Filter
     # HTML filter that wraps links around inline images.

@@ -1,40 +1,69 @@
 - @no_container = true
 - page_title "Labels"
-- hide_class = ''
 - can_admin_label = can?(current_user, :admin_label, @project)
+- hide_class = ''
+- search = params[:search]
 
-- if @labels.exists? || @prioritized_labels.exists?
+- if can_admin_label
+  - content_for(:header_content) do
+    .nav-controls
+      = link_to _('New label'), new_project_label_path(@project), class: "btn btn-new"
+
+- if @labels.exists? || @prioritized_labels.exists? || search.present?
   #promote-label-modal
   %div{ class: container_class }
     .top-area.adjust
       .nav-text
-        Labels can be applied to issues and merge requests.
-        - if can_admin_label
-          Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.
+        = _('Labels can be applied to issues and merge requests.')
 
-      - if can_admin_label
-        .nav-controls
-          = link_to new_project_label_path(@project), class: "btn btn-new" do
-            New label
+      .nav-controls
+        = form_tag project_labels_path(@project), method: :get do
+          .input-group
+            = search_field_tag :search, params[:search], { placeholder: _('Filter'), id: 'label-search', class: 'form-control search-text-input input-short', spellcheck: false }
+            %span.input-group-append
+              %button.btn.btn-default{ type: "submit", "aria-label" => _('Submit search') }
+                = icon("search")
 
-    .labels
+    .labels-container.prepend-top-10
       - if can_admin_label
+        - if search.blank?
+          %p.text-muted
+            = _('Star a label to make it a priority label. Order the prioritized labels to change their relative priority, by dragging.')
         -# Only show it in the first page
         - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
         .prioritized-labels{ class: ('hide' if hide) }
-          %h5 Prioritized Labels
-          %ul.content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
-            #js-priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty?}" }
+          %h5.prepend-top-10= _('Prioritized Labels')
+          .content-list.manage-labels-list.js-prioritized-labels{ "data-url" => set_priorities_project_labels_path(@project) }
+            #js-priority-labels-empty-state.priority-labels-empty-state{ class: "#{'hidden' unless @prioritized_labels.empty? && search.blank?}" }
               = render 'shared/empty_states/priority_labels'
             - if @prioritized_labels.present?
-              = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label
+              = render partial: 'shared/label', subject: @project, collection: @prioritized_labels, as: :label, locals: { force_priority: true }
+            - elsif search.present?
+              .nothing-here-block
+                = _('No prioritised labels with such name or description')
 
       - if @labels.present?
         .other-labels
           - if can_admin_label
-            %h5{ class: ('hide' if hide) } Other Labels
-          %ul.content-list.manage-labels-list.js-other-labels
+            %h5{ class: ('hide' if hide) }= _('Other Labels')
+          .content-list.manage-labels-list.js-other-labels
             = render partial: 'shared/label', subject: @project, collection: @labels, as: :label
             = paginate @labels, theme: 'gitlab'
+      - elsif search.present?
+        .other-labels
+          - if @available_labels.any?
+            %h5
+              = _('Other Labels')
+            .nothing-here-block
+              = _('No other labels with such name or description')
+          - else
+            .nothing-here-block
+              = _('No labels with such name or description')
+
+
 - else
   = render 'shared/empty_states/labels'
+
+%template#js-badge-item-template
+  %li.label-link-item.js-priority-badge.inline.prepend-left-10
+    .label-badge.label-badge-blue= _('Prioritized label')

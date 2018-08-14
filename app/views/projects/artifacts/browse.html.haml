@@ -9,10 +9,10 @@
 .tree-holder
   .nav-block
     %ul.breadcrumb.repo-breadcrumb
-      %li
+      %li.breadcrumb-item
         = link_to 'Artifacts', browse_project_job_artifacts_path(@project, @build)
       - path_breadcrumbs do |title, path|
-        %li
+        %li.breadcrumb-item
           = link_to truncate(title, length: 40), browse_project_job_artifacts_path(@project, @build, path)
 
     .tree-controls

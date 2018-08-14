@@ -9,7 +9,7 @@ require 'spec_helper'
 # user_calendar_activities   GET    /u/:username/calendar_activities(.:format)
 describe UsersController, "routing" do
   it "to #show" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/User")).to route_to('users#show', username: 'User')
   end
@@ -162,8 +162,8 @@ describe ProfilesController, "routing" do
     expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
   end
 
-  it "to #reset_rss_token" do
-    expect(put("/profile/reset_rss_token")).to route_to('profiles#reset_rss_token')
+  it "to #reset_feed_token" do
+    expect(put("/profile/reset_feed_token")).to route_to('profiles#reset_feed_token')
   end
 
   it "to #show" do
@@ -210,7 +210,7 @@ describe Profiles::KeysController, "routing" do
 
   # get all the ssh-keys of a user
   it "to #get_keys" do
-    allow_any_instance_of(UserUrlConstrainer).to receive(:matches?).and_return(true)
+    allow_any_instance_of(::Constraints::UserUrlConstrainer).to receive(:matches?).and_return(true)
 
     expect(get("/foo.keys")).to route_to('profiles/keys#get_keys', username: 'foo')
   end
@@ -249,7 +249,11 @@ describe DashboardController, "routing" do
   end
 
   it "to #issues" do
-    expect(get("/dashboard/issues")).to route_to('dashboard#issues')
+    expect(get("/dashboard/issues.html")).to route_to('dashboard#issues', format: 'html')
+  end
+
+  it "to #calendar_issues" do
+    expect(get("/dashboard/issues.ics")).to route_to('dashboard#issues_calendar', format: 'ics')
   end
 
   it "to #merge_requests" do

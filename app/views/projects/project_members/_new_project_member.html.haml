@@ -2,19 +2,19 @@
   .col-sm-12
     = form_for @project_member, as: :project_member, url: project_project_members_path(@project), html: { class: 'users-project-form' } do |f|
       .form-group
-        = label_tag :user_ids, "Select members to invite", class: "label-light"
+        = label_tag :user_ids, "Select members to invite", class: "label-bold"
         = users_select_tag(:user_ids, multiple: true, class: "input-clamp", scope: :all, email_user: true, placeholder: "Search for members to update or invite")
       .form-group
-        = label_tag :access_level, "Choose a role permission", class: "label-light"
+        = label_tag :access_level, "Choose a role permission", class: "label-bold"
         .select-wrapper
           = select_tag :access_level, options_for_select(ProjectMember.access_level_roles, @project_member.access_level), class: "form-control project-access-select select-control"
           = icon('chevron-down')
-        .help-block.append-bottom-10
+        .form-text.text-muted.append-bottom-10
           = link_to "Read more", help_page_path("user/permissions"), class: "vlink"
           about role permissions
       .form-group
         .clearable-input
-          = label_tag :expires_at, 'Access expiration date', class: 'label-light'
+          = label_tag :expires_at, 'Access expiration date', class: 'label-bold'
           = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date', placeholder: 'Expiration date'
           %i.clear-icon.js-clear-input
       = f.submit "Add to project", class: "btn btn-create"

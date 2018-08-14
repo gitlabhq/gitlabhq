@@ -1,13 +1,21 @@
+import $ from 'jquery';
 import autosize from 'autosize';
-import GfmAutoComplete from './gfm_auto_complete';
+import GfmAutoComplete, * as GFMConfig from './gfm_auto_complete';
 import dropzoneInput from './dropzone_input';
-import textUtils from './lib/utils/text_markdown';
+import { addMarkdownListeners, removeMarkdownListeners } from './lib/utils/text_markdown';
 
 export default class GLForm {
-  constructor(form, enableGFM = false) {
+  constructor(form, enableGFM = {}) {
     this.form = form;
     this.textarea = this.form.find('textarea.js-gfm-input');
-    this.enableGFM = enableGFM;
+    this.enableGFM = Object.assign({}, GFMConfig.defaultAutocompleteConfig, enableGFM);
+    // Disable autocomplete for keywords which do not have dataSources available
+    const dataSources = (gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources) || {};
+    Object.keys(this.enableGFM).forEach(item => {
+      if (item !== 'emojis') {
+        this.enableGFM[item] = !!dataSources[item];
+      }
+    });
     // Before we start, we should clean up any previous data for this form
     this.destroy();
     // Setup the form
@@ -33,20 +41,13 @@ export default class GLForm {
       // remove notify commit author checkbox for non-commit notes
       gl.utils.disableButtonIfEmptyField(this.form.find('.js-note-text'), this.form.find('.js-comment-button, .js-note-new-discussion'));
       this.autoComplete = new GfmAutoComplete(gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources);
-      this.autoComplete.setup(this.form.find('.js-gfm-input'), {
-        emojis: true,
-        members: this.enableGFM,
-        issues: this.enableGFM,
-        milestones: this.enableGFM,
-        mergeRequests: this.enableGFM,
-        labels: this.enableGFM,
-      });
+      this.autoComplete.setup(this.form.find('.js-gfm-input'), this.enableGFM);
       dropzoneInput(this.form);
       autosize(this.textarea);
     }
     // form and textarea event listeners
     this.addEventListeners();
-    textUtils.init(this.form);
+    addMarkdownListeners(this.form);
     // hide discard button
     this.form.find('.js-note-discard').hide();
     this.form.show();
@@ -85,7 +86,7 @@ export default class GLForm {
   clearEventListeners() {
     this.textarea.off('focus');
     this.textarea.off('blur');
-    textUtils.removeListeners(this.form);
+    removeMarkdownListeners(this.form);
   }
 
   addEventListeners() {

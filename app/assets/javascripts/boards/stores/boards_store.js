@@ -1,5 +1,7 @@
-/* eslint-disable comma-dangle, space-before-function-paren, one-var, no-shadow, dot-notation, max-len */
+/* eslint-disable comma-dangle, no-shadow */
 /* global List */
+
+import $ from 'jquery';
 import _ from 'underscore';
 import Cookies from 'js-cookie';
 import { getUrlParamsArray } from '~/lib/utils/common_utils';
@@ -101,8 +103,25 @@ gl.issueBoards.BoardsStore = {
     const listLabels = issueLists.map(listIssue => listIssue.label);
 
     if (!issueTo) {
-      // Add to new lists issues if it doesn't already exist
-      listTo.addIssue(issue, listFrom, newIndex);
+      // Check if target list assignee is already present in this issue
+      if ((listTo.type === 'assignee' && listFrom.type === 'assignee') &&
+          issue.findAssignee(listTo.assignee)) {
+        const targetIssue = listTo.findIssue(issue.id);
+        targetIssue.removeAssignee(listFrom.assignee);
+      } else if (listTo.type === 'milestone') {
+        const currentMilestone = issue.milestone;
+        const currentLists = this.state.lists
+            .filter(list => (list.type === 'milestone' && list.id !== listTo.id))
+            .filter(list => list.issues.some(listIssue => issue.id === listIssue.id));
+
+        issue.removeMilestone(currentMilestone);
+        issue.addMilestone(listTo.milestone);
+        currentLists.forEach(currentList => currentList.removeIssue(issue));
+        listTo.addIssue(issue, listFrom, newIndex);
+      } else {
+        // Add to new lists issues if it doesn't already exist
+        listTo.addIssue(issue, listFrom, newIndex);
+      }
     } else {
       listTo.updateIssueLabel(issue, listFrom);
       issueTo.removeLabel(listFrom.label);
@@ -113,9 +132,22 @@ gl.issueBoards.BoardsStore = {
         list.removeIssue(issue);
       });
       issue.removeLabels(listLabels);
-    } else {
+    } else if (listTo.type === 'backlog' && listFrom.type === 'assignee') {
+      issue.removeAssignee(listFrom.assignee);
+      listFrom.removeIssue(issue);
+    } else if (listTo.type === 'backlog' && listFrom.type === 'milestone') {
+      issue.removeMilestone(listFrom.milestone);
+      listFrom.removeIssue(issue);
+    } else if (this.shouldRemoveIssue(listFrom, listTo)) {
       listFrom.removeIssue(issue);
     }
+  },
+  shouldRemoveIssue(listFrom, listTo) {
+    return (
+      (listTo.type !== 'label' && listFrom.type === 'assignee') ||
+      (listTo.type !== 'assignee' && listFrom.type === 'label') ||
+      (listFrom.type === 'backlog')
+    );
   },
   moveIssueInList (list, issue, oldIndex, newIndex, idArray) {
     const beforeId = parseInt(idArray[newIndex - 1], 10) || null;
@@ -124,13 +156,14 @@ gl.issueBoards.BoardsStore = {
     list.moveIssue(issue, oldIndex, newIndex, beforeId, afterId);
   },
   findList (key, val, type = 'label') {
-    return this.state.lists.filter((list) => {
-      const byType = type ? list['type'] === type : true;
+    const filteredList = this.state.lists.filter((list) => {
+      const byType = type ? (list.type === type) || (list.type === 'assignee') || (list.type === 'milestone') : true;
 
       return list[key] === val && byType;
-    })[0];
+    });
+    return filteredList[0];
   },
   updateFiltersUrl () {
-    history.pushState(null, null, `?${this.filter.path}`);
+    window.history.pushState(null, null, `?${this.filter.path}`);
   }
 };

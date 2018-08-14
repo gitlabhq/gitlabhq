@@ -1,13 +1,15 @@
 %tr{ id: dom_id(runner) }
   %td
-    - if runner.shared?
-      %span.label.label-success shared
+    - if runner.instance_type?
+      %span.badge.badge-success shared
+    - elsif runner.group_type?
+      %span.badge.badge-success group
     - else
-      %span.label.label-info specific
+      %span.badge.badge-info specific
     - if runner.locked?
-      %span.label.label-warning locked
+      %span.badge.badge-warning locked
     - unless runner.active?
-      %span.label.label-danger paused
+      %span.badge.badge-danger paused
 
   %td
     = link_to admin_runner_path(runner) do
@@ -19,7 +21,7 @@
   %td
     = runner.ip_address
   %td
-    - if runner.shared?
+    - if runner.instance_type? || runner.group_type?
       n/a
     - else
       = runner.projects.count(:all)
@@ -27,15 +29,15 @@
     #{runner.builds.count(:all)}
   %td
     - runner.tag_list.sort.each do |tag|
-      %span.label.label-primary
+      %span.badge.badge-primary
         = tag
   %td
     - if runner.contacted_at
-      #{time_ago_in_words(runner.contacted_at)} ago
+      = time_ago_with_tooltip runner.contacted_at
     - else
       Never
   %td.admin-runner-btn-group-cell
-    .pull-right.btn-group
+    .float-right.btn-group
       = link_to admin_runner_path(runner), class: 'btn btn-sm btn-default has-tooltip', title: 'Edit', ref: 'tooltip', aria: { label: 'Edit' }, data: { placement: 'top', container: 'body'} do
         = icon('pencil')
       &nbsp;

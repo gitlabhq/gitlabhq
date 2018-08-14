@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from '~/lib/utils/axios_utils';
 import Activities from '~/activities';
 import { localTimeAgo } from '~/lib/utils/datetime_utility';
@@ -76,10 +77,9 @@ export default class UserTabs {
     this.action = action || this.defaultAction;
     this.$parentEl = $(parentEl) || $(document);
     this.windowLocation = window.location;
-    this.$parentEl.find('.nav-links a')
-      .each((i, navLink) => {
-        this.loaded[$(navLink).attr('data-action')] = false;
-      });
+    this.$parentEl.find('.nav-links a').each((i, navLink) => {
+      this.loaded[$(navLink).attr('data-action')] = false;
+    });
     this.actions = Object.keys(this.loaded);
     this.bindEvents();
 
@@ -115,8 +115,7 @@ export default class UserTabs {
   }
 
   activateTab(action) {
-    return this.$parentEl.find(`.nav-links .js-${action}-tab a`)
-      .tab('show');
+    return this.$parentEl.find(`.nav-links .js-${action}-tab a`).tab('show');
   }
 
   setTab(action, endpoint) {
@@ -136,7 +135,8 @@ export default class UserTabs {
   loadTab(action, endpoint) {
     this.toggleLoading(true);
 
-    return axios.get(endpoint)
+    return axios
+      .get(endpoint)
       .then(({ data }) => {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
@@ -160,10 +160,11 @@ export default class UserTabs {
     const utcOffset = $calendarWrap.data('utcOffset');
     let utcFormatted = 'UTC';
     if (utcOffset !== 0) {
-      utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${(utcOffset / 3600)}`;
+      utcFormatted = `UTC${utcOffset > 0 ? '+' : ''}${utcOffset / 3600}`;
     }
 
-    axios.get(calendarPath)
+    axios
+      .get(calendarPath)
       .then(({ data }) => {
         $calendarWrap.html(CALENDAR_TEMPLATE);
         $calendarWrap.find('.calendar-hint').append(`(Timezone: ${utcFormatted})`);
@@ -179,21 +180,24 @@ export default class UserTabs {
   }
 
   toggleLoading(status) {
-    return this.$parentEl.find('.loading-status .loading')
-      .toggle(status);
+    return this.$parentEl.find('.loading-status .loading').toggleClass('hide', !status);
   }
 
   setCurrentAction(source) {
     let newState = source;
     newState = newState.replace(/\/+$/, '');
     newState += this.windowLocation.search + this.windowLocation.hash;
-    history.replaceState({
-      url: newState,
-    }, document.title, newState);
+    window.history.replaceState(
+      {
+        url: newState,
+      },
+      document.title,
+      newState,
+    );
     return newState;
   }
 
   getCurrentAction() {
-    return this.$parentEl.find('.nav-links .active a').data('action');
+    return this.$parentEl.find('.nav-links a.active').data('action');
   }
 }

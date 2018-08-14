@@ -10,7 +10,7 @@ describe 'Merge request > User sees versions', :js do
   let!(:params) { {} }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit diffs_project_merge_request_path(project, merge_request, params)
   end
@@ -143,9 +143,9 @@ describe 'Merge request > User sees versions', :js do
     end
 
     it_behaves_like 'allows commenting',
-                    file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
-                    line_code: '4_4',
-                    comment: 'Typo, please fix.'
+                   file_id: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44',
+                   line_code: '4_4',
+                   comment: 'Typo, please fix.'
   end
 
   describe 'compare with same version' do

@@ -1,12 +1,15 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class Runner < ActiveRecord::Base
-      VERSION = '0.1.13'.freeze
+      VERSION = '0.1.31'.freeze
 
       self.table_name = 'clusters_applications_runners'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       belongs_to :runner, class_name: 'Ci::Runner', foreign_key: :runner_id
@@ -28,9 +31,10 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
+          version: VERSION,
           chart: chart,
-          values: values,
+          files: files,
           repository: repository
         )
       end
@@ -43,10 +47,19 @@ module Clusters
 
       def create_and_assign_runner
         transaction do
-          project.runners.create!(name: 'kubernetes-cluster', tag_list: %w(kubernetes cluster)).tap do |runner|
+          Ci::Runner.create!(runner_create_params).tap do |runner|
             update!(runner_id: runner.id)
           end
         end
+      end
+
+      def runner_create_params
+        {
+          name: 'kubernetes-cluster',
+          runner_type: :project_type,
+          tag_list: %w(kubernetes cluster),
+          projects: [project]
+        }
       end
 
       def gitlab_url

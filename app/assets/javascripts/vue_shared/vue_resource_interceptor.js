@@ -28,7 +28,7 @@ Vue.http.interceptors.push((request, next) => {
     response.headers.forEach((value, key) => {
       headers[key] = value;
     });
-    // eslint-disable-next-line no-param-reassign
+
     response.headers = headers;
   });
 });

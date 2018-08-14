@@ -1,3 +1,3 @@
-%h3.page-title An error has occurred
+%h3.page-title= _("An error has occurred")
 %main{ :role => "main" }
   %pre= @pre_auth.error_response.body[:error_description]

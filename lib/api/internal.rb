@@ -11,7 +11,8 @@ module API
       #
       # Params:
       #   key_id - ssh key id for Git over SSH
-      #   user_id - user id for Git over HTTP
+      #   user_id - user id for Git over HTTP or over SSH in keyless SSH CERT mode
+      #   username - user name for Git over SSH in keyless SSH cert mode
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
       #   project - project full_path (not path on disk)
       #   action - git action (git-upload-pack or git-receive-pack)
@@ -21,14 +22,15 @@ module API
 
         # Stores some Git-specific env thread-safely
         env = parse_env
-        env = fix_git_env_repository_paths(env, repository_path) if project
-        Gitlab::Git::Env.set(env)
+        Gitlab::Git::HookEnv.set(gl_repository, env) if project
 
         actor =
           if params[:key_id]
             Key.find_by(id: params[:key_id])
           elsif params[:user_id]
             User.find_by(id: params[:user_id])
+          elsif params[:username]
+            User.find_by_username(params[:username])
           end
 
         protocol = params[:protocol]
@@ -51,7 +53,7 @@ module API
           access_checker.check(params[:action], params[:changes])
           @project ||= access_checker.project
         rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
-          return { status: false, message: e.message }
+          break { status: false, message: e.message }
         end
 
         log_user_activity(actor)
@@ -59,8 +61,13 @@ module API
         {
           status: true,
           gl_repository: gl_repository,
+          gl_id: Gitlab::GlId.gl_id(user),
           gl_username: user&.username,
-          repository_path: repository_path,
+
+          # This repository_path is a bogus value but gitlab-shell still requires
+          # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
+          repository_path: '/',
+
           gitaly: gitaly_payload(params[:action])
         }
       end
@@ -68,10 +75,17 @@ module API
       post "/lfs_authenticate" do
         status 200
 
-        key = Key.find(params[:key_id])
-        key.update_last_used_at
+        if params[:key_id]
+          actor = Key.find(params[:key_id])
+          actor.update_last_used_at
+        elsif params[:user_id]
+          actor = User.find_by(id: params[:user_id])
+          raise ActiveRecord::RecordNotFound.new("No such user id!") unless actor
+        else
+          raise ActiveRecord::RecordNotFound.new("No key_id or user_id passed!")
+        end
 
-        token_handler = Gitlab::LfsToken.new(key)
+        token_handler = Gitlab::LfsToken.new(actor)
 
         {
           username: token_handler.actor_name,
@@ -97,7 +111,7 @@ module API
       end
 
       #
-      # Discover user by ssh key or user id
+      # Discover user by ssh key, user id or username
       #
       get "/discover" do
         if params[:key_id]
@@ -105,6 +119,8 @@ module API
           user = key.user
         elsif params[:user_id]
           user = User.find_by(id: params[:user_id])
+        elsif params[:username]
+          user = User.find_by(username: params[:username])
         end
 
         present user, with: Entities::UserSafe
@@ -114,7 +130,7 @@ module API
         {
           api_version: API.version,
           gitlab_version: Gitlab::VERSION,
-          gitlab_rev: Gitlab::REVISION,
+          gitlab_rev: Gitlab.revision,
           redis: redis_ping
         }
       end
@@ -138,26 +154,34 @@ module API
       post '/two_factor_recovery_codes' do
         status 200
 
-        key = Key.find_by(id: params[:key_id])
+        if params[:key_id]
+          key = Key.find_by(id: params[:key_id])
 
-        if key
-          key.update_last_used_at
-        else
-          return { 'success' => false, 'message' => 'Could not find the given key' }
-        end
+          if key
+            key.update_last_used_at
+          else
+            break { 'success' => false, 'message' => 'Could not find the given key' }
+          end
 
-        if key.is_a?(DeployKey)
-          return { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
-        end
+          if key.is_a?(DeployKey)
+            break { success: false, message: 'Deploy keys cannot be used to retrieve recovery codes' }
+          end
 
-        user = key.user
+          user = key.user
 
-        unless user
-          return { success: false, message: 'Could not find a user for the given key' }
+          unless user
+            break { success: false, message: 'Could not find a user for the given key' }
+          end
+        elsif params[:user_id]
+          user = User.find_by(id: params[:user_id])
+
+          unless user
+            break { success: false, message: 'Could not find the given user' }
+          end
         end
 
         unless user.two_factor_enabled?
-          return { success: false, message: 'Two-factor authentication is not enabled for this user' }
+          break { success: false, message: 'Two-factor authentication is not enabled for this user' }
         end
 
         codes = nil

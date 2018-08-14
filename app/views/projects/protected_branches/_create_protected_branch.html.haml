@@ -1,14 +1,14 @@
 - content_for :merge_access_levels do
   .merge_access_levels-container
     = dropdown_tag('Select',
-                    options: { toggle_class: 'js-allowed-to-merge wide',
-                    dropdown_class: 'dropdown-menu-selectable capitalize-header',
+                    options: { toggle_class: 'js-allowed-to-merge qa-allowed-to-merge-select wide',
+                    dropdown_class: 'dropdown-menu-selectable qa-allowed-to-merge-dropdown capitalize-header',
                     data: { field_name: 'protected_branch[merge_access_levels_attributes][0][access_level]', input_id: 'merge_access_levels_attributes' }})
 - content_for :push_access_levels do
   .push_access_levels-container
     = dropdown_tag('Select',
-                    options: { toggle_class: 'js-allowed-to-push wide',
-                    dropdown_class: 'dropdown-menu-selectable capitalize-header',
+                    options: { toggle_class: 'js-allowed-to-push qa-allowed-to-push-select wide',
+                    dropdown_class: 'dropdown-menu-selectable qa-allowed-to-push-dropdown capitalize-header',
                     data: { field_name: 'protected_branch[push_access_levels_attributes][0][access_level]', input_id: 'push_access_levels_attributes' }})
 
 = render 'projects/protected_branches/shared/create_protected_branch'

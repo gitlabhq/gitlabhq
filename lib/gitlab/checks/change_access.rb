@@ -5,7 +5,7 @@ module Gitlab
         push_code: 'You are not allowed to push code to this project.',
         delete_default_branch: 'The default branch of a project cannot be deleted.',
         force_push_protected_branch: 'You are not allowed to force push code to a protected branch on this project.',
-        non_master_delete_protected_branch: 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.',
+        non_master_delete_protected_branch: 'You are not allowed to delete protected branches from this project. Only a project maintainer or owner can delete a protected branch.',
         non_web_delete_protected_branch: 'You can only delete protected branches using the web interface.',
         merge_protected_branch: 'You are not allowed to merge code into protected branches on this project.',
         push_protected_branch: 'You are not allowed to push code to protected branches on this project.',
@@ -93,7 +93,7 @@ module Gitlab
           end
         else
           unless user_access.can_push_to_branch?(branch_name)
-            raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:push_protected_branch]
+            raise GitAccess::UnauthorizedError, push_to_protected_branch_rejected_message
           end
         end
       end
@@ -139,6 +139,29 @@ module Gitlab
       end
 
       private
+
+      def push_to_protected_branch_rejected_message
+        if project.empty_repo?
+          empty_project_push_message
+        else
+          ERROR_MESSAGES[:push_protected_branch]
+        end
+      end
+
+      def empty_project_push_message
+        <<~MESSAGE
+
+        A default branch (e.g. master) does not yet exist for #{project.full_path}
+        Ask a project Owner or Maintainer to create a default branch:
+
+          #{project_members_url}
+
+        MESSAGE
+      end
+
+      def project_members_url
+        Gitlab::Routing.url_helpers.project_project_members_url(project)
+      end
 
       def should_run_commit_validations?
         commit_check.validate_lfs_file_locks?

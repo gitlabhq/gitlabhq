@@ -29,7 +29,8 @@ For installations from source you'll have to install and configure it yourself.
 
 Prometheus and it's exporters are on by default, starting with GitLab 9.0.
 Prometheus will run as the `gitlab-prometheus` user and listen on
-`http://localhost:9090`. Each exporter will be automatically be set up as a
+`http://localhost:9090`. By default Prometheus is only accessible from the GitLab server itself.
+Each exporter will be automatically set up as a
 monitoring target for Prometheus, unless individually disabled.
 
 To disable Prometheus and all of its exporters, as well as any added in the future:
@@ -44,14 +45,16 @@ To disable Prometheus and all of its exporters, as well as any added in the futu
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
 
-## Changing the port Prometheus listens on
+## Changing the port and address Prometheus listens on
 
 >**Note:**
 The following change was added in [GitLab Omnibus 8.17][1261]. Although possible,
-it's not recommended to change the default address and port Prometheus listens
+it's not recommended to change the port Prometheus listens
 on as this might affect or conflict with other services running on the GitLab
 server. Proceed at your own risk.
 
+In order to access Prometheus from outside the GitLab server you will need to 
+set a FQDN or IP in `prometheus['listen_address']`.
 To change the address/port that Prometheus listens on:
 
 1. Edit `/etc/gitlab/gitlab.rb`
@@ -62,7 +65,14 @@ To change the address/port that Prometheus listens on:
     ```
 
     Replace `localhost:9090` with the address/port you want Prometheus to
-    listen on.
+    listen on. If you would like to allow access to Prometheus to hosts other
+    than `localhost`, leave out the host, or use `0.0.0.0` to allow public access:
+
+    ```ruby
+    prometheus['listen_address'] = ':9090'
+    # or
+    prometheus['listen_address'] = '0.0.0.0:9090'
+    ```
 
 1. Save the file and [reconfigure GitLab][reconfigure] for the changes to
    take effect
@@ -73,9 +83,9 @@ You can visit `http://localhost:9090` for the dashboard that Prometheus offers b
 
 >**Note:**
 If SSL has been enabled on your GitLab instance, you may not be able to access
-Prometheus on the same browser as GitLab due to [HSTS][hsts]. We plan to
+Prometheus on the same browser as GitLab if using the same FQDN due to [HSTS][hsts]. We plan to
 [provide access via GitLab][multi-user-prometheus], but in the interim there are
-some workarounds: using a separate browser for Prometheus, resetting HSTS, or
+some workarounds: using a separate FQDN, using server IP, using a separate browser for Prometheus, resetting HSTS, or
 having [Nginx proxy it][nginx-custom-config].
 
 The performance data collected by Prometheus can be viewed directly in the
@@ -113,7 +123,7 @@ To disable the monitoring of Kubernetes:
 
 ## GitLab Prometheus metrics
 
-> Introduced as an experimental feature in GitLab 9.3.
+> Introduced in GitLab 9.3.
 
 GitLab monitors its own internal service metrics, and makes them available at the `/-/metrics` endpoint. Unlike other exporters, this endpoint requires authentication as it is available on the same URL and port as user traffic.
 

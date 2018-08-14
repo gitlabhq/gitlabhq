@@ -21,12 +21,37 @@ describe IssuablesHelper do
     end
   end
 
+  describe '#group_dropdown_label' do
+    let(:group)  { create(:group) }
+    let(:default) { 'default label' }
+
+    it 'returns default group label when group_id is nil' do
+      expect(group_dropdown_label(nil, default)).to eq('default label')
+    end
+
+    it 'returns "any group" when group_id is 0' do
+      expect(group_dropdown_label('0', default)).to eq('Any group')
+    end
+
+    it 'returns group full path when a group was found for the provided id' do
+      expect(group_dropdown_label(group.id, default)).to eq(group.full_name)
+    end
+
+    it 'returns default label when a group was not found for the provided id' do
+      expect(group_dropdown_label(9999, default)).to eq('default label')
+    end
+  end
+
   describe '#issuable_labels_tooltip' do
-    it 'returns label text' do
+    it 'returns label text with no labels' do
+      expect(issuable_labels_tooltip([])).to eq("Labels")
+    end
+
+    it 'returns label text with labels within max limit' do
       expect(issuable_labels_tooltip([label])).to eq(label.title)
     end
 
-    it 'returns label text' do
+    it 'returns label text with labels exceeding max limit' do
       expect(issuable_labels_tooltip([label, label2], limit: 1)).to eq("#{label.title}, and 1 more")
     end
   end
@@ -40,23 +65,23 @@ describe IssuablesHelper do
       end
 
       it 'returns "Open" when state is :opened' do
-        expect(helper.issuables_state_counter_text(:issues, :opened))
-          .to eq('<span>Open</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :opened, true))
+          .to eq('<span>Open</span> <span class="badge badge-pill">42</span>')
       end
 
       it 'returns "Closed" when state is :closed' do
-        expect(helper.issuables_state_counter_text(:issues, :closed))
-          .to eq('<span>Closed</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:issues, :closed, true))
+          .to eq('<span>Closed</span> <span class="badge badge-pill">42</span>')
       end
 
       it 'returns "Merged" when state is :merged' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :merged))
-          .to eq('<span>Merged</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :merged, true))
+          .to eq('<span>Merged</span> <span class="badge badge-pill">42</span>')
       end
 
       it 'returns "All" when state is :all' do
-        expect(helper.issuables_state_counter_text(:merge_requests, :all))
-          .to eq('<span>All</span> <span class="badge">42</span>')
+        expect(helper.issuables_state_counter_text(:merge_requests, :all, true))
+          .to eq('<span>All</span> <span class="badge badge-pill">42</span>')
       end
     end
   end
@@ -98,27 +123,6 @@ describe IssuablesHelper do
           expect(helper.issuable_reference(issue)).to eql(issue.to_reference(project))
         end
       end
-    end
-  end
-
-  describe '#issuable_filter_present?' do
-    it 'returns true when any key is present' do
-      allow(helper).to receive(:params).and_return(
-        ActionController::Parameters.new(milestone_title: 'Velit consectetur asperiores natus delectus.',
-                                         project_id: 'gitlabhq',
-                                         scope: 'all')
-      )
-
-      expect(helper.issuable_filter_present?).to be_truthy
-    end
-
-    it 'returns false when no key is present' do
-      allow(helper).to receive(:params).and_return(
-        ActionController::Parameters.new(project_id: 'gitlabhq',
-                                         scope: 'all')
-      )
-
-      expect(helper.issuable_filter_present?).to be_falsey
     end
   end
 
@@ -180,6 +184,7 @@ describe IssuablesHelper do
         issuableRef: "##{issue.iid}",
         markdownPreviewPath: "/#{@project.full_path}/preview_markdown",
         markdownDocsPath: '/help/user/markdown',
+        markdownVersion: 11,
         issuableTemplates: [],
         projectPath: @project.path,
         projectNamespace: @project.namespace.path,

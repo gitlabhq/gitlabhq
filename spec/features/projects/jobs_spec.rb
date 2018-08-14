@@ -1,7 +1,7 @@
 require 'spec_helper'
 require 'tempfile'
 
-feature 'Jobs' do
+describe 'Jobs', :clean_gitlab_redis_shared_state do
   let(:user) { create(:user) }
   let(:user_access_level) { :developer }
   let(:project) { create(:project, :repository) }
@@ -11,7 +11,7 @@ feature 'Jobs' do
   let(:job2) { create(:ci_build) }
 
   let(:artifacts_file) do
-    fixture_file_upload(Rails.root + 'spec/fixtures/banana_sample.gif', 'image/gif')
+    fixture_file_upload('spec/fixtures/banana_sample.gif', 'image/gif')
   end
 
   before do
@@ -113,7 +113,7 @@ feature 'Jobs' do
 
   describe "GET /:project/jobs/:id" do
     context "Job from project" do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -135,8 +135,22 @@ feature 'Jobs' do
       end
     end
 
+    context 'sidebar' do
+      let(:job) { create(:ci_build, :success, :trace_live, pipeline: pipeline, name: '<img src=x onerror=alert(document.domain)>') }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'renders escaped tooltip name' do
+        page.within('aside.right-sidebar') do
+          expect(find('.active.build-job a')['data-title']).to eq('<img src="x"> - passed')
+        end
+      end
+    end
+
     context 'when job is not running', :js do
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :success, :trace_artifact, pipeline: pipeline) }
 
       before do
         visit project_job_path(project, job)
@@ -153,7 +167,7 @@ feature 'Jobs' do
       end
 
       context 'if job failed' do
-        let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, pipeline: pipeline) }
 
         before do
           visit project_job_path(project, job)
@@ -165,7 +179,7 @@ feature 'Jobs' do
 
         it 'links to issues/new with the title and description filled in' do
           button_title = "Job Failed ##{job.id}"
-          job_url = project_job_path(project, job)
+          job_url = project_job_url(project, job, host: page.server.host, port: page.server.port)
           options = { issue: { title: button_title, description: "Job [##{job.id}](#{job_url}) failed for #{job.sha}:\n" } }
 
           href = new_project_issue_path(project, options)
@@ -187,7 +201,7 @@ feature 'Jobs' do
 
     context "Download artifacts" do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file)
+        job.update(legacy_artifacts_file: artifacts_file)
         visit project_job_path(project, job)
       end
 
@@ -198,8 +212,8 @@ feature 'Jobs' do
 
     context 'Artifacts expire date' do
       before do
-        job.update_attributes(legacy_artifacts_file: artifacts_file,
-                              artifacts_expire_at: expire_at)
+        job.update(legacy_artifacts_file: artifacts_file,
+                   artifacts_expire_at: expire_at)
 
         visit project_job_path(project, job)
       end
@@ -259,7 +273,7 @@ feature 'Jobs' do
       end
     end
 
-    feature 'Raw trace' do
+    describe 'Raw trace' do
       before do
         job.run!
 
@@ -271,7 +285,7 @@ feature 'Jobs' do
       end
     end
 
-    feature 'HTML trace', :js do
+    describe 'HTML trace', :js do
       before do
         job.run!
 
@@ -282,7 +296,7 @@ feature 'Jobs' do
         it 'loads job trace' do
           expect(page).to have_content 'BUILD TRACE'
 
-          job.trace.write do |stream|
+          job.trace.write('a+b') do |stream|
             stream.append(' and more trace', 11)
           end
 
@@ -291,7 +305,7 @@ feature 'Jobs' do
       end
     end
 
-    feature 'Variables' do
+    describe 'Variables' do
       let(:trigger_request) { create(:ci_trigger_request) }
 
       let(:job) do
@@ -339,7 +353,7 @@ feature 'Jobs' do
 
       context 'job is successfull and has deployment' do
         let(:deployment) { create(:deployment) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, deployments: [deployment], pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -349,7 +363,7 @@ feature 'Jobs' do
       end
 
       context 'job is complete and not successful' do
-        let(:job) { create(:ci_build, :failed, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :failed, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link for the job' do
           visit project_job_path(project, job)
@@ -360,7 +374,7 @@ feature 'Jobs' do
 
       context 'job creates a new deployment' do
         let!(:deployment) { create(:deployment, environment: environment, sha: project.commit.id) }
-        let(:job) { create(:ci_build, :success, environment: environment.name, pipeline: pipeline) }
+        let(:job) { create(:ci_build, :success, :trace_artifact, environment: environment.name, pipeline: pipeline) }
 
         it 'shows a link to latest deployment' do
           visit project_job_path(project, job)
@@ -379,6 +393,7 @@ feature 'Jobs' do
       end
 
       it 'shows manual action empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job requires a manual action')
         expect(page).to have_content('This job depends on a user to trigger its process. Often they are used to deploy code to production environments')
         expect(page).to have_link('Trigger this manual action')
@@ -402,6 +417,7 @@ feature 'Jobs' do
       end
 
       it 'shows empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not been triggered yet')
         expect(page).to have_content('This job depends on upstream jobs that need to succeed in order for this job to be triggered')
       end
@@ -415,8 +431,62 @@ feature 'Jobs' do
       end
 
       it 'shows pending empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
         expect(page).to have_content('This job has not started yet')
         expect(page).to have_content('This job is in pending state and is waiting to be picked by a runner')
+      end
+    end
+
+    context 'Canceled job' do
+      context 'with log' do
+        let(:job) { create(:ci_build, :canceled, :trace_artifact, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders job log' do
+          expect(page).to have_selector('.js-build-output')
+        end
+      end
+
+      context 'without log' do
+        let(:job) { create(:ci_build, :canceled, pipeline: pipeline) }
+
+        before do
+          visit project_job_path(project, job)
+        end
+
+        it 'renders empty state' do
+          expect(page).to have_content(job.detailed_status(user).illustration[:title])
+          expect(page).not_to have_selector('.js-build-output')
+          expect(page).to have_content('This job has been canceled')
+        end
+      end
+    end
+
+    context 'Skipped job' do
+      let(:job) { create(:ci_build, :skipped, pipeline: pipeline) }
+
+      before do
+        visit project_job_path(project, job)
+      end
+
+      it 'renders empty state' do
+        expect(page).to have_content(job.detailed_status(user).illustration[:title])
+        expect(page).not_to have_selector('.js-build-output')
+        expect(page).to have_content('This job has been skipped')
+      end
+    end
+
+    context 'when job is failed but has no trace' do
+      let(:job) { create(:ci_build, :failed, pipeline: pipeline) }
+
+      it 'renders empty state' do
+        visit project_job_path(project, job)
+
+        expect(job).not_to have_trace
+        expect(page).to have_content('This job does not have a trace.')
       end
     end
   end
@@ -435,16 +505,18 @@ feature 'Jobs' do
     end
   end
 
-  describe "POST /:project/jobs/:id/retry" do
+  describe "POST /:project/jobs/:id/retry", :js do
     context "Job from project", :js do
       before do
         job.run!
+        job.cancel!
         visit project_job_path(project, job)
-        find('.js-cancel-job').click()
+        wait_for_requests
+
         find('.js-retry-button').click
       end
 
-      it 'shows the right status and buttons', :js do
+      it 'shows the right status and buttons' do
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
@@ -472,14 +544,14 @@ feature 'Jobs' do
 
   describe "GET /:project/jobs/:id/download" do
     before do
-      job.update_attributes(legacy_artifacts_file: artifacts_file)
+      job.update(legacy_artifacts_file: artifacts_file)
       visit project_job_path(project, job)
       click_link 'Download'
     end
 
     context "Build from other project" do
       before do
-        job2.update_attributes(legacy_artifacts_file: artifacts_file)
+        job2.update(legacy_artifacts_file: artifacts_file)
         visit download_project_job_artifacts_path(project, job2)
       end
 
@@ -531,44 +603,6 @@ feature 'Jobs' do
             visit raw_project_job_path(project, job2)
           end
           expect(requests.first.status_code).to eq(404)
-        end
-      end
-    end
-
-    context 'storage form' do
-      let(:existing_file) { Tempfile.new('existing-trace-file').path }
-
-      before do
-        job.run!
-      end
-
-      context 'when job has trace in file', :js do
-        before do
-          allow_any_instance_of(Gitlab::Ci::Trace)
-            .to receive(:paths)
-            .and_return([existing_file])
-        end
-
-        it 'sends the right headers' do
-          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
-            visit raw_project_job_path(project, job)
-          end
-          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
-        end
-      end
-
-      context 'when job has trace in the database', :js do
-        before do
-          allow_any_instance_of(Gitlab::Ci::Trace)
-            .to receive(:paths)
-            .and_return([])
-
-          visit project_job_path(project, job)
-        end
-
-        it 'sends the right headers' do
-          expect(page).not_to have_selector('.js-raw-link-controller')
         end
       end
     end

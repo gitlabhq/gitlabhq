@@ -51,7 +51,11 @@ describe BroadcastMessage do
 
       expect(described_class).to receive(:where).and_call_original.once
 
-      2.times { described_class.current }
+      described_class.current
+
+      Timecop.travel(1.year) do
+        described_class.current
+      end
     end
 
     it 'includes messages that need to be displayed in the future' do

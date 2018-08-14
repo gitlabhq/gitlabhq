@@ -1,74 +1,74 @@
 <script>
-  /* global ListIssue */
-  import _ from 'underscore';
-  import eventHub from '../eventhub';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import Api from '../../api';
+import $ from 'jquery';
+import _ from 'underscore';
+import eventHub from '../eventhub';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
+import Api from '../../api';
 
-  export default {
-    name: 'BoardProjectSelect',
-    components: {
-      loadingIcon,
+export default {
+  name: 'BoardProjectSelect',
+  components: {
+    loadingIcon,
+  },
+  props: {
+    groupId: {
+      type: Number,
+      required: true,
+      default: 0,
     },
-    props: {
-      groupId: {
-        type: Number,
-        required: true,
-        default: 0,
+  },
+  data() {
+    return {
+      loading: true,
+      selectedProject: {},
+    };
+  },
+  computed: {
+    selectedProjectName() {
+      return this.selectedProject.name || 'Select a project';
+    },
+  },
+  mounted() {
+    $(this.$refs.projectsDropdown).glDropdown({
+      filterable: true,
+      filterRemote: true,
+      search: {
+        fields: ['name_with_namespace'],
       },
-    },
-    data() {
-      return {
-        loading: true,
-        selectedProject: {},
-      };
-    },
-    computed: {
-      selectedProjectName() {
-        return this.selectedProject.name || 'Select a project';
+      clicked: ({ $el, e }) => {
+        e.preventDefault();
+        this.selectedProject = {
+          id: $el.data('project-id'),
+          name: $el.data('project-name'),
+        };
+        eventHub.$emit('setSelectedProject', this.selectedProject);
       },
-    },
-    mounted() {
-      $(this.$refs.projectsDropdown).glDropdown({
-        filterable: true,
-        filterRemote: true,
-        search: {
-          fields: ['name_with_namespace'],
-        },
-        clicked: ({ $el, e }) => {
-          e.preventDefault();
-          this.selectedProject = {
-            id: $el.data('project-id'),
-            name: $el.data('project-name'),
-          };
-          eventHub.$emit('setSelectedProject', this.selectedProject);
-        },
-        selectable: true,
-        data: (term, callback) => {
-          this.loading = true;
-          return Api.groupProjects(this.groupId, term, (projects) => {
-            this.loading = false;
-            callback(projects);
-          });
-        },
-        renderRow(project) {
-          return `
+      selectable: true,
+      data: (term, callback) => {
+        this.loading = true;
+        return Api.groupProjects(this.groupId, term, {}, projects => {
+          this.loading = false;
+          callback(projects);
+        });
+      },
+      renderRow(project) {
+        return `
             <li>
               <a href='#' class='dropdown-menu-link' data-project-id="${project.id}" data-project-name="${project.name}">
                 ${_.escape(project.name)}
               </a>
             </li>
           `;
-        },
-        text: project => project.name,
-      });
-    },
-  };
+      },
+      text: project => project.name,
+    });
+  },
+};
 </script>
 
 <template>
   <div>
-    <label class="label-light prepend-top-10">
+    <label class="label-bold prepend-top-10">
       Project
     </label>
     <div

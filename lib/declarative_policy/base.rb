@@ -119,8 +119,8 @@ module DeclarativePolicy
       # a PolicyDsl which is used for registering the rule with
       # this class. PolicyDsl will call back into Base.enable_when,
       # Base.prevent_when, and Base.prevent_all_when.
-      def rule(&b)
-        rule = RuleDsl.new(self).instance_eval(&b)
+      def rule(&block)
+        rule = RuleDsl.new(self).instance_eval(&block)
         PolicyDsl.new(self, rule)
       end
 
@@ -222,8 +222,8 @@ module DeclarativePolicy
 
     # computes the given ability and prints a helpful debugging output
     # showing which
-    def debug(ability, *a)
-      runner(ability).debug(*a)
+    def debug(ability, *args)
+      runner(ability).debug(*args)
     end
 
     desc "Unknown user"
@@ -274,7 +274,7 @@ module DeclarativePolicy
     #
     # NOTE we can't use ||= here because the value might be the
     # boolean `false`
-    def cache(key, &b)
+    def cache(key)
       return @cache[key] if cached?(key)
 
       @cache[key] = yield

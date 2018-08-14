@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class GpgKey < ActiveRecord::Base
   KEY_PREFIX = '-----BEGIN PGP PUBLIC KEY BLOCK-----'.freeze
   KEY_SUFFIX = '-----END PGP PUBLIC KEY BLOCK-----'.freeze

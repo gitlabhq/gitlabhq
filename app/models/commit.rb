@@ -1,4 +1,6 @@
 # coding: utf-8
+# frozen_string_literal: true
+
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -30,9 +32,12 @@ class Commit
 
   MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
+  # Used by GFM to match and present link extensions on node texts and hrefs.
+  LINK_EXTENSION_PATTERN = /(patch)/.freeze
 
   def banzai_render_context(field)
-    context = { pipeline: :single_line, project: self.project }
+    pipeline = field == :description ? :commit_description : :single_line
+    context = { pipeline: pipeline, project: self.project }
     context[:author] = self.author if self.author
 
     context
@@ -102,6 +107,10 @@ class Commit
         end
       end
     end
+
+    def parent_class
+      ::Project
+    end
   end
 
   attr_accessor :raw
@@ -142,7 +151,8 @@ class Commit
   end
 
   def self.link_reference_pattern
-    @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
+    @link_reference_pattern ||=
+      super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})?(\.(?<extension>#{LINK_EXTENSION_PATTERN}))?/)
   end
 
   def to_reference(from = nil, full: false)
@@ -175,7 +185,7 @@ class Commit
       if safe_message.blank?
         no_commit_message
       else
-        safe_message.split("\n", 2).first
+        safe_message.split(/[\r\n]/, 2).first
       end
   end
 
@@ -216,8 +226,34 @@ class Commit
     Gitlab::ClosingIssueExtractor.new(project, current_user).closed_by_message(safe_message)
   end
 
+  def lazy_author
+    BatchLoader.for(author_email.downcase).batch do |emails, loader|
+      # A Hash that maps user Emails to the corresponding User objects. The
+      # Emails at this point are the _primary_ Emails of the Users.
+      users_for_emails = User
+        .by_any_email(emails)
+        .each_with_object({}) { |user, hash| hash[user.email] = user }
+
+      users_for_ids = users_for_emails
+        .values
+        .each_with_object({}) { |user, hash| hash[user.id] = user }
+
+      # Some commits may have used an alternative Email address. In this case we
+      # need to query the "emails" table to map those addresses to User objects.
+      Email
+        .where(email: emails - users_for_emails.keys)
+        .pluck(:email, :user_id)
+        .each { |(email, id)| users_for_emails[email] = users_for_ids[id] }
+
+      users_for_emails.each { |email, user| loader.call(email, user) }
+    end
+  end
+
   def author
-    User.find_by_any_email(author_email.downcase)
+    # We use __sync so that we get the actual objects back (including an actual
+    # nil), instead of a wrapper, as returning a wrapped nil breaks a lot of
+    # code.
+    lazy_author.__sync
   end
   request_cache(:author) { author_email.downcase }
 
@@ -244,7 +280,7 @@ class Commit
   end
 
   def notes_with_associations
-    notes.includes(:author)
+    notes.includes(:author, :award_emoji)
   end
 
   def merge_requests
@@ -305,21 +341,21 @@ class Commit
   end
 
   def cherry_pick_description(user)
-    message_body = "(cherry picked from commit #{sha})"
+    message_body = ["(cherry picked from commit #{sha})"]
 
     if merged_merge_request?(user)
       commits_in_merge_request = merged_merge_request(user).commits
 
       if commits_in_merge_request.present?
-        message_body << "\n"
+        message_body << ""
 
         commits_in_merge_request.reverse.each do |commit_in_merge|
-          message_body << "\n#{commit_in_merge.short_id} #{commit_in_merge.title}"
+          message_body << "#{commit_in_merge.short_id} #{commit_in_merge.title}"
         end
       end
     end
 
-    message_body
+    message_body.join("\n")
   end
 
   def cherry_pick_message(user)
@@ -412,8 +448,18 @@ class Commit
     true
   end
 
+  def to_ability_name
+    model_name.singular
+  end
+
   def touch
     # no-op but needs to be defined since #persisted? is defined
+  end
+
+  def touch_later
+    # No-op.
+    # This method is called by ActiveRecord.
+    # We don't want to do anything for `Commit` model, so this is empty.
   end
 
   WIP_REGEX = /\A\s*(((?i)(\[WIP\]|WIP:|WIP)\s|WIP$))|(fixup!|squash!)\s/.freeze

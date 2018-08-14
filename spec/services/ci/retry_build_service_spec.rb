@@ -6,7 +6,9 @@ describe Ci::RetryBuildService do
   set(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:stage) do
-    Ci::Stage.create!(project: project, pipeline: pipeline, name: 'test')
+    create(:ci_stage_entity, project: project,
+                             pipeline: pipeline,
+                             name: 'test')
   end
 
   let(:build) { create(:ci_build, pipeline: pipeline, stage_id: stage.id) }
@@ -22,19 +24,21 @@ describe Ci::RetryBuildService do
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
        erased_at auto_canceled_by job_artifacts job_artifacts_archive
-       job_artifacts_metadata job_artifacts_trace].freeze
+       job_artifacts_metadata job_artifacts_trace job_artifacts_junit].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
-       user_id auto_canceled_by_id retried failure_reason].freeze
+       user_id auto_canceled_by_id retried failure_reason
+       artifacts_file_store artifacts_metadata_store
+       metadata runner_session trace_chunks].freeze
 
   shared_examples 'build duplication' do
     let(:another_pipeline) { create(:ci_empty_pipeline, project: project) }
 
     let(:build) do
-      create(:ci_build, :failed, :artifacts, :expired, :erased,
+      create(:ci_build, :failed, :artifacts, :test_reports, :expired, :erased,
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :triggered, :trace_artifact, :teardown_environment,
              description: 'my-job', stage: 'test', stage_id: stage.id,
@@ -45,7 +49,7 @@ describe Ci::RetryBuildService do
       # Make sure that build has both `stage_id` and `stage` because FactoryBot
       # can reset one of the fields when assigning another. We plan to deprecate
       # and remove legacy `stage` column in the future.
-      build.update_attributes(stage: 'test', stage_id: stage.id)
+      build.update(stage: 'test', stage_id: stage.id)
     end
 
     describe 'clone accessors' do
@@ -96,7 +100,11 @@ describe Ci::RetryBuildService do
   end
 
   describe '#execute' do
-    let(:new_build) { service.execute(build) }
+    let(:new_build) do
+      Timecop.freeze(1.second.from_now) do
+        service.execute(build)
+      end
+    end
 
     context 'when user has ability to execute build' do
       before do
@@ -146,7 +154,11 @@ describe Ci::RetryBuildService do
   end
 
   describe '#reprocess' do
-    let(:new_build) { service.reprocess!(build) }
+    let(:new_build) do
+      Timecop.freeze(1.second.from_now) do
+        service.reprocess!(build)
+      end
+    end
 
     context 'when user has ability to execute build' do
       before do

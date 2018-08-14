@@ -1,7 +1,7 @@
 # GitLab quick actions
 
-Quick actions are textual shortcuts for common actions on issues or merge
-requests that are usually done by clicking buttons or dropdowns in GitLab's UI.
+Quick actions are textual shortcuts for common actions on issues, merge requests
+or commits that are usually done by clicking buttons or dropdowns in GitLab's UI.
 You can enter these commands while creating a new issue or merge request, and
 in comments. Each command should be on a separate line in order to be properly
 detected and executed. The commands are removed from the issue, merge request or
@@ -38,6 +38,9 @@ do.
 | `/award :emoji:`  | Toggle award for :emoji: |
 | `/board_move ~column`      | Move issue to column on the board |
 | `/duplicate #issue`        | Closes this issue and marks it as a duplicate of another issue |
-| `/move path/to/project`	     | Moves issue to another project |
-| `/tableflip`	             | Append the comment with `(╯°□°)╯︵ ┻━┻` |
-| `/shrug`	                 | Append the comment with `¯\＿(ツ)＿/¯` |
+| `/move path/to/project`        | Moves issue to another project |
+| `/tag v1.2.3 <message>`    | Tags a commit with a given tag name and optional message |
+| `/tableflip`               | Append the comment with `(╯°□°)╯︵ ┻━┻` |
+| `/shrug`                   | Append the comment with `¯\＿(ツ)＿/¯` |
+| <code>/copy_metadata #issue &#124; !merge_request</code> | Copy labels and milestone from other issue or merge request |
+| `/confidential`            | Makes the issue confidential |

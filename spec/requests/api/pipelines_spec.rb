@@ -11,7 +11,7 @@ describe API::Pipelines do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET /projects/:id/pipelines ' do
@@ -24,7 +24,8 @@ describe API::Pipelines do
         expect(json_response).to be_an Array
         expect(json_response.first['sha']).to match /\A\h{40}\z/
         expect(json_response.first['id']).to eq pipeline.id
-        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status])
+        expect(json_response.first['web_url']).to be_present
+        expect(json_response.first.keys).to contain_exactly(*%w[id sha ref status web_url])
       end
 
       context 'when parameter is passed' do
@@ -285,6 +286,15 @@ describe API::Pipelines do
   end
 
   describe 'POST /projects/:id/pipeline ' do
+    def expect_variables(variables, expected_variables)
+      variables.each_with_index do |variable, index|
+        expected_variable = expected_variables[index]
+
+        expect(variable.key).to eq(expected_variable['key'])
+        expect(variable.value).to eq(expected_variable['value'])
+      end
+    end
+
     context 'authorized user' do
       context 'with gitlab-ci.yml' do
         before do
@@ -294,11 +304,60 @@ describe API::Pipelines do
         it 'creates and returns a new pipeline' do
           expect do
             post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
-          end.to change { Ci::Pipeline.count }.by(1)
+          end.to change { project.pipelines.count }.by(1)
 
           expect(response).to have_gitlab_http_status(201)
           expect(json_response).to be_a Hash
           expect(json_response['sha']).to eq project.commit.id
+        end
+
+        context 'variables given' do
+          let(:variables) { [{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }] }
+
+          it 'creates and returns a new pipeline using the given variables' do
+            expect do
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
+            end.to change { project.pipelines.count }.by(1)
+            expect_variables(project.pipelines.last.variables, variables)
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to be_a Hash
+            expect(json_response['sha']).to eq project.commit.id
+            expect(json_response).not_to have_key('variables')
+          end
+        end
+
+        describe 'using variables conditions' do
+          let(:variables) { [{ 'key' => 'STAGING', 'value' => 'true' }] }
+
+          before do
+            config = YAML.dump(test: { script: 'test', only: { variables: ['$STAGING'] } })
+            stub_ci_pipeline_yaml_file(config)
+          end
+
+          it 'creates and returns a new pipeline using the given variables' do
+            expect do
+              post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch, variables: variables
+            end.to change { project.pipelines.count }.by(1)
+            expect_variables(project.pipelines.last.variables, variables)
+
+            expect(response).to have_gitlab_http_status(201)
+            expect(json_response).to be_a Hash
+            expect(json_response['sha']).to eq project.commit.id
+            expect(json_response).not_to have_key('variables')
+          end
+
+          context 'condition unmatch' do
+            let(:variables) { [{ 'key' => 'STAGING', 'value' => 'false' }] }
+
+            it "doesn't create a job" do
+              expect do
+                post api("/projects/#{project.id}/pipeline", user), ref: project.default_branch
+              end.not_to change { project.pipelines.count }
+
+              expect(response).to have_gitlab_http_status(400)
+            end
+          end
         end
 
         it 'fails when using an invalid ref' do

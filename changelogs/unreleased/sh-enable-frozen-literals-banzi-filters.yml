@@ -1,0 +1,5 @@
+---
+title: Enable frozen strings in remaining lib/banzai/filter/*.rb files
+merge_request: 20777
+author:
+type: performance

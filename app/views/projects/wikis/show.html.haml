@@ -1,4 +1,4 @@
-- @content_class = "limit-container-width limit-container-width-sm" unless fluid_layout
+- @content_class = "limit-container-width" unless fluid_layout
 - breadcrumb_title @page.title.capitalize
 - wiki_breadcrumb_dropdown_links(@page.slug)
 - page_title @page.title.capitalize, _("Wiki")
@@ -24,7 +24,7 @@
     - history_link = link_to s_("WikiHistoricalPage|history"), project_wiki_history_path(@project, @page)
     = (s_("WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}.") % { most_recent_link: most_recent_link, history_link: history_link }).html_safe
 
-.wiki-holder.prepend-top-default.append-bottom-default
+.prepend-top-default.append-bottom-default
   .wiki
     = render_wiki_content(@page)
 

@@ -17,7 +17,7 @@ module Gitlab
 
               current_file = file_from_gitaly_header(gitaly_file.header)
             else
-              current_file.content << gitaly_file.content
+              current_file.raw_content << gitaly_file.content
             end
           end
         end

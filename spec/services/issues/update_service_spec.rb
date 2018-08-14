@@ -18,7 +18,7 @@ describe Issues::UpdateService, :mailer do
   end
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     project.add_developer(user2)
     project.add_developer(user3)
   end
@@ -55,6 +55,8 @@ describe Issues::UpdateService, :mailer do
       end
 
       it 'updates the issue with the given params' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
         update_issue(opts)
 
         expect(issue).to be_valid
@@ -72,6 +74,21 @@ describe Issues::UpdateService, :mailer do
 
         expect { update_issue(confidential: true) }
           .to change { project.open_issues_count }.from(1).to(0)
+      end
+
+      it 'enqueues ConfidentialIssueWorker when an issue is made confidential' do
+        expect(TodosDestroyer::ConfidentialIssueWorker).to receive(:perform_in).with(1.hour, issue.id)
+
+        update_issue(confidential: true)
+      end
+
+      it 'does not enqueue ConfidentialIssueWorker when an issue is made non confidential' do
+        # set confidentiality to true before the actual update
+        issue.update!(confidential: true)
+
+        expect(TodosDestroyer::ConfidentialIssueWorker).not_to receive(:perform_in)
+
+        update_issue(confidential: false)
       end
 
       it 'updates open issue counter for assignees when issue is reassigned' do
@@ -95,6 +112,39 @@ describe Issues::UpdateService, :mailer do
         update_issue(opts)
 
         expect(issue.relative_position).to be_between(issue1.relative_position, issue2.relative_position)
+      end
+
+      context 'when moving issue between issues from different projects', :nested_groups do
+        let(:group) { create(:group) }
+        let(:subgroup) { create(:group, parent: group) }
+
+        let(:project_1) { create(:project, namespace: group) }
+        let(:project_2) { create(:project, namespace: group) }
+        let(:project_3) { create(:project, namespace: subgroup) }
+
+        let(:issue_1) { create(:issue, project: project_1) }
+        let(:issue_2) { create(:issue, project: project_2) }
+        let(:issue_3) { create(:issue, project: project_3) }
+
+        before do
+          group.add_developer(user)
+        end
+
+        it 'sorts issues as specified by parameters' do
+          # Moving all issues to end here like the last example won't work since
+          # all projects only have the same issue count
+          # so their relative_position will be the same.
+          issue_1.move_to_end
+          issue_2.move_after(issue_1)
+          issue_3.move_after(issue_2)
+          [issue_1, issue_2, issue_3].map(&:save)
+
+          opts[:move_between_ids] = [issue_1.id, issue_2.id]
+          opts[:board_group_id] = group.id
+
+          described_class.new(issue_3.project, user, opts).execute(issue_3)
+          expect(issue_2.relative_position).to be_between(issue_1.relative_position, issue_2.relative_position)
+        end
       end
 
       context 'when current user cannot admin issues in the project' do
@@ -304,11 +354,17 @@ describe Issues::UpdateService, :mailer do
 
       context 'when the labels change' do
         before do
-          update_issue(label_ids: [label.id])
+          Timecop.freeze(1.minute.from_now) do
+            update_issue(label_ids: [label.id])
+          end
         end
 
         it 'marks todos as done' do
           expect(todo.reload.done?).to eq true
+        end
+
+        it 'updates updated_at' do
+          expect(issue.reload.updated_at).to be > Time.now
         end
       end
     end
@@ -462,7 +518,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { label_ids: [], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label, label3])
+          issue.update(labels: [label, label3])
         end
 
         it 'ignores the label_ids parameter' do
@@ -478,7 +534,7 @@ describe Issues::UpdateService, :mailer do
         let(:params) { { add_label_ids: [label3.id], remove_label_ids: [label.id] } }
 
         before do
-          issue.update_attributes(labels: [label])
+          issue.update(labels: [label])
         end
 
         it 'adds the passed labels' do
@@ -557,7 +613,7 @@ describe Issues::UpdateService, :mailer do
 
       context 'valid project' do
         before do
-          target_project.add_master(user)
+          target_project.add_maintainer(user)
         end
 
         it 'calls the move service with the proper issue and project' do

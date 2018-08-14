@@ -1,0 +1,5 @@
+---
+title: Don't set gon variables in JSON requests
+merge_request: 21016
+author: Peter Leitzen
+type: performance

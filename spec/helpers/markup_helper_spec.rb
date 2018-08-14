@@ -11,7 +11,7 @@ describe MarkupHelper do
 
   before do
     # Ensure the generated reference links aren't redacted
-    project.add_master(user)
+    project.add_maintainer(user)
 
     # Helper expects a @project instance variable
     helper.instance_variable_set(:@project, project)
@@ -205,7 +205,9 @@ describe MarkupHelper do
     it "uses Wiki pipeline for markdown files" do
       allow(@wiki).to receive(:format).and_return(:markdown)
 
-      expect(helper).to receive(:markdown_unsafe).with('wiki content', pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page", issuable_state_filter_enabled: true)
+      expect(helper).to receive(:markdown_unsafe).with('wiki content',
+        pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page",
+        issuable_state_filter_enabled: true, markdown_engine: :redcarpet)
 
       helper.render_wiki_content(@wiki)
     end
@@ -236,18 +238,31 @@ describe MarkupHelper do
       expect(helper.markup('foo.rst', content).encoding.name).to eq('UTF-8')
     end
 
-    it "delegates to #markdown_unsafe when file name corresponds to Markdown" do
+    it 'delegates to #markdown_unsafe when file name corresponds to Markdown' do
       expect(helper).to receive(:gitlab_markdown?).with('foo.md').and_return(true)
       expect(helper).to receive(:markdown_unsafe).and_return('NOEL')
 
       expect(helper.markup('foo.md', content)).to eq('NOEL')
     end
 
-    it "delegates to #asciidoc_unsafe when file name corresponds to AsciiDoc" do
+    it 'delegates to #asciidoc_unsafe when file name corresponds to AsciiDoc' do
       expect(helper).to receive(:asciidoc?).with('foo.adoc').and_return(true)
       expect(helper).to receive(:asciidoc_unsafe).and_return('NOEL')
 
       expect(helper.markup('foo.adoc', content)).to eq('NOEL')
+    end
+
+    it 'uses passed in rendered content' do
+      expect(helper).not_to receive(:gitlab_markdown?)
+      expect(helper).not_to receive(:markdown_unsafe)
+
+      expect(helper.markup('foo.md', content, rendered: '<p>NOEL</p>')).to eq('<p>NOEL</p>')
+    end
+
+    it 'defaults to Redcarpet' do
+      expect(helper).to receive(:markdown_unsafe).with(content, hash_including(markdown_engine: :redcarpet)).and_return('NOEL')
+
+      expect(helper.markup('foo.md', content)).to eq('NOEL')
     end
   end
 
@@ -298,7 +313,7 @@ describe MarkupHelper do
 
       it 'preserves code color scheme' do
         object = create_object("```ruby\ndef test\n  'hello world'\nend\n```")
-        expected = "\n<pre class=\"code highlight js-syntax-highlight ruby\">" \
+        expected = "<pre class=\"code highlight js-syntax-highlight ruby\">" \
           "<code><span class=\"line\"><span class=\"k\">def</span> <span class=\"nf\">test</span>...</span>\n" \
           "</code></pre>"
 

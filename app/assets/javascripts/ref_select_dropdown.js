@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 class RefSelectDropdown {
   constructor($dropdownButton, availableRefs) {
     const availableRefsValue = availableRefs || JSON.parse(document.getElementById('availableRefs').innerHTML);

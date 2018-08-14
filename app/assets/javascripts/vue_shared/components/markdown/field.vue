@@ -1,4 +1,6 @@
 <script>
+  import $ from 'jquery';
+  import { s__ } from '~/locale';
   import Flash from '../../../flash';
   import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
@@ -20,6 +22,11 @@
       markdownDocsPath: {
         type: String,
         required: true,
+      },
+      markdownVersion: {
+        type: Number,
+        required: false,
+        default: 0,
       },
       addSpacingClasses: {
         type: Boolean,
@@ -61,7 +68,15 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
+      return new GLForm($(this.$refs['gl-form']), {
+        emojis: this.enableAutocomplete,
+        members: this.enableAutocomplete,
+        issues: this.enableAutocomplete,
+        mergeRequests: this.enableAutocomplete,
+        epics: this.enableAutocomplete,
+        milestones: this.enableAutocomplete,
+        labels: this.enableAutocomplete,
+      });
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('glForm');
@@ -83,10 +98,11 @@
 
         if (text) {
           this.markdownPreviewLoading = true;
-          this.$http.post(this.markdownPreviewPath, { text })
-            .then(resp => resp.json())
-            .then(data => this.renderMarkdown(data))
-            .catch(() => new Flash('Error loading markdown preview'));
+          this.$http
+            .post(this.versionedPreviewPath(), { text })
+              .then(resp => resp.json())
+              .then(data => this.renderMarkdown(data))
+              .catch(() => new Flash(s__('Error loading markdown preview')));
         } else {
           this.renderMarkdown();
         }
@@ -110,23 +126,30 @@
           $(this.$refs['markdown-preview']).renderGFM();
         });
       },
+
+      versionedPreviewPath() {
+        const { markdownPreviewPath, markdownVersion } = this;
+        return `${markdownPreviewPath}${
+          markdownPreviewPath.indexOf('?') === -1 ? '?' : '&'
+          }markdown_version=${markdownVersion}`;
+      },
     },
   };
 </script>
 
 <template>
   <div
-    class="md-area js-vue-markdown-field"
+    ref="gl-form"
     :class="{ 'prepend-top-default append-bottom-default': addSpacingClasses }"
-    ref="gl-form">
+    class="md-area js-vue-markdown-field">
     <markdown-header
       :preview-markdown="previewMarkdown"
       @preview-markdown="showPreviewTab"
       @write-markdown="showWriteTab"
     />
     <div
-      class="md-write-holder"
       v-show="!previewMarkdown"
+      class="md-write-holder"
     >
       <div class="zen-backdrop">
         <slot name="textarea"></slot>
@@ -136,8 +159,8 @@
           aria-label="Enter zen mode"
         >
           <icon
-            name="screen-normal"
             :size="32"
+            name="screen-normal"
           />
         </a>
         <markdown-toolbar
@@ -148,8 +171,8 @@
       </div>
     </div>
     <div
-      class="md md-preview-holder md-preview"
       v-show="previewMarkdown"
+      class="md md-preview-holder md-preview js-vue-md-preview"
     >
       <div
         ref="markdown-preview"
@@ -163,8 +186,8 @@
     <template v-if="previewMarkdown && !markdownPreviewLoading">
       <div
         v-if="referencedCommands"
-        v-html="referencedCommands"
         class="referenced-commands"
+        v-html="referencedCommands"
       >
       </div>
       <div

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 require 'socket'
 
@@ -69,8 +71,8 @@ class IrkerWorker
     newbranch = "#{Gitlab.config.gitlab.url}/#{repo_path}/branches"
     newbranch = "\x0302\x1f#{newbranch}\x0f" if @colors
 
-    privmsg = "[#{repo_name}] #{committer} has created a new branch "
-    privmsg += "#{branch}: #{newbranch}"
+    privmsg = "[#{repo_name}] #{committer} has created a new branch " \
+              "#{branch}: #{newbranch}"
     sendtoirker privmsg
   end
 
@@ -112,9 +114,7 @@ class IrkerWorker
     url = compare_url data, project.full_path
     commits = colorize_commits data['total_commits_count']
 
-    new_commits = 'new commit'
-    new_commits += 's' if data['total_commits_count'] > 1
-
+    new_commits = 'new commit'.pluralize(data['total_commits_count'])
     sendtoirker "[#{repo}] #{committer} pushed #{commits} #{new_commits} " \
                 "to #{branch}: #{url}"
   end
@@ -122,8 +122,8 @@ class IrkerWorker
   def compare_url(data, repo_path)
     sha1 = Commit.truncate_sha(data['before'])
     sha2 = Commit.truncate_sha(data['after'])
-    compare_url = "#{Gitlab.config.gitlab.url}/#{repo_path}/compare"
-    compare_url += "/#{sha1}...#{sha2}"
+    compare_url = "#{Gitlab.config.gitlab.url}/#{repo_path}/compare" \
+                  "/#{sha1}...#{sha2}"
     colorize_url compare_url
   end
 
@@ -144,8 +144,7 @@ class IrkerWorker
   def files_count(commit)
     diff_size = commit.raw_deltas.size
 
-    files = "#{diff_size} file"
-    files += 's' if diff_size > 1
+    files = "#{diff_size} file".pluralize(diff_size)
     files
   end
 

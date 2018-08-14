@@ -115,15 +115,16 @@ and [Using the GitLab Container Registry documentation](../../ci/docker/using_do
 
 ## Using with private projects
 
-> [Introduced][ce-11845] in GitLab 9.3.
+> Personal Access tokens were [introduced][ce-11845] in GitLab 9.3.
+> Project Deploy Tokens were [introduced][ce-17894] in GitLab 10.7
 
 If a project is private, credentials will need to be provided for authorization.
-The preferred way to do this, is by using [personal access tokens][pat].
-The minimal scope needed is `read_registry`.
+The preferred way to do this, is either by using a [personal access tokens][pat] or a [project deploy token][pdt].
+The minimal scope needed for both of them is `read_registry`.
 
 Example of using a personal access token:
 ```
-docker login registry.example.com -u <your_username> -p <your_personal_access_token>
+docker login registry.example.com -u <your_username> -p <your_access_token>
 ```
 
 ## Troubleshooting the GitLab Container Registry
@@ -141,6 +142,24 @@ docker login registry.example.com -u <your_username> -p <your_personal_access_to
 3. Check the Registry logs (e.g. `/var/log/gitlab/registry/current`) and the GitLab production logs
    for errors (e.g. `/var/log/gitlab/gitlab-rails/production.log`). You may be able to find clues
    there.
+
+#### Enable the registry debug server
+
+The optional debug server can be enabled by setting the registry debug address
+in your `gitlab.rb` configuration.
+
+```ruby
+registry['debug_addr'] = "localhost:5001"
+```
+
+After adding the setting, [reconfigure] GitLab to apply the change.
+
+Use curl to request debug output from the debug server:
+
+```bash
+curl localhost:5001/debug/health
+curl localhost:5001/debug/vars
+```
 
 ### Advanced Troubleshooting
 
@@ -270,5 +289,8 @@ Once the right permissions were set, the error will go away.
 
 [ce-4040]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4040
 [ce-11845]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11845
+[ce-17894]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/17894
 [docker-docs]: https://docs.docker.com/engine/userguide/intro/
 [pat]: ../profile/personal_access_tokens.md
+[pdt]: ../project/deploy_tokens/index.md
+[reconfigure]: ../../administration/restart_gitlab.md#omnibus-gitlab-reconfigure

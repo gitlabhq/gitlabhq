@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { addSelectOnFocusBehaviour } from '../lib/utils/common_utils';
 
 let hasUserDefinedProjectPath = false;
@@ -36,9 +37,10 @@ const bindEvents = () => {
   const $projectFieldsForm = $('.project-fields-form');
   const $selectedTemplateText = $('.selected-template');
   const $changeTemplateBtn = $('.change-template');
-  const $selectedIcon = $('.selected-icon svg');
+  const $selectedIcon = $('.selected-icon');
   const $templateProjectNameInput = $('#template-project-name #project_path');
   const $pushNewProjectTipTrigger = $('.push-new-project-tip');
+  const $projectTemplateButtons = $('.project-templates-buttons');
 
   if ($newProjectForm.length !== 1) {
     return;
@@ -65,8 +67,8 @@ const bindEvents = () => {
       .on('click', (e) => { e.preventDefault(); })
       .popover({
         title: $pushNewProjectTipTrigger.data('title'),
-        placement: 'auto bottom',
-        html: 'true',
+        placement: 'bottom',
+        html: true,
         content: $('.push-new-project-tip-template').html(),
       })
       .on('shown.bs.popover', () => {
@@ -87,35 +89,35 @@ const bindEvents = () => {
   }
 
   function chooseTemplate() {
-    $('.template-option').hide();
+    $projectTemplateButtons.addClass('hidden');
     $projectFieldsForm.addClass('selected');
-    $selectedIcon.removeClass('active');
+    $selectedIcon.empty();
     const value = $(this).val();
     const templates = {
       rails: {
         text: 'Ruby on Rails',
-        icon: '.selected-icon .icon-rails',
+        icon: '.template-option svg.icon-rails',
       },
       express: {
         text: 'NodeJS Express',
-        icon: '.selected-icon .icon-node-express',
+        icon: '.template-option svg.icon-node-express',
       },
       spring: {
         text: 'Spring',
-        icon: '.selected-icon .icon-java-spring',
+        icon: '.template-option svg.icon-java-spring',
       },
     };
 
     const selectedTemplate = templates[value];
     $selectedTemplateText.text(selectedTemplate.text);
-    $(selectedTemplate.icon).addClass('active');
+    $(selectedTemplate.icon).clone().addClass('d-block').appendTo($selectedIcon);
     $templateProjectNameInput.focus();
   }
 
   $useTemplateBtn.on('change', chooseTemplate);
 
   $changeTemplateBtn.on('click', () => {
-    $('.template-option').show();
+    $projectTemplateButtons.removeClass('hidden');
     $projectFieldsForm.removeClass('selected');
     $useTemplateBtn.prop('checked', false);
   });

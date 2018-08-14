@@ -1,8 +1,11 @@
+import $ from 'jquery';
 import _ from 'underscore';
 import Vue from 'vue';
 import notesApp from '~/notes/components/notes_app.vue';
 import service from '~/notes/services/notes_service';
-import '~/render_gfm';
+import createStore from '~/notes/stores';
+import '~/behaviors/markdown/render_gfm';
+import { mountComponentWithStore } from 'spec/helpers';
 import * as mockData from '../mock_data';
 
 const vueMatchers = {
@@ -21,6 +24,7 @@ const vueMatchers = {
 describe('note_app', () => {
   let mountComponent;
   let vm;
+  let store;
 
   beforeEach(() => {
     jasmine.addMatchers(vueMatchers);
@@ -28,16 +32,18 @@ describe('note_app', () => {
 
     const IssueNotesApp = Vue.extend(notesApp);
 
-    mountComponent = (data) => {
+    store = createStore();
+    mountComponent = data => {
       const props = data || {
         noteableData: mockData.noteableDataMock,
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
 
-      return new IssueNotesApp({
-        propsData: props,
-      }).$mount();
+      return mountComponentWithStore(IssueNotesApp, {
+        props,
+        store,
+      });
     };
   });
 
@@ -47,9 +53,11 @@ describe('note_app', () => {
 
   describe('set data', () => {
     const responseInterceptor = (request, next) => {
-      next(request.respondWith(JSON.stringify([]), {
-        status: 200,
-      }));
+      next(
+        request.respondWith(JSON.stringify([]), {
+          status: 200,
+        }),
+      );
     };
 
     beforeEach(() => {
@@ -73,8 +81,8 @@ describe('note_app', () => {
       expect(vm.$store.state.userData).toEqual(mockData.userDataMock);
     });
 
-    it('should fetch notes', () => {
-      expect(vm.$store.state.notes).toEqual([]);
+    it('should fetch discussions', () => {
+      expect(vm.$store.state.discussions).toEqual([]);
     });
   });
 
@@ -88,15 +96,20 @@ describe('note_app', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, mockData.individualNoteInterceptor);
     });
 
-    it('should render list of notes', (done) => {
-      const note = mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET['/gitlab-org/gitlab-ce/issues/26/discussions.json'][0].notes[0];
+    it('should render list of notes', done => {
+      const note =
+        mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET[
+          '/gitlab-org/gitlab-ce/issues/26/discussions.json'
+        ][0].notes[0];
 
       setTimeout(() => {
         expect(
           vm.$el.querySelector('.main-notes-list .note-header-author-name').textContent.trim(),
         ).toEqual(note.author.name);
 
-        expect(vm.$el.querySelector('.main-notes-list .note-text').innerHTML).toEqual(note.note_html);
+        expect(vm.$el.querySelector('.main-notes-list .note-text').innerHTML).toEqual(
+          note.note_html,
+        );
         done();
       }, 0);
     });
@@ -105,13 +118,13 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
       expect(
         vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here...');
+      ).toEqual('Write a comment or drag your files here…');
     });
 
     it('should render form comment button as disabled', () => {
-      expect(
-        vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled'),
-      ).toEqual('disabled');
+      expect(vm.$el.querySelector('.js-note-new-discussion').getAttribute('disabled')).toEqual(
+        'disabled',
+      );
     });
   });
 
@@ -128,13 +141,13 @@ describe('note_app', () => {
       expect(vm.$el.querySelector('.js-main-target-form').tagName).toEqual('FORM');
       expect(
         vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
-      ).toEqual('Write a comment or drag your files here...');
+      ).toEqual('Write a comment or drag your files here…');
     });
   });
 
   describe('update note', () => {
     describe('individual note', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         Vue.http.interceptors.push(mockData.individualNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
@@ -155,7 +168,7 @@ describe('note_app', () => {
         expect(vm).toIncludeElement('.js-vue-issue-note-form');
       });
 
-      it('calls the service to update the note', (done) => {
+      it('calls the service to update the note', done => {
         vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
         vm.$el.querySelector('.js-vue-issue-save').click();
 
@@ -168,7 +181,7 @@ describe('note_app', () => {
     });
 
     describe('discussion note', () => {
-      beforeEach((done) => {
+      beforeEach(done => {
         Vue.http.interceptors.push(mockData.discussionNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
@@ -190,7 +203,7 @@ describe('note_app', () => {
         expect(vm).toIncludeElement('.js-vue-issue-note-form');
       });
 
-      it('updates the note and resets the edit form', (done) => {
+      it('updates the note and resets the edit form', done => {
         vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
         vm.$el.querySelector('.js-vue-issue-save').click();
 
@@ -210,12 +223,16 @@ describe('note_app', () => {
 
     it('should render markdown docs url', () => {
       const { markdownDocsPath } = mockData.notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual('Markdown');
+      expect(vm.$el.querySelector(`a[href="${markdownDocsPath}"]`).textContent.trim()).toEqual(
+        'Markdown',
+      );
     });
 
     it('should render quick action docs url', () => {
       const { quickActionsDocsPath } = mockData.notesDataMock;
-      expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual('quick actions');
+      expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual(
+        'quick actions',
+      );
     });
   });
 
@@ -229,7 +246,7 @@ describe('note_app', () => {
       Vue.http.interceptors = _.without(Vue.http.interceptors, mockData.individualNoteInterceptor);
     });
 
-    it('should render markdown docs url', (done) => {
+    it('should render markdown docs url', done => {
       setTimeout(() => {
         vm.$el.querySelector('.js-note-edit').click();
         const { markdownDocsPath } = mockData.notesDataMock;
@@ -243,15 +260,15 @@ describe('note_app', () => {
       }, 0);
     });
 
-    it('should not render quick actions docs url', (done) => {
+    it('should not render quick actions docs url', done => {
       setTimeout(() => {
         vm.$el.querySelector('.js-note-edit').click();
         const { quickActionsDocsPath } = mockData.notesDataMock;
 
         Vue.nextTick(() => {
-          expect(
-            vm.$el.querySelector(`.edit-note a[href="${quickActionsDocsPath}"]`),
-          ).toEqual(null);
+          expect(vm.$el.querySelector(`.edit-note a[href="${quickActionsDocsPath}"]`)).toEqual(
+            null,
+          );
           done();
         });
       }, 0);

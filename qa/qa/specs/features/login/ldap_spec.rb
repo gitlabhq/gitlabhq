@@ -1,8 +1,12 @@
 module QA
-  feature 'LDAP user login', :ldap do
-    scenario 'user logs in using LDAP credentials' do
+  describe 'LDAP user login', :ldap do
+    before do
+      Runtime::Env.user_type = 'ldap'
+    end
+
+    it 'user logs in using LDAP credentials' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
-      Page::Main::Login.act { sign_in_using_ldap_credentials }
+      Page::Main::Login.act { sign_in_using_credentials }
 
       # TODO, since `Signed in successfully` message was removed
       # this is the only way to tell if user is signed in correctly.

@@ -4,5 +4,5 @@
     &nbsp;
     %span.str-truncated
       = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message")
-    .pull-right
+    .float-right
       #{time_ago_with_tooltip(commit.committed_date)}

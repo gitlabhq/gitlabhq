@@ -6,6 +6,7 @@ describe QuickActions::InterpretService do
   let(:developer2) { create(:user) }
   let(:issue) { create(:issue, project: project) }
   let(:milestone) { create(:milestone, project: project, title: '9.10') }
+  let(:commit) { create(:commit, project: project) }
   let(:inprogress) { create(:label, project: project, title: 'In Progress') }
   let(:bug) { create(:label, project: project, title: 'Bug') }
   let(:note) { build(:note, commit_id: merge_request.diff_head_sha) }
@@ -306,6 +307,31 @@ describe QuickActions::InterpretService do
       end
     end
 
+    shared_examples 'copy_metadata command' do
+      it 'fetches issue or merge request and copies labels and milestone if content contains /copy_metadata reference' do
+        source_issuable # populate the issue
+        todo_label # populate this label
+        inreview_label # populate this label
+        _, updates = service.execute(content, issuable)
+
+        expect(updates[:add_label_ids]).to match_array([inreview_label.id, todo_label.id])
+
+        if source_issuable.milestone
+          expect(updates[:milestone_id]).to eq(source_issuable.milestone.id)
+        else
+          expect(updates).not_to have_key(:milestone_id)
+        end
+      end
+    end
+
+    shared_examples 'confidential command' do
+      it 'marks issue as confidential if content contains /confidential' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(confidential: true)
+      end
+    end
+
     shared_examples 'shrug command' do
       it 'appends ¯\_(ツ)_/¯ to the comment' do
         new_content, _ = service.execute(content, issuable)
@@ -319,6 +345,14 @@ describe QuickActions::InterpretService do
         new_content, _ = service.execute(content, issuable)
 
         expect(new_content).to end_with(described_class::TABLEFLIP)
+      end
+    end
+
+    shared_examples 'tag command' do
+      it 'tags a commit' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(tag_name: tag_name, tag_message: tag_message)
       end
     end
 
@@ -603,16 +637,6 @@ describe QuickActions::InterpretService do
       let(:issuable) { merge_request }
     end
 
-    it_behaves_like 'todo command' do
-      let(:content) { '/todo' }
-      let(:issuable) { issue }
-    end
-
-    it_behaves_like 'todo command' do
-      let(:content) { '/todo' }
-      let(:issuable) { merge_request }
-    end
-
     it_behaves_like 'done command' do
       let(:content) { '/done' }
       let(:issuable) { issue }
@@ -757,6 +781,92 @@ describe QuickActions::InterpretService do
       let(:issuable) { issue }
     end
 
+    it_behaves_like 'confidential command' do
+      let(:content) { '/confidential' }
+      let(:issuable) { issue }
+    end
+
+    context '/todo' do
+      let(:content) { '/todo' }
+
+      context 'if issuable is an Issue' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'if issuable is a MergeRequest' do
+        it_behaves_like 'todo command' do
+          let(:issuable) { merge_request }
+        end
+      end
+
+      context 'if issuable is a Commit' do
+        it_behaves_like 'empty command' do
+          let(:issuable) { commit }
+        end
+      end
+    end
+
+    context '/copy_metadata command' do
+      let(:todo_label) { create(:label, project: project, title: 'To Do') }
+      let(:inreview_label) { create(:label, project: project, title: 'In Review') }
+
+      it_behaves_like 'empty command' do
+        let(:content) { '/copy_metadata' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'copy_metadata command' do
+        let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+
+        let(:content) { "/copy_metadata #{source_issuable.to_reference}" }
+        let(:issuable) { issue }
+      end
+
+      context 'when the parent issuable has a milestone' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [todo_label, inreview_label], milestone: milestone) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'when more than one issuable is passed' do
+        it_behaves_like 'copy_metadata command' do
+          let(:source_issuable) { create(:labeled_issue, project: project, labels: [inreview_label, todo_label]) }
+          let(:other_label) { create(:label, project: project, title: 'Other') }
+          let(:other_source_issuable) { create(:labeled_issue, project: project, labels: [other_label]) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference} #{other_source_issuable.to_reference}" }
+          let(:issuable) { issue }
+        end
+      end
+
+      context 'cross project references' do
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :public) }
+          let(:source_issuable) { create(:labeled_issue, project: other_project, labels: [todo_label, inreview_label]) }
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:content) { "/copy_metadata imaginary#1234" }
+          let(:issuable) { issue }
+        end
+
+        it_behaves_like 'empty command' do
+          let(:other_project) { create(:project, :private) }
+          let(:source_issuable) { create(:issue, project: other_project) }
+
+          let(:content) { "/copy_metadata #{source_issuable.to_reference(project)}" }
+          let(:issuable) { issue }
+        end
+      end
+    end
+
     context '/duplicate command' do
       it_behaves_like 'duplicate command' do
         let(:issue_duplicate) { create(:issue, project: project) }
@@ -843,6 +953,11 @@ describe QuickActions::InterpretService do
       end
 
       it_behaves_like 'empty command' do
+        let(:content) { '/confidential' }
+        let(:issuable) { issue }
+      end
+
+      it_behaves_like 'empty command' do
         let(:content) { '/duplicate #{issue.to_reference}' }
         let(:issuable) { issue }
       end
@@ -876,6 +991,12 @@ describe QuickActions::InterpretService do
           let(:content) { '/award :lorem_ipsum:' }
           let(:issuable) { issue }
         end
+      end
+
+      context 'if issuable is a Commit' do
+        let(:content) { '/award :100:' }
+        let(:issuable) { commit }
+        it_behaves_like 'empty command'
       end
     end
 
@@ -1006,6 +1127,32 @@ describe QuickActions::InterpretService do
       context 'if issuable is not an Issue' do
         let(:issuable) { merge_request }
         it_behaves_like 'empty command'
+      end
+    end
+
+    context '/tag command' do
+      let(:issuable) { commit }
+
+      context 'ignores command with no argument' do
+        it_behaves_like 'empty command' do
+          let(:content) { '/tag' }
+        end
+      end
+
+      context 'tags a commit with a tag name' do
+        it_behaves_like 'tag command' do
+          let(:tag_name) { 'v1.2.3' }
+          let(:tag_message) { nil }
+          let(:content) { "/tag #{tag_name}" }
+        end
+      end
+
+      context 'tags a commit with a tag name and message' do
+        it_behaves_like 'tag command' do
+          let(:tag_name) { 'v1.2.3' }
+          let(:tag_message) { 'Stable release' }
+          let(:content) { "/tag #{tag_name} #{tag_message}" }
+        end
       end
     end
   end
@@ -1223,6 +1370,40 @@ describe QuickActions::InterpretService do
         _, explanations = service.explain(content, issue)
 
         expect(explanations).to eq(["Moves this issue to test/project."])
+      end
+    end
+
+    describe 'tag a commit' do
+      describe 'with a tag name' do
+        context 'without a message' do
+          let(:content) { '/tag v1.2.3' }
+
+          it 'includes the tag name only' do
+            _, explanations = service.explain(content, commit)
+
+            expect(explanations).to eq(["Tags this commit to v1.2.3."])
+          end
+        end
+
+        context 'with an empty message' do
+          let(:content) { '/tag v1.2.3 ' }
+
+          it 'includes the tag name only' do
+            _, explanations = service.explain(content, commit)
+
+            expect(explanations).to eq(["Tags this commit to v1.2.3."])
+          end
+        end
+      end
+
+      describe 'with a tag name and message' do
+        let(:content) { '/tag v1.2.3 Stable release' }
+
+        it 'includes the tag name and message' do
+          _, explanations = service.explain(content, commit)
+
+          expect(explanations).to eq(["Tags this commit to v1.2.3 with \"Stable release\"."])
+        end
       end
     end
   end

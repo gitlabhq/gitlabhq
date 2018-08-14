@@ -38,8 +38,8 @@
     <ul class="stage-event-list">
       <li
         v-for="(build, i) in items"
-        class="stage-event-item item-build-component"
         :key="i"
+        class="stage-event-item item-build-component"
       >
         <div class="item-details">
           <!-- FIXME: Pass an alt attribute here for accessibility -->
@@ -52,8 +52,8 @@
               #{{ build.id }}
             </a>
             <icon
-              name="fork"
               :size="16"
+              name="fork"
             />
             <a
               :href="build.branch.url"

@@ -44,6 +44,10 @@ describe Gitlab::Ci::Status::Build::Stop do
     describe '#action_title' do
       it { expect(subject.action_title).to eq 'Stop' }
     end
+
+    describe '#action_button_title' do
+      it { expect(subject.action_button_title).to eq 'Stop this environment' }
+    end
   end
 
   describe '.matches?' do
@@ -75,6 +79,26 @@ describe Gitlab::Ci::Status::Build::Stop do
       it 'does not match' do
         expect(subject).to be false
       end
+    end
+  end
+
+  describe '#status_tooltip' do
+    it 'does not override status status_tooltip' do
+      expect(status).to receive(:status_tooltip)
+
+      subject.status_tooltip
+    end
+  end
+
+  describe '#badge_tooltip' do
+    let(:user) { create(:user) }
+    let(:build) { create(:ci_build, :playable) }
+    let(:status) { Gitlab::Ci::Status::Core.new(build, user) }
+
+    it 'does not override status badge_tooltip' do
+      expect(status).to receive(:badge_tooltip)
+
+      subject.badge_tooltip
     end
   end
 end

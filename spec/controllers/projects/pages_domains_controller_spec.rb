@@ -13,13 +13,13 @@ describe Projects::PagesDomainsController do
   end
 
   let(:pages_domain_params) do
-    build(:pages_domain, :with_certificate, :with_key, domain: 'my.otherdomain.com').slice(:key, :certificate, :domain)
+    build(:pages_domain, domain: 'my.otherdomain.com').slice(:key, :certificate, :domain)
   end
 
   before do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET show' do
@@ -68,7 +68,7 @@ describe Projects::PagesDomainsController do
     end
 
     let(:pages_domain_params) do
-      attributes_for(:pages_domain, :with_certificate, :with_key).slice(:key, :certificate)
+      attributes_for(:pages_domain).slice(:key, :certificate)
     end
 
     let(:params) do

@@ -1,0 +1,49 @@
+.sub-section
+  %h4.warning-title Change group path
+  = form_for @group, html: { multipart: true, class: 'gl-show-field-errors' }, authenticity_token: true do |f|
+    = form_errors(@group)
+    .form-group
+      %p
+        Changing group path can have unintended side effects.
+        = succeed '.' do
+          = link_to 'Learn more', help_page_path('user/group/index', anchor: 'changing-a-groups-path'), target: '_blank'
+
+      .input-group.gl-field-error-anchor
+        .group-root-path.input-group-prepend.has-tooltip{ title: group_path(@group), :'data-placement' => 'bottom' }
+          .input-group-text
+            %span>= root_url
+            - if parent
+              %strong= parent.full_path + '/'
+        = f.hidden_field :parent_id
+        = f.text_field :path, placeholder: 'open-source', class: 'form-control',
+          autofocus: local_assigns[:autofocus] || false, required: true,
+          pattern: Gitlab::PathRegex::NAMESPACE_FORMAT_REGEX_JS,
+          title: 'Please choose a group path with no special characters.',
+          "data-bind-in" => "#{'create_chat_team' if Gitlab.config.mattermost.enabled}"
+
+    = f.submit 'Change group path', class: 'btn btn-warning'
+
+.sub-section
+  %h4.danger-title Remove group
+  = form_tag(@group, method: :delete) do
+    %p
+      Removing group will cause all child projects and resources to be removed.
+      %br
+      %strong Removed group can not be restored!
+
+    = button_to 'Remove group', '#', class: 'btn btn-remove js-confirm-danger', data: { 'confirm-danger-message' => remove_group_message(@group) }
+
+- if supports_nested_groups?
+  .sub-section
+    %h4.warning-title Transfer group
+    = form_for @group, url: transfer_group_path(@group), method: :put do |f|
+      .form-group
+        = dropdown_tag('Select parent group', options: { toggle_class: 'js-groups-dropdown', title: 'Parent Group', filter: true, dropdown_class: 'dropdown-open-top dropdown-group-transfer', placeholder: 'Search groups', data: { data: parent_group_options(@group) } })
+        = hidden_field_tag 'new_parent_group_id'
+
+      %ul
+        %li Be careful. Changing a group's parent can have unintended #{link_to 'side effects', 'https://docs.gitlab.com/ce/user/project/index.html#redirects-when-changing-repository-paths', target: 'blank'}.
+        %li You can only transfer the group to a group you manage.
+        %li You will need to update your local repositories to point to the new location.
+        %li If the parent group's visibility is lower than the group current visibility, visibility levels for subgroups and projects will be changed to match the new parent group's visibility.
+      = f.submit 'Transfer group', class: 'btn btn-warning'

@@ -39,8 +39,8 @@
 <template>
   <div class="mr-widget-body media">
     <status-icon
-      status="warning"
       :show-disabled-button="true"
+      status="warning"
     />
 
     <div class="media-body space-children">
@@ -51,9 +51,9 @@
         {{ missingBranchNameMessage }}
         <i
           v-tooltip
-          class="fa fa-question-circle"
           :title="message"
           :aria-label="message"
+          class="fa fa-question-circle"
         >
         </i>
       </span>

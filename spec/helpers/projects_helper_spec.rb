@@ -5,9 +5,9 @@ describe ProjectsHelper do
 
   describe "#project_status_css_class" do
     it "returns appropriate class" do
-      expect(project_status_css_class("started")).to eq("active")
-      expect(project_status_css_class("failed")).to eq("danger")
-      expect(project_status_css_class("finished")).to eq("success")
+      expect(project_status_css_class("started")).to eq("table-active")
+      expect(project_status_css_class("failed")).to eq("table-danger")
+      expect(project_status_css_class("finished")).to eq("table-success")
     end
   end
 
@@ -80,6 +80,7 @@ describe ProjectsHelper do
     before do
       allow(helper).to receive(:current_user).and_return(user)
       allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
+      allow(user).to receive(:max_member_access_for_project).and_return(40)
     end
 
     it "includes the route" do
@@ -88,6 +89,10 @@ describe ProjectsHelper do
 
     it "includes the project" do
       expect(helper.project_list_cache_key(project)).to include(project.cache_key)
+    end
+
+    it "includes the last activity date" do
+      expect(helper.project_list_cache_key(project)).to include(project.last_activity_date)
     end
 
     it "includes the controller name" do
@@ -120,6 +125,10 @@ describe ProjectsHelper do
       create(:ci_pipeline, :success, project: project, sha: project.commit.sha)
 
       expect(helper.project_list_cache_key(project)).to include("pipeline-status/#{project.commit.sha}-success")
+    end
+
+    it "includes the user max member access" do
+      expect(helper.project_list_cache_key(project)).to include('access:40')
     end
   end
 
@@ -244,13 +253,20 @@ describe ProjectsHelper do
   describe '#link_to_member' do
     let(:group)   { build_stubbed(:group) }
     let(:project) { build_stubbed(:project, group: group) }
-    let(:user)    { build_stubbed(:user) }
+    let(:user)    { build_stubbed(:user, name: '<h1>Administrator</h1>') }
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
         link = helper.link_to_member(project, user)
 
         expect(link).to match(%r{/#{user.username}})
+      end
+
+      it 'HTML escapes the name of the user' do
+        link = helper.link_to_member(project, user)
+
+        expect(link).to include(ERB::Util.html_escape(user.name))
+        expect(link).not_to include(user.name)
       end
     end
   end
@@ -271,29 +287,6 @@ describe ProjectsHelper do
 
         expect(helper.send(:default_clone_protocol)).to eq('https')
       end
-    end
-  end
-
-  describe '#sanitized_import_error' do
-    let(:project) { create(:project, :repository) }
-
-    before do
-      allow(project).to receive(:repository_storage_path).and_return('/base/repo/path')
-      allow(Settings.shared).to receive(:[]).with('path').and_return('/base/repo/export/path')
-    end
-
-    it 'removes the repo path' do
-      repo = '/base/repo/path/namespace/test.git'
-      import_error = "Could not clone #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Could not clone [REPOS PATH]/namespace/test.git')
-    end
-
-    it 'removes the temporary repo path used for uploads/exports' do
-      repo = '/base/repo/export/path/tmp/project_exports/uploads/test.tar.gz'
-      import_error = "Unable to decompress #{repo}\n"
-
-      expect(sanitize_repo_path(project, import_error)).to eq('Unable to decompress [REPO EXPORT PATH]/uploads/test.tar.gz')
     end
   end
 
@@ -319,74 +312,6 @@ describe ProjectsHelper do
       expect(user).to receive(:recent_push).with(project).and_return(event)
 
       expect(helper.last_push_event).to eq(event)
-    end
-  end
-
-  describe "#project_feature_access_select" do
-    let(:project) { create(:project, :public) }
-    let(:user)    { create(:user) }
-
-    context "when project is internal or public" do
-      it "shows all options" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to include("Everyone with access")
-      end
-    end
-
-    context "when project is private" do
-      before do
-        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-      end
-
-      it "shows only allowed options" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
-      end
-    end
-
-    context "when project moves from public to private" do
-      before do
-        project.update_attributes(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-      end
-
-      it "shows the highest allowed level selected" do
-        helper.instance_variable_set(:@project, project)
-        result = helper.project_feature_access_select(:issues_access_level)
-
-        expect(result).to include("Disabled")
-        expect(result).to include("Only team members")
-        expect(result).to have_selector('option[disabled]', text: "Everyone with access")
-        expect(result).to have_selector('option[selected]', text: "Only team members")
-      end
-    end
-  end
-
-  describe "#visibility_select_options" do
-    let(:project) { create(:project, :repository) }
-    let(:user)    { create(:user) }
-
-    before do
-      allow(helper).to receive(:current_user).and_return(user)
-
-      stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC])
-    end
-
-    it "does not include the Public restricted level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).not_to include('Public')
-    end
-
-    it "includes the Internal level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Internal')
-    end
-
-    it "includes the Private level" do
-      expect(helper.send(:visibility_select_options, project, Gitlab::VisibilityLevel::PRIVATE)).to include('Private')
     end
   end
 
@@ -501,6 +426,48 @@ describe ProjectsHelper do
 
     it 'parses quotes in name' do
       expect(helper.send(:git_user_name)).to eq('John \"A\" Doe53')
+    end
+  end
+
+  describe 'show_xcode_link' do
+    let!(:project) { create(:project) }
+    let(:mac_ua) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36' }
+    let(:ios_ua) { 'Mozilla/5.0 (iPad; CPU OS 5_1_1 like Mac OS X) AppleWebKit/534.46 (KHTML, like Gecko) Version/5.1 Mobile/9B206 Safari/7534.48.3' }
+
+    context 'when the repository is xcode compatible' do
+      before do
+        allow(project.repository).to receive(:xcode_project?).and_return(true)
+      end
+
+      it 'returns false if the visitor is not using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
+
+      it 'returns true if the visitor is using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(true)
+      end
+    end
+
+    context 'when the repository is not xcode compatible' do
+      before do
+        allow(project.repository).to receive(:xcode_project?).and_return(false)
+      end
+
+      it 'returns false if the visitor is not using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(ios_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
+
+      it 'returns false if the visitor is using macos' do
+        allow(helper).to receive(:browser).and_return(Browser.new(mac_ua))
+
+        expect(helper.show_xcode_link?(project)).to eq(false)
+      end
     end
   end
 end

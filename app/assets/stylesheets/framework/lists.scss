@@ -2,7 +2,7 @@
  * Well styled list
  *
  */
-.well-list {
+.hover-list {
   position: relative;
   margin: 0;
   padding: 0;
@@ -24,6 +24,10 @@
       color: $list-text-disabled-color;
     }
 
+    &:not(.ui-sort-disabled):hover {
+      background: $row-hover;
+    }
+
     &.unstyled {
       &:hover {
         background: none;
@@ -34,13 +38,14 @@
       background-color: $list-warning-row-bg;
       border-color: $list-warning-row-border;
       color: $list-warning-row-color;
+
+      &:hover {
+        background: $list-warning-row-bg;
+      }
+
     }
 
     &.smoke { background-color: $gray-light; }
-
-    &:not(.ui-sort-disabled):hover {
-      background: $row-hover;
-    }
 
     &:last-child {
       border-bottom: 0;
@@ -67,7 +72,7 @@
       }
     }
 
-    .well-title {
+    .card.card-body-title {
       font-size: $list-font-size;
       line-height: 18px;
     }
@@ -154,7 +159,7 @@ ul.content-list {
         &:last-child {
           margin-right: 0;
 
-          @media(max-width: $screen-xs-max) {
+          @include media-breakpoint-down(xs) {
             margin: 0 auto;
           }
         }
@@ -168,7 +173,7 @@ ul.content-list {
     .member-controls {
       float: none;
 
-      @media (min-width: $screen-sm-min) {
+      @include media-breakpoint-up(sm) {
         float: right;
       }
     }
@@ -223,7 +228,7 @@ ul.content-list {
     }
   }
 
-  .label-default {
+  .badge-secondary {
     color: $gl-text-color-secondary;
   }
 
@@ -232,7 +237,7 @@ ul.content-list {
   }
 }
 
-.panel > .content-list > li {
+.card > .content-list > li {
   padding: $gl-padding-top $gl-padding;
 }
 
@@ -254,7 +259,7 @@ ul.controls {
       margin-right: 0;
     }
 
-    .author_link {
+    .author-link {
       .avatar-inline {
         margin-left: 0;
         margin-right: 0;
@@ -265,7 +270,7 @@ ul.controls {
 
   .issuable-pipeline-broken a,
   .issuable-pipeline-status a,
-  .author_link {
+  .author-link {
     display: flex;
   }
 }
@@ -274,251 +279,14 @@ ul.indent-list {
   padding: 10px 0 0 30px;
 }
 
-
 // Specific styles for tree list
 @keyframes spin-avatar {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-.groups-list-tree-container {
-  .has-no-search-results {
-    text-align: center;
-    padding: $gl-padding;
-    font-style: italic;
-    color: $well-light-text-color;
-  }
-
-  > .group-list-tree > .group-row.has-children:first-child {
-    border-top: 0;
-  }
-}
-
-.group-list-tree {
-  .avatar-container.content-loading {
-    position: relative;
-
-    > a,
-    > a .avatar {
-      height: 100%;
-      border-radius: 50%;
-    }
-
-    > a {
-      padding: 2px;
-
-      .avatar {
-        border: 2px solid $white-normal;
-
-        &.identicon {
-          line-height: 15px;
-        }
-      }
-    }
-
-    &::after {
-      content: "";
-      position: absolute;
-      height: 100%;
-      width: 100%;
-      background-color: transparent;
-      border: 2px outset $kdb-border;
-      border-radius: 50%;
-      animation: spin-avatar 3s infinite linear;
-    }
-  }
-
-  .folder-toggle-wrap {
-    float: left;
-    line-height: $list-text-height;
-    font-size: 0;
-
-    span {
-      font-size: $gl-font-size;
-    }
-  }
-
-  .folder-caret,
-  .item-type-icon {
-    display: inline-block;
-  }
-
-  .folder-caret {
-    width: 15px;
-
-    svg {
-      margin-bottom: 2px;
-    }
-  }
-
-  .item-type-icon {
-    margin-top: 2px;
-    width: 20px;
-  }
-
-  > .group-row:not(.has-children) {
-    .folder-caret {
-      opacity: 0;
-    }
-  }
-
-  .content-list li:last-child {
-    padding-bottom: 0;
-  }
-
-  .group-list-tree {
-    margin-bottom: 0;
-    margin-left: 30px;
-    position: relative;
-
-    &::before {
-      content: '';
-      display: block;
-      width: 0;
-      position: absolute;
-      top: 5px;
-      bottom: 0;
-      left: -16px;
-      border-left: 2px solid $border-white-normal;
-    }
-
-    .group-row {
-      position: relative;
-
-      &::before {
-        content: "";
-        display: block;
-        width: 10px;
-        height: 0;
-        border-top: 2px solid $border-white-normal;
-        position: absolute;
-        top: 30px;
-        left: -16px;
-      }
-
-      &:last-child::before {
-        background: $white-light;
-        height: auto;
-        top: 30px;
-        bottom: 0;
-      }
-
-      &.being-removed {
-        opacity: 0.5;
-      }
-    }
-  }
-
-  .group-row {
-    padding: 0;
-
-    &.has-children {
-      border-top: 0;
-    }
-
-    &:first-child {
-      border-top: 1px solid $white-normal;
-    }
-
-    &:last-of-type {
-      .group-row-contents:not(:hover) {
-        border-bottom: 1px solid transparent;
-      }
-    }
-  }
-
-  .group-row-contents {
-    padding: 10px 10px 8px;
-    border-top: solid 1px transparent;
-    border-bottom: solid 1px $white-normal;
-
-    &:hover {
-      border-color: $row-hover-border;
-      background-color: $row-hover;
-      cursor: pointer;
-    }
-
-    .avatar-container > a {
-      width: 100%;
-      text-decoration: none;
-    }
-
-    &.has-more-items {
-      display: block;
-      padding: 20px 10px;
-    }
-
-    .stats {
-      position: relative;
-      line-height: 46px;
-
-      > span {
-        display: inline-flex;
-        align-items: center;
-        height: 16px;
-        min-width: 30px;
-      }
-
-      > span:last-child {
-        margin-right: 0;
-      }
-
-      .stat-value {
-        margin: 2px 0 0 5px;
-      }
-    }
-
-    .controls {
-      margin-left: 5px;
-
-      > .btn {
-        margin-right: $btn-xs-side-margin;
-      }
-    }
-  }
-
-  .project-row-contents .stats {
-    line-height: inherit;
-
-    > span:first-child {
-      margin-left: 25px;
-    }
-
-    .item-visibility {
-      margin-right: 0;
-    }
-
-    .last-updated {
-      position: absolute;
-      right: 12px;
-      min-width: 250px;
-      text-align: right;
-      color: $gl-text-color-secondary;
-    }
-  }
-}
-
 .namespace-title {
   .tooltip-inner {
     max-width: 350px;
-  }
-}
-
-ul.group-list-tree {
-  li.group-row {
-    > .group-row-contents .title {
-      line-height: $list-text-height;
-    }
-
-    &.has-description > .group-row-contents .title {
-      line-height: inherit;
-    }
-  }
-}
-
-.js-groups-list-holder {
-  .groups-list-loading {
-    font-size: 34px;
-    text-align: center;
   }
 }

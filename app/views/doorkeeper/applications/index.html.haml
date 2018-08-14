@@ -1,4 +1,4 @@
-- page_title "Applications"
+- page_title _("Applications")
 - @content_class = "limit-container-width" unless fluid_layout
 
 .row.prepend-top-default
@@ -7,28 +7,27 @@
       = page_title
     %p
       - if user_oauth_applications?
-        Manage applications that can use GitLab as an OAuth provider,
-        and applications that you've authorized to use your account.
+        = _("Manage applications that can use GitLab as an OAuth provider, and applications that you've authorized to use your account.")
       - else
-        Manage applications that you've authorized to use your account.
+        = _("Manage applications that you've authorized to use your account.")
   .col-lg-8
     - if user_oauth_applications?
       %h5.prepend-top-0
-        Add new application
+        = _('Add new application')
       = render 'form', application: @application
       %hr
     - if user_oauth_applications?
       .oauth-applications
         %h5
-          Your applications (#{@applications.size})
+          = _("Your applications (%{size})") % { size: @applications.size }
         - if @applications.any?
           .table-responsive
             %table.table
               %thead
                 %tr
-                  %th Name
-                  %th Callback URL
-                  %th Clients
+                  %th= _('Name')
+                  %th= _('Callback URL')
+                  %th= _('Clients')
                   %th.last-heading
               %tbody
                 - @applications.each do |application|
@@ -41,25 +40,25 @@
                     %td
                       = link_to edit_oauth_application_path(application), class: "btn btn-transparent append-right-5" do
                         %span.sr-only
-                          Edit
+                          = _('Edit')
                         = icon('pencil')
                       = render 'delete_form', application: application, small: true
         - else
           .settings-message.text-center
-            You don't have any applications
+            = _("You don't have any applications")
     .oauth-authorized-applications.prepend-top-20.append-bottom-default
       - if user_oauth_applications?
         %h5
-          Authorized applications (#{@authorized_tokens.size})
+          = _("Authorized applications (%{size})") % { size: @authorized_tokens.size }
 
       - if @authorized_tokens.any?
         .table-responsive
           %table.table.table-striped
             %thead
               %tr
-                %th Name
-                %th Authorized At
-                %th Scope
+                %th= _('Name')
+                %th= _('Authorized At')
+                %th= _('Scope')
                 %th
             %tbody
               - @authorized_apps.each do |app|
@@ -72,12 +71,12 @@
               - @authorized_anonymous_tokens.each do |token|
                 %tr
                   %td
-                    Anonymous
-                    .help-block
-                      %em Authorization was granted by entering your username and password in the application.
+                    = _('Anonymous')
+                    .form-text.text-muted
+                      %em= _("Authorization was granted by entering your username and password in the application.")
                   %td= token.created_at
                   %td= token.scopes
                   %td= render 'doorkeeper/authorized_applications/delete_form', token: token
       - else
         .settings-message.text-center
-          You don't have any authorized applications
+          = _("You don't have any authorized applications")

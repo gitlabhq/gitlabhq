@@ -1,3 +1,5 @@
+import $ from 'jquery';
+
 export default class FileTemplateSelector {
   constructor(mediator) {
     this.mediator = mediator;
@@ -28,6 +30,10 @@ export default class FileTemplateSelector {
     if (this.$dropdown !== null) {
       this.$wrapper.addClass('hidden');
     }
+  }
+
+  isHidden() {
+    return this.$wrapper.hasClass('hidden');
   }
 
   getToggleText() {

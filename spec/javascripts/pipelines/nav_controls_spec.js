@@ -39,19 +39,6 @@ describe('Pipelines Nav Controls', () => {
     expect(component.$el.querySelector('.js-run-pipeline')).toEqual(null);
   });
 
-  it('should render link for resetting runner caches', () => {
-    const mockData = {
-      newPipelinePath: 'foo',
-      ciLintPath: 'foo',
-      resetCachePath: 'foo',
-    };
-
-    component = mountComponent(NavControlsComponent, mockData);
-
-    expect(component.$el.querySelector('.js-clear-cache').textContent.trim()).toContain('Clear Runner Caches');
-    expect(component.$el.querySelector('.js-clear-cache').getAttribute('href')).toEqual(mockData.resetCachePath);
-  });
-
   it('should render link for CI lint', () => {
     const mockData = {
       newPipelinePath: 'foo',
@@ -64,5 +51,29 @@ describe('Pipelines Nav Controls', () => {
 
     expect(component.$el.querySelector('.js-ci-lint').textContent.trim()).toContain('CI Lint');
     expect(component.$el.querySelector('.js-ci-lint').getAttribute('href')).toEqual(mockData.ciLintPath);
+  });
+
+  describe('Reset Runners Cache', () => {
+    beforeEach(() => {
+      const mockData = {
+        newPipelinePath: 'foo',
+        ciLintPath: 'foo',
+        resetCachePath: 'foo',
+      };
+
+      component = mountComponent(NavControlsComponent, mockData);
+    });
+
+    it('should render button for resetting runner caches', () => {
+      expect(component.$el.querySelector('.js-clear-cache').textContent.trim()).toContain('Clear Runner Caches');
+    });
+
+    it('should emit postAction event when reset runner cache button is clicked', () => {
+      spyOn(component, '$emit');
+
+      component.$el.querySelector('.js-clear-cache').click();
+
+      expect(component.$emit).toHaveBeenCalledWith('resetRunnersCache', 'foo');
+    });
   });
 });

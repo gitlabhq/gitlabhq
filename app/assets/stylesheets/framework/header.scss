@@ -1,60 +1,24 @@
 .navbar-gitlab {
-  &.navbar-gitlab {
-    padding: 0 16px;
-    z-index: 1000;
-    margin-bottom: 0;
-    min-height: $header-height;
-    border: 0;
-    border-bottom: 1px solid $border-color;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    border-radius: 0;
+  padding: 0 16px;
+  z-index: 1000;
+  margin-bottom: 0;
+  min-height: $header-height;
+  border: 0;
+  border-bottom: 1px solid $border-color;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  border-radius: 0;
 
-    .logo-text {
-      line-height: initial;
+  .logo-text {
+    line-height: initial;
 
-      svg {
-        width: 55px;
-        height: 14px;
-        margin: 0;
-        fill: $white-light;
-      }
-    }
-
-    .container-fluid {
-      padding: 0;
-
-      .user-counter {
-        svg {
-          margin-right: 3px;
-        }
-      }
-
-      .navbar-toggle {
-        right: -10px;
-        border-radius: 0;
-        min-width: 45px;
-        padding: 0;
-        margin-right: -7px;
-        font-size: 14px;
-        text-align: center;
-        color: currentColor;
-
-        &:hover,
-        &:focus,
-        &.active {
-          color: currentColor;
-          background-color: transparent;
-        }
-
-        .more-icon,
-        .close-icon {
-          fill: $white-light;
-          margin: auto;
-        }
-      }
+    svg {
+      width: 55px;
+      height: 14px;
+      margin: 0;
+      fill: $white-light;
     }
   }
 
@@ -73,6 +37,7 @@
   }
 
   .header-content {
+    width: 100%;
     display: -webkit-flex;
     display: flex;
     justify-content: space-between;
@@ -127,7 +92,7 @@
         border-radius: $border-radius-default;
 
         .tanuki-logo {
-          @media (min-width: $screen-sm-min) {
+          @include media-breakpoint-up(sm) {
             margin-right: 8px;
           }
         }
@@ -146,7 +111,7 @@
     }
 
     &.menu-expanded {
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         .title-container {
           display: none;
         }
@@ -169,13 +134,15 @@
     border-top: 0;
     padding: 0;
 
-    @media (max-width: $screen-xs-max) {
+    @include media-breakpoint-down(xs) {
       flex: 1 1 auto;
     }
 
     .nav {
-      > li:not(.hidden-xs) a {
-        @media (max-width: $screen-xs-max) {
+      flex-wrap: nowrap;
+
+      > li:not(.d-none) a {
+        @include media-breakpoint-down(xs) {
           margin-left: 0;
           min-width: 100%;
         }
@@ -184,16 +151,49 @@
   }
 
   .container-fluid {
+    padding: 0;
+
+    .user-counter {
+      svg {
+        margin-right: 3px;
+      }
+    }
+
+    .navbar-toggler {
+      position: relative;
+      right: -10px;
+      border-radius: 0;
+      min-width: 45px;
+      padding: 0;
+      margin: $gl-padding-8 -7px $gl-padding-8 0;
+      font-size: 14px;
+      text-align: center;
+      color: currentColor;
+
+      &:hover,
+      &:focus,
+      &.active {
+        color: currentColor;
+        background-color: transparent;
+      }
+
+      .more-icon,
+      .close-icon {
+        fill: $white-light;
+        margin: auto;
+      }
+    }
 
     .navbar-nav {
-      @media (max-width: $screen-xs-max) {
+      @include media-breakpoint-down(xs) {
         display: -webkit-flex;
         display: flex;
         padding-right: 10px;
+        flex-direction: row;
       }
 
       li {
-        .badge {
+        .badge.badge-pill {
           box-shadow: none;
           font-weight: $gl-font-weight-bold;
         }
@@ -202,7 +202,7 @@
 
     .nav > li {
       &.header-user {
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           padding-left: 10px;
         }
       }
@@ -213,7 +213,7 @@
         padding: 6px 8px;
         height: 32px;
 
-        @media (max-width: $screen-xs-max) {
+        @include media-breakpoint-down(xs) {
           padding: 0;
         }
 
@@ -269,14 +269,8 @@
 .navbar-sub-nav,
 .navbar-nav {
   > li {
-    > a:hover,
-    > a:focus {
-      text-decoration: none;
-      outline: 0;
-      color: $white-light;
-    }
-
-    > a {
+    > a,
+    > button {
       display: -webkit-flex;
       display: flex;
       align-items: center;
@@ -288,11 +282,27 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
+
+      &:hover,
+      &:focus {
+        text-decoration: none;
+        outline: 0;
+        color: $white-light;
+      }
+    }
+
+    > button {
+      background: transparent;
+      border: 0;
     }
 
     &.line-separator {
       margin: 8px;
     }
+  }
+
+  .dropdown-menu {
+    position: absolute;
   }
 }
 
@@ -301,19 +311,13 @@
   display: flex;
   margin: 0 0 0 6px;
 
-  .projects-dropdown-menu {
-    padding: 0;
-    overflow-y: initial;
-    max-height: initial;
-  }
-
   .dropdown-chevron {
     position: relative;
     top: -1px;
     font-size: 10px;
   }
 
-  .project-item-select-holder {
+  .frequent-items-item-select-holder {
     display: inline;
   }
 
@@ -329,15 +333,15 @@
   fill: currentColor;
 }
 
-.header-user .dropdown-menu-nav,
-.header-new .dropdown-menu-nav {
+.header-user .dropdown-menu,
+.header-new .dropdown-menu {
   margin-top: $dropdown-vertical-offset;
 }
 
 .breadcrumbs {
   display: -webkit-flex;
   display: flex;
-  min-height: 48px;
+  min-height: $breadcrumb-min-height;
   color: $gl-text-color;
 }
 
@@ -383,7 +387,7 @@
   margin-bottom: 0;
   line-height: 16px;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     flex-wrap: wrap;
   }
 
@@ -415,7 +419,7 @@
 .breadcrumb-item-text {
   text-decoration: inherit;
 
-  @media (max-width: $screen-xs-max) {
+  @include media-breakpoint-down(xs) {
     @include str-truncated(128px);
   }
 }
@@ -447,17 +451,23 @@
 }
 
 .btn-sign-in {
-  margin-top: 3px;
+  background-color: $indigo-100;
+  color: $indigo-900;
   font-weight: $gl-font-weight-bold;
+  line-height: 18px;
 
   &:hover {
     background-color: $white-light;
+  }
+
+  @include media-breakpoint-down(xs) {
+    margin-top: $gl-padding-4;
   }
 }
 
 .navbar-nav {
   li {
-    .badge {
+    .badge.badge-pill {
       position: inherit;
       font-weight: $gl-font-weight-normal;
       margin-left: -6px;
@@ -466,7 +476,7 @@
       padding: 0 5px;
       line-height: 12px;
       border-radius: 7px;
-      box-shadow: 0 1px 0 rgba($gl-header-color, .2);
+      box-shadow: 0 1px 0 rgba($gl-header-color, 0.2);
 
       &.issues-count {
         background-color: $green-500;
@@ -483,7 +493,7 @@
   }
 }
 
-@media (max-width: $screen-xs-max) {
+@include media-breakpoint-down(xs) {
   .navbar-gitlab .container-fluid {
     font-size: 18px;
 
@@ -498,7 +508,7 @@
       margin-left: -8px;
       margin-right: -10px;
 
-      .nav > li:not(.hidden-xs) {
+      .nav > li:not(.d-none) {
         display: table-cell !important;
         width: 25%;
 
@@ -519,9 +529,9 @@
 }
 
 .header-user {
-  .dropdown-menu-nav {
+  .dropdown-menu {
     width: auto;
-    min-width: 160px;
+    min-width: unset;
     margin-top: 4px;
     color: $gl-text-color;
     left: auto;
@@ -532,6 +542,10 @@
       .user-name {
         display: block;
       }
+    }
+
+    svg {
+      vertical-align: text-top;
     }
   }
 }
@@ -552,10 +566,7 @@
   background: $white-light;
   border-bottom: 1px solid $white-normal;
 
-  .center-logo {
-    margin: 8px 0;
-    text-align: center;
-
+  .mx-auto {
     .tanuki-logo,
     img {
       height: 36px;

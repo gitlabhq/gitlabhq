@@ -16,19 +16,19 @@ shared_examples 'PATCH #update updates variables' do
   let(:variable_attributes) do
     { id: variable.id,
       key: variable.key,
-      value: variable.value,
+      secret_value: variable.value,
       protected: variable.protected?.to_s }
   end
   let(:new_variable_attributes) do
     { key: 'new_key',
-      value: 'dummy_value',
+      secret_value: 'dummy_value',
       protected: 'false' }
   end
 
   context 'with invalid new variable parameters' do
     let(:variables_attributes) do
       [
-        variable_attributes.merge(value: 'other_value'),
+        variable_attributes.merge(secret_value: 'other_value'),
         new_variable_attributes.merge(key: '...?')
       ]
     end
@@ -52,7 +52,7 @@ shared_examples 'PATCH #update updates variables' do
     let(:variables_attributes) do
       [
         new_variable_attributes,
-        new_variable_attributes.merge(value: 'other_value')
+        new_variable_attributes.merge(secret_value: 'other_value')
       ]
     end
 
@@ -74,7 +74,7 @@ shared_examples 'PATCH #update updates variables' do
   context 'with valid new variable parameters' do
     let(:variables_attributes) do
       [
-        variable_attributes.merge(value: 'other_value'),
+        variable_attributes.merge(secret_value: 'other_value'),
         new_variable_attributes
       ]
     end

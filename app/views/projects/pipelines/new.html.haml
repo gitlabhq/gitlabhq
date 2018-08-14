@@ -1,24 +1,35 @@
 - breadcrumb_title "Pipelines"
-- page_title "New Pipeline"
+- page_title = s_("Pipeline|Run Pipeline")
+- settings_link = link_to _('CI/CD settings'), project_settings_ci_cd_path(@project)
 
 %h3.page-title
-  New Pipeline
+  = s_("Pipeline|Run Pipeline")
 %hr
 
-= form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "form-horizontal js-new-pipeline-form js-requires-input" } do |f|
+= form_for @pipeline, as: :pipeline, url: project_pipelines_path(@project), html: { id: "new-pipeline-form", class: "js-new-pipeline-form js-requires-input" } do |f|
   = form_errors(@pipeline)
-  .form-group
-    = f.label :ref, 'Create for', class: 'control-label'
-    .col-sm-10
+  .form-group.row
+    .col-sm-12
+      = f.label :ref, s_('Pipeline|Create for'), class: 'col-form-label'
       = hidden_field_tag 'pipeline[ref]', params[:ref] || @project.default_branch
       = dropdown_tag(params[:ref] || @project.default_branch,
                      options: { toggle_class: 'js-branch-select wide git-revision-dropdown-toggle',
-                                filter: true, dropdown_class: "dropdown-menu-selectable git-revision-dropdown", placeholder: "Search branches",
+                                filter: true, dropdown_class: "dropdown-menu-selectable git-revision-dropdown", placeholder: s_("Pipeline|Search branches"),
                                 data: { selected: params[:ref] || @project.default_branch, field_name: 'pipeline[ref]' } })
-      .help-block Existing branch name, tag
+      .form-text.text-muted
+        = s_("Pipeline|Existing branch name or tag")
+
+    .col-sm-12.prepend-top-10.js-ci-variable-list-section
+      %label
+        = s_('Pipeline|Variables')
+      %ul.ci-variable-list
+        = render 'ci/variables/variable_row', form_field: 'pipeline', only_key_value: true
+      .form-text.text-muted
+        = (s_("Pipeline|Specify variable values to be used in this run. The values specified in %{settings_link} will be used by default.") % {settings_link: settings_link}).html_safe
+
   .form-actions
-    = f.submit 'Create pipeline', class: 'btn btn-create', tabindex: 3
-    = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-cancel'
+    = f.submit s_('Pipeline|Create pipeline'), class: 'btn btn-success js-variables-save-button', tabindex: 3
+    = link_to 'Cancel', project_pipelines_path(@project), class: 'btn btn-default float-right'
 
 -# haml-lint:disable InlineJavaScript
 %script#availableRefs{ type: "application/json" }= @project.repository.ref_names.to_json.html_safe

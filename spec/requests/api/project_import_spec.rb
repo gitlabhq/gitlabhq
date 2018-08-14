@@ -3,10 +3,12 @@ require 'spec_helper'
 describe API::ProjectImport do
   let(:export_path) { "#{Dir.tmpdir}/project_export_spec" }
   let(:user) { create(:user) }
-  let(:file) { File.join(Rails.root, 'spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
+  let(:file) { File.join('spec', 'features', 'projects', 'import_export', 'test_project_export.tar.gz') }
   let(:namespace) { create(:group) }
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
+    stub_feature_flags(import_export_object_storage: true)
+    stub_uploads_object_storage(FileUploader)
 
     namespace.add_owner(user)
   end
@@ -40,7 +42,7 @@ describe API::ProjectImport do
       expect(response).to have_gitlab_http_status(201)
     end
 
-    it 'schedules an import at the user namespace level' do
+    it 'does not shedule an import for a nampespace that does not exist' do
       expect_any_instance_of(Project).not_to receive(:import_schedule)
       expect(::Projects::CreateService).not_to receive(:new)
 
@@ -71,6 +73,72 @@ describe API::ProjectImport do
       expect(json_response['error']).to eq('file is invalid')
     end
 
+    it 'stores params that can be overridden' do
+      stub_import(namespace)
+      override_params = { 'description' => 'Hello world' }
+
+      post api('/projects/import', user),
+           path: 'test-import',
+           file: fixture_file_upload(file),
+           namespace: namespace.id,
+           override_params: override_params
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.import_data.data['override_params']).to eq(override_params)
+    end
+
+    it 'does not store params that are not allowed' do
+      stub_import(namespace)
+      override_params = { 'not_allowed' => 'Hello world' }
+
+      post api('/projects/import', user),
+           path: 'test-import',
+           file: fixture_file_upload(file),
+           namespace: namespace.id,
+           override_params: override_params
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.import_data.data['override_params']).to be_empty
+    end
+
+    it 'correctly overrides params during the import' do
+      override_params = { 'description' => 'Hello world' }
+
+      perform_enqueued_jobs do
+        post api('/projects/import', user),
+             path: 'test-import',
+             file: fixture_file_upload(file),
+             namespace: namespace.id,
+             override_params: override_params
+      end
+      import_project = Project.find(json_response['id'])
+
+      expect(import_project.description).to eq('Hello world')
+    end
+
+    context 'when target path already exists in namespace' do
+      let(:existing_project) { create(:project, namespace: user.namespace) }
+
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        post api('/projects/import', user), path: existing_project.path, file: fixture_file_upload(file)
+
+        expect(response).to have_gitlab_http_status(400)
+        expect(json_response['message']).to eq('Name has already been taken')
+      end
+
+      context 'when param overwrite is true' do
+        it 'schedules an import' do
+          stub_import(user.namespace)
+
+          post api('/projects/import', user), path: existing_project.path, file: fixture_file_upload(file), overwrite: true
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+      end
+    end
+
     def stub_import(namespace)
       expect_any_instance_of(Project).to receive(:import_schedule)
       expect(::Projects::CreateService).to receive(:new).with(user, hash_including(namespace_id: namespace.id)).and_call_original
@@ -79,8 +147,8 @@ describe API::ProjectImport do
 
   describe 'GET /projects/:id/import' do
     it 'returns the import status' do
-      project = create(:project, import_status: 'started')
-      project.add_master(user)
+      project = create(:project, :import_started)
+      project.add_maintainer(user)
 
       get api("/projects/#{project.id}/import", user)
 
@@ -89,8 +157,9 @@ describe API::ProjectImport do
     end
 
     it 'returns the import status and the error if failed' do
-      project = create(:project, import_status: 'failed', import_error: 'error')
-      project.add_master(user)
+      project = create(:project, :import_failed)
+      project.add_maintainer(user)
+      project.import_state.update(last_error: 'error')
 
       get api("/projects/#{project.id}/import", user)
 

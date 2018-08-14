@@ -1,4 +1,5 @@
 class Projects::NotesController < Projects::ApplicationController
+  include RendersNotes
   include NotesActions
   include NotesHelper
   include ToggleAwardEmoji
@@ -7,19 +8,6 @@ class Projects::NotesController < Projects::ApplicationController
   before_action :authorize_read_note!
   before_action :authorize_create_note!, only: [:create]
   before_action :authorize_resolve_note!, only: [:resolve, :unresolve]
-
-  #
-  # This is a fix to make spinach feature tests passing:
-  # Controller actions are returned from AbstractController::Base and methods of parent classes are
-  #   excluded in order to return only specific controller related methods.
-  # That is ok for the app (no :create method in ancestors)
-  #   but fails for tests because there is a :create method on FactoryBot (one of the ancestors)
-  #
-  # see https://github.com/rails/rails/blob/v4.2.7/actionpack/lib/abstract_controller/base.rb#L78
-  #
-  def create
-    super
-  end
 
   def delete_attachment
     note.remove_attachment!
@@ -33,9 +21,7 @@ class Projects::NotesController < Projects::ApplicationController
   def resolve
     return render_404 unless note.resolvable?
 
-    note.resolve!(current_user)
-
-    MergeRequests::ResolvedDiscussionNotificationService.new(project, current_user).execute(note.noteable)
+    Notes::ResolveService.new(project, current_user).execute(note)
 
     discussion = note.discussion
 
@@ -68,7 +54,7 @@ class Projects::NotesController < Projects::ApplicationController
   private
 
   def render_json_with_notes_serializer
-    Notes::RenderService.new(current_user).execute([note], project)
+    prepare_notes_for_rendering([note])
 
     render json: note_serializer.represent(note)
   end

@@ -4,17 +4,18 @@ describe 'User updates wiki page' do
   shared_examples 'wiki page user update' do
     let(:user) { create(:user) }
     before do
-      project.add_master(user)
+      project.add_maintainer(user)
       sign_in(user)
     end
 
     context 'when wiki is empty' do
       before do
         visit(project_wikis_path(project))
+        click_link "Create your first page"
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'redirects back to the home edit page' do
           page.within(:css, '.wiki-form .form-actions') do
@@ -66,7 +67,7 @@ describe 'User updates wiki page' do
       end
 
       context 'in a user namespace' do
-        let(:project) { create(:project, namespace: user.namespace) }
+        let(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
 
         it 'updates a page' do
           click_link('Edit')
@@ -95,11 +96,11 @@ describe 'User updates wiki page' do
           expect(find('textarea#wiki_content').value).to eq('')
         end
 
-        it 'shows the autocompletion dropdown', :js do
+        it 'shows the emoji autocompletion dropdown', :js do
           click_link('Edit')
 
           find('#wiki_content').native.send_keys('')
-          fill_in(:wiki_content, with: '@')
+          fill_in(:wiki_content, with: ':')
 
           expect(page).to have_selector('.atwho-view')
         end
@@ -134,7 +135,7 @@ describe 'User updates wiki page' do
       end
 
       context 'in a group namespace' do
-        let(:project) { create(:project, namespace: create(:group, :public)) }
+        let(:project) { create(:project, :wiki_repo, namespace: create(:group, :public)) }
 
         it 'updates a page' do
           click_link('Edit')
@@ -154,7 +155,7 @@ describe 'User updates wiki page' do
     end
 
     context 'when the page is in a subdir' do
-      let!(:project) { create(:project, namespace: user.namespace) }
+      let!(:project) { create(:project, :wiki_repo, namespace: user.namespace) }
       let(:project_wiki) { create(:project_wiki, project: project, user: project.creator) }
       let(:page_name) { 'page_name' }
       let(:page_dir) { "foo/bar/#{page_name}" }

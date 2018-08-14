@@ -30,6 +30,10 @@ module Gitlab
           gl_user.try(:valid?)
         end
 
+        def valid_sign_in?
+          valid? && persisted?
+        end
+
         def save(provider = 'OAuth')
           raise SigninDisabledForProviderError if oauth_provider_disabled?
           raise SignupDisabledError unless gl_user
@@ -44,7 +48,7 @@ module Gitlab
           gl_user
         rescue ActiveRecord::RecordInvalid => e
           log.info "(#{provider}) Error saving user #{auth_hash.uid} (#{auth_hash.email}): #{gl_user.errors.full_messages}"
-          return self, e.record.errors
+          [self, e.record.errors]
         end
 
         def gl_user
@@ -64,7 +68,21 @@ module Gitlab
           user
         end
 
+        def find_and_update!
+          save if should_save?
+
+          gl_user
+        end
+
+        def bypass_two_factor?
+          false
+        end
+
         protected
+
+        def should_save?
+          true
+        end
 
         def add_or_update_user_identities
           return unless gl_user
@@ -124,6 +142,9 @@ module Gitlab
           Gitlab::Auth::LDAP::Person.find_by_uid(auth_hash.uid, adapter) ||
             Gitlab::Auth::LDAP::Person.find_by_email(auth_hash.uid, adapter) ||
             Gitlab::Auth::LDAP::Person.find_by_dn(auth_hash.uid, adapter)
+
+        rescue Gitlab::Auth::LDAP::LDAPConnectionError
+          nil
         end
 
         def ldap_config

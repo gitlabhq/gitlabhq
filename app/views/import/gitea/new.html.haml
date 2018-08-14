@@ -1,23 +1,22 @@
-- page_title "Gitea Import"
-- header_title "Projects", root_path
+- page_title _("Gitea Import")
+- header_title _("Projects"), root_path
 
 %h3.page-title
   = custom_icon('go_logo')
-  Import Projects from Gitea
+  = _('Import Projects from Gitea')
 
 %p
-  To get started, please enter your Gitea Host URL and a
-  = succeed '.' do
-    = link_to 'Personal Access Token', 'https://github.com/gogits/go-gogs-client/wiki#access-token'
+  - link_to_personal_token = link_to(_('Personal Access Token'), 'https://github.com/gogits/go-gogs-client/wiki#access-token')
+  = _('To get started, please enter your Gitea Host URL and a %{link_to_personal_token}.').html_safe % { link_to_personal_token: link_to_personal_token }
 
-= form_tag personal_access_token_import_gitea_path, class: 'form-horizontal' do
-  .form-group
-    = label_tag :gitea_host_url, 'Gitea Host URL', class: 'control-label'
+= form_tag personal_access_token_import_gitea_path do
+  .form-group.row
+    = label_tag :gitea_host_url, _('Gitea Host URL'), class: 'col-form-label col-sm-2'
     .col-sm-4
       = text_field_tag :gitea_host_url, nil, placeholder: 'https://try.gitea.io', class: 'form-control'
-  .form-group
-    = label_tag :personal_access_token, 'Personal Access Token', class: 'control-label'
+  .form-group.row
+    = label_tag :personal_access_token, _('Personal Access Token'), class: 'col-form-label col-sm-2'
     .col-sm-4
       = text_field_tag :personal_access_token, nil, class: 'form-control'
   .form-actions
-    = submit_tag 'List Your Gitea Repositories', class: 'btn btn-create'
+    = submit_tag _('List Your Gitea Repositories'), class: 'btn btn-create'

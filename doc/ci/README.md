@@ -1,5 +1,6 @@
 ---
 comments: false
+description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 ---
 
 # GitLab Continuous Integration (GitLab CI/CD)
@@ -18,7 +19,7 @@ Here's some info we've gathered to get you started.
 The first steps towards your GitLab CI/CD journey.
 
 - [Getting started with GitLab CI/CD](quick_start/README.md): understand how GitLab CI/CD works.
-- GitLab CI/CD configuration file: [`.gitlab-ci.yml`](yaml/README.md) - Learn all about the ins and outs of `.gitlab-ci.yml`.
+- [GitLab CI/CD configuration file: `.gitlab-ci.yml`](yaml/README.md) - Learn all about the ins and outs of `.gitlab-ci.yml`.
 - [Pipelines and jobs](pipelines.md): configure your GitLab CI/CD pipelines to build, test, and deploy your application.
 - Runners: The [GitLab Runner](https://docs.gitlab.com/runner/) is responsible by running the jobs in your CI/CD pipeline. On GitLab.com, Shared Runners are enabled by default, so
 you don't need to set up anything to start to use them with GitLab CI/CD.
@@ -45,7 +46,9 @@ you don't need to set up anything to start to use them with GitLab CI/CD.
 ## Exploring GitLab CI/CD
 
 - [CI/CD Variables](variables/README.md) - Learn how to use variables defined in
-  your `.gitlab-ci.yml` or secured ones defined in your project's settings
+  your `.gitlab-ci.yml` or the ones defined in your project's settings
+  - [Where variables can be used](variables/where_variables_can_be_used.md) - A
+    deeper look on where and how the CI/CD variables can be used
 - **The permissions model** - Learn about the access levels a user can have for
   performing certain CI actions
   - [User permissions](../user/permissions.md#gitlab-ci)
@@ -65,7 +68,8 @@ learn how to leverage its potential even more.
   environments and use them for different purposes like testing, building and
   deploying
 - [Job artifacts](../user/project/pipelines/job_artifacts.md)
-- [Git submodules](git_submodules.md): How to run your CI jobs when Git
+- [Caching dependencies](caching/index.md)
+- [Git submodules](git_submodules.md) - How to run your CI jobs when Git
   submodules are involved
 - [Use SSH keys in your build environment](ssh_keys/README.md)
 - [Trigger pipelines through the GitLab API](triggers/README.md)

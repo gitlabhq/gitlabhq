@@ -20,6 +20,11 @@
         type: String,
         required: true,
       },
+      markdownVersion: {
+        type: Number,
+        required: false,
+        default: 0,
+      },
       canAttachFile: {
         type: Boolean,
         required: false,
@@ -47,18 +52,19 @@
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
+      :markdown-version="markdownVersion"
       :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     >
       <textarea
         id="issue-description"
+        ref="textarea"
+        slot="textarea"
+        v-model="formState.description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
         data-supports-quick-actions="false"
         aria-label="Description"
-        v-model="formState.description"
-        ref="textarea"
-        slot="textarea"
-        placeholder="Write a comment or drag your files here..."
+        placeholder="Write a comment or drag your files here…"
         @keydown.meta.enter="updateIssuable"
         @keydown.ctrl.enter="updateIssuable">
       </textarea>

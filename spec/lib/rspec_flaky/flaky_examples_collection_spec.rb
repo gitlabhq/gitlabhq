@@ -24,14 +24,6 @@ describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
     }
   end
 
-  describe '.from_json' do
-    it 'accepts a JSON' do
-      collection = described_class.from_json(JSON.pretty_generate(collection_hash))
-
-      expect(collection.to_report).to eq(described_class.new(collection_hash).to_report)
-    end
-  end
-
   describe '#initialize' do
     it 'accepts no argument' do
       expect { described_class.new }.not_to raise_error
@@ -46,11 +38,11 @@ describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
     end
   end
 
-  describe '#to_report' do
+  describe '#to_h' do
     it 'calls #to_h on the values' do
       collection = described_class.new(collection_hash)
 
-      expect(collection.to_report).to eq(collection_report)
+      expect(collection.to_h).to eq(collection_report)
     end
   end
 
@@ -61,7 +53,7 @@ describe RspecFlaky::FlakyExamplesCollection, :aggregate_failures do
         a: { example_id: 'spec/foo/bar_spec.rb:2' },
         c: { example_id: 'spec/bar/baz_spec.rb:4' })
 
-      expect((collection2 - collection1).to_report).to eq(
+      expect((collection2 - collection1).to_h).to eq(
         c: {
           example_id: 'spec/bar/baz_spec.rb:4',
           first_flaky_at: nil,

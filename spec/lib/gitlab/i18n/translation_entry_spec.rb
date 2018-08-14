@@ -109,7 +109,7 @@ describe Gitlab::I18n::TranslationEntry do
       data = { msgid: %w(hello world) }
       entry = described_class.new(data, 2)
 
-      expect(entry.msgid_contains_newlines?).to be_truthy
+      expect(entry.msgid_has_multiple_lines?).to be_truthy
     end
   end
 
@@ -118,7 +118,7 @@ describe Gitlab::I18n::TranslationEntry do
       data = { msgid_plural: %w(hello world) }
       entry = described_class.new(data, 2)
 
-      expect(entry.plural_id_contains_newlines?).to be_truthy
+      expect(entry.plural_id_has_multiple_lines?).to be_truthy
     end
   end
 
@@ -127,7 +127,7 @@ describe Gitlab::I18n::TranslationEntry do
       data = { msgstr: %w(hello world) }
       entry = described_class.new(data, 2)
 
-      expect(entry.translations_contain_newlines?).to be_truthy
+      expect(entry.translations_have_multiple_lines?).to be_truthy
     end
   end
 

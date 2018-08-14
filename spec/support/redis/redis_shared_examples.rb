@@ -65,6 +65,14 @@ RSpec.shared_examples "redis_shared_examples" do
   end
 
   describe '.url' do
+    it 'withstands mutation' do
+      url1 = described_class.url
+      url2 = described_class.url
+      url1 << 'foobar' unless url1.frozen?
+
+      expect(url2).not_to end_with('foobar')
+    end
+
     context 'when yml file with env variable' do
       let(:config_file_name) { config_with_environment_variable_inside }
 
@@ -101,7 +109,6 @@ RSpec.shared_examples "redis_shared_examples" do
     before do
       clear_pool
     end
-
     after do
       clear_pool
     end

@@ -8,59 +8,27 @@ module API
     PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
     COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
 
-    use GrapeLogging::Middleware::RequestLogger,
-        logger: Logger.new(LOG_FILENAME),
-        formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
-        include: [
-          GrapeLogging::Loggers::FilterParameters.new,
-          GrapeLogging::Loggers::ClientEnv.new,
-          Gitlab::GrapeLogging::Loggers::UserLogger.new
-        ]
+    insert_before Grape::Middleware::Error,
+                  GrapeLogging::Middleware::RequestLogger,
+                  logger: Logger.new(LOG_FILENAME),
+                  formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
+                  include: [
+                    GrapeLogging::Loggers::FilterParameters.new,
+                    GrapeLogging::Loggers::ClientEnv.new,
+                    Gitlab::GrapeLogging::Loggers::UserLogger.new,
+                    Gitlab::GrapeLogging::Loggers::QueueDurationLogger.new
+                  ]
 
     allow_access_with_scope :api
     prefix :api
 
-    version %w(v3 v4), using: :path
-
     version 'v3', using: :path do
-      helpers ::API::V3::Helpers
-      helpers ::API::Helpers::CommonHelpers
-
-      mount ::API::V3::AwardEmoji
-      mount ::API::V3::Boards
-      mount ::API::V3::Branches
-      mount ::API::V3::BroadcastMessages
-      mount ::API::V3::Builds
-      mount ::API::V3::Commits
-      mount ::API::V3::DeployKeys
-      mount ::API::V3::Environments
-      mount ::API::V3::Files
-      mount ::API::V3::Groups
-      mount ::API::V3::Issues
-      mount ::API::V3::Labels
-      mount ::API::V3::Members
-      mount ::API::V3::MergeRequestDiffs
-      mount ::API::V3::MergeRequests
-      mount ::API::V3::Notes
-      mount ::API::V3::Pipelines
-      mount ::API::V3::ProjectHooks
-      mount ::API::V3::Milestones
-      mount ::API::V3::Projects
-      mount ::API::V3::ProjectSnippets
-      mount ::API::V3::Repositories
-      mount ::API::V3::Runners
-      mount ::API::V3::Services
-      mount ::API::V3::Settings
-      mount ::API::V3::Snippets
-      mount ::API::V3::Subscriptions
-      mount ::API::V3::SystemHooks
-      mount ::API::V3::Tags
-      mount ::API::V3::Templates
-      mount ::API::V3::Todos
-      mount ::API::V3::Triggers
-      mount ::API::V3::Users
-      mount ::API::V3::Variables
+      route :any, '*path' do
+        error!('API V3 is no longer supported. Use API V4 instead.', 410)
+      end
     end
+
+    version 'v4', using: :path
 
     before do
       header['X-Frame-Options'] = 'SAMEORIGIN'
@@ -76,6 +44,14 @@ module API
 
     rescue_from ActiveRecord::RecordNotFound do
       rack_response({ 'message' => '404 Not found' }.to_json, 404)
+    end
+
+    rescue_from UploadedFile::InvalidPathError do |e|
+      rack_response({ 'message' => e.message }.to_json, 400)
+    end
+
+    rescue_from ObjectStorage::RemoteStoreError do |e|
+      rack_response({ 'message' => e.message }.to_json, 500)
     end
 
     # Retain 405 error rather than a 500 error for Grape 0.15.0+.
@@ -107,6 +83,7 @@ module API
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::Applications
+    mount ::API::Avatar
     mount ::API::AwardEmoji
     mount ::API::Badges
     mount ::API::Boards
@@ -131,6 +108,7 @@ module API
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
+    mount ::API::Markdown
     mount ::API::Members
     mount ::API::MergeRequestDiffs
     mount ::API::MergeRequests
@@ -146,6 +124,7 @@ module API
     mount ::API::ProjectHooks
     mount ::API::Projects
     mount ::API::ProjectMilestones
+    mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
     mount ::API::Repositories

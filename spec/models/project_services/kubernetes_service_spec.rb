@@ -65,7 +65,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
       before do
         kubernetes_service.update_attribute(:active, false)
-        kubernetes_service.properties[:namespace] = "foo"
+        kubernetes_service.properties['namespace'] = "foo"
       end
 
       it 'should not update attributes' do
@@ -82,7 +82,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       let(:kubernetes_service) { create(:kubernetes_service) }
 
       it 'should update attributes' do
-        kubernetes_service.properties[:namespace] = 'foo'
+        kubernetes_service.properties['namespace'] = 'foo'
         expect(kubernetes_service.save).to be_truthy
       end
     end
@@ -92,7 +92,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
       before do
         kubernetes_service.active = false
-        kubernetes_service.properties[:namespace] = 'foo'
+        kubernetes_service.properties['namespace'] = 'foo'
         kubernetes_service.save
       end
 
@@ -105,7 +105,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       end
 
       it 'should update attributes' do
-        expect(kubernetes_service.properties[:namespace]).to eq("foo")
+        expect(kubernetes_service.properties['namespace']).to eq("foo")
       end
     end
 
@@ -113,12 +113,12 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       let(:kubernetes_service) { create(:kubernetes_service, template: true, active: false) }
 
       before do
-        kubernetes_service.properties[:namespace] = 'foo'
+        kubernetes_service.properties['namespace'] = 'foo'
       end
 
       it 'should update attributes' do
         expect(kubernetes_service.save).to be_truthy
-        expect(kubernetes_service.properties[:namespace]).to eq('foo')
+        expect(kubernetes_service.properties['namespace']).to eq('foo')
       end
     end
   end
@@ -370,7 +370,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
         stub_kubeclient_pods(status: 500)
       end
 
-      it { expect { subject }.to raise_error(KubeException) }
+      it { expect { subject }.to raise_error(Kubeclient::HttpError) }
     end
 
     context 'when kubernetes responds with 404s' do

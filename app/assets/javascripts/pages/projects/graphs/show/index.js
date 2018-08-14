@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import flash from '~/flash';
 import { __ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';

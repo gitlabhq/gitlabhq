@@ -1,0 +1,58 @@
+import Vue from 'vue';
+import ProjectAvatarDefault from '~/vue_shared/components/project_avatar/default.vue';
+import mountComponent from 'spec/helpers/vue_mount_component_helper';
+import { projectData } from 'spec/ide/mock_data';
+import { getFirstCharacterCapitalized } from '~/lib/utils/text_utility';
+import { TEST_HOST } from 'spec/test_constants';
+
+describe('ProjectAvatarDefault component', () => {
+  const Component = Vue.extend(ProjectAvatarDefault);
+  let vm;
+
+  beforeEach(() => {
+    vm = mountComponent(Component, {
+      project: projectData,
+    });
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+  });
+
+  it('renders identicon if project has no avatar_url', done => {
+    const expectedText = getFirstCharacterCapitalized(projectData.name);
+
+    vm.project = {
+      ...vm.project,
+      avatar_url: null,
+    };
+
+    vm.$nextTick()
+      .then(() => {
+        const identiconEl = vm.$el.querySelector('.identicon');
+
+        expect(identiconEl).not.toBe(null);
+        expect(identiconEl.textContent.trim()).toEqual(expectedText);
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
+  it('renders avatar image if project has avatar_url', done => {
+    const avatarUrl = `${TEST_HOST}/images/home/nasa.svg`;
+
+    vm.project = {
+      ...vm.project,
+      avatar_url: avatarUrl,
+    };
+
+    vm.$nextTick()
+      .then(() => {
+        expect(vm.$el).toContainElement('.avatar');
+        expect(vm.$el).not.toContainElement('.identicon');
+        expect(vm.$el.querySelector('img')).toHaveAttr('src', avatarUrl);
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+});

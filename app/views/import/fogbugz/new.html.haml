@@ -1,26 +1,24 @@
-- page_title "FogBugz Import"
-- header_title "Projects", root_path
+- page_title _("FogBugz Import")
+- header_title _("Projects"), root_path
 %h3.page-title
   %i.fa.fa-bug
-  Import projects from FogBugz
+  = _('Import projects from FogBugz')
 %hr
 
-= form_tag callback_import_fogbugz_path, class: 'form-horizontal' do
+= form_tag callback_import_fogbugz_path do
   %p
-    To get started you enter your FogBugz URL and login information below.
-    In the next steps, you'll be able to map users and select the projects
-    you want to import.
-  .form-group
-    = label_tag :uri, 'FogBugz URL', class: 'control-label'
-    .col-sm-4
+    = _("To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import.")
+  .form-group.row
+    = label_tag :uri, _('FogBugz URL'), class: 'col-form-label col-md-2'
+    .col-md-4
       = text_field_tag :uri, nil, placeholder: 'https://mycompany.fogbugz.com', class: 'form-control'
-  .form-group
-    = label_tag :email, 'FogBugz Email', class: 'control-label'
-    .col-sm-4
+  .form-group.row
+    = label_tag :email, _('FogBugz Email'), class: 'col-form-label col-md-2'
+    .col-md-4
       = text_field_tag :email, nil, class: 'form-control'
-  .form-group
-    = label_tag :password, 'FogBugz Password', class: 'control-label'
-    .col-sm-4
+  .form-group.row
+    = label_tag :password, _('FogBugz Password'), class: 'col-form-label col-md-2'
+    .col-md-4
       = password_field_tag :password, nil, class: 'form-control'
   .form-actions
-    = submit_tag 'Continue to the next step', class: 'btn btn-create'
+    = submit_tag _('Continue to the next step'), class: 'btn btn-create'

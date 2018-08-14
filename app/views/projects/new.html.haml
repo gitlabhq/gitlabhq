@@ -18,8 +18,6 @@
         = _('A project is where you house your files (repository), plan your work (issues), and publish your documentation (wiki), %{among_other_things_link}.').html_safe % { among_other_things_link: among_other_things_link }
       %p
         = _('All features are enabled for blank projects, from templates, or when importing, but you can disable them afterward in the project settings.')
-      -# EE-specific start
-      -# EE-specific end
       .md
         = brand_new_project_guidelines
       %p
@@ -30,21 +28,19 @@
         %template.push-new-project-tip-template= render partial: "new_project_push_tip"
 
     .col-lg-9.js-toggle-container
-      %ul.nav-links.gitlab-tabs{ role: 'tablist' }
-        %li{ class: active_when(active_tab == 'blank'), role: 'presentation' }
-          %a{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Blank project
-            %span.visible-xs Blank
-        %li{ class: active_when(active_tab == 'template'), role: 'presentation' }
-          %a{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Create from template
-            %span.visible-xs Template
-        %li{ class: active_when(active_tab == 'import'), role: 'presentation' }
-          %a{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
-            %span.hidden-xs Import project
-            %span.visible-xs Import
-        -# EE-specific start
-        -# EE-specific end
+      %ul.nav.nav-tabs.nav-links.gitlab-tabs{ role: 'tablist' }
+        %li.nav-item{ role: 'presentation' }
+          %a.nav-link.active{ href: '#blank-project-pane', id: 'blank-project-tab', data: { toggle: 'tab' }, role: 'tab' }
+            %span.d-none.d-sm-block Blank project
+            %span.d-block.d-sm-none Blank
+        %li.nav-item{ role: 'presentation' }
+          %a.nav-link{ href: '#create-from-template-pane', id: 'create-from-template-tab', data: { toggle: 'tab' }, role: 'tab' }
+            %span.d-none.d-sm-block Create from template
+            %span.d-block.d-sm-none Template
+        %li.nav-item{ role: 'presentation' }
+          %a.nav-link{ href: '#import-project-pane', id: 'import-project-tab', data: { toggle: 'tab' }, role: 'tab' }
+            %span.d-none.d-sm-block Import project
+            %span.d-block.d-sm-none Import
 
       .tab-content.gitlab-tab-content
         .tab-pane{ id: 'blank-project-pane', class: active_when(active_tab == 'blank'), role: 'tabpanel' }
@@ -59,62 +55,14 @@
                   = render 'project_templates', f: f
 
         .tab-pane.import-project-pane.js-toggle-container{ id: 'import-project-pane', class: active_when(active_tab == 'import'), role: 'tabpanel' }
-          = form_for @project, html: { class: 'new_project' } do |f|
-            - if import_sources_enabled?
-              .project-import.row
-                .col-lg-12
-                  .form-group.import-btn-container.clearfix
-                    = f.label :visibility_level, class: 'label-light' do #the label here seems wrong
-                      Import project from
-                    .import-buttons
-                      - if gitlab_project_import_enabled?
-                        .import_gitlab_project.has-tooltip{ data: { container: 'body' } }
-                          = link_to new_import_gitlab_project_path, class: 'btn btn_import_gitlab_project project-submit' do
-                            = icon('gitlab', text: 'GitLab export')
-                      %div
-                        - if github_import_enabled?
-                          = link_to new_import_github_path, class: 'btn import_github' do
-                            = icon('github', text: 'GitHub')
-                      %div
-                        - if bitbucket_import_enabled?
-                          = link_to status_import_bitbucket_path, class: "btn import_bitbucket #{'how_to_import_link' unless bitbucket_import_configured?}" do
-                            = icon('bitbucket', text: 'Bitbucket')
-                          - unless bitbucket_import_configured?
-                            = render 'bitbucket_import_modal'
-                      %div
-                        - if gitlab_import_enabled?
-                          = link_to status_import_gitlab_path, class: "btn import_gitlab #{'how_to_import_link' unless gitlab_import_configured?}" do
-                            = icon('gitlab', text: 'GitLab.com')
-                          - unless gitlab_import_configured?
-                            = render 'gitlab_import_modal'
-                      %div
-                        - if google_code_import_enabled?
-                          = link_to new_import_google_code_path, class: 'btn import_google_code' do
-                            = icon('google', text: 'Google Code')
-                      %div
-                        - if fogbugz_import_enabled?
-                          = link_to new_import_fogbugz_path, class: 'btn import_fogbugz' do
-                            = icon('bug', text: 'Fogbugz')
-                      %div
-                        - if gitea_import_enabled?
-                          = link_to new_import_gitea_path, class: 'btn import_gitea' do
-                            = custom_icon('go_logo')
-                            Gitea
-                      %div
-                        - if git_import_enabled?
-                          %button.btn.js-toggle-button.js-import-git-toggle-button{ type: "button", data: { toggle_open_class: 'active' } }
-                            = icon('git', text: 'Repo by URL')
-                .col-lg-12
-                  .js-toggle-content.toggle-import-form{ class: ('hide' if active_tab != 'import') }
-                    %hr
-                      = render "shared/import_form", f: f
-                      = render 'new_project_fields', f: f, project_name_id: "import-url-name"
+          - if import_sources_enabled?
+            = render 'import_project_pane', active_tab: active_tab
+          - else
+            .nothing-here-block
+              %h4 No import options available
+              %p Contact an administrator to enable options for importing your project.
 
-
-        -# EE-specific start
-        -# EE-specific end
-
-.save-project-loader.hide
+.save-project-loader.d-none
   .center
     %h2
       %i.fa.fa-spinner.fa-spin

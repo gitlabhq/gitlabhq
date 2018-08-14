@@ -72,25 +72,25 @@
 
 <template>
   <div
-    class="project-feature-controls"
     :data-for="name"
+    class="project-feature-controls"
   >
     <input
       v-if="name"
-      type="hidden"
       :name="name"
       :value="value"
+      type="hidden"
     />
     <project-feature-toggle
       :value="featureEnabled"
-      @change="toggleFeature"
       :disabled-input="disabledInput"
+      @change="toggleFeature"
     />
     <div class="select-wrapper">
       <select
+        :disabled="displaySelectInput"
         class="form-control project-repo-select select-control"
         @change="selectOption"
-        :disabled="displaySelectInput"
       >
         <option
           v-for="[optionValue, optionName] in displayOptions"

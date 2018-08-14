@@ -14,6 +14,7 @@ describe API::MergeRequests do
   let!(:merge_request) { create(:merge_request, :simple, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time) }
   let!(:merge_request_closed) { create(:merge_request, state: "closed", milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Closed test", created_at: base_time + 1.second) }
   let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test", created_at: base_time + 2.seconds, merge_commit_sha: '9999999999999999999999999999999999999999') }
+  let!(:merge_request_locked) { create(:merge_request, state: "locked", milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Locked test", created_at: base_time + 1.second) }
   let!(:note)       { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   let!(:note2)      { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "another comment on a MR") }
   let!(:label) do
@@ -29,13 +30,24 @@ describe API::MergeRequests do
     project.add_reporter(user)
   end
 
+  describe 'route shadowing' do
+    include GrapePathHelpers::NamedRouteMatcher
+
+    it 'does not occur' do
+      path = api_v4_projects_merge_requests_path(id: 1)
+      expect(path).to eq('/api/v4/projects/1/merge_requests')
+
+      path = api_v4_projects_merge_requests_path(id: 1, merge_request_iid: 3)
+      expect(path).to eq('/api/v4/projects/1/merge_requests/3')
+    end
+  end
+
   describe 'GET /merge_requests' do
     context 'when unauthenticated' do
       it 'returns an array of all merge requests' do
         get api('/merge_requests', user), scope: 'all'
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
+        expect_paginated_array_response
       end
 
       it "returns authentication error without any scope" do
@@ -46,6 +58,12 @@ describe API::MergeRequests do
 
       it "returns authentication error  when scope is assigned-to-me" do
         get api("/merge_requests"), scope: 'assigned-to-me'
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+
+      it "returns authentication error when scope is assigned_to_me" do
+        get api("/merge_requests"), scope: 'assigned_to_me'
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -62,27 +80,14 @@ describe API::MergeRequests do
       let!(:merge_request2) { create(:merge_request, :simple, author: user, assignee: user, source_project: project2, target_project: project2) }
       let(:user2) { create(:user) }
 
-      it 'returns an array of all merge requests' do
-        get api('/merge_requests', user), scope: :all
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.map { |mr| mr['id'] })
-          .to contain_exactly(merge_request.id, merge_request_closed.id, merge_request_merged.id, merge_request2.id)
-      end
-
-      it 'does not return unauthorized merge requests' do
+      it 'returns an array of all merge requests except unauthorized ones' do
         private_project = create(:project, :private)
         merge_request3 = create(:merge_request, :simple, source_project: private_project, target_project: private_project, source_branch: 'other-branch')
 
         get api('/merge_requests', user), scope: :all
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.map { |mr| mr['id'] })
-          .not_to include(merge_request3.id)
+        expect_response_contain_exactly(merge_request2, merge_request_merged, merge_request_closed, merge_request, merge_request_locked)
+        expect(json_response.map { |mr| mr['id'] }).not_to include(merge_request3.id)
       end
 
       it 'returns an array of merge requests created by current user if no scope is given' do
@@ -90,10 +95,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2)
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       it 'returns an array of merge requests authored by the given user' do
@@ -101,10 +103,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), author_id: user2.id, scope: :all
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       it 'returns an array of merge requests assigned to the given user' do
@@ -112,32 +111,39 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user), assignee_id: user2.id, scope: :all
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       it 'returns an array of merge requests assigned to me' do
         merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
 
+        get api('/merge_requests', user2), scope: 'assigned_to_me'
+
+        expect_response_ordered_exactly(merge_request3)
+      end
+
+      it 'returns an array of merge requests assigned to me (kebab-case)' do
+        merge_request3 = create(:merge_request, :simple, author: user, assignee: user2, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
         get api('/merge_requests', user2), scope: 'assigned-to-me'
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       it 'returns an array of merge requests created by me' do
         merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
 
+        get api('/merge_requests', user2), scope: 'created_by_me'
+
+        expect_response_ordered_exactly(merge_request3)
+      end
+
+      it 'returns an array of merge requests created by me (kebab-case)' do
+        merge_request3 = create(:merge_request, :simple, author: user2, assignee: user, source_project: project2, target_project: project2, source_branch: 'other-branch')
+
         get api('/merge_requests', user2), scope: 'created-by-me'
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       it 'returns merge requests reacted by the authenticated user by the given emoji' do
@@ -146,19 +152,14 @@ describe API::MergeRequests do
 
         get api('/merge_requests', user2), my_reaction_emoji: award_emoji.name, scope: 'all'
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request3.id)
+        expect_response_ordered_exactly(merge_request3)
       end
 
       context 'source_branch param' do
         it 'returns merge requests with the given source branch' do
           get api('/merge_requests', user), source_branch: merge_request_closed.source_branch, state: 'all'
 
-          expect(json_response.length).to eq(2)
-          expect(json_response.map { |mr| mr['id'] })
-            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
+          expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
         end
       end
 
@@ -166,9 +167,7 @@ describe API::MergeRequests do
         it 'returns merge requests with the given target branch' do
           get api('/merge_requests', user), target_branch: merge_request_closed.target_branch, state: 'all'
 
-          expect(json_response.length).to eq(2)
-          expect(json_response.map { |mr| mr['id'] })
-            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
+          expect_response_contain_exactly(merge_request_closed, merge_request_merged, merge_request_locked)
         end
       end
 
@@ -177,8 +176,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests?created_before=2000-01-02T00:00:00.060Z', user)
 
-        expect(json_response.size).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request2.id)
+        expect_response_ordered_exactly(merge_request2)
       end
 
       it 'returns merge requests created after a specific date' do
@@ -186,8 +184,7 @@ describe API::MergeRequests do
 
         get api("/merge_requests?created_after=#{merge_request2.created_at}", user)
 
-        expect(json_response.size).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request2.id)
+        expect_response_ordered_exactly(merge_request2)
       end
 
       it 'returns merge requests updated before a specific date' do
@@ -195,8 +192,7 @@ describe API::MergeRequests do
 
         get api('/merge_requests?updated_before=2000-01-02T00:00:00.060Z', user)
 
-        expect(json_response.size).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request2.id)
+        expect_response_ordered_exactly(merge_request2)
       end
 
       it 'returns merge requests updated after a specific date' do
@@ -204,8 +200,7 @@ describe API::MergeRequests do
 
         get api("/merge_requests?updated_after=#{merge_request2.updated_at}", user)
 
-        expect(json_response.size).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request2.id)
+        expect_response_ordered_exactly(merge_request2)
       end
 
       context 'search params' do
@@ -216,293 +211,67 @@ describe API::MergeRequests do
         it 'returns merge requests matching given search string for title' do
           get api("/merge_requests", user), search: merge_request.title
 
-          expect(json_response.length).to eq(1)
-          expect(json_response.first['id']).to eq(merge_request.id)
+          expect_response_ordered_exactly(merge_request)
         end
 
         it 'returns merge requests for project matching given search string for description' do
           get api("/merge_requests", user), project_id: project.id, search: merge_request.description
 
-          expect(json_response.length).to eq(1)
-          expect(json_response.first['id']).to eq(merge_request.id)
+          expect_response_ordered_exactly(merge_request)
+        end
+      end
+
+      context 'state param' do
+        it 'returns merge requests with the given state' do
+          get api('/merge_requests', user), state: 'locked'
+
+          expect_response_contain_exactly(merge_request_locked)
         end
       end
     end
   end
 
   describe "GET /projects/:id/merge_requests" do
-    context "when unauthenticated" do
-      it 'returns merge requests for public projects' do
-        get api("/projects/#{project.id}/merge_requests")
+    let(:endpoint_path) { "/projects/#{project.id}/merge_requests" }
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-      end
+    it_behaves_like 'merge requests list'
 
-      it "returns 404 for non public projects" do
-        project = create(:project, :private)
-        get api("/projects/#{project.id}/merge_requests")
+    it "returns 404 for non public projects" do
+      project = create(:project, :private)
 
-        expect(response).to have_gitlab_http_status(404)
-      end
+      get api("/projects/#{project.id}/merge_requests")
+
+      expect(response).to have_gitlab_http_status(404)
     end
 
-    context "when authenticated" do
-      it 'avoids N+1 queries' do
-        control = ActiveRecord::QueryRecorder.new do
-          get api("/projects/#{project.id}/merge_requests", user)
-        end
+    it 'returns merge_request by "iids" array' do
+      get api(endpoint_path, user), iids: [merge_request.iid, merge_request_closed.iid]
 
-        create(:merge_request, state: 'closed', milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['title']).to eq merge_request_closed.title
+      expect(json_response.first['id']).to eq merge_request_closed.id
+    end
+  end
 
-        create(:merge_request, milestone: milestone1, author: user, assignee: user, source_project: project, target_project: project, title: "Test", created_at: base_time)
+  describe "GET /groups/:id/merge_requests" do
+    let!(:group) { create(:group, :public) }
+    let!(:project) { create(:project, :public, :repository, creator: user, namespace: group, only_allow_merge_if_pipeline_succeeds: false) }
+    let(:endpoint_path) { "/groups/#{group.id}/merge_requests" }
 
-        expect do
-          get api("/projects/#{project.id}/merge_requests", user)
-        end.not_to exceed_query_limit(control)
-      end
+    before do
+      group.add_reporter(user)
+    end
 
-      it "returns an array of all merge_requests" do
-        get api("/projects/#{project.id}/merge_requests", user)
+    it_behaves_like 'merge requests list'
 
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
-        expect(json_response.last['title']).to eq(merge_request.title)
-        expect(json_response.last).to have_key('web_url')
-        expect(json_response.last['sha']).to eq(merge_request.diff_head_sha)
-        expect(json_response.last['merge_commit_sha']).to be_nil
-        expect(json_response.last['merge_commit_sha']).to eq(merge_request.merge_commit_sha)
-        expect(json_response.last['downvotes']).to eq(1)
-        expect(json_response.last['upvotes']).to eq(1)
-        expect(json_response.last['labels']).to eq([label2.title, label.title])
-        expect(json_response.first['title']).to eq(merge_request_merged.title)
-        expect(json_response.first['sha']).to eq(merge_request_merged.diff_head_sha)
-        expect(json_response.first['merge_commit_sha']).not_to be_nil
-        expect(json_response.first['merge_commit_sha']).to eq(merge_request_merged.merge_commit_sha)
-      end
+    context 'when have subgroups', :nested_groups do
+      let!(:group) { create(:group, :public) }
+      let!(:subgroup) { create(:group, parent: group) }
+      let!(:project) { create(:project, :public, :repository, creator: user, namespace: subgroup, only_allow_merge_if_pipeline_succeeds: false) }
 
-      it "returns an array of all merge_requests using simple mode" do
-        get api("/projects/#{project.id}/merge_requests?view=simple", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response.last.keys).to match_array(%w(id iid title web_url created_at description project_id state updated_at))
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
-        expect(json_response.last['iid']).to eq(merge_request.iid)
-        expect(json_response.last['title']).to eq(merge_request.title)
-        expect(json_response.last).to have_key('web_url')
-        expect(json_response.first['iid']).to eq(merge_request_merged.iid)
-        expect(json_response.first['title']).to eq(merge_request_merged.title)
-        expect(json_response.first).to have_key('web_url')
-      end
-
-      it "returns an array of all merge_requests" do
-        get api("/projects/#{project.id}/merge_requests?state", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(3)
-        expect(json_response.last['title']).to eq(merge_request.title)
-      end
-
-      it "returns an array of open merge_requests" do
-        get api("/projects/#{project.id}/merge_requests?state=opened", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.last['title']).to eq(merge_request.title)
-      end
-
-      it "returns an array of closed merge_requests" do
-        get api("/projects/#{project.id}/merge_requests?state=closed", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['title']).to eq(merge_request_closed.title)
-      end
-
-      it "returns an array of merged merge_requests" do
-        get api("/projects/#{project.id}/merge_requests?state=merged", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to include_pagination_headers
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['title']).to eq(merge_request_merged.title)
-      end
-
-      it 'returns merge_request by "iids" array' do
-        get api("/projects/#{project.id}/merge_requests", user), iids: [merge_request.iid, merge_request_closed.iid]
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(2)
-        expect(json_response.first['title']).to eq merge_request_closed.title
-        expect(json_response.first['id']).to eq merge_request_closed.id
-      end
-
-      it 'matches V4 response schema' do
-        get api("/projects/#{project.id}/merge_requests", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(response).to match_response_schema('public_api/v4/merge_requests')
-      end
-
-      it 'returns an empty array if no issue matches milestone' do
-        get api("/projects/#{project.id}/merge_requests", user), milestone: '1.0.0'
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(0)
-      end
-
-      it 'returns an empty array if milestone does not exist' do
-        get api("/projects/#{project.id}/merge_requests", user), milestone: 'foo'
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(0)
-      end
-
-      it 'returns an array of merge requests in given milestone' do
-        get api("/projects/#{project.id}/merge_requests", user), milestone: '0.9'
-
-        expect(json_response.first['title']).to eq merge_request_closed.title
-        expect(json_response.first['id']).to eq merge_request_closed.id
-      end
-
-      it 'returns an array of merge requests matching state in milestone' do
-        get api("/projects/#{project.id}/merge_requests", user), milestone: '0.9', state: 'closed'
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(merge_request_closed.id)
-      end
-
-      it 'returns an array of labeled merge requests' do
-        get api("/projects/#{project.id}/merge_requests?labels=#{label.title}", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['labels']).to eq([label2.title, label.title])
-      end
-
-      it 'returns an array of labeled merge requests where all labels match' do
-        get api("/projects/#{project.id}/merge_requests?labels=#{label.title},foo,bar", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(0)
-      end
-
-      it 'returns an empty array if no merge request matches labels' do
-        get api("/projects/#{project.id}/merge_requests?labels=foo,bar", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(0)
-      end
-
-      it 'returns an array of labeled merge requests that are merged for a milestone' do
-        bug_label = create(:label, title: 'bug', color: '#FFAABB', project: project)
-
-        mr1 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone)
-        mr2 = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
-        mr3 = create(:merge_request, state: "closed", source_project: project, target_project: project, milestone: milestone1)
-        _mr = create(:merge_request, state: "merged", source_project: project, target_project: project, milestone: milestone1)
-
-        create(:label_link, label: bug_label, target: mr1)
-        create(:label_link, label: bug_label, target: mr2)
-        create(:label_link, label: bug_label, target: mr3)
-
-        get api("/projects/#{project.id}/merge_requests?labels=#{bug_label.title}&milestone=#{milestone1.title}&state=merged", user)
-
-        expect(response).to have_gitlab_http_status(200)
-        expect(json_response).to be_an Array
-        expect(json_response.length).to eq(1)
-        expect(json_response.first['id']).to eq(mr2.id)
-      end
-
-      context "with ordering" do
-        before do
-          @mr_later = mr_with_later_created_and_updated_at_time
-          @mr_earlier = mr_with_earlier_created_and_updated_at_time
-        end
-
-        it "returns an array of merge_requests in ascending order" do
-          get api("/projects/#{project.id}/merge_requests?sort=asc", user)
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(3)
-          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
-          expect(response_dates).to eq(response_dates.sort)
-        end
-
-        it "returns an array of merge_requests in descending order" do
-          get api("/projects/#{project.id}/merge_requests?sort=desc", user)
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(3)
-          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
-          expect(response_dates).to eq(response_dates.sort.reverse)
-        end
-
-        it "returns an array of merge_requests ordered by updated_at" do
-          get api("/projects/#{project.id}/merge_requests?order_by=updated_at", user)
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(3)
-          response_dates = json_response.map { |merge_request| merge_request['updated_at'] }
-          expect(response_dates).to eq(response_dates.sort.reverse)
-        end
-
-        it "returns an array of merge_requests ordered by created_at" do
-          get api("/projects/#{project.id}/merge_requests?order_by=created_at&sort=asc", user)
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to include_pagination_headers
-          expect(json_response).to be_an Array
-          expect(json_response.length).to eq(3)
-          response_dates = json_response.map { |merge_request| merge_request['created_at'] }
-          expect(response_dates).to eq(response_dates.sort)
-        end
-      end
-
-      context 'source_branch param' do
-        it 'returns merge requests with the given source branch' do
-          get api('/merge_requests', user), source_branch: merge_request_closed.source_branch, state: 'all'
-
-          expect(json_response.length).to eq(2)
-          expect(json_response.map { |mr| mr['id'] })
-            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
-        end
-      end
-
-      context 'target_branch param' do
-        it 'returns merge requests with the given target branch' do
-          get api('/merge_requests', user), target_branch: merge_request_closed.target_branch, state: 'all'
-
-          expect(json_response.length).to eq(2)
-          expect(json_response.map { |mr| mr['id'] })
-            .to contain_exactly(merge_request_closed.id, merge_request_merged.id)
-        end
-      end
+      it_behaves_like 'merge requests list'
     end
   end
 
@@ -535,6 +304,14 @@ describe API::MergeRequests do
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
       expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
+    end
+
+    it 'exposes description and title html when render_html is true' do
+      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), render_html: true
+
+      expect(response).to have_gitlab_http_status(200)
+
+      expect(json_response).to include('title_html', 'description_html')
     end
 
     context 'merge_request_metrics' do
@@ -626,12 +403,13 @@ describe API::MergeRequests do
                source_project: forked_project,
                target_project: project,
                source_branch: 'fixes',
-               allow_maintainer_to_push: true)
+               allow_collaboration: true)
       end
 
-      it 'includes the `allow_maintainer_to_push` field' do
+      it 'includes the `allow_collaboration` field' do
         get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
 
+        expect(json_response['allow_collaboration']).to be_truthy
         expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
     end
@@ -740,12 +518,14 @@ describe API::MergeRequests do
              target_branch: 'master',
              author: user,
              labels: 'label, label2',
-             milestone_id: milestone.id
+             milestone_id: milestone.id,
+             squash: true
 
         expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq('Test merge_request')
         expect(json_response['labels']).to eq(%w(label label2))
         expect(json_response['milestone']['id']).to eq(milestone.id)
+        expect(json_response['squash']).to be_truthy
         expect(json_response['force_remove_source_branch']).to be_falsy
       end
 
@@ -861,7 +641,7 @@ describe API::MergeRequests do
         expect(json_response['title']).to eq('Test merge_request')
       end
 
-      it 'returns 422 when target project has disabled merge requests' do
+      it 'returns 403 when target project has disabled merge requests' do
         project.project_feature.update(merge_requests_access_level: 0)
 
         post api("/projects/#{forked_project.id}/merge_requests", user2),
@@ -871,7 +651,7 @@ describe API::MergeRequests do
              author: user2,
              target_project_id: project.id
 
-        expect(response).to have_gitlab_http_status(422)
+        expect(response).to have_gitlab_http_status(403)
       end
 
       it "returns 400 when source_branch is missing" do
@@ -892,11 +672,12 @@ describe API::MergeRequests do
         expect(response).to have_gitlab_http_status(400)
       end
 
-      it 'allows setting `allow_maintainer_to_push`' do
+      it 'allows setting `allow_collaboration`' do
         post api("/projects/#{forked_project.id}/merge_requests", user2),
-          title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
-          author: user2, target_project_id: project.id, allow_maintainer_to_push: true
+             title: 'Test merge_request', source_branch: "feature_conflict", target_branch: "master",
+             author: user2, target_project_id: project.id, allow_collaboration: true
         expect(response).to have_gitlab_http_status(201)
+        expect(json_response['allow_collaboration']).to be_truthy
         expect(json_response['allow_maintainer_to_push']).to be_truthy
       end
 
@@ -1034,6 +815,14 @@ describe API::MergeRequests do
       expect(response).to have_gitlab_http_status(200)
     end
 
+    it "updates the MR's squash attribute" do
+      expect do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}/merge", user), squash: true
+      end.to change { merge_request.reload.squash }
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
     it "enables merge when pipeline succeeds if the pipeline is active" do
       allow_any_instance_of(MergeRequest).to receive(:head_pipeline).and_return(pipeline)
       allow(pipeline).to receive(:active?).and_return(true)
@@ -1098,6 +887,13 @@ describe API::MergeRequests do
       expect(json_response['milestone']['id']).to eq(milestone.id)
     end
 
+    it "updates squash and returns merge_request" do
+      put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), squash: true
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['squash']).to be_truthy
+    end
+
     it "returns merge_request with renamed target_branch" do
       put api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user), target_branch: "wiki"
       expect(response).to have_gitlab_http_status(200)
@@ -1158,6 +954,7 @@ describe API::MergeRequests do
       issue = create(:issue, project: project)
       mr = merge_request.tap do |mr|
         mr.update_attribute(:description, "Closes #{issue.to_reference(mr.project)}")
+        mr.cache_merge_request_closes_issues!
       end
 
       get api("/projects/#{project.id}/merge_requests/#{mr.iid}/closes_issues", user)
@@ -1340,5 +1137,23 @@ describe API::MergeRequests do
     merge_request_closed.updated_at -= 30.minutes
     merge_request_closed.save
     merge_request_closed
+  end
+
+  def expect_response_contain_exactly(*items)
+    expect_paginated_array_response
+    expect(json_response.length).to eq(items.size)
+    expect(json_response.map { |element| element['id'] }).to contain_exactly(*items.map(&:id))
+  end
+
+  def expect_response_ordered_exactly(*items)
+    expect_paginated_array_response
+    expect(json_response.length).to eq(items.size)
+    expect(json_response.map { |element| element['id'] }).to eq(items.map(&:id))
+  end
+
+  def expect_paginated_array_response
+    expect(response).to have_gitlab_http_status(200)
+    expect(response).to include_pagination_headers
+    expect(json_response).to be_an Array
   end
 end

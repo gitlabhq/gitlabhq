@@ -22,9 +22,9 @@
 
 header,
 nav,
-nav.main-nav,
 nav.navbar-collapse,
 nav.navbar-collapse.collapse,
+.nav-sidebar,
 .profiler-results,
 .tree-ref-holder,
 .tree-holder .breadcrumb,
@@ -36,7 +36,10 @@ ul.notes-form,
 .gutter-toggle,
 .issuable-details .content-block-small,
 .edit-link,
-.note-action-button {
+.note-action-button,
+.right-sidebar,
+.flash-container,
+#js-peek {
   display: none !important;
 }
 
@@ -52,4 +55,8 @@ pre {
 
 .right-sidebar {
   top: 0;
+}
+
+a[href]::after {
+  content: none !important;
 }

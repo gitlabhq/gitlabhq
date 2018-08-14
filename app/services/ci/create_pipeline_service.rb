@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
@@ -7,6 +9,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
+                Gitlab::Ci::Pipeline::Chain::Populate,
                 Gitlab::Ci::Pipeline::Chain::Create].freeze
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
@@ -23,6 +26,7 @@ module Ci
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
         seeds_block: block,
+        variables_attributes: params[:variables_attributes],
         project: project,
         current_user: current_user)
 
@@ -65,7 +69,7 @@ module Ci
       project.pipelines
         .where(ref: pipeline.ref)
         .where.not(id: pipeline.id)
-        .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
+        .where.not(sha: project.commit(pipeline.ref).try(:id))
         .created_or_pending
     end
 

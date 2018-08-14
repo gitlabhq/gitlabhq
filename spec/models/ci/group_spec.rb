@@ -41,4 +41,55 @@ describe Ci::Group do
       end
     end
   end
+
+  describe '.fabricate' do
+    let(:pipeline) { create(:ci_empty_pipeline) }
+    let(:stage) { create(:ci_stage_entity, pipeline: pipeline) }
+
+    before do
+      create_build(:ci_build, name: 'rspec 0 2')
+      create_build(:ci_build, name: 'rspec 0 1')
+      create_build(:ci_build, name: 'spinach 0 1')
+      create_build(:commit_status, name: 'aaaaa')
+    end
+
+    it 'returns an array of three groups' do
+      expect(stage.groups).to be_a Array
+      expect(stage.groups).to all(be_a described_class)
+      expect(stage.groups.size).to eq 3
+    end
+
+    it 'returns groups with correctly ordered statuses' do
+      expect(stage.groups.first.jobs.map(&:name))
+        .to eq ['aaaaa']
+      expect(stage.groups.second.jobs.map(&:name))
+        .to eq ['rspec 0 1', 'rspec 0 2']
+      expect(stage.groups.third.jobs.map(&:name))
+        .to eq ['spinach 0 1']
+    end
+
+    it 'returns groups with correct names' do
+      expect(stage.groups.map(&:name))
+        .to eq %w[aaaaa rspec spinach]
+    end
+
+    context 'when a name is nil on legacy pipelines' do
+      before do
+        pipeline.builds.first.update_attribute(:name, nil)
+      end
+
+      it 'returns an array of three groups' do
+        expect(stage.groups.map(&:name))
+          .to eq ['', 'aaaaa', 'rspec', 'spinach']
+      end
+    end
+
+    def create_build(type, status: 'success', **opts)
+      create(type, pipeline: pipeline,
+                   stage: stage.name,
+                   status: status,
+                   stage_id: stage.id,
+                   **opts)
+    end
+  end
 end

@@ -54,28 +54,30 @@
 
 <template>
   <button
-    @click="onClick"
-    type="button"
     :class="containerClass"
     :disabled="loading || disabled"
+    type="button"
+    @click="onClick"
   >
     <transition name="fade">
       <loading-icon
         v-if="loading"
         :inline="true"
-        class="js-loading-button-icon"
         :class="{
           'append-right-5': label
         }"
+        class="js-loading-button-icon"
       />
     </transition>
     <transition name="fade">
-      <span
-        v-if="label"
-        class="js-loading-button-label"
-      >
-        {{ label }}
-      </span>
+      <slot>
+        <span
+          v-if="label"
+          class="js-loading-button-label"
+        >
+          {{ label }}
+        </span>
+      </slot>
     </transition>
   </button>
 </template>

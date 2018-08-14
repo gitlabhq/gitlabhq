@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 # A note on merge request or commit diffs
 #
 # A note of this type can be resolvable.
 class DiffNote < Note
   include NoteOnDiff
+  include Gitlab::Utils::StrongMemoize
 
   NOTEABLE_TYPES = %w(MergeRequest Commit).freeze
 
@@ -12,7 +15,6 @@ class DiffNote < Note
 
   validates :original_position, presence: true
   validates :position, presence: true
-  validates :diff_line, presence: true, if: :on_text?
   validates :line_code, presence: true, line_code: true, if: :on_text?
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
@@ -23,6 +25,7 @@ class DiffNote < Note
   before_validation :update_position, on: :create, if: :on_text?
   before_validation :set_line_code, if: :on_text?
   after_save :keep_around_commits
+  after_commit :create_diff_file, on: :create
 
   def discussion_class(*)
     DiffDiscussion
@@ -53,8 +56,25 @@ class DiffNote < Note
     position.position_type == "image"
   end
 
+  def create_diff_file
+    return unless should_create_diff_file?
+
+    diff_file = fetch_diff_file
+    diff_line = diff_file.line_for_position(self.original_position)
+
+    creation_params = diff_file.diff.to_hash
+      .except(:too_large)
+      .merge(diff: diff_file.diff_hunk(diff_line))
+
+    create_note_diff_file(creation_params)
+  end
+
   def diff_file
-    @diff_file ||= self.original_position.diff_file(self.project.repository)
+    strong_memoize(:diff_file) do
+      enqueue_diff_file_creation_job if should_create_diff_file?
+
+      fetch_diff_file
+    end
   end
 
   def diff_line
@@ -84,6 +104,38 @@ class DiffNote < Note
   end
 
   private
+
+  def enqueue_diff_file_creation_job
+    # Avoid enqueuing multiple file creation jobs at once for a note (i.e.
+    # parallel calls to `DiffNote#diff_file`).
+    lease = Gitlab::ExclusiveLease.new("note_diff_file_creation:#{id}", timeout: 1.hour.to_i)
+    return unless lease.try_obtain
+
+    CreateNoteDiffFileWorker.perform_async(id)
+  end
+
+  def should_create_diff_file?
+    on_text? && note_diff_file.nil? && self == discussion.first_note
+  end
+
+  def fetch_diff_file
+    if note_diff_file
+      diff = Gitlab::Git::Diff.new(note_diff_file.to_hash)
+      Gitlab::Diff::File.new(diff,
+                             repository: project.repository,
+                             diff_refs: original_position.diff_refs)
+    elsif created_at_diff?(noteable.diff_refs)
+      # We're able to use the already persisted diffs (Postgres) if we're
+      # presenting a "current version" of the MR discussion diff.
+      # So no need to make an extra Gitaly diff request for it.
+      # As an extra benefit, the returned `diff_file` already
+      # has `highlighted_diff_lines` data set from Redis on
+      # `Diff::FileCollection::MergeRequestDiff`.
+      noteable.diffs(paths: original_position.paths, expanded: true).diff_files.first
+    else
+      original_position.diff_file(self.project.repository)
+    end
+  end
 
   def supported?
     for_commit? || self.noteable.has_complete_diff_refs?

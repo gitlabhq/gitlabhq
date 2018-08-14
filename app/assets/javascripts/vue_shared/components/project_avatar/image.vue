@@ -85,7 +85,6 @@
 <template>
   <img
     v-tooltip
-    class="avatar"
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
@@ -99,5 +98,6 @@
     :data-container="tooltipContainer"
     :data-placement="tooltipPlacement"
     :title="tooltipText"
+    class="avatar"
   />
 </template>

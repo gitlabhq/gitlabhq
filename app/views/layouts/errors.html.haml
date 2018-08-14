@@ -3,57 +3,17 @@
   %head
     %meta{ :content => "width=device-width, initial-scale=1, maximum-scale=1", :name => "viewport" }
     %title= yield(:title)
-    :css
-      body {
-        color: #666;
-        text-align: center;
-        font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-        margin: auto;
-        font-size: 14px;
-      }
+    %style
+      = Rails.application.assets_manifest.find_sources('errors.css').first.to_s.html_safe
+  %body
+    .page-container
+      = yield
+    -# haml-lint:disable InlineJavaScript
+    :javascript
+      (function(){
+        var goBackElement = document.querySelector('.js-go-back');
 
-      h1 {
-        font-size: 56px;
-        line-height: 100px;
-        font-weight: 400;
-        color: #456;
-      }
-
-      h2 {
-        font-size: 24px;
-        color: #666;
-        line-height: 1.5em;
-      }
-
-      h3 {
-        color: #456;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 28px;
-      }
-
-      hr {
-        max-width: 800px;
-        margin: 18px auto;
-        border: 0;
-        border-top: 1px solid #EEE;
-        border-bottom: 1px solid white;
-      }
-
-      img {
-        max-width: 40vw;
-        display: block;
-        margin: 40px auto;
-      }
-
-      .container {
-        margin: auto 20px;
-      }
-
-      ul {
-      margin: auto;
-      text-align: left;
-      display:inline-block;
-      }
-%body
-  = yield
+        if (goBackElement && history.length > 1) {
+          goBackElement.style.display = 'block';
+        }
+      }());

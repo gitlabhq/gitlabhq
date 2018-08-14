@@ -39,7 +39,7 @@ module Gitlab
         content.delete!("\r")
         content.gsub!(commands_regex) do
           if $~[:cmd]
-            commands << [$~[:cmd], $~[:arg]].reject(&:blank?)
+            commands << [$~[:cmd].downcase, $~[:arg]].reject(&:blank?)
             ''
           else
             $~[0]
@@ -102,14 +102,14 @@ module Gitlab
               # /close
 
               ^\/
-              (?<cmd>#{Regexp.union(names)})
+              (?<cmd>#{Regexp.new(Regexp.union(names).source, Regexp::IGNORECASE)})
               (?:
                 [ ]
                 (?<arg>[^\n]*)
               )?
               (?:\n|$)
             )
-        }mx
+        }mix
       end
 
       def perform_substitutions(content, commands)
@@ -120,7 +120,7 @@ module Gitlab
         end
 
         substitution_definitions.each do |substitution|
-          match_data = substitution.match(content)
+          match_data = substitution.match(content.downcase)
           if match_data
             command = [substitution.name.to_s]
             command << match_data[1] unless match_data[1].empty?

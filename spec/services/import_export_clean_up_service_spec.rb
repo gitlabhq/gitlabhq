@@ -11,7 +11,6 @@ describe ImportExportCleanUpService do
         path = '/invalid/path/'
         stub_repository_downloads_path(path)
 
-        expect(File).to receive(:directory?).with(path + tmp_import_export_folder).and_return(false).at_least(:once)
         expect(service).not_to receive(:clean_up_export_files)
 
         service.execute
@@ -35,6 +34,24 @@ describe ImportExportCleanUpService do
           files.each { |file| expect(File.exist?(file)).to eq true }
           expect(File.directory?(dir)).to eq true
         end
+      end
+    end
+
+    context 'with uploader exports' do
+      it 'removes old files' do
+        upload = create(:import_export_upload,
+                        updated_at: 2.days.ago,
+                        export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+
+        expect { service.execute }.to change { upload.reload.export_file.file.nil? }.to(true)
+      end
+
+      it 'does not remove new files' do
+        upload = create(:import_export_upload,
+                        updated_at: 1.hour.ago,
+                        export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'))
+
+        expect { service.execute }.not_to change { upload.reload.export_file.file.nil? }
       end
     end
 

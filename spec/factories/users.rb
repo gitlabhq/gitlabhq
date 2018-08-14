@@ -12,10 +12,6 @@ FactoryBot.define do
       user.notification_email = user.email
     end
 
-    before(:create) do |user|
-      user.ensure_rss_token
-    end
-
     trait :admin do
       admin true
     end

@@ -1,5 +1,0 @@
----
-title: Fix Slack/Mattermost notifications not respecting `notify_only_default_branch` setting for pushes
-merge_request: 17345
-author:
-type: fixed

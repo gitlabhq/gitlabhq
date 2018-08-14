@@ -1,4 +1,4 @@
-/* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in, comma-dangle, max-len, no-param-reassign */
+/* eslint-disable object-shorthand, func-names, camelcase, no-restricted-syntax, guard-for-in, comma-dangle, max-len */
 /* global DiscussionModel */
 
 import Vue from 'vue';

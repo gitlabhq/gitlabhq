@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Issuable concern
 #
 # Contains common functionality shared between Issues and MergeRequests
@@ -97,8 +99,6 @@ module Issuable
 
     strip_attributes :title
 
-    after_save :ensure_metrics, unless: :imported?
-
     # We want to use optimistic lock for cases when only title or description are involved
     # http://api.rubyonrails.org/classes/ActiveRecord/Locking/Optimistic.html
     def locking_enabled?
@@ -106,6 +106,10 @@ module Issuable
     end
 
     def allows_multiple_assignees?
+      false
+    end
+
+    def etag_caching_enabled?
       false
     end
 
@@ -137,7 +141,7 @@ module Issuable
       fuzzy_search(query, [:title, :description])
     end
 
-    def sort(method, excluded_labels: [])
+    def sort_by_attribute(method, excluded_labels: [])
       sorted =
         case method.to_s
         when 'downvotes_desc'     then order_downvotes_desc
@@ -152,7 +156,7 @@ module Issuable
         end
 
       # Break ties with the ID column for pagination
-      sorted.order(id: :desc)
+      sorted.with_order_id_desc
     end
 
     def order_due_date_and_labels_priority(excluded_labels: [])
@@ -239,6 +243,12 @@ module Issuable
 
   def open?
     opened?
+  end
+
+  def overdue?
+    return false unless respond_to?(:due_date)
+
+    due_date.try(:past?) || false
   end
 
   def user_notes_count

@@ -5,14 +5,14 @@ class NotificationSettingsController < ApplicationController
     return render_404 unless can_read?(resource)
 
     @notification_setting = current_user.notification_settings_for(resource)
-    @saved = @notification_setting.update_attributes(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params)
 
     render_response
   end
 
   def update
     @notification_setting = current_user.notification_settings.find(params[:id])
-    @saved = @notification_setting.update_attributes(notification_setting_params)
+    @saved = @notification_setting.update(notification_setting_params)
 
     render_response
   end

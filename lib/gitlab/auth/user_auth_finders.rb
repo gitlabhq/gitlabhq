@@ -1,9 +1,5 @@
 module Gitlab
   module Auth
-    #
-    # Exceptions
-    #
-
     AuthenticationError = Class.new(StandardError)
     MissingTokenError = Class.new(AuthenticationError)
     TokenNotFoundError = Class.new(AuthenticationError)
@@ -29,13 +25,15 @@ module Gitlab
         current_request.env['warden']&.authenticate if verified_request?
       end
 
-      def find_user_from_rss_token
-        return unless current_request.path.ends_with?('.atom') || current_request.format.atom?
+      def find_user_from_feed_token
+        return unless rss_request? || ics_request?
 
-        token = current_request.params[:rss_token].presence
+        # NOTE: feed_token was renamed from rss_token but both needs to be supported because
+        #       users might have already added the feed to their RSS reader before the rename
+        token = current_request.params[:feed_token].presence || current_request.params[:rss_token].presence
         return unless token
 
-        User.find_by_rss_token(token) || raise(UnauthorizedError)
+        User.find_by_feed_token(token) || raise(UnauthorizedError)
       end
 
       def find_user_from_access_token
@@ -60,6 +58,12 @@ module Gitlab
       end
 
       private
+
+      def route_authentication_setting
+        return {} unless respond_to?(:route_setting)
+
+        route_setting(:authentication) || {}
+      end
 
       def access_token
         strong_memoize(:access_token) do
@@ -101,6 +105,14 @@ module Gitlab
 
       def current_request
         @current_request ||= ensure_action_dispatch_request(request)
+      end
+
+      def rss_request?
+        current_request.path.ends_with?('.atom') || current_request.format.atom?
+      end
+
+      def ics_request?
+        current_request.path.ends_with?('.ics') || current_request.format.ics?
       end
     end
   end

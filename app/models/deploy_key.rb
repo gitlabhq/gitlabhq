@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeployKey < Key
   include IgnorableColumn
 
@@ -25,6 +27,10 @@ class DeployKey < Key
 
   def destroyed_when_orphaned?
     self.private?
+  end
+
+  def user
+    super || User.ghost
   end
 
   def has_access_to?(project)

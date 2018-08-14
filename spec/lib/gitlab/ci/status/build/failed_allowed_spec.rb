@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Status::Build::FailedAllowed do
   let(:status) { double('core status') }
   let(:user) { double('user') }
+  let(:build) { create(:ci_build, :failed, :allowed_to_fail) }
 
   subject do
     described_class.new(status)
@@ -65,6 +66,28 @@ describe Gitlab::Ci::Status::Build::FailedAllowed do
 
         subject.action_title
       end
+    end
+  end
+
+  describe '#badge_tooltip' do
+    let(:user) { create(:user) }
+    let(:failed_status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:build_status) { Gitlab::Ci::Status::Build::Failed.new(failed_status) }
+    let(:status) { described_class.new(build_status) }
+
+    it 'does override badge_tooltip' do
+      expect(status.badge_tooltip).to eq('failed <br> (unknown failure)')
+    end
+  end
+
+  describe '#status_tooltip' do
+    let(:user) { create(:user) }
+    let(:failed_status) { Gitlab::Ci::Status::Failed.new(build, user) }
+    let(:build_status) { Gitlab::Ci::Status::Build::Failed.new(failed_status) }
+    let(:status) { described_class.new(build_status) }
+
+    it 'does override status_tooltip' do
+      expect(status.status_tooltip).to eq 'failed <br> (unknown failure) (allowed to fail)'
     end
   end
 

@@ -22,15 +22,18 @@
     "in_progress_merge_commit_sha": { "type": ["string", "null"] },
     "merge_error": { "type": ["string", "null"] },
     "merge_commit_sha": { "type": ["string", "null"] },
+    "short_merge_commit_sha": { "type": ["string", "null"] },
     "merge_params": { "type": ["object", "null"] },
     "merge_status": { "type": "string" },
     "merge_user_id": { "type": ["integer", "null"] },
     "merge_when_pipeline_succeeds": { "type": "boolean" },
     "source_branch": { "type": "string" },
     "source_project_id": { "type": "integer" },
+    "source_project_full_path": { "type": ["string", "null"]},
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "allow_maintainer_to_push": { "type": "boolean"},
+    "target_project_full_path": { "type": ["string", "null"]},
+    "allow_collaboration": { "type": "boolean"},
     "metrics": {
       "oneOf": [
         { "type": "null" },
@@ -78,6 +81,7 @@
         "can_revert_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_cherry_pick_on_current_merge_request": { "type": ["boolean", "null"] },
         "can_create_note": { "type": "boolean" },
+        "can_create_issue": { "type": "boolean" },
         "can_update": { "type": "boolean" }
       },
       "additionalProperties": false
@@ -100,6 +104,7 @@
     "merge_commit_message_with_description": { "type": "string" },
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
+    "merge_commit_path": { "type": ["string", "null"] },
     "remove_wip_path": { "type": ["string", "null"] },
     "commits_count": { "type": "integer" },
     "remove_source_branch": { "type": ["boolean", "null"] },
@@ -107,10 +112,13 @@
     "ff_only_enabled": { "type": ["boolean", false] },
     "should_be_rebased": { "type": "boolean" },
     "create_note_path": { "type": ["string", "null"] },
+    "preview_note_path": { "type": ["string", "null"] },
     "rebase_commit_sha": { "type": ["string", "null"] },
     "rebase_in_progress": { "type": "boolean" },
     "can_push_to_source_branch": { "type": "boolean" },
-    "rebase_path": { "type": ["string", "null"] }
+    "rebase_path": { "type": ["string", "null"] },
+    "squash": { "type": "boolean" },
+    "test_reports_path": { "type": ["string", "null"] }
   },
   "additionalProperties": false
 }

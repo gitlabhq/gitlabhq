@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import axios from './lib/utils/axios_utils';
 import Api from './api';
 import { normalizeHeaders } from './lib/utils/common_utils';
@@ -11,6 +12,7 @@ export default function groupsSelect() {
     const skipGroups = $select.data('skipGroups') || [];
     $select.select2({
       placeholder: 'Search for a group',
+      allowClear: $select.hasClass('allowClear'),
       multiple: $select.hasClass('multiselect'),
       minimumInputLength: 0,
       ajax: {

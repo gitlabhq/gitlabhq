@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class IssuableBaseService < BaseService
   private
 
@@ -51,9 +53,10 @@ class IssuableBaseService < BaseService
     return unless milestone_id
 
     params[:milestone_id] = '' if milestone_id == IssuableFinder::NONE
+    group_ids = project.group&.self_and_ancestors&.pluck(:id)
 
     milestone =
-      Milestone.for_projects_and_groups([project.id], [project.group&.id]).find_by_id(milestone_id)
+      Milestone.for_projects_and_groups([project.id], group_ids).find_by_id(milestone_id)
 
     params[:milestone_id] = '' unless milestone
   end
@@ -106,7 +109,7 @@ class IssuableBaseService < BaseService
   end
 
   def available_labels
-    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @available_labels ||= LabelsFinder.new(current_user, project_id: @project.id, include_ancestor_groups: true).execute
   end
 
   def handle_quick_actions_on_create(issuable)
@@ -129,7 +132,7 @@ class IssuableBaseService < BaseService
   def create_issuable(issuable, attributes, label_ids:)
     issuable.with_transaction_returning_status do
       if issuable.save
-        issuable.update_attributes(label_ids: label_ids)
+        issuable.update(label_ids: label_ids)
       end
     end
   end
@@ -182,7 +185,10 @@ class IssuableBaseService < BaseService
     old_associations = associations_before_update(issuable)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
-    params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
+    if labels_changing?(issuable.label_ids, label_ids)
+      params[:label_ids] = label_ids
+      issuable.touch
+    end
 
     if issuable.changed? || params.present?
       issuable.assign_attributes(params.merge(updated_by: current_user))

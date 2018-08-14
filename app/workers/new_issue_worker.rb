@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NewIssueWorker
   include ApplicationWorker
   include NewIssuable

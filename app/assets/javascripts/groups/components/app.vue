@@ -1,9 +1,10 @@
 <script>
 /* global Flash */
 
+import $ from 'jquery';
 import { s__ } from '~/locale';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import modal from '~/vue_shared/components/modal.vue';
+import DeprecatedModal from '~/vue_shared/components/deprecated_modal.vue';
 import { getParameterByName } from '~/lib/utils/common_utils';
 import { mergeUrlParams } from '~/lib/utils/url_utility';
 
@@ -14,7 +15,7 @@ import groupsComponent from './groups.vue';
 export default {
   components: {
     loadingIcon,
-    modal,
+    DeprecatedModal,
     groupsComponent,
   },
   props: {
@@ -51,8 +52,9 @@ export default {
     },
   },
   created() {
-    this.searchEmptyMessage = this.hideProjects ?
-      COMMON_STR.GROUP_SEARCH_EMPTY : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
+    this.searchEmptyMessage = this.hideProjects
+      ? COMMON_STR.GROUP_SEARCH_EMPTY
+      : COMMON_STR.GROUP_PROJECT_SEARCH_EMPTY;
 
     eventHub.$on('fetchPage', this.fetchPage);
     eventHub.$on('toggleChildren', this.toggleChildren);
@@ -71,22 +73,30 @@ export default {
     eventHub.$off('updateGroups', this.updateGroups);
   },
   methods: {
-    fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
-      return this.service.getGroups(parentId, page, filterGroupsBy, sortBy, archived)
-                .then((res) => {
-                  if (updatePagination) {
-                    this.updatePagination(res.headers);
-                  }
+    fetchGroups({
+      parentId,
+      page,
+      filterGroupsBy,
+      sortBy,
+      archived,
+      updatePagination,
+    }) {
+      return this.service
+        .getGroups(parentId, page, filterGroupsBy, sortBy, archived)
+        .then(res => {
+          if (updatePagination) {
+            this.updatePagination(res.headers);
+          }
 
-                  return res;
-                })
-                .then(res => res.json())
-                .catch(() => {
-                  this.isLoading = false;
-                  $.scrollTo(0);
+          return res;
+        })
+        .then(res => res.json())
+        .catch(() => {
+          this.isLoading = false;
+          $.scrollTo(0);
 
-                  Flash(COMMON_STR.FAILURE);
-                });
+          Flash(COMMON_STR.FAILURE);
+        });
     },
     fetchAllGroups() {
       const page = getParameterByName('page') || null;
@@ -102,7 +112,7 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then((res) => {
+      }).then(res => {
         this.isLoading = false;
         this.updateGroups(res, Boolean(filterGroupsBy));
       });
@@ -117,14 +127,18 @@ export default {
         sortBy,
         archived,
         updatePagination: true,
-      }).then((res) => {
+      }).then(res => {
         this.isLoading = false;
         $.scrollTo(0);
 
         const currentPath = mergeUrlParams({ page }, window.location.href);
-        window.history.replaceState({
-          page: currentPath,
-        }, document.title, currentPath);
+        window.history.replaceState(
+          {
+            page: currentPath,
+          },
+          document.title,
+          currentPath,
+        );
 
         this.updateGroups(res);
       });
@@ -134,14 +148,15 @@ export default {
       if (!parentGroup.isOpen) {
         if (parentGroup.children.length === 0) {
           parentGroup.isChildrenLoading = true;
-          // eslint-disable-next-line promise/catch-or-return
           this.fetchGroups({
             parentId: parentGroup.id,
-          }).then((res) => {
-            this.store.setGroupChildren(parentGroup, res);
-          }).catch(() => {
-            parentGroup.isChildrenLoading = false;
-          });
+          })
+            .then(res => {
+              this.store.setGroupChildren(parentGroup, res);
+            })
+            .catch(() => {
+              parentGroup.isChildrenLoading = false;
+            });
         } else {
           parentGroup.isOpen = true;
         }
@@ -153,7 +168,11 @@ export default {
       this.targetGroup = group;
       this.targetParentGroup = parentGroup;
       this.showModal = true;
-      this.groupLeaveConfirmationMessage = s__(`GroupsTree|Are you sure you want to leave the "${group.fullName}" group?`);
+      this.groupLeaveConfirmationMessage = s__(
+        `GroupsTree|Are you sure you want to leave the "${
+          group.fullName
+        }" group?`,
+      );
     },
     hideLeaveGroupModal() {
       this.showModal = false;
@@ -161,14 +180,15 @@ export default {
     leaveGroup() {
       this.showModal = false;
       this.targetGroup.isBeingRemoved = true;
-      this.service.leaveGroup(this.targetGroup.leavePath)
+      this.service
+        .leaveGroup(this.targetGroup.leavePath)
         .then(res => res.json())
-        .then((res) => {
+        .then(res => {
           $.scrollTo(0);
           this.store.removeGroup(this.targetGroup, this.targetParentGroup);
           Flash(res.notice, 'notice');
         })
-        .catch((err) => {
+        .catch(err => {
           let message = COMMON_STR.FAILURE;
           if (err.status === 403) {
             message = COMMON_STR.LEAVE_FORBIDDEN;
@@ -195,10 +215,10 @@ export default {
 <template>
   <div>
     <loading-icon
-      class="loading-animation prepend-top-20"
-      size="2"
       v-if="isLoading"
       :label="s__('GroupsTree|Loading groups')"
+      class="loading-animation prepend-top-20"
+      size="2"
     />
     <groups-component
       v-if="!isLoading"
@@ -207,12 +227,12 @@ export default {
       :search-empty-message="searchEmptyMessage"
       :page-info="pageInfo"
     />
-    <modal
-      v-if="showModal"
-      kind="warning"
+    <deprecated-modal
+      v-show="showModal"
       :primary-button-label="__('Leave')"
       :title="__('Are you sure?')"
       :text="groupLeaveConfirmationMessage"
+      kind="warning"
       @cancel="hideLeaveGroupModal"
       @submit="leaveGroup"
     />

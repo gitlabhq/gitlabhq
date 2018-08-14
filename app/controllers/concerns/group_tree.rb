@@ -1,21 +1,16 @@
 module GroupTree
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def render_group_tree(groups)
-    @groups = if params[:filter].present?
-                # We find the ancestors by ID of the search results here.
-                # Otherwise the ancestors would also have filters applied,
-                # which would cause them not to be preloaded.
-                group_ids = groups.search(params[:filter]).select(:id)
-                Gitlab::GroupHierarchy.new(Group.where(id: group_ids))
-                  .base_and_ancestors
-              else
-                # Only show root groups if no parent-id is given
-                groups.where(parent_id: params[:parent_id])
-              end
+    groups = groups.sort_by_attribute(@sort = params[:sort])
 
-    @groups = @groups.with_selects_for_list(archived: params[:archived])
-                .sort(@sort = params[:sort])
-                .page(params[:page])
+    groups = if params[:filter].present?
+               filtered_groups_with_ancestors(groups)
+             else
+               # If `params[:parent_id]` is `nil`, we will only show root-groups
+               groups.where(parent_id: params[:parent_id]).page(params[:page])
+             end
+
+    @groups = groups.with_selects_for_list(archived: params[:archived])
 
     respond_to do |format|
       format.html
@@ -27,5 +22,22 @@ module GroupTree
       end
     end
     # rubocop:enable Gitlab/ModuleWithInstanceVariables
+  end
+
+  def filtered_groups_with_ancestors(groups)
+    filtered_groups = groups.search(params[:filter]).page(params[:page])
+
+    if Group.supports_nested_groups?
+      # We find the ancestors by ID of the search results here.
+      # Otherwise the ancestors would also have filters applied,
+      # which would cause them not to be preloaded.
+      #
+      # Pagination needs to be applied before loading the ancestors to
+      # make sure ancestors are not cut off by pagination.
+      Gitlab::GroupHierarchy.new(Group.where(id: filtered_groups.select(:id)))
+        .base_and_ancestors
+    else
+      filtered_groups
+    end
   end
 end

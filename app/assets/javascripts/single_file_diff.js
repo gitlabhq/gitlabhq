@@ -1,5 +1,6 @@
-/* eslint-disable func-names, prefer-arrow-callback, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, one-var, one-var-declaration-per-line, consistent-return, no-param-reassign, max-len */
+/* eslint-disable func-names, prefer-arrow-callback, consistent-return, */
 
+import $ from 'jquery';
 import { __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import createFlash from './flash';
@@ -10,7 +11,7 @@ import syntaxHighlight from './syntax_highlight';
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
 const ERROR_HTML = '<div class="nothing-here-block"><i class="fa fa-warning"></i> Could not load diff</div>';
-const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <a class="click-to-expand">Click to expand it.</a></div>';
+const COLLAPSED_HTML = '<div class="nothing-here-block diff-collapsed">This diff is collapsed. <button class="click-to-expand btn btn-link">Click to expand it.</button></div>';
 
 export default class SingleFileDiff {
   constructor(file) {

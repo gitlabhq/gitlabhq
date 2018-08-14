@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 ##
 # Concern for setting Sidekiq settings for the low priority CI pipeline workers.
 #

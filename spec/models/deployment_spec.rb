@@ -16,6 +16,16 @@ describe Deployment do
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to validate_presence_of(:sha) }
 
+  describe 'modules' do
+    it_behaves_like 'AtomicInternalId' do
+      let(:internal_id_attribute) { :iid }
+      let(:instance) { build(:deployment) }
+      let(:scope) { :project }
+      let(:scope_attrs) { { project: instance.project } }
+      let(:usage) { :deployments }
+    end
+  end
+
   describe 'after_create callbacks' do
     let(:environment) { create(:environment) }
     let(:store) { Gitlab::EtagCaching::Store.new }
@@ -145,24 +155,6 @@ describe Deployment do
 
         it { is_expected.to eq(close_action) }
       end
-    end
-  end
-
-  describe '#stop_action?' do
-    subject { deployment.stop_action? }
-
-    context 'when no other actions' do
-      let(:deployment) { build(:deployment) }
-
-      it { is_expected.to be_falsey }
-    end
-
-    context 'when matching action is defined' do
-      let(:build) { create(:ci_build) }
-      let(:deployment) { FactoryBot.build(:deployment, deployable: build, on_stop: 'close_app') }
-      let!(:close_action) { create(:ci_build, :manual, pipeline: build.pipeline, name: 'close_app') }
-
-      it { is_expected.to be_truthy }
     end
   end
 end

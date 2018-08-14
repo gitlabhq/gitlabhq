@@ -12,7 +12,7 @@
       Add email address
     = form_for 'email', url: profile_emails_path do |f|
       .form-group
-        = f.label :email, class: 'label-light'
+        = f.label :email, class: 'label-bold'
         = f.text_field :email, class: 'form-control'
       .prepend-top-default
         = f.submit 'Add email address', class: 'btn btn-create'
@@ -29,23 +29,23 @@
           Your Public Email will be displayed on your public profile.
         %li
           All email addresses will be used to identify your commits.
-    %ul.well-list
+    %ul.content-list
       %li
         = render partial: 'shared/email_with_badge', locals: { email: @primary_email, verified: current_user.confirmed? }
-        %span.pull-right
-          %span.label.label-success Primary email
+        %span.float-right
+          %span.badge.badge-success Primary email
           - if @primary_email === current_user.public_email
-            %span.label.label-info Public email
+            %span.badge.badge-info Public email
           - if @primary_email === current_user.notification_email
-            %span.label.label-info Notification email
+            %span.badge.badge-info Notification email
       - @emails.each do |email|
         %li
           = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-          %span.pull-right
+          %span.float-right
             - if email.email === current_user.public_email
-              %span.label.label-info Public email
+              %span.badge.badge-info Public email
             - if email.email === current_user.notification_email
-              %span.label.label-info Notification email
+              %span.badge.badge-info Notification email
             - unless email.confirmed?
               - confirm_title = "#{email.confirmation_sent_at ? 'Resend' : 'Send'} confirmation email"
               = link_to confirm_title, resend_confirmation_instructions_profile_email_path(email), method: :put, class: 'btn btn-sm btn-warning prepend-left-10'

@@ -24,13 +24,21 @@ describe API::Settings, 'Settings' do
       expect(json_response['ecdsa_key_restriction']).to eq(0)
       expect(json_response['ed25519_key_restriction']).to eq(0)
       expect(json_response['circuitbreaker_failure_count_threshold']).not_to be_nil
+      expect(json_response['performance_bar_allowed_group_id']).to be_nil
+      expect(json_response['instance_statistics_visibility_private']).to be(false)
+      expect(json_response).not_to have_key('performance_bar_allowed_group_path')
+      expect(json_response).not_to have_key('performance_bar_enabled')
     end
   end
 
   describe "PUT /application/settings" do
+    let(:group) { create(:group) }
+
     context "custom repository storage type set in the config" do
       before do
-        storages = { 'custom' => 'tmp/tests/custom_repositories' }
+        # Add a possible storage to the config
+        storages = Gitlab.config.repositories.storages
+                     .merge({ 'custom' => 'tmp/tests/custom_repositories' })
         allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
       end
 
@@ -54,7 +62,11 @@ describe API::Settings, 'Settings' do
           dsa_key_restriction: 2048,
           ecdsa_key_restriction: 384,
           ed25519_key_restriction: 256,
-          circuitbreaker_check_interval: 2
+          circuitbreaker_check_interval: 2,
+          enforce_terms: true,
+          terms: 'Hello world!',
+          performance_bar_allowed_group_path: group.full_path,
+          instance_statistics_visibility_private: true
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -76,7 +88,28 @@ describe API::Settings, 'Settings' do
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
         expect(json_response['circuitbreaker_check_interval']).to eq(2)
+        expect(json_response['enforce_terms']).to be(true)
+        expect(json_response['terms']).to eq('Hello world!')
+        expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
+        expect(json_response['instance_statistics_visibility_private']).to be(true)
       end
+    end
+
+    it "supports legacy performance_bar_allowed_group_id" do
+      put api("/application/settings", admin),
+        performance_bar_allowed_group_id: group.full_path
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['performance_bar_allowed_group_id']).to eq(group.id)
+    end
+
+    it "supports legacy performance_bar_enabled" do
+      put api("/application/settings", admin),
+        performance_bar_enabled: false,
+        performance_bar_allowed_group_id: group.full_path
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['performance_bar_allowed_group_id']).to be_nil
     end
 
     context "missing koding_url value when koding_enabled is true" do

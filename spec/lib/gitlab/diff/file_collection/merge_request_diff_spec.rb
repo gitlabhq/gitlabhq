@@ -12,12 +12,21 @@ describe Gitlab::Diff::FileCollection::MergeRequestDiff do
     diff_files
   end
 
-  it 'does not files marked as undiffable in .gitattributes' do
+  it 'does not highlight files marked as undiffable in .gitattributes' do
     allow_any_instance_of(Gitlab::Diff::File).to receive(:diffable?).and_return(false)
 
     expect_any_instance_of(Gitlab::Diff::File).not_to receive(:highlighted_diff_lines)
 
     diff_files
+  end
+
+  it 'it uses a different cache key if diff line keys change' do
+    mr_diff = described_class.new(merge_request.merge_request_diff, diff_options: nil)
+    key = mr_diff.cache_key
+
+    stub_const('Gitlab::Diff::Line::SERIALIZE_KEYS', [:foo])
+
+    expect(mr_diff.cache_key).not_to eq(key)
   end
 
   shared_examples 'initializes a DiffCollection' do

@@ -1,5 +1,6 @@
 require 'cgi'
 require 'uri'
+require 'open3'
 
 module QA
   module Git
@@ -12,8 +13,7 @@ module QA
         end
       end
 
-      def location=(address)
-        @location = address
+      def uri=(address)
         @uri = URI(address)
       end
 
@@ -33,11 +33,15 @@ module QA
       end
 
       def clone(opts = '')
-        `git clone #{opts} #{@uri.to_s} ./ #{suppress_output}`
+        run_and_redact_credentials("git clone #{opts} #{@uri} ./")
       end
 
       def checkout(branch_name)
         `git checkout "#{branch_name}"`
+      end
+
+      def checkout_new_branch(branch_name)
+        `git checkout -b "#{branch_name}"`
       end
 
       def shallow_clone
@@ -55,7 +59,7 @@ module QA
       end
 
       def add_file(name, contents)
-        File.write(name, contents)
+        ::File.write(name, contents)
 
         `git add #{name}`
       end
@@ -65,7 +69,9 @@ module QA
       end
 
       def push_changes(branch = 'master')
-        `git push #{@uri.to_s} #{branch} #{suppress_output}`
+        output, _ = run_and_redact_credentials("git push #{@uri} #{branch}")
+
+        output
       end
 
       def commits
@@ -74,12 +80,10 @@ module QA
 
       private
 
-      def suppress_output
-        # If we're running as the default user, it's probably a temporary
-        # instance and output can be useful for debugging
-        return if @username == Runtime::User.default_name
-
-        "&> #{File::NULL}"
+      # Since the remote URL contains the credentials, and git occasionally
+      # outputs the URL. Note that stderr is redirected to stdout.
+      def run_and_redact_credentials(command)
+        Open3.capture2("#{command} 2>&1 | sed -E 's#://[^@]+@#://****@#g'")
       end
     end
   end

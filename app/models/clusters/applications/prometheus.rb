@@ -1,14 +1,17 @@
+# frozen_string_literal: true
+
 module Clusters
   module Applications
     class Prometheus < ActiveRecord::Base
       include PrometheusAdapter
 
-      VERSION = "2.0.0".freeze
+      VERSION = '6.7.3'.freeze
 
       self.table_name = 'clusters_applications_prometheus'
 
       include ::Clusters::Concerns::ApplicationCore
       include ::Clusters::Concerns::ApplicationStatus
+      include ::Clusters::Concerns::ApplicationVersion
       include ::Clusters::Concerns::ApplicationData
 
       default_value_for :version, VERSION
@@ -19,6 +22,14 @@ module Clusters
             project.find_or_initialize_service('prometheus').update(active: true)
           end
         end
+      end
+
+      def ready_status
+        [:installed]
+      end
+
+      def ready?
+        ready_status.include?(status_name)
       end
 
       def chart
@@ -35,9 +46,10 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(
-          name,
+          name: name,
+          version: VERSION,
           chart: chart,
-          values: values
+          files: files
         )
       end
 
@@ -49,6 +61,11 @@ module Clusters
         # ensures headers containing auth data are appended to original k8s client options
         options = kube_client.rest_client.options.merge(headers: kube_client.headers)
         RestClient::Resource.new(proxy_url, options)
+      rescue Kubeclient::HttpError
+        # If users have mistakenly set parameters or removed the depended clusters,
+        # `proxy_url` could raise an exception because gitlab can not communicate with the cluster.
+        # Since `PrometheusAdapter#can_query?` is eargely loaded on environement pages in gitlab,
+        # we need to silence the exceptions
       end
 
       private

@@ -12,8 +12,7 @@ Here are some things to keep in mind regarding test performance:
 - `FactoryBot.build(...)` and `.build_stubbed` are faster than `.create`.
 - Don't `create` an object when `build`, `build_stubbed`, `attributes_for`,
   `spy`, or `double` will do. Database persistence is slow!
-- Don't mark a feature as requiring JavaScript (through `@javascript` in
-  Spinach or `:js` in RSpec) unless it's _actually_ required for the test
+- Don't mark a feature as requiring JavaScript (through `:js` in RSpec) unless it's _actually_ required for the test
   to be valid. Headless browser testing is slow!
 
 [parallelization]: ci.md#test-suite-parallelization-on-the-ci
@@ -63,6 +62,8 @@ writing one](testing_levels.md#consider-not-writing-a-system-test)!
 
 Sometimes you may need to debug Capybara tests by observing browser behavior.
 
+#### Live debug
+
 You can pause Capybara and view the website on the browser by using the
 `live_debug` method in your spec. The current page will be automatically opened
 in your default browser.
@@ -89,6 +90,71 @@ Finished in 34.51 seconds (files took 0.76702 seconds to load)
 ```
 
 Note: `live_debug` only works on javascript enabled specs.
+
+#### Run `:js` spec in a visible browser
+
+Run the spec with `CHROME_HEADLESS=0`, e.g.:
+
+```
+CHROME_HEADLESS=0 bundle exec rspec some_spec.rb
+```
+
+The test will go by quickly, but this will give you an idea of what's happening.
+
+You can also add `byebug` or `binding.pry` to pause execution and [step through](../pry_debugging.md#stepping)
+the test.
+
+#### Screenshots
+
+We use the `capybara-screenshot` gem to automatically take a screenshot on
+failure. In CI you can download these files as job artifacts.
+
+Also, you can manually take screenshots at any point in a test by adding the
+methods below. Be sure to remove them when they are no longer needed! See
+https://github.com/mattheworiordan/capybara-screenshot#manual-screenshots for
+more.
+
+Add `screenshot_and_save_page` in a `:js` spec to screenshot what Capybara
+"sees", and save the page source.
+
+Add `screenshot_and_open_image` in a `:js` spec to screenshot what Capybara
+"sees", and automatically open the image.
+
+The HTML dumps created by this are missing CSS.
+This results in them looking very different from the actual application.
+There is a [small hack](https://gitlab.com/gitlab-org/gitlab-ce/snippets/1718469) to add CSS which makes debugging easier.
+
+### Fast unit tests
+
+Some classes are well-isolated from Rails and you should be able to test them
+without the overhead added by the Rails environment and Bundler's `:default`
+group's gem loading. In these cases, you can `require 'fast_spec_helper'`
+instead of `require 'spec_helper'` in your test file, and your test should run
+really fast since:
+
+- Gems loading is skipped
+- Rails app boot is skipped
+- gitlab-shell and Gitaly setup are skipped
+- Test repositories setup are skipped
+
+`fast_spec_helper` also support autoloading classes that are located inside the
+`lib/` directory. It means that as long as your class / module is using only
+code from the `lib/` directory you will not need to explicitly load any
+dependencies. `fast_spec_helper` also loads all ActiveSupport extensions,
+including core extensions that are commonly used in the Rails environment.
+
+Note that in some cases, you might still have to load some dependencies using
+`require_dependency` when a code is using gems or a dependency is not located
+in `lib/`.
+
+For example, if you want to test your code that is calling the
+`Gitlab::UntrustedRegexp` class, which under the hood uses `re2` library, you
+should either add `require_dependency 're2'` to files in your library that
+need `re2` gem, to make this requirement explicit, or you can add it to the
+spec itself, but the former is preferred.
+
+It takes around one second to load tests that are using `fast_spec_helper`
+instead of 30+ seconds in case of a regular `spec_helper`.
 
 ### `let` variables
 
@@ -179,6 +245,11 @@ describe "#==" do
   end
 end
 ```
+
+### Prometheus tests
+
+Prometheus metrics may be preserved from one test run to another. To ensure that metrics are
+reset before each example, add the `:prometheus` tag to the Rspec test.
 
 ### Matchers
 
@@ -281,14 +352,13 @@ All fixtures should be be placed under `spec/fixtures/`.
 
 RSpec config files are files that change the RSpec config (i.e.
 `RSpec.configure do |config|` blocks). They should be placed under
-`spec/support/config/`.
+`spec/support/`.
 
 Each file should be related to a specific domain, e.g.
-`spec/support/config/capybara.rb`, `spec/support/config/carrierwave.rb`, etc.
+`spec/support/capybara.rb`, `spec/support/carrierwave.rb`, etc.
 
-Helpers can be included in the `spec/support/config/rspec.rb` file. If a
-helpers module applies only to a certain kind of specs, it should add modifiers
-to the `config.include` call. For instance if
+If a helpers module applies only to a certain kind of specs, it should add
+modifiers to the `config.include` call. For instance if
 `spec/support/helpers/cycle_analytics_helpers.rb` applies to `:lib` and
 `type: :model` specs only, you would write the following:
 
@@ -298,6 +368,14 @@ RSpec.configure do |config|
   config.include Spec::Support::Helpers::CycleAnalyticsHelpers, type: :model
 end
 ```
+
+If a config file only consists of `config.include`, you can add these
+`config.include` directly in `spec/spec_helper.rb`.
+
+For very generic helpers, consider including them in the `spec/support/rspec.rb`
+file which is used by the `spec/fast_spec_helper.rb` file. See
+[Fast unit tests](#fast-unit-tests) for more details about the
+`spec/fast_spec_helper.rb` file.
 
 ---
 

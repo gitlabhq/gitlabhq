@@ -1,12 +1,13 @@
 # Web terminals
 
-> [Introduced][ce-7690] in GitLab 8.15. Only project masters and owners can
-  access web terminals.
+>
+[Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690)
+in GitLab 8.15. Only project maintainers and owners can access web terminals.
 
-With the introduction of the [Kubernetes project service][kubservice], GitLab
-gained the ability to store and use credentials for a Kubernetes cluster. One
-of the things it uses these credentials for is providing access to
-[web terminals](../../ci/environments.html#web-terminals) for environments.
+With the introduction of the [Kubernetes integration](../../user/project/clusters/index.md),
+GitLab gained the ability to store and use credentials for a Kubernetes cluster.
+One of the things it uses these credentials for is providing access to
+[web terminals](../../ci/environments.md#web-terminals) for environments.
 
 ## How it works
 
@@ -80,6 +81,3 @@ Terminal sessions use long-lived connections; by default, these may last
 forever. You can configure a maximum session time in the Admin area of your
 GitLab instance if you find this undesirable from a scalability or security
 point of view.
-
-[ce-7690]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/7690
-[kubservice]: ../../user/project/integrations/kubernetes.md

@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { refreshCurrentPage } from '../../lib/utils/url_utility';
 
 function showBlacklistType() {
@@ -24,7 +25,7 @@ export default function adminInit() {
 
   $('body').on('click', '.js-toggle-colors-link', (e) => {
     e.preventDefault();
-    $('.js-toggle-colors-container').toggle();
+    $('.js-toggle-colors-container').toggleClass('hide');
   });
 
   $('.log-tabs a').on('click', function logTabsClick(e) {

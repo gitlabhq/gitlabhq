@@ -1,5 +1,0 @@
----
-title: Fix Error 500 when viewing a commit with a GPG signature in Geo
-merge_request:
-author:
-type: fixed

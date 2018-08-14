@@ -10,22 +10,31 @@ are very appreciative of the work done by translators and proofreaders!
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Chinese Traditional
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
+  - Weizhe Ding - [GitLab](https://gitlab.com/d.weizhe), [Crowdin](https://crowdin.com/profile/d.weizhe)
+  - Yi-Jyun Pan - [GitLab](https://gitlab.com/pan93412), [Crowdin](https://crowdin.com/profile/pan93412)
 - Chinese Traditional, Hong Kong
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Dutch
+  -  Emily Hendle - [GitLab](https://gitlab.com/pundachan), [Crowdin](https://crowdin.com/profile/pandachan)
 - Esperanto
 - French
-  - Rémy Coutable - [GitLab](https://gitlab.com/rymai), [Crowdin](https://crowdin.com/profile/rymai)
+  - Davy Defaud - [GitLab](https://gitlab.com/DevDef), [Crowdin](https://crowdin.com/profile/DevDef)
 - German
+- Indonesian
+  - Ahmad Naufal Mukhtar - [GitLab](https://gitlab.com/anaufalm), [Crowdin](https://crowdin.com/profile/anaufalm)
 - Italian
   - Paolo Falomo - [GitLab](https://gitlab.com/paolofalomo), [Crowdin](https://crowdin.com/profile/paolo.falomo)
 - Japanese
+  - Yamana Tokiuji - [GitLab](https://gitlab.com/tokiuji), [Crowdin](https://crowdin.com/profile/yamana)
+  - Hiroyuki Sato - [GitLab](https://gitlab.com/hiroponz), [Crowdin](https://crowdin.com/profile/hiroponz)
 - Korean
+  - Chang-Ho Cha - [GitLab](https://gitlab.com/changho-cha), [Crowdin](https://crowdin.com/profile/zzazang)
   - Huang Tao - [GitLab](https://gitlab.com/htve), [Crowdin](https://crowdin.com/profile/htve)
 - Polish
   - Filip Mech - [GitLab](https://gitlab.com/mehenz), [Crowdin](https://crowdin.com/profile/mehenz)
 - Portuguese, Brazilian
   - Paulo George Gomes Bezerra - [GitLab](https://gitlab.com/paulobezerra), [Crowdin](https://crowdin.com/profile/paulogomes.rep)
+  - André Gama - [GitLab](https://gitlab.com/andregamma), [Crowdin](https://crowdin.com/profile/ToeOficial)
 - Russian
   - Nikita Grylov - [GitLab](https://gitlab.com/nixel2007), [Crowdin](https://crowdin.com/profile/nixel2007)
   - Alexy Lustin - [GitLab](https://gitlab.com/allustin), [Crowdin](https://crowdin.com/profile/lustin)

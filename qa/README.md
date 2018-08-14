@@ -26,7 +26,7 @@ and corresponding views / partials / selectors in CE / EE.
 
 Whenever `qa:selectors` job fails in your merge request, you are supposed to
 fix [page objects](qa/page/README.md). You should also trigger end-to-end tests
-using `package-qa` manual action, to test if everything works fine.
+using `package-and-qa` manual action, to test if everything works fine.
 
 ## How can I use it?
 
@@ -55,7 +55,7 @@ Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bin/qa Test::Instance http://localhost qa/specs/features/login/standard_spec.rb:3 --backtrace
+bin/qa Test::Instance http://localhost qa/specs/features/project/create_spec.rb:3 --backtrace
 ```
 
 ### Overriding the authenticated user

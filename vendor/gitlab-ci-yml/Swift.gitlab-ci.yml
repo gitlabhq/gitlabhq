@@ -1,5 +1,5 @@
 # Lifted from: https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/
-# This file assumes an own GitLab CI runner, setup on an OS X system.
+# This file assumes an own GitLab CI runner, setup on an macOS system.
 stages:
   - build
   - archive
@@ -8,11 +8,11 @@ build_project:
   stage: build
   script:
     - xcodebuild clean -project ProjectName.xcodeproj -scheme SchemeName | xcpretty
-    - xcodebuild test -project ProjectName.xcodeproj -scheme SchemeName -destination 'platform=iOS Simulator,name=iPhone 6s,OS=9.2' | xcpretty -s
+    - xcodebuild test -project ProjectName.xcodeproj -scheme SchemeName -destination 'platform=iOS Simulator,name=iPhone 8,OS=11.3' | xcpretty -s
   tags:
-    - ios_9-2
-    - xcode_7-2
-    - osx_10-11
+    - ios_11-3
+    - xcode_9-3
+    - macos_10-13
 
 archive_project:
   stage: archive
@@ -25,6 +25,6 @@ archive_project:
     paths:
     - build/ProjectName.ipa
   tags:
-    - ios_9-2
-    - xcode_7-2
-    - osx_10-11
+    - ios_11-3
+    - xcode_9-3
+    - macos_10-13

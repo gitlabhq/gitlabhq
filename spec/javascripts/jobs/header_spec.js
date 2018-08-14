@@ -13,11 +13,14 @@ describe('Job details header', () => {
     const threeWeeksAgo = new Date();
     threeWeeksAgo.setDate(threeWeeksAgo.getDate() - 21);
 
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+
     props = {
       job: {
         status: {
           group: 'failed',
-          icon: 'ci-status-failed',
+          icon: 'status_failed',
           label: 'failed',
           text: 'failed',
           details_path: 'path',
@@ -31,17 +34,31 @@ describe('Job details header', () => {
           email: 'foo@bar.com',
           avatar_url: 'link',
         },
-        started: '2018-01-08T09:48:27.319Z',
+        started: twoDaysAgo.toISOString(),
         new_issue_path: 'path',
       },
       isLoading: false,
     };
-
-    vm = mountComponent(HeaderComponent, props);
   });
 
   afterEach(() => {
     vm.$destroy();
+  });
+
+  describe('job reason', () => {
+    it('should not render the reason when reason is absent', () => {
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(false);
+    });
+
+    it('should render the reason when reason is present', () => {
+      props.job.callout_message = 'There is an unknown failure, please try again';
+
+      vm = mountComponent(HeaderComponent, props);
+
+      expect(vm.shouldRenderReason).toBe(true);
+    });
   });
 
   describe('triggered job', () => {
@@ -51,14 +68,17 @@ describe('Job details header', () => {
 
     it('should render provided job information', () => {
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
-      ).toEqual('failed Job #123 triggered 3 weeks ago by Foo');
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
+      ).toEqual('failed Job #123 triggered 2 days ago by Foo');
     });
 
     it('should render new issue link', () => {
-      expect(
-        vm.$el.querySelector('.js-new-issue').getAttribute('href'),
-      ).toEqual(props.job.new_issue_path);
+      expect(vm.$el.querySelector('.js-new-issue').getAttribute('href')).toEqual(
+        props.job.new_issue_path,
+      );
     });
   });
 
@@ -68,7 +88,10 @@ describe('Job details header', () => {
       vm = mountComponent(HeaderComponent, props);
 
       expect(
-        vm.$el.querySelector('.header-main-content').textContent.replace(/\s+/g, ' ').trim(),
+        vm.$el
+          .querySelector('.header-main-content')
+          .textContent.replace(/\s+/g, ' ')
+          .trim(),
       ).toEqual('failed Job #123 created 3 weeks ago by Foo');
     });
   });

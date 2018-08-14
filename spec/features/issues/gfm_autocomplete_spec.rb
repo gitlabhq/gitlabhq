@@ -1,13 +1,13 @@
 require 'rails_helper'
 
-feature 'GFM autocomplete', :js do
+describe 'GFM autocomplete', :js do
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }
   let(:issue)   { create(:issue, project: project) }
 
   before do
-    project.add_master(user)
+    project.add_maintainer(user)
     sign_in(user)
     visit project_issue_path(project, issue)
 

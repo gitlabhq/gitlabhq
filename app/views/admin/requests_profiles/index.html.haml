@@ -13,8 +13,8 @@
   - if @profiles.present?
     .prepend-top-default
       - @profiles.each do |path, profiles|
-        .panel.panel-default.panel-small
-          .panel-heading
+        .card.card-small
+          .card-header
             %code= path
           %ul.content-list
             - profiles.each do |profile|

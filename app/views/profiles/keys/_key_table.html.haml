@@ -1,7 +1,7 @@
 - is_admin = local_assigns.fetch(:admin, false)
 
 - if @keys.any?
-  %ul.well-list
+  %ul.content-list
     = render partial: 'profiles/keys/key', collection: @keys, locals: { is_admin: is_admin }
 - else
   %p.settings-message.text-center

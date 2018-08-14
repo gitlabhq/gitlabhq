@@ -8,10 +8,9 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
 
     return head(403) unless can?(current_user, :assign_runner, @runner)
 
-    path = runners_path(project)
-    runner_project = @runner.assign_to(project, current_user)
+    path = project_runners_path(project)
 
-    if runner_project.persisted?
+    if @runner.assign_to(project, current_user)
       redirect_to path
     else
       redirect_to path, alert: 'Failed adding runner to project'
@@ -22,6 +21,6 @@ class Projects::RunnerProjectsController < Projects::ApplicationController
     runner_project = project.runner_projects.find(params[:id])
     runner_project.destroy
 
-    redirect_to runners_path(project), status: 302
+    redirect_to project_runners_path(project), status: :found
   end
 end

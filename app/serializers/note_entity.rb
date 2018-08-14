@@ -1,13 +1,12 @@
+# frozen_string_literal: true
+
 class NoteEntity < API::Entities::Note
   include RequestAwareEntity
+  include NotesHelper
 
   expose :type
 
   expose :author, using: NoteUserEntity
-
-  expose :human_access do |note|
-    note.project.team.human_max_access(note.author_id)
-  end
 
   unexpose :note, as: :body
   expose :note
@@ -19,12 +18,21 @@ class NoteEntity < API::Entities::Note
 
   expose :current_user do
     expose :can_edit do |note|
-      Ability.can_edit_note?(request.current_user, note)
+      can?(current_user, :admin_note, note)
+    end
+
+    expose :can_award_emoji do |note|
+      can?(current_user, :award_emoji, note)
+    end
+
+    expose :can_resolve do |note|
+      note.resolvable? && can?(current_user, :resolve_note, note)
     end
   end
 
   expose :resolved?, as: :resolved
   expose :resolvable?, as: :resolvable
+
   expose :resolved_by, using: NoteUserEntity
 
   expose :system_note_icon_name, if: -> (note, _) { note.system? } do |note|
@@ -37,24 +45,13 @@ class NoteEntity < API::Entities::Note
 
   expose :emoji_awardable?, as: :emoji_awardable
   expose :award_emoji, if: -> (note, _) { note.emoji_awardable? }, using: AwardEmojiEntity
-  expose :toggle_award_path, if: -> (note, _) { note.emoji_awardable? } do |note|
-    if note.for_personal_snippet?
-      toggle_award_emoji_snippet_note_path(note.noteable, note)
-    else
-      toggle_award_emoji_project_note_path(note.project, note.id)
-    end
-  end
 
   expose :report_abuse_path do |note|
     new_abuse_report_path(user_id: note.author.id, ref_url: Gitlab::UrlBuilder.build(note))
   end
 
-  expose :path do |note|
-    if note.for_personal_snippet?
-      snippet_note_path(note.noteable, note)
-    else
-      project_note_path(note.project, note)
-    end
+  expose :noteable_note_url do |note|
+    noteable_note_url(note)
   end
 
   expose :resolve_path, if: -> (note, _) { note.part_of_discussion? && note.resolvable? } do |note|
@@ -66,7 +63,12 @@ class NoteEntity < API::Entities::Note
   end
 
   expose :attachment, using: NoteAttachmentEntity, if: -> (note, _) { note.attachment? }
-  expose :delete_attachment_path, if: -> (note, _) { note.attachment? } do |note|
-    delete_attachment_project_note_path(note.project, note)
+
+  expose :cached_markdown_version
+
+  private
+
+  def current_user
+    request.current_user
   end
 end

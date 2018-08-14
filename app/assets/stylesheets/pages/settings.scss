@@ -52,7 +52,7 @@
 
 .settings-content {
   max-height: 1px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
   // Keep the section from expanding when we scroll over it
@@ -70,7 +70,7 @@
     animation: none;
   }
 
-  @media(max-width: $screen-sm-max) {
+  @media(max-width: map-get($grid-breakpoints, md)-1) {
     padding-right: 20px;
   }
 
@@ -98,13 +98,9 @@
   }
 
   .bs-callout,
-  .checkbox:first-child,
-  .help-block {
+  .form-check:first-child,
+  .form-text.text-muted {
     margin-top: 0;
-  }
-
-  .label-light {
-    margin-bottom: 0;
   }
 }
 
@@ -131,12 +127,9 @@
   color: $gl-danger;
 }
 
-.service-settings .control-label {
-  padding-top: 0;
-}
-
 .integration-settings-form {
-  .well {
+  .card.card-body,
+  .info-well {
     padding: $gl-padding / 2;
     box-shadow: none;
   }
@@ -158,7 +151,7 @@
 }
 
 .visibility-level-setting {
-  .radio {
+  .form-check {
     margin-bottom: 10px;
 
     i.fa {
@@ -174,7 +167,7 @@
 
     .option-description,
     .option-disabled-reason {
-      margin-left: 29px;
+      margin-left: 30px;
       color: $project-option-descr-color;
     }
 
@@ -198,22 +191,39 @@
   }
 }
 
+.initialize-with-readme-setting {
+  .form-check {
+    margin-bottom: 10px;
+
+    .option-title {
+      font-weight: $gl-font-weight-normal;
+      display: inline-block;
+      color: $gl-text-color;
+    }
+
+    .option-description {
+      color: $project-option-descr-color;
+    }
+  }
+}
+
 .prometheus-metrics-monitoring {
-  .panel {
-    .panel-toggle {
+  .card {
+    .card-toggle {
       width: 14px;
     }
 
-    .badge {
-      font-size: inherit;
+    .badge.badge-pill {
+      font-size: 12px;
+      line-height: 12px;
     }
 
-    .panel-heading .badge-count {
+    .card-header .label-count {
       color: $white-light;
       background: $common-gray-dark;
     }
 
-    .panel-body {
+    .card-body {
       padding: 0;
     }
 
@@ -248,7 +258,7 @@
     li {
       padding: $gl-padding;
 
-      .badge {
+      .badge.badge-pill {
         margin-left: 5px;
         background: $badge-bg;
       }
@@ -261,25 +271,47 @@
   }
 }
 
-.modal-doorkeepr-auth,
-.doorkeeper-app-form {
-  .scope-description {
-    color: $theme-gray-700;
-  }
-}
-
 .modal-doorkeepr-auth {
   .modal-body {
     padding: $gl-padding;
   }
 }
 
-.doorkeeper-app-form {
-  .scope-description {
-    margin: 0 0 5px 17px;
+.deprecated-service {
+  cursor: default;
+}
+
+.personal-access-tokens-never-expires-label {
+  color: $note-disabled-comment-color;
+}
+
+.created-deploy-token-container {
+  .deploy-token-field {
+    width: 90%;
+    display: inline;
+  }
+
+  .btn-clipboard {
+    background-color: $white-light;
+    border: 1px solid $theme-gray-200;
+  }
+
+  .deploy-token-help-block {
+    display: block;
+    margin-bottom: 0;
   }
 }
 
-.deprecated-service {
-  cursor: default;
+.mirror-error-badge {
+  background-color: $error-bg;
+  border-radius: $border-radius-default;
+  color: $white-light;
+}
+
+.push-pull-table {
+  margin-top: 1em;
+
+  .mirror-action-buttons {
+    padding-right: 0;
+  }
 }

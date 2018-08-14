@@ -25,6 +25,7 @@ export default () => {
     const modalProps = {
       milestoneTitle: button.dataset.milestoneTitle,
       url: button.dataset.url,
+      groupName: button.dataset.groupName,
     };
     eventHub.$once('promoteMilestoneModal.requestStarted', onRequestStarted);
     eventHub.$emit('promoteMilestoneModal.props', modalProps);
@@ -54,6 +55,7 @@ export default () => {
         return {
           modalProps: {
             milestoneTitle: '',
+            groupName: '',
             url: '',
           },
         };

@@ -64,4 +64,41 @@ describe PreviewMarkdownService do
       expect(result[:commands]).to eq 'Sets time estimate to 2y.'
     end
   end
+
+  context 'commit description' do
+    let(:project) { create(:project, :repository) }
+    let(:commit) { project.commit }
+    let(:params) do
+      {
+        text: "My work\n/tag v1.2.3 Stable release",
+        quick_actions_target_type: 'Commit',
+        quick_actions_target_id: commit.id
+      }
+    end
+    let(:service) { described_class.new(project, user, params) }
+
+    it 'removes quick actions from text' do
+      result = service.execute
+
+      expect(result[:text]).to eq 'My work'
+    end
+
+    it 'explains quick actions effect' do
+      result = service.execute
+
+      expect(result[:commands]).to eq 'Tags this commit to v1.2.3 with "Stable release".'
+    end
+  end
+
+  it 'sets correct markdown engine' do
+    service = described_class.new(project, user, { markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION })
+    result  = service.execute
+
+    expect(result[:markdown_engine]).to eq :redcarpet
+
+    service = described_class.new(project, user, { markdown_version: CacheMarkdownField::CACHE_COMMONMARK_VERSION })
+    result  = service.execute
+
+    expect(result[:markdown_engine]).to eq :common_mark
+  end
 end

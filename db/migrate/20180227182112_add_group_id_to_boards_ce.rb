@@ -8,6 +8,7 @@ class AddGroupIdToBoardsCe < ActiveRecord::Migration
   def up
     return if group_id_exists?
 
+    # rubocop:disable Migration/AddConcurrentForeignKey
     add_column :boards, :group_id, :integer
     add_foreign_key :boards, :namespaces, column: :group_id, on_delete: :cascade
     add_concurrent_index :boards, :group_id
@@ -18,6 +19,7 @@ class AddGroupIdToBoardsCe < ActiveRecord::Migration
   def down
     return unless group_id_exists?
 
+    # rubocop:disable Migration/RemoveIndex
     remove_foreign_key :boards, column: :group_id
     remove_index :boards, :group_id if index_exists? :boards, :group_id
     remove_column :boards, :group_id

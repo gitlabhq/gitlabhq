@@ -53,6 +53,22 @@ To get started with the command line, please read through the
 
 Use GitLab's [file finder](../../../workflow/file_finder.md) to search for files in a repository.
 
+### Jupyter Notebook files
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/2508) in GitLab 9.1
+
+[Jupyter][jupyter] Notebook (previously IPython Notebook) files are used for
+interactive computing in many fields and contain a complete record of the
+user's sessions and include code, narrative text, equations and rich output.
+
+When added to a repository, Jupyter Notebooks with a `.ipynb` extension will be
+rendered to HTML when viewed.
+
+![Jupyter Notebook Rich Output](img/jupyter_notebook.png)
+
+Interactive features, including JavaScript plots, will not work when viewed in
+GitLab.
+
 ## Branches
 
 When you submit changes in a new [branch](branches/index.md), you create a new version
@@ -66,7 +82,7 @@ your implementation with your team.
 You can live preview changes submitted to a new branch with
 [Review Apps](../../../ci/review_apps/index.md).
 
-With [GitLab Starter](https://about.gitlab.com/products/), you can also request
+With [GitLab Starter](https://about.gitlab.com/pricing/), you can also request
 [approval](https://docs.gitlab.com/ee/user/project/merge_requests/merge_request_approvals.html) from your managers.
 
 To create, delete, and [branches](branches/index.md) via GitLab's UI:
@@ -116,8 +132,9 @@ Use GPG to [sign your commits](gpg_signed_commits/index.md).
 
 ## Repository size
 
-In GitLab.com, your repository size limit it 10GB. For other instances,
-the repository size is limited by your system administrators.
+On GitLab.com, your [repository size limit is 10GB](../../gitlab_com/index.md#repository-size-limit)
+(including LFS). For other instances, the repository size is limited by your
+system administrators.
 
 You can also [reduce a repository size using Git](reducing_the_repo_size_using_git.md).
 
@@ -148,13 +165,23 @@ Find it under your project's **Repository > Compare**.
 
 ## Locked files
 
-> Available in [GitLab Premium](https://about.gitlab.com/products/).
+> Available in [GitLab Premium](https://about.gitlab.com/pricing/).
 
 Lock your files to prevent any conflicting changes.
 
 [File Locking](https://docs.gitlab.com/ee/user/project/file_lock.html) is available only in
-[GitLab Premium](https://about.gitlab.com/products/).
+[GitLab Premium](https://about.gitlab.com/pricing/).
 
 ## Repository's API
 
 You can access your repos via [repository API](../../../api/repositories.md).
+
+## Clone in Apple Xcode
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/45820) in GitLab 11.0
+
+Projects that contain a `.xcodeproj` or `.xcworkspace` directory can now be cloned
+in Xcode using the new **Open in Xcode** button, located next to the Git URL
+used for cloning your project. The button is only shown on macOS.
+
+[jupyter]: https://jupyter.org

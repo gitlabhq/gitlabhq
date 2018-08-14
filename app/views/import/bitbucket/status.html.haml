@@ -1,22 +1,22 @@
-- page_title 'Bitbucket import'
-- header_title 'Projects', root_path
+- page_title _('Bitbucket import')
+- header_title _('Projects'), root_path
 
 %h3.page-title
   %i.fa.fa-bitbucket
-  Import projects from Bitbucket
+  = _('Import projects from Bitbucket')
 
 - if @repos.any?
   %p.light
-    Select projects you want to import.
+    = _('Select projects you want to import.')
   %hr
   %p
   - if @incompatible_repos.any?
     = button_tag class: 'btn btn-import btn-success js-import-all' do
-      Import all compatible projects
+      = _('Import all compatible projects')
       = icon('spinner spin', class: 'loading-icon')
   - else
     = button_tag class: 'btn btn-import btn-success js-import-all' do
-      Import all projects
+      = _('Import all projects')
       = icon('spinner spin', class: 'loading-icon')
 
 .table-responsive
@@ -26,9 +26,9 @@
     %colgroup.import-jobs-status-col
     %thead
       %tr
-        %th From Bitbucket
-        %th To GitLab
-        %th Status
+        %th= _('From Bitbucket')
+        %th= _('To GitLab')
+        %th= _('Status')
     %tbody
       - @already_added_projects.each do |project|
         %tr{ id: "project_#{project.id}", class: "#{project_status_css_class(project.import_status)}" }
@@ -40,10 +40,10 @@
             - if project.import_status == 'finished'
               %span
                 %i.fa.fa-check
-                done
+                = _('done')
             - elsif project.import_status == 'started'
               %i.fa.fa-spinner.fa-spin
-              started
+              = _('started')
             - else
               = project.human_import_status_name
 
@@ -54,18 +54,19 @@
           %td.import-target
             %fieldset.row
             .input-group
-              .project-path.input-group-btn
+              .project-path.input-group-prepend
                 - if current_user.can_select_namespace?
                   - selected = params[:namespace_id] || :current_user
                   - opts = current_user.can_create_group? ? { extra_group: Group.new(name: repo.owner, path: repo.owner) } : {}
-                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'select2 js-select-namespace', tabindex: 1 }
+                  = select_tag :namespace_id, namespaces_options(selected, opts.merge({ display_path: true })), { class: 'input-group-text select2 js-select-namespace', tabindex: 1 }
                 - else
-                  = text_field_tag :path, current_user.namespace_path, class: "input-large form-control", tabindex: 1, disabled: true
-              %span.input-group-addon /
+                  = text_field_tag :path, current_user.namespace_path, class: "input-group-text input-large form-control", tabindex: 1, disabled: true
+              %span.input-group-prepend
+                .input-group-text /
               = text_field_tag :path, repo.name, class: "input-mini form-control", tabindex: 2, autofocus: true, required: true
           %td.import-actions.job-status
             = button_tag class: 'btn btn-import js-add-to-import' do
-              Import
+              = _('Import')
               = icon('spinner spin', class: 'loading-icon')
       - @incompatible_repos.each do |repo|
         %tr{ id: "repo_#{repo.owner}___#{repo.slug}" }
@@ -73,16 +74,13 @@
             = link_to repo.full_name, "https://bitbucket.org/#{repo.full_name}", target: '_blank', rel: 'noopener noreferrer'
           %td.import-target
           %td.import-actions-job-status
-            = label_tag 'Incompatible Project', nil, class: 'label label-danger'
+            = label_tag _('Incompatible Project'), nil, class: 'label badge-danger'
 
 - if @incompatible_repos.any?
   %p
-    One or more of your Bitbucket projects cannot be imported into GitLab
-    directly because they use Subversion or Mercurial for version control,
-    rather than Git. Please convert
-    = link_to 'them to Git,', 'https://www.atlassian.com/git/tutorials/migrating-overview'
-    and go through the
-    = link_to 'import flow', status_import_bitbucket_path
-    again.
+    = _("One or more of your Bitbucket projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git.")
+    - link_to_git = link_to(_('Git'), 'https://www.atlassian.com/git/tutorials/migrating-overview')
+    - link_to_import_flow = link_to(_('import flow'), status_import_bitbucket_path)
+    = _("Please convert them to %{link_to_git}, and go through the %{link_to_import_flow} again.").html_safe % { link_to_git: link_to_git, link_to_import_flow: link_to_import_flow }
 
 .js-importer-status{ data: { jobs_import_path: "#{jobs_import_bitbucket_path}", import_path: "#{import_bitbucket_path}" } }

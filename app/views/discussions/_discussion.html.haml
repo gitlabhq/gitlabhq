@@ -8,12 +8,12 @@
       .discussion.js-toggle-container{ data: { discussion_id: discussion.id } }
         .discussion-header
           .discussion-actions
-            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button" }
+            %button.note-action-button.discussion-toggle-button.js-toggle-button{ type: "button", class: ("js-toggle-lazy-diff" unless expanded) }
               - if expanded
                 = icon("chevron-up")
               - else
                 = icon("chevron-down")
-              Toggle discussion
+              = _('Toggle discussion')
           = link_to_member(@project, discussion.author, avatar: false)
 
           .inline.discussion-headline-light
@@ -51,5 +51,5 @@
           - if discussion.diff_discussion? && discussion.diff_file
             = render "discussions/diff_with_notes", discussion: discussion
           - else
-            .panel.panel-default
+            .card
               = render partial: "discussions/notes", locals: { discussion: discussion, disable_collapse_class: true }

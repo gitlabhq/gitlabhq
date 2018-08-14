@@ -1,13 +1,16 @@
-/* eslint-disable no-useless-return, func-names, space-before-function-paren, wrap-iife, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty, no-return-assign, camelcase, prefer-spread */
+/* eslint-disable no-useless-return, func-names, no-var, no-underscore-dangle, prefer-arrow-callback, max-len, one-var, no-unused-vars, one-var-declaration-per-line, prefer-template, no-new, consistent-return, object-shorthand, comma-dangle, no-shadow, no-param-reassign, brace-style, vars-on-top, quotes, no-lonely-if, no-else-return, dot-notation, no-empty */
 /* global Issuable */
 /* global ListLabel */
+
+import $ from 'jquery';
 import _ from 'underscore';
-import { __ } from './locale';
+import { sprintf, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 import flash from './flash';
+import ModalStore from './boards/stores/modal_store';
 
 export default class LabelsSelect {
   constructor(els, options = {}) {
@@ -36,7 +39,7 @@ export default class LabelsSelect {
       showNo = $dropdown.data('showNo');
       showAny = $dropdown.data('showAny');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('defaultLabel');
+      defaultLabel = $dropdown.data('defaultLabel') || __('Label');
       abilityName = $dropdown.data('abilityName');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
@@ -53,7 +56,7 @@ export default class LabelsSelect {
         .map(function () {
           return this.value;
         }).get();
-      const handleClick = options.handleClick;
+      const { handleClick } = options;
 
       $sidebarLabelTooltip.tooltip();
 
@@ -80,7 +83,7 @@ export default class LabelsSelect {
         $dropdown.trigger('loading.gl.dropdown');
         axios.put(issueUpdateURL, data)
           .then(({ data }) => {
-            var labelCount, template, labelTooltipTitle, labelTitles;
+            var labelCount, template, labelTooltipTitle, labelTitles, formattedLabels;
             $loading.fadeOut();
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
@@ -112,13 +115,12 @@ export default class LabelsSelect {
               labelTooltipTitle = labelTitles.join(', ');
             }
             else {
-              labelTooltipTitle = '';
-              $sidebarLabelTooltip.tooltip('destroy');
+              labelTooltipTitle = __('Labels');
             }
 
             $sidebarLabelTooltip
               .attr('title', labelTooltipTitle)
-              .tooltip('fixTitle');
+              .tooltip('_fixTitle');
 
             $('.has-tooltip', $value).tooltip({
               container: 'body'
@@ -213,7 +215,7 @@ export default class LabelsSelect {
           }
           else {
             if (label.color != null) {
-              color = label.color[0];
+              [color] = label.color;
             }
           }
           if (color) {
@@ -241,21 +243,22 @@ export default class LabelsSelect {
           var $dropdownParent = $dropdown.parent();
           var $dropdownInputField = $dropdownParent.find('.dropdown-input-field');
           var isSelected = el !== null ? el.hasClass('is-active') : false;
-          var title = selected.title;
+
+          var title = selected ? selected.title : null;
           var selectedLabels = this.selected;
 
           if ($dropdownInputField.length && $dropdownInputField.val().length) {
             $dropdownParent.find('.dropdown-input-clear').trigger('click');
           }
 
-          if (selected.id === 0) {
+          if (selected && selected.id === 0) {
             this.selected = [];
             return 'No Label';
           }
           else if (isSelected) {
             this.selected.push(title);
           }
-          else {
+          else if (!isSelected && title) {
             var index = this.selected.indexOf(title);
             this.selected.splice(index, 1);
           }
@@ -264,7 +267,10 @@ export default class LabelsSelect {
             return selectedLabels;
           }
           else if (selectedLabels.length) {
-            return selectedLabels[0] + " +" + (selectedLabels.length - 1) + " more";
+            return sprintf(__('%{firstLabel} +%{labelCount} more'), {
+              firstLabel: selectedLabels[0],
+              labelCount: selectedLabels.length - 1
+            });
           }
           else {
             return defaultLabel;
@@ -348,7 +354,7 @@ export default class LabelsSelect {
           }
 
           if ($dropdown.closest('.add-issues-modal').length) {
-            boardsModel = gl.issueBoards.ModalStore.store.filter;
+            boardsModel = ModalStore.store.filter;
           }
 
           if (boardsModel) {
@@ -380,7 +386,7 @@ export default class LabelsSelect {
               }));
             }
             else {
-              var labels = gl.issueBoards.BoardsStore.detail.issue.labels;
+              var { labels } = gl.issueBoards.BoardsStore.detail.issue;
               labels = labels.filter(function (selectedLabel) {
                 return selectedLabel.id !== label.id;
               });
@@ -406,6 +412,14 @@ export default class LabelsSelect {
             }
           }
         },
+        opened: function(e) {
+          if ($dropdown.hasClass('js-issue-board-sidebar')) {
+            const previousSelection = $dropdown.attr('data-selected');
+            this.selected = previousSelection ? previousSelection.split(',') : [];
+            $dropdown.data('glDropdown').updateLabel();
+          }
+        },
+        preserveContext: true,
       });
 
       // Set dropdown data
@@ -424,7 +438,7 @@ export default class LabelsSelect {
     const tpl = _.template([
       '<% _.each(labels, function(label){ %>',
       '<a href="<%- issueUpdateURL.slice(0, issueUpdateURL.lastIndexOf("/")) %>?label_name[]=<%- encodeURIComponent(label.title) %>">',
-      '<span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
+      '<span class="badge label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;">',
       '<%- label.title %>',
       '</span>',
       '</a>',

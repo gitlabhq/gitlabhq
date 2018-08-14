@@ -21,6 +21,7 @@ module Gitlab
       STAGES = {
         issues_and_diff_notes: Stage::ImportIssuesAndDiffNotesWorker,
         notes: Stage::ImportNotesWorker,
+        lfs_objects: Stage::ImportLfsObjectsWorker,
         finish: Stage::FinishImportWorker
       }.freeze
 
@@ -63,11 +64,10 @@ module Gitlab
       end
 
       def find_project(id)
-        # We only care about the import JID so we can refresh it. We also only
-        # want the project if it hasn't been marked as failed yet. It's possible
-        # the import gets marked as stuck when jobs of the current stage failed
-        # somehow.
-        Project.select(:import_jid).import_started.find_by(id: id)
+        # TODO: Only select the JID
+        # This is due to the fact that the JID could be present in either the project record or
+        # its associated import_state record
+        Project.import_started.find_by(id: id)
       end
     end
   end

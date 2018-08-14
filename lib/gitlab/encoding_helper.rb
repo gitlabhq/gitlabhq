@@ -65,17 +65,17 @@ module Gitlab
         clean(message)
       end
     rescue ArgumentError
-      return nil
+      nil
     end
 
-    def encode_binary(s)
-      return "" if s.nil?
+    def encode_binary(str)
+      return "" if str.nil?
 
-      s.dup.force_encoding(Encoding::ASCII_8BIT)
+      str.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 
-    def binary_stringio(s)
-      StringIO.new(s || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+    def binary_stringio(str)
+      StringIO.new(str || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
     end
 
     private
@@ -90,7 +90,7 @@ module Gitlab
     end
 
     def clean(message)
-      message.encode("UTF-16BE", undef: :replace, invalid: :replace, replace: "")
+      message.encode("UTF-16BE", undef: :replace, invalid: :replace, replace: "".encode("UTF-16BE"))
         .encode("UTF-8")
         .gsub("\0".encode("UTF-8"), "")
     end

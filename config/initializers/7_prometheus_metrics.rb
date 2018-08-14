@@ -25,7 +25,7 @@ Sidekiq.configure_server do |config|
   end
 end
 
-if Gitlab::Metrics.prometheus_metrics_enabled?
+if !Rails.env.test? && Gitlab::Metrics.prometheus_metrics_enabled?
   unless Sidekiq.server?
     Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
   end

@@ -9,7 +9,7 @@ describe Projects::CommitController do
 
   before do
     sign_in(user)
-    project.add_master(user)
+    project.add_maintainer(user)
   end
 
   describe 'GET show' do
@@ -79,41 +79,18 @@ describe Projects::CommitController do
     end
 
     describe "as diff" do
-      include_examples "export as", :diff
-      let(:format) { :diff }
+      it "triggers workhorse to serve the request" do
+        go(id: commit.id, format: :diff)
 
-      it "should really only be a git diff" do
-        go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format)
-
-        expect(response.body).to start_with("diff --git")
-      end
-
-      it "is only be a git diff without whitespace changes" do
-        go(id: '66eceea0db202bb39c4e445e8ca28689645366c5', format: format, w: 1)
-
-        expect(response.body).to start_with("diff --git")
-
-        # without whitespace option, there are more than 2 diff_splits for other formats
-        diff_splits = assigns(:diffs).diff_files.first.diff.diff.split("\n")
-        expect(diff_splits.length).to be <= 2
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-diff:")
       end
     end
 
     describe "as patch" do
-      include_examples "export as", :patch
-      let(:format) { :patch }
-      let(:commit2) { project.commit('498214de67004b1da3d820901307bed2a68a8ef6') }
-
-      it "is a git email patch" do
-        go(id: commit2.id, format: format)
-
-        expect(response.body).to start_with("From #{commit2.id}")
-      end
-
       it "contains a git diff" do
-        go(id: commit2.id, format: format)
+        go(id: commit.id, format: :patch)
 
-        expect(response.body).to match(/^diff --git/)
+        expect(response.headers[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with("git-format-patch:")
       end
     end
 

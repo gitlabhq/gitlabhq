@@ -27,7 +27,7 @@ module CommitsHelper
     return unless @project && @ref
 
     # Add the root project link and the arrow icon
-    crumbs = content_tag(:li) do
+    crumbs = content_tag(:li, class: 'breadcrumb-item') do
       link_to(
         @project.path,
         project_commits_path(@project, @ref)
@@ -38,7 +38,7 @@ module CommitsHelper
       parts = @path.split('/')
 
       parts.each_with_index do |part, i|
-        crumbs << content_tag(:li) do
+        crumbs << content_tag(:li, class: 'breadcrumb-item') do
           # The text is just the individual part, but the link needs all the parts before it
           link_to(
             part,
@@ -62,8 +62,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
-    link_to(url, class: 'label label-gray ref-name branch-link') do
-      sprite_icon('fork', size: 16, css_class: 'fork-svg') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name branch-link') do
+      sprite_icon('branch', size: 12, css_class: 'fork-svg') + "#{text}"
     end
   end
 
@@ -76,8 +76,8 @@ module CommitsHelper
 
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
-    link_to(url, class: 'label label-gray ref-name') do
-      icon('tag', class: 'append-right-5') + "#{text}"
+    link_to(url, class: 'badge badge-gray ref-name') do
+      sprite_icon('tag', size: 12, css_class: 'append-right-5 vertical-align-middle') + "#{text}"
     end
   end
 
@@ -93,25 +93,18 @@ module CommitsHelper
     return unless current_controller?(:commits)
 
     if @path.blank?
-      return link_to(
-        _("Browse Files"),
-        project_tree_path(project, commit),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, commit)
+      tooltip = _("Browse Files")
     elsif @repo.blob_at(commit.id, @path)
-      return link_to(
-        _("Browse File"),
-        project_blob_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_blob_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse File")
     elsif @path.present?
-      return link_to(
-        _("Browse Directory"),
-        project_tree_path(project,
-                                    tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      url = project_tree_path(project, tree_join(commit.id, @path))
+      tooltip = _("Browse Directory")
+    end
+
+    link_to url, class: "btn btn-default has-tooltip", title: tooltip, data: { container: "body" } do
+      sprite_icon('folder-open')
     end
   end
 
@@ -152,15 +145,14 @@ module CommitsHelper
         person_name
       end
 
-    options = {
-      class: "commit-#{options[:source]}-link has-tooltip",
-      title: source_email
+    link_options = {
+      class: "commit-#{options[:source]}-link"
     }
 
     if user.nil?
-      mail_to(source_email, text, options)
+      mail_to(source_email, text, link_options)
     else
-      link_to(text, user_path(user), options)
+      link_to(text, user_path(user), link_options)
     end
   end
 
@@ -170,7 +162,7 @@ module CommitsHelper
     tooltip = "#{action.capitalize} this #{commit.change_type_title(current_user)} in a new merge request" if has_tooltip
     btn_class = "btn btn-#{btn_class}" unless btn_class.nil?
 
-    if can_collaborate_with_project?
+    if can_collaborate_with_project?(@project)
       link_to action.capitalize, "#modal-#{action}-commit", 'data-toggle' => 'modal', 'data-container' => 'body', title: (tooltip if has_tooltip), class: "#{btn_class} #{'has-tooltip' if has_tooltip}"
     elsif can?(current_user, :fork_project, @project)
       continue_params = {

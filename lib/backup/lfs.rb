@@ -2,12 +2,12 @@ require 'backup/files'
 
 module Backup
   class Lfs < Files
-    def initialize
-      super('lfs', Settings.lfs.storage_path)
-    end
+    attr_reader :progress
 
-    def create_files_dir
-      Dir.mkdir(app_files_dir, 0700)
+    def initialize(progress)
+      @progress = progress
+
+      super('lfs', Settings.lfs.storage_path)
     end
   end
 end

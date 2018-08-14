@@ -1,70 +1,78 @@
 <script>
-  /**
-  * Renders the stop "button" that allows stop an environment.
-  * Used in environments table.
-  */
-  import eventHub from '../event_hub';
-  import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-  import tooltip from '../../vue_shared/directives/tooltip';
+/**
+ * Renders the stop "button" that allows stop an environment.
+ * Used in environments table.
+ */
 
-  export default {
-    components: {
-      loadingIcon,
+import $ from 'jquery';
+import Icon from '~/vue_shared/components/icon.vue';
+import { s__ } from '~/locale';
+import eventHub from '../event_hub';
+import LoadingButton from '../../vue_shared/components/loading_button.vue';
+import tooltip from '../../vue_shared/directives/tooltip';
+
+export default {
+  components: {
+    Icon,
+    LoadingButton,
+  },
+
+  directives: {
+    tooltip,
+  },
+
+  props: {
+    environment: {
+      type: Object,
+      required: true,
     },
+  },
 
-    directives: {
-      tooltip,
+  data() {
+    return {
+      isLoading: false,
+    };
+  },
+
+  computed: {
+    title() {
+      return s__('Environments|Stop environment');
     },
+  },
 
-    props: {
-      stopUrl: {
-        type: String,
-        default: '',
-      },
+  mounted() {
+    eventHub.$on('stopEnvironment', this.onStopEnvironment);
+  },
+
+  beforeDestroy() {
+    eventHub.$off('stopEnvironment', this.onStopEnvironment);
+  },
+
+  methods: {
+    onClick() {
+      $(this.$el).tooltip('dispose');
+      eventHub.$emit('requestStopEnvironment', this.environment);
     },
-
-    data() {
-      return {
-        isLoading: false,
-      };
+    onStopEnvironment(environment) {
+      if (this.environment.id === environment.id) {
+        this.isLoading = true;
+      }
     },
-
-    computed: {
-      title() {
-        return 'Stop';
-      },
-    },
-
-    methods: {
-      onClick() {
-        // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to stop this environment?')) {
-          this.isLoading = true;
-
-          $(this.$el).tooltip('destroy');
-
-          eventHub.$emit('postAction', this.stopUrl);
-        }
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
-  <button
+  <loading-button
     v-tooltip
-    type="button"
-    class="btn stop-env-link hidden-xs hidden-sm"
-    data-container="body"
-    @click="onClick"
-    :disabled="isLoading"
+    :loading="isLoading"
     :title="title"
     :aria-label="title"
+    container-class="btn btn-danger d-none d-sm-none d-md-block"
+    data-container="body"
+    data-toggle="modal"
+    data-target="#stop-environment-modal"
+    @click="onClick"
   >
-    <i
-      class="fa fa-stop stop-env-icon"
-      aria-hidden="true"
-    >
-    </i>
-    <loading-icon v-if="isLoading" />
-  </button>
+    <icon name="stop"/>
+  </loading-button>
 </template>

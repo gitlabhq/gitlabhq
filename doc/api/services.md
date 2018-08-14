@@ -1,6 +1,6 @@
 # Services API
 
->**Note:** This API requires an access token with Master or Owner permissions
+>**Note:** This API requires an access token with Maintainer or Owner permissions
 
 ## Asana
 
@@ -405,6 +405,13 @@ GET /projects/:id/services/flowdock
 
 Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.
 
+CAUTION: **Warning:**
+Gemnasium service integration has been deprecated in GitLab 11.0. Gemnasium has been
+[acquired by GitLab](https://about.gitlab.com/press/releases/2018-01-30-gemnasium-acquisition.html)
+in January 2018 and since May 15, 2018, the service provided by Gemnasium is no longer available.
+You can [migrate from Gemnasium to GitLab](https://docs.gitlab.com/ee/user/project/import/gemnasium.html)
+to keep monitoring your dependencies.
+
 ### Create/Edit Gemnasium service
 
 Set Gemnasium service for a project.
@@ -434,6 +441,54 @@ Get Gemnasium service settings for a project.
 
 ```
 GET /projects/:id/services/gemnasium
+```
+
+## Hangouts Chat
+
+Google GSuite team collaboration tool.
+
+>**Note:** This service was [introduced in v11.2](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20290)
+
+### Create/Edit Hangouts Chat service
+
+Set Hangouts Chat service for a project.
+
+```
+PUT /projects/:id/services/hangouts_chat
+```
+
+>**Note:** Specific event parameters (e.g. `push_events` flag) were [introduced in v10.4][11435]
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Hangouts Chat webhook. e.g. https://chat.googleapis.com/v1/spaces... |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+
+### Delete Hangouts Chat service
+
+Delete Hangouts Chat service for a project.
+
+```
+DELETE /projects/:id/services/hangouts_chat
+```
+
+### Get Hangouts Chat service settings
+
+Get Hangouts Chat service settings for a project.
+
+```
+GET /projects/:id/services/hangouts_chat
 ```
 
 ## HipChat
@@ -968,7 +1023,7 @@ Group Chat Software
 Set Microsoft Teams service for a project.
 
 ```
-PUT /projects/:id/services/microsoft_teams
+PUT /projects/:id/services/microsoft-teams
 ```
 
 Parameters:
@@ -982,7 +1037,7 @@ Parameters:
 Delete Microsoft Teams service for a project.
 
 ```
-DELETE /projects/:id/services/microsoft_teams
+DELETE /projects/:id/services/microsoft-teams
 ```
 
 ### Get Microsoft Teams service settings
@@ -990,7 +1045,7 @@ DELETE /projects/:id/services/microsoft_teams
 Get Microsoft Teams service settings for a project.
 
 ```
-GET /projects/:id/services/microsoft_teams
+GET /projects/:id/services/microsoft-teams
 ```
 
 ## Mattermost notifications

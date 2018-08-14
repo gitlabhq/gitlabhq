@@ -240,3 +240,31 @@ sudo gitlab-rake gitlab:tcp_check[example.com,80]
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:tcp_check[example.com,80] RAILS_ENV=production
 ```
+
+## Clear exclusive lease (DANGER)
+
+GitLab uses a shared lock mechanism: `ExclusiveLease` to prevent simultaneous operations
+in a shared resource. An example is running periodic garbage collection on repositories.
+
+In very specific situations, a operation locked by an Exclusive Lease can fail without
+releasing the lock. If you can't wait for it to expire, you can run this task to manually
+clear it.
+
+To clear all exclusive leases:
+
+DANGER: **DANGER**: 
+Don't run it while GitLab or Sidekiq is running
+
+```bash
+sudo gitlab-rake gitlab:exclusive_lease:clear
+```
+
+To specify a lease `type` or lease `type + id`, specify a scope:
+
+```bash
+# to clear all leases for repository garbage collection:
+sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:*]
+
+# to clear a lease for repository garbage collection in a specific project: (id=4)
+sudo gitlab-rake gitlab:exclusive_lease:clear[project_housekeeping:4]
+```

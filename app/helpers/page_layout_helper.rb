@@ -39,7 +39,7 @@ module PageLayoutHelper
   end
 
   def favicon
-    Rails.env.development? ? 'favicon-blue.ico' : 'favicon.ico'
+    Gitlab::Favicon.main
   end
 
   def page_image

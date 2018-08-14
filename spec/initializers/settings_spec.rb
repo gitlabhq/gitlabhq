@@ -1,5 +1,5 @@
 require 'spec_helper'
-require_relative '../../config/initializers/1_settings'
+require_relative '../../config/initializers/1_settings' unless defined?(Settings)
 
 describe Settings do
   describe '#ldap' do

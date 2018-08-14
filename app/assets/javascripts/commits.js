@@ -1,3 +1,4 @@
+import $ from 'jquery';
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
@@ -44,7 +45,7 @@ export default class CommitsList {
         this.content.fadeTo('fast', 1.0);
 
         // Change url so if user reload a page - search results are saved
-        history.replaceState({
+        window.history.replaceState({
           page: commitsUrl,
         }, document.title, commitsUrl);
       })

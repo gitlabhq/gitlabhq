@@ -1,5 +1,0 @@
----
-title: Prevent trace artifact migration to incur data loss
-merge_request: 17313
-author:
-type: fixed

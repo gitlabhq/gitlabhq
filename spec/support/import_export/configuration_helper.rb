@@ -9,8 +9,8 @@ module ConfigurationHelper
   end
 
   def relation_class_for_name(relation_name)
-    relation_name = Gitlab::ImportExport::RelationFactory::OVERRIDES[relation_name.to_sym] || relation_name
-    relation_name.to_s.classify.constantize
+    relation_name = Gitlab::ImportExport::RelationFactory.overrides[relation_name.to_sym] || relation_name
+    Gitlab::ImportExport::RelationFactory.relation_class(relation_name)
   end
 
   def parsed_attributes(relation_name, attributes)

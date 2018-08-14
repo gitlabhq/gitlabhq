@@ -12,7 +12,7 @@ require Rails.root.join('db', 'post_migrate', '20161221153951_rename_reserved_pr
 # Ideally, the test should not use factories and rely on the `table` helper instead.
 describe RenameReservedProjectNames, :migration, schema: :latest do
   let(:migration) { described_class.new }
-  let!(:project) { create(:project) }
+  let!(:project) { create(:project) } # rubocop:disable RSpec/FactoriesInMigrationSpecs
 
   before do
     project.path = 'projects'

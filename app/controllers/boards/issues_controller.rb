@@ -12,8 +12,9 @@ module Boards
     skip_before_action :authenticate_user!, only: [:index]
 
     def index
-      issues = Boards::Issues::ListService.new(board_parent, current_user, filter_params).execute
-      issues = issues.page(params[:page]).per(params[:per] || 20)
+      list_service = Boards::Issues::ListService.new(board_parent, current_user, filter_params)
+      issues = list_service.execute
+      issues = issues.page(params[:page]).per(params[:per] || 20).without_count
       make_sure_position_is_set(issues) if Gitlab::Database.read_write?
       issues = issues.preload(:project,
                               :milestone,
@@ -22,10 +23,7 @@ module Boards
                               notes: [:award_emoji, :author]
                              )
 
-      render json: {
-        issues: serialize_as_json(issues),
-        size: issues.total_count
-      }
+      render_issues(issues, list_service.metadata)
     end
 
     def create
@@ -50,6 +48,13 @@ module Boards
     end
 
     private
+
+    def render_issues(issues, metadata)
+      data = { issues: serialize_as_json(issues) }
+      data.merge!(metadata)
+
+      render json: data
+    end
 
     def make_sure_position_is_set(issues)
       issues.each do |issue|
@@ -94,9 +99,10 @@ module Boards
 
     def serialize_as_json(resource)
       resource.as_json(
-        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position],
+        only: [:id, :iid, :project_id, :title, :confidential, :due_date, :relative_position, :weight],
         labels: true,
-        sidebar_endpoints: true,
+        issue_endpoints: true,
+        include_full_project_path: board.group_board?,
         include: {
           project: { only: [:id, :path] },
           assignees: { only: [:id, :name, :username], methods: [:avatar_url] },

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'securerandom'
 
 # Compare 2 refs for one repo or between repositories
@@ -10,9 +12,14 @@ class CompareService
     @start_ref_name = new_start_ref_name
   end
 
-  def execute(target_project, target_ref, straight: false)
+  def execute(target_project, target_ref, base_sha: nil, straight: false)
     raw_compare = target_project.repository.compare_source_branch(target_ref, start_project.repository, start_ref_name, straight: straight)
 
-    Compare.new(raw_compare, target_project, straight: straight) if raw_compare
+    return unless raw_compare
+
+    Compare.new(raw_compare,
+                target_project,
+                base_sha: base_sha,
+                straight: straight)
   end
 end

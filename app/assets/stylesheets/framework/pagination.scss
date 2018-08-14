@@ -1,90 +1,14 @@
 .gl-pagination {
-  text-align: center;
-  border-top: 1px solid $border-color;
-  margin: 0;
-  margin-top: 0;
-
-  .pagination {
-    padding: 0;
-
-    a {
-      cursor: pointer;
-    }
-
-    .separator,
-    .separator:hover {
-      a {
-        cursor: default;
-        background-color: $gray-light;
-        padding: $gl-vert-padding;
-      }
-    }
-  }
-
-
-  .gap,
-  .gap:hover {
-    background-color: $gray-light;
-    padding: $gl-vert-padding;
-    cursor: default;
+  a {
+    color: inherit;
+    text-decoration: none;
   }
 }
 
-.panel > .gl-pagination {
-  margin: 0;
-}
-
-/**
- * Extra-small screen pagination.
- */
-@media (max-width: 320px) {
-  .gl-pagination {
-    .first,
-    .last {
-      display: none;
-    }
-
-    .page {
-      display: none;
-
-      &.active {
-        display: inline;
-      }
-    }
-  }
-}
-
-/**
- * Small screen pagination
- */
-@media (max-width: $screen-xs-min) {
-  .gl-pagination {
-    .pagination li a {
-      padding: 6px 10px;
-    }
-
-    .page {
-      display: none;
-
-      &.active {
-        display: inline;
-      }
-    }
-  }
-}
-
-/**
- * Medium screen pagination
- */
-@media (min-width: $screen-xs-min) and (max-width: $screen-md-max) {
-  .gl-pagination {
-    .page {
-      display: none;
-
-      &.active,
-      &.sibling {
-        display: inline;
-      }
+.page-item {
+  &.active {
+    .page-link {
+      z-index: 3;
     }
   }
 }

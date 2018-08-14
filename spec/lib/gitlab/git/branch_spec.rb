@@ -1,7 +1,12 @@
 require "spec_helper"
 
-describe Gitlab::Git::Branch, seed_helper: true do
+describe Gitlab::Git::Branch, :seed_helper do
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+  let(:rugged) do
+    Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      repository.rugged
+    end
+  end
 
   subject { repository.branches }
 
@@ -69,7 +74,9 @@ describe Gitlab::Git::Branch, seed_helper: true do
       Gitlab::Git.committer_hash(email: user.email, name: user.name)
     end
     let(:params) do
-      parents = [repository.rugged.head.target]
+      parents = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+        [repository.rugged.head.target]
+      end
       tree = parents.first.tree
 
       {
@@ -122,6 +129,7 @@ describe Gitlab::Git::Branch, seed_helper: true do
   it { expect(repository.branches.size).to eq(SeedRepo::Repo::BRANCHES.size) }
 
   def create_commit
-    repository.create_commit(params.merge(committer: committer.merge(time: Time.now)))
+    params[:message].delete!("\r")
+    Rugged::Commit.create(rugged, params.merge(committer: committer.merge(time: Time.now)))
   end
 end
