@@ -5,10 +5,6 @@ describe Projects::DetectRepositoryLanguagesService, :clean_gitlab_redis_shared_
 
   subject { described_class.new(project, project.owner) }
 
-  before do
-    allow(Feature).to receive(:disabled?).and_return(false)
-  end
-
   describe '#execute' do
     context 'without previous detection' do
       it 'inserts new programming languages in the database' do
