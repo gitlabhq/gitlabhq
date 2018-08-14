@@ -122,10 +122,7 @@ Issue Board, that is, create or delete lists and drag issues from one list to an
 - **List** - A column on the issue board that displays issues matching certain attributes. In addition to the default lists of 'Open' and 'Closed' issue, each additional list will show issues matching your chosen label or assignee. On the top of that list you can see the number of issues that belong to it.
    - **Label list**: a list based on a label. It shows all opened issues with that label.
    - **Assignee list**: a list which includes all issues assigned to a user.
-<<<<<<< HEAD
    - **Milestone list**: a list which includes all issues with that milestone.
-=======
->>>>>>> upstream/master
    - **Open** (default): shows all open issues that do not belong to one of the other lists. Always appears as the leftmost list.
    - **Closed** (default): shows all closed issues. Always appears as the rightmost list.
 - **Card** - A box in the list that represents an individual issue. The information you can see on a card consists of the issue number, the issue title, the assignee, and the labels associated with the issue. You can drag cards from one list to another to change their label or assignee from that of the source list to that of the destination list.
@@ -383,7 +380,6 @@ As on another list types, click on the trash icon to remove it.
 
 When dragging issues between lists, different behavior occurs depending on the source list and the target list.
 
-<<<<<<< HEAD
 | | To Open | To Closed | To label `B` list | To assignee `Bob` list | To milestone `2.0` list |
 | --- | --- | --- | --- | ---  | --- |
 | From Open | - | Issue closed | `B` added | `Bob` assigned | `2.0`  added |
@@ -391,14 +387,6 @@ When dragging issues between lists, different behavior occurs depending on the s
 | From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned | `2.0` added |
 | From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned | `2.0` added |
 | From milestone `1.0` list | `1.0` removed | Issue closed | `B` added | `Bob` assigned<br/> | `1.0` removed<br/>`2.0` added |
-=======
-| | To Open | To Closed | To label `B` list | To assignee `Bob` list |
-| --- | --- | --- | --- | ---  |
-| From Open | - | Issue closed | `B` added | `Bob` assigned |
-| From Closed | Issue reopened | - | Issue reopened<br/>`B` added | Issue reopened<br/>`Bob` assigned |
-| From label `A` list | `A` removed | Issue closed | `A` removed<br/>`B` added | `Bob` assigned |
-| From assignee `Alice` list | `Alice` unassigned | Issue closed | `B` added | `Alice` unassigned<br/>`Bob` assigned |
->>>>>>> upstream/master
 
 ## Features per tier
 
