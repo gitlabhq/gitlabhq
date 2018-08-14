@@ -206,7 +206,7 @@ ul.related-merge-requests > li {
 
 .issuable-email-modal-btn {
   padding: 0;
-  color: $gl-link-color;
+  color: $blue-600;
   background-color: transparent;
   border: 0;
   outline: 0;
@@ -239,7 +239,7 @@ ul.related-merge-requests > li {
 
 .create-mr-dropdown-wrap {
   .ref::selection {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   .dropdown {
@@ -328,7 +328,7 @@ ul.related-merge-requests > li {
   color: $gl-text-color-secondary;
 
   &[href] {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   &:hover,
@@ -352,7 +352,7 @@ ul.related-merge-requests > li {
   .issue-token:hover &,
   .issue-token-link:focus > & {
     background-color: $gray-normal;
-    color: $gl-link-hover-color;
+    color: $blue-800;
     text-decoration: none;
   }
 }

@@ -639,10 +639,10 @@
 
     .deploy-info-text-link {
       font-family: $monospace-font;
-      fill: $gl-link-color;
+      fill: $blue-600;
 
       &:hover {
-        fill: $gl-link-hover-color;
+        fill: $blue-800;
       }
     }
 
