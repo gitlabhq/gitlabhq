@@ -34,7 +34,7 @@ export default {
 
       if (file.highlightedDiffLines) {
         const linesLength = file.highlightedDiffLines.length;
-        let u = 0;
+        let u;
         for (u = 0; u < linesLength; u += 1) {
           const line = file.highlightedDiffLines[u];
           delete line.text;

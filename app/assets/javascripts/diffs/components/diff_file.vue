@@ -46,6 +46,9 @@ export default {
     showExpandMessage() {
       return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
     },
+    showLoadingIcon() {
+      return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
+    },
   },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff']),
@@ -133,7 +136,7 @@ export default {
       :diff-file="file"
     />
     <loading-icon
-      v-if="isLoadingCollapsedDiff || (!file.renderIt && !isCollapsed)"
+      v-else-if="showLoadingIcon"
       class="diff-content loading"
     />
     <div
