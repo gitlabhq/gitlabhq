@@ -119,14 +119,14 @@ export const parsedGitattributes = state => {
   }, {});
 };
 
-export const isPathBinary = (state, getters) => path =>
+export const isFileBinary = (state, getters) => file =>
   Object.keys(getters.parsedGitattributes).reduce((acc, key) => {
-    if (minimatch(path, key)) {
+    if (minimatch(file.name, key)) {
       return getters.parsedGitattributes[key].encoding === encodingTypes.binary;
     }
 
     return acc;
-  }, false);
+  }, false) || file.binary;
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
