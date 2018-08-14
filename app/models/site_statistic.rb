@@ -73,18 +73,4 @@ class SiteStatistic < ActiveRecord::Base
 
     super
   end
-
-  def self.recalculate_counters!
-    transaction do
-      # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48967
-      ActiveRecord::Base.connection.execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql?
-      self.update_all('repositories_count = (SELECT COUNT(*) FROM projects)')
-    end
-
-    transaction do
-      # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48967
-      ActiveRecord::Base.connection.execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql?
-      self.update_all('wikis_count = (SELECT COUNT(*) FROM project_features WHERE wiki_access_level != 0)')
-    end
-  end
 end

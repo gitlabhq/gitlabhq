@@ -80,16 +80,4 @@ describe SiteStatistic do
       end
     end
   end
-
-  describe '.recalculate_counters!' do
-    it 'recalculates existing counters' do
-      create(:project)
-      described_class.fetch.update(repositories_count: 0, wikis_count: 0)
-
-      described_class.recalculate_counters!
-
-      expect(described_class.fetch.repositories_count).to eq(1)
-      expect(described_class.fetch.wikis_count).to eq(1)
-    end
-  end
 end
