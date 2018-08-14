@@ -85,12 +85,12 @@ describe IconsHelper do
       icon_name = 'standard'
       expect(audit_icon(icon_name).to_s)
           .to eq '<i class="fa fa-key"></i>'
-      end
+    end
 
     it 'returns right icon name for two-factor auth' do
       icon_name = 'two-factor'
       expect(audit_icon(icon_name).to_s)
-        .to eq '<i class="fa fa-key"></i>'
+          .to eq '<i class="fa fa-key"></i>'
     end
 
     it 'returns right icon name for google_oauth2 auth' do
