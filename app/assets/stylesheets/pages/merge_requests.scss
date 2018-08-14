@@ -195,6 +195,7 @@
     .ci-widget-content {
       display: flex;
       align-items: center;
+      flex: 1;
     }
   }
 
@@ -222,6 +223,7 @@
 
   .normal {
     flex: 1;
+    flex-basis: auto;
   }
 
   .capitalize {
@@ -236,21 +238,19 @@
     overflow: hidden;
     word-break: break-all;
 
-    &.label-truncated {
-      position: relative;
-      display: inline-block;
-      width: 250px;
-      margin-bottom: -3px;
-      white-space: nowrap;
-      text-overflow: clip;
-      line-height: 14px;
-
-      &::after {
-        position: absolute;
-        content: '...';
-        right: 0;
-        font-family: $regular-font;
-        background-color: $gray-light;
+    &.label-truncate {
+      // NOTE: This selector targets its children because some of the HTML comes from
+      // 'source_branch_link'. Once this external HTML is no longer used, we could
+      // simplify this.
+      > a,
+      > span {
+        display: inline-block;
+        max-width: 12.5em;
+        margin-bottom: -3px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 14px;
+        overflow: hidden;
       }
     }
   }
@@ -582,7 +582,7 @@
 
     @include media-breakpoint-down(md) {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
 
       .branch-actions {
         margin-top: 16px;
@@ -593,6 +593,7 @@
       .branch-actions {
         align-self: center;
         margin-left: $gl-padding;
+        white-space: nowrap;
       }
     }
   }
@@ -918,7 +919,7 @@
   flex: 1;
   flex-direction: row;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     flex-direction: column;
 
     .stage-cell .stage-container {

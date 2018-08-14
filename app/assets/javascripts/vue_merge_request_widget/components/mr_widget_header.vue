@@ -1,18 +1,16 @@
 <script>
-import tooltip from '~/vue_shared/directives/tooltip';
 import { n__ } from '~/locale';
 import { mergeUrlParams, webIDEUrl } from '~/lib/utils/url_utility';
 import Icon from '~/vue_shared/components/icon.vue';
 import clipboardButton from '~/vue_shared/components/clipboard_button.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 
 export default {
   name: 'MRWidgetHeader',
-  directives: {
-    tooltip,
-  },
   components: {
     Icon,
     clipboardButton,
+    TooltipOnTruncate,
   },
   props: {
     mr: {
@@ -36,22 +34,11 @@ export default {
         gfm: `\`${this.mr.sourceBranch}\``,
       });
     },
-    isSourceBranchLong() {
-      return this.isBranchTitleLong(this.mr.sourceBranch);
-    },
-    isTargetBranchLong() {
-      return this.isBranchTitleLong(this.mr.targetBranch);
-    },
     webIdePath() {
       return mergeUrlParams({
         target_project: this.mr.sourceProjectFullPath !== this.mr.targetProjectFullPath ?
           this.mr.targetProjectFullPath : '',
       }, webIDEUrl(`/${this.mr.sourceProjectFullPath}/merge_requests/${this.mr.iid}`));
-    },
-  },
-  methods: {
-    isBranchTitleLong(branchTitle) {
-      return branchTitle.length > 32;
     },
   },
 };
@@ -65,30 +52,21 @@ export default {
       <div class="normal">
         <strong>
           {{ s__("mrWidget|Request to merge") }}
-          <span
-            :class="{ 'label-truncated': isSourceBranchLong }"
-            :title="isSourceBranchLong ? mr.sourceBranch : ''"
-            :v-tooltip="isSourceBranchLong"
-            class="label-branch js-source-branch"
-            data-placement="bottom"
+          <tooltip-on-truncate
+            :title="mr.sourceBranch"
+            truncate-target="child"
+            class="label-branch label-truncate js-source-branch"
             v-html="mr.sourceBranchLink"
-          >
-          </span>
-
-          <clipboard-button
+          /><clipboard-button
             :text="branchNameClipboardData"
             :title="__('Copy branch name to clipboard')"
             css-class="btn-default btn-transparent btn-clipboard"
           />
-
           {{ s__("mrWidget|into") }}
-
-          <span
-            :v-tooltip="isTargetBranchLong"
-            :class="{ 'label-truncatedtooltip': isTargetBranchLong }"
-            :title="isTargetBranchLong ? mr.targetBranch : ''"
-            class="label-branch"
-            data-placement="bottom"
+          <tooltip-on-truncate
+            :title="mr.targetBranch"
+            truncate-target="child"
+            class="label-branch label-truncate"
           >
             <a
               :href="mr.targetBranchTreePath"
@@ -96,7 +74,7 @@ export default {
             >
               {{ mr.targetBranch }}
             </a>
-          </span>
+          </tooltip-on-truncate>
         </strong>
         <div
           v-if="shouldShowCommitsBehindText"
