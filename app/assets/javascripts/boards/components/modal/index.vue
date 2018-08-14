@@ -1,6 +1,6 @@
 <script>
   /* global ListIssue */
-  import queryData from '~/boards/utils/query_data';
+  import { urlParamsToObject } from '~/lib/utils/common_utils';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import ModalHeader from './header.vue';
   import ModalList from './list.vue';
@@ -111,10 +111,13 @@
 
         return gl.boardService
           .getBacklog(
-            queryData(this.filter.path, {
-              page: this.page,
-              per: this.perPage,
-            }),
+            Object.assign(
+              urlParamsToObject(this.filter.path),
+              {
+                page: this.page,
+                per: this.perPage,
+              },
+            ),
           )
           .then(res => res.data)
           .then(data => {

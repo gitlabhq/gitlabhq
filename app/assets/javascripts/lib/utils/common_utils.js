@@ -132,17 +132,42 @@ export const parseUrlPathname = url => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-// We can trust that each param has one & since values containing & will be encoded
-// Remove the first character of search as it is always ?
-export const getUrlParamsArray = () =>
-  window.location.search
-    .slice(1)
+export const urlParamsToArray = (path = '') => {
+  return path
+    .slice(1) // Remove the first character of search as it is always ?
     .split('&')
     .filter(param => param.length > 0)
     .map(param => {
       const split = param.split('=');
       return [decodeURI(split[0]), split[1]].join('=');
     });
+};
+
+export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
+
+export const urlParamsToObject = (path = '') => {
+  return path.split('&').reduce((dataParam, filterParam) => {
+    if (filterParam === '') return dataParam;
+
+    const data = dataParam;
+    const paramSplit = filterParam.split('=');
+    const paramKeyNormalized = paramSplit[0].replace('[]', '');
+    const isArray = paramSplit[0].indexOf('[]');
+    const value = decodeURIComponent(paramSplit[1].replace(/\+/g, ' '));
+
+    if (isArray !== -1) {
+      if (!data[paramKeyNormalized]) {
+        data[paramKeyNormalized] = [];
+      }
+
+      data[paramKeyNormalized].push(value);
+    } else {
+      data[paramKeyNormalized] = value;
+    }
+
+    return data;
+  }, {});
+};
 
 export const isMetaKey = e => e.metaKey || e.ctrlKey || e.altKey || e.shiftKey;
 
