@@ -181,7 +181,7 @@
   .card-header {
     .header-text-primary,
     .header-text-secondary {
-      color: $gl-link-color;
+      color: $blue-600;
     }
 
     .header-text-primary {
@@ -219,11 +219,11 @@
 
     .project-status-content {
       &.status-type-success {
-        color: $gl-text-green;
+        color: $green-600;
       }
 
       &.status-type-failure {
-        color: $gl-text-red;
+        color: $red-500;
       }
     }
 
@@ -241,7 +241,7 @@
 
     .error-icon,
     .error-text {
-      color: $gl-text-red;
+      color: $red-500;
     }
 
     .error-text {
