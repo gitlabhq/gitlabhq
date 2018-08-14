@@ -255,7 +255,7 @@ Example response:
 Get a list of visible events for a particular project.
 
 ```
-GET /:project_id/events
+GET /projects/:project_id/events
 ```
 
 Parameters:
