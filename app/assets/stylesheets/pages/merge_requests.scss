@@ -237,7 +237,10 @@
     font-weight: normal;
     overflow: hidden;
     word-break: break-all;
+  }
 
+  .deploy-link,
+  .label-branch {
     &.label-truncate {
       // NOTE: This selector targets its children because some of the HTML comes from
       // 'source_branch_link'. Once this external HTML is no longer used, we could
