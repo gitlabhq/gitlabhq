@@ -22,7 +22,8 @@ module Gitlab
       'tr_TR' => 'Türkçe',
       'id_ID' => 'Bahasa Indonesia',
       'fil_PH' => 'Filipino',
-      'pl_PL' => 'Polski'
+      'pl_PL' => 'Polski',
+      'cs_CZ' => 'Čeština'
     }.freeze
 
     def available_locales
