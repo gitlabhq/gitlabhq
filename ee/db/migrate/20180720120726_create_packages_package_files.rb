@@ -8,7 +8,7 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
 
   def up
     create_table :packages_package_files, id: :bigserial do |t|
-      t.references :package, type: :bigint, index: true, null: false
+      t.references :package, type: :bigint, null: false
 
       t.timestamps_with_timezone null: false
 

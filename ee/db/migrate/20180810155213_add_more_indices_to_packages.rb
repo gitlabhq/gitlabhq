@@ -7,17 +7,11 @@ class AddMoreIndicesToPackages < ActiveRecord::Migration
 
   def up
     add_concurrent_index :packages_package_files, [:package_id, :file_name]
-    add_concurrent_index :packages_maven_metadata, :path, length: text_index_length
+    add_concurrent_index :packages_maven_metadata, [:package_id, :path]
   end
 
   def down
     remove_concurrent_index :packages_package_files, [:package_id, :file_name]
-    remove_concurrent_index :packages_maven_metadata, :path, length: text_index_length
-  end
-
-  private
-
-  def text_index_length
-    Gitlab::Database.mysql? ? 20 : nil
+    remove_concurrent_index :packages_maven_metadata, [:package_id, :path]
   end
 end
