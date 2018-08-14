@@ -856,7 +856,7 @@ module API
     class NotificationSetting < Grape::Entity
       expose :level
       expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
-        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+        ::NotificationSetting.email_events.each do |event|
           expose event
         end
       end
