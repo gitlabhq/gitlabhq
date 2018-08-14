@@ -5,6 +5,16 @@ describe 'Conversational Development Index' do
     sign_in(create(:admin))
   end
 
+  it 'has dismissable intro callout', :js do
+    visit instance_statistics_conversational_development_index_index_path
+
+    expect(page).to have_content 'Introducing Your Conversational Development Index'
+
+    find('.js-close-callout').click
+
+    expect(page).not_to have_content 'Introducing Your Conversational Development Index'
+  end
+
   context 'when usage ping is disabled' do
     it 'shows empty state' do
       stub_application_setting(usage_ping_enabled: false)
