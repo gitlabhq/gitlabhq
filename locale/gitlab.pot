@@ -6700,6 +6700,9 @@ msgstr ""
 msgid "mrWidget|The source branch has been removed"
 msgstr ""
 
+msgid "mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch"
+msgstr ""
+
 msgid "mrWidget|The source branch is being removed"
 msgstr ""
 
