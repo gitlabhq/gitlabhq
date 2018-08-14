@@ -240,7 +240,6 @@ project:
 - flowdock_service
 - assembla_service
 - asana_service
-- gemnasium_service
 - slack_service
 - microsoft_teams_service
 - mattermost_service
