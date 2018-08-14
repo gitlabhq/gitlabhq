@@ -1,0 +1,10 @@
+New Epic <%= @epic.to_reference(full: true) %> was created.
+
+<%= url_for(group_epic_url(@epic.group, @epic)) %>
+
+Author: <%= @epic.author_name %>
+<% if @epic.assignee %>
+Assignee: <%= @epic.assignee.name %>
+<% end %>
+
+<%= @epic.description %>

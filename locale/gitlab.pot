@@ -4919,6 +4919,9 @@ msgstr ""
 msgid "NotificationEvent|Merge merge request"
 msgstr ""
 
+msgid "NotificationEvent|New epic"
+msgstr ""
+
 msgid "NotificationEvent|New issue"
 msgstr ""
 

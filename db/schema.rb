@@ -1866,6 +1866,7 @@ ActiveRecord::Schema.define(version: 20180807153545) do
     t.boolean "success_pipeline"
     t.boolean "push_to_merge_request"
     t.boolean "issue_due"
+    t.boolean "new_epic"
   end
 
   add_index "notification_settings", ["source_id", "source_type"], name: "index_notification_settings_on_source_id_and_source_type", using: :btree

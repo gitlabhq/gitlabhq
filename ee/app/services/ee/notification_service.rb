@@ -38,6 +38,10 @@ module EE
       end
     end
 
+    def new_epic(epic)
+      new_resource_email(epic, :new_epic_email)
+    end
+
     def project_mirror_user_changed(new_mirror_user, deleted_user_name, project)
       mailer.project_mirror_user_changed_email(new_mirror_user.id, deleted_user_name, project.id).deliver_later
     end

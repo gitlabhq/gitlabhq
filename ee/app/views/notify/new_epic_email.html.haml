@@ -1,0 +1,11 @@
+- if Gitlab::CurrentSettings.email_author_in_body
+  %p.details
+    #{link_to @epic.author_name, user_url(@epic.author)} created an epic:
+
+- if @epic.assignee
+  %p
+    Assignee: #{@epic.assignee.name}
+
+- if @epic.description
+  %div
+  = markdown(@epic.description, pipeline: :email, author: @epic.author)

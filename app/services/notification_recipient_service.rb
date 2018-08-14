@@ -130,7 +130,7 @@ module NotificationRecipientService
       end
 
       def add_project_watchers
-        add_recipients(project_watchers, :watch, nil)
+        add_recipients(project_watchers, :watch, nil) if project
       end
 
       def add_group_watchers
@@ -220,6 +220,10 @@ module NotificationRecipientService
     end
 
     class Default < Base
+      prepend ::EE::NotificationRecipientBuilders::Default
+
+      MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request].freeze
+
       attr_reader :target
       attr_reader :current_user
       attr_reader :action
@@ -236,7 +240,13 @@ module NotificationRecipientService
 
       def build!
         add_participants(current_user)
-        add_project_watchers
+
+        if project
+          add_project_watchers
+        else # for group level targets
+          add_group_watchers
+        end
+
         add_custom_notifications
 
         # Re-assign is considered as a mention of the new assignee
@@ -252,7 +262,7 @@ module NotificationRecipientService
 
         add_subscribed_users
 
-        if [:new_issue, :new_merge_request].include?(custom_action)
+        if self.class.mention_type_actions.include?(custom_action)
           # These will all be participants as well, but adding with the :mention
           # type ensures that users with the mention notification level will
           # receive them, too.
@@ -279,9 +289,13 @@ module NotificationRecipientService
       end
 
       # Build event key to search on custom notification level
-      # Check NotificationSetting::EMAIL_EVENTS
+      # Check NotificationSetting.email_events
       def custom_action
         @custom_action ||= "#{action}_#{target.class.model_name.name.underscore}".to_sym
+      end
+
+      def self.mention_type_actions
+        MENTION_TYPE_ACTIONS.dup
       end
     end
 

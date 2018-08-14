@@ -7,6 +7,7 @@ module EE
       include ::Emails::AdminNotification
       include ::Emails::CsvExport
       include ::Emails::ServiceDesk
+      include ::Emails::Epics
 
       attr_reader :group
     end
