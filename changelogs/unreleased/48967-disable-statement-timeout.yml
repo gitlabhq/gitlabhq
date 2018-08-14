@@ -1,0 +1,5 @@
+---
+title: disable_statement_timeout no longer leak to other migrations
+merge_request: 20503
+author:
+type: fixed

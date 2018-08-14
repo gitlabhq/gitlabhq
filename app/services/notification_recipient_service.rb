@@ -220,8 +220,11 @@ module NotificationRecipientService
     end
 
     class Default < Base
+<<<<<<< HEAD
       prepend ::EE::NotificationRecipientBuilders::Default
 
+=======
+>>>>>>> upstream/master
       MENTION_TYPE_ACTIONS = [:new_issue, :new_merge_request].freeze
 
       attr_reader :target

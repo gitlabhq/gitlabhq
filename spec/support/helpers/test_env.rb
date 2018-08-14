@@ -67,6 +67,7 @@ module TestEnv
 
   TMP_TEST_PATH = Rails.root.join('tmp', 'tests', '**')
   REPOS_STORAGE = 'default'.freeze
+  BROKEN_STORAGE = 'broken'.freeze
 
   # Test environment
   #
@@ -157,10 +158,11 @@ module TestEnv
     component_timed_setup('Gitaly',
       install_dir: gitaly_dir,
       version: Gitlab::GitalyClient.expected_server_version,
-      task: "gitlab:gitaly:install[#{gitaly_dir}]") do
+      task: "gitlab:gitaly:install[#{gitaly_dir},#{repos_path}]") do
 
-      # Always re-create config, in case it's outdated. This is fast anyway.
-      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, force: true)
+      # Re-create config, to specify the broken storage path
+      storage_paths = { 'default' => repos_path, 'broken' => broken_path }
+      Gitlab::SetupHelper.create_gitaly_configuration(gitaly_dir, storage_paths, force: true)
 
       start_gitaly(gitaly_dir)
     end
@@ -254,6 +256,10 @@ module TestEnv
 
   def repos_path
     @repos_path ||= Gitlab.config.repositories.storages[REPOS_STORAGE].legacy_disk_path
+  end
+
+  def broken_path
+    @broken_path ||= Gitlab.config.repositories.storages[BROKEN_STORAGE].legacy_disk_path
   end
 
   def backup_path

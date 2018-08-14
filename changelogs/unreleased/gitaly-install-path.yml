@@ -1,0 +1,5 @@
+---
+title: Remove storage path dependency of gitaly install task
+merge_request: 21101
+author:
+type: changed
