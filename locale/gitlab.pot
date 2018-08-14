@@ -3854,6 +3854,9 @@ msgstr ""
 msgid "Oops, are you sure?"
 msgstr ""
 
+msgid "Open"
+msgstr ""
+
 msgid "Open in Xcode"
 msgstr ""
 
