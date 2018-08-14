@@ -33,9 +33,10 @@ export default {
       'isEditModeActive',
       'isCommitModeActive',
       'isReviewModeActive',
+      'isPathBinary',
     ]),
     shouldHideEditor() {
-      return this.file && this.file.binary && !this.file.content;
+      return this.file && this.isPathBinary(this.file.name) && !this.file.content;
     },
     showContentViewer() {
       return (
