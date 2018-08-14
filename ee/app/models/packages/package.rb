@@ -7,5 +7,8 @@ class Packages::Package < ActiveRecord::Base
   accepts_nested_attributes_for :maven_metadatum
 
   validates :project, presence: true
-  validates :name, presence: true
+
+  validates :name,
+    presence: true,
+    format: { with: Gitlab::Regex.package_name_regex }
 end
