@@ -95,7 +95,7 @@ module EE
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
-        enable :admin_package
+        enable :create_package
       end
 
       rule { can?(:public_access) }.enable :read_package

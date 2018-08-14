@@ -29,7 +29,7 @@ module API
       end
 
       def authorize_create_package!
-        authorize!(:admin_package, user_project)
+        authorize!(:create_package, user_project)
       end
 
       def extract_format(file_name)
