@@ -165,6 +165,10 @@ When the user is authenticated and `simple` is not set this returns something li
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
     },
+    "license": {
+      "name": "MIT License",
+      "spdx_id": "MIT"
+    }
   },
   {
     "id": 6,
@@ -245,7 +249,8 @@ When the user is authenticated and `simple` is not set this returns something li
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
-    }
+    },
+    "license": null
   }
 ]
 ```
@@ -353,6 +358,10 @@ GET /users/:user_id/projects
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
+    },
+    "license": {
+      "name": "MIT License",
+      "spdx_id": "MIT"
     }
   },
   {
@@ -434,7 +443,8 @@ GET /users/:user_id/projects
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
-    }
+    },
+    "license": null
   }
 ]
 ```
@@ -546,6 +556,10 @@ GET /projects/:id
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
+  },
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
   }
 }
 ```
@@ -843,6 +857,10 @@ Example responses:
       "labels": "http://example.com/api/v4/projects/1/labels",
       "events": "http://example.com/api/v4/projects/1/events",
       "members": "http://example.com/api/v4/projects/1/members"
+    },
+    "license": {
+      "name": "MIT License",
+      "spdx_id": "MIT"
     }
   }
 ]
@@ -922,6 +940,10 @@ Example response:
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
+  },
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
   }
 }
 ```
@@ -1000,6 +1022,10 @@ Example response:
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
+  },
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
   }
 }
 ```
@@ -1119,6 +1145,10 @@ Example response:
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
+  },
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
   }
 }
 ```
@@ -1215,6 +1245,10 @@ Example response:
     "labels": "http://example.com/api/v4/projects/1/labels",
     "events": "http://example.com/api/v4/projects/1/events",
     "members": "http://example.com/api/v4/projects/1/members"
+  },
+  "license": {
+    "name": "MIT License",
+    "spdx_id": "MIT"
   }
 }
 ```

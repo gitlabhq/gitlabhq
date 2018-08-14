@@ -122,6 +122,15 @@ module API
       expose :import_error, if: lambda { |status, _ops| status.import_error }
     end
 
+    class ProjectLicense < Grape::Entity
+      expose :name do |license|
+        license.nickname || license.name
+      end
+      expose :spdx_id do |license|
+        license.meta['spdx-id']
+      end
+    end
+
     class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
@@ -193,6 +202,9 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :resolve_outdated_diff_discussions
       expose :container_registry_enabled
+      expose :license, using: Entities::ProjectLicense do |project|
+        project.repository.license
+      end
 
       # Expose old field names with the new permissions methods to keep API compatible
       expose(:issues_enabled) { |project, options| project.feature_available?(:issues, options[:current_user]) }
