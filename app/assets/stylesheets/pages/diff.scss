@@ -18,7 +18,8 @@
       vertical-align: middle;
     }
 
-    .file-actions .svg-icon {
+    .file-actions .svg-icon,
+    .svg-icon.top-minus-1 {
       top: -1px;
     }
   }

@@ -30,7 +30,7 @@
       - if diff_file.deleted_file?
         deleted
 
-  = copy_file_path_button(diff_file.file_path)
+  = copy_file_path_button(diff_file.file_path, icon_class: 'svg-icon top-minus-1')
 
   - if diff_file.mode_changed?
     %small

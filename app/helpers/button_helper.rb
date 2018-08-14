@@ -19,6 +19,7 @@ module ButtonHelper
   # See http://clipboardjs.com/#usage
   def clipboard_button(data = {})
     css_class = data[:class] || 'btn-clipboard btn-transparent'
+    icon_class = data[:icon_class] || ''
     title = data[:title] || 'Copy to clipboard'
     button_text = data[:button_text] || ''
     hide_tooltip = data[:hide_tooltip] || false
@@ -51,7 +52,7 @@ module ButtonHelper
     }
 
     content_tag :button, button_attributes do
-      concat(sprite_icon('duplicate', css_class: 'svg-icon')) unless hide_button_icon
+      concat(sprite_icon('duplicate', css_class: icon_class)) unless hide_button_icon
       concat(button_text)
     end
   end
