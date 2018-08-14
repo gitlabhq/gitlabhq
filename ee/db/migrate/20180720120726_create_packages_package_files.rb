@@ -8,11 +8,11 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
 
   def up
     create_table :packages_package_files, id: :bigserial do |t|
+      t.references :package, type: :bigint, index: true, null: false
+
       t.timestamps_with_timezone null: false
 
       t.bigint :size
-
-      t.references :package, index: true, null: false
       t.integer :file_type
       t.integer :file_store
       t.binary :file_md5

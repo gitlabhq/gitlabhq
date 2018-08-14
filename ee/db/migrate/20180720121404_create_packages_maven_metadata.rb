@@ -8,8 +8,9 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
 
   def up
     create_table :packages_maven_metadata, id: :bigserial do |t|
+      t.references :package, type: :bigint, index: true, null: false
+
       t.timestamps_with_timezone null: false
-      t.references :package, index: true, null: false
 
       t.string :app_group, null: false
       t.string :app_name, null: false

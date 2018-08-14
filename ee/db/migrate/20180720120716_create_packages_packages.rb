@@ -8,8 +8,12 @@ class CreatePackagesPackages < ActiveRecord::Migration
 
   def change
     create_table :packages_packages, id: :bigserial do |t|
+      t.references :project,
+        index: true,
+        foreign_key: { on_delete: :cascade },
+        null: false
+
       t.timestamps_with_timezone null: false
-      t.references :project, index: true, foreign_key: { on_delete: :cascade }, null: false
 
       t.string :name, null: false
       t.string :version
