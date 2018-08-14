@@ -25,8 +25,9 @@ class AddLowerPathIndexToRedirectRoutes < ActiveRecord::Migration
     # trivial to write a query that checks for an index. BUT there is a
     # convenient `IF EXISTS` parameter for `DROP INDEX`.
     if supports_drop_index_concurrently?
-      disable_statement_timeout
-      execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME};"
+      disable_statement_timeout do
+        execute "DROP INDEX CONCURRENTLY IF EXISTS #{INDEX_NAME};"
+      end
     else
       execute "DROP INDEX IF EXISTS #{INDEX_NAME};"
     end

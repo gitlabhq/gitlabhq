@@ -4067,6 +4067,12 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Job has been erased"
+msgstr ""
+
+msgid "Job|Job has been erased by"
+msgstr ""
+
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr ""
 

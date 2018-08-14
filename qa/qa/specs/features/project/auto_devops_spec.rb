@@ -50,7 +50,7 @@ module QA
       Page::Project::Pipeline::Show.perform do |pipeline|
         expect(pipeline).to have_build('build', status: :success, wait: 600)
         expect(pipeline).to have_build('test', status: :success, wait: 600)
-        expect(pipeline).to have_build('production', status: :success, wait: 600)
+        expect(pipeline).to have_build('production', status: :success, wait: 1200)
       end
     end
   end

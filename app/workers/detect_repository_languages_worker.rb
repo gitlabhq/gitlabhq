@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DetectRepositoryLanguagesWorker
   include ApplicationWorker
   include ExceptionBacktrace
