@@ -1,0 +1,5 @@
+---
+title: 'Auto-DevOps.gitlab-ci.yml: Update glibc package signing key URL'
+merge_request: 21182
+author: sgerrand
+type: fixed
