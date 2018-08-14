@@ -195,19 +195,10 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
 $gl-text-color-disabled: #919191;
-$gl-text-green: $green-600;
-$gl-text-green-hover: $green-700;
-$gl-text-red: $red-500;
-$gl-text-orange: $orange-600;
-$gl-link-color: $blue-600;
-$gl-link-hover-color: $blue-800;
 $gl-grayish-blue: #7f8fa4;
-$gl-gray: $gl-text-color;
 $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
-$gl-header-nav-hover-color: #434343;
-$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -226,7 +217,7 @@ $list-warning-row-color: $orange-700;
 /*
  * Markdown
  */
-$md-link-color: $gl-link-color;
+$md-link-color: $blue-600;
 $md-area-border: #ddd;
 
 /*
@@ -583,8 +574,8 @@ $commit-message-text-area-bg: rgba(0, 0, 0, 0);
 $common-gray: $gl-text-color;
 $common-gray-light: #bbb;
 $common-gray-dark: #444;
-$common-red: $gl-text-red;
-$common-green: $gl-text-green;
+$common-red: $red-500;
+$common-green: $green-600;
 
 /*
 * Editor
