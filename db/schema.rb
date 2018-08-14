@@ -1135,6 +1135,7 @@ ActiveRecord::Schema.define(version: 20180816193530) do
 
   add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
   add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
+  add_index "lists", ["list_type"], name: "index_lists_on_list_type", using: :btree
 
   create_table "members", force: :cascade do |t|
     t.integer "access_level", null: false
