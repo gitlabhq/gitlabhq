@@ -254,7 +254,6 @@ module IssuablesHelper
       updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
-      canAdmin: can?(current_user, :"admin_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
       markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
@@ -269,7 +268,6 @@ module IssuablesHelper
 
     if parent.is_a?(Group)
       data[:groupPath] = parent.path
-      data[:issueLinksEndpoint] = group_epic_issues_path(parent, issuable)
     else
       data.merge!(projectPath: ref_project.path, projectNamespace: ref_project.namespace.full_path)
     end
