@@ -1923,6 +1923,43 @@ ActiveRecord::Schema.define(version: 20180807153545) do
     t.string "nonce", null: false
   end
 
+  create_table "packages_maven_metadata", id: :bigserial, force: :cascade do |t|
+    t.integer "package_id", limit: 8, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "app_group", null: false
+    t.string "app_name", null: false
+    t.string "app_version"
+    t.string "path", limit: 512, null: false
+  end
+
+  add_index "packages_maven_metadata", ["package_id", "path"], name: "index_packages_maven_metadata_on_package_id_and_path", using: :btree
+
+  create_table "packages_package_files", id: :bigserial, force: :cascade do |t|
+    t.integer "package_id", limit: 8, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "size", limit: 8
+    t.integer "file_type"
+    t.integer "file_store"
+    t.binary "file_md5"
+    t.binary "file_sha1"
+    t.string "file_name", null: false
+    t.text "file", null: false
+  end
+
+  add_index "packages_package_files", ["package_id", "file_name"], name: "index_packages_package_files_on_package_id_and_file_name", using: :btree
+
+  create_table "packages_packages", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+    t.string "version"
+  end
+
+  add_index "packages_packages", ["project_id"], name: "index_packages_packages_on_project_id", using: :btree
+
   create_table "pages_domains", force: :cascade do |t|
     t.integer "project_id"
     t.text "certificate"
@@ -3084,6 +3121,9 @@ ActiveRecord::Schema.define(version: 20180807153545) do
   add_foreign_key "notes", "projects", name: "fk_99e097b079", on_delete: :cascade
   add_foreign_key "notification_settings", "users", name: "fk_0c95e91db7", on_delete: :cascade
   add_foreign_key "oauth_openid_requests", "oauth_access_grants", column: "access_grant_id", name: "fk_oauth_openid_requests_oauth_access_grants_access_grant_id"
+  add_foreign_key "packages_maven_metadata", "packages_packages", column: "package_id", name: "fk_be88aed360", on_delete: :cascade
+  add_foreign_key "packages_package_files", "packages_packages", column: "package_id", name: "fk_86f0f182f8", on_delete: :cascade
+  add_foreign_key "packages_packages", "projects", on_delete: :cascade
   add_foreign_key "pages_domains", "projects", name: "fk_ea2f6dfc6f", on_delete: :cascade
   add_foreign_key "path_locks", "projects", name: "fk_5265c98f24", on_delete: :cascade
   add_foreign_key "path_locks", "users"

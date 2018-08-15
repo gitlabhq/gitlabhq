@@ -1,6 +1,6 @@
-# This patches ActiveRecord so indexes for binary columns created using the
-# MySQL adapter apply a length of 20. Otherwise MySQL can't create an index on
-# binary columns.
+# This patches ActiveRecord so indexes for binary columns created
+# using the MySQL adapter apply a length of 20. Otherwise MySQL can't create an
+# index on binary columns.
 
 module MysqlSetLengthForBinaryIndex
   def add_index(table_name, column_names, options = {})

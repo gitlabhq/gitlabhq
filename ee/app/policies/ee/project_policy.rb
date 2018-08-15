@@ -89,12 +89,16 @@ module EE
         enable :read_deploy_board
         enable :admin_issue_link
         enable :admin_epic_issue
+        enable :read_package
       end
 
       rule { can?(:developer_access) }.policy do
         enable :admin_board
         enable :admin_vulnerability_feedback
+        enable :create_package
       end
+
+      rule { can?(:public_access) }.enable :read_package
 
       rule { can?(:developer_access) & security_reports_feature_available }.enable :read_project_security_dashboard
 
