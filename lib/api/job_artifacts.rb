@@ -28,7 +28,7 @@ module API
         builds = user_project.latest_successful_builds_for(params[:ref_name])
         latest_build = builds.find_by!(name: params[:job])
 
-        present_carrierwave_file!(latest_build.artifacts_file)
+        present_carrierwave_file!(latest_build.artifacts_archive_file)
       end
 
       desc 'Download the artifacts archive from a job' do
@@ -43,7 +43,7 @@ module API
 
         build = find_build!(params[:job_id])
 
-        present_carrierwave_file!(build.artifacts_file)
+        present_carrierwave_file!(build.artifacts_archive_file)
       end
 
       desc 'Download a specific file from artifacts archive' do
@@ -57,7 +57,7 @@ module API
         authorize_read_builds!
 
         build = find_build!(params[:job_id])
-        not_found! unless build.artifacts?
+        not_found! unless build.artifacts_archive?
 
         path = Gitlab::Ci::Build::Artifacts::Path
           .new(params[:artifact_path])
@@ -77,7 +77,7 @@ module API
 
         build = find_build!(params[:job_id])
         authorize!(:update_build, build)
-        break not_found!(build) unless build.artifacts?
+        break not_found!(build) unless build.artifacts_archive?
 
         build.keep_artifacts!
 

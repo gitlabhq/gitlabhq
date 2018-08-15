@@ -28,7 +28,7 @@ describe 'gitlab:artifacts namespace rake task' do
             subject
 
             expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
+            expect(build.reload.artifacts_archive_metadata_store).to eq(ObjectStorage::Store::REMOTE)
           end
         end
 
@@ -39,7 +39,7 @@ describe 'gitlab:artifacts namespace rake task' do
             subject
 
             expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
+            expect(build.reload.artifacts_archive_metadata_store).to eq(ObjectStorage::Store::REMOTE)
           end
         end
 
@@ -48,7 +48,7 @@ describe 'gitlab:artifacts namespace rake task' do
             subject
 
             expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::LOCAL)
-            expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::LOCAL)
+            expect(build.reload.artifacts_archive_metadata_store).to eq(ObjectStorage::Store::LOCAL)
           end
         end
       end
@@ -62,7 +62,7 @@ describe 'gitlab:artifacts namespace rake task' do
           subject
 
           expect(build.reload.artifacts_file_store).to eq(ObjectStorage::Store::REMOTE)
-          expect(build.reload.artifacts_metadata_store).to eq(ObjectStorage::Store::REMOTE)
+          expect(build.reload.artifacts_archive_metadata_store).to eq(ObjectStorage::Store::REMOTE)
         end
       end
     end

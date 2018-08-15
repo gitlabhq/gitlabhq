@@ -449,8 +449,8 @@ describe Projects::JobsController, :clean_gitlab_redis_shared_state do
       end
 
       it 'erases artifacts' do
-        expect(job.artifacts_file.exists?).to be_falsey
-        expect(job.artifacts_metadata.exists?).to be_falsey
+        expect(job.artifacts_archive_file.exists?).to be_falsey
+        expect(job.artifacts_archive_metadata.exists?).to be_falsey
       end
 
       it 'erases trace' do

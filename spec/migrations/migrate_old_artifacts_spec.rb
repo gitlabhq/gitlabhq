@@ -36,7 +36,7 @@ describe MigrateOldArtifacts do
     end
 
     it "legacy artifacts are not accessible" do
-      expect(build_with_legacy_artifacts.artifacts?).to be_falsey
+      expect(build_with_legacy_artifacts.artifacts_archive?).to be_falsey
     end
 
     it "legacy artifacts are set" do

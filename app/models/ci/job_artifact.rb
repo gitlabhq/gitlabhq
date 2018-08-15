@@ -37,7 +37,7 @@ module Ci
 
     enum file_type: {
       archive: 1,
-      metadata: 2,
+      archive_metadata: 2,
       trace: 3,
       junit: 4
     }

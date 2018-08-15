@@ -3,7 +3,7 @@
     .blocks-container
       #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
-      - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
+      - if can?(current_user, :read_build, @project) && (@build.artifacts_archive? || @build.artifacts_expired?)
         .block
           .title
             Job artifacts
@@ -11,21 +11,21 @@
             %p.build-detail-row
               The artifacts were removed
               #{time_ago_with_tooltip(@build.artifacts_expire_at)}
-          - elsif @build.has_expiring_artifacts?
+          - elsif @build.has_expiring_artifacts_archive?
             %p.build-detail-row
               The artifacts will be removed
               #{time_ago_with_tooltip(@build.artifacts_expire_at)}
 
-          - if @build.artifacts?
+          - if @build.artifacts_archive?
             .btn-group.d-flex{ role: :group }
-              - if @build.has_expiring_artifacts? && can?(current_user, :update_build, @build)
+              - if @build.has_expiring_artifacts_archive? && can?(current_user, :update_build, @build)
                 = link_to keep_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default', method: :post do
                   Keep
 
               = link_to download_project_job_artifacts_path(@project, @build), rel: 'nofollow', download: '', class: 'btn btn-sm btn-default' do
                 Download
 
-              - if @build.browsable_artifacts?
+              - if @build.browsable_artifacts_archive?
                 = link_to browse_project_job_artifacts_path(@project, @build), class: 'btn btn-sm btn-default' do
                   Browse
 

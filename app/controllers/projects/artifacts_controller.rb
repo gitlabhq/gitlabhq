@@ -12,13 +12,13 @@ class Projects::ArtifactsController < Projects::ApplicationController
   before_action :entry, only: [:file]
 
   def download
-    send_upload(artifacts_file, attachment: artifacts_file.filename)
+    send_upload(artifacts_archive_file, attachment: artifacts_archive_file.filename)
   end
 
   def browse
     @path = params[:path]
     directory = @path ? "#{@path}/" : ''
-    @entry = build.artifacts_metadata_entry(directory)
+    @entry = build.artifacts_archive_metadata_entry(directory)
 
     render_404 unless @entry.exists?
   end
@@ -72,7 +72,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def validate_artifacts!
-    render_404 unless build&.artifacts?
+    render_404 unless build&.artifacts_archive?
   end
 
   def build
@@ -93,12 +93,12 @@ class Projects::ArtifactsController < Projects::ApplicationController
     builds.find_by(name: params[:job])
   end
 
-  def artifacts_file
-    @artifacts_file ||= build.artifacts_file
+  def artifacts_archive_file
+    @artifacts_archive_file ||= build.artifacts_archive_file
   end
 
   def entry
-    @entry = build.artifacts_metadata_entry(params[:path])
+    @entry = build.artifacts_archive_metadata_entry(params[:path])
 
     render_404 unless @entry.exists?
   end

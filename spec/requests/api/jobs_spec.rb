@@ -720,7 +720,7 @@ describe API::Jobs do
         expect(job.job_artifacts.count).to eq(0)
         expect(job.trace.exist?).to be_falsy
         expect(job.artifacts_file.exists?).to be_falsy
-        expect(job.artifacts_metadata.exists?).to be_falsy
+        expect(job.artifacts_archive_metadata.exists?).to be_falsy
         expect(job.has_test_reports?).to be_falsy
       end
 

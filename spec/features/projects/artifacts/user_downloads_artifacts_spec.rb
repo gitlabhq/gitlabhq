@@ -7,10 +7,10 @@ describe "User downloads artifacts" do
 
   shared_examples "downloading" do
     it "downloads the zip" do
-      expect(page.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename="#{job.artifacts_file.filename}"})
+      expect(page.response_headers["Content-Disposition"]).to eq(%Q{attachment; filename="#{job.artifacts_archive_file.filename}"})
       expect(page.response_headers['Content-Transfer-Encoding']).to eq("binary")
       expect(page.response_headers['Content-Type']).to eq("application/zip")
-      expect(page.source.b).to eq(job.artifacts_file.file.read.b)
+      expect(page.source.b).to eq(job.artifacts_archive_file.file.read.b)
     end
   end
 

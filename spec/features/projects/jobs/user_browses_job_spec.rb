@@ -26,8 +26,8 @@ describe 'User browses a job', :js do
 
     expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace
-    expect(build.artifacts_file.exists?).to be_falsy
-    expect(build.artifacts_metadata.exists?).to be_falsy
+    expect(build.artifacts_archive_file.exists?).to be_falsy
+    expect(build.artifacts_archive_metadata.exists?).to be_falsy
 
     page.within('.erased') do
       expect(page).to have_content('Job has been erased')

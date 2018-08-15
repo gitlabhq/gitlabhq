@@ -1379,10 +1379,10 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:metadata_sha256) { Digest::SHA256.file(metadata.path).hexdigest }
 
             let(:stored_artifacts_file) { job.reload.artifacts_file.file }
-            let(:stored_metadata_file) { job.reload.artifacts_metadata.file }
+            let(:stored_metadata_file) { job.reload.artifacts_archive_metadata.file }
             let(:stored_artifacts_size) { job.reload.artifacts_size }
             let(:stored_artifacts_sha256) { job.reload.job_artifacts_archive.file_sha256 }
-            let(:stored_metadata_sha256) { job.reload.job_artifacts_metadata.file_sha256 }
+            let(:stored_metadata_sha256) { job.reload.job_artifacts_archive_metadata.file_sha256 }
 
             before do
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)

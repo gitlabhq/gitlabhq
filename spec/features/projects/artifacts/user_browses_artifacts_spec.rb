@@ -60,7 +60,7 @@ describe "User browses artifacts" do
   end
 
   context "when browsing a directory with a text file" do
-    let(:txt_entry) { job.artifacts_metadata_entry("other_artifacts_0.1.2/doc_sample.txt") }
+    let(:txt_entry) { job.artifacts_archive_metadata_entry("other_artifacts_0.1.2/doc_sample.txt") }
 
     before do
       allow(Gitlab.config.pages).to receive(:enabled).and_return(true)

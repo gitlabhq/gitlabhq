@@ -32,7 +32,7 @@ describe Projects::UpdatePagesService do
       it "doesn't delete artifacts after deploying" do
         expect(execute).to eq(:success)
 
-        expect(build.reload.artifacts?).to eq(true)
+        expect(build.reload.artifacts_archive?).to eq(true)
       end
     end
 
@@ -88,7 +88,7 @@ describe Projects::UpdatePagesService do
         it "doesn't delete artifacts after deploying" do
           expect(execute).to eq(:success)
 
-          expect(build.artifacts?).to eq(true)
+          expect(build.artifacts_archive?).to eq(true)
         end
       end
 
@@ -164,7 +164,7 @@ describe Projects::UpdatePagesService do
 
       context 'when missing artifacts metadata' do
         before do
-          expect(build).to receive(:artifacts_metadata?).and_return(false)
+          expect(build).to receive(:artifacts_archive_metadata?).and_return(false)
         end
 
         it 'does not raise an error as failed job' do
@@ -202,7 +202,7 @@ describe Projects::UpdatePagesService do
       build.update(legacy_artifacts_file: file)
       build.update(legacy_artifacts_metadata: metafile)
 
-      allow(build).to receive(:artifacts_metadata_entry)
+      allow(build).to receive(:artifacts_archive_metadata_entry)
         .and_return(metadata)
     end
 

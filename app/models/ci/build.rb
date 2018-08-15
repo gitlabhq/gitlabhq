@@ -63,7 +63,7 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts_archive, ->() do
-      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
+      where('(artifacts_archive_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
 
@@ -447,12 +447,12 @@ module Ci
       project.execute_services(build_data.dup, :job_hooks)
     end
 
-    def browsable_artifacts?
-      artifacts_metadata?
+    def browsable_artifacts_archive?
+      artifacts_archive_metadata?
     end
 
-    def artifacts_metadata_entry(path, **options)
-      artifacts_metadata.open do |metadata_stream|
+    def artifacts_archive_metadata_entry(path, **options)
+      artifacts_archive_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
           metadata_stream,
           path,
@@ -463,8 +463,8 @@ module Ci
     end
 
     def erase_artifacts!
-      remove_artifacts_file!
-      remove_artifacts_metadata!
+      remove_artifacts_archive_file!
+      remove_artifacts_archive_metadata!
       save
     end
 
@@ -483,7 +483,7 @@ module Ci
     end
 
     def erasable?
-      complete? && (artifacts? || has_test_reports? || has_trace?)
+      complete? && (artifacts_archive? || has_test_reports? || has_trace?)
     end
 
     def erased?
@@ -505,7 +505,7 @@ module Ci
         end
     end
 
-    def has_expiring_artifacts?
+    def has_expiring_artifacts_archive?
       artifacts_expire_at.present? && artifacts_expire_at > Time.now
     end
 

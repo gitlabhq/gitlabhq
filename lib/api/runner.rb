@@ -281,7 +281,7 @@ module API
           job.job_artifacts.build(
             project: job.project,
             file: metadata,
-            file_type: :metadata,
+            file_type: "#{params['artifact_type']}_metadata",
             file_format: :gzip,
             file_sha256: metadata.sha256,
             expire_in: expire_in)
@@ -307,7 +307,7 @@ module API
       get '/:id/artifacts' do
         job = authenticate_job!
 
-        present_carrierwave_file!(job.artifacts_file, supports_direct_download: params[:direct_download])
+        present_carrierwave_file!(job.artifacts_archive_file, supports_direct_download: params[:direct_download])
       end
     end
   end

@@ -244,8 +244,8 @@ describe Ci::Build do
     end
   end
 
-  describe '#artifacts?' do
-    subject { build.artifacts? }
+  describe '#artifacts_archive?' do
+    subject { build.artifacts_archive? }
 
     context 'when new artifacts are used' do
       context 'artifacts archive does not exist' do
@@ -270,7 +270,7 @@ describe Ci::Build do
     context 'when legacy artifacts are used' do
       let(:build) { create(:ci_build, :legacy_artifacts) }
 
-      subject { build.artifacts? }
+      subject { build.artifacts_archive? }
 
       context 'is expired' do
         let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
@@ -292,8 +292,8 @@ describe Ci::Build do
     end
   end
 
-  describe '#browsable_artifacts?' do
-    subject { build.browsable_artifacts? }
+  describe '#browsable_artifacts_archive?' do
+    subject { build.browsable_artifacts_archive? }
 
     context 'artifacts metadata does not exist' do
       before do
@@ -330,8 +330,8 @@ describe Ci::Build do
     end
   end
 
-  describe '#artifacts_metadata?' do
-    subject { build.artifacts_metadata? }
+  describe '#artifacts_archive_metadata?' do
+    subject { build.artifacts_archive_metadata? }
     context 'artifacts metadata does not exist' do
       it { is_expected.to be_falsy }
     end
@@ -847,7 +847,7 @@ describe Ci::Build do
       end
 
       it 'removes artifact metadata file' do
-        expect(build.artifacts_metadata.exists?).to be_falsy
+        expect(build.artifacts_archive_metadata.exists?).to be_falsy
       end
 
       it 'removes test reports' do
@@ -939,7 +939,7 @@ describe Ci::Build do
           let!(:build) { create(:ci_build, :success, :artifacts) }
 
           before do
-            build.remove_artifacts_metadata!
+            build.remove_artifacts_archive_metadata!
           end
 
           describe '#erase' do
@@ -1008,7 +1008,7 @@ describe Ci::Build do
             let!(:build) { create(:ci_build, :success, :legacy_artifacts) }
 
             before do
-              build.remove_artifacts_metadata!
+              build.remove_artifacts_archive_metadata!
             end
 
             describe '#erase' do
@@ -1555,7 +1555,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#has_expiring_artifacts?' do
+  describe '#has_expiring_artifacts_archive?' do
     context 'when artifacts have expiration date set' do
       before do
         build.update(artifacts_expire_at: 1.day.from_now)
@@ -2856,7 +2856,7 @@ describe Ci::Build do
     end
   end
 
-  describe '#artifacts_metadata_entry' do
+  describe '#artifacts_archive_metadata_entry' do
     set(:build) { create(:ci_build, project: project) }
     let(:path) { 'other_artifacts_0.1.2/another-subdirectory/banana_sample.gif' }
 
@@ -2864,7 +2864,7 @@ describe Ci::Build do
       stub_artifacts_object_storage
     end
 
-    subject { build.artifacts_metadata_entry(path) }
+    subject { build.artifacts_archive_metadata_entry(path) }
 
     context 'when using local storage' do
       let!(:metadata) { create(:ci_job_artifact, :metadata, job: build) }

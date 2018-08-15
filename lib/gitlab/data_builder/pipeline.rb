@@ -43,8 +43,8 @@ module Gitlab
           manual: build.action?,
           user: build.user.try(:hook_attrs),
           runner: build.runner && runner_hook_attrs(build.runner),
-          artifacts_file: {
-            filename: build.artifacts_file.filename,
+          artifacts_archive_file: {
+            filename: build.artifacts_archive_file.filename,
             size: build.artifacts_size
           }
         }

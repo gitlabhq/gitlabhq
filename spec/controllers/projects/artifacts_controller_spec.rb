@@ -20,7 +20,7 @@ describe Projects::ArtifactsController do
 
   describe 'GET download' do
     it 'sends the artifacts file' do
-      expect(controller).to receive(:send_file).with(job.artifacts_file.path, hash_including(disposition: 'attachment')).and_call_original
+      expect(controller).to receive(:send_file).with(job.artifacts_archive_file.path, hash_including(disposition: 'attachment')).and_call_original
 
       get :download, namespace_id: project.namespace, project_id: project, job_id: job
     end

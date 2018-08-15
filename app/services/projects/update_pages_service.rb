@@ -23,7 +23,7 @@ module Projects
       @status.enqueue!
       @status.run!
 
-      raise InvalidStateError, 'missing pages artifacts' unless build.artifacts?
+      raise InvalidStateError, 'missing pages artifacts' unless build.artifacts_archive?
       raise InvalidStateError, 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts
@@ -82,10 +82,10 @@ module Projects
     end
 
     def extract_zip_archive!(temp_path)
-      raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_metadata?
+      raise InvalidStateError, 'missing artifacts metadata' unless build.artifacts_archive_metadata?
 
       # Calculate page size after extract
-      public_entry = build.artifacts_metadata_entry(SITE_PATH, recursive: true)
+      public_entry = build.artifacts_archive_metadata_entry(SITE_PATH, recursive: true)
 
       if public_entry.total_size > max_size
         raise InvalidStateError, "artifacts for pages are too large: #{public_entry.total_size}"
@@ -96,7 +96,7 @@ module Projects
       # -n  never overwrite existing files
       # We add * to end of SITE_PATH, because we want to extract SITE_PATH and all subdirectories
       site_path = File.join(SITE_PATH, '*')
-      build.artifacts_file.use_file do |artifacts_path|
+      build.artifacts_archive_file.use_file do |artifacts_path|
         unless system(*%W(unzip -n #{artifacts_path} #{site_path} -d #{temp_path}))
           raise FailedToExtractError, 'pages failed to extract'
         end
@@ -159,7 +159,7 @@ module Projects
     end
 
     def artifacts
-      build.artifacts_file.path
+      build.artifacts_archive_file.path
     end
 
     def latest_sha

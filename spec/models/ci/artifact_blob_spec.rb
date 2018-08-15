@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Ci::ArtifactBlob do
   set(:project) { create(:project, :public) }
   set(:build) { create(:ci_build, :artifacts, project: project) }
-  let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }
+  let(:entry) { build.artifacts_archive_metadata_entry('other_artifacts_0.1.2/another-subdirectory/banana_sample.gif') }
 
   subject { described_class.new(entry) }
 
@@ -57,7 +57,7 @@ describe Ci::ArtifactBlob do
 
     context 'txt extensions' do
       let(:path) { 'other_artifacts_0.1.2/doc_sample.txt' }
-      let(:entry) { build.artifacts_metadata_entry(path) }
+      let(:entry) { build.artifacts_archive_metadata_entry(path) }
 
       it 'returns a URL' do
         url = subject.external_url(build.project, build)
@@ -94,7 +94,7 @@ describe Ci::ArtifactBlob do
     end
 
     context 'txt extensions' do
-      let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
+      let(:entry) { build.artifacts_archive_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
 
       it 'returns true' do
         expect(subject.external_link?(build)).to be true
