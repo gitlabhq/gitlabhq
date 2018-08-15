@@ -1,6 +1,10 @@
 module QA
   module Runtime
     module Wait
+      DEFAULT_TIMEOUT = 10 # seconds
+      DEFAULT_INTERVAL = 1 # seconds
+      RELOAD = false
+
       class Timer
         attr_reader :end_time, :timeout
         TimeoutError = Class.new(StandardError)
@@ -8,15 +12,20 @@ module QA
         def initialize(timeout: Wait::DEFAULT_TIMEOUT)
           @timeout = timeout
           @end_time = current_time + timeout if timeout
-          @remaining_time = @end_time - current_time if end_time
+          @remaining_time = end_time - current_time if end_time
         end
 
-        def wait(&block)
+        def wait(timeout, &block)
+          time = current_time + timeout
           loop do
-            yield(block)
-            return if remaining_time + timeout < 0
+            yield block
+            @remaining_time = time - current_time
+            raise TimeoutError, "Timed out after #{timeout} seconds" if @remaining_time < 0
           end
-          raise TimeoutError, "timed out after #{timeout} seconds"
+        end
+
+        def reset!
+          @end_time = nil
         end
 
         def remaining_time
@@ -31,9 +40,9 @@ module QA
       end
 
       class << self
-        DEFAULT_TIMEOUT = 10 # seconds
-        DEFAULT_INTERVAL = 1 # seconds
-        RELOAD = false
+        def timer
+          @timer ||= Timer.new
+        end
 
         # hard sleep
         def sleep(timeout: nil, interval: nil, reload: false)
@@ -44,8 +53,11 @@ module QA
           start = Time.now
 
           while Time.now - start < timeout
-            result = yield
-            return result if result
+
+            if block_given?
+              result = yield
+              return result if result
+            end
 
             Kernel.sleep(interval)
 
@@ -66,11 +78,13 @@ module QA
         private
 
         def run_with_timer(timeout, interval, &block)
-          return yield block if timeout.nil?
-
-          timer.wait(timeout) do
+          if timeout.zero?
             yield block
-            Kernel.sleep interval || DEFAULT_INTERVAL
+          else
+            timer.wait(timeout) do
+              yield block
+              sleep(timeout: timeout, interval: interval)
+            end
           end
         end
       end
