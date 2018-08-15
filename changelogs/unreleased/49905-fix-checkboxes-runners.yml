@@ -1,0 +1,5 @@
+---
+title: Fix checkboxes on runner admin settings - The labels are now clickable
+merge_request:
+author:
+type: fixed
