@@ -50,4 +50,34 @@ describe 'User searches for users' do
       expect(page).not_to have_content('@gob_2018')
     end
   end
+
+  context 'when on the group page' do
+    it 'finds the user belonging to the group' do
+      group = create(:group)
+
+      user1 = create(:user, username: 'gob_bluth', name: 'Gob Bluth')
+      create(:group_member, :developer, user: user1, group: group)
+
+      user2 = create(:user, username: 'michael_bluth', name: 'Michael Bluth')
+      create(:group_member, :developer, user: user2, group: group)
+
+      create(:user, username: 'gob_2018', name: 'George Oscar Bluth')
+
+      sign_in(user1)
+
+      visit group_path(group)
+
+      fill_in 'search', with: 'gob'
+      click_button 'Go'
+
+      expect(page).to have_content('Gob Bluth')
+      expect(page).to have_content('@gob_bluth')
+
+      expect(page).not_to have_content('Michael Bluth')
+      expect(page).not_to have_content('@michael_bluth')
+
+      expect(page).not_to have_content('George Oscar Bluth')
+      expect(page).not_to have_content('@gob_2018')
+    end
+  end
 end
