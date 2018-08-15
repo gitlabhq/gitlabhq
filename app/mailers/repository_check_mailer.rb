@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class RepositoryCheckMailer < BaseMailer
   def notify(failed_count)
     @message =
