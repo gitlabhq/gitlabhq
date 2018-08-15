@@ -2,8 +2,7 @@
 - commit_message = commit_message % { page_title: @page.title }
 
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
-           html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' },
-           data: { markdown_version: CacheMarkdownField::CACHE_REDCARPET_VERSION } do |f|
+           html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
   = form_errors(@page)
 
   - if @page.persisted?

@@ -207,7 +207,7 @@ describe MarkupHelper do
 
       expect(helper).to receive(:markdown_unsafe).with('wiki content',
         pipeline: :wiki, project: project, project_wiki: @wiki, page_slug: "nested/page",
-        issuable_state_filter_enabled: true, markdown_engine: :redcarpet)
+        issuable_state_filter_enabled: true)
 
       helper.render_wiki_content(@wiki)
     end
@@ -259,10 +259,12 @@ describe MarkupHelper do
       expect(helper.markup('foo.md', content, rendered: '<p>NOEL</p>')).to eq('<p>NOEL</p>')
     end
 
-    it 'defaults to Redcarpet' do
-      expect(helper).to receive(:markdown_unsafe).with(content, hash_including(markdown_engine: :redcarpet)).and_return('NOEL')
+    it 'defaults to CommonMark' do
+      expect(helper.markup('foo.md', 'x^2')).to include('x^2')
+    end
 
-      expect(helper.markup('foo.md', content)).to eq('NOEL')
+    it 'honors markdown_engine for RedCarpet' do
+      expect(helper.markup('foo.md', 'x^2', { markdown_engine: :redcarpet })).to include('x<sup>2</sup>')
     end
   end
 
