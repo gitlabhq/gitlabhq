@@ -1,0 +1,5 @@
+---
+title: Expose all artifacts sizes in jobs api
+merge_request: 20821
+author: Peter Marko
+type: added
