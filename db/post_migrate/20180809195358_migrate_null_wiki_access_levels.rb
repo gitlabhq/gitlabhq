@@ -5,6 +5,8 @@ class MigrateNullWikiAccessLevels < ActiveRecord::Migration
 
   DOWNTIME = false
 
+  disable_ddl_transaction!
+
   class ProjectFeature < ActiveRecord::Base
     include EachBatch
 
@@ -14,6 +16,13 @@ class MigrateNullWikiAccessLevels < ActiveRecord::Migration
   def up
     ProjectFeature.where(wiki_access_level: nil).each_batch do |relation|
       relation.update_all(wiki_access_level: 20)
+    end
+
+    # We need to re-count wikis as previous attempt was not considering the NULLs.
+    transaction do
+      execute('SET LOCAL statement_timeout TO 0') if Gitlab::Database.postgresql? # see https://gitlab.com/gitlab-org/gitlab-ce/issues/48967
+
+      execute("UPDATE site_statistics SET wikis_count = (SELECT COUNT(*) FROM project_features WHERE wiki_access_level != 0)")
     end
   end
 
