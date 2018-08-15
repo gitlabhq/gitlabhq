@@ -1108,6 +1108,10 @@ module API
       expose :filename, :size
     end
 
+    class JobArtifact < Grape::Entity
+      expose :file_type, :size, :filename, :file_format
+    end
+
     class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -1122,7 +1126,9 @@ module API
     end
 
     class Job < JobBasic
+      # artifacts_file is included in job_artifacts, but kept for backward compatibility (remove in api/v5)
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :job_artifacts, as: :artifacts, using: JobArtifact
       expose :runner, with: Runner
       expose :artifacts_expire_at
     end

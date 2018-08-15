@@ -3,6 +3,32 @@ require 'spec_helper'
 describe API::Jobs do
   include HttpIOHelpers
 
+  shared_examples 'a job with artifacts and trace' do |result_is_array: true|
+    context 'with artifacts and trace' do
+      let!(:second_job) { create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline) }
+
+      it 'returns artifacts and trace data', :skip_before_request do
+        get api(api_endpoint, api_user)
+        json_job = result_is_array ? json_response.select { |job| job['id'] == second_job.id }.first : json_response
+
+        expect(json_job['artifacts_file']).not_to be_nil
+        expect(json_job['artifacts_file']).not_to be_empty
+        expect(json_job['artifacts_file']['filename']).to eq(second_job.artifacts_file.filename)
+        expect(json_job['artifacts_file']['size']).to eq(second_job.artifacts_file.size)
+        expect(json_job['artifacts']).not_to be_nil
+        expect(json_job['artifacts']).to be_an Array
+        expect(json_job['artifacts'].size).to eq(second_job.job_artifacts.length)
+        json_job['artifacts'].each do |artifact|
+          expect(artifact).not_to be_nil
+          file_type = Ci::JobArtifact.file_types[artifact['file_type']]
+          expect(artifact['size']).to eq(second_job.job_artifacts.where(file_type: file_type).first.size)
+          expect(artifact['filename']).to eq(second_job.job_artifacts.where(file_type: file_type).first.filename)
+          expect(artifact['file_format']).to eq(second_job.job_artifacts.where(file_type: file_type).first.file_format)
+        end
+      end
+    end
+  end
+
   set(:project) do
     create(:project, :repository, public_builds: false)
   end
@@ -50,6 +76,20 @@ describe API::Jobs do
         expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
       end
 
+      context 'without artifacts and trace' do
+        it 'returns no artifacts nor trace data' do
+          json_job = json_response.first
+
+          expect(json_job['artifacts_file']).to be_nil
+          expect(json_job['artifacts']).to be_an Array
+          expect(json_job['artifacts']).to be_empty
+        end
+      end
+
+      it_behaves_like 'a job with artifacts and trace' do
+        let(:api_endpoint) { "/projects/#{project.id}/jobs" }
+      end
+
       it 'returns pipeline data' do
         json_job = json_response.first
 
@@ -61,7 +101,7 @@ describe API::Jobs do
       end
 
       it 'avoids N+1 queries', :skip_before_request do
-        first_build = create(:ci_build, :artifacts, pipeline: pipeline)
+        first_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline)
         first_build.runner = create(:ci_runner)
         first_build.user = create(:user)
         first_build.save
@@ -69,7 +109,7 @@ describe API::Jobs do
         control_count = ActiveRecord::QueryRecorder.new { go }.count
 
         second_pipeline = create(:ci_empty_pipeline, project: project, sha: project.commit.id, ref: project.default_branch)
-        second_build = create(:ci_build, :artifacts, pipeline: second_pipeline)
+        second_build = create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: second_pipeline)
         second_build.runner = create(:ci_runner)
         second_build.user = create(:user)
         second_build.save
@@ -118,9 +158,11 @@ describe API::Jobs do
   describe 'GET /projects/:id/pipelines/:pipeline_id/jobs' do
     let(:query) { Hash.new }
 
-    before do
-      job
-      get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        job
+        get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
+      end
     end
 
     context 'authorized user' do
@@ -134,6 +176,13 @@ describe API::Jobs do
         expect(json_response).not_to be_empty
         expect(json_response.first['commit']['id']).to eq project.commit.id
         expect(Time.parse(json_response.first['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
+        expect(json_response.first['artifacts_file']).to be_nil
+        expect(json_response.first['artifacts']).to be_an Array
+        expect(json_response.first['artifacts']).to be_empty
+      end
+
+      it_behaves_like 'a job with artifacts and trace' do
+        let(:api_endpoint) { "/projects/#{project.id}/pipelines/#{pipeline.id}/jobs" }
       end
 
       it 'returns pipeline data' do
@@ -184,7 +233,7 @@ describe API::Jobs do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
         end.count
 
-        3.times { create(:ci_build, :artifacts, pipeline: pipeline) }
+        3.times { create(:ci_build, :trace_artifact, :artifacts, :test_reports, pipeline: pipeline) }
 
         expect do
           get api("/projects/#{project.id}/pipelines/#{pipeline.id}/jobs", api_user), query
@@ -202,8 +251,10 @@ describe API::Jobs do
   end
 
   describe 'GET /projects/:id/jobs/:job_id' do
-    before do
-      get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+    before do |example|
+      unless example.metadata[:skip_before_request]
+        get api("/projects/#{project.id}/jobs/#{job.id}", api_user)
+      end
     end
 
     context 'authorized user' do
@@ -220,8 +271,15 @@ describe API::Jobs do
         expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
         expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
         expect(Time.parse(json_response['artifacts_expire_at'])).to be_like_time(job.artifacts_expire_at)
+        expect(json_response['artifacts_file']).to be_nil
+        expect(json_response['artifacts']).to be_an Array
+        expect(json_response['artifacts']).to be_empty
         expect(json_response['duration']).to eq(job.duration)
         expect(json_response['web_url']).to be_present
+      end
+
+      it_behaves_like 'a job with artifacts and trace', result_is_array: false do
+        let(:api_endpoint) { "/projects/#{project.id}/jobs/#{second_job.id}" }
       end
 
       it 'returns pipeline data' do
