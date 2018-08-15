@@ -175,19 +175,7 @@ describe ObjectStorage do
       end
 
       describe '#use_file' do
-        context 'when file is stored locally' do
-          it "calls a regular path" do
-            expect { |b| uploader.use_file(&b) }.not_to yield_with_args(%r[tmp/cache])
-          end
-        end
-
-        context 'when file is stored remotely' do
-          let(:store) { described_class::Store::REMOTE }
-
-          before do
-            stub_artifacts_object_storage
-          end
-
+        shared_examples_for 'return cache file and cleanup' do
           it "calls a cache path" do
             expect { |b| uploader.use_file(&b) }.to yield_with_args(%r[tmp/cache])
           end
@@ -203,6 +191,20 @@ describe ObjectStorage do
 
             expect(File.exist?(cached_path)).to be_falsey
           end
+        end
+
+        context 'when file is stored locally' do
+          it_behaves_like 'return cache file and cleanup'
+        end
+
+        context 'when file is stored remotely' do
+          let(:store) { described_class::Store::REMOTE }
+
+          before do
+            stub_artifacts_object_storage
+          end
+
+          it_behaves_like 'return cache file and cleanup'
         end
       end
 
