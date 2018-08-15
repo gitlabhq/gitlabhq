@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EmailRejectionMailer < BaseMailer
   def rejection(reason, original_raw, can_retry = false)
     @reason = reason

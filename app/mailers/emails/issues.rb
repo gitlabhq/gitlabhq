@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Issues
     def new_issue_email(recipient_id, issue_id, reason = nil)

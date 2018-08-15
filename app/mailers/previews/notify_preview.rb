@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotifyPreview < ActionMailer::Preview
   def note_merge_request_email_for_individual_note
     note_email(:note_merge_request_email) do
