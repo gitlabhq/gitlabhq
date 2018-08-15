@@ -97,13 +97,6 @@ describe Geo::ProjectRegistryFinder, :geo do
         expect(subject.count_synced_wikis).to eq 1
       end
 
-      it 'does not count disabled wikis' do
-        create(:geo_project_registry, :synced, project: project_synced)
-        create(:geo_project_registry, :synced, project: create(:project, :wiki_disabled))
-
-        expect(subject.count_synced_wikis).to eq 1
-      end
-
       context 'with selective sync' do
         before do
           secondary.update!(selective_sync_type: 'namespaces', namespaces: [synced_group])
@@ -247,13 +240,6 @@ describe Geo::ProjectRegistryFinder, :geo do
         create(:geo_project_registry, :wiki_verification_failed, project: project_wiki_verification_failed)
 
         expect(subject.count_verified_wikis).to eq 2
-      end
-
-      it 'does not count disabled wikis' do
-        create(:geo_project_registry, :wiki_verified, project: project_wiki_verified)
-        create(:geo_project_registry, :wiki_verified, project: create(:project, :wiki_disabled))
-
-        expect(subject.count_verified_wikis).to eq 1
       end
     end
 

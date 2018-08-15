@@ -178,6 +178,7 @@ Example response:
     "job_artifacts_synced_missing_on_primary_count": 0,
     "job_artifacts_synced_in_percentage": "0.00%",
     "repositories_count": 41,
+    "projects_count": 41,
     "repositories_failed_count": nil,
     "repositories_synced_count": nil,
     "repositories_synced_in_percentage": "0.00%",
@@ -242,6 +243,7 @@ Example response:
     "job_artifacts_synced_missing_on_primary_count": 0,
     "job_artifacts_synced_in_percentage": "50.00%",
     "repositories_count": 41,
+    "projects_count": 41,
     "repositories_failed_count": 1,
     "repositories_synced_count": 40,
     "repositories_synced_in_percentage": "97.56%",
@@ -283,6 +285,8 @@ Example response:
 ]
 ```
 
+Note: fields `wikis_count` and `repositories_count` are deprecated and will be deleted soon. Please use `projects_count` instead.
+
 ## Retrieve status about a specific Geo node
 
 ```
@@ -319,6 +323,7 @@ Example response:
   "job_artifacts_synced_missing_on_primary_count": 0,
   "job_artifacts_synced_in_percentage": "50.00%",
   "repositories_count": 41,
+  "projects_count": 41,
   "repositories_failed_count": 1,
   "repositories_synced_count": 40,
   "repositories_synced_in_percentage": "97.56%",
@@ -340,7 +345,9 @@ Example response:
 }
 ```
 
-Please note that the `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+Note: The `health_status` parameter can only be in an "Healthy" or "Unhealthy" state, while the `health` parameter can be empty, "Healthy", or contain the actual error message.
+
+Note: Fields `wikis_count` and `repositories_count` are deprecated and will be deleted soon. Please use `projects_count` instead.
 
 ## Retrieve project sync or verification failures that occurred on the current node
 

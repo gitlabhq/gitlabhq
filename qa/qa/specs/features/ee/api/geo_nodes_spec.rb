@@ -37,6 +37,7 @@ module QA
                                db_replication_lag_seconds: :integer_or_null,
                                lfs_objects_count: :integer,
                                job_artifacts_count: :integer,
+                               projects_count: :integer,
                                repositories_count: :integer,
                                wikis_count: :integer,
                                replication_slots_count: :integer_or_null,

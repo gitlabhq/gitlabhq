@@ -165,7 +165,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   end
 
   def wiki_sync_due?(scheduled_time)
-    project.wiki_enabled? && (never_synced_wiki? || wiki_sync_needed?(scheduled_time))
+    never_synced_wiki? || wiki_sync_needed?(scheduled_time)
   end
 
   # Returns whether repository is pending verification check

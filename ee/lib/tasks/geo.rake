@@ -249,13 +249,13 @@ namespace :geo do
 
     print 'Repositories: '.rjust(COLUMN_WIDTH)
     show_failed_value(current_node_status.repositories_failed_count)
-    print "#{current_node_status.repositories_synced_count}/#{current_node_status.repositories_count} "
+    print "#{current_node_status.repositories_synced_count}/#{current_node_status.projects_count} "
     puts using_percentage(current_node_status.repositories_synced_in_percentage)
 
     if Gitlab::Geo.repository_verification_enabled?
       print 'Verified Repositories: '.rjust(COLUMN_WIDTH)
       show_failed_value(current_node_status.repositories_verification_failed_count)
-      print "#{current_node_status.repositories_verified_count}/#{current_node_status.repositories_count} "
+      print "#{current_node_status.repositories_verified_count}/#{current_node_status.projects_count} "
       puts using_percentage(current_node_status.repositories_verified_in_percentage)
     end
 
@@ -284,7 +284,7 @@ namespace :geo do
     if Gitlab::CurrentSettings.repository_checks_enabled
       print 'Repositories Checked: '.rjust(COLUMN_WIDTH)
       show_failed_value(current_node_status.repositories_checked_failed_count)
-      print "#{current_node_status.repositories_checked_count}/#{current_node_status.repositories_count} "
+      print "#{current_node_status.repositories_checked_count}/#{current_node_status.projects_count} "
       puts using_percentage(current_node_status.repositories_checked_in_percentage)
     end
 

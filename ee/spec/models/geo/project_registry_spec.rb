@@ -207,17 +207,7 @@ describe Geo::ProjectRegistry do
         )
       end
 
-      context 'wiki enabled' do
-        it { expect(registry.wiki_sync_due?(Time.now)).to eq(expected) }
-      end
-
-      context 'wiki disabled' do
-        before do
-          project.update!(wiki_enabled: false)
-        end
-
-        it { expect(registry.wiki_sync_due?(Time.now)).to be_falsy }
-      end
+      it { expect(registry.wiki_sync_due?(Time.now)).to eq(expected) }
     end
   end
 

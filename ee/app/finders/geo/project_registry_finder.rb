@@ -1,11 +1,7 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
-    def count_repositories
+    def count_projects
       current_node.projects.count
-    end
-
-    def count_wikis
-      current_node.projects.with_wiki_enabled.count
     end
 
     def count_synced_repositories
@@ -194,7 +190,7 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_synced_wikis
-      Geo::ProjectRegistry.synced_wikis.where(fdw_enabled_wikis)
+      Geo::ProjectRegistry.synced_wikis
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
@@ -222,7 +218,7 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>]
     def fdw_find_verified_wikis
-      Geo::ProjectRegistry.verified_wikis.where(fdw_enabled_wikis)
+      Geo::ProjectRegistry.verified_wikis
     end
 
     def fdw_inner_join_repository_state
@@ -230,20 +226,6 @@ module Geo
         .join(fdw_repository_state_table, Arel::Nodes::InnerJoin)
         .on(local_registry_table[:project_id].eq(fdw_repository_state_table[:project_id]))
         .join_sources
-    end
-
-    def fdw_enabled_wikis
-      project_id_matcher =
-        Geo::Fdw::ProjectFeature.arel_table[:project_id]
-          .eq(Geo::ProjectRegistry.arel_table[:project_id])
-
-      # Only read the IDs of projects with disabled wikis from the remote database
-      Geo::Fdw::ProjectFeature
-        .where(wiki_access_level: [::ProjectFeature::DISABLED])
-        .where(project_id_matcher)
-        .select('1')
-        .exists
-        .not
     end
 
     #
@@ -290,7 +272,7 @@ module Geo
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
     def legacy_find_synced_wikis
       legacy_inner_join_registry_ids(
-        current_node.projects.with_wiki_enabled,
+        current_node.projects,
           Geo::ProjectRegistry.synced_wikis.pluck(:project_id),
           Project
       )
@@ -304,7 +286,7 @@ module Geo
     # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of verified wikis
     def legacy_find_verified_wikis
       legacy_inner_join_registry_ids(
-        current_node.projects.with_wiki_enabled,
+        current_node.projects,
           Geo::ProjectRegistry.verified_wikis.pluck(:project_id),
           Project
       )
