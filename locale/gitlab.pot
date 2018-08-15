@@ -3139,10 +3139,28 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Browse"
+msgstr ""
+
+msgid "Job|Download"
+msgstr ""
+
+msgid "Job|Job artifacts"
+msgstr ""
+
 msgid "Job|Job has been erased"
 msgstr ""
 
 msgid "Job|Job has been erased by"
+msgstr ""
+
+msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|The artifacts were removed"
+msgstr ""
+
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Jul"
