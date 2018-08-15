@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     trigger: 'hover',
     boundary: 'viewport',
     placement(tip, el) {
-      return $(el).data('placement') || 'bottom';
+      return $(el).data('placement') || 'top';
     },
   });
 

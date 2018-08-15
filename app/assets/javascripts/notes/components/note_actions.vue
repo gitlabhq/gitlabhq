@@ -166,7 +166,7 @@ export default {
         :class="{ 'js-user-authored': isAuthoredByCurrentUser }"
         class="note-action-button note-emoji-button js-add-award js-note-emoji"
         data-position="right"
-        data-placement="bottom"
+        data-placement="top"
         data-container="body"
         href="#"
         title="Add reaction"
@@ -213,7 +213,7 @@ export default {
         class="note-action-button more-actions-toggle btn btn-transparent"
         data-toggle="dropdown"
         data-container="body"
-        data-placement="bottom">
+        data-placement="top">
         <span
           class="icon"
           v-html="ellipsisSvg">
