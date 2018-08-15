@@ -25,17 +25,17 @@ describe MarkupHelper do
       let(:actual) { "#{merge_request.to_reference} -> #{commit.to_reference} -> #{issue.to_reference}" }
 
       it "links to the merge request" do
-        expected = project_merge_request_path(project, merge_request)
+        expected = urls.project_merge_request_path(project, merge_request)
         expect(helper.markdown(actual)).to match(expected)
       end
 
       it "links to the commit" do
-        expected = project_commit_path(project, commit)
+        expected = urls.project_commit_path(project, commit)
         expect(helper.markdown(actual)).to match(expected)
       end
 
       it "links to the issue" do
-        expected = project_issue_path(project, issue)
+        expected = urls.project_issue_path(project, issue)
         expect(helper.markdown(actual)).to match(expected)
       end
     end
@@ -46,7 +46,7 @@ describe MarkupHelper do
       let(:second_issue) { create(:issue, project: second_project) }
 
       it 'links to the issue' do
-        expected = project_issue_path(second_project, second_issue)
+        expected = urls.project_issue_path(second_project, second_issue)
         expect(markdown(actual, project: second_project)).to match(expected)
       end
     end
@@ -93,7 +93,7 @@ describe MarkupHelper do
 
       # First issue link
       expect(doc.css('a')[1].attr('href'))
-        .to eq project_issue_path(project, issues[0])
+        .to eq urls.project_issue_path(project, issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -102,7 +102,7 @@ describe MarkupHelper do
 
       # Second issue link
       expect(doc.css('a')[3].attr('href'))
-        .to eq project_issue_path(project, issues[1])
+        .to eq urls.project_issue_path(project, issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -128,7 +128,7 @@ describe MarkupHelper do
 
       # First issue link
       expect(doc.css('a')[1].attr('href'))
-        .to eq project_issue_path(project, issues[0])
+        .to eq urls.project_issue_path(project, issues[0])
       expect(doc.css('a')[1].text).to eq issues[0].to_reference
 
       # Internal commit link
@@ -137,7 +137,7 @@ describe MarkupHelper do
 
       # Second issue link
       expect(doc.css('a')[3].attr('href'))
-        .to eq project_issue_path(project, issues[1])
+        .to eq urls.project_issue_path(project, issues[1])
       expect(doc.css('a')[3].text).to eq issues[1].to_reference
 
       # Trailing commit link
@@ -183,7 +183,7 @@ describe MarkupHelper do
       doc = Nokogiri::HTML.parse(rendered)
 
       expect(doc.css('a')[0].attr('href'))
-        .to eq project_issue_path(project, issue)
+        .to eq urls.project_issue_path(project, issue)
       expect(doc.css('a')[0].text).to eq issue.to_reference
 
       wrapped = helper.link_to_html(rendered, link)
@@ -413,5 +413,9 @@ describe MarkupHelper do
     it 'shows the full issue reference' do
       expect(helper.cross_project_reference(project, issue)).to include(project.full_path)
     end
+  end
+
+  def urls
+    Gitlab::Routing.url_helpers
   end
 end
