@@ -180,7 +180,7 @@ gem 'rufus-scheduler', '~> 3.4'
 gem 'httparty', '~> 0.13.3'
 
 # Colored output to console
-gem 'rainbow', '~> 2.2'
+gem 'rainbow', '~> 3.0'
 
 # Progress bar
 gem 'ruby-progressbar'
