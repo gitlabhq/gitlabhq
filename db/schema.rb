@@ -1928,7 +1928,7 @@ ActiveRecord::Schema.define(version: 20180810155213) do
     t.string "app_group", null: false
     t.string "app_name", null: false
     t.string "app_version"
-    t.string "path", limit: 1024, null: false
+    t.string "path", limit: 512, null: false
   end
 
   add_index "packages_maven_metadata", ["package_id", "path"], name: "index_packages_maven_metadata_on_package_id_and_path", using: :btree

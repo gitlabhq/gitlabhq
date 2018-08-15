@@ -15,7 +15,7 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
       t.string :app_group, null: false
       t.string :app_name, null: false
       t.string :app_version
-      t.string :path, limit: 1024, null: false
+      t.string :path, limit: 512, null: false
     end
 
     add_concurrent_foreign_key :packages_maven_metadata, :packages_packages,
