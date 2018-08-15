@@ -50,10 +50,10 @@ A. Consider you are a software developer working in a team:
 1. You checkout a new branch, and submit your changes through a merge request
 1. You gather feedback from your team
 1. You work on the implementation optimizing code with [Code Quality reports](code_quality.md) **[STARTER]**
+1. You verify your changes with [JUnit test reports](../../../ci/junit_test_reports.md) in GitLab CI/CD
 1. You avoid using dependencies whose license is not compatible with your project with [License Management reports](license_management.md) **[ULTIMATE]**
-1. You build and test your changes with GitLab CI/CD
 1. You request the [approval](#merge-request-approvals) from your manager
-1. Your manager pushes a commit with his final review, [approves the merge request](#merge-request-approvals), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds)
+1. Your manager pushes a commit with their final review, [approves the merge request](merge_request_approvals.md), and set it to [merge when pipeline succeeds](#merge-when-pipeline-succeeds) (Merge Request Approvals are available in GitLab Starter)
 1. Your changes get deployed to production with [manual actions](../../../ci/yaml/README.md#manual-actions) for GitLab CI/CD
 1. Your implementations were successfully shipped to your customer
 
