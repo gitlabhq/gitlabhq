@@ -16,7 +16,7 @@ module Search
     end
 
     def scope
-      @scope ||= %w[notes issues merge_requests milestones wiki_blobs commits].delete(params[:scope]) { 'blobs' }
+      @scope ||= %w[notes issues merge_requests milestones wiki_blobs commits users].delete(params[:scope]) { 'blobs' }
     end
   end
 end

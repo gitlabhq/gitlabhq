@@ -45,6 +45,12 @@
             = _("Commits")
             %span.badge.badge-pill
               = @search_results.commits_count
+      - if can?(current_user, :read_users_list)
+        %li{ class: active_when(@scope == 'users') }
+          = link_to search_filter_path(scope: 'users') do
+            Users
+            %span.badge.badge-pill
+              = limited_count(@search_results.limited_users_count)
 
     - elsif @show_snippets
       %li{ class: active_when(@scope == 'snippet_blobs') }
