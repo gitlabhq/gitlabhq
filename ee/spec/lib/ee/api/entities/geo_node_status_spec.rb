@@ -85,7 +85,7 @@ describe EE::API::Entities::GeoNodeStatus, :postgresql do
 
   describe '#repositories_synced_in_percentage' do
     it 'formats as percentage' do
-      geo_node_status.assign_attributes(repositories_count: 10,
+      geo_node_status.assign_attributes(projects_count: 10,
                                         repositories_synced_count: 5,
                                         repositories_failed_count: 0)
 

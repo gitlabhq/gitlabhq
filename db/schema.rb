@@ -1176,6 +1176,7 @@ ActiveRecord::Schema.define(version: 20180807153545) do
     t.binary "storage_configuration_digest"
     t.integer "repositories_retrying_verification_count"
     t.integer "wikis_retrying_verification_count"
+    t.integer "projects_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
