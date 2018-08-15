@@ -244,9 +244,11 @@ describe Gitlab::Cleanup::ProjectUploads do
         orphaned1 = create(:upload, :personal_snippet_upload, :with_file)
         orphaned2 = create(:upload, :namespace_upload, :with_file)
         orphaned3 = create(:upload, :attachment_upload, :with_file)
+        orphaned4 = create(:upload, :favicon_upload, :with_file)
         paths << orphaned1.absolute_path
         paths << orphaned2.absolute_path
         paths << orphaned3.absolute_path
+        paths << orphaned4.absolute_path
         Upload.delete_all
 
         expect(logger).not_to receive(:info).with(/move|fix/i)
