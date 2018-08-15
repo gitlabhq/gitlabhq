@@ -108,12 +108,30 @@ A few fields are required:
 
 #### Query Variables
 
-GitLab supports a limited set of [CI variables] in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `CI_ENVIRONMENT_SLUG`. The supported variables are:
+GitLab supports a limited set of [CI variables](../../../ci/variables/README.html) in the Prometheus query. This is particularly useful for identifying a specific environment, for example with `CI_ENVIRONMENT_SLUG`. The supported variables are:
 
 * CI_ENVIRONMENT_SLUG
 * KUBE_NAMESPACE
 
 To specify a variable in a query, enclose it in curly braces with a leading percent. For example: `%{ci_environment_slug}`.
+
+### Setting up alerts for Prometheus metrics **[ULTIMATE]**
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/6590) in [GitLab Ultimate](https://about.gitlab.com/pricing/) 11.2 for [custom metrics](#adding-additional-metrics).
+
+Alerts can be configured for [custom metrics](#adding-additional-metrics) directly in the performance dashboard. 
+Metrics from the [Metric Library](prometheus_library/metrics.md) 
+will be supported in an [upcoming release](https://gitlab.com/gitlab-org/gitlab-ee/issues/6948).
+
+To set an alert, click on the alarm icon in the top right corner of the metric you want to create the alert for. A dropdown 
+will appear, with options to set the threshold and operator. Click **Add** to save and activate the alert.
+
+![Adding an alert](img/prometheus_alert.png)
+
+If the metric exceeds the threshold of the alert for over 5 minutes, an email
+will be sent to all [Maintainers and Owners](../../permissions.md#project-members-permissions) of the project. 
+
+To remove the alert, click back on the alert icon for the desired metric, and click **Delete**.
 
 ## Determining the performance impact of a merge
 
