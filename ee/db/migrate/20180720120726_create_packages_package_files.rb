@@ -22,6 +22,8 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
       t.text :file, null: false
     end
 
+    add_concurrent_index :packages_package_files, [:package_id, :file_name]
+
     add_concurrent_foreign_key :packages_package_files, :packages_packages,
       column: :package_id,
       on_delete: :cascade
@@ -30,6 +32,10 @@ class CreatePackagesPackageFiles < ActiveRecord::Migration
   def down
     if foreign_keys_for(:packages_package_files, :package_id).any?
       remove_foreign_key :packages_package_files, column: :package_id
+    end
+
+    if index_exists?(:packages_package_files, [:package_id, :file_name])
+      remove_concurrent_index :packages_package_files, [:package_id, :file_name]
     end
 
     if table_exists?(:packages_package_files)

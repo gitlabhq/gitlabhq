@@ -18,6 +18,8 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
       t.string :path, limit: 512, null: false
     end
 
+    add_concurrent_index :packages_maven_metadata, [:package_id, :path]
+
     add_concurrent_foreign_key :packages_maven_metadata, :packages_packages,
       column: :package_id,
       on_delete: :cascade
@@ -26,6 +28,10 @@ class CreatePackagesMavenMetadata < ActiveRecord::Migration
   def down
     if foreign_keys_for(:packages_maven_metadata, :package_id).any?
       remove_foreign_key :packages_maven_metadata, column: :package_id
+    end
+
+    if index_exists?(:packages_maven_metadata, [:package_id, :path])
+      remove_concurrent_index :packages_maven_metadata, [:package_id, :path]
     end
 
     if table_exists?(:packages_maven_metadata)
