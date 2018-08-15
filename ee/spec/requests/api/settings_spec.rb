@@ -5,6 +5,7 @@ describe API::Settings, 'EE Settings' do
 
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
+  let(:project) { create(:project) }
 
   before do
     stub_env('IN_MEMORY_APPLICATION_SETTINGS', 'false')
@@ -12,12 +13,15 @@ describe API::Settings, 'EE Settings' do
 
   describe "PUT /application/settings" do
     it 'sets EE specific settings' do
+      stub_licensed_features(custom_file_templates: true)
+
       put api("/application/settings", admin),
         help_text: 'Help text',
         snowplow_collector_uri: 'https://snowplow.example.com',
         snowplow_cookie_domain: '.example.com',
         snowplow_enabled: true,
-        snowplow_site_id:  'site_id'
+        snowplow_site_id:  'site_id',
+        file_template_project_id: project.id
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response['help_text']).to eq('Help text')
@@ -25,6 +29,7 @@ describe API::Settings, 'EE Settings' do
       expect(json_response['snowplow_cookie_domain']).to eq('.example.com')
       expect(json_response['snowplow_enabled']).to be_truthy
       expect(json_response['snowplow_site_id']).to eq('site_id')
+      expect(json_response['file_template_project_id']).to eq(project.id)
     end
   end
 
@@ -72,6 +77,7 @@ describe API::Settings, 'EE Settings' do
 
       it 'allows updating the settings' do
         put api("/application/settings", admin), settings
+        expect(response).to have_gitlab_http_status(200)
 
         settings.each do |attribute, value|
           expect(ApplicationSetting.current.public_send(attribute)).to eq(value)
@@ -107,6 +113,13 @@ describe API::Settings, 'EE Settings' do
   context 'custom email footer' do
     let(:settings) { { email_additional_text: 'this is a scary legal footer' } }
     let(:feature) { :email_additional_text }
+
+    it_behaves_like 'settings for licensed features'
+  end
+
+  context 'custom file template project' do
+    let(:settings) { { file_template_project_id: project.id } }
+    let(:feature) { :custom_file_templates }
 
     it_behaves_like 'settings for licensed features'
   end

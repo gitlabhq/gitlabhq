@@ -385,6 +385,8 @@
     .settings-content
       = render partial: 'slack'
 
+= render_if_exists 'admin/application_settings/templates', expanded: expanded
+
 %section.settings.as-third-party-offers.no-animate#js-third-party-offers-settings{ class: ('expanded' if expanded) }
   .settings-header
     %h4

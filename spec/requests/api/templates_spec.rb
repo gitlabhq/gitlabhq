@@ -56,6 +56,8 @@ describe API::Templates do
     end
 
     it 'returns a license template' do
+      expect(response).to have_gitlab_http_status(200)
+
       expect(json_response['key']).to eq('mit')
       expect(json_response['name']).to eq('MIT License')
       expect(json_response['nickname']).to be_nil
@@ -181,6 +183,7 @@ describe API::Templates do
         it 'replaces the copyright owner placeholder with the name of the current user' do
           get api('/templates/licenses/mit', user)
 
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['content']).to include("Copyright (c) #{Time.now.year} #{user.name}")
         end
       end

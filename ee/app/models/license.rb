@@ -40,6 +40,7 @@ class License < ActiveRecord::Base
     board_assignee_lists
     board_milestone_lists
     cross_project_pipelines
+    custom_file_templates
     email_additional_text
     db_load_balancing
     deploy_board
@@ -150,6 +151,7 @@ class License < ActiveRecord::Base
   GLOBAL_FEATURES = %i[
     admin_audit_log
     auditor_user
+    custom_file_templates
     db_load_balancing
     elastic_search
     extended_audit_events
