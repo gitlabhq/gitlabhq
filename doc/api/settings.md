@@ -56,7 +56,8 @@ Example response:
    "enforce_terms": true,
    "terms": "Hello world!",
    "performance_bar_allowed_group_id": 42,
-   "instance_statistics_visibility_private": false
+   "instance_statistics_visibility_private": false,
+   "user_show_add_ssh_key_message": true
 }
 ```
 
@@ -161,6 +162,8 @@ PUT /application/settings
 | `enforce_terms`                          | boolean          | no                                            | Enforce application ToS to all users                                                                                                                                                                                                                                                                                                                                                                                                         |
 | `terms`                                  | text             | yes (if `enforce_terms` is true)              | Markdown content for the ToS                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | `instance_statistics_visibility_private` | boolean          | no                                            | When set to `true` Instance statistics will only be available to admins                                                                                                                                                                                                                                                                                                                                                                      |
+| `user_show_add_ssh_key_message`          | boolean          | no                                            | When set to `false` disable the "You won't be able to pull or push
++project code via SSH" warning shown to users with no uploaded SSH key                                                                                                                                                                                                                                                                   |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/application/settings?signup_enabled=false&default_project_visibility=internal
@@ -206,6 +209,7 @@ Example response:
   "enforce_terms": true,
   "terms": "Hello world!",
   "performance_bar_allowed_group_id": 42,
-  "instance_statistics_visibility_private": false
+  "instance_statistics_visibility_private": false,
+  "user_show_add_ssh_key_message": true
 }
 ```
