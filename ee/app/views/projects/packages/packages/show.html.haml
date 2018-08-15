@@ -1,0 +1,60 @@
+- add_to_breadcrumbs _("Packages"), project_packages_path(@project)
+- add_to_breadcrumbs @package.name, project_packages_path(@project)
+- breadcrumb_title @package.version
+- page_title "Packages"
+
+.detail-page-header
+  .detail-page-header-body
+    %strong
+      = @package.version
+  .detail-page-header-actions
+    - if can?(current_user, :admin_package, @project)
+      = link_to project_package_path(@project, @package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
+        = _('Delete')
+.row.prepend-top-default
+  .col-md-6
+    .card
+      .card-header
+        = _('Package info:')
+      %ul.content-list
+        %li
+          %span.light
+            = _('Name:')
+          %strong
+            = @package.name
+        %li
+          %span.light
+            = _('Version:')
+          %strong
+            = @package.version
+        %li
+          %span.light
+            = _('Created on:')
+          %strong
+            = @package.created_at.to_s(:medium)
+    - if @maven_metadatum
+      .card
+        .card-header
+          = _('Maven Package info:')
+        %ul.content-list
+          %li
+            %span.light
+              = _('Group ID:')
+            %strong
+              = @maven_metadatum.app_group
+          %li
+            %span.light
+              = _('Artifact ID:')
+            %strong
+              = @maven_metadatum.app_name
+  .col-md-6
+    .card
+      .card-header
+        = _('Package files:')
+      %ul.content-list
+        - @package_files.each do |package_file|
+          %li
+            = package_file.file.identifier
+            .text-muted
+              = _('Added')
+              = time_ago_with_tooltip(package_file.created_at)

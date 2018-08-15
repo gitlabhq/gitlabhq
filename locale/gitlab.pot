@@ -423,6 +423,9 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
+msgid "Added"
+msgstr ""
+
 msgid "Additional text"
 msgstr ""
 
@@ -733,6 +736,9 @@ msgid "Are you sure you want to unlock %{path_lock_path}?"
 msgstr ""
 
 msgid "Are you sure?"
+msgstr ""
+
+msgid "Artifact ID:"
 msgstr ""
 
 msgid "Artifacts"
@@ -2433,6 +2439,9 @@ msgstr ""
 msgid "Delete"
 msgstr ""
 
+msgid "Delete Package"
+msgstr ""
+
 msgid "Delete Snippet"
 msgstr ""
 
@@ -3622,6 +3631,9 @@ msgstr ""
 msgid "Group ID"
 msgstr ""
 
+msgid "Group ID:"
+msgstr ""
+
 msgid "Group Runners"
 msgstr ""
 
@@ -4410,6 +4422,12 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "Maven Package info:"
+msgstr ""
+
+msgid "Maven package"
+msgstr ""
+
 msgid "Maximum git storage failures"
 msgstr ""
 
@@ -4856,6 +4874,9 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
+msgid "No packages stored for this project."
+msgstr ""
+
 msgid "No prioritised labels with such name or description"
 msgstr ""
 
@@ -5102,6 +5123,18 @@ msgid "Overwrite diverged branches"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Package files:"
+msgstr ""
+
+msgid "Package info:"
+msgstr ""
+
+msgid "Package was removed"
+msgstr ""
+
+msgid "Packages"
 msgstr ""
 
 msgid "Pages"
@@ -7434,6 +7467,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -7594,6 +7630,12 @@ msgid "Verification information"
 msgstr ""
 
 msgid "Verified"
+msgstr ""
+
+msgid "Version"
+msgstr ""
+
+msgid "Version:"
 msgstr ""
 
 msgid "View epics list"
