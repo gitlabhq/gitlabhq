@@ -2971,6 +2971,9 @@ msgstr ""
 msgid "IDE|Review"
 msgstr ""
 
+msgid "IP Address"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -3059,6 +3062,9 @@ msgid "Include the username in the URL if required: <code>https://username@gitla
 msgstr ""
 
 msgid "Incompatible Project"
+msgstr ""
+
+msgid "Indicates whether this runner can pick jobs without tags"
 msgstr ""
 
 msgid "Inline"
@@ -3388,6 +3394,9 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Maximum git storage failures"
+msgstr ""
+
+msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
@@ -3932,6 +3941,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
+msgid "Paused Runners don't accept new jobs"
+msgstr ""
+
 msgid "Pending"
 msgstr ""
 
@@ -4424,6 +4436,9 @@ msgstr ""
 msgid "Promote to group label"
 msgstr ""
 
+msgid "Protected"
+msgstr ""
+
 msgid "Protip:"
 msgstr ""
 
@@ -4637,6 +4652,9 @@ msgid "Reviewing (merge request !%{mergeRequestId})"
 msgstr ""
 
 msgid "Revoke"
+msgstr ""
+
+msgid "Run untagged jobs"
 msgstr ""
 
 msgid "Runner token"
@@ -5480,7 +5498,13 @@ msgstr ""
 msgid "This repository"
 msgstr ""
 
+msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
 msgid "This source diff could not be displayed because it is too large."
+msgstr ""
+
+msgid "This timeout will take precedence when lower than Project-defined timeout"
 msgstr ""
 
 msgid "This user has no identities"
@@ -5722,6 +5746,9 @@ msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: ON"
+msgstr ""
+
+msgid "Token"
 msgstr ""
 
 msgid "Too many changes to show."
@@ -6148,6 +6175,9 @@ msgid "You can only edit files when you are on a branch"
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgstr ""
+
+msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
