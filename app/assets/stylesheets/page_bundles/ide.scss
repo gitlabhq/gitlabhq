@@ -1293,6 +1293,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
   &.build-page .top-bar {
     top: 0;
+    height: auto;
     font-size: 12px;
     border-top-right-radius: $border-radius-default;
   }
