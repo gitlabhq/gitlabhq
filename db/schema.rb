@@ -214,7 +214,7 @@ ActiveRecord::Schema.define(version: 20180808162000) do
     t.string "snowplow_cookie_domain"
     t.boolean "instance_statistics_visibility_private", default: false, null: false
     t.boolean "web_ide_clientside_preview_enabled", default: false, null: false
-<<<<<<< HEAD
+    t.boolean "user_show_add_ssh_key_message", default: true, null: false
     t.integer "custom_project_templates_group_id"
   end
 
@@ -244,9 +244,6 @@ ActiveRecord::Schema.define(version: 20180808162000) do
     t.integer "user_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
-    t.boolean "user_show_add_ssh_key_message", default: true, null: false
->>>>>>> upstream/master
   end
 
   add_index "approvers", ["target_id", "target_type"], name: "index_approvers_on_target_id_and_target_type", using: :btree
