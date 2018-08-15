@@ -171,7 +171,6 @@ export default {
         :class="getAwardClassBindings(awardList)"
         :title="awardTitle(awardList)"
         data-boundary="viewport"
-        data-placement="bottom"
         class="btn award-control"
         type="button"
         @click="handleAward(awardName)"
@@ -187,7 +186,6 @@ export default {
           title="Add reaction"
           aria-label="Add reaction"
           data-boundary="viewport"
-          data-placement="bottom"
           type="button"
         >
           <span class="award-control-icon award-control-icon-neutral">
