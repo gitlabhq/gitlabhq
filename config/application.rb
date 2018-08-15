@@ -170,6 +170,7 @@ module Gitlab
     %w[images javascripts stylesheets].each do |path|
       config.assets.paths << "#{config.root}/ee/app/assets/#{path}"
     end
+    config.assets.precompile << "shared/snowplow/sp.js"
 
     # Compile non-JS/CSS assets in the ee/app/assets folder by default
     # Mimic sprockets-rails default: https://github.com/rails/sprockets-rails/blob/v3.2.1/lib/sprockets/railtie.rb#L84-L87
