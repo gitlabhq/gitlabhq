@@ -1,0 +1,4 @@
+title: Incremental rendering with Vue on merge request page
+merge_request: 21063
+author:
+type: performance

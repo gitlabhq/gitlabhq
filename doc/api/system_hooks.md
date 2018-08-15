@@ -34,6 +34,7 @@ Example response:
     "push_events":true,
     "tag_push_events":false,
     "merge_requests_events": true,
+    "repository_update_events": true,
     "enable_ssl_verification":true
   }
 ]
@@ -56,6 +57,7 @@ POST /hooks
 | `push_events` | boolean |  no | When true, the hook will fire on push events |
 | `tag_push_events` | boolean | no | When true, the hook will fire on new tags being pushed |
 | `merge_requests_events` | boolean | no | Trigger hook on merge requests events |
+| `repository_update_events` | boolean | no | Trigger hook on repository update events |
 | `enable_ssl_verification` | boolean | no | Do SSL verification when triggering the hook |
 
 Example request:
@@ -75,6 +77,7 @@ Example response:
     "push_events":true,
     "tag_push_events":false,
     "merge_requests_events": true,
+    "repository_update_events": true,
     "enable_ssl_verification":true
   }
 ]

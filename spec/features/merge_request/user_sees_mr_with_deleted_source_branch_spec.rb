@@ -28,7 +28,7 @@ describe 'Merge request > User sees MR with deleted source branch', :js do
     click_on 'Changes'
     wait_for_requests
 
-    expect(page).to have_selector('.diffs.tab-pane .nothing-here-block')
+    expect(page).to have_selector('.diffs.tab-pane .file-holder')
     expect(page).to have_content('Source branch does not exist.')
   end
 end

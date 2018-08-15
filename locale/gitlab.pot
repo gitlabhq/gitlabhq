@@ -3532,7 +3532,14 @@ msgstr ""
 msgid "Git version"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "GitHub import"
+=======
+msgid "IP Address"
+msgstr ""
+
+msgid "Identifier"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "GitLab CI Linter has been moved"
@@ -3978,6 +3985,9 @@ msgstr ""
 msgid "Incompatible Project"
 msgstr ""
 
+msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
 msgid "Inline"
 msgstr ""
 
@@ -4067,13 +4077,32 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Browse"
+msgstr ""
+
+msgid "Job|Download"
+msgstr ""
+
+msgid "Job|Job artifacts"
+msgstr ""
+
 msgid "Job|Job has been erased"
 msgstr ""
 
 msgid "Job|Job has been erased by"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
+=======
+msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|The artifacts were removed"
+msgstr ""
+
+msgid "Job|The artifacts will be removed"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Jul"
@@ -4411,6 +4440,9 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Maximum git storage failures"
+msgstr ""
+
+msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
@@ -5134,6 +5166,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
+msgid "Paused Runners don't accept new jobs"
+msgstr ""
+
 msgid "Pending"
 msgstr ""
 
@@ -5797,6 +5832,9 @@ msgstr ""
 msgid "ProtectedEnvironment|Your environment has been unprotected"
 msgstr ""
 
+msgid "Protected"
+msgstr ""
+
 msgid "Protip:"
 msgstr ""
 
@@ -6062,10 +6100,14 @@ msgstr ""
 msgid "Revoke"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
+=======
+msgid "Run untagged jobs"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "Runner token"
@@ -7109,7 +7151,13 @@ msgstr ""
 msgid "This repository"
 msgstr ""
 
+msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
 msgid "This source diff could not be displayed because it is too large."
+msgstr ""
+
+msgid "This timeout will take precedence when lower than Project-defined timeout"
 msgstr ""
 
 msgid "This user has no identities"
@@ -7384,6 +7432,9 @@ msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: ON"
+msgstr ""
+
+msgid "Token"
 msgstr ""
 
 msgid "Too many changes to show."
@@ -7890,7 +7941,11 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
+=======
+msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."

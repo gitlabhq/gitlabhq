@@ -1,6 +1,7 @@
 import mutations from '~/diffs/store/mutations';
 import * as types from '~/diffs/store/mutation_types';
 import { INLINE_DIFF_VIEW_TYPE } from '~/diffs/constants';
+import diffFileMockData from '../mock_data/diff_file';
 
 describe('DiffsStoreMutations', () => {
   describe('SET_BASE_CONFIG', () => {
@@ -21,6 +22,23 @@ describe('DiffsStoreMutations', () => {
 
       mutations[types.SET_LOADING](state, false);
       expect(state.isLoading).toEqual(false);
+    });
+  });
+
+  describe('SET_DIFF_DATA', () => {
+    it('should set diff data type properly', () => {
+      const state = {};
+      const diffMock = {
+        diff_files: [diffFileMockData],
+      };
+
+      mutations[types.SET_DIFF_DATA](state, diffMock);
+
+      const firstLine = state.diffFiles[0].parallelDiffLines[0];
+
+      expect(firstLine.right.text).toBeUndefined();
+      expect(state.diffFiles[0].renderIt).toEqual(true);
+      expect(state.diffFiles[0].collapsed).toEqual(false);
     });
   });
 

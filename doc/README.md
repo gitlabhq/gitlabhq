@@ -148,12 +148,15 @@ scales to run your tests faster.
 - [Review Apps](ci/review_apps/index.md): Preview changes to your app right from a merge request.
 - [Pipeline Graphs](ci/pipelines.md#pipeline-graphs)
 - [JUnit test reports](ci/junit_test_reports.md)
+<<<<<<< HEAD
 - [Multi-project pipelines](ci/multi_project_pipelines.md) **[PREMIUM]**
 - [Code Quality reports](user/project/merge_requests/code_quality.md) **[STARTER]**
 - [Static Application Security Testing (SAST) reports](user/project/merge_requests/sast.md) **[ULTIMATE]**
 - [Dynamic Application Security Testing (DAST)](user/project/merge_requests/dast.md) **[ULTIMATE]**
 - [Dependency Scanning reports](user/project/merge_requests/dependency_scanning.md) **[ULTIMATE]**
 - [Container Scanning reports](user/project/merge_requests/container_scanning.md) **[ULTIMATE]**
+=======
+>>>>>>> upstream/master
 
 ### Package
 
