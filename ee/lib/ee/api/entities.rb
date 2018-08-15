@@ -120,6 +120,7 @@ module EE
             ::License.feature_available?(:external_authorization_service)
           end)
           expose :email_additional_text, if: ->(_instance, _opts) { ::License.feature_available?(:email_additional_text) }
+          expose :file_template_project_id, if: ->(_instance, _opts) { ::License.feature_available?(:custom_file_templates) }
         end
       end
 

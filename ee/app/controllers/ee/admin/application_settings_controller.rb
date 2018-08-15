@@ -24,6 +24,10 @@ module EE
           attrs << :email_additional_text
         end
 
+        if License.feature_available?(:custom_file_templates)
+          attrs << :file_template_project_id
+        end
+
         if License.feature_available?(:pseudonymizer)
           attrs << :pseudonymizer_enabled
         end

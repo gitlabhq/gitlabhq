@@ -21,7 +21,7 @@ module Gitlab
         def category_directory(category)
           return @base_dir unless category.present?
 
-          @base_dir + @categories[category]
+          File.join(@base_dir, @categories[category])
         end
 
         class << self
