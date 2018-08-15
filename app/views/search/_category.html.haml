@@ -84,8 +84,9 @@
           = _("Milestones")
           %span.badge.badge-pill
             = limited_count(@search_results.limited_milestones_count)
-      %li{ class: active_when(@scope == 'users') }
-        = link_to search_filter_path(scope: 'users') do
-          Users
-          %span.badge.badge-pill
-            = limited_count(@search_results.limited_users_count)
+      - if can?(current_user, :read_users_list)
+        %li{ class: active_when(@scope == 'users') }
+          = link_to search_filter_path(scope: 'users') do
+            Users
+            %span.badge.badge-pill
+              = limited_count(@search_results.limited_users_count)

@@ -123,10 +123,6 @@ describe Gitlab::SearchResults do
     end
 
     describe '#users' do
-      it 'returns an empty array when the current_user is not allowed to read users list' do
-        expect(results.objects('users')).to be_empty
-      end
-
       it 'calls the UsersFinder' do
         expect(UsersFinder).to receive(:new).with(user, search: 'foo').and_call_original
 
