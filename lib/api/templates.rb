@@ -16,31 +16,8 @@ module API
         gitlab_version: 8.15
       }
     }.freeze
-    PROJECT_TEMPLATE_REGEX =
-      %r{[\<\{\[]
-        (project|description|
-        one\sline\s.+\swhat\sit\sdoes\.) # matching the start and end is enough here
-      [\>\}\]]}xi.freeze
-    YEAR_TEMPLATE_REGEX = /[<{\[](year|yyyy)[>}\]]/i.freeze
-    FULLNAME_TEMPLATE_REGEX =
-      %r{[\<\{\[]
-        (fullname|name\sof\s(author|copyright\sowner))
-      [\>\}\]]}xi.freeze
 
     helpers do
-      def parsed_license_template
-        # We create a fresh Licensee::License object since we'll modify its
-        # content in place below.
-        template = Licensee::License.new(params[:name])
-
-        template.content.gsub!(YEAR_TEMPLATE_REGEX, Time.now.year.to_s)
-        template.content.gsub!(PROJECT_TEMPLATE_REGEX, params[:project]) if params[:project].present?
-
-        fullname = params[:fullname].presence || current_user.try(:name)
-        template.content.gsub!(FULLNAME_TEMPLATE_REGEX, fullname) if fullname
-        template
-      end
-
       def render_response(template_type, template)
         not_found!(template_type.to_s.singularize) unless template
         present template, with: Entities::Template
@@ -56,11 +33,12 @@ module API
       use :pagination
     end
     get "templates/licenses" do
-      options = {
-        featured: declared(params)[:popular].present? ? true : nil
-      }
-      licences = ::Kaminari.paginate_array(Licensee::License.all(options))
-      present paginate(licences), with: Entities::License
+      popular = declared(params)[:popular]
+      popular = to_boolean(popular) if popular.present?
+
+      templates = LicenseTemplateFinder.new(popular: popular).execute
+
+      present paginate(::Kaminari.paginate_array(templates)), with: ::API::Entities::License
     end
 
     desc 'Get the text for a specific license' do
@@ -71,9 +49,15 @@ module API
       requires :name, type: String, desc: 'The name of the template'
     end
     get "templates/licenses/:name", requirements: { name: /[\w\.-]+/ } do
-      not_found!('License') unless Licensee::License.find(declared(params)[:name])
+      templates = LicenseTemplateFinder.new.execute
+      template = templates.find { |template| template.key == params[:name] }
 
-      template = parsed_license_template
+      not_found!('License') unless template.present?
+
+      template.resolve!(
+        project_name: params[:project].presence,
+        fullname: params[:fullname].presence || current_user&.name
+      )
 
       present template, with: ::API::Entities::License
     end

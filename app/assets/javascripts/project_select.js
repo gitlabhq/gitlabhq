@@ -14,6 +14,7 @@ export default function projectSelect() {
     this.orderBy = $(select).data('orderBy') || 'id';
     this.withIssuesEnabled = $(select).data('withIssuesEnabled');
     this.withMergeRequestsEnabled = $(select).data('withMergeRequestsEnabled');
+    this.allowClear = $(select).data('allowClear') || false;
 
     placeholder = "Search for project";
     if (this.includeGroups) {
@@ -71,6 +72,13 @@ export default function projectSelect() {
       text: function (project) {
         return project.name_with_namespace || project.name;
       },
+
+      initSelection: function(el, callback) {
+        return Api.project(el.val()).then(({ data }) => callback(data));
+      },
+
+      allowClear: this.allowClear,
+
       dropdownCssClass: "ajax-project-dropdown"
     });
     if (simpleFilter) return select;
