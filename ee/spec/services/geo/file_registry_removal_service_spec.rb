@@ -190,5 +190,27 @@ describe Geo::FileRegistryRemovalService do
         it_behaves_like 'removes'
       end
     end
+
+    context 'with favicon' do
+      let(:appearance) { create(:appearance) }
+      let(:file) { fixture_file_upload('spec/fixtures/dk.png', 'image/png') }
+      let!(:upload) do
+        FaviconUploader.new(appearance).store!(file)
+        Upload.find_by(model: appearance, uploader: FaviconUploader)
+      end
+      let!(:file_registry) { create(:geo_file_registry, :favicon, file_id: upload.id) }
+      let!(:file_path) { upload.build_uploader.file.path }
+
+      it_behaves_like 'removes'
+
+      context 'migrated to object storage' do
+        before do
+          stub_uploads_object_storage(FaviconUploader)
+          upload.update_column(:store, PersonalFileUploader::Store::REMOTE)
+        end
+
+        it_behaves_like 'removes'
+      end
+    end
   end
 end

@@ -59,6 +59,7 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
       let(:issuable_upload) { create(:upload, :issuable_upload) }
       let(:namespace_upload) { create(:upload, :namespace_upload) }
       let(:attachment_upload) { create(:upload, :attachment_upload) }
+      let(:favicon_upload) { create(:upload, :favicon_upload) }
 
       before do
         create(:geo_file_registry, :avatar, file_id: avatar_upload.id)
@@ -66,6 +67,7 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
         create(:geo_file_registry, :file, file_id: issuable_upload.id)
         create(:geo_file_registry, :namespace_file, file_id: namespace_upload.id)
         create(:geo_file_registry, :attachment, file_id: attachment_upload.id)
+        create(:geo_file_registry, :favicon, file_id: favicon_upload.id)
       end
 
       it 'schedules nothing for attachments stored locally' do
@@ -74,6 +76,7 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
         expect(worker).not_to receive(:schedule_job).with(anything, issuable_upload.id)
         expect(worker).not_to receive(:schedule_job).with(anything, namespace_upload.id)
         expect(worker).not_to receive(:schedule_job).with(anything, attachment_upload.id)
+        expect(worker).not_to receive(:schedule_job).with(anything, favicon_upload.id)
 
         worker.perform
       end
@@ -85,12 +88,14 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
           stub_uploads_object_storage(FileUploader)
           stub_uploads_object_storage(NamespaceFileUploader)
           stub_uploads_object_storage(AttachmentUploader)
+          stub_uploads_object_storage(FaviconUploader)
 
           avatar_upload.update_column(:store, FileUploader::Store::REMOTE)
           personal_snippet_upload.update_column(:store, FileUploader::Store::REMOTE)
           issuable_upload.update_column(:store, FileUploader::Store::REMOTE)
           namespace_upload.update_column(:store, FileUploader::Store::REMOTE)
           attachment_upload.update_column(:store, FileUploader::Store::REMOTE)
+          favicon_upload.update_column(:store, FileUploader::Store::REMOTE)
         end
 
         it 'schedules jobs for uploads stored remotely and synced locally' do
@@ -99,6 +104,7 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
           expect(worker).to receive(:schedule_job).with('file', issuable_upload.id)
           expect(worker).to receive(:schedule_job).with('namespace_file', namespace_upload.id)
           expect(worker).to receive(:schedule_job).with('attachment', attachment_upload.id)
+          expect(worker).to receive(:schedule_job).with('favicon', favicon_upload.id)
 
           worker.perform
         end
@@ -109,6 +115,7 @@ describe Geo::MigratedLocalFilesCleanUpWorker, :geo do
           expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('file', issuable_upload.id)
           expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('namespace_file', namespace_upload.id)
           expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('attachment', attachment_upload.id)
+          expect(Geo::FileRegistryRemovalWorker).to receive(:perform_async).with('favicon', favicon_upload.id)
 
           worker.perform
         end

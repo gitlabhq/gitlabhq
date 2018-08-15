@@ -10,6 +10,7 @@ FactoryBot.define do
     trait(:lfs) { file_type :lfs }
     trait(:namespace_file) { file_type :namespace_file }
     trait(:personal_file) { file_type :personal_file }
+    trait(:favicon) { file_type :favicon }
     trait(:import_export) { file_type :import_export }
 
     trait :with_file do
