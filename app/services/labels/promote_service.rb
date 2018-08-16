@@ -65,7 +65,7 @@ module Labels
     end
 
     def update_project_labels(label_ids)
-      Label.where(id: label_ids).destroy_all
+      Label.where(id: label_ids).destroy_all # rubocop: disable DestroyAll
     end
 
     def clone_label_to_group_label(label)

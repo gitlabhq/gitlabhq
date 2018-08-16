@@ -1764,7 +1764,7 @@ describe MergeRequest do
 
       context 'with no discussions' do
         before do
-          merge_request.notes.destroy_all
+          merge_request.notes.destroy_all # rubocop: disable DestroyAll
         end
 
         it 'returns true' do
