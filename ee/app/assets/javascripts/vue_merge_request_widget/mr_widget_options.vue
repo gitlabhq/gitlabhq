@@ -197,6 +197,7 @@ export default {
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
       :source-branch-link="mr.sourceBranchLink"
+      :source-branch="mr.sourceBranch"
     />
     <deployment
       v-for="deployment in mr.deployments"
