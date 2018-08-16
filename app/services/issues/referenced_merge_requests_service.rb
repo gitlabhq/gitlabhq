@@ -10,13 +10,7 @@ module Issues
     end
 
     def referenced_merge_requests(issue)
-      ext = issue.all_references(current_user)
-
-      issue.notes_with_associations.each do |object|
-        object.all_references(current_user, extractor: ext)
-      end
-
-      merge_requests = ext.merge_requests.sort_by(&:iid)
+      merge_requests = extract_merge_requests(issue, issue.notes)
 
       cross_project_filter = -> (merge_requests) do
         merge_requests.select { |mr| mr.target_project == project }
@@ -34,13 +28,7 @@ module Issues
     def closed_by_merge_requests(issue)
       return [] unless issue.open?
 
-      ext = issue.all_references(current_user)
-
-      issue.notes.system.each do |note|
-        note.all_references(current_user, extractor: ext)
-      end
-
-      merge_requests = ext.merge_requests.select(&:open?)
+      merge_requests = extract_merge_requests(issue, issue.notes.system).select(&:open?)
 
       return [] if merge_requests.empty?
 
@@ -49,6 +37,16 @@ module Issues
     end
 
     private
+
+    def extract_merge_requests(issue, notes)
+      ext = issue.all_references(current_user)
+
+      notes.includes(:author).each do |note|
+        note.all_references(current_user, extractor: ext)
+      end
+
+      ext.merge_requests
+    end
 
     def sort_by_iid(merge_requests)
       Gitlab::IssuableSorter.sort(project, merge_requests) { |mr| mr.iid.to_s }

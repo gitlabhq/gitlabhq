@@ -5,7 +5,7 @@ require 'spec_helper.rb'
 describe Issues::ReferencedMergeRequestsService do
   def create_referencing_mr(attributes = {})
     create(:merge_request, attributes).tap do |merge_request|
-      create(:note, :system, project: project, noteable: issue, note: merge_request.to_reference(full: true))
+      create(:note, :system, project: project, noteable: issue, author: user, note: merge_request.to_reference(full: true))
     end
   end
 
@@ -54,6 +54,18 @@ describe Issues::ReferencedMergeRequestsService do
       expect(service.referenced_merge_requests(issue)).not_to include(closing_mr_other_project)
       expect(service.referenced_merge_requests(issue)).not_to include(referencing_mr_other_project)
     end
+
+    context 'performance' do
+      it 'does not run a query for each note author', :use_clean_rails_memory_store_caching do
+        service.referenced_merge_requests(issue) # warm cache
+        control_count = ActiveRecord::QueryRecorder.new { service.referenced_merge_requests(issue) }.count
+
+        create(:note, project: project, noteable: issue, author: create(:user))
+        service.referenced_merge_requests(issue) # warm cache
+
+        expect { service.referenced_merge_requests(issue) }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   describe '#closed_by_merge_requests' do
@@ -67,6 +79,18 @@ describe Issues::ReferencedMergeRequestsService do
 
     it 'returns an empty array when the current issue is closed already' do
       expect(service.closed_by_merge_requests(closed_issue)).to eq([])
+    end
+
+    context 'performance' do
+      it 'does not run a query for each note author', :use_clean_rails_memory_store_caching do
+        service.closed_by_merge_requests(issue) # warm cache
+        control_count = ActiveRecord::QueryRecorder.new { service.closed_by_merge_requests(issue) }.count
+
+        create(:note, :system, project: project, noteable: issue, author: create(:user))
+        service.closed_by_merge_requests(issue) # warm cache
+
+        expect { service.closed_by_merge_requests(issue) }.not_to exceed_query_limit(control_count)
+      end
     end
   end
 end
