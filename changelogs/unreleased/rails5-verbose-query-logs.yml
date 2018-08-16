@@ -2,4 +2,4 @@
 title: 'Rails5: Enable verbose query logs'
 merge_request: 21231
 author: Jasper Maes
-type: fixed
+type: other
