@@ -3532,14 +3532,7 @@ msgstr ""
 msgid "Git version"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GitHub import"
-=======
-msgid "IP Address"
-msgstr ""
-
-msgid "Identifier"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GitLab CI Linter has been moved"
@@ -3871,6 +3864,9 @@ msgstr ""
 msgid "IDE|Review"
 msgstr ""
 
+msgid "IP Address"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -4092,9 +4088,6 @@ msgstr ""
 msgid "Job|Job has been erased by"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
-=======
 msgid "Job|Keep"
 msgstr ""
 
@@ -4102,7 +4095,9 @@ msgid "Job|The artifacts were removed"
 msgstr ""
 
 msgid "Job|The artifacts will be removed"
->>>>>>> upstream/master
+msgstr ""
+
+msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
 msgstr ""
 
 msgid "Jul"
@@ -5787,6 +5782,9 @@ msgstr ""
 msgid "Promotions|Upgrade plan"
 msgstr ""
 
+msgid "Protected"
+msgstr ""
+
 msgid "Protected Environments"
 msgstr ""
 
@@ -5830,9 +5828,6 @@ msgid "ProtectedEnvironment|Your environment has been protected."
 msgstr ""
 
 msgid "ProtectedEnvironment|Your environment has been unprotected"
-msgstr ""
-
-msgid "Protected"
 msgstr ""
 
 msgid "Protip:"
@@ -6100,14 +6095,13 @@ msgstr ""
 msgid "Revoke"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
-=======
+msgstr ""
+
 msgid "Run untagged jobs"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Runner token"
@@ -7941,11 +7935,10 @@ msgstr ""
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
-=======
 msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
->>>>>>> upstream/master
+msgstr ""
+
+msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
