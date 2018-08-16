@@ -3,7 +3,7 @@ module Projects
     class PackagesController < ApplicationController
       before_action :verify_packages_enabled!
       before_action :authorize_read_package!
-      before_action :authorize_admin_package!, only: [:destroy]
+      before_action :authorize_destroy_package!, only: [:destroy]
 
       def index
         @packages = project.packages.all.page(params[:page])

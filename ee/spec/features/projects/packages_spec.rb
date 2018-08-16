@@ -7,7 +7,7 @@ describe 'Packages' do
 
   before do
     sign_in(user)
-    project.add_developer(user)
+    project.add_master(user)
   end
 
   context 'when there are no packages' do

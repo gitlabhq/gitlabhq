@@ -8,7 +8,7 @@
     %strong
       = @package.version
   .detail-page-header-actions
-    - if can?(current_user, :admin_package, @project)
+    - if can?(current_user, :destroy_package, @project)
       = link_to project_package_path(@project, @package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
         = _('Delete')
 .row.prepend-top-default

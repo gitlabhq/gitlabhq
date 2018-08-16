@@ -1,5 +1,5 @@
 - page_title "Packages"
-- can_admin_package = can?(current_user, :admin_package, @project)
+- can_destroy_package = can?(current_user, :destroy_package, @project)
 
 - if @packages.any?
   %table.table
@@ -23,7 +23,7 @@
           %td
             = time_ago_with_tooltip(package.created_at)
           %td
-            - if can_admin_package
+            - if can_destroy_package
               = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
                 = icon('trash')
 

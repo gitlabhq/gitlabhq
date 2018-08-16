@@ -114,6 +114,7 @@ module EE
         enable :push_code_to_protected_branches
         enable :admin_path_locks
         enable :update_approvers
+        enable :destroy_package
       end
 
       rule { license_management_enabled & can?(:maintainer_access) }.enable :admin_software_license_policy
