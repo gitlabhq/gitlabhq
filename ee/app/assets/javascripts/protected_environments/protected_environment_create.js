@@ -48,10 +48,7 @@ export default class ProtectedEnvironmentCreate {
   // Enable submit button after selecting an option
   onSelect() {
     const $allowedToDeploy = this[`${ACCESS_LEVELS.DEPLOY}_dropdown`].getSelectedItems();
-    const toggle = !(
-      this.$form.find(PROTECTED_ENVIRONMENT_INPUT).val() &&
-      $allowedToDeploy.length
-    );
+    const toggle = !(this.$form.find(PROTECTED_ENVIRONMENT_INPUT).val() && $allowedToDeploy.length);
 
     this.$form.find('input[type="submit"]').attr('disabled', toggle);
   }
@@ -114,6 +111,7 @@ export default class ProtectedEnvironmentCreate {
 
     axios[this.$form.attr('method')](this.$form.attr('action'), this.getFormData())
       .then(() => {
+        window.location.hash = 'js-protected-environments-settings';
         window.location.reload();
       })
       .catch(() => Flash('Failed to protect the environment'));

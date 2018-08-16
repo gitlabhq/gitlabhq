@@ -2,7 +2,7 @@
 - can_admin_project = can?(current_user, :admin_project, @project)
 
 - if protected_environments_enabled?
-  %section.protected-environments-settings.settings.no-animate{ class: ('expanded' if expanded) }
+  %section.protected-environments-settings.settings.no-animate#js-protected-environments-settings{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         = _('Protected Environments')
