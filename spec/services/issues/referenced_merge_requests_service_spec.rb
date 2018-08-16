@@ -47,6 +47,24 @@ describe Issues::ReferencedMergeRequestsService do
 
         expect { service.execute(issue) }.not_to exceed_query_limit(control_count)
       end
+
+      it 'preloads the head pipeline for each merge request, and its routes' do
+        # Hack to ensure no data is preserved on issue before starting the spec,
+        # to avoid false negatives
+        reloaded_issue = Issue.find(issue.id)
+
+        pipeline_routes = lambda do |merge_requests|
+          merge_requests.map { |mr| mr.head_pipeline&.project&.full_path }
+        end
+
+        closing_mr_other_project.update!(head_pipeline: create(:ci_pipeline))
+        control_count = ActiveRecord::QueryRecorder.new { service.execute(reloaded_issue).each(&pipeline_routes) }
+
+        closing_mr.update!(head_pipeline: create(:ci_pipeline))
+
+        expect { service.execute(issue).each(&pipeline_routes) }
+          .not_to exceed_query_limit(control_count)
+      end
     end
   end
 

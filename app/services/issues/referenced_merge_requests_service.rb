@@ -3,10 +3,14 @@
 module Issues
   class ReferencedMergeRequestsService < Issues::BaseService
     def execute(issue)
-      [
-        sort_by_iid(referenced_merge_requests(issue)),
-        sort_by_iid(closed_by_merge_requests(issue))
-      ]
+      referenced = referenced_merge_requests(issue)
+      closed_by = closed_by_merge_requests(issue)
+      preloader = ActiveRecord::Associations::Preloader.new
+
+      preloader.preload(referenced + closed_by,
+                        head_pipeline: { project: [:route, { namespace: :route }] })
+
+      [sort_by_iid(referenced), sort_by_iid(closed_by)]
     end
 
     def referenced_merge_requests(issue)
