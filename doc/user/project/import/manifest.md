@@ -1,5 +1,8 @@
 # Import multiple repositories by uploading a manifest file
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28811) in
+GitLab 11.2.
+
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the
 [Android repository](https://android.googlesource.com/platform/manifest/+/2d6f081a3b05d8ef7a2b1b52b0d536b2b74feab4/default.xml).
