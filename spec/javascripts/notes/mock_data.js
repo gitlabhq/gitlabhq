@@ -1104,7 +1104,7 @@ export const collapsedSystemNotes = [
         resolvable: false,
         noteable_iid: 12,
         note: 'changed the description',
-        note_html: '\n  <p dir="auto">changed the description 2 times within 1 minute </p>',
+        note_html: ' <p dir="auto">changed the description 2 times within 1 minute </p>',
         current_user: { can_edit: false, can_award_emoji: true },
         resolved: false,
         resolved_by: null,
