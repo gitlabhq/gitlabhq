@@ -33,7 +33,4 @@ export const fetchBranches = ({ dispatch, rootGetters }, { search = '' }) => {
 
 export const resetBranches = ({ commit }) => commit(types.RESET_BRANCHES);
 
-export const openBranch = ({ rootState, dispatch }, id) =>
-  dispatch('goToRoute', `/project/${rootState.currentProjectId}/edit/${id}`, { root: true });
-
 export default () => {};

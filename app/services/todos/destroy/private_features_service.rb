@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Todos
   module Destroy
     class PrivateFeaturesService < ::Todos::Destroy::BaseService

@@ -101,6 +101,9 @@ msgstr[1] ""
 msgid "%{filePath} deleted"
 msgstr ""
 
+msgid "%{firstLabel} +%{labelCount} more"
+msgstr ""
+
 msgid "%{group_docs_link_start}Groups%{group_docs_link_end} allow you to manage and collaborate across multiple projects. Members of a group have access to all of its projects."
 msgstr ""
 
@@ -638,6 +641,9 @@ msgid "Authentication Log"
 msgstr ""
 
 msgid "Authentication log"
+msgstr ""
+
+msgid "Authentication method"
 msgstr ""
 
 msgid "Author"
@@ -1987,6 +1993,9 @@ msgstr ""
 msgid "DashboardProjects|Personal"
 msgstr ""
 
+msgid "Debug"
+msgstr ""
+
 msgid "Dec"
 msgstr ""
 
@@ -2167,6 +2176,9 @@ msgid "Diffs|No file name available"
 msgstr ""
 
 msgid "Diffs|Something went wrong while fetching diff lines."
+msgstr ""
+
+msgid "Direction"
 msgstr ""
 
 msgid "Directory name"
@@ -2391,6 +2403,9 @@ msgstr ""
 msgid "Environments|You don't have any environments right now."
 msgstr ""
 
+msgid "Error"
+msgstr ""
+
 msgid "Error Reporting and Logging"
 msgstr ""
 
@@ -2437,6 +2452,9 @@ msgid "Error updating status for all todos."
 msgstr ""
 
 msgid "Error updating todo status."
+msgstr ""
+
+msgid "Error while loading the merge request. Please try again."
 msgstr ""
 
 msgid "Estimated"
@@ -2515,6 +2533,9 @@ msgid "Failed to check related branches."
 msgstr ""
 
 msgid "Failed to remove issue from board, please try again."
+msgstr ""
+
+msgid "Failed to remove mirror."
 msgstr ""
 
 msgid "Failed to remove the pipeline schedule"
@@ -2715,6 +2736,9 @@ msgid "Go Back"
 msgstr ""
 
 msgid "Go back"
+msgstr ""
+
+msgid "Go to"
 msgstr ""
 
 msgid "Go to %{link_to_google_takeout}."
@@ -2947,6 +2971,9 @@ msgstr ""
 msgid "IDE|Review"
 msgstr ""
 
+msgid "IP Address"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -3031,10 +3058,19 @@ msgstr ""
 msgid "Include a Terms of Service agreement and Privacy Policy that all users must accept."
 msgstr ""
 
+msgid "Include the username in the URL if required: <code>https://username@gitlab.company.com/group/project.git</code>."
+msgstr ""
+
 msgid "Incompatible Project"
 msgstr ""
 
+msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
 msgid "Inline"
+msgstr ""
+
+msgid "Input your repository URL"
 msgstr ""
 
 msgid "Install GitLab Runner"
@@ -3101,6 +3137,30 @@ msgid "Job has been erased"
 msgstr ""
 
 msgid "Jobs"
+msgstr ""
+
+msgid "Job|Browse"
+msgstr ""
+
+msgid "Job|Download"
+msgstr ""
+
+msgid "Job|Job artifacts"
+msgstr ""
+
+msgid "Job|Job has been erased"
+msgstr ""
+
+msgid "Job|Job has been erased by"
+msgstr ""
+
+msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|The artifacts were removed"
+msgstr ""
+
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Jul"
@@ -3354,6 +3414,9 @@ msgstr ""
 msgid "Maximum git storage failures"
 msgstr ""
 
+msgid "Maximum job timeout"
+msgstr ""
+
 msgid "May"
 msgstr ""
 
@@ -3468,6 +3531,21 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
+msgid "Mirror a repository"
+msgstr ""
+
+msgid "Mirror direction"
+msgstr ""
+
+msgid "Mirror repository"
+msgstr ""
+
+msgid "Mirrored repositories"
+msgstr ""
+
+msgid "Mirroring repositories"
+msgstr ""
+
 msgid "MissingSSHKeyWarningLink|add an SSH key"
 msgstr ""
 
@@ -3526,6 +3604,9 @@ msgid "Nav|Sign out and sign in with a different account"
 msgstr ""
 
 msgid "Network"
+msgstr ""
+
+msgid "Never"
 msgstr ""
 
 msgid "New"
@@ -3791,10 +3872,16 @@ msgstr ""
 msgid "Only comments from the following commit are shown below"
 msgstr ""
 
+msgid "Only mirror protected branches"
+msgstr ""
+
 msgid "Only project members can comment."
 msgstr ""
 
 msgid "Oops, are you sure?"
+msgstr ""
+
+msgid "Open"
 msgstr ""
 
 msgid "Open in Xcode"
@@ -3870,6 +3957,9 @@ msgid "Path:"
 msgstr ""
 
 msgid "Pause"
+msgstr ""
+
+msgid "Paused Runners don't accept new jobs"
 msgstr ""
 
 msgid "Pending"
@@ -4364,6 +4454,9 @@ msgstr ""
 msgid "Promote to group label"
 msgstr ""
 
+msgid "Protected"
+msgstr ""
+
 msgid "Protip:"
 msgstr ""
 
@@ -4377,6 +4470,9 @@ msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
 msgid "Public pipelines"
+msgstr ""
+
+msgid "Push"
 msgstr ""
 
 msgid "Push events"
@@ -4576,6 +4672,9 @@ msgstr ""
 msgid "Revoke"
 msgstr ""
 
+msgid "Run untagged jobs"
+msgstr ""
+
 msgid "Runner token"
 msgstr ""
 
@@ -4586,6 +4685,9 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
+msgstr ""
+
+msgid "Runners page"
 msgstr ""
 
 msgid "Running"
@@ -4778,6 +4880,9 @@ msgid "Set up CI/CD"
 msgstr ""
 
 msgid "Set up Koding"
+msgstr ""
+
+msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
 msgstr ""
 
 msgid "SetPasswordToCloneLink|set a password"
@@ -5189,6 +5294,9 @@ msgstr ""
 msgid "Test coverage parsing"
 msgstr ""
 
+msgid "The Git LFS objects will <strong>not</strong> be synced."
+msgstr ""
+
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project"
 msgstr ""
 
@@ -5244,6 +5352,9 @@ msgid "The repository for this project is empty"
 msgstr ""
 
 msgid "The repository must be accessible over <code>http://</code>, <code>https://</code> or <code>git://</code>."
+msgstr ""
+
+msgid "The repository must be accessible over <code>http://</code>, <code>https://</code>, <code>ssh://</code> and <code>git://</code>."
 msgstr ""
 
 msgid "The review stage shows the time from creating the merge request to merging it. The data will automatically be added after you merge your first merge request."
@@ -5402,10 +5513,19 @@ msgstr ""
 msgid "This repository"
 msgstr ""
 
+msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
 msgid "This source diff could not be displayed because it is too large."
 msgstr ""
 
+msgid "This timeout will take precedence when lower than Project-defined timeout"
+msgstr ""
+
 msgid "This user has no identities"
+msgstr ""
+
+msgid "This user will be the author of all events in the activity feed that are the result of an update, like new branches being created or new commits being pushed to existing branches."
 msgstr ""
 
 msgid "Time before an issue gets scheduled"
@@ -5643,6 +5763,9 @@ msgstr ""
 msgid "ToggleButton|Toggle Status: ON"
 msgstr ""
 
+msgid "Token"
+msgstr ""
+
 msgid "Too many changes to show."
 msgstr ""
 
@@ -5721,7 +5844,13 @@ msgstr ""
 msgid "Update"
 msgstr ""
 
+msgid "Update now"
+msgstr ""
+
 msgid "Update your group name, description, avatar, and other general settings."
+msgstr ""
+
+msgid "Updating"
 msgstr ""
 
 msgid "Upload <code>GoogleCodeProjectHosting.json</code> here:"
@@ -6061,6 +6190,9 @@ msgid "You can only edit files when you are on a branch"
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgstr ""
+
+msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."

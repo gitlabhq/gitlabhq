@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class DetectRepositoryLanguagesService < BaseService
     attr_reader :detected_repository_languages, :programming_languages

@@ -226,7 +226,7 @@ module Ci
     end
 
     def cancelable?
-      active?
+      active? || created?
     end
 
     def retryable?

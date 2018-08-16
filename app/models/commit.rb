@@ -448,6 +448,10 @@ class Commit
     true
   end
 
+  def to_ability_name
+    model_name.singular
+  end
+
   def touch
     # no-op but needs to be defined since #persisted? is defined
   end

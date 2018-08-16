@@ -251,6 +251,7 @@ class ProjectPolicy < BasePolicy
     enable :update_pages
     enable :read_cluster
     enable :create_cluster
+    enable :create_environment_terminal
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

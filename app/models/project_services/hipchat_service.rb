@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class HipchatService < Service
   include ActionView::Helpers::SanitizeHelper
 
@@ -108,7 +110,7 @@ class HipchatService < Service
     before = push[:before]
     after = push[:after]
 
-    message = ""
+    message = []
     message << "#{push[:user_name]} "
 
     if Gitlab::Git.blank_ref?(before)
@@ -132,7 +134,7 @@ class HipchatService < Service
       end
     end
 
-    message
+    message.join
   end
 
   def markdown(text, options = {})
@@ -165,11 +167,11 @@ class HipchatService < Service
     description = obj_attr[:description]
 
     issue_link = "<a href=\"#{issue_url}\">issue ##{issue_iid}</a>"
-    message = "#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"
 
+    message = ["#{user_name} #{state} #{issue_link} in #{project_link}: <b>#{title}</b>"]
     message << "<pre>#{markdown(description)}</pre>"
 
-    message
+    message.join
   end
 
   def create_merge_request_message(data)
@@ -184,12 +186,11 @@ class HipchatService < Service
 
     merge_request_url = "#{project_url}/merge_requests/#{merge_request_id}"
     merge_request_link = "<a href=\"#{merge_request_url}\">merge request !#{merge_request_id}</a>"
-    message = "#{user_name} #{state} #{merge_request_link} in " \
-      "#{project_link}: <b>#{title}</b>"
+    message = ["#{user_name} #{state} #{merge_request_link} in " \
+      "#{project_link}: <b>#{title}</b>"]
 
     message << "<pre>#{markdown(description)}</pre>"
-
-    message
+    message.join
   end
 
   def format_title(title)
@@ -235,12 +236,11 @@ class HipchatService < Service
     end
 
     subject_html = "<a href=\"#{note_url}\">#{subject_type} #{subject_desc}</a>"
-    message = "#{user_name} commented on #{subject_html} in #{project_link}: "
+    message = ["#{user_name} commented on #{subject_html} in #{project_link}: "]
     message << title
 
     message << "<pre>#{markdown(note, ref: commit_id)}</pre>"
-
-    message
+    message.join
   end
 
   def create_pipeline_message(data)

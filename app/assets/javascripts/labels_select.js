@@ -4,7 +4,7 @@
 
 import $ from 'jquery';
 import _ from 'underscore';
-import { __ } from './locale';
+import { sprintf, __ } from './locale';
 import axios from './lib/utils/axios_utils';
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
 import DropdownUtils from './filtered_search/dropdown_utils';
@@ -39,7 +39,7 @@ export default class LabelsSelect {
       showNo = $dropdown.data('showNo');
       showAny = $dropdown.data('showAny');
       showMenuAbove = $dropdown.data('showMenuAbove');
-      defaultLabel = $dropdown.data('defaultLabel') || 'Label';
+      defaultLabel = $dropdown.data('defaultLabel') || __('Label');
       abilityName = $dropdown.data('abilityName');
       $selectbox = $dropdown.closest('.selectbox');
       $block = $selectbox.closest('.block');
@@ -267,7 +267,10 @@ export default class LabelsSelect {
             return selectedLabels;
           }
           else if (selectedLabels.length) {
-            return selectedLabels[0] + " +" + (selectedLabels.length - 1) + " more";
+            return sprintf(__('%{firstLabel} +%{labelCount} more'), {
+              firstLabel: selectedLabels[0],
+              labelCount: selectedLabels.length - 1
+            });
           }
           else {
             return defaultLabel;

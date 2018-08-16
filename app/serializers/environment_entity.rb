@@ -23,9 +23,8 @@ class EnvironmentEntity < Grape::Entity
     stop_project_environment_path(environment.project, environment)
   end
 
-  expose :terminal_path, if: ->(environment, _) { environment.has_terminals? } do |environment|
-    can?(request.current_user, :admin_environment, environment.project) &&
-      terminal_project_environment_path(environment.project, environment)
+  expose :terminal_path, if: ->(*) { environment.has_terminals? && can_access_terminal? } do |environment|
+    terminal_project_environment_path(environment.project, environment)
   end
 
   expose :folder_path do |environment|
@@ -40,7 +39,13 @@ class EnvironmentEntity < Grape::Entity
 
   private
 
+  alias_method :environment, :object
+
   def current_user
     request.current_user
+  end
+
+  def can_access_terminal?
+    can?(request.current_user, :create_environment_terminal, environment)
   end
 end

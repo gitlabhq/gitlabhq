@@ -79,6 +79,18 @@ describe ButtonHelper do
       end
     end
 
+    context 'without an ssh key on the user and user_show_add_ssh_key_message unset' do
+      before do
+        stub_application_setting(user_show_add_ssh_key_message: false)
+      end
+
+      it 'there is no warning on the dropdown description' do
+        description = element.search('.dropdown-menu-inner-content').first
+
+        expect(description).to be_nil
+      end
+    end
+
     context 'with an ssh key on the user' do
       before do
         create(:key, user: user)

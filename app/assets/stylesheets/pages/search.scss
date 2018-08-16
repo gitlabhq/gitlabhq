@@ -23,7 +23,7 @@ $search-avatar-size: 16px;
 .search-text-input:hover,
 .form-control:hover,
 :not[readonly] {
-  border-color: lighten($dropdown-input-focus-border, 20%);
+  border-color: lighten($blue-300, 20%);
   box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
 }
 
@@ -127,7 +127,7 @@ input[type='checkbox']:hover {
   &.search-active {
     form {
       @extend .form-control:focus;
-      border-color: $dropdown-input-focus-border;
+      border-color: $blue-300;
       box-shadow: none;
 
       @include media-breakpoint-up(xl) {
@@ -259,6 +259,6 @@ input[type='checkbox']:hover {
 
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }

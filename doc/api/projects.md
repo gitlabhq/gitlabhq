@@ -258,8 +258,7 @@ GET /projects?custom_attributes[key]=value&custom_attributes[other_key]=other_va
 
 ## List user projects
 
-Get a list of visible projects for the given user. When accessed without
-authentication, only public projects are returned.
+Get a list of visible projects owned by the given user. When accessed without authentication, only public projects are returned.
 
 ```
 GET /users/:user_id/projects

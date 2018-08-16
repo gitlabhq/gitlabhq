@@ -7,7 +7,7 @@ module Tags
       return error('Tag name invalid') unless valid_tag
 
       repository = project.repository
-      message&.strip!
+      message = message&.strip
 
       new_tag = nil
 

@@ -1,10 +1,10 @@
 <script>
   import { mapActions, mapGetters, mapState } from 'vuex';
   import { s__ } from '~/locale';
-  import { componentNames } from '~/vue_shared/components/reports/issue_body';
-  import ReportSection from '~/vue_shared/components/reports/report_section.vue';
-  import SummaryRow from '~/vue_shared/components/reports/summary_row.vue';
-  import IssuesList from '~/vue_shared/components/reports/issues_list.vue';
+  import { componentNames } from './issue_body';
+  import ReportSection from './report_section.vue';
+  import SummaryRow from './summary_row.vue';
+  import IssuesList from './issues_list.vue';
   import Modal from './modal.vue';
   import createStore from '../store';
   import { summaryTextBuilder, reportTextBuilder, statusIcon } from '../store/utils';

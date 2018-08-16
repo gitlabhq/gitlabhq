@@ -192,7 +192,10 @@ module ProjectsHelper
   end
 
   def show_no_ssh_key_message?
-    cookies[:hide_no_ssh_message].blank? && !current_user.hide_no_ssh_key && current_user.require_ssh_key?
+    Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
+      cookies[:hide_no_ssh_message].blank? &&
+      !current_user.hide_no_ssh_key &&
+      current_user.require_ssh_key?
   end
 
   def show_no_password_message?

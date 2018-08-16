@@ -170,7 +170,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $placeholder-text-color;
+  color: $gl-text-color-tertiary;
 }
 
 .input-group {
@@ -201,7 +201,7 @@ label {
 }
 
 .gl-show-field-errors {
-  .form-control {
+  .form-control:not(textarea) {
     height: 34px;
   }
 

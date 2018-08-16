@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Todos
   module Destroy
     class GroupPrivateService < ::Todos::Destroy::BaseService

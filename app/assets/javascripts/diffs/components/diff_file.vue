@@ -46,16 +46,25 @@ export default {
     showExpandMessage() {
       return this.isCollapsed && !this.isLoadingCollapsedDiff && !this.file.tooLarge;
     },
+    showLoadingIcon() {
+      return this.isLoadingCollapsedDiff || (!this.file.renderIt && !this.isCollapsed);
+    },
   },
   methods: {
     ...mapActions('diffs', ['loadCollapsedDiff']),
     handleToggle() {
       const { collapsed, highlightedDiffLines, parallelDiffLines } = this.file;
 
-      if (collapsed && !highlightedDiffLines && !parallelDiffLines.length) {
+      if (
+        collapsed &&
+        !highlightedDiffLines &&
+        parallelDiffLines !== undefined &&
+        !parallelDiffLines.length
+      ) {
         this.handleLoadCollapsedDiff();
       } else {
         this.file.collapsed = !this.file.collapsed;
+        this.file.renderIt = true;
       }
     },
     handleLoadCollapsedDiff() {
@@ -65,6 +74,7 @@ export default {
         .then(() => {
           this.isLoadingCollapsedDiff = false;
           this.file.collapsed = false;
+          this.file.renderIt = true;
         })
         .catch(() => {
           this.isLoadingCollapsedDiff = false;
@@ -121,12 +131,12 @@ export default {
     </div>
 
     <diff-content
-      v-if="!isCollapsed"
+      v-if="!isCollapsed && file.renderIt"
       :class="{ hidden: isCollapsed || file.tooLarge }"
       :diff-file="file"
     />
     <loading-icon
-      v-if="isLoadingCollapsedDiff"
+      v-else-if="showLoadingIcon"
       class="diff-content loading"
     />
     <div

@@ -141,7 +141,7 @@
     color: inherit;
 
     &:hover {
-      color: $gl-link-hover-color;
+      color: $blue-800;
 
       .avatar {
         border-color: rgba($avatar-border, .2);
@@ -241,7 +241,7 @@
 
       &:hover {
         text-decoration: underline;
-        color: $gl-link-hover-color;
+        color: $blue-800;
       }
     }
   }
@@ -329,7 +329,7 @@
     }
 
     .btn-secondary-hover-link:hover {
-      color: $gl-link-color;
+      color: $blue-600;
     }
 
     .sidebar-collapsed-icon {
@@ -448,8 +448,8 @@
       }
 
       .todo-undone {
-        color: $gl-link-color;
-        fill: $gl-link-color;
+        color: $blue-600;
+        fill: $blue-600;
       }
 
       .author {

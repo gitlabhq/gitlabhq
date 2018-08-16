@@ -25,52 +25,23 @@ them to review it for you.
 We use the [monthly release blog post](https://about.gitlab.com/handbook/marketing/blog/release-posts/#monthly-releases) as a changelog checklist to ensure everything
 is documented.
 
-Whenever you submit a merge request for the documentation, use the documentation MR description template.
+Whenever you submit a merge request for the documentation, use the
+"Documentation" MR description template. If you're changing documentation
+location, use the MR description template called "Change documentation
+location" instead.
 
-Please check the [documentation workflow](https://about.gitlab.com/handbook/product/technical-writing/workflow/) before getting started.
+## Documentation workflow
+
+Please read through the [documentation workflow](workflow.md) before getting started.
 
 ## Documentation structure
 
-- Overview and use cases: what it is, why it is necessary, why one would use it
-- Requirements: what do we need to get started
-- Tutorial: how to set it up, how to use it
-
-Always link a new document from its topic-related index, otherwise, it will
-not be included it in the documentation site search.
-
-_Note: to be extended._
-
-### Feature overview and use cases
-
-Every major feature (regardless if present in GitLab Community or Enterprise editions)
-should present, at the beginning of the document, two main sections: **overview** and
-**use cases**. Every GitLab EE-only feature should also contain these sections.
-
-**Overview**: as the name suggests, the goal here is to provide an overview of the feature.
-Describe what is it, what it does, why it is important/cool/nice-to-have,
-what problem it solves, and what you can do with this feature that you couldn't
-do before.
-
-**Use cases**: provide at least two, ideally three, use cases for every major feature.
-You should answer this question: what can you do with this feature/change? Use cases
-are examples of how this feature or change can be used in real life.
-
-Examples:
-- CE and EE: [Issues](../user/project/issues/index.md#use-cases)
-- CE and EE: [Merge Requests](../user/project/merge_requests/index.md#overview)
-- EE-only: [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html#overview)
-- EE-only: [Jenkins integration](https://docs.gitlab.com/ee/integration/jenkins.md#overview)
-
-Note that if you don't have anything to add between the doc title (`<h1>`) and
-the header `## Overview`, you can omit the header, but keep the content of the
-overview there.
-
-> **Overview** and **use cases** are required to **every** Enterprise Edition feature,
-and for every **major** feature present in Community Edition.
+Follow through the [documentation structure guide](structure.md) for learning
+how to structure GitLab docs.
 
 ## Markdown and styles
 
-Currently GitLab docs use Redcarpet as [markdown](../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
+Currently GitLab docs use Redcarpet as [markdown](../../user/markdown.md) engine, but there's an [open discussion](https://gitlab.com/gitlab-com/gitlab-docs/issues/50) for implementing Kramdown in the near future.
 
 All the docs follow the [documentation style guidelines](styleguide.md).
 
@@ -84,8 +55,17 @@ In order to have a [solid site structure](https://searchengineland.com/seo-benef
 all docs should be linked. Every new document should be cross-linked to its related documentation, and linked from its topic-related index, when existent.
 
 The directories `/workflow/`, `/gitlab-basics/`, `/university/`, and `/articles/` have
-been deprecated and the majority their docs have been moved to their correct location
+been **deprecated** and the majority their docs have been moved to their correct location
 in small iterations. Please don't create new docs in these folders.
+
+### Documentation files
+
+- When you create a new directory, always start with an `index.md` file.
+Do not use another file name and **do not** create `README.md` files
+- **Do not** use special chars and spaces, or capital letters in file names,
+directory names, branch names, and anything that generates a path.
+- Max screenshot size: 100KB
+- We do not support videos (yet)
 
 ### Location and naming documents
 
@@ -116,7 +96,7 @@ The table below shows what kind of documentation goes where.
 
 ---
 
-**General rules:**
+**General rules & best practices:**
 
 1. The correct naming and location of a new document, is a combination
    of the relative URL of the document in question and the GitLab Map design
@@ -203,7 +183,7 @@ Things to note:
   documentation, sometimes it might be useful to search a path deeper.
 - The `*.md` extension is not used when a document is linked to GitLab's
   built-in help page, that's why we omit it in `git grep`.
-- Use the checklist on the documentation MR description template.
+- Use the checklist on the "Change documentation location" MR description template.
 
 #### Alternative redirection method
 
@@ -514,7 +494,7 @@ Suppose there's a process to go from point A to point B in 5 steps: `(A) 1 > 2 >
 
 A **guide** can be understood as a description of certain processes to achieve a particular objective. A guide brings you from A to B describing the characteristics of that process, but not necessarily going over each step. It can mention, for example, steps 2 and 3, but does not necessarily explain how to accomplish them.
 
-- Live example: "[Static sites and GitLab Pages domains (Part 1)](../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../../user/project/pages/getting_started_part_four.md)"
+- Live example: "[Static sites and GitLab Pages domains (Part 1)](../../user/project/pages/getting_started_part_one.md) to [Creating and Tweaking GitLab CI/CD for GitLab Pages (Part 4)](../../user/project/pages/getting_started_part_four.md)"
 
 A **tutorial** requires a clear **step-by-step** guidance to achieve a singular objective. It brings you from A to B, describing precisely all the necessary steps involved in that process, showing each of the 5 steps to go from A to B.
 It does not only describes steps 2 and 3, but also shows you how to accomplish them.

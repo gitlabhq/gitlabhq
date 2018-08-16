@@ -5,12 +5,67 @@ describe AvatarsHelper do
 
   let(:user) { create(:user) }
 
-  describe '#project_icon' do
-    it 'returns an url for the avatar' do
-      project = create(:project, :public, avatar: File.open(uploaded_image_temp_path))
+  describe '#project_icon & #group_icon' do
+    shared_examples 'resource with a default avatar' do |source_type|
+      it 'returns a default avatar div' do
+        expect(public_send("#{source_type}_icon", *helper_args))
+          .to match(%r{<div class="identicon bg\d+">F</div>})
+      end
+    end
 
-      expect(helper.project_icon(project.full_path).to_s)
-        .to eq "<img data-src=\"#{project.avatar.url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
+    shared_examples 'resource with a custom avatar' do |source_type|
+      it 'returns a custom avatar image' do
+        expect(public_send("#{source_type}_icon", *helper_args))
+          .to eq "<img src=\"#{resource.avatar.url}\" alt=\"Banana sample\" />"
+      end
+    end
+
+    context 'when providing a project' do
+      it_behaves_like 'resource with a default avatar', 'project' do
+        let(:resource) { create(:project, name: 'foo') }
+        let(:helper_args) { [resource] }
+      end
+
+      it_behaves_like 'resource with a custom avatar', 'project' do
+        let(:resource) { create(:project, :public, avatar: File.open(uploaded_image_temp_path)) }
+        let(:helper_args) { [resource] }
+      end
+    end
+
+    context 'when providing a project path' do
+      it_behaves_like 'resource with a default avatar', 'project' do
+        let(:resource) { create(:project, name: 'foo') }
+        let(:helper_args) { [resource.full_path] }
+      end
+
+      it_behaves_like 'resource with a custom avatar', 'project' do
+        let(:resource) { create(:project, :public, avatar: File.open(uploaded_image_temp_path)) }
+        let(:helper_args) { [resource.full_path] }
+      end
+    end
+
+    context 'when providing a group' do
+      it_behaves_like 'resource with a default avatar', 'group' do
+        let(:resource) { create(:group, name: 'foo') }
+        let(:helper_args) { [resource] }
+      end
+
+      it_behaves_like 'resource with a custom avatar', 'group' do
+        let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+        let(:helper_args) { [resource] }
+      end
+    end
+
+    context 'when providing a group path' do
+      it_behaves_like 'resource with a default avatar', 'group' do
+        let(:resource) { create(:group, name: 'foo') }
+        let(:helper_args) { [resource.full_path] }
+      end
+
+      it_behaves_like 'resource with a custom avatar', 'group' do
+        let(:resource) { create(:group, avatar: File.open(uploaded_image_temp_path)) }
+        let(:helper_args) { [resource.full_path] }
+      end
     end
   end
 

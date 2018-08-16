@@ -366,18 +366,9 @@ module Gitlab
         end
       end
 
-      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/1233
       def new_commits(newrev)
-        gitaly_migrate(:new_commits) do |is_enabled|
-          if is_enabled
-            gitaly_ref_client.list_new_commits(newrev)
-          else
-            refs = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-              rev_list(including: newrev, excluding: :all).split("\n").map(&:strip)
-            end
-
-            Gitlab::Git::Commit.batch_by_oid(self, refs)
-          end
+        wrapped_gitaly_errors do
+          gitaly_ref_client.list_new_commits(newrev)
         end
       end
 

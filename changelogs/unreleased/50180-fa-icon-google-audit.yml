@@ -1,0 +1,5 @@
+---
+title: Show google icon in audit log
+merge_request: 21207
+author: Jan Beckmann
+type: fixed

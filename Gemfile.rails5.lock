@@ -701,8 +701,7 @@ GEM
       method_source
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    rainbow (2.2.2)
-      rake
+    rainbow (3.0.0)
     raindrops (0.18.0)
     rake (12.3.1)
     rb-fsevent (0.10.2)
@@ -1147,7 +1146,7 @@ DEPENDENCIES
   rails-controller-testing
   rails-deprecated_sanitizer (~> 1.0.3)
   rails-i18n (~> 5.1)
-  rainbow (~> 2.2)
+  rainbow (~> 3.0)
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)
   rbtrace (~> 0.4)

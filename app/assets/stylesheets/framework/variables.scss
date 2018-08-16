@@ -177,7 +177,6 @@ $border-gray-dark: darken($white-normal, $darken-border-factor);
  * UI elements
  */
 $border-color: #e5e5e5;
-$focus-border-color: $blue-300;
 $well-expand-item: #e8f2f7;
 $well-inner-border: #eef0f2;
 $well-light-border: #f1f1f1;
@@ -196,19 +195,10 @@ $gl-text-color-quaternary: #d6d6d6;
 $gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, 0.85);
 $gl-text-color-disabled: #919191;
-$gl-text-green: $green-600;
-$gl-text-green-hover: $green-700;
-$gl-text-red: $red-500;
-$gl-text-orange: $orange-600;
-$gl-link-color: $blue-600;
-$gl-link-hover-color: $blue-800;
 $gl-grayish-blue: #7f8fa4;
-$gl-gray: $gl-text-color;
 $gl-gray-dark: #313236;
 $gl-gray-light: #5c5c5c;
 $gl-header-color: #4c4e54;
-$gl-header-nav-hover-color: #434343;
-$placeholder-text-color: $gl-text-color-tertiary;
 
 /*
  * Lists
@@ -227,7 +217,7 @@ $list-warning-row-color: $orange-700;
 /*
  * Markdown
  */
-$md-link-color: $gl-link-color;
+$md-link-color: $blue-600;
 $md-area-border: #ddd;
 
 /*
@@ -374,7 +364,7 @@ $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 $monospace-font: 'Menlo', 'DejaVu Sans Mono', 'Liberation Mono', 'Consolas', 'Ubuntu Mono',
   'Courier New', 'andale mono', 'lucida console', monospace;
 $regular-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell,
-  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+  'Helvetica Neue', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 
 /*
 * Dropdowns
@@ -392,8 +382,7 @@ $dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
 $dropdown-input-color: #555;
 $dropdown-input-fa-color: #c7c7c7;
-$dropdown-input-focus-border: $focus-border-color;
-$dropdown-input-focus-shadow: rgba($dropdown-input-focus-border, 0.4);
+$dropdown-input-focus-shadow: rgba($blue-300, 0.4);
 $dropdown-loading-bg: rgba(#fff, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
@@ -585,8 +574,8 @@ $commit-message-text-area-bg: rgba(0, 0, 0, 0);
 $common-gray: $gl-text-color;
 $common-gray-light: #bbb;
 $common-gray-dark: #444;
-$common-red: $gl-text-red;
-$common-green: $gl-text-green;
+$common-red: $red-500;
+$common-green: $green-600;
 
 /*
 * Editor
@@ -834,19 +823,3 @@ Prometheus
 $prometheus-table-row-highlight-color: $theme-gray-100;
 
 $priority-label-empty-state-width: 114px;
-
-/*
- * Override Bootstrap 4 variables
- */
-
-$secondary: $gray-light;
-$input-disabled-bg: $gray-light;
-$input-border-color: $theme-gray-200;
-$input-color: $gl-text-color;
-$font-family-sans-serif: $regular-font;
-$font-family-monospace: $monospace-font;
-$input-line-height: 20px;
-$btn-line-height: 20px;
-$table-accent-bg: $gray-light;
-$card-border-color: $border-color;
-$card-cap-bg: $gray-light;

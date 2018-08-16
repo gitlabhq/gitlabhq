@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JiraService < IssueTrackerService
   include Gitlab::Routing
   include ApplicationHelper

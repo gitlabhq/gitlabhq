@@ -292,6 +292,8 @@ describe('IDE clientside preview', () => {
     describe('update', () => {
       beforeEach(() => {
         jasmine.clock().install();
+
+        vm.sandpackReady = true;
         vm.manager.updatePreview = jasmine.createSpy('updatePreview');
         vm.manager.listener = jasmine.createSpy('updatePreview');
       });
@@ -306,7 +308,7 @@ describe('IDE clientside preview', () => {
 
         vm.update();
 
-        jasmine.clock().tick(500);
+        jasmine.clock().tick(250);
 
         expect(vm.initPreview).toHaveBeenCalled();
       });
@@ -314,7 +316,7 @@ describe('IDE clientside preview', () => {
       it('calls updatePreview', () => {
         vm.update();
 
-        jasmine.clock().tick(500);
+        jasmine.clock().tick(250);
 
         expect(vm.manager.updatePreview).toHaveBeenCalledWith(vm.sandboxOpts);
       });

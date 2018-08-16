@@ -856,7 +856,7 @@ module API
     class NotificationSetting < Grape::Entity
       expose :level
       expose :events, if: ->(notification_setting, _) { notification_setting.custom? } do
-        ::NotificationSetting::EMAIL_EVENTS.each do |event|
+        ::NotificationSetting.email_events.each do |event|
           expose event
         end
       end
@@ -1080,6 +1080,10 @@ module API
       expose :filename, :size
     end
 
+    class JobArtifact < Grape::Entity
+      expose :file_type, :size, :filename, :file_format
+    end
+
     class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
@@ -1094,7 +1098,9 @@ module API
     end
 
     class Job < JobBasic
+      # artifacts_file is included in job_artifacts, but kept for backward compatibility (remove in api/v5)
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :job_artifacts, as: :artifacts, using: JobArtifact
       expose :runner, with: Runner
       expose :artifacts_expire_at
     end
@@ -1153,7 +1159,7 @@ module API
 
     class License < Grape::Entity
       expose :key, :name, :nickname
-      expose :featured, as: :popular
+      expose :popular?, as: :popular
       expose :url, as: :html_url
       expose(:source_url) { |license| license.meta['source'] }
       expose(:description) { |license| license.meta['description'] }

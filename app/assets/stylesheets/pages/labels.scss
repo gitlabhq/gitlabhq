@@ -114,7 +114,7 @@
     }
 
     &:hover {
-      color: $gl-link-color;
+      color: $blue-600;
 
       &.remove-row {
         color: $gl-danger;
@@ -253,7 +253,7 @@
   text-align: right;
   padding: 0;
   position: relative;
-  top: -3px;
+  margin: 0;
 }
 
 .label-badge {
@@ -274,6 +274,7 @@
 
 .label-links {
   list-style: none;
+  margin: 0;
   padding: 0;
   white-space: nowrap;
 }
@@ -342,10 +343,10 @@
 
     &.remove-row {
       &:hover {
-        color: $gl-text-red;
+        color: $red-500;
 
         svg {
-          fill: $gl-text-red;
+          fill: $red-500;
         }
       }
     }

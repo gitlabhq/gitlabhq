@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MockDeploymentService < DeploymentService
   def title
     'Mock deployment'
