@@ -59,7 +59,7 @@ module EE
           flash[:notice] = "The repository is being updated..."
         end
 
-        redirect_to_repository_settings(project, anchor: 'js-mirror-settings')
+        redirect_to_repository_settings(project, anchor: 'js-push-remote-settings')
       end
 
       def mirror_params_attributes
