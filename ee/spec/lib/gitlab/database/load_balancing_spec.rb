@@ -156,7 +156,7 @@ describe Gitlab::Database::LoadBalancing do
 
     context 'without a license' do
       before do
-        License.destroy_all
+        License.destroy_all # rubocop: disable DestroyAll
       end
 
       it 'is disabled' do

@@ -30,7 +30,7 @@ describe HistoricalDataWorker do
 
     context 'when there is not a license key' do
       it 'does not track historical data' do
-        License.destroy_all
+        License.destroy_all # rubocop: disable DestroyAll
 
         expect(HistoricalData).not_to receive(:track!)
 

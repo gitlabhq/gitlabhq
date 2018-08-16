@@ -11,7 +11,7 @@ describe "Admin uploads license" do
     set(:license) { build(:license, data: build(:gitlab_license, restrictions: { active_user_count: 2000 }).export) }
 
     before do
-      License.destroy_all
+      License.destroy_all # rubocop: disable DestroyAll
 
       visit(admin_license_path(trial_key: license.data))
     end

@@ -560,7 +560,7 @@ describe License do
         let(:license) { create(:license, trial: true, expired: true) }
 
         before(:all) do
-          described_class.destroy_all
+          described_class.destroy_all # rubocop: disable DestroyAll
         end
 
         ::License::EES_FEATURES.each do |feature|

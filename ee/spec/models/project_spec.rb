@@ -774,7 +774,7 @@ describe Project do
 
       context 'without a License' do
         before do
-          License.destroy_all
+          License.destroy_all # rubocop: disable DestroyAll
         end
 
         it 'is disabled' do
@@ -1123,7 +1123,7 @@ describe Project do
 
     context 'without a license key' do
       before do
-        License.destroy_all
+        License.destroy_all # rubocop: disable DestroyAll
       end
 
       it_behaves_like 'project with disabled services'

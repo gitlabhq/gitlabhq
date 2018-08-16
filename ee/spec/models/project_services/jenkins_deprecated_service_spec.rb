@@ -134,7 +134,7 @@ ICON_STATUS_HTML
 
     context 'without a license key' do
       before do
-        License.destroy_all
+        License.destroy_all # rubocop: disable DestroyAll
       end
 
       it_behaves_like 'a disabled jenkins deprecated service'

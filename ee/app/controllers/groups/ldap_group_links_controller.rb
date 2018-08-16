@@ -26,7 +26,7 @@ class Groups::LdapGroupLinksController < Groups::ApplicationController
   end
 
   def destroy
-    @group.ldap_group_links.where(id: params[:id]).destroy_all
+    @group.ldap_group_links.where(id: params[:id]).destroy_all # rubocop: disable DestroyAll
     redirect_back_or_default(default: { action: 'index' }, options: { notice: 'LDAP link removed' })
   end
 

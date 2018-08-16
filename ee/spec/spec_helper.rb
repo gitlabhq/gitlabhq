@@ -7,7 +7,7 @@ RSpec.configure do |config|
   config.include EE::LicenseHelpers
 
   config.before(:all) do
-    License.destroy_all
+    License.destroy_all # rubocop: disable DestroyAll
     TestLicense.init
   end
 
