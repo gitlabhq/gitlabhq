@@ -7,16 +7,15 @@ module Gitlab
 
           ExtensionError = Class.new(StandardError)
 
-          def initialize(hash, context = hash)
+          def initialize(hash)
             @hash = hash
-            @context = context
           end
 
           def each
             @hash.each_pair do |key, value|
               next unless value.key?(:extends)
 
-              yield Extendable::Entry.new(key, value, @context)
+              yield Extendable::Entry.new(key, @hash)
             end
           end
 
@@ -24,7 +23,7 @@ module Gitlab
             each do |entry|
               raise ExtensionError unless entry.valid?
 
-              @hash[entry.key] = entry.extend!
+              entry.extend!
             end
           end
         end
