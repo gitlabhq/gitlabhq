@@ -5,9 +5,9 @@ module Gitlab
         class Entry
           attr_reader :key
 
-          def initialize(key, hash, parent = nil)
+          def initialize(key, context, parent = nil)
             @key = key
-            @hash = hash
+            @context = context
             @parent = parent
           end
 
@@ -16,12 +16,12 @@ module Gitlab
           end
 
           def value
-            @value ||= @hash.fetch(@key)
+            @value ||= @context.fetch(@key)
           end
 
           def base
             Extendable::Entry
-              .new(extends, @hash, self)
+              .new(extends, @context, self)
               .extend!
           end
 
@@ -33,9 +33,17 @@ module Gitlab
             value.fetch(:extends).to_sym
           end
 
+          def path
+            Array(@parent&.path).compact.push(key)
+          end
+
           def extend!
+            if path.count(key) > 1
+              raise Extendable::Collection::CircularDependencyError
+            end
+
             if extensible?
-              @hash[key] = base.deep_merge(value)
+              @context[key] = base.deep_merge(value)
             else
               value
             end
