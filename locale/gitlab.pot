@@ -3139,10 +3139,19 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Are you sure you want to erase this job?"
+msgstr ""
+
 msgid "Job|Browse"
 msgstr ""
 
+msgid "Job|Complete Raw"
+msgstr ""
+
 msgid "Job|Download"
+msgstr ""
+
+msgid "Job|Erase job log"
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -3155,6 +3164,15 @@ msgid "Job|Job has been erased by"
 msgstr ""
 
 msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|Scroll to bottom"
+msgstr ""
+
+msgid "Job|Scroll to top"
+msgstr ""
+
+msgid "Job|Show complete raw"
 msgstr ""
 
 msgid "Job|The artifacts were removed"
