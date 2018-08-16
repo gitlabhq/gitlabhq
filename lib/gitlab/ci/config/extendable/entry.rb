@@ -5,10 +5,9 @@ module Gitlab
         class Entry
           attr_reader :key
 
-          def initialize(key, value, context, parent = nil)
+          def initialize(key, hash, parent = nil)
             @key = key
-            @value = value
-            @context = context
+            @hash = hash
             @parent = parent
           end
 
@@ -16,32 +15,29 @@ module Gitlab
             true
           end
 
-          # def circular_dependency?
-          #   @extends.to_s == @key.to_s
-          # end
+          def value
+            @value ||= @hash.fetch(@key)
+          end
 
           def base
             Extendable::Entry
-              .new(extends, @context.fetch(extends), @context, self)
+              .new(extends, @hash, self)
               .extend!
           end
 
           def extensible?
-            @value.key?(:extends)
+            value.key?(:extends)
           end
 
           def extends
-            @value.fetch(:extends).to_sym
+            value.fetch(:extends).to_sym
           end
 
           def extend!
             if extensible?
-              original = @value.dup
-              parent = base.dup
-
-              @value.clear.deep_merge!(parent).deep_merge!(original)
+              @hash[key] = base.deep_merge(value)
             else
-              @value.to_h
+              value
             end
           end
         end
