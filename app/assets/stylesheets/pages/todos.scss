@@ -12,8 +12,8 @@
   flex-direction: row;
 
   &:hover {
-    background-color: $row-hover;
-    border-color: $row-hover-border;
+    background-color: $blue-50;
+    border-color: $blue-200;
     cursor: pointer;
   }
 
@@ -22,7 +22,7 @@
     border-bottom: 1px solid transparent;
 
     &:hover {
-      border-color: $row-hover-border;
+      border-color: $blue-200;
     }
   }
 
