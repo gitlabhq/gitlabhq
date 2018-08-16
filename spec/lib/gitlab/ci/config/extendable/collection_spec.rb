@@ -116,8 +116,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
       end
     end
 
-    pending 'when invalid `extends` is specified'
-    context 'when circular dependecy has been detected' do
+    context 'when nested circular dependecy has been detected' do
       let(:hash) do
         {
           test: {
@@ -145,5 +144,24 @@ describe Gitlab::Ci::Config::Extendable::Collection do
           .to raise_error(described_class::CircularDependencyError)
       end
     end
+
+    context 'when circular dependecy to self has been detected' do
+      let(:hash) do
+        {
+          test: {
+            extends: 'test',
+            script: 'ls',
+            only: { refs: %w[master] }
+          }
+        }
+      end
+
+      it 'raises an error' do
+        expect { subject.extend! }
+          .to raise_error(described_class::CircularDependencyError)
+      end
+    end
+
+    pending 'when invalid `extends` is specified'
   end
 end
