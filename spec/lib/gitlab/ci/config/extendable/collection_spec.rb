@@ -117,6 +117,33 @@ describe Gitlab::Ci::Config::Extendable::Collection do
     end
 
     pending 'when invalid `extends` is specified'
-    pending 'when circular dependecy has been detected'
+    context 'when circular dependecy has been detected' do
+      let(:hash) do
+        {
+          test: {
+            extends: 'something',
+            script: 'ls',
+            only: { refs: %w[master] }
+          },
+
+          something: {
+            extends: '.first',
+            script: 'deploy',
+            only: { variables: %w[$SOMETHING] }
+          },
+
+          '.first': {
+            extends: 'something',
+            script: 'run',
+            only: { kubernetes: 'active' }
+          }
+        }
+      end
+
+      it 'raises an error' do
+        expect { subject.extend! }
+          .to raise_error(described_class::CircularDependencyError)
+      end
+    end
   end
 end

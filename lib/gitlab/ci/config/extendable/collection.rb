@@ -6,6 +6,7 @@ module Gitlab
           include Enumerable
 
           ExtensionError = Class.new(StandardError)
+          CircularDependencyError = Class.new(ExtensionError)
 
           def initialize(hash)
             @hash = hash
