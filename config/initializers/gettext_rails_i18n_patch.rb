@@ -1,5 +1,6 @@
 require 'gettext_i18n_rails/haml_parser'
 require 'gettext_i18n_rails_js/parser/javascript'
+require 'json'
 
 VUE_TRANSLATE_REGEX = /((%[\w.-]+)(?:\s))?{{ (N|n|s)?__\((.*)\) }}/
 
@@ -35,6 +36,20 @@ module GettextI18nRailsJs
           ".jsx",
           ".vue"
         ].include? ::File.extname(file)
+      end
+
+      def collect_for(file)
+        gettext_messages_by_file[file] || []
+      end
+
+      private
+
+      def gettext_messages_by_file
+        @gettext_messages_by_file ||= JSON.parse(load_messages)
+      end
+
+      def load_messages
+        `node scripts/frontend/extract_gettext_all.js --all`
       end
     end
   end

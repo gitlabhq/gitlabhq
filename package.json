@@ -126,6 +126,8 @@
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-vue": "^4.5.0",
+    "gettext-extractor": "^3.3.2",
+    "gettext-extractor-vue": "^4.0.1",
     "ignore": "^3.3.7",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.9.0",
