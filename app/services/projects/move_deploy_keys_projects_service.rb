@@ -27,7 +27,7 @@ module Projects
     end
 
     def remove_remaining_deploy_keys_projects
-      source_project.deploy_keys_projects.destroy_all
+      source_project.deploy_keys_projects.destroy_all # rubocop: disable DestroyAll
     end
   end
 end

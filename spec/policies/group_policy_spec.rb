@@ -206,7 +206,7 @@ describe GroupPolicy do
       nested_group.add_guest(developer)
       nested_group.add_guest(maintainer)
 
-      group.owners.destroy_all
+      group.owners.destroy_all # rubocop: disable DestroyAll
 
       group.add_guest(owner)
       nested_group.add_owner(owner)
