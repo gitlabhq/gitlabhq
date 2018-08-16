@@ -152,19 +152,19 @@ export const urlParamsToObject = (path = '') => splitPath(path)
     }
 
     const data = dataParam;
-    const paramSplit = filterParam.split('=');
-    const paramKeyNormalized = paramSplit[0].replace('[]', '');
-    const isArray = paramSplit[0].indexOf('[]');
-    const value = decodeURIComponent(paramSplit[1].replace(/\+/g, ' '));
+    let [key, value] = filterParam.split('=');
+    const isArray = key.includes('[]');
+    key = key.replace('[]', '');
+    value = decodeURIComponent(value.replace(/\+/g, ' '));
 
-    if (isArray !== -1) {
-      if (!data[paramKeyNormalized]) {
-        data[paramKeyNormalized] = [];
+    if (isArray) {
+      if (!data[key]) {
+        data[key] = [];
       }
 
-      data[paramKeyNormalized].push(value);
+      data[key].push(value);
     } else {
-      data[paramKeyNormalized] = value;
+      data[key] = value;
     }
 
     return data;
