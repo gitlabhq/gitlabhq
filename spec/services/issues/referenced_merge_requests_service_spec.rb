@@ -35,6 +35,19 @@ describe Issues::ReferencedMergeRequestsService do
       expect(mrs).to eq([closing_mr, referencing_mr, closing_mr_other_project, referencing_mr_other_project])
       expect(closed_by_mrs).to eq([closing_mr, closing_mr_other_project])
     end
+
+    context 'performance' do
+      it 'does not run extra queries when extra namespaces are included', :use_clean_rails_memory_store_caching do
+        service.execute(issue) # warm cache
+        control_count = ActiveRecord::QueryRecorder.new { service.execute(issue) }.count
+
+        third_project = create(:project, :public)
+        create_closing_mr(source_project: third_project)
+        service.execute(issue) # warm cache
+
+        expect { service.execute(issue) }.not_to exceed_query_limit(control_count)
+      end
+    end
   end
 
   describe '#referenced_merge_requests' do
