@@ -141,9 +141,6 @@ ul.notes {
     }
 
     .note-body {
-      overflow-x: auto;
-      overflow-y: hidden;
-
       .note-text {
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
