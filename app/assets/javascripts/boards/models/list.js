@@ -120,10 +120,10 @@ class List {
   }
 
   getIssues(emptyIssues = true) {
-    const data = Object.assign(
-      urlParamsToObject(gl.issueBoards.BoardsStore.filter.path),
-      { page: this.page },
-    );
+    const data = {
+      ...urlParamsToObject(gl.issueBoards.BoardsStore.filter.path),
+      page: this.page,
+    };
 
     if (this.label && data.label_name) {
       data.label_name = data.label_name.filter(label => label !== this.label.title);

@@ -132,11 +132,9 @@ export const parseUrlPathname = url => {
   return parsedUrl.pathname.charAt(0) === '/' ? parsedUrl.pathname : `/${parsedUrl.pathname}`;
 };
 
-function splitPath(path) {
-  return path
-    .replace(/^\?/, '')
-    .split('&');
-}
+const splitPath = (path = '') => path
+  .replace(/^\?/, '')
+  .split('&');
 
 export const urlParamsToArray = (path = '') => splitPath(path)
   .filter(param => param.length > 0)
@@ -149,7 +147,9 @@ export const getUrlParamsArray = () => urlParamsToArray(window.location.search);
 
 export const urlParamsToObject = (path = '') => splitPath(path)
   .reduce((dataParam, filterParam) => {
-    if (filterParam === '') return dataParam;
+    if (filterParam === '') {
+      return dataParam;
+    }
 
     const data = dataParam;
     const paramSplit = filterParam.split('=');

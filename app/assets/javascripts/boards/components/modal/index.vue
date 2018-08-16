@@ -109,16 +109,11 @@
       loadIssues(clearIssues = false) {
         if (!this.showAddIssuesModal) return false;
 
-        return gl.boardService
-          .getBacklog(
-            Object.assign(
-              urlParamsToObject(this.filter.path),
-              {
-                page: this.page,
-                per: this.perPage,
-              },
-            ),
-          )
+        return gl.boardService.getBacklog({
+          ...urlParamsToObject(this.filter.path),
+          page: this.page,
+          per: this.perPage,
+        })
           .then(res => res.data)
           .then(data => {
             if (clearIssues) {
