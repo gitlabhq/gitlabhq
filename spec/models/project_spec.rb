@@ -3259,6 +3259,11 @@ describe Project do
   end
 
   describe '#auto_devops_enabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     subject { project.auto_devops_enabled? }
@@ -3268,19 +3273,14 @@ describe Project do
         stub_application_setting(auto_devops_enabled: true)
       end
 
-      it 'auto devops is implicitly enabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).to be_auto_devops_enabled
-      end
+      it { is_expected.to be_truthy }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when explicitly disabled' do
@@ -3288,9 +3288,7 @@ describe Project do
           create(:project_auto_devops, project: project, enabled: false)
         end
 
-        it "auto devops is disabled" do
-          expect(project).not_to be_auto_devops_enabled
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -3299,19 +3297,22 @@ describe Project do
         stub_application_setting(auto_devops_enabled: false)
       end
 
-      it 'auto devops is implicitly disabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).not_to be_auto_devops_enabled
-      end
+      it { is_expected.to be_falsey }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
         end
+
+        it { is_expected.to be_truthy }
       end
     end
   end
@@ -3361,6 +3362,11 @@ describe Project do
   end
 
   describe '#has_auto_devops_implicitly_disabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     context 'when enabled in settings' do
@@ -3380,6 +3386,16 @@ describe Project do
 
       it 'auto devops is implicitly disabled' do
         expect(project).to have_auto_devops_implicitly_disabled
+      end
+
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
       end
 
       context 'when explicitly disabled' do
