@@ -1,4 +1,8 @@
-<!--See the general Documentation guidelines https://docs.gitlab.com/ee/development/documentation/index.html -->
+<!--See the general documentation guidelines https://docs.gitlab.com/ee/development/documentation -->
+
+<!-- Mention "documentation" or "docs" in the MR title -->
+
+<!-- Use this description template for new docs or updates to existing docs. For changing documentation location use the "Change documentation location" template -->
 
 ## What does this MR do?
 
@@ -10,20 +14,19 @@
 
 Closes 
 
-## Moving docs to a new location?
+## Author's checklist
 
-Read the guidelines:
-https://docs.gitlab.com/ee/development/documentation/#changing-document-location
+- [ ] [Apply the correct labels and milestone](https://docs.gitlab.com/ee/development/documentation/workflow.html#2-developer-s-role-in-the-documentation-process)
+- [ ] Crosslink the document from the higher-level index
+- [ ] Crosslink the document from other subject-related docs
+- [ ] Correctly apply the product [badges](https://docs.gitlab.com/ee/development/documentation/styleguide.html#product-badges) and [tiers](https://docs.gitlab.com/ee/development/documentation/styleguide.html#gitlab-versions-and-tiers)
+- [ ] [Port the MR to EE (or backport from CE)](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee): _always recommended, required when the `ee-compat-check` job fails_
 
-- [ ] Make sure the old link is not removed and has its contents replaced with
-      a link to the new location.
-- [ ] Make sure internal links pointing to the document in question are not broken.
-- [ ] Search and replace any links referring to the old docs in the GitLab Rails app,
-      specifically under the `app/views/` and `ee/app/views` (for GitLab EE) directories.
-- [ ] Make sure to add [`redirect_from`](https://docs.gitlab.com/ee/development/documentation/index.html#redirections-for-pages-with-disqus-comments)
-      to the new document if there are any Disqus comments on the old document thread.
-- [ ] If working on CE and the `ee-compat-check` jobs fails, [submit an MR to EE
-      with the changes](https://docs.gitlab.com/ee/development/documentation/index.html#cherry-picking-from-ce-to-ee) as well.
-- [ ] Ping one of the technical writers for review.
+## Review checklist
+
+- [ ] Your team's review (required)
+- [ ] PM's review (recommended, but not a blocker)
+- [ ] Technical writer's review (required)
+- [ ] Merge the EE-MR first, CE-MR afterwards
 
 /label ~Documentation
