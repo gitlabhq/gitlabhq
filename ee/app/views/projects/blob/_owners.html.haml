@@ -1,0 +1,9 @@
+- return if blob.owners.empty?
+
+.well-segment.blob-auxiliary-viewer.file-owner-content
+  = sprite_icon('users', size: 18, css_class: 'icon')
+  %strong
+    = _("Code owners")
+  = link_to icon('question-circle'), help_page_path('user/project/code_owners'), title: 'About this feature', target: '_blank'
+  &#58;
+  = users_sentence(blob.owners, link_class: 'file-owner-link')

@@ -1946,6 +1946,9 @@ msgstr ""
 msgid "ClusterIntegration|sign up"
 msgstr ""
 
+msgid "Code owners"
+msgstr ""
+
 msgid "Cohorts"
 msgstr ""
 
