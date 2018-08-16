@@ -1,6 +1,6 @@
 # Getting started with interactive web terminals
 
-> Introduced in GitLab 11.2.
+> Introduced in GitLab 11.3.
 
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-of commands for their CI pipeline.
@@ -27,14 +27,14 @@ NOTE: **Note:** Not all executors are
 
 Sometimes, when a job is running, things don't go as you would expect, and it
 would be helpful if one can have a shell to aid debugging. When a job is
-running, on the right panel you can see a button that will open the terminal
+running, on the right panel you can see a button `debug` that will open the terminal
 for the current job.
 
 ![Example of job running with terminal
 available](img/interactive_web_terminal_running_job.png)
 
-When clicked, you will be redirected to a new page where you can access the
-terminal and type commands like a normal shell.
+When clicked, a new tab will open to the terminal page where you can access
+the terminal and type commands like a normal shell.
 
 ![terminal of the job](img/interactive_web_terminal_page.png)
 
