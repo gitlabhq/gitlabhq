@@ -1,0 +1,5 @@
+---
+title: Update to Rouge 3.2.1, which includes a critical fix to the Perl Lexer
+merge_request: 21263
+author:
+type: changed
