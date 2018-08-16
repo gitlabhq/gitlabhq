@@ -27,6 +27,7 @@ class Project < ActiveRecord::Base
   include FastDestroyAll::Helpers
   include WithUploads
   include BatchDestroyDependentAssociations
+  include FeatureGate
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -519,18 +520,19 @@ class Project < ActiveRecord::Base
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
-      Gitlab::CurrentSettings.auto_devops_enabled?
+      has_auto_devops_implicitly_enabled?
     else
       auto_devops.enabled?
     end
   end
 
   def has_auto_devops_implicitly_enabled?
-    auto_devops&.enabled.nil? && Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? &&
+      (Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def has_auto_devops_implicitly_disabled?
-    auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? && !(Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def empty_repo?

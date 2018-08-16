@@ -100,7 +100,7 @@ describe ProjectAutoDevops do
     end
   end
 
-  describe '#set_gitlab_deploy_token' do
+  describe '#create_gitlab_deploy_token' do
     let(:auto_devops) { build(:project_auto_devops, project: project) }
 
     context 'when the project is public' do
@@ -144,9 +144,9 @@ describe ProjectAutoDevops do
       end
     end
 
-    context 'when autodevops is enabled at instancel level' do
+    context 'when autodevops is enabled at instance level' do
       let(:project) { create(:project, :repository, :internal) }
-      let(:auto_devops) { build(:project_auto_devops, :disabled, project: project) }
+      let(:auto_devops) { build(:project_auto_devops, enabled: nil, project: project) }
 
       it 'should create a deploy token' do
         allow(Gitlab::CurrentSettings).to receive(:auto_devops_enabled?).and_return(true)
