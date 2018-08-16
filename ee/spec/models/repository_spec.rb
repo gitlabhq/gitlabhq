@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Repository do
   include RepoHelpers
+  include ::EE::GeoHelpers
   TestBlob = Struct.new(:path)
 
   let(:project) { create(:project, :repository) }
@@ -111,6 +112,46 @@ describe Repository do
       expect(repository.upstream_branches.size).to eq(1)
       expect(repository.upstream_branches.first).to be_an_instance_of(Gitlab::Git::Branch)
       expect(repository.upstream_branches.first.name).to eq('upstream_branch')
+    end
+  end
+
+  describe '#keep_around' do
+    set(:primary_node)   { create(:geo_node, :primary) }
+    set(:secondary_node) { create(:geo_node) }
+    let(:sha) { sample_commit.id }
+
+    context 'on a Geo primary' do
+      before do
+        stub_current_geo_node(primary_node)
+      end
+
+      context 'when a single SHA is passed' do
+        it 'creates a RepositoryUpdatedEvent' do
+          expect do
+            repository.keep_around(sha)
+          end.to change { ::Geo::RepositoryUpdatedEvent.count }.by(1)
+        end
+      end
+
+      context 'when multiple SHAs are passed' do
+        it 'creates exactly one RepositoryUpdatedEvent' do
+          expect do
+            repository.keep_around(sha, sample_big_commit.id)
+          end.to change { ::Geo::RepositoryUpdatedEvent.count }.by(1)
+        end
+      end
+    end
+
+    context 'on a Geo secondary' do
+      before do
+        stub_current_geo_node(secondary_node)
+      end
+
+      it 'does not create a RepositoryUpdatedEvent' do
+        expect do
+          repository.keep_around(sha)
+        end.not_to change { ::Geo::RepositoryUpdatedEvent.count }
+      end
     end
   end
 end
