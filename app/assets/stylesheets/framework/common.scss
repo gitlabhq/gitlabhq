@@ -71,7 +71,7 @@ pre {
   }
 
   &.card.card-body-pre {
-    border: 1px solid $well-pre-bg;
+    border: 1px solid $gray-darker;
     background: $gray-light;
     border-radius: 0;
     color: $well-pre-color;
@@ -233,7 +233,7 @@ li.note {
 
 .error-message {
   padding: 10px;
-  background: $error-bg;
+  background: $red-400;
   margin: 0;
   color: $white-light;
 
@@ -244,11 +244,11 @@ li.note {
 }
 
 .warning_message {
-  border-left: 4px solid $warning-message-border;
-  color: $warning-message-color;
+  border-left: 4px solid $orange-200;
+  color: $orange-700;
   padding: 10px;
   margin-bottom: 10px;
-  background: $warning-message-bg;
+  background: $orange-100;
   padding-left: 20px;
 
   &.centered {
@@ -345,15 +345,6 @@ img.emoji {
     font-size: $gl-font-size;
     color: $description-color;
     margin-top: 8px;
-  }
-}
-
-.profiler-results {
-  top: 73px !important;
-
-  .profiler-button,
-  .profiler-controls {
-    border-color: $profiler-border !important;
   }
 }
 

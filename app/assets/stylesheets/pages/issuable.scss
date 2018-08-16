@@ -436,10 +436,10 @@
       width: 100%;
       text-align: center;
       margin-bottom: 10px;
-      color: $issuable-sidebar-color;
+      color: $gl-text-color-secondary;
 
       svg {
-        fill: $issuable-sidebar-color;
+        fill: $gl-text-color-secondary;
       }
 
       &:hover:not(.disabled),
@@ -470,14 +470,14 @@
       }
 
       .avatar-counter:hover {
-        color: $issuable-sidebar-color;
-        border-color: $issuable-sidebar-color;
+        color: $gl-text-color-secondary;
+        border-color: $gl-text-color-secondary;
       }
 
       .btn-clipboard {
         border: 0;
         background: transparent;
-        color: $issuable-sidebar-color;
+        color: $gl-text-color-secondary;
 
         &:hover {
           color: $gl-text-color;
@@ -835,7 +835,7 @@
     svg {
       width: 16px;
       height: 16px;
-      fill: $issuable-sidebar-color;
+      fill: $gl-text-color-secondary;
     }
 
     &:hover svg {
