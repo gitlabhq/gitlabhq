@@ -15,46 +15,57 @@
   .col-md-6
     .card
       .card-header
-        = _('Package info:')
+        %strong= _('Package information')
       %ul.content-list
         %li
           %span.light
-            = _('Name:')
-          %strong
+            = _('Name')
+          %span.pull-right
             = @package.name
         %li
           %span.light
-            = _('Version:')
-          %strong
+            = _('Version')
+          %span.pull-right
             = @package.version
         %li
           %span.light
-            = _('Created on:')
-          %strong
+            = _('Created on')
+          %span.pull-right
             = @package.created_at.to_s(:medium)
+  .col-md-6
     - if @maven_metadatum
       .card
         .card-header
-          = _('Maven Package info:')
+          %strong= _('Maven Metadata')
         %ul.content-list
           %li
             %span.light
-              = _('Group ID:')
-            %strong
+              = _('Group ID')
+            %span.pull-right
               = @maven_metadatum.app_group
           %li
             %span.light
-              = _('Artifact ID:')
-            %strong
+              = _('Artifact ID')
+            %span.pull-right
               = @maven_metadatum.app_name
-  .col-md-6
-    .card
-      .card-header
-        = _('Package files:')
-      %ul.content-list
-        - @package_files.each do |package_file|
           %li
-            = package_file.file.identifier
-            .text-muted
-              = _('Added')
-              = time_ago_with_tooltip(package_file.created_at)
+            %span.light
+              = _('Version')
+            %span.pull-right
+              = @maven_metadatum.app_version
+%table.table
+  %thead
+    %tr
+      %th Name
+      %th Size
+      %th Created
+  %tbody
+    - @package_files.each do |package_file|
+      %tr
+        %td
+          = icon('file-o fw')
+          = package_file.file.identifier
+        %td
+          = number_to_human_size(package_file.size, precision: 2)
+        %td
+          = time_ago_with_tooltip(package_file.created_at)
