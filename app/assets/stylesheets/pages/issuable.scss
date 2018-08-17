@@ -701,6 +701,15 @@
   align-self: center;
   overflow: hidden;
   text-overflow: ellipsis;
+
+  .user-status-emoji {
+    margin: 0 8px 0 4px;
+
+    gl-emoji {
+      font-size: 1em;
+      line-height: 1;
+    }
+  }
 }
 
 .js-issuable-selector-wrap {

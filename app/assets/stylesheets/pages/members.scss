@@ -195,6 +195,15 @@
     word-break: break-all;
   }
 
+  .user-status-emoji {
+    margin-right: 4px;
+
+    gl-emoji {
+      font-size: 1em;
+      line-height: 1;
+    }
+  }
+
   .member-group-link {
     display: inline-block;
   }
