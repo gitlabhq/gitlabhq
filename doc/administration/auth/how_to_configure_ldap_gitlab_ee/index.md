@@ -50,7 +50,7 @@ _The reporter permission allows support staff to manage issues, labels, and revi
 
 > Guest permissions allows people ops staff to review and lodge new issues while allowing no read or write access to project code or [confidential issues](../../../user/project/issues/confidential_issues.md#permissions-and-access-to-confidential-issues) created by other users.
 
-See the [permission list](../../user/permissions.md) for complementary info.
+See the [permission list](../../../user/permissions.md) for complementary info.
 
 #### Group permissions - example
 
