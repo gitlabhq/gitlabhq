@@ -4,12 +4,12 @@ module Geo
 
     RepositoryUpdateError = Class.new(StandardError)
 
-    def initialize(project, params = {})
-      @project = project
+    def initialize(repository, params = {})
+      @project = repository.project
       @params  = params
       @refs    = params.fetch(:refs, [])
       @changes = params.fetch(:changes, [])
-      @source  = params.fetch(:source, Geo::RepositoryUpdatedEvent::REPOSITORY)
+      @source  = repository.geo_updated_event_source
     end
 
     def execute

@@ -13,7 +13,7 @@ describe Geo::RepositoryUpdatedService do
   end
 
   describe '#execute' do
-    subject { described_class.new(project, source: source) }
+    subject { described_class.new(repository) }
 
     shared_examples 'repository being updated' do
       context 'when not running on a primary node' do
@@ -59,7 +59,7 @@ describe Geo::RepositoryUpdatedService do
         end
 
         it 'does not raise an error when project have never been verified' do
-          expect { described_class.new(create(:project)) }.not_to raise_error
+          expect { described_class.new(create(:project).repository) }.not_to raise_error
         end
 
         it 'raises a Geo::RepositoryUpdatedService::RepositoryUpdateError when an error occurs' do
@@ -74,14 +74,14 @@ describe Geo::RepositoryUpdatedService do
 
     context 'when repository is being updated' do
       include_examples 'repository being updated' do
-        let(:source) { Geo::RepositoryUpdatedEvent::REPOSITORY }
+        let(:repository) { project.repository }
         let(:method_prefix) { 'repository' }
       end
     end
 
     context 'when wiki is being updated' do
       include_examples 'repository being updated' do
-        let(:source) { Geo::RepositoryUpdatedEvent::WIKI }
+        let(:repository) { project.wiki.repository }
         let(:method_prefix) { 'wiki' }
       end
     end

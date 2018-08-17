@@ -1649,12 +1649,12 @@ describe Project do
     before do
       allow(::Geo::RepositoryUpdatedService)
         .to receive(:new)
-        .with(project, source: Geo::RepositoryUpdatedEvent::REPOSITORY)
+        .with(project.repository)
         .and_return(repository_updated_service)
 
       allow(::Geo::RepositoryUpdatedService)
         .to receive(:new)
-        .with(project, source: Geo::RepositoryUpdatedEvent::WIKI)
+        .with(project.wiki.repository)
         .and_return(wiki_updated_service)
     end
 

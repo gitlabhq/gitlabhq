@@ -520,7 +520,8 @@ module EE
     override :after_import
     def after_import
       super
-      log_geo_events
+      repository.log_geo_updated_event
+      wiki.repository.log_geo_updated_event
     end
 
     override :import?
@@ -571,13 +572,6 @@ module EE
 
     def validate_board_limit(board)
       # Board limits are disabled in EE, so this method is just a no-op.
-    end
-
-    def log_geo_events
-      return unless ::Gitlab::Geo.primary?
-
-      ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::REPOSITORY).execute
-      ::Geo::RepositoryUpdatedService.new(self, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
     end
 
     override :after_rename_repository

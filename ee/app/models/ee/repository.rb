@@ -81,8 +81,11 @@ module EE
     def log_geo_updated_event
       return unless ::Gitlab::Geo.primary?
 
-      source = is_wiki ? ::Geo::RepositoryUpdatedEvent::WIKI : ::Geo::RepositoryUpdatedEvent::REPOSITORY
-      ::Geo::RepositoryUpdatedService.new(self.project, source: source).execute
+      ::Geo::RepositoryUpdatedService.new(self).execute
+    end
+
+    def geo_updated_event_source
+      is_wiki ? Geo::RepositoryUpdatedEvent::WIKI : Geo::RepositoryUpdatedEvent::REPOSITORY
     end
   end
 end
