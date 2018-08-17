@@ -288,13 +288,13 @@ describe('Dropdown Utils', () => {
 
   describe('setDataValueIfSelected', () => {
     beforeEach(() => {
-      spyOn(FilteredSearchDropdownManager, 'addWordToInput')
-        .and.callFake(() => {});
+      spyOn(FilteredSearchDropdownManager, 'addWordToInput').and.callFake(() => {});
     });
 
     it('calls addWordToInput when dataValue exists', () => {
       const selected = {
         getAttribute: () => 'value',
+        hasAttribute: () => false,
       };
 
       DropdownUtils.setDataValueIfSelected(null, selected);
@@ -304,6 +304,7 @@ describe('Dropdown Utils', () => {
     it('returns true when dataValue exists', () => {
       const selected = {
         getAttribute: () => 'value',
+        hasAttribute: () => false,
       };
 
       const result = DropdownUtils.setDataValueIfSelected(null, selected);

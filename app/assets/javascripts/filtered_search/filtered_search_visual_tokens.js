@@ -55,11 +55,13 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static createVisualTokenElementHTML({
-    canEdit = true,
-    uppercaseTokenName = false,
-    capitalizeTokenValue = false,
-  }) {
+  static createVisualTokenElementHTML(options = {}) {
+    const {
+      canEdit = true,
+      uppercaseTokenName = false,
+      capitalizeTokenValue = false,
+    } = options;
+
     return `
       <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
         <div class="${uppercaseTokenName ? 'text-uppercase' : ''} name"></div>
@@ -186,12 +188,13 @@ export default class FilteredSearchVisualTokens {
     }
   }
 
-  static addVisualTokenElement(name, value, {
-    isSearchTerm = false,
-    canEdit,
-    uppercaseTokenName,
-    capitalizeTokenValue,
-  }) {
+  static addVisualTokenElement(name, value, options = {}) {
+    const {
+      isSearchTerm = false,
+      canEdit,
+      uppercaseTokenName,
+      capitalizeTokenValue,
+    } = options;
     const li = document.createElement('li');
     li.classList.add('js-visual-token');
     li.classList.add(isSearchTerm ? 'filtered-search-term' : 'filtered-search-token');

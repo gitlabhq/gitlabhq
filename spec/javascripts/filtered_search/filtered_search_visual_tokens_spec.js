@@ -284,7 +284,7 @@ describe('Filtered Search Visual Tokens', () => {
 
   describe('addVisualTokenElement', () => {
     it('renders search visual tokens', () => {
-      subject.addVisualTokenElement('search term', null, true);
+      subject.addVisualTokenElement('search term', null, { isSearchTerm: true });
       const token = tokensContainer.querySelector('.js-visual-token');
 
       expect(token.classList.contains('filtered-search-term')).toEqual(true);
