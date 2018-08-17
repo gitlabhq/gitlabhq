@@ -10,7 +10,7 @@ module Gitlab
           CircularDependencyError = Class.new(ExtensionError)
 
           def initialize(hash)
-            @hash = hash.dup
+            @hash = hash.deep_dup
 
             each { |entry| entry.extend! if entry.extensible? }
           end
