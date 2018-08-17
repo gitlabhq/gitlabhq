@@ -179,7 +179,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
       end
     end
 
-    context 'when extensible entry has non-hash inheritace defined' do
+    context 'when extensible entry has non-hash inheritance defined' do
       let(:hash) do
         {
           test: {

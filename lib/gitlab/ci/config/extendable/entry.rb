@@ -40,16 +40,17 @@ module Gitlab
 
             if unknown_extension?
               raise Extendable::Collection::InvalidExtensionError,
-                    'Unknown extension!'
+                    "Unknown extends key in extended `#{key}`!"
             end
 
             if invalid_base?
               raise Extendable::Collection::InvalidExtensionError,
-                    'Invalid base hash!'
+                    "Invalid base hash in extended `#{key}`!"
             end
 
             if circular_dependency?
-              raise Extendable::Collection::CircularDependencyError
+              raise Extendable::Collection::CircularDependencyError,
+                    "Circular dependency detected in extended `#{key}`!"
             end
 
             @context[key] = base_hash!.deep_merge(value)
@@ -62,7 +63,7 @@ module Gitlab
           end
 
           def unknown_extension?
-            !@context.key?(key)
+            !@context.key?(extends_key)
           end
 
           def invalid_base?

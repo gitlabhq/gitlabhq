@@ -115,13 +115,13 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       let(:hash) do
         {
           first: 'my value',
-          second: { extends: 'first' },
-          test: { extends: 'second' }
+          test: { extends: 'first' }
         }
       end
 
       it 'raises an error' do
-        expect { subject.extend! }.to raise_error(StandardError)
+        expect { subject.extend! }
+          .to raise_error(StandardError, /Invalid base hash/)
       end
     end
 
@@ -131,7 +131,8 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       end
 
       it 'raises an error' do
-        expect { subject.extend! }.to raise_error(StandardError)
+        expect { subject.extend! }
+          .to raise_error(StandardError, /Unknown extends key/)
       end
     end
 
@@ -177,7 +178,7 @@ describe Gitlab::Ci::Config::Extendable::Entry do
       end
 
       it 'does not mutate orignal context' do
-        original = hash.dup
+        original = hash.deep_dup
 
         subject.extend!
 
