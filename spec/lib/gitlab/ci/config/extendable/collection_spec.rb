@@ -20,7 +20,23 @@ describe Gitlab::Ci::Config::Extendable::Collection do
   end
 
   describe '#to_hash' do
-    context 'when a hash has a single simple extension' do
+    context 'when hash does not contain extensions' do
+      let(:hash) do
+        {
+          test: { script: 'test' },
+          production: {
+            script: 'deploy',
+            only: { variables: %w[$SOMETHING] }
+          }
+        }
+      end
+
+      it 'does not modify the hash' do
+        expect(subject.to_hash).to eq hash
+      end
+    end
+
+    context 'when hash has a single simple extension' do
       let(:hash) do
         {
           something: {
@@ -158,6 +174,25 @@ describe Gitlab::Ci::Config::Extendable::Collection do
       end
 
       it 'raises an error about invalid extension' do
+        expect { subject.to_hash }
+          .to raise_error(described_class::InvalidExtensionError)
+      end
+    end
+
+    context 'when extensible entry has non-hash inheritace defined' do
+      let(:hash) do
+        {
+          test: {
+            extends: 'something',
+            script: 'ls',
+            only: { refs: %w[master] }
+          },
+
+          something: 'some text'
+        }
+      end
+
+      it 'raises an error about invalid base' do
         expect { subject.to_hash }
           .to raise_error(described_class::InvalidExtensionError)
       end
