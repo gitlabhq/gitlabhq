@@ -107,5 +107,21 @@ describe Gitlab::Ci::Config do
         end
       end
     end
+
+    context 'when invalid extended hash has been provided' do
+      let(:yml) do
+        <<-EOS
+          test:
+            extends: test
+            script: rspec
+        EOS
+      end
+
+      it 'raises an error' do
+        expect { config }.to raise_error(
+          described_class::ConfigError, /Circular dependency detected/
+        )
+      end
+    end
   end
 end
