@@ -21,11 +21,11 @@
     }
 
     &.disabled {
-      color: $list-text-disabled-color;
+      color: $gl-text-color-tertiary;
     }
 
     &:not(.ui-sort-disabled):hover {
-      background: $row-hover;
+      background: $blue-50;
     }
 
     &.unstyled {
@@ -35,12 +35,12 @@
     }
 
     &.warning-row {
-      background-color: $list-warning-row-bg;
-      border-color: $list-warning-row-border;
-      color: $list-warning-row-color;
+      background-color: $orange-100;
+      border-color: $orange-200;
+      color: $orange-700;
 
       &:hover {
-        background: $list-warning-row-bg;
+        background: $orange-100;
       }
 
     }
@@ -73,7 +73,7 @@
     }
 
     .card.card-body-title {
-      font-size: $list-font-size;
+      font-size: $gl-font-size;
       line-height: 18px;
     }
   }
@@ -109,8 +109,8 @@ ul.content-list {
 
   li {
     border-color: $white-normal;
-    font-size: $list-font-size;
-    color: $list-text-color;
+    font-size: $gl-font-size;
+    color: $gl-text-color;
 
     &.no-description {
       .title {
