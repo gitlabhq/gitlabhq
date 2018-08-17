@@ -1,0 +1,5 @@
+---
+title: Fix bin/secpick error and security branch prefixing
+merge_request: 21210
+author:
+type: fixed

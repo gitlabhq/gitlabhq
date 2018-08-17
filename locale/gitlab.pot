@@ -3864,6 +3864,9 @@ msgstr ""
 msgid "IDE|Review"
 msgstr ""
 
+msgid "IP Address"
+msgstr ""
+
 msgid "Identifier"
 msgstr ""
 
@@ -3978,6 +3981,9 @@ msgstr ""
 msgid "Incompatible Project"
 msgstr ""
 
+msgid "Indicates whether this runner can pick jobs without tags"
+msgstr ""
+
 msgid "Inline"
 msgstr ""
 
@@ -4067,10 +4073,28 @@ msgstr ""
 msgid "Jobs"
 msgstr ""
 
+msgid "Job|Browse"
+msgstr ""
+
+msgid "Job|Download"
+msgstr ""
+
+msgid "Job|Job artifacts"
+msgstr ""
+
 msgid "Job|Job has been erased"
 msgstr ""
 
 msgid "Job|Job has been erased by"
+msgstr ""
+
+msgid "Job|Keep"
+msgstr ""
+
+msgid "Job|The artifacts were removed"
+msgstr ""
+
+msgid "Job|The artifacts will be removed"
 msgstr ""
 
 msgid "Job|This job is stuck, because the project doesn't have any runners online assigned to it."
@@ -4411,6 +4435,9 @@ msgid "Markdown enabled"
 msgstr ""
 
 msgid "Maximum git storage failures"
+msgstr ""
+
+msgid "Maximum job timeout"
 msgstr ""
 
 msgid "May"
@@ -5134,6 +5161,9 @@ msgstr ""
 msgid "Pause"
 msgstr ""
 
+msgid "Paused Runners don't accept new jobs"
+msgstr ""
+
 msgid "Pending"
 msgstr ""
 
@@ -5752,6 +5782,9 @@ msgstr ""
 msgid "Promotions|Upgrade plan"
 msgstr ""
 
+msgid "Protected"
+msgstr ""
+
 msgid "Protected Environments"
 msgstr ""
 
@@ -6066,6 +6099,9 @@ msgid "Roadmap"
 msgstr ""
 
 msgid "Run CI/CD pipelines for external repositories"
+msgstr ""
+
+msgid "Run untagged jobs"
 msgstr ""
 
 msgid "Runner token"
@@ -7115,7 +7151,13 @@ msgstr ""
 msgid "This repository"
 msgstr ""
 
+msgid "This runner will only run on pipelines triggered on protected branches"
+msgstr ""
+
 msgid "This source diff could not be displayed because it is too large."
+msgstr ""
+
+msgid "This timeout will take precedence when lower than Project-defined timeout"
 msgstr ""
 
 msgid "This user has no identities"
@@ -7390,6 +7432,9 @@ msgid "ToggleButton|Toggle Status: OFF"
 msgstr ""
 
 msgid "ToggleButton|Toggle Status: ON"
+msgstr ""
+
+msgid "Token"
 msgstr ""
 
 msgid "Too many changes to show."
@@ -7894,6 +7939,9 @@ msgid "You can only edit files when you are on a branch"
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
+msgstr ""
+
+msgid "You can setup jobs to only use Runners with specific tags. Separate tags with commas."
 msgstr ""
 
 msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."

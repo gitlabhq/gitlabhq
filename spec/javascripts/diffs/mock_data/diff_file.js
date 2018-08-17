@@ -39,6 +39,7 @@ export default {
   viewPath: '/gitlab-org/gitlab-test/blob/spooky-stuff/CHANGELOG',
   replacedViewPath: null,
   collapsed: false,
+  renderIt: false,
   tooLarge: false,
   contextLinesPath:
     '/gitlab-org/gitlab-test/blob/c48ee0d1bf3b30453f5b32250ce03134beaa6d13/CHANGELOG/diff',

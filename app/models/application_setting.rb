@@ -299,7 +299,8 @@ class ApplicationSetting < ActiveRecord::Base
       unique_ips_limit_time_window: 3600,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       instance_statistics_visibility_private: false,
-      user_default_external: false
+      user_default_external: false,
+      user_show_add_ssh_key_message: true
     }
   end
 

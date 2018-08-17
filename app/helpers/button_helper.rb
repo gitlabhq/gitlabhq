@@ -74,7 +74,11 @@ module ButtonHelper
   end
 
   def ssh_clone_button(project, append_link: true)
-    dropdown_description = _("You won't be able to pull or push project code via SSH until you add an SSH key to your profile") if current_user.try(:require_ssh_key?)
+    if Gitlab::CurrentSettings.user_show_add_ssh_key_message? &&
+        current_user.try(:require_ssh_key?)
+      dropdown_description = _("You won't be able to pull or push project code via SSH until you add an SSH key to your profile")
+    end
+
     append_url = project.ssh_url_to_repo if append_link
     geo_url = geo_primary_ssh_url_to_repo(project) if Gitlab::Geo.secondary?
 
