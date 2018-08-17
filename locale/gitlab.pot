@@ -6796,6 +6796,9 @@ msgstr ""
 msgid "mrWidget|This project is archived, write access has been disabled"
 msgstr ""
 
+msgid "mrWidget|You are not allowed to edit this project directly. Please fork to make changes."
+msgstr ""
+
 msgid "mrWidget|You can merge this merge request manually using the"
 msgstr ""
 
