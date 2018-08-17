@@ -76,7 +76,13 @@ module Gitlab
             merge_request_id = GithubImport
               .insert_and_return_id(attributes, project.merge_requests)
 
-            [project.merge_requests.find(merge_request_id), false]
+            merge_request = project.merge_requests.find(merge_request_id)
+
+            # We use .insert_and_return_id which effectively disables all callbacks.
+            # Trigger iid logic here to make sure we track internal id values consistently.
+            merge_request.ensure_target_project_iid!
+
+            [merge_request, false]
           end
         rescue ActiveRecord::InvalidForeignKey
           # It's possible the project has been deleted since scheduling this
