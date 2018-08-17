@@ -294,15 +294,12 @@ msgstr ""
 msgid "<strong>%{changedFilesLength} unstaged</strong> and <strong>%{stagedFilesLength} staged</strong> changes"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "<strong>%{created_count}</strong> created, <strong>%{accepted_count}</strong> accepted."
 msgstr ""
 
 msgid "<strong>%{created_count}</strong> created, <strong>%{closed_count}</strong> closed."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "<strong>%{group_name}</strong> group members"
 msgstr ""
 
@@ -622,12 +619,9 @@ msgid "An error occurred while getting projects"
 msgstr ""
 
 msgid "An error occurred while importing project: %{details}"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "An error occurred while initializing path locks"
-=======
->>>>>>> upstream/master
 msgstr ""
 
 msgid "An error occurred while loading commit signatures"
@@ -1685,12 +1679,9 @@ msgstr ""
 msgid "ClusterIntegration|Install"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|Install Prometheus"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "ClusterIntegration|Install applications on your Kubernetes cluster. Read more about %{helpLink}"
 msgstr ""
 
@@ -2843,12 +2834,9 @@ msgstr ""
 msgid "Environments|No deployments yet"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Environments|No pod name has been specified"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Environments|Note that this action will stop the environment, but it will %{emphasisStart}not%{emphasisEnd} have an effect on any existing deployment due to no “stop environment action” being defined in the %{ciConfigLinkStart}.gitlab-ci.yml%{ciConfigLinkEnd} file."
 msgstr ""
 
@@ -4279,7 +4267,6 @@ msgstr ""
 msgid "Leave the \"File type\" and \"Delivery method\" options on their default values."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "License"
 msgstr ""
 
@@ -4334,8 +4321,6 @@ msgstr ""
 msgid "Licenses"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
@@ -4665,12 +4650,9 @@ msgstr ""
 msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project. %{milestoneTitle} is not currently used in any issues or merge requests."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Milestones|<p>%{milestonePromotion}</p> %{finalWarning}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Milestones|Delete milestone"
 msgstr ""
 
@@ -4689,14 +4671,10 @@ msgstr ""
 msgid "Milestones|Promote Milestone"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Milestones|Promoting %{milestone} will make it available for all projects inside %{groupName}. Existing project milestones with the same name will be merged. "
 msgstr ""
 
 msgid "Milestones|This action cannot be reversed."
-=======
-msgid "Milestones|Promoting %{milestoneTitle} will make it available for all projects inside %{groupName}. Existing project milestones with the same title will be merged. This action cannot be reversed."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Mirror a repository"
@@ -5076,12 +5054,9 @@ msgstr ""
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Once imported, repositories can be mirrored over SSH. Read more %{ssh_link}"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "One more item"
 msgid_plural "%d more items"
 msgstr[0] ""
@@ -5693,7 +5668,6 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "PrometheusAlerts|Add alert"
 msgstr ""
 
@@ -5724,8 +5698,6 @@ msgstr ""
 msgid "PrometheusAlerts|Threshold"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "PrometheusDashboard|Time"
 msgstr ""
 
@@ -5942,23 +5914,17 @@ msgstr ""
 msgid "Reference:"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Refresh"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Refreshing in a second to show the updated status..."
 msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
-<<<<<<< HEAD
 msgid "Regenerate key"
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Register / Sign In"
 msgstr ""
 
@@ -6939,12 +6905,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "The X509 Certificate to use when mutual TLS is required to communicate with the external authorization service. If left blank, the server certificate is still validated when accessing over HTTPS."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "The character highlighter helps you keep the subject line to %{titleLength} characters and wrap the body at %{bodyLength} so they are readable in git."
 msgstr ""
 
@@ -7104,7 +7067,6 @@ msgstr ""
 msgid "This application will be able to:"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "This board's scope is reduced"
 msgstr ""
 
@@ -7117,11 +7079,6 @@ msgstr ""
 msgid "This date is before the planned start date, so this epic won't appear in the roadmap."
 msgstr ""
 
-=======
-msgid "This branch has changed since you started editing. Would you like to create a new branch?"
-msgstr ""
-
->>>>>>> upstream/master
 msgid "This diff is collapsed."
 msgstr ""
 
@@ -7528,14 +7485,13 @@ msgstr ""
 msgid "Trending"
 msgstr ""
 
-<<<<<<< HEAD
+msgid "Trigger"
+msgstr ""
+
 msgid "Trigger pipelines for mirror updates"
 msgstr ""
 
 msgid "Trigger pipelines when branches or tags are updated from the upstream repository. Depending on the activity of the upstream repository, this may greatly increase the load on your CI runners. Only enable this if you know they can handle the load."
-=======
-msgid "Trigger"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Trigger this manual action"
