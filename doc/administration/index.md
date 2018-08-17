@@ -109,10 +109,7 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-<<<<<<< HEAD
 - **(Premium)** [Additional custom email text](../user/admin_area/settings/email.md): Set a custom message that appears at the bottom of the every email.
-=======
->>>>>>> upstream/master
 
 [reply by email]: reply_by_email.md
 [issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
