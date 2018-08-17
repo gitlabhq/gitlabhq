@@ -6,26 +6,23 @@ module Gitlab
           include Enumerable
 
           ExtensionError = Class.new(StandardError)
+          InvalidExtensionError = Class.new(ExtensionError)
           CircularDependencyError = Class.new(ExtensionError)
 
           def initialize(hash)
-            @hash = hash
+            @hash = hash.dup
+
+            each { |entry| entry.extend! if entry.extensible? }
           end
 
           def each
-            @hash.each_pair do |key, value|
-              next unless value.key?(:extends)
-
+            @hash.each_key do |key|
               yield Extendable::Entry.new(key, @hash)
             end
           end
 
-          def extend!
-            each do |entry|
-              raise ExtensionError unless entry.valid?
-
-              entry.extend!
-            end
+          def to_hash
+            @hash.to_h
           end
         end
       end

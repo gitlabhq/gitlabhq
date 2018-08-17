@@ -13,23 +13,13 @@ describe Gitlab::Ci::Config::Extendable::Collection do
         { something: { script: 'ls' }, test: test }
       end
 
-      it 'yields the test hash' do
-        expect { |b| subject.each(&b) }.to yield_control
-      end
-    end
-
-    context 'when not extending using a hash' do
-      let(:hash) do
-        { something: { extends: [1], script: 'ls' } }
-      end
-
-      it 'yields invalid extends as well' do
+      it 'yields control' do
         expect { |b| subject.each(&b) }.to yield_control
       end
     end
   end
 
-  describe '#extend!' do
+  describe '#to_hash' do
     context 'when a hash has a single simple extension' do
       let(:hash) do
         {
@@ -47,7 +37,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
       end
 
       it 'extends a hash with a deep reverse merge' do
-        expect(subject.extend!).to eq(
+        expect(subject.to_hash).to eq(
           something: {
             script: 'deploy',
             only: { variables: %w[$SOMETHING] }
@@ -88,7 +78,7 @@ describe Gitlab::Ci::Config::Extendable::Collection do
       end
 
       it 'extends a hash with a deep reverse merge' do
-        expect(subject.extend!).to eq(
+        expect(subject.to_hash).to eq(
           '.first': {
             script: 'run',
             only: { kubernetes: 'active' }
@@ -139,8 +129,8 @@ describe Gitlab::Ci::Config::Extendable::Collection do
         }
       end
 
-      it 'raises an error' do
-        expect { subject.extend! }
+      it 'raises an error about circular dependency' do
+        expect { subject.to_hash }
           .to raise_error(described_class::CircularDependencyError)
       end
     end
@@ -156,12 +146,21 @@ describe Gitlab::Ci::Config::Extendable::Collection do
         }
       end
 
-      it 'raises an error' do
-        expect { subject.extend! }
+      it 'raises an error about circular dependency' do
+        expect { subject.to_hash }
           .to raise_error(described_class::CircularDependencyError)
       end
     end
 
-    pending 'when invalid `extends` is specified'
+    context 'when invalid extends value is specified' do
+      let(:hash) do
+        { something: { extends: 1, script: 'ls' } }
+      end
+
+      it 'raises an error about invalid extension' do
+        expect { subject.to_hash }
+          .to raise_error(described_class::InvalidExtensionError)
+      end
+    end
   end
 end
