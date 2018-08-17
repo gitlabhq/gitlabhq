@@ -23,9 +23,9 @@ class RootController < Dashboard::ProjectsController
 
   def redirect_unlogged_user
     if redirect_to_home_page_url?
-      redirect_to(Gitlab::CurrentSettings.home_page_url)
+      redirect_to(Gitlab::CurrentSettings.home_page_url, status: :moved_permanently)
     else
-      redirect_to(new_user_session_path)
+      redirect_to(new_user_session_path, status: :moved_permanently)
     end
   end
 

@@ -1,0 +1,5 @@
+---
+title: Redirect to home page with 301 instead of 302
+merge_request: 21278
+author:
+type: changed

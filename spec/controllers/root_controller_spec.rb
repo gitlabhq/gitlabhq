@@ -7,6 +7,7 @@ describe RootController do
         get :index
 
         expect(response).to redirect_to(new_user_session_path)
+        expect(response).to have_http_status(301)
       end
 
       context 'when a custom home page URL is defined' do
@@ -18,6 +19,7 @@ describe RootController do
           get :index
 
           expect(response).to redirect_to('https://gitlab.com')
+          expect(response).to have_http_status(301)
         end
       end
     end
