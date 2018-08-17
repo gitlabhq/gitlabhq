@@ -258,6 +258,31 @@ end
 
 [`extend ::Gitlab::Utils::Override`]: utilities.md#override
 
+##### Overriding CE class methods
+
+The same applies to class methods, except we want to use
+`ActiveSupport::Concern` and put `extend ::Gitlab::Utils::Override`
+within the block of `class_methods`. Here's an example:
+
+```ruby
+module EE
+  module Groups
+    module GroupMembersController
+      extend ActiveSupport::Concern
+
+      class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :admin_not_required_endpoints
+        def admin_not_required_endpoints
+          super.concat(%i[update override])
+        end
+      end
+    end
+  end
+end
+```
+
 #### Use self-descriptive wrapper methods
 
 When it's not possible/logical to modify the implementation of a
@@ -665,6 +690,9 @@ module EE
       extend ActiveSupport::Concern
 
       class_methods do
+        extend ::Gitlab::Utils::Override
+
+        override :update_params_at_least_one_of
         def update_params_at_least_one_of
           super.push(*%i[
             squash
