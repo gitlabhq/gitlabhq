@@ -29,6 +29,7 @@ end
 
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
+Rainbow.enabled = false
 
 require_relative '../ee/spec/spec_helper'
 
