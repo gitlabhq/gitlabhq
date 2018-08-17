@@ -1,5 +1,5 @@
 ---
-last_updated: 2018-02-16
+last_updated: 2018-08-16
 author: Marcia Ramos
 author_gitlab: marcia
 level: beginner
@@ -28,7 +28,7 @@ Let's start from the beginning with [DNS records](#dns-records).
 If you already know how they work and want to skip the introduction to DNS,
 you may be interested in skipping it until the [TL;DR](#tl-dr) section below.
 
-## DNS Records
+### DNS Records
 
 A Domain Name System (DNS) web service routes visitors to websites
 by translating domain names (such as `www.example.com`) into the
@@ -64,22 +64,28 @@ for the most popular hosting services:
 If your hosting service is not listed above, you can just try to
 search the web for `how to add dns record on <my hosting service>`.
 
-### DNS A record
+#### DNS A record
 
 In case you want to point a root domain (`example.com`) to your
 GitLab Pages site, deployed to `namespace.gitlab.io`, you need to
 log into your domain's admin control panel and add a DNS `A` record
 pointing your domain to Pages' server IP address. For projects on
-GitLab.com, this IP is `52.167.214.135`. For projects living in
+GitLab.com, this IP is `35.185.44.232`. For projects living in
 other GitLab instances (CE or EE), please contact your sysadmin
 asking for this information (which IP address is Pages server
 running on your instance).
 
 **Practical Example:**
 
-![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated.png)
+![DNS A record pointing to GitLab.com Pages server](img/dns_add_new_a_record_example_updated_2018.png)
 
-### DNS CNAME record
+NOTE: **Note:**
+Note that if you use your root domain for your GitLab Pages website **only**, and if
+your domain registrar supports this feature, you can add a DNS apex `CNAME`
+record instead of an `A` record. The main advantage of doing so is that when GitLab Pages
+IP on GitLab.com changes for whatever reason, you don't need to update your `A` record.
+
+#### DNS CNAME record
 
 In case you want to point a subdomain (`hello-world.example.com`)
 to your GitLab Pages site initially deployed to `namespace.gitlab.io`,
@@ -112,14 +118,14 @@ If the domain has multiple uses (e.g., you host email on it as well):
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
-| domain.com | A | 52.167.214.135 |
+| domain.com | A | 35.185.44.232 |
 | domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
 
 If the domain is dedicated to GitLab Pages use and no other services run on it:
 
 | From | DNS Record | To |
 | ---- | ---------- | -- |
-| subdomain.domain.com | CNAME | gitlab.io |
+| subdomain.domain.com | CNAME | namespace.gitlab.io |
 | _gitlab-pages-verification-code.subdomain.domain.com | TXT | gitlab-pages-verification-code=00112233445566778899aabbccddeeff |
 
 > **Notes**:
@@ -129,9 +135,11 @@ If the domain is dedicated to GitLab Pages use and no other services run on it:
 > - **Do not** add any special chars after the default Pages
 domain. E.g., **do not** point your `subdomain.domain.com` to
 `namespace.gitlab.io.` or `namespace.gitlab.io/`.
-> - GitLab Pages IP on GitLab.com [has been changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) from `104.208.235.32` to `52.167.214.135`.
+> - GitLab Pages IP on GitLab.com [was changed](https://about.gitlab.com/2017/03/06/we-are-changing-the-ip-of-gitlab-pages-on-gitlab-com/) in 2017
+> - GitLab Pages IP on GitLab.com [has been changed](https://about.gitlab.com/2018/07/19/gcp-move-update/#gitlab-pages-and-custom-domains)
+from `52.167.214.135` to `35.185.44.232` in 2018
 
-## Add your custom domain to GitLab Pages settings
+### Add your custom domain to GitLab Pages settings
 
 Once you've set the DNS record, you'll need navigate to your project's
 **Setting > Pages** and click **+ New domain** to add your custom domain to
@@ -164,6 +172,18 @@ will fail and attempts to visit your domain will respond with a 404.
 
 Read through the [general documentation on GitLab Pages](introduction.md#add-a-custom-domain-to-your-pages-website) to learn more about adding
 custom domains to GitLab Pages sites.
+
+### Redirecting `www.domain.com` to `domain.com` with Cloudflare
+
+If you use Cloudflare, you can redirect `www` to `domain.com` without the need of adding both
+`www.domain.com` and `domain.com` to GitLab. This happens due to a [Cloudflare feature that creates
+a 301 redirect as a "page rule"](https://gitlab.com/gitlab-org/gitlab-ce/issues/48848#note_87314849) for redirecting `www.domain.com` to `domain.com`. In this case,
+you can use the following setup:
+
+- In Cloudflare, create a DNS `A` record pointing `domain.com` to `35.185.44.232`
+- In GitLab, add the domain to GitLab Pages
+- In Cloudflare, create a DNS `TXT` record to verify your domain
+- In Cloudflare, create a DNS `CNAME` record poiting `www` to `domain.com`
 
 ## SSL/TLS Certificates
 
