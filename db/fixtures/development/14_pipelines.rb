@@ -111,7 +111,7 @@ class Gitlab::Seeder::Pipelines
       setup_build_log(build)
 
       build.project.environments.
-        find_or_create_by(name: build.expanded_environment_name)
+        find_or_create_by(name: build.)
 
       build.save!
     end

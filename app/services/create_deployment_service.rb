@@ -3,8 +3,7 @@
 class CreateDeploymentService
   attr_reader :job
 
-  delegate :expanded_environment_name,
-           :variables,
+  delegate :variables,
            :project,
            to: :job
 

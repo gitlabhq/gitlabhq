@@ -2,7 +2,7 @@ module EnvironmentHelper
   def environment_for_build(project, build)
     return unless build.environment
 
-    project.environments.find_by(name: build.expanded_environment_name)
+    project.environments.find_by(name: build.environment_name)
   end
 
   def environment_link_for_build(project, build)
@@ -10,7 +10,7 @@ module EnvironmentHelper
     if environment
       link_to environment.name, project_environment_path(project, environment)
     else
-      content_tag :span, build.expanded_environment_name
+      content_tag :span, build.environment_name
     end
   end
 

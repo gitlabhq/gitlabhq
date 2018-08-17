@@ -35,6 +35,34 @@ module Ci
       "#{subject.name} - #{detailed_status.status_tooltip}"
     end
 
+    def steps
+      [Gitlab::Ci::Build::Step.from_commands(self),
+       Gitlab::Ci::Build::Step.from_after_script(self)].compact
+    end
+
+    def image
+      Gitlab::Ci::Build::Image.from_image(self)
+    end
+
+    def services
+      Gitlab::Ci::Build::Image.from_services(self)
+    end
+
+    def cache
+      cache = options[:cache]
+
+      if cache && project.jobs_cache_index
+        cache = cache.merge(
+          key: "#{cache[:key]}-#{project.jobs_cache_index}")
+      end
+
+      [cache]
+    end
+
+    def credentials
+      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
+    end
+
     private
 
     def tooltip_for_badge

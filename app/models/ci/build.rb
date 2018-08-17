@@ -10,6 +10,8 @@ module Ci
     include Importable
     include Gitlab::Utils::StrongMemoize
 
+    ignore_column :environment
+
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
     belongs_to :trigger_request
@@ -31,6 +33,8 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
+    has_one :config, class_name: 'Ci::BuildConfig'
+    has_one :environment_deployment, class_name: 'Ci::BuildEnvironmentDeployment'
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
@@ -40,20 +44,6 @@ module Ci
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
     delegate :terminal_specification, to: :runner_session, allow_nil: true
     delegate :gitlab_deploy_token, to: :project
-
-    ##
-    # The "environment" field for builds is a String, and is the unexpanded name!
-    #
-    def persisted_environment
-      return unless has_environment?
-
-      strong_memoize(:persisted_environment) do
-        Environment.find_by(name: expanded_environment_name, project: project)
-      end
-    end
-
-    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -126,6 +116,12 @@ module Ci
 
     after_save :update_project_statistics_after_save, if: :artifacts_size_changed?
     after_destroy :update_project_statistics_after_destroy, unless: :project_destroyed?
+
+    delegate :retries_max, :yaml_variables, :environment_action,
+      :dependencies, :environment_url, to: :ensure_config
+
+    delegate :environment, :environment_name, :deployment, :starts_environment?, :stops_environment?,
+      to: :ensure_environment_deployment
 
     class << self
       # This is needed for url_for to work,
@@ -201,6 +197,39 @@ module Ci
       metadata || build_metadata(project: project)
     end
 
+    def ensure_config
+      config || migrate_config
+    end
+
+    def migrate_config
+      build_config.tap do |new_config|
+        # assign data
+        new_config.yaml_commands = self.commands
+        new_config.yaml_options = self.options
+        new_config.yaml_variables = self.yaml_variables
+
+        # nullify current data (if saved, it is gonna be removed)
+        self.commands = nil
+        self.options = nil
+        self.yaml_variables = nil
+      end
+    end
+
+    def ensure_environment_deployment
+      environment_deployment || migrate_environment_deployment
+    end
+
+    def migrate_environment_deployment
+      environment = ensure_config.persisted_environment
+      return unless environment
+
+      build_environment_deployment(
+        environment: environment,
+        deployment: last_deployment,
+        action: ensure_config.environment_action
+      )
+    end
+
     def detailed_status(current_user)
       Gitlab::Ci::Status::Build::Factory
         .new(self, current_user)
@@ -242,40 +271,24 @@ module Ci
       pipeline.builds.retried.where(name: self.name).count
     end
 
-    def retries_max
-      self.options.fetch(:retry, 0).to_i
-    end
-
     def latest?
       !retried?
     end
 
-    def expanded_environment_name
-      return unless has_environment?
-
-      strong_memoize(:expanded_environment_name) do
-        ExpandVariables.expand(environment, simple_variables)
-      end
-    end
-
     def has_environment?
-      environment.present?
+      ensure_environment_deployment.present?
     end
 
     def starts_environment?
-      has_environment? && self.environment_action == 'start'
+      ensure_environment_deployment&.start?
     end
 
     def stops_environment?
-      has_environment? && self.environment_action == 'stop'
-    end
-
-    def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
+      ensure_environment_deployment&.stop?
     end
 
     def outdated_deployment?
-      success? && !last_deployment.try(:last?)
+      ensure_environment_deployment&.outdated?
     end
 
     def depends_on_builds
@@ -304,7 +317,7 @@ module Ci
     ##
     # Variables in the environment name scope.
     #
-    def scoped_variables(environment: expanded_environment_name)
+    def scoped_variables(environment: environment_name)
       Gitlab::Ci::Variables::Collection.new.tap do |variables|
         variables.concat(predefined_variables)
         variables.concat(project.predefined_variables)
@@ -519,11 +532,11 @@ module Ci
     end
 
     def when
-      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+      read_attribute(:when) || 'on_success'
     end
 
     def yaml_variables
-      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+      read_attribute(:yaml_variables) || []
     end
 
     def user_variables
@@ -545,63 +558,6 @@ module Ci
 
     def secret_project_variables(environment: persisted_environment)
       project.secret_variables_for(ref: ref, environment: environment)
-    end
-
-    def steps
-      [Gitlab::Ci::Build::Step.from_commands(self),
-       Gitlab::Ci::Build::Step.from_after_script(self)].compact
-    end
-
-    def image
-      Gitlab::Ci::Build::Image.from_image(self)
-    end
-
-    def services
-      Gitlab::Ci::Build::Image.from_services(self)
-    end
-
-    def cache
-      cache = options[:cache]
-
-      if cache && project.jobs_cache_index
-        cache = cache.merge(
-          key: "#{cache[:key]}-#{project.jobs_cache_index}")
-      end
-
-      [cache]
-    end
-
-    def credentials
-      Gitlab::Ci::Build::Credentials::Factory.new(self).create!
-    end
-
-    def dependencies
-      return [] if empty_dependencies?
-
-      depended_jobs = depends_on_builds
-
-      return depended_jobs unless options[:dependencies].present?
-
-      depended_jobs.select do |job|
-        options[:dependencies].include?(job.name)
-      end
-    end
-
-    def empty_dependencies?
-      options[:dependencies]&.empty?
-    end
-
-    def has_valid_build_dependencies?
-      return true if Feature.enabled?('ci_disable_validates_dependencies')
-
-      dependencies.all?(&:valid_dependency?)
-    end
-
-    def valid_dependency?
-      return false if artifacts_expired?
-      return false if erased?
-
-      true
     end
 
     def runner_required_feature_names
@@ -748,16 +704,6 @@ module Ci
         variables.append(key: 'CI_DEPLOY_USER', value: gitlab_deploy_token.username)
         variables.append(key: 'CI_DEPLOY_PASSWORD', value: gitlab_deploy_token.token, public: false)
       end
-    end
-
-    def environment_url
-      options&.dig(:environment, :url) || persisted_environment&.external_url
-    end
-
-    def build_attributes_from_config
-      return {} unless pipeline.config_processor
-
-      pipeline.config_processor.build_attributes(name)
     end
 
     def update_project_statistics_after_save

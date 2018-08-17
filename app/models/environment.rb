@@ -134,7 +134,7 @@ class Environment < ActiveRecord::Base
     return [] unless manual_actions
 
     manual_actions.select do |action|
-      action.expanded_environment_name == environment
+      action.environment_name == environment
     end
   end
 
