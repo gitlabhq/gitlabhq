@@ -73,7 +73,7 @@ module Milestones
     end
 
     def destroy_old_milestones(milestone)
-      Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all
+      Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all # rubocop: disable DestroyAll
     end
 
     def group_project_ids

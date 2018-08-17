@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def ensure_default_member!
-        @project.project_members.destroy_all
+        @project.project_members.destroy_all # rubocop: disable DestroyAll
 
         ProjectMember.create!(user: @user, access_level: ProjectMember::MAINTAINER, source_id: @project.id, importing: true)
       end

@@ -34,7 +34,7 @@ module FastDestroyAll
 
   included do
     before_destroy do
-      raise ForbiddenActionError, '`destroy` and `destroy_all` are forbbiden. Please use `fast_destroy_all`'
+      raise ForbiddenActionError, '`destroy` and `destroy_all` are forbidden. Please use `fast_destroy_all`'
     end
   end
 
