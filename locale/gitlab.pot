@@ -4796,6 +4796,9 @@ msgstr ""
 msgid "Retry verification"
 msgstr ""
 
+msgid "Reveal Variables"
+msgstr ""
+
 msgid "Reveal value"
 msgid_plural "Reveal values"
 msgstr[0] ""
@@ -5956,6 +5959,9 @@ msgid "Track time with quick actions"
 msgstr ""
 
 msgid "Trending"
+msgstr ""
+
+msgid "Trigger"
 msgstr ""
 
 msgid "Trigger this manual action"
