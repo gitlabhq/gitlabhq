@@ -6,11 +6,17 @@ module Gitlab
     class Config
       prepend EE::Gitlab::Ci::Config
 
-      # EE would override this and utilize opts argument
+      ConfigError = Class.new(StandardError)
+
       def initialize(config, opts = {})
-        @config = build_config(config, opts)
+        @config = Extendable::Collection
+          .new(build_config(config, opts))
+          .to_hash
+
         @global = Entry::Global.new(@config)
         @global.compose!
+      rescue Loader::FormatError, Extendable::Collection::ExtensionError => e
+        raise Config::ConfigError, e.message
       end
 
       def valid?
@@ -62,7 +68,7 @@ module Gitlab
 
       private
 
-      # 'Opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
+      # 'opts' argument is used in EE see /ee/lib/ee/gitlab/ci/config.rb
       def build_config(config, opts = {})
         Loader.new(config).load!
       end

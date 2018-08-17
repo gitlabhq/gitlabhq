@@ -9,9 +9,10 @@ module Gitlab
           include Configurable
           include Attributable
 
-          ALLOWED_KEYS = %i[tags script only except type image services allow_failure
-                            type stage when artifacts cache dependencies before_script
-                            after_script variables environment coverage retry].freeze
+          ALLOWED_KEYS = %i[tags script only except type image services
+                            allow_failure type stage when artifacts cache
+                            dependencies before_script after_script variables
+                            environment coverage retry extends].freeze
 
           validations do
             validates :config, allowed_keys: ALLOWED_KEYS
@@ -32,6 +33,7 @@ module Gitlab
                                       'always or manual' }
 
               validates :dependencies, array_of_strings: true
+              validates :extends, type: String
             end
           end
 
@@ -81,7 +83,8 @@ module Gitlab
                   :cache, :image, :services, :only, :except, :variables,
                   :artifacts, :commands, :environment, :coverage, :retry
 
-          attributes :script, :tags, :allow_failure, :when, :dependencies, :retry
+          attributes :script, :tags, :allow_failure, :when, :dependencies,
+                     :retry, :extends
 
           def compose!(deps = nil)
             super do
