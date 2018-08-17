@@ -19,7 +19,7 @@ class Projects::PushRulesController < Projects::ApplicationController
       flash[:alert] = @push_rule.errors.full_messages.join(', ').html_safe
     end
 
-    redirect_to_repository_settings(@project)
+    redirect_to_repository_settings(@project, anchor: 'js-push-rules')
   end
 
   private

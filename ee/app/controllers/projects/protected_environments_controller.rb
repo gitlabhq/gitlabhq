@@ -12,7 +12,7 @@ class Projects::ProtectedEnvironmentsController < Projects::ApplicationControlle
       flash[:alert] = protected_environment.errors.full_messages.join(', ')
     end
 
-    redirect_to project_settings_ci_cd_path(@project)
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-protected-environments-settings')
   end
 
   def update
@@ -34,7 +34,7 @@ class Projects::ProtectedEnvironmentsController < Projects::ApplicationControlle
       flash[:alert] = s_("ProtectedEnvironment|Your environment can't be unprotected")
     end
 
-    redirect_to project_settings_ci_cd_path(@project), status: :found
+    redirect_to project_settings_ci_cd_path(@project, anchor: 'js-protected-environments-settings'), status: :found
   end
 
   def search

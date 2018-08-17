@@ -44,7 +44,7 @@ describe Projects::ProtectedEnvironmentsController do
         it 'should redirect to CI/CD settings' do
           subject
 
-          expect(response).to redirect_to project_settings_ci_cd_path(project)
+          expect(response).to redirect_to project_settings_ci_cd_path(project, anchor: 'js-protected-environments-settings')
         end
       end
 
@@ -64,7 +64,7 @@ describe Projects::ProtectedEnvironmentsController do
         it 'should redirect to CI/CD settings' do
           subject
 
-          expect(response).to redirect_to project_settings_ci_cd_path(project)
+          expect(response).to redirect_to project_settings_ci_cd_path(project, anchor: 'js-protected-environments-settings')
         end
       end
     end
@@ -166,7 +166,7 @@ describe Projects::ProtectedEnvironmentsController do
       it 'should redirect to CI/CD settings' do
         subject
 
-        expect(response).to redirect_to project_settings_ci_cd_path(project)
+        expect(response).to redirect_to project_settings_ci_cd_path(project, anchor: 'js-protected-environments-settings')
       end
     end
 
