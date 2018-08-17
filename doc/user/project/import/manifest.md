@@ -1,5 +1,6 @@
 # Import multiple repositories by uploading a manifest file
 
+<<<<<<< HEAD
 GitLab allows you to import all the required Git repositories
 based on a manifest file like the one used by the
 [Android repository](https://android.googlesource.com/platform/manifest/+/2d6f081a3b05d8ef7a2b1b52b0d536b2b74feab4/default.xml).
@@ -22,6 +23,33 @@ a `name` and `path` attribute. GitLab will then build the URL to the repository
 by combining the URL from the `remote` tag with a project name.
 A path attribute will be used to represent the project path in GitLab.
 
+=======
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/28811) in
+GitLab 11.2.
+
+GitLab allows you to import all the required Git repositories
+based on a manifest file like the one used by the
+[Android repository](https://android.googlesource.com/platform/manifest/+/2d6f081a3b05d8ef7a2b1b52b0d536b2b74feab4/default.xml).
+This feature can be very handy when you need to import a project with many
+repositories like the Android Open Source Project (AOSP).
+
+## Requirements
+
+GitLab must be using PostgreSQL for its database, since
+[subgroups](../../group/subgroups/index.md) are needed for the manifest import
+to work.
+
+Read more about the [database requirements](../../../install/requirements.md#database).
+
+## Manifest format
+
+A manifest must be an XML file. There must be one `remote` tag with a `review`
+attribute that contains a URL to a Git server, and each `project` tag must have
+a `name` and `path` attribute. GitLab will then build the URL to the repository
+by combining the URL from the `remote` tag with a project name.
+A path attribute will be used to represent the project path in GitLab.
+
+>>>>>>> upstream/master
 Below is a valid example of a manifest file:
 
 ```xml

@@ -3,10 +3,6 @@
 Job traces are sent by GitLab Runner while it's processing a job. You can see
 traces in job pages, pipelines, email notifications, etc.
 
-There isn't a way to automatically expire old job logs, but it's safe to remove
-them if they're taking up too much space. If you remove the logs manually, the
-job output in the UI will be empty.
-
 ## Data flow
 
 In general, there are two states in job traces: "live trace" and "archived trace".
@@ -57,11 +53,55 @@ To change the location where the job logs will be stored, follow the steps below
 
 ## Uploading traces to object storage
 
-An archived trace is considered as a [job artifact](job_artifacts.md).
-Therefore, when you [set up an object storage](job_artifacts.md#object-storage-settings),
+Archived traces are considered as [job artifacts](job_artifacts.md).
+Therefore, when you [set up the object storage integration](job_artifacts.md#object-storage-settings),
 job traces are automatically migrated to it along with the other job artifacts.
 
-See [Data flow](#data-flow) to learn about the process.
+See "Phase 4: uploading" in [Data flow](#data-flow) to learn about the process.
+
+## How to archive legacy job trace files
+
+Legacy job traces, which were created before GitLab 10.5, were not archived regularly.
+It's the same state with the "2: overwriting" in the above [Data flow](#data-flow).
+To archive those legacy job traces, please follow the instruction below.
+
+1. Execute the following command
+
+      ```bash
+      gitlab-rake gitlab:traces:archive
+      ```
+
+      After you executed this task, GitLab instance queues up Sidekiq jobs (asynchronous processes)
+      for migrating job trace files from local storage to object storage. 
+      It could take time to complete the all migration jobs. You can check the progress by the following command
+
+      ```bash
+      sudo gitlab-rails console
+      ```
+
+      ```bash
+      [1] pry(main)> Sidekiq::Stats.new.queues['pipeline_background:archive_trace']
+      => 100
+      ```
+
+      If the count becomes zero, the archiving processes are done
+
+## How to migrate archived job traces to object storage
+
+If job traces have already been archived into local storage, and you want to migrate those traces to object storage, please follow the instruction below.
+
+1. Ensure [Object storage integration for Job Artifacts](job_artifacts.md#object-storage-settings) is enabled
+1. Execute the following command
+
+      ```bash
+      gitlab-rake gitlab:traces:migrate
+      ```
+
+## How to remove job traces
+
+There isn't a way to automatically expire old job logs, but it's safe to remove
+them if they're taking up too much space. If you remove the logs manually, the
+job output in the UI will be empty.
 
 ## New live trace architecture
 

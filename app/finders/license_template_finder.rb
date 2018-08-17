@@ -8,8 +8,11 @@
 #            false, all licenses except popular ones are shown. When nil (the
 #            default), *all* licenses will be shown.
 class LicenseTemplateFinder
+<<<<<<< HEAD
   prepend ::EE::LicenseTemplateFinder
 
+=======
+>>>>>>> upstream/master
   attr_reader :params
 
   def initialize(params = {})

@@ -203,7 +203,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },

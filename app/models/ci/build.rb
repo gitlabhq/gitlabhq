@@ -71,6 +71,10 @@ module Ci
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
 
+    scope :with_archived_trace, ->() do
+      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+    end
+
     scope :without_archived_trace, ->() do
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
@@ -81,6 +85,7 @@ module Ci
     end
 
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+    scope :with_archived_trace_stored_locally, -> { with_archived_trace.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }

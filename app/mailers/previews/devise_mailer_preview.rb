@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DeviseMailerPreview < ActionMailer::Preview
   def confirmation_instructions_for_signup
     DeviseMailer.confirmation_instructions(unsaved_user, 'faketoken', {})
