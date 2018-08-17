@@ -423,9 +423,6 @@ msgstr ""
 msgid "Add users to group"
 msgstr ""
 
-msgid "Added"
-msgstr ""
-
 msgid "Additional text"
 msgstr ""
 
@@ -738,7 +735,7 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
-msgid "Artifact ID:"
+msgid "Artifact ID"
 msgstr ""
 
 msgid "Artifacts"
@@ -2325,6 +2322,9 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+msgid "Created on"
+msgstr ""
+
 msgid "Created on:"
 msgstr ""
 
@@ -3631,9 +3631,6 @@ msgstr ""
 msgid "Group ID"
 msgstr ""
 
-msgid "Group ID:"
-msgstr ""
-
 msgid "Group Runners"
 msgstr ""
 
@@ -4422,7 +4419,7 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
-msgid "Maven Package info:"
+msgid "Maven Metadata"
 msgstr ""
 
 msgid "Maven package"
@@ -5125,10 +5122,7 @@ msgstr ""
 msgid "Owner"
 msgstr ""
 
-msgid "Package files:"
-msgstr ""
-
-msgid "Package info:"
+msgid "Package information"
 msgstr ""
 
 msgid "Package was removed"
@@ -7633,9 +7627,6 @@ msgid "Verified"
 msgstr ""
 
 msgid "Version"
-msgstr ""
-
-msgid "Version:"
 msgstr ""
 
 msgid "View epics list"
