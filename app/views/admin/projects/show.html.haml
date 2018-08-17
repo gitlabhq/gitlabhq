@@ -179,7 +179,7 @@
         project members
         %span.badge.badge-pill= @project.users.size
         .float-right
-          = link_to icon('pencil-square-o', text: 'Manage access'), polymorphic_url([@project, :members]), class: "btn btn-sm"
+          = link_to icon('pencil-square-o', text: 'Manage access'), project_project_members_path(@project), class: "btn btn-sm"
       %ul.content-list.project_members.members-list
         = render partial: 'shared/members/member', collection: @project_members, as: :member, locals: { show_controls: false }
       .card-footer
