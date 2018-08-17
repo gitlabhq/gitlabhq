@@ -111,17 +111,17 @@ const axiosDefaultAdapter = getDefaultAdapter();
 // render all of our tests
 const testsContext = require.context('KARMA_TEST_CONTEXT');
 testsContext.keys().forEach(function(path) {
-  // try {
-  //   testsContext(path);
-  // } catch (err) {
-  //   console.log(err);
-  //   console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
-  describe('Test bundle', function() {
-    it(`includes '${path}'`, function() {
-      expect(null).toBeNull();
+  try {
+    testsContext(path);
+  } catch (err) {
+    console.log(err);
+    console.error('[GL SPEC RUNNER ERROR] Unable to load spec: ', path);
+    describe('Test bundle', function() {
+      it(`includes '${path}'`, function() {
+        expect(null).toBeNull();
+      });
     });
-  });
-  // }
+  }
 });
 
 describe('test errors', () => {
@@ -152,7 +152,6 @@ describe('test errors', () => {
   });
 });
 
-/*
 // if we're generating coverage reports, make sure to include all files so
 // that we can catch files with 0% coverage
 // see: https://github.com/deepsweet/istanbul-instrumenter-loader/issues/15
@@ -213,4 +212,3 @@ if (process.env.BABEL_ENV === 'coverage') {
     });
   });
 }
-*/
