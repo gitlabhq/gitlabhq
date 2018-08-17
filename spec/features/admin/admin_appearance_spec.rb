@@ -39,6 +39,31 @@ describe 'Admin Appearance' do
     expect_custom_new_project_appearance(appearance)
   end
 
+  context 'Custom system header and footer' do
+    before do
+      appearance.update(header_message: "Foo", footer_message: "Bar")
+      sign_in(create(:admin))
+    end
+
+    it 'shows custom system header and footer when licensed' do
+      stub_licensed_features(system_header_footer: true)
+
+      visit admin_appearances_path
+
+      expect(page).to have_content appearance.header_message
+      expect(page).to have_content appearance.footer_message
+    end
+
+    it 'does not show custom system header and footer when unlicensed' do
+      stub_licensed_features(system_header_footer: false)
+
+      visit admin_appearances_path
+
+      expect(page).not_to have_content appearance.header_message
+      expect(page).not_to have_content appearance.footer_message
+    end
+  end
+
   it 'Custom sign-in page' do
     visit new_user_session_path
 
