@@ -26,7 +26,8 @@ code_quality:
   allow_failure: true
   services:
     - docker:stable-dind
-  script: - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
+  script:
+    - export SP_VERSION=$(echo "$CI_SERVER_VERSION" | sed 's/^\([0-9]*\)\.\([0-9]*\).*/\1-\2-stable/')
     - docker run
         --env SOURCE_CODE="$PWD"
         --volume "$PWD":/code
