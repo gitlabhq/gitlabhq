@@ -185,5 +185,16 @@ describe Gitlab::Ci::Config::Extendable::Entry do
         expect(hash).to eq original
       end
     end
+
+    context 'when circular depenency gets detected' do
+      let(:hash) do
+        { test: { extends: 'test' } }
+      end
+
+      it 'raises an error' do
+        expect { subject.extend! }
+          .to raise_error(StandardError, /Circular dependency detected/)
+      end
+    end
   end
 end
