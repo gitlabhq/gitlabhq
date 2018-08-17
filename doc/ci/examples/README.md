@@ -44,13 +44,6 @@ There's also a collection of repositories with [example projects](https://gitlab
 - [The `.gitlab-ci.yml` file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
 
 ## Test Reports
-<<<<<<< HEAD
-=======
-
-[Collect test reports in Verify stage](../junit_test_reports.md).
-
-## Code Quality analysis
->>>>>>> upstream/master
 
 [Collect test reports in Verify stage](../junit_test_reports.md).
 
