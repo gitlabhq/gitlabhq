@@ -159,7 +159,7 @@ describe ButtonHelper do
           expect(element.attr('data-clipboard-text')).to eq(nil)
           expect(element.inner_text).to eq("")
 
-          expect(element.to_html).to include sprite_icon('duplicate', css_class: 'svg-icon')
+          expect(element.to_html).to include sprite_icon('duplicate')
         end
       end
 
