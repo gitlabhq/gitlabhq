@@ -58,6 +58,7 @@ Example response:
    "performance_bar_allowed_group_id": 42,
    "instance_statistics_visibility_private": false,
    "user_show_add_ssh_key_message": true
+   "file_template_project_id": 1
 }
 ```
 
@@ -108,6 +109,7 @@ PUT /application/settings
 | `email_author_in_body`                   | boolean          | no                                            | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead.                                                                                                                                                                                                                                                                |
 | `email_additional_text`                   | string          | no                                            | **(Premium)** Additional text added to the bottom of every email for legal/auditing/compliance reasons reasons                                                                                                                                                                                                                                                                |
 | `enabled_git_access_protocol`            | string           | no                                            | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols.                                                                                                                                                                                                                                                                                                                                                   |
+| `file_template_project_id                | integer          | no                                            | **(Premium)** The ID of a project to load custom file templates from                                                |
 | `geo_status_timeout`                     | integer          | no                                            | The amount of seconds after which a request to get a secondary node status will time out.                                                                                                                                                                                                                                                                                                                                                                 |
 | `gravatar_enabled`                       | boolean          | no                                            | Enable Gravatar                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | `help_page_hide_commercial_content`      | boolean          | no                                            | Hide marketing-related entries from help                                                                                                                                                                                                                                                                                                                                                                                                                  |
@@ -241,5 +243,6 @@ Example response:
   "performance_bar_allowed_group_id": 42,
   "instance_statistics_visibility_private": false,
   "user_show_add_ssh_key_message": true
+  "file_template_project_id": 1
 }
 ```

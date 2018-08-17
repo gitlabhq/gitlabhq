@@ -6361,6 +6361,9 @@ msgstr ""
 msgid "Set default and restrict visibility levels. Configure import sources and git access protocol."
 msgstr ""
 
+msgid "Set instance-wide template repository"
+msgstr ""
+
 msgid "Set max session time for web terminal."
 msgstr ""
 
@@ -6852,6 +6855,9 @@ msgid "Team"
 msgstr ""
 
 msgid "Template"
+msgstr ""
+
+msgid "Templates"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"

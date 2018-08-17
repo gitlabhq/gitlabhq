@@ -11,6 +11,8 @@ module EE
 
       EMAIL_ADDITIONAL_TEXT_CHARACTER_LIMIT = 10_000
 
+      belongs_to :file_template_project, class_name: "Project"
+
       ignore_column :minimum_mirror_sync_time
 
       validates :shared_runners_minutes,

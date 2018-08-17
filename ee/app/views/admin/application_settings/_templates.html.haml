@@ -1,0 +1,22 @@
+- if License.feature_available?(:custom_file_templates)
+  %section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4
+        = _('Templates')
+      %button.btn.js-settings-toggle{ type: 'button' }
+        = expanded ? _('Collapse') : _('Expand')
+      %p
+        = _('Set instance-wide template repository')
+    .settings-content
+      = form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+        = form_errors(@application_setting)
+
+        %fieldset
+          .form-group
+            = f.label :file_template_project_id, class: 'label-light' do
+              .form-text.text-muted
+                Select a
+                = link_to 'template repository', help_page_path("user/admin_area/settings/instance_template_repository", anchor: "version-check")
+            = project_select_tag('application_setting[file_template_project_id]', class: 'project-item-select hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
+              placeholder: admin_project_dropdown_label('Search projects'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', all_projects: 'true', simple_filter: true, allow_clear: true}, value: @application_setting.file_template_project_id)
+        = f.submit 'Save changes', class: "btn btn-success"

@@ -151,6 +151,7 @@ module API
       optional :email_additional_text, type: String, desc: 'Additional text added to the bottom of every email for legal/auditing/compliance reasons'
       optional :help_text, type: String, desc: 'GitLab server administrator information'
       optional :repository_size_limit, type: Integer, desc: 'Size limit per repository (MB)'
+      optional :file_template_project_id, type: Integer, desc: 'ID of project where instance-level file templates are stored.'
       optional :repository_storages, type: Array[String], desc: 'A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random.'
       optional :snowplow_enabled, type: Boolean, desc: 'Enable Snowplow'
       given snowplow_enabled: ->(val) { val } do
@@ -202,6 +203,10 @@ module API
 
       unless ::License.feature_available?(:email_additional_text)
         attrs = attrs.except(:email_additional_text)
+      end
+
+      unless ::License.feature_available?(:custom_file_templates)
+        attrs = attrs.except(:file_template_project_id)
       end
       ## EE-only END: Remove unlicensed attributes
 
