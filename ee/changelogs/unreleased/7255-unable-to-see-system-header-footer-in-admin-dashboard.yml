@@ -1,0 +1,5 @@
+---
+title: Fixes bug that prevented a user from seeing the system header and footer settings on the admin dashboard
+merge_request: 6926
+author:
+type: fixed
