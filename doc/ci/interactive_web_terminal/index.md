@@ -2,6 +2,10 @@
 
 > Introduced in GitLab 11.3.
 
+CAUTION: **Warning:**
+Interactive web terminals are in beta, so they might not work properly and
+lack features. For more information [follow issue #25990](https://gitlab.com/gitlab-org/gitlab-ce/issues/25990).
+
 Interactive web terminals give the user access to a terminal in GitLab for
 running one-of commands for their CI pipeline.
 
