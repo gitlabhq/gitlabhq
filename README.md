@@ -58,7 +58,7 @@ You can access a new installation with the login **`root`** and password **`5ive
 
 ## Contributing
 
-GitLab is an open source project and we are very happy to accept community contributions. Please refer to [CONTRIBUTING.md](/CONTRIBUTING.md) for details.
+GitLab is an open source project and we are very happy to accept community contributions. Please refer to [Contributing to GitLab page](https://about.gitlab.com/contributing/) for more details.
 
 ## Licensing
 
