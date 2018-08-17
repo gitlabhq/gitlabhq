@@ -308,6 +308,12 @@ group :metrics do
   # Prometheus
   gem 'prometheus-client-mmap', '~> 0.9.4'
   gem 'raindrops', '~> 0.18'
+
+  # OpenTracing
+  gem 'opentracing', '~> 0.3.0'
+  gem 'rails-tracer', :github => 'iaintshine/ruby-rails-tracer', :branch => 'master'
+  # gem 'rack-tracer', :github => 'opentracing-contrib/ruby-rack-tracer', :branch => 'master'
+  gem 'jaeger-client', :github => 'salemove/jaeger-client-ruby', :branch => 'master'
 end
 
 group :development do

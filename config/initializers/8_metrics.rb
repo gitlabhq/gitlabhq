@@ -188,3 +188,22 @@ if Gitlab::Metrics.enabled? && !Rails.env.test?
     prepend TrackNewRedisConnections
   end
 end
+
+
+if true # TRACING ENABLED
+  require 'opentracing'
+  require 'jaeger/client'
+  require 'rack/tracer'
+  require 'rails/tracer'
+
+  OpenTracing.global_tracer = Jaeger::Client.build(service_name: 'unicorn')
+
+  Gitlab::Application.configure do |config|
+    config.middleware.use(Rack::Tracer)
+    config.middleware.insert_after(Rack::Tracer, Rails::Rack::Tracer)
+  end
+
+  ActiveRecord::Tracer.instrument(tracer: OpenTracing.global_tracer, active_span: -> { OpenTracing.global_tracer.active_span })
+
+  ActiveSupport::Cache::Tracer.instrument(tracer: OpenTracing.global_tracer, active_span: -> { OpenTracing.global_tracer.active_span })
+end
