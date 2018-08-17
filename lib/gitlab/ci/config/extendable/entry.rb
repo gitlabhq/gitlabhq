@@ -19,9 +19,9 @@ module Gitlab
             @value ||= @context.fetch(@key)
           end
 
-          def base
+          def base_hash
             Extendable::Entry
-              .new(extends, @context, self)
+              .new(extends_key, @context, self)
               .extend!
           end
 
@@ -29,8 +29,8 @@ module Gitlab
             value.key?(:extends)
           end
 
-          def extends
-            value.fetch(:extends).to_sym
+          def extends_key
+            value.fetch(:extends).to_s.to_sym
           end
 
           def path
@@ -38,15 +38,29 @@ module Gitlab
           end
 
           def extend!
-            if path.count(key) > 1
+            if circular_dependency?
               raise Extendable::Collection::CircularDependencyError
             end
 
+            if invalid_extends_key?
+              raise Extendable::Collection::InvalidExtensionError
+            end
+
             if extensible?
-              @context[key] = base.deep_merge(value)
+              @context[key] = base_hash.deep_merge(value)
             else
               value
             end
+          end
+
+          private
+
+          def circular_dependency?
+            path.count(key) > 1
+          end
+
+          def invalid_extends_key?
+            !@context.key?(key)
           end
         end
       end
