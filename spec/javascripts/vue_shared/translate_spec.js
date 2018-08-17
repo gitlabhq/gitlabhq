@@ -202,19 +202,11 @@ describe('Vue translate filter', () => {
         <span>
           {{ n__(
           \`
-<<<<<<< HEAD
-          multiline 
-          string
-          \`,
-          \`
-          multiline 
-=======
           multiline
           string
           \`,
           \`
           multiline
->>>>>>> upstream/master
           strings
           \`,
           2
@@ -242,11 +234,7 @@ describe('Vue translate filter', () => {
           {{ s__(
           \`
           Context|
-<<<<<<< HEAD
-          multiline 
-=======
           multiline
->>>>>>> upstream/master
           string
           \`
           ) }}
