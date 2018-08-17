@@ -20,7 +20,7 @@ describe Users::DestroyService do
 
       it 'will delete the project' do
         expect_next_instance_of(Projects::DestroyService) do |destroy_service|
-          expect(destroy_service).to receive(:execute).once.and_return(true)
+          expect(destroy_service).to receive(:execute).once
         end
 
         service.execute(user)
@@ -35,7 +35,7 @@ describe Users::DestroyService do
 
       it 'destroys a project in pending_delete' do
         expect_next_instance_of(Projects::DestroyService) do |destroy_service|
-          expect(destroy_service).to receive(:execute).once.and_return(true)
+          expect(destroy_service).to receive(:execute).once
         end
 
         service.execute(user)
@@ -172,36 +172,23 @@ describe Users::DestroyService do
     end
 
     describe "user personal's repository removal" do
-      context 'storages' do
-        before do
-          perform_enqueued_jobs { service.execute(user) }
-        end
+      before do
+        perform_enqueued_jobs { service.execute(user) }
+      end
 
-        context 'legacy storage' do
-          let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
+      context 'legacy storage' do
+        let!(:project) { create(:project, :empty_repo, :legacy_storage, namespace: user.namespace) }
 
-          it 'removes repository' do
-            expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
-          end
-        end
-
-        context 'hashed storage' do
-          let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
-
-          it 'removes repository' do
-            expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
-          end
+        it 'removes repository' do
+          expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
         end
       end
 
-      context 'repository removal status is taken into account' do
-        it 'raises exception' do
-          expect_next_instance_of(::Projects::DestroyService) do |destroy_service|
-            expect(destroy_service).to receive(:execute).and_return(false)
-          end
+      context 'hashed storage' do
+        let!(:project) { create(:project, :empty_repo, namespace: user.namespace) }
 
-          expect { service.execute(user) }
-            .to raise_error(Users::DestroyService::DestroyError, "Project #{project.id} can't be deleted" )
+        it 'removes repository' do
+          expect(gitlab_shell.exists?(project.repository_storage, "#{project.disk_path}.git")).to be_falsey
         end
       end
     end
