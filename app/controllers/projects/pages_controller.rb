@@ -11,7 +11,7 @@ class Projects::PagesController < Projects::ApplicationController
 
   def destroy
     project.remove_pages
-    project.pages_domains.destroy_all
+    project.pages_domains.destroy_all # rubocop: disable DestroyAll
 
     respond_to do |format|
       format.html  do

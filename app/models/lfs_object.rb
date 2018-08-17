@@ -30,11 +30,13 @@ class LfsObject < ActiveRecord::Base
     [nil, LfsObjectUploader::Store::LOCAL].include?(self.file_store)
   end
 
+  # rubocop: disable DestroyAll
   def self.destroy_unreferenced
     joins("LEFT JOIN lfs_objects_projects ON lfs_objects_projects.lfs_object_id = #{table_name}.id")
         .where(lfs_objects_projects: { id: nil })
         .destroy_all
   end
+  # rubocop: enable DestroyAll
 
   def self.calculate_oid(path)
     Digest::SHA256.file(path).hexdigest

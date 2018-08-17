@@ -16,6 +16,6 @@ class RemoveAwardEmojisWithNoUser < ActiveRecord::Migration
   # disable_ddl_transaction!
 
   def up
-    AwardEmoji.joins('LEFT JOIN users ON users.id = user_id').where('users.id IS NULL').destroy_all
+    AwardEmoji.joins('LEFT JOIN users ON users.id = user_id').where('users.id IS NULL').destroy_all # rubocop: disable DestroyAll
   end
 end

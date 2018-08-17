@@ -22,7 +22,7 @@ module Projects
 
     # Remove remaining notification settings from source_project
     def remove_remaining_notification_settings
-      source_project.notification_settings.destroy_all
+      source_project.notification_settings.destroy_all # rubocop: disable DestroyAll
     end
 
     # Get users of current notification_settings

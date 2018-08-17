@@ -26,7 +26,7 @@ module Projects
 
     # Remove remaining project group links from source_project
     def remove_remaining_project_group_links
-      source_project.reload.project_group_links.destroy_all
+      source_project.reload.project_group_links.destroy_all # rubocop: disable DestroyAll
     end
 
     def group_links_in_target_project

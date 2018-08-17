@@ -448,7 +448,7 @@ describe MergeRequests::UpdateService, :mailer do
           update_merge_request(approver_ids: [existing_approver, removed_approver].map(&:id).join(','))
         end
 
-        Todo.where(action: Todo::APPROVAL_REQUIRED).destroy_all
+        Todo.where(action: Todo::APPROVAL_REQUIRED).destroy_all # rubocop: disable DestroyAll
         ActionMailer::Base.deliveries.clear
       end
 
