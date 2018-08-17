@@ -41,7 +41,7 @@ describe 'Admin Appearance' do
 
   context 'Custom system header and footer' do
     before do
-      appearance.update_attributes(header_message: "Foo", footer_message: "Bar")
+      appearance.update(header_message: "Foo", footer_message: "Bar")
       sign_in(create(:admin))
     end
 
