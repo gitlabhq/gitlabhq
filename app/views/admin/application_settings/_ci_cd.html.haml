@@ -38,6 +38,8 @@
       .form-text.text-muted
         Set the default expiration time for each job's artifacts.
         0 for unlimited.
+        The default unit is in seconds, but you can define an alternative. For example:
+        <code>4 mins 2 sec</code>, <code>2h42min</code>.
         = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   = f.submit 'Save changes', class: "btn btn-success"
