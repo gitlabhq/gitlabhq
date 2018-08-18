@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'json'
 
 module IconsHelper
@@ -47,9 +49,10 @@ module IconsHelper
       end
     end
 
-    css_classes = size ? "s#{size}" : ""
-    css_classes << " #{css_class}" unless css_class.blank?
-    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
+    css_classes = []
+    css_classes << "s#{size}" if size
+    css_classes << "#{css_class}" unless css_class.blank?
+    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes.join(' '))
   end
 
   def external_snippet_icon(name)
@@ -70,10 +73,10 @@ module IconsHelper
   end
 
   def spinner(text = nil, visible = false)
-    css_class = 'loading'
-    css_class << ' hide' unless visible
+    css_class = ['loading']
+    css_class << 'hide' unless visible
 
-    content_tag :div, class: css_class do
+    content_tag :div, class: css_class.join(' ') do
       icon('spinner spin') + text
     end
   end
@@ -97,9 +100,10 @@ module IconsHelper
         'globe'
       end
 
-    name << " fw" if fw
+    name = [name]
+    name << "fw" if fw
 
-    icon(name)
+    icon(name.join(' '))
   end
 
   def file_type_icon_class(type, mode, name)

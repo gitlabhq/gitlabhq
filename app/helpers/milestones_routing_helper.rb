@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MilestonesRoutingHelper
   def milestone_path(milestone, *args)
     if milestone.group_milestone?

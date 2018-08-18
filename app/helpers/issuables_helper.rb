@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module IssuablesHelper
   include GitlabRoutingHelper
 
@@ -167,8 +169,9 @@ module IssuablesHelper
   end
 
   def issuable_meta(issuable, project, text)
-    output = ""
+    output = []
     output << "Opened #{time_ago_with_tooltip(issuable.created_at)} by ".html_safe
+
     output << content_tag(:strong) do
       author_output = link_to_member(project, issuable.author, size: 24, mobile_classes: "d-none d-sm-inline", tooltip: true)
       author_output << link_to_member(project, issuable.author, size: 24, by_username: true, avatar: false, mobile_classes: "d-block d-sm-none")
@@ -186,7 +189,7 @@ module IssuablesHelper
     output << content_tag(:span, (issuable.task_status if issuable.tasks?), id: "task_status", class: "d-none d-sm-none d-md-inline-block")
     output << content_tag(:span, (issuable.task_status_short if issuable.tasks?), id: "task_status_short", class: "d-md-none")
 
-    output.html_safe
+    output.join.html_safe
   end
 
   def issuable_todo(issuable)

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WikiHelper
   # Produces a pure text breadcrumb for a given page.
   #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module GroupsHelper
   def group_nav_link_paths
     %w[groups#projects groups#edit badges#index ci_cd#show ldap_group_links#index hooks#index audit_events#index pipeline_quota#index]
@@ -43,22 +45,22 @@ module GroupsHelper
 
   def group_title(group, name = nil, url = nil)
     @has_group_title = true
-    full_title = ''
+    full_title = []
 
     group.ancestors.reverse.each_with_index do |parent, index|
       if index > 0
         add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true, for_dropdown: true), location: :before)
       else
-        full_title += breadcrumb_list_item group_title_link(parent, hidable: false)
+        full_title << breadcrumb_list_item(group_title_link(parent, hidable: false))
       end
     end
 
-    full_title += render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups")
+    full_title << render("layouts/nav/breadcrumbs/collapsed_dropdown", location: :before, title: _("Show parent subgroups"))
 
-    full_title += breadcrumb_list_item group_title_link(group)
-    full_title += ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
+    full_title << breadcrumb_list_item(group_title_link(group))
+    full_title << ' &middot; '.html_safe + link_to(simple_sanitize(name), url, class: 'group-path breadcrumb-item-text js-breadcrumb-item-text') if name
 
-    full_title.html_safe
+    full_title.join.html_safe
   end
 
   def projects_lfs_status(group)
@@ -138,15 +140,8 @@ module GroupsHelper
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
-      output =
-        if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-          group_icon(group, class: "avatar-tile", width: 15, height: 15)
-        else
-          ""
-        end
-
-      output << simple_sanitize(group.name)
-      output.html_safe
+      output = group_icon(group, class: "avatar-tile", width: 15, height: 15) if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
+      [output, simple_sanitize(group.name)].join.html_safe
     end
   end
 

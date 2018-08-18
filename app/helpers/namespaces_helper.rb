@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NamespacesHelper
   def namespace_id_from(params)
     params.dig(:project, :namespace_id) || params[:namespace_id]

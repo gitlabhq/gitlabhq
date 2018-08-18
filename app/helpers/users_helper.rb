@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module UsersHelper
   def user_link(user)
     link_to(user.name, user_path(user),

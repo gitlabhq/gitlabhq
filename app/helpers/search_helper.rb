@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SearchHelper
   def search_autocomplete_opts(term)
     return unless current_user

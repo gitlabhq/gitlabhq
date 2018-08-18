@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module NumbersHelper
   def limited_counter_with_delimiter(resource, **options)
     limit = options.fetch(:limit, 1000).to_i

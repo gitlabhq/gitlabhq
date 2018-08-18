@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module StorageHealthHelper
   def failing_storage_health_message(storage_health)
     storage_name = content_tag(:strong, h(storage_health.storage_name))
