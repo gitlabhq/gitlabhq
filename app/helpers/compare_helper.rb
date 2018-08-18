@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CompareHelper
   def create_mr_button?(from = params[:from], to = params[:to], project = @project)
     from.present? &&

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ConversationalDevelopmentIndexHelper
   def score_level(score)
     if score < 33.33
