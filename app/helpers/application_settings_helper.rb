@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ApplicationSettingsHelper
   prepend EE::ApplicationSettingsHelper
   extend self
@@ -74,12 +76,12 @@ module ApplicationSettingsHelper
   def oauth_providers_checkboxes
     button_based_providers.map do |source|
       disabled = Gitlab::CurrentSettings.disabled_oauth_sign_in_sources.include?(source.to_s)
-      css_class = 'btn'
-      css_class << ' active' unless disabled
+      css_class = ['btn']
+      css_class << 'active' unless disabled
       checkbox_name = 'application_setting[enabled_oauth_sign_in_sources][]'
       name = Gitlab::Auth::OAuth::Provider.label_for(source)
 
-      label_tag(checkbox_name, class: css_class) do
+      label_tag(checkbox_name, class: css_class.join(' ')) do
         check_box_tag(checkbox_name, source, !disabled,
                       autocomplete: 'off',
                       id: name.tr(' ', '_')) + name

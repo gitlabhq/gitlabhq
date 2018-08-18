@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EnvironmentHelper
   def environment_for_build(project, build)
     return unless build.environment

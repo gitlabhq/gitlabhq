@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module ButtonHelper
   # Output a "Copy to Clipboard" button
   #
@@ -95,8 +97,7 @@ module ButtonHelper
   end
 
   def kerberos_clone_button(project)
-    klass = 'kerberos-selector'
-    klass << ' has-tooltip'
+    klass = 'kerberos-selector has-tooltip'
 
     content_tag :a, 'KRB5',
       class: klass,

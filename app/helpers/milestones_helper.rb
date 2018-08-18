@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MilestonesHelper
   prepend EE::MilestonesHelper
   include EntityDateHelper
@@ -120,20 +122,18 @@ module MilestonesHelper
     title = date_type == :start ? "Start date" : "End date"
 
     if date
-      time_ago = time_ago_in_words(date)
-      time_ago.slice!("about ")
-
-      time_ago << if date.past?
-                    " ago"
-                  else
-                    " remaining"
-                  end
+      time_ago = time_ago_in_words(date).sub("about ", "")
+      state = if date.past?
+                "ago"
+              else
+                "remaining"
+              end
 
       content = [
         title,
         "<br />",
         date.to_s(:medium),
-        "(#{time_ago})"
+        "(#{time_ago} #{state})"
       ].join(" ")
 
       content.html_safe
