@@ -103,16 +103,6 @@ describe Repository do
     end
   end
 
-  describe '#after_sync' do
-    it 'expires repository cache' do
-      expect(repository).to receive(:expire_all_method_caches)
-      expect(repository).to receive(:expire_branch_cache)
-      expect(repository).to receive(:expire_content_cache)
-
-      repository.after_sync
-    end
-  end
-
   describe '#upstream_branches' do
     it 'returns branches from the upstream remote' do
       masterrev = repository.find_branch('master').dereferenced_target
