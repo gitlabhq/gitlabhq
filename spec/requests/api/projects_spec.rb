@@ -20,7 +20,6 @@ describe API::Projects do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, :repository, namespace: user.namespace) }
   let(:project2) { create(:project, namespace: user.namespace) }
-  let(:snippet) { create(:project_snippet, :public, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, :developer, user: user3, project: project) }
   let(:user4) { create(:user) }
   let(:project3) do
@@ -575,7 +574,7 @@ describe API::Projects do
       expect(json_response['avatar_url']).to eq("http://localhost/uploads/-/system/project/avatar/#{project_id}/banana_sample.gif")
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+    it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
       post api('/projects', user), project
@@ -583,7 +582,7 @@ describe API::Projects do
       expect(json_response['resolve_outdated_diff_discussions']).to be_falsey
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve if resolve_outdated_diff_discussions' do
+    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: true)
 
       post api('/projects', user), project
@@ -698,7 +697,7 @@ describe API::Projects do
       expect(json_response.map { |project| project['id'] }).to contain_exactly(public_project.id)
     end
 
-    it 'returns projects filetered by minimal access level' do
+    it 'returns projects filtered by minimal access level' do
       private_project1 = create(:project, :private, name: 'private_project1', creator_id: user4.id, namespace: user4.namespace)
       private_project2 = create(:project, :private, name: 'private_project2', creator_id: user4.id, namespace: user4.namespace)
       private_project1.add_developer(user2)
@@ -789,7 +788,7 @@ describe API::Projects do
       expect(json_response['visibility']).to eq('private')
     end
 
-    it 'sets a project as allowing outdated diff discussions to automatically resolve' do
+    it 'sets a project as not allowing outdated diff discussions to automatically resolve' do
       project = attributes_for(:project, resolve_outdated_diff_discussions: false)
 
       post api("/projects/user/#{user.id}", admin), project
@@ -1169,100 +1168,6 @@ describe API::Projects do
     end
   end
 
-  describe 'GET /projects/:id/snippets' do
-    before do
-      snippet
-    end
-
-    it 'returns an array of project snippets' do
-      get api("/projects/#{project.id}/snippets", user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(response).to include_pagination_headers
-      expect(json_response).to be_an Array
-      expect(json_response.first['title']).to eq(snippet.title)
-    end
-  end
-
-  describe 'GET /projects/:id/snippets/:snippet_id' do
-    it 'returns a project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq(snippet.title)
-    end
-
-    it 'returns a 404 error if snippet id not found' do
-      get api("/projects/#{project.id}/snippets/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-  end
-
-  describe 'POST /projects/:id/snippets' do
-    it 'creates a new project snippet' do
-      post api("/projects/#{project.id}/snippets", user),
-        title: 'api test', file_name: 'sample.rb', code: 'test', visibility: 'private'
-      expect(response).to have_gitlab_http_status(201)
-      expect(json_response['title']).to eq('api test')
-    end
-
-    it 'returns a 400 error if invalid snippet is given' do
-      post api("/projects/#{project.id}/snippets", user)
-      expect(status).to eq(400)
-    end
-  end
-
-  describe 'PUT /projects/:id/snippets/:snippet_id' do
-    it 'updates an existing project snippet' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        code: 'updated code'
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq('example')
-      expect(snippet.reload.content).to eq('updated code')
-    end
-
-    it 'updates an existing project snippet with new title' do
-      put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
-        title: 'other api test'
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq('other api test')
-    end
-  end
-
-  describe 'DELETE /projects/:id/snippets/:snippet_id' do
-    before do
-      snippet
-    end
-
-    it 'deletes existing project snippet' do
-      expect do
-        delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-
-        expect(response).to have_gitlab_http_status(204)
-      end.to change { Snippet.count }.by(-1)
-    end
-
-    it 'returns 404 when deleting unknown snippet id' do
-      delete api("/projects/#{project.id}/snippets/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-
-    it_behaves_like '412 response' do
-      let(:request) { api("/projects/#{project.id}/snippets/#{snippet.id}", user) }
-    end
-  end
-
-  describe 'GET /projects/:id/snippets/:snippet_id/raw' do
-    it 'gets a raw project snippet' do
-      get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
-      expect(response).to have_gitlab_http_status(200)
-    end
-
-    it 'returns a 404 error if raw project snippet not found' do
-      get api("/projects/#{project.id}/snippets/5555/raw", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
-  end
-
   describe 'fork management' do
     let(:project_fork_target) { create(:project) }
     let(:project_fork_source) { create(:project, :public) }
@@ -1285,7 +1190,7 @@ describe API::Projects do
         expect(project_fork_target.forked?).to be_truthy
       end
 
-      it 'refreshes the forks count cachce' do
+      it 'refreshes the forks count cache' do
         expect(project_fork_source.forks_count).to be_zero
 
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)

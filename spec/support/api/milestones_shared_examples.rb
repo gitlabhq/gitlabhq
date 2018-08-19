@@ -102,14 +102,6 @@ shared_examples_for 'group and project milestones' do |route_definition|
       expect(json_response['iid']).to eq(milestone.iid)
     end
 
-    it 'returns a milestone by id' do
-      get api(resource_route, user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq(milestone.title)
-      expect(json_response['iid']).to eq(milestone.iid)
-    end
-
     it 'returns 401 error if user not authenticated' do
       get api(resource_route)
 

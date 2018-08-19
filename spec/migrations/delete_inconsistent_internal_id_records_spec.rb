@@ -79,7 +79,11 @@ describe DeleteInconsistentInternalIdRecords, :migration do
   end
 
   context 'for milestones (by group)' do
+<<<<<<< HEAD
     # milestones (by group) is a little different than most of the other models
+=======
+    # milestones (by group) is a little different than all of the other models
+>>>>>>> upstream/master
     let!(:group1) { create(:group) }
     let!(:group2) { create(:group) }
     let!(:group3) { create(:group) }
@@ -116,6 +120,7 @@ describe DeleteInconsistentInternalIdRecords, :migration do
       expect { migrate! }.not_to change { internal_id_query.call(group3).size }
     end
   end
+<<<<<<< HEAD
 
   context 'for milestones (by group)' do
     # epics (by group) is a little different than most of the other models
@@ -155,4 +160,6 @@ describe DeleteInconsistentInternalIdRecords, :migration do
       expect { migrate! }.not_to change { internal_id_query.call(group3).size }
     end
   end
+=======
+>>>>>>> upstream/master
 end
