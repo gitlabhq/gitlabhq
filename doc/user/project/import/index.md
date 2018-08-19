@@ -12,10 +12,7 @@
 1. [From TFS](tfs.md)
 1. [From repo by URL](repo_by_url.md)
 1. [By uploading a manifest file (AOSP)](manifest.md)
-<<<<<<< HEAD
 1. [From Gemnasium](gemnasium.md)
-=======
->>>>>>> upstream/master
 
 In addition to the specific migration documentation above, you can import any
 Git repository via HTTP from the New Project page. Be aware that if the
