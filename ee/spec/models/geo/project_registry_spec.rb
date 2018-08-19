@@ -264,7 +264,7 @@ describe Geo::ProjectRegistry do
       it 'sets last_repository_synced_at to now' do
         subject.start_sync!(type)
 
-        expect(subject.last_repository_synced_at).to eq(Time.now)
+        expect(subject.last_repository_synced_at).to be_like_time(Time.now)
       end
 
       shared_examples_for 'sets repository_retry_at to a future time' do
@@ -320,7 +320,7 @@ describe Geo::ProjectRegistry do
       it 'sets last_wiki_synced_at to now' do
         subject.start_sync!(type)
 
-        expect(subject.last_wiki_synced_at).to eq(Time.now)
+        expect(subject.last_wiki_synced_at).to be_like_time(Time.now)
       end
 
       shared_examples_for 'sets wiki_retry_at to a future time' do
