@@ -2,11 +2,8 @@
 
 module Groups
   class DestroyService < Groups::BaseService
-<<<<<<< HEAD
     prepend ::EE::Groups::DestroyService
 
-=======
->>>>>>> upstream/master
     DestroyError = Class.new(StandardError)
 
     def async_execute
