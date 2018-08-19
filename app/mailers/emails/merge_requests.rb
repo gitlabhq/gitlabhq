@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module MergeRequests
     def new_merge_request_email(recipient_id, merge_request_id, reason = nil)

@@ -202,11 +202,11 @@ describe('Vue translate filter', () => {
         <span>
           {{ n__(
           \`
-          multiline 
+          multiline
           string
           \`,
           \`
-          multiline 
+          multiline
           strings
           \`,
           2
@@ -234,7 +234,7 @@ describe('Vue translate filter', () => {
           {{ s__(
           \`
           Context|
-          multiline 
+          multiline
           string
           \`
           ) }}

@@ -1075,8 +1075,10 @@ keep artifacts forever.
 After their expiry, artifacts are deleted hourly by default (via a cron job),
 and are not accessible anymore.
 
-The value of `expire_in` is an elapsed time. Examples of parsable values:
+The value of `expire_in` is an elapsed time in seconds, unless a unit is
+provided. Examples of parsable values:
 
+- '42'
 - '3 mins 4 sec'
 - '2 hrs 20 min'
 - '2h20min'

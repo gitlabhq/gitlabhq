@@ -1,0 +1,5 @@
+---
+title: Fix issue stopping Instance Statistics javascript to be executed
+merge_request: 21211
+author:
+type: fixed

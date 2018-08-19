@@ -1,15 +1,18 @@
 %fieldset
   %legend Access
   .form-group.row
-    = f.label :projects_limit, class: 'col-form-label col-sm-2'
+    .col-sm-2.text-right
+      = f.label :projects_limit, class: 'col-form-label'
     .col-sm-10= f.number_field :projects_limit, min: 0, max: Gitlab::Database::MAX_INT_VALUE, class: 'form-control'
 
   .form-group.row
-    = f.label :can_create_group, class: 'col-form-label col-sm-2'
+    .col-sm-2.text-right
+      = f.label :can_create_group, class: 'col-form-label'
     .col-sm-10= f.check_box :can_create_group
 
   .form-group.row
-    = f.label :access_level, class: 'col-form-label col-sm-2'
+    .col-sm-2.text-right
+      = f.label :access_level, class: 'col-form-label'
     .col-sm-10
       - editing_current_user = (current_user == @user)
 
@@ -36,7 +39,8 @@
           You cannot remove your own admin rights.
 
   .form-group.row
-    = f.label :external, class: 'col-form-label col-sm-2'
+    .col-sm-2.text-right
+      = f.label :external, class: 'col-form-label'
     .col-sm-10
       = f.check_box :external do
         External

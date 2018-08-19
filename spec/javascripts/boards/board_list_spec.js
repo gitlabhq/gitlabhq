@@ -210,6 +210,15 @@ describe('Board list component', () => {
     });
   });
 
+  it('does not load issues if already loading', () => {
+    component.list.nextPage = spyOn(component.list, 'nextPage').and.returnValue(new Promise(() => {}));
+
+    component.onScroll();
+    component.onScroll();
+
+    expect(component.list.nextPage).toHaveBeenCalledTimes(1);
+  });
+
   it('shows loading more spinner', (done) => {
     component.showCount = true;
     component.list.loadingMore = true;

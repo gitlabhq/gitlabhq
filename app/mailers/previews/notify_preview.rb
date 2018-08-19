@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotifyPreview < ActionMailer::Preview
   prepend EE::Preview::NotifyPreview
 
