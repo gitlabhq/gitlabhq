@@ -2,11 +2,4 @@
 - page_title "Metrics for environment", @environment.name
 
 .prometheus-container{ class: container_class }
-  .top-area
-    .row
-      .col-sm-6
-        %h3
-          Environment:
-          = link_to @environment.name, environment_path(@environment)
-
   #prometheus-graphs{ data: metrics_data(@project, @environment) }
