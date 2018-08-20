@@ -15,6 +15,13 @@ module QA
         p.description = 'Project with Auto Devops'
       end
 
+      # Disable code_quality check in Auto DevOps pipeline as it takes
+      # too long and times out the test
+      Factory::Resource::SecretVariable.fabricate! do |resource|
+        resource.key = 'CODE_QUALITY_DISABLED'
+        resource.value = '1'
+      end
+
       # Create Auto Devops compatible repo
       Factory::Repository::ProjectPush.fabricate! do |push|
         push.project = project
