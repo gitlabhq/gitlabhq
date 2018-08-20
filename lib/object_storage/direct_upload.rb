@@ -41,7 +41,9 @@ module ObjectStorage
         GetURL: get_url,
         StoreURL: store_url,
         DeleteURL: delete_url,
-        MultipartUpload: multipart_upload_hash
+        MultipartUpload: multipart_upload_hash,
+        CustomPutHeaders: true,
+        PutHeaders: upload_options
       }.compact
     end
 
