@@ -1,6 +1,6 @@
 import FilteredSearchTokenKeys from './filtered_search_token_keys';
 
-const tokenKeys = [{
+export const tokenKeys = [{
   key: 'author',
   type: 'string',
   param: 'username',
@@ -42,14 +42,14 @@ if (gon.current_user_id) {
   });
 }
 
-const alternativeTokenKeys = [{
+export const alternativeTokenKeys = [{
   key: 'label',
   type: 'string',
   param: 'name',
   symbol: '~',
 }];
 
-const conditions = [{
+export const conditions = [{
   url: 'assignee_id=0',
   tokenKey: 'assignee',
   value: 'none',
