@@ -15,8 +15,8 @@ describe "Admin Runners" do
 
     context "when there are runners" do
       it 'has all necessary texts' do
-        runner = FactoryBot.create(:ci_runner, contacted_at: Time.now)
-        FactoryBot.create(:ci_build, pipeline: pipeline, runner_id: runner.id)
+        runner = create(:ci_runner, contacted_at: Time.now)
+        create(:ci_build, pipeline: pipeline, runner_id: runner.id)
         visit admin_runners_path
 
         expect(page).to have_text "Setup a shared Runner manually"
@@ -25,8 +25,8 @@ describe "Admin Runners" do
 
       describe 'search', :js do
         before do
-          FactoryBot.create :ci_runner, description: 'runner-foo'
-          FactoryBot.create :ci_runner, description: 'runner-bar'
+          create(:ci_runner, description: 'runner-foo')
+          create(:ci_runner, description: 'runner-bar')
 
           visit admin_runners_path
         end
@@ -47,8 +47,8 @@ describe "Admin Runners" do
 
       describe 'filter by status', :js do
         it 'shows correct runner when status matches' do
-          FactoryBot.create :ci_runner, description: 'runner-active', active: true
-          FactoryBot.create :ci_runner, description: 'runner-paused', active: false
+          create(:ci_runner, description: 'runner-active', active: true)
+          create(:ci_runner, description: 'runner-paused', active: false)
 
           visit admin_runners_path
 
@@ -61,8 +61,8 @@ describe "Admin Runners" do
         end
 
         it 'shows no runner when status does not match' do
-          FactoryBot.create :ci_runner, :online, description: 'runner-active', active: true
-          FactoryBot.create :ci_runner, :online, description: 'runner-paused', active: false
+          create(:ci_runner, :online, description: 'runner-active', active: true)
+          create(:ci_runner, :online, description: 'runner-paused', active: false)
 
           visit admin_runners_path
 
@@ -76,9 +76,9 @@ describe "Admin Runners" do
       end
 
       it 'shows correct runner when status is selected and search term is entered', :js do
-        FactoryBot.create :ci_runner, description: 'runner-a-1', active: true
-        FactoryBot.create :ci_runner, description: 'runner-a-2', active: false
-        FactoryBot.create :ci_runner, description: 'runner-b-1', active: true
+        create(:ci_runner, description: 'runner-a-1', active: true)
+        create(:ci_runner, description: 'runner-a-2', active: false)
+        create(:ci_runner, description: 'runner-b-1', active: true)
 
         visit admin_runners_path
 
@@ -94,8 +94,8 @@ describe "Admin Runners" do
       end
 
       it 'sorts by last contact date', :js do
-        FactoryBot.create :ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37'
-        FactoryBot.create :ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37'
+        create(:ci_runner, description: 'runner-1', created_at: '2018-07-12 15:37', contacted_at: '2018-07-12 15:37')
+        create(:ci_runner, description: 'runner-2', created_at: '2018-07-12 16:37', contacted_at: '2018-07-12 16:37')
 
         visit admin_runners_path
 
@@ -147,7 +147,7 @@ describe "Admin Runners" do
 
     context 'shared runner' do
       it 'shows the label and does not show the project count' do
-        runner = create :ci_runner, :instance
+        runner = create(:ci_runner, :instance)
 
         visit admin_runners_path
 
@@ -160,8 +160,8 @@ describe "Admin Runners" do
 
     context 'specific runner' do
       it 'shows the label and the project count' do
-        project = create :project
-        runner = create :ci_runner, :project, projects: [project]
+        project = create(:project)
+        runner = create(:ci_runner, :project, projects: [project])
 
         visit admin_runners_path
 
@@ -174,11 +174,11 @@ describe "Admin Runners" do
   end
 
   describe "Runner show page" do
-    let(:runner) { FactoryBot.create :ci_runner }
+    let(:runner) { create(:ci_runner) }
 
     before do
-      @project1 = FactoryBot.create(:project)
-      @project2 = FactoryBot.create(:project)
+      @project1 = create(:project)
+      @project2 = create(:project)
       visit admin_runner_path(runner)
     end
 
