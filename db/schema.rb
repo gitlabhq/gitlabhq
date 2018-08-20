@@ -1204,6 +1204,7 @@ ActiveRecord::Schema.define(version: 20180808162000) do
     t.integer "commits_count"
   end
 
+  add_index "merge_request_diffs", ["id"], name: "tmp_partial_diff_id_with_files_index", where: "((state)::text <> ALL ((ARRAY['without_files'::character varying, 'empty'::character varying])::text[]))", using: :btree
   add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
 
   create_table "merge_request_metrics", force: :cascade do |t|
@@ -1764,6 +1765,7 @@ ActiveRecord::Schema.define(version: 20180808162000) do
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
+  add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2395,7 +2397,7 @@ ActiveRecord::Schema.define(version: 20180808162000) do
   add_foreign_key "term_agreements", "users", on_delete: :cascade
   add_foreign_key "timelogs", "issues", name: "fk_timelogs_issues_issue_id", on_delete: :cascade
   add_foreign_key "timelogs", "merge_requests", name: "fk_timelogs_merge_requests_merge_request_id", on_delete: :cascade
-  add_foreign_key "todos", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "todos", "namespaces", column: "group_id", name: "fk_a27c483435", on_delete: :cascade
   add_foreign_key "todos", "notes", name: "fk_91d1f47b13", on_delete: :cascade
   add_foreign_key "todos", "projects", name: "fk_45054f9c45", on_delete: :cascade
   add_foreign_key "todos", "users", column: "author_id", name: "fk_ccf0373936", on_delete: :cascade

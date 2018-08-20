@@ -109,6 +109,7 @@ module QA
     autoload :View, 'qa/page/view'
     autoload :Element, 'qa/page/element'
     autoload :Validator, 'qa/page/validator'
+    autoload :Validatable, 'qa/page/validatable'
 
     module Main
       autoload :Login, 'qa/page/main/login'

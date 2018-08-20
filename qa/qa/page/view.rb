@@ -46,8 +46,8 @@ module QA
           @elements = []
         end
 
-        def element(name, pattern = nil)
-          @elements.push(Page::Element.new(name, pattern))
+        def element(name, required = true)
+          @elements.push(Page::Element.new(name, required))
         end
       end
     end

@@ -3,31 +3,31 @@ module QA
     module Main
       class Login < Page::Base
         view 'app/views/devise/passwords/edit.html.haml' do
-          element :password_field, 'password_field :password'
-          element :password_confirmation, 'password_field :password_confirmation'
-          element :change_password_button, 'submit "Change your password"'
+          element :txt_password, false
+          element :txt_password, false
+          element :btn_change_password, false
         end
 
         view 'app/views/devise/sessions/_new_base.html.haml' do
-          element :login_field, 'text_field :login'
-          element :password_field, 'password_field :password'
-          element :sign_in_button, 'submit "Sign in"'
+          element :txt_username
+          element :txt_password
+          element :btn_signin
         end
 
         view 'app/views/devise/sessions/_new_ldap.html.haml' do
-          element :username_field, 'text_field_tag :username'
-          element :password_field, 'password_field_tag :password'
-          element :sign_in_button, 'submit_tag "Sign in"'
+          element :txt_username
+          element :txt_password
+          element :btn_signin
         end
 
         view 'app/views/devise/shared/_tabs_ldap.html.haml' do
-          element :ldap_tab, "link_to server['label']"
-          element :standard_tab, "link_to 'Standard'"
+          element :ldap_tab, false
+          element :standard_tab, false
         end
 
         view 'app/views/devise/shared/_tabs_normal.html.haml' do
-          element :sign_in_tab, /nav-link.*login-pane.*Sign in/
-          element :register_tab, /nav-link.*register-pane.*Register/
+          element :tab_standard
+          element :tab_register
         end
 
         def initialize
@@ -62,11 +62,11 @@ module QA
         end
 
         def switch_to_sign_in_tab
-          click_on 'Sign in'
+          click_element :tab_standard
         end
 
         def switch_to_register_tab
-          click_on 'Register'
+          click_element :tab_register
         end
 
         private
@@ -82,9 +82,9 @@ module QA
         def sign_in_using_gitlab_credentials
           click_link 'Standard' if page.has_content?('LDAP')
 
-          fill_in :user_login, with: Runtime::User.name
-          fill_in :user_password, with: Runtime::User.password
-          click_button 'Sign in'
+          fill_element :txt_username, Runtime::User.name
+          fill_element :txt_password, Runtime::User.password
+          click_element :btn_signin, Page::Menu::Main
         end
 
         def set_initial_password_if_present

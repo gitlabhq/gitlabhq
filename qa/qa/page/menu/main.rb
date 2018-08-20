@@ -3,49 +3,54 @@ module QA
     module Menu
       class Main < Page::Base
         view 'app/views/layouts/header/_current_user_dropdown.html.haml' do
-          element :user_sign_out_link, 'link_to _("Sign out")'
-          element :settings_link, 'link_to s_("CurrentUser|Settings")'
+          element :btn_signout
+          element :btn_settings
         end
 
         view 'app/views/layouts/header/_default.html.haml' do
           element :navbar
           element :user_avatar
-          element :user_menu, '.dropdown-menu'
+          element :drp_user
         end
 
         view 'app/views/layouts/nav/_dashboard.html.haml' do
-          element :admin_area_link
-          element :projects_dropdown
-          element :groups_dropdown
+          element :lnk_adminarea
+          element :drp_projects
+          element :drp_groups
         end
 
         view 'app/views/layouts/nav/projects_dropdown/_show.html.haml' do
-          element :projects_dropdown_sidebar
-          element :your_projects_link
+          element :drp_projects_sidebar
+          element :drp_projects_sidebar_lnk_yourprojects
+        end
+
+        view 'app/views/layouts/nav/groups_dropdown/_show.html.haml' do
+          element :drp_groups_sidebar
+          element :drp_groups_sidebar_lnk_yourgroups
         end
 
         def go_to_groups
           within_top_menu do
-            click_element :groups_dropdown
+            click_element :drp_groups
           end
 
-          page.within('.qa-groups-dropdown-sidebar') do
-            click_element :your_groups_link
+          page.within_element(:drp_groups_sidebar) do
+            click_element :drp_groups_sidebar_lnk_yourgroups
           end
         end
 
         def go_to_projects
           within_top_menu do
-            click_element :projects_dropdown
+            click_element :drp_projects
           end
 
-          page.within('.qa-projects-dropdown-sidebar') do
-            click_element :your_projects_link
+          page.within_element(:drp_projects_sidebar) do
+            click_element :drp_projects_sidebar_lnk_yourprojects
           end
         end
 
         def go_to_admin_area
-          within_top_menu { click_element :admin_area_link }
+          within_top_menu { click_element :lnk_adminarea }
         end
 
         def sign_out
@@ -68,7 +73,7 @@ module QA
         private
 
         def within_top_menu
-          page.within('.qa-navbar') do
+          page.within_element(:navbar) do
             yield
           end
         end
@@ -77,7 +82,7 @@ module QA
           within_top_menu do
             click_element :user_avatar
 
-            page.within('.dropdown-menu') do
+            page.within_element(:drp_user) do
               yield
             end
           end

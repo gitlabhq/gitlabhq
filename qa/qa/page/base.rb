@@ -5,6 +5,7 @@ module QA
     class Base
       include Capybara::DSL
       include Scenario::Actable
+      extend Validatable
       extend SingleForwardable
 
       def_delegators :evaluator, :view, :views
@@ -68,8 +69,9 @@ module QA
         all(element_selector_css(name))
       end
 
-      def click_element(name)
+      def click_element(name, page = self)
         find_element(name).click
+        page.validate_elements_present!
       end
 
       def fill_element(name, content)

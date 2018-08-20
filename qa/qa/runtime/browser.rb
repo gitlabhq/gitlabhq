@@ -29,6 +29,7 @@ module QA
 
       def self.visit(address, page = nil, &block)
         new.visit(address, page, &block)
+        page.validate_elements_present!
       end
 
       def self.configure!

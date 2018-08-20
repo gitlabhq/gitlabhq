@@ -1,6 +1,6 @@
 %ul.list-unstyled.navbar-sub-nav
   - if dashboard_nav_link?(:projects)
-    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects qa-projects-dropdown" }) do
+    = nav_link(path: ['root#index', 'projects#trending', 'projects#starred', 'dashboard/projects#index'], html_options: { id: 'nav-projects-dropdown', class: "home dropdown header-projects", data: qa_selector('drp_projects') }) do
       %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Projects')
         = sprite_icon('angle-down', css_class: 'caret-down')
@@ -8,7 +8,7 @@
         = render "layouts/nav/projects_dropdown/show"
 
   - if dashboard_nav_link?(:groups)
-    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "home dropdown header-groups qa-groups-dropdown" }) do
+    = nav_link(controller: ['dashboard/groups', 'explore/groups'], html_options: { id: 'nav-groups-dropdown', class: "home dropdown header-groups", data: qa_selector('drp_groups') }) do
       %button{ type: 'button', data: { toggle: "dropdown" } }
         = _('Groups')
         = sprite_icon('angle-down', css_class: 'caret-down')
@@ -72,7 +72,7 @@
         = sprite_icon('chart', size: 18)
   - if current_user.admin?
     = nav_link(controller: 'admin/dashboard') do
-      = link_to admin_root_path, class: 'admin-icon qa-admin-area-link', title: _('Admin area'), aria: { label: _('Admin area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'} do
+      = link_to admin_root_path, class: 'admin-icon', title: _('Admin area'), aria: { label: _('Admin area') }, data: {toggle: 'tooltip', placement: 'bottom', container: 'body'}.merge(qa_selector('lnk_adminarea')) do
         = sprite_icon('admin', size: 18)
   - if Gitlab::Sherlock.enabled?
     %li

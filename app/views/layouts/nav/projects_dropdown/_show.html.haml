@@ -1,9 +1,9 @@
 - project_meta = { id: @project.id, name: @project.name, namespace: @project.full_name, web_url: project_path(@project), avatar_url: @project.avatar_url } if @project&.persisted?
 .frequent-items-dropdown-container
-  .frequent-items-dropdown-sidebar.qa-projects-dropdown-sidebar
+  .frequent-items-dropdown-sidebar{data: qa_selector('drp_projects_sidebar')}
     %ul
       = nav_link(path: 'dashboard/projects#index') do
-        = link_to dashboard_projects_path, class: 'qa-your-projects-link' do
+        = link_to dashboard_projects_path, data: qa_selector('drp_projects_sidebar_lnk_yourprojects') do
           = _('Your projects')
       = nav_link(path: 'projects#starred') do
         = link_to starred_dashboard_projects_path do

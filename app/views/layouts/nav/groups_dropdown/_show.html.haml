@@ -1,9 +1,9 @@
 - group_meta = { id: @group.id, name: @group.name, namespace: @group.full_name, web_url: group_path(@group), avatar_url: @group.avatar_url } if @group&.persisted?
 .frequent-items-dropdown-container
-  .frequent-items-dropdown-sidebar.qa-groups-dropdown-sidebar
+  .frequent-items-dropdown-sidebar{data: qa_selector('drp_groups_sidebar')}
     %ul
       = nav_link(path: 'dashboard/groups#index') do
-        = link_to dashboard_groups_path, class: 'qa-your-groups-link' do
+        = link_to dashboard_groups_path, data: qa_selector('drp_groups_sidebar_lnk_yourgroups') do
           = _('Your groups')
       = nav_link(path: 'groups#explore') do
         = link_to explore_groups_path do

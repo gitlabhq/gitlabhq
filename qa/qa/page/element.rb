@@ -1,19 +1,28 @@
 module QA
   module Page
     class Element
-      attr_reader :name
+      attr_reader :name, :required
 
-      def initialize(name, pattern = nil)
+      def initialize(name, required = true)
         @name = name
-        @pattern = pattern || selector
+
+        unless !!required == required
+          warn "[QA] DEPRECATED TYPING: element #{name}, #{required} should be a boolean!"
+        end
+
+        @required = required
+      end
+
+      def required?
+        !!required
       end
 
       def selector
-        "qa-#{@name.to_s.tr('_', '-')}"
+        /['"]data-qa-selector['"]: ['"]#{@name}['"]/
       end
 
       def selector_css
-        ".#{selector}"
+        %Q([data-qa-selector="#{@name}"])
       end
 
       def expression
