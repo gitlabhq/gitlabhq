@@ -1,4 +1,4 @@
-import FilteredSearchTokenKeysIssues from 'ee/filtered_search/filtered_search_token_keys_issues';
+import IssuesFilteredSearchTokenKeysEE from 'ee/filtered_search/issues_filtered_search_token_keys';
 
 describe('Filtered Search Token Keys (Issues EE)', () => {
   const weightTokenKey = {
@@ -14,10 +14,10 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
     let tokenKeys;
 
     beforeEach(() => {
-      FilteredSearchTokenKeysIssues.init({
+      IssuesFilteredSearchTokenKeysEE.init({
         multipleAssignees: true,
       });
-      tokenKeys = FilteredSearchTokenKeysIssues.get();
+      tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
     });
 
     it('should return tokenKeys', () => {
@@ -34,7 +34,7 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
     });
 
     it('should always return the same array', () => {
-      const tokenKeys2 = FilteredSearchTokenKeysIssues.get();
+      const tokenKeys2 = IssuesFilteredSearchTokenKeysEE.get();
 
       expect(tokenKeys).toEqual(tokenKeys2);
     });
@@ -47,8 +47,8 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
 
   describe('getKeys', () => {
     it('should return keys', () => {
-      const getKeys = FilteredSearchTokenKeysIssues.getKeys();
-      const keys = FilteredSearchTokenKeysIssues.get().map(i => i.key);
+      const getKeys = IssuesFilteredSearchTokenKeysEE.getKeys();
+      const keys = IssuesFilteredSearchTokenKeysEE.get().map(i => i.key);
 
       keys.forEach((key, i) => {
         expect(key).toEqual(getKeys[i]);
@@ -60,7 +60,7 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
     let conditions;
 
     beforeEach(() => {
-      conditions = FilteredSearchTokenKeysIssues.getConditions();
+      conditions = IssuesFilteredSearchTokenKeysEE.getConditions();
     });
 
     it('should return conditions', () => {
@@ -79,89 +79,89 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
 
   describe('searchByKey', () => {
     it('should return null when key not found', () => {
-      const tokenKey = FilteredSearchTokenKeysIssues.searchByKey('notakey');
+      const tokenKey = IssuesFilteredSearchTokenKeysEE.searchByKey('notakey');
       expect(tokenKey === null).toBe(true);
     });
 
     it('should return tokenKey when found by key', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
-      const result = FilteredSearchTokenKeysIssues.searchByKey(tokenKeys[0].key);
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
+      const result = IssuesFilteredSearchTokenKeysEE.searchByKey(tokenKeys[0].key);
       expect(result).toEqual(tokenKeys[0]);
     });
 
     it('should return weight tokenKey when found by weight key', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
       const match = tokenKeys.find(tk => tk.key === weightTokenKey.key);
-      const result = FilteredSearchTokenKeysIssues.searchByKey(weightTokenKey.key);
+      const result = IssuesFilteredSearchTokenKeysEE.searchByKey(weightTokenKey.key);
       expect(result).toEqual(match);
     });
   });
 
   describe('searchBySymbol', () => {
     it('should return null when symbol not found', () => {
-      const tokenKey = FilteredSearchTokenKeysIssues.searchBySymbol('notasymbol');
+      const tokenKey = IssuesFilteredSearchTokenKeysEE.searchBySymbol('notasymbol');
       expect(tokenKey === null).toBe(true);
     });
 
     it('should return tokenKey when found by symbol', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
-      const result = FilteredSearchTokenKeysIssues.searchBySymbol(tokenKeys[0].symbol);
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
+      const result = IssuesFilteredSearchTokenKeysEE.searchBySymbol(tokenKeys[0].symbol);
       expect(result).toEqual(tokenKeys[0]);
     });
 
     it('should return weight tokenKey when found by weight symbol', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
       const match = tokenKeys.find(tk => tk.key === weightTokenKey.key);
-      const result = FilteredSearchTokenKeysIssues.searchBySymbol(weightTokenKey.symbol);
+      const result = IssuesFilteredSearchTokenKeysEE.searchBySymbol(weightTokenKey.symbol);
       expect(result).toEqual(match);
     });
   });
 
   describe('searchByKeyParam', () => {
     it('should return null when key param not found', () => {
-      const tokenKey = FilteredSearchTokenKeysIssues.searchByKeyParam('notakeyparam');
+      const tokenKey = IssuesFilteredSearchTokenKeysEE.searchByKeyParam('notakeyparam');
       expect(tokenKey === null).toBe(true);
     });
 
     it('should return tokenKey when found by key param', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
-      const result = FilteredSearchTokenKeysIssues
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByKeyParam(`${tokenKeys[0].key}_${tokenKeys[0].param}`);
       expect(result).toEqual(tokenKeys[0]);
     });
 
     it('should return alternative tokenKey when found by key param', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.getAlternatives();
-      const result = FilteredSearchTokenKeysIssues
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.getAlternatives();
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByKeyParam(`${tokenKeys[0].key}_${tokenKeys[0].param}`);
       expect(result).toEqual(tokenKeys[0]);
     });
 
     it('should return weight tokenKey when found by weight key param', () => {
-      const tokenKeys = FilteredSearchTokenKeysIssues.get();
+      const tokenKeys = IssuesFilteredSearchTokenKeysEE.get();
       const match = tokenKeys.find(tk => tk.key === weightTokenKey.key);
-      const result = FilteredSearchTokenKeysIssues.searchByKeyParam(weightTokenKey.key);
+      const result = IssuesFilteredSearchTokenKeysEE.searchByKeyParam(weightTokenKey.key);
       expect(result).toEqual(match);
     });
   });
 
   describe('searchByConditionUrl', () => {
     it('should return null when condition url not found', () => {
-      const condition = FilteredSearchTokenKeysIssues.searchByConditionUrl(null);
+      const condition = IssuesFilteredSearchTokenKeysEE.searchByConditionUrl(null);
       expect(condition === null).toBe(true);
     });
 
     it('should return condition when found by url', () => {
-      const conditions = FilteredSearchTokenKeysIssues.getConditions();
-      const result = FilteredSearchTokenKeysIssues
+      const conditions = IssuesFilteredSearchTokenKeysEE.getConditions();
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByConditionUrl(conditions[0].url);
       expect(result).toBe(conditions[0]);
     });
 
     it('should return weight condition when found by weight url', () => {
-      const conditions = FilteredSearchTokenKeysIssues.getConditions();
+      const conditions = IssuesFilteredSearchTokenKeysEE.getConditions();
       const weightConditions = conditions.filter(c => c.tokenKey === 'weight');
-      const result = FilteredSearchTokenKeysIssues
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByConditionUrl(weightConditions[0].url);
       expect(result).toBe(weightConditions[0]);
     });
@@ -169,22 +169,22 @@ describe('Filtered Search Token Keys (Issues EE)', () => {
 
   describe('searchByConditionKeyValue', () => {
     it('should return null when condition tokenKey and value not found', () => {
-      const condition = FilteredSearchTokenKeysIssues
+      const condition = IssuesFilteredSearchTokenKeysEE
         .searchByConditionKeyValue(null, null);
       expect(condition === null).toBe(true);
     });
 
     it('should return condition when found by tokenKey and value', () => {
-      const conditions = FilteredSearchTokenKeysIssues.getConditions();
-      const result = FilteredSearchTokenKeysIssues
+      const conditions = IssuesFilteredSearchTokenKeysEE.getConditions();
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByConditionKeyValue(conditions[0].tokenKey, conditions[0].value);
       expect(result).toEqual(conditions[0]);
     });
 
     it('should return weight condition when found by weight tokenKey and value', () => {
-      const conditions = FilteredSearchTokenKeysIssues.getConditions();
+      const conditions = IssuesFilteredSearchTokenKeysEE.getConditions();
       const weightConditions = conditions.filter(c => c.tokenKey === 'weight');
-      const result = FilteredSearchTokenKeysIssues
+      const result = IssuesFilteredSearchTokenKeysEE
         .searchByConditionKeyValue(weightConditions[0].tokenKey, weightConditions[0].value);
       expect(result).toEqual(weightConditions[0]);
     });
