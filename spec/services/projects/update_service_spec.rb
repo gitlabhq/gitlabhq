@@ -262,6 +262,7 @@ describe Projects::UpdateService do
         context 'when hashed storage is enabled' do
           before do
             stub_application_setting(hashed_storage_enabled: true)
+            stub_feature_flags(disable_hashed_storage_upgrade: false)
           end
 
           it 'migrates project to a hashed storage instead of renaming the repo to another legacy name' do
@@ -275,7 +276,7 @@ describe Projects::UpdateService do
 
           context 'when disable_hashed_storage_upgrade feature flag is enabled' do
             before do
-              expect(Feature).to receive(:enabled?).with(:disable_hashed_storage_upgrade) { true }
+              stub_feature_flags(disable_hashed_storage_upgrade: true)
             end
 
             it 'renames the project without upgrading it' do
