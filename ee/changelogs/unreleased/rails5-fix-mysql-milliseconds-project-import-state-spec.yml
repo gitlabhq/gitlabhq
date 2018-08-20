@@ -1,0 +1,5 @@
+---
+title: 'Rails5: fix mysql milliseconds problem in project_import_state_spec'
+merge_request: 6874
+author: Jasper Maes
+type: fixed

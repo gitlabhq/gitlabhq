@@ -6,7 +6,7 @@ describe ProjectImportState, type: :model do
       Timecop.freeze(Time.now) do
         import_state = create(:import_state, :mirror)
 
-        expect(import_state.next_execution_timestamp).to eq(Time.now)
+        expect(import_state.next_execution_timestamp).to be_like_time(Time.now)
       end
     end
   end
@@ -29,7 +29,7 @@ describe ProjectImportState, type: :model do
 
   describe '#set_next_execution_timestamp' do
     let(:import_state) { create(:import_state, :mirror, :finished) }
-    let!(:timestamp) { Time.now }
+    let!(:timestamp) { Time.now.change(usec: 0) }
     let!(:jitter) { 2.seconds }
 
     before do
