@@ -4219,6 +4219,9 @@ msgstr ""
 msgid "Last commit"
 msgstr ""
 
+msgid "Last contact"
+msgstr ""
+
 msgid "Last edited %{date}"
 msgstr ""
 
@@ -4913,6 +4916,9 @@ msgstr ""
 msgid "No repository"
 msgstr ""
 
+msgid "No runners found"
+msgstr ""
+
 msgid "No schedules"
 msgstr ""
 
@@ -5416,6 +5422,9 @@ msgstr ""
 msgid "Preferences|Navigation theme"
 msgstr ""
 
+msgid "Press Enter or click to search"
+msgstr ""
+
 msgid "Preview"
 msgstr ""
 
@@ -5914,6 +5923,9 @@ msgstr ""
 msgid "Real-time features"
 msgstr ""
 
+msgid "Recent searches"
+msgstr ""
+
 msgid "Reference:"
 msgstr ""
 
@@ -6128,7 +6140,22 @@ msgstr ""
 msgid "Run untagged jobs"
 msgstr ""
 
+msgid "Runner cannot be assigned to other projects"
+msgstr ""
+
+msgid "Runner runs jobs from all unassigned projects"
+msgstr ""
+
+msgid "Runner runs jobs from all unassigned projects in its group"
+msgstr ""
+
+msgid "Runner runs jobs from assigned projects"
+msgstr ""
+
 msgid "Runner token"
+msgstr ""
+
+msgid "Runner will not receive any new jobs"
 msgstr ""
 
 msgid "Runners"
@@ -6138,6 +6165,12 @@ msgid "Runners API"
 msgstr ""
 
 msgid "Runners can be placed on separate users, servers, and even on your local machine."
+msgstr ""
+
+msgid "Runners can be placed on separate users, servers, even on your local machine."
+msgstr ""
+
+msgid "Runners currently online: %{active_runners_cnt}"
 msgstr ""
 
 msgid "Runners page"
@@ -6240,6 +6273,9 @@ msgid "Search merge requests"
 msgstr ""
 
 msgid "Search milestones"
+msgstr ""
+
+msgid "Search or filter results..."
 msgstr ""
 
 msgid "Search or jump to…"
@@ -7515,6 +7551,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -7677,7 +7716,11 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "View epics list"
+=======
+msgid "Version"
+>>>>>>> 10a680ba04b... add i18n support to admin runners page
 msgstr ""
 
 msgid "View file @ "
@@ -7966,6 +8009,9 @@ msgid "You can only add files when you are on a branch"
 msgstr ""
 
 msgid "You can only edit files when you are on a branch"
+msgstr ""
+
+msgid "You can reset runners registration token by pressing a button below."
 msgstr ""
 
 msgid "You can resolve the merge conflict using either the Interactive mode, by choosing %{use_ours} or %{use_theirs} buttons, or by editing the files directly. Commit these changes into %{branch_name}"
@@ -8651,6 +8697,9 @@ msgid "mrWidget|into"
 msgstr ""
 
 msgid "mrWidget|to be merged automatically when the pipeline succeeds"
+msgstr ""
+
+msgid "n/a"
 msgstr ""
 
 msgid "new merge request"
