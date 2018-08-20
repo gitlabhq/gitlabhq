@@ -1,0 +1,15 @@
+# Backend Maintainers are the default for all ruby files
+*.rb @ayufan @DouweM @dzaporozhets @grzesiek @nick.thomas @rspeicher @rymai @smcgivern
+*.rake @ayufan @DouweM @dzaporozhets @grzesiek @nick.thomas @rspeicher @rymai @smcgivern
+
+# Technical writing team are the default reviewers for everything in `doc/`
+/doc/ @axil @marcia
+
+# Frontend maintainers should see everything in `app/assets/`
+app/assets/ @annabeldunstone @ClemMakesApps @fatihacet @filipa @iamphill @mikegreiling @timzallmann
+
+# Someone from the database team should review changes in `db/`
+db/ @abrandl @NikolayS
+
+# Feature specific owners
+/ee/lib/gitlab/code_owners/ @reprazent
