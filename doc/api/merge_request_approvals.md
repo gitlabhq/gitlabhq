@@ -211,7 +211,7 @@ GET /projects/:id/merge_requests/:merge_request_iid/approvals
   "updated_at": "2016-06-08T21:20:42.470Z",
   "merge_status": "cannot_be_merged",
   "approvals_required": 2,
-  "approvals_missing": 1,
+  "approvals_left": 1,
   "approved_by": [
     {
       "user": {
@@ -261,7 +261,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approvals
   "updated_at": "2016-06-08T21:20:42.470Z",
   "merge_status": "cannot_be_merged",
   "approvals_required": 2,
-  "approvals_missing": 2,
+  "approvals_left": 2,
   "approved_by": [],
   "approvers": [],
   "approver_groups": []
@@ -302,7 +302,7 @@ PUT /projects/:id/merge_requests/:merge_request_iid/approvers
   "updated_at": "2016-06-08T21:20:42.470Z",
   "merge_status": "cannot_be_merged",
   "approvals_required": 2,
-  "approvals_missing": 2,
+  "approvals_left": 2,
   "approved_by": [],
   "approvers": [
     {
