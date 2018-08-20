@@ -2,11 +2,8 @@
 
 module Users
   class DestroyService
-<<<<<<< HEAD
     prepend ::EE::Users::DestroyService
 
-=======
->>>>>>> upstream/master
     DestroyError = Class.new(StandardError)
 
     attr_accessor :current_user
