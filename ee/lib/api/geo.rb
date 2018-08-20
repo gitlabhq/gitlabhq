@@ -1,3 +1,5 @@
+require 'base64'
+
 module API
   class Geo < Grape::API
     resource :geo do
@@ -38,6 +40,51 @@ module API
 
         unless db_status.update(params.merge(last_successful_status_check_at: Time.now.utc))
           render_validation_error!(db_status)
+        end
+      end
+
+      # git push over SSH secondary -> primary related proxying logic
+      #
+      resource 'proxy_git_push_ssh' do
+        format :json
+
+        # Responsible for making HTTP GET /repo.git/info/refs?service=git-receive-pack
+        # request *from* secondary gitlab-shell to primary
+        #
+        params do
+          requires :secret_token, type: String
+          requires :data, type: Hash do
+            requires :gl_id, type: String
+            requires :primary_repo, type: String
+          end
+        end
+        post 'info_refs' do
+          authenticate_by_gitlab_shell_token!
+          params.delete(:secret_token)
+
+          resp = Gitlab::Geo::GitPushSSHProxy.new(params['data']).info_refs
+          status(resp.code.to_i)
+          { status: true, message: nil, result: Base64.encode64(resp.body.to_s) }
+        end
+
+        # Responsible for making HTTP POST /repo.git/git-receive-pack
+        # request *from* secondary gitlab-shell to primary
+        #
+        params do
+          requires :secret_token, type: String
+          requires :data, type: Hash do
+            requires :gl_id, type: String
+            requires :primary_repo, type: String
+          end
+          requires :output, type: String, desc: 'Output from git-receive-pack'
+        end
+        post 'push' do
+          authenticate_by_gitlab_shell_token!
+          params.delete(:secret_token)
+
+          resp = Gitlab::Geo::GitPushSSHProxy.new(params['data']).push(Base64.decode64(params['output']))
+          status(resp.code.to_i)
+          { status: true, message: nil, result: Base64.encode64(resp.body.to_s) }
         end
       end
     end
