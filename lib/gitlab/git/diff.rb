@@ -226,6 +226,7 @@ module Gitlab
         @new_file = diff.from_id == BLANK_SHA
         @renamed_file = diff.from_path != diff.to_path
         @deleted_file = diff.to_id == BLANK_SHA
+        @too_large = diff.too_large if diff.respond_to?(:too_large)
 
         collapse! if diff.respond_to?(:collapsed) && diff.collapsed
       end
