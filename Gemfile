@@ -310,9 +310,10 @@ group :metrics do
   gem 'raindrops', '~> 0.18'
 
   # OpenTracing
-  gem 'opentracing', '~> 0.3.0'
-  gem 'rails-tracer', :github => 'iaintshine/ruby-rails-tracer', :branch => 'master'
-  # gem 'rack-tracer', :github => 'opentracing-contrib/ruby-rack-tracer', :branch => 'master'
+  gem 'opentracing', '~> 0.4.1'
+  # gem 'zipkin-tracer', '~0.28.0'
+  # gem 'rails-tracer', :github => 'iaintshine/ruby-rails-tracer', :branch => 'master'
+  gem 'rack-tracer', :github => 'opentracing-contrib/ruby-rack-tracer', :branch => 'master'
   gem 'jaeger-client', :github => 'salemove/jaeger-client-ruby', :branch => 'master'
 end
 
@@ -430,7 +431,7 @@ end
 
 # Gitaly GRPC client
 gem 'gitaly-proto', '~> 0.112.0', require: 'gitaly'
-gem 'grpc', '~> 1.11.0'
+gem 'grpc', '~> 1.14.1'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed
 gem 'google-protobuf', '= 3.5.1'

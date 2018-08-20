@@ -1,12 +1,10 @@
 GIT
-  remote: git://github.com/iaintshine/ruby-rails-tracer.git
-  revision: 7d7173e3b03078d9525b65e9febf38adfe59e8ac
+  remote: git://github.com/opentracing-contrib/ruby-rack-tracer.git
+  revision: 04c55fe06d83be7ca213d3a34865dbcf1f6ad5f7
   branch: master
   specs:
-    rails-tracer (0.5.0)
-      method-tracer (~> 1.1)
-      opentracing (~> 0.3.1)
-      rack-tracer (~> 0.3.0)
+    rack-tracer (0.8.0)
+      opentracing (~> 0.4)
 
 GIT
   remote: git://github.com/salemove/jaeger-client-ruby.git
@@ -358,15 +356,14 @@ GEM
       representable (~> 3.0)
       retriable (>= 2.0, < 4.0)
     google-protobuf (3.5.1)
-    googleapis-common-protos-types (1.0.1)
+    googleapis-common-protos-types (1.0.2)
       google-protobuf (~> 3.0)
-    googleauth (0.6.2)
+    googleauth (0.6.4)
       faraday (~> 0.12)
       jwt (>= 1.4, < 3.0)
-      logging (~> 2.0)
       memoist (~> 0.12)
       multi_json (~> 1.11)
-      os (~> 0.9)
+      os (>= 0.9, < 2.0)
       signet (~> 0.7)
     gpgme (2.0.13)
       mini_portile2 (~> 2.1)
@@ -390,10 +387,9 @@ GEM
       railties
       sprockets-rails
     graphql (1.8.1)
-    grpc (1.11.0)
+    grpc (1.14.1)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
-      googleauth (>= 0.5.1, < 0.7)
     haml (5.0.4)
       temple (>= 0.8.0)
       tilt
@@ -494,11 +490,7 @@ GEM
       xml-simple
     licensee (8.9.2)
       rugged (~> 0.24)
-    little-plugger (1.1.4)
     locale (2.1.2)
-    logging (2.2.2)
-      little-plugger (~> 1.1)
-      multi_json (~> 1.10)
     lograge (0.10.0)
       actionpack (>= 4)
       activesupport (>= 4)
@@ -513,8 +505,6 @@ GEM
     memoist (0.16.0)
     memoizable (0.4.2)
       thread_safe (~> 0.3, >= 0.3.1)
-    method-tracer (1.1.2)
-      opentracing (~> 0.3.1)
     method_source (0.9.0)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
@@ -603,11 +593,11 @@ GEM
       activesupport
       nokogiri (>= 1.4.4)
       omniauth (~> 1.0)
-    opentracing (0.3.2)
+    opentracing (0.4.1)
     org-ruby (0.9.12)
       rubypants (~> 0.2)
     orm_adapter (0.5.0)
-    os (0.9.6)
+    os (1.0.0)
     parallel (1.12.1)
     parser (2.5.1.0)
       ast (~> 2.4.0)
@@ -666,7 +656,7 @@ GEM
       pry (~> 0.10)
     pry-rails (0.3.5)
       pry (>= 0.9.10)
-    public_suffix (3.0.2)
+    public_suffix (3.0.3)
     pyu-ruby-sasl (0.0.3.3)
     rack (1.6.10)
     rack-accept (0.4.5)
@@ -686,8 +676,6 @@ GEM
       rack
     rack-test (0.6.3)
       rack (>= 1.0)
-    rack-tracer (0.3.0)
-      opentracing
     rails (4.2.10)
       actionmailer (= 4.2.10)
       actionpack (= 4.2.10)
@@ -1088,7 +1076,7 @@ DEPENDENCIES
   grape_logging (~> 1.7)
   graphiql-rails (~> 1.4.10)
   graphql (~> 1.8.0)
-  grpc (~> 1.11.0)
+  grpc (~> 1.14.1)
   haml_lint (~> 0.26.0)
   hamlit (~> 2.8.8)
   hangouts-chat (~> 0.0.5)
@@ -1139,7 +1127,7 @@ DEPENDENCIES
   omniauth-shibboleth (~> 1.3.0)
   omniauth-twitter (~> 1.4)
   omniauth_crowd (~> 2.2.0)
-  opentracing (~> 0.3.0)
+  opentracing (~> 0.4.1)
   org-ruby (~> 0.9.12)
   peek (~> 1.0.1)
   peek-gc (~> 0.0.2)
@@ -1157,10 +1145,10 @@ DEPENDENCIES
   rack-cors (~> 1.0.0)
   rack-oauth2 (~> 1.2.1)
   rack-proxy (~> 0.6.0)
+  rack-tracer!
   rails (= 4.2.10)
   rails-deprecated_sanitizer (~> 1.0.3)
   rails-i18n (~> 4.0.9)
-  rails-tracer!
   rainbow (~> 3.0)
   raindrops (~> 0.18)
   rblineprof (~> 0.3.6)

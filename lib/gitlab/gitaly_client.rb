@@ -52,13 +52,17 @@ module Gitlab
     end
 
     def self.stub(name, storage)
+      interceptors = []
+      if true
+        interceptors.append(TracingGRPCClientInterceptor.new)
+      end
       MUTEX.synchronize do
         @stubs ||= {}
         @stubs[storage] ||= {}
         @stubs[storage][name] ||= begin
           klass = stub_class(name)
           addr = stub_address(storage)
-          klass.new(addr, :this_channel_is_insecure)
+          klass.new(addr, :this_channel_is_insecure, interceptors: interceptors)
         end
       end
     end
