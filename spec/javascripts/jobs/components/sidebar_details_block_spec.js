@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import sidebarDetailsBlock from '~/jobs/components/sidebar_details_block.vue';
-import job from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import job from '../mock_data';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Sidebar details block', () => {
   let SidebarComponent;

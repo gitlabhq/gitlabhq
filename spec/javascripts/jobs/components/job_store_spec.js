@@ -1,5 +1,5 @@
 import JobStore from '~/jobs/stores/job_store';
-import job from './mock_data';
+import job from '../mock_data';
 
 describe('Job Store', () => {
   let store;
