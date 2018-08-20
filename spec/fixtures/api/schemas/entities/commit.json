@@ -1,0 +1,27 @@
+{
+  "type": "object",
+  "allOf": [
+    { "$ref": "../public_api/v4/commit/basic.json" },
+    {
+      "type": "object",
+      "required": [
+        "author_gravatar_url",
+        "commit_url",
+        "commit_path",
+        "author"
+      ],
+      "properties": {
+        "author_gravatar_url": { "type": "string" },
+        "commit_url": { "type": "string" },
+        "commit_path": { "type": "string" },
+        "author": {
+          "oneOf": [
+            { "type": "null" },
+            { "type": "user.json" }
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  ]
+}
