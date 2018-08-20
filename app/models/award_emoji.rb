@@ -28,6 +28,23 @@ class AwardEmoji < ActiveRecord::Base
         .where('name IN (?) AND awardable_type = ? AND awardable_id IN (?)', [DOWNVOTE_NAME, UPVOTE_NAME], type, ids)
         .group('name', 'awardable_id')
     end
+
+    # Returns the top 100 emoji awarded by the given user.
+    #
+    # The returned value is a Hash mapping emoji names to the number of times
+    # they were awarded:
+    #
+    #     { 'thumbsup' => 2, 'thumbsdown' => 1 }
+    #
+    # user - The User to get the awards for.
+    # limt - The maximum number of emoji to return.
+    def award_counts_for_user(user, limit = 100)
+      limit(limit)
+        .where(user: user)
+        .group(:name)
+        .order('count_all DESC, name ASC')
+        .count
+    end
   end
 
   def downvote?
