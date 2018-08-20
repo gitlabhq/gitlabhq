@@ -1,73 +1,77 @@
-- breadcrumb_title "Runners"
+- breadcrumb_title _('Runners')
 - @no_container = true
 
 %div{ class: container_class }
   .bs-callout
     %p
-      A 'Runner' is a process which runs a job.
-      You can setup as many Runners as you need.
+      = (_"A 'Runner' is a process which runs a job. You can setup as many Runners as you need.")
       %br
-      Runners can be placed on separate users, servers, even on your local machine.
+      = _('Runners can be placed on separate users, servers, even on your local machine.')
       %br
 
     %div
-      %span Each Runner can be in one of the following states:
+      %span= _('Each Runner can be in one of the following states:')
       %ul
         %li
           %span.badge.badge-success shared
-          \- Runner runs jobs from all unassigned projects
+          \-
+          = _('Runner runs jobs from all unassigned projects')
         %li
           %span.badge.badge-success group
-          \- Runner runs jobs from all unassigned projects in its group
+          \-
+          = _('Runner runs jobs from all unassigned projects in its group')
         %li
           %span.badge.badge-info specific
-          \- Runner runs jobs from assigned projects
+          \-
+          = _('Runner runs jobs from assigned projects')
         %li
           %span.badge.badge-warning locked
-          \- Runner cannot be assigned to other projects
+          \-
+          = _('Runner cannot be assigned to other projects')
         %li
           %span.badge.badge-danger paused
-          \- Runner will not receive any new jobs
+          \-
+          = _('Runner will not receive any new jobs')
 
   .bs-callout.clearfix
     .float-left
       %p
-        You can reset runners registration token by pressing a button below.
+        = _('You can reset runners registration token by pressing a button below.')
       .prepend-top-10
-        = button_to _("Reset runners registration token"), reset_runners_token_admin_application_settings_path,
+        = button_to _('Reset runners registration token'), reset_runners_token_admin_application_settings_path,
           method: :put, class: 'btn btn-default',
-          data: { confirm: _("Are you sure you want to reset registration token?") }
+          data: { confirm: _('Are you sure you want to reset registration token?') }
 
   = render partial: 'ci/runner/how_to_setup_shared_runner',
            locals: { registration_token: Gitlab::CurrentSettings.runners_registration_token }
 
   .bs-callout
     %p
-      Runners currently online: #{@active_runners_cnt}
+      = _('Runners currently online: %{active_runners_cnt}') % { active_runners_cnt: @active_runners_cnt }
 
   .row-content-block.second-block
     = form_tag admin_runners_path, id: 'runners-search', method: :get, class: 'filter-form js-filter-form' do
       .filtered-search-wrapper
         .filtered-search-box
           = dropdown_tag(custom_icon('icon_history'),
-            options: { wrapper_class: "filtered-search-history-dropdown-wrapper",
-            toggle_class: "filtered-search-history-dropdown-toggle-button",
-            dropdown_class: "filtered-search-history-dropdown",
-            content_class: "filtered-search-history-dropdown-content",
-            title: "Recent searches" }) do
+            options: { wrapper_class: 'filtered-search-history-dropdown-wrapper',
+            toggle_class: 'filtered-search-history-dropdown-toggle-button',
+            dropdown_class: 'filtered-search-history-dropdown',
+            content_class: 'filtered-search-history-dropdown-content',
+            title: _('Recent searches') }) do
             .js-filtered-search-history-dropdown{ data: { full_path: admin_runners_path } }
           .filtered-search-box-input-container.droplab-dropdown
             .scroll-container
               %ul.tokens-container.list-unstyled
                 %li.input-token
-                  %input.form-control.filtered-search{ { id: 'filtered-search-runners', placeholder: 'Search or filter results...' } }
+                  %input.form-control.filtered-search{ { id: 'filtered-search-runners', placeholder: _('Search or filter results...') } }
             #js-dropdown-hint.filtered-search-input-dropdown-menu.dropdown-menu.hint-dropdown
               %ul{ data: { dropdown: true } }
                 %li.filter-dropdown-item{ data: { action: 'submit' } }
                   = button_tag class: %w[btn btn-link] do
                     = icon('search')
                     %span
-                      Press Enter or click to search
+                      = _('Press Enter or click to search')
               %ul.filter-dropdown{ data: { dynamic: true, dropdown: true } }
                 %li.filter-dropdown-item
                   = button_tag class: %w[btn btn-link] do
@@ -93,18 +97,18 @@
     .runners-content.content-list
       .table-holder
         .gl-responsive-table-row.table-row-header{ role: 'row' }
-          .table-section.section-10{ role: 'rowheader' } Type
-          .table-section.section-10{ role: 'rowheader' } Runner token
-          .table-section.section-10{ role: 'rowheader' } Description
-          .table-section.section-10{ role: 'rowheader' } Version
-          .table-section.section-10{ role: 'rowheader' } IP Address
-          .table-section.section-10{ role: 'rowheader' } Projects
-          .table-section.section-10{ role: 'rowheader' } Jobs
-          .table-section.section-10{ role: 'rowheader' } Tags
-          .table-section.section-10{ role: 'rowheader' } Last contact
+          .table-section.section-10{ role: 'rowheader' }= _('Type')
+          .table-section.section-10{ role: 'rowheader' }= _('Runner token')
+          .table-section.section-10{ role: 'rowheader' }= _('Description')
+          .table-section.section-10{ role: 'rowheader' }= _('Version')
+          .table-section.section-10{ role: 'rowheader' }= _('IP Address')
+          .table-section.section-10{ role: 'rowheader' }= _('Projects')
+          .table-section.section-10{ role: 'rowheader' }= _('Jobs')
+          .table-section.section-10{ role: 'rowheader' }= _('Tags')
+          .table-section.section-10{ role: 'rowheader' }= _('Last contact')
 
         - @runners.each do |runner|
-          = render "admin/runners/runner", runner: runner
-      = paginate @runners, theme: "gitlab"
+          = render 'admin/runners/runner', runner: runner
+      = paginate @runners, theme: 'gitlab'
   - else
-    .nothing-here-block No runners found
+    .nothing-here-block= _('No runners found')
