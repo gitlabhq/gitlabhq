@@ -92,17 +92,16 @@ export default class FilteredSearchDropdownManager {
         gl: DropdownEmoji,
         element: this.container.querySelector('#js-dropdown-my-reaction'),
       },
-<<<<<<< HEAD
-      weight: {
-        reference: null,
-        gl: DropdownWeight,
-        element: this.container.querySelector('#js-dropdown-weight'),
-=======
       status: {
         reference: null,
         gl: NullDropdown,
         element: this.container.querySelector('#js-dropdown-admin-runner-status'),
->>>>>>> 8e8cc0b32a0... use filtered search bar for admin runners
+      },
+
+      weight: {
+        reference: null,
+        gl: DropdownWeight,
+        element: this.container.querySelector('#js-dropdown-weight'),
       },
     };
 
