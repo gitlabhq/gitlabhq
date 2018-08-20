@@ -12,6 +12,8 @@ describe 'Path Locks', :js do
     sign_in(user)
 
     visit tree_path
+
+    wait_for_requests
   end
 
   it 'Locking folders' do

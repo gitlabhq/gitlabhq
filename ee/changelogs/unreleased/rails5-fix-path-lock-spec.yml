@@ -1,0 +1,5 @@
+---
+title: Rails5 fix duplicate gpg signature in path lock spec
+merge_request: 6939
+author: Jasper Maes
+type: fixed
