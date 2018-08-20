@@ -25,11 +25,8 @@ module SortingHelper
       sort_value_popularity       => sort_title_popularity,
       sort_value_priority         => sort_title_priority,
       sort_value_upvotes          => sort_title_upvotes,
-<<<<<<< HEAD
+      sort_value_contacted_date   => sort_title_contacted_date,
       sort_value_weight           => sort_title_weight
-=======
-      sort_value_contacted_date   => sort_title_contacted_date
->>>>>>> fae85677212... add sort dropdown to admin runners page
     }
   end
 
@@ -380,12 +377,11 @@ module SortingHelper
     'upvotes_desc'
   end
 
-<<<<<<< HEAD
-  def sort_value_weight
-    'weight'
-=======
   def sort_value_contacted_date
     'contacted_asc'
->>>>>>> fae85677212... add sort dropdown to admin runners page
+  end
+
+  def sort_value_weight
+    'weight'
   end
 end
