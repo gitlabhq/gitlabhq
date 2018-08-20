@@ -359,7 +359,7 @@ POST /projects/:id/merge_requests/:merge_request_iid/approve
 | `sha`               | string  | no       | The HEAD of the MR  |
 
 The `sha` parameter works in the same way as
-when [accepting a merge request](#accept-mr): if it is passed, then it must
+when [accepting a merge request](merge_requests.md#accept-mr): if it is passed, then it must
 match the current HEAD of the merge request for the approval to be added. If it
 does not match, the response code will be `409`.
 
