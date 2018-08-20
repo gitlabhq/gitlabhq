@@ -1,7 +1,7 @@
 require 'pathname'
 
 module QA
-  describe 'Auto Devops', :kubernetes do
+  describe 'Auto Devops', :orchestrated, :kubernetes do
     after do
       @cluster&.remove!
     end

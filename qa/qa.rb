@@ -77,14 +77,16 @@ module QA
     #
     autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
-    autoload :Taggable, 'qa/scenario/taggable'
     autoload :Template, 'qa/scenario/template'
 
     ##
     # Test scenario entrypoints.
     #
     module Test
-      autoload :Instance, 'qa/scenario/test/instance'
+      module Instance
+        autoload :All, 'qa/scenario/test/instance/all'
+        autoload :Smoke, 'qa/scenario/test/instance/smoke'
+      end
 
       module Integration
         autoload :Github, 'qa/scenario/test/integration/github'

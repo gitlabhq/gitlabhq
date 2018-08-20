@@ -1,5 +1,5 @@
 module QA
-  describe 'CI/CD Pipelines', :core, :docker do
+  describe 'CI/CD Pipelines', :orchestrated, :docker do
     let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
     after do

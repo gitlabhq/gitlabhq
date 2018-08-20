@@ -1,5 +1,5 @@
 module QA
-  describe 'API users', :core do
+  describe 'API users' do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
     end

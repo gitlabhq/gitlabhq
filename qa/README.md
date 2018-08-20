@@ -35,7 +35,7 @@ following call would login to a local [GDK] instance and run all specs in
 `qa/specs/features`:
 
 ```
-bin/qa Test::Instance http://localhost:3000
+bin/qa Test::Instance::All http://localhost:3000
 ```
 
 ### Writing tests
@@ -48,14 +48,14 @@ You can also supply specific tests to run as another parameter. For example, to
 run the repository-related specs, you can execute:
 
 ```
-bin/qa Test::Instance http://localhost qa/specs/features/repository/
+bin/qa Test::Instance::All http://localhost qa/specs/features/repository/
 ```
 
 Since the arguments would be passed to `rspec`, you could use all `rspec`
 options there. For example, passing `--backtrace` and also line number:
 
 ```
-bin/qa Test::Instance http://localhost qa/specs/features/project/create_spec.rb:3 --backtrace
+bin/qa Test::Instance::All http://localhost qa/specs/features/project/create_spec.rb:3 --backtrace
 ```
 
 ### Overriding the authenticated user
@@ -67,7 +67,7 @@ If you need to authenticate as a different user, you can provide the
 `GITLAB_USERNAME` and `GITLAB_PASSWORD` environment variables:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
 If your user doesn't have permission to default sandbox group
@@ -75,13 +75,13 @@ If your user doesn't have permission to default sandbox group
 `GITLAB_SANDBOX_NAME`:
 
 ```
-GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
 In addition, the `GITLAB_USER_TYPE` can be set to "ldap" to sign in as an LDAP user:
 
 ```
-GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance https://gitlab.example.com
+GITLAB_USER_TYPE=ldap GITLAB_USERNAME=jsmith GITLAB_PASSWORD=password GITLAB_SANDBOX_NAME=jsmith-qa-sandbox bin/qa Test::Instance::All https://gitlab.example.com
 ```
 
 All [supported environment variables are here](https://gitlab.com/gitlab-org/gitlab-qa#supported-environment-variables).

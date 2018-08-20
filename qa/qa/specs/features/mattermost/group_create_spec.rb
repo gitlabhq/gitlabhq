@@ -1,5 +1,5 @@
 module QA
-  describe 'create a new group', :mattermost do
+  describe 'create a new group', :orchestrated, :mattermost do
     it 'creating a group with a mattermost team' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

@@ -1,10 +1,6 @@
 module QA
-  describe 'LDAP user login', :orchestrated, :ldap do
-    before do
-      Runtime::Env.user_type = 'ldap'
-    end
-
-    it 'user logs in using LDAP credentials' do
+  describe 'basic user login', :smoke do
+    it 'user logs in using basic credentials' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
