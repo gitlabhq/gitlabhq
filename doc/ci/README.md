@@ -1,4 +1,3 @@
----
 comments: false
 description: "Learn how to use GitLab CI/CD, the GitLab built-in Continuous Integration, Continuous Deployment, and Continuous Delivery toolset to build, test, and deploy your application."
 ---
@@ -81,6 +80,8 @@ learn how to leverage its potential even more.
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
   and status of each CI/CD environment running on Kubernetes
 - [ChatOps](chatops/README.md) - Trigger CI jobs from chat, with results sent back to the channel.
+- [Interactive web terminal](interactive_web_terminal/index.md) - Open an interactive
+  web terminal to debug the running jobs
 
 ## GitLab CI/CD for Docker
 
