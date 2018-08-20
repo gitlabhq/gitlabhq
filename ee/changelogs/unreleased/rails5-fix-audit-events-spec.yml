@@ -1,0 +1,5 @@
+---
+title: 'Rails5: Fix audit event spec'
+merge_request: 6940
+author: Jasper Maes
+type: fixed
