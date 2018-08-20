@@ -7716,11 +7716,10 @@ msgstr ""
 msgid "Verified"
 msgstr ""
 
-<<<<<<< HEAD
-msgid "View epics list"
-=======
 msgid "Version"
->>>>>>> 10a680ba04b... add i18n support to admin runners page
+msgstr ""
+
+msgid "View epics list"
 msgstr ""
 
 msgid "View file @ "
