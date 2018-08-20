@@ -30,11 +30,8 @@ end
 # require rainbow gem String monkeypatch, so we can test SystemChecks
 require 'rainbow/ext/string'
 Rainbow.enabled = false
-<<<<<<< HEAD
 
 require_relative '../ee/spec/spec_helper'
-=======
->>>>>>> upstream/master
 
 # Requires supporting ruby files with custom matchers and macros, etc,
 # in spec/support/ and its subdirectories.
