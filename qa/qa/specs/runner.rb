@@ -14,7 +14,13 @@ module QA
       def perform
         args = []
         args.push('--tty') if tty
-        tags.to_a.each { |tag| args.push(['-t', tag.to_s]) }
+
+        if tags.any?
+          tags.each { |tag| args.push(['-t', tag.to_s]) }
+        else
+          args.push(%w[-t ~orchestrated])
+        end
+
         args.push(options)
 
         Runtime::Browser.configure!

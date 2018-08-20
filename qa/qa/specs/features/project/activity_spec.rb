@@ -1,5 +1,5 @@
 module QA
-  describe 'activity page', :core do
+  describe 'activity page' do
     it 'push creates an event in the activity page' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

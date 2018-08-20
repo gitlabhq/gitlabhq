@@ -1,5 +1,5 @@
 module QA
-  describe 'creates issue', :core do
+  describe 'creates issue', :smoke do
     let(:issue_title) { 'issue title' }
 
     it 'user creates issue' do

@@ -1,7 +1,7 @@
 require 'securerandom'
 
 module QA
-  describe 'API basics', :core do
+  describe 'API basics' do
     before(:context) do
       @api_client = Runtime::API::Client.new(:gitlab)
     end
