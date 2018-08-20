@@ -214,9 +214,6 @@ gem 'jira-ruby', '~> 1.4'
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
 
-# Gemnasium integration
-gem 'gemnasium-gitlab-service', '~> 0.2'
-
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
 
