@@ -296,8 +296,6 @@ GEM
     fuubar (2.2.0)
       rspec-core (~> 3.0)
       ruby-progressbar (~> 1.4)
-    gemnasium-gitlab-service (0.2.6)
-      rugged (~> 0.21)
     gemojione (3.3.0)
       json
     get_process_mem (0.2.0)
@@ -1086,7 +1084,6 @@ DEPENDENCIES
   font-awesome-rails (~> 4.7)
   foreman (~> 0.84.0)
   fuubar (~> 2.2.0)
-  gemnasium-gitlab-service (~> 0.2)
   gemojione (~> 3.3)
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)

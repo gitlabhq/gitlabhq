@@ -354,20 +354,6 @@ module API
           desc: 'Flowdock token'
         }
       ],
-      'gemnasium' => [
-        {
-          required: true,
-          name: :api_key,
-          type: String,
-          desc: 'Your personal API key on gemnasium.com'
-        },
-        {
-          required: true,
-          name: :token,
-          type: String,
-          desc: "The project's slug on gemnasium.com"
-        }
-      ],
       'hangouts-chat' => [
         {
           required: true,
@@ -755,7 +741,6 @@ module API
       EmailsOnPushService,
       ExternalWikiService,
       FlowdockService,
-      GemnasiumService,
       GithubService,
       HangoutsChatService,
       HipchatService,
