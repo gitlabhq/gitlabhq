@@ -30,7 +30,7 @@ we'll be using to configure our cloud infrastructure.
 
 ### Reference Architecture
 
-![Reference Architecture](img/reference-arch.png)
+![Reference Architecture](img/reference-arch2.png)
 
 ***
 
