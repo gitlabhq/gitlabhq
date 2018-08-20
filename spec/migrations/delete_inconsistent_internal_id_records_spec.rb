@@ -79,11 +79,7 @@ describe DeleteInconsistentInternalIdRecords, :migration do
   end
 
   context 'for milestones (by group)' do
-<<<<<<< HEAD
     # milestones (by group) is a little different than most of the other models
-=======
-    # milestones (by group) is a little different than all of the other models
->>>>>>> upstream/master
     let!(:group1) { create(:group) }
     let!(:group2) { create(:group) }
     let!(:group3) { create(:group) }
