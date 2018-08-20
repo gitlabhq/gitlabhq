@@ -60,7 +60,7 @@ describe Project do
             project.save
           end.to change { ProjectImportState.count }.by(1)
 
-          expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+          expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
         end
       end
     end
@@ -75,7 +75,7 @@ describe Project do
               project.update(mirror: true, mirror_user_id: project.creator.id, import_url: generate(:url))
             end.to change { ProjectImportState.count }.by(1)
 
-            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+            expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
           end
         end
       end
@@ -89,7 +89,7 @@ describe Project do
               project.update(mirror: true, mirror_user_id: project.creator.id)
             end.not_to change { ProjectImportState.count }
 
-            expect(project.import_state.next_execution_timestamp).to eq(Time.now)
+            expect(project.import_state.next_execution_timestamp).to be_like_time(Time.now)
           end
         end
       end
@@ -377,7 +377,7 @@ describe Project do
 
   describe '#force_import_job!' do
     it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
-      timestamp = Time.now
+      timestamp = 1.second.from_now.change(usec: 0)
       project = create(:project, :mirror)
 
       expect(UpdateAllMirrorsWorker).to receive(:perform_async)
@@ -396,7 +396,7 @@ describe Project do
 
         Timecop.freeze(timestamp) do
           expect { project.force_import_job! }.to change(project.import_state, :retry_count).to(0)
-          expect(project.import_state.next_execution_timestamp).to eq(timestamp)
+          expect(project.import_state.next_execution_timestamp).to be_like_time(timestamp)
         end
       end
     end
