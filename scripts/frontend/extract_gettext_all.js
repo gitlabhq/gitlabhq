@@ -7,7 +7,7 @@ const {
 } = require('gettext-extractor-vue');
 const ensureSingleLine = require('../../app/assets/javascripts/locale/ensure_single_line.js');
 
-const arguments = argumentsParser
+const { file, all, outputHelp } = argumentsParser
   .option('-f, --file <file>', 'Extract message from one single file')
   .option('-a, --all', 'Extract message from all js/vue files')
   .parse(process.argv);
@@ -61,12 +61,12 @@ function printJson() {
   console.log(JSON.stringify(messages));
 }
 
-if (arguments.file) {
-  vueParser.parseFile(arguments.file).then(() => printJson());
-} else if (arguments.all) {
+if (file) {
+  vueParser.parseFile(file).then(() => printJson());
+} else if (all) {
   vueParser.parseFilesGlob('{ee/app,app}/assets/javascripts/**/*.{js,vue}').then(() => printJson());
 } else {
   console.warn('ERROR: Please use the script correctly:');
-  arguments.outputHelp();
+  outputHelp();
   process.exit(1);
 }
