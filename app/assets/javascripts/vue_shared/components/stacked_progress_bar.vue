@@ -71,7 +71,11 @@ export default {
   },
   methods: {
     getPercent(count) {
-      return roundOffFloat((count / this.totalCount) * 100, 1);
+      const percent = roundOffFloat((count / this.totalCount) * 100, 1);
+      if (percent > 0 && percent < 1) {
+        return '< 1';
+      }
+      return percent;
     },
     barStyle(percent) {
       return `width: ${percent}%;`;
