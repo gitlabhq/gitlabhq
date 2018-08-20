@@ -1,0 +1,13 @@
+.table-holder .packages-table {
+  tr {
+    th {
+      border-top: none;
+      background: none;
+      padding: $gl-padding-top 0;
+    }
+
+    td {
+      padding: $gl-padding-top 0;
+    }
+  }
+}

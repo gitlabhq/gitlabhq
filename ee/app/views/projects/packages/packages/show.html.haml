@@ -18,17 +18,17 @@
         %strong= _('Package information')
       %ul.content-list
         %li
-          %span.light
+          %span.text-secondary
             = _('Name')
           %span.pull-right
             = @package.name
         %li
-          %span.light
+          %span.text-secondary
             = _('Version')
           %span.pull-right
             = @package.version
         %li
-          %span.light
+          %span.text-secondary
             = _('Created on')
           %span.pull-right
             = @package.created_at.to_s(:medium)
@@ -39,26 +39,30 @@
           %strong= _('Maven Metadata')
         %ul.content-list
           %li
-            %span.light
+            %span.text-secondary
               = _('Group ID')
             %span.pull-right
               = @maven_metadatum.app_group
           %li
-            %span.light
+            %span.text-secondary
               = _('Artifact ID')
             %span.pull-right
               = @maven_metadatum.app_name
           %li
-            %span.light
+            %span.text-secondary
               = _('Version')
             %span.pull-right
               = @maven_metadatum.app_version
 %table.table
   %thead
     %tr
-      %th Name
-      %th Size
-      %th Created
+      %th
+        = _('Name')
+      %th
+        = _('Size')
+      %th
+        .pull-right
+          = _('Created')
   %tbody
     - @package_files.each do |package_file|
       %tr
@@ -68,4 +72,5 @@
         %td
           = number_to_human_size(package_file.size, precision: 2)
         %td
-          = time_ago_with_tooltip(package_file.created_at)
+          .pull-right
+            = time_ago_with_tooltip(package_file.created_at)

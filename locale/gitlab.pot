@@ -6465,6 +6465,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Size"
+msgstr ""
+
 msgid "Size and domain settings for static websites"
 msgstr ""
 

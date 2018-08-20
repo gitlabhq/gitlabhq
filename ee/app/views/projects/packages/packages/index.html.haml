@@ -2,32 +2,34 @@
 - can_destroy_package = can?(current_user, :destroy_package, @project)
 
 - if @packages.any?
-  %table.table
-    %thead
-      %tr
-        %th= _('Name')
-        %th= _('Version')
-        %th= _('Type')
-        %th= _('Created')
-        %th
-
-    %tbody
-      - @packages.each do |package|
+  .table-holder
+    %table.table.packages-table
+      %thead
         %tr
-          %td
-            = link_to package.name, project_package_path(@project, package)
-          %td
-            = package.version
-          %td
-            = _('Maven package')
-          %td
-            = time_ago_with_tooltip(package.created_at)
-          %td
-            - if can_destroy_package
-              = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
-                = icon('trash')
+          %th= _('Name')
+          %th= _('Version')
+          %th= _('Type')
+          %th= _('Created')
+          %th
 
-  = paginate @packages, theme: "gitlab"
+      %tbody
+        - @packages.each do |package|
+          %tr
+            %td
+              = link_to package.name, project_package_path(@project, package)
+            %td
+              = package.version
+            %td
+              = _('Maven package')
+            %td
+              = time_ago_with_tooltip(package.created_at)
+            %td
+              - if can_destroy_package
+                .pull-right
+                  = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
+                    = icon('trash')
+
+    = paginate @packages, theme: "gitlab"
 
 - else
   .nothing-here-block
