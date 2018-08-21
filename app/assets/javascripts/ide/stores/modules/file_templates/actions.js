@@ -78,4 +78,5 @@ export const undoFileTemplate = ({ dispatch, commit, rootGetters }) => {
   commit(types.SET_UPDATE_SUCCESS, false);
 };
 
+// prevent babel-plugin-rewire from generating an invalid default during karma tests
 export default () => {};
