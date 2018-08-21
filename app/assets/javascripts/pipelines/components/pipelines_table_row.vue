@@ -330,7 +330,7 @@ export default {
         <pipelines-artifacts-component
           v-if="pipeline.details.artifacts.length"
           :artifacts="pipeline.details.artifacts"
-          class="d-none d-sm-none d-md-block"
+          class="d-md-block"
         />
 
         <loading-button
