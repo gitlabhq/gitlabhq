@@ -1,5 +1,5 @@
 ---
 title: "Avoid nil safe message"
-merge_request: 16889
+merge_request: 21326
 author: Yi Siliang
 type: fixed
