@@ -2,11 +2,8 @@
 
 module Autocomplete
   class UsersFinder
-<<<<<<< HEAD
     prepend EE::Autocomplete::UsersFinder
 
-=======
->>>>>>> upstream/master
     # The number of users to display in the results is hardcoded to 20, and
     # pagination is not supported. This ensures that performance remains
     # consistent and removes the need for implementing keyset pagination to
