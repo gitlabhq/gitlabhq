@@ -25,10 +25,20 @@ class DropDuplicateProtectedTags < ActiveRecord::Migration
         .group(:name, :project_id)
         .select('max(id)')
 
-      ProtectedTag
-        .where(project_id: projects)
-        .where.not(id: ids)
-        .delete_all
+      if Gitlab::Database.postgresql?
+        ProtectedTag
+          .where(project_id: projects)
+          .where.not(id: ids)
+          .delete_all
+      else
+        sql = ProtectedTag
+          .select(:id)
+          .where(project_id: projects)
+          .where.not(id: ids)
+          .to_sql
+
+        ProtectedTag.where("id IN (#{sql})").delete_all # rubocop:disable GitlabSecurity/SqlInjection
+      end
     end
   end
 
