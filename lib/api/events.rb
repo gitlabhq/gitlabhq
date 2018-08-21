@@ -1,6 +1,7 @@
 module API
   class Events < Grape::API
     include PaginationParams
+    include APIGuard
 
     helpers do
       params :event_filter_params do
@@ -24,6 +25,8 @@ module API
     end
 
     resource :events do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc "List currently authenticated user's events" do
         detail 'This feature was introduced in GitLab 9.3.'
         success Entities::Event
@@ -46,6 +49,8 @@ module API
       requires :id, type: String, desc: 'The ID or Username of the user'
     end
     resource :users do
+      allow_access_with_scope :read_user, if: -> (request) { request.get? }
+
       desc 'Get the contribution events of a specified user' do
         detail 'This feature was introduced in GitLab 8.13.'
         success Entities::Event

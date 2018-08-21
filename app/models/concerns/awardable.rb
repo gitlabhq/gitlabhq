@@ -101,7 +101,7 @@ module Awardable
   end
 
   def remove_award_emoji(name, current_user)
-    award_emoji.where(name: name, user: current_user).destroy_all
+    award_emoji.where(name: name, user: current_user).destroy_all # rubocop: disable DestroyAll
   end
 
   def toggle_award_emoji(emoji_name, current_user)

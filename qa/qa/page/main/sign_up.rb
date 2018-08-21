@@ -11,12 +11,12 @@ module QA
           element :register_button, 'submit "Register"'
         end
 
-        def sign_up!(name:, username:, email:, password:)
-          fill_in :new_user_name, with: name
-          fill_in :new_user_username, with: username
-          fill_in :new_user_email, with: email
-          fill_in :new_user_email_confirmation, with: email
-          fill_in :new_user_password, with: password
+        def sign_up!(user)
+          fill_in :new_user_name, with: user.name
+          fill_in :new_user_username, with: user.username
+          fill_in :new_user_email, with: user.email
+          fill_in :new_user_email_confirmation, with: user.email
+          fill_in :new_user_password, with: user.password
           click_button 'Register'
 
           Page::Menu::Main.act { has_personal_area? }

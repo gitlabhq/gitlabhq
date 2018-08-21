@@ -1,5 +1,5 @@
 module QA
-  describe 'logging in to Mattermost', :mattermost do
+  describe 'logging in to Mattermost', :orchestrated, :mattermost do
     it 'can use gitlab oauth' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }

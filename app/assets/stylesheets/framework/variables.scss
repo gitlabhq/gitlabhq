@@ -203,21 +203,12 @@ $gl-header-color: #4c4e54;
 /*
  * Lists
  */
-$list-font-size: $gl-font-size;
-$list-title-color: $gl-text-color;
-$list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-tertiary;
-$list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
-$list-warning-row-bg: $orange-100;
-$list-warning-row-border: $orange-200;
-$list-warning-row-color: $orange-700;
 
 /*
  * Markdown
  */
-$md-link-color: $blue-600;
 $md-area-border: #ddd;
 
 /*
@@ -249,8 +240,6 @@ $gl-bar-padding: 3px;
 /*
  * Misc
  */
-$row-hover: $blue-50;
-$row-hover-border: $blue-200;
 $progress-color: #c0392b;
 $header-height: 40px;
 $ide-statusbar-height: 25px;
@@ -258,19 +247,13 @@ $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
-$error-exclamation-point: $red-500;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $settings-icon-size: 18px;
-$provider-btn-not-active-color: $blue-500;
-$link-underline-blue: $blue-500;
-$active-item-blue: $blue-500;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-margin-5: 5px;
-$issue-status-expired: $orange-500;
-$issuable-sidebar-color: $gl-text-color-secondary;
 $sidebar-block-hover-color: #ebebeb;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
@@ -292,7 +275,6 @@ $breadcrumb-min-height: 48px;
 * Common component specific colors
 */
 $hint-color: #999;
-$well-pre-bg: #eee;
 $well-pre-color: #555;
 $loading-color: #555;
 $update-author-color: #999;
@@ -301,10 +283,6 @@ $user-mention-bg-hover: rgba($blue-500, 0.15);
 $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
-$error-bg: $red-400;
-$warning-message-bg: $orange-100;
-$warning-message-border: $orange-200;
-$warning-message-color: $orange-700;
 $control-group-descr-color: #666;
 $table-permission-x-bg: #d9edf7;
 $username-color: #666;
@@ -374,7 +352,7 @@ $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: $row-hover;
+$dropdown-link-hover-bg: $blue-50;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, 0.1);
@@ -592,11 +570,7 @@ $events-body-border: #ddd;
 /*
 * Files
 */
-$file-image-bg: #eee;
-$blob-bg: #eee;
-$blame-border: #eee;
 $blame-line-numbers-border: #ddd;
-$logs-bg: #eee;
 $logs-li-color: #888;
 $logs-p-color: #333;
 
@@ -667,7 +641,6 @@ $login-devise-error-color: $red-700;
 * Nav
 */
 $nav-link-gray: #959494;
-$nav-badge-bg: #eee;
 $nav-toggle-gray: #666;
 
 /*

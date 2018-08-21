@@ -4,7 +4,12 @@ module QA
       class Fork < Factory::Base
         dependency Factory::Repository::ProjectPush, as: :push
 
-        dependency Factory::Resource::User, as: :user
+        dependency Factory::Resource::User, as: :user do |user|
+          if Runtime::Env.forker?
+            user.username = Runtime::Env.forker_username
+            user.password = Runtime::Env.forker_password
+          end
+        end
 
         product(:user) { |factory| factory.user }
 
