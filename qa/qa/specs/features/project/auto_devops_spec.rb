@@ -1,7 +1,7 @@
 require 'pathname'
 
 module QA
-  describe 'Auto Devops', :kubernetes do
+  describe 'Auto Devops', :orchestrated, :kubernetes do
     after do
       @cluster&.remove!
     end
@@ -13,6 +13,13 @@ module QA
       project = Factory::Resource::Project.fabricate! do |p|
         p.name = 'project-with-autodevops'
         p.description = 'Project with Auto Devops'
+      end
+
+      # Disable code_quality check in Auto DevOps pipeline as it takes
+      # too long and times out the test
+      Factory::Resource::SecretVariable.fabricate! do |resource|
+        resource.key = 'CODE_QUALITY_DISABLED'
+        resource.value = '1'
       end
 
       # Create Auto Devops compatible repo

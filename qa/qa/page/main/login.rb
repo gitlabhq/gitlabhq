@@ -40,17 +40,19 @@ module QA
           end
         end
 
-        def sign_in_using_credentials
+        def sign_in_using_credentials(user = nil)
           # Don't try to log-in if we're already logged-in
           return if Page::Menu::Main.act { has_personal_area?(wait: 0) }
 
           using_wait_time 0 do
             set_initial_password_if_present
 
+            raise NotImplementedError if Runtime::User.ldap_user? && user&.credentials_given?
+
             if Runtime::User.ldap_user?
               sign_in_using_ldap_credentials
             else
-              sign_in_using_gitlab_credentials
+              sign_in_using_gitlab_credentials(user || Runtime::User)
             end
           end
 
@@ -69,21 +71,30 @@ module QA
           click_on 'Register'
         end
 
+        def switch_to_ldap_tab
+          click_on 'LDAP'
+        end
+
+        def switch_to_standard_tab
+          click_on 'Standard'
+        end
+
         private
 
         def sign_in_using_ldap_credentials
-          click_link 'LDAP'
+          switch_to_ldap_tab
 
           fill_in :username, with: Runtime::User.ldap_username
           fill_in :password, with: Runtime::User.ldap_password
           click_button 'Sign in'
         end
 
-        def sign_in_using_gitlab_credentials
-          click_link 'Standard' if page.has_content?('LDAP')
+        def sign_in_using_gitlab_credentials(user)
+          switch_to_sign_in_tab unless page.has_button?('Sign in')
+          switch_to_standard_tab if page.has_content?('LDAP')
 
-          fill_in :user_login, with: Runtime::User.name
-          fill_in :user_password, with: Runtime::User.password
+          fill_in :user_login, with: user.username
+          fill_in :user_password, with: user.password
           click_button 'Sign in'
         end
 

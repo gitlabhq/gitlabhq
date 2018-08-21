@@ -1,5 +1,5 @@
 module QA
-  describe 'secret variables support', :core do
+  describe 'secret variables support' do
     it 'user adds a secret variable' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

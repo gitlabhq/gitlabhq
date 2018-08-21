@@ -20,7 +20,7 @@ describe "Admin Runners" do
 
       it 'has all necessary texts' do
         expect(page).to have_text "Setup a shared Runner manually"
-        expect(page).to have_text "Runners with last contact more than a minute ago: 1"
+        expect(page).to have_text "Runners currently online: 1"
       end
 
       describe 'search' do
@@ -55,7 +55,7 @@ describe "Admin Runners" do
 
       it 'has all necessary texts including no runner message' do
         expect(page).to have_text "Setup a shared Runner manually"
-        expect(page).to have_text "Runners with last contact more than a minute ago: 0"
+        expect(page).to have_text "Runners currently online: 0"
         expect(page).to have_text 'No runners found'
       end
     end

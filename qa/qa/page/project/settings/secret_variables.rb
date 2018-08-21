@@ -23,7 +23,13 @@ module QA
             # After we fill the key, JS would generate another field so
             # we need to use the same index to find the corresponding one.
             keys[index].set(key)
-            all_elements(:ci_variable_input_value)[index].set(value)
+            node = all_elements(:ci_variable_input_value)[index]
+
+            # Simply run `node.set(value)` is too slow for long text here,
+            # so we need to run JavaScript directly to set the value.
+            # The code was inspired from:
+            # https://github.com/teamcapybara/capybara/blob/679548cea10773d45e32808f4d964377cfe5e892/lib/capybara/selenium/node.rb#L217
+            execute_script("arguments[0].value = #{value.to_json}", node)
           end
 
           def save_variables

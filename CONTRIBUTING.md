@@ -64,11 +64,11 @@ As of July 2018, all the documentation for contributing to the GitLab project ha
 
 ## Contribute to GitLab
 
-For a first-time step-by-step guide to the contribution process, see
-["Contributing to GitLab"](https://about.gitlab.com/contributing/).
-
 Thank you for your interest in contributing to GitLab. This guide details how
-to contribute to GitLab in a way that is efficient for everyone.
+to contribute to GitLab in a way that is easy for everyone.
+
+For a first-time step-by-step guide to the contribution process, please see
+["Contributing to GitLab"](https://about.gitlab.com/contributing/).
 
 Looking for something to work on? Look for issues with the label [Accepting Merge Requests](#i-want-to-contribute).
 
@@ -77,10 +77,10 @@ source edition, and GitLab Enterprise Edition (EE) which is our commercial
 edition. Throughout this guide you will see references to CE and EE for
 abbreviation.
 
-If you have read this guide and want to know how the GitLab [core team]
+If you want to know how the GitLab [core team]
 operates please see [the GitLab contributing process](PROCESS.md).
 
-- [GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
+[GitLab Inc engineers should refer to the engineering workflow document](https://about.gitlab.com/handbook/engineering/workflow/)
 
 ## Security vulnerability disclosure
 
