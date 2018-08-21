@@ -1,0 +1,5 @@
+---
+title: Fix Jira integration duplicating branches and MRs
+merge_request: 6876
+author:
+type: fixed

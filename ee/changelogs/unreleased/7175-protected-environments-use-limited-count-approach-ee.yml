@@ -1,0 +1,5 @@
+---
+title: Use limited count approach on Protected Environments view
+merge_request: 6987
+author:
+type: performance

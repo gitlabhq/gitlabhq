@@ -31,9 +31,9 @@ account, in order to maximize the integrated GitLab projects used by your team.
 
     Enter a useful name for the `Name` field.
 
-    For the `Redirect URI` field, enter `https://<your-gitlab-instance-domain>/-/jira/login/oauth/callback`,
+    For the `Redirect URI` field, enter `https://<your-gitlab-instance-domain>/login/oauth/callback`,
     replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
-    this would be `https://gitlab.com/-/jira/login/oauth/callback`.
+    this would be `https://gitlab.com/login/oauth/callback`.
 
     ![GitLab Application setup](img/jira_dev_panel_gl_setup_1.png)
     - Check `api` in the Scopes section.
@@ -58,9 +58,9 @@ from the left navigation menu. Click `Link GitHub account` to start creating a n
 
     ![Creation of Jira DVCS integration](img/jira_dev_panel_jira_setup_2.png)
 
-    For the `Host URL` field, enter `https://<your-gitlab-instance-domain>/-/jira`,
+    For the `Host URL` field, enter `https://<your-gitlab-instance-domain>/`,
     replacing `<your-gitlab-instance-domain>` appropriately. So for example, if you are using GitLab.com,
-    this would be `https://gitlab.com/-/jira`.
+    this would be `https://gitlab.com/`.
 
     For the `Client ID` field, use the `Application ID` value from the previous section.
 

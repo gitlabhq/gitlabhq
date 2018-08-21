@@ -1446,11 +1446,16 @@ DELETE /projects/:id/hooks/:hook_id
 Note the JSON response differs if the hook is available or not. If the project hook
 is available before it is returned in the JSON response or an empty response is returned.
 
-## Admin fork relation
+## Fork relationship
 
-Allows modification of the forked relationship between existing projects. Available only for admins.
+Allows modification of the forked relationship between existing projects. Available only for project owners and admins.
 
 ### Create a forked from/to relation between existing projects
+
+CAUTION: **Warning:**
+This will destroy the LFS objects stored in the fork.
+So to retain the LFS objects, make sure you've pulled them **before** creating the fork relation,
+and push them again **after** creating the fork relation.
 
 ```
 POST /projects/:id/fork/:forked_from_id
