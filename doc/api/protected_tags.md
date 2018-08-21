@@ -4,7 +4,7 @@
 
 **Valid access levels**
 
-The access levels are defined in the `ProtectedTagAccess::ALLOWED_ACCESS_LEVELS` constant. Currently, these levels are recognized:
+Currently, these levels are recognized:
 ```
 0  => No access
 30 => Developer access
