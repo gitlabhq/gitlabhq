@@ -337,6 +337,18 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it 'returns a 400 bad request if the commit message is empty' do
+      invalid_params = {
+        branch: 'master',
+        content: 'puts 8',
+        commit_message: ''
+      }
+
+      post api(route(file_path), user), invalid_params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it "returns a 400 if editor fails to create file" do
       allow_any_instance_of(Repository).to receive(:create_file)
         .and_raise(Gitlab::Git::CommitError, 'Cannot create file')
