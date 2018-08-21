@@ -450,7 +450,7 @@ describe API::Files do
   end
 
   describe "DELETE /projects/:id/repository/files" do
-    let(:valid_params) do
+    let(:params) do
       {
         branch: 'master',
         commit_message: 'Changed file'
@@ -458,7 +458,7 @@ describe API::Files do
     end
 
     it "deletes existing file in project repo" do
-      delete api(route(file_path), user), valid_params
+      delete api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(204)
     end
@@ -469,19 +469,27 @@ describe API::Files do
       expect(response).to have_gitlab_http_status(400)
     end
 
+    it 'returns a 400 bad request if the commit message is empty' do
+      params[:commit_message] = ''
+
+      delete api(route(file_path), user), params
+
+      expect(response).to have_gitlab_http_status(400)
+    end
+
     it "returns a 400 if fails to delete file" do
       allow_any_instance_of(Repository).to receive(:delete_file).and_raise(Gitlab::Git::CommitError, 'Cannot delete file')
 
-      delete api(route(file_path), user), valid_params
+      delete api(route(file_path), user), params
 
       expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
       it "removes a file with the specified author" do
-        valid_params.merge!(author_email: author_email, author_name: author_name)
+        params.merge!(author_email: author_email, author_name: author_name)
 
-        delete api(route(file_path), user), valid_params
+        delete api(route(file_path), user), params
 
         expect(response).to have_gitlab_http_status(204)
       end
