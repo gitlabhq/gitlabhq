@@ -95,7 +95,13 @@ describe 'New project' do
           click_button 'Create project'
 
           created_project = Project.last
-          expect(current_path).to eq(project_path(created_project))
+
+          if Gitlab.rails5?
+            expect(current_path).to eq(project_import_path(created_project))
+          else
+            expect(current_path).to eq(project_path(created_project))
+          end
+
           expect(created_project.project_feature).to be_issues_enabled
         end
       end
@@ -113,7 +119,13 @@ describe 'New project' do
           click_button 'Create project'
 
           created_project = Project.last
-          expect(current_path).to eq(project_path(created_project))
+
+          if Gitlab.rails5?
+            expect(current_path).to eq(project_import_path(created_project))
+          else
+            expect(current_path).to eq(project_path(created_project))
+          end
+
           expect(created_project.mirror).to eq(true)
           expect(created_project.project_feature).not_to be_issues_enabled
         end
