@@ -1026,9 +1026,7 @@ describe API::Projects do
           get api("/projects/#{project.id}", user)
 
           expect(response).to have_http_status(200)
-          expect(json_response['license']).to be_a Hash
-          expect(json_response['license']['name']).to be_present
-          expect(json_response['license']['spdx_id']).to be_present
+          expect(json_response['license']).to match_schema('entities/license_information')
         end
 
         it 'returns nil if no license' do
