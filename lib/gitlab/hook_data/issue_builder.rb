@@ -1,11 +1,8 @@
 module Gitlab
   module HookData
     class IssueBuilder < BaseBuilder
-<<<<<<< HEAD
       prepend ::EE::Gitlab::HookData::IssueBuilder
 
-=======
->>>>>>> upstream/master
       SAFE_HOOK_RELATIONS = %i[
         assignees
         labels
@@ -51,11 +48,7 @@ module Gitlab
         }
 
         issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
-<<<<<<< HEAD
           .merge!(attrs)
-=======
-            .merge!(attrs)
->>>>>>> upstream/master
       end
     end
   end
