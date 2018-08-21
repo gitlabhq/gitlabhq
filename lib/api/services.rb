@@ -741,10 +741,7 @@ module API
       EmailsOnPushService,
       ExternalWikiService,
       FlowdockService,
-<<<<<<< HEAD
       GithubService,
-=======
->>>>>>> upstream/master
       HangoutsChatService,
       HipchatService,
       IrkerService,
