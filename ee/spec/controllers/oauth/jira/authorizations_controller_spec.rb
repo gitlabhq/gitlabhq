@@ -35,7 +35,7 @@ describe Oauth::Jira::AuthorizationsController do
                                'client_id' => 'client-123',
                                'client_secret' => 'secret-123',
                                'grant_type' => 'authorization_code',
-                               'redirect_uri' => 'http://test.host/-/jira/login/oauth/callback' }
+                               'redirect_uri' => 'http://test.host/login/oauth/callback' }
 
       expect(Gitlab::HTTP).to receive(:post).with(oauth_token_url, allow_local_requests: true, body: expected_auth_params) do
         { 'access_token' => 'fake-123', 'scope' => 'foo', 'token_type' => 'bar' }

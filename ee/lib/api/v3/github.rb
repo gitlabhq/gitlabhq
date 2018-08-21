@@ -98,30 +98,42 @@ module API
       # Jira handles the filtering, presenting just MRs mentioning the Jira
       # issue ID on the MR title / description.
       resource :repos do
+        # Keeping for backwards compatibility with old Jira integration instructions
+        # so that users that do not change it will not suddenly have a broken integration
         get '/-/jira/pulls' do
           present find_merge_requests, with: ::API::Github::Entities::PullRequest
+        end
+
+        params do
+          use :project_full_path
+        end
+        get ':namespace/:project/pulls', requirements: PROJECT_ENDPOINT_REQUIREMENTS do
+          user_project = find_project_with_access(params)
+
+          merge_requests = MergeRequestsFinder.new(current_user, authorized_only: true, project_id: user_project.id).execute
+
+          present paginate(merge_requests), with: ::API::Github::Entities::PullRequest
         end
 
         # In Github, each Merge Request is automatically also an issue.
         # Therefore we return its comments here.
         # It'll present _just_ the comments counting with a link to GitLab on
         # Jira dev panel, not the actual note content.
-        #
-        get '/-/jira/issues/:id/comments' do
+        get ':namespace/:project/issues/:id/comments' do
           merge_request = find_merge_request_with_access(params[:id])
 
           present find_notes(merge_request), with: ::API::Github::Entities::NoteableComment
         end
 
-        # This refers to "review" comments but Jira dev panel doesn't seem to
+        # This refer to "review" comments but Jira dev panel doesn't seem to
         # present it accordingly.
-        get '/-/jira/pulls/:id/comments' do
+        get ':namespace/:project/pulls/:id/comments' do
           present []
         end
 
         # Commits are not presented within "Pull Requests" modal on Jira dev
         # panel.
-        get '/-/jira/pulls/:id/commits' do
+        get ':namespace/:project/pulls/:id/commits' do
           present []
         end
 
@@ -129,7 +141,7 @@ module API
         # after fetching branches.
         # We need to respond with a 200 request to avoid breaking the
         # integration flow (fetching merge requests).
-        get '/-/jira/events' do
+        get ':namespace/:project/events' do
           present []
         end
 
