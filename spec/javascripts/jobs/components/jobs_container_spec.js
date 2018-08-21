@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from '~/jobs/components/jobs_container.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Artifacts block', () => {
   const Component = Vue.extend(component);

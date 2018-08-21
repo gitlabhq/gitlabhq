@@ -108,11 +108,15 @@ module IssuableCollections
   end
 
   def set_sort_order_from_cookie
-    key = 'issuable_sort'
+    cookies[remember_sorting_key] = params[:sort] if params[:sort].present?
+    # fallback to legacy cookie value for backward compatibility
+    cookies[remember_sorting_key] ||= cookies['issuable_sort']
+    cookies[remember_sorting_key] = update_cookie_value(cookies[remember_sorting_key])
+    params[:sort] = cookies[remember_sorting_key]
+  end
 
-    cookies[key] = params[:sort] if params[:sort].present?
-    cookies[key] = update_cookie_value(cookies[key])
-    params[:sort] = cookies[key]
+  def remember_sorting_key
+    @remember_sorting_key ||= "#{collection_type.downcase}_sort"
   end
 
   def default_sort_order
@@ -141,16 +145,14 @@ module IssuableCollections
   end
 
   def finder
-    strong_memoize(:finder) do
-      issuable_finder_for(finder_type)
-    end
+    @finder ||= issuable_finder_for(finder_type)
   end
 
   def collection_type
-    @collection_type ||= case finder
-                         when IssuesFinder
+    @collection_type ||= case finder_type.name
+                         when 'IssuesFinder'
                            'Issue'
-                         when MergeRequestsFinder
+                         when 'MergeRequestsFinder'
                            'MergeRequest'
                          end
   end

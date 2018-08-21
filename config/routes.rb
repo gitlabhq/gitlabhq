@@ -27,6 +27,7 @@ Rails.application.routes.draw do
                 authorizations: 'oauth/authorizations'
   end
 
+<<<<<<< HEAD
   # This prefixless path is required because Jira gets confused if we set it up with a path
   # More information: https://gitlab.com/gitlab-org/gitlab-ee/issues/6752
   scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
@@ -45,6 +46,15 @@ Rails.application.routes.draw do
     end
   end
 
+=======
+  # This is here so we can "reserve" the path for the Jira integration in GitLab EE
+  # Having a non-existent controller here does not affect the scope in any way since all possible routes
+  # get a 404 proc returned. It is written in this way to minimize merge conflicts with EE
+  scope path: '/login/oauth', controller: 'oauth/jira/authorizations', as: :oauth_jira do
+    match ':action', via: [:get, :post], to: proc { [404, {}, ['']] }
+  end
+
+>>>>>>> upstream/master
   use_doorkeeper_openid_connect
 
   # Autocomplete

@@ -1,7 +1,9 @@
 require "spec_helper"
 
 describe "User sorts issues" do
-  set(:project) { create(:project_empty_repo, :public) }
+  set(:user) { create(:user) }
+  set(:group) { create(:group) }
+  set(:project) { create(:project_empty_repo, :public, group: group) }
   set(:issue1) { create(:issue, project: project) }
   set(:issue2) { create(:issue, project: project) }
   set(:issue3) { create(:issue, project: project) }
@@ -12,7 +14,29 @@ describe "User sorts issues" do
     create(:award_emoji, :downvote, awardable: issue1)
     create(:award_emoji, :upvote, awardable: issue2)
 
+    sign_in(user)
+
     visit(project_issues_path(project))
+  end
+
+  it 'keeps the sort option' do
+    find('button.dropdown-toggle').click
+
+    page.within('.content ul.dropdown-menu.dropdown-menu-right li') do
+      click_link('Milestone')
+    end
+
+    visit(issues_dashboard_path(assignee_id: user.id))
+
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+
+    visit(project_issues_path(project))
+
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
+
+    visit(issues_group_path(group))
+
+    expect(find('.issues-filters a.is-active')).to have_content('Milestone')
   end
 
   it "sorts by popularity" do
