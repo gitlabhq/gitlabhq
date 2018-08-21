@@ -3,16 +3,16 @@
 
 - if @packages.any?
   .table-holder
-    .gl-responsive-table-row.table-row-header{ role: 'row'}
-      .table-section.section-30{ role: 'rowheader'}
-        =_('Name')
-      .table-section.section-20{ role: 'rowheader'}
-        =_('Version')
-      .table-section.section-20{ role: 'rowheader'}
-        =_('Type')
-      .table-section.section-20{ role: 'rowheader'}
-        =_('Created')
-      .table-section.section-10{ role: 'rowheader'}
+    .gl-responsive-table-row.table-row-header{ role: 'row' }
+      .table-section.section-30{ role: 'rowheader' }
+        = _('Name')
+      .table-section.section-20{ role: 'rowheader' }
+        = _('Version')
+      .table-section.section-20{ role: 'rowheader' }
+        = _('Type')
+      .table-section.section-20{ role: 'rowheader' }
+        = _('Created')
+      .table-section.section-10{ role: 'rowheader' }
     - @packages.each do |package|
       .gl-responsive-table-row
         .table-section.section-30
