@@ -83,11 +83,6 @@ describe API::ProjectHooks, 'ProjectHooks' do
         expect(response).to have_gitlab_http_status(403)
       end
     end
-
-    it "returns a 404 error if hook id is not available" do
-      get api("/projects/#{project.id}/hooks/1234", user)
-      expect(response).to have_gitlab_http_status(404)
-    end
   end
 
   describe "POST /projects/:id/hooks" do

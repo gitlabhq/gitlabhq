@@ -5206,6 +5206,9 @@ msgstr ""
 msgid "Pipeline"
 msgstr ""
 
+msgid "Pipeline %{pipelineLinkStart} #%{pipelineId} %{pipelineLinkEnd} from %{pipelineLinkRefStart} %{pipelineRef} %{pipelineLinkRefEnd}"
+msgstr ""
+
 msgid "Pipeline Health"
 msgstr ""
 

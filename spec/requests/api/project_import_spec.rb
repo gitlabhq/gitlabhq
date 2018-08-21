@@ -42,7 +42,7 @@ describe API::ProjectImport do
       expect(response).to have_gitlab_http_status(201)
     end
 
-    it 'does not shedule an import for a nampespace that does not exist' do
+    it 'does not schedule an import for a namespace that does not exist' do
       expect_any_instance_of(Project).not_to receive(:import_schedule)
       expect(::Projects::CreateService).not_to receive(:new)
 
