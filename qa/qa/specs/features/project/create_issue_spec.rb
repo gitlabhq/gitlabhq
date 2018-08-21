@@ -19,20 +19,21 @@ module QA
       expect(page).to have_content(issue_title)
     end
 
-    describe 'with attachments', :object_storage do
-      let(:file_to_attach) { File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif')) }
+    context 'when using attachements in comments', :object_storage do
+      let(:file_to_attach) do
+        File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif'))
+      end
 
       it 'user comments on an issue with an attachment' do
         create_issue
 
         Page::Project::Issue::Show.perform do |show|
           show.comment('See attached banana for scale', attachment: file_to_attach)
-        end
 
-        image_url = find('a[href$="banana_sample.gif"]')[:href]
+          show.refresh
 
-        Page::Project::Issue::Show.perform do |show|
-          # Wait for attachment to upload
+          image_url = find('a[href$="banana_sample.gif"]')[:href]
+
           found = show.wait(reload: false) do
             show.asset_exists?(image_url)
           end
