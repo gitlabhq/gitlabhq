@@ -24,7 +24,7 @@ describe QA::Scenario::Test::Instance::All do
         subject.perform("test")
 
         expect(runner).to have_received(:options=)
-          .with(::File.expand_path('../../../../../qa/specs/features', __dir__))
+          .with(::File.expand_path('../../../../qa/specs/features', __dir__))
       end
     end
 
