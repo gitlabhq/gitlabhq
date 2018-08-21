@@ -2,7 +2,7 @@
 
 > **Notes:**
 - [Introduced][ee-5811] in GitLab 11.3.
-- This document is about the admin guide. To learn how to use GitLab Maven 
+- This document is about the admin guide. Learn how to use GitLab Maven 
   repository from [user documentation](../user/project/maven_packages.md).
 
 When enabled, every project in GitLab will have its own space to store Maven packages.
@@ -11,7 +11,7 @@ When enabled, every project in GitLab will have its own space to store Maven pac
 
 **Omnibus GitLab installations**
 
-# TODO
+# TODO: Update this section once https://gitlab.com/gitlab-org/gitlab-ee/issues/7253 is resolved
 
 **Installations from source**
 

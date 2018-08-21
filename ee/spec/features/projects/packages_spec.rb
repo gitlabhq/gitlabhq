@@ -3,7 +3,6 @@ require 'spec_helper'
 describe 'Packages' do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
-  let(:package) { create(:maven_package, project: project) }
 
   before do
     sign_in(user)
@@ -19,6 +18,8 @@ describe 'Packages' do
   end
 
   context 'when there are packages' do
+    let!(:package) { create(:maven_package, project: project) }
+
     before do
       package
 
