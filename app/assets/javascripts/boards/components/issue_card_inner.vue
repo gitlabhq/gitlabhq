@@ -3,11 +3,13 @@
   import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import eventHub from '../eventhub';
   import tooltip from '../../vue_shared/directives/tooltip';
+  import Icon from "~/vue_shared/components/icon.vue"
 
   const Store = gl.issueBoards.BoardsStore;
 
   export default {
     components: {
+      Icon,
       UserAvatarLink,
     },
     directives: {
@@ -150,13 +152,48 @@
           :href="issue.path"
           :title="issue.title"
           class="js-no-trigger">{{ issue.title }}</a>
-        <span
+      </h4>
+    </div>
+    <div
+      v-if="showLabelFooter"
+      class="board-card-labels"
+    >
+      <button
+        v-tooltip
+        v-for="label in issue.labels"
+        v-if="showLabel(label)"
+        :key="label.id"
+        :style="labelStyle(label)"
+        :title="label.description"
+        class="badge color-label"
+        type="button"
+        data-container="body"
+        @click="filterByLabel(label, $event)"
+      >
+        {{ label.title }}
+      </button>
+    </div>
+    <div class="board-card-issue-summary">
+      <span class="board-card-issue-due">
+        <icon name="calendar"/>
+        Mar 31
+      </span>
+      <span class="board-card-issue-estimate">
+        <icon name="hourglass"/>
+        2d
+      </span>
+      <span class="board-card-issue-wight">
+        <icon name="scale"/>
+        8
+      </span>
+    </div>
+    <div class="board-card-footer">
+      <span
           v-if="issueId"
           class="board-card-number"
         >
-          {{ issue.referencePath }}
+          {{ issue.project.path }}{{ issue.referencePath }}
         </span>
-      </h4>
       <div class="board-card-assignee">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
@@ -178,25 +215,6 @@
           {{ assigneeCounterLabel }}
         </span>
       </div>
-    </div>
-    <div
-      v-if="showLabelFooter"
-      class="board-card-footer"
-    >
-      <button
-        v-tooltip
-        v-for="label in issue.labels"
-        v-if="showLabel(label)"
-        :key="label.id"
-        :style="labelStyle(label)"
-        :title="label.description"
-        class="badge color-label"
-        type="button"
-        data-container="body"
-        @click="filterByLabel(label, $event)"
-      >
-        {{ label.title }}
-      </button>
     </div>
   </div>
 </template>

@@ -299,15 +299,16 @@
   .confidential-icon {
     position: relative;
     top: 1px;
+    color: $orange-600;
     margin-right: 5px;
   }
 }
 
 .board-card-title {
   @include overflow-break-word();
-  margin: 0 30px 0 0;
   font-size: 1em;
   line-height: inherit;
+  margin-bottom: 8px;
 
   a {
     color: $gl-text-color;

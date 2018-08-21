@@ -210,6 +210,8 @@ class Projects::IssuesController < Projects::ApplicationController
       task_num
       lock_version
       discussion_locked
+      time_estimate
+      human_time_estimate
     ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
