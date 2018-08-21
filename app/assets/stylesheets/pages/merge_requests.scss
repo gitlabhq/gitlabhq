@@ -200,7 +200,7 @@
 
   .mr-widget-icon {
     font-size: 22px;
-    margin-right: $status-icon-margin;
+    margin-right: $gl-btn-padding;
   }
 
   .ci-status-icon svg {
@@ -281,7 +281,7 @@
       margin-bottom: 0;
 
       &.has-conflicts .fa-exclamation-triangle {
-        color: $gl-warning;
+        color: $orange-500;
       }
 
       time {
@@ -313,7 +313,7 @@
     }
 
     .danger {
-      color: $gl-danger;
+      color: $red-500;
     }
 
     .spacing,
@@ -514,7 +514,7 @@
 }
 
 .mr-links {
-  padding-left: $status-icon-size + $status-icon-margin;
+  padding-left: $status-icon-size + $gl-btn-padding;
 }
 
 .mr-info-list {

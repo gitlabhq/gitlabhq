@@ -24,12 +24,12 @@ $search-avatar-size: 16px;
 .form-control:hover,
 :not[readonly] {
   border-color: lighten($blue-300, 20%);
-  box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
+  box-shadow: 0 0 4px lighten($dropdown-input-focus-shadow, 20%);
 }
 
 input[type='checkbox']:hover {
-  box-shadow: 0 0 2px 2px lighten($search-input-focus-shadow-color, 20%),
-    0 0 0 1px lighten($search-input-focus-shadow-color, 20%);
+  box-shadow: 0 0 2px 2px lighten($dropdown-input-focus-shadow, 20%),
+    0 0 0 1px lighten($dropdown-input-focus-shadow, 20%);
 }
 
 .search {
@@ -181,7 +181,7 @@ input[type='checkbox']:hover {
     width: $search-avatar-size;
     height: $search-avatar-size;
     border-radius: 50%;
-    border: 1px solid $avatar-border;
+    border: 1px solid $gray-normal;
   }
 }
 
