@@ -264,6 +264,14 @@ describe Projects::ForkService do
 
         expect(fork_from_project.forks_count).to eq(1)
       end
+
+      it 'leaves no LFS objects dangling' do
+        create(:lfs_objects_project, project: fork_to_project)
+
+        expect { subject.execute(fork_to_project) }
+          .to change { fork_to_project.lfs_objects_projects.count }
+          .to(0)
+      end
     end
   end
 end
