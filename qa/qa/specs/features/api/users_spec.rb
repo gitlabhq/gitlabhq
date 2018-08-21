@@ -14,11 +14,11 @@ module QA
       end
 
       it 'submit request with a valid user name' do
-        get request.url, { params: { username: Runtime::User.name } }
+        get request.url, { params: { username: Runtime::User.username } }
 
         expect_status(200)
         expect(json_body).to contain_exactly(
-          a_hash_including(username: Runtime::User.name)
+          a_hash_including(username: Runtime::User.username)
         )
       end
 

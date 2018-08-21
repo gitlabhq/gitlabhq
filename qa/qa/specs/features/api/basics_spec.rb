@@ -7,7 +7,7 @@ module QA
     end
 
     let(:project_name) { "api-basics-#{SecureRandom.hex(8)}" }
-    let(:sanitized_project_path) { CGI.escape("#{Runtime::User.name}/#{project_name}") }
+    let(:sanitized_project_path) { CGI.escape("#{Runtime::User.username}/#{project_name}") }
 
     it 'user creates a project with a file and deletes them afterwards' do
       create_project_request = Runtime::API::Request.new(@api_client, '/projects')
