@@ -308,19 +308,9 @@ $tanuki-yellow: #fca326;
 /*
  * State colors:
  */
-$gl-primary: $blue-500;
-$gl-success: $green-500;
-$gl-success-focus: rgba($gl-success, 0.4);
-$gl-info: $blue-500;
-$gl-warning: $orange-500;
-$gl-danger: $red-500;
+$green-500-focus: rgba($green-500, 0.4);
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
 $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
-// Bootstrap override states
-$success: $gl-success;
-$info: $gl-info;
-$warning: $gl-warning;
-$danger: $gl-danger;
 
 /*
  * Commit Diff Colors
@@ -341,10 +331,9 @@ $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
 $file-mode-changed: #777;
-$diff-image-bg: #ddd;
-$diff-image-info-color: grey;
+$diff-image-info-color: gray;
 $diff-swipe-border: #999;
-$diff-view-modes-color: grey;
+$diff-view-modes-color: gray;
 $diff-view-modes-border: #c1c1c1;
 $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
@@ -384,7 +373,6 @@ $dropdown-member-form-control-width: 163px;
 * Filtered Search
 */
 $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
-$dropdown-hover-color: $blue-400;
 
 /*
 * Contextual Sidebar
@@ -399,7 +387,7 @@ $sidebar-milestone-toggle-bottom-margin: 10px;
 * Buttons
 */
 $btn-active-gray: #ececec;
-$btn-active-gray-light: e4e7ed;
+$btn-active-gray-light: #e4e7ed;
 $btn-white-active: #848484;
 $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
@@ -410,7 +398,6 @@ $gl-btn-horz-padding: 12px;
 * Badges
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
-$badge-color: $gl-text-color-secondary;
 
 /*
 * Pagination
@@ -418,21 +405,12 @@ $badge-color: $gl-text-color-secondary;
 $pagination-padding-y: 6px;
 $pagination-padding-x: 16px;
 $pagination-line-height: 20px;
-$pagination-border-color: $border-color;
-$pagination-active-bg: $blue-600;
-$pagination-active-border-color: $blue-600;
-$pagination-hover-bg: $blue-50;
-$pagination-hover-border-color: $border-color;
-$pagination-hover-color: $gl-text-color;
 $pagination-disabled-color: #cdcdcd;
-$pagination-disabled-bg: $gray-light;
-$pagination-disabled-border-color: $border-color;
 
 /*
  *  Status icons
  */
 $status-icon-size: 22px;
-$status-icon-margin: $gl-btn-padding;
 
 /*
  *  Award emoji
@@ -445,16 +423,13 @@ $award-emoji-positive-add-lines: #bb9c13;
  * Search Box
  */
 $search-input-border-color: rgba($blue-400, 0.8);
-$search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 240px;
 $search-input-active-width: 320px;
-$location-badge-active-bg: $blue-500;
 $location-icon-color: #e7e9ed;
 
 /*
  *  Notes
  */
-$notes-light-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -475,7 +450,6 @@ $identicon-indigo: #e8eaf6;
 $identicon-blue: #e3f2fd;
 $identicon-teal: #e0f2f1;
 $identicon-orange: #fbe9e7;
-$identicon-gray: $gray-darker;
 $identicon-fg-color: #555555;
 
 /*
@@ -491,7 +465,6 @@ $calendar-user-contrib-text: #959494;
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
 $cycle-analytics-big-font: 19px;
-$cycle-analytics-dark-text: $gl-text-color;
 $cycle-analytics-light-gray: #bfbfbf;
 $cycle-analytics-dismiss-icon-color: #b2b2b2;
 
@@ -519,9 +492,6 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 * Avatar
 */
 $avatar-radius: 50%;
-$avatar-border: $gray-normal;
-$avatar-border-hover: $gray-darker;
-$avatar-background: $gray-lightest;
 $gl-avatar-size: 40px;
 
 /*
