@@ -14,7 +14,7 @@ module Issues
     end
 
     def referenced_merge_requests(issue)
-      merge_requests = extract_merge_requests(issue, issue.notes)
+      merge_requests = extract_merge_requests(issue)
 
       cross_project_filter = -> (merge_requests) do
         merge_requests.select { |mr| mr.target_project == project }
@@ -32,7 +32,7 @@ module Issues
     def closed_by_merge_requests(issue)
       return [] unless issue.open?
 
-      merge_requests = extract_merge_requests(issue, issue.notes.system).select(&:open?)
+      merge_requests = extract_merge_requests(issue, filter: :system).select(&:open?)
 
       return [] if merge_requests.empty?
 
@@ -42,14 +42,21 @@ module Issues
 
     private
 
-    def extract_merge_requests(issue, notes)
+    def extract_merge_requests(issue, filter: nil)
       ext = issue.all_references(current_user)
+      notes = issue_notes(issue)
+      notes = notes.select(&filter) if filter
 
-      notes.includes(:author).each do |note|
+      notes.each do |note|
         note.all_references(current_user, extractor: ext)
       end
 
       ext.merge_requests
+    end
+
+    def issue_notes(issue)
+      @issue_notes ||= {}
+      @issue_notes[issue] ||= issue.notes.includes(:author)
     end
 
     def sort_by_iid(merge_requests)

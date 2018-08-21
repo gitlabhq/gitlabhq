@@ -65,6 +65,12 @@ describe Issues::ReferencedMergeRequestsService do
         expect { service.execute(issue).each(&pipeline_routes) }
           .not_to exceed_query_limit(control_count)
       end
+
+      it 'only loads issue notes once' do
+        expect(issue).to receive(:notes).once.and_call_original
+
+        service.execute(issue)
+      end
     end
   end
 
