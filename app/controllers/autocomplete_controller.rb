@@ -1,6 +1,9 @@
 class AutocompleteController < ApplicationController
+<<<<<<< HEAD
   prepend EE::AutocompleteController
 
+=======
+>>>>>>> upstream/master
   skip_before_action :authenticate_user!, only: [:users, :award_emojis]
 
   def users
@@ -11,6 +14,7 @@ class AutocompleteController < ApplicationController
     group = Autocomplete::GroupFinder
       .new(current_user, project, params)
       .execute
+<<<<<<< HEAD
 
     users = Autocomplete::UsersFinder
       .new(params: params, current_user: current_user, project: project, group: group)
@@ -19,6 +23,16 @@ class AutocompleteController < ApplicationController
     render json: UserSerializer.new.represent(users)
   end
 
+=======
+
+    users = Autocomplete::UsersFinder
+      .new(params: params, current_user: current_user, project: project, group: group)
+      .execute
+
+    render json: UserSerializer.new.represent(users)
+  end
+
+>>>>>>> upstream/master
   def user
     user = UserFinder.new(params).execute!
 

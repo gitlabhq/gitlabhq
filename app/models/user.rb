@@ -20,8 +20,11 @@ class User < ActiveRecord::Base
   include BlocksJsonSerialization
   include WithUploads
   include OptionallySearch
+<<<<<<< HEAD
 
   prepend EE::User
+=======
+>>>>>>> upstream/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -258,11 +261,14 @@ class User < ActiveRecord::Base
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
+<<<<<<< HEAD
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
   scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :with_provider, ->(provider) do
     joins(:identities).where(identities: { provider: provider })
   end
+=======
+>>>>>>> upstream/master
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }

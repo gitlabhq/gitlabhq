@@ -53,7 +53,11 @@ module Gitlab
         }
 
         merge_request.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
+<<<<<<< HEAD
           .merge!(attrs)
+=======
+            .merge!(attrs)
+>>>>>>> upstream/master
       end
     end
   end

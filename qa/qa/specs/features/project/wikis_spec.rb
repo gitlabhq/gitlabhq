@@ -1,5 +1,5 @@
 module QA
-  describe 'Wiki Functionality', :core do
+  describe 'Wiki Functionality' do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

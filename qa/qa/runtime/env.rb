@@ -41,6 +41,18 @@ module QA
         ENV['GITLAB_PASSWORD']
       end
 
+      def forker?
+        forker_username && forker_password
+      end
+
+      def forker_username
+        ENV['GITLAB_FORKER_USERNAME']
+      end
+
+      def forker_password
+        ENV['GITLAB_FORKER_PASSWORD']
+      end
+
       def ldap_username
         ENV['GITLAB_LDAP_USERNAME']
       end

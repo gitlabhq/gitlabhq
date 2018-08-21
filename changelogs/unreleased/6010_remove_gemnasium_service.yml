@@ -1,5 +1,9 @@
 ---
 title: Remove Gemnasium service
+<<<<<<< HEAD
 merge_request:
+=======
+merge_request: 21185
+>>>>>>> upstream/master
 author:
 type: removed

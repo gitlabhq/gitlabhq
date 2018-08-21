@@ -378,12 +378,21 @@ describe User do
       context 'when filtering by todo authors' do
         let(:user1) { create(:user) }
         let(:user2) { create(:user) }
+<<<<<<< HEAD
 
         before do
           create(:todo, user: user1, author: user1, state: :done)
           create(:todo, user: user2, author: user2, state: :pending)
         end
 
+=======
+
+        before do
+          create(:todo, user: user1, author: user1, state: :done)
+          create(:todo, user: user2, author: user2, state: :pending)
+        end
+
+>>>>>>> upstream/master
         it 'only returns users that have authored todos' do
           users = described_class.limit_to_todo_authors(
             user: user2,
