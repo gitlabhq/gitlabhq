@@ -34,10 +34,7 @@ Click on the service links to see further configuration instructions and details
 | [Emails on push](emails_on_push.md) | Email the commits and diff of each push to a list of recipients |
 | External Wiki | Replaces the link to the internal wiki with a link to an external wiki |
 | Flowdock | Flowdock is a collaboration web app for technical teams |
-<<<<<<< HEAD
 | [GitHub](github.md) | Sends pipeline notifications to GitHub |
-=======
->>>>>>> upstream/master
 | [Hangouts Chat](hangouts_chat.md) | Receive events notifications in Google Hangouts Chat |
 | [HipChat](hipchat.md) | Private group chat and IM |
 | [Irker (IRC gateway)](irker.md) | Send IRC messages, on update, to a list of recipients through an Irker gateway |
