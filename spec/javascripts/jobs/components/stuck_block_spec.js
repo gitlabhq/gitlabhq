@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from '~/jobs/components/stuck_block.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Stuck Block Job component', () => {
   const Component = Vue.extend(component);
