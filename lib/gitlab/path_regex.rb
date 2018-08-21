@@ -40,6 +40,7 @@ module Gitlab
       invites
       jwt
       koding
+      login
       notification_settings
       oauth
       profile
