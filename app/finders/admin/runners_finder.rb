@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Admin::RunnersFinder < UnionFinder
   NUMBER_OF_RUNNERS_PER_PAGE = 30
 
