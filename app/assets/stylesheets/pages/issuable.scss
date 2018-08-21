@@ -703,11 +703,11 @@
   text-overflow: ellipsis;
 
   .user-status-emoji {
-    margin: 0 8px 0 4px;
+    margin: 0 $gl-padding-8 0 $gl-padding-4;
 
     gl-emoji {
       font-size: 1em;
-      line-height: 1;
+      line-height: 16px;
     }
   }
 }

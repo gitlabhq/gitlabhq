@@ -196,11 +196,11 @@
   }
 
   .user-status-emoji {
-    margin-right: 4px;
+    margin-right: $gl-padding-4;
 
     gl-emoji {
       font-size: 1em;
-      line-height: 1;
+      line-height: 16px;
     }
   }
 
