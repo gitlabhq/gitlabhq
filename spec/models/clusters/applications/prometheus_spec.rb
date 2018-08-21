@@ -154,20 +154,17 @@ describe Clusters::Applications::Prometheus do
   end
 
   describe '#install_command' do
-    let(:kubeclient) { double('kubernetes client') }
     let(:prometheus) { create(:clusters_applications_prometheus) }
 
-    it 'returns an instance of Gitlab::Kubernetes::Helm::InstallCommand' do
-      expect(prometheus.install_command).to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand)
-    end
+    subject { prometheus.install_command }
+
+    it { is_expected.to be_an_instance_of(Gitlab::Kubernetes::Helm::InstallCommand) }
 
     it 'should be initialized with 3 arguments' do
-      command = prometheus.install_command
-
-      expect(command.name).to eq('prometheus')
-      expect(command.chart).to eq('stable/prometheus')
-      expect(command.version).to eq('6.7.3')
-      expect(command.files).to eq(prometheus.files)
+      expect(subject.name).to eq('prometheus')
+      expect(subject.chart).to eq('stable/prometheus')
+      expect(subject.version).to eq('6.7.3')
+      expect(subject.files).to eq(prometheus.files)
     end
 
     context 'application failed to install previously' do

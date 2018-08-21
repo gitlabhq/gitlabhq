@@ -1127,6 +1127,7 @@ X-Gitlab-Event: Build Hook
   "build_finished_at": null,
   "build_duration": null,
   "build_allow_failure": false,
+  "build_failure_reason": "script_failure",
   "project_id": 380,
   "project_name": "gitlab-org/gitlab-test",
   "user": {

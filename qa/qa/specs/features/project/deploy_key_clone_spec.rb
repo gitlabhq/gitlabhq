@@ -1,7 +1,7 @@
 require 'digest/sha1'
 
 module QA
-  describe 'cloning code using a deploy key', :core, :docker do
+  describe 'cloning code using a deploy key', :docker do
     def login
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

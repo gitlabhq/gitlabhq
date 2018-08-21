@@ -1,10 +1,4 @@
-describe QA::Scenario::Test::Instance do
-  subject do
-    Class.new(described_class) do
-      tags :rspec
-    end
-  end
-
+describe QA::Scenario::Test::Instance::All do
   context '#perform' do
     let(:arguments) { spy('Runtime::Scenario') }
     let(:release) { spy('Runtime::Release') }
@@ -26,16 +20,16 @@ describe QA::Scenario::Test::Instance do
     end
 
     context 'no paths' do
-      it 'should call runner with default arguments' do
+      it 'calls runner with default arguments' do
         subject.perform("test")
 
         expect(runner).to have_received(:options=)
-          .with(::File.expand_path('../../../qa/specs/features', __dir__))
+          .with(::File.expand_path('../../../../qa/specs/features', __dir__))
       end
     end
 
     context 'specifying paths' do
-      it 'should call runner with paths' do
+      it 'calls runner with paths' do
         subject.perform('test', 'path1', 'path2')
 
         expect(runner).to have_received(:options=).with(%w[path1 path2])

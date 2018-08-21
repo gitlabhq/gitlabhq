@@ -38,13 +38,13 @@ module Gitlab
 
       def build
         attrs = {
-          description: absolute_image_urls(issue.description),
-          url: Gitlab::UrlBuilder.build(issue),
-          total_time_spent: issue.total_time_spent,
-          human_total_time_spent: issue.human_total_time_spent,
-          human_time_estimate: issue.human_time_estimate,
-          assignee_ids: issue.assignee_ids,
-          assignee_id: issue.assignee_ids.first # This key is deprecated
+            description: absolute_image_urls(issue.description),
+            url: Gitlab::UrlBuilder.build(issue),
+            total_time_spent: issue.total_time_spent,
+            human_total_time_spent: issue.human_total_time_spent,
+            human_time_estimate: issue.human_time_estimate,
+            assignee_ids: issue.assignee_ids,
+            assignee_id: issue.assignee_ids.first # This key is deprecated
         }
 
         issue.attributes.with_indifferent_access.slice(*self.class.safe_hook_attributes)
