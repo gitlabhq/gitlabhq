@@ -17,8 +17,8 @@
       .gl-responsive-table-row
         .table-section.section-30
           .table-mobile-header{ role: "rowheader" }= _("Name")
-          .table-mobile-content
-            = link_to package.name, project_package_path(@project, package)
+          .table-mobile-content.flex-truncate-parent
+            = link_to package.name, project_package_path(@project, package), class: 'flex-truncate-child'
         .table-section.section-20
           .table-mobile-header{ role: "rowheader" }= _("Version")
           .table-mobile-content
