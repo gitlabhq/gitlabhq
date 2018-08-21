@@ -1,36 +1,44 @@
-- page_title "Packages"
+- page_title _("Packages")
 - can_destroy_package = can?(current_user, :destroy_package, @project)
 
 - if @packages.any?
   .table-holder
-    %table.table.packages-table
-      %thead
-        %tr
-          %th= _('Name')
-          %th= _('Version')
-          %th= _('Type')
-          %th= _('Created')
-          %th
-
-      %tbody
-        - @packages.each do |package|
-          %tr
-            %td
-              = link_to package.name, project_package_path(@project, package)
-            %td
-              = package.version
-            %td
-              = _('Maven package')
-            %td
-              = time_ago_with_tooltip(package.created_at)
-            %td
-              - if can_destroy_package
-                .pull-right
-                  = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
-                    = icon('trash')
-
+    .gl-responsive-table-row.table-row-header{ role: 'row'}
+      .table-section.section-30{ role: 'rowheader'}
+        =_('Name')
+      .table-section.section-20{ role: 'rowheader'}
+        =_('Version')
+      .table-section.section-20{ role: 'rowheader'}
+        =_('Type')
+      .table-section.section-20{ role: 'rowheader'}
+        =_('Created')
+      .table-section.section-10{ role: 'rowheader'}
+    - @packages.each do |package|
+      .gl-responsive-table-row
+        .table-section.section-30
+          .table-mobile-header{ role: "rowheader" }= _("Name")
+          .table-mobile-content
+            = link_to package.name, project_package_path(@project, package)
+        .table-section.section-20
+          .table-mobile-header{ role: "rowheader" }= _("Version")
+          .table-mobile-content
+            = package.version
+        .table-section.section-20
+          .table-mobile-header{ role: "rowheader" }= _("Type")
+          .table-mobile-content
+            = _('Maven package')
+        .table-section.section-20
+          .table-mobile-header{ role: "rowheader" }= _("Created")
+          .table-mobile-content
+            = time_ago_with_tooltip(package.created_at)
+        .table-section.section-10
+          .table-mobile-header{ role: "rowheader" }
+          .table-mobile-content
+            - if can_destroy_package
+              .pull-right
+                = link_to project_package_path(@project, package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
+                  = icon('trash')
     = paginate @packages, theme: "gitlab"
-
 - else
   .nothing-here-block
     = _('No packages stored for this project.')

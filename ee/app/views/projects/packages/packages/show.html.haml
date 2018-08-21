@@ -1,18 +1,17 @@
 - add_to_breadcrumbs _("Packages"), project_packages_path(@project)
 - add_to_breadcrumbs @package.name, project_packages_path(@project)
 - breadcrumb_title @package.version
-- page_title "Packages"
+- page_title _("Packages")
 
-.detail-page-header
-  .detail-page-header-body
-    %strong
-      = @package.version
-  .detail-page-header-actions
-    - if can?(current_user, :destroy_package, @project)
-      = link_to project_package_path(@project, @package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
-        = _('Delete')
+.detail-page-header.d-flex.justify-content-between
+  %strong
+    = @package.version
+
+  - if can?(current_user, :destroy_package, @project)
+    = link_to project_package_path(@project, @package), method: :delete, data: { confirm: _("Are you sure?") }, class: "btn btn-grouped btn-inverted btn-remove", title: _('Delete Package') do
+      = _('Delete')
 .row.prepend-top-default
-  .col-md-6
+  .col-sm-6
     .card
       .card-header
         %strong= _('Package information')
@@ -32,7 +31,7 @@
             = _('Created on')
           %span.pull-right
             = @package.created_at.to_s(:medium)
-  .col-md-6
+  .col-sm-6
     - if @maven_metadatum
       .card
         .card-header
