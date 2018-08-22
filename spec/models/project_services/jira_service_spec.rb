@@ -27,13 +27,13 @@ describe JiraService do
     end
   end
 
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to :project }
     it { is_expected.to have_one :service_hook }
     it { is_expected.to allow_value(nil).for(:jira_issue_transition_id) }
-    it { is_expected.to allow_value("1,2,3").for(:jira_issue_transition_id) }
-    it { is_expected.to allow_value("1;2;3").for(:jira_issue_transition_id) }
-    it { is_expected.not_to allow_value("a,b,cd").for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value('1,2,3').for(:jira_issue_transition_id) }
+    it { is_expected.to allow_value('1;2;3').for(:jira_issue_transition_id) }
+    it { is_expected.not_to allow_value('a,b,cd').for(:jira_issue_transition_id) }
   end
 
   describe 'Validations' do
@@ -116,143 +116,142 @@ describe JiraService do
   describe '#close_issue' do
     let(:custom_base_url) { 'http://custom_url' }
     let(:user)    { create(:user) }
-    let(:project) { create(:project) }
-    let(:merge_request) { create(:merge_request) }
+    let(:project) { create(:project, :repository) }
 
-    before do
-      @jira_service = described_class.new
-      allow(@jira_service).to receive_messages(
-        project_id: project.id,
-        project: project,
-        service_hook: true,
-        url: 'http://jira.example.com',
-        username: 'gitlab_jira_username',
-        password: 'gitlab_jira_password',
-        jira_issue_transition_id: "999"
-      )
-
-      # These stubs are needed to test JiraService#close_issue.
-      # We close the issue then do another request to API to check if it got closed.
-      # Here is stubbed the API return with a closed and an opened issues.
-      open_issue   = JIRA::Resource::Issue.new(@jira_service.client, attrs: { "id" => "JIRA-123" })
-      closed_issue = open_issue.dup
-      allow(open_issue).to receive(:resolution).and_return(false)
-      allow(closed_issue).to receive(:resolution).and_return(true)
-      allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
-
-      allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return("JIRA-123")
-      allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
-
-      @jira_service.save
-
-      project_issues_url = 'http://jira.example.com/rest/api/2/issue/JIRA-123'
-      @transitions_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/transitions'
-      @comment_url       = 'http://jira.example.com/rest/api/2/issue/JIRA-123/comment'
-      @remote_link_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
-
-      WebMock.stub_request(:get, project_issues_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
-      WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
-      WebMock.stub_request(:post, @comment_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
-      WebMock.stub_request(:post, @remote_link_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
-    end
-
-    it "calls JIRA API" do
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
-
-      expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: /Issue solved with/
-      ).once
-    end
-
-    # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
-    # for more information
-    it "creates Remote Link reference in JIRA for comment" do
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
-
-      favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
-
-      # Creates comment
-      expect(WebMock).to have_requested(:post, @comment_url)
-      # Creates Remote Link in JIRA issue fields
-      expect(WebMock).to have_requested(:post, @remote_link_url).with(
-        body: hash_including(
-          GlobalID: "GitLab",
-          object: {
-            url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
-            title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
-            icon: { title: "GitLab", url16x16: favicon_path },
-            status: { resolved: true }
-          }
+    shared_examples 'close_issue' do
+      before do
+        @jira_service = described_class.new
+        allow(@jira_service).to receive_messages(
+          project_id: project.id,
+          project: project,
+          service_hook: true,
+          url: 'http://jira.example.com',
+          username: 'gitlab_jira_username',
+          password: 'gitlab_jira_password',
+          jira_issue_transition_id: '999'
         )
-      ).once
-    end
 
-    it "does not send comment or remote links to issues already closed" do
-      allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
+        # These stubs are needed to test JiraService#close_issue.
+        # We close the issue then do another request to API to check if it got closed.
+        # Here is stubbed the API return with a closed and an opened issues.
+        open_issue   = JIRA::Resource::Issue.new(@jira_service.client, attrs: { 'id' => 'JIRA-123' })
+        closed_issue = open_issue.dup
+        allow(open_issue).to receive(:resolution).and_return(false)
+        allow(closed_issue).to receive(:resolution).and_return(true)
+        allow(JIRA::Resource::Issue).to receive(:find).and_return(open_issue, closed_issue)
 
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:key).and_return('JIRA-123')
+        allow(JIRA::Resource::Remotelink).to receive(:all).and_return([])
 
-      expect(WebMock).not_to have_requested(:post, @comment_url)
-      expect(WebMock).not_to have_requested(:post, @remote_link_url)
-    end
+        @jira_service.save
 
-    it "does not send comment or remote links to issues with unknown resolution" do
-      allow_any_instance_of(JIRA::Resource::Issue).to receive(:respond_to?).with(:resolution).and_return(false)
+        project_issues_url = 'http://jira.example.com/rest/api/2/issue/JIRA-123'
+        @transitions_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/transitions'
+        @comment_url       = 'http://jira.example.com/rest/api/2/issue/JIRA-123/comment'
+        @remote_link_url   = 'http://jira.example.com/rest/api/2/issue/JIRA-123/remotelink'
 
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
-
-      expect(WebMock).not_to have_requested(:post, @comment_url)
-      expect(WebMock).not_to have_requested(:post, @remote_link_url)
-    end
-
-    it "references the GitLab commit/merge request" do
-      stub_config_setting(base_url: custom_base_url)
-
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
-
-      expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: %r{#{custom_base_url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
-      ).once
-    end
-
-    it "references the GitLab commit/merge request (relative URL)" do
-      stub_config_setting(relative_url_root: '/gitlab')
-      stub_config_setting(url: Settings.send(:build_gitlab_url))
-
-      allow(described_class).to receive(:default_url_options) do
-        { script_name: '/gitlab' }
+        WebMock.stub_request(:get, project_issues_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+        WebMock.stub_request(:post, @comment_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
+        WebMock.stub_request(:post, @remote_link_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password))
       end
 
-      @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+      it 'calls JIRA API' do
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
-      expect(WebMock).to have_requested(:post, @comment_url).with(
-        body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}}
-      ).once
-    end
+        expect(WebMock).to have_requested(:post, @comment_url).with(
+          body: /Issue solved with/
+        ).once
+      end
 
-    context '#close_issue' do
-      it "logs exception when transition id is not valid" do
+      # Check https://developer.atlassian.com/jiradev/jira-platform/guides/other/guide-jira-remote-issue-links/fields-in-remote-issue-links
+      # for more information
+      it 'creates Remote Link reference in JIRA for comment' do
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+        favicon_path = "http://localhost/assets/#{find_asset('favicon.png').digest_path}"
+
+        # Creates comment
+        expect(WebMock).to have_requested(:post, @comment_url)
+        # Creates Remote Link in JIRA issue fields
+        expect(WebMock).to have_requested(:post, @remote_link_url).with(
+          body: hash_including(
+            GlobalID: 'GitLab',
+            object: {
+              url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{commit_id}",
+              title: "GitLab: Solved by commit #{commit_id}.",
+              icon: { title: 'GitLab', url16x16: favicon_path },
+              status: { resolved: true }
+            }
+          )
+        ).once
+      end
+
+      it 'does not send comment or remote links to issues already closed' do
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:resolution).and_return(true)
+
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+        expect(WebMock).not_to have_requested(:post, @comment_url)
+        expect(WebMock).not_to have_requested(:post, @remote_link_url)
+      end
+
+      it 'does not send comment or remote links to issues with unknown resolution' do
+        allow_any_instance_of(JIRA::Resource::Issue).to receive(:respond_to?).with(:resolution).and_return(false)
+
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+        expect(WebMock).not_to have_requested(:post, @comment_url)
+        expect(WebMock).not_to have_requested(:post, @remote_link_url)
+      end
+
+      it 'references the GitLab commit' do
+        stub_config_setting(base_url: custom_base_url)
+
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+        expect(WebMock).to have_requested(:post, @comment_url).with(
+          body: %r{#{custom_base_url}/#{project.full_path}/commit/#{commit_id}}
+        ).once
+      end
+
+      it 'references the GitLab commit' do
+        stub_config_setting(relative_url_root: '/gitlab')
+        stub_config_setting(url: Settings.send(:build_gitlab_url))
+
+        allow(described_class).to receive(:default_url_options) do
+          { script_name: '/gitlab' }
+        end
+
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
+
+        expect(WebMock).to have_requested(:post, @comment_url).with(
+          body: %r{#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{commit_id}}
+        ).once
+      end
+
+      it 'logs exception when transition id is not valid' do
         allow(Rails.logger).to receive(:info)
-        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise("Bad Request")
+        WebMock.stub_request(:post, @transitions_url).with(basic_auth: %w(gitlab_jira_username gitlab_jira_password)).and_raise('Bad Request')
 
-        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
-        expect(Rails.logger).to have_received(:info).with("JiraService Issue Transition failed message ERROR: http://jira.example.com - Bad Request")
+        expect(Rails.logger).to have_received(:info).with('JiraService Issue Transition failed message ERROR: http://jira.example.com - Bad Request')
       end
 
-      it "calls the api with jira_issue_transition_id" do
-        @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+      it 'calls the api with jira_issue_transition_id' do
+        @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
         expect(WebMock).to have_requested(:post, @transitions_url).with(
           body: /999/
         ).once
       end
 
-      context "when have multiple transition ids" do
-        it "calls the api with transition ids separated by comma" do
-          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1,2,3")
+      context 'when have multiple transition ids' do
+        it 'calls the api with transition ids separated by comma' do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: '1,2,3')
 
-          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+          @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
           1.upto(3) do |transition_id|
             expect(WebMock).to have_requested(:post, @transitions_url).with(
@@ -261,10 +260,10 @@ describe JiraService do
           end
         end
 
-        it "calls the api with transition ids separated by semicolon" do
-          allow(@jira_service).to receive_messages(jira_issue_transition_id: "1;2;3")
+        it 'calls the api with transition ids separated by semicolon' do
+          allow(@jira_service).to receive_messages(jira_issue_transition_id: '1;2;3')
 
-          @jira_service.close_issue(merge_request, ExternalIssue.new("JIRA-123", project))
+          @jira_service.close_issue(resource, ExternalIssue.new('JIRA-123', project))
 
           1.upto(3) do |transition_id|
             expect(WebMock).to have_requested(:post, @transitions_url).with(
@@ -273,6 +272,20 @@ describe JiraService do
           end
         end
       end
+    end
+
+    context 'when resource is a merge request' do
+      let(:resource) { create(:merge_request) }
+      let(:commit_id) { resource.diff_head_sha }
+
+      it_behaves_like 'close_issue'
+    end
+
+    context 'when resource is a commit' do
+      let(:resource) { project.commit('master') }
+      let(:commit_id) { resource.id }
+
+      it_behaves_like 'close_issue'
     end
   end
 
@@ -321,17 +334,17 @@ describe JiraService do
     end
   end
 
-  describe "Stored password invalidation" do
+  describe 'Stored password invalidation' do
     let(:project) { create(:project) }
 
-    context "when a password was previously set" do
+    context 'when a password was previously set' do
       before do
         @jira_service = described_class.create!(
           project: project,
           properties: {
             url: 'http://jira.example.com/web',
             username: 'mic',
-            password: "password"
+            password: 'password'
           }
         )
       end
@@ -370,10 +383,10 @@ describe JiraService do
           @jira_service.url = 'http://jira_edited.example.com/rweb'
           @jira_service.save
 
-          expect(@jira_service.password).to eq("password")
+          expect(@jira_service.password).to eq('password')
         end
 
-        it 'reset password if api url set to ""' do
+        it 'reset password if api url set to empty' do
           @jira_service.api_url = ''
           @jira_service.save
 
@@ -440,7 +453,7 @@ describe JiraService do
 
       it 'is initialized' do
         expect(@service.title).to eq('JIRA')
-        expect(@service.description).to eq("Jira issue tracker")
+        expect(@service.description).to eq('Jira issue tracker')
       end
     end
 
@@ -454,7 +467,7 @@ describe JiraService do
         @service.destroy!
       end
 
-      it "is correct" do
+      it 'is correct' do
         expect(@service.title).to eq('Jira One')
         expect(@service.description).to eq('Jira One issue tracker')
       end
@@ -476,7 +489,7 @@ describe JiraService do
 
       it 'is initialized' do
         expect(@service.options[:use_cookies]).to eq(true)
-        expect(@service.options[:additional_cookies]).to eq(["OBBasicAuth=fromDialog"])
+        expect(@service.options[:additional_cookies]).to eq(['OBBasicAuth=fromDialog'])
       end
     end
   end

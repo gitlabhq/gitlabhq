@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from '~/jobs/components/empty_state.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Empty State', () => {
   const Component = Vue.extend(component);

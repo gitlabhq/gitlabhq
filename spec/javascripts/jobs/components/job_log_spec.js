@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import component from '~/jobs/components/job_log.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Job Log', () => {
   const Component = Vue.extend(component);

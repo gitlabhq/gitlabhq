@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import JobMediator from '~/jobs/job_details_mediator';
-import job from './mock_data';
+import job from '../mock_data';
 
 describe('JobMediator', () => {
   let mediator;
