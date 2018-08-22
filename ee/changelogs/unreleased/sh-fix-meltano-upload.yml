@@ -1,6 +1,0 @@
----
-title: Allow Pseudonymizer to write to a bucket without having permissions to see
-  all buckets
-merge_request: 6682
-author:
-type: fixed

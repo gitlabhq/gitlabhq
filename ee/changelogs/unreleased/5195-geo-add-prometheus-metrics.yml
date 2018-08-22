@@ -1,5 +1,0 @@
----
-title: Add Prometheus metrics to track Geo autocorrect numbers
-merge_request: 6778
-author:
-type: added

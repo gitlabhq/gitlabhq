@@ -1,5 +1,0 @@
----
-title: Rails5 fix no implicit conversion of Symbol into Integer
-merge_request: 6582
-author: Jasper Maes
-type: fixed

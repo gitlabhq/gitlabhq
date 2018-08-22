@@ -1,5 +1,0 @@
----
-title: 'Rails5: fix slice in burndown fixture'
-merge_request: 6813
-author: Jasper Maes
-type: fixed

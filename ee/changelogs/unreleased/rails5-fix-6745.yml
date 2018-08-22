@@ -1,5 +1,0 @@
----
-title: Rails5 fix AttachmentRegistryFinder arel queries
-merge_request: 6396
-author: Jasper Maes
-type: fixed

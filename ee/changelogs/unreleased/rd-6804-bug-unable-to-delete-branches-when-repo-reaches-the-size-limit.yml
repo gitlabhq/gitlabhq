@@ -1,5 +1,0 @@
----
-title: Fix a bug where user was unable to delete a branch when repo size was above the limit
-merge_request: 6373
-author:
-type: fixed

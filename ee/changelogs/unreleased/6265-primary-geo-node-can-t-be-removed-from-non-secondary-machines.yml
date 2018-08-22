@@ -1,5 +1,0 @@
----
-title: Allow Geo node to be edited once the database is failed over
-merge_request: 6248
-author:
-type: fixed

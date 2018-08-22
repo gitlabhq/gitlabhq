@@ -1,5 +1,0 @@
----
-title: Use same gem versions for Rails 5 as for Rails 4
-merge_request: 6712
-author: Jasper Maes
-type: fixed
