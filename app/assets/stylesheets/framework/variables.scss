@@ -330,7 +330,6 @@ $line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
-$file-mode-changed: #777;
 $diff-image-info-color: gray;
 $diff-swipe-border: #999;
 $diff-view-modes-color: gray;
@@ -353,9 +352,7 @@ $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: $blue-50;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
-$dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
@@ -365,7 +362,6 @@ $dropdown-input-focus-shadow: rgba($blue-300, 0.4);
 $dropdown-loading-bg: rgba(#fff, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-$dropdown-item-hover-bg: $gray-darker;
 $dropdown-fade-mask-height: 32px;
 $dropdown-member-form-control-width: 163px;
 
@@ -507,22 +503,6 @@ $blame-blue: #254e77;
 $builds-trace-bg: #111;
 
 /*
-* Callout
-*/
-$callout-danger-bg: $red-100;
-$callout-danger-border: $red-200;
-$callout-danger-color: $red-700;
-$callout-warning-bg: $orange-100;
-$callout-warning-border: $orange-200;
-$callout-warning-color: $orange-700;
-$callout-info-bg: $blue-100;
-$callout-info-border: $blue-200;
-$callout-info-color: $blue-700;
-$callout-success-bg: $green-100;
-$callout-success-border: $green-200;
-$callout-success-color: $green-700;
-
-/*
 * Commit Page
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);
@@ -531,16 +511,8 @@ $commit-message-text-area-bg: rgba(0, 0, 0, 0);
 /*
 * Common
 */
-$common-gray: $gl-text-color;
 $common-gray-light: #bbb;
 $common-gray-dark: #444;
-$common-red: $red-500;
-$common-green: $green-600;
-
-/*
-* Editor
-*/
-$editor-cancel-color: $red-600;
 
 /*
 * Events
@@ -561,7 +533,6 @@ $logs-p-color: #333;
 */
 $input-height: 34px;
 $input-danger-bg: #f2dede;
-$input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
@@ -608,16 +579,9 @@ $fade-mask-transition-duration: 0.1s;
 $fade-mask-transition-curve: ease-in-out;
 
 /*
-* Lint
-*/
-$lint-incorrect-color: $red-500;
-$lint-correct-color: $green-500;
-
-/*
 * Login
 */
 $login-brand-holder-color: #888;
-$login-devise-error-color: $red-700;
 
 /*
 * Nav
@@ -630,15 +594,12 @@ $nav-toggle-gray: #666;
 */
 $notify-details: #777;
 $notify-footer: #777;
-$notify-new-file: $green-600;
-$notify-deleted-file: $red-700;
 
 /*
 * Projects
 */
 $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
-$project-private-forks-notice-odd: $green-600;
 $project-network-controls-color: #888;
 
 $feature-toggle-color: #fff;
@@ -647,21 +608,10 @@ $feature-toggle-color-disabled: #999;
 $feature-toggle-color-enabled: #4a8bee;
 
 /*
-* Runners
-*/
-$runner-state-shared-bg: $green-400;
-$runner-state-specific-bg: $blue-400;
-$runner-status-online-color: $green-600;
-$runner-status-offline-color: $gray-darkest;
-$runner-status-paused-color: $red-500;
-
-/*
 Stat Graph
 */
 $stat-graph-common-bg: #f3f3f3;
-$stat-graph-area-fill: $green-500;
 $stat-graph-axis-fill: #aaa;
-$stat-graph-orange-fill: $orange-500;
 $stat-graph-selection-fill: #333;
 $stat-graph-selection-stroke: #333;
 
@@ -674,7 +624,6 @@ $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 /*
 * Todo
 */
-$todo-alert-blue: $blue-500;
 $todo-body-pre-color: #777;
 $todo-body-border: #ddd;
 
@@ -697,7 +646,6 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: $gray-darker;
 $ci-action-icon-size: 22px;
 $ci-action-icon-size-lg: 24px;
 $pipeline-dropdown-line-height: 20px;
@@ -738,13 +686,6 @@ Cross-project Pipelines
  */
 
 $linked-project-column-margin: 60px;
-
-/*
-Convdev Index
-*/
-$color-high-score: $green-400;
-$color-average-score: $orange-400;
-$color-low-score: $red-400;
 
 /*
 Performance Bar
@@ -799,9 +740,5 @@ Modals
 $modal-body-height: 134px;
 $modal-border-color: #e9ecef;
 
-/*
-Prometheus
-*/
-$prometheus-table-row-highlight-color: $theme-gray-100;
 
 $priority-label-empty-state-width: 114px;

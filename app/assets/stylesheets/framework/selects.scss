@@ -58,7 +58,7 @@
 .select2-drop.select2-drop-above {
   box-shadow: 0 2px 4px $dropdown-shadow-color;
   border-radius: $border-radius-base;
-  border: 1px solid $dropdown-border-color;
+  border: 1px solid $border-color;
   min-width: 175px;
   color: $gl-text-color;
   z-index: 999;
@@ -69,7 +69,7 @@
 }
 
 .select2-drop.select2-drop-above.select2-drop-active {
-  border-top: 1px solid $dropdown-border-color;
+  border-top: 1px solid $border-color;
   margin-top: -6px;
 }
 
@@ -193,7 +193,7 @@
     color: $gl-text-color;
 
     .select2-result-label {
-      background: $dropdown-item-hover-bg;
+      background: $gray-darker;
     }
   }
 
