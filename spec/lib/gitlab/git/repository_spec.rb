@@ -1901,6 +1901,33 @@ describe Gitlab::Git::Repository, :seed_helper do
         it_behaves_like 'remove_remote'
       end
     end
+
+    describe '#remote_exists?' do
+      shared_examples 'remote_exists?' do
+        it 'detects existence with a remote name or URL' do
+          expect(repository.remote_exists?(remote_name)).to be_falsey
+          expect(repository.remote_exists?(url)).to be_falsey
+
+          repository.add_remote(remote_name, url)
+
+          expect(repository.remote_exists?(remote_name)).to be_truthy
+          expect(repository.remote_exists?(url)).to be_truthy
+
+          repository.remove_remote(remote_name)
+
+          expect(repository.remote_exists?(remote_name)).to be_falsey
+          expect(repository.remote_exists?(url)).to be_falsey
+        end
+      end
+
+      context 'using Gitaly' do
+        it_behaves_like 'remote_exists?'
+      end
+
+      context 'with Gitaly disabled', :disable_gitaly do
+        it_behaves_like 'remote_exists?'
+      end
+    end
   end
 
   describe '#gitlab_projects' do

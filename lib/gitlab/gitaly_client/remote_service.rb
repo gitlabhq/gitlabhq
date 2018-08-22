@@ -3,6 +3,8 @@ module Gitlab
     class RemoteService
       MAX_MSG_SIZE = 128.kilobytes.freeze
 
+      # This checks whether a remote URL exists (e.g. for imports). Not to
+      # be confused with remote_exists? below.
       def self.exists?(remote_url)
         request = Gitaly::FindRemoteRepositoryRequest.new(remote: remote_url)
 
@@ -37,6 +39,20 @@ module Gitlab
         response = GitalyClient.call(@storage, :remote_service, :remove_remote, request, timeout: GitalyClient.fast_timeout)
 
         response.result
+      end
+
+      def remote_exists?(name)
+        request = Gitaly::RemoteExistsRequest.new(
+          repository: @gitaly_repo,
+          name_or_url: name
+        )
+
+        response = GitalyClient.call(@storage,
+                                     :remote_service,
+                                     :remote_exists, request,
+                                     timeout: GitalyClient.fast_timeout)
+
+        response.exists
       end
 
       def fetch_internal_remote(repository)

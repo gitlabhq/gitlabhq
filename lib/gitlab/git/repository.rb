@@ -666,6 +666,13 @@ module Gitlab
         end
       end
 
+      # This can be a remote name or URL per `man git-ls-remote`
+      def remote_exists?(remote_name)
+        wrapped_gitaly_errors do
+          gitaly_remote_client.remote_exists?(remote_name)
+        end
+      end
+
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,

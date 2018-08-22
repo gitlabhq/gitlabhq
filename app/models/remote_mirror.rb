@@ -195,6 +195,13 @@ class RemoteMirror < ActiveRecord::Base
     self.remote_name = "remote_mirror_#{SecureRandom.hex}"
   end
 
+  def ensure_remote!
+    return unless project
+    return unless remote_name && url
+
+    project.repository.add_remote(remote_name, url) unless project.repository.remote_exists?(remote_name)
+  end
+
   def refresh_remote
     return unless project
 
