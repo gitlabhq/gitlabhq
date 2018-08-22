@@ -1,5 +1,0 @@
----
-title: Use limit parameter to retrieve Wikis from Gitaly
-merge_request: 20764
-author:
-type: performance

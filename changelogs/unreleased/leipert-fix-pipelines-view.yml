@@ -1,5 +1,0 @@
----
-title: Fix rendering of pipeline failure view when directly navigationg to it
-merge_request: 21043
-author:
-type: fixed

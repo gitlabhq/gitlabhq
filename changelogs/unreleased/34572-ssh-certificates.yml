@@ -1,5 +1,0 @@
----
-title: Add support for SSH certificate authentication
-merge_request: 19911
-author: Ævar Arnfjörð Bjarmason
-type: added
