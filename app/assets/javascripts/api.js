@@ -274,7 +274,6 @@ const Api = {
     return axios.get(url, { params });
   },
 
-<<<<<<< HEAD
   approverUsers(search, options, callback = $.noop) {
     const url = Api.buildUrl('/autocomplete/users.json');
     return axios
@@ -311,8 +310,6 @@ const Api = {
       });
   },
 
-=======
->>>>>>> upstream/master
   buildUrl(url) {
     let urlRoot = '';
     if (gon.relative_url_root != null) {
