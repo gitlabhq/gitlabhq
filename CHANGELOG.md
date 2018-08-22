@@ -2,6 +2,18 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.2.1 (2018-08-22)
+
+### Fixed (2 changes)
+
+- Fix wrong commit count in push event payload. !21338
+- Fix broken Git over HTTP clones with LDAP users. !21352
+
+### Performance (1 change)
+
+- Eliminate unnecessary and duplicate system hook fires. !21337
+
+
 ## 11.2.0 (2018-08-22)
 
 ### Security (7 changes)
