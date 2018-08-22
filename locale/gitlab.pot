@@ -2963,6 +2963,12 @@ msgstr ""
 msgid "Error loading project data. Please try again."
 msgstr ""
 
+msgid "Error loading template types."
+msgstr ""
+
+msgid "Error loading template."
+msgstr ""
+
 msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
