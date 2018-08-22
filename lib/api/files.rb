@@ -59,7 +59,7 @@ module API
       params :simple_file_params do
         requires :file_path, type: String, desc: 'The url encoded path to the file. Ex. lib%2Fclass%2Erb'
         requires :branch, type: String, desc: 'Name of the branch to commit into. To create a new branch, also provide `start_branch`.'
-        requires :commit_message, type: String, desc: 'Commit message'
+        requires :commit_message, type: String, allow_blank: false, desc: 'Commit message'
         optional :start_branch, type: String, desc: 'Name of the branch to start the new commit from'
         optional :author_email, type: String, desc: 'The email of the author'
         optional :author_name, type: String, desc: 'The name of the author'

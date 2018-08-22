@@ -91,6 +91,7 @@ module API
         group_link.group.name
       end
       expose :group_access, as: :group_access_level
+      expose :expires_at
     end
 
     class ProjectIdentity < Grape::Entity

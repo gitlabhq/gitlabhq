@@ -1,0 +1,5 @@
+---
+title: Eliminate unnecessary and duplicate system hook fires
+merge_request: 21337
+author:
+type: performance

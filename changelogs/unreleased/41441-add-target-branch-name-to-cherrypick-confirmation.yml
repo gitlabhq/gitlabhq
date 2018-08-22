@@ -1,0 +1,5 @@
+---
+title: Add target branch name to cherrypick confirmation message
+merge_request: 20846
+author: George Andrinopoulos
+type: other

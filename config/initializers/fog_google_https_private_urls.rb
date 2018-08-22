@@ -7,7 +7,7 @@ module Fog
     class GoogleXML
       class File < Fog::Model
         module MonkeyPatch
-          def url(expires)
+          def url(expires, options = {})
             requires :key
             collection.get_https_url(key, expires)
           end

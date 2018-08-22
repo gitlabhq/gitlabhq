@@ -298,13 +298,16 @@ class User < ActiveRecord::Base
     end
   end
 
-  def self.with_two_factor_indistinct
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NOT NULL OR users.otp_required_for_login = ?", true)
-  end
-
   def self.with_two_factor
-    with_two_factor_indistinct.distinct(arel_table[:id])
+    with_u2f_registrations = <<-SQL
+      EXISTS (
+        SELECT *
+        FROM u2f_registrations AS u2f
+        WHERE u2f.user_id = users.id
+      ) OR users.otp_required_for_login = ?
+    SQL
+
+    where(with_u2f_registrations, true)
   end
 
   def self.without_two_factor

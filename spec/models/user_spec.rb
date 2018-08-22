@@ -343,6 +343,14 @@ describe User do
         expect(users_with_two_factor).to eq([user_with_2fa.id])
         expect(users_with_two_factor).not_to include(user_without_2fa.id)
       end
+
+      it 'works with ORDER BY' do
+        user_with_2fa = create(:user, :two_factor_via_otp, :two_factor_via_u2f)
+
+        expect(described_class
+          .with_two_factor
+          .reorder_by_name).to eq([user_with_2fa])
+      end
     end
 
     describe ".without_two_factor" do
