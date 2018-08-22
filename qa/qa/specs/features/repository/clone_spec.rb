@@ -1,5 +1,5 @@
 module QA
-  describe 'clone code from the repository' do
+  describe 'clone code from the repository', :ldap do
     context 'with regular account over http' do
       let(:location) do
         Page::Project::Show.act do
