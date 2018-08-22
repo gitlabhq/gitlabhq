@@ -400,7 +400,7 @@
     fill: none;
 
     &.actual {
-      stroke: $gl-success;
+      stroke: $green-500;
     }
 
     &.ideal {
@@ -412,7 +412,7 @@
   .focus {
     circle {
       fill: $white-light;
-      stroke: $gl-success;
+      stroke: $green-500;
       stroke-width: 2px;
     }
   }

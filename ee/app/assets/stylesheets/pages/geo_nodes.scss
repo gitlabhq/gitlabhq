@@ -29,7 +29,7 @@
 }
 
 .geo-node-healthy {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .geo-node-unhealthy {
@@ -54,7 +54,7 @@
   }
 
   .status-icon-warning {
-    fill: $gl-warning;
+    fill: $orange-500;
   }
 
   .status-icon-failure {
@@ -112,7 +112,7 @@
     }
 
     .detail-value-stale-icon {
-      color: $gl-warning;
+      color: $orange-500;
     }
 
     .node-detail-value-bold {
