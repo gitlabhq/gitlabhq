@@ -270,16 +270,14 @@ $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
 $performance-bar-height: 35px;
-$system-header-height: 35px;
-$system-footer-height: $system-header-height;
 $flash-height: 52px;
 $context-header-height: 60px;
 $breadcrumb-min-height: 48px;
 
 // EE-only CSS variables START
+$system-header-height: 35px;
 $issue-box-upcoming-bg: #8f8f8f;
 $pages-group-name-color: #4c4e54;
-$ldap-members-override-bg: $orange-50;
 // EE-only CSS variables END
 
 /*
@@ -679,7 +677,6 @@ GitLab Plans
 $gl-gold-plan: #d4af37;
 $gl-silver-plan: #91a1ab;
 $gl-bronze-plan: #cd7f32;
-$gl-no-plan: $gl-gray-light;
 
 /*
 Cross-project Pipelines

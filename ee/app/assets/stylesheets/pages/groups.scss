@@ -29,6 +29,6 @@
   }
 
   &:not([data-plan]) {
-    svg g { fill: $gl-no-plan; }
+    svg g { fill: $gl-gray-light; }
   }
 }
