@@ -1,0 +1,5 @@
+---
+title: Fix wrong commit count in push event payload
+merge_request: 21338
+author:
+type: fixed
