@@ -33,7 +33,7 @@
 }
 
 .geo-node-unhealthy {
-  color: $gl-danger;
+  color: $red-500;
 }
 
 .geo-node-offline {
@@ -58,7 +58,7 @@
   }
 
   .status-icon-failure {
-    fill: $gl-danger;
+    fill: $red-500;
   }
 
   .card-body {
@@ -120,7 +120,7 @@
     }
 
     .node-detail-value-error {
-      color: $gl-danger;
+      color: $red-500;
     }
   }
 
