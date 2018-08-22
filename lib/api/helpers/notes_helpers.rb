@@ -92,10 +92,7 @@ module API
 
         parent = noteable_parent(noteable)
 
-        if opts[:created_at]
-          opts.delete(:created_at) unless
-            (current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner))
-        end
+        opts.delete(:created_at) unless current_user.can?(:set_note_created_at, policy_object)
 
         opts[:updated_at] = opts[:created_at] if opts[:created_at]
 

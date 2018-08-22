@@ -172,11 +172,8 @@ module API
 
         authorize! :create_issue, user_project
 
-        # Setting created_at time or iid only allowed for admins and project owners
-        unless current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner)
-          params.delete(:created_at)
-          params.delete(:iid)
-        end
+        params.delete(:created_at) unless current_user.can?(:set_issue_created_at, user_project)
+        params.delete(:iid) unless current_user.can?(:set_issue_iid, user_project)
 
         issue_params = declared_params(include_missing: false)
 
