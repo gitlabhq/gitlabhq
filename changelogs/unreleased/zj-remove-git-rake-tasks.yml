@@ -1,5 +1,0 @@
----
-title: Remove gitlab:user:check_repos, gitlab:check_repo, gitlab:git:prune, gitlab:git:gc, and gitlab:git:repack
-merge_request: 20806
-author:
-type: removed

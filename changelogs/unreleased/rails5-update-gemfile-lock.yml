@@ -1,5 +1,0 @@
----
-title: Update Gemfile.rails5.lock with latest Gemfile.lock changes
-merge_request: 20466
-author: Jasper Maes
-type: fixed

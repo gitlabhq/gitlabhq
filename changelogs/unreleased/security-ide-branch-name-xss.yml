@@ -1,5 +1,0 @@
----
-title: Fixed XSS in branch name in Web IDE
-merge_request:
-author:
-type: security

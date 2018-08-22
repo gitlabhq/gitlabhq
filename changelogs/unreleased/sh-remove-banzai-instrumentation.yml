@@ -1,5 +1,0 @@
----
-title: Remove method instrumentation for Banzai filters and reference parsers
-merge_request: 20770
-author:
-type: performance
