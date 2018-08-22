@@ -1,0 +1,5 @@
+---
+title: Fix broken Git over HTTP clones with LDAP users
+merge_request: 21352
+author:
+type: fixed
