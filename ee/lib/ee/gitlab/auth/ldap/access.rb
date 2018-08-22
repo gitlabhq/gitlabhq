@@ -6,6 +6,19 @@ module EE
           extend ActiveSupport::Concern
           extend ::Gitlab::Utils::Override
 
+          override :update_user
+          def update_user
+            return if ::Gitlab::Database.read_only?
+
+            update_email
+            update_memberships
+            update_identity
+            update_ssh_keys if sync_ssh_keys?
+            update_kerberos_identity if import_kerberos_identities?
+          end
+
+          private
+
           override :find_ldap_user
           def find_ldap_user
             found_user = super
@@ -14,15 +27,6 @@ module EE
             if ldap_identity
               ::Gitlab::Auth::LDAP::Person.find_by_email(user.email, adapter)
             end
-          end
-
-          override :update_user
-          def update_user
-            update_email
-            update_memberships
-            update_identity
-            update_ssh_keys if sync_ssh_keys?
-            update_kerberos_identity if import_kerberos_identities?
           end
 
           # Update user ssh keys if they changed in LDAP
