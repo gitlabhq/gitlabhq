@@ -735,6 +735,9 @@ msgstr ""
 msgid "Are you sure?"
 msgstr ""
 
+msgid "Artifact ID"
+msgstr ""
+
 msgid "Artifacts"
 msgstr ""
 
@@ -2319,6 +2322,9 @@ msgstr ""
 msgid "Created by me"
 msgstr ""
 
+msgid "Created on"
+msgstr ""
+
 msgid "Created on:"
 msgstr ""
 
@@ -2431,6 +2437,9 @@ msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
 msgid "Delete"
+msgstr ""
+
+msgid "Delete Package"
 msgstr ""
 
 msgid "Delete Snippet"
@@ -4452,6 +4461,12 @@ msgstr ""
 msgid "Markdown enabled"
 msgstr ""
 
+msgid "Maven Metadata"
+msgstr ""
+
+msgid "Maven package"
+msgstr ""
+
 msgid "Maximum git storage failures"
 msgstr ""
 
@@ -4901,6 +4916,9 @@ msgstr ""
 msgid "No other labels with such name or description"
 msgstr ""
 
+msgid "No packages stored for this project."
+msgstr ""
+
 msgid "No prioritised labels with such name or description"
 msgstr ""
 
@@ -5147,6 +5165,15 @@ msgid "Overwrite diverged branches"
 msgstr ""
 
 msgid "Owner"
+msgstr ""
+
+msgid "Package information"
+msgstr ""
+
+msgid "Package was removed"
+msgstr ""
+
+msgid "Packages"
 msgstr ""
 
 msgid "Pages"
@@ -6501,6 +6528,9 @@ msgstr ""
 msgid "Sign-up restrictions"
 msgstr ""
 
+msgid "Size"
+msgstr ""
+
 msgid "Size and domain settings for static websites"
 msgstr ""
 
@@ -7512,6 +7542,9 @@ msgstr ""
 msgid "Twitter"
 msgstr ""
 
+msgid "Type"
+msgstr ""
+
 msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
@@ -7672,6 +7705,9 @@ msgid "Verification information"
 msgstr ""
 
 msgid "Verified"
+msgstr ""
+
+msgid "Version"
 msgstr ""
 
 msgid "View epics list"
