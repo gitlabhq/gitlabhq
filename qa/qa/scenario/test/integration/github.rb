@@ -2,7 +2,7 @@ module QA
   module Scenario
     module Test
       module Integration
-        class Github < Test::Instance
+        class Github < Test::Instance::All
           tags :github
 
           def perform(address, *rspec_options)
