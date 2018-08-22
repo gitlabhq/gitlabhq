@@ -1,5 +1,5 @@
 ---
 title: Allow date parameters on Issues and Notes API for group owners
-merge_request:
+merge_request: 21342
 author: Florent Dubois
 type: fixed
