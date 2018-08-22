@@ -223,9 +223,13 @@ describe GitPushService, services: true do
       end
     end
 
-    context "Sends System Push data" do
-      it "when pushing on a branch" do
-        expect(SystemHookPushWorker).to receive(:perform_async).with(push_data, :push_hooks)
+    describe 'system hooks' do
+      let(:system_hook_service) { double() }
+
+      it "sends a system hook after pushing a branch" do
+        expect(SystemHooksService).to receive(:new).and_return(system_hook_service)
+        expect(system_hook_service).to receive(:execute_hooks).with(push_data, :push_hooks)
+
         execute_service(project, user, oldrev, newrev, ref)
       end
     end
