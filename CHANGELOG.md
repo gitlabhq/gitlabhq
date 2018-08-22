@@ -4,25 +4,15 @@ entry.
 
 ## 11.2.0 (2018-08-22)
 
-<<<<<<< HEAD
 ### Security (7 changes)
 
 - Bump Gitaly to 0.117.1 for Rouge update. !21277
 - Fix symlink vulnerability in project import.
+- Bump rugged to 0.27.4 for security fixes.
+- Fixed XSS in branch name in Web IDE.
 - Adding CSRF protection to Hooks test action.
 - Don't expose project names in GitHub counters.
-- Bump rugged to 0.27.4 for security fixes.
 - Don't expose project names in various counters.
-- Fixed XSS in branch name in Web IDE.
-=======
-### Security (5 changes)
-
-- Bump Gitaly to 0.117.1 for Rouge update. !21277
-- Fix symlink vulnerability in project import.
-- Bump rugged to 0.27.4 for security fixes.
-- Fixed XSS in branch name in Web IDE.
-- Adding CSRF protection to Hooks test action.
->>>>>>> upstream/master
 
 ### Removed (1 change)
 
@@ -82,15 +72,9 @@ entry.
 - Fix bug setting http headers in Files API. !20938
 - Rails5: fix flaky spec. !20953 (Jasper Maes)
 - Fixed list of projects not loading in group boards. !20955
-<<<<<<< HEAD
-- Fix rendering of the context lines in MR diffs page. !20968
-- Fix navigation to First and Next discussion on MR Changes tab. !20968
-- Fix autosave and ESC confirmation issues for MR discussions. !20968
-=======
 - Fix autosave and ESC confirmation issues for MR discussions. !20968
 - Fix navigation to First and Next discussion on MR Changes tab. !20968
 - Fix rendering of the context lines in MR diffs page. !20968
->>>>>>> upstream/master
 - fix error caused when using the search bar while unauthenticated. !20970
 - Fix GPG status badge loading regressions. !20987
 - Ensure links in notifications footer are not escaped. !21000
@@ -104,20 +88,6 @@ entry.
 - Fix issue stopping Instance Statistics javascript to be executed. !21211
 - Fix broken JavaScript in IE11. !21214
 - Improve JUnit test reports in merge request widgets. !49966
-<<<<<<< HEAD
-- Fix handling of annotated tags when Gitaly is not in use.
-- Properly handle colons in URL passwords.
-- Renders test reports for resolved failures and resets error state.
-- Sanitize git URL in import errors. (Jamie Schembri)
-- Fix updated_at if created_at is set for Note API.
-- Allow to toggle notifications for issues due soon.
-- Fix serialization of LegacyDiffNote.
-- Update hamlit to fix ruby 2.5 incompatibilities, fixes #42045. (Matthew Dawson)
-- Escapes milestone and label's names on flash notice when promoting them.
-- Add missing predefined variable and fix docs.
-- Allow updating a project's avatar without other params. (Jamie Schembri)
-- Fix the UI for listing system-level labels.
-=======
 - Properly handle colons in URL passwords.
 - Renders test reports for resolved failures and resets error state.
 - Fix handling of annotated tags when Gitaly is not in use.
@@ -130,7 +100,6 @@ entry.
 - Fix the UI for listing system-level labels.
 - Update hamlit to fix ruby 2.5 incompatibilities, fixes #42045. (Matthew Dawson)
 - Fix updated_at if created_at is set for Note API.
->>>>>>> upstream/master
 - Fix search bar text input alignment.
 
 ### Changed (32 changes, 7 of them are from the community)
@@ -164,15 +133,9 @@ entry.
 - Update to Rouge 3.2.0, including Terraform and Crystal lexer and bug fixes. !20991
 - Update design of project templates. !21012
 - Update to Rouge 3.2.1, which includes a critical fix to the Perl Lexer. !21263
-<<<<<<< HEAD
-- Redesign GCP offer banner.
-- Add a 10 ms bucket for SQL timings.
-- Show one digit after dot in commit_per_day value in charts page. (msdundar)
-=======
 - Add a 10 ms bucket for SQL timings.
 - Show one digit after dot in commit_per_day value in charts page. (msdundar)
 - Redesign GCP offer banner.
->>>>>>> upstream/master
 
 ### Performance (30 changes, 10 of them are from the community)
 
@@ -243,15 +206,6 @@ entry.
 - Clean orphaned files in object storage. !20918
 - Adds frontend support to render test reports on the MR widget. !20936
 - Trigger system hooks when project is archived/unarchived. !20995
-<<<<<<< HEAD
-- Emails on push recipients now accepts formats like John Doe <johndoe@example.com>. (George Thomas)
-- Added button to regenerate 2FA codes. (Luke Picciau)
-- Improve danger confirmation modals by focusing input field. (Jamie Schembri)
-- Add new model for tracking label events.
-- Custom Wiki Sidebar Support Issue 14995. (Josh Sooter)
-- Clicking CI icon in Web IDE now opens up pipelines panel.
-- Enabled deletion of files in the Web IDE.
-=======
 - Custom Wiki Sidebar Support Issue 14995. (Josh Sooter)
 - Emails on push recipients now accepts formats like John Doe <johndoe@example.com>. (George Thomas)
 - Add new model for tracking label events.
@@ -259,7 +213,6 @@ entry.
 - Clicking CI icon in Web IDE now opens up pipelines panel.
 - Enabled deletion of files in the Web IDE.
 - Added button to regenerate 2FA codes. (Luke Picciau)
->>>>>>> upstream/master
 
 ### Other (26 changes, 7 of them are from the community)
 
@@ -285,15 +238,9 @@ entry.
 - Update git rerere link in docs. !21060 (gfyoung)
 - Add 'tabindex' attribute support on Icon component to show BS4 popover on trigger type 'focus'. !21066
 - Add a Gitlab::Profiler.print_by_total_time convenience method for profiling from a Rails console.
-<<<<<<< HEAD
-- Disables toggle comments button if diff has no discussions.
-- Automatically expand runner's settings block when linking to the runner's settings page.
-- Increases title column on modal for reports.
-=======
 - Automatically expand runner's settings block when linking to the runner's settings page.
 - Increases title column on modal for reports.
 - Disables toggle comments button if diff has no discussions.
->>>>>>> upstream/master
 - Moves help_popover component to a common location.
 
 
