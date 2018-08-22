@@ -913,10 +913,26 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to be_nil
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
+      end
+
+      it 'returns a group link with expiration date' do
+        group = create(:group)
+        expires_at = 5.days.from_now.to_date
+        link = create(:project_group_link, project: project, group: group, expires_at: expires_at)
+
+        get api("/projects/#{project.id}", user)
+
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
       end
 
       it 'returns a project by path name' do
