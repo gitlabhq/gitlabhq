@@ -1,5 +1,0 @@
----
-title: Fix email confirmation bug when user adds additional email to account
-merge_request: 20084
-author: muhammadn
-type: fixed
