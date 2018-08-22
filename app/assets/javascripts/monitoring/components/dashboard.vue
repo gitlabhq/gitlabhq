@@ -130,7 +130,9 @@ export default {
     getGraphsData() {
       this.state = 'loading';
       Promise.all([
-        this.service.getGraphsData().then(data => this.store.storeMetrics(data)),
+        this.service.getGraphsData().then(data => {
+          this.store.storeMetrics(data)
+        }),
         this.service
           .getDeploymentData()
           .then(data => this.store.storeDeploymentData(data))
@@ -141,6 +143,7 @@ export default {
           .catch(() => Flash(s__('Metrics|There was an error getting environments information.'))),
       ])
         .then(() => {
+          return;
           if (this.store.groups.length < 1) {
             this.state = 'noData';
             return;
@@ -171,7 +174,7 @@ export default {
 
 <template>
   <div
-    v-if="!showEmptyState"
+    v-if="showEmptyState"
     class="prometheus-graphs prepend-top-10"
   >
     <div class="environments d-flex align-items-center">

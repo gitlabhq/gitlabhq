@@ -31,6 +31,92 @@ export default class MonitoringService {
   }
 
   getGraphsData() {
+    const initialTime = 1532868277.633;
+
+    function createValues(length = 20) {
+      let values = []
+      for (let i = 0; i < length; i++)  {
+        const increase = i * 60
+        let time = initialTime + increase
+        const value = Math.random()
+        values.push([
+          time,
+          value
+        ])
+      }
+      return values
+    }
+    const values = createValues()
+
+    const valuesWithZeroes = [
+      ...values.slice(0, 4),
+      [
+        values[4][0],
+        0
+      ],
+      [
+        values[5][0],
+        0
+      ],
+      ...values.slice(6)
+    ];
+
+    const valuesWithGap = [
+      ...createValues().slice(1, 4),
+      ...createValues().slice(6),
+    ];
+
+    const results = [
+      {
+        "group": "Response metrics (Custom)",
+        "priority": 0,
+        "metrics": [
+          {
+            "title": "Error Rate",
+            "weight": 0,
+            "y_label": "Error Rate",
+            "queries": [
+              {
+                "query_range": "sum(backend_code:haproxy_server_http_responses_total:irate1m{tier=\"lb\", environment=\"prd\", code=\"5xx\"}) by (code,backend)",
+                "unit": "errors / min",
+                "label": "errors / min",
+                "result": [
+                  {
+                    "metric": {
+                      "backend": "canary_web",
+                      "code": "5xx"
+                    },
+                    "values": valuesWithGap,
+                  },
+                  {
+                    "metric": {
+                      "backend": "https_git",
+                      "code": "5xx"
+                    },
+                    values: values
+                  },
+                  {
+                    "metric": {
+                      "backend": "pages_http",
+                      "code": "5xx"
+                    },
+                    values: createValues()
+                  },
+                  {
+                    "metric": {
+                      "backend": "registry",
+                      "code": "5xx"
+                    },
+                    values: valuesWithGap
+                  },
+                ]
+              }
+            ]
+          },
+        ]
+      }
+    ];
+    return Promise.resolve(results);
     return backOffRequest(() => axios.get(this.metricsEndpoint))
       .then(resp => resp.data)
       .then((response) => {

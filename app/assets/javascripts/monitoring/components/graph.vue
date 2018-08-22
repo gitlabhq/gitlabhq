@@ -72,6 +72,7 @@ export default {
       graphWidth: 600,
       graphHeightOffset: 120,
       margin: {},
+      point: {},
       unitOfDisplay: '',
       yAxisLabel: '',
       legendTitle: '',
@@ -107,6 +108,16 @@ export default {
     deploymentFlagData() {
       return this.reducedDeploymentData.find(deployment => deployment.showDeploymentFlag);
     },
+    activeTimeSeries() {
+      if (!this.point) return [];
+      return this.timeSeries.filter((series) => {
+        const timeValueOverlay = series.timeSeriesScaleX.invert(this.point.x);
+        const overlayIndex = bisectDate(series.values, timeValueOverlay);
+        const d0 = series.values[overlayIndex - 1];
+        const d1 = series.values[overlayIndex];
+        return !(d0 === undefined || d1 === undefined);
+      })
+    }
   },
   watch: {
     updateAspectRatio() {
@@ -149,22 +160,43 @@ export default {
       this.renderAxesPaths();
       this.formatDeployments();
     },
+    handleMouseMove(evt) {
+      if (this.moving) {
+        return;
+      }
+      requestAnimationFrame(() => {
+        this.handleMouseOverGraph(evt);
+        this.moving = false;
+      });
+      this.moving = true;
+    },
     handleMouseOverGraph(e) {
-      let point = this.$refs.graphData.createSVGPoint();
-      point.x = e.clientX;
-      point.y = e.clientY;
-      point = point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
-      point.x += 7;
-      const firstTimeSeries = this.timeSeries[0];
-      const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(point.x);
-      const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay, 1);
+      this.point = this.$refs.graphData.createSVGPoint();
+      this.point.x = e.clientX;
+      this.point.y = e.clientY;
+      this.point = this.point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
+      this.point.x += 7;
+      const timeSeriesWithValues = this.timeSeries.find((series) => {
+        const timeValueOverlay = series.timeSeriesScaleX.invert(this.point.x);
+        const overlayIndex = bisectDate(series.values, timeValueOverlay);
+        const d0 = series.values[overlayIndex - 1];
+        const d1 = series.values[overlayIndex];
+        return !(d0 === undefined || d1 === undefined);
+      })
+      if (!timeSeriesWithValues) debugger
+      const firstTimeSeries = timeSeriesWithValues;
+      const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(this.point.x);
+      const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay);
       const d0 = firstTimeSeries.values[overlayIndex - 1];
       const d1 = firstTimeSeries.values[overlayIndex];
-      if (d0 === undefined || d1 === undefined) return;
+      if (d0 === undefined || d1 === undefined) {
+        console.log('errrrr')
+        return;
+      }
       const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
       const hoveredDataIndex = evalTime ? overlayIndex : overlayIndex - 1;
       const hoveredDate = firstTimeSeries.values[hoveredDataIndex].time;
-      const currentDeployXPos = this.mouseOverDeployInfo(point.x);
+      const currentDeployXPos = this.mouseOverDeployInfo(this.point.x);
 
       eventHub.$emit('hoverChanged', {
         hoveredDate,
@@ -172,11 +204,14 @@ export default {
       });
     },
     renderAxesPaths() {
+      const graphWidthOffset = 70;
+      const graphWidth = this.graphWidth - graphWidthOffset;
+      const graphHeight = this.graphHeight - this.graphHeightOffset;
+
       this.timeSeries = createTimeSeries(
         this.graphData.queries,
-        this.graphWidth,
-        this.graphHeight,
-        this.graphHeightOffset,
+        graphWidth,
+        graphHeight,
       );
 
       if (_.findWhere(this.timeSeries, { renderCanary: true })) {
@@ -273,13 +308,15 @@ export default {
             v-for="(path, index) in timeSeries"
             :key="index"
             :generated-line-path="path.linePath"
+            :generated-line-paths="path.linePaths"
             :generated-area-path="path.areaPath"
+            :generated-area-paths="path.areaPaths"
             :line-style="path.lineStyle"
             :line-color="path.lineColor"
             :area-color="path.areaColor"
             :current-coordinates="currentCoordinates[index]"
             :current-time-series-index="index"
-            :show-dot="showFlagContent"
+            :show-dot="(showFlagContent && currentCoordinates[index]) ? true : false"
           />
           <graph-deployment
             :deployment-data="reducedDeploymentData"
@@ -292,7 +329,7 @@ export default {
             :height="(graphHeight - 100)"
             class="prometheus-graph-overlay"
             transform="translate(-5, 20)"
-            @mousemove="handleMouseOverGraph($event)"
+            @mousemove="handleMouseOverGraph"
           />
         </svg>
       </svg>
@@ -303,7 +340,7 @@ export default {
         :graph-height="graphHeight"
         :graph-height-offset="graphHeightOffset"
         :show-flag-content="showFlagContent"
-        :time-series="timeSeries"
+        :time-series="activeTimeSeries"
         :unit-of-display="unitOfDisplay"
         :legend-title="legendTitle"
         :deployment-flag-data="deploymentFlagData"

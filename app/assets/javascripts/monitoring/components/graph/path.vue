@@ -5,8 +5,16 @@ export default {
       type: String,
       required: true,
     },
+    generatedLinePaths: {
+      type: Array,
+      required: true,
+    },
     generatedAreaPath: {
       type: String,
+      required: true,
+    },
+    generatedAreaPaths: {
+      type: Array,
       required: true,
     },
     lineStyle: {
@@ -53,11 +61,13 @@ export default {
       r="3"
     />
     <path
+      v-for="generatedAreaPath in generatedAreaPaths"
       :d="generatedAreaPath"
       :fill="areaColor"
       class="metric-area"
     />
     <path
+      v-for="generatedLinePath in generatedLinePaths"
       :d="generatedLinePath"
       :stroke="lineColor"
       :stroke-dasharray="strokeDashArray"

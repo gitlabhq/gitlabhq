@@ -29,7 +29,7 @@ const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
 const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
 
-function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle) {
+function queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle) {
   let usedColors = [];
   let renderCanary = false;
   const timeSeriesParsed = [];
@@ -65,9 +65,9 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       renderCanary = true;
     }
 
-    const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth - 70]);
+    const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth]);
 
-    const timeSeriesScaleY = d3.scaleLinear().range([graphHeight - graphHeightOffset, 0]);
+    const timeSeriesScaleY = d3.scaleLinear().range([graphHeight, 0]);
 
     timeSeriesScaleX.domain(xDom);
     timeSeriesScaleX.ticks(d3.timeMinute, 60);
@@ -87,7 +87,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       .defined(defined)
       .curve(d3.curveLinear)
       .x(d => timeSeriesScaleX(d.time))
-      .y0(graphHeight - graphHeightOffset)
+      .y0(graphHeight)
       .y1(d => timeSeriesScaleY(d.value));
 
     const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
@@ -119,9 +119,31 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
       });
     }
 
+    const lineSegments = timeSeries.values.reduce((acc, curr) => {
+      const lastIndex = (acc.length || 1) - 1;
+      acc[lastIndex] = acc[lastIndex] || []
+
+      const lastItemIndex = (acc[lastIndex].length || 1) - 1
+      const lastItem = acc[lastIndex][lastItemIndex]
+
+      if (lastItem) {
+        const diff = curr.time - lastItem.time
+        if (diff > 60000) {
+          acc.push([curr]);
+        } else {
+          acc[lastIndex] = acc[lastIndex].concat(curr);
+        }
+      } else {
+        acc[lastIndex] = acc[lastIndex].concat(curr)
+      }
+      return acc;
+    }, []);
+
     timeSeriesParsed.push({
       linePath: lineFunction(timeSeries.values),
+      linePaths: lineSegments.map(lineFunction),
       areaPath: areaFunction(timeSeries.values),
+      areaPaths: lineSegments.map(areaFunction),
       timeSeriesScaleX,
       timeSeriesScaleY,
       values: timeSeries.values,
@@ -140,7 +162,8 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom
   return timeSeriesParsed;
 }
 
-export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
+export default function createTimeSeries(queries, graphWidth, graphHeight) {
+
   const allValues = queries.reduce(
     (allQueryResults, query) =>
       allQueryResults.concat(
@@ -155,7 +178,7 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
   return queries.reduce((series, query, index) => {
     const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
     return series.concat(
-      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle),
+      queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle),
     );
   }, []);
 }

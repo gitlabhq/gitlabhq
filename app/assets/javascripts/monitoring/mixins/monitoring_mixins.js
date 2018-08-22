@@ -29,7 +29,7 @@ const mixins = {
         time.setSeconds(this.timeSeries[0].values[0].time.getSeconds());
 
         if (xPos >= 0) {
-          const seriesIndex = bisectDate(this.timeSeries[0].values, time, 1);
+          const seriesIndex = bisectDate(this.timeSeries[0].values, time);
 
           deploymentDataArray.push({
             id: deployment.id,
@@ -50,15 +50,21 @@ const mixins = {
     },
 
     positionFlag() {
-      const timeSeries = this.timeSeries[0];
-      const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate, 1);
+      const timeSeries = this.activeTimeSeries[0];
+      if (!timeSeries) return;
+      const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate);
 
-      this.currentData = timeSeries.values[hoveredDataIndex];
+      this.currentData = timeSeries.values[hoveredDataIndex] || {};
+      if (!this.currentData || !timeSeries) {
+        return;
+      }
       this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
+      console.log(timeSeries)
 
       this.currentCoordinates = this.timeSeries.map((series) => {
-        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate, 1);
+        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
         const currentData = series.values[currentDataIndex];
+        if  (!currentData) { debugger; return null; }
         const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
         const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
 
