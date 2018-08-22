@@ -224,11 +224,11 @@ describe GitPushService, services: true do
     end
 
     describe 'system hooks' do
-      let(:system_hook_service) { double() }
+      let(:system_hooks_service) { SystemHooksService.new }
 
       it "sends a system hook after pushing a branch" do
-        expect(SystemHooksService).to receive(:new).and_return(system_hook_service)
-        expect(system_hook_service).to receive(:execute_hooks).with(push_data, :push_hooks)
+        expect(SystemHooksService).to receive(:new).and_return(system_hooks_service)
+        expect(system_hooks_service).to receive(:execute_hooks).with(push_data, :push_hooks)
 
         execute_service(project, user, oldrev, newrev, ref)
       end
