@@ -72,8 +72,17 @@ module Clusters
               "clientSecret" => oauth_application.secret,
               "callbackUrl" => callback_url
             }
+          },
+          "singleuser" => {
+            "extraEnv" => {
+              "GITLAB_PROJECT_ID" => project_id
+            }
           }
         }
+      end
+
+      def project_id
+        cluster&.project&.id
       end
 
       def gitlab_url
