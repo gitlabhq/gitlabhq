@@ -8,7 +8,7 @@ module Gitlab
   # This method is used for smooth upgrading from the current Rails 4.x to Rails 5.0.
   # https://gitlab.com/gitlab-org/gitlab-ce/issues/14286
   def self.rails5?
-    ENV["RAILS5"].in?(%w[1 true])
+    !%w[0 false].include?(ENV["RAILS5"])
   end
 
   class Application < Rails::Application
