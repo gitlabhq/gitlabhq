@@ -394,23 +394,23 @@
 }
 
 .vs-public {
-  color: $gl-primary;
+  color: $blue-500;
 }
 
 .vs-internal {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .vs-private {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-enabled {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-disabled {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .breadcrumb.repo-breadcrumb {
@@ -732,7 +732,7 @@
       background-color: transparent;
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
-      color: $notes-light-color;
+      color: $gl-text-color-secondary;
     }
 
     .stat-link {

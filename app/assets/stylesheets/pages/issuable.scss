@@ -144,7 +144,7 @@
       color: $blue-800;
 
       .avatar {
-        border-color: rgba($avatar-border, .2);
+        border-color: rgba($gray-normal, .2);
       }
 
     }
@@ -240,7 +240,7 @@
     }
 
     a.edit-link:not([href]):hover {
-      color: rgba($avatar-border, .2);
+      color: rgba($gray-normal, .2);
     }
 
     .lock-edit, // uses same style, different js behaviour
@@ -946,7 +946,7 @@
   &.focus,
   &.focus:hover {
     border-color: $blue-300;
-    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
   }
 }
 
