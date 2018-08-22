@@ -104,7 +104,7 @@ class Member < ActiveRecord::Base
     def filter_by_2fa(value)
       case value
       when 'enabled'
-        left_join_users.merge(User.with_two_factor_indistinct)
+        left_join_users.merge(User.with_two_factor)
       when 'disabled'
         left_join_users.merge(User.without_two_factor)
       else

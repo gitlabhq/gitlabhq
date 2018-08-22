@@ -1,0 +1,5 @@
+---
+title: Bump fog-google to 1.7.0 and google-api-client to 0.23.0
+merge_request: 21295
+author:
+type: fixed
