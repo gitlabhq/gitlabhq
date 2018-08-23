@@ -1,0 +1,5 @@
+---
+title: Speed up diff comparisons by limiting number of commit messages rendered
+merge_request: 21335
+author:
+type: performance

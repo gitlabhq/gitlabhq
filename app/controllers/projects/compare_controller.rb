@@ -78,7 +78,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def define_commits
-    @commits = compare.present? ? prepare_commits_for_rendering(compare.commits) : []
+    @commits = compare.present? ? set_commits_for_rendering(@compare.commits) : []
   end
 
   def define_diffs
