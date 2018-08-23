@@ -460,8 +460,10 @@ GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is o
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
-
     # Type 'yes' to create the database tables.
+    
+    # or you can skip the question by adding force=yes
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 
     # When done you see 'Administrator account created:'
 
