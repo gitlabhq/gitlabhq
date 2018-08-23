@@ -382,6 +382,14 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     end
   end
 
+  describe '#cluster' do
+    subject { service.cluster }
+
+    it 'is always nil' do
+      is_expected.to be_nil
+    end
+  end
+
   describe "#deprecated?" do
     let(:kubernetes_service) { create(:kubernetes_service) }
 

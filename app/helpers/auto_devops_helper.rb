@@ -24,23 +24,14 @@ module AutoDevopsHelper
     end
   end
 
-  def cluster_ingress_ip(project)
-    project
-      .cluster_ingresses
-      .where("external_ip is not null")
-      .limit(1)
-      .pluck(:external_ip)
-      .first
-  end
-
   def cluster_ingress_domain(project)
-    project.cluster_ingress_domain
+    project.cluster_ingresses.where("external_ip is not null").first&.default_domain
   end
 
   private
 
   def missing_auto_devops_domain?(project)
-    !project.cluster_ingress_domain && !(project.auto_devops || project.build_auto_devops)&.has_domain?
+    !cluster_ingress_domain(project) && !(project.auto_devops || project.build_auto_devops)&.has_domain?
   end
 
   def missing_auto_devops_service?(project)

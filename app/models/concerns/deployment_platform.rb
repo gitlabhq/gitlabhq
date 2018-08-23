@@ -9,29 +9,33 @@ module DeploymentPlatform
     @deployment_platform[environment] ||= find_deployment_platform(environment)
   end
 
+  # EE would override this and utilize environment argument
+  def deployment_cluster(environment: nil)
+    deployment_platform(environment: environment)&.cluster
+  end
+
   private
 
   def find_deployment_platform(environment)
-    find_cluster_platform_kubernetes(environment: environment) ||
+    find_cluster(environment: environment)&.platform_kubernetes ||
       find_kubernetes_service_integration ||
-      build_cluster_and_deployment_platform
+      build_cluster&.platform_kubernetes
   end
 
   # EE would override this and utilize environment argument
-  def find_cluster_platform_kubernetes(environment: nil)
-    clusters.enabled.default_environment
-      .last&.platform_kubernetes
+  def find_cluster(environment: nil)
+    clusters.enabled.default_environment.last
   end
 
   def find_kubernetes_service_integration
     services.deployment.reorder(nil).find_by(active: true)
   end
 
-  def build_cluster_and_deployment_platform
+  def build_cluster
     return unless kubernetes_service_template
 
     cluster = ::Clusters::Cluster.create(cluster_attributes_from_service_template)
-    cluster.platform_kubernetes if cluster.persisted?
+    cluster if cluster.persisted?
   end
 
   def kubernetes_service_template

@@ -104,6 +104,11 @@ class KubernetesService < DeploymentService
     { success: false, result: err }
   end
 
+  # compatibility with Clusters::Plaforms::Kubernetes
+  def cluster
+    nil
+  end
+
   def predefined_variables
     config = YAML.dump(kubeconfig)
 

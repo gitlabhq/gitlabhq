@@ -23,13 +23,17 @@ class ProjectAutoDevops < ActiveRecord::Base
     domain.present? || instance_domain.present?
   end
 
-  def predefined_variables
+  def auto_devops_domain_variable
     Gitlab::Ci::Variables::Collection.new.tap do |variables|
       if has_domain?
         variables.append(key: 'AUTO_DEVOPS_DOMAIN',
                          value: domain.presence || instance_domain)
       end
+    end
+  end
 
+  def predefined_variables
+    Gitlab::Ci::Variables::Collection.new.tap do |variables|
       if manual?
         variables.append(key: 'STAGING_ENABLED', value: '1')
         variables.append(key: 'INCREMENTAL_ROLLOUT_ENABLED', value: '1')

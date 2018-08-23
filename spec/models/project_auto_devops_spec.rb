@@ -38,14 +38,16 @@ describe ProjectAutoDevops do
     end
   end
 
-  describe '#predefined_variables' do
+  describe '#auto_devops_domain_variable' do
     let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: domain) }
+
+    subject { auto_devops.auto_devops_domain_variable }
 
     context 'when domain is defined' do
       let(:domain) { 'example.com' }
 
       it 'returns AUTO_DEVOPS_DOMAIN' do
-        expect(auto_devops.predefined_variables).to include(domain_variable)
+        expect(subject).to include(domain_variable)
       end
     end
 
@@ -57,7 +59,7 @@ describe ProjectAutoDevops do
           allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return('example.com')
         end
 
-        it { expect(auto_devops.predefined_variables).to include(domain_variable) }
+        it { expect(subject).to include(domain_variable) }
       end
 
       context 'when there is no instance domain specified' do
@@ -65,9 +67,17 @@ describe ProjectAutoDevops do
           allow(Gitlab::CurrentSettings).to receive(:auto_devops_domain).and_return(nil)
         end
 
-        it { expect(auto_devops.predefined_variables).not_to include(domain_variable) }
+        it { expect(subject).not_to include(domain_variable) }
       end
     end
+
+    def domain_variable
+      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
+    end
+  end
+
+  describe '#predefined_variables' do
+    let(:auto_devops) { build_stubbed(:project_auto_devops, project: project, domain: domain) }
 
     context 'when deploy_strategy is manual' do
       let(:domain) { 'example.com' }
@@ -93,10 +103,6 @@ describe ProjectAutoDevops do
         expect(auto_devops.predefined_variables.map { |var| var[:key] })
           .not_to include("STAGING_ENABLED", "INCREMENTAL_ROLLOUT_ENABLED")
       end
-    end
-
-    def domain_variable
-      { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true }
     end
   end
 

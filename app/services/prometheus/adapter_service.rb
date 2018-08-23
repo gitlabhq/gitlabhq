@@ -27,10 +27,10 @@ module Prometheus
     end
 
     def cluster_prometheus_adapter
-      return unless deployment_platform.respond_to?(:cluster)
+      return unless deployment_platform
 
       cluster = deployment_platform.cluster
-      return unless cluster.application_prometheus&.ready?
+      return unless cluster&.application_prometheus&.ready?
 
       cluster.application_prometheus
     end

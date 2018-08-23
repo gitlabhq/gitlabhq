@@ -1838,21 +1838,15 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables(environment: nil)
-    deployment_platform(environment: environment)&.predefined_variables || []
+    Gitlab::Ci::Variables::Collection.new
+      .concat(deployment_platform(environment: environment)&.predefined_variables || [])
+      .concat(auto_devops_domain_variable(deployment_cluster(environment: environment)))
   end
 
   def auto_devops_variables
     return [] unless auto_devops_enabled?
 
-    ingress_default_domain_variable + (auto_devops || build_auto_devops)&.predefined_variables
-  end
-
-  def cluster_ingress_domain(environment: nil)
-    # Kubernetes service template (deprecated) would not have a cluster
-    platform = deployment_platform(environment: environment)
-    return unless platform.respond_to?(:cluster)
-
-    platform&.cluster&.application_ingress&.default_domain
+    (auto_devops || build_auto_devops)&.predefined_variables
   end
 
   def append_or_update_attribute(name, value)
@@ -2221,14 +2215,6 @@ class Project < ActiveRecord::Base
     ContainerRepository.build_root_repository(self).has_tags?
   end
 
-  def ingress_default_domain_variable
-    Gitlab::Ci::Variables::Collection.new.tap do |variables|
-      if domain = cluster_ingress_domain
-        variables.append(key: 'AUTO_DEVOPS_DOMAIN', value: domain)
-      end
-    end
-  end
-
   def handle_update_attribute_error(ex, value)
     if ex.message.start_with?('Failed to replace')
       if value.respond_to?(:each)
@@ -2265,5 +2251,17 @@ class Project < ActiveRecord::Base
     else
       check_access.call
     end
+  end
+
+  def auto_devops_domain_variable(deployment_cluster)
+    return [] unless auto_devops_enabled?
+
+    variables = Gitlab::Ci::Variables::Collection.new
+
+    if default_domain = deployment_cluster&.application_ingress&.default_domain
+      variables.append(key: 'AUTO_DEVOPS_DOMAIN', value: default_domain)
+    end
+
+    variables.concat((auto_devops || build_auto_devops)&.auto_devops_domain_variable)
   end
 end
