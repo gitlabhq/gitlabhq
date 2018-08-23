@@ -56,6 +56,7 @@ describe Gitlab::UsageData do
       expect(count_data[:projects]).to eq(3)
 
       expect(count_data.keys).to match_array(%i(
+        assignee_lists
         boards
         ci_builds
         ci_internal_pipelines
@@ -83,9 +84,11 @@ describe Gitlab::UsageData do
         groups
         issues
         keys
+        label_lists
         labels
         lfs_objects
         merge_requests
+        milestone_lists
         milestones
         notes
         projects

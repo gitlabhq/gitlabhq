@@ -34,6 +34,7 @@ module Gitlab
       def system_usage_data
         {
           counts: {
+            assignee_lists: List.assignee.count,
             boards: Board.count,
             ci_builds: ::Ci::Build.count,
             ci_internal_pipelines: ::Ci::Pipeline.internal.count,
@@ -61,9 +62,11 @@ module Gitlab
             groups: Group.count,
             issues: Issue.count,
             keys: Key.count,
+            label_lists: List.label.count,
             labels: Label.count,
             lfs_objects: LfsObject.count,
             merge_requests: MergeRequest.count,
+            milestone_lists: List.milestone.count,
             milestones: Milestone.count,
             notes: Note.count,
             pages_domains: PagesDomain.count,
