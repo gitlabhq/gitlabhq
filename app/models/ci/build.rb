@@ -310,7 +310,7 @@ module Ci
         variables.concat(project.predefined_variables)
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
-        variables.concat(project.deployment_variables(environment: environment)) if environment
+        variables.concat(project.deployment_variables(environment: environment))
         variables.concat(yaml_variables)
         variables.concat(user_variables)
         variables.concat(secret_group_variables)
