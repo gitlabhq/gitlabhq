@@ -85,8 +85,7 @@ class Project < ActiveRecord::Base
   after_create :create_project_feature, unless: :project_feature
 
   after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy ->(project) { project.project_feature } # keep reference so we can untrack later
-  after_destroy :untrack_site_statistics
+  before_destroy :untrack_site_statistics
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -2095,7 +2094,7 @@ class Project < ActiveRecord::Base
 
   def untrack_site_statistics
     SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
-    SiteStatistic.project_feature.untrack_statistics_for_deletion!
+    self.project_feature.untrack_statistics_for_deletion!
   end
 
   def execute_rename_repository_hooks!(full_path_before)
