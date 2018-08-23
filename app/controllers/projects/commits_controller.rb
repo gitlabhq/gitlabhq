@@ -63,7 +63,7 @@ class Projects::CommitsController < Projects::ApplicationController
       end
 
     @commits = @commits.with_pipeline_status
-    @commits = prepare_commits_for_rendering(@commits)
+    @commits = set_commits_for_rendering(@commits)
   end
 
   # Rails 5 sets request.format from the extension.
