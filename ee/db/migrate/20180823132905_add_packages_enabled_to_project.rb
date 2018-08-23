@@ -7,7 +7,7 @@ class AddPackagesEnabledToProject < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:projects, :packages_enabled, :boolean, default: false, allow_null: false)
+    add_column_with_default(:projects, :packages_enabled, :boolean, default: true, allow_null: false)
   end
 
   def down
