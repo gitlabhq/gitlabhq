@@ -25,8 +25,8 @@
 
 .footer-message {
   bottom: 0;
-  height: $system-footer-height;
-  line-height: $system-footer-height;
+  height: $system-header-height;
+  line-height: $system-header-height;
 }
 
 .with-performance-bar {
@@ -104,7 +104,7 @@
   // navless pages' footer border eg: login page
   &.devise-layout-html body .footer-container,
   &.devise-layout-html body hr.footer-fixed {
-    bottom: $system-footer-height;
+    bottom: $system-header-height;
   }
 }
 
@@ -121,7 +121,7 @@
   }
 
   @if (map-get($map, system-footer) == true) {
-    $height: $height + $system-footer-height;
+    $height: $height + $system-header-height;
   }
 
   @if (map-get($map, flash) == true) {

@@ -147,7 +147,7 @@
 }
 
 @mixin dropdown-item-hover {
-  background-color: $dropdown-item-hover-bg;
+  background-color: $gray-darker;
   color: $gl-text-color;
   outline: 0;
 
@@ -195,7 +195,7 @@
     text-decoration: none;
 
     .badge.badge-pill {
-      background-color: darken($dropdown-link-hover-bg, 5%);
+      background-color: darken($blue-50, 5%);
     }
   }
 
@@ -233,7 +233,7 @@
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
   background-color: $white-light;
-  border: 1px solid $dropdown-border-color;
+  border: 1px solid $border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
 
@@ -874,7 +874,7 @@ header.header-content .dropdown-menu.frequent-items-dropdown-menu {
     overflow-y: auto;
 
     li.section-empty.section-failure {
-      color: $callout-danger-color;
+      color: $red-700;
     }
 
     .frequent-items-list-item-container a {
