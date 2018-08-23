@@ -22,6 +22,7 @@ module EE
         external_authorization_classification_label
         ci_cd_only
         use_custom_template
+        packages_enabled
       ]
 
       if allow_mirror_params?

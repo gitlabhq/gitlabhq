@@ -28,6 +28,21 @@ module EE
       nav_tabs
     end
 
+    override :project_permissions_settings
+    def project_permissions_settings
+      super.merge(
+        packagesEnabled: !!project.packages_enabled
+      )
+    end
+
+    override :project_permissions_panel_data
+    def project_permissions_panel_data
+      super.merge(
+        packagesAvailable: Gitlab.config.packages.enabled,
+        packagesHelpPath: help_page_path('user/project/maven_packages')
+      )
+    end
+
     override :default_url_to_repo
     def default_url_to_repo(project = @project)
       case default_clone_protocol
