@@ -312,11 +312,11 @@ span.idiff {
     text-decoration: none;
 
     .new-file {
-      color: $notify-new-file;
+      color: $green-600;
     }
 
     .deleted-file {
-      color: $notify-deleted-file;
+      color: $red-700;
     }
   }
 }

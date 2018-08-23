@@ -900,7 +900,7 @@ pre.light-well {
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: $project-private-forks-notice-odd;
+    color: $green-600;
   }
 
   i:nth-child(2) {
@@ -1128,12 +1128,12 @@ pre.light-well {
 .project-ci-body {
   .incorrect-syntax {
     font-size: 18px;
-    color: $lint-incorrect-color;
+    color: $red-500;
   }
 
   .correct-syntax {
     font-size: 18px;
-    color: $lint-correct-color;
+    color: $green-500;
   }
 }
 
