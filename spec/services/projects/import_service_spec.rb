@@ -69,7 +69,7 @@ describe Projects::ImportService do
         result = subject.execute
 
         expect(result[:status]).to eq :error
-        expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - The repository could not be created."
+        expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - The repository could not be created."
       end
 
       context 'when repository creation succeeds' do
@@ -141,7 +141,7 @@ describe Projects::ImportService do
           result = subject.execute
 
           expect(result[:status]).to eq :error
-          expect(result[:message]).to eq "Error importing repository #{project.import_url} into #{project.full_path} - Failed to import the repository"
+          expect(result[:message]).to eq "Error importing repository #{project.safe_import_url} into #{project.full_path} - Failed to import the repository"
         end
 
         context 'when repository import scheduled' do
