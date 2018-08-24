@@ -37,6 +37,9 @@
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
+  - if browser.ie?
+    = stylesheet_link_tag 'ie'
+
   = Gon::Base.render_data
 
   - if content_for?(:library_javascripts)

@@ -1,0 +1,8 @@
+@import 'framework/variables';
+
+.show.dropdown {
+  .dropdown-menu,
+  .dropdown-menu-nav {
+    height: $dropdown-max-height;
+  }
+}
