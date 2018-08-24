@@ -9,6 +9,7 @@ import Vue from 'vue';
 import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
+import '~/boards/stores/boards_store'; // sets global variable gl.issueBoards.BoardsStore
 
 import { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
