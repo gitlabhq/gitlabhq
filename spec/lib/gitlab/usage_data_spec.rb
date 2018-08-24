@@ -56,12 +56,8 @@ describe Gitlab::UsageData do
       expect(count_data[:boards]).to eq(1)
       expect(count_data[:projects]).to eq(3)
 
-<<<<<<< HEAD
       expect(count_data.keys).to include(*%i(
-=======
-      expect(count_data.keys).to match_array(%i(
         assignee_lists
->>>>>>> upstream/master
         boards
         ci_builds
         ci_internal_pipelines
