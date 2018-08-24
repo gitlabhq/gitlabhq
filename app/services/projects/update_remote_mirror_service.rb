@@ -10,6 +10,7 @@ module Projects
       return success unless remote_mirror.enabled?
 
       begin
+        remote_mirror.ensure_remote!
         repository.fetch_remote(remote_mirror.remote_name, no_tags: true)
 
         opts = {}

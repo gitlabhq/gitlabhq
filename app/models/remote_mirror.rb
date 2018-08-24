@@ -152,6 +152,15 @@ class RemoteMirror < ActiveRecord::Base
     result.to_s
   end
 
+  def ensure_remote!
+    return unless project
+    return unless remote_name && url
+
+    # If this fails or the remote already exists, we won't know due to
+    # https://gitlab.com/gitlab-org/gitaly/issues/1317
+    project.repository.add_remote(remote_name, url)
+  end
+
   private
 
   def raw

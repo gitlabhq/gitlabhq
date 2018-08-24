@@ -56,6 +56,7 @@ description: 'Learn how to contribute to GitLab.'
 - [Performance guidelines](performance.md)
 - [Merge request performance guidelines](merge_request_performance_guidelines.md)
   for ensuring merge requests do not negatively impact GitLab performance
+- [Profiling](profiling.md) for profiling a URL
 
 ## Database guides
 

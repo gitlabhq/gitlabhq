@@ -94,14 +94,6 @@ module IssuesHelper
     end
   end
 
-  def award_user_authored_class(award)
-    if award == 'thumbsdown' || award == 'thumbsup'
-      'user-authored js-user-authored'
-    else
-      ''
-    end
-  end
-
   def awards_sort(awards)
     awards.sort_by do |award, award_emojis|
       if award == "thumbsup"
