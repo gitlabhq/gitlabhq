@@ -15,7 +15,9 @@ module API
         use :pagination
       end
       get ':id/labels' do
-        present paginate(available_labels_for(user_group)), with: Entities::Label, current_user: current_user, project: user_project
+        group_labels = available_labels_for(user_group)
+
+        present paginate(group_labels), with: Entities::Label, current_user: current_user, parent: user_group
       end
 
       desc 'Create a new label' do
@@ -27,15 +29,15 @@ module API
         optional :description, type: String, desc: 'The description of label to be created'
       end
       post ':id/labels' do
-        authorize! :admin_label, user_project
+        authorize! :admin_label, user_group
 
         label = available_labels_for(user_group).find_by(title: params[:name])
         conflict!('Label already exists') if label
 
-        label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(project: user_group)
+        label = ::Labels::CreateService.new(declared_params(include_missing: false)).execute(group: user_group)
 
         if label.valid?
-          present label, with: Entities::Label, current_user: current_user, project: user_project
+          present label, with: Entities::Label, current_user: current_user, parent: user_group
         else
           render_validation_error!(label)
         end
@@ -48,7 +50,7 @@ module API
         requires :name, type: String, desc: 'The name of the label to be deleted'
       end
       delete ':id/labels' do
-        authorize! :admin_label, user_project
+        authorize! :admin_label, user_group
 
         label = user_group.labels.find_by(title: params[:name])
         not_found!('Label') unless label
@@ -67,7 +69,7 @@ module API
         at_least_one_of :new_name, :color, :description
       end
       put ':id/labels' do
-        authorize! :admin_label, user_project
+        authorize! :admin_label, user_group
 
         label = user_group.labels.find_by(title: params[:name])
         not_found!('Label not found') unless label
@@ -79,7 +81,7 @@ module API
         label = ::Labels::UpdateService.new(label_params).execute(label)
         render_validation_error!(label) unless label.valid?
 
-        present label, with: Entities::Label, current_user: current_user, project: user_project
+        present label, with: Entities::Label, current_user: current_user, parent: user_group
       end
     end
   end
