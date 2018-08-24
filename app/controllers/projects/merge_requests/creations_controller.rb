@@ -103,7 +103,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     @target_project = @merge_request.target_project
     @source_project = @merge_request.source_project
-    @commits = prepare_commits_for_rendering(@merge_request.commits)
+    @commits = set_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
