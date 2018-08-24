@@ -406,7 +406,7 @@ describe 'Pipelines', :js do
 
             within('.js-builds-dropdown-list') do
               build_element = page.find('.mini-pipeline-graph-dropdown-item')
-              expect(build_element['data-original-title']).to eq('build - failed <br> (unknown failure)')
+              expect(build_element['data-original-title']).to eq('build - failed - (unknown failure)')
             end
           end
         end

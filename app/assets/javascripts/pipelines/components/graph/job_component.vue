@@ -1,5 +1,4 @@
 <script>
-import _ from 'underscore';
 import ActionComponent from './action_component.vue';
 import JobNameComponent from './job_name_component.vue';
 import tooltip from '../../../vue_shared/directives/tooltip';
@@ -62,7 +61,7 @@ export default {
       const textBuilder = [];
 
       if (this.job.name) {
-        textBuilder.push(_.escape(this.job.name));
+        textBuilder.push(this.job.name);
       }
 
       if (this.job.name && this.status.tooltip) {
@@ -106,7 +105,6 @@ export default {
       :class="cssClassJobName"
       :data-boundary="tooltipBoundary"
       data-container="body"
-      data-html="true"
       class="js-pipeline-graph-job-link"
     >
 
@@ -122,7 +120,6 @@ export default {
       class="js-job-component-tooltip non-details-job-component"
       :title="tooltipText"
       :class="cssClassJobName"
-      data-html="true"
       data-container="body"
     >
 
