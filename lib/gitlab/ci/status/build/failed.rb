@@ -31,7 +31,7 @@ module Gitlab
           end
 
           def description
-            "<br> (#{REASONS[subject.failure_reason]})"
+            "- (#{REASONS[subject.failure_reason]})"
           end
         end
       end
