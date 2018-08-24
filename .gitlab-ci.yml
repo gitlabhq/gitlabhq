@@ -729,7 +729,8 @@ karma:
     - date
     - scripts/gitaly-test-spawn
     - date
-    - bundle exec rake karma
+    - bundle exec rake karma:fixtures
+    - find spec/javascripts -name '*_spec.js' -exec yarn karma -f {} \;
   coverage: '/^Statements *: (\d+\.\d+%)/'
   artifacts:
     name: coverage-javascript
