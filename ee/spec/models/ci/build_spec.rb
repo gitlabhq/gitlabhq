@@ -13,34 +13,6 @@ describe Ci::Build do
 
   let(:job) { create(:ci_build, pipeline: pipeline) }
 
-  describe '.code_quality' do
-    subject { described_class.code_quality }
-
-    context 'when a job name is codeclimate' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codeclimate') }
-
-      it { is_expected.to include(job) }
-    end
-
-    context 'when a job name is codequality' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codequality') }
-
-      it { is_expected.to include(job) }
-    end
-
-    context 'when a job name is code_quality' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'code_quality') }
-
-      it { is_expected.to include(job) }
-    end
-
-    context 'when a job name is irrelevant' do
-      let!(:job) { create(:ci_build, pipeline: pipeline, name: 'codechecker') }
-
-      it { is_expected.not_to include(job) }
-    end
-  end
-
   describe '#shared_runners_minutes_limit_enabled?' do
     subject { job.shared_runners_minutes_limit_enabled? }
 
@@ -143,24 +115,88 @@ describe Ci::Build do
     end
   end
 
-  BUILD_ARTIFACTS_METHODS = {
+  build_artifacts_methods = {
     # has_codeclimate_json? is deprecated and replaced with code_quality_artifact (#5779)
-    has_codeclimate_json?: Ci::Build::CODECLIMATE_FILE,
-    has_code_quality_json?: Ci::Build::CODE_QUALITY_FILE,
-    has_performance_json?: Ci::Build::PERFORMANCE_FILE,
-    has_sast_json?: Ci::Build::SAST_FILE,
-    has_dependency_scanning_json?: Ci::Build::DEPENDENCY_SCANNING_FILE,
-    has_license_management_json?: Ci::Build::LICENSE_MANAGEMENT_FILE,
+    has_codeclimate_json?: {
+      filename: Ci::Build::CODECLIMATE_FILE,
+      job_names: %w[codeclimate codequality code_quality]
+    },
+    has_code_quality_json?: {
+      filename: Ci::Build::CODE_QUALITY_FILE,
+      job_names: %w[codeclimate codequality code_quality]
+    },
+    has_performance_json?: {
+      filename: Ci::Build::PERFORMANCE_FILE,
+      job_names: %w[performance deploy]
+    },
+    has_sast_json?: {
+      filename: Ci::Build::SAST_FILE,
+      job_names: %w[sast]
+    },
+    has_dependency_scanning_json?: {
+      filename: Ci::Build::DEPENDENCY_SCANNING_FILE,
+      job_names: %w[dependency_scanning]
+    },
+    has_license_management_json?: {
+      filename: Ci::Build::LICENSE_MANAGEMENT_FILE,
+      job_names: %w[license_management]
+    },
     # has_sast_container_json? is deprecated and replaced with has_container_scanning_json (#5778)
-    has_sast_container_json?: Ci::Build::SAST_CONTAINER_FILE,
-    has_container_scanning_json?: Ci::Build::CONTAINER_SCANNING_FILE,
-    has_dast_json?: Ci::Build::DAST_FILE
-  }.freeze
+    has_sast_container_json?: {
+      filename: Ci::Build::SAST_CONTAINER_FILE,
+      job_names: %w[sast:container container_scanning]
+    },
+    has_container_scanning_json?: {
+      filename: Ci::Build::CONTAINER_SCANNING_FILE,
+      job_names: %w[sast:container container_scanning]
+    },
+    has_dast_json?: {
+      filename: Ci::Build::DAST_FILE,
+      job_names: %w[dast]
+    }
+  }
 
-  BUILD_ARTIFACTS_METHODS.each do |method, filename|
+  build_artifacts_methods.each do |method, requirements|
+    filename = requirements[:filename]
+    job_names = requirements[:job_names]
+
     describe "##{method}" do
-      context 'valid build' do
-        let!(:build) do
+      job_names.each do |job_name|
+        context "with a job named #{job_name} and a file named #{filename}" do
+          let(:build) do
+            create(
+              :ci_build,
+              :artifacts,
+              name: job_name,
+              pipeline: pipeline,
+              options: {
+                artifacts: {
+                  paths: [filename, 'some-other-artifact.txt']
+                }
+              }
+            )
+          end
+
+          it { expect(build.send(method)).to be_truthy }
+        end
+      end
+
+      context 'with an invalid filename' do
+        let(:build) do
+          create(
+            :ci_build,
+            :artifacts,
+            name: job_names.first,
+            pipeline: pipeline,
+            options: {}
+          )
+        end
+
+        it { expect(build.send(method)).to be_falsey }
+      end
+
+      context 'with an invalid job name' do
+        let(:build) do
           create(
             :ci_build,
             :artifacts,
@@ -170,19 +206,6 @@ describe Ci::Build do
                 paths: [filename, 'some-other-artifact.txt']
               }
             }
-          )
-        end
-
-        it { expect(build.send(method)).to be_truthy }
-      end
-
-      context 'invalid build' do
-        let!(:build) do
-          create(
-            :ci_build,
-            :artifacts,
-            pipeline: pipeline,
-            options: {}
           )
         end
 

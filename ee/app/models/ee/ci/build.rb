@@ -20,21 +20,7 @@ module EE
       DAST_FILE = 'gl-dast-report.json'.freeze
 
       included do
-        scope :code_quality, -> { where(name: %w[codeclimate codequality code_quality]) }
-        scope :performance, -> { where(name: %w[performance deploy]) }
-        scope :sast, -> { where(name: 'sast') }
-        scope :dependency_scanning, -> { where(name: 'dependency_scanning') }
-        scope :license_management, -> { where(name: 'license_management') }
-        scope :sast_container, -> { where(name: %w[sast:container container_scanning]) }
-        scope :dast, -> { where(name: 'dast') }
-
         after_save :stick_build_if_status_changed
-      end
-
-      class_methods do
-        def find_dast
-          dast.find(&:has_dast_json?)
-        end
       end
 
       def shared_runners_minutes_limit_enabled?
@@ -50,40 +36,49 @@ module EE
 
       # has_codeclimate_json? is deprecated and replaced with has_code_quality_json? (#5779)
       def has_codeclimate_json?
-        has_artifact?(CODECLIMATE_FILE)
+        name_in?(%w[codeclimate codequality code_quality]) &&
+          has_artifact?(CODECLIMATE_FILE)
       end
 
       def has_code_quality_json?
-        has_artifact?(CODE_QUALITY_FILE)
+        name_in?(%w[codeclimate codequality code_quality]) &&
+          has_artifact?(CODE_QUALITY_FILE)
       end
 
       def has_performance_json?
-        has_artifact?(PERFORMANCE_FILE)
+        name_in?(%w[performance deploy]) &&
+          has_artifact?(PERFORMANCE_FILE)
       end
 
       def has_sast_json?
-        has_artifact?(SAST_FILE)
+        name_in?('sast') &&
+          has_artifact?(SAST_FILE)
       end
 
       def has_dependency_scanning_json?
-        has_artifact?(DEPENDENCY_SCANNING_FILE)
+        name_in?('dependency_scanning') &&
+          has_artifact?(DEPENDENCY_SCANNING_FILE)
       end
 
       def has_license_management_json?
-        has_artifact?(LICENSE_MANAGEMENT_FILE)
+        name_in?('license_management') &&
+          has_artifact?(LICENSE_MANAGEMENT_FILE)
       end
 
       # has_sast_container_json? is deprecated and replaced with has_container_scanning_json? (#5778)
       def has_sast_container_json?
-        has_artifact?(SAST_CONTAINER_FILE)
+        name_in?(%w[sast:container container_scanning]) &&
+          has_artifact?(SAST_CONTAINER_FILE)
       end
 
       def has_container_scanning_json?
-        has_artifact?(CONTAINER_SCANNING_FILE)
+        name_in?(%w[sast:container container_scanning]) &&
+          has_artifact?(CONTAINER_SCANNING_FILE)
       end
 
       def has_dast_json?
-        has_artifact?(DAST_FILE)
+        name_in?('dast') &&
+          has_artifact?(DAST_FILE)
       end
 
       private
@@ -91,6 +86,10 @@ module EE
       def has_artifact?(name)
         options.dig(:artifacts, :paths)&.include?(name) &&
           artifacts_metadata?
+      end
+
+      def name_in?(names)
+        name.in?(Array(names))
       end
     end
   end

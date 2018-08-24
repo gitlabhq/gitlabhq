@@ -171,4 +171,24 @@ describe Ci::Pipeline do
       expect(described_class.with_security_reports).to eq([pipeline_1, pipeline_2, pipeline_3, pipeline_4])
     end
   end
+
+  context 'performance' do
+    def create_build(job_name)
+      create(
+        :ci_build,
+        :artifacts,
+        name: job_name,
+        pipeline: pipeline
+      )
+    end
+
+    it 'does not perform extra queries when calling pipeline artifacts methods after the first' do
+      create_build('codeclimate')
+      create_build('dependency_scanning')
+
+      pipeline.code_quality_artifact
+
+      expect { pipeline.dependency_scanning_artifact }.not_to exceed_query_limit(0)
+    end
+  end
 end

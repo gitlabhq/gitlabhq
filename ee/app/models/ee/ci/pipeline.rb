@@ -18,40 +18,40 @@ module EE
 
       # codeclimate_artifact is deprecated and replaced with code_quality_artifact (#5779)
       def codeclimate_artifact
-        @codeclimate_artifact ||= artifacts.code_quality.find(&:has_codeclimate_json?)
+        @codeclimate_artifact ||= artifacts.find(&:has_codeclimate_json?)
       end
 
       def code_quality_artifact
-        @code_quality_artifact ||= artifacts.code_quality.find(&:has_code_quality_json?)
+        @code_quality_artifact ||= artifacts.find(&:has_code_quality_json?)
       end
 
       def performance_artifact
-        @performance_artifact ||= artifacts.performance.find(&:has_performance_json?)
+        @performance_artifact ||= artifacts.find(&:has_performance_json?)
       end
 
       def sast_artifact
-        @sast_artifact ||= artifacts.sast.find(&:has_sast_json?)
+        @sast_artifact ||= artifacts.find(&:has_sast_json?)
       end
 
       def dependency_scanning_artifact
-        @dependency_scanning_artifact ||= artifacts.dependency_scanning.find(&:has_dependency_scanning_json?)
+        @dependency_scanning_artifact ||= artifacts.find(&:has_dependency_scanning_json?)
       end
 
       def license_management_artifact
-        @license_management_artifact ||= artifacts.license_management.find(&:has_license_management_json?)
+        @license_management_artifact ||= artifacts.find(&:has_license_management_json?)
       end
 
       # sast_container_artifact is deprecated and replaced with container_scanning_artifact (#5778)
       def sast_container_artifact
-        @sast_container_artifact ||= artifacts.sast_container.find(&:has_sast_container_json?)
+        @sast_container_artifact ||= artifacts.find(&:has_sast_container_json?)
       end
 
       def container_scanning_artifact
-        @container_scanning_artifact ||= artifacts.sast_container.find(&:has_container_scanning_json?)
+        @container_scanning_artifact ||= artifacts.find(&:has_container_scanning_json?)
       end
 
       def dast_artifact
-        @dast_artifact ||= artifacts.dast.find(&:has_dast_json?)
+        @dast_artifact ||= artifacts.find(&:has_dast_json?)
       end
 
       def initialize_yaml_processor
