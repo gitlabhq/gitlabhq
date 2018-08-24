@@ -92,7 +92,7 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
           .with(issue)
           .and_return([user.id, true])
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -121,7 +121,7 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
           .with(issue)
           .and_return([project.creator_id, false])
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -150,7 +150,7 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
           .with(issue)
           .and_return([user.id, true])
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 
@@ -185,7 +185,7 @@ describe Gitlab::GithubImport::Importer::IssueImporter, :clean_gitlab_redis_cach
         .and_return([user.id, true])
 
       issue = build_stubbed(:issue, project: project)
-      allow(Gitlab::GithubImport)
+      allow(importer)
         .to receive(:insert_and_return_id)
         .and_return(issue.id)
       allow(project.issues).to receive(:find).with(issue.id).and_return(issue)
