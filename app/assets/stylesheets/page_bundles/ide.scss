@@ -1412,11 +1412,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   height: 230px;
 }
 
-.ide-merge-requests-dropdown-content {
-  min-height: 230px;
-  max-height: 470px;
-}
-
 .ide-merge-request-project-path {
   font-size: 12px;
   line-height: 16px;

@@ -1,0 +1,5 @@
+---
+title: Fix issue with double scrollbars on dropdowns
+merge_request: 21373
+author:
+type: fixed

@@ -118,10 +118,6 @@ input[type='checkbox']:hover {
         width: $search-input-active-width;
       }
     }
-
-    .dropdown-content {
-      max-height: $search-dropdown-max-height - 18px;
-    }
   }
 
   &.search-active {
