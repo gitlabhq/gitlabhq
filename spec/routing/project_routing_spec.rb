@@ -381,7 +381,7 @@ describe 'project routing' do
     end
   end
 
-  # test_project_hook GET    /:project_id/hooks/:id/test(.:format) hooks#test
+  # test_project_hook POST    /:project_id/hooks/:id/test(.:format) hooks#test
   #     project_hooks GET    /:project_id/hooks(.:format)          hooks#index
   #                   POST   /:project_id/hooks(.:format)          hooks#create
   # edit_project_hook GET    /:project_id/hooks/:id/edit(.:format) hooks#edit
@@ -398,11 +398,11 @@ describe 'project routing' do
     end
   end
 
-  # retry_namespace_project_hook_hook_log GET /:project_id/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
+  # retry_namespace_project_hook_hook_log POST /:project_id/hooks/:hook_id/hook_logs/:id/retry(.:format) projects/hook_logs#retry
   # namespace_project_hook_hook_log       GET /:project_id/hooks/:hook_id/hook_logs/:id(.:format)       projects/hook_logs#show
   describe Projects::HookLogsController, 'routing' do
     it 'to #retry' do
-      expect(get('/gitlab/gitlabhq/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
+      expect(post('/gitlab/gitlabhq/hooks/1/hook_logs/1/retry')).to route_to('projects/hook_logs#retry', namespace_id: 'gitlab', project_id: 'gitlabhq', hook_id: '1', id: '1')
     end
 
     it 'to #show' do
