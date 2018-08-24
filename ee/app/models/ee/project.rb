@@ -82,6 +82,8 @@ module EE
         validates :import_url, presence: true
         validates :mirror_user, presence: true
       end
+
+      default_value_for :packages_enabled, true
     end
 
     module ClassMethods
