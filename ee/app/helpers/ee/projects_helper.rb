@@ -29,16 +29,16 @@ module EE
     end
 
     override :project_permissions_settings
-    def project_permissions_settings
+    def project_permissions_settings(project)
       super.merge(
         packagesEnabled: !!project.packages_enabled
       )
     end
 
     override :project_permissions_panel_data
-    def project_permissions_panel_data
+    def project_permissions_panel_data(project)
       super.merge(
-        packagesAvailable: Gitlab.config.packages.enabled,
+        packagesAvailable: ::Gitlab.config.packages.enabled,
         packagesHelpPath: help_page_path('user/project/maven_packages')
       )
     end
