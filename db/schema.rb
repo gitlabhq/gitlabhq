@@ -2229,7 +2229,7 @@ ActiveRecord::Schema.define(version: 20180823132905) do
     t.boolean "mirror_overwrites_diverged_branches"
     t.boolean "pages_https_only", default: true
     t.string "external_webhook_token"
-    t.boolean "packages_enabled", default: true, null: false
+    t.boolean "packages_enabled"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
