@@ -402,7 +402,7 @@ module QuickActions
       match[1] if match
     end
     command :award do |name|
-      if name && issuable.user_can_award?(current_user, name)
+      if name && issuable.user_can_award?(current_user)
         @updates[:emoji_award] = name
       end
     end
