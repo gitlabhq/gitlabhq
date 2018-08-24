@@ -366,7 +366,7 @@
     line,
     path {
       fill: none;
-      stroke: $stat-graph-axis-fill;
+      stroke: $gl-gray-350;
       shape-rendering: crispEdges;
     }
   }
@@ -404,7 +404,7 @@
     }
 
     &.ideal {
-      stroke: $stat-graph-axis-fill;
+      stroke: $gl-gray-350;
       stroke-dasharray: 6px 6px;
     }
   }

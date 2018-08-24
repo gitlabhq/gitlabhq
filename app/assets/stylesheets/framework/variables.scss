@@ -32,6 +32,14 @@ $gray-dark: darken($gray-light, $darken-dark-factor);
 $gray-darker: #eee;
 $gray-darkest: #c4c4c4;
 
+$gl-gray-100: #dddddd;
+$gl-gray-200: #cccccc;
+$gl-gray-350: #aaaaaa;
+$gl-gray-400: #999999;
+$gl-gray-500: #777777;
+$gl-gray-600: #666666;
+$gl-gray-700: #555555;
+
 $green-50: #f1fdf6;
 $green-100: #dcf5e7;
 $green-200: #b3e6c8;
@@ -208,11 +216,6 @@ $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
 
 /*
- * Markdown
- */
-$md-area-border: #ddd;
-
-/*
  * Code
  */
 $code-font-size: 90%;
@@ -242,7 +245,6 @@ $input-horizontal-padding: 12px;
 /*
  * Misc
  */
-$progress-color: #c0392b;
 $header-height: 40px;
 $header-height-pod-logs: 75px;
 $ide-statusbar-height: 25px;
@@ -258,15 +260,7 @@ $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-margin-5: 5px;
 $sidebar-block-hover-color: #ebebeb;
-$group-path-color: #999;
-$project-path-color: #999;
-$namespace-kind-color: #aaa;
-$panel-heading-link-color: #777;
-$graph-author-email-color: #777;
 $count-arrow-border: #dce0e5;
-$save-project-loader-color: #555;
-$divergence-graph-bar-bg: #ccc;
-$divergence-graph-separator-bg: #ccc;
 $general-hover-transition-duration: 100ms;
 $general-hover-transition-curve: linear;
 $highlight-changes-color: rgb(235, 255, 232);
@@ -285,20 +279,8 @@ $pages-group-name-color: #4c4e54;
 /*
 * Common component specific colors
 */
-$hint-color: #999;
-$well-pre-color: #555;
-$loading-color: #555;
-$update-author-color: #999;
 $user-mention-bg: rgba($blue-500, 0.044);
 $user-mention-bg-hover: rgba($blue-500, 0.15);
-$time-color: #999;
-$project-member-show-color: #aaa;
-$gl-promo-color: #aaa;
-$control-group-descr-color: #666;
-$table-permission-x-bg: #d9edf7;
-$username-color: #666;
-$description-color: #666;
-$profiler-border: #eee;
 
 /* tanuki logo colors */
 $tanuki-red: #e24329;
@@ -329,9 +311,7 @@ $line-select-yellow: #fcf8e7;
 $line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
-$file-mode-changed: #777;
 $diff-image-info-color: gray;
-$diff-swipe-border: #999;
 $diff-view-modes-color: gray;
 $diff-view-modes-border: #c1c1c1;
 $diff-jagged-border-gradient-color: darken($white-normal, 8%);
@@ -351,12 +331,10 @@ $dropdown-width: 300px;
 $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
-$dropdown-link-color: #555;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
 $dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
-$dropdown-input-color: #555;
 $dropdown-input-fa-color: #c7c7c7;
 $dropdown-input-focus-shadow: rgba($blue-300, 0.4);
 $dropdown-loading-bg: rgba(#fff, 0.6);
@@ -429,13 +407,7 @@ $location-icon-color: #e7e9ed;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
-$note-line2-border: #ddd;
 $note-icon-gutter-width: 55px;
-
-/*
-* Zen
-*/
-$zen-control-color: #555;
 
 /*
 * Identicon
@@ -446,7 +418,6 @@ $identicon-indigo: #e8eaf6;
 $identicon-blue: #e3f2fd;
 $identicon-teal: #e0f2f1;
 $identicon-orange: #fbe9e7;
-$identicon-fg-color: #555555;
 
 /*
 * Calendar
@@ -515,16 +486,8 @@ $common-gray-light: #bbb;
 $common-gray-dark: #444;
 
 /*
-* Events
-*/
-$events-pre-color: #777;
-$events-note-icon-color: #777;
-$events-body-border: #ddd;
-
-/*
 * Files
 */
-$blame-line-numbers-border: #ddd;
 $logs-li-color: #888;
 $logs-p-color: #333;
 
@@ -543,8 +506,6 @@ $input-short-md-width: 280px;
 * Help
 */
 $document-index-color: #888;
-$help-shortcut-color: #999;
-$help-shortcut-mapping-color: #555;
 $help-shortcut-header-color: #333;
 
 /*
@@ -553,12 +514,6 @@ $help-shortcut-header-color: #333;
 $issues-today-bg: #f3fff2;
 $issues-today-border: #e1e8d5;
 $compare-display-color: #888;
-
-/*
-* jQuery UI
-*/
-$jq-ui-border: #ddd;
-$jq-ui-default-color: #777;
 
 /*
 * Label
@@ -584,34 +539,19 @@ $fade-mask-transition-curve: ease-in-out;
 $login-brand-holder-color: #888;
 
 /*
-* Nav
-*/
-$nav-link-gray: #959494;
-$nav-toggle-gray: #666;
-
-/*
-* Notify
-*/
-$notify-details: #777;
-$notify-footer: #777;
-
-/*
 * Projects
 */
 $project-option-descr-color: #54565b;
-$project-breadcrumb-color: #999;
 $project-network-controls-color: #888;
 
 $feature-toggle-color: #fff;
 $feature-toggle-text-color: #fff;
-$feature-toggle-color-disabled: #999;
 $feature-toggle-color-enabled: #4a8bee;
 
 /*
 Stat Graph
 */
 $stat-graph-common-bg: #f3f3f3;
-$stat-graph-axis-fill: #aaa;
 $stat-graph-selection-fill: #333;
 $stat-graph-selection-stroke: #333;
 
@@ -622,17 +562,9 @@ $select2-drop-shadow1: rgba(76, 86, 103, 0.247059);
 $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 
 /*
-* Todo
-*/
-$todo-body-pre-color: #777;
-$todo-body-border: #ddd;
-
-/*
 * Typography
 */
 $kdb-bg: #fcfcfc;
-$kdb-color: #555;
-$kdb-border: #ccc;
 $kdb-border-bottom: #bbb;
 $kdb-shadow: #bbb;
 $body-text-shadow: rgba(255, 255, 255, 0.01);
@@ -641,7 +573,6 @@ $body-text-shadow: rgba(255, 255, 255, 0.01);
 * UI Dev Kit
 */
 $ui-dev-kit-example-color: #bbb;
-$ui-dev-kit-example-border: #ddd;
 
 /*
 Pipeline Graph
@@ -687,12 +618,10 @@ $linked-project-column-margin: 60px;
 /*
 Performance Bar
 */
-$perf-bar-text: #999;
 $perf-bar-production: #222;
 $perf-bar-staging: #291430;
 $perf-bar-development: #4c1210;
 $perf-bar-bucket-bg: #111;
-$perf-bar-bucket-color: #ccc;
 $perf-bar-bucket-box-shadow-from: rgba($white-light, 0.2);
 $perf-bar-bucket-box-shadow-to: rgba($black, 0.25);
 

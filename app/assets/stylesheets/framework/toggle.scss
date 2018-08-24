@@ -31,7 +31,7 @@
   height: 24px;
   cursor: pointer;
   user-select: none;
-  background: $feature-toggle-color-disabled;
+  background: $gl-gray-400;
   border-radius: 12px;
   padding: 3px;
   transition: all .4s ease;
@@ -61,7 +61,7 @@
     }
 
     .toggle-icon-svg {
-      fill: $feature-toggle-color-disabled;
+      fill: $gl-gray-400;
     }
 
     .toggle-status-checked {
