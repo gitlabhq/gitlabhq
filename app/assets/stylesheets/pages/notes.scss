@@ -94,8 +94,8 @@ ul.notes {
       opacity: 0.5;
 
       .dummy-avatar {
-        background-color: $kdb-border;
-        border: 1px solid darken($kdb-border, 25%);
+        background-color: $gl-gray-200;
+        border: 1px solid darken($gl-gray-200, 25%);
       }
 
       .note-headline-light,
