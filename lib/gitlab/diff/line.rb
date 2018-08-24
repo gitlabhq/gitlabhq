@@ -85,7 +85,7 @@ module Gitlab
           old_line: old_line,
           new_line: new_line,
           text: text,
-          rich_text: rich_text || text,
+          rich_text: rich_text || CGI.escapeHTML(text),
           meta_data: meta_positions
         }
       end
