@@ -106,11 +106,6 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
-<<<<<<< HEAD
-    mount ::API::Groups
-    mount ::API::GroupBoards
-=======
->>>>>>> upstream/master
     mount ::API::GroupMilestones
     mount ::API::Groups
     mount ::API::GroupVariables
