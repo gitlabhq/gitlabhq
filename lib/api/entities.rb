@@ -431,6 +431,11 @@ module API
       expose :unprotect_access_levels, using: Entities::ProtectedRefAccess
     end
 
+    class ProtectedTag < Grape::Entity
+      expose :name
+      expose :create_access_levels, using: Entities::ProtectedRefAccess
+    end
+
     class Milestone < Grape::Entity
       expose :id, :iid
       expose :project_id, if: -> (entity, options) { entity&.project_id }
