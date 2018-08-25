@@ -2072,11 +2072,17 @@ class Project < ActiveRecord::Base
   private
 
   def rename_or_migrate_repository!
-    if Gitlab::CurrentSettings.hashed_storage_enabled? && storage_version != LATEST_STORAGE_VERSION
+    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
+        storage_upgradable? &&
+        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
       ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
     else
       storage.rename_repo
     end
+  end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
   end
 
   def after_rename_repository(full_path_before, path_before)
