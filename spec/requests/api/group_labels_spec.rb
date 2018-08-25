@@ -209,4 +209,92 @@ describe API::GroupLabels do
       expect(json_response['message']['color']).to eq(['must be a valid color code'])
     end
   end
+
+  describe 'POST /groups/:id/labels/:label_id/subscribe' do
+    context 'when label_id is a label title' do
+      it 'subscribes to the label' do
+        post api("/groups/#{group.id}/labels/#{label1.title}/subscribe", user)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['subscribed']).to be_truthy
+      end
+    end
+
+    context 'when label_id is a label ID' do
+      it 'subscribes to the label' do
+        post api("/groups/#{group.id}/labels/#{label1.id}/subscribe", user)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['subscribed']).to be_truthy
+      end
+    end
+
+    context 'when user is already subscribed to label' do
+      before do
+        label1.subscribe(user)
+      end
+
+      it 'returns 304' do
+        post api("/groups/#{group.id}/labels/#{label1.id}/subscribe", user)
+
+        expect(response).to have_gitlab_http_status(304)
+      end
+    end
+
+    context 'when label ID is not found' do
+      it 'returns 404 error' do
+        post api("/groups/#{group.id}/labels/1234/subscribe", user)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
+
+  describe 'POST /groups/:id/labels/:label_id/unsubscribe' do
+    before do
+      label1.subscribe(user)
+    end
+
+    context 'when label_id is a label title' do
+      it 'unsubscribes from the label' do
+        post api("/groups/#{group.id}/labels/#{label1.title}/unsubscribe", user)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['subscribed']).to be_falsey
+      end
+    end
+
+    context 'when label_id is a label ID' do
+      it 'unsubscribes from the label' do
+        post api("/groups/#{group.id}/labels/#{label1.id}/unsubscribe", user)
+
+        expect(response).to have_gitlab_http_status(201)
+        expect(json_response['name']).to eq(label1.title)
+        expect(json_response['subscribed']).to be_falsey
+      end
+    end
+
+    context 'when user is already unsubscribed from label' do
+      before do
+        label1.unsubscribe(user)
+      end
+
+      it 'returns 304' do
+        post api("/groups/#{group.id}/labels/#{label1.id}/unsubscribe", user)
+
+        expect(response).to have_gitlab_http_status(304)
+      end
+    end
+
+    context 'when label ID is not found' do
+      it 'returns 404 error' do
+        post api("/groups/#{group.id}/labels/1234/unsubscribe", user)
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+  end
 end
