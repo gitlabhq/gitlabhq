@@ -987,12 +987,12 @@ module API
         label.open_merge_requests_count(options[:current_user])
       end
 
-      expose :priority do |label, options|
+      expose :priority, if: lambda { |_, options| options[:project].is_a?(::Project) }  do |label, options|
         label.priority(options[:project])
       end
 
       expose :subscribed do |label, options|
-        label.subscribed?(options[:current_user], options[:parent])
+        label.subscribed?(options[:current_user], options[:project])
       end
     end
 

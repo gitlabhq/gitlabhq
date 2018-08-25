@@ -172,8 +172,8 @@ module API
       render_api_error!('The branch refname is invalid', 400)
     end
 
-    def find_project_label(id)
-      labels = available_labels_for(user_project)
+    def find_label(parent, id)
+      labels = available_labels_for(parent)
       label = labels.find_by_id(id) || labels.find_by_title(id)
 
       label || not_found!('Label')
