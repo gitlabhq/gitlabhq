@@ -250,6 +250,9 @@ msgstr ""
 msgid "A collection of graphs regarding Continuous Integration"
 msgstr ""
 
+msgid "A default branch cannot be chosen for an empty project."
+msgstr ""
+
 msgid "A new branch will be created in your fork and a new merge request will be started."
 msgstr ""
 
@@ -2084,6 +2087,9 @@ msgid "December"
 msgstr ""
 
 msgid "Decline and sign out"
+msgstr ""
+
+msgid "Default Branch"
 msgstr ""
 
 msgid "Default: Directly import the Google Code email address or username"
@@ -5060,6 +5066,9 @@ msgid "Select source branch"
 msgstr ""
 
 msgid "Select target branch"
+msgstr ""
+
+msgid "Select the branch you want to set as the default for this project. All merge requests and commits will automatically be made against this branch unless you specify a different one."
 msgstr ""
 
 msgid "Selecting a GitLab user will add a link to the GitLab user in the descriptions of issues and comments (e.g. \"By <a href=\"#\">@johnsmith</a>\"). It will also associate and/or assign these issues and comments with the selected user."
