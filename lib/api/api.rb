@@ -106,13 +106,13 @@ module API
     mount ::API::Features
     mount ::API::Files
     mount ::API::GroupBoards
-    mount ::API::Groups
-    mount ::API::GroupBoards
     mount ::API::GroupMilestones
+    mount ::API::Groups
+    mount ::API::GroupVariables
     mount ::API::Internal
     mount ::API::Issues
-    mount ::API::Jobs
     mount ::API::JobArtifacts
+    mount ::API::Jobs
     mount ::API::Keys
     mount ::API::Labels
     mount ::API::Lint
@@ -133,11 +133,12 @@ module API
     mount ::API::ProjectExport
     mount ::API::ProjectImport
     mount ::API::ProjectHooks
-    mount ::API::Projects
     mount ::API::ProjectMilestones
+    mount ::API::Projects
     mount ::API::ProjectSnapshots
     mount ::API::ProjectSnippets
     mount ::API::ProtectedBranches
+    mount ::API::ProtectedTags
     mount ::API::Repositories
     mount ::API::Runner
     mount ::API::Runners
@@ -154,7 +155,6 @@ module API
     mount ::API::Triggers
     mount ::API::Users
     mount ::API::Variables
-    mount ::API::GroupVariables
     mount ::API::Version
     mount ::API::Wikis
 

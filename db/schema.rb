@@ -2368,6 +2368,7 @@ ActiveRecord::Schema.define(version: 20180816193530) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "protected_tags", ["project_id", "name"], name: "index_protected_tags_on_project_id_and_name", unique: true, using: :btree
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
   create_table "push_event_payloads", id: false, force: :cascade do |t|
