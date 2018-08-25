@@ -4,8 +4,6 @@ class MigrateUsersNotificationLevel < ActiveRecord::Migration
   # Migrates only users who changed their default notification level :participating
   # creating a new record on notification settings table
 
-  DOWNTIME = false
-
   def up
     execute(%Q{
       INSERT INTO notification_settings
