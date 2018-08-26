@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module API
   class GroupLabels < Grape::API
     include PaginationParams
@@ -9,6 +11,7 @@ module API
     end
     resource :groups, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
       desc 'Get all labels of the group' do
+        detail 'This feature was added in GitLab 11.3'
         success Entities::Label
       end
       params do
@@ -21,6 +24,7 @@ module API
       end
 
       desc 'Create a new label' do
+        detail 'This feature was added in GitLab 11.3'
         success Entities::Label
       end
       params do
@@ -44,6 +48,7 @@ module API
       end
 
       desc 'Delete an existing label' do
+        detail 'This feature was added in GitLab 11.3'
         success Entities::Label
       end
       params do
@@ -59,6 +64,7 @@ module API
       end
 
       desc 'Update an existing label. At least one optional parameter is required.' do
+        detail 'This feature was added in GitLab 11.3'
         success Entities::Label
       end
       params do
