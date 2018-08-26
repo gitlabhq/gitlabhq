@@ -1,5 +1,6 @@
 class Projects::JobsController < Projects::ApplicationController
   include SendFileUpload
+  include ContinueParams
 
   before_action :build, except: [:index, :cancel_all]
   before_action :authorize_read_build!
@@ -101,7 +102,12 @@ class Projects::JobsController < Projects::ApplicationController
     return respond_422 unless @build.cancelable?
 
     @build.cancel
-    redirect_to build_path(@build)
+
+    if continue_params
+      redirect_to continue_params[:to]
+    else
+      redirect_to builds_project_pipeline_path(@project, @build.pipeline.id)
+    end
   end
 
   def status
