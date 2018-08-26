@@ -14,7 +14,7 @@ module QA
             element :project_import_row, 'data: { qa: { repo_path: repo.full_name } }'
             element :project_namespace_select
             element :project_namespace_field, 'select_tag :namespace_id'
-            element :project_path_field, 'text_field_tag :path, repo.name'
+            element :project_path_field, 'text_field_tag :path, sanitize_project_name(repo.name)'
             element :import_button, "_('Import')"
           end
 
