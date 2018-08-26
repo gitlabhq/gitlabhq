@@ -220,6 +220,16 @@ describe Geo::FileDownloadService do
               expect(registry_entry.retry_at > Time.now).to be_truthy
             end
           end
+
+          it 'sets a retry date with a maximum of about 7 days' do
+            registry_entry.update!(retry_count: 100, retry_at: 7.days.from_now)
+
+            Timecop.freeze do
+              execute!
+
+              expect(registry_entry.reload.retry_at < 8.days.from_now).to be_truthy
+            end
+          end
         end
 
         context 'when the file is not missing on the primary' do
@@ -247,6 +257,16 @@ describe Geo::FileDownloadService do
 
               expect(registry_entry.reload.retry_count).to eq(4)
               expect(registry_entry.retry_at > Time.now).to be_truthy
+            end
+          end
+
+          it 'sets a retry date with a maximum of about 7 days' do
+            registry_entry.update!(retry_count: 100, retry_at: 7.days.from_now)
+
+            Timecop.freeze do
+              execute!
+
+              expect(registry_entry.reload.retry_at < 8.days.from_now).to be_truthy
             end
           end
         end
