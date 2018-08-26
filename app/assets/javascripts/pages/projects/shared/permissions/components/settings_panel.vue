@@ -1,5 +1,4 @@
 <script>
-  /* eslint-disable vue/require-default-prop */
   import projectFeatureSetting from './project_feature_setting.vue';
   import projectFeatureToggle from '../../../../../vue_shared/components/toggle_button.vue';
   import projectSettingRow from './project_setting_row.vue';
@@ -41,14 +40,17 @@
       visibilityHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
       lfsHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
       registryHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
     },
 
