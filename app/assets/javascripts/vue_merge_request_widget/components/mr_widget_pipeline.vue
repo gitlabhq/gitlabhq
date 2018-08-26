@@ -4,7 +4,10 @@ import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
+<<<<<<< HEAD
 import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
+=======
+>>>>>>> upstream/master
 
 export default {
   name: 'MRWidgetPipeline',
@@ -13,7 +16,10 @@ export default {
     CiIcon,
     Icon,
     TooltipOnTruncate,
+<<<<<<< HEAD
     LinkedPipelinesMiniList,
+=======
+>>>>>>> upstream/master
   },
   props: {
     pipeline: {
