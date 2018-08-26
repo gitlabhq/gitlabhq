@@ -1708,4 +1708,10 @@ describe Project do
       end
     end
   end
+
+  describe '#packages_enabled' do
+    subject { create(:project).packages_enabled }
+
+    it { is_expected.to be true }
+  end
 end
