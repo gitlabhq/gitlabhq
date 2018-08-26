@@ -58,6 +58,7 @@
       packagesHelpPath: {
         type: String,
         required: false,
+        default: '',
       },
     },
 
