@@ -44,7 +44,11 @@ describe('StackedProgressBarComponent', () => {
       });
 
       it('returns percentage with decimal place from provided count based on `totalCount`', () => {
-        expect(vm.getPercent(10)).toBe(0.2);
+        expect(vm.getPercent(67)).toBe(1.3);
+      });
+
+      it('returns percentage as `< 1` from provided count based on `totalCount` when evaluated value is less than 1', () => {
+        expect(vm.getPercent(10)).toBe('< 1');
       });
     });
 
