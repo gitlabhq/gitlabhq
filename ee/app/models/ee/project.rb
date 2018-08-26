@@ -83,7 +83,9 @@ module EE
         validates :mirror_user, presence: true
       end
 
-      default_value_for :packages_enabled, true
+      if column_names.include? :packages_enabled
+        default_value_for :packages_enabled, true
+      end
     end
 
     module ClassMethods
