@@ -14,6 +14,7 @@ describe API::GroupLabels do
       get api("/groups/#{group.id}/labels", user)
 
       expect(response).to have_gitlab_http_status(200)
+      expect(response).to match_response_schema('public_api/v4/group_labels')
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(2)

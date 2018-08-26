@@ -1,0 +1,17 @@
+{
+  "type": "array",
+  "items": {
+    "type": "object",
+    "properties" : {
+      "id" : { "type": "integer" },
+      "name" : { "type": "string "},
+      "color" : { "type": "string "},
+      "description" : { "type": "string "},
+      "open_issues_count" : { "type": "integer "},
+      "closed_issues_count" : { "type": "integer "},
+      "open_merge_requests_count" : { "type": "integer "},
+      "subscribed" : { "type": "boolean" }
+    },
+    "additionalProperties": false
+  }
+}
