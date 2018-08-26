@@ -82,10 +82,6 @@ module EE
         validates :import_url, presence: true
         validates :mirror_user, presence: true
       end
-
-      if column_names.include? :packages_enabled
-        default_value_for :packages_enabled, true
-      end
     end
 
     module ClassMethods
