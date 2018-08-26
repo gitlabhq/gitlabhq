@@ -3,6 +3,7 @@
 import PipelineStage from '~/pipelines/components/stage.vue';
 import CiIcon from '~/vue_shared/components/ci_icon.vue';
 import Icon from '~/vue_shared/components/icon.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import LinkedPipelinesMiniList from 'ee/vue_shared/components/linked_pipelines_mini_list.vue';
 
 export default {
@@ -11,6 +12,7 @@ export default {
     PipelineStage,
     CiIcon,
     Icon,
+    TooltipOnTruncate,
     LinkedPipelinesMiniList,
   },
   props: {
@@ -29,6 +31,10 @@ export default {
       required: false,
     },
     sourceBranchLink: {
+      type: String,
+      required: false,
+    },
+    sourceBranch: {
       type: String,
       required: false,
     },
@@ -121,11 +127,12 @@ export default {
                   >
                     {{ pipeline.commit.short_id }}</a>
                   on
-                  <span
-                    class="label-branch"
+                  <tooltip-on-truncate
+                    :title="sourceBranch"
+                    truncate-target="child"
+                    class="label-branch label-truncate"
                     v-html="sourceBranchLink"
-                  >
-                  </span>
+                  />
                 </template>
               </div>
               <div
