@@ -265,6 +265,19 @@ entry.
 - Moves help_popover component to a common location.
 
 
+## 11.1.5 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Sanitize git URL in import errors. (Jamie Schembri)
+
+
 ## 11.1.4 (2018-07-30)
 
 ### Fixed (4 changes, 1 of them is from the community)
