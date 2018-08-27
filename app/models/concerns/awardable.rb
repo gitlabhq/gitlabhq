@@ -12,7 +12,7 @@ module Awardable
     end
   end
 
-  module ClassMethods
+  class_methods do
     def awarded(user, name)
       sql = <<~EOL
         EXISTS (
