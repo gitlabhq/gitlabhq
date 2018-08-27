@@ -67,7 +67,7 @@ module Geo
       if retry_later
         # We don't limit the amount of retries
         registry.retry_count = (registry.retry_count || 0) + 1
-        registry.retry_at = Time.now + delay(registry.retry_count).seconds
+        registry.retry_at = next_retry_time(registry.retry_count)
       else
         registry.retry_count = 0
         registry.retry_at = nil
