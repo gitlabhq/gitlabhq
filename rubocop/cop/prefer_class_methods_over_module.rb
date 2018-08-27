@@ -2,12 +2,14 @@
 
 module RuboCop
   module Cop
-    # Enforces the use of 'class_methods' instead of 'module ClassMethods'
+    # Enforces the use of 'class_methods' instead of 'module ClassMethods' for activesupport concerns.
     # For more information see: https://gitlab.com/gitlab-org/gitlab-ce/issues/50414
     #
     # @example
     #   # bad
     #   module Foo
+    #     extend ActiveSupport::Concern
+    #
     #     module ClassMethods
     #       def a_class_method
     #       end
@@ -16,6 +18,8 @@ module RuboCop
     #
     #   # good
     #   module Foo
+    #     extend ActiveSupport::Concern
+    #
     #     class_methods do
     #       def a_class_method
     #       end
@@ -27,8 +31,12 @@ module RuboCop
 
       MSG = 'Do not use module ClassMethods, use class_methods block instead.'
 
+      def_node_matcher :extend_activesupport_concern?, <<~PATTERN
+        (:send nil? :extend (:const (:const nil? :ActiveSupport) :Concern))
+      PATTERN
+
       def on_module(node)
-        add_offense(node) if node.defined_module_name == 'ClassMethods'
+        add_offense(node) if node.defined_module_name == 'ClassMethods' && extends_activesupport_concern?(node)
       end
 
       def autocorrect(node)
@@ -38,6 +46,18 @@ module RuboCop
       end
 
       private
+
+      def extends_activesupport_concern?(node)
+        container_module(node.parent)&.descendants.any? do |descendant|
+          extend_activesupport_concern?(descendant)
+        end
+      end
+
+      def container_module(node)
+        node = node.parent until node.type == :module
+
+        node
+      end
 
       def module_range(node)
         module_node, _ = *node
