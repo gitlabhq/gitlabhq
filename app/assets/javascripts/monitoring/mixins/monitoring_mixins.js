@@ -10,6 +10,7 @@ const mixins = {
         const deployment = d;
         if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
           dataFound = d.xPos + 1;
+          debugger
 
           deployment.showDeploymentFlag = true;
         } else {
@@ -24,9 +25,9 @@ const mixins = {
     formatDeployments() {
       this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
         const time = new Date(deployment.created_at);
-        const xPos = Math.floor(this.timeSeries[0].timeSeriesScaleX(time));
+        const xPos = Math.floor(this.activeTimeSeries[0].timeSeriesScaleX(time));
 
-        time.setSeconds(this.timeSeries[0].values[0].time.getSeconds());
+        time.setSeconds(this.activeTimeSeries[0].values[0].time.getSeconds());
 
         if (xPos >= 0) {
           const seriesIndex = bisectDate(this.timeSeries[0].values, time);
@@ -59,9 +60,8 @@ const mixins = {
         return;
       }
       this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
-      console.log(timeSeries)
 
-      this.currentCoordinates = this.timeSeries.map((series) => {
+      this.currentCoordinates = this.activeTimeSeries.map((series) => {
         const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
         const currentData = series.values[currentDataIndex];
         if  (!currentData) { debugger; return null; }

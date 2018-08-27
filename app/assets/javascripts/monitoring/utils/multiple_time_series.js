@@ -3,6 +3,7 @@ import { scaleLinear, scaleTime } from 'd3-scale';
 import { line, area, curveLinear } from 'd3-shape';
 import { extent, max, sum } from 'd3-array';
 import { timeMinute } from 'd3-time';
+import { mouse } from 'd3-selection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 
 const d3 = {
@@ -15,6 +16,7 @@ const d3 = {
   max,
   timeMinute,
   sum,
+  mouse,
 };
 
 const defaultColorPalette = {
@@ -66,6 +68,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle) 
     }
 
     const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth]);
+    console.log(timeSeriesScaleX)
 
     const timeSeriesScaleY = d3.scaleLinear().range([graphHeight, 0]);
 

@@ -3,7 +3,7 @@ import { scaleLinear, scaleTime } from 'd3-scale';
 import { axisLeft, axisBottom } from 'd3-axis';
 import _ from 'underscore';
 import { max, extent } from 'd3-array';
-import { select } from 'd3-selection';
+import { mouse, select } from 'd3-selection';
 import GraphAxis from './graph/axis.vue';
 import GraphLegend from './graph/legend.vue';
 import GraphFlag from './graph/flag.vue';
@@ -177,15 +177,16 @@ export default {
       this.point = this.point.matrixTransform(this.$refs.graphData.getScreenCTM().inverse());
       this.point.x += 7;
       const timeSeriesWithValues = this.timeSeries.find((series) => {
-        const timeValueOverlay = series.timeSeriesScaleX.invert(this.point.x);
+        const timeValueOverlay = series.timeSeriesScaleX.clamp(true).invert(this.point.x);
         const overlayIndex = bisectDate(series.values, timeValueOverlay);
         const d0 = series.values[overlayIndex - 1];
         const d1 = series.values[overlayIndex];
         return !(d0 === undefined || d1 === undefined);
       })
-      if (!timeSeriesWithValues) debugger
+      if (!timeSeriesWithValues) return;
       const firstTimeSeries = timeSeriesWithValues;
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(this.point.x);
+      console.log(timeValueOverlay)
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay);
       const d0 = firstTimeSeries.values[overlayIndex - 1];
       const d1 = firstTimeSeries.values[overlayIndex];
