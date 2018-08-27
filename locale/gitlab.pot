@@ -144,6 +144,9 @@ msgstr[1] ""
 msgid "%{text} is available"
 msgstr ""
 
+msgid "%{title}"
+msgstr ""
+
 msgid "%{title} changes"
 msgstr ""
 
@@ -2248,6 +2251,9 @@ msgid "DownloadSource|Download"
 msgstr ""
 
 msgid "Downvotes"
+msgstr ""
+
+msgid "Due Date"
 msgstr ""
 
 msgid "Due date"
@@ -5739,6 +5745,9 @@ msgstr ""
 msgid "To validate your GitLab CI configurations, go to 'CI/CD → Pipelines' inside your project, and click on the 'CI Lint' button."
 msgstr ""
 
+msgid "Today"
+msgstr ""
+
 msgid "Todo"
 msgstr ""
 
@@ -6142,6 +6151,9 @@ msgid "Yes, add it"
 msgstr ""
 
 msgid "Yes, let me map Google Code users to full names or GitLab users."
+msgstr ""
+
+msgid "Yesterday"
 msgstr ""
 
 msgid "You are an admin, which means granting access to <strong>%{client_name}</strong> will allow them to interact with GitLab as an admin as well. Proceed with caution."
