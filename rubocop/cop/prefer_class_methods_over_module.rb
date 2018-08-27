@@ -48,12 +48,15 @@ module RuboCop
       private
 
       def extends_activesupport_concern?(node)
-        container_module(node.parent)&.descendants.any? do |descendant|
+        container_module = container_module_of(node.parent)
+        return false unless container_module
+
+        container_module.descendants.any? do |descendant|
           extend_activesupport_concern?(descendant)
         end
       end
 
-      def container_module(node)
+      def container_module_of(node)
         node = node.parent until node.type == :module
 
         node
