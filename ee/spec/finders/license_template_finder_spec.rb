@@ -11,7 +11,7 @@ describe LicenseTemplateFinder do
 
     before do
       stub_ee_application_setting(file_template_project: project)
-      allow(Gitlab::Template::LicenseTemplate)
+      allow(Gitlab::Template::CustomLicenseTemplate)
         .to receive(:all)
         .with(project)
         .and_return([OpenStruct.new(name: "custom template")])

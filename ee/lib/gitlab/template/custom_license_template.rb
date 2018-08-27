@@ -1,6 +1,6 @@
 module Gitlab
   module Template
-    class LicenseTemplate < BaseTemplate
+    class CustomLicenseTemplate < BaseTemplate
       class << self
         def extension
           '.txt'

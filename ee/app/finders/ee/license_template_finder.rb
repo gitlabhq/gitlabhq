@@ -29,7 +29,7 @@ module EE
     end
 
     def custom_licenses
-      ::Gitlab::Template::LicenseTemplate.all(template_project)
+      ::Gitlab::Template::CustomLicenseTemplate.all(template_project)
     end
 
     def template_project
