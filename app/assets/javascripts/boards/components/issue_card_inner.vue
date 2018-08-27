@@ -1,143 +1,145 @@
 <script>
-  import $ from 'jquery';
-  import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import eventHub from '../eventhub';
-  import tooltip from '../../vue_shared/directives/tooltip';
-  import Icon from "~/vue_shared/components/icon.vue"
+import $ from 'jquery';
+import Icon from '~/vue_shared/components/icon.vue';
+import UserAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+import eventHub from '../eventhub';
+import tooltip from '../../vue_shared/directives/tooltip';
+import IssueDueDate from './issue_due_date.vue';
 
-  const Store = gl.issueBoards.BoardsStore;
+const Store = gl.issueBoards.BoardsStore;
 
-  export default {
-    components: {
-      Icon,
-      UserAvatarLink,
+export default {
+  components: {
+    Icon,
+    UserAvatarLink,
+    IssueDueDate,
+  },
+  directives: {
+    tooltip,
+  },
+  props: {
+    issue: {
+      type: Object,
+      required: true,
     },
-    directives: {
-      tooltip,
+    issueLinkBase: {
+      type: String,
+      required: true,
     },
-    props: {
-      issue: {
-        type: Object,
-        required: true,
-      },
-      issueLinkBase: {
-        type: String,
-        required: true,
-      },
-      list: {
-        type: Object,
-        required: false,
-        default: () => ({}),
-      },
-      rootPath: {
-        type: String,
-        required: true,
-      },
-      updateFilters: {
-        type: Boolean,
-        required: false,
-        default: false,
-      },
-      groupId: {
-        type: Number,
-        required: false,
-        default: null,
-      },
+    list: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
-    data() {
+    rootPath: {
+      type: String,
+      required: true,
+    },
+    updateFilters: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    groupId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+  },
+  data() {
+    return {
+      limitBeforeCounter: 3,
+      maxRender: 4,
+      maxCounter: 99,
+    };
+  },
+  computed: {
+    numberOverLimit() {
+      return this.issue.assignees.length - this.limitBeforeCounter;
+    },
+    assigneeCounterTooltip() {
+      return `${this.assigneeCounterLabel} more`;
+    },
+    assigneeCounterLabel() {
+      if (this.numberOverLimit > this.maxCounter) {
+        return `${this.maxCounter}+`;
+      }
+
+      return `+${this.numberOverLimit}`;
+    },
+    shouldRenderCounter() {
+      if (this.issue.assignees.length <= this.maxRender) {
+        return false;
+      }
+
+      return this.issue.assignees.length > this.numberOverLimit;
+    },
+    issueId() {
+      if (this.issue.iid) {
+        return `#${this.issue.iid}`;
+      }
+      return false;
+    },
+    showLabelFooter() {
+      return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
+    },
+  },
+  methods: {
+    isIndexLessThanlimit(index) {
+      return index < this.limitBeforeCounter;
+    },
+    shouldRenderAssignee(index) {
+      // Eg. maxRender is 4,
+      // Render up to all 4 assignees if there are only 4 assigness
+      // Otherwise render up to the limitBeforeCounter
+      if (this.issue.assignees.length <= this.maxRender) {
+        return index < this.maxRender;
+      }
+
+      return index < this.limitBeforeCounter;
+    },
+    assigneeUrl(assignee) {
+      return `${this.rootPath}${assignee.username}`;
+    },
+    assigneeUrlTitle(assignee) {
+      return `Assigned to ${assignee.name}`;
+    },
+    avatarUrlTitle(assignee) {
+      return `Avatar for ${assignee.name}`;
+    },
+    showLabel(label) {
+      if (!label.id) return false;
+      return true;
+    },
+    filterByLabel(label, e) {
+      if (!this.updateFilters) return;
+
+      const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
+      const labelTitle = encodeURIComponent(label.title);
+      const param = `label_name[]=${labelTitle}`;
+      const labelIndex = filterPath.indexOf(param);
+      $(e.currentTarget).tooltip('hide');
+
+      if (labelIndex === -1) {
+        filterPath.push(param);
+      } else {
+        filterPath.splice(labelIndex, 1);
+      }
+
+      gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
+
+      Store.updateFiltersUrl();
+
+      eventHub.$emit('updateTokens');
+    },
+    labelStyle(label) {
       return {
-        limitBeforeCounter: 3,
-        maxRender: 4,
-        maxCounter: 99,
+        backgroundColor: label.color,
+        color: label.textColor,
       };
     },
-    computed: {
-      numberOverLimit() {
-        return this.issue.assignees.length - this.limitBeforeCounter;
-      },
-      assigneeCounterTooltip() {
-        return `${this.assigneeCounterLabel} more`;
-      },
-      assigneeCounterLabel() {
-        if (this.numberOverLimit > this.maxCounter) {
-          return `${this.maxCounter}+`;
-        }
-
-        return `+${this.numberOverLimit}`;
-      },
-      shouldRenderCounter() {
-        if (this.issue.assignees.length <= this.maxRender) {
-          return false;
-        }
-
-        return this.issue.assignees.length > this.numberOverLimit;
-      },
-      issueId() {
-        if (this.issue.iid) {
-          return `#${this.issue.iid}`;
-        }
-        return false;
-      },
-      showLabelFooter() {
-        return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
-      },
-    },
-    methods: {
-      isIndexLessThanlimit(index) {
-        return index < this.limitBeforeCounter;
-      },
-      shouldRenderAssignee(index) {
-        // Eg. maxRender is 4,
-        // Render up to all 4 assignees if there are only 4 assigness
-        // Otherwise render up to the limitBeforeCounter
-        if (this.issue.assignees.length <= this.maxRender) {
-          return index < this.maxRender;
-        }
-
-        return index < this.limitBeforeCounter;
-      },
-      assigneeUrl(assignee) {
-        return `${this.rootPath}${assignee.username}`;
-      },
-      assigneeUrlTitle(assignee) {
-        return `Assigned to ${assignee.name}`;
-      },
-      avatarUrlTitle(assignee) {
-        return `Avatar for ${assignee.name}`;
-      },
-      showLabel(label) {
-        if (!label.id) return false;
-        return true;
-      },
-      filterByLabel(label, e) {
-        if (!this.updateFilters) return;
-
-        const filterPath = gl.issueBoards.BoardsStore.filter.path.split('&');
-        const labelTitle = encodeURIComponent(label.title);
-        const param = `label_name[]=${labelTitle}`;
-        const labelIndex = filterPath.indexOf(param);
-        $(e.currentTarget).tooltip('hide');
-
-        if (labelIndex === -1) {
-          filterPath.push(param);
-        } else {
-          filterPath.splice(labelIndex, 1);
-        }
-
-        gl.issueBoards.BoardsStore.filter.path = filterPath.join('&');
-
-        Store.updateFiltersUrl();
-
-        eventHub.$emit('updateTokens');
-      },
-      labelStyle(label) {
-        return {
-          backgroundColor: label.color,
-          color: label.textColor,
-        };
-      },
-    },
-  };
+  },
+};
 </script>
 <template>
   <div>
@@ -174,26 +176,28 @@
       </button>
     </div>
     <div class="board-card-issue-summary">
-      <span class="board-card-issue-due">
+      <span
+        v-if="issue.dueDate"
+        class="board-card-issue-due"
+      >
         <icon name="calendar"/>
-        Mar 31
+        <IssueDueDate :date="issue.dueDate" />
       </span>
       <span class="board-card-issue-estimate">
         <icon name="hourglass"/>
         2d
       </span>
       <span class="board-card-issue-wight">
-        <icon name="scale"/>
-        8
+        <icon name="scale"/>8
       </span>
     </div>
     <div class="board-card-footer">
       <span
-          v-if="issueId"
-          class="board-card-number"
-        >
-          {{ issue.project.path }}{{ issue.referencePath }}
-        </span>
+        v-if="issueId"
+        class="board-card-number"
+      >
+        {{ issue.project.path }}{{ issue.referencePath }}
+      </span>
       <div class="board-card-assignee">
         <user-avatar-link
           v-for="(assignee, index) in issue.assignees"
