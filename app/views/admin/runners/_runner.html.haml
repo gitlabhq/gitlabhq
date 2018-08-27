@@ -1,65 +1,47 @@
 .gl-responsive-table-row{ id: dom_id(runner) }
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Type')
-    .table-mobile-content
-      - if runner.instance_type?
-        %span.badge.badge-success shared
-      - elsif runner.group_type?
-        %span.badge.badge-success group
-      - else
-        %span.badge.badge-info specific
-      - if runner.locked?
-        %span.badge.badge-warning locked
-      - unless runner.active?
-        %span.badge.badge-danger paused
+  = render layout: 'runner_table_cell', locals: { label: _('Type') } do
+    - if runner.instance_type?
+      %span.badge.badge-success shared
+    - elsif runner.group_type?
+      %span.badge.badge-success group
+    - else
+      %span.badge.badge-info specific
+    - if runner.locked?
+      %span.badge.badge-warning locked
+    - unless runner.active?
+      %span.badge.badge-danger paused
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Runner token')
-    .table-mobile-content
-      = link_to runner.short_sha, admin_runner_path(runner)
+  = render layout: 'runner_table_cell', locals: { label: _('Runner token') } do
+    = link_to runner.short_sha, admin_runner_path(runner)
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Description')
-    .table-mobile-content
-      = runner.description
+  = render layout: 'runner_table_cell', locals: { label: _('Description') } do
+    = runner.description
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Version')
-    .table-mobile-content
-      = runner.version
+  = render layout: 'runner_table_cell', locals: { label: _('Version') } do
+    = runner.version
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('IP Address')
-    .table-mobile-content
-      = runner.ip_address
+  = render layout: 'runner_table_cell', locals: { label: _('IP Address') } do
+    = runner.ip_address
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Projects')
-    .table-mobile-content
-      - if runner.instance_type? || runner.group_type?
-        = _('n/a')
-      - else
-        = runner.projects.count(:all)
+  = render layout: 'runner_table_cell', locals: { label: _('Projects') } do
+    - if runner.instance_type? || runner.group_type?
+      = _('n/a')
+    - else
+      = runner.projects.count(:all)
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Jobs')
-    .table-mobile-content
-      = runner.builds.count(:all)
+  = render layout: 'runner_table_cell', locals: { label: _('Jobs') } do
+    = runner.builds.count(:all)
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Tags')
-    .table-mobile-content
-      - runner.tag_list.sort.each do |tag|
-        %span.badge.badge-primary
-          = tag
+  = render layout: 'runner_table_cell', locals: { label: _('Tags') } do
+    - runner.tag_list.sort.each do |tag|
+      %span.badge.badge-primary
+        = tag
 
-  .table-section.section-10
-    .table-mobile-header{ role: 'rowheader' }= _('Last contact')
-    .table-mobile-content
-      - if runner.contacted_at
-        = time_ago_with_tooltip runner.contacted_at
-      - else
-        = _('Never')
+  = render layout: 'runner_table_cell', locals: { label: _('Last contact') } do
+    - if runner.contacted_at
+      = time_ago_with_tooltip runner.contacted_at
+    - else
+      = _('Never')
 
   .table-section.table-button-footer.section-10
     .btn-group.table-action-buttons
