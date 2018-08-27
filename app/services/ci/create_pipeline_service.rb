@@ -73,6 +73,7 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def auto_cancelable_pipelines
       project.pipelines
         .where(ref: pipeline.ref)
@@ -80,6 +81,7 @@ module Ci
         .where.not(sha: project.commit(pipeline.ref).try(:id))
         .created_or_pending
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def pipeline_created_counter
       @pipeline_created_counter ||= Gitlab::Metrics
@@ -92,8 +94,10 @@ module Ci
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def related_merge_requests
       pipeline.project.source_of_merge_requests.opened.where(source_branch: pipeline.ref)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

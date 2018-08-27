@@ -8,6 +8,7 @@ class DeleteContainerRepositoryWorker
 
   attr_reader :container_repository
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(current_user_id, container_repository_id)
     current_user = User.find_by(id: current_user_id)
     @container_repository = ContainerRepository.find_by(id: container_repository_id)
@@ -21,6 +22,7 @@ class DeleteContainerRepositoryWorker
       Projects::ContainerRepository::DestroyService.new(project, current_user).execute(container_repository)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # For ExclusiveLeaseGuard concern
   def lease_key

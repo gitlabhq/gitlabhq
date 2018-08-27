@@ -5,6 +5,7 @@ class EnvironmentsFinder
     @project, @current_user, @params = project, current_user, params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     deployments = project.deployments
     deployments =
@@ -42,6 +43,7 @@ class EnvironmentsFinder
 
     environments
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 

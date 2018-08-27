@@ -144,6 +144,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def assign_to_closing_issues_link
+    # rubocop: disable CodeReuse/ServiceClass
     issues = MergeRequests::AssignIssuesService.new(project,
                                                     current_user,
                                                     merge_request: merge_request,
@@ -154,6 +155,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
       pluralize_this_issue = issues.count > 1 ? "these issues" : "this issue"
       link_to "Assign yourself to #{pluralize_this_issue}", path, method: :post
     end
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def can_revert_on_current_merge_request?
@@ -204,7 +206,9 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def conflicts
+    # rubocop: disable CodeReuse/ServiceClass
     @conflicts ||= MergeRequests::Conflicts::ListService.new(merge_request)
+    # rubocop: enable CodeReuse/ServiceClass
   end
 
   def closing_issues

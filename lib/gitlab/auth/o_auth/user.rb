@@ -114,11 +114,13 @@ module Gitlab
           build_new_user
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_by_email
           return unless auth_hash.has_attribute?(:email)
 
           ::User.find_by(email: auth_hash.email.downcase)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def auto_link_ldap_user?
           Gitlab.config.omniauth.auto_link_ldap_user
@@ -181,10 +183,12 @@ module Gitlab
           @auth_hash = AuthHash.new(auth_hash)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def find_by_uid_and_provider
           identity = Identity.with_extern_uid(auth_hash.provider, auth_hash.uid).take
           identity&.user
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def build_new_user
           user_params = user_attributes.merge(skip_confirmation: true)

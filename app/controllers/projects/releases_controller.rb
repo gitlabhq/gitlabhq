@@ -28,9 +28,11 @@ class Projects::ReleasesController < Projects::ApplicationController
     @tag ||= @repository.find_tag(params[:tag_id])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def release
     @release ||= @project.releases.find_or_initialize_by(tag: @tag.name)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def release_params
     params.require(:release).permit(:description)

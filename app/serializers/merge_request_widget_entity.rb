@@ -245,7 +245,7 @@ class MergeRequestWidgetEntity < IssuableEntity
 
   def presenter(merge_request)
     @presenters ||= {}
-    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+    @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user) # rubocop: disable CodeReuse/Presenter
   end
 
   # Once SchedulePopulateMergeRequestMetricsWithEventsData fully runs,

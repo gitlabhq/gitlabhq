@@ -19,7 +19,7 @@ class GlobalMilestone
     params =
       { project_ids: projects.map(&:id), state: params[:state] }
 
-    child_milestones = MilestonesFinder.new(params).execute
+    child_milestones = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
 
     milestones = child_milestones.select(:id, :title).group_by(&:title).map do |title, grouped|
       milestones_relation = Milestone.where(id: grouped.map(&:id))
@@ -50,7 +50,7 @@ class GlobalMilestone
 
     params = { group_ids: [group.id], state: 'all' }
 
-    relation = MilestonesFinder.new(params).execute
+    relation = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
     grouped_by_state = relation.reorder(nil).group(:state).count
 
     {
@@ -66,7 +66,7 @@ class GlobalMilestone
 
     params = { project_ids: projects.map(&:id), state: 'all' }
 
-    relation = MilestonesFinder.new(params).execute
+    relation = MilestonesFinder.new(params).execute # rubocop: disable CodeReuse/Finder
     project_milestones_by_state_and_title = relation.reorder(nil).group(:state, :title).count
 
     opened = count_by_state(project_milestones_by_state_and_title, 'active')

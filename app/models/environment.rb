@@ -164,9 +164,11 @@ class Environment < ActiveRecord::Base
     prometheus_adapter.query(:additional_metrics_environment, self) if has_metrics?
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def prometheus_adapter
     @prometheus_adapter ||= Prometheus::AdapterService.new(project, deployment_platform).prometheus_adapter
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def slug
     super.presence || generate_slug

@@ -13,9 +13,11 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_pages_domain!
         user_project.pages_domains.find_by(domain: params[:domain]) || not_found!('PagesDomain')
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def pages_domain
         @pages_domain ||= find_pages_domain!
@@ -61,11 +63,13 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ":id/pages/domains" do
         authorize! :read_pages, user_project
 
         present paginate(user_project.pages_domains.order(:domain)), with: Entities::PagesDomain
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single pages domain' do
         success Entities::PagesDomain

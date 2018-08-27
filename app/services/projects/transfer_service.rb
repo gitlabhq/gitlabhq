@@ -39,6 +39,7 @@ module Projects
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def transfer(project)
       @old_path = project.full_path
       @old_group = project.group
@@ -56,6 +57,7 @@ module Projects
 
       attempt_transfer_transaction
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_transfer_transaction
       Project.transaction do

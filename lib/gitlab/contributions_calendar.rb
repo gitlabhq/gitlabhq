@@ -14,6 +14,7 @@ module Gitlab
                   end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def activity_dates
       return @activity_dates if @activity_dates.present?
 
@@ -36,7 +37,9 @@ module Gitlab
         activities[event["date"]] += event["total_amount"]
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def events_by_date(date)
       return Event.none unless can_read_cross_project?
 
@@ -44,6 +47,7 @@ module Gitlab
         .where(created_at: date.beginning_of_day..date.end_of_day)
         .where(project_id: projects)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def starting_year
       1.year.ago.year
@@ -59,6 +63,7 @@ module Gitlab
       Ability.allowed?(current_user, :read_cross_project)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def event_counts(date_from, feature)
       t = Event.arel_table
 
@@ -87,5 +92,6 @@ module Gitlab
         .where(conditions)
         .where("events.project_id in (#{authed_projects.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

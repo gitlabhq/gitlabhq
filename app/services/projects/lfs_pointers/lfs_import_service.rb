@@ -41,6 +41,7 @@ module Projects
         project.update(lfs_enabled: false)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def get_download_links
         existent_lfs = LfsListService.new(project).execute
         linked_oids = LfsLinkService.new(project).execute(existent_lfs.keys)
@@ -50,6 +51,7 @@ module Projects
 
         LfsDownloadLinkListService.new(project, remote_uri: current_endpoint_uri).execute(not_linked_lfs)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def lfsconfig_endpoint_uri
         strong_memoize(:lfsconfig_endpoint_uri) do

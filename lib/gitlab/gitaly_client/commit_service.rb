@@ -250,6 +250,7 @@ module Gitlab
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def patch(revision)
         request = Gitaly::CommitPatchRequest.new(
           repository: @gitaly_repo,
@@ -259,6 +260,7 @@ module Gitlab
 
         response.sum(&:data)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def commit_stats(revision)
         request = Gitaly::CommitStatsRequest.new(

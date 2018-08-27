@@ -30,6 +30,7 @@ module API
     prepend EE::API::MergeRequests
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_merge_requests(args = {})
         args = declared_params.merge(args)
 
@@ -47,6 +48,7 @@ module API
         merge_requests
           .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def merge_request_pipelines_with_access
         authorize! :read_pipeline, user_project

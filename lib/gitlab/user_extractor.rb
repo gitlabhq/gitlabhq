@@ -14,11 +14,13 @@ module Gitlab
       @text = text
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def users
       return User.none unless @text.present?
 
       @users ||= User.from("(#{union.to_sql}) users")
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def usernames
       matches[:usernames]

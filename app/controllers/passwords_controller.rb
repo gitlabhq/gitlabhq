@@ -7,6 +7,7 @@ class PasswordsController < Devise::PasswordsController
 
   prepend EE::PasswordsController
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def edit
     super
     reset_password_token = Devise.token_generator.digest(
@@ -26,6 +27,7 @@ class PasswordsController < Devise::PasswordsController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def update
     super do |resource|

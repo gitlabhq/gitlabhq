@@ -10,6 +10,7 @@ class ContainerRepository < ActiveRecord::Base
 
   before_destroy :delete_tags!
 
+  # rubocop: disable CodeReuse/ServiceClass
   def registry
     @registry ||= begin
       token = Auth::ContainerRegistryAuthenticationService.full_access_token(path)
@@ -20,6 +21,7 @@ class ContainerRepository < ActiveRecord::Base
       ContainerRegistry::Registry.new(url, token: token, path: host_port)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def path
     @path ||= [project.full_path, name]

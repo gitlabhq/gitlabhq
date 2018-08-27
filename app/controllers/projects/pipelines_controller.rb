@@ -161,6 +161,7 @@ class Projects::PipelinesController < Projects::ApplicationController
     params.require(:pipeline).permit(:ref, variables_attributes: %i[key secret_value])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pipeline
     @pipeline ||= project
                     .pipelines
@@ -168,6 +169,7 @@ class Projects::PipelinesController < Projects::ApplicationController
                     .find_by!(id: params[:id])
                     .present(current_user: current_user)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     # Also see https://gitlab.com/gitlab-org/gitlab-ce/issues/42343

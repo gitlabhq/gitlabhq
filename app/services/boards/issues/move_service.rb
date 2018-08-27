@@ -23,13 +23,17 @@ module Boards
           moving_from_list != moving_to_list
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def moving_from_list
         @moving_from_list ||= board.lists.find_by(id: params[:from_list_id])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def moving_to_list
         @moving_to_list ||= board.lists.find_by(id: params[:to_list_id])
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def update(issue)
         ::Issues::UpdateService.new(issue.project, current_user, issue_params(issue)).execute(issue)
@@ -63,6 +67,7 @@ module Boards
         [moving_to_list.label_id].compact
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def remove_label_ids
         label_ids =
           if moving_to_list.movable?
@@ -75,6 +80,7 @@ module Boards
 
         Array(label_ids).compact
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def move_between_ids
         return unless params[:move_after_id] || params[:move_before_id]

@@ -42,6 +42,7 @@ module API
       params do
         use :pagination
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/triggers' do
         authenticate!
         authorize! :admin_build, user_project
@@ -50,6 +51,7 @@ module API
 
         present paginate(triggers), with: Entities::Trigger
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get specific trigger of a project' do
         success Entities::Trigger

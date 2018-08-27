@@ -16,6 +16,7 @@ module API
         optional :scope,    type: String, values: %w[active inactive],
                             desc: 'The scope of pipeline schedules'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       get ':id/pipeline_schedules' do
         authorize! :read_pipeline_schedule, user_project
 
@@ -23,6 +24,7 @@ module API
           .preload([:owner, :last_pipeline])
         present paginate(schedules), with: Entities::PipelineSchedule
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Get a single pipeline schedule' do
         success Entities::PipelineScheduleDetails
@@ -161,6 +163,7 @@ module API
     end
 
     helpers do
+      # rubocop: disable CodeReuse/ActiveRecord
       def pipeline_schedule
         @pipeline_schedule ||=
           user_project
@@ -172,7 +175,9 @@ module API
               end
             end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def pipeline_schedule_variable
         @pipeline_schedule_variable ||=
           pipeline_schedule.variables.find_by(key: params[:key]).tap do |pipeline_schedule_variable|
@@ -181,6 +186,7 @@ module API
             end
           end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

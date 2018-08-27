@@ -3,6 +3,7 @@
 module Ci
   class CompareTestReportsService < ::BaseService
     def execute(base_pipeline, head_pipeline)
+      # rubocop: disable CodeReuse/Serializer
       comparer = Gitlab::Ci::Reports::TestReportsComparer
         .new(base_pipeline&.test_reports, head_pipeline.test_reports)
 
@@ -19,6 +20,7 @@ module Ci
         key: key(base_pipeline, head_pipeline),
         status_reason: e.message
       }
+      # rubocop: enable CodeReuse/Serializer
     end
 
     def latest?(base_pipeline, head_pipeline, data)

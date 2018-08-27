@@ -46,6 +46,7 @@ module Autocomplete
     # Returns the users based on the input parameters, as an Array.
     #
     # This method is separate so it is easier to extend in EE.
+    # rubocop: disable CodeReuse/ActiveRecord
     def limited_users
       # When changing the order of these method calls, make sure that
       # reorder_by_name() is called _before_ optionally_search(), otherwise
@@ -63,6 +64,7 @@ module Autocomplete
         .limit(LIMIT)
         .to_a
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def prepend_current_user?
       filter_by_current_user.present? && current_user
@@ -72,6 +74,7 @@ module Autocomplete
       author_id.present? && current_user
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_users
       if project
         project.authorized_users.union_with_user(author_id)
@@ -83,5 +86,6 @@ module Autocomplete
         User.none
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

@@ -67,21 +67,23 @@ class NotesFinder
     @params[:target_type]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def notes_of_any_type
     types = %w(commit issue merge_request snippet)
     note_relations = types.map { |t| notes_for_type(t) }
     note_relations.map! { |notes| search(notes) }
-    UnionFinder.new.find_union(note_relations, Note.includes(:author))
+    UnionFinder.new.find_union(note_relations, Note.includes(:author)) # rubocop: disable CodeReuse/Finder
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def noteables_for_type(noteable_type)
     case noteable_type
     when "issue"
-      IssuesFinder.new(@current_user, project_id: @project.id).execute
+      IssuesFinder.new(@current_user, project_id: @project.id).execute # rubocop: disable CodeReuse/Finder
     when "merge_request"
-      MergeRequestsFinder.new(@current_user, project_id: @project.id).execute
+      MergeRequestsFinder.new(@current_user, project_id: @project.id).execute # rubocop: disable CodeReuse/Finder
     when "snippet", "project_snippet"
-      SnippetsFinder.new(@current_user, project: @project).execute
+      SnippetsFinder.new(@current_user, project: @project).execute # rubocop: disable CodeReuse/Finder
     when "personal_snippet"
       PersonalSnippet.all
     else
@@ -89,6 +91,7 @@ class NotesFinder
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def notes_for_type(noteable_type)
     if noteable_type == "commit"
       if Ability.allowed?(@current_user, :download_code, @project)
@@ -101,6 +104,7 @@ class NotesFinder
       @project.notes.where(noteable_type: finder.base_class.name, noteable_id: finder.reorder(nil))
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def notes_on_target
     if target.respond_to?(:related_notes)

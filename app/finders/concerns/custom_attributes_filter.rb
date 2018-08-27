@@ -1,4 +1,5 @@
 module CustomAttributesFilter
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_custom_attributes(items)
     return items unless params[:custom_attributes].is_a?(Hash)
     return items unless Ability.allowed?(current_user, :read_custom_attribute)
@@ -17,4 +18,5 @@ module CustomAttributesFilter
       scope.where('EXISTS (?)', custom_attributes.where(key: key, value: value))
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

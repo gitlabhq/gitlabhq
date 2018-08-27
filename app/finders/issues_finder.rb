@@ -31,10 +31,13 @@ class IssuesFinder < IssuableFinder
     @scalar_params ||= super + [:due_date]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def klass
     Issue.includes(:author)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def with_confidentiality_access_check
     return Issue.all if user_can_see_all_confidential_issues?
     return Issue.where('issues.confidential IS NOT TRUE') if user_cannot_see_confidential_issues?
@@ -48,6 +51,7 @@ class IssuesFinder < IssuableFinder
       user_id: current_user.id,
       project_ids: current_user.authorized_projects(CONFIDENTIAL_ACCESS_LEVEL).select(:id))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -127,6 +131,7 @@ class IssuesFinder < IssuableFinder
     current_user.blank?
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_assignee(items)
     if assignee
       items.assigned_to(assignee)
@@ -138,4 +143,5 @@ class IssuesFinder < IssuableFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

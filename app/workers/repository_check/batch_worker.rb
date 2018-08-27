@@ -61,22 +61,28 @@ module RepositoryCheck
       never_checked_project_ids(BATCH_SIZE) + old_checked_project_ids(BATCH_SIZE)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def never_checked_project_ids(batch_size)
       projects_on_shard.where(last_repository_check_at: nil)
         .where('created_at < ?', 24.hours.ago)
         .limit(batch_size).pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def old_checked_project_ids(batch_size)
       projects_on_shard.where.not(last_repository_check_at: nil)
         .where('last_repository_check_at < ?', 1.month.ago)
         .reorder(last_repository_check_at: :asc)
         .limit(batch_size).pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def projects_on_shard
       Project.where(repository_storage: shard_name)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def try_obtain_lease_for_project(id)
       # Use a 24-hour timeout because on servers/projects where 'git fsck' is

@@ -81,17 +81,21 @@ module Projects
       @project.errors.add(:namespace, "is not valid")
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def allowed_fork?(source_project_id)
       return true if source_project_id.nil?
 
       source_project = Project.find_by(id: source_project_id)
       current_user.can?(:fork_project, source_project)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:create_projects, namespace)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.full_name}\"")
@@ -169,12 +173,14 @@ module Projects
       @project
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def create_services_from_active_templates(project)
       Service.where(template: true, active: true).each do |template|
         service = Service.build_from_template(project.id, template)
         service.save!
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def set_project_name_from_path
       # Set project name from path

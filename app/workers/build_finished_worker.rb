@@ -7,6 +7,7 @@ class BuildFinishedWorker
 
   queue_namespace :pipeline_processing
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(build_id)
     Ci::Build.find_by(id: build_id).try do |build|
       UpdateBuildMinutesService.new(build.project, nil).execute(build)
@@ -20,4 +21,5 @@ class BuildFinishedWorker
       ArchiveTraceWorker.perform_async(build.id)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

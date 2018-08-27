@@ -61,12 +61,16 @@ class GroupDescendantsFinder
   end
 
   def direct_child_groups
+    # rubocop: disable CodeReuse/Finder
     GroupsFinder.new(current_user,
                      parent: parent_group,
                      all_available: true).execute
+    # rubocop: enable CodeReuse/Finder
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def all_visible_descendant_groups
+    # rubocop: disable CodeReuse/Finder
     groups_table = Group.arel_table
     visible_to_user = groups_table[:visibility_level]
                       .in(Gitlab::VisibilityLevel.levels_for_user(current_user))
@@ -84,7 +88,9 @@ class GroupDescendantsFinder
     hierarchy_for_parent
       .descendants
       .where(visible_to_user)
+    # rubocop: enable CodeReuse/Finder
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def subgroups_matching_filter
     all_visible_descendant_groups
@@ -101,24 +107,29 @@ class GroupDescendantsFinder
   #
   # So when searching 'project', on the 'subgroup' page we want to preload
   # 'nested-group' but not 'subgroup' or 'root'
+  # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_groups(base_for_ancestors)
     group_ids = base_for_ancestors.except(:select, :sort).select(:id)
     Gitlab::GroupHierarchy.new(Group.where(id: group_ids))
       .base_and_ancestors(upto: parent_group.id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def ancestors_of_filtered_projects
     projects_to_load_ancestors_of = projects.where.not(namespace: parent_group)
     groups_to_load_ancestors_of = Group.where(id: projects_to_load_ancestors_of.select(:namespace_id))
     ancestors_of_groups(groups_to_load_ancestors_of)
       .with_selects_for_list(archived: params[:archived])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def ancestors_of_filtered_subgroups
     ancestors_of_groups(subgroups)
       .with_selects_for_list(archived: params[:archived])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def subgroups
     return Group.none unless Group.supports_nested_groups?
 
@@ -132,22 +143,29 @@ class GroupDescendantsFinder
 
     groups.with_selects_for_list(archived: params[:archived]).order_by(sort)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/Finder
   def direct_child_projects
     GroupProjectsFinder.new(group: parent_group, current_user: current_user, params: params, options: { only_owned: true })
       .execute
   end
+  # rubocop: enable CodeReuse/Finder
 
   # Finds all projects nested under `parent_group` or any of its descendant
   # groups
+  # rubocop: disable CodeReuse/ActiveRecord
   def projects_matching_filter
+    # rubocop: disable CodeReuse/Finder
     projects_nested_in_group = Project.where(namespace_id: hierarchy_for_parent.base_and_descendants.select(:id))
     params_with_search = params.merge(search: params[:filter])
 
     ProjectsFinder.new(params: params_with_search,
                        current_user: current_user,
                        project_ids_relation: projects_nested_in_group).execute
+    # rubocop: enable CodeReuse/Finder
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
     projects = if params[:filter]
@@ -163,7 +181,9 @@ class GroupDescendantsFinder
     params.fetch(:sort, 'id_asc')
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def hierarchy_for_parent
     @hierarchy ||= Gitlab::GroupHierarchy.new(Group.where(id: parent_group.id))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

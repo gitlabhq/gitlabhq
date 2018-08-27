@@ -34,6 +34,7 @@ module Lfs
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def lock
       return @lock if defined?(@lock)
 
@@ -43,5 +44,6 @@ module Lfs
                 project.lfs_file_locks.find_by!(path: params[:path])
               end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

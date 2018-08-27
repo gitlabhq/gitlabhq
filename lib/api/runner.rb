@@ -17,6 +17,7 @@ module API
         optional :tag_list, type: Array[String], desc: %q(List of Runner's tags)
         optional :maximum_timeout, type: Integer, desc: 'Maximum timeout set when this Runner will handle the job'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       post '/' do
         attributes = attributes_for_keys([:description, :active, :locked, :run_untagged, :tag_list, :maximum_timeout])
           .merge(get_runner_details_from_request)
@@ -43,6 +44,7 @@ module API
           render_validation_error!(runner)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       desc 'Deletes a registered Runner' do
         http_codes [[204, 'Runner was deleted'], [403, 'Forbidden']]

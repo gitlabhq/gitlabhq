@@ -43,6 +43,7 @@ class TodoService
   # collects the todo users before the todos themselves are deleted, then
   # updates the todo counts for those users.
   #
+  # rubocop: disable CodeReuse/ActiveRecord
   def destroy_target(target)
     todo_users = User.where(id: target.todos.pending.select(:user_id)).to_a
 
@@ -50,6 +51,7 @@ class TodoService
 
     todo_users.each(&:update_todos_count_cache)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   # When we reassign an issue we should:
   #
@@ -200,16 +202,21 @@ class TodoService
     create_todos(current_user, attributes)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def todo_exist?(issuable, current_user)
     TodosFinder.new(current_user).execute.exists?(target: issuable)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def todos_by_ids(ids, current_user)
     current_user.todos.where(id: Array(ids))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def update_todos_state(todos, current_user, state)
     # Only update those that are not really on that state
     todos = todos.where.not(state: state)
@@ -218,6 +225,7 @@ class TodoService
     current_user.update_todos_count_cache
     todos_ids
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def create_todos(users, attributes)
     Array(users).map do |user|
@@ -342,8 +350,10 @@ class TodoService
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def pending_todos(user, criteria = {})
     valid_keys = [:project_id, :target_id, :target_type, :commit_id]
     user.todos.pending.where(criteria.slice(*valid_keys))
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

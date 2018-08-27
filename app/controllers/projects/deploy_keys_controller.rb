@@ -56,6 +56,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
     end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def disable
     deploy_key_project = @project.deploy_keys_projects.find_by(deploy_key_id: params[:id])
     return render_404 unless deploy_key_project
@@ -69,6 +70,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
       format.json { head :ok }
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   protected
 
