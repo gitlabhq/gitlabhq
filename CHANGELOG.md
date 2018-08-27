@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.2.2 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+
 ## 11.2.1 (2018-08-22)
 
 ### Fixed (2 changes)
