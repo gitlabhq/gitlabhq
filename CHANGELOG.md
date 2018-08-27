@@ -547,6 +547,19 @@ entry.
 - Use monospaced font for MR diff commit link ref on GFM.
 
 
+## 11.0.6 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Sanitize git URL in import errors. (Jamie Schembri)
+
+
 ## 11.0.5 (2018-07-26)
 
 ### Security (4 changes)
