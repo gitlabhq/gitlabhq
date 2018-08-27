@@ -5,6 +5,7 @@ module Gitlab
     AVAILABLE_LANGUAGES = {
       'en' => 'English',
       'es' => 'Español',
+      'gl_ES' => 'Galego',
       'de' => 'Deutsch',
       'fr' => 'Français',
       'pt_BR' => 'Português (Brasil)',
