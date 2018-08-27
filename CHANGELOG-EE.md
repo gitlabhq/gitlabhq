@@ -105,6 +105,7 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 ## 11.1.5 (2018-08-27)
 
+- No changes.
 ### Security (1 change)
 
 - Prevent regular users from moving projects to different storage shards.
