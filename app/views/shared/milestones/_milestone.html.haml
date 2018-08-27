@@ -16,6 +16,9 @@
             = milestone_date_range(milestone)
         %div
           = render('shared/milestone_expired', milestone: milestone)
+          - if milestone.group_milestone?
+            .label-badge.label-badge-blue.d-inline-block
+              = milestone.group.full_name
           - if milestone.legacy_group_milestone?
             .projects
               - milestone.milestones.each do |milestone|
