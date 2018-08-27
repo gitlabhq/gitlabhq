@@ -2798,6 +2798,18 @@ msgstr ""
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
+msgid "Enter the issue description"
+msgstr ""
+
+msgid "Enter the issue title"
+msgstr ""
+
+msgid "Enter the merge request description"
+msgstr ""
+
+msgid "Enter the merge request title"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -6448,6 +6460,9 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+msgid "Setup a %{type} Runner manually"
+msgstr ""
+
 msgid "Setup a specific Runner automatically"
 msgstr ""
 
@@ -7044,6 +7059,9 @@ msgid "The time in seconds between storage checks. If a check did not complete y
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
+msgstr ""
+
+msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
