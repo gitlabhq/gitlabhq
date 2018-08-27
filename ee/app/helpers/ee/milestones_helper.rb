@@ -18,7 +18,7 @@ module EE
       return false if cookies['hide_burndown_message'].present?
       return false unless milestone.supports_burndown_charts?
 
-      warning.nil? && can_admin_milestone?(milestone)
+      warning.nil? && can?(current_user, :admin_milestone, milestone.parent)
     end
 
     def data_warning_for(burndown)
@@ -44,14 +44,6 @@ module EE
       else
         _("Weight %{weight}") % { weight: weight }
       end
-    end
-
-    private
-
-    def can_admin_milestone?(milestone)
-      policy_name = milestone.group_milestone? ? :admin_milestones : :admin_milestone
-
-      can?(current_user, policy_name, milestone.parent)
     end
   end
 end
