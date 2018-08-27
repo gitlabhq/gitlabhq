@@ -40,10 +40,22 @@ describe ButtonHelper do
       end
 
       context 'when user has no personal access tokens' do
-        it 'has a personal access token text on the dropdown description ' do
+        it 'has a personal access token text on the dropdown description' do
           description = element.search('.dropdown-menu-inner-content').first
 
           expect(description.inner_text).to eq 'Create a personal access token on your account to pull or push via HTTP.'
+        end
+      end
+
+      context 'when user has personal access tokens' do
+        before do
+          create(:personal_access_token, user: user)
+        end
+
+        it 'does not have a personal access token text on the dropdown description' do
+          description = element.search('.dropdown-menu-inner-content').first
+
+          expect(description).to be_nil
         end
       end
     end
