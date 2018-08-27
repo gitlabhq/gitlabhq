@@ -14,7 +14,7 @@ describe 'Projects > Settings > Packages', :js do
       allow(Gitlab.config.packages).to receive(:enabled).and_return(true)
     end
 
-    it 'displays the correct elements' do
+    it 'displays the packages toggle button' do
       visit edit_project_path(project)
 
       expect(page).to have_content('Packages')
@@ -27,10 +27,10 @@ describe 'Projects > Settings > Packages', :js do
       allow(Gitlab.config.packages).to receive(:enabled).and_return(false)
     end
 
-    it 'displays the correct elements' do
+    it 'does not show up in UI' do
       visit edit_project_path(project)
 
-      expect(page).to_not have_content('Packages')
+      expect(page).not_to have_content('Packages')
     end
   end
 end

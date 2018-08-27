@@ -539,6 +539,15 @@ module EE
       Feature.enabled?('protected_environments') && feature_available?(:protected_environments)
     end
 
+    # Because we use default_value_for we need to be sure
+    # packages_enabled= method does exist even if we rollback migration.
+    # Otherwise many tests from spec/migrations will fail.
+    def packages_enabled=(value)
+      if has_attribute?(:packages_enabled)
+        write_attribute(:packages_enabled, value)
+      end
+    end
+
     private
 
     def set_override_pull_mirror_available
@@ -591,15 +600,6 @@ module EE
         old_path: path_before,
         old_path_with_namespace: full_path_before
       ).create
-    end
-
-    # Because we use default_value_for we need to be sure
-    # packages_enabled= method does exist even if we rollback migration.
-    # Otherwise many tests from spec/migrations will fail.
-    def packages_enabled=(value)
-      if has_attribute?(:packages_enabled)
-        write_attribute(:packages_enabled, value)
-      end
     end
   end
 end
