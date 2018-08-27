@@ -97,15 +97,8 @@
     .runners-content.content-list
       .table-holder
         .gl-responsive-table-row.table-row-header{ role: 'row' }
-          .table-section.section-10{ role: 'rowheader' }= _('Type')
-          .table-section.section-10{ role: 'rowheader' }= _('Runner token')
-          .table-section.section-10{ role: 'rowheader' }= _('Description')
-          .table-section.section-10{ role: 'rowheader' }= _('Version')
-          .table-section.section-10{ role: 'rowheader' }= _('IP Address')
-          .table-section.section-10{ role: 'rowheader' }= _('Projects')
-          .table-section.section-10{ role: 'rowheader' }= _('Jobs')
-          .table-section.section-10{ role: 'rowheader' }= _('Tags')
-          .table-section.section-10{ role: 'rowheader' }= _('Last contact')
+          - [_('Type'), _('Runner token'), _('Description'), _('Version'), _('IP Address'), _('Projects'), _('Jobs'), _('Tags'), _('Last contact')].each do |label|
+            .table-section.section-10{ role: 'rowheader' }= label
 
         - @runners.each do |runner|
           = render 'admin/runners/runner', runner: runner
