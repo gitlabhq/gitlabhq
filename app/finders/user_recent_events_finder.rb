@@ -21,6 +21,7 @@ class UserRecentEventsFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     return Event.none unless can?(current_user, :read_user_profile, target_user)
 
@@ -29,9 +30,11 @@ class UserRecentEventsFinder
       .with_associations
       .limit_recent(LIMIT, params[:offset])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def recent_events(offset)
     sql = <<~SQL
       (#{projects}) AS projects_for_join
@@ -42,10 +45,13 @@ class UserRecentEventsFinder
     # Workaround for https://github.com/rails/rails/issues/24193
     Event.from([Arel.sql(sql)])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def target_events
     Event.where(author: target_user)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def projects
     target_user.project_interactions.to_sql

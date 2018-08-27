@@ -79,6 +79,7 @@ module Gitlab
         ::Labels::FindOrCreateService.new(nil, project, params).execute(skip_authorization: true)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def user_info(person_id)
         user_hash = user_map[person_id.to_s]
 
@@ -95,7 +96,9 @@ module Gitlab
 
         { name: user_name, gitlab_id: gitlab_id }
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_cases
         return unless @cases
 
@@ -141,6 +144,7 @@ module Gitlab
           import_issue_comments(issue, comments)
         end
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def opened_content(comments)
         while comment = comments.shift

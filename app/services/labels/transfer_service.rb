@@ -32,6 +32,7 @@ module Labels
 
     attr_reader :current_user, :old_group, :project
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def labels_to_transfer
       label_ids = []
       label_ids << group_labels_applied_to_issues.select(:id)
@@ -41,7 +42,9 @@ module Labels
 
       Label.where("labels.id IN (#{union.to_sql})").reorder(nil).uniq # rubocop:disable GitlabSecurity/SqlInjection
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_issues
       Label.joins(:issues)
         .where(
@@ -49,7 +52,9 @@ module Labels
           labels: { type: 'GroupLabel', group_id: old_group.id }
         )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def group_labels_applied_to_merge_requests
       Label.joins(:merge_requests)
         .where(
@@ -57,6 +62,7 @@ module Labels
           labels: { type: 'GroupLabel', group_id: old_group.id }
         )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_or_create_label!(label)
       params    = label.attributes.slice('title', 'description', 'color')
@@ -65,6 +71,7 @@ module Labels
       new_label.id
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_label_links(labels, old_label_id:, new_label_id:)
       # use 'labels' relation to get label_link ids only of issues/MRs
       # in the project being transferred.
@@ -76,10 +83,13 @@ module Labels
       LabelLink.where(id: link_ids, label_id: old_label_id)
         .update_all(label_id: new_label_id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def update_label_priorities(old_label_id:, new_label_id:)
       LabelPriority.where(project_id: project.id, label_id: old_label_id)
         .update_all(label_id: new_label_id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

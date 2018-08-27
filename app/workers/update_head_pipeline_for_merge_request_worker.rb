@@ -6,6 +6,7 @@ class UpdateHeadPipelineForMergeRequestWorker
 
   queue_namespace :pipeline_processing
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def perform(merge_request_id)
     merge_request = MergeRequest.find(merge_request_id)
     pipeline = Ci::Pipeline.where(project: merge_request.source_project, ref: merge_request.source_branch).last
@@ -20,6 +21,7 @@ class UpdateHeadPipelineForMergeRequestWorker
 
     merge_request.update_attribute(:head_pipeline_id, pipeline.id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def log_error_message_for(merge_request)
     Rails.logger.error(

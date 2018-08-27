@@ -107,15 +107,19 @@ module Projects
       mv_repository(old_path, new_path)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def repo_exists?(path)
       gitlab_shell.exists?(project.repository_storage, path + '.git')
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def mv_repository(from_path, to_path)
       return true unless gitlab_shell.exists?(project.repository_storage, from_path + '.git')
 
       gitlab_shell.mv_repository(project.repository_storage, from_path, to_path)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def attempt_rollback(project, message)
       return unless project

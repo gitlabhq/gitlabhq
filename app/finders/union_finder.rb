@@ -1,4 +1,5 @@
 class UnionFinder
+  # rubocop: disable CodeReuse/ActiveRecord
   def find_union(segments, klass)
     if segments.length > 1
       union = Gitlab::SQL::Union.new(segments.map { |s| s.select(:id) })
@@ -8,4 +9,5 @@ class UnionFinder
       segments.first
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

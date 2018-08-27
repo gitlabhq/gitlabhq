@@ -5,6 +5,7 @@ module NamespacesHelper
     params.dig(:project, :namespace_id) || params[:namespace_id]
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def namespaces_options(selected = :current_user, display_path: false, groups: nil, extra_group: nil, groups_only: false)
     groups ||= current_user.manageable_groups
                  .eager_load(:route)
@@ -42,6 +43,7 @@ module NamespacesHelper
 
     grouped_options_for_select(options, selected_id)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def namespace_icon(namespace, size = 40)
     if namespace.is_a?(Group)
@@ -55,6 +57,7 @@ module NamespacesHelper
 
   # Many importers create a temporary Group, so use the real
   # group if one exists by that name to prevent duplicates.
+  # rubocop: disable CodeReuse/ActiveRecord
   def dedup_extra_group(extra_group)
     unless extra_group.persisted?
       existing_group = Group.find_by(path: extra_group.path)
@@ -63,6 +66,7 @@ module NamespacesHelper
 
     extra_group
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def options_for_group(namespaces, display_path:, type:)
     group_label = type.pluralize

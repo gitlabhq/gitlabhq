@@ -18,6 +18,7 @@ class MilestonesFinder
     @params = params
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def execute
     return Milestone.none if project_ids.empty? && group_ids.empty?
 
@@ -28,6 +29,7 @@ class MilestonesFinder
 
     order(items)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   private
 
@@ -35,6 +37,7 @@ class MilestonesFinder
     items.for_projects_and_groups(project_ids, group_ids)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def by_title(items)
     if params[:title]
       items.where(title: params[:title])
@@ -42,13 +45,16 @@ class MilestonesFinder
       items
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_state(items)
     Milestone.filter_by_state(items, params[:state])
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def order(items)
     order_statement = Gitlab::Database.nulls_last_order('due_date', 'ASC')
     items.reorder(order_statement).order('title ASC')
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 end

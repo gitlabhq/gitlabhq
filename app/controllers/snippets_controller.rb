@@ -24,6 +24,7 @@ class SnippetsController < ApplicationController
   layout 'snippets'
   respond_to :html
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     if params[:username].present?
       @user = User.find_by(username: params[:username])
@@ -38,6 +39,7 @@ class SnippetsController < ApplicationController
       redirect_to(current_user ? dashboard_snippets_path : explore_snippets_path)
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @snippet = PersonalSnippet.new
@@ -94,9 +96,11 @@ class SnippetsController < ApplicationController
 
   protected
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def snippet
     @snippet ||= PersonalSnippet.inc_relations_for_view.find_by(id: params[:id])
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   alias_method :awardable, :snippet
   alias_method :spammable, :snippet

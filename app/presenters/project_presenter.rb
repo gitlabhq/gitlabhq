@@ -319,7 +319,7 @@ class ProjectPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def tags_to_show
-    project.tag_list.take(MAX_TAGS_TO_SHOW)
+    project.tag_list.take(MAX_TAGS_TO_SHOW) # rubocop: disable CodeReuse/ActiveRecord
   end
 
   def count_of_extra_tags_not_shown

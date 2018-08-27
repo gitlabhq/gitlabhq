@@ -35,6 +35,7 @@ class EventFilter
               end
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def apply_filter(events)
     return events if params.blank? || params == EventFilter.all
 
@@ -51,6 +52,7 @@ class EventFilter
       events.where(action: [Event::CREATED, Event::UPDATED, Event::CLOSED, Event::REOPENED])
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def options(key)
     filter = params.dup

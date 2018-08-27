@@ -29,7 +29,9 @@ module Gitlab
 
         %w(total_count resolved_count failed_count).each do |method|
           define_method(method) do
+            # rubocop: disable CodeReuse/ActiveRecord
             suite_comparers.sum { |suite| suite.public_send(method) } # rubocop:disable GitlabSecurity/PublicSend
+            # rubocop: enable CodeReuse/ActiveRecord
           end
         end
       end

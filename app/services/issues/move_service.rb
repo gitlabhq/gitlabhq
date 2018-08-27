@@ -58,6 +58,7 @@ module Issues
       CreateService.new(@new_project, @current_user, new_params).execute
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def cloneable_label_ids
       params = {
         project_id: @new_project.id,
@@ -67,6 +68,7 @@ module Issues
 
       LabelsFinder.new(current_user, params).execute.pluck(:id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def cloneable_milestone_id
       title = @old_issue.milestone&.title
@@ -97,6 +99,7 @@ module Issues
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def copy_resource_label_events
       @old_issue.resource_label_events.find_in_batches do |batch|
         events = batch.map do |event|
@@ -108,6 +111,7 @@ module Issues
         Gitlab::Database.bulk_insert(ResourceLabelEvent.table_name, events)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def rewrite_issue_award_emoji
       rewrite_award_emoji(@old_issue, @new_issue)

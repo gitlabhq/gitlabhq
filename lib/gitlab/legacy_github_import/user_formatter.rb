@@ -29,6 +29,7 @@ module Gitlab
             .try(:id)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def find_by_external_uid
         return nil unless id
 
@@ -40,6 +41,7 @@ module Gitlab
             .first
             .try(:id)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
   end
 end

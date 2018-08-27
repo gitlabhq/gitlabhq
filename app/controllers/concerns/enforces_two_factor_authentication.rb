@@ -24,6 +24,7 @@ module EnforcesTwoFactorAuthentication
       current_user.try(:require_two_factor_authentication_from_group?)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def two_factor_authentication_reason(global: -> {}, group: -> {})
     if two_factor_authentication_required?
       if Gitlab::CurrentSettings.require_two_factor_authentication?
@@ -34,6 +35,7 @@ module EnforcesTwoFactorAuthentication
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def two_factor_grace_period
     periods = [Gitlab::CurrentSettings.two_factor_grace_period]

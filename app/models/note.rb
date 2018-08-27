@@ -181,6 +181,7 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def cross_reference?
     return unless system?
 
@@ -190,6 +191,7 @@ class Note < ActiveRecord::Base
       SystemNoteService.cross_reference?(note)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def diff_note?
     false

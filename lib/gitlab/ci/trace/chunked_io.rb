@@ -133,6 +133,7 @@ module Gitlab
           invalidate_chunk_cache
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def truncate(offset)
           raise ArgumentError, 'Outside of file' if offset > size || offset < 0
           return if offset == size # Skip the following process as it doesn't affect anything
@@ -148,6 +149,7 @@ module Gitlab
         ensure
           invalidate_chunk_cache
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def flush
           # no-op
@@ -206,9 +208,11 @@ module Gitlab
           @chunks_cache = []
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def current_chunk
           @chunks_cache[chunk_index] ||= trace_chunks.find_by(chunk_index: chunk_index)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def build_chunk
           @chunks_cache[chunk_index] = ::Ci::BuildTraceChunk.new(build: build, chunk_index: chunk_index)
@@ -218,13 +222,17 @@ module Gitlab
           current_chunk || build_chunk
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def trace_chunks
           ::Ci::BuildTraceChunk.where(build: build)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def calculate_size
           trace_chunks.order(chunk_index: :desc).first.try(&:end_offset).to_i
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

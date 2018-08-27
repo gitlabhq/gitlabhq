@@ -2,6 +2,7 @@
 
 module Issues
   class ReferencedMergeRequestsService < Issues::BaseService
+    # rubocop: disable CodeReuse/ActiveRecord
     def execute(issue)
       referenced = referenced_merge_requests(issue)
       closed_by = closed_by_merge_requests(issue)
@@ -12,6 +13,7 @@ module Issues
 
       [sort_by_iid(referenced), sort_by_iid(closed_by)]
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def referenced_merge_requests(issue)
       merge_requests = extract_merge_requests(issue)
@@ -29,6 +31,7 @@ module Issues
       )
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def closed_by_merge_requests(issue)
       return [] unless issue.open?
 
@@ -39,6 +42,7 @@ module Issues
       ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: issue.id).pluck(:merge_request_id)
       merge_requests.select { |mr| mr.id.in?(ids) }
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 
@@ -54,10 +58,12 @@ module Issues
       ext.merge_requests
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def issue_notes(issue)
       @issue_notes ||= {}
       @issue_notes[issue] ||= issue.notes.includes(:author)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def sort_by_iid(merge_requests)
       Gitlab::IssuableSorter.sort(project, merge_requests) { |mr| mr.iid.to_s }

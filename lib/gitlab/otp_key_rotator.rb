@@ -26,6 +26,7 @@ module Gitlab
       @filename = filename
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def rotate!(old_key:, new_key:)
       old_key ||= Gitlab::Application.secrets.otp_key_base
 
@@ -47,7 +48,9 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def rollback!
       ActiveRecord::Base.transaction do
         CSV.foreach(filename, headers: HEADERS, return_headers: false) do |row|
@@ -55,6 +58,7 @@ module Gitlab
         end
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     private
 

@@ -94,6 +94,7 @@ module API
       LabelsFinder.new(current_user, search_params).execute
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_user(id)
       if id =~ /^\d+$/
         User.find_by(id: id)
@@ -101,7 +102,9 @@ module API
         User.find_by(username: id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project(id)
       if id.is_a?(Integer) || id =~ /^\d+$/
         Project.find_by(id: id)
@@ -109,6 +112,7 @@ module API
         Project.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_project!(id)
       project = find_project(id)
@@ -120,6 +124,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_group(id)
       if id.to_s =~ /^\d+$/
         Group.find_by(id: id)
@@ -127,6 +132,7 @@ module API
         Group.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_group!(id)
       group = find_group(id)
@@ -138,6 +144,7 @@ module API
       end
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_namespace(id)
       if id.to_s =~ /^\d+$/
         Namespace.find_by(id: id)
@@ -145,6 +152,7 @@ module API
         Namespace.find_by_full_path(id)
       end
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_namespace!(id)
       namespace = find_namespace(id)
@@ -169,13 +177,17 @@ module API
       label || not_found!('Label')
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_issue(iid)
       IssuesFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_project_merge_request(iid)
       MergeRequestsFinder.new(current_user, project_id: user_project.id).find_by!(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_project_commit(id)
       user_project.commit_by(oid: id)
@@ -186,11 +198,13 @@ module API
       SnippetsFinder.new(current_user, finder_params).find(id)
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_merge_request_with_access(iid, access_level = :read_merge_request)
       merge_request = user_project.merge_requests.find_by!(iid: iid)
       authorize! access_level, merge_request
       merge_request
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def find_build!(id)
       user_project.builds.find(id.to_i)
@@ -282,9 +296,11 @@ module API
       Gitlab.rails5? ? permitted_attrs.to_h : permitted_attrs
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def filter_by_iid(items, iid)
       items.where(iid: iid)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def filter_by_search(items, text)
       items.search(text)
@@ -381,9 +397,11 @@ module API
 
     # project helpers
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def reorder_projects(projects)
       projects.reorder(params[:order_by] => params[:sort])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def project_finder_params
       finder_params = {}

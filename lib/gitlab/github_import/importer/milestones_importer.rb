@@ -10,11 +10,13 @@ module Gitlab
 
         # project - An instance of `Project`
         # client - An instance of `Gitlab::GithubImport::Client`
+        # rubocop: disable CodeReuse/ActiveRecord
         def initialize(project, client)
           @project = project
           @client = client
           @existing_milestones = project.milestones.pluck(:iid).to_set
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def execute
           # We insert records in bulk, by-passing any standard model callbacks.

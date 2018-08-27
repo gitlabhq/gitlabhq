@@ -240,6 +240,7 @@ module Gitlab
                  standalone_pr_comments: pr_comments.count)
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def import_merge_event(merge_request, merge_event)
         log_info(stage: 'import_merge_event', message: 'starting', iid: merge_request.iid)
 
@@ -253,6 +254,7 @@ module Gitlab
 
         log_info(stage: 'import_merge_event', message: 'finished', iid: merge_request.iid)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       def import_inline_comments(inline_comments, merge_request)
         log_info(stage: 'import_inline_comments', message: 'starting', iid: merge_request.iid)

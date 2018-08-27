@@ -4,6 +4,7 @@
 module Projects
   module LfsPointers
     class LfsDownloadService < BaseService
+      # rubocop: disable CodeReuse/ActiveRecord
       def execute(oid, url)
         return unless project&.lfs_enabled? && oid.present? && url.present?
 
@@ -20,6 +21,7 @@ module Projects
       rescue StandardError => e
         Rails.logger.error("LFS file with oid #{oid} could't be downloaded from #{sanitized_uri.sanitized_url}: #{e.message}")
       end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       private
 

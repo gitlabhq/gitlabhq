@@ -139,8 +139,10 @@ module ConversationalDevelopmentIndex
       ]
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def average_percentage_score
       cards.sum(&:percentage_score) / cards.size.to_f
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

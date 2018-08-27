@@ -14,6 +14,7 @@ module API
         end
       end
 
+      # rubocop: disable CodeReuse/ActiveRecord
       def gate_targets(params)
         targets = []
         targets << Feature.group(params[:feature_group]) if params[:feature_group]
@@ -21,6 +22,7 @@ module API
 
         targets
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     resource :features do

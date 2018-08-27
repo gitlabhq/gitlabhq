@@ -1115,12 +1115,14 @@ class Project < ActiveRecord::Base
     find_or_initialize_services.find { |service| service.to_param == name }
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def create_labels
     Label.templates.each do |label|
       params = label.attributes.except('id', 'template', 'created_at', 'updated_at')
       Labels::FindOrCreateService.new(nil, self, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def find_service(list, name)
     list.find { |service| service.to_param == name }
@@ -1168,6 +1170,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def send_move_instructions(old_path_with_namespace)
     # New project path needs to be committed to the DB or notification will
     # retrieve stale information
@@ -1175,6 +1178,7 @@ class Project < ActiveRecord::Base
       NotificationService.new.project_was_moved(self, old_path_with_namespace)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def owner
     if group
@@ -1184,6 +1188,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_hooks(data, hooks_scope = :push_hooks)
     run_after_commit_or_now do
       hooks.hooks_for(hooks_scope).select_active(hooks_scope, data).each do |hook|
@@ -1192,6 +1197,7 @@ class Project < ActiveRecord::Base
       SystemHooksService.new.execute_hooks(data, hooks_scope)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
@@ -1506,13 +1512,17 @@ class Project < ActiveRecord::Base
     self.runners_token && ActiveSupport::SecurityUtils.variable_size_secure_compare(token, self.runners_token)
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_issues_count(current_user = nil)
     Projects::OpenIssuesCountService.new(self, current_user).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def open_merge_requests_count
     Projects::OpenMergeRequestsCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def visibility_level_allowed_as_fork?(level = self.visibility_level)
     return true unless forked?
@@ -1593,6 +1603,7 @@ class Project < ActiveRecord::Base
   end
 
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
+  # rubocop: disable CodeReuse/ServiceClass
   def remove_pages
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
@@ -1608,6 +1619,7 @@ class Project < ActiveRecord::Base
       PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def rename_repo
     path_before      = previous_changes['path'].first
@@ -1668,6 +1680,7 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def after_create_default_branch
     return unless default_branch
 
@@ -1688,6 +1701,7 @@ class Project < ActiveRecord::Base
       ProtectedBranches::CreateService.new(self, creator, params).execute(skip_authorization: true)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def remove_import_jid
     return unless import_jid
@@ -1918,9 +1932,11 @@ class Project < ActiveRecord::Base
   # @deprecated cannot remove yet because it has an index with its name in elasticsearch
   alias_method :path_with_namespace, :full_path
 
+  # rubocop: disable CodeReuse/ServiceClass
   def forks_count
     Projects::ForksCountService.new(self).count
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def legacy_storage?
     [nil, 0].include?(self.storage_version)
@@ -2071,6 +2087,7 @@ class Project < ActiveRecord::Base
 
   private
 
+  # rubocop: disable CodeReuse/ServiceClass
   def rename_or_migrate_repository!
     if Gitlab::CurrentSettings.hashed_storage_enabled? &&
         storage_upgradable? &&
@@ -2080,6 +2097,7 @@ class Project < ActiveRecord::Base
       storage.rename_repo
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def storage_upgradable?
     storage_version != LATEST_STORAGE_VERSION
@@ -2104,6 +2122,7 @@ class Project < ActiveRecord::Base
     self.project_feature.untrack_statistics_for_deletion!
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def execute_rename_repository_hooks!(full_path_before)
     # When we import a project overwriting the original project, there
     # is a move operation. In that case we don't want to send the instructions.
@@ -2114,6 +2133,7 @@ class Project < ActiveRecord::Base
 
     reload_repository!
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def storage
     @storage ||=

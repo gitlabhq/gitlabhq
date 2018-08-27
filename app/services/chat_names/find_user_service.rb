@@ -17,6 +17,7 @@ module ChatNames
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_chat_name
       ChatName.find_by(
         service: @service,
@@ -24,5 +25,6 @@ module ChatNames
         chat_id: @params[:user_id]
       )
     end
+    # rubocop: enable CodeReuse/ActiveRecord
   end
 end

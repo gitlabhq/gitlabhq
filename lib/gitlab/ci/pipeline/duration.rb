@@ -86,6 +86,7 @@ module Gitlab
           end
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def from_pipeline(pipeline)
           status = %w[success failed running canceled]
           builds = pipeline.builds.latest
@@ -93,6 +94,7 @@ module Gitlab
 
           from_builds(builds)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
 
         def from_builds(builds)
           now = Time.now
@@ -134,9 +136,11 @@ module Gitlab
           Period.new(previous.first, [previous.last, current.last].max)
         end
 
+        # rubocop: disable CodeReuse/ActiveRecord
         def process_duration(periods)
           periods.sum(&:duration)
         end
+        # rubocop: enable CodeReuse/ActiveRecord
       end
     end
   end

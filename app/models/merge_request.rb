@@ -137,12 +137,14 @@ class MergeRequest < ActiveRecord::Base
       Gitlab::Timeless.timeless(merge_request, &block)
     end
 
+    # rubocop: disable CodeReuse/ServiceClass
     after_transition unchecked: :cannot_be_merged do |merge_request, transition|
       if merge_request.notify_conflict?
         NotificationService.new.merge_request_unmergeable(merge_request)
         TodoService.new.merge_request_became_unmergeable(merge_request)
       end
     end
+    # rubocop: enable CodeReuse/ServiceClass
 
     def check_state?(merge_status)
       [:unchecked, :cannot_be_merged_recheck].include?(merge_status.to_sym)
@@ -623,11 +625,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def reload_diff(current_user = nil)
     return unless open?
 
     MergeRequests::ReloadDiffsService.new(self, current_user).execute
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def check_if_can_be_merged
     return unless self.class.state_machines[:merge_status].check_state?(merge_status) && Gitlab::Database.read_write?
@@ -1036,6 +1040,7 @@ class MergeRequest < ActiveRecord::Base
     actual_head_pipeline&.has_test_reports?
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def compare_test_reports
     unless has_test_reports?
       return { status: :error, status_reason: 'This merge request does not have test reports' }
@@ -1050,7 +1055,9 @@ class MergeRequest < ActiveRecord::Base
       data
     end || { status: :parsing }
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
+  # rubocop: disable CodeReuse/ServiceClass
   def calculate_reactive_cache(identifier, *args)
     case identifier.to_sym
     when :compare_test_results
@@ -1060,6 +1067,7 @@ class MergeRequest < ActiveRecord::Base
       raise NotImplementedError, "Unknown identifier: #{identifier}"
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
@@ -1125,6 +1133,7 @@ class MergeRequest < ActiveRecord::Base
     diff_refs && diff_refs.complete?
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_diff_discussion_positions(old_diff_refs:, new_diff_refs:, current_user: nil)
     return unless has_complete_diff_refs?
     return if new_diff_refs == old_diff_refs
@@ -1154,6 +1163,7 @@ class MergeRequest < ActiveRecord::Base
         .execute(self)
     end
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def keep_around_commit
     project.repository.keep_around(self.merge_commit_sha)
@@ -1189,9 +1199,11 @@ class MergeRequest < ActiveRecord::Base
     true
   end
 
+  # rubocop: disable CodeReuse/ServiceClass
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end
+  # rubocop: enable CodeReuse/ServiceClass
 
   def first_contribution?
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST

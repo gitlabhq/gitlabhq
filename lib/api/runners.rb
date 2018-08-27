@@ -146,6 +146,7 @@ module API
       params do
         requires :runner_id, type: Integer, desc: 'The ID of the runner'
       end
+      # rubocop: disable CodeReuse/ActiveRecord
       delete ':id/runners/:runner_id' do
         runner_project = user_project.runner_projects.find_by(runner_id: params[:runner_id])
         not_found!('Runner') unless runner_project
@@ -155,6 +156,7 @@ module API
 
         destroy_conditionally!(runner_project)
       end
+      # rubocop: enable CodeReuse/ActiveRecord
     end
 
     helpers do

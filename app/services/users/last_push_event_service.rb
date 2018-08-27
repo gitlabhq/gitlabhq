@@ -58,11 +58,13 @@ module Users
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def find_event_in_database(id)
       PushEvent
         .without_existing_merge_requests
         .find_by(id: id)
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def user_cache_key
       "last-push-event/#{@user.id}"

@@ -7,6 +7,7 @@ class Projects::ForksController < Projects::ApplicationController
   before_action :authorize_download_code!
   before_action :authenticate_user!, only: [:new, :create]
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def index
     base_query = project.forks.includes(:creator)
 
@@ -27,12 +28,14 @@ class Projects::ForksController < Projects::ApplicationController
       end
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def new
     @namespaces = current_user.manageable_namespaces
     @namespaces.delete(@project.namespace)
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def create
     namespace = Namespace.find(params[:namespace_key])
 
@@ -55,6 +58,7 @@ class Projects::ForksController < Projects::ApplicationController
       render :error
     end
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def whitelist_query_limiting
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42335')

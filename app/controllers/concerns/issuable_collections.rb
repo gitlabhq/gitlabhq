@@ -48,9 +48,11 @@ module IssuableCollections
     false
   end
 
+  # rubocop: disable CodeReuse/ActiveRecord
   def issuables_collection
     finder.execute.preload(preload_for_collection)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
 
   def redirect_out_of_range(total_pages)
     return false if total_pages.nil? || total_pages.zero?
@@ -81,6 +83,7 @@ module IssuableCollections
   end
 
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+  # rubocop: disable CodeReuse/ActiveRecord
   def filter_params
     set_sort_order_from_cookie
     set_default_state
@@ -101,6 +104,7 @@ module IssuableCollections
 
     @filter_params.permit(finder_type.valid_params)
   end
+  # rubocop: enable CodeReuse/ActiveRecord
   # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def set_default_state

@@ -18,9 +18,11 @@ module Lfs
 
     private
 
+    # rubocop: disable CodeReuse/ActiveRecord
     def current_lock
       project.lfs_file_locks.find_by(path: params[:path])
     end
+    # rubocop: enable CodeReuse/ActiveRecord
 
     def create_lock!
       lock = project.lfs_file_locks.create!(user: current_user,
