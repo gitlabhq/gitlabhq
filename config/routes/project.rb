@@ -390,6 +390,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
         member do
           delete :delete_attachment
           post :resolve
+          post :convert
           delete :resolve, action: :unresolve
         end
       end

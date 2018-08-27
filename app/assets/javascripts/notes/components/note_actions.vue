@@ -44,6 +44,10 @@ export default {
       type: Boolean,
       required: true,
     },
+    canConvertToDiscussion: {
+      type: Boolean,
+      required: true,
+    },
     canAwardEmoji: {
       type: Boolean,
       required: true,
@@ -113,6 +117,9 @@ export default {
     this.resolvedDiscussionSvg = resolvedDiscussionSvg;
   },
   methods: {
+    onConvertToDiscussion() {
+      this.$emit('handleConvertToDiscussion');
+    },
     onEdit() {
       this.$emit('handleEdit');
     },
@@ -185,6 +192,23 @@ export default {
           v-html="emojiSmile">
         </span>
       </a>
+    </div>
+    <div
+      v-if="canConvertToDiscussion"
+      class="note-actions-item">
+      <button
+        v-tooltip
+        type="button"
+        title="Start a discussion"
+        class="note-action-button js-note-edit btn btn-transparent"
+        data-container="body"
+        data-placement="bottom"
+        @click="onConvertToDiscussion">
+        <span
+          class="link-highlight"
+          v-html="editSvg">
+        </span>
+      </button>
     </div>
     <div
       v-if="canEdit"

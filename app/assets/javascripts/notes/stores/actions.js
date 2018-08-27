@@ -52,6 +52,14 @@ export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
       if (selectedDiscussion) commit(types.UPDATE_DISCUSSION, selectedDiscussion);
     });
 
+export const convertToDiscussion = ({ commit }, { endpoint, note }) =>
+  service
+    .convertToDiscussion(endpoint)
+    .then(res => res.json())
+    .then(res => {
+      commit(types.CONVERT_TO_DISCUSSION, res)
+  });
+
 export const deleteNote = ({ commit }, note) =>
   service.deleteNote(note.path).then(() => {
     commit(types.DELETE_NOTE, note);

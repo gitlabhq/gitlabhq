@@ -18,6 +18,23 @@ class Projects::NotesController < Projects::ApplicationController
     end
   end
 
+  def convert
+    return render_404 if note.resolvable?
+
+    Notes::ConvertService.new(project, current_user).execute(note)
+
+    discussion = note.discussion
+
+    if serialize_notes?
+      render_json_with_notes_serializer
+    else
+      render json: {
+        resolved_by: note.resolved_by.try(:name),
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
+  end
+
   def resolve
     return render_404 unless note.resolvable?
 

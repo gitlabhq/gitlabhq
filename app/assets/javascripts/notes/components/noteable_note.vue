@@ -28,6 +28,7 @@ export default {
   },
   data() {
     return {
+      isConverting: false,
       isEditing: false,
       isDeleting: false,
       isRequesting: false,
@@ -42,11 +43,15 @@ export default {
     classNameBindings() {
       return {
         [`note-row-${this.note.id}`]: true,
+        'is-converting': this.isConverting && !this.isRequesting,
         'is-editing': this.isEditing && !this.isRequesting,
         'is-requesting being-posted': this.isRequesting,
         'disabled-content': this.isDeleting,
         target: this.isTarget,
       };
+    },
+    canConvertToDiscussion() {
+      return !this.note.resolvable && !!this.getUserData.id;
     },
     canResolve() {
       return this.note.resolvable && !!this.getUserData.id;
@@ -78,9 +83,29 @@ export default {
   },
 
   methods: {
-    ...mapActions(['deleteNote', 'updateNote', 'toggleResolveNote', 'scrollToNoteIfNeeded']),
+    ...mapActions(['convertToDiscussion', 'deleteNote', 'updateNote', 'toggleResolveNote', 'scrollToNoteIfNeeded']),
     editHandler() {
       this.isEditing = true;
+    },
+    convertToDiscussionHandler() {
+      const data = {
+        endpoint: `${this.note.path}/convert`,
+        note: {
+          target_type: this.getNoteableData.targetType,
+          target_id: this.note.noteable_id,
+        },
+      };
+
+      this.isConverting = true;
+
+      this.convertToDiscussion(data)
+        .then(() => {
+          this.isConverting = false;
+        })
+        .catch(() => {
+          Flash('Something went wrong while converting to a discussion. Please try again.');
+          this.isConverting = false;
+        })
     },
     deleteHandler() {
       // eslint-disable-next-line no-alert
@@ -183,6 +208,7 @@ export default {
             :access-level="note.human_access"
             :can-edit="note.current_user.can_edit"
             :can-award-emoji="note.current_user.can_award_emoji"
+            :can-convert-to-discussion="canConvertToDiscussion"
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :can-resolve="note.current_user.can_resolve"
@@ -194,6 +220,7 @@ export default {
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
             @handleResolve="resolveHandler"
+            @handleConvertToDiscussion="convertToDiscussionHandler"
           />
         </div>
         <note-body

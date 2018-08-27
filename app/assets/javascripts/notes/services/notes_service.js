@@ -8,6 +8,9 @@ export default {
   fetchDiscussions(endpoint) {
     return Vue.http.get(endpoint);
   },
+  convertToDiscussion(endpoint, data) {
+    return Vue.http.post(endpoint, data, { emulateJSON: true });
+  },
   deleteNote(endpoint) {
     return Vue.http.delete(endpoint);
   },
