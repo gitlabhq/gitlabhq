@@ -10,18 +10,33 @@ module EE
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
 
-    prepended do
-      belongs_to :user
-      belongs_to :group
+    module Scopes
+      extend ActiveSupport::Concern
 
-      protected_type = self.parent.model_name.singular
-      validates :group_id, uniqueness: { scope: protected_type, allow_nil: true }
-      validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
-      validates :access_level, uniqueness: { scope: protected_type, if: :role?,
-                                             conditions: -> { where(user_id: nil, group_id: nil) } }
-      validates :group, :user,
-               absence: true,
-               unless: :protected_refs_for_users_required_and_available
+      included do
+        belongs_to :user
+        belongs_to :group
+
+        protected_type = self.parent.model_name.singular
+        validates :group_id, uniqueness: { scope: protected_type, allow_nil: true }
+        validates :user_id, uniqueness: { scope: protected_type, allow_nil: true }
+        validates :access_level, uniqueness: { scope: protected_type, if: :role?,
+                                               conditions: -> { where(user_id: nil, group_id: nil) } }
+        validates :group, :user,
+                  absence: true,
+                  unless: :protected_refs_for_users_required_and_available
+      end
+    end
+
+    class_methods do
+      # We can't specify `override` here:
+      #   https://gitlab.com/gitlab-org/gitlab-ce/issues/50911
+      def allowed_access_levels
+        [
+          *super,
+          ::Gitlab::Access::ADMIN
+        ]
+      end
     end
 
     def type

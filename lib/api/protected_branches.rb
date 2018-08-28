@@ -44,26 +44,26 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer,
-                                     values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                     values: ProtectedBranch::PushAccessLevel.allowed_access_levels,
                                      desc: 'Access levels allowed to push (defaults: `40`, maintainer access level)'
         optional :merge_access_level, type: Integer,
-                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                      values: ProtectedBranch::MergeAccessLevel.allowed_access_levels,
                                       desc: 'Access levels allowed to merge (defaults: `40`, maintainer access level)'
         optional :unprotect_access_level, type: Integer,
-                                          values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                          values: ProtectedBranch::UnprotectAccessLevel.allowed_access_levels,
                                           desc: 'Access levels allowed to unprotect (defaults: `40`, maintainer access level)'
         optional :allowed_to_push, type: Array, desc: 'An array of users/groups allowed to push' do
-          optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
+          optional :access_level, type: Integer, values: ProtectedBranch::PushAccessLevel.allowed_access_levels
           optional :user_id, type: Integer
           optional :group_id, type: Integer
         end
         optional :allowed_to_merge, type: Array, desc: 'An array of users/groups allowed to merge' do
-          optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
+          optional :access_level, type: Integer, values: ProtectedBranch::MergeAccessLevel.allowed_access_levels
           optional :user_id, type: Integer
           optional :group_id, type: Integer
         end
         optional :allowed_to_unprotect, type: Array, desc: 'An array of users/groups allowed to unprotect' do
-          optional :access_level, type: Integer, values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS
+          optional :access_level, type: Integer, values: ProtectedBranch::UnprotectAccessLevel.allowed_access_levels
           optional :user_id, type: Integer
           optional :group_id, type: Integer
         end
