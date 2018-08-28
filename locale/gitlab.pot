@@ -6971,11 +6971,10 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
-=======
+msgstr ""
+
 msgid "The deployment of this job to %{environmentLink} did not succeed."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "The fork relationship has been removed."
