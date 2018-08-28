@@ -51,7 +51,7 @@ module Gitlab
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
 
-      custom_action = check_custom_action!(cmd)
+      custom_action = check_custom_action(cmd)
       return custom_action if custom_action
 
       check_db_accessibility!(cmd)
@@ -96,8 +96,8 @@ module Gitlab
 
     private
 
-    def check_custom_action!(cmd)
-      false
+    def check_custom_action(cmd)
+      nil
     end
 
     def check_valid_actor!

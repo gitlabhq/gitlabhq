@@ -6,8 +6,17 @@ module API
     helpers ::API::Helpers::InternalHelpers
     helpers ::Gitlab::Identifier
 
+    UNKNOWN_CHECK_RESULT_ERROR = 'Unknown check result'.freeze
+
+    helpers do
+      def response_with_status(code: 200, success: true, message: nil, **extra_options)
+        status code
+        { status: success, message: message }.merge(extra_options).compact
+      end
+    end
+
     namespace 'internal' do
-      # Check if git command is allowed to project
+      # Check if git command is allowed for project
       #
       # Params:
       #   key_id - ssh key id for Git over SSH
@@ -18,8 +27,6 @@ module API
       #   action - git action (git-upload-pack or git-receive-pack)
       #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
       post "/allowed" do
-        status 200
-
         # Stores some Git-specific env thread-safely
         env = parse_env
         Gitlab::Git::HookEnv.set(gl_repository, env) if project
@@ -49,27 +56,37 @@ module API
                     namespace_path: namespace_path, project_path: project_path,
                     redirected_path: redirected_path)
 
-        begin
-          access_checker.check(params[:action], params[:changes])
-          @project ||= access_checker.project
-        rescue Gitlab::GitAccess::UnauthorizedError, Gitlab::GitAccess::NotFoundError => e
-          break { status: false, message: e.message }
-        end
+        check_result = begin
+                         result = access_checker.check(params[:action], params[:changes])
+                         @project ||= access_checker.project
+                         result
+                       rescue Gitlab::GitAccess::UnauthorizedError => e
+                         break response_with_status(code: 401, success: false, message: e.message)
+                       rescue Gitlab::GitAccess::NotFoundError => e
+                         break response_with_status(code: 404, success: false, message: e.message)
+                       end
 
         log_user_activity(actor)
 
-        {
-          status: true,
-          gl_repository: gl_repository,
-          gl_id: Gitlab::GlId.gl_id(user),
-          gl_username: user&.username,
+        case check_result
+        when ::Gitlab::GitAccessResult::Success
+          payload = {
+            gl_repository: gl_repository,
+            gl_id: Gitlab::GlId.gl_id(user),
+            gl_username: user&.username,
 
-          # This repository_path is a bogus value but gitlab-shell still requires
-          # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
-          repository_path: '/',
+            # This repository_path is a bogus value but gitlab-shell still requires
+            # its presence. https://gitlab.com/gitlab-org/gitlab-shell/issues/135
+            repository_path: '/',
 
-          gitaly: gitaly_payload(params[:action])
-        }
+            gitaly: gitaly_payload(params[:action])
+          }
+          response_with_status(**payload)
+        when ::Gitlab::GitAccessResult::CustomAction
+          response_with_status(code: 300, message: check_result.message, payload: check_result.payload)
+        else
+          response_with_status(code: 500, success: false, message: UNKNOWN_CHECK_RESULT_ERROR)
+        end
       end
 
       post "/lfs_authenticate" do
