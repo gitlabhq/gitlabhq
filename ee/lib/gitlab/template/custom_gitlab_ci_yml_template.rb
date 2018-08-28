@@ -1,13 +1,13 @@
 module Gitlab
   module Template
-    class CustomLicenseTemplate < CustomTemplate
+    class CustomGitlabCiYmlTemplate < CustomTemplate
       class << self
         def extension
-          '.txt'
+          '.yml'
         end
 
         def base_dir
-          'LICENSE/'
+          'gitlab-ci/'
         end
       end
     end

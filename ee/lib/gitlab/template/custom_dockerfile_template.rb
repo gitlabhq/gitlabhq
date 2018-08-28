@@ -1,13 +1,13 @@
 module Gitlab
   module Template
-    class CustomLicenseTemplate < CustomTemplate
+    class CustomDockerfileTemplate < CustomTemplate
       class << self
         def extension
-          '.txt'
+          '.dockerfile'
         end
 
         def base_dir
-          'LICENSE/'
+          'Dockerfile/'
         end
       end
     end

@@ -1,4 +1,6 @@
 class TemplateFinder
+  prepend ::EE::TemplateFinder
+
   VENDORED_TEMPLATES = {
     dockerfiles: ::Gitlab::Template::DockerfileTemplate,
     gitignores: ::Gitlab::Template::GitignoreTemplate,

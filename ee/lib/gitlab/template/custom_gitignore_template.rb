@@ -1,13 +1,13 @@
 module Gitlab
   module Template
-    class CustomLicenseTemplate < CustomTemplate
+    class CustomGitignoreTemplate < CustomTemplate
       class << self
         def extension
-          '.txt'
+          '.gitignore'
         end
 
         def base_dir
-          'LICENSE/'
+          'gitignore/'
         end
       end
     end
