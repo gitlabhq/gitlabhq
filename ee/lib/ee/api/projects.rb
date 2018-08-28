@@ -33,7 +33,14 @@ module EE
           def verify_update_project_attrs!(project, attrs)
             super
 
+            verify_storage_attrs!(attrs)
             verify_mirror_attrs!(project, attrs)
+          end
+
+          def verify_storage_attrs!(attrs)
+            unless current_user.admin?
+              attrs.delete(:repository_storage)
+            end
           end
 
           def verify_mirror_attrs!(project, attrs)
