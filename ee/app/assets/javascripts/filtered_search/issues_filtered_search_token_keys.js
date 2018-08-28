@@ -33,6 +33,7 @@ const IssuesFilteredSearchTokenKeysEE = new FilteredSearchTokenKeys(
   [...conditions, ...weightConditions],
 );
 
+// cannot be an arrow function because it needs FilteredSearchTokenKeys instance
 IssuesFilteredSearchTokenKeysEE.init = function init(availableFeatures) {
   // Enable multiple assignees when available
   if (availableFeatures && availableFeatures.multipleAssignees) {
