@@ -76,4 +76,17 @@ describe('Issue Due Date component', () => {
 
     expect(vm.$el.classList.contains('text-danger')).toEqual(true);
   });
+
+  it('should render month, day and year when due date is not current year', () => {
+    const date = new Date();
+    date.setDate(date.getDate() + 365);
+    const dueDate = dateFormat(date, 'yyyy-mm-dd', true);
+    vm = new IssueDueDate({
+      propsData: {
+        date: dueDate,
+      },
+    }).$mount();
+
+    expect(vm.$el.textContent.trim()).toEqual(dateFormat(dueDate, 'mmm d, yyyy', true));
+  });
 });

@@ -33,13 +33,17 @@ export default {
       )}<span>`;
     },
     body() {
-      const { timeDifference } = this;
+      const { timeDifference, issueDueDate } = this;
+      const currentYear = new Date().getFullYear();
 
       if (timeDifference === 0) return __('Today');
       if (timeDifference === -1) return __('Yesterday');
-      if (timeDifference > 0 && timeDifference < 7)
+      if (timeDifference > 0 && timeDifference < 7) {
         return dateFormat(this.issueDueDate, 'dddd', true);
-      return dateFormat(this.issueDueDate, 'mmm d', true);
+      }
+      // If due date is in the current year, don’t show the year.
+      const format = currentYear === issueDueDate.getFullYear() ? 'mmm d' : 'mmm d, yyyy';
+      return dateFormat(issueDueDate, format, true);
     },
     issueDueDate() {
       return new Date(this.date);
@@ -61,7 +65,7 @@ export default {
     v-tooltip
     :class="cssClass"
     :title="title"
-    datetime="date"
+    :datetime="date"
     data-html="true"
     data-placement="bottom"
     data-container="body"
