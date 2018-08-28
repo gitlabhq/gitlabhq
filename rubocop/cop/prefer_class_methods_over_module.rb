@@ -36,7 +36,7 @@ module RuboCop
       PATTERN
 
       def on_module(node)
-        add_offense(node) if node.defined_module_name == 'ClassMethods' && extends_activesupport_concern?(node)
+        add_offense(node) if node.defined_module_name == 'ClassMethods' && module_extends_activesupport_concern?(node)
       end
 
       def autocorrect(node)
@@ -47,7 +47,7 @@ module RuboCop
 
       private
 
-      def extends_activesupport_concern?(node)
+      def module_extends_activesupport_concern?(node)
         container_module = container_module_of(node)
         return false unless container_module
 
