@@ -116,7 +116,23 @@ java:
       junit: build/test-results/test/TEST-*.xml
 ```
 
-If you define multiple tasks of kind test, it will generate multiple directories 
-under `build/test-results/` directory. 
-To address all subdirectory at once, you can leverage regex matching by defining following 
+If you define multiple tasks of kind test, it will generate multiple directories
+under `build/test-results/` directory.
+To address all subdirectory at once, you can leverage regex matching by defining following
 path: `build/test-results/test/TEST-*.xml`
+
+### Java example with Maven
+
+For parsing Surefire and Failsafe test resports use the following job in `.gitlab-ci.yml`:
+
+```yaml
+java:
+  stage: test
+  script:
+  - mvn verify
+  artifacts:
+    reports:
+      junit:
+        - target/surefire-reports/TEST-*.xml
+        - target/failsafe-reports/TEST-*.xml
+```
