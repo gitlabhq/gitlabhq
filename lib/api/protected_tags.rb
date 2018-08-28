@@ -47,7 +47,7 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected tag'
         optional :create_access_level, type: Integer, default: Gitlab::Access::MAINTAINER,
-                                       values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
+                                       values: ProtectedTag::CreateAccessLevel.allowed_access_levels,
                                        desc: 'Access levels allowed to create (defaults: `40`, maintainer access level)'
       end
       post ':id/protected_tags' do
