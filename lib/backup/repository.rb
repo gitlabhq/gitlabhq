@@ -69,6 +69,8 @@ module Backup
       custom_hooks_path = custom_hooks_tar(project)
       Gitlab::GitalyClient::RepositoryService.new(project.repository)
         .restore_custom_hooks(custom_hooks_path)
+#    rescue => e
+#      progress_warn(project, e, 'Failed to restore custom hooks')
     end
 
     def restore
@@ -84,6 +86,7 @@ module Backup
         if File.exist?(path_to_project_bundle)
           begin
             project.repository.create_from_bundle(path_to_project_bundle)
+puts 'created from bundle'
             restore_custom_hooks(project)
             restore_repo_success = true
           rescue => e

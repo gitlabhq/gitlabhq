@@ -71,6 +71,33 @@ describe Backup::Repository do
         end
       end
     end
+
+    context 'restore custom hooks' do
+      let(:project) { create(:project, :repository) }
+let(:bundle_path) do
+  tmp = Tempfile.new(%w[restore .bundle])
+  path = tmp.path
+  tmp.close
+  project.repository.bundle_to_disk(path)
+  path
+end
+
+after do
+  FileUtils.rm_f(bundle_path)
+end
+
+      before do
+allow(subject).to receive(:path_to_bundle).and_return(bundle_path)
+        allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:restore_custom_hooks).and_raise('restore custom hooks failed')
+      end
+
+      it 'shows the appropriate error' do
+        subject.restore
+
+        progress.rewind
+        expect(progress.read).to include('Failed to restore custom hooks')
+      end
+    end
   end
 
   describe '#prepare_directories', :seed_helper do

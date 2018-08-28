@@ -150,6 +150,20 @@ describe 'gitlab:app namespace rake task' do
           end
           expect(Dir.entries(File.join(repo_path, 'custom_hooks'))).to include("dummy.txt")
         end
+
+context 'when custom_hooks.tar is invalid (gitlab-ce#50667)' do
+  it 'ignores the error' do
+    expect { run_rake_task('gitlab:backup:create') }.to output.to_stdout
+allow_any_instance_of(Gitlab::GitalyClient::RepositoryService).to receive(:restore_custom_hooks).and_raise('restore custom hooks failed')
+    #expect {
+ run_rake_task('gitlab:backup:restore') #}.to output.to_stdout
+
+    repo_path = Gitlab::GitalyClient::StorageSettings.allow_disk_access do
+      project.repository.path
+    end
+    expect(File.exist?(File.join(repo_path, 'custom_hooks'))).to be_false
+  end
+end
       end
 
       context 'specific backup tasks' do
