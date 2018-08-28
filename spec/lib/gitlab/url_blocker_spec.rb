@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Gitlab::UrlBlocker do
@@ -82,6 +83,17 @@ describe Gitlab::UrlBlocker do
             expect(described_class).not_to be_blocked_url("http://#{ip}")
           end
         end
+
+        it 'allows IPv4 link-local endpoints' do
+          expect(described_class).not_to be_blocked_url('http://169.254.169.254')
+          expect(described_class).not_to be_blocked_url('http://169.254.168.100')
+        end
+
+        # This is blocked due to the hostname check: https://gitlab.com/gitlab-org/gitlab-ce/issues/50227
+        it 'blocks IPv6 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.169.254]')
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.168.100]')
+        end
       end
 
       context 'false' do
@@ -96,10 +108,21 @@ describe Gitlab::UrlBlocker do
             expect(described_class).to be_blocked_url("http://#{ip}", allow_local_network: false)
           end
         end
+
+        it 'blocks IPv4 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://169.254.169.254', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://169.254.168.100', allow_local_network: false)
+        end
+
+        it 'blocks IPv6 link-local endpoints' do
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.169.254]', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://[::ffff:169.254.168.100]', allow_local_network: false)
+          expect(described_class).to be_blocked_url('http://[FE80::C800:EFF:FE74:8]', allow_local_network: false)
+        end
       end
 
       def stub_domain_resolv(domain, ip)
-        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true)])
+        allow(Addrinfo).to receive(:getaddrinfo).with(domain, any_args).and_return([double(ip_address: ip, ipv4_private?: true, ipv6_link_local?: false)])
       end
 
       def unstub_domain_resolv
