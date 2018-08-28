@@ -3632,10 +3632,10 @@ msgstr ""
 msgid "Milestones"
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project. %{milestoneTitle} is not currently used in any issues or merge requests."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
 msgid "Milestones|Delete milestone"
