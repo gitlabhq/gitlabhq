@@ -183,15 +183,16 @@ export default {
         const d1 = series.values[overlayIndex];
         return !(d0 === undefined || d1 === undefined);
       })
-      if (!timeSeriesWithValues) return;
+      if (!timeSeriesWithValues) {
+        debugger
+        return;
+      }
       const firstTimeSeries = timeSeriesWithValues;
       const timeValueOverlay = firstTimeSeries.timeSeriesScaleX.invert(this.point.x);
-      console.log(timeValueOverlay)
       const overlayIndex = bisectDate(firstTimeSeries.values, timeValueOverlay);
       const d0 = firstTimeSeries.values[overlayIndex - 1];
       const d1 = firstTimeSeries.values[overlayIndex];
       if (d0 === undefined || d1 === undefined) {
-        console.log('errrrr')
         return;
       }
       const evalTime = timeValueOverlay - d0[0] > d1[0] - timeValueOverlay;
@@ -317,7 +318,7 @@ export default {
             :area-color="path.areaColor"
             :current-coordinates="currentCoordinates[index]"
             :current-time-series-index="index"
-            :show-dot="(showFlagContent && currentCoordinates[index]) ? true : false"
+            :show-dot="showFlagContent"
           />
           <graph-deployment
             :deployment-data="reducedDeploymentData"

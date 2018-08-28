@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import { scaleLinear, scaleTime } from 'd3-scale';
 import { line, area, curveLinear } from 'd3-shape';
-import { extent, max, sum } from 'd3-array';
+import { extent, min, max, sum } from 'd3-array';
 import { timeMinute } from 'd3-time';
 import { mouse } from 'd3-selection';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
@@ -13,6 +13,7 @@ const d3 = {
   area,
   curveLinear,
   extent,
+  min,
   max,
   timeMinute,
   sum,
@@ -53,6 +54,14 @@ function queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle) 
     return defaultColorPalette[pick];
   }
 
+  // const minX = Object.keys(query.result).reduce((min, time) => {
+  //   return Math.min(time, min)
+  // }, Infinity)
+  // console.log(minX)
+  // const maxX = query.result.find
+
+  let maxMax = 0;
+
   query.result.forEach((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
     let lineColor = '';
@@ -63,12 +72,17 @@ function queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle) 
     const accum = d3.sum(timeSeriesValues);
     const trackName = capitalizeFirstCharacter(query.track ? query.track : 'Stable');
 
+    const times = timeSeries.values.map(d => d.time);
+    const min =  d3.min(times)
+    const max = d3.max(times)
+    const diff = (max - min)
+    maxMax = Math.max(maxMax, diff);
+
     if (trackName === 'Canary') {
       renderCanary = true;
     }
 
     const timeSeriesScaleX = d3.scaleTime().range([0, graphWidth]);
-    console.log(timeSeriesScaleX)
 
     const timeSeriesScaleY = d3.scaleLinear().range([graphHeight, 0]);
 
@@ -109,10 +123,14 @@ function queryTimeSeries(query, graphWidth, graphHeight, xDom, yDom, lineStyle) 
       }
     }
 
+    maxMax = maxMax / 60000
+    console.log('MAXMAX: ', maxMax);
+
     if (!shouldRenderLegend) {
       if (!timeSeriesParsed[0].tracksLegend) {
         timeSeriesParsed[0].tracksLegend = [];
       }
+
       timeSeriesParsed[0].tracksLegend.push({
         max: maximumValue,
         average: accum / timeSeries.values.length,

@@ -67,8 +67,9 @@ export default {
       class="metric-area"
     />
     <path
-      v-for="generatedLinePath in generatedLinePaths"
+      v-for="(generatedLinePath, index) in generatedLinePaths"
       :d="generatedLinePath"
+      :key="index"
       :stroke="lineColor"
       :stroke-dasharray="strokeDashArray"
       class="metric-line"

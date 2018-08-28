@@ -86,29 +86,29 @@ export default class MonitoringService {
                       "backend": "canary_web",
                       "code": "5xx"
                     },
-                    "values": valuesWithGap,
+                    "values": values,
                   },
                   {
                     "metric": {
                       "backend": "https_git",
                       "code": "5xx"
                     },
-                    values: values
-                  },
-                  {
-                    "metric": {
-                      "backend": "pages_http",
-                      "code": "5xx"
-                    },
-                    values: createValues()
-                  },
-                  {
-                    "metric": {
-                      "backend": "registry",
-                      "code": "5xx"
-                    },
                     values: valuesWithGap
                   },
+                  // {
+                  //   "metric": {
+                  //     "backend": "pages_http",
+                  //     "code": "5xx"
+                  //   },
+                  //   values: createValues()
+                  // },
+                  // {
+                  //   "metric": {
+                  //     "backend": "registry",
+                  //     "code": "5xx"
+                  //   },
+                  //   values: valuesWithGap
+                  // },
                 ]
               }
             ]

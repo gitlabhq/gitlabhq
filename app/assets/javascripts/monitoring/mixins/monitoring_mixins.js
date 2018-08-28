@@ -8,9 +8,10 @@ const mixins = {
       let dataFound = false;
       this.reducedDeploymentData = this.reducedDeploymentData.map((d) => {
         const deployment = d;
+        console.log(d.xPos)
+        console.log(mouseXPos)
         if (d.xPos >= mouseXPos - 10 && d.xPos <= mouseXPos + 10 && !dataFound) {
           dataFound = d.xPos + 1;
-          debugger
 
           deployment.showDeploymentFlag = true;
         } else {
@@ -25,9 +26,11 @@ const mixins = {
     formatDeployments() {
       this.reducedDeploymentData = this.deploymentData.reduce((deploymentDataArray, deployment) => {
         const time = new Date(deployment.created_at);
-        const xPos = Math.floor(this.activeTimeSeries[0].timeSeriesScaleX(time));
+        const xPos = Math.floor(this.activeTimeSeries[1].timeSeriesScaleX(time));
 
-        time.setSeconds(this.activeTimeSeries[0].values[0].time.getSeconds());
+        time.setSeconds(this.activeTimeSeries[1].values[0].time.getSeconds());
+
+        console.log(xPos)
 
         if (xPos >= 0) {
           const seriesIndex = bisectDate(this.timeSeries[0].values, time);
@@ -51,7 +54,14 @@ const mixins = {
     },
 
     positionFlag() {
-      const timeSeries = this.activeTimeSeries[0];
+      const timeSeries = this.timeSeries[0]
+      // .find(series => {
+      //   if (!series) return;
+      //   const hoveredDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
+      //   const currentData = timeSeries.values[hoveredDataIndex]
+      //   return currentData
+      // });
+
       if (!timeSeries) return;
       const hoveredDataIndex = bisectDate(timeSeries.values, this.hoverData.hoveredDate);
 
@@ -61,18 +71,36 @@ const mixins = {
       }
       this.currentXCoordinate = Math.floor(timeSeries.timeSeriesScaleX(this.currentData.time));
 
-      this.currentCoordinates = this.activeTimeSeries.map((series) => {
-        const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
-        const currentData = series.values[currentDataIndex];
-        if  (!currentData) { debugger; return null; }
-        const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
-        const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
+      let val
 
-        return {
-          currentX,
-          currentY,
-          currentDataIndex,
-        };
+      this.currentCoordinates = this.activeTimeSeries
+        .filter((series) => {
+          const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
+          const currentData = series.values[currentDataIndex];
+          if  (!currentData) { debugger; return null; }
+          const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
+          const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
+
+          // if hovered data doesn't match we don't want this
+          if (currentData.time == this.hoverData.hoveredDate) {
+            return true
+          } else {
+            console.log('neg')
+            return  false;
+          }
+        })
+        .map((series) => {
+          const currentDataIndex = bisectDate(series.values, this.hoverData.hoveredDate);
+          const currentData = series.values[currentDataIndex];
+          if  (!currentData) { debugger; return null; }
+          const currentX = Math.floor(series.timeSeriesScaleX(currentData.time));
+          const currentY = Math.floor(series.timeSeriesScaleY(currentData.value));
+
+          return {
+            currentX,
+            currentY,
+            currentDataIndex,
+          };
       });
 
       if (this.hoverData.currentDeployXPos) {
