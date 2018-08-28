@@ -52,7 +52,7 @@ describe Gitlab::Ci::Status::Build::Failed do
     let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
 
     it 'does override badge_tooltip' do
-      expect(subject.badge_tooltip).to eq 'failed <br> (script failure)'
+      expect(subject.badge_tooltip).to eq 'failed - (script failure)'
     end
   end
 
@@ -61,7 +61,7 @@ describe Gitlab::Ci::Status::Build::Failed do
     let(:status) { Gitlab::Ci::Status::Failed.new(build, user) }
 
     it 'does override status_tooltip' do
-      expect(subject.status_tooltip).to eq 'failed <br> (script failure)'
+      expect(subject.status_tooltip).to eq 'failed - (script failure)'
     end
   end
 
