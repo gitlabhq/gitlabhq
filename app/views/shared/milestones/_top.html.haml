@@ -23,7 +23,7 @@
       = milestone_date_range(milestone)
   - if group
     .float-right
-      - if can?(current_user, :admin_milestones, group)
+      - if can?(current_user, :admin_milestone, group)
         - if milestone.group_milestone?
           = link_to edit_group_milestone_path(group, milestone), class: "btn btn btn-grouped" do
             Edit
@@ -31,6 +31,9 @@
           = link_to 'Close Milestone', group_milestone_route(milestone, {state_event: :close }), method: :put, class: "btn btn-grouped btn-close"
         - else
           = link_to 'Reopen Milestone', group_milestone_route(milestone, {state_event: :activate }), method: :put, class: "btn btn-grouped btn-reopen"
+
+        - unless is_dynamic_milestone
+          = render 'shared/milestones/delete_button'
 
 = render 'shared/milestones/deprecation_message' if is_dynamic_milestone
 

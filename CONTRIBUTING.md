@@ -314,7 +314,7 @@ This [documentation](doc/development/contributing/merge_request_workflow.md) has
 
 ## Definition of done
 
-This [documentation](doc/development/contributing/merge_request_workflow.md)) has been moved.
+This [documentation](doc/development/contributing/merge_request_workflow.md) has been moved.
 
 
 ## Style guides

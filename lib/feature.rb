@@ -47,7 +47,8 @@ class Feature
     end
 
     def disabled?(key, thing = nil)
-      !enabled?(key, thing)
+      # we need to make different method calls to make it easy to mock / define expectations in test mode
+      thing.nil? ? !enabled?(key) : !enabled?(key, thing)
     end
 
     def enable(key, thing = true)

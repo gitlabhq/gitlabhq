@@ -12,11 +12,14 @@ module Groups
     def execute
       group.prepare_for_destroy
 
-      group.projects.each do |project|
+      group.projects.includes(:project_feature).each do |project|
         # Execute the destruction of the models immediately to ensure atomic cleanup.
         success = ::Projects::DestroyService.new(project, current_user).execute
         raise DestroyError, "Project #{project.id} can't be deleted" unless success
       end
+
+      # reload the relation to prevent triggering destroy hooks on the projects again
+      group.projects.reload
 
       group.children.each do |group|
         # This needs to be synchronous since the namespace gets destroyed below

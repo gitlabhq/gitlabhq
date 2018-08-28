@@ -1,0 +1,5 @@
+---
+title: Use slugs for default project path and sanitize names before import
+merge_request: 21367
+author:
+type: fixed

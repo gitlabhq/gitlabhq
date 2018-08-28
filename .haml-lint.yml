@@ -70,14 +70,15 @@ linters:
     enabled: false
 
   RuboCop:
-    enabled: false
+    enabled: true
     # These cops are incredibly noisy when it comes to HAML templates, so we
     # ignore them.
     ignored_cops:
-      - Lint/BlockAlignment
-      - Lint/EndAlignment
+      - Layout/BlockAlignment
+      - Layout/EndAlignment
       - Lint/Void
       - Metrics/LineLength
+      - Naming/FileName
       - Style/AlignParameters
       - Style/BlockNesting
       - Style/ElseAlignment
@@ -90,6 +91,52 @@ linters:
       - Style/TrailingBlankLines
       - Style/TrailingWhitespace
       - Style/WhileUntilModifier
+
+      # These cops should eventually get enabled
+      - Cop/LineBreakAfterGuardClauses
+      - Cop/LineBreakAroundConditionalBlock
+      - Cop/ProjectPathHelper
+      - GitlabSecurity/PublicSend
+      - Layout/LeadingCommentSpace
+      - Layout/SpaceAfterColon
+      - Layout/SpaceAfterComma
+      - Layout/SpaceAroundOperators
+      - Layout/SpaceBeforeBlockBraces
+      - Layout/SpaceBeforeComma
+      - Layout/SpaceBeforeFirstArg
+      - Layout/SpaceInsideArrayLiteralBrackets
+      - Layout/SpaceInsideHashLiteralBraces
+      - Layout/SpaceInsideStringInterpolation
+      - Layout/TrailingBlankLines
+      - Lint/BooleanSymbol
+      - Lint/LiteralInInterpolation
+      - Lint/ParenthesesAsGroupedExpression
+      - Lint/RedundantWithIndex
+      - Lint/Syntax
+      - Lint/UselessAssignment
+      - Metrics/BlockNesting
+      - Naming/VariableName
+      - Performance/RedundantMatch
+      - Performance/StringReplacement
+      - Rails/Presence
+      - Rails/RequestReferer
+      - Style/AndOr
+      - Style/ColonMethodCall
+      - Style/ConditionalAssignment
+      - Style/HashSyntax
+      - Style/IdenticalConditionalBranches
+      - Style/NegatedIf
+      - Style/NestedTernaryOperator
+      - Style/Not
+      - Style/ParenthesesAroundCondition
+      - Style/RedundantParentheses
+      - Style/SelfAssignment
+      - Style/Semicolon
+      - Style/TernaryParentheses
+      - Style/TrailingCommaInHashLiteral
+      - Style/UnlessElse
+      - Style/WordArray
+      - Style/ZeroLengthPredicate
 
   RubyComments:
     enabled: true

@@ -78,7 +78,7 @@
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         -# haml-lint:disable InlineJavaScript
-        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
+        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 

@@ -43,18 +43,7 @@
         - else
           = link_to 'Reopen milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
 
-        %button.js-delete-milestone-button.btn.btn-grouped.btn-danger{ data: { toggle: 'modal',
-          target: '#delete-milestone-modal',
-          milestone_id: @milestone.id,
-          milestone_title: markdown_field(@milestone, :title),
-          milestone_url: project_milestone_path(@project, @milestone),
-          milestone_issue_count: @milestone.issues.count,
-          milestone_merge_request_count: @milestone.merge_requests.count },
-          disabled: true }
-          = _('Delete')
-          = icon('spin spinner', class: 'js-loading-icon hidden' )
-
-        #delete-milestone-modal
+        = render 'shared/milestones/delete_button'
 
       %a.btn.btn-default.btn-grouped.float-right.d-block.d-sm-none.js-sidebar-toggle{ href: "#" }
         = icon('angle-double-left')

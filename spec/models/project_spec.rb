@@ -2989,6 +2989,7 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
 
       it 'renames a repository' do
@@ -3160,6 +3161,7 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
 
       context 'migration to hashed storage' do
