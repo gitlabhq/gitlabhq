@@ -24,6 +24,9 @@ module EE
       condition(:deploy_board_disabled) { !@subject.feature_available?(:deploy_board) }
 
       with_scope :subject
+      condition(:packages_disabled) { !@subject.packages_enabled }
+
+      with_scope :subject
       condition(:classification_label_authorized, score: 32) do
         EE::Gitlab::ExternalAuthorization.access_allowed?(
           @user,
@@ -109,6 +112,10 @@ module EE
       rule { repository_mirrors_enabled & ((mirror_available & can?(:admin_project)) | admin) }.enable :admin_mirror
 
       rule { deploy_board_disabled & ~is_development }.prevent :read_deploy_board
+
+      rule { packages_disabled }.policy do
+        prevent(*create_read_update_admin_destroy(:package))
+      end
 
       rule { can?(:maintainer_access) }.policy do
         enable :push_code_to_protected_branches

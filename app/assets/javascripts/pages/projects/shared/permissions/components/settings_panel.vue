@@ -37,6 +37,11 @@
         required: false,
         default: false,
       },
+      packagesAvailable: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       visibilityHelpPath: {
         type: String,
         required: false,
@@ -48,6 +53,11 @@
         default: '',
       },
       registryHelpPath: {
+        type: String,
+        required: false,
+        default: '',
+      },
+      packagesHelpPath: {
         type: String,
         required: false,
         default: '',
@@ -66,6 +76,7 @@
         snippetsAccessLevel: 20,
         containerRegistryEnabled: true,
         lfsEnabled: true,
+        packagesEnabled: true,
         requestAccessEnabled: true,
         highlightChangesClass: false,
       };
@@ -131,12 +142,14 @@
           if (value === 0) {
             this.containerRegistryEnabled = false;
             this.lfsEnabled = false;
+            this.packagesEnabled = false;
           }
         } else if (oldValue === 0) {
           this.mergeRequestsAccessLevel = value;
           this.buildsAccessLevel = value;
           this.containerRegistryEnabled = true;
           this.lfsEnabled = true;
+          this.packagesEnabled = true;
         }
       },
 
@@ -300,6 +313,18 @@
             v-model="lfsEnabled"
             :disabled-input="!repositoryEnabled"
             name="project[lfs_enabled]"
+          />
+        </project-setting-row>
+        <project-setting-row
+          v-if="packagesAvailable"
+          :help-path="packagesHelpPath"
+          label="Packages"
+          help-text="Every project can have its own space to store its Maven packages"
+        >
+          <project-feature-toggle
+            v-model="packagesEnabled"
+            :disabled-input="!repositoryEnabled"
+            name="project[packages_enabled]"
           />
         </project-setting-row>
       </div>

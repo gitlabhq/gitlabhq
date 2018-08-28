@@ -82,6 +82,8 @@ module EE
         validates :import_url, presence: true
         validates :mirror_user, presence: true
       end
+
+      default_value_for :packages_enabled, true
     end
 
     module ClassMethods
@@ -536,6 +538,15 @@ module EE
 
     def protected_environments_feature_available?
       Feature.enabled?('protected_environments') && feature_available?(:protected_environments)
+    end
+
+    # Because we use default_value_for we need to be sure
+    # packages_enabled= method does exist even if we rollback migration.
+    # Otherwise many tests from spec/migrations will fail.
+    def packages_enabled=(value)
+      if has_attribute?(:packages_enabled)
+        write_attribute(:packages_enabled, value)
+      end
     end
 
     private
