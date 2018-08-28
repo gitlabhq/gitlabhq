@@ -1,6 +1,7 @@
 import Api from '~/api';
 import { __ } from '~/locale';
 import * as types from './mutation_types';
+import eventHub from '../../../eventhub';
 
 export const requestTemplateTypes = ({ commit }) => commit(types.REQUEST_TEMPLATE_TYPES);
 export const receiveTemplateTypesError = ({ commit, dispatch }) => {
@@ -69,6 +70,7 @@ export const setFileTemplate = ({ dispatch, commit, rootGetters }, template) => 
     { root: true },
   );
   commit(types.SET_UPDATE_SUCCESS, true);
+  eventHub.$emit(`editor.update.model.new.content.${rootGetters.activeFile.key}`, template.content);
 };
 
 export const undoFileTemplate = ({ dispatch, commit, rootGetters }) => {
@@ -76,6 +78,8 @@ export const undoFileTemplate = ({ dispatch, commit, rootGetters }) => {
 
   dispatch('changeFileContent', { path: file.path, content: file.raw }, { root: true });
   commit(types.SET_UPDATE_SUCCESS, false);
+
+  eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.raw);
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

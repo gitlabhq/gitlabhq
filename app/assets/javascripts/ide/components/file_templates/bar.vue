@@ -23,16 +23,20 @@ export default {
     this.setInitialType();
   },
   methods: {
-    ...mapActions('fileTemplates', ['setTemplateType', 'fetchTemplate']),
+    ...mapActions('fileTemplates', [
+      'setSelectedTemplateType',
+      'fetchTemplate',
+      'undoFileTemplate',
+    ]),
     setInitialType() {
       const type = this.templateTypes.find(t => t.name === this.activeFile.name);
 
       if (type) {
-        this.setTemplateType(type);
+        this.setSelectedTemplateType(type);
       }
     },
     selectTemplateType(type) {
-      this.setTemplateType(type);
+      this.setSelectedTemplateType(type);
     },
     selecteTemplate(template) {
       this.fetchTemplate(template);
@@ -69,6 +73,7 @@ export default {
         <button
           type="button"
           class="btn btn-default"
+          @click="undoFileTemplate"
         >
           {{ __('Undo') }}
         </button>

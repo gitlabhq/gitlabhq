@@ -77,11 +77,12 @@ export default {
   <div class="dropdown">
     <dropdown-button
       :toggle-text="label"
+      data-display="static"
     />
     <div class="dropdown-menu">
       <div
         v-if="title"
-        class="dropdown-title"
+        class="dropdown-title ml-0 mr-0"
       >
         {{ title }}
       </div>
@@ -95,6 +96,10 @@ export default {
           type="search"
           class="dropdown-input-field"
         />
+        <i
+          aria-hidden="true"
+          class="fa fa-search dropdown-input-search"
+        ></i>
       </div>
       <div class="dropdown-content">
         <loading-icon
