@@ -48,6 +48,17 @@ describe RuboCop::Cop::PreferClassMethodsOverModule do
     RUBY
   end
 
+  it "doesn't flag violation when ClassMethods is used inside a class" do
+    expect_no_offenses(<<~RUBY)
+      class Foo
+        module ClassMethods
+          def a_class_method
+          end
+        end
+      end
+    RUBY
+  end
+
   it "doesn't flag violation when not using either class_methods or ClassMethods" do
     expect_no_offenses(<<~RUBY)
       module Foo
