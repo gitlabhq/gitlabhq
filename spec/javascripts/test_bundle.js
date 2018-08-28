@@ -106,6 +106,20 @@ afterEach(() => {
   clearTimeout(longRunningTestTimeoutHandle);
 });
 
+function waitForPendingRequests(done) {
+  const numPendingRequests = window.activeVueResources;
+  if (numPendingRequests > 0) {
+    console.log(`Waiting for ${numPendingRequests} pending requests`);
+    setTimeout(() => waitForPendingRequests(done), 10);
+  } else {
+    done();
+  }
+}
+
+afterEach((done) => {
+  waitForPendingRequests(done);
+});
+
 const axiosDefaultAdapter = getDefaultAdapter();
 
 // render all of our tests
