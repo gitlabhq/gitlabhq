@@ -9,24 +9,60 @@
   margin-right: 15px;
   border-radius: $avatar-radius;
   border: 1px solid $avatar-border;
-  &.s16 { @include avatar-size(16px, 6px); }
-  &.s18 { @include avatar-size(18px, 6px); }
-  &.s19 { @include avatar-size(19px, 6px); }
-  &.s20 { @include avatar-size(20px, 7px); }
-  &.s24 { @include avatar-size(24px, 8px); }
-  &.s26 { @include avatar-size(26px, 8px); }
-  &.s32 { @include avatar-size(32px, 10px); }
-  &.s36 { @include avatar-size(36px, 10px); }
-  &.s40 { @include avatar-size(40px, 10px); }
-  &.s46 { @include avatar-size(46px, 15px); }
-  &.s48 { @include avatar-size(48px, 10px); }
-  &.s60 { @include avatar-size(60px, 12px); }
-  &.s70 { @include avatar-size(70px, 14px); }
-  &.s90 { @include avatar-size(90px, 15px); }
-  &.s100 { @include avatar-size(100px, 15px); }
-  &.s110 { @include avatar-size(110px, 15px); }
-  &.s140 { @include avatar-size(140px, 15px); }
-  &.s160 { @include avatar-size(160px, 20px); }
+  &.s16 {
+    @include avatar-size(16px, 6px);
+  }
+  &.s18 {
+    @include avatar-size(18px, 6px);
+  }
+  &.s19 {
+    @include avatar-size(19px, 6px);
+  }
+  &.s20 {
+    @include avatar-size(20px, 7px);
+  }
+  &.s24 {
+    @include avatar-size(24px, 8px);
+  }
+  &.s26 {
+    @include avatar-size(26px, 8px);
+  }
+  &.s32 {
+    @include avatar-size(32px, 10px);
+  }
+  &.s36 {
+    @include avatar-size(36px, 10px);
+  }
+  &.s40 {
+    @include avatar-size(40px, 10px);
+  }
+  &.s46 {
+    @include avatar-size(46px, 15px);
+  }
+  &.s48 {
+    @include avatar-size(48px, 10px);
+  }
+  &.s60 {
+    @include avatar-size(60px, 12px);
+  }
+  &.s70 {
+    @include avatar-size(70px, 14px);
+  }
+  &.s90 {
+    @include avatar-size(90px, 15px);
+  }
+  &.s100 {
+    @include avatar-size(100px, 15px);
+  }
+  &.s110 {
+    @include avatar-size(110px, 15px);
+  }
+  &.s140 {
+    @include avatar-size(140px, 15px);
+  }
+  &.s160 {
+    @include avatar-size(160px, 20px);
+  }
 }
 
 .avatar {
@@ -46,8 +82,12 @@
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
 
-    &.s16 { margin-right: 4px; }
-    &.s24 { margin-right: 4px; }
+    &.s16 {
+      margin-right: 4px;
+    }
+    &.s24 {
+      margin-right: 4px;
+    }
   }
 
   &.center {
@@ -73,28 +113,82 @@
   background-color: $identicon-gray;
 
   // Sizes
-  &.s16 { font-size: 12px; line-height: 1.33; }
-  &.s24 { font-size: 13px; line-height: 1.8; }
-  &.s26 { font-size: 20px; line-height: 1.33; }
-  &.s32 { font-size: 20px; line-height: 30px; }
-  &.s40 { font-size: 16px; line-height: 38px; }
-  &.s48 { font-size: 20px; line-height: 46px; }
-  &.s60 { font-size: 32px; line-height: 58px; }
-  &.s70 { font-size: 34px; line-height: 70px; }
-  &.s90 { font-size: 36px; line-height: 88px; }
-  &.s100 { font-size: 36px; line-height: 98px; }
-  &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
-  &.s140 { font-size: 72px; line-height: 138px; }
-  &.s160 { font-size: 96px; line-height: 158px; }
+  &.s16 {
+    font-size: 12px;
+    line-height: 1.33;
+  }
+  &.s24 {
+    font-size: 13px;
+    line-height: 1.8;
+  }
+  &.s26 {
+    font-size: 20px;
+    line-height: 1.33;
+  }
+  &.s32 {
+    font-size: 20px;
+    line-height: 30px;
+  }
+  &.s40 {
+    font-size: 16px;
+    line-height: 38px;
+  }
+  &.s48 {
+    font-size: 20px;
+    line-height: 46px;
+  }
+  &.s60 {
+    font-size: 32px;
+    line-height: 58px;
+  }
+  &.s70 {
+    font-size: 34px;
+    line-height: 70px;
+  }
+  &.s90 {
+    font-size: 36px;
+    line-height: 88px;
+  }
+  &.s100 {
+    font-size: 36px;
+    line-height: 98px;
+  }
+  &.s110 {
+    font-size: 40px;
+    line-height: 108px;
+    font-weight: $gl-font-weight-normal;
+  }
+  &.s140 {
+    font-size: 72px;
+    line-height: 138px;
+  }
+  &.s160 {
+    font-size: 96px;
+    line-height: 158px;
+  }
 
   // Background colors
-  &.bg1 { background-color: $identicon-red; }
-  &.bg2 { background-color: $identicon-purple; }
-  &.bg3 { background-color: $identicon-indigo; }
-  &.bg4 { background-color: $identicon-blue; }
-  &.bg5 { background-color: $identicon-teal; }
-  &.bg6 { background-color: $identicon-orange; }
-  &.bg7 { background-color: $identicon-gray; }
+  &.bg1 {
+    background-color: $identicon-red;
+  }
+  &.bg2 {
+    background-color: $identicon-purple;
+  }
+  &.bg3 {
+    background-color: $identicon-indigo;
+  }
+  &.bg4 {
+    background-color: $identicon-blue;
+  }
+  &.bg5 {
+    background-color: $identicon-teal;
+  }
+  &.bg6 {
+    background-color: $identicon-orange;
+  }
+  &.bg7 {
+    background-color: $identicon-gray;
+  }
 }
 
 .avatar-container {
@@ -116,7 +210,10 @@
     align-self: center;
   }
 
-  &.s40 { min-width: 40px; min-height: 40px; }
+  &.s40 {
+    min-width: 40px;
+    min-height: 40px;
+  }
 }
 
 .avatar-counter {
@@ -128,4 +225,8 @@
   font-size: 9px;
   line-height: 16px;
   text-align: center;
+}
+
+.no-avatar {
+  border: 1px dashed $gray-darkest;
 }

@@ -51,6 +51,8 @@ export default {
       limitBeforeCounter: 3,
       maxRender: 4,
       maxCounter: 99,
+      noAssigneesTitle: 'No assignee',
+      noAvatarUrl: 'no-avatar',
     };
   },
   computed: {
@@ -83,6 +85,9 @@ export default {
     showLabelFooter() {
       return this.issue.labels.find(l => this.showLabel(l)) !== undefined;
     },
+    shouldRenderNoAssignee() {
+      return this.issue.assignees.length === 0;
+    },
   },
   methods: {
     isIndexLessThanlimit(index) {
@@ -99,12 +104,15 @@ export default {
       return index < this.limitBeforeCounter;
     },
     assigneeUrl(assignee) {
+      if (!assignee) return '';
       return `${this.rootPath}${assignee.username}`;
     },
     assigneeUrlTitle(assignee) {
+      if (!assignee) return this.noAssigneesTitle;
       return `Assigned to ${assignee.name}`;
     },
     avatarUrlTitle(assignee) {
+      if (!assignee) return this.noAssigneesTitle;
       return `Avatar for ${assignee.name}`;
     },
     showLabel(label) {
@@ -207,6 +215,13 @@ export default {
           :img-alt="avatarUrlTitle(assignee)"
           :img-src="assignee.avatar"
           :tooltip-text="assigneeUrlTitle(assignee)"
+          class="js-no-trigger"
+          tooltip-placement="bottom"
+        />
+        <user-avatar-link
+          v-if="shouldRenderNoAssignee"
+          :link-href="assigneeUrl()"
+          :tooltip-text="assigneeUrlTitle()"
           class="js-no-trigger"
           tooltip-placement="bottom"
         />

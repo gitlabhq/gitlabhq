@@ -79,6 +79,9 @@ export default {
     avatarSizeClass() {
       return `s${this.size}`;
     },
+    showImage() {
+      return this.imgSrc !== 'no-avatar';
+    },
   },
 };
 </script>
@@ -86,6 +89,7 @@ export default {
 <template>
   <img
     v-tooltip
+    v-if="showImage"
     :class="{
       lazy: lazy,
       [avatarSizeClass]: true,
