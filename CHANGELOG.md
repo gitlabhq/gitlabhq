@@ -267,6 +267,10 @@ entry.
 - Moves help_popover component to a common location.
 
 
+## 11.1.6 (2018-08-28)
+
+- No changes.
+
 ## 11.1.5 (2018-08-27)
 
 ### Security (3 changes)
