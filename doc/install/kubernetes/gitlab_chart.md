@@ -30,7 +30,7 @@ The `gitlab` chart includes all required dependencies, and takes a few minutes
 to deploy.
 
 TIP: **Tip:**
-For large scale deployments, we strongly recommend using the
+For production deployments, we strongly recommend using the
 [detailed installation instructions](https://gitlab.com/charts/gitlab/blob/master/doc/installation/README.md)
 utilizing [external Postgres, Redis, and object storage](https://gitlab.com/charts/gitlab/tree/master/doc/advanced) services.
 
