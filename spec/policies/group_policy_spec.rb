@@ -18,7 +18,7 @@ describe GroupPolicy do
 
   let(:reporter_permissions) { [:admin_label] }
 
-  let(:developer_permissions) { [:admin_milestones] }
+  let(:developer_permissions) { [:admin_milestone] }
 
   let(:maintainer_permissions) do
     [

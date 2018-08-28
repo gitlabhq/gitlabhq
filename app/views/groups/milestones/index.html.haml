@@ -5,7 +5,7 @@
 
   .nav-controls
     = render 'shared/milestones_sort_dropdown'
-    - if can?(current_user, :admin_milestones, @group)
+    - if can?(current_user, :admin_milestone, @group)
       = link_to "New milestone", new_group_milestone_path(@group), class: "btn btn-new"
 
 .milestones

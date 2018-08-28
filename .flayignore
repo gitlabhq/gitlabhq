@@ -6,6 +6,7 @@ app/controllers/projects/approvers_controller.rb
 app/controllers/projects/protected_branches/merge_access_levels_controller.rb
 app/controllers/projects/protected_branches/push_access_levels_controller.rb
 app/controllers/projects/protected_tags/create_access_levels_controller.rb
+app/helpers/system_note_helper.rb
 app/policies/project_policy.rb
 app/models/concerns/relative_positioning.rb
 app/workers/stuck_merge_jobs_worker.rb

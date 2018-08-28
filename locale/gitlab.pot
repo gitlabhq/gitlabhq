@@ -4677,10 +4677,10 @@ msgstr ""
 msgid "Milestones"
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project. %{milestoneTitle} is not currently used in any issues or merge requests."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
 msgid "Milestones|<p>%{milestonePromotion}</p> %{finalWarning}"
@@ -6971,7 +6971,11 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "The connection will time out after %{timeout}. For repositories that take longer, use a clone/push combination."
+=======
+msgid "The deployment of this job to %{environmentLink} did not succeed."
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "The fork relationship has been removed."
@@ -7187,6 +7191,18 @@ msgstr ""
 msgid "This job has not started yet"
 msgstr ""
 
+msgid "This job is an out-of-date deployment to %{environmentLink}."
+msgstr ""
+
+msgid "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
+msgstr ""
+
+msgid "This job is creating a deployment to %{environmentLink} and will overwrite the last %{deploymentLink}."
+msgstr ""
+
+msgid "This job is creating a deployment to %{environmentLink}."
+msgstr ""
+
 msgid "This job is in pending state and is waiting to be picked by a runner"
 msgstr ""
 
@@ -7194,6 +7210,9 @@ msgid "This job is stuck, because you don't have any active runners online with 
 msgstr ""
 
 msgid "This job is stuck, because you don't have any active runners that can run this job."
+msgstr ""
+
+msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
