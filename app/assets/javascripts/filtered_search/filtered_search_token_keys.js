@@ -1,8 +1,8 @@
 export default class FilteredSearchTokenKeys {
-  constructor(tokenKeys, alternativeTokenKeys, conditions) {
-    this.tokenKeys = tokenKeys || [];
-    this.alternativeTokenKeys = alternativeTokenKeys || [];
-    this.conditions = conditions || [];
+  constructor(tokenKeys = [], alternativeTokenKeys = [], conditions = []) {
+    this.tokenKeys = tokenKeys;
+    this.alternativeTokenKeys = alternativeTokenKeys;
+    this.conditions = conditions;
 
     this.tokenKeysWithAlternative = this.tokenKeys.concat(this.alternativeTokenKeys);
   }
