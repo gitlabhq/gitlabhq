@@ -1,4 +1,4 @@
-## Custom project templates **[PREMIUM ONLY]**
+# Custom project templates **[PREMIUM ONLY]**
 
 > **Notes:**
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/issues/6860) in [GitLab Premium](https://about.gitlab.com/pricing) 11.2
