@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 11.2.3 (2018-08-28)
+
+- No changes.
+
+## 11.2.2 (2018-08-27)
+
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
+
+
 ## 11.2.1 (2018-08-22)
 
 - No changes.
@@ -96,6 +107,18 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Geo: Log to geo.log when the Log Cursor skips an event.
 
 
+## 11.1.6 (2018-08-28)
+
+- No changes.
+
+## 11.1.5 (2018-08-27)
+
+- No changes.
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
+
+
 ## 11.1.4 (2018-07-30)
 
 - No changes.
@@ -187,6 +210,13 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Enable Geo snapshot synchronization for everyone. !6286
 - Geo - Make Geo repository verification flag opt-out by default. !6369
+
+
+## 11.0.6 (2018-08-27)
+
+### Security (1 change)
+
+- Prevent regular users from moving projects to different storage shards.
 
 
 ## 11.0.5 (2018-07-26)
