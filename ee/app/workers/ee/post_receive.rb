@@ -12,7 +12,7 @@ module EE
       super
 
       if ::Gitlab::Geo.primary?
-        ::Geo::RepositoryUpdatedService.new(post_received.project, refs: refs, changes: changes).execute
+        ::Geo::RepositoryUpdatedService.new(post_received.project.repository, refs: refs, changes: changes).execute
       end
     end
 
@@ -22,7 +22,7 @@ module EE
       update_wiki_es_indexes(post_received)
 
       if ::Gitlab::Geo.primary?
-        ::Geo::RepositoryUpdatedService.new(post_received.project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
+        ::Geo::RepositoryUpdatedService.new(post_received.project.wiki.repository).execute
       end
     end
 

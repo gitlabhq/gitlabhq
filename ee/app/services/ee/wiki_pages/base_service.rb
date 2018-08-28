@@ -16,7 +16,7 @@ module EE
 
       def process_wiki_repository_update
         if ::Gitlab::Geo.primary?
-          ::Geo::RepositoryUpdatedService.new(project, source: ::Geo::RepositoryUpdatedEvent::WIKI).execute
+          ::Geo::RepositoryUpdatedService.new(project.wiki.repository).execute
         end
       end
     end
