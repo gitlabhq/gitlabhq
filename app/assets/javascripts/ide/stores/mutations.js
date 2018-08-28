@@ -146,13 +146,7 @@ export default {
       staged: false,
       prevPath: '',
       moved: false,
-      lastCommit: Object.assign(state.entries[file.path].lastCommit, {
-        id: lastCommit.commit.id,
-        url: lastCommit.commit_path,
-        message: lastCommit.commit.message,
-        author: lastCommit.commit.author_name,
-        updatedAt: lastCommit.commit.authored_date,
-      }),
+      lastCommitSha: lastCommit.commit.id,
     });
 
     if (prevPath) {
