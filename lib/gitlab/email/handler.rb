@@ -1,12 +1,5 @@
 # frozen_string_literal: true
 
-require 'gitlab/email/handler/create_merge_request_handler'
-require 'gitlab/email/handler/create_note_handler'
-require 'gitlab/email/handler/create_issue_handler'
-require 'gitlab/email/handler/unsubscribe_handler'
-
-require 'ee/gitlab/email/handler'
-
 module Gitlab
   module Email
     module Handler

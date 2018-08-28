@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'gitlab/email/handler/ee/service_desk_handler'
-
 module EE
   module Gitlab
     module Email
