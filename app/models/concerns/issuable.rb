@@ -109,8 +109,8 @@ module Issuable
       false
     end
 
-    def has_multiple_assignees?
-      assignees.count > 1
+    def etag_caching_enabled?
+      false
     end
   end
 
