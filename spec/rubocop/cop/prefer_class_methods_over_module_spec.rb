@@ -93,6 +93,6 @@ describe RuboCop::Cop::PreferClassMethodsOverModule do
         end
       end
     RUBY
-    expect(autocorrected).to eql(expected_source)
+    expect(autocorrected).to eq(expected_source)
   end
 end
