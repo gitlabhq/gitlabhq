@@ -11,6 +11,7 @@ import commentForm from './comment_form.vue';
 import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
 import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
 import skeletonLoadingContainer from '../../vue_shared/components/notes/skeleton_note.vue';
+import highlightCurrentUser from '~/behaviors/markdown/highlight_current_user';
 
 export default {
   name: 'NotesApp',
@@ -95,6 +96,9 @@ export default {
         this.actionToggleAward({ awardName, noteId });
       });
     }
+  },
+  updated() {
+    this.$nextTick(() => highlightCurrentUser(this.$el.querySelectorAll('.gfm-project_member')));
   },
   methods: {
     ...mapActions({
