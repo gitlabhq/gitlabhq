@@ -10,7 +10,7 @@ import VueResource from 'vue-resource';
 import Translate from '~/vue_shared/translate';
 import jasmineDiff from 'jasmine-diff';
 
-import { getDefaultAdapter } from '~/lib/utils/axios_utils';
+import axios, { getDefaultAdapter } from '~/lib/utils/axios_utils';
 import { FIXTURES_PATH, TEST_HOST } from './test_constants';
 
 import customMatchers from './matchers';
@@ -204,6 +204,11 @@ if (process.env.BABEL_ENV === 'coverage') {
   ];
 
   describe('Uncovered files', function() {
+    beforeEach(() => {
+      // ignore all requests
+      axios.defaults.adapter = () => {};
+    });
+
     const sourceFiles = require.context('~', true, /\.(js|vue)$/);
 
     $.holdReady(true);
