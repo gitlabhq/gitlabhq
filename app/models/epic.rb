@@ -5,6 +5,10 @@
 class Epic < ActiveRecord::Base
   prepend EE::Epic
 
+  def self.link_reference_pattern
+    nil
+  end
+
   def self.reference_prefix
     '&'
   end
