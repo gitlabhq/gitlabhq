@@ -196,7 +196,7 @@ They will, like usual users, receive a role in the project or group with all
 the abilities that are mentioned in the table above. They cannot however create
 groups or projects, and they have the same access as logged out users in all
 other cases.
-
+ 
 An administrator can flag a user as external [through the API](../api/users.md)
 or by checking the checkbox on the admin panel. As an administrator, navigate
 to **Admin > Users** to create a new user or edit an existing one. There, you
@@ -204,6 +204,21 @@ will find the option to flag the user as external.
 
 By default new users are not set as external users. This behavior can be changed
 by an administrator under **Admin > Application Settings**.
+
+### Default internal users
+
+The "Internal users" field allows specifying an e-mail address regex pattern to identify default internal users.  
+
+New users whose email address matches the regex pattern will be set to internal by default rather than an external collaborator.
+
+The regex pattern format is Ruby, but it needs to be convertible to JavaScript, and the ignore case flag will be set, e.g. "/regex pattern/i".
+
+Here are some examples:
+
+- Use `\.internal@domain\.com` to mark email addresses containing ".internal@domain.com" internal.
+- Use `^(?:(?!\.ext@domain\.com).)*$\r?` to mark users with email addresses NOT including .ext@domain.com internal.
+
+Please be aware that this regex could lead to a DOS attack, [see](https://en.wikipedia.org/wiki/ReDoS?) ReDos on Wikipedia.
 
 ## Auditor users **[PREMIUM ONLY]**
 

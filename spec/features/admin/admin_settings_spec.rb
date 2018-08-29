@@ -103,6 +103,18 @@ describe 'Admin updates settings' do
     expect(page).to have_content "Application settings saved successfully"
   end
 
+  it 'Change New users set to external', :js do
+    user_internal_regex = find('#application_setting_user_default_internal_regex', visible: :all)
+
+    expect(user_internal_regex).to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'To define internal users, first enable new users set to external'
+
+    check 'application_setting_user_default_external'
+
+    expect(user_internal_regex).not_to be_readonly
+    expect(user_internal_regex['placeholder']).to eq 'Regex pattern'
+  end
+
   it 'Change Sign-in restrictions' do
     page.within('.as-signin') do
       fill_in 'Home page URL', with: 'https://about.gitlab.com/'

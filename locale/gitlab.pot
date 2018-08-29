@@ -876,6 +876,9 @@ msgstr ""
 msgid "AutoDevOps|enable Auto DevOps"
 msgstr ""
 
+msgid "Automatically marked as default internal user"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -4055,6 +4058,9 @@ msgstr ""
 msgid "Internal - The project can be accessed by any logged in user."
 msgstr ""
 
+msgid "Internal users"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr ""
 
@@ -5973,6 +5979,9 @@ msgstr[1] ""
 msgid "Regenerate key"
 msgstr ""
 
+msgid "Regex pattern"
+msgstr ""
+
 msgid "Register / Sign In"
 msgstr ""
 
@@ -6732,6 +6741,9 @@ msgstr ""
 msgid "Specific Runners"
 msgstr ""
 
+msgid "Specify an e-mail address regex pattern to identify default internal users."
+msgstr ""
+
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
@@ -7447,6 +7459,9 @@ msgid "To connect GitHub repositories, you first need to authorize GitLab to acc
 msgstr ""
 
 msgid "To connect an SVN repository, check out %{svn_link}."
+msgstr ""
+
+msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
