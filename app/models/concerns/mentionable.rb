@@ -61,7 +61,7 @@ module Mentionable
         cache_key: [self, attr],
         author: author,
         skip_project_check: skip_project_check?
-      )
+      ).merge(mentionable_params)
 
       extractor.analyze(text, options)
     end
@@ -86,12 +86,11 @@ module Mentionable
     return [] unless matches_cross_reference_regex?
 
     refs = all_references(current_user)
-    refs = (refs.issues + refs.merge_requests + refs.commits)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
     # case for otherwise identical Commit objects.
-    refs.reject { |ref| ref == local_reference }
+    extracted_mentionables(refs).reject { |ref| ref == local_reference }
   end
 
   # Uses regex to quickly determine if mentionables might be referenced
@@ -134,6 +133,10 @@ module Mentionable
 
   private
 
+  def extracted_mentionables(refs)
+    refs.issues + refs.merge_requests + refs.commits
+  end
+
   # Returns a Hash of changed mentionable fields
   #
   # Preference is given to the `changes` Hash, but falls back to
@@ -160,5 +163,9 @@ module Mentionable
 
   def skip_project_check?
     false
+  end
+
+  def mentionable_params
+    {}
   end
 end
