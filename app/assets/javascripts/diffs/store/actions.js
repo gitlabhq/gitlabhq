@@ -29,7 +29,8 @@ export const fetchDiffFiles = ({ state, commit }) => {
     .then(handleLocationHash);
 };
 
-export const assignDiscussionsToDiff = ({ state, commit }, allLineDiscussions) => {
+export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
+  console.log('ASSIGN DISCS : ');
   console.log('DIFF : ', state.diffFiles);
   console.log('STATE : ', allLineDiscussions);
 
