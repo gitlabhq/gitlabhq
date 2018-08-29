@@ -1167,6 +1167,9 @@ msgstr ""
 msgid "Choose a branch/tag (e.g. %{master}) or enter a commit (e.g. %{sha}) to see what's changed or to create a merge request."
 msgstr ""
 
+msgid "Choose a template..."
+msgstr ""
+
 msgid "Choose a type..."
 msgstr ""
 
@@ -5602,9 +5605,6 @@ msgid "Team"
 msgstr ""
 
 msgid "Template"
-msgstr ""
-
-msgid "Template applied"
 msgstr ""
 
 msgid "Terms of Service Agreement and Privacy Policy"
