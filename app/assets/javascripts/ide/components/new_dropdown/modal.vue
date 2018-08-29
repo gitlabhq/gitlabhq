@@ -91,6 +91,7 @@ export default {
     :header-title-text="modalTitle"
     :footer-primary-button-text="buttonLabel"
     footer-primary-button-variant="success"
+    modal-size="lg"
     @submit="submitForm"
     @open="focusInput"
     @closed="closedModal"

@@ -47,7 +47,7 @@ export default {
 
 <template>
   <div class="d-flex align-items-center ide-file-templates">
-    <strong class="mr-2">
+    <strong class="append-right-default">
       {{ __('File templates') }}
     </strong>
     <dropdown
@@ -58,7 +58,7 @@ export default {
     />
     <dropdown
       v-if="showTemplatesDropdown"
-      :label="__('Choose a type...')"
+      :label="__('Choose a template...')"
       :async="true"
       :searchable="true"
       :title="__('File templates')"
@@ -66,18 +66,14 @@ export default {
       @click="selecteTemplate"
     />
     <transition name="fade">
-      <div v-show="updateSuccess">
-        <strong class="text-success mr-2">
-          {{ __('Template applied') }}
-        </strong>
-        <button
-          type="button"
-          class="btn btn-default"
-          @click="undoFileTemplate"
-        >
-          {{ __('Undo') }}
-        </button>
-      </div>
+      <button
+        v-show="updateSuccess"
+        type="button"
+        class="btn btn-default"
+        @click="undoFileTemplate"
+      >
+        {{ __('Undo') }}
+      </button>
     </transition>
   </div>
 </template>

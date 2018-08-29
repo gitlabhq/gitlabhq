@@ -32,8 +32,22 @@ export const fetchTemplateTypes = ({ dispatch, state }) => {
     .catch(() => dispatch('receiveTemplateTypesError'));
 };
 
-export const setSelectedTemplateType = ({ commit }, type) =>
+export const setSelectedTemplateType = ({ commit, dispatch, rootGetters }, type) => {
   commit(types.SET_SELECTED_TEMPLATE_TYPE, type);
+
+  if (rootGetters.activeFile.prevPath === type.name) {
+    dispatch('discardFileChanges', rootGetters.activeFile.path, { root: true });
+  } else if (rootGetters.activeFile.name !== type.name) {
+    dispatch(
+      'renameEntry',
+      {
+        path: rootGetters.activeFile.path,
+        name: type.name,
+      },
+      { root: true },
+    );
+  }
+};
 
 export const receiveTemplateError = ({ dispatch }, template) => {
   dispatch(
@@ -80,6 +94,10 @@ export const undoFileTemplate = ({ dispatch, commit, rootGetters }) => {
   commit(types.SET_UPDATE_SUCCESS, false);
 
   eventHub.$emit(`editor.update.model.new.content.${file.key}`, file.raw);
+
+  if (file.prevPath) {
+    dispatch('discardFileChanges', file.path, { root: true });
+  }
 };
 
 // prevent babel-plugin-rewire from generating an invalid default during karma tests

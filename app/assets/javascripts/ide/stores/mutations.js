@@ -245,6 +245,10 @@ export default {
     if (newEntry.type === 'blob') {
       state.changedFiles = state.changedFiles.concat(newEntry);
     }
+
+    if (state.entries[newPath].opened) {
+      state.openFiles.push(state.entries[newPath]);
+    }
   },
   ...projectMutations,
   ...mergeRequestMutation,
