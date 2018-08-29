@@ -34,7 +34,7 @@ module Gitlab
           end
 
           def description
-            "<br> (#{failure_reason_message})"
+            "- (#{failure_reason_message})"
           end
 
           def failure_reason_message
