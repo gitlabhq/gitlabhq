@@ -8,7 +8,7 @@ from source, follow the
 NOTE: **Note:**
 If your GitLab installation uses external PostgreSQL, the Omnibus roles
 will not be able to perform all necessary configuration steps. Refer to the
-section on [External PostreSQL][external postgresql] for additional instructions.
+section on [External PostgreSQL][external postgresql] for additional instructions.
 
 NOTE: **Note:**
 The stages of the setup process must be completed in the documented order.
