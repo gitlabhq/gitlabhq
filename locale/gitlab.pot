@@ -8476,6 +8476,11 @@ msgstr ""
 msgid "importing"
 msgstr ""
 
+msgid "instance completed"
+msgid_plural "instances completed"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "is invalid because there is downstream lock"
 msgstr ""
 

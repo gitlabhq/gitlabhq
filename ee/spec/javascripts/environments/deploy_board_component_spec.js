@@ -29,6 +29,15 @@ describe('Deploy Board', () => {
       ).toEqual(`${deployBoardMockData.completion}%`);
     });
 
+    it('should render total instance count', () => {
+      const renderedTotal = component.$el.querySelector('.deploy-board-instances .total-instances');
+      const actualTotal = deployBoardMockData.instances.length;
+
+      expect(
+        renderedTotal.textContent,
+      ).toEqual(`(${actualTotal})`);
+    });
+
     it('should render all instances', () => {
       const instances = component.$el.querySelectorAll('.deploy-board-instances-container a');
 
