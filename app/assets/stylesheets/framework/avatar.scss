@@ -8,6 +8,7 @@
   float: left;
   margin-right: 15px;
   border-radius: $avatar-radius;
+<<<<<<< HEAD
   border: 1px solid $avatar-border;
   &.s16 {
     @include avatar-size(16px, 6px);
@@ -63,6 +64,27 @@
   &.s160 {
     @include avatar-size(160px, 20px);
   }
+=======
+  border: 1px solid $gray-normal;
+  &.s16 { @include avatar-size(16px, 6px); }
+  &.s18 { @include avatar-size(18px, 6px); }
+  &.s19 { @include avatar-size(19px, 6px); }
+  &.s20 { @include avatar-size(20px, 7px); }
+  &.s24 { @include avatar-size(24px, 8px); }
+  &.s26 { @include avatar-size(26px, 8px); }
+  &.s32 { @include avatar-size(32px, 10px); }
+  &.s36 { @include avatar-size(36px, 10px); }
+  &.s40 { @include avatar-size(40px, 10px); }
+  &.s46 { @include avatar-size(46px, 15px); }
+  &.s48 { @include avatar-size(48px, 10px); }
+  &.s60 { @include avatar-size(60px, 12px); }
+  &.s70 { @include avatar-size(70px, 14px); }
+  &.s90 { @include avatar-size(90px, 15px); }
+  &.s100 { @include avatar-size(100px, 15px); }
+  &.s110 { @include avatar-size(110px, 15px); }
+  &.s140 { @include avatar-size(140px, 15px); }
+  &.s160 { @include avatar-size(160px, 20px); }
+>>>>>>> 04845fdeae75ba5de7c93992a5d55663edf647e0
 }
 
 .avatar {
@@ -72,7 +94,7 @@
   width: 40px;
   height: 40px;
   padding: 0;
-  background: $avatar-background;
+  background: $gray-lightest;
   overflow: hidden;
 
   &.avatar-inline {
@@ -102,7 +124,7 @@
   }
 
   &:not([href]):hover {
-    border-color: darken($avatar-border, 10%);
+    border-color: darken($gray-normal, 10%);
   }
 }
 
@@ -110,7 +132,7 @@
   text-align: center;
   vertical-align: top;
   color: $identicon-fg-color;
-  background-color: $identicon-gray;
+  background-color: $gray-darker;
 
   // Sizes
   &.s16 {
@@ -168,27 +190,13 @@
   }
 
   // Background colors
-  &.bg1 {
-    background-color: $identicon-red;
-  }
-  &.bg2 {
-    background-color: $identicon-purple;
-  }
-  &.bg3 {
-    background-color: $identicon-indigo;
-  }
-  &.bg4 {
-    background-color: $identicon-blue;
-  }
-  &.bg5 {
-    background-color: $identicon-teal;
-  }
-  &.bg6 {
-    background-color: $identicon-orange;
-  }
-  &.bg7 {
-    background-color: $identicon-gray;
-  }
+  &.bg1 { background-color: $identicon-red; }
+  &.bg2 { background-color: $identicon-purple; }
+  &.bg3 { background-color: $identicon-indigo; }
+  &.bg4 { background-color: $identicon-blue; }
+  &.bg5 { background-color: $identicon-teal; }
+  &.bg6 { background-color: $identicon-orange; }
+  &.bg7 { background-color: $gray-darker; }
 }
 
 .avatar-container {
@@ -219,7 +227,7 @@
 .avatar-counter {
   background-color: $gray-darkest;
   color: $white-light;
-  border: 1px solid $avatar-border;
+  border: 1px solid $gray-normal;
   border-radius: 1em;
   font-family: $regular-font;
   font-size: 9px;

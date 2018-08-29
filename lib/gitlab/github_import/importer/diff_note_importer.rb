@@ -13,7 +13,7 @@ module Gitlab
           @note = note
           @project = project
           @client = client
-          @user_finder = UserFinder.new(project, client)
+          @user_finder = GithubImport::UserFinder.new(project, client)
         end
 
         def execute

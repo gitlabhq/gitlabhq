@@ -16,8 +16,6 @@ class DetectRepositoryLanguagesWorker
     user = User.find_by(id: user_id)
     return unless project && user
 
-    return if Feature.disabled?(:repository_languages, project.namespace)
-
     try_obtain_lease do
       ::Projects::DetectRepositoryLanguagesService.new(project, user).execute
     end

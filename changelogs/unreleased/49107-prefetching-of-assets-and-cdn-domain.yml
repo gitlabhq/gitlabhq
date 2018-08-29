@@ -1,5 +1,0 @@
----
-title: DNS prefetching if asset_host for CDN hosting is set
-merge_request: 20781
-author:
-type: performance

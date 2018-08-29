@@ -6,7 +6,7 @@ to perform various actions.
 All statistics are opt-out, you can enable/disable them from the admin panel
 under **Admin area > Settings > Usage statistics**.
 
-## Version check
+## Version check **[CORE ONLY]**
 
 If enabled, version check will inform you if a new version is available and the
 importance of it through a status. This is shown on the help page (i.e. `/help`)
@@ -29,7 +29,7 @@ secure.
 If you disable version check, this information will not be collected.  Enable or
 disable the version check at **Admin area > Settings > Usage statistics**.
 
-## Usage ping
+## Usage ping **[CORE ONLY]**
 
 > [Introduced][ee-557] in GitLab Enterprise Edition 8.10. More statistics
 [were added][ee-735] in GitLab Enterprise Edition
@@ -66,6 +66,15 @@ production: &base
     # ...
     usage_ping_enabled: false
 ```
+
+## Instance statistics visibility **[CORE ONLY]**
+
+Once usage ping is enabled, GitLab will gather data from other instances and
+will be able to show [usage statistics](../../instance_statistics/index.md)
+of your instance to your users.
+
+This can be restricted to admins by selecting "Only admins" in the Instance
+Statistics visibility section under **Admin area > Settings > Usage statistics**.
 
 [ee-557]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/557
 [ee-735]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/735

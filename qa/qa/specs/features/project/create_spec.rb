@@ -1,5 +1,5 @@
 module QA
-  describe 'create a new project', :core do
+  describe 'create a new project', :smoke do
     it 'user creates a new project' do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }

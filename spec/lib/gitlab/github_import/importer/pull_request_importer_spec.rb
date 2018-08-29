@@ -80,7 +80,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
       end
 
       it 'imports the pull request with the pull request author as the merge request author' do
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -111,6 +111,16 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
         expect(mr).to be_instance_of(MergeRequest)
         expect(exists).to eq(false)
       end
+
+      it 'triggers internal_id functionality to track greatest iids' do
+        mr = build_stubbed(:merge_request, source_project: project, target_project: project)
+        allow(importer).to receive(:insert_and_return_id).and_return(mr.id)
+        allow(project.merge_requests).to receive(:find).with(mr.id).and_return(mr)
+
+        expect(mr).to receive(:ensure_target_project_iid!)
+
+        importer.create_merge_request
+      end
     end
 
     context 'when the author could not be found' do
@@ -125,7 +135,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .with(pull_request)
           .and_return(user.id)
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -171,7 +181,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .to receive(:source_branch)
           .and_return('master')
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .with(
             {
@@ -209,7 +219,7 @@ describe Gitlab::GithubImport::Importer::PullRequestImporter, :clean_gitlab_redi
           .with(pull_request)
           .and_return(user.id)
 
-        expect(Gitlab::GithubImport)
+        expect(importer)
           .to receive(:insert_and_return_id)
           .and_raise(ActiveRecord::InvalidForeignKey, 'invalid foreign key')
 

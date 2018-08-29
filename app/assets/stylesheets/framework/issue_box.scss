@@ -26,12 +26,12 @@
 
   &.status-box-closed,
   &.status-box-mr-closed {
-    background-color: $gl-danger;
+    background-color: $red-500;
   }
 
   &.status-box-issue-closed,
   &.status-box-mr-merged {
-    background-color: $gl-primary;
+    background-color: $blue-500;
   }
 
   &.status-box-open {
@@ -39,7 +39,7 @@
   }
 
   &.status-box-expired {
-    background-color: $issue-status-expired;
+    background-color: $orange-500;
   }
 
   &.status-box-upcoming {

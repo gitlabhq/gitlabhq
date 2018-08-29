@@ -74,13 +74,13 @@
     }
 
     &.is-dropzone-hover {
-      border-color: $gl-success;
+      border-color: $green-500;
       box-shadow: 0 0 2px $black-transparent,
-                  0 0 4px $gl-success-focus;
+                  0 0 4px $green-500-focus;
 
       .comment-toolbar,
       .nav-links {
-        border-color: $gl-success;
+        border-color: $green-500;
       }
     }
   }

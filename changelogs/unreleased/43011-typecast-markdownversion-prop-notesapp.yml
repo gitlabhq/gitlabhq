@@ -1,5 +1,0 @@
----
-title: Fix Vue datatype errors for markdownVersion parsing
-merge_request: 20800
-author:
-type: fixed

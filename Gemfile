@@ -116,14 +116,14 @@ gem 'dropzonejs-rails', '~> 0.7.1'
 # for backups
 gem 'fog-aws', '~> 2.0.1'
 gem 'fog-core', '~> 1.44'
-gem 'fog-google', '~> 1.3.3'
+gem 'fog-google', '~> 1.7.1'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
 gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.19.8'
+gem 'google-api-client', '~> 0.23'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -213,9 +213,6 @@ gem 'jira-ruby', '~> 1.4'
 
 # Flowdock integration
 gem 'gitlab-flowdock-git-hook', '~> 1.0.1'
-
-# Gemnasium integration
-gem 'gemnasium-gitlab-service', '~> 0.2'
 
 # Slack integration
 gem 'slack-notifier', '~> 1.5.1'
@@ -423,7 +420,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.112.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.113.0', require: 'gitaly'
 gem 'grpc', '~> 1.11.0'
 
 # Locked until https://github.com/google/protobuf/issues/4210 is closed

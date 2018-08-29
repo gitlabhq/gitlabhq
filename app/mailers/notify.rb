@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Notify < BaseMailer
   include ActionDispatch::Routing::PolymorphicRoutes
   include GitlabRoutingHelper
@@ -92,12 +94,14 @@ class Notify < BaseMailer
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
   #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = ""
-    subject << "#{@project.name} | " if @project
-    subject << "#{@group.name} | " if @group
-    subject << extra.join(' | ') if extra.present?
-    subject << " | #{Gitlab.config.gitlab.email_subject_suffix}" if Gitlab.config.gitlab.email_subject_suffix.present?
-    subject
+    subject = []
+
+    subject << @project.name if @project
+    subject << @group.name if @group
+    subject.concat(extra) if extra.present?
+    subject << Gitlab.config.gitlab.email_subject_suffix if Gitlab.config.gitlab.email_subject_suffix.present?
+
+    subject.join(' | ')
   end
 
   # Return a string suitable for inclusion in the 'Message-Id' mail header.

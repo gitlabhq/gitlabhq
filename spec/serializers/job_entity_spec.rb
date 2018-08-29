@@ -142,7 +142,7 @@ describe JobEntity do
     end
 
     it 'should indicate the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed <br> (API failure)')
+      expect(subject[:status][:tooltip]).to eq('failed - (API failure)')
     end
 
     it 'should include a callout message with a verbose output' do
@@ -166,7 +166,7 @@ describe JobEntity do
     end
 
     it 'should indicate the failure reason on tooltip' do
-      expect(subject[:status][:tooltip]).to eq('failed <br> (API failure) (allowed to fail)')
+      expect(subject[:status][:tooltip]).to eq('failed - (API failure) (allowed to fail)')
     end
 
     it 'should include a callout message with a verbose output' do

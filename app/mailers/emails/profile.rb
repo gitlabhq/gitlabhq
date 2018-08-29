@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Profile
     def new_user_email(user_id, token = nil)

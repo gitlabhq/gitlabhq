@@ -102,14 +102,6 @@ shared_examples_for 'group and project milestones' do |route_definition|
       expect(json_response['iid']).to eq(milestone.iid)
     end
 
-    it 'returns a milestone by id' do
-      get api(resource_route, user)
-
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq(milestone.title)
-      expect(json_response['iid']).to eq(milestone.iid)
-    end
-
     it 'returns 401 error if user not authenticated' do
       get api(resource_route)
 
@@ -201,6 +193,24 @@ shared_examples_for 'group and project milestones' do |route_definition|
       put api(resource_route, user), start_date: Date.tomorrow
 
       expect(response).to have_gitlab_http_status(200)
+    end
+  end
+
+  describe "DELETE #{route_definition}/:milestone_id" do
+    it "rejects a member with reporter access from deleting a milestone" do
+      reporter = create(:user)
+      milestone.parent.add_reporter(reporter)
+
+      delete api(resource_route, reporter)
+
+      expect(response).to have_gitlab_http_status(403)
+    end
+
+    it 'deletes the milestone when the user has developer access to the project' do
+      delete api(resource_route, user)
+
+      expect(project.milestones.find_by_id(milestone.id)).to be_nil
+      expect(response).to have_gitlab_http_status(204)
     end
   end
 

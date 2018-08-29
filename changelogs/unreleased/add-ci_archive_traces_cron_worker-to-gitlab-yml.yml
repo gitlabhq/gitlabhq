@@ -1,0 +1,5 @@
+---
+title: Add an example of the configuration of archive trace cron worker in gitlab.yml.example
+merge_request: 20583
+author:
+type: other

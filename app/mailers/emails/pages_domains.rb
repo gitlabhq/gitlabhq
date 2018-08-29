@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module PagesDomains
     def pages_domain_enabled_email(domain, recipient)

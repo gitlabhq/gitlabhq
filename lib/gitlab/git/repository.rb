@@ -543,14 +543,8 @@ module Gitlab
       end
 
       def update_branch(branch_name, user:, newrev:, oldrev:)
-        gitaly_migrate(:operation_user_update_branch) do |is_enabled|
-          if is_enabled
-            gitaly_operation_client.user_update_branch(branch_name, user, newrev, oldrev)
-          else
-            Gitlab::GitalyClient::StorageSettings.allow_disk_access do
-              OperationService.new(user, self).update_branch(branch_name, newrev, oldrev)
-            end
-          end
+        wrapped_gitaly_errors do
+          gitaly_operation_client.user_update_branch(branch_name, user, newrev, oldrev)
         end
       end
 

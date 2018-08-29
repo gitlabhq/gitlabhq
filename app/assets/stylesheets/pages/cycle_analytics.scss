@@ -165,7 +165,7 @@
         border-right-color: transparent;
         border-top-color: $border-color;
         border-bottom-color: $border-color;
-        box-shadow: inset 2px 0 0 0 $active-item-blue;
+        box-shadow: inset 2px 0 0 0 $blue-500;
 
         .stage-name {
           font-weight: $gl-font-weight-bold;
@@ -285,7 +285,7 @@
 
     .total-time {
       font-size: $cycle-analytics-big-font;
-      color: $cycle-analytics-dark-text;
+      color: $gl-text-color;
 
       span {
         color: $gl-text-color;

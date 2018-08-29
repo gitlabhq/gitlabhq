@@ -92,7 +92,7 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
-export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
+export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     service
@@ -100,6 +100,9 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
       .then(raw => {
         if (!(file.tempFile && !file.prevPath)) commit(types.SET_FILE_RAW_DATA, { file, raw });
         if (file.mrChange && file.mrChange.new_file === false) {
+          const baseSha =
+            (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
+
           service
             .getBaseRawFileData(file, baseSha)
             .then(baseRaw => {
@@ -122,7 +125,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
           action: payload =>
             dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
           actionText: __('Please try again'),
-          actionPayload: { path, baseSha },
+          actionPayload: { path },
         });
         reject();
       });

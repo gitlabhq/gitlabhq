@@ -203,21 +203,12 @@ $gl-header-color: #4c4e54;
 /*
  * Lists
  */
-$list-font-size: $gl-font-size;
-$list-title-color: $gl-text-color;
-$list-text-color: $gl-text-color;
-$list-text-disabled-color: $gl-text-color-tertiary;
-$list-border-light: #eee;
 $list-border: rgba(0, 0, 0, 0.05);
 $list-text-height: 42px;
-$list-warning-row-bg: $orange-100;
-$list-warning-row-border: $orange-200;
-$list-warning-row-color: $orange-700;
 
 /*
  * Markdown
  */
-$md-link-color: $blue-600;
 $md-area-border: #ddd;
 
 /*
@@ -249,8 +240,6 @@ $gl-bar-padding: 3px;
 /*
  * Misc
  */
-$row-hover: $blue-50;
-$row-hover-border: $blue-200;
 $progress-color: #c0392b;
 $header-height: 40px;
 $ide-statusbar-height: 25px;
@@ -258,19 +247,13 @@ $fixed-layout-width: 1280px;
 $limited-layout-width: 990px;
 $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
-$error-exclamation-point: $red-500;
 $border-radius-default: 4px;
 $border-radius-small: 2px;
 $settings-icon-size: 18px;
-$provider-btn-not-active-color: $blue-500;
-$link-underline-blue: $blue-500;
-$active-item-blue: $blue-500;
 $layout-link-gray: #7e7c7c;
 $btn-side-margin: 10px;
 $btn-sm-side-margin: 7px;
 $btn-margin-5: 5px;
-$issue-status-expired: $orange-500;
-$issuable-sidebar-color: $gl-text-color-secondary;
 $sidebar-block-hover-color: #ebebeb;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
@@ -292,7 +275,6 @@ $breadcrumb-min-height: 48px;
 * Common component specific colors
 */
 $hint-color: #999;
-$well-pre-bg: #eee;
 $well-pre-color: #555;
 $loading-color: #555;
 $update-author-color: #999;
@@ -301,10 +283,6 @@ $user-mention-bg-hover: rgba($blue-500, 0.15);
 $time-color: #999;
 $project-member-show-color: #aaa;
 $gl-promo-color: #aaa;
-$error-bg: $red-400;
-$warning-message-bg: $orange-100;
-$warning-message-border: $orange-200;
-$warning-message-color: $orange-700;
 $control-group-descr-color: #666;
 $table-permission-x-bg: #d9edf7;
 $username-color: #666;
@@ -319,19 +297,9 @@ $tanuki-yellow: #fca326;
 /*
  * State colors:
  */
-$gl-primary: $blue-500;
-$gl-success: $green-500;
-$gl-success-focus: rgba($gl-success, 0.4);
-$gl-info: $blue-500;
-$gl-warning: $orange-500;
-$gl-danger: $red-500;
+$green-500-focus: rgba($green-500, 0.4);
 $gl-btn-active-background: rgba(0, 0, 0, 0.16);
 $gl-btn-active-gradient: inset 0 2px 3px $gl-btn-active-background;
-// Bootstrap override states
-$success: $gl-success;
-$info: $gl-info;
-$warning: $gl-warning;
-$danger: $gl-danger;
 
 /*
  * Commit Diff Colors
@@ -351,10 +319,9 @@ $line-select-yellow-dark: #f0e2bd;
 $dark-diff-match-bg: rgba(255, 255, 255, 0.3);
 $dark-diff-match-color: rgba(255, 255, 255, 0.1);
 $file-mode-changed: #777;
-$file-mode-changed: #777;
-$diff-image-info-color: grey;
+$diff-image-info-color: gray;
 $diff-swipe-border: #999;
-$diff-view-modes-color: grey;
+$diff-view-modes-color: gray;
 $diff-view-modes-border: #c1c1c1;
 $diff-jagged-border-gradient-color: darken($white-normal, 8%);
 
@@ -374,9 +341,7 @@ $dropdown-min-height: 40px;
 $dropdown-max-height: 312px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
-$dropdown-link-hover-bg: $row-hover;
 $dropdown-empty-row-bg: rgba(#000, 0.04);
-$dropdown-border-color: $border-color;
 $dropdown-shadow-color: rgba(#000, 0.1);
 $dropdown-divider-color: rgba(#000, 0.1);
 $dropdown-title-btn-color: #bfbfbf;
@@ -386,7 +351,6 @@ $dropdown-input-focus-shadow: rgba($blue-300, 0.4);
 $dropdown-loading-bg: rgba(#fff, 0.6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
-$dropdown-item-hover-bg: $gray-darker;
 $dropdown-fade-mask-height: 32px;
 $dropdown-member-form-control-width: 163px;
 
@@ -394,7 +358,6 @@ $dropdown-member-form-control-width: 163px;
 * Filtered Search
 */
 $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
-$dropdown-hover-color: $blue-400;
 
 /*
 * Contextual Sidebar
@@ -409,7 +372,7 @@ $sidebar-milestone-toggle-bottom-margin: 10px;
 * Buttons
 */
 $btn-active-gray: #ececec;
-$btn-active-gray-light: e4e7ed;
+$btn-active-gray-light: #e4e7ed;
 $btn-white-active: #848484;
 $gl-btn-padding: 10px;
 $gl-btn-line-height: 16px;
@@ -420,7 +383,6 @@ $gl-btn-horz-padding: 12px;
 * Badges
 */
 $badge-bg: rgba(0, 0, 0, 0.07);
-$badge-color: $gl-text-color-secondary;
 
 /*
 * Pagination
@@ -428,21 +390,12 @@ $badge-color: $gl-text-color-secondary;
 $pagination-padding-y: 6px;
 $pagination-padding-x: 16px;
 $pagination-line-height: 20px;
-$pagination-border-color: $border-color;
-$pagination-active-bg: $blue-600;
-$pagination-active-border-color: $blue-600;
-$pagination-hover-bg: $blue-50;
-$pagination-hover-border-color: $border-color;
-$pagination-hover-color: $gl-text-color;
 $pagination-disabled-color: #cdcdcd;
-$pagination-disabled-bg: $gray-light;
-$pagination-disabled-border-color: $border-color;
 
 /*
  *  Status icons
  */
 $status-icon-size: 22px;
-$status-icon-margin: $gl-btn-padding;
 
 /*
  *  Award emoji
@@ -455,16 +408,13 @@ $award-emoji-positive-add-lines: #bb9c13;
  * Search Box
  */
 $search-input-border-color: rgba($blue-400, 0.8);
-$search-input-focus-shadow-color: $dropdown-input-focus-shadow;
 $search-input-width: 240px;
 $search-input-active-width: 320px;
-$location-badge-active-bg: $blue-500;
 $location-icon-color: #e7e9ed;
 
 /*
  *  Notes
  */
-$notes-light-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -485,7 +435,6 @@ $identicon-indigo: #e8eaf6;
 $identicon-blue: #e3f2fd;
 $identicon-teal: #e0f2f1;
 $identicon-orange: #fbe9e7;
-$identicon-gray: $gray-darker;
 $identicon-fg-color: #555555;
 
 /*
@@ -501,7 +450,6 @@ $calendar-user-contrib-text: #959494;
 $cycle-analytics-box-padding: 30px;
 $cycle-analytics-box-text-color: #8c8c8c;
 $cycle-analytics-big-font: 19px;
-$cycle-analytics-dark-text: $gl-text-color;
 $cycle-analytics-light-gray: #bfbfbf;
 $cycle-analytics-dismiss-icon-color: #b2b2b2;
 
@@ -529,9 +477,6 @@ $issue-board-list-difference-md: $issue-board-list-difference-sm + $issue-boards
 * Avatar
 */
 $avatar-radius: 50%;
-$avatar-border: $gray-normal;
-$avatar-border-hover: $gray-darker;
-$avatar-background: $gray-lightest;
 $gl-avatar-size: 40px;
 
 /*
@@ -547,22 +492,6 @@ $blame-blue: #254e77;
 $builds-trace-bg: #111;
 
 /*
-* Callout
-*/
-$callout-danger-bg: $red-100;
-$callout-danger-border: $red-200;
-$callout-danger-color: $red-700;
-$callout-warning-bg: $orange-100;
-$callout-warning-border: $orange-200;
-$callout-warning-color: $orange-700;
-$callout-info-bg: $blue-100;
-$callout-info-border: $blue-200;
-$callout-info-color: $blue-700;
-$callout-success-bg: $green-100;
-$callout-success-border: $green-200;
-$callout-success-color: $green-700;
-
-/*
 * Commit Page
 */
 $commit-max-width-marker-color: rgba(0, 0, 0, 0);
@@ -571,16 +500,8 @@ $commit-message-text-area-bg: rgba(0, 0, 0, 0);
 /*
 * Common
 */
-$common-gray: $gl-text-color;
 $common-gray-light: #bbb;
 $common-gray-dark: #444;
-$common-red: $red-500;
-$common-green: $green-600;
-
-/*
-* Editor
-*/
-$editor-cancel-color: $red-600;
 
 /*
 * Events
@@ -592,11 +513,7 @@ $events-body-border: #ddd;
 /*
 * Files
 */
-$file-image-bg: #eee;
-$blob-bg: #eee;
-$blame-border: #eee;
 $blame-line-numbers-border: #ddd;
-$logs-bg: #eee;
 $logs-li-color: #888;
 $logs-p-color: #333;
 
@@ -605,7 +522,6 @@ $logs-p-color: #333;
 */
 $input-height: 34px;
 $input-danger-bg: #f2dede;
-$input-danger-border: $red-400;
 $input-group-addon-bg: #f7f8fa;
 $gl-field-focus-shadow: rgba(0, 0, 0, 0.075);
 $gl-field-focus-shadow-error: rgba($red-500, 0.6);
@@ -652,22 +568,14 @@ $fade-mask-transition-duration: 0.1s;
 $fade-mask-transition-curve: ease-in-out;
 
 /*
-* Lint
-*/
-$lint-incorrect-color: $red-500;
-$lint-correct-color: $green-500;
-
-/*
 * Login
 */
 $login-brand-holder-color: #888;
-$login-devise-error-color: $red-700;
 
 /*
 * Nav
 */
 $nav-link-gray: #959494;
-$nav-badge-bg: #eee;
 $nav-toggle-gray: #666;
 
 /*
@@ -675,15 +583,12 @@ $nav-toggle-gray: #666;
 */
 $notify-details: #777;
 $notify-footer: #777;
-$notify-new-file: $green-600;
-$notify-deleted-file: $red-700;
 
 /*
 * Projects
 */
 $project-option-descr-color: #54565b;
 $project-breadcrumb-color: #999;
-$project-private-forks-notice-odd: $green-600;
 $project-network-controls-color: #888;
 
 $feature-toggle-color: #fff;
@@ -692,21 +597,10 @@ $feature-toggle-color-disabled: #999;
 $feature-toggle-color-enabled: #4a8bee;
 
 /*
-* Runners
-*/
-$runner-state-shared-bg: $green-400;
-$runner-state-specific-bg: $blue-400;
-$runner-status-online-color: $green-600;
-$runner-status-offline-color: $gray-darkest;
-$runner-status-paused-color: $red-500;
-
-/*
 Stat Graph
 */
 $stat-graph-common-bg: #f3f3f3;
-$stat-graph-area-fill: $green-500;
 $stat-graph-axis-fill: #aaa;
-$stat-graph-orange-fill: $orange-500;
 $stat-graph-selection-fill: #333;
 $stat-graph-selection-stroke: #333;
 
@@ -719,7 +613,6 @@ $select2-drop-shadow2: rgba(31, 37, 50, 0.317647);
 /*
 * Todo
 */
-$todo-alert-blue: $blue-500;
 $todo-body-pre-color: #777;
 $todo-body-border: #ddd;
 
@@ -742,7 +635,6 @@ $ui-dev-kit-example-border: #ddd;
 /*
 Pipeline Graph
 */
-$stage-hover-bg: $gray-darker;
 $ci-action-icon-size: 22px;
 $ci-action-icon-size-lg: 24px;
 $pipeline-dropdown-line-height: 20px;
@@ -768,13 +660,6 @@ $filter-value-selected-color: #d7d7d7;
 Animation Functions
 */
 $dropdown-animation-timing: cubic-bezier(0.23, 1, 0.32, 1);
-
-/*
-Convdev Index
-*/
-$color-high-score: $green-400;
-$color-average-score: $orange-400;
-$color-low-score: $red-400;
 
 /*
 Performance Bar
@@ -817,9 +702,5 @@ Modals
 */
 $modal-body-height: 134px;
 
-/*
-Prometheus
-*/
-$prometheus-table-row-highlight-color: $theme-gray-100;
 
 $priority-label-empty-state-width: 114px;

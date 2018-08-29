@@ -116,6 +116,11 @@ target. However, if one does and falls into either of the above categories, it's
 the reviewer's responsibility to manage the above communication and assignment
 on behalf of the community member.
 
+Every new feature or change should be shipped with its corresponding documentation
+in accordance with the
+[documentation process](https://docs.gitlab.com/ee/development/documentation/workflow.html)
+and [structure](https://docs.gitlab.com/ee/development/documentation/structure.html).
+
 #### What happens if these deadlines are missed?
 
 If a small or large feature is _not_ with a maintainer or reviewer by the
@@ -141,14 +146,9 @@ and to prevent any last minute surprises.
 
 ### On the 7th
 
-Merge requests should still be complete, following the
-[definition of done][done]. The single exception is documentation, and this can
-only be left until after the freeze if:
+Merge requests should still be complete, following the [definition of done][done].
 
-* There is a follow-up issue to add documentation.
-* It is assigned to the person writing documentation for this feature, and they
-  are aware of it.
-* It is in the correct milestone, with the ~Deliverable label.
+#### Feature merge requests
 
 If a merge request is not ready, but the developers and Product Manager
 responsible for the feature think it is essential that it is in the release,
@@ -164,6 +164,23 @@ information, see
 [Automatic CE->EE merge][automatic_ce_ee_merge] and
 [Guidelines for implementing Enterprise Edition features][ee_features].
 
+#### Documentation merge requests
+
+Documentation is part of the product and must be shipped with the feature.
+
+The single exception for the feature freeze is documentation, and it can
+be left to be **merged up to the 14th** if:
+
+* There is a follow-up issue to add documentation.
+* It is assigned to the developer writing documentation for this feature, and they
+  are aware of it.
+* It is in the correct milestone, with the labels ~Documentation, ~Deliverable,
+~missed-deliverable, and "pick into X.Y" applied.
+* It must be reviewed and approved by a technical writer.
+
+For more information read the process for
+[documentation shipped late](https://docs.gitlab.com/ee/development/documentation/workflow.html#documentation-shipped-late).
+
 ### After the 7th
 
 Once the stable branch is frozen, the only MRs that can be cherry-picked into
@@ -172,7 +189,7 @@ the stable branch are:
 * Fixes for [regressions](#regressions) where the affected version `xx.x` in `regression:xx.x` is the current release. See [Managing bugs](#managing-bugs) section.
 * Fixes for security issues
 * Fixes or improvements to automated QA scenarios
-* Documentation updates for changes in the same release
+* [Documentation updates](https://docs.gitlab.com/ee/development/documentation/workflow.html#documentation-shipped-late) for changes in the same release
 * New or updated translations (as long as they do not touch application code)
 
 During the feature freeze all merge requests that are meant to go into the

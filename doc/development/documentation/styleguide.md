@@ -10,6 +10,22 @@ GitLab documentation. Check the
 
 Check the GitLab handbook for the [writing styles guidelines](https://about.gitlab.com/handbook/communication/#writing-style-guidelines).
 
+## Files
+
+- [Directory structure](index.md#location-and-naming-documents): place the docs
+in the correct location
+- [Documentation files](index.md#documentation-files): name the files accordingly
+- [Markdown](../../user/markdown.md): use the GitLab Flavored Markdown in the
+documentation
+
+NOTE: **Note:**
+**Do not** use capital letters, spaces, or special chars in file names,
+branch names, directory names, headings, or in anything that generates a path.
+
+NOTE: **Note:**
+**Do not** create new `README.md` files, name them `index.md` instead. There's
+a test that will fail if it spots a new `README.md` file.
+
 ## Text
 
 - Split up long lines (wrap text), this makes it much easier to review and edit. Only
@@ -61,7 +77,8 @@ For punctuation rules, please refer to the [GitLab UX guide](https://design.gitl
 
 - Add **only one H1** in each document, by adding `#` at the beginning of
   it (when using markdown). The `h1` will be the document `<title>`.
-- For subheadings, use `##`, `###` and so on
+- Start with an h2 (`##`), and respect the order h2 > h3 > h4 > h5 > h6.
+  Never skip the hierarchy level, such as h2 > h4
 - Avoid putting numbers in headings. Numbers shift, hence documentation anchor
   links shift too, which eventually leads to dead links. If you think it is
   compelling to add numbers in headings, make sure to at least discuss it with
@@ -115,10 +132,7 @@ needs to expand the tab to find the settings you're referring to
   the `.md` document that you're working on is located. Always prepend their
   names with the name of the document that they will be included in. For
   example, if there is a document called `twitter.md`, then a valid image name
-  could be `twitter_login_screen.png`. [**Exception**: images for
-  [articles](index.md#technical-articles) should be
-  put in a directory called `img` underneath `/articles/article_title/img/`, therefore,
-  there's no need to prepend the document name to their filenames.]
+  could be `twitter_login_screen.png`.
 - Images should have a specific, non-generic name that will differentiate them.
 - Keep all file names in lower case.
 - Consider using PNG images instead of JPEG.
@@ -126,6 +140,8 @@ needs to expand the tab to find the settings you're referring to
 - Compress gifs with <https://ezgif.com/optimize> or similar tool.
 - Images should be used (only when necessary) to _illustrate_ the description
 of a process, not to _replace_ it.
+- Max image size: 100KB (gifs included).
+- The GitLab docs do not support videos yet.
 
 Inside the document:
 

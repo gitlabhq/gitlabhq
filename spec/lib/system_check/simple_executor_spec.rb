@@ -98,15 +98,6 @@ describe SystemCheck::SimpleExecutor do
     end
   end
 
-  before do
-    @rainbow = Rainbow.enabled
-    Rainbow.enabled = false
-  end
-
-  after do
-    Rainbow.enabled = @rainbow
-  end
-
   describe '#component' do
     it 'returns stored component name' do
       expect(subject.component).to eq('Test')

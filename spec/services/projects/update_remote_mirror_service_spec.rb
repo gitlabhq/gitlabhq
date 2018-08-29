@@ -18,6 +18,7 @@ describe Projects::UpdateRemoteMirrorService do
     end
 
     it "fetches the remote repository" do
+      expect(remote_mirror).to receive(:ensure_remote!).and_call_original
       expect(repository).to receive(:fetch_remote).with(remote_mirror.remote_name, no_tags: true) do
         sync_remote(repository, remote_mirror.remote_name, local_branch_names)
       end

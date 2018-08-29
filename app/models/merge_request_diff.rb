@@ -314,9 +314,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def keep_around_commits
     [repository, merge_request.source_project.repository].uniq.each do |repo|
-      repo.keep_around(start_commit_sha)
-      repo.keep_around(head_commit_sha)
-      repo.keep_around(base_commit_sha)
+      repo.keep_around(start_commit_sha, head_commit_sha, base_commit_sha)
     end
   end
 end
