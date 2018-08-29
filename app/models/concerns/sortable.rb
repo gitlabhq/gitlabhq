@@ -16,7 +16,7 @@ module Sortable
     scope :order_name_desc, -> { reorder(Arel::Nodes::Descending.new(arel_table[:name].lower)) }
   end
 
-  module ClassMethods
+  class_methods do
     def order_by(method)
       case method.to_s
       when 'created_asc'  then order_created_asc

@@ -38,7 +38,7 @@ module Referable
     end
   end
 
-  module ClassMethods
+  class_methods do
     # The character that prefixes the actual reference identifier
     #
     # This should be overridden by the including class.

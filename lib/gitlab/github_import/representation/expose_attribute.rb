@@ -6,7 +6,7 @@ module Gitlab
       module ExposeAttribute
         extend ActiveSupport::Concern
 
-        module ClassMethods
+        class_methods do
           # Defines getter methods for the given attribute names.
           #
           # Example:

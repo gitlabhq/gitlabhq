@@ -2,7 +2,7 @@
 module CaseSensitivity
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Queries the given columns regardless of the casing used.
     #
     # Unlike other ActiveRecord methods this method only operates on a Hash.

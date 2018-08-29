@@ -8,7 +8,7 @@
 module Mentionable
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     # Indicate which attributes of the Mentionable to search for GFM references.
     def attr_mentionable(attr, options = {})
       attr = attr.to_s

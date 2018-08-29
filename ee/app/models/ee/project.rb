@@ -81,7 +81,7 @@ module EE
       end
     end
 
-    module ClassMethods
+    class_methods do
       def search_by_visibility(level)
         where(visibility_level: ::Gitlab::VisibilityLevel.string_options[level])
       end

@@ -85,7 +85,7 @@ module API
       end
     end
 
-    module ClassMethods
+    class_methods do
       private
 
       def install_error_responders(base)

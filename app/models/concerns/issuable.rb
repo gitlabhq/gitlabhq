@@ -115,7 +115,7 @@ module Issuable
     end
   end
 
-  module ClassMethods
+  class_methods do
     # Searches for records with a matching title.
     #
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.

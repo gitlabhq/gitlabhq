@@ -24,7 +24,7 @@
 module AtomicInternalId
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def has_internal_id(column, scope:, init:, presence: true) # rubocop:disable Naming/PredicateName
       # We require init here to retain the ability to recalculate in the absence of a
       # InternaLId record (we may delete records in `internal_ids` for example).

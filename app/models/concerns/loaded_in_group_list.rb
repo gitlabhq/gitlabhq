@@ -1,7 +1,7 @@
 module LoadedInGroupList
   extend ActiveSupport::Concern
 
-  module ClassMethods
+  class_methods do
     def with_counts(archived:)
       selects_including_counts = [
         'namespaces.*',

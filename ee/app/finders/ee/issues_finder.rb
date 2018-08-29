@@ -4,7 +4,7 @@ module EE
     extend ::Gitlab::Utils::Override
     include ::Gitlab::Utils::StrongMemoize
 
-    module ClassMethods
+    class_methods do
       extend ::Gitlab::Utils::Override
 
       override :scalar_params
