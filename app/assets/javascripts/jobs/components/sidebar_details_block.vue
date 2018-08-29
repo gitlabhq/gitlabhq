@@ -1,14 +1,16 @@
 <script>
-import detailRow from './sidebar_detail_row.vue';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import timeagoMixin from '../../vue_shared/mixins/timeago';
-import { timeIntervalInWords } from '../../lib/utils/datetime_utility';
+import LoadingIcon from '~/vue_shared/components/loading_icon.vue';
+import timeagoMixin from '~/vue_shared/mixins/timeago';
+import { timeIntervalInWords } from '~/lib/utils/datetime_utility';
+import Icon from '~/vue_shared/components/icon.vue';
+import DetailRow from './sidebar_detail_row.vue';
 
 export default {
   name: 'SidebarDetailsBlock',
   components: {
-    detailRow,
-    loadingIcon,
+    DetailRow,
+    LoadingIcon,
+    Icon,
   },
   mixins: [timeagoMixin],
   props: {
@@ -20,15 +22,15 @@ export default {
       type: Boolean,
       required: true,
     },
-    canUserRetry: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     runnerHelpUrl: {
       type: String,
       required: false,
       default: '',
+    },
+    terminalPath: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   computed: {
@@ -92,13 +94,23 @@ export default {
         {{ job.name }}
       </strong>
       <a
-        v-if="canUserRetry"
+        v-if="job.retry_path"
         :class="retryButtonClass"
         :href="job.retry_path"
         data-method="post"
         rel="nofollow"
       >
         {{ __('Retry') }}
+      </a>
+      <a
+        v-if="terminalPath"
+        :href="terminalPath"
+        class="js-terminal-link pull-right btn btn-primary
+  btn-inverted visible-md-block visible-lg-block"
+        target="_blank"
+      >
+        {{ __('Debug') }}
+        <icon name="external-link" />
       </a>
       <button
         :aria-label="__('Toggle Sidebar')"
@@ -125,7 +137,7 @@ export default {
           {{ __('New issue') }}
         </a>
         <a
-          v-if="canUserRetry"
+          v-if="job.retry_path"
           :href="job.retry_path"
           class="js-retry-job btn btn-inverted-secondary"
           data-method="post"

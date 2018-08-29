@@ -142,12 +142,6 @@ These task complies with the `BATCH` environment variable to process uploads in 
 	  gitlab-rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
       ```
 
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing uploads to the object storage, but all new
-      uploads will still be stored on the local disk. In the future
-      you will be given an option to define a default storage for all
-      new files.
-
 ---
 
 **In installations from source:**
@@ -199,12 +193,6 @@ _The uploads are stored by default in
 	  sudo -u git -H bundle exec rake "gitlab:uploads:migrate[FileUploader, MergeRequest]"
 	  
       ```
-
-      Currently this has to be executed manually and it will allow you to
-      migrate the existing uploads to the object storage, but all new
-      uploads will still be stored on the local disk. In the future
-      you will be given an option to define a default storage for all
-      new files.
 
 [reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"

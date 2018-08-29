@@ -182,12 +182,14 @@ module BlobHelper
   def licenses_for_select
     return @licenses_for_select if defined?(@licenses_for_select)
 
-    licenses = Licensee::License.all
+    grouped_licenses = LicenseTemplateFinder.new.execute.group_by(&:category)
+    categories = grouped_licenses.keys
 
-    @licenses_for_select = {
-      Popular: licenses.select(&:featured).map { |license| { name: license.name, id: license.key } },
-      Other: licenses.reject(&:featured).map { |license| { name: license.name, id: license.key } }
-    }
+    @licenses_for_select = categories.each_with_object({}) do |category, hash|
+      hash[category] = grouped_licenses[category].map do |license|
+        { name: license.name, id: license.id }
+      end
+    end
   end
 
   def ref_project

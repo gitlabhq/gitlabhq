@@ -30,7 +30,7 @@ class DeployToken < ActiveRecord::Base
   end
 
   def active?
-    !revoked && expires_at > Date.today
+    !revoked && !expired?
   end
 
   def scopes
@@ -62,6 +62,12 @@ class DeployToken < ActiveRecord::Base
   end
 
   private
+
+  def expired?
+    return false unless expires_at
+
+    expires_at < Date.today
+  end
 
   def ensure_at_least_one_scope
     errors.add(:base, "Scopes can't be blank") unless read_repository || read_registry

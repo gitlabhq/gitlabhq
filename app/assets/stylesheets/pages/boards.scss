@@ -225,7 +225,7 @@
   outline: 0;
 
   &:hover {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
@@ -288,7 +288,7 @@
 
   &.is-active,
   &.is-active .board-card-assignee:hover a {
-    background-color: $row-hover;
+    background-color: $blue-50;
   }
 
   .badge {

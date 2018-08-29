@@ -296,40 +296,30 @@ describe Repository do
   end
 
   describe '#new_commits' do
-    shared_examples 'finding unreferenced commits' do
-      set(:project) { create(:project, :repository) }
-      let(:repository) { project.repository }
+    set(:project) { create(:project, :repository) }
+    let(:repository) { project.repository }
 
-      subject { repository.new_commits(rev) }
+    subject { repository.new_commits(rev) }
 
-      context 'when there are no new commits' do
-        let(:rev) { repository.commit.id }
+    context 'when there are no new commits' do
+      let(:rev) { repository.commit.id }
 
-        it 'returns an empty array' do
-          expect(subject).to eq([])
-        end
-      end
-
-      context 'when new commits are found' do
-        let(:branch) { 'orphaned-branch' }
-        let!(:rev) { repository.commit(branch).id }
-
-        it 'returns the commits' do
-          repository.delete_branch(branch)
-
-          expect(subject).not_to be_empty
-          expect(subject).to all( be_a(::Commit) )
-          expect(subject.size).to eq(1)
-        end
+      it 'returns an empty array' do
+        expect(subject).to eq([])
       end
     end
 
-    context 'when Gitaly handles the request' do
-      it_behaves_like 'finding unreferenced commits'
-    end
+    context 'when new commits are found' do
+      let(:branch) { 'orphaned-branch' }
+      let!(:rev) { repository.commit(branch).id }
 
-    context 'when Gitaly is disabled', :disable_gitaly do
-      it_behaves_like 'finding unreferenced commits'
+      it 'returns the commits' do
+        repository.delete_branch(branch)
+
+        expect(subject).not_to be_empty
+        expect(subject).to all( be_a(::Commit) )
+        expect(subject.size).to eq(1)
+      end
     end
   end
 
@@ -2014,6 +2004,24 @@ describe Repository do
       expect(repository.kept_around?(sample_commit.id)).to be_falsey
 
       File.delete(path)
+    end
+
+    context 'for multiple SHAs' do
+      it 'skips non-existent SHAs' do
+        repository.keep_around('aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa', sample_commit.id)
+
+        expect(repository.kept_around?(sample_commit.id)).to be_truthy
+      end
+
+      it 'skips already-kept-around SHAs' do
+        repository.keep_around(sample_commit.id)
+
+        expect(repository.raw_repository).to receive(:write_ref).exactly(1).and_call_original
+
+        repository.keep_around(sample_commit.id, another_sample_commit.id)
+
+        expect(repository.kept_around?(another_sample_commit.id)).to be_truthy
+      end
     end
   end
 

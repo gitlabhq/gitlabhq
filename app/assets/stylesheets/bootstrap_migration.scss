@@ -4,17 +4,16 @@
 
 $text-color: $gl-text-color;
 
-$brand-primary: $gl-primary;
-$brand-success: $gl-success;
-$brand-info: $gl-info;
-$brand-warning: $gl-warning;
-$brand-danger: $gl-danger;
+$brand-primary: $blue-500;
+$brand-success: $green-500;
+$brand-info: $blue-500;
+$brand-warning: $orange-500;
+$brand-danger: $red-500;
 
 $border-radius-base: 3px !default;
 
 $modal-body-bg: $white-light;
 $input-border: $border-color;
-$input-border-focus: $focus-border-color;
 
 $padding-base-vertical: $gl-vert-padding;
 $padding-base-horizontal: $gl-padding;
@@ -86,7 +85,7 @@ strong {
 }
 
 a {
-  color: $gl-link-color;
+  color: $blue-600;
 }
 
 hr {
@@ -338,4 +337,14 @@ input[type=color].form-control {
   .btn {
     vertical-align: unset;
   }
+}
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:first-child {
+  @extend .input-group-prepend;
+}
+
+// Bootstrap 3 compatibility because bootstrap_form Gem is not updated yet
+.input-group-btn:last-child {
+  @extend .input-group-append;
 }

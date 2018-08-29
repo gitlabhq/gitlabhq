@@ -1,11 +1,9 @@
 import Clusters from '~/clusters/clusters_bundle';
 import {
-  APPLICATION_INSTALLABLE,
-  APPLICATION_INSTALLING,
-  APPLICATION_INSTALLED,
   REQUEST_LOADING,
   REQUEST_SUCCESS,
   REQUEST_FAILURE,
+  APPLICATION_STATUS,
 } from '~/clusters/constants';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
@@ -84,7 +82,7 @@ describe('Clusters', () => {
     it('does not show alert when things transition from initial null state to something', () => {
       cluster.checkForNewInstalls(INITIAL_APP_MAP, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLABLE, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Helm Tiller' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -94,10 +92,10 @@ describe('Clusters', () => {
     it('shows an alert when something gets newly installed', () => {
       cluster.checkForNewInstalls({
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLING, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
       }, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
+        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');
@@ -108,12 +106,12 @@ describe('Clusters', () => {
     it('shows an alert when multiple things gets newly installed', () => {
       cluster.checkForNewInstalls({
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLING, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_INSTALLABLE, title: 'Ingress' },
+        helm: { status: APPLICATION_STATUS.INSTALLING, title: 'Helm Tiller' },
+        ingress: { status: APPLICATION_STATUS.INSTALLABLE, title: 'Ingress' },
       }, {
         ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
-        ingress: { status: APPLICATION_INSTALLED, title: 'Ingress' },
+        helm: { status: APPLICATION_STATUS.INSTALLED, title: 'Helm Tiller' },
+        ingress: { status: APPLICATION_STATUS.INSTALLED, title: 'Ingress' },
       });
 
       const flashMessage = document.querySelector('.js-cluster-application-notice .flash-text');

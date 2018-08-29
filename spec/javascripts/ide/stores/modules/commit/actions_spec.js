@@ -184,7 +184,7 @@ describe('IDE commit module actions', () => {
           branch,
         })
         .then(() => {
-          expect(f.lastCommit.message).toBe(data.message);
+          expect(f.lastCommitSha).toBe(data.id);
         })
         .then(done)
         .catch(done.fail);
@@ -266,19 +266,21 @@ describe('IDE commit module actions', () => {
     });
 
     describe('success', () => {
+      const COMMIT_RESPONSE = {
+        id: '123456',
+        short_id: '123',
+        message: 'test message',
+        committed_date: 'date',
+        stats: {
+          additions: '1',
+          deletions: '2',
+        },
+      };
+
       beforeEach(() => {
         spyOn(service, 'commit').and.returnValue(
           Promise.resolve({
-            data: {
-              id: '123456',
-              short_id: '123',
-              message: 'test message',
-              committed_date: 'date',
-              stats: {
-                additions: '1',
-                deletions: '2',
-              },
-            },
+            data: COMMIT_RESPONSE,
           }),
         );
       });
@@ -294,9 +296,10 @@ describe('IDE commit module actions', () => {
                 {
                   action: 'update',
                   file_path: jasmine.anything(),
-                  content: jasmine.anything(),
+                  content: undefined,
                   encoding: jasmine.anything(),
                   last_commit_id: undefined,
+                  previous_path: undefined,
                 },
               ],
               start_branch: 'master',
@@ -320,9 +323,10 @@ describe('IDE commit module actions', () => {
                 {
                   action: 'update',
                   file_path: jasmine.anything(),
-                  content: jasmine.anything(),
+                  content: undefined,
                   encoding: jasmine.anything(),
                   last_commit_id: '123456789',
+                  previous_path: undefined,
                 },
               ],
               start_branch: undefined,
@@ -350,8 +354,8 @@ describe('IDE commit module actions', () => {
         store
           .dispatch('commit/commitChanges')
           .then(() => {
-            expect(store.state.entries[store.state.openFiles[0].path].lastCommit.message).toBe(
-              'test message',
+            expect(store.state.entries[store.state.openFiles[0].path].lastCommitSha).toBe(
+              COMMIT_RESPONSE.id,
             );
 
             done();

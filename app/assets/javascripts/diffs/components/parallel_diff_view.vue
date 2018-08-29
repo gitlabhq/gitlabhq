@@ -21,8 +21,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['commitId']),
-    ...mapGetters(['discussionsByLineCode']),
+    ...mapGetters('diffs', [
+      'commitId',
+      'singleDiscussionByLineCode',
+      'shouldRenderParallelCommentRow',
+    ]),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
@@ -53,29 +56,9 @@ export default {
     },
   },
   methods: {
-    shouldRenderCommentRow(line) {
-      const leftLineCode = line.left.lineCode;
-      const rightLineCode = line.right.lineCode;
-      const discussions = this.discussionsByLineCode;
-      const leftDiscussions = discussions[leftLineCode];
-      const rightDiscussions = discussions[rightLineCode];
-      const hasDiscussion = leftDiscussions || rightDiscussions;
-
-      const hasExpandedDiscussionOnLeft = leftDiscussions
-        ? leftDiscussions.every(discussion => discussion.expanded)
-        : false;
-      const hasExpandedDiscussionOnRight = rightDiscussions
-        ? rightDiscussions.every(discussion => discussion.expanded)
-        : false;
-
-      if (hasDiscussion && (hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight)) {
-        return true;
-      }
-
-      const hasCommentFormOnLeft = this.diffLineCommentForms[leftLineCode];
-      const hasCommentFormOnRight = this.diffLineCommentForms[rightLineCode];
-
-      return hasCommentFormOnLeft || hasCommentFormOnRight;
+    discussionsByLine(line, leftOrRight) {
+      return line[leftOrRight] && line[leftOrRight].lineCode !== undefined ?
+            this.singleDiscussionByLineCode(line[leftOrRight].lineCode) : [];
     },
   },
 };
@@ -98,13 +81,17 @@ export default {
             :line="line"
             :is-bottom="index + 1 === diffLinesLength"
             :key="index"
+            :left-discussions="discussionsByLine(line, 'left')"
+            :right-discussions="discussionsByLine(line, 'right')"
           />
           <parallel-diff-comment-row
-            v-if="shouldRenderCommentRow(line)"
+            v-if="shouldRenderParallelCommentRow(line)"
             :key="`dcr-${index}`"
             :line="line"
             :diff-file-hash="diffFile.fileHash"
             :line-index="index"
+            :left-discussions="discussionsByLine(line, 'left')"
+            :right-discussions="discussionsByLine(line, 'right')"
           />
         </template>
       </tbody>

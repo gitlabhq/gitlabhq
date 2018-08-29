@@ -1,5 +1,6 @@
 <script>
 import Icon from '~/vue_shared/components/icon.vue';
+import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate.vue';
 import timeagoMixin from '../../vue_shared/mixins/timeago';
 import tooltip from '../../vue_shared/directives/tooltip';
 import LoadingButton from '../../vue_shared/components/loading_button.vue';
@@ -16,6 +17,7 @@ export default {
     MemoryUsage,
     StatusIcon,
     Icon,
+    TooltipOnTruncate,
   },
   directives: {
     tooltip,
@@ -88,14 +90,20 @@ export default {
               <span>
                 Deployed to
               </span>
-              <a
-                :href="deployment.url"
-                target="_blank"
-                rel="noopener noreferrer nofollow"
-                class="deploy-link js-deploy-meta"
+              <tooltip-on-truncate
+                :title="deployment.name"
+                truncate-target="child"
+                class="deploy-link label-truncate"
               >
-                {{ deployment.name }}
-              </a>
+                <a
+                  :href="deployment.url"
+                  target="_blank"
+                  rel="noopener noreferrer nofollow"
+                  class="js-deploy-meta"
+                >
+                  {{ deployment.name }}
+                </a>
+              </tooltip-on-truncate>
             </template>
             <span
               v-tooltip

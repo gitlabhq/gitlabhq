@@ -7,7 +7,7 @@
   }
 
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 
   img:not(.emoji) {
@@ -180,7 +180,7 @@
   }
 
   a > code {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   dd {
@@ -423,25 +423,25 @@ h4 {
 input,
 textarea {
   &::-webkit-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   // support firefox 19+ vendor prefix
   &::-moz-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
     opacity: 1; // FF defaults to 0.54
   }
 
   // scss-lint:disable PseudoElement
   // support Edge vendor prefix
   &::-ms-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 
   // scss-lint:disable PseudoElement
   // support IE vendor prefix
   &:-ms-input-placeholder {
-    color: $placeholder-text-color;
+    color: $gl-text-color-tertiary;
   }
 }
 

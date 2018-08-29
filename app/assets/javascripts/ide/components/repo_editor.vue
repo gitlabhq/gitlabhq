@@ -133,7 +133,6 @@ export default {
         .then(() =>
           this.getRawFileData({
             path: this.file.path,
-            baseSha: this.currentMergeRequest ? this.currentMergeRequest.baseCommitSha : '',
           }),
         )
         .then(() => {

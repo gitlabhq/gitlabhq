@@ -6,12 +6,13 @@
         %i.fa.fa-fw.board-title-expandable-toggle{ "v-if": "list.isExpandable",
           ":class": "{ \"fa-caret-down\": list.isExpanded, \"fa-caret-right\": !list.isExpanded }",
           "aria-hidden": "true" }
+        = render_if_exists "shared/boards/components/list_milestone"
 
         %a.user-avatar-link.js-no-trigger{ "v-if": "list.type === \"assignee\"", ":href": "list.assignee.path" }
           -# haml-lint:disable AltText
           %img.avatar.s20.has-tooltip{ height: "20", width: "20", ":src": "list.assignee.avatar", ":alt": "list.assignee.name" }
 
-        %span.board-title-text.has-tooltip{ "v-if": "list.type !== \"label\"",
+        %span.board-title-text.has-tooltip.block-truncated{ "v-if": "list.type !== \"label\"",
           ":title" => '((list.label && list.label.description) || list.title || "")', data: { container: "body" } }
           {{ list.title }}
 

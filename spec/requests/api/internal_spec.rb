@@ -429,7 +429,7 @@ describe API::Internal do
     context "archived project" do
       before do
         project.add_developer(user)
-        project.archive!
+        ::Projects::UpdateService.new(project, user, archived: true).execute
       end
 
       context "git pull" do

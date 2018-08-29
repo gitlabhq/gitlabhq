@@ -108,6 +108,25 @@ describe SystemNoteService do
     end
   end
 
+  describe '.tag_commit' do
+    let(:noteable) do
+      project.commit
+    end
+    let(:tag_name) { 'v1.2.3' }
+
+    subject { described_class.tag_commit(noteable, project, author, tag_name) }
+
+    it_behaves_like 'a system note' do
+      let(:action) { 'tag' }
+    end
+
+    it 'sets the note text' do
+      link = "http://localhost/#{project.full_path}/tags/#{tag_name}"
+
+      expect(subject.note).to eq "tagged commit #{noteable.sha} to [`#{tag_name}`](#{link})"
+    end
+  end
+
   describe '.change_assignee' do
     subject { described_class.change_assignee(noteable, project, author, assignee) }
 

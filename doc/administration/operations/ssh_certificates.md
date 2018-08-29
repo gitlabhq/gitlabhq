@@ -163,3 +163,20 @@ Such a restriction can currently be hacked in by e.g. providing a
 custom `AuthorizedKeysCommand` which checks if the discovered key-ID
 returned from `gitlab-shell-authorized-keys-check` is a deploy key or
 not (all non-deploy keys should be refused).
+
+## Disabling the global warning about users lacking SSH keys
+
+By default GitLab will show a "You won't be able to pull or push
+project code via SSH" warning to users who have not uploaded an SSH
+key to their profile.
+
+This is counterproductive when using SSH certificates, since users
+aren't expected to upload their own keys.
+
+To disable this warning globally, go to "Application settings ->
+Account and limit settings" and disable the "Show user add SSH key
+message" setting.
+
+This setting was added specifically for use with SSH certificates, but
+can be turned off without using them if you'd like to hide the warning
+for some other reason.

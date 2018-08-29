@@ -388,29 +388,29 @@
     line-height: $gl-btn-line-height;
 
     &:hover {
-      color: $gl-link-color;
+      color: $blue-600;
     }
   }
 }
 
 .vs-public {
-  color: $gl-primary;
+  color: $blue-500;
 }
 
 .vs-internal {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .vs-private {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-enabled {
-  color: $gl-success;
+  color: $green-500;
 }
 
 .lfs-disabled {
-  color: $gl-warning;
+  color: $orange-500;
 }
 
 .breadcrumb.repo-breadcrumb {
@@ -449,8 +449,8 @@
 
   &:hover:not(.disabled),
   &.forked {
-    background-color: $row-hover;
-    border-color: $row-hover-border;
+    background-color: $blue-50;
+    border-color: $blue-200;
   }
 
   .avatar-container,
@@ -490,30 +490,31 @@
     margin-bottom: 0;
   }
 
+  .tab-pane {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
   .template-option {
-    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
-    position: relative;
+    .logo {
+      .btn-template-icon {
+        width: 40px !important;
+      }
+    }
+
+    padding: 16px 0;
 
     &:not(:first-child) {
       border-top: 1px solid $border-color;
     }
 
-    .btn-template-icon {
-      position: absolute;
-      left: $gl-padding;
-      top: $gl-padding;
+    .controls {
+      margin-left: auto;
     }
+
   }
 
-  .template-title {
-    font-size: 16px;
-  }
-
-  .template-description {
-    margin: 6px 0 12px;
-  }
-
-  .template-button {
+  .choose-template {
     input {
       position: absolute;
       clip: rect(0, 0, 0, 0);
@@ -540,8 +541,6 @@
     }
 
     .selected-icon {
-      padding-right: $gl-padding;
-
       svg {
         display: none;
         top: 7px;
@@ -732,7 +731,7 @@
       background-color: transparent;
       font-size: $gl-font-size;
       line-height: $gl-btn-line-height;
-      color: $notes-light-color;
+      color: $gl-text-color-secondary;
     }
 
     .stat-link {
@@ -755,8 +754,19 @@
 }
 
 .repository-languages-bar {
-  height: 6px;
-  margin-bottom: 8px;
+  height: 8px;
+  margin-bottom: $gl-padding-8;
+  background-color: $white-light;
+  border-radius: $border-radius-default;
+
+  .progress-bar {
+    margin-right: 2px;
+    padding: 0 $gl-padding-4;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
 }
 
 pre.light-well {
@@ -824,10 +834,6 @@ pre.light-well {
 
   .avatar-container {
     align-self: flex-start;
-
-    > a {
-      width: 100%;
-    }
   }
 
   .project-details {
@@ -888,13 +894,13 @@ pre.light-well {
 
 .cannot-be-merged,
 .cannot-be-merged:hover {
-  color: $error-exclamation-point;
+  color: $red-500;
   margin-top: 2px;
 }
 
 .private-forks-notice .private-fork-icon {
   i:nth-child(1) {
-    color: $project-private-forks-notice-odd;
+    color: $green-600;
   }
 
   i:nth-child(2) {
@@ -955,7 +961,7 @@ pre.light-well {
   margin-left: 5px;
 
   &.is-done {
-    color: $gl-text-green;
+    color: $green-600;
   }
 }
 
@@ -1122,12 +1128,12 @@ pre.light-well {
 .project-ci-body {
   .incorrect-syntax {
     font-size: 18px;
-    color: $lint-incorrect-color;
+    color: $red-500;
   }
 
   .correct-syntax {
     font-size: 18px;
-    color: $lint-correct-color;
+    color: $green-500;
   }
 }
 

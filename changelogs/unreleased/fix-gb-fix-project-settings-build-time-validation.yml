@@ -1,5 +1,0 @@
----
-title: Limit maximum project build timeout setting to 1 month
-merge_request: 20591
-author:
-type: fixed

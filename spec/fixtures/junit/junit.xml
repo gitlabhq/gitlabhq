@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="rspec" tests="4" skipped="0" failures="2" errors="0" time="0.011289" timestamp="2018-07-17T10:48:13+00:00" hostname="runner-400e3f62-project-15-concurrent-0">
+<properties>
+<property name="seed" value="404"/>
+</properties>
+<testcase classname="spec.test_spec" name="Test#sum when a is 1 and b is 2 returns summary" file="./spec/test_spec.rb" time="0.009292"><failure message="
+expected: 3
+     got: -1
+
+(compared using ==)
+" type="RSpec::Expectations::ExpectationNotMetError">Failure/Error: is_expected.to eq(3)
+
+  expected: 3
+       got: -1
+
+  (compared using ==)
+./spec/test_spec.rb:12:in `block (4 levels) in &lt;top (required)&gt;&apos;</failure></testcase>
+<testcase classname="spec.test_spec" name="Test#sum when a is 100 and b is 200 returns summary" file="./spec/test_spec.rb" time="0.000180"><failure message="
+expected: 300
+     got: -100
+
+(compared using ==)
+" type="RSpec::Expectations::ExpectationNotMetError">Failure/Error: is_expected.to eq(300)
+
+  expected: 300
+       got: -100
+
+  (compared using ==)
+./spec/test_spec.rb:21:in `block (4 levels) in &lt;top (required)&gt;&apos;</failure></testcase>
+<testcase classname="spec.test_spec" name="Test#subtract when a is 1 and b is 2 raises an error" file="./spec/test_spec.rb" time="0.000748"></testcase>
+<testcase classname="spec.test_spec" name="Test#subtract when a is 2 and b is 1 returns correct result" file="./spec/test_spec.rb" time="0.000064"></testcase>
+</testsuite>

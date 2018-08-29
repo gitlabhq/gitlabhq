@@ -109,6 +109,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           post :assign_related_issues
           get :discussions, format: :json
           post :rebase
+          get :test_reports
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
@@ -306,7 +307,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :hook_logs, only: [:show] do
           member do
-            get :retry
+            post :retry
           end
         end
       end

@@ -153,7 +153,7 @@ page](https://golang.org/dl).
 
     # Remove former Go installation folder
     sudo rm -rf /usr/local/go
-    
+
     curl --remote-name --progress https://dl.google.com/go/go1.10.3.linux-amd64.tar.gz
     echo 'fa1b0e45d3b647c252f51f5e1204aba049cde4af177ef9f2181f43004f901035  go1.10.3.linux-amd64.tar.gz' | shasum -a256 -c - && \
       sudo tar -C /usr/local -xzf go1.10.3.linux-amd64.tar.gz
@@ -457,11 +457,35 @@ GitLab-Pages uses [GNU Make](https://www.gnu.org/software/make/). This step is o
     sudo -u git -H git checkout v$(</home/git/gitlab/GITLAB_PAGES_VERSION)
     sudo -u git -H make
 
+### Install Gitaly
+
+    # Fetch Gitaly source with Git and compile with Go
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
+
+You can specify a different Git repository by providing it as an extra parameter:
+
+    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
+
+Next, make sure gitaly configured:
+
+    # Restrict Gitaly socket access
+    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
+    sudo chown git /home/git/gitlab/tmp/sockets/private
+
+    # If you are using non-default settings you need to update config.toml
+    cd /home/git/gitaly
+    sudo -u git -H editor config.toml
+
+For more information about configuring Gitaly see
+[doc/administration/gitaly](../administration/gitaly).
+
 ### Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
-
     # Type 'yes' to create the database tables.
+    
+    # or you can skip the question by adding force=yes
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production force=yes
 
     # When done you see 'Administrator account created:'
 
@@ -490,28 +514,6 @@ If you installed GitLab in another directory or as a user other than the default
 Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
-
-### Install Gitaly
-
-    # Fetch Gitaly source with Git and compile with Go
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly]" RAILS_ENV=production
-
-You can specify a different Git repository by providing it as an extra parameter:
-
-    sudo -u git -H bundle exec rake "gitlab:gitaly:install[/home/git/gitaly,https://example.com/gitaly.git]" RAILS_ENV=production
-
-Next, make sure gitaly configured:
-
-    # Restrict Gitaly socket access
-    sudo chmod 0700 /home/git/gitlab/tmp/sockets/private
-    sudo chown git /home/git/gitlab/tmp/sockets/private
-
-    # If you are using non-default settings you need to update config.toml
-    cd /home/git/gitaly
-    sudo -u git -H editor config.toml
-
-For more information about configuring Gitaly see
-[doc/administration/gitaly](../administration/gitaly).
 
 ### Setup Logrotate
 

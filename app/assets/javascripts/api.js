@@ -15,6 +15,7 @@ const Api = {
   mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
   mergeRequestVersionsPath: '/api/:version/projects/:id/merge_requests/:mrid/versions',
   groupLabelsPath: '/groups/:namespace_path/-/labels',
+  templatesPath: '/api/:version/templates/:key',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',
@@ -244,6 +245,18 @@ const Api = {
     });
   },
 
+  branches(id, query = '', options = {}) {
+    const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
+
+    return axios.get(url, {
+      params: {
+        search: query,
+        per_page: 20,
+        ...options,
+      },
+    });
+  },
+
   createBranch(id, { ref, branch }) {
     const url = Api.buildUrl(this.createBranchPath).replace(':id', encodeURIComponent(id));
 
@@ -251,6 +264,12 @@ const Api = {
       ref,
       branch,
     });
+  },
+
+  templates(key, params = {}) {
+    const url = Api.buildUrl(this.templatesPath).replace(':key', key);
+
+    return axios.get(url, { params });
   },
 
   buildUrl(url) {

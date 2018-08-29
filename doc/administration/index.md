@@ -93,7 +93,6 @@ created in snippets, wikis, and repos.
   - [Postfix for incoming email](reply_by_email_postfix_setup.md): Set up a
   basic Postfix mail server with IMAP authentication on Ubuntu for incoming
   emails.
-- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 [reply by email]: reply_by_email.md
 [issues by email]: ../user/project/issues/create_new_issue.md#new-issue-via-email
@@ -137,7 +136,6 @@ created in snippets, wikis, and repos.
   - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
     - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
     - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
-- [Conversational Development (ConvDev) Index](../user/admin_area/monitoring/convdev.md): Provides an overview of your entire instance's feature usage.
 
 ### Performance Monitoring
 

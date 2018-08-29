@@ -13,6 +13,11 @@ class MergeRequest < ActiveRecord::Base
   include ThrottledTouch
   include Gitlab::Utils::StrongMemoize
   include LabelEventable
+  include ReactiveCaching
+
+  self.reactive_cache_key = ->(model) { [model.project.id, model.iid] }
+  self.reactive_cache_refresh_interval = 10.minutes
+  self.reactive_cache_lifetime = 10.minutes
 
   ignore_column :locked_at,
                 :ref_fetched,
@@ -54,6 +59,8 @@ class MergeRequest < ActiveRecord::Base
   has_many :merge_requests_closing_issues,
     class_name: 'MergeRequestsClosingIssues',
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
+
+  has_many :cached_closes_issues, through: :merge_requests_closing_issues, source: :issue
 
   belongs_to :assignee, class_name: "User"
 
@@ -758,8 +765,9 @@ class MergeRequest < ActiveRecord::Base
   # Calculating this information for a number of merge requests requires
   # running `ReferenceExtractor` on each of them separately.
   # This optimization does not apply to issues from external sources.
-  def cache_merge_request_closes_issues!(current_user)
+  def cache_merge_request_closes_issues!(current_user = self.author)
     return unless project.issues_enabled?
+    return if closed? || merged?
 
     transaction do
       self.merge_requests_closing_issues.delete_all
@@ -768,6 +776,18 @@ class MergeRequest < ActiveRecord::Base
         next if issue.is_a?(ExternalIssue)
 
         self.merge_requests_closing_issues.create!(issue: issue)
+      end
+    end
+  end
+
+  def visible_closing_issues_for(current_user = self.author)
+    strong_memoize(:visible_closing_issues_for) do
+      if self.target_project.has_external_issue_tracker?
+        closes_issues(current_user)
+      else
+        cached_closes_issues.select do |issue|
+          Ability.allowed?(current_user, :read_issue, issue)
+        end
       end
     end
   end
@@ -791,7 +811,7 @@ class MergeRequest < ActiveRecord::Base
     ext = Gitlab::ReferenceExtractor.new(project, current_user)
     ext.analyze("#{title}\n#{description}")
 
-    ext.issues - closes_issues(current_user)
+    ext.issues - visible_closing_issues_for(current_user)
   end
 
   def target_project_path
@@ -839,7 +859,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_commit_message(include_description: false)
-    closes_issues_references = closes_issues.map do |issue|
+    closes_issues_references = visible_closing_issues_for.map do |issue|
       issue.to_reference(target_project)
     end
 
@@ -1012,6 +1032,35 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
+  def has_test_reports?
+    actual_head_pipeline&.has_test_reports?
+  end
+
+  def compare_test_reports
+    unless has_test_reports?
+      return { status: :error, status_reason: 'This merge request does not have test reports' }
+    end
+
+    with_reactive_cache(:compare_test_results) do |data|
+      unless Ci::CompareTestReportsService.new(project)
+        .latest?(base_pipeline, actual_head_pipeline, data)
+        raise InvalidateReactiveCache
+      end
+
+      data
+    end || { status: :parsing }
+  end
+
+  def calculate_reactive_cache(identifier, *args)
+    case identifier.to_sym
+    when :compare_test_results
+      Ci::CompareTestReportsService.new(project).execute(
+        base_pipeline, actual_head_pipeline)
+    else
+      raise NotImplementedError, "Unknown identifier: #{identifier}"
+    end
+  end
+
   def all_commits
     # MySQL doesn't support LIMIT in a subquery.
     diffs_relation = if Gitlab::Database.postgresql?
@@ -1045,21 +1094,27 @@ class MergeRequest < ActiveRecord::Base
 
   def can_be_reverted?(current_user)
     return false unless merge_commit
+    return false unless merged_at
 
-    merged_at = metrics&.merged_at
-    notes_association = notes_with_associations
+    # It is not guaranteed that Note#created_at will be strictly later than
+    # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
+    # comparison, as will a HA environment if clocks are not *precisely*
+    # synchronized. Add a minute's leeway to compensate for both possibilities
+    cutoff = merged_at - 1.minute
 
-    if merged_at
-      # It is not guaranteed that Note#created_at will be strictly later than
-      # MergeRequestMetric#merged_at. Nanoseconds on MySQL may break this
-      # comparison, as will a HA environment if clocks are not *precisely*
-      # synchronized. Add a minute's leeway to compensate for both possibilities
-      cutoff = merged_at - 1.minute
-
-      notes_association = notes_association.where('created_at >= ?', cutoff)
-    end
+    notes_association = notes_with_associations.where('created_at >= ?', cutoff)
 
     !merge_commit.has_been_reverted?(current_user, notes_association)
+  end
+
+  def merged_at
+    strong_memoize(:merged_at) do
+      next unless merged?
+
+      metrics&.merged_at ||
+        merge_event&.created_at ||
+        notes.system.reorder(nil).find_by(note: 'merged')&.created_at
+    end
   end
 
   def can_be_cherry_picked?
@@ -1122,6 +1177,12 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
+  end
+
+  def base_pipeline
+    @base_pipeline ||= project.pipelines
+      .order(id: :desc)
+      .find_by(sha: diff_base_sha)
   end
 
   def discussions_rendered_on_frontend?

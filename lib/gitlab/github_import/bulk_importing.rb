@@ -15,10 +15,12 @@ module Gitlab
       end
 
       # Bulk inserts the given rows into the database.
-      def bulk_insert(model, rows, batch_size: 100)
+      def bulk_insert(model, rows, batch_size: 100, pre_hook: nil)
         rows.each_slice(batch_size) do |slice|
+          pre_hook.call(slice) if pre_hook
           Gitlab::Database.bulk_insert(model.table_name, slice)
         end
+        rows
       end
     end
   end

@@ -141,9 +141,6 @@ ul.notes {
     }
 
     .note-body {
-      overflow-x: auto;
-      overflow-y: hidden;
-
       .note-text {
         @include md-typography;
         // Reset ul style types since we're nested inside a ul already
@@ -210,7 +207,7 @@ ul.notes {
       }
 
       a {
-        color: $gl-link-color;
+        color: $blue-600;
       }
 
       p {
@@ -253,14 +250,14 @@ ul.notes {
       overflow: hidden;
 
       .system-note-commit-list-toggler {
-        color: $gl-link-color;
+        color: $blue-600;
         padding: 10px 0 0;
         cursor: pointer;
         position: relative;
         z-index: 2;
 
         &:hover {
-          color: $gl-link-color;
+          color: $blue-600;
           text-decoration: underline;
         }
       }
@@ -390,7 +387,7 @@ ul.notes {
     color: inherit;
 
     &:hover {
-      color: $gl-link-color;
+      color: $blue-600;
     }
 
     &:focus,
@@ -446,12 +443,12 @@ ul.notes {
 
 .note-headline-light,
 .discussion-headline-light {
-  color: $notes-light-color;
+  color: $gl-text-color-secondary;
 }
 
 .discussion-headline-light {
   a {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
@@ -546,6 +543,7 @@ ul.notes {
 
   svg {
     @include btn-svg;
+    margin: 0;
   }
 
   .award-control-icon-positive,
@@ -559,12 +557,12 @@ ul.notes {
   &:hover,
   &.is-active {
     .danger-highlight {
-      color: $gl-text-red;
+      color: $red-500;
     }
 
     .link-highlight {
-      color: $gl-link-color;
-      fill: $gl-link-color;
+      color: $blue-600;
+      fill: $blue-600;
     }
 
     .award-control-icon-neutral {
@@ -596,13 +594,13 @@ ul.notes {
   transition: color 0.1s linear;
 
   &:hover {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   &:focus {
     text-decoration: underline;
     outline: none;
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   .fa {
@@ -672,7 +670,7 @@ ul.notes {
   }
 
   a {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 }
 
@@ -758,16 +756,16 @@ ul.notes {
   &:not(.is-disabled) {
     &:hover,
     &:focus {
-      color: $gl-text-green;
+      color: $green-600;
     }
   }
 
   &.is-active {
-    color: $gl-text-green;
+    color: $green-600;
 
     &:hover,
     &:focus {
-      color: $gl-text-green-hover;
+      color: $green-700;
     }
   }
 

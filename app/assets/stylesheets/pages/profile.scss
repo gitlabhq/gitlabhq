@@ -20,7 +20,7 @@
 .account-btn-link,
 .profile-settings-sidebar a,
 .settings-sidebar a {
-  color: $md-link-color;
+  color: $blue-600;
 }
 
 .private-tokens-reset div.reset-action:not(:first-child) {
@@ -137,7 +137,7 @@
 
 .profile-settings-content {
   a {
-    color: $md-link-color;
+    color: $blue-600;
   }
 }
 
@@ -170,7 +170,7 @@
   background-color: $gray-light;
 
   &.not-active {
-    color: $provider-btn-not-active-color;
+    color: $blue-500;
   }
 }
 
@@ -415,6 +415,26 @@ table.u2f-registrations {
 
     &.unverified {
       @include status-color($gray-dark, color("gray"), $common-gray-dark);
+    }
+  }
+}
+
+.edit-user {
+  .clear-user-status {
+    svg {
+      fill: $gl-text-color-secondary;
+    }
+  }
+
+  .emoji-menu-toggle-button {
+    @extend .note-action-button;
+
+    .no-emoji-placeholder {
+      position: relative;
+
+      svg {
+        fill: $gl-text-color-secondary;
+      }
     }
   }
 }

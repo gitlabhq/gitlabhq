@@ -20,8 +20,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters('diffs', ['commitId']),
-    ...mapGetters(['discussionsByLineCode']),
+    ...mapGetters('diffs', [
+      'commitId',
+      'shouldRenderInlineCommentRow',
+      'singleDiscussionByLineCode',
+    ]),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
@@ -36,15 +39,8 @@ export default {
     },
   },
   methods: {
-    shouldRenderCommentRow(line) {
-      if (this.diffLineCommentForms[line.lineCode]) return true;
-
-      const lineDiscussions = this.discussionsByLineCode[line.lineCode];
-      if (lineDiscussions === undefined) {
-        return false;
-      }
-
-      return lineDiscussions.every(discussion => discussion.expanded);
+    discussionsList(line) {
+      return line.lineCode !== undefined ? this.singleDiscussionByLineCode(line.lineCode) : [];
     },
   },
 };
@@ -65,13 +61,15 @@ export default {
           :line="line"
           :is-bottom="index + 1 === diffLinesLength"
           :key="line.lineCode"
+          :discussions="discussionsList(line)"
         />
         <inline-diff-comment-row
-          v-if="shouldRenderCommentRow(line)"
+          v-if="shouldRenderInlineCommentRow(line)"
           :diff-file-hash="diffFile.fileHash"
           :line="line"
           :line-index="index"
           :key="index"
+          :discussions="discussionsList(line)"
         />
       </template>
     </tbody>

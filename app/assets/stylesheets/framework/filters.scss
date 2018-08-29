@@ -205,8 +205,8 @@
 
   &.focus,
   &.focus:hover {
-    border-color: $dropdown-input-focus-border;
-    box-shadow: 0 0 4px $search-input-focus-shadow-color;
+    border-color: $blue-300;
+    box-shadow: 0 0 4px $dropdown-input-focus-shadow;
   }
 
   gl-emoji {
@@ -294,7 +294,7 @@
   &:hover,
   &:focus {
     color: $gl-text-color;
-    border-color: $dropdown-input-focus-border;
+    border-color: $blue-300;
     outline: none;
   }
 

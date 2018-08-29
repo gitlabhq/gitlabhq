@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Strip Attribute module
 #
 # Contains functionality to clean attributes before validation

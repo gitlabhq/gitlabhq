@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Pipeline < ActiveRecord::Base
     extend Gitlab::Ci::Model
@@ -603,6 +605,18 @@ module Ci
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts_archive.to_a
     end
 
+    def has_test_reports?
+      complete? && builds.latest.with_test_reports.any?
+    end
+
+    def test_reports
+      Gitlab::Ci::Reports::TestReports.new.tap do |test_reports|
+        builds.latest.with_test_reports.each do |build|
+          build.collect_test_reports!(test_reports)
+        end
+      end
+    end
+
     private
 
     def ci_yaml_from_repo
@@ -635,8 +649,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha)
-      project.repository.keep_around(self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha)
     end
 
     def valid_source

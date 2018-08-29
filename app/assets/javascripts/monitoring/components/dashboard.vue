@@ -147,6 +147,7 @@ export default {
           }
           this.showEmptyState = false;
         })
+        .then(this.resize)
         .catch(() => {
           this.state = 'unableToConnect';
         });
@@ -171,7 +172,7 @@ export default {
 <template>
   <div
     v-if="!showEmptyState"
-    class="prometheus-graphs prepend-top-10"
+    class="prometheus-graphs prepend-top-default"
   >
     <div class="environments d-flex align-items-center">
       {{ s__('Metrics|Environment') }}

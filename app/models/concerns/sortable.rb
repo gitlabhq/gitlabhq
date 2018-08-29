@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # == Sortable concern
 #
 # Set default scope for ordering objects
@@ -6,6 +8,7 @@ module Sortable
   extend ActiveSupport::Concern
 
   included do
+    scope :with_order_id_desc, -> { order(id: :desc) }
     scope :order_id_desc, -> { reorder(id: :desc) }
     scope :order_id_asc, -> { reorder(id: :asc) }
     scope :order_created_desc, -> { reorder(created_at: :desc) }

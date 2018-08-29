@@ -170,27 +170,6 @@ class Issue < ActiveRecord::Base
     "#{project.to_reference(from, full: full)}#{reference}"
   end
 
-  def referenced_merge_requests(current_user = nil)
-    ext = all_references(current_user)
-
-    notes_with_associations.each do |object|
-      object.all_references(current_user, extractor: ext)
-    end
-
-    merge_requests = ext.merge_requests.sort_by(&:iid)
-
-    cross_project_filter = -> (merge_requests) do
-      merge_requests.select { |mr| mr.target_project == project }
-    end
-
-    Ability.merge_requests_readable_by_user(
-      merge_requests, current_user,
-      filters: {
-        read_cross_project: cross_project_filter
-      }
-    )
-  end
-
   # All branches containing the current issue's ID, except for
   # those with a merge request open referencing the current issue.
   def related_branches(current_user)
@@ -198,7 +177,11 @@ class Issue < ActiveRecord::Base
       branch =~ /\A#{iid}-(?!\d+-stable)/i
     end
 
-    branches_with_merge_request = self.referenced_merge_requests(current_user).map(&:source_branch)
+    branches_with_merge_request =
+      Issues::ReferencedMergeRequestsService
+        .new(project, current_user)
+        .referenced_merge_requests(self)
+        .map(&:source_branch)
 
     branches_with_iid - branches_with_merge_request
   end
@@ -223,26 +206,6 @@ class Issue < ActiveRecord::Base
   # To allow polymorphism with MergeRequest.
   def source_project
     project
-  end
-
-  # From all notes on this issue, we'll select the system notes about linked
-  # merge requests. Of those, the MRs closing `self` are returned.
-  def closed_by_merge_requests(current_user = nil)
-    return [] unless open?
-
-    ext = all_references(current_user)
-
-    notes.system.each do |note|
-      note.all_references(current_user, extractor: ext)
-    end
-
-    merge_requests = ext.merge_requests.select(&:open?)
-    if merge_requests.any?
-      ids = MergeRequestsClosingIssues.where(merge_request_id: merge_requests.map(&:id), issue_id: id).pluck(:merge_request_id)
-      merge_requests.select { |mr| mr.id.in?(ids) }
-    else
-      []
-    end
   end
 
   def moved?
@@ -276,10 +239,6 @@ class Issue < ActiveRecord::Base
     return false unless project && project.feature_available?(:issues, user)
 
     user ? readable_by?(user) : publicly_visible?
-  end
-
-  def overdue?
-    due_date.try(:past?) || false
   end
 
   def check_for_spam?

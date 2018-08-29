@@ -8,7 +8,7 @@ input {
 
 input[type='text'].danger {
   background: $input-danger-bg !important;
-  border-color: $input-danger-border;
+  border-color: $red-400;
   text-shadow: 0 1px 1px $white-light;
 }
 
@@ -170,7 +170,7 @@ label {
 }
 
 .form-control::-webkit-input-placeholder {
-  color: $placeholder-text-color;
+  color: $gl-text-color-tertiary;
 }
 
 .input-group {
@@ -201,7 +201,7 @@ label {
 }
 
 .gl-show-field-errors {
-  .form-control {
+  .form-control:not(textarea) {
     height: 34px;
   }
 

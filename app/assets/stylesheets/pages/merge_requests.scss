@@ -15,6 +15,39 @@
   }
 }
 
+.mr-widget-border-top {
+  border-top: 1px solid $border-color;
+}
+
+.media-section {
+  @include media-breakpoint-down(md) {
+    align-items: flex-start;
+
+    .media-body {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  .code-text {
+    @include media-breakpoint-up(lg) {
+      align-self: center;
+      flex: 1;
+    }
+  }
+}
+
+.mr-widget-section {
+  .media {
+    align-items: center;
+  }
+
+  .code-text {
+    flex: 1;
+  }
+}
+
+
 .mr-widget-heading {
   position: relative;
   border: 1px solid $border-color;
@@ -52,6 +85,14 @@
 
   .mr-widget-footer {
     padding: 0;
+  }
+
+  .mr-report {
+    padding: 0;
+
+    > .media {
+      padding: $gl-padding;
+    }
   }
 
   form {
@@ -154,12 +195,13 @@
     .ci-widget-content {
       display: flex;
       align-items: center;
+      flex: 1;
     }
   }
 
   .mr-widget-icon {
     font-size: 22px;
-    margin-right: $status-icon-margin;
+    margin-right: $gl-btn-padding;
   }
 
   .ci-status-icon svg {
@@ -181,6 +223,7 @@
 
   .normal {
     flex: 1;
+    flex-basis: auto;
   }
 
   .capitalize {
@@ -194,22 +237,23 @@
     font-weight: normal;
     overflow: hidden;
     word-break: break-all;
+  }
 
-    &.label-truncated {
-      position: relative;
-      display: inline-block;
-      width: 250px;
-      margin-bottom: -3px;
-      white-space: nowrap;
-      text-overflow: clip;
-      line-height: 14px;
-
-      &::after {
-        position: absolute;
-        content: '...';
-        right: 0;
-        font-family: $regular-font;
-        background-color: $gray-light;
+  .deploy-link,
+  .label-branch {
+    &.label-truncate {
+      // NOTE: This selector targets its children because some of the HTML comes from
+      // 'source_branch_link'. Once this external HTML is no longer used, we could
+      // simplify this.
+      > a,
+      > span {
+        display: inline-block;
+        max-width: 12.5em;
+        margin-bottom: -3px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        line-height: 14px;
+        overflow: hidden;
       }
     }
   }
@@ -240,7 +284,7 @@
       margin-bottom: 0;
 
       &.has-conflicts .fa-exclamation-triangle {
-        color: $gl-warning;
+        color: $orange-500;
       }
 
       time {
@@ -272,7 +316,7 @@
     }
 
     .danger {
-      color: $gl-danger;
+      color: $red-500;
     }
 
     .spacing,
@@ -473,7 +517,7 @@
 }
 
 .mr-links {
-  padding-left: $status-icon-size + $status-icon-margin;
+  padding-left: $status-icon-size + $gl-btn-padding;
 }
 
 .mr-info-list {
@@ -541,7 +585,7 @@
 
     @include media-breakpoint-down(md) {
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
 
       .branch-actions {
         margin-top: 16px;
@@ -552,13 +596,13 @@
       .branch-actions {
         align-self: center;
         margin-left: $gl-padding;
+        white-space: nowrap;
       }
     }
   }
 
   .diverged-commits-count {
     color: $gl-text-color-secondary;
-    font-size: 12px;
   }
 }
 
@@ -877,7 +921,7 @@
   flex: 1;
   flex-direction: row;
 
-  @include media-breakpoint-down(md) {
+  @include media-breakpoint-down(sm) {
     flex-direction: column;
 
     .stage-cell .stage-container {

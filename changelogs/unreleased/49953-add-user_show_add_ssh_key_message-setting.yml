@@ -1,0 +1,5 @@
+---
+title: Add ability to suppress the global "You won't be able to use SSH" message
+merge_request: 21027
+author: Ævar Arnfjörð Bjarmason
+type: added

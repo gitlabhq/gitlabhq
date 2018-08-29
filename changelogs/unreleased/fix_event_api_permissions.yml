@@ -1,0 +1,5 @@
+---
+title: 'Events API now requires the read_user or api scope.'
+merge_request: 20627
+author: Warren Parad
+type: fixed

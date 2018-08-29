@@ -53,21 +53,14 @@ describe Awardable do
       issue.project.add_guest(user)
     end
 
-    it 'does not allow upvoting or downvoting your own issue' do
-      issue.update!(author: user)
-
-      expect(issue.user_can_award?(user, AwardEmoji::DOWNVOTE_NAME)).to be_falsy
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
-    end
-
     it 'is truthy when the user is allowed to award emoji' do
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_truthy
+      expect(issue.user_can_award?(user)).to be_truthy
     end
 
     it 'is falsy when the project is archived' do
       issue.project.update!(archived: true)
 
-      expect(issue.user_can_award?(user, AwardEmoji::UPVOTE_NAME)).to be_falsy
+      expect(issue.user_can_award?(user)).to be_falsy
     end
   end
 

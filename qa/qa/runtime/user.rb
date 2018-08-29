@@ -3,12 +3,12 @@ module QA
     module User
       extend self
 
-      def default_name
+      def default_username
         'root'
       end
 
-      def name
-        Runtime::Env.user_username || default_name
+      def username
+        Runtime::Env.user_username || default_username
       end
 
       def password

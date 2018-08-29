@@ -35,14 +35,13 @@ export default {
 
 <template>
   <ide-tree-list
-    header-class="d-flex w-100"
     viewer-type="editor"
   >
     <template
       slot="header"
     >
       {{ __('Edit') }}
-      <div class="ml-auto d-flex">
+      <div class="ide-tree-actions ml-auto d-flex">
         <new-entry-button
           :label="__('New file')"
           :show-label="false"

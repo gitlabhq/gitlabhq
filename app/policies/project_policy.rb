@@ -143,6 +143,10 @@ class ProjectPolicy < BasePolicy
     enable :destroy_merge_request
     enable :destroy_issue
     enable :remove_pages
+
+    enable :set_issue_iid
+    enable :set_issue_created_at
+    enable :set_note_created_at
   end
 
   rule { can?(:guest_access) }.policy do
@@ -251,6 +255,7 @@ class ProjectPolicy < BasePolicy
     enable :update_pages
     enable :read_cluster
     enable :create_cluster
+    enable :create_environment_terminal
   end
 
   rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror

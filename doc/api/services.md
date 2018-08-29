@@ -401,48 +401,6 @@ Get Flowdock service settings for a project.
 GET /projects/:id/services/flowdock
 ```
 
-## Gemnasium
-
-Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.
-
-CAUTION: **Warning:**
-Gemnasium service integration has been deprecated in GitLab 11.0. Gemnasium has been
-[acquired by GitLab](https://about.gitlab.com/press/releases/2018-01-30-gemnasium-acquisition.html)
-in January 2018 and since May 15, 2018, the service provided by Gemnasium is no longer available.
-You can [migrate from Gemnasium to GitLab](https://docs.gitlab.com/ee/user/project/import/gemnasium.html)
-to keep monitoring your dependencies.
-
-### Create/Edit Gemnasium service
-
-Set Gemnasium service for a project.
-
-```
-PUT /projects/:id/services/gemnasium
-```
-
-Parameters:
-
-| Parameter | Type | Required | Description |
-| --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | Your personal API KEY on gemnasium.com |
-| `token`  | string | true | The project's slug on gemnasium.com |
-
-### Delete Gemnasium service
-
-Delete Gemnasium service for a project.
-
-```
-DELETE /projects/:id/services/gemnasium
-```
-
-### Get Gemnasium service settings
-
-Get Gemnasium service settings for a project.
-
-```
-GET /projects/:id/services/gemnasium
-```
-
 ## Hangouts Chat
 
 Google GSuite team collaboration tool.

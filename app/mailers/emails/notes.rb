@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Emails
   module Notes
     def note_commit_email(recipient_id, note_id)

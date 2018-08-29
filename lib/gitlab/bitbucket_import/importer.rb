@@ -188,7 +188,8 @@ module Gitlab
       end
 
       def import_inline_comments(inline_comments, pull_request, merge_request)
-        line_code_map = {}
+        position_map = {}
+        discussion_map = {}
 
         children, parents = inline_comments.partition(&:has_parent?)
 
@@ -196,22 +197,28 @@ module Gitlab
         # relationships. We assume that the child can appear in any order in
         # the JSON.
         parents.each do |comment|
-          line_code_map[comment.iid] = generate_line_code(comment)
+          position_map[comment.iid] = build_position(merge_request, comment)
         end
 
         children.each do |comment|
-          line_code_map[comment.iid] = line_code_map.fetch(comment.parent_id, nil)
+          position_map[comment.iid] = position_map.fetch(comment.parent_id, nil)
         end
 
         inline_comments.each do |comment|
           begin
             attributes = pull_request_comment_attributes(comment)
+            attributes[:discussion_id] = discussion_map[comment.parent_id] if comment.has_parent?
+
             attributes.merge!(
-              position: build_position(merge_request, comment),
-              line_code: line_code_map.fetch(comment.iid),
+              position: position_map[comment.iid],
               type: 'DiffNote')
 
-            merge_request.notes.create!(attributes)
+            note = merge_request.notes.create!(attributes)
+
+            # We can't store a discussion ID until a note is created, so if
+            # replies are created before the parent the discussion ID won't be
+            # linked properly.
+            discussion_map[comment.iid] = note.discussion_id
           rescue StandardError => e
             errors << { type: :pull_request, iid: comment.iid, errors: e.message }
           end
@@ -238,10 +245,6 @@ module Gitlab
             errors << { type: :pull_request, iid: comment.iid, errors: e.message }
           end
         end
-      end
-
-      def generate_line_code(pr_comment)
-        Gitlab::Git.diff_line_code(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
       end
 
       def pull_request_comment_attributes(comment)

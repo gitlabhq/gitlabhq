@@ -27,6 +27,8 @@ class Project < ActiveRecord::Base
   include FastDestroyAll::Helpers
   include WithUploads
   include BatchDestroyDependentAssociations
+  include FeatureGate
+  include OptionallySearch
   extend Gitlab::Cache::RequestCache
 
   extend Gitlab::ConfigHelper
@@ -83,8 +85,7 @@ class Project < ActiveRecord::Base
   after_create :create_project_feature, unless: :project_feature
 
   after_create -> { SiteStatistic.track(STATISTICS_ATTRIBUTE) }
-  before_destroy ->(project) { project.project_feature.untrack_statistics_for_deletion! }
-  after_destroy -> { SiteStatistic.untrack(STATISTICS_ATTRIBUTE) }
+  before_destroy :untrack_site_statistics
 
   after_create :create_ci_cd_settings,
     unless: :ci_cd_settings,
@@ -139,7 +140,6 @@ class Project < ActiveRecord::Base
   has_one :flowdock_service
   has_one :assembla_service
   has_one :asana_service
-  has_one :gemnasium_service
   has_one :mattermost_slash_commands_service
   has_one :mattermost_service
   has_one :slack_slash_commands_service
@@ -383,6 +383,26 @@ class Project < ActiveRecord::Base
                                             only_integer: true,
                                             message: 'needs to be beetween 10 minutes and 1 month' }
 
+  # Paginates a collection using a `WHERE id < ?` condition.
+  #
+  # before - A project ID to use for filtering out projects with an equal or
+  #      greater ID. If no ID is given, all projects are included.
+  #
+  # limit - The maximum number of rows to include.
+  def self.paginate_in_descending_order_using_id(
+    before: nil,
+    limit: Kaminari.config.default_per_page
+  )
+    relation = order_id_desc.limit(limit)
+    relation = relation.where('projects.id < ?', before) if before
+
+    relation
+  end
+
+  def self.eager_load_namespace_and_owner
+    includes(namespace: :owner)
+  end
+
   # Returns a collection of projects that is either public or visible to the
   # logged in user.
   def self.public_or_visible_to_user(user = nil)
@@ -470,6 +490,24 @@ class Project < ActiveRecord::Base
       }x
     end
 
+    def reference_postfix
+      '>'
+    end
+
+    def reference_postfix_escaped
+      '&gt;'
+    end
+
+    # Pattern used to extract `namespace/project>` project references from text.
+    # '>' or its escaped form ('&gt;') are checked for because '>' is sometimes escaped
+    # when the reference comes from an external source.
+    def markdown_reference_pattern
+      %r{
+        #{reference_pattern}
+        (#{reference_postfix}|#{reference_postfix_escaped})
+      }x
+    end
+
     def trending
       joins('INNER JOIN trending_projects ON projects.id = trending_projects.project_id')
         .reorder('trending_projects.id ASC')
@@ -501,14 +539,19 @@ class Project < ActiveRecord::Base
 
   def auto_devops_enabled?
     if auto_devops&.enabled.nil?
-      Gitlab::CurrentSettings.auto_devops_enabled?
+      has_auto_devops_implicitly_enabled?
     else
       auto_devops.enabled?
     end
   end
 
+  def has_auto_devops_implicitly_enabled?
+    auto_devops&.enabled.nil? &&
+      (Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
+  end
+
   def has_auto_devops_implicitly_disabled?
-    auto_devops&.enabled.nil? && !Gitlab::CurrentSettings.auto_devops_enabled?
+    auto_devops&.enabled.nil? && !(Gitlab::CurrentSettings.auto_devops_enabled? || Feature.enabled?(:force_autodevops_on_by_default, self))
   end
 
   def empty_repo?
@@ -654,6 +697,8 @@ class Project < ActiveRecord::Base
       project_import_data.credentials ||= {}
       project_import_data.credentials = project_import_data.credentials.merge(credentials)
     end
+
+    project_import_data
   end
 
   def import?
@@ -900,6 +945,10 @@ class Project < ActiveRecord::Base
     else
       path
     end
+  end
+
+  def to_reference_with_postfix
+    "#{to_reference(full: true)}#{self.class.reference_postfix}"
   end
 
   # `from` argument can be a Namespace or Project.
@@ -1320,14 +1369,6 @@ class Project < ActiveRecord::Base
     :visibility_level
   end
 
-  def archive!
-    update_attribute(:archived, true)
-  end
-
-  def unarchive!
-    update_attribute(:archived, false)
-  end
-
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
@@ -1568,45 +1609,31 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo
-    new_full_path = build_full_path
+    path_before      = previous_changes['path'].first
+    full_path_before = full_path_was
+    full_path_after  = build_full_path
 
-    Rails.logger.error "Attempting to rename #{full_path_was} -> #{new_full_path}"
+    Gitlab::AppLogger.info("Attempting to rename #{full_path_was} -> #{full_path_after}")
 
     if has_container_registry_tags?
-      Rails.logger.error "Project #{full_path_was} cannot be renamed because container registry tags are present!"
+      Gitlab::AppLogger.info("Project #{full_path_was} cannot be renamed because container registry tags are present!")
 
-      # we currently doesn't support renaming repository if it contains images in container registry
+      # we currently don't support renaming repository if it contains images in container registry
       raise StandardError.new('Project cannot be renamed, because images are present in its container registry')
     end
 
-    expire_caches_before_rename(full_path_was)
+    expire_caches_before_rename(full_path_before)
 
-    if storage.rename_repo
-      Gitlab::AppLogger.info "Project was renamed: #{full_path_was} -> #{new_full_path}"
-      rename_repo_notify!
-      after_rename_repo
+    if rename_or_migrate_repository!
+      Gitlab::AppLogger.info("Project was renamed: #{full_path_before} -> #{full_path_after}")
+      after_rename_repository(full_path_before, path_before)
     else
-      Rails.logger.error "Repository could not be renamed: #{full_path_was} -> #{new_full_path}"
+      Gitlab::AppLogger.info("Repository could not be renamed: #{full_path_before} -> #{full_path_after}")
 
       # if we cannot move namespace directory we should rollback
       # db changes in order to prevent out of sync between db and fs
-      raise StandardError.new('repository cannot be renamed')
+      raise StandardError.new('Repository cannot be renamed')
     end
-  end
-
-  def after_rename_repo
-    write_repository_config
-
-    path_before_change = previous_changes['path'].first
-
-    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
-    # if we need execute any take action or no-op.
-
-    unless hashed_storage?(:attachments)
-      Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
-    end
-
-    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def write_repository_config(gl_full_path: full_path)
@@ -1617,17 +1644,6 @@ class Project < ActiveRecord::Base
   rescue Gitlab::Git::Repository::NoRepository => e
     Rails.logger.error("Error writing to .git/config for project #{full_path} (#{id}): #{e.message}.")
     nil
-  end
-
-  def rename_repo_notify!
-    # When we import a project overwriting the original project, there
-    # is a move operation. In that case we don't want to send the instructions.
-    send_move_instructions(full_path_was) unless import_started?
-
-    self.old_path_with_namespace = full_path_was
-    SystemHooksService.new.execute_hooks_for(self, :rename)
-
-    reload_repository!
   end
 
   def after_import
@@ -2053,6 +2069,50 @@ class Project < ActiveRecord::Base
   end
 
   private
+
+  def rename_or_migrate_repository!
+    if Gitlab::CurrentSettings.hashed_storage_enabled? &&
+        storage_upgradable? &&
+        Feature.disabled?(:skip_hashed_storage_upgrade) # kill switch in case we need to disable upgrade behavior
+      ::Projects::HashedStorageMigrationService.new(self, full_path_was).execute
+    else
+      storage.rename_repo
+    end
+  end
+
+  def storage_upgradable?
+    storage_version != LATEST_STORAGE_VERSION
+  end
+
+  def after_rename_repository(full_path_before, path_before)
+    execute_rename_repository_hooks!(full_path_before)
+
+    write_repository_config
+
+    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
+    # if we need execute any take action or no-op.
+    unless hashed_storage?(:attachments)
+      Gitlab::UploadsTransfer.new.rename_project(path_before, self.path, namespace.full_path)
+    end
+
+    Gitlab::PagesTransfer.new.rename_project(path_before, self.path, namespace.full_path)
+  end
+
+  def untrack_site_statistics
+    SiteStatistic.untrack(STATISTICS_ATTRIBUTE)
+    self.project_feature.untrack_statistics_for_deletion!
+  end
+
+  def execute_rename_repository_hooks!(full_path_before)
+    # When we import a project overwriting the original project, there
+    # is a move operation. In that case we don't want to send the instructions.
+    send_move_instructions(full_path_before) unless import_started?
+
+    self.old_path_with_namespace = full_path_before
+    SystemHooksService.new.execute_hooks_for(self, :rename)
+
+    reload_repository!
+  end
 
   def storage
     @storage ||=

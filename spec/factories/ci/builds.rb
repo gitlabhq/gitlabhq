@@ -188,9 +188,8 @@ FactoryBot.define do
     end
 
     trait :test_reports do
-      after(:create) do |build|
-        create(:ci_job_artifact, :junit, job: build)
-        build.reload
+      after(:build) do |build|
+        build.job_artifacts << create(:ci_job_artifact, :junit, job: build)
       end
     end
 

@@ -43,6 +43,10 @@ describe Avatarable do
         expect(project.avatar_path(only_path: only_path)).to eq(avatar_path)
       end
 
+      it 'returns the expected avatar path with width parameter' do
+        expect(project.avatar_path(only_path: only_path, size: 128)).to eq(avatar_path + "?width=128")
+      end
+
       context "when avatar is stored remotely" do
         before do
           stub_uploads_object_storage(AvatarUploader)

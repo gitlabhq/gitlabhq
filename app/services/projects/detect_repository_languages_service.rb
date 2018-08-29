@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Projects
   class DetectRepositoryLanguagesService < BaseService
     attr_reader :detected_repository_languages, :programming_languages
@@ -13,10 +15,9 @@ module Projects
 
         detection.updates.each do |update|
           RepositoryLanguage
-            .arel_table.update_manager
             .where(project_id: project.id)
             .where(programming_language_id: update[:programming_language_id])
-            .set(share: update[:share])
+            .update_all(share: update[:share])
         end
 
         Gitlab::Database.bulk_insert(

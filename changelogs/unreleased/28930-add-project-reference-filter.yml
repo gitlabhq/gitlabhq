@@ -1,0 +1,5 @@
+---
+title: Add the ability to reference projects in comments and other markdown text.
+merge_request: 20285
+author: Reuben Pereira
+type: added

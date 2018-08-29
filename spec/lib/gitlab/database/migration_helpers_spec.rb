@@ -48,10 +48,10 @@ describe Gitlab::Database::MigrationHelpers do
         allow(model).to receive(:transaction_open?).and_return(false)
       end
 
-      context 'using PostgreSQL' do
+      context 'using PostgreSQL', :postgresql do
         before do
           allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
-          allow(model).to receive(:disable_statement_timeout)
+          allow(model).to receive(:disable_statement_timeout).and_call_original
         end
 
         it 'creates the index concurrently' do
@@ -114,12 +114,12 @@ describe Gitlab::Database::MigrationHelpers do
       before do
         allow(model).to receive(:transaction_open?).and_return(false)
         allow(model).to receive(:index_exists?).and_return(true)
+        allow(model).to receive(:disable_statement_timeout).and_call_original
       end
 
       context 'using PostgreSQL' do
         before do
           allow(model).to receive(:supports_drop_index_concurrently?).and_return(true)
-          allow(model).to receive(:disable_statement_timeout)
         end
 
         describe 'by column name' do
@@ -162,7 +162,7 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'using MySQL' do
         it 'removes an index' do
-          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(false).twice
 
           expect(model).to receive(:remove_index)
             .with(:users, { column: :foo })
@@ -224,21 +224,26 @@ describe Gitlab::Database::MigrationHelpers do
 
       context 'using PostgreSQL' do
         before do
+          allow(Gitlab::Database).to receive(:postgresql?).and_return(true)
           allow(Gitlab::Database).to receive(:mysql?).and_return(false)
         end
 
         it 'creates a concurrent foreign key and validates it' do
-          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).ordered.with(/NOT VALID/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).with(/RESET ALL/)
 
           model.add_concurrent_foreign_key(:projects, :users, column: :user_id)
         end
 
         it 'appends a valid ON DELETE statement' do
-          expect(model).to receive(:disable_statement_timeout)
+          expect(model).to receive(:disable_statement_timeout).and_call_original
+          expect(model).to receive(:execute).with(/statement_timeout/)
           expect(model).to receive(:execute).with(/ON DELETE SET NULL/)
           expect(model).to receive(:execute).ordered.with(/VALIDATE CONSTRAINT/)
+          expect(model).to receive(:execute).with(/RESET ALL/)
 
           model.add_concurrent_foreign_key(:projects, :users,
                                            column: :user_id,
@@ -291,12 +296,67 @@ describe Gitlab::Database::MigrationHelpers do
 
   describe '#disable_statement_timeout' do
     context 'using PostgreSQL' do
-      it 'disables statement timeouts' do
+      it 'disables statement timeouts to current transaction only' do
         expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
 
-        expect(model).to receive(:execute).with('SET statement_timeout TO 0')
+        expect(model).to receive(:execute).with('SET LOCAL statement_timeout TO 0')
 
         model.disable_statement_timeout
+      end
+
+      # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
+      context 'with real environment', :postgresql, :delete do
+        before do
+          model.execute("SET statement_timeout TO '20000'")
+        end
+
+        after do
+          model.execute('RESET ALL')
+        end
+
+        it 'defines statement to 0 only for current transaction' do
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+
+          model.connection.transaction do
+            model.disable_statement_timeout
+            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+          end
+
+          expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+        end
+      end
+
+      context 'when passing a blocks' do
+        it 'disables statement timeouts on session level and executes the block' do
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(true)
+          expect(model).to receive(:execute).with('SET statement_timeout TO 0')
+          expect(model).to receive(:execute).with('RESET ALL')
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
+
+        # this specs runs without an enclosing transaction (:delete truncation method for db_cleaner)
+        context 'with real environment', :postgresql, :delete do
+          before do
+            model.execute("SET statement_timeout TO '20000'")
+          end
+
+          after do
+            model.execute('RESET ALL')
+          end
+
+          it 'defines statement to 0 for any code run inside the block' do
+            expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('20s')
+
+            model.disable_statement_timeout do
+              model.connection.transaction do
+                expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+              end
+
+              expect(model.execute('SHOW statement_timeout').first['statement_timeout']).to eq('0')
+            end
+          end
+        end
       end
     end
 
@@ -307,6 +367,16 @@ describe Gitlab::Database::MigrationHelpers do
         expect(model).not_to receive(:execute)
 
         model.disable_statement_timeout
+      end
+
+      context 'when passing a blocks' do
+        it 'executes the block of code' do
+          expect(Gitlab::Database).to receive(:postgresql?).and_return(false)
+
+          expect(model).not_to receive(:execute)
+
+          expect { |block| model.disable_statement_timeout(&block) }.to yield_control
+        end
       end
     end
   end

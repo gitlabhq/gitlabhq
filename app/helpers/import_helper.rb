@@ -5,6 +5,10 @@ module ImportHelper
     false
   end
 
+  def sanitize_project_name(name)
+    name.gsub(/[^\w\-]/, '-')
+  end
+
   def import_project_target(owner, name)
     namespace = current_user.can_create_group? ? owner : current_user.namespace_path
     "#{namespace}/#{name}"

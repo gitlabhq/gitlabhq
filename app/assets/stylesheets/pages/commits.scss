@@ -1,9 +1,17 @@
-.commit-description {
-  background: none;
+%commit-description-base {
+  padding: $gl-padding-8 0 $gl-padding-8 $gl-padding-8;
+  margin-top: $gl-padding-8;
   border: 0;
-  padding: 0;
+  border-radius: unset;
+  background: none;
   word-break: normal;
-  white-space: pre-wrap;
+  overflow-x: auto;
+  border-left: 3px solid $white-dark;
+  color: $gl-text-color-secondary;
+}
+
+.commit-description {
+  @extend %commit-description-base;
 }
 
 .js-details-expand {
@@ -175,11 +183,17 @@
   justify-content: space-between;
   align-items: start;
   flex-grow: 1;
+  min-width: 0;
+
+  .project_namespace {
+    color: $gl-text-color-secondary;
+  }
 }
 
 .commit-content {
   padding-right: 10px;
   white-space: normal;
+  overflow: hidden;
 
   .commit-title {
     display: flex;
@@ -265,22 +279,14 @@
     }
 
     &.autodevops-link {
-      color: $gl-link-color;
+      color: $blue-600;
     }
   }
 
   .commit-row-description {
-    font-size: 14px;
-    padding: 0 0 0 $gl-padding-8;
-    border: 0;
+    @extend %commit-description-base;
     display: none;
-    white-space: pre-wrap;
-    word-break: normal;
-    color: $gl-text-color-secondary;
-    background: none;
-    font-family: inherit;
-    border-left: 2px solid $theme-gray-300;
-    border-radius: unset;
+    flex: 1;
 
     a {
       color: $gl-text-color;
@@ -315,7 +321,7 @@
   }
 
   .commit-sha {
-    color: $gl-link-color;
+    color: $blue-600;
   }
 
   .commit-row-message {

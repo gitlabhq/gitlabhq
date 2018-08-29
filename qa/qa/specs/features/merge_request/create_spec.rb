@@ -1,5 +1,5 @@
 module QA
-  describe 'creates a merge request', :core do
+  describe 'creates a merge request with milestone' do
     it 'user creates a new merge request'  do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
@@ -27,6 +27,27 @@ module QA
       Page::Issuable::Sidebar.perform do |sidebar|
         expect(sidebar).to have_milestone(current_milestone.title)
       end
+    end
+  end
+
+  describe 'creates a merge request', :smoke do
+    it 'user creates a new merge request'  do
+      Runtime::Browser.visit(:gitlab, Page::Main::Login)
+      Page::Main::Login.act { sign_in_using_credentials }
+
+      current_project = Factory::Resource::Project.fabricate! do |project|
+        project.name = 'project-with-merge-request'
+      end
+
+      Factory::Resource::MergeRequest.fabricate! do |merge_request|
+        merge_request.title = 'This is a merge request'
+        merge_request.description = 'Great feature'
+        merge_request.project = current_project
+      end
+
+      expect(page).to have_content('This is a merge request')
+      expect(page).to have_content('Great feature')
+      expect(page).to have_content(/Opened [\w\s]+ ago/)
     end
   end
 end

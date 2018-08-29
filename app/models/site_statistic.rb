@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class SiteStatistic < ActiveRecord::Base
   # prevents the creation of multiple rows
   default_value_for :id, 1
@@ -47,7 +49,7 @@ class SiteStatistic < ActiveRecord::Base
   #
   # @return [SiteStatistic] record with tracked information
   def self.fetch
-    SiteStatistic.transaction(requires_new: true) do
+    transaction(requires_new: true) do
       SiteStatistic.first_or_create!
     end
   rescue ActiveRecord::RecordNotUnique

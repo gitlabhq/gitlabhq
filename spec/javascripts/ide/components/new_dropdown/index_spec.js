@@ -62,7 +62,9 @@ describe('new dropdown component', () => {
       vm.dropdownOpen = true;
 
       setTimeout(() => {
-        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalled();
+        expect(vm.$refs.dropdownMenu.scrollIntoView).toHaveBeenCalledWith({
+          block: 'nearest',
+        });
 
         done();
       });
@@ -73,7 +75,7 @@ describe('new dropdown component', () => {
     it('calls delete action', () => {
       spyOn(vm, 'deleteEntry');
 
-      vm.$el.querySelectorAll('.dropdown-menu button')[3].click();
+      vm.$el.querySelectorAll('.dropdown-menu button')[4].click();
 
       expect(vm.deleteEntry).toHaveBeenCalledWith('');
     });

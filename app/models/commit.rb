@@ -193,6 +193,7 @@ class Commit
   # otherwise returns commit message without first line
   def description
     return safe_message if full_title.length >= 100
+    return no_commit_message if safe_message.blank?
 
     safe_message.split("\n", 2)[1].try(:chomp)
   end
@@ -446,6 +447,10 @@ class Commit
 
   def persisted?
     true
+  end
+
+  def to_ability_name
+    model_name.singular
   end
 
   def touch

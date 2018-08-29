@@ -1,12 +1,7 @@
 %aside.right-sidebar.right-sidebar-expanded.build-sidebar.js-build-sidebar.js-right-sidebar{ data: { "offset-top" => "101", "spy" => "affix" } }
   .sidebar-container
     .blocks-container
-      - if can?(current_user, :create_build_terminal, @build)
-        .block
-          = link_to terminal_project_job_path(@project, @build), class: 'terminal-button pull-right btn visible-md-block visible-lg-block', title: 'Terminal' do
-            Terminal
-
-      #js-details-block-vue{ data: { can_user_retry: can?(current_user, :update_build, @build) && @build.retryable? } }
+      #js-details-block-vue{ data: { terminal_path: can?(current_user, :create_build_terminal, @build) && @build.has_terminal? ? terminal_project_job_path(@project, @build) : nil } }
 
       - if can?(current_user, :read_build, @project) && (@build.artifacts? || @build.artifacts_expired?)
         .block
@@ -87,7 +82,7 @@
         - builds.select{|build| build.status == build_status}.each do |build|
           .build-job{ class: sidebar_build_class(build, @build), data: { stage: build.stage } }
             - tooltip = sanitize(build.tooltip_message.dup)
-            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', html: 'true', title: tooltip, container: 'body' }) do
+            = link_to(project_job_path(@project, build), data: { toggle: 'tooltip', title: tooltip, container: 'body' }) do
               = sprite_icon('arrow-right', size:16, css_class: 'icon-arrow-right')
               %span{ class: "ci-status-icon-#{build.status}" }
                 = ci_icon_for_status(build.status)

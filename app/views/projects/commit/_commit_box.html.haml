@@ -55,7 +55,7 @@
   %h3.commit-title
     = markdown_field(@commit, :title)
   - if @commit.description.present?
-    .commit-description<
+    %pre.commit-description<
       = preserve(markdown_field(@commit, :description))
 
 .info-well

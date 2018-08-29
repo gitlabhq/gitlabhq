@@ -1,0 +1,6 @@
+---
+title: Vendor Auto-DevOps.gitlab-ci.yml with new proxy env vars passed through to
+  docker
+merge_request: 21159
+author: kinolaev
+type: added

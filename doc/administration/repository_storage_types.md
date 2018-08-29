@@ -42,7 +42,7 @@ Registry, etc.
 ## Hashed Storage
 
 > **Warning:** Hashed storage is in **Beta**. For the latest updates, check the
-> associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821)
+> associated [issue](https://gitlab.com/gitlab-com/infrastructure/issues/3542)
 > and please report any problems you encounter.
 
 Hashed Storage is the new storage behavior we are rolling out with 10.0. Instead
@@ -73,7 +73,7 @@ by another folder with the next 2 characters. They are both stored in a special
 ### How to migrate to Hashed Storage
 
 In GitLab, go to **Admin > Settings**, find the **Repository Storage** section
-and select "_Create new projects using hashed storage paths_".
+and select "_Use hashed storage paths for newly created and renamed projects_".
 
 To migrate your existing projects to the new storage type, check the specific
 [rake tasks].

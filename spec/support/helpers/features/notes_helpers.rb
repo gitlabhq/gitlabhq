@@ -20,6 +20,13 @@ module Spec
               end
             end
           end
+
+          def preview_note(text)
+            page.within('.js-main-target-form') do
+              fill_in('note[note]', with: text)
+              click_on('Preview')
+            end
+          end
         end
       end
     end

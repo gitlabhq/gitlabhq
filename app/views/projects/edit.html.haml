@@ -15,6 +15,7 @@
     .settings-content
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-general-project-settings' }
         %fieldset
           .row
             .form-group.col-md-9
@@ -51,7 +52,7 @@
           .form-group
             - if @project.avatar?
               .avatar-container.s160.append-bottom-15
-                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160')
+                = project_icon(@project.full_path, alt: '', class: 'avatar project-avatar s160', width: 160, height: 160)
             - if @project.avatar_in_git
               %p.light
                 = _("Project avatar in repository: %{link}").html_safe % { link: @project.avatar_in_git }
@@ -75,8 +76,9 @@
         Enable or disable certain project features and choose access levels.
     .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         -# haml-lint:disable InlineJavaScript
-        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
+        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data_json(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
@@ -94,6 +96,7 @@
       = render_if_exists 'shared/promotions/promote_mr_features'
 
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
+        %input{ name: 'update_section', type: 'hidden', value: 'js-merge-request-settings' }
         = render 'projects/merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save qa-save-merge-request-changes"
 

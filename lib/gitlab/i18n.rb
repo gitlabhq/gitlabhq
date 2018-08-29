@@ -5,6 +5,7 @@ module Gitlab
     AVAILABLE_LANGUAGES = {
       'en' => 'English',
       'es' => 'Español',
+      'gl_ES' => 'Galego',
       'de' => 'Deutsch',
       'fr' => 'Français',
       'pt_BR' => 'Português (Brasil)',
@@ -22,7 +23,8 @@ module Gitlab
       'tr_TR' => 'Türkçe',
       'id_ID' => 'Bahasa Indonesia',
       'fil_PH' => 'Filipino',
-      'pl_PL' => 'Polski'
+      'pl_PL' => 'Polski',
+      'cs_CZ' => 'Čeština'
     }.freeze
 
     def available_locales

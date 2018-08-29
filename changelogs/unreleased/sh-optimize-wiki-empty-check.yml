@@ -1,5 +1,0 @@
----
-title: Optimize ProjectWiki#empty? check
-merge_request: 20573
-author:
-type: performance

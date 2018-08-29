@@ -1,6 +1,6 @@
 .row.prepend-top-default
   .col-lg-12
-    = form_for @project, url: project_settings_ci_cd_path(@project) do |f|
+    = form_for @project, url: project_settings_ci_cd_path(@project, anchor: 'js-general-pipeline-settings') do |f|
       = form_errors(@project)
       %fieldset.builds-feature
         .form-group.append-bottom-default.js-secret-runner-token
@@ -17,7 +17,7 @@
           %h5.prepend-top-0
             = _("Git strategy for pipelines")
           %p
-            = _("Choose between <code>clone</code> or <code>fetch</code> to get the recent application code")
+            = _("Choose between <code>clone</code> or <code>fetch</code> to get the recent application code").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'git-strategy'), target: '_blank'
           .form-check
             = f.radio_button :build_allow_git_fetch, 'false', { class: 'form-check-input' }
@@ -47,7 +47,7 @@
           = f.label :ci_config_path, _('Custom CI config path'), class: 'label-bold'
           = f.text_field :ci_config_path, class: 'form-control', placeholder: '.gitlab-ci.yml'
           %p.form-text.text-muted
-            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>")
+            = _("The path to CI config file. Defaults to <code>.gitlab-ci.yml</code>").html_safe
             = link_to icon('question-circle'), help_page_path('user/project/pipelines/settings', anchor: 'custom-ci-config-path'), target: '_blank'
 
         %hr

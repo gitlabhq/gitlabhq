@@ -112,7 +112,7 @@
 
     &.image_file,
     &.video {
-      background: $file-image-bg;
+      background: $gray-darker;
       text-align: center;
       padding: 30px;
 
@@ -131,7 +131,7 @@
     }
 
     &.blob-no-preview {
-      background: $blob-bg;
+      background: $gray-darker;
       text-shadow: 0 1px 2px $white-light;
       padding: 100px 0;
     }
@@ -146,7 +146,7 @@
       }
 
       tr {
-        border-bottom: 1px solid $blame-border;
+        border-bottom: 1px solid $gray-darker;
 
         &:last-child {
           border-bottom: 0;
@@ -211,7 +211,7 @@
     }
 
     &.logs {
-      background: $logs-bg;
+      background: $gray-darker;
       max-height: 700px;
       overflow-y: auto;
 
@@ -233,7 +233,7 @@
           }
 
           &:hover {
-            background: $row-hover;
+            background: $blue-50;
           }
         }
       }
@@ -286,19 +286,19 @@ span.idiff {
 
   .new-file {
     a {
-      color: $gl-text-green;
+      color: $green-600;
     }
   }
 
   .renamed-file {
     a {
-      color: $gl-text-orange;
+      color: $orange-600;
     }
   }
 
   .deleted-file {
     a {
-      color: $gl-text-red;
+      color: $red-500;
     }
   }
 
@@ -312,11 +312,11 @@ span.idiff {
     text-decoration: none;
 
     .new-file {
-      color: $notify-new-file;
+      color: $green-600;
     }
 
     .deleted-file {
-      color: $notify-deleted-file;
+      color: $red-700;
     }
   }
 }

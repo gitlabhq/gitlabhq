@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class JiraService < IssueTrackerService
   include Gitlab::Routing
   include ApplicationHelper
@@ -7,6 +9,10 @@ class JiraService < IssueTrackerService
   validates :api_url, public_url: true, allow_blank: true
   validates :username, presence: true, if: :activated?
   validates :password, presence: true, if: :activated?
+
+  validates :jira_issue_transition_id,
+            format: { with: Gitlab::Regex.jira_transition_id_regex, message: "transition ids can have only numbers which can be split with , or ;" },
+            allow_blank: true
 
   prop_accessor :username, :password, :url, :api_url, :jira_issue_transition_id, :title, :description
 
@@ -91,7 +97,7 @@ class JiraService < IssueTrackerService
       { type: 'text', name: 'api_url', title: 'JIRA API URL', placeholder: 'If different from Web URL' },
       { type: 'text', name: 'username', placeholder: '', required: true },
       { type: 'password', name: 'password', placeholder: '', required: true },
-      { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID', placeholder: '' }
+      { type: 'text', name: 'jira_issue_transition_id', title: 'Transition ID(s)', placeholder: 'Use , or ; to separate multiple transition IDs' }
     ]
   end
 
@@ -191,8 +197,18 @@ class JiraService < IssueTrackerService
     end
   end
 
+  # jira_issue_transition_id can have multiple values split by , or ;
+  # the issue is transitioned at the order given by the user
+  # if any transition fails it will log the error message and stop the transition sequence
   def transition_issue(issue)
-    issue.transitions.build.save(transition: { id: jira_issue_transition_id })
+    jira_issue_transition_id.scan(Gitlab::Regex.jira_transition_id_regex).each do |transition_id|
+      begin
+        issue.transitions.build.save!(transition: { id: transition_id })
+      rescue => error
+        Rails.logger.info "#{self.class.name} Issue Transition failed message ERROR: #{client_url} - #{error.message}"
+        return false
+      end
+    end
   end
 
   def add_issue_solved_comment(issue, commit_id, commit_url)

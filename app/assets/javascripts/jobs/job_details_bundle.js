@@ -52,9 +52,9 @@ export default () => {
       return createElement('details-block', {
         props: {
           isLoading: this.mediator.state.isLoading,
-          canUserRetry: !!('canUserRetry' in detailsBlockDataset),
           job: this.mediator.store.state.job,
           runnerHelpUrl: dataset.runnerHelpUrl,
+          terminalPath: detailsBlockDataset.terminalPath,
         },
       });
     },

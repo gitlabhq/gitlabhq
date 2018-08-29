@@ -42,7 +42,6 @@ describe Project do
     it { is_expected.to have_one(:assembla_service) }
     it { is_expected.to have_one(:slack_slash_commands_service) }
     it { is_expected.to have_one(:mattermost_slash_commands_service) }
-    it { is_expected.to have_one(:gemnasium_service) }
     it { is_expected.to have_one(:buildkite_service) }
     it { is_expected.to have_one(:bamboo_service) }
     it { is_expected.to have_one(:teamcity_service) }
@@ -362,6 +361,15 @@ describe Project do
 
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
+  end
+
+  describe '#to_reference_with_postfix' do
+    it 'returns the full path with reference_postfix' do
+      namespace = create(:namespace, path: 'sample-namespace')
+      project = create(:project, path: 'sample-project', namespace: namespace)
+
+      expect(project.to_reference_with_postfix).to eq 'sample-namespace/sample-project>'
+    end
   end
 
   describe '#to_reference' do
@@ -1466,6 +1474,53 @@ describe Project do
 
         expect(search_result).to eq([pending_delete_project])
       end
+    end
+  end
+
+  describe '.optionally_search' do
+    let(:project) { create(:project) }
+
+    it 'searches for projects matching the query if one is given' do
+      relation = described_class.optionally_search(project.name)
+
+      expect(relation).to eq([project])
+    end
+
+    it 'returns the current relation if no search query is given' do
+      relation = described_class.where(id: project.id)
+
+      expect(relation.optionally_search).to eq(relation)
+    end
+  end
+
+  describe '.paginate_in_descending_order_using_id' do
+    let!(:project1) { create(:project) }
+    let!(:project2) { create(:project) }
+
+    it 'orders the relation in descending order' do
+      expect(described_class.paginate_in_descending_order_using_id)
+        .to eq([project2, project1])
+    end
+
+    it 'applies a limit to the relation' do
+      expect(described_class.paginate_in_descending_order_using_id(limit: 1))
+        .to eq([project2])
+    end
+
+    it 'limits projects by and ID when given' do
+      expect(described_class.paginate_in_descending_order_using_id(before: project2.id))
+        .to eq([project1])
+    end
+  end
+
+  describe '.including_namespace_and_owner' do
+    it 'eager loads the namespace and namespace owner' do
+      create(:project)
+
+      row = described_class.eager_load_namespace_and_owner.to_a.first
+      recorder = ActiveRecord::QueryRecorder.new { row.namespace.owner }
+
+      expect(recorder.count).to be_zero
     end
   end
 
@@ -2934,6 +2989,7 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
       end
 
       it 'renames a repository' do
@@ -3105,6 +3161,20 @@ describe Project do
         # call. This makes testing a bit easier.
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
         allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+        stub_feature_flags(skip_hashed_storage_upgrade: false)
+      end
+
+      context 'migration to hashed storage' do
+        it 'calls HashedStorageMigrationService with correct options' do
+          project = create(:project, :repository, :legacy_storage)
+          allow(project).to receive(:previous_changes).and_return('path' => ['foo'])
+
+          expect_next_instance_of(::Projects::HashedStorageMigrationService) do |service|
+            expect(service).to receive(:execute).and_return(true)
+          end
+
+          project.rename_repo
+        end
       end
 
       it 'renames a repository' do
@@ -3153,8 +3223,10 @@ describe Project do
         context 'when not rolled out' do
           let(:project) { create(:project, :repository, storage_version: 1, skip_disk_validation: true) }
 
-          it 'moves pages folder to new location' do
-            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+          it 'moves pages folder to hashed storage' do
+            expect_next_instance_of(Projects::HashedStorage::MigrateAttachmentsService) do |service|
+              expect(service).to receive(:execute)
+            end
 
             project.rename_repo
           end
@@ -3235,6 +3307,11 @@ describe Project do
   end
 
   describe '#auto_devops_enabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     subject { project.auto_devops_enabled? }
@@ -3244,19 +3321,14 @@ describe Project do
         stub_application_setting(auto_devops_enabled: true)
       end
 
-      it 'auto devops is implicitly enabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).to be_auto_devops_enabled
-      end
+      it { is_expected.to be_truthy }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
-        end
+        it { is_expected.to be_truthy }
       end
 
       context 'when explicitly disabled' do
@@ -3264,9 +3336,7 @@ describe Project do
           create(:project_auto_devops, project: project, enabled: false)
         end
 
-        it "auto devops is disabled" do
-          expect(project).not_to be_auto_devops_enabled
-        end
+        it { is_expected.to be_falsey }
       end
     end
 
@@ -3275,24 +3345,76 @@ describe Project do
         stub_application_setting(auto_devops_enabled: false)
       end
 
-      it 'auto devops is implicitly disabled' do
-        expect(project.auto_devops).to be_nil
-        expect(project).not_to be_auto_devops_enabled
-      end
+      it { is_expected.to be_falsey }
 
       context 'when explicitly enabled' do
         before do
           create(:project_auto_devops, project: project)
         end
 
-        it "auto devops is enabled" do
-          expect(project).to be_auto_devops_enabled
+        it { is_expected.to be_truthy }
+      end
+
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
+        end
+
+        it { is_expected.to be_truthy }
+      end
+    end
+  end
+
+  describe '#has_auto_devops_implicitly_enabled?' do
+    set(:project) { create(:project) }
+
+    context 'when disabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: false)
+      end
+
+      it 'does not have auto devops implicitly disabled' do
+        expect(project).not_to have_auto_devops_implicitly_enabled
+      end
+    end
+
+    context 'when enabled in settings' do
+      before do
+        stub_application_setting(auto_devops_enabled: true)
+      end
+
+      it 'auto devops is implicitly disabled' do
+        expect(project).to have_auto_devops_implicitly_enabled
+      end
+
+      context 'when explicitly disabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: false)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
+        end
+      end
+
+      context 'when explicitly enabled' do
+        before do
+          create(:project_auto_devops, project: project, enabled: true)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_enabled
         end
       end
     end
   end
 
   describe '#has_auto_devops_implicitly_disabled?' do
+    before do
+      allow(Feature).to receive(:enabled?).and_call_original
+      Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(0)
+    end
+
     set(:project) { create(:project) }
 
     context 'when enabled in settings' do
@@ -3314,6 +3436,16 @@ describe Project do
         expect(project).to have_auto_devops_implicitly_disabled
       end
 
+      context 'when force_autodevops_on_by_default is enabled for the project' do
+        before do
+          Feature.get(:force_autodevops_on_by_default).enable_percentage_of_actors(100)
+        end
+
+        it 'does not have auto devops implicitly disabled' do
+          expect(project).not_to have_auto_devops_implicitly_disabled
+        end
+      end
+
       context 'when explicitly disabled' do
         before do
           create(:project_auto_devops, project: project, enabled: false)
@@ -3326,7 +3458,7 @@ describe Project do
 
       context 'when explicitly enabled' do
         before do
-          create(:project_auto_devops, project: project)
+          create(:project_auto_devops, project: project, enabled: true)
         end
 
         it 'does not have auto devops implicitly disabled' do

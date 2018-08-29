@@ -36,6 +36,7 @@ import {
   notify,
   SourceBranchRemovalStatus,
 } from './dependencies';
+import GroupedTestReportsApp from '../reports/components/grouped_test_reports_app.vue';
 import { setFaviconOverlay } from '../lib/utils/common_utils';
 
 export default {
@@ -68,6 +69,7 @@ export default {
     'mr-widget-auto-merge-failed': AutoMergeFailed,
     'mr-widget-rebase': RebaseState,
     SourceBranchRemovalStatus,
+    GroupedTestReportsApp,
   },
   props: {
     mrData: {
@@ -252,6 +254,7 @@ export default {
       :pipeline="mr.pipeline"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
     />
     <deployment
@@ -260,6 +263,10 @@ export default {
       :deployment="deployment"
     />
     <div class="mr-section-container">
+      <grouped-test-reports-app
+        v-if="mr.testResultsPath"
+        :endpoint="mr.testResultsPath"
+      />
       <div class="mr-widget-section">
         <component
           :is="componentName"

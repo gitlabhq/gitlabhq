@@ -19,7 +19,7 @@ describe Projects::DeployKeysController do
       it 'redirects to blob' do
         get :index, params
 
-        expect(response).to redirect_to(namespace_project_settings_repository_path(params))
+        expect(response).to redirect_to(project_settings_repository_path(project, anchor: 'js-deploy-keys-settings'))
       end
     end
 

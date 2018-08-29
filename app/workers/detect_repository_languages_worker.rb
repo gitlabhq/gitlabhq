@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class DetectRepositoryLanguagesWorker
   include ApplicationWorker
   include ExceptionBacktrace
@@ -13,8 +15,6 @@ class DetectRepositoryLanguagesWorker
     @project = Project.find_by(id: project_id)
     user = User.find_by(id: user_id)
     return unless project && user
-
-    return if Feature.disabled?(:repository_languages, project.namespace)
 
     try_obtain_lease do
       ::Projects::DetectRepositoryLanguagesService.new(project, user).execute

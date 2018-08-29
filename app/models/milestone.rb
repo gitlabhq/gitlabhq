@@ -146,22 +146,25 @@ class Milestone < ActiveRecord::Base
   end
 
   def self.sort_by_attribute(method)
-    case method.to_s
-    when 'due_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
-    when 'due_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
-    when 'name_asc'
-      reorder(Arel::Nodes::Ascending.new(arel_table[:title].lower))
-    when 'name_desc'
-      reorder(Arel::Nodes::Descending.new(arel_table[:title].lower))
-    when 'start_date_asc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
-    when 'start_date_desc'
-      reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
-    else
-      order_by(method)
-    end
+    sorted =
+      case method.to_s
+      when 'due_date_asc'
+        reorder(Gitlab::Database.nulls_last_order('due_date', 'ASC'))
+      when 'due_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('due_date', 'DESC'))
+      when 'name_asc'
+        reorder(Arel::Nodes::Ascending.new(arel_table[:title].lower))
+      when 'name_desc'
+        reorder(Arel::Nodes::Descending.new(arel_table[:title].lower))
+      when 'start_date_asc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'ASC'))
+      when 'start_date_desc'
+        reorder(Gitlab::Database.nulls_last_order('start_date', 'DESC'))
+      else
+        order_by(method)
+      end
+
+    sorted.with_order_id_desc
   end
 
   ##

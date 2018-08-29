@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   class Build < CommitStatus
     prepend ArtifactMigratable
@@ -65,11 +67,21 @@ module Ci
         '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').archive)
     end
 
+    scope :with_archived_trace, ->() do
+      where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
+    end
+
     scope :without_archived_trace, ->() do
       where('NOT EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').trace)
     end
 
+    scope :with_test_reports, ->() do
+      includes(:job_artifacts_junit) # Prevent N+1 problem when iterating each ci_job_artifact row
+        .where('EXISTS (?)', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id').test_reports)
+    end
+
     scope :with_artifacts_stored_locally, -> { with_artifacts_archive.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
+    scope :with_archived_trace_stored_locally, -> { with_archived_trace.where(artifacts_file_store: [nil, LegacyArtifactUploader::Store::LOCAL]) }
     scope :with_artifacts_not_expired, ->() { with_artifacts_archive.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts_archive.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
@@ -219,7 +231,7 @@ module Ci
     end
 
     def cancelable?
-      active?
+      active? || created?
     end
 
     def retryable?
@@ -627,7 +639,23 @@ module Ci
       running? && runner_session_url.present?
     end
 
+    def collect_test_reports!(test_reports)
+      test_reports.get_suite(group_name).tap do |test_suite|
+        each_test_report do |file_type, blob|
+          Gitlab::Ci::Parsers.fabricate!(file_type).parse!(blob, test_suite)
+        end
+      end
+    end
+
     private
+
+    def each_test_report
+      Ci::JobArtifact::TEST_REPORT_FILE_TYPES.each do |file_type|
+        public_send("job_artifacts_#{file_type}").each_blob do |blob| # rubocop:disable GitlabSecurity/PublicSend
+          yield file_type, blob
+        end
+      end
+    end
 
     def update_artifacts_size
       self.artifacts_size = legacy_artifacts_file&.size

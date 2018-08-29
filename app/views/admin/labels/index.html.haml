@@ -7,10 +7,11 @@
     = _('Labels')
 %hr
 
-.labels
+.labels.labels-container.admin-labels
   - if @labels.present?
-    %ul.bordered-list.manage-labels-list
+    %ul.manage-labels-list
       = render @labels
+
     = paginate @labels, theme: 'gitlab'
   - else
     .card.bg-light

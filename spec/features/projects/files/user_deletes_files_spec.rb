@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Projects > Files > User deletes files' do
+describe 'Projects > Files > User deletes files', :js do
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -19,6 +19,7 @@ describe 'Projects > Files > User deletes files' do
     before do
       project.add_maintainer(user)
       visit(project_tree_path_root_ref)
+      wait_for_requests
     end
 
     it 'deletes the file', :js do
@@ -35,10 +36,11 @@ describe 'Projects > Files > User deletes files' do
     end
   end
 
-  context 'when an user does not have write access' do
+  context 'when an user does not have write access', :js do
     before do
       project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
+      wait_for_requests
     end
 
     it 'deletes the file in a forked project', :js do

@@ -254,8 +254,10 @@ module ApplicationSettingsHelper
       :usage_ping_enabled,
       :instance_statistics_visibility_private,
       :user_default_external,
+      :user_show_add_ssh_key_message,
       :user_oauth_applications,
-      :version_check_enabled
+      :version_check_enabled,
+      :web_ide_clientside_preview_enabled
     ]
   end
 end

@@ -32,6 +32,7 @@ export const rightSidebarViews = {
   pipelines: 'pipelines-list',
   jobsDetail: 'jobs-detail',
   mergeRequestInfo: 'merge-request-info',
+  clientSidePreview: 'clientside',
 };
 
 export const stageKeys = {
@@ -53,3 +54,10 @@ export const commitItemIconMap = {
     class: 'ide-file-deletion',
   },
 };
+
+export const modalTypes = {
+  rename: 'rename',
+  tree: 'tree',
+};
+
+export const packageJsonPath = 'package.json';

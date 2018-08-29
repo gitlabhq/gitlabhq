@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This module takes care of updating cache columns for Markdown-containing
 # fields. Use like this in the body of your class:
 #

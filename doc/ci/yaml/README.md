@@ -1075,8 +1075,10 @@ keep artifacts forever.
 After their expiry, artifacts are deleted hourly by default (via a cron job),
 and are not accessible anymore.
 
-The value of `expire_in` is an elapsed time. Examples of parsable values:
+The value of `expire_in` is an elapsed time in seconds, unless a unit is
+provided. Examples of parsable values:
 
+- '42'
 - '3 mins 4 sec'
 - '2 hrs 20 min'
 - '2h20min'
@@ -1091,6 +1093,52 @@ job:
   artifacts:
     expire_in: 1 week
 ```
+
+### `artifacts:reports`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20390) in
+GitLab 11.2. Requires GitLab Runner 11.2 and above.
+
+The `reports` keyword is used for collecting test reports from jobs and
+exposing them in GitLab's UI (merge requests, pipeline views). Read how to use
+this with [JUnit reports](#artifacts-reports-junit).
+
+NOTE: **Note:**
+The test reports are collected regardless of the job results (success or failure).
+You can use [`artifacts:expire_in`](#artifacts-expire_in) to set up an expiration
+date for their artifacts.
+
+#### `artifacts:reports:junit`
+
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/20390) in
+GitLab 11.2. Requires GitLab Runner 11.2 and above.
+
+The `junit` report collects [JUnit XML files](https://www.ibm.com/support/knowledgecenter/en/SSQ2R2_14.1.0/com.ibm.rsar.analysis.codereview.cobol.doc/topics/cac_useresults_junit.html)
+as artifacts. Although JUnit was originally developed in Java, there are many
+[third party ports](https://en.wikipedia.org/wiki/JUnit#Ports) for other
+languages like Javascript, Python, Ruby, etc.
+
+Below is an example of collecting a JUnit XML file from Ruby's RSpec test tool:
+
+```yaml
+rspec:
+  stage: test
+  script:
+  - bundle install
+  - rspec --format RspecJunitFormatter --out rspec.xml
+  artifacts:
+    reports:
+      junit: rspec.xml
+```
+
+The collected JUnit reports will be uploaded to GitLab as an artifact and will
+be automatically [shown in merge requests](../junit_test_reports.md).
+
+NOTE: **Note:**
+In case the JUnit tool you use exports to multiple XML files, you can specify
+multiple test report paths within a single job
+(`junit: [rspec-1.xml, rspec-2.xml, rspec-3.xml]`) and they will be automatically
+concatenated into a single file.
 
 ## `dependencies`
 

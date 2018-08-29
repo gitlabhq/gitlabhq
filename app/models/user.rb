@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
   include WithUploads
+  include OptionallySearch
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -101,6 +102,10 @@ class User < ActiveRecord::Base
   has_many :groups, through: :group_members
   has_many :owned_groups, -> { where(members: { access_level: Gitlab::Access::OWNER }) }, through: :group_members, source: :group
   has_many :maintainers_groups, -> { where(members: { access_level: Gitlab::Access::MAINTAINER }) }, through: :group_members, source: :group
+  has_many :owned_or_maintainers_groups,
+           -> { where(members: { access_level: [Gitlab::Access::MAINTAINER, Gitlab::Access::OWNER] }) },
+           through: :group_members,
+           source: :group
   alias_attribute :masters_groups, :maintainers_groups
 
   # Projects
@@ -249,18 +254,51 @@ class User < ActiveRecord::Base
   scope :external, -> { where(external: true) }
   scope :active, -> { with_state(:active).non_internal }
   scope :without_projects, -> { joins('LEFT JOIN project_authorizations ON users.id = project_authorizations.user_id').where(project_authorizations: { user_id: nil }) }
-  scope :todo_authors, ->(user_id, state) { where(id: Todo.where(user_id: user_id, state: state).select(:author_id)) }
   scope :order_recent_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'DESC')) }
   scope :order_oldest_sign_in, -> { reorder(Gitlab::Database.nulls_last_order('current_sign_in_at', 'ASC')) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
 
-  def self.with_two_factor_indistinct
-    joins("LEFT OUTER JOIN u2f_registrations AS u2f ON u2f.user_id = users.id")
-      .where("u2f.id IS NOT NULL OR users.otp_required_for_login = ?", true)
+  # Limits the users to those that have TODOs, optionally in the given state.
+  #
+  # user - The user to get the todos for.
+  #
+  # with_todos - If we should limit the result set to users that are the
+  #              authors of todos.
+  #
+  # todo_state - An optional state to require the todos to be in.
+  def self.limit_to_todo_authors(user: nil, with_todos: false, todo_state: nil)
+    if user && with_todos
+      where(id: Todo.where(user: user, state: todo_state).select(:author_id))
+    else
+      all
+    end
+  end
+
+  # Returns a relation that optionally includes the given user.
+  #
+  # user_id - The ID of the user to include.
+  def self.union_with_user(user_id = nil)
+    if user_id.present?
+      union = Gitlab::SQL::Union.new([all, User.unscoped.where(id: user_id)])
+
+      # We use "unscoped" here so that any inner conditions are not repeated for
+      # the outer query, which would be redundant.
+      User.unscoped.from("(#{union.to_sql}) #{User.table_name}")
+    else
+      all
+    end
   end
 
   def self.with_two_factor
-    with_two_factor_indistinct.distinct(arel_table[:id])
+    with_u2f_registrations = <<-SQL
+      EXISTS (
+        SELECT *
+        FROM u2f_registrations AS u2f
+        WHERE u2f.user_id = users.id
+      ) OR users.otp_required_for_login = ?
+    SQL
+
+    where(with_u2f_registrations, true)
   end
 
   def self.without_two_factor
@@ -359,6 +397,18 @@ class User < ActiveRecord::Base
           .or(fuzzy_arel_match(:username, query, lower_exact_match: true))
           .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+    end
+
+    # Limits the result set to users _not_ in the given query/list of IDs.
+    #
+    # users - The list of users to ignore. This can be an
+    #         `ActiveRecord::Relation`, or an Array.
+    def where_not_in(users = nil)
+      users ? where.not(id: users) : all
+    end
+
+    def reorder_by_name
+      reorder(:name)
     end
 
     # searches user by given pattern
@@ -512,7 +562,7 @@ class User < ActiveRecord::Base
         otp_grace_period_started_at: nil,
         otp_backup_codes:            nil
       )
-      self.u2f_registrations.destroy_all
+      self.u2f_registrations.destroy_all # rubocop: disable DestroyAll
     end
   end
 
@@ -982,15 +1032,7 @@ class User < ActiveRecord::Base
   end
 
   def manageable_groups
-    union_sql = Gitlab::SQL::Union.new([owned_groups.select(:id), maintainers_groups.select(:id)]).to_sql
-
-    # Update this line to not use raw SQL when migrated to Rails 5.2.
-    # Either ActiveRecord or Arel constructions are fine.
-    # This was replaced with the raw SQL construction because of bugs in the arel gem.
-    # Bugs were fixed in arel 9.0.0 (Rails 5.2).
-    owned_and_maintainer_groups = Group.where("namespaces.id IN (#{union_sql})") # rubocop:disable GitlabSecurity/SqlInjection
-
-    Gitlab::GroupHierarchy.new(owned_and_maintainer_groups).base_and_descendants
+    Gitlab::GroupHierarchy.new(owned_or_maintainers_groups).base_and_descendants
   end
 
   def namespaces
@@ -1242,11 +1284,6 @@ class User < ActiveRecord::Base
   def required_terms_not_accepted?
     Gitlab::CurrentSettings.current_application_settings.enforce_terms? &&
       !terms_accepted?
-  end
-
-  def owned_or_maintainers_groups
-    union = Gitlab::SQL::Union.new([owned_groups, maintainers_groups])
-    Group.from("(#{union.to_sql}) namespaces")
   end
 
   # @deprecated

@@ -1,5 +1,0 @@
----
-title: Fix updated_at if created_at is set for Note API
-merge_request:
-author:
-type: fixed

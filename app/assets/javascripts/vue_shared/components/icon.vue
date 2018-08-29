@@ -1,7 +1,7 @@
 <script>
 
 // only allow classes in images.scss e.g. s12
-const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
+const validSizes = [8, 10, 12, 16, 18, 24, 32, 48, 72];
 let iconValidator = () => true;
 
 /*
@@ -75,6 +75,12 @@ export default {
       required: false,
       default: null,
     },
+
+    tabIndex: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
 
   computed: {
@@ -98,6 +104,7 @@ export default {
     :height="height"
     :x="x"
     :y="y"
+    :tabindex="tabIndex"
   >
     <use v-bind="{ 'xlink:href':spriteHref }"/>
   </svg>

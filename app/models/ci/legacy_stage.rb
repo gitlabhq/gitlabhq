@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Ci
   # Currently this is artificial object, constructed dynamically
   # We should migrate this object to actual database record in the future

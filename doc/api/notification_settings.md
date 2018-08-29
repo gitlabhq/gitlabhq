@@ -15,7 +15,7 @@ mention
 custom
 ```
 
-If the `custom` level is used, specific email events can be controlled. Notification email events are defined in the `NotificationSetting::EMAIL_EVENTS` model variable. Currently, these events are recognized:
+If the `custom` level is used, specific email events can be controlled. Available events are returned by `NotificationSetting.email_events`. Currently, these events are recognized:
 
 ```
 new_note

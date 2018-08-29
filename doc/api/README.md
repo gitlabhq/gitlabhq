@@ -53,6 +53,7 @@ following locations:
 - [Project Members](members.md)
 - [Project Snippets](project_snippets.md)
 - [Protected Branches](protected_branches.md)
+- [Protected Tags](protected_tags.md)
 - [Repositories](repositories.md)
 - [Repository Files](repository_files.md)
 - [Runners](runners.md)
@@ -401,14 +402,13 @@ GET /api/v4/projects/1/branches/my%2Fbranch/commits
 
 ## Encoding API parameters of `array` and `hash` types
 
-When making an API call with parameters of type `array` and/or `hash`, the parameters may be
-specified as shown below.
+We can call the API with `array` and `hash` types parameters as shown below:
 
 ### `array`
 
 `import_sources` is a parameter of type `array`:
 
-```
+```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
 -d "import_sources[]=github" \
 -d "import_sources[]=bitbucket" \
@@ -419,7 +419,7 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
 
 `override_params` is a parameter of type `hash`:
 
-```
+```bash
 curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
 --form "namespace=email" \
 --form "path=impapi" \
@@ -427,6 +427,20 @@ curl --request POST --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" \
 --form "override_params[visibility]=private" \
 --form "override_params[some_other_param]=some_value" \
 https://gitlab.example.com/api/v4/projects/import
+```
+
+### Array of hashes
+
+`variables` is a parameter of type `array` containing hash key/value pairs `[{ 'key' => 'UPLOAD_TO_S3', 'value' => 'true' }]`:
+
+```bash
+curl --globoff --request POST --header "PRIVATE-TOKEN: ********************" \
+"https://gitlab.example.com/api/v4/projects/169/pipeline?ref=master&variables[][key]=VAR1&variables[][value]=hello&variables[][key]=VAR2&variables[][value]=world"
+
+curl --request POST --header "PRIVATE-TOKEN: ********************" \
+--header "Content-Type: application/json" \
+--data '{ "ref": "master", "variables": [ {"key": "VAR1", "value": "hello"}, {"key": "VAR2", "value": "world"} ] }' \
+"https://gitlab.example.com/api/v4/projects/169/pipeline"
 ```
 
 ## `id` vs `iid`

@@ -1,0 +1,20 @@
+/*
+ * This file is only for overriding Bootstrap 4 variables.
+ * Please add any new variables to variables.scss
+ */
+
+$secondary: $gray-light;
+$input-disabled-bg: $gray-light;
+$input-border-color: $theme-gray-200;
+$input-color: $gl-text-color;
+$font-family-sans-serif: $regular-font;
+$font-family-monospace: $monospace-font;
+$input-line-height: 20px;
+$btn-line-height: 20px;
+$table-accent-bg: $gray-light;
+$card-border-color: $border-color;
+$card-cap-bg: $gray-light;
+$success: $green-500;
+$info: $blue-500;
+$warning: $orange-500;
+$danger: $red-500;

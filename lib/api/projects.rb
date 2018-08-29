@@ -321,7 +321,7 @@ module API
       post ':id/archive' do
         authorize!(:archive_project, user_project)
 
-        user_project.archive!
+        ::Projects::UpdateService.new(user_project, current_user, archived: true).execute
 
         present user_project, with: Entities::Project
       end
@@ -332,7 +332,7 @@ module API
       post ':id/unarchive' do
         authorize!(:archive_project, user_project)
 
-        user_project.unarchive!
+        ::Projects::UpdateService.new(@project, current_user, archived: false).execute
 
         present user_project, with: Entities::Project
       end
@@ -386,7 +386,7 @@ module API
         requires :forked_from_id, type: String, desc: 'The ID of the project it was forked from'
       end
       post ":id/fork/:forked_from_id" do
-        authenticated_as_admin!
+        authorize! :admin_project, user_project
 
         fork_from_project = find_project!(params[:forked_from_id])
 

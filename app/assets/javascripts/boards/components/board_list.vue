@@ -112,12 +112,20 @@ export default {
           if (e.target) {
             const containerEl = e.target.closest('.js-board-list') || e.target.querySelector('.js-board-list');
             const toBoardType = containerEl.dataset.boardType;
+            const cloneActions = {
+              label: ['milestone', 'assignee'],
+              assignee: ['milestone', 'label'],
+              milestone: ['label', 'assignee'],
+            };
 
             if (toBoardType) {
               const fromBoardType = this.list.type;
+              // For each list we check if the destination list is
+              // a the list were we should clone the issue
+              const shouldClone = Object.entries(cloneActions).some(entry => (
+                 fromBoardType === entry[0] && entry[1].includes(toBoardType)));
 
-              if ((fromBoardType === 'assignee' && toBoardType === 'label') ||
-                  (fromBoardType === 'label' && toBoardType === 'assignee')) {
+              if (shouldClone) {
                 return 'clone';
               }
             }
@@ -145,7 +153,8 @@ export default {
         });
       },
       onUpdate: (e) => {
-        const sortedArray = this.sortable.toArray().filter(id => id !== '-1');
+        const sortedArray = this.sortable.toArray()
+          .filter(id => id !== '-1');
         gl.issueBoards.BoardsStore
           .moveIssueInList(this.list, Store.moving.issue, e.oldIndex, e.newIndex, sortedArray);
       },
@@ -194,7 +203,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
+      if (!this.list.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },

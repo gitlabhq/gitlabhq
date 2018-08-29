@@ -1,15 +1,17 @@
-= form_for @application_setting, url: admin_application_settings_path, html: { class: 'fieldset-form' } do |f|
+= form_for @application_setting, url: admin_application_settings_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' } do |f|
   = form_errors(@application_setting)
 
   %fieldset
     .form-group
-      .form-check
-        = f.check_box :auto_devops_enabled, class: 'form-check-input'
-        = f.label :auto_devops_enabled, class: 'form-check-label' do
-          Enabled Auto DevOps for projects by default
-      .form-text.text-muted
-        It will automatically build, test, and deploy applications based on a predefined CI/CD configuration
-        = link_to icon('question-circle'), help_page_path('topics/autodevops/index.md')
+      .card.auto-devops-card
+        .card-body
+          .form-check
+            = f.check_box :auto_devops_enabled, class: 'form-check-input'
+            = f.label :auto_devops_enabled, class: 'form-check-label' do
+              Default to Auto DevOps pipeline for all projects
+            .form-text.text-muted
+              = s_('CICD|The Auto DevOps pipeline will run if no alternative CI configuration file is found.')
+              = link_to _('More information'), help_page_path('topics/autodevops/index.md'), target: '_blank'
     .form-group
       = f.label :auto_devops_domain, class: 'label-bold'
       = f.text_field :auto_devops_domain, class: 'form-control', placeholder: 'domain.com'
@@ -36,6 +38,8 @@
       .form-text.text-muted
         Set the default expiration time for each job's artifacts.
         0 for unlimited.
+        The default unit is in seconds, but you can define an alternative. For example:
+        <code>4 mins 2 sec</code>, <code>2h42min</code>.
         = link_to icon('question-circle'), help_page_path('user/admin_area/settings/continuous_integration', anchor: 'default-artifacts-expiration')
 
   = f.submit 'Save changes', class: "btn btn-success"

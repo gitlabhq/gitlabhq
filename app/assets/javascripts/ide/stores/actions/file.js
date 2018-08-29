@@ -54,22 +54,19 @@ export const setFileActive = ({ commit, state, getters, dispatch }, path) => {
 
   commit(types.SET_FILE_ACTIVE, { path, active: true });
   dispatch('scrollToTab');
-
-  commit(types.SET_CURRENT_PROJECT, file.projectId);
-  commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
 export const getFileData = ({ state, commit, dispatch }, { path, makeFileActive = true }) => {
   const file = state.entries[path];
 
-  if (file.raw || file.tempFile) return Promise.resolve();
+  if (file.raw || (file.tempFile && !file.prevPath)) return Promise.resolve();
 
   commit(types.TOGGLE_LOADING, { entry: file });
 
+  const url = file.prevPath ? file.url.replace(file.path, file.prevPath) : file.url;
+
   return service
-    .getFileData(
-      `${gon.relative_url_root ? gon.relative_url_root : ''}${file.url.replace('/-/', '/')}`,
-    )
+    .getFileData(`${gon.relative_url_root ? gon.relative_url_root : ''}${url.replace('/-/', '/')}`)
     .then(({ data, headers }) => {
       const normalizedHeaders = normalizeHeaders(headers);
       setPageTitle(decodeURI(normalizedHeaders['PAGE-TITLE']));
@@ -95,14 +92,17 @@ export const setFileMrChange = ({ commit }, { file, mrChange }) => {
   commit(types.SET_FILE_MERGE_REQUEST_CHANGE, { file, mrChange });
 };
 
-export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) => {
+export const getRawFileData = ({ state, commit, dispatch, getters }, { path }) => {
   const file = state.entries[path];
   return new Promise((resolve, reject) => {
     service
       .getRawFileData(file)
       .then(raw => {
-        if (!file.tempFile) commit(types.SET_FILE_RAW_DATA, { file, raw });
+        if (!(file.tempFile && !file.prevPath)) commit(types.SET_FILE_RAW_DATA, { file, raw });
         if (file.mrChange && file.mrChange.new_file === false) {
+          const baseSha =
+            (getters.currentMergeRequest && getters.currentMergeRequest.baseCommitSha) || '';
+
           service
             .getBaseRawFileData(file, baseSha)
             .then(baseRaw => {
@@ -125,7 +125,7 @@ export const getRawFileData = ({ state, commit, dispatch }, { path, baseSha }) =
           action: payload =>
             dispatch('getRawFileData', payload).then(() => dispatch('setErrorMessage', null)),
           actionText: __('Please try again'),
-          actionPayload: { path, baseSha },
+          actionPayload: { path },
         });
         reject();
       });
@@ -176,8 +176,21 @@ export const setFileViewMode = ({ commit }, { file, viewMode }) => {
 export const discardFileChanges = ({ dispatch, state, commit, getters }, path) => {
   const file = state.entries[path];
 
+  if (file.deleted && file.parentPath) {
+    dispatch('restoreTree', file.parentPath);
+  }
+
+  if (file.movedPath) {
+    commit(types.DISCARD_FILE_CHANGES, file.movedPath);
+    commit(types.REMOVE_FILE_FROM_CHANGED, file.movedPath);
+  }
+
   commit(types.DISCARD_FILE_CHANGES, path);
   commit(types.REMOVE_FILE_FROM_CHANGED, path);
+
+  if (file.prevPath) {
+    dispatch('discardFileChanges', file.prevPath);
+  }
 
   if (file.tempFile && file.opened) {
     commit(types.TOGGLE_FILE_OPEN, path);

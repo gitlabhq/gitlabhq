@@ -197,6 +197,49 @@ describe 'Project' do
 
       expect(page.status_code).to eq(200)
     end
+
+    context 'for signed commit on default branch', :js do
+      before do
+        project.change_head('33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+      end
+
+      it 'displays a GPG badge' do
+        visit project_path(project)
+        wait_for_requests
+
+        expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+        expect(page).to have_selector '.gpg-status-box.invalid'
+      end
+    end
+
+    context 'for subgroups', :js do
+      let(:group) { create(:group) }
+      let(:subgroup) { create(:group, parent: group) }
+      let(:project) { create(:project, :repository, group: subgroup) }
+
+      it 'renders tree table without errors' do
+        wait_for_requests
+
+        expect(page).to have_selector('.tree-item')
+        expect(page).not_to have_selector('.flash-alert')
+      end
+
+      context 'for signed commit' do
+        before do
+          repository = project.repository
+          repository.write_ref("refs/heads/#{project.default_branch}", '33f3729a45c02fc67d00adb1b8bca394b0e761d9')
+          repository.expire_branches_cache
+        end
+
+        it 'displays a GPG badge' do
+          visit project_path(project)
+          wait_for_requests
+
+          expect(page).not_to have_selector '.gpg-status-box.js-loading-gpg-badge'
+          expect(page).to have_selector '.gpg-status-box.invalid'
+        end
+      end
+    end
   end
 
   describe 'activity view' do
