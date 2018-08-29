@@ -30,16 +30,10 @@ export const fetchDiffFiles = ({ state, commit }) => {
 };
 
 export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
-  console.log('ASSIGN DISCS : ');
-  console.log('DIFF : ', state.diffFiles);
-  console.log('STATE : ', allLineDiscussions);
-
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
-      console.log('KE : ', discussions);
       const fileHash = discussions[0].fileHash;
       const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
-      console.log('FILE : ', selectedFile);
       if (selectedFile) {
         const targetLine = selectedFile.parallelDiffLines.find(line => {
           return (
@@ -49,7 +43,6 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
         });
 
         if (targetLine) {
-          console.log('TARGET LINE : ', targetLine);
           Object.assign(targetLine.right, { discussions });
         }
       }
@@ -77,7 +70,6 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
           { timeout: 1000 },
         );
       } else {
-        console.log('No more items found -> Done');
         resolve();
       }
     });

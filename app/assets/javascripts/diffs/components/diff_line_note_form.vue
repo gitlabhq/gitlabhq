@@ -90,10 +90,7 @@ export default {
 
           this.refetchDiscussionById({ path: endpoint, discussionId: result.discussion_id })
             .then(selectedDiscussion => {
-              //debugger;
-              console.log('SEL DISCUSSION: ', selectedDiscussion);
               const lineCodeDiscussions = utils.reduceDiscussionsToLineCodes([selectedDiscussion]);
-              console.log('LINE CODE DISCUSSIONS: ', lineCodeDiscussions);
               this.assignDiscussionsToDiff(lineCodeDiscussions);
 
               this.handleCancelCommentForm();
