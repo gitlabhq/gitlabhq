@@ -3,7 +3,7 @@
 module Clusters
   module Gcp
     module Kubernetes
-      class FetchKubernetesTokenService
+      class CreateServiceAccountService
         attr_reader :api_url, :ca_pem, :username, :password
 
         def initialize(api_url, ca_pem, username, password)
@@ -14,52 +14,39 @@ module Clusters
         end
 
         def execute
-          read_secrets.each do |secret|
-            name = secret.dig('metadata', 'name')
-            if token_regex =~ name
-              token_base64 = secret.dig('data', 'token')
-              return Base64.decode64(token_base64) if token_base64
-            end
-          end
+          kubeclient = build_kube_client!(api_groups: ['api', 'apis/rbac.authorization.k8s.io'])
 
-          nil
+          kubeclient.create_service_account(service_account_resource)
+          kubeclient.create_cluster_role_binding(cluster_role_binding_resource)
         end
 
         private
 
-        def token_regex
-          /#{SERVICE_ACCOUNT_NAME}-token/
+        def service_account_resource
+          Gitlab::Kubernetes::ServiceAccount.new(SERVICE_ACCOUNT_NAME, 'default').generate
         end
 
-        def read_secrets
-          kubeclient = build_kubeclient!
+        def cluster_role_binding_resource
+          subjects = [{ kind: 'ServiceAccount', name: SERVICE_ACCOUNT_NAME, namespace: 'default' }]
 
-          kubeclient.get_secrets.as_json
-        rescue Kubeclient::HttpError => err
-          raise err unless err.error_code == 404
-
-          []
+          Gitlab::Kubernetes::ClusterRoleBinding.new(
+            CLUSTER_ROLE_BINDING_NAME,
+            CLUSTER_ROLE_NAME,
+            subjects
+          ).generate
         end
 
-        def build_kubeclient!(api_path: 'api', api_version: 'v1')
+        def build_kube_client!(api_groups: ['api'], api_version: 'v1')
           raise "Incomplete settings" unless api_url && username && password
 
-          ::Kubeclient::Client.new(
-            join_api_url(api_path),
+          Gitlab::Kubernetes::KubeClient.new(
+            api_url,
+            api_groups,
             api_version,
             auth_options: { username: username, password: password },
             ssl_options: kubeclient_ssl_options,
             http_proxy_uri: ENV['http_proxy']
           )
-        end
-
-        def join_api_url(api_path)
-          url = URI.parse(api_url)
-          prefix = url.path.sub(%r{/+\z}, '')
-
-          url.path = [prefix, api_path].join("/")
-
-          url.to_s
         end
 
         def kubeclient_ssl_options

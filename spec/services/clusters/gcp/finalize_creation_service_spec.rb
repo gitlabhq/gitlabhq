@@ -45,6 +45,8 @@ describe Clusters::Gcp::FinalizeCreationService do
         )
 
         stub_kubeclient_discover(api_url)
+        stub_kubeclient_create_service_account(api_url)
+        stub_kubeclient_create_cluster_role_binding(api_url)
       end
 
       context 'when suceeded to fetch kuberenetes token' do
@@ -54,6 +56,7 @@ describe Clusters::Gcp::FinalizeCreationService do
           stub_kubeclient_get_secrets(
             api_url,
             {
+              metadata_name: 'gitlab-token-Y1a',
               token: Base64.encode64(token)
             } )
         end
@@ -71,6 +74,7 @@ describe Clusters::Gcp::FinalizeCreationService do
           expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
           expect(platform.username).to eq(username)
           expect(platform.password).to eq(password)
+          expect(platform.authorization_type).to eq('rbac')
           expect(platform.token).to eq(token)
         end
       end

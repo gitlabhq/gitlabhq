@@ -16,6 +16,14 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
         [
           {
             'metadata': {
+              name: 'default-token-123'
+            },
+            'data': {
+              'token': Base64.encode64('yyy.token.yyy')
+            }
+          },
+          {
+            'metadata': {
               name: metadata_name
             },
             'data': {
@@ -30,13 +38,13 @@ describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
           .to receive(:get_secrets).and_return(secrets_json)
       end
 
-      context 'when default-token exists' do
-        let(:metadata_name) { 'default-token-123' }
+      context 'when gitlab-token exists' do
+        let(:metadata_name) { 'gitlab-token-123' }
 
         it { is_expected.to eq(token) }
       end
 
-      context 'when default-token does not exist' do
+      context 'when gitlab-token does not exist' do
         let(:metadata_name) { 'another-token-123' }
 
         it { is_expected.to be_nil }
