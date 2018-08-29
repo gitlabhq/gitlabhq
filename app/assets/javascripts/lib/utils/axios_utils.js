@@ -8,6 +8,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 // Maintain a global counter for active requests
 // see: spec/support/wait_for_requests.rb
 axios.interceptors.request.use((config) => {
+  console.log(`request ${config.method} ${config.url}`);
   window.activeVueResources = window.activeVueResources || 0;
   window.activeVueResources += 1;
 
@@ -15,14 +16,19 @@ axios.interceptors.request.use((config) => {
 });
 
 // Remove the global counter
-axios.interceptors.response.use((config) => {
+axios.interceptors.response.use((response) => {
+  const { config } = response;
+  console.log(`response ${config.method} ${config.url}`);
   window.activeVueResources -= 1;
 
-  return config;
-}, (e) => {
+  return response;
+}, (error) => {
+  const { response } = error;
+  const { config } = response;
+  console.log(`response error ${config.method} ${config.url}`);
   window.activeVueResources -= 1;
 
-  return Promise.reject(e);
+  return Promise.reject(error);
 });
 
 export default axios;
