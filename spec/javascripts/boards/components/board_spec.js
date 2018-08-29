@@ -4,7 +4,7 @@ import '~/boards/components/board';
 import '~/boards/models/list';
 import { mockBoardService } from '../mock_data';
 
-describe('Board component', () => {
+xdescribe('Board component', () => {
   let vm;
   let el;
 

@@ -7,7 +7,7 @@ import {
 } from '~/clusters/constants';
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
-describe('Clusters', () => {
+xdescribe('Clusters', () => {
   let cluster;
   preloadFixtures('clusters/show_cluster.html.raw');
 

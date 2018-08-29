@@ -6,7 +6,7 @@ import axios from '~/lib/utils/axios_utils';
 import Issue from '~/issue';
 import '~/lib/utils/text_utility';
 
-describe('Issue', function() {
+xdescribe('Issue', function() {
   let $boxClosed, $boxOpen, $btn;
 
   preloadFixtures('issues/closed-issue.html.raw');

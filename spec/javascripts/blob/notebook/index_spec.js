@@ -2,7 +2,7 @@ import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import renderNotebook from '~/blob/notebook';
 
-describe('iPython notebook renderer', () => {
+xdescribe('iPython notebook renderer', () => {
   preloadFixtures('static/notebook_viewer.html.raw');
 
   beforeEach(() => {

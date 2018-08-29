@@ -3,7 +3,7 @@ import MockAdaptor from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
 import IntegrationSettingsForm from '~/integrations/integration_settings_form';
 
-describe('IntegrationSettingsForm', () => {
+xdescribe('IntegrationSettingsForm', () => {
   const FIXTURE = 'services/edit_service.html.raw';
   preloadFixtures(FIXTURE);
 

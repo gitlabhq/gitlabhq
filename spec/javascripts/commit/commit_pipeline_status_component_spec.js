@@ -4,7 +4,7 @@ import axios from '~/lib/utils/axios_utils';
 import commitPipelineStatus from '~/projects/tree/components/commit_pipeline_status_component.vue';
 import mountComponent from 'spec/helpers/vue_mount_component_helper';
 
-describe('Commit pipeline status component', () => {
+xdescribe('Commit pipeline status component', () => {
   let vm;
   let Component;
   let mock;

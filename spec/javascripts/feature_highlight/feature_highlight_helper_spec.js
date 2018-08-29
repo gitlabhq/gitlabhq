@@ -10,7 +10,7 @@ import { togglePopover } from '~/shared/popover';
 
 import getSetTimeoutPromise from 'spec/helpers/set_timeout_promise_helper';
 
-describe('feature highlight helper', () => {
+xdescribe('feature highlight helper', () => {
   describe('getSelector', () => {
     it('returns js-feature-highlight selector', () => {
       const highlightId = 'highlightId';

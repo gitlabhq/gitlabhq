@@ -14,7 +14,7 @@ import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
 import { listObj, listObjDuplicate, boardsMockInterceptor, mockBoardService } from './mock_data';
 
-describe('Store', () => {
+xdescribe('Store', () => {
   let mock;
 
   beforeEach(() => {

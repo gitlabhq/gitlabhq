@@ -5,7 +5,7 @@ import axios from '~/lib/utils/axios_utils';
 import CommitsList from '~/commits';
 import Pager from '~/pager';
 
-describe('Commits List', () => {
+xdescribe('Commits List', () => {
   let commitsList;
 
   beforeEach(() => {

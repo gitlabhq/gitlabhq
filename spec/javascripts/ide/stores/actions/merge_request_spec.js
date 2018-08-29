@@ -11,7 +11,7 @@ import service from '~/ide/services';
 import { activityBarViews } from '~/ide/constants';
 import { resetStore } from '../../helpers';
 
-describe('IDE store merge request actions', () => {
+xdescribe('IDE store merge request actions', () => {
   let mock;
 
   beforeEach(() => {

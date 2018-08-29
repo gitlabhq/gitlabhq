@@ -10,7 +10,7 @@ import eventHub from '~/ide/eventhub';
 import { file, resetStore } from '../../helpers';
 import testAction from '../../../helpers/vuex_action_helper';
 
-describe('IDE store file actions', () => {
+xdescribe('IDE store file actions', () => {
   let mock;
 
   beforeEach(() => {

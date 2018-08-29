@@ -3,7 +3,7 @@ import MockAdapter from 'axios-mock-adapter';
 import CreateMergeRequestDropdown from '~/create_merge_request_dropdown';
 import { TEST_HOST } from 'spec/test_constants';
 
-describe('CreateMergeRequestDropdown', () => {
+xdescribe('CreateMergeRequestDropdown', () => {
   let axiosMock;
   let dropdown;
 
