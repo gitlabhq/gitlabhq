@@ -131,7 +131,7 @@ stages:
 .single-script-job: &single-script-job
   image: ruby:2.4-alpine
   before_script: []
-  stage: build
+  stage: test
   cache: {}
   dependencies: []
   variables: &single-script-job-variables
