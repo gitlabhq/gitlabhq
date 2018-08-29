@@ -746,6 +746,32 @@ karma:
     reports:
       junit: junit_karma.xml
 
+jest:
+  <<: *dedicated-no-docs-and-no-qa-pull-cache-job
+  <<: *use-pg
+  dependencies:
+  - compile-assets
+  - setup-test-env
+  script:
+    - scripts/gitaly-test-spawn
+    - date
+    - bundle exec rake karma:fixtures
+    - date
+    - yarn jest --ci --coverage
+  artifacts:
+    name: coverage-frontend
+    expire_in: 31d
+    when: always
+    paths:
+    - coverage-frontend/
+    - "junit_jest.xml"
+    reports:
+      junit: "junit_jest.xml"
+  cache:
+    key: jest
+    paths:
+      - tmp/jest-cache/
+
 code_quality:
   <<: *dedicated-no-docs-no-db-pull-cache-job
   image: docker:stable
