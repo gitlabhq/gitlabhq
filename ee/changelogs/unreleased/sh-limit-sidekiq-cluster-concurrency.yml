@@ -1,0 +1,5 @@
+---
+title: Limit sidekiq-cluster concurrency to a maximum of 50
+merge_request: 7025
+author:
+type: performance

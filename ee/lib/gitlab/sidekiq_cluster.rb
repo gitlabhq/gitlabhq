@@ -62,16 +62,16 @@ module Gitlab
     # directory - The directory of the Rails application.
     #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env, directory = Dir.pwd, dryrun: false)
-      queues.map { |pair| start_sidekiq(pair, env, directory, dryrun: dryrun) }
+    def self.start(queues, env, directory = Dir.pwd, max_concurrency = 50, dryrun: false)
+      queues.map { |pair| start_sidekiq(pair, env, directory, max_concurrency, dryrun: dryrun) }
     end
 
     # Starts a Sidekiq process that processes _only_ the given queues.
     #
     # Returns the PID of the started process.
-    def self.start_sidekiq(queues, env, directory = Dir.pwd, dryrun: false)
+    def self.start_sidekiq(queues, env, directory = Dir.pwd, max_concurrency = 50, dryrun: false)
       cmd = %w[bundle exec sidekiq]
-      cmd << "-c #{queues.length + 1}"
+      cmd << "-c #{self.concurrency(queues, max_concurrency)}"
       cmd << "-e#{env}"
       cmd << "-gqueues: #{queues.join(', ')}"
       cmd << "-r#{directory}"
@@ -95,6 +95,14 @@ module Gitlab
       wait_async(pid)
 
       pid
+    end
+
+    def self.concurrency(queues, max_concurrency)
+      if max_concurrency.positive?
+        [queues.length + 1, max_concurrency].min
+      else
+        queues.length + 1
+      end
     end
 
     # Waits for the given process to complete using a separate thread.
