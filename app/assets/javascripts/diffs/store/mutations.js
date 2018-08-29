@@ -2,7 +2,6 @@ import Vue from 'vue';
 import _ from 'underscore';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { findDiffFile, addLineReferences, removeMatchLine, addContextLines } from './utils';
-import { LINES_TO_BE_RENDERED_DIRECTLY, MAX_LINES_TO_BE_RENDERED } from '../constants';
 import { trimFirstCharOfLineContent } from '../store/utils';
 import { LINES_TO_BE_RENDERED_DIRECTLY, MAX_LINES_TO_BE_RENDERED } from '../constants';
 import * as types from './mutation_types';
