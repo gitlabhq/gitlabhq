@@ -2905,25 +2905,6 @@ describe Project do
     end
   end
 
-  describe '#remove_exported_project_file' do
-    let(:project) { create(:project, :with_export) }
-
-    it 'removes the exported project file' do
-      stub_feature_flags(import_export_object_storage: false)
-
-      exported_file = project.export_project_path
-
-      expect(File.exist?(exported_file)).to be_truthy
-
-      allow(FileUtils).to receive(:rm_rf).and_call_original
-      expect(FileUtils).to receive(:rm_rf).with(exported_file).and_call_original
-
-      project.remove_exported_project_file
-
-      expect(File.exist?(exported_file)).to be_falsy
-    end
-  end
-
   describe '#forks_count' do
     it 'returns the number of forks' do
       project = build(:project)

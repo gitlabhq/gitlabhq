@@ -9,6 +9,7 @@
 >    application settings (`/admin/application_settings`) under 'Import sources'.
 >  - The exports are stored in a temporary [shared directory][tmp] and are deleted
 >    every 24 hours by a specific worker.
+>  - ImportExport can use object storage automatically starting from GitLab 11.3 
 
 The GitLab Import/Export version can be checked by using:
 
@@ -29,12 +30,6 @@ sudo gitlab-rake gitlab:import_export:data
 # Installations from source
 bundle exec rake gitlab:import_export:data RAILS_ENV=production
 ```
-
-In order to enable Object Storage on the Export, you can use the [feature flag][feature-flags]:
-
-```
-import_export_object_storage
-``` 
 
 [ce-3050]: https://gitlab.com/gitlab-org/gitlab-ce/issues/3050
 [feature-flags]: https://docs.gitlab.com/ee/api/features.html

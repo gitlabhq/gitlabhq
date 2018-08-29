@@ -1733,10 +1733,6 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started

@@ -424,10 +424,6 @@ class ProjectsController < Projects::ApplicationController
     Gitlab::QueryLimiting.whitelist('https://gitlab.com/gitlab-org/gitlab-ce/issues/42440')
   end
 
-  def export_project_path
-    @export_project_path ||= @project.export_project_path
-  end
-
   def export_project_object_storage?
     @project.export_project_object_exists?
   end
