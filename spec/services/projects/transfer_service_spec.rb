@@ -169,6 +169,34 @@ describe Projects::TransferService do
     it { expect(project.errors[:new_namespace]).to include('Cannot move project') }
   end
 
+  context 'target namespace containing the same project name' do
+    before do
+      group.add_owner(user)
+
+      create(:project, name: project.name, group: group, path: 'other')
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
+  context 'target namespace containing the same project path' do
+    before do
+      group.add_owner(user)
+
+      create(:project, name: project.name, group: group)
+
+      @result = transfer_project(project, user, group)
+    end
+
+    it { expect(@result).to eq false }
+    it { expect(project.namespace).to eq(user.namespace) }
+    it { expect(project.errors[:new_namespace]).to include('Project with same name or path in target namespace already exists') }
+  end
+
   def transfer_project(project, user, new_namespace)
     service = Projects::TransferService.new(project, user)
 
