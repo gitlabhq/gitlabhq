@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-<<<<<<< HEAD
-  context :create do
-=======
   context :create, :core do
->>>>>>> upstream/master
     describe 'Files management' do
       it 'user creates, edits and deletes a file via the Web' do
         Runtime::Browser.visit(:gitlab, Page::Main::Login)

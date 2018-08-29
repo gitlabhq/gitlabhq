@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-<<<<<<< HEAD
-  context :verify, :docker do
-=======
   context :verify, :orchestrated, :docker do
->>>>>>> upstream/master
     describe 'Pipeline creation and processing' do
       let(:executor) { "qa-runner-#{Time.now.to_i}" }
 
