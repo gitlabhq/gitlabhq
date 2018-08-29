@@ -59,6 +59,8 @@ describe Clusters::Gcp::FinalizeCreationService do
               metadata_name: 'gitlab-token-Y1a',
               token: Base64.encode64(token)
             } )
+
+          stub_feature_flags(rbac_clusters: false)
         end
 
         it_behaves_like 'success'
@@ -74,8 +76,31 @@ describe Clusters::Gcp::FinalizeCreationService do
           expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
           expect(platform.username).to eq(username)
           expect(platform.password).to eq(password)
-          expect(platform.authorization_type).to eq('rbac')
+          expect(platform.authorization_type).to eq('abac')
           expect(platform.token).to eq(token)
+        end
+
+        context 'rbac_clusters feature enabled' do
+          before do
+            stub_feature_flags(rbac_clusters: true)
+          end
+
+          it_behaves_like 'success'
+
+          it 'has corresponded data' do
+            described_class.new.execute(provider)
+            cluster.reload
+            provider.reload
+            platform.reload
+
+            expect(provider.endpoint).to eq(endpoint)
+            expect(platform.api_url).to eq(api_url)
+            expect(platform.ca_cert).to eq(Base64.decode64(load_sample_cert))
+            expect(platform.username).to eq(username)
+            expect(platform.password).to eq(password)
+            expect(platform.authorization_type).to eq('rbac')
+            expect(platform.token).to eq(token)
+          end
         end
       end
 

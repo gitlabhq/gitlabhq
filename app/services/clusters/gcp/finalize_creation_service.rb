@@ -48,9 +48,8 @@ module Clusters
         Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(kube_client).execute
       end
 
-      # GKE Clusters have RBAC enabled on Kubernetes >= 1.6
       def authorization_type
-        'rbac'
+        Feature.enabled?(:rbac_clusters) ? 'rbac' : 'abac'
       end
 
       def kube_client
