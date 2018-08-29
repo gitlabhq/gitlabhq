@@ -1771,7 +1771,7 @@ class Project < ActiveRecord::Base
   end
 
   def export_project_object_exists?
-    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
+    import_export_upload&.export_file&.file
   end
 
   def full_path_slug

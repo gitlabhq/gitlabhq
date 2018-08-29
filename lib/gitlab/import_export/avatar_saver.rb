@@ -1,8 +1,6 @@
 module Gitlab
   module ImportExport
     class AvatarSaver
-      include Gitlab::ImportExport::CommandLineUtil
-
       def initialize(project:, shared:)
         @project = project
         @shared = shared
@@ -15,17 +13,10 @@ module Gitlab
           project: @project,
           shared: @shared,
           relative_export_path: 'avatar',
-          from: avatar_path
         ).save
       rescue => e
         @shared.error(e)
         false
-      end
-
-      private
-
-      def avatar_path
-        @project.avatar.path
       end
     end
   end
