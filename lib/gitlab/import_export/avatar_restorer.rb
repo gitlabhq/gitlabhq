@@ -19,7 +19,7 @@ module Gitlab
       private
 
       def avatar_export_file
-        @avatar_export_file ||= Dir["#{avatar_export_path}/*"].first
+        @avatar_export_file ||= Dir["#{avatar_export_path}/**/*"].first
       end
 
       def avatar_export_path

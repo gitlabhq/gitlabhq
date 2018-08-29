@@ -141,23 +141,7 @@ FactoryBot.define do
     end
 
     trait :with_export do
-      before(:create) do |_project, _evaluator|
-        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { false }
-        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { false }
-      end
-
       after(:create) do |project, _evaluator|
-        ProjectExportWorker.new.perform(project.creator.id, project.id)
-      end
-    end
-
-    trait :with_object_export do
-      before(:create) do |_project, _evaluator|
-        allow(Feature).to receive(:enabled?).with(:import_export_object_storage) { true }
-        allow(Feature).to receive(:enabled?).with('import_export_object_storage') { true }
-      end
-
-      after(:create) do |project, evaluator|
         ProjectExportWorker.new.perform(project.creator.id, project.id)
       end
     end

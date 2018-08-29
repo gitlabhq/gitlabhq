@@ -8,7 +8,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
     before do
       allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(export_path)
       FileUtils.mkdir_p(File.join(shared.export_path, 'uploads/random'))
-      FileUtils.touch(File.join(shared.export_path, 'uploads/random', "dummy.txt"))
+      FileUtils.touch(File.join(shared.export_path, 'uploads/random', 'dummy.txt'))
     end
 
     after do
@@ -27,9 +27,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
       it 'copies the uploads to the project path' do
         subject.restore
 
-        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
-
-        expect(uploads).to include('dummy.txt')
+        expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
       end
     end
 
@@ -45,9 +43,7 @@ describe Gitlab::ImportExport::UploadsRestorer do
       it 'copies the uploads to the project path' do
         subject.restore
 
-        uploads = Dir.glob(File.join(subject.uploads_path, '**/*')).map { |file| File.basename(file) }
-
-        expect(uploads).to include('dummy.txt')
+        expect(project.uploads.map { |u| u.build_uploader.filename }).to include('dummy.txt')
       end
     end
   end

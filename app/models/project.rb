@@ -1751,16 +1751,12 @@ class Project < ActiveRecord::Base
     import_export_shared.archive_path
   end
 
-  def export_project_path
-    Dir.glob("#{export_path}/*export.tar.gz").max_by { |f| File.ctime(f) }
-  end
-
   def export_status
     if export_in_progress?
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path || export_project_object_exists?
+    elsif export_project_object_exists?
       :finished
     else
       :none
@@ -1775,21 +1771,15 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports(path = export_path)
-    if path.present?
-      FileUtils.rm_rf(path)
-    elsif export_project_object_exists?
-      import_export_upload.remove_export_file!
-      import_export_upload.save
-    end
-  end
+  def remove_exports
+    return unless export_project_object_exists?
 
-  def remove_exported_project_file
-    remove_exports(export_project_path)
+    import_export_upload.remove_export_file!
+    import_export_upload.save
   end
 
   def export_project_object_exists?
-    Gitlab::ImportExport.object_storage? && import_export_upload&.export_file&.file
+    import_export_upload&.export_file&.file
   end
 
   def full_path_slug

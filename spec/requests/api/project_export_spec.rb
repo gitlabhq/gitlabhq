@@ -4,8 +4,8 @@ describe API::ProjectExport do
   set(:project) { create(:project) }
   set(:project_none) { create(:project) }
   set(:project_started) { create(:project) }
-  set(:project_finished) { create(:project) }
-  set(:project_after_export) { create(:project) }
+  let(:project_finished) { create(:project, :with_export) }
+  let(:project_after_export) { create(:project, :with_export) }
   set(:user) { create(:user) }
   set(:admin) { create(:admin) }
 
@@ -29,13 +29,7 @@ describe API::ProjectExport do
     # simulate exporting work directory
     FileUtils.mkdir_p File.join(project_started.export_path, 'securerandom-hex')
 
-    # simulate exported
-    FileUtils.mkdir_p project_finished.export_path
-    FileUtils.touch File.join(project_finished.export_path, '_export.tar.gz')
-
     # simulate in after export action
-    FileUtils.mkdir_p project_after_export.export_path
-    FileUtils.touch File.join(project_after_export.export_path, '_export.tar.gz')
     FileUtils.touch Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrategy.lock_file_path(project_after_export)
   end
 
@@ -191,14 +185,11 @@ describe API::ProjectExport do
 
       context 'when upload complete' do
         before do
-          FileUtils.rm_rf(project_after_export.export_path)
+          project_after_export.remove_exports
+        end
 
-          if project_after_export.export_project_object_exists?
-            upload = project_after_export.import_export_upload
-
-            upload.remove_export_file!
-            upload.save
-          end
+        it 'has removed the export' do
+          expect(project_after_export.export_project_object_exists?).to be_falsey
         end
 
         it_behaves_like '404 response' do
@@ -273,13 +264,13 @@ describe API::ProjectExport do
       before do
         stub_uploads_object_storage(ImportExportUploader)
 
-        [project, project_finished, project_after_export].each do |p|
-          p.add_maintainer(user)
+        project.add_maintainer(user)
+        project_finished.add_maintainer(user)
+        project_after_export.add_maintainer(user)
 
-          upload = ImportExportUpload.new(project: p)
-          upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
-          upload.save!
-        end
+        upload = ImportExportUpload.new(project: project)
+        upload.export_file = fixture_file_upload('spec/fixtures/project_export.tar.gz', "`/tar.gz")
+        upload.save!
       end
 
       it_behaves_like 'get project download by strategy'
