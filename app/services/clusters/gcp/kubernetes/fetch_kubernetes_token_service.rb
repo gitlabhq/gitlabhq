@@ -4,13 +4,10 @@ module Clusters
   module Gcp
     module Kubernetes
       class FetchKubernetesTokenService
-        attr_reader :api_url, :ca_pem, :username, :password
+        attr_reader :kubeclient
 
-        def initialize(api_url, ca_pem, username, password)
-          @api_url = api_url
-          @ca_pem = ca_pem
-          @username = username
-          @password = password
+        def initialize(kubeclient)
+          @kubeclient = kubeclient
         end
 
         def execute
@@ -32,45 +29,11 @@ module Clusters
         end
 
         def read_secrets
-          kubeclient = build_kubeclient!
-
           kubeclient.get_secrets.as_json
         rescue Kubeclient::HttpError => err
           raise err unless err.error_code == 404
 
           []
-        end
-
-        def build_kubeclient!(api_path: 'api', api_version: 'v1')
-          raise "Incomplete settings" unless api_url && username && password
-
-          ::Kubeclient::Client.new(
-            join_api_url(api_path),
-            api_version,
-            auth_options: { username: username, password: password },
-            ssl_options: kubeclient_ssl_options,
-            http_proxy_uri: ENV['http_proxy']
-          )
-        end
-
-        def join_api_url(api_path)
-          url = URI.parse(api_url)
-          prefix = url.path.sub(%r{/+\z}, '')
-
-          url.path = [prefix, api_path].join("/")
-
-          url.to_s
-        end
-
-        def kubeclient_ssl_options
-          opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
-
-          if ca_pem.present?
-            opts[:cert_store] = OpenSSL::X509::Store.new
-            opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
-          end
-
-          opts
         end
       end
     end
