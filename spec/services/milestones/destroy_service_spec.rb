@@ -4,8 +4,6 @@ describe Milestones::DestroyService do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   let(:milestone) { create(:milestone, title: 'Milestone v1.0', project: project) }
-  let!(:issue) { create(:issue, project: project, milestone: milestone) }
-  let!(:merge_request) { create(:merge_request, source_project: project, milestone: milestone) }
 
   before do
     project.add_maintainer(user)
@@ -23,10 +21,21 @@ describe Milestones::DestroyService do
     end
 
     it 'deletes milestone id from issuables' do
+      issue = create(:issue, project: project, milestone: milestone)
+      merge_request = create(:merge_request, source_project: project, milestone: milestone)
+
       service.execute(milestone)
 
       expect(issue.reload.milestone).to be_nil
       expect(merge_request.reload.milestone).to be_nil
+    end
+
+    it 'logs destroy event' do
+      service.execute(milestone)
+
+      event = Event.where(project_id: milestone.project_id, target_type: 'Milestone')
+
+      expect(event.count).to eq(1)
     end
 
     context 'group milestones' do
@@ -38,13 +47,20 @@ describe Milestones::DestroyService do
         group.add_developer(user)
       end
 
-      it { expect(service.execute(group_milestone)).to be_nil }
+      it { expect(service.execute(group_milestone)).to eq(group_milestone) }
 
-      it 'does not update milestone issuables' do
-        expect(MergeRequests::UpdateService).not_to receive(:new)
-        expect(Issues::UpdateService).not_to receive(:new)
+      it 'deletes milestone id from issuables' do
+        issue = create(:issue, project: project, milestone: group_milestone)
+        merge_request = create(:merge_request, source_project: project, milestone: group_milestone)
 
         service.execute(group_milestone)
+
+        expect(issue.reload.milestone).to be_nil
+        expect(merge_request.reload.milestone).to be_nil
+      end
+
+      it 'does not log destroy event' do
+        expect { service.execute(group_milestone) }.not_to change { Event.count }
       end
     end
   end

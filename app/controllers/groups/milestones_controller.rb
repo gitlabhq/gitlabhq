@@ -4,8 +4,8 @@ class Groups::MilestonesController < Groups::ApplicationController
   include MilestoneActions
 
   before_action :group_projects
-  before_action :milestone, only: [:edit, :show, :update, :merge_requests, :participants, :labels]
-  before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update]
+  before_action :milestone, only: [:edit, :show, :update, :merge_requests, :participants, :labels, :destroy]
+  before_action :authorize_admin_milestones!, only: [:edit, :new, :create, :update, :destroy]
 
   def index
     respond_to do |format|
@@ -58,10 +58,21 @@ class Groups::MilestonesController < Groups::ApplicationController
     redirect_to milestone_path
   end
 
+  def destroy
+    return render_404 if @milestone.legacy_group_milestone?
+
+    Milestones::DestroyService.new(group, current_user).execute(@milestone)
+
+    respond_to do |format|
+      format.html { redirect_to group_milestones_path(group), status: :see_other }
+      format.js { head :ok }
+    end
+  end
+
   private
 
   def authorize_admin_milestones!
-    return render_404 unless can?(current_user, :admin_milestones, group)
+    return render_404 unless can?(current_user, :admin_milestone, group)
   end
 
   def milestone_params
