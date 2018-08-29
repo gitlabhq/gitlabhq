@@ -58,12 +58,22 @@ describe Gitlab::SidekiqCluster do
   describe '.start' do
     it 'starts Sidekiq with the given queues and environment' do
       expect(described_class).to receive(:start_sidekiq)
-        .ordered.with(%w(foo), :production, 'foo/bar', dryrun: false)
+        .ordered.with(%w(foo), :production, 'foo/bar', 50, dryrun: false)
 
       expect(described_class).to receive(:start_sidekiq)
-        .ordered.with(%w(bar baz), :production, 'foo/bar', dryrun: false)
+        .ordered.with(%w(bar baz), :production, 'foo/bar', 50, dryrun: false)
 
-      described_class.start([%w(foo), %w(bar baz)], :production, 'foo/bar')
+      described_class.start([%w(foo), %w(bar baz)], :production, 'foo/bar', 50)
+    end
+
+    it 'starts Sidekiq with capped concurrency limits for each queue' do
+      expect(described_class).to receive(:start_sidekiq)
+        .ordered.with(%w(foo bar baz), :production, 'foo/bar', 2, dryrun: false)
+
+      expect(described_class).to receive(:start_sidekiq)
+        .ordered.with(%w(solo), :production, 'foo/bar', 2, dryrun: false)
+
+      described_class.start([%w(foo bar baz), %w(solo)], :production, 'foo/bar', 2)
     end
   end
 
