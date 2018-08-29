@@ -37,7 +37,7 @@ describe BuildSerializer do
       it 'serializes only status' do
         expect(subject[:text]).to eq(status.text)
         expect(subject[:label]).to eq('failed')
-        expect(subject[:tooltip]).to eq('failed <br> (unknown failure)')
+        expect(subject[:tooltip]).to eq('failed - (unknown failure)')
         expect(subject[:icon]).to eq(status.icon)
         expect(subject[:favicon]).to match_asset_path("/assets/ci_favicons/#{status.favicon}.png")
       end

@@ -4,6 +4,8 @@ module Gitlab
   module GithubImport
     module Importer
       class IssueImporter
+        include Gitlab::Import::DatabaseHelpers
+
         attr_reader :project, :issue, :client, :user_finder, :milestone_finder,
                     :issuable_finder
 
@@ -55,7 +57,7 @@ module Gitlab
             updated_at: issue.updated_at
           }
 
-          GithubImport.insert_and_return_id(attributes, project.issues).tap do |id|
+          insert_and_return_id(attributes, project.issues).tap do |id|
             # We use .insert_and_return_id which effectively disables all callbacks.
             # Trigger iid logic here to make sure we track internal id values consistently.
             project.issues.find(id).ensure_project_iid!

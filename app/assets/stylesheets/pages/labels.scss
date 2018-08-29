@@ -67,7 +67,7 @@
 .dropdown-labels-error {
   padding: 5px 10px;
   margin-bottom: 10px;
-  background-color: $gl-danger;
+  background-color: $red-500;
   color: $white-light;
 }
 
@@ -117,7 +117,7 @@
       color: $blue-600;
 
       &.remove-row {
-        color: $gl-danger;
+        color: $red-500;
       }
     }
   }

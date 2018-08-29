@@ -452,14 +452,14 @@
 }
 
 .btn-missing {
-  color: $notes-light-color;
+  color: $gl-text-color-secondary;
   border: 1px dashed $border-gray-normal-dashed;
   border-radius: $border-radius-default;
 
   &:hover,
   &:active,
   &:focus {
-    color: $notes-light-color;
+    color: $gl-text-color-secondary;
     background-color: $white-normal;
   }
 }

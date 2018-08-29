@@ -83,6 +83,7 @@ module QA
     # Test scenario entrypoints.
     #
     module Test
+      autoload :Instance, 'qa/scenario/test/instance'
       module Instance
         autoload :All, 'qa/scenario/test/instance/all'
         autoload :Smoke, 'qa/scenario/test/instance/smoke'

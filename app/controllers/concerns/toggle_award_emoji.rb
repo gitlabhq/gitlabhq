@@ -5,7 +5,7 @@ module ToggleAwardEmoji
     authenticate_user!
     name = params.require(:name)
 
-    if awardable.user_can_award?(current_user, name)
+    if awardable.user_can_award?(current_user)
       awardable.toggle_award_emoji(name, current_user)
 
       todoable = to_todoable(awardable)

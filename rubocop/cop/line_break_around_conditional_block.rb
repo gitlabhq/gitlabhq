@@ -48,6 +48,8 @@ module RuboCop
       MSG = 'Add a line break around conditional blocks'
 
       def on_if(node)
+        # This cop causes errors in haml files, so let's skip those
+        return if in_haml?(node)
         return if node.single_line?
         return unless node.if? || node.unless?
 
@@ -115,6 +117,10 @@ module RuboCop
 
       def end_line?(line)
         line =~ /^\s*(end|})/
+      end
+
+      def in_haml?(node)
+        node.location.expression.source_buffer.name.end_with?('.haml.rb')
       end
     end
   end

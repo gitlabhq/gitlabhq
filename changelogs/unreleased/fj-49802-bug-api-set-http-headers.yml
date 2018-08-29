@@ -1,5 +1,0 @@
----
-title: Fix bug setting http headers in Files API
-merge_request: 20938
-author:
-type: fixed

@@ -191,14 +191,18 @@ class DiffNote < Note
   end
 
   def keep_around_commits
-    project.repository.keep_around(self.original_position.base_sha)
-    project.repository.keep_around(self.original_position.start_sha)
-    project.repository.keep_around(self.original_position.head_sha)
+    shas = [
+      self.original_position.base_sha,
+      self.original_position.start_sha,
+      self.original_position.head_sha
+    ]
 
     if self.position != self.original_position
-      project.repository.keep_around(self.position.base_sha)
-      project.repository.keep_around(self.position.start_sha)
-      project.repository.keep_around(self.position.head_sha)
+      shas << self.position.base_sha
+      shas << self.position.start_sha
+      shas << self.position.head_sha
     end
+
+    project.repository.keep_around(*shas)
   end
 end

@@ -307,7 +307,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
 
         resources :hook_logs, only: [:show] do
           member do
-            get :retry
+            post :retry
           end
         end
       end

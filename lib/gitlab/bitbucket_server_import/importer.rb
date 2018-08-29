@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BitbucketServerImport
     class Importer
       include Gitlab::ShellAdapter
+
       attr_reader :recover_missing_commits
       attr_reader :project, :project_key, :repository_slug, :client, :errors, :users
 
@@ -175,21 +178,18 @@ module Gitlab
         description = ''
         description += @formatter.author_line(pull_request.author) unless find_user_id(pull_request.author_email)
         description += pull_request.description if pull_request.description
-
-        source_branch_sha = pull_request.source_branch_sha
-        target_branch_sha = pull_request.target_branch_sha
         author_id = gitlab_user_id(pull_request.author_email)
 
         attributes = {
           iid: pull_request.iid,
           title: pull_request.title,
           description: description,
-          source_project: project,
+          source_project_id: project.id,
           source_branch: Gitlab::Git.ref_name(pull_request.source_branch_name),
-          source_branch_sha: source_branch_sha,
-          target_project: project,
+          source_branch_sha: pull_request.source_branch_sha,
+          target_project_id: project.id,
           target_branch: Gitlab::Git.ref_name(pull_request.target_branch_name),
-          target_branch_sha: target_branch_sha,
+          target_branch_sha: pull_request.target_branch_sha,
           state: pull_request.state,
           author_id: author_id,
           assignee_id: nil,
@@ -197,7 +197,9 @@ module Gitlab
           updated_at: pull_request.updated_at
         }
 
-        merge_request = project.merge_requests.create!(attributes)
+        creator = Gitlab::Import::MergeRequestCreator.new(project)
+        merge_request = creator.execute(attributes)
+
         import_pull_request_comments(pull_request, merge_request) if merge_request.persisted?
       end
 

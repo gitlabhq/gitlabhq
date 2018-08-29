@@ -402,7 +402,7 @@ describe API::Projects do
 
       context 'and with min_access_level' do
         before do
-          project2.add_master(user2)
+          project2.add_maintainer(user2)
           project3.add_developer(user2)
           project4.add_reporter(user2)
         end
@@ -913,10 +913,26 @@ describe API::Projects do
         expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
         expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
         expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to be_nil
         expect(json_response['only_allow_merge_if_pipeline_succeeds']).to eq(project.only_allow_merge_if_pipeline_succeeds)
         expect(json_response['only_allow_merge_if_all_discussions_are_resolved']).to eq(project.only_allow_merge_if_all_discussions_are_resolved)
         expect(json_response['merge_method']).to eq(project.merge_method.to_s)
         expect(json_response['readme_url']).to eq(project.readme_url)
+      end
+
+      it 'returns a group link with expiration date' do
+        group = create(:group)
+        expires_at = 5.days.from_now.to_date
+        link = create(:project_group_link, project: project, group: group, expires_at: expires_at)
+
+        get api("/projects/#{project.id}", user)
+
+        expect(json_response['shared_with_groups']).to be_an Array
+        expect(json_response['shared_with_groups'].length).to eq(1)
+        expect(json_response['shared_with_groups'][0]['group_id']).to eq(group.id)
+        expect(json_response['shared_with_groups'][0]['group_name']).to eq(group.name)
+        expect(json_response['shared_with_groups'][0]['group_access_level']).to eq(link.group_access)
+        expect(json_response['shared_with_groups'][0]['expires_at']).to eq(expires_at.to_s)
       end
 
       it 'returns a project by path name' do
@@ -1121,47 +1137,87 @@ describe API::Projects do
   describe 'fork management' do
     let(:project_fork_target) { create(:project) }
     let(:project_fork_source) { create(:project, :public) }
+    let(:private_project_fork_source) { create(:project, :private) }
 
     describe 'POST /projects/:id/fork/:forked_from_id' do
-      let(:new_project_fork_source) { create(:project, :public) }
+      context 'user is a developer' do
+        before do
+          project_fork_target.add_developer(user)
+        end
 
-      it "is not available for non admin users" do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
-        expect(response).to have_gitlab_http_status(403)
-      end
+        it 'denies project to be forked from an existing project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
 
-      it 'allows project to be forked from an existing project' do
-        expect(project_fork_target.forked?).not_to be_truthy
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        expect(response).to have_gitlab_http_status(201)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        expect(project_fork_target.forked_project_link).not_to be_nil
-        expect(project_fork_target.forked?).to be_truthy
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
 
       it 'refreshes the forks count cache' do
         expect(project_fork_source.forks_count).to be_zero
-
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-
-        expect(project_fork_source.forks_count).to eq(1)
       end
 
-      it 'fails if forked_from project which does not exist' do
-        post api("/projects/#{project_fork_target.id}/fork/9999", admin)
-        expect(response).to have_gitlab_http_status(404)
+      context 'user is maintainer' do
+        before do
+          project_fork_target.add_maintainer(user)
+        end
+
+        it 'allows project to be forked from an existing project' do
+          expect(project_fork_target).not_to be_forked
+
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
+          project_fork_target.reload
+
+          expect(response).to have_gitlab_http_status(201)
+          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+          expect(project_fork_target.forked_project_link).to be_present
+          expect(project_fork_target).to be_forked
+        end
+
+        it 'denies project to be forked from a private project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", user)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
       end
 
-      it 'fails with 409 if already forked' do
-        post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        post api("/projects/#{project_fork_target.id}/fork/#{new_project_fork_source.id}", admin)
-        expect(response).to have_gitlab_http_status(409)
-        project_fork_target.reload
-        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
-        expect(project_fork_target.forked?).to be_truthy
+      context 'user is admin' do
+        it 'allows project to be forked from an existing project' do
+          expect(project_fork_target).not_to be_forked
+
+          post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+
+        it 'allows project to be forked from a private project' do
+          post api("/projects/#{project_fork_target.id}/fork/#{private_project_fork_source.id}", admin)
+
+          expect(response).to have_gitlab_http_status(201)
+        end
+
+        it 'refreshes the forks count cachce' do
+          expect do
+            post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
+          end.to change(project_fork_source, :forks_count).by(1)
+        end
+
+        it 'fails if forked_from project which does not exist' do
+          post api("/projects/#{project_fork_target.id}/fork/9999", admin)
+          expect(response).to have_gitlab_http_status(404)
+        end
+
+        it 'fails with 409 if already forked' do
+          other_project_fork_source = create(:project, :public)
+
+          Projects::ForkService.new(project_fork_source, admin).execute(project_fork_target)
+
+          post api("/projects/#{project_fork_target.id}/fork/#{other_project_fork_source.id}", admin)
+          project_fork_target.reload
+
+          expect(response).to have_gitlab_http_status(409)
+          expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+          expect(project_fork_target).to be_forked
+        end
       end
     end
 
@@ -1183,8 +1239,8 @@ describe API::Projects do
           before do
             post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
             project_fork_target.reload
-            expect(project_fork_target.forked_from_project).not_to be_nil
-            expect(project_fork_target.forked?).to be_truthy
+            expect(project_fork_target.forked_from_project).to be_present
+            expect(project_fork_target).to be_forked
           end
 
           it 'makes forked project unforked' do
@@ -1193,7 +1249,7 @@ describe API::Projects do
             expect(response).to have_gitlab_http_status(204)
             project_fork_target.reload
             expect(project_fork_target.forked_from_project).to be_nil
-            expect(project_fork_target.forked?).not_to be_truthy
+            expect(project_fork_target).not_to be_forked
           end
 
           it_behaves_like '412 response' do
@@ -1228,8 +1284,8 @@ describe API::Projects do
         before do
           post api("/projects/#{private_fork.id}/fork/#{project_fork_source.id}", admin)
           private_fork.reload
-          expect(private_fork.forked_from_project).not_to be_nil
-          expect(private_fork.forked?).to be_truthy
+          expect(private_fork.forked_from_project).to be_present
+          expect(private_fork).to be_forked
           project_fork_source.reload
           expect(project_fork_source.forks.length).to eq(1)
           expect(project_fork_source.forks).to include(private_fork)

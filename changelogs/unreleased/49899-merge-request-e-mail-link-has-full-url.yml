@@ -1,5 +1,0 @@
----
-title: Ensure links in notifications footer are not escaped
-merge_request: 21000
-author:
-type: fixed

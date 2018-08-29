@@ -1,8 +1,9 @@
+import _ from 'underscore';
 import { PROJECT_BADGE } from '~/badges/constants';
 import { DUMMY_IMAGE_URL, TEST_HOST } from 'spec/test_constants';
 
 export const createDummyBadge = () => {
-  const id = Math.floor(1000 * Math.random());
+  const id = _.uniqueId();
   return {
     id,
     imageUrl: `${TEST_HOST}/badges/${id}/image/url`,

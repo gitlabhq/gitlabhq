@@ -1,5 +1,0 @@
----
-title: Fix GPG status badge loading regressions
-merge_request: 20987
-author:
-type: fixed

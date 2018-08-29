@@ -649,8 +649,7 @@ module Ci
     def keep_around_commits
       return unless project
 
-      project.repository.keep_around(self.sha)
-      project.repository.keep_around(self.before_sha)
+      project.repository.keep_around(self.sha, self.before_sha)
     end
 
     def valid_source

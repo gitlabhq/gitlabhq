@@ -1,5 +1,0 @@
----
-title: Fix merge requests not showing any diff files for big patches
-merge_request: 21125
-author:
-type: fixed
