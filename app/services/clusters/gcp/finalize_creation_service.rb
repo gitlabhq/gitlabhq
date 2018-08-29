@@ -36,7 +36,7 @@ module Clusters
       end
 
       def request_kubernetes_token
-        Ci::FetchKubernetesTokenService.new(
+        Clusters::Gcp::Kubernetes::FetchKubernetesTokenService.new(
           'https://' + gke_cluster.endpoint,
           Base64.decode64(gke_cluster.master_auth.cluster_ca_certificate),
           gke_cluster.master_auth.username,

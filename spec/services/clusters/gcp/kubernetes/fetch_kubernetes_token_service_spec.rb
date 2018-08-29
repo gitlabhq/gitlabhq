@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Ci::FetchKubernetesTokenService do
+describe Clusters::Gcp::Kubernetes::FetchKubernetesTokenService do
   describe '#execute' do
     subject { described_class.new(api_url, ca_pem, username, password).execute }
 
