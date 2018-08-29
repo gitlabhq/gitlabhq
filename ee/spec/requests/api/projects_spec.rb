@@ -97,11 +97,11 @@ describe API::Projects do
 
       context 'as a user' do
         it 'returns 200 but does not change repository_storage' do
-          expect {
+          expect do
             Sidekiq::Testing.fake! do
               put(api("/projects/#{new_project.id}", user), repository_storage: unknown_storage, issues_enabled: false)
             end
-          }.not_to change(ProjectUpdateRepositoryStorageWorker.jobs, :size)
+          end.not_to change(ProjectUpdateRepositoryStorageWorker.jobs, :size)
 
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['issues_enabled']).to eq(false)
@@ -122,11 +122,11 @@ describe API::Projects do
         it 'returns 200 when repository storage has changed' do
           stub_storage_settings('extra' => { 'path' => 'tmp/tests/extra_storage' })
 
-          expect {
+          expect do
             Sidekiq::Testing.fake! do
               put(api("/projects/#{new_project.id}", admin), repository_storage: 'extra')
             end
-          }.to change(ProjectUpdateRepositoryStorageWorker.jobs, :size).by(1)
+          end.to change(ProjectUpdateRepositoryStorageWorker.jobs, :size).by(1)
 
           expect(response).to have_gitlab_http_status(200)
         end
