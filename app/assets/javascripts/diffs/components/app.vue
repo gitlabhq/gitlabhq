@@ -128,7 +128,6 @@ export default {
             () => {
               this.startRenderDiffsQueue()
                 .then(() => {
-                  console.log('Done rendering Que');
                   requestIdleCallback(
                     () => {
                       this.assignDiscussionsToDiff(this.discussionsStructuredByLineCode);

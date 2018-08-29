@@ -61,7 +61,6 @@ export default {
     },
   },
   created() {
-    // console.log('LINE : ', this.line);
     this.newLineType = NEW_LINE_TYPE;
     this.oldLineType = OLD_LINE_TYPE;
     this.parallelDiffViewType = PARALLEL_DIFF_VIEW_TYPE;
