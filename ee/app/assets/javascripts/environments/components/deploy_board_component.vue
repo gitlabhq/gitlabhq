@@ -11,6 +11,7 @@
   import _ from 'underscore';
   import { n__ } from '~/locale';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import tooltip from '~/vue_shared/directives/tooltip';
   import deployBoardSvg from 'ee_empty_states/icons/_deploy_board.svg';
   import instanceComponent from './deploy_board_instance_component.vue';
 
@@ -18,6 +19,9 @@
     components: {
       instanceComponent,
       loadingIcon,
+    },
+    directives: {
+      tooltip,
     },
     props: {
       deployBoardData: {
@@ -45,8 +49,24 @@
       canRenderEmptyState() {
         return !this.isLoading && this.isEmpty;
       },
+      instanceCount() {
+        const { instances } = this.deployBoardData;
+
+        return Array.isArray(instances) ? instances.length : 0;
+      },
+      instanceIsCompletedCount() {
+        const completionPercentage = this.deployBoardData.completion / 100;
+        const completionCount = Math.floor(completionPercentage * this.instanceCount);
+
+        return Number.isNaN(completionCount) ? 0 : completionCount;
+      },
+      instanceIsCompletedText() {
+        const title = n__('instance completed', 'instances completed', this.instanceIsCompletedCount);
+
+        return `${this.instanceIsCompletedCount} ${title}`;
+      },
       instanceTitle() {
-        return n__('Instance', 'Instances', this.deployBoardData.instances.length);
+        return n__('Instance', 'Instances', this.instanceCount);
       },
       projectName() {
         return '<projectname>';
@@ -65,14 +85,20 @@
     <div v-if="canRenderDeployBoard">
 
       <section class="deploy-board-information">
-        <span>
+        <span
+          v-tooltip
+          :title="instanceIsCompletedText"
+        >
           <span class="percentage">{{ deployBoardData.completion }}%</span>
           <span class="text">Complete</span>
         </span>
       </section>
 
       <section class="deploy-board-instances">
-        <p class="text">{{ instanceTitle }}</p>
+        <p class="text">
+          <span>{{ instanceTitle }}</span>
+          <span class="total-instances">({{ instanceCount }})</span>
+        </p>
 
         <div class="deploy-board-instances-container">
           <template v-for="(instance, i) in deployBoardData.instances">
