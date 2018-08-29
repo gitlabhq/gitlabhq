@@ -36,6 +36,38 @@ describe Gitlab::ImportExport::UploadsManager do
 
         expect(File).to exist(exported_file_path)
       end
+
+      context 'with orphaned project upload files' do
+        let(:orphan_path) { File.join(FileUploader.absolute_base_dir(project), 'f93f088ddf492ffd950cf059002cbbb6', 'orphan.jpg') }
+        let(:exported_orphan_path) { "#{shared.export_path}/uploads/f93f088ddf492ffd950cf059002cbbb6/orphan.jpg" }
+
+        before do
+          FileUtils.mkdir_p(File.dirname(orphan_path))
+          FileUtils.touch(orphan_path)
+        end
+
+        after do
+          File.delete(orphan_path) if File.exist?(orphan_path)
+        end
+
+        it 'excludes orphaned upload files' do
+          manager.save
+
+          expect(File).not_to exist(exported_orphan_path)
+        end
+      end
+
+      context 'with an upload missing its file' do
+        before do
+          File.delete(upload.absolute_path)
+        end
+
+        it 'does not cause errors' do
+          manager.save
+
+          expect(shared.errors).to be_empty
+        end
+      end
     end
 
     context 'using object storage' do

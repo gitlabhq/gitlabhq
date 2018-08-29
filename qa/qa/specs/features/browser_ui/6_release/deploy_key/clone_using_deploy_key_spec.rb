@@ -62,6 +62,7 @@ module QA
           end
 
           gitlab_ci = <<~YAML
+<<<<<<< HEAD
             cat-config:
               script:
                 - mkdir -p ~/.ssh
@@ -76,6 +77,22 @@ module QA
               tags:
                 - qa
                 - docker
+=======
+          cat-config:
+            script:
+              - mkdir -p ~/.ssh
+              - ssh-keyscan -p #{@repository_location.port} #{@repository_location.host} >> ~/.ssh/known_hosts
+              - eval $(ssh-agent -s)
+              - ssh-add -D
+              - echo "$#{deploy_key_name}" | ssh-add -
+              - git clone #{@repository_location.git_uri}
+              - cd #{@project.name}
+              - git checkout #{deploy_key_name}
+              - sha1sum .gitlab-ci.yml
+            tags:
+              - qa
+              - docker
+>>>>>>> upstream/master
           YAML
 
           Factory::Repository::ProjectPush.fabricate! do |resource|

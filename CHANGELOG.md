@@ -275,7 +275,10 @@ entry.
 
 ## 11.1.5 (2018-08-27)
 
+<<<<<<< HEAD
 - No changes.
+=======
+>>>>>>> upstream/master
 ### Security (3 changes)
 
 - Fixed persistent XSS rendering/escaping of diff location lines.
