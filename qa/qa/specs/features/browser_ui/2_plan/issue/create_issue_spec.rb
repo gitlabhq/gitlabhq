@@ -22,7 +22,7 @@ module QA
         expect(page).to have_content(issue_title)
       end
 
-      context 'when using attachements in comments', :object_storage do
+      context 'when using attachments in comments', :object_storage do
         let(:file_to_attach) do
           File.absolute_path(File.join('spec', 'fixtures', 'banana_sample.gif'))
         end
