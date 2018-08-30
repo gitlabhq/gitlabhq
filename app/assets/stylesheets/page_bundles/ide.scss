@@ -1442,3 +1442,13 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   top: 50%;
   transform: translateY(-50%);
 }
+
+.ide-file-templates {
+  padding: $grid-size $gl-padding;
+  background-color: $gray-light;
+  border-bottom: 1px solid $white-dark;
+
+  .dropdown {
+    min-width: 180px;
+  }
+}

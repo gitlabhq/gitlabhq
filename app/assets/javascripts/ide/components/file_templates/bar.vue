@@ -15,9 +15,7 @@ export default {
     },
   },
   watch: {
-    activeFile: {
-      handler: 'setInitialType',
-    },
+    activeFile: 'setInitialType',
   },
   mounted() {
     this.setInitialType();
@@ -38,8 +36,11 @@ export default {
     selectTemplateType(type) {
       this.setSelectedTemplateType(type);
     },
-    selecteTemplate(template) {
+    selectTemplate(template) {
       this.fetchTemplate(template);
+    },
+    undo() {
+      this.undoFileTemplate();
     },
   },
 };
@@ -63,29 +64,17 @@ export default {
       :searchable="true"
       :title="__('File templates')"
       class="mr-2"
-      @click="selecteTemplate"
+      @click="selectTemplate"
     />
     <transition name="fade">
       <button
         v-show="updateSuccess"
         type="button"
         class="btn btn-default"
-        @click="undoFileTemplate"
+        @click="undo"
       >
         {{ __('Undo') }}
       </button>
     </transition>
   </div>
 </template>
-
-<style>
-.ide-file-templates {
-  padding: 8px 16px;
-  background-color: #fafafa;
-  border-bottom: 1px solid #eaeaea;
-}
-
-.ide-file-templates .dropdown {
-  min-width: 180px;
-}
-</style>

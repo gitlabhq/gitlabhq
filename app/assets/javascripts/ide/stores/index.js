@@ -23,7 +23,7 @@ export const createStore = () =>
       pipelines,
       mergeRequests,
       branches,
-      fileTemplates,
+      fileTemplates: fileTemplates(),
     },
   });
 

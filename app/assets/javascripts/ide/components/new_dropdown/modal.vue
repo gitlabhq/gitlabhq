@@ -51,6 +51,9 @@ export default {
 
       return __('Create file');
     },
+    isCreatingNew() {
+      return this.entryModal.type !== modalTypes.rename;
+    },
   },
   methods: {
     ...mapActions(['createTempEntry', 'renameEntry']),
@@ -110,7 +113,10 @@ export default {
           class="form-control"
           placeholder="/dir/file_name"
         />
-        <ul class="prepend-top-default list-inline">
+        <ul
+          v-if="isCreatingNew"
+          class="prepend-top-default list-inline"
+        >
           <li
             v-for="(template, index) in templateTypes"
             :key="index"
