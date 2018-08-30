@@ -10,7 +10,7 @@ overriding levels as you get to more specific scopes.
 There are a few user account notifications:
 
 - When a new user is created (via signup or an admin creating them), they receive a welcome notification. 
-(If users are created in GitLab via LDAP, a notification is _not_ sent.)
+(If a new user is created in GitLab via LDAP, a notification is _not_ sent.)
 - When a user adds a new email address to their account, they receive a confirmation email.
 - When a user adds a new SSH Key to their account, they receive a notification.
 
@@ -24,8 +24,19 @@ with changes (including creation and removal of) to these GitLab objects:
 - Issues
 - Merge requests
 - Epics (for GitLab Ultimate and GitLab.com Free only)
+- Descriptions
 - Comments
 - Pipelines
+
+Since these objects are logically nested in GitLab, a notification level applied
+to one object will automatically be applied to all underneath objects. For example,
+if a notification level of `Watch` is applied to the `GitLab.org` group, then `Watch`
+is also applied to all descedent groups (subgroups), all descendent projects, all
+issues in those projects, and all comments in those issues.
+
+## Notification levels
+
+Talk about Disabled, Participating, etc.
 
 
 ## Notification settings
