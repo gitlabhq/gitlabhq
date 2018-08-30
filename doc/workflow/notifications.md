@@ -1,6 +1,17 @@
 # GitLab Notification Emails
 
-GitLab has a notification system in place to notify a user of events that are important for the workflow.
+GitLab provides a highly configurable email notification system, allowing you to 
+receive alerts for events that are important to your personal workflow.
+
+## User account notifications
+
+There are a few user account notifications:
+
+- When a new user is created (via signup or an admin creating them), they receive a welcome notification. 
+(If users are created in GitLab via LDAP, a notification is _not_ sent.)
+- When a user adds a new email address to their account, they receive a confirmation email.
+- When a user adds a new SSH Key to their account, they receive a notification.
+
 
 ## Notification settings
 
