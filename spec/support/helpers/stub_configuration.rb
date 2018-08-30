@@ -1,5 +1,8 @@
 require 'active_support/core_ext/hash/transform_values'
 require 'active_support/hash_with_indifferent_access'
+require 'active_support/dependencies'
+
+require_dependency 'gitlab'
 
 module StubConfiguration
   def stub_application_setting(messages)
