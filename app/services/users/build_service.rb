@@ -4,6 +4,10 @@ module Users
   class BuildService < BaseService
     prepend ::EE::Users::BuildService
 
+    delegate :user_default_internal_regex_enabled?,
+             :user_default_internal_regex_instance,
+             to: :'Gitlab::CurrentSettings.current_application_settings'
+
     def initialize(current_user, params = {})
       @current_user = current_user
       @params = params.dup
@@ -91,6 +95,10 @@ module Users
         if params[:reset_password]
           user_params.merge!(force_random_password: true, password_expires_at: nil)
         end
+
+        if user_default_internal_regex_enabled? && !user_params.key?(:external)
+          user_params[:external] = user_external?
+        end
       else
         allowed_signup_params = signup_params
         allowed_signup_params << :skip_confirmation if skip_authorization
@@ -106,6 +114,10 @@ module Users
 
     def skip_user_confirmation_email_from_setting
       !Gitlab::CurrentSettings.send_user_confirmation_email
+    end
+
+    def user_external?
+      user_default_internal_regex_instance.match(params[:email]).nil?
     end
   end
 end

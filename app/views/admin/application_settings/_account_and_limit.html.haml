@@ -32,6 +32,13 @@
         = f.check_box :user_default_external, class: 'form-check-input'
         = f.label :user_default_external, class: 'form-check-label' do
           Newly registered users will by default be external
+      .prepend-top-10
+        = _('Internal users')
+      = f.text_field :user_default_internal_regex, placeholder: _('Regex pattern'), class: 'form-control prepend-top-5'
+      .help-block
+        = _('Specify an e-mail address regex pattern to identify default internal users.')
+        = link_to _('More information'), help_page_path('user/permissions', anchor: 'external-users-permissions'),
+          target: '_blank'
     .form-group
       = f.label :user_show_add_ssh_key_message, 'Prompt users to upload SSH keys', class: 'label-bold'
       .form-check
