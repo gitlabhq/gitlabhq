@@ -172,8 +172,9 @@ describe Projects::TransferService do
   context 'target namespace containing the same project name' do
     before do
       group.add_owner(user)
+      project.update(name: 'new_name')
 
-      create(:project, name: project.name, group: group, path: 'other')
+      create(:project, name: 'new_name', group: group, path: 'other')
 
       @result = transfer_project(project, user, group)
     end
@@ -187,7 +188,7 @@ describe Projects::TransferService do
     before do
       group.add_owner(user)
 
-      create(:project, name: project.name, group: group)
+      create(:project, name: 'other-name', path: project.path, group: group)
 
       @result = transfer_project(project, user, group)
     end

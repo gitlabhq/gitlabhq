@@ -43,7 +43,7 @@ module Projects
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
 
-      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.path).exists?
+      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
         raise TransferError.new("Project with same name or path in target namespace already exists")
       end
 
