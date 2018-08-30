@@ -1,0 +1,5 @@
+---
+title: Fixed bug when the project logo file is stored in LFS
+merge_request: 20948
+author:
+type: fixed

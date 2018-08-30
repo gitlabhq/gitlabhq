@@ -1,24 +1,55 @@
 require 'spec_helper'
 
 describe Projects::AvatarsController do
-  let(:project) { create(:project, :repository, avatar: fixture_file_upload("spec/fixtures/dk.png", "image/png")) }
-  let(:user)    { create(:user) }
+  let(:project) { create(:project, :repository) }
 
   before do
-    sign_in(user)
-    project.add_maintainer(user)
     controller.instance_variable_set(:@project, project)
   end
 
-  it 'GET #show' do
-    get :show, namespace_id: project.namespace.id, project_id: project.id
+  describe 'GET #show' do
+    subject { get :show, namespace_id: project.namespace, project_id: project }
 
-    expect(response).to have_gitlab_http_status(404)
+    context 'when repository has no avatar' do
+      it 'shows 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when repository has an avatar' do
+      before do
+        allow(project).to receive(:avatar_in_git).and_return(filepath)
+      end
+
+      context 'when the avatar is stored in the repository' do
+        let(:filepath) { 'files/images/logo-white.png' }
+
+        it 'sends the avatar' do
+          subject
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response.header['Content-Type']).to eq('image/png')
+          expect(response.header[Gitlab::Workhorse::SEND_DATA_HEADER]).to start_with('git-blob:')
+        end
+      end
+
+      context 'when the avatar is stored in lfs' do
+        it_behaves_like 'repository lfs file load' do
+          let(:filename) { 'lfs_object.iso' }
+          let(:filepath) { "files/lfs/#{filename}" }
+        end
+      end
+    end
   end
 
-  it 'removes avatar from DB by calling destroy' do
-    delete :destroy, namespace_id: project.namespace.id, project_id: project.id
-    expect(project.avatar.present?).to be_falsey
-    expect(project).to be_valid
+  describe 'DELETE #destroy' do
+    it 'removes avatar from DB by calling destroy' do
+      delete :destroy, namespace_id: project.namespace.id, project_id: project.id
+
+      expect(project.avatar.present?).to be_falsey
+      expect(project).to be_valid
+    end
   end
 end
