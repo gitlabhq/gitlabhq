@@ -2,6 +2,31 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 11.2.3 (2018-08-28)
+
+- No changes.
+
+## 11.2.2 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+
+## 11.2.1 (2018-08-22)
+
+### Fixed (2 changes)
+
+- Fix wrong commit count in push event payload. !21338
+- Fix broken Git over HTTP clones with LDAP users. !21352
+
+### Performance (1 change)
+
+- Eliminate unnecessary and duplicate system hook fires. !21337
+
+
 ## 11.2.0 (2018-08-22)
 
 ### Security (5 changes)
@@ -240,6 +265,23 @@ entry.
 - Increases title column on modal for reports.
 - Disables toggle comments button if diff has no discussions.
 - Moves help_popover component to a common location.
+
+
+## 11.1.6 (2018-08-28)
+
+- No changes.
+
+## 11.1.5 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Sanitize git URL in import errors. (Jamie Schembri)
 
 
 ## 11.1.4 (2018-07-30)
@@ -522,6 +564,19 @@ entry.
 - Remove the use of `is_shared` of `Ci::Runner`.
 - Add more detailed logging to githost.log when rebasing.
 - Use monospaced font for MR diff commit link ref on GFM.
+
+
+## 11.0.6 (2018-08-27)
+
+### Security (3 changes)
+
+- Fixed persistent XSS rendering/escaping of diff location lines.
+- Adding CSRF protection to Hooks resend action.
+- Block link-local addresses in URLBlocker.
+
+### Fixed (1 change, 1 of them is from the community)
+
+- Sanitize git URL in import errors. (Jamie Schembri)
 
 
 ## 11.0.5 (2018-07-26)

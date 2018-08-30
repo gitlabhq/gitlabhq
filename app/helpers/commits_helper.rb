@@ -210,17 +210,6 @@ module CommitsHelper
     Sanitize.clean(string, remove_contents: true)
   end
 
-  def limited_commits(commits)
-    if commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      [
-        commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE),
-        commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE
-      ]
-    else
-      [commits, 0]
-    end
-  end
-
   def commit_path(project, commit, merge_request: nil)
     if merge_request&.persisted?
       diffs_project_merge_request_path(project, merge_request, commit_id: commit.id)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180816193530) do
+ActiveRecord::Schema.define(version: 20180826111825) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1135,6 +1135,7 @@ ActiveRecord::Schema.define(version: 20180816193530) do
 
   add_index "lists", ["board_id", "label_id"], name: "index_lists_on_board_id_and_label_id", unique: true, using: :btree
   add_index "lists", ["label_id"], name: "index_lists_on_label_id", using: :btree
+  add_index "lists", ["list_type"], name: "index_lists_on_list_type", using: :btree
 
   create_table "members", force: :cascade do |t|
     t.integer "access_level", null: false
@@ -1740,6 +1741,7 @@ ActiveRecord::Schema.define(version: 20180816193530) do
     t.datetime "updated_at", null: false
   end
 
+  add_index "protected_tags", ["project_id", "name"], name: "index_protected_tags_on_project_id_and_name", unique: true, using: :btree
   add_index "protected_tags", ["project_id"], name: "index_protected_tags_on_project_id", using: :btree
 
   create_table "push_event_payloads", id: false, force: :cascade do |t|

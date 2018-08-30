@@ -13,13 +13,11 @@ module Gitlab
       end
 
       def save
-        copy_files(@from, uploads_export_path) if File.directory?(@from)
-
         if File.file?(@from) && @relative_export_path == 'avatar'
           copy_files(@from, File.join(uploads_export_path, @project.avatar.filename))
         end
 
-        copy_from_object_storage
+        copy_project_uploads
 
         true
       rescue => e
@@ -48,14 +46,19 @@ module Gitlab
         UploadService.new(@project, File.open(upload, 'r'), FileUploader, uploader_context).execute
       end
 
-      def copy_from_object_storage
-        return unless Gitlab::ImportExport.object_storage?
-
+      def copy_project_uploads
         each_uploader do |uploader|
           next unless uploader.file
-          next if uploader.upload.local? # Already copied, using  the old  method
 
-          download_and_copy(uploader)
+          if uploader.upload.local?
+            next unless uploader.upload.exist?
+
+            copy_files(uploader.absolute_path, File.join(uploads_export_path, uploader.upload.path))
+          else
+            next unless Gitlab::ImportExport.object_storage?
+
+            download_and_copy(uploader)
+          end
         end
       end
 

@@ -8,7 +8,7 @@ input {
 
 input[type='text'].danger {
   background: $input-danger-bg !important;
-  border-color: $input-danger-border;
+  border-color: $red-400;
   text-shadow: 0 1px 1px $white-light;
 }
 

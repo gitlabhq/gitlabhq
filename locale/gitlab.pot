@@ -2391,6 +2391,18 @@ msgstr ""
 msgid "Enter in your Bitbucket Server URL and personal access token below"
 msgstr ""
 
+msgid "Enter the issue description"
+msgstr ""
+
+msgid "Enter the issue title"
+msgstr ""
+
+msgid "Enter the merge request description"
+msgstr ""
+
+msgid "Enter the merge request title"
+msgstr ""
+
 msgid "Environments"
 msgstr ""
 
@@ -3620,10 +3632,10 @@ msgstr ""
 msgid "Milestones"
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} and remove it from %{issuesWithCount} and %{mergeRequestsWithCount}. Once deleted, it cannot be undone or recovered."
 msgstr ""
 
-msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle} from this project. %{milestoneTitle} is not currently used in any issues or merge requests."
+msgid "Milestones| You’re about to permanently delete the milestone %{milestoneTitle}. This milestone is not currently used in any issues or merge requests."
 msgstr ""
 
 msgid "Milestones|Delete milestone"
@@ -5050,6 +5062,9 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
+msgid "Setup a %{type} Runner manually"
+msgstr ""
+
 msgid "Setup a specific Runner automatically"
 msgstr ""
 
@@ -5477,6 +5492,9 @@ msgstr ""
 msgid "The collection of events added to the data gathered for that stage."
 msgstr ""
 
+msgid "The deployment of this job to %{environmentLink} did not succeed."
+msgstr ""
+
 msgid "The fork relationship has been removed."
 msgstr ""
 
@@ -5550,6 +5568,9 @@ msgid "The time in seconds between storage checks. When a previous check did com
 msgstr ""
 
 msgid "The time taken by each data entry gathered by that stage."
+msgstr ""
+
+msgid "The update action will time out after %{number_of_minutes} minutes. For big repositories, use a clone/push combination."
 msgstr ""
 
 msgid "The user map is a JSON document mapping the Google Code users that participated on your projects to the way their email addresses and usernames will be imported into GitLab. You can change this by changing the value on the right hand side of <code>:</code>. Be sure to preserve the surrounding double quotes, other punctuation and the email address or username on the left hand side."
@@ -5657,6 +5678,18 @@ msgstr ""
 msgid "This job has not started yet"
 msgstr ""
 
+msgid "This job is an out-of-date deployment to %{environmentLink}."
+msgstr ""
+
+msgid "This job is an out-of-date deployment to %{environmentLink}. View the most recent deployment %{deploymentLink}."
+msgstr ""
+
+msgid "This job is creating a deployment to %{environmentLink} and will overwrite the last %{deploymentLink}."
+msgstr ""
+
+msgid "This job is creating a deployment to %{environmentLink}."
+msgstr ""
+
 msgid "This job is in pending state and is waiting to be picked by a runner"
 msgstr ""
 
@@ -5664,6 +5697,9 @@ msgid "This job is stuck, because you don't have any active runners online with 
 msgstr ""
 
 msgid "This job is stuck, because you don't have any active runners that can run this job."
+msgstr ""
+
+msgid "This job is the most recent deployment to %{link}."
 msgstr ""
 
 msgid "This job requires a manual action"
@@ -6704,6 +6740,9 @@ msgid "mrWidget|The source branch HEAD has recently changed. Please reload the p
 msgstr ""
 
 msgid "mrWidget|The source branch has been removed"
+msgstr ""
+
+msgid "mrWidget|The source branch is %{commitsBehindLinkStart}%{commitsBehind}%{commitsBehindLinkEnd} the target branch"
 msgstr ""
 
 msgid "mrWidget|The source branch is being removed"

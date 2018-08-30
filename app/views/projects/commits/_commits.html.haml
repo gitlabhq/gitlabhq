@@ -2,7 +2,8 @@
 - project = local_assigns.fetch(:project) { merge_request&.project }
 - ref = local_assigns.fetch(:ref) { merge_request&.source_branch }
 
-- commits, hidden = limited_commits(@commits)
+- commits = @commits
+- hidden = @hidden_commit_count
 
 - commits.chunk { |c| c.committed_date.in_time_zone.to_date }.each do |day, commits|
   %li.commit-header.js-commit-header{ data: { day: day } }

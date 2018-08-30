@@ -254,6 +254,7 @@ export default {
       :pipeline="mr.pipeline"
       :ci-status="mr.ciStatus"
       :has-ci="mr.hasCI"
+      :source-branch="mr.sourceBranch"
       :source-branch-link="mr.sourceBranchLink"
     />
     <deployment

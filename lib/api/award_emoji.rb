@@ -100,7 +100,7 @@ module API
       end
 
       def can_award_awardable?
-        awardable.user_can_award?(current_user, params[:name])
+        awardable.user_can_award?(current_user)
       end
 
       def awardable

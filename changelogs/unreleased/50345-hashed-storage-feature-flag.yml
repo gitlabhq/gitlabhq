@@ -1,0 +1,5 @@
+---
+title: Feature flag to disable Hashed Storage migration when renaming a repository
+merge_request: 21291
+author:
+type: added

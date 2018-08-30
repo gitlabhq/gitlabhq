@@ -104,6 +104,8 @@ describe QA::Runtime::Env do
 
   describe '.github_access_token' do
     it 'returns "" if GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', nil)
+
       expect(described_class.github_access_token).to eq('')
     end
 
@@ -115,6 +117,8 @@ describe QA::Runtime::Env do
 
   describe '.require_github_access_token!' do
     it 'raises ArgumentError if GITHUB_ACCESS_TOKEN is not defined' do
+      stub_env('GITHUB_ACCESS_TOKEN', nil)
+
       expect { described_class.require_github_access_token! }.to raise_error(ArgumentError)
     end
 

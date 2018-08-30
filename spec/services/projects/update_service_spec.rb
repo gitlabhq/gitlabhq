@@ -249,9 +249,20 @@ describe Projects::UpdateService do
           expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
         end
 
-        context 'when hashed storage enabled' do
+        it 'renames the project without upgrading it' do
+          result = update_project(project, admin, path: 'new-path')
+
+          expect(result).not_to include(status: :error)
+          expect(project).to be_valid
+          expect(project.errors).to be_empty
+          expect(project.disk_path).to include('new-path')
+          expect(project.reload.hashed_storage?(:repository)).to be_falsey
+        end
+
+        context 'when hashed storage is enabled' do
           before do
             stub_application_setting(hashed_storage_enabled: true)
+            stub_feature_flags(skip_hashed_storage_upgrade: false)
           end
 
           it 'migrates project to a hashed storage instead of renaming the repo to another legacy name' do
@@ -261,6 +272,22 @@ describe Projects::UpdateService do
             expect(project).to be_valid
             expect(project.errors).to be_empty
             expect(project.reload.hashed_storage?(:repository)).to be_truthy
+          end
+
+          context 'when skip_hashed_storage_upgrade feature flag is enabled' do
+            before do
+              stub_feature_flags(skip_hashed_storage_upgrade: true)
+            end
+
+            it 'renames the project without upgrading it' do
+              result = update_project(project, admin, path: 'new-path')
+
+              expect(result).not_to include(status: :error)
+              expect(project).to be_valid
+              expect(project.errors).to be_empty
+              expect(project.disk_path).to include('new-path')
+              expect(project.reload.hashed_storage?(:repository)).to be_falsey
+            end
           end
         end
       end
