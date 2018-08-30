@@ -428,6 +428,8 @@ GEM
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
     jquery-atwho-rails (1.3.2)
+    js_regex (2.2.1)
+      regexp_parser (>= 0.4.11, <= 0.5.0)
     json (1.8.6)
     json-jwt (1.9.4)
       activesupport
@@ -726,6 +728,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.4.1)
       redis (>= 2.2, < 5)
+    regexp_parser (0.5.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -1074,6 +1077,7 @@ DEPENDENCIES
   influxdb (~> 0.2)
   jira-ruby (~> 1.4)
   jquery-atwho-rails (~> 1.3.2)
+  js_regex (~> 2.2.1)
   json-schema (~> 2.8.0)
   jwt (~> 1.5.6)
   kaminari (~> 1.0)
