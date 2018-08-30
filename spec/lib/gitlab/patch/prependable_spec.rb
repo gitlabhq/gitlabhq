@@ -71,22 +71,41 @@ describe Gitlab::Patch::Prependable do
 
       subject
 
-      expect(prepended_modules).to eq([[subject, ee], [subject, ce]])
+      expect(prepended_modules).to eq([[ce, ee]])
+    end
+
+    context 'overriding a method' do
+      before do
+        subject.module_eval do
+          def self.class_name
+            'Custom'
+          end
+
+          def name
+            'custom'
+          end
+        end
+      end
+
+      it 'returns values from the class' do
+        expect(subject.new.name).to eq('custom')
+        expect(subject.class_name).to eq('Custom')
+      end
     end
   end
 
   describe 'a class prepending a concern prepending a concern' do
     subject { Class.new.prepend(ce) }
 
-    it 'returns values from prepended module ce' do
-      expect(subject.new.name).to eq('ce')
-      expect(subject.class_name).to eq('CE')
+    it 'returns values from prepended module ee' do
+      expect(subject.new.name).to eq('ee')
+      expect(subject.class_name).to eq('EE')
     end
 
     it 'prepends only once' do
       subject.prepend(ce)
 
-      expect(prepended_modules).to eq([[subject, ee], [subject, ce]])
+      expect(prepended_modules).to eq([[ce, ee], [subject, ce]])
     end
   end
 
