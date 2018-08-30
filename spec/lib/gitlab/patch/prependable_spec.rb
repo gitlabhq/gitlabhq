@@ -23,7 +23,7 @@ describe Gitlab::Patch::Prependable do
 
       this = self
       prepended do
-        prepended_modules_ << this
+        prepended_modules_ << [self, this]
       end
 
       def name
@@ -48,7 +48,7 @@ describe Gitlab::Patch::Prependable do
 
       this = self
       prepended do
-        prepended_modules_ << this
+        prepended_modules_ << [self, this]
       end
 
       def name
@@ -71,7 +71,7 @@ describe Gitlab::Patch::Prependable do
 
       subject
 
-      expect(prepended_modules).to eq([ee, ce])
+      expect(prepended_modules).to eq([[subject, ee], [subject, ce]])
     end
   end
 
@@ -86,7 +86,7 @@ describe Gitlab::Patch::Prependable do
     it 'prepends only once' do
       subject.prepend(ce)
 
-      expect(prepended_modules).to eq([ee, ce])
+      expect(prepended_modules).to eq([[subject, ee], [subject, ce]])
     end
   end
 
@@ -115,7 +115,7 @@ describe Gitlab::Patch::Prependable do
     it 'prepends only once' do
       subject.prepend(ee)
 
-      expect(prepended_modules).to eq([ee])
+      expect(prepended_modules).to eq([[subject, ee]])
     end
   end
 end
