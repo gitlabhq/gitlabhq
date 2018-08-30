@@ -1,7 +1,9 @@
 # GitLab Notification Emails
 
 GitLab provides a highly configurable email notification system, allowing you to 
-receive alerts for events that are important to your personal workflow.
+receive alerts for events that are important to your personal workflow. In particular,
+you can configure different notification levels for different event scopes, even
+overriding levels as you get to more specific scopes.
 
 ## User account notifications
 
@@ -11,6 +13,19 @@ There are a few user account notifications:
 (If users are created in GitLab via LDAP, a notification is _not_ sent.)
 - When a user adds a new email address to their account, they receive a confirmation email.
 - When a user adds a new SSH Key to their account, they receive a notification.
+
+## Event scopes
+
+Besides user account events, other notification-generating events are associated
+with changes (including creation and removal of) to these GitLab objects:
+
+- Groups
+- Projects
+- Issues
+- Merge requests
+- Epics (for GitLab Ultimate and GitLab.com Free only)
+- Comments
+- Pipelines
 
 
 ## Notification settings
@@ -72,9 +87,6 @@ Below is the table of events users can be notified of:
 
 | Event                        | Sent to                                                           | Settings level               |
 |------------------------------|-------------------------------------------------------------------|------------------------------|
-| New SSH key added            | User                                                              | Security email, always sent. |
-| New email added              | User                                                              | Security email, always sent. |
-| New user created             | User                                                              | Sent on user creation, except for omniauth (LDAP)|
 | User added to project        | User                                                              | Sent when user is added to project |
 | Project access level changed | User                                                              | Sent when user project access level is changed |
 | User added to group          | User                                                              | Sent when user is added to group |
