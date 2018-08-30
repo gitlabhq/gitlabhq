@@ -4,7 +4,9 @@ entry.
 
 ## 11.2.3 (2018-08-28)
 
-- No changes.
+### Fixed (1 change)
+
+- Fixed cache invalidation issue with diff lines from 11.2.2.
 
 ## 11.2.2 (2018-08-27)
 
@@ -271,7 +273,9 @@ entry.
 
 ## 11.1.6 (2018-08-28)
 
-- No changes.
+### Fixed (1 change)
+
+- Fixed cache invalidation issue with diff lines from 11.2.2.
 
 ## 11.1.5 (2018-08-27)
 

@@ -5976,9 +5976,12 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
+<<<<<<< HEAD
 msgid "Regenerate key"
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "Regex pattern"
 msgstr ""
 
@@ -7470,6 +7473,7 @@ msgstr ""
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
 msgstr ""
 
+<<<<<<< HEAD
 msgid "To connect GitHub repositories, you can use a %{personal_access_token_link}. When you create your Personal Access Token, you will need to select the <code>repo</code> scope, so we can display a list of your public and private repositories which are available to connect."
 msgstr ""
 
@@ -7479,6 +7483,8 @@ msgstr ""
 msgid "To connect an SVN repository, check out %{svn_link}."
 msgstr ""
 
+=======
+>>>>>>> upstream/master
 msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
