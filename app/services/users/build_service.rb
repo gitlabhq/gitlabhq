@@ -2,11 +2,8 @@
 
 module Users
   class BuildService < BaseService
-<<<<<<< HEAD
     prepend ::EE::Users::BuildService
 
-=======
->>>>>>> upstream/master
     delegate :user_default_internal_regex_enabled?,
              :user_default_internal_regex_instance,
              to: :'Gitlab::CurrentSettings.current_application_settings'
