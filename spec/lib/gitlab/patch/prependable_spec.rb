@@ -118,4 +118,54 @@ describe Gitlab::Patch::Prependable do
       expect(prepended_modules).to eq([[subject, ee]])
     end
   end
+
+  describe 'simple case' do
+    subject do
+      foo_ = foo
+
+      Class.new do
+        prepend foo_
+
+        def value
+          10
+        end
+      end
+    end
+
+    let(:foo) do
+      Module.new do
+        extend ActiveSupport::Concern
+
+        prepended do
+          def self.class_value
+            20
+          end
+        end
+
+        def value
+          super * 10
+        end
+      end
+    end
+
+    context 'class methods' do
+      it "has a method" do
+        expect(subject).to respond_to(:class_value)
+      end
+
+      it 'can execute a method' do
+        expect(subject.class_value).to eq(20)
+      end
+    end
+
+    context 'instance methods' do
+      it "has a method" do
+        expect(subject.new).to respond_to(:value)
+      end
+
+      it 'chains a method execution' do
+        expect(subject.new.value).to eq(100)
+      end
+    end
+  end
 end
