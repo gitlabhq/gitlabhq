@@ -8500,7 +8500,6 @@ msgstr ""
 msgid "importing"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "instance completed"
 msgid_plural "instances completed"
 msgstr[0] ""
@@ -8513,9 +8512,9 @@ msgid "is invalid because there is upstream lock"
 msgstr ""
 
 msgid "is not a valid X509 certificate."
-=======
+msgstr ""
+
 msgid "issue boards"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "latest version"
