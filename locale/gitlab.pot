@@ -3592,6 +3592,9 @@ msgstr ""
 msgid "GitLab.com import"
 msgstr ""
 
+msgid "GitLab’s issue tracker"
+msgstr ""
+
 msgid "Gitaly"
 msgstr ""
 
@@ -4274,6 +4277,9 @@ msgid "Latest changes"
 msgstr ""
 
 msgid "Learn more"
+msgstr ""
+
+msgid "Learn more about %{issue_boards_url}, to keep track of issues in multiple lists, using labels, assignees, and milestones. If you’re missing something from issue boards, please create an issue on %{gitlab_issues_url}."
 msgstr ""
 
 msgid "Learn more about Kubernetes"
@@ -7061,6 +7067,9 @@ msgstr ""
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
 msgstr ""
 
+msgid "The tabs below will be removed in a future version"
+msgstr ""
+
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
 msgstr ""
 
@@ -8491,6 +8500,7 @@ msgstr ""
 msgid "importing"
 msgstr ""
 
+<<<<<<< HEAD
 msgid "instance completed"
 msgid_plural "instances completed"
 msgstr[0] ""
@@ -8503,6 +8513,9 @@ msgid "is invalid because there is upstream lock"
 msgstr ""
 
 msgid "is not a valid X509 certificate."
+=======
+msgid "issue boards"
+>>>>>>> upstream/master
 msgstr ""
 
 msgid "latest version"
