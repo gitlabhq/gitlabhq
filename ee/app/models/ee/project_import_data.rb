@@ -17,7 +17,7 @@ module EE
 
     extend ActiveSupport::Concern
 
-    included do
+    prepended do
       validates :auth_method, inclusion: { in: %w[password ssh_public_key] }, allow_blank: true
 
       # We should generate a key even if there's no SSH URL present

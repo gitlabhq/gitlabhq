@@ -8,7 +8,7 @@ module EE
         size_limit_exceeded: 21
       }.freeze
 
-      included do
+      prepended do
         has_one :chat_data, class_name: 'Ci::PipelineChatData'
 
         scope :with_security_reports, -> {
