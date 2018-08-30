@@ -24,7 +24,7 @@ class MergeRequest < ActiveRecord::Base
                 :ref_fetched,
                 :deleted_at
 
-  include ::EE::MergeRequest
+  prepend ::EE::MergeRequest
   include Elastic::MergeRequestsSearch
 
   belongs_to :target_project, class_name: "Project"

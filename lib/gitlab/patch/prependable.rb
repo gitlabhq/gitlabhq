@@ -10,42 +10,29 @@ module Gitlab
         end
       end
 
-      module MetaConcern
-        def extended(base)
-          super
-          base.instance_variable_set(:@_prepend_dependencies, [])
-        end
-      end
-
-      def self.prepended(base)
-        super
-        base.singleton_class.prepend MetaConcern
-      end
-
-      def append_features(base)
-        super
-
-        prepend_features(base)
-      end
-
       def prepend_features(base)
-        if base.instance_variable_defined?(:@_prepend_dependencies)
-          base.instance_variable_get(:@_prepend_dependencies) << self
-          false
-        else
-          return false if prepended?(base)
+        return false if prepended?(base)
 
-          @_prepend_dependencies.each { |dep| base.prepend(dep) }
+        super
 
-          super
+        if const_defined?(:ClassMethods)
+          klass_methods = const_get(:ClassMethods)
+          base.singleton_class.prepend klass_methods
+          base.instance_variable_set(:@_prepended_class_methods, klass_methods)
+        end
 
-          if const_defined?(:ClassMethods)
-            base.singleton_class.prepend const_get(:ClassMethods)
-          end
+        if instance_variable_defined?(:@_prepended_block)
+          base.class_eval(&@_prepended_block)
+        end
 
-          if instance_variable_defined?(:@_prepended_block)
-            base.class_eval(&@_prepended_block)
-          end
+        true
+      end
+
+      def class_methods
+        super
+
+        if instance_variable_defined?(:@_prepended_class_methods)
+          const_get(:ClassMethods).prepend @_prepended_class_methods
         end
       end
 
@@ -63,8 +50,7 @@ module Gitlab
       def prepended?(base)
         index = base.ancestors.index(base)
 
-        @_prepend_dependencies.index(self) ||
-          base.ancestors[0...index].index(self)
+        base.ancestors[0...index].index(self)
       end
     end
   end

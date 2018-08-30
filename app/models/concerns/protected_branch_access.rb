@@ -5,7 +5,7 @@ module ProtectedBranchAccess
 
   included do
     include ProtectedRefAccess
-    include EE::ProtectedRefAccess
+    prepend EE::ProtectedRefAccess
 
     belongs_to :protected_branch
 
