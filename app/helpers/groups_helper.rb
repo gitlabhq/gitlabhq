@@ -140,8 +140,8 @@ module GroupsHelper
 
   def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
-      output = group_icon(group, class: "avatar-tile", width: 15, height: 15) if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-      [output, simple_sanitize(group.name)].join.html_safe
+      icon = group_icon(group, class: "avatar-tile", width: 15, height: 15) if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
+      [icon, simple_sanitize(group.name)].join.html_safe
     end
   end
 
