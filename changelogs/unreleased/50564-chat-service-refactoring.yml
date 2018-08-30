@@ -1,0 +1,5 @@
+---
+title: Use sample data for push event when no commits created
+merge_request: 21440
+author: Takuya Noguchi
+type: fixed
