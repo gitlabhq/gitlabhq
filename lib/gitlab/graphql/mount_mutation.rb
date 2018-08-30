@@ -5,7 +5,7 @@ module Gitlab
     module MountMutation
       extend ActiveSupport::Concern
 
-      module ClassMethods
+      class_methods do
         def mount_mutation(mutation_class)
           # Using an underscored field name symbol will make `graphql-ruby`
           # standardize the field name

@@ -2,7 +2,7 @@ module EE
   module Service
     extend ActiveSupport::Concern
 
-    module ClassMethods
+    class_methods do
       extend ::Gitlab::Utils::Override
 
       override :available_services_names

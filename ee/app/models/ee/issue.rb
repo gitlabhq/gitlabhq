@@ -70,7 +70,7 @@ module EE
       project&.feature_available?(:issue_weights)
     end
 
-    module ClassMethods
+    class_methods do
       # override
       def sort_by_attribute(method, excluded_labels: [])
         case method.to_s

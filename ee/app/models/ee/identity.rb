@@ -12,7 +12,7 @@ module EE
       end
     end
 
-    module ClassMethods
+    class_methods do
       def uniqueness_scope
         [*super, :saml_provider_id]
       end

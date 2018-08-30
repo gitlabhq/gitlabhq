@@ -41,7 +41,7 @@ module EE
       before_create :sync_membership_lock_with_parent
     end
 
-    module ClassMethods
+    class_methods do
       def plans_with_feature(feature)
         LICENSE_PLANS_TO_NAMESPACE_PLANS.values_at(*License.plans_with_feature(feature))
       end

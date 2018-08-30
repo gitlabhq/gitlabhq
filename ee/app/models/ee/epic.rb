@@ -31,7 +31,7 @@ module EE
       end
     end
 
-    module ClassMethods
+    class_methods do
       # We support internal references (&epic_id) and cross-references (group.full_path&epic_id)
       #
       # Escaped versions with `&amp;` will be extracted too

@@ -85,7 +85,7 @@ module Elastic
       end
     end
 
-    module ClassMethods
+    class_methods do
       # Should be overridden for all nested models
       def nested?
         false

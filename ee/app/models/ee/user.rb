@@ -45,7 +45,7 @@ module EE
       enum roadmap_layout: { weeks: 1, months: 4, quarters: 12 }
     end
 
-    module ClassMethods
+    class_methods do
       def support_bot
         email_pattern = "support%s@#{Settings.gitlab.host}"
 

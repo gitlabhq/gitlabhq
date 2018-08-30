@@ -86,7 +86,7 @@ module EE
       default_value_for :packages_enabled, true
     end
 
-    module ClassMethods
+    class_methods do
       def search_by_visibility(level)
         where(visibility_level: ::Gitlab::VisibilityLevel.string_options[level])
       end
