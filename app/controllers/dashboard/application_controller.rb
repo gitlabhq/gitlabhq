@@ -12,4 +12,8 @@ class Dashboard::ApplicationController < ApplicationController
   def projects
     @projects ||= current_user.authorized_projects.sorted_by_activity.non_archived
   end
+
+  def groups
+    @groups ||= GroupsFinder.new(current_user, state_all: true).execute
+  end
 end

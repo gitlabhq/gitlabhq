@@ -34,13 +34,29 @@ class GlobalMilestone
     new(title, child_milestones)
   end
 
-  def self.states_count(projects, group = nil)
+  def self.states_count(projects, groups = nil)
     legacy_group_milestones_count = legacy_group_milestone_states_count(projects)
-    group_milestones_count = group_milestones_states_count(group)
+    group_milestones_count = groups_milestone_state_count(groups)
 
     legacy_group_milestones_count.merge(group_milestones_count) do |k, legacy_group_milestones_count, group_milestones_count|
       legacy_group_milestones_count + group_milestones_count
     end
+  end
+
+  def self.groups_milestone_state_count(groups)
+    return STATE_COUNT_HASH unless groups
+    return self.group_milestones_states_count(groups) unless groups.respond_to?(:each)
+
+    milestone_states = STATE_COUNT_HASH
+
+    groups.each do |group|
+      group_milestones_count = self.group_milestones_states_count(group)
+      milestone_states = milestone_states.merge(group_milestones_count) do |k, milestone_state, group_milestones_count|
+        milestone_state + group_milestones_count
+      end
+    end
+
+    milestone_states
   end
 
   def self.group_milestones_states_count(group)

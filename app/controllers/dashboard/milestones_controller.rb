@@ -4,12 +4,13 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
   include MilestoneActions
 
   before_action :projects
+  before_action :groups
   before_action :milestone, only: [:show, :merge_requests, :participants, :labels]
 
   def index
     respond_to do |format|
       format.html do
-        @milestone_states = GlobalMilestone.states_count(@projects)
+        @milestone_states = GlobalMilestone.states_count(@projects, @groups)
         @milestones = Kaminari.paginate_array(milestones).page(params[:page])
       end
       format.json do
