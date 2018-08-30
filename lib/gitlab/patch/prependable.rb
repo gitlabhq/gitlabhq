@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+# We're patching `ActiveSupport::Concern` in
+# config/initializers/0_as_concern.rb
+#
+# We want to patch `ActiveSupport::Concern` for two reasons:
+# 1. Allow defining class methods via: `class_methods` method
+# 2. Allow `prepended do; end` work like `included do; end`
+# If we don't need anything above, we don't need this patch nor the concern!
+
 # rubocop:disable Gitlab/ModuleWithInstanceVariables
 module Gitlab
   module Patch
