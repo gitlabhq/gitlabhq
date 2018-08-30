@@ -92,9 +92,13 @@ module Gitlab
         queue_verification(base)
       end
 
-      alias_method :prepended, :included
+      def prepended(base = nil)
+        super
 
-      def extended(mod)
+        queue_verification(base)
+      end
+
+      def extended(mod = nil)
         super
 
         queue_verification(mod.singleton_class)
