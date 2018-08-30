@@ -2,11 +2,10 @@
 
 module ProtectedTagAccess
   extend ActiveSupport::Concern
+  include ProtectedRefAccess
+  include EE::ProtectedRefAccess # Can't use prepend. It'll override wrongly
 
   included do
-    include ProtectedRefAccess
-    prepend EE::ProtectedRefAccess
-
     belongs_to :protected_tag
 
     delegate :project, to: :protected_tag

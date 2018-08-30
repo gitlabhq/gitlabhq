@@ -10,7 +10,7 @@ module EE
     extend ActiveSupport::Concern
     extend ::Gitlab::Utils::Override
 
-    prepended do
+    included do
       belongs_to :user
       belongs_to :group
 
