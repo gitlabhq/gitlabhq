@@ -1,4 +1,5 @@
 {
+  "description": "Basic job information",
   "type": "object",
   "required": [
     "id",
@@ -13,12 +14,18 @@
   "properties": {
     "id": { "type": "integer" },
     "name": { "type": "string" },
-    "started": { "type": "boolean" } ,
+    "started": {
+      "oneOf": [
+        { "type": "string", "format": "date-time" },
+        { "type": "boolean" }
+      ]
+    },
     "build_path": { "type": "string" },
+    "retry_path": { "type": "string" },
     "playable": { "type": "boolean" },
     "created_at": { "type": "string" },
     "updated_at": { "type": "string" },
-    "status": { "$ref": "ci_detailed_status.json" }
+    "status": { "$ref": "../ci_detailed_status.json" }
   },
-  "additionalProperties": false
+  "additionalProperties": true
 }
