@@ -13,7 +13,11 @@
       = pluralize @pipeline.total_size, "job"
       - if @pipeline.ref
         from
-        = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+        - if @project.repository.branch_exists?(@pipeline.ref)
+          = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"
+        - else
+          %span.ref-name
+            = @pipeline.ref
       - if @pipeline.duration
         in
         = time_interval_in_words(@pipeline.duration)

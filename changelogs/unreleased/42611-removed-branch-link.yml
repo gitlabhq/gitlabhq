@@ -1,0 +1,5 @@
+---
+title: Only render link to branch when branch still exists in pipeline page
+merge_request:
+author:
+type: fixed

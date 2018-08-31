@@ -63,6 +63,11 @@ describe 'Pipeline', :js do
       expect(page).to have_css('#js-tab-pipeline.active')
     end
 
+    it 'shows link to the pipeline ref' do
+      expect(page).to have_link(pipeline.ref)
+    end
+
+
     it_behaves_like 'showing user status' do
       let(:user_with_status) { pipeline.user }
 
@@ -208,6 +213,18 @@ describe 'Pipeline', :js do
         it { expect(page).not_to have_content('Cancel running') }
       end
     end
+
+    context 'with deleted branch' do
+      before do
+        DeleteBranchService.new(@project, @user).execute(pipeline.ref)
+      end
+
+      it 'does not render link to the pipeline ref' do
+        expect(page).not_to have_link(pipeline.ref)
+        expect(page).to have_content(pipeline.ref)
+      end
+    end
+
   end
 
   context 'when user does not have access to read jobs' do
