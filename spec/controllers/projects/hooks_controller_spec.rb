@@ -30,6 +30,7 @@ describe Projects::HooksController do
         tag_push_events: true,
         merge_requests_events: true,
         issues_events: true,
+        confidential_note_events: true,
         confidential_issues_events: true,
         note_events: true,
         job_events: true,

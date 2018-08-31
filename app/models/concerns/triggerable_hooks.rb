@@ -6,6 +6,7 @@ module TriggerableHooks
     push_hooks:               :push_events,
     tag_push_hooks:           :tag_push_events,
     issue_hooks:              :issues_events,
+    confidential_note_hooks:  :confidential_note_events,
     confidential_issue_hooks: :confidential_issues_events,
     note_hooks:               :note_events,
     merge_request_hooks:      :merge_requests_events,
