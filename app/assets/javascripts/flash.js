@@ -10,6 +10,7 @@ const hideFlash = (flashEl, fadeTransition = true) => {
 
   flashEl.addEventListener('transitionend', () => {
     flashEl.remove();
+    window.dispatchEvent(new Event('resize'));
     if (document.body.classList.contains('flash-shown')) document.body.classList.remove('flash-shown');
   }, {
     once: true,
