@@ -6,11 +6,13 @@ require 'fast_spec_helper'
 require_relative '../../../../config/initializers/0_as_concern'
 
 describe Gitlab::Patch::Prependable do
-  let(:prepended_modules) { [] }
+  before do
+    @prepended_modules = []
+  end
 
   let(:ee) do
     # So that block in Module.new could see them
-    prepended_modules_ = prepended_modules
+    prepended_modules = @prepended_modules
 
     Module.new do
       extend ActiveSupport::Concern
@@ -23,7 +25,7 @@ describe Gitlab::Patch::Prependable do
 
       this = self
       prepended do
-        prepended_modules_ << [self, this]
+        prepended_modules << [self, this]
       end
 
       def name
@@ -33,7 +35,7 @@ describe Gitlab::Patch::Prependable do
   end
 
   let(:ce) do
-    prepended_modules_ = prepended_modules
+    prepended_modules = @prepended_modules
     ee_ = ee
 
     Module.new do
@@ -48,7 +50,7 @@ describe Gitlab::Patch::Prependable do
 
       this = self
       prepended do
-        prepended_modules_ << [self, this]
+        prepended_modules << [self, this]
       end
 
       def name
@@ -65,16 +67,24 @@ describe Gitlab::Patch::Prependable do
       expect(subject.class_name).to eq('EE')
     end
 
+    it 'has the expected ancestors' do
+      expect(subject.ancestors.take(3)).to eq([subject, ee, ce])
+      expect(subject.singleton_class.ancestors.take(3))
+        .to eq([subject.singleton_class,
+                ee.const_get(:ClassMethods),
+                ce.const_get(:ClassMethods)])
+    end
+
     it 'prepends only once' do
       ce.prepend(ee)
       ce.prepend(ee)
 
       subject
 
-      expect(prepended_modules).to eq([[ce, ee]])
+      expect(@prepended_modules).to eq([[ce, ee]])
     end
 
-    context 'overriding a method' do
+    context 'overriding methods' do
       before do
         subject.module_eval do
           def self.class_name
@@ -102,10 +112,18 @@ describe Gitlab::Patch::Prependable do
       expect(subject.class_name).to eq('EE')
     end
 
+    it 'has the expected ancestors' do
+      expect(subject.ancestors.take(3)).to eq([ee, ce, subject])
+      expect(subject.singleton_class.ancestors.take(3))
+        .to eq([ee.const_get(:ClassMethods),
+                ce.const_get(:ClassMethods),
+                subject.singleton_class])
+    end
+
     it 'prepends only once' do
       subject.prepend(ce)
 
-      expect(prepended_modules).to eq([[ce, ee], [subject, ce]])
+      expect(@prepended_modules).to eq([[ce, ee], [subject, ce]])
     end
   end
 
@@ -131,10 +149,17 @@ describe Gitlab::Patch::Prependable do
       expect(subject.class_name).to eq('EE')
     end
 
+    it 'has the expected ancestors' do
+      expect(subject.ancestors.take(2)).to eq([ee, subject])
+      expect(subject.singleton_class.ancestors.take(2))
+        .to eq([ee.const_get(:ClassMethods),
+                subject.singleton_class])
+    end
+
     it 'prepends only once' do
       subject.prepend(ee)
 
-      expect(prepended_modules).to eq([[subject, ee]])
+      expect(@prepended_modules).to eq([[subject, ee]])
     end
   end
 

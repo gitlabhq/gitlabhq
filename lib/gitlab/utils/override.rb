@@ -89,19 +89,19 @@ module Gitlab
       def included(base = nil)
         super
 
-        queue_verification(base)
+        queue_verification(base) if base
       end
 
       def prepended(base = nil)
         super
 
-        queue_verification(base)
+        queue_verification(base) if base
       end
 
       def extended(mod = nil)
         super
 
-        queue_verification(mod.singleton_class)
+        queue_verification(mod.singleton_class) if mod
       end
 
       def queue_verification(base)
