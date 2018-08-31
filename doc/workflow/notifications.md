@@ -31,7 +31,7 @@ with changes (including creation and removal of) to these GitLab objects:
 Since these objects are logically nested in GitLab, a notification level applied
 to one object will automatically be applied to all underneath objects. For example,
 if a notification level of `Watch` is applied to the `GitLab.org` group, then `Watch`
-is also applied to all descedent groups (subgroups), all descendent projects, all
+is also applied to all descendant groups (subgroups), all descendant projects, all
 issues in those projects, and all comments in those issues.
 
 ## Notification levels
