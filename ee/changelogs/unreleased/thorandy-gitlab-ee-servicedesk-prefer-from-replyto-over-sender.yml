@@ -1,0 +1,5 @@
+---
+title: Prefer From address over Sender for Service Desk emails
+merge_request: 7006
+author: Andreas Josephson
+type: changed
