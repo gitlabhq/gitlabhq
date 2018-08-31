@@ -6,7 +6,7 @@ module Gitlab
 
         class << self
           def from_image(job)
-            image = Gitlab::Ci::Build::Image.new(job.options[:image])
+            image = Gitlab::Ci::Build::Image.new(job.config.image)
             return unless image.valid?
 
             image

@@ -49,7 +49,8 @@ class CommitStatus < ActiveRecord::Base
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4,
     missing_dependency_failure: 5,
-    runner_unsupported: 6
+    runner_unsupported: 6,
+    missing_config: 7,
   }
 
   ##

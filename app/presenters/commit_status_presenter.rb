@@ -8,7 +8,8 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
     stuck_or_timeout_failure: 'There has been a timeout failure or the job got stuck. Check your timeout limits or try again',
     runner_system_failure: 'There has been a runner system failure, please try again',
     missing_dependency_failure: 'There has been a missing dependency failure',
-    runner_unsupported: 'Your runner is outdated, please upgrade your runner'
+    runner_unsupported: 'Your runner is outdated, please upgrade your runner',
+    missing_config: 'The build is not playable due to missing configuration (archived)',
   }.freeze
 
   presents :build
@@ -22,6 +23,6 @@ class CommitStatusPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def unrecoverable?
-    script_failure? || missing_dependency_failure?
+    script_failure? || missing_dependency_failure? || missing_metadata?
   end
 end

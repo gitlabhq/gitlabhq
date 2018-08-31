@@ -12,15 +12,14 @@ module Gitlab
         class << self
           def from_commands(job)
             self.new(:script).tap do |step|
-              step.script = job.options[:before_script].to_a + job.options[:script].to_a
-              step.script = job.commands.split("\n") if step.script.empty?
+              step.script = job.config.before_script + job.config.script
               step.timeout = job.metadata_timeout
               step.when = WHEN_ON_SUCCESS
             end
           end
 
           def from_after_script(job)
-            after_script = job.options[:after_script]
+            after_script = job.config.after_script
             return unless after_script
 
             self.new(:after_script).tap do |step|

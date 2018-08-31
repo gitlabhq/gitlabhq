@@ -8,7 +8,10 @@ module Ci
     include ObjectStorage::BackgroundMove
     include Presentable
     include Importable
+    include IgnorableColumn
     include Gitlab::Utils::StrongMemoize
+
+    ignore_column :commands
 
     belongs_to :project, inverse_of: :builds
     belongs_to :runner
@@ -31,6 +34,7 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
+    has_one :config, class_name: 'Ci::BuildConfig'
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
@@ -51,9 +55,6 @@ module Ci
         Environment.find_by(name: expanded_environment_name, project: project)
       end
     end
-
-    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
-    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
     delegate :name, to: :project, prefix: true
 
@@ -197,6 +198,22 @@ module Ci
       end
     end
 
+    def config
+      super || migrate_config
+    end
+
+    def migrate_config
+      return unless self.options
+
+      build_config(
+        yaml_options: Gitlab::Serializer::Ci::Options.load(self.options),
+        yaml_variables: Gitlab::Serializer::Ci::Variables.load(self.yaml_variables))
+        .tap do
+        self.options = nil
+        self.yaml_variables = nil
+      end
+    end
+
     def ensure_metadata
       metadata || build_metadata(project: project)
     end
@@ -243,7 +260,7 @@ module Ci
     end
 
     def retries_max
-      self.options.fetch(:retry, 0).to_i
+      config&.retries_max.to_i
     end
 
     def latest?
@@ -271,7 +288,7 @@ module Ci
     end
 
     def environment_action
-      self.options.fetch(:environment, {}).fetch(:action, 'start') if self.options
+      self.config&.environment_action || 'start'
     end
 
     def outdated_deployment?
@@ -451,12 +468,12 @@ module Ci
       artifacts_metadata?
     end
 
-    def artifacts_metadata_entry(path, **options)
+    def artifacts_metadata_entry(path, **params)
       artifacts_metadata.open do |metadata_stream|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
           metadata_stream,
           path,
-          **options)
+          **params)
 
         metadata.to_entry
       end
@@ -519,11 +536,11 @@ module Ci
     end
 
     def when
-      read_attribute(:when) || build_attributes_from_config[:when] || 'on_success'
+      read_attribute(:when) || 'on_success'
     end
 
     def yaml_variables
-      read_attribute(:yaml_variables) || build_attributes_from_config[:yaml_variables] || []
+      config&.yaml_variables || []
     end
 
     def user_variables
@@ -561,14 +578,7 @@ module Ci
     end
 
     def cache
-      cache = options[:cache]
-
-      if cache && project.jobs_cache_index
-        cache = cache.merge(
-          key: "#{cache[:key]}-#{project.jobs_cache_index}")
-      end
-
-      [cache]
+      config&.cache
     end
 
     def credentials
@@ -576,19 +586,20 @@ module Ci
     end
 
     def dependencies
+      return [] unless config
       return [] if empty_dependencies?
 
       depended_jobs = depends_on_builds
 
-      return depended_jobs unless options[:dependencies].present?
+      return depended_jobs unless config.dependencies.present?
 
       depended_jobs.select do |job|
-        options[:dependencies].include?(job.name)
+        config.dependencies.include?(job.name)
       end
     end
 
     def empty_dependencies?
-      options[:dependencies]&.empty?
+      config&.dependencies&.empty?
     end
 
     def has_valid_build_dependencies?
@@ -619,7 +630,7 @@ module Ci
     end
 
     def publishes_artifacts_reports?
-      options&.dig(:artifacts, :reports)&.any?
+      config&.publishes_artifacts_reports?
     end
 
     def hide_secrets(trace)
@@ -631,8 +642,8 @@ module Ci
       trace
     end
 
-    def serializable_hash(options = {})
-      super(options).merge(when: read_attribute(:when))
+    def serializable_hash(params = {})
+      super(params).merge(when: read_attribute(:when))
     end
 
     def has_terminal?
@@ -751,7 +762,7 @@ module Ci
     end
 
     def environment_url
-      options&.dig(:environment, :url) || persisted_environment&.external_url
+      config&.environment_url || persisted_environment&.external_url
     end
 
     def build_attributes_from_config

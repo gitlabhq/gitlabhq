@@ -75,6 +75,11 @@ module Ci
         return false
       end
 
+      unless build.config
+        build.drop!(:missing_config)
+        return false
+      end
+
       unless build.supported_runner?(params.dig(:info, :features))
         build.drop!(:runner_unsupported)
         return false
