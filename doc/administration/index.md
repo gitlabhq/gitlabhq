@@ -57,7 +57,6 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
 - [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 
-
 #### Customizing GitLab's appearance
 
 - [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
