@@ -41,6 +41,7 @@ module Ci
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
+    accepts_nested_attributes_for :config, update_only: true
     accepts_nested_attributes_for :runner_session
 
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true

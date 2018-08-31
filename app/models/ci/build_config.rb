@@ -9,6 +9,10 @@ module Ci
     serialize :yaml_options # rubocop:disable Cop/ActiveRecordSerialize
     serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
 
+    def project
+      build.project
+    end
+
     def image
       self.yaml_options[:image] if self.yaml_options
     end

@@ -2,10 +2,12 @@
 
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
+    CLONE_ACCESSORS = %i[pipeline project ref tag name
                          allow_failure stage stage_id stage_idx trigger_request
-                         yaml_variables when environment coverage_regex
+                         when environment coverage_regex
                          description tag_list protected].freeze
+
+    CONFIG_ACCESSORS = %i[yaml_options yaml_variables].freeze
 
     def execute(build)
       reprocess!(build).tap do |new_build|
@@ -24,11 +26,20 @@ module Ci
         raise Gitlab::Access::AccessDeniedError
       end
 
+      unless build.config
+        raise Gitlab::Access::AccessDeniedError
+      end
+
       attributes = CLONE_ACCESSORS.map do |attribute|
         [attribute, build.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
       end
 
+      config_attributes = CONFIG_ACCESSORS.map do |attribute|
+        [attribute, build.config.public_send(attribute)] # rubocop:disable GitlabSecurity/PublicSend
+      end
+
       attributes.push([:user, current_user])
+      attributes.push([:config_attributes, Hash[config_attributes]])
 
       build.retried = true
 
