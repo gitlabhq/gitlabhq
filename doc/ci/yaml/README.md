@@ -1280,13 +1280,6 @@ These variables can be later used in all executed commands and scripts.
 The YAML-defined variables are also set to all created service containers,
 thus allowing to fine tune them.
 
-To turn off global defined variables in a specific job, define an empty hash:
-
-```yaml
-job_name:
-  variables: {}
-```
-
 Except for the user defined variables, there are also the ones [set up by the
 Runner itself](../variables/README.md#predefined-variables-environment-variables).
 One example would be `CI_COMMIT_REF_NAME` which has the value of
