@@ -1738,7 +1738,7 @@ class Project < ActiveRecord::Base
       :started
     elsif after_export_in_progress?
       :after_export_action
-    elsif export_project_path || export_project_object_exists?
+    elsif export_project_object_exists?
       :finished
     else
       :none
@@ -1753,17 +1753,11 @@ class Project < ActiveRecord::Base
     import_export_shared.after_export_in_progress?
   end
 
-  def remove_exports(path = export_path)
-    if path.present?
-      FileUtils.rm_rf(path)
-    elsif export_project_object_exists?
+  def remove_exports
+    if export_project_object_exists?
       import_export_upload.remove_export_file!
       import_export_upload.save
     end
-  end
-
-  def remove_exported_project_file
-    remove_exports(export_project_path)
   end
 
   def export_project_object_exists?

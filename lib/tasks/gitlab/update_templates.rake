@@ -6,6 +6,8 @@ namespace :gitlab do
 
   desc "GitLab | Update project templates"
   task :update_project_templates do
+    include Gitlab::ImportExport::CommandLineUtil
+
     if Rails.env.production?
       puts "This rake task is not meant fo production instances".red
       exit(1)
@@ -52,7 +54,7 @@ namespace :gitlab do
       end
 
       Projects::ImportExport::ExportService.new(project, admin).execute
-      FileUtils.cp(project.export_project_path, template.archive_path)
+      download_or_copy_upload(project.import_export_upload.export_file, template.archive_path)
       Projects::DestroyService.new(admin, project).execute
       puts "Exported #{template.name}".green
     end

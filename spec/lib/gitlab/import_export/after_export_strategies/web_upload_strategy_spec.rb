@@ -33,7 +33,7 @@ describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
         allow(strategy).to receive(:send_file)
         allow(strategy).to receive(:handle_response_error)
 
-        expect(project).to receive(:remove_exported_project_file)
+        expect(project).to receive(:remove_exports)
 
         strategy.execute(user, project)
       end
@@ -48,7 +48,7 @@ describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
         allow(strategy).to receive(:send_file)
         allow(strategy).to receive(:handle_response_error)
 
-        expect(project).to receive(:remove_exported_project_file)
+        expect(project).to receive(:remove_exports)
 
         strategy.execute(user, project)
       end

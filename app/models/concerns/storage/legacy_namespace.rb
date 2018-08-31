@@ -25,8 +25,6 @@ module Storage
         Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
       end
 
-      remove_exports!
-
       # If repositories moved successfully we need to
       # send update instructions to users.
       # However we cannot allow rollback since we moved namespace dir
@@ -101,8 +99,6 @@ module Storage
           end
         end
       end
-
-      remove_exports!
     end
 
     def remove_legacy_exports!
