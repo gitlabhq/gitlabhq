@@ -73,3 +73,11 @@
       = form.label :reset_approvals_on_push do
         %strong Remove all approvals in a merge request when new commits are pushed to its source branch
 
+  .form-group.self-approval
+    .form-check
+      = form.check_box :merge_requests_author_approval, class: 'form-check-input'
+      = form.label :merge_requests_author_approval do
+        %strong Enable self approval of merge requests
+        = link_to icon('question-circle'), help_page_path("user/project/merge_requests/merge_request_approvals",
+          anchor: 'allowing-merge-request-authors-to-approve-their-own-merge-requests'), target: '_blank'
+
