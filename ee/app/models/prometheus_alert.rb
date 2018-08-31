@@ -7,10 +7,13 @@ class PrometheusAlert < ActiveRecord::Base
 
   belongs_to :environment, required: true, validate: true, inverse_of: :prometheus_alerts
   belongs_to :project, required: true, validate: true, inverse_of: :prometheus_alerts
-  belongs_to :prometheus_metric, required: true, validate: true, inverse_of: :prometheus_alert
+  belongs_to :prometheus_metric, required: true, validate: true, inverse_of: :prometheus_alerts
 
   after_save :clear_prometheus_adapter_cache!
   after_destroy :clear_prometheus_adapter_cache!
+
+  validate :require_valid_environment_project!
+  validate :require_valid_metric_project!
 
   enum operator: [:lt, :eq, :gt]
 
@@ -44,5 +47,18 @@ class PrometheusAlert < ActiveRecord::Base
 
   def clear_prometheus_adapter_cache!
     environment.clear_prometheus_reactive_cache!(:additional_metrics_environment)
+  end
+
+  def require_valid_environment_project!
+    return if project == environment.project
+
+    errors.add(:environment, "invalid project")
+  end
+
+  def require_valid_metric_project!
+    return if prometheus_metric.default?
+    return if project == prometheus_metric.project
+
+    errors.add(:prometheus_metric, "invalid project")
   end
 end

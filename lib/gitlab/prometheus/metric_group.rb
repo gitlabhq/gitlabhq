@@ -1,6 +1,7 @@
 module Gitlab
   module Prometheus
     class MetricGroup
+      prepend EE::Gitlab::Prometheus::MetricGroup
       include ActiveModel::Model
 
       attr_accessor :name, :priority, :metrics
@@ -13,14 +14,9 @@ module Gitlab
         end
       end
 
-      def self.for_project(project)
-        common_metrics + custom_metrics(project)
-      end
-
-      def self.custom_metrics(project)
-        project.prometheus_metrics.all.group_by(&:group_title).map do |name, metrics|
-          MetricGroup.new(name: name, priority: 0, metrics: metrics.map(&:to_query_metric))
-        end
+      # EE only
+      def self.for_project(_)
+        common_metrics
       end
     end
   end
