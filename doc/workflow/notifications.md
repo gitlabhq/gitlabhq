@@ -12,7 +12,7 @@ There are a few user account notifications:
 - When a new user is created (via signup or an admin creating them), they receive a welcome notification. 
 (If a new user is created in GitLab via LDAP, a notification is _not_ sent.)
 - When a user adds a new email address to their account, they receive a confirmation email.
-- When a user adds a new SSH Key to their account, they receive a notification.
+- When a user adds a new SSH key to their account, they receive a notification.
 
 ## Event scopes
 
@@ -23,7 +23,7 @@ with changes (including creation and removal of) to these GitLab objects:
 - Projects
 - Issues
 - Merge requests
-- Epics (for GitLab Ultimate and GitLab.com Free only)
+- Epics (for GitLab Ultimate and GitLab.com Gold only)
 - Descriptions
 - Comments
 - Pipelines
