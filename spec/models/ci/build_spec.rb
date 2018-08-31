@@ -1562,7 +1562,7 @@ describe Ci::Build do
       end
 
       it 'has expiring artifacts' do
-        expect(build).to have_expiring_artifacts
+        expect(build).to have_expiring_artifacts_archive
       end
     end
 
@@ -1572,7 +1572,7 @@ describe Ci::Build do
       end
 
       it 'does not have expiring artifacts' do
-        expect(build).not_to have_expiring_artifacts
+        expect(build).not_to have_expiring_artifacts_archive
       end
     end
   end

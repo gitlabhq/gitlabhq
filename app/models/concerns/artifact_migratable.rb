@@ -7,10 +7,12 @@ module ArtifactMigratable
   def artifacts_archive_file
     job_artifacts_archive&.file || legacy_artifacts_file
   end
+  alias_method :artifacts_file, :artifacts_archive_file
 
   def artifacts_archive_metadata
     job_artifacts_archive_metadata&.file || legacy_artifacts_metadata
   end
+  alias_method :artifacts_metadata, :artifacts_archive_metadata
 
   def artifacts_archive?
     !artifacts_expired? && artifacts_archive_file.exists?
@@ -23,6 +25,7 @@ module ArtifactMigratable
   def artifacts_archive_file_changed?
     job_artifacts_archive&.file_changed? || attribute_changed?(:artifacts_file)
   end
+  alias_method :artifacts_file_changed?, :artifacts_archive_file_changed?
 
   def remove_artifacts_archive_file!
     if job_artifacts_archive
