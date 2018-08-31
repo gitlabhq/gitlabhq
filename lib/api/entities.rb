@@ -260,7 +260,7 @@ module API
         super(projects_relation).preload(:group)
                                 .preload(project_group_links: :group,
                                          fork_network: :root_project,
-                                         forked_project_link: :forked_from_project,
+                                         fork_network_member: :forked_from_project,
                                          forked_from_project: [:route, :forks, :tags, namespace: :route])
       end
       # rubocop: enable CodeReuse/ActiveRecord

@@ -259,7 +259,6 @@ describe Projects::DestroyService do
 
     before do
       project.lfs_objects << create(:lfs_object)
-      forked_project.forked_project_link.destroy
       forked_project.reload
     end
 
