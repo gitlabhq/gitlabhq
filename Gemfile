@@ -387,6 +387,7 @@ group :test do
   gem 'sham_rack', '~> 1.3.6'
   gem 'concurrent-ruby', '~> 1.0.5'
   gem 'test-prof', '~> 0.2.5'
+  gem 'rspec_junit_formatter'
 end
 
 gem 'octokit', '~> 4.9'
