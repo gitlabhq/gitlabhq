@@ -55,7 +55,7 @@ module NamespacesHelper
   # group if one exists by that name to prevent duplicates.
   def dedup_extra_group(extra_group)
     unless extra_group.persisted?
-      existing_group = Group.find_by(name: extra_group.name)
+      existing_group = Group.find_by(path: extra_group.path)
       extra_group = existing_group if existing_group&.persisted?
     end
 
