@@ -100,3 +100,23 @@ golang:
     reports:
       junit: report.xml
 ```
+
+### Java examples
+#### Gradle
+
+Use the following job in `.gitlab-ci.yml`:
+
+```yaml
+java:
+  stage: test
+  script:
+  - gradle test
+  artifacts:
+    reports:
+      junit: build/test-results/test/TEST-*.xml
+```
+
+If you define multiple tasks of kind test, it will generate multiple directories 
+under `build/test-results/` directory. 
+To address all subdirectory at once, you can leverage regex matching by defining following 
+path: `build/test-results/test/TEST-*.xml`
