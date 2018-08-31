@@ -24,6 +24,9 @@ module Ci
       upload_multiple_artifacts: -> (build) { build.publishes_artifacts_reports? }
     }.freeze
 
+    serialize :options # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
     has_many :trace_chunks, class_name: 'Ci::BuildTraceChunk', foreign_key: :build_id
@@ -206,8 +209,8 @@ module Ci
       return unless self.options
 
       build_config(
-        yaml_options: Gitlab::Serializer::Ci::Options.load(self.options),
-        yaml_variables: Gitlab::Serializer::Ci::Variables.load(self.yaml_variables))
+        yaml_options: self.options,
+        yaml_variables: self.yaml_variables)
         .tap do
         self.options = nil
         self.yaml_variables = nil
@@ -328,7 +331,7 @@ module Ci
         variables.concat(pipeline.predefined_variables)
         variables.concat(runner.predefined_variables) if runner
         variables.concat(project.deployment_variables(environment: environment)) if environment
-        variables.concat(yaml_variables)
+        variables.concat(config&.yaml_variables || [])
         variables.concat(user_variables)
         variables.concat(secret_group_variables)
         variables.concat(secret_project_variables(environment: environment))
@@ -537,10 +540,6 @@ module Ci
 
     def when
       read_attribute(:when) || 'on_success'
-    end
-
-    def yaml_variables
-      config&.yaml_variables || []
     end
 
     def user_variables

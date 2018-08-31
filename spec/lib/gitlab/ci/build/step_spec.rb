@@ -18,13 +18,6 @@ describe Gitlab::Ci::Build::Step do
       end
     end
 
-    context 'when commands are specified' do
-      it_behaves_like 'has correct script' do
-        let(:job) { create(:ci_build, :no_options, commands: "ls -la\ndate") }
-        let(:script) { ['ls -la', 'date'] }
-      end
-    end
-
     context 'when script option is specified' do
       it_behaves_like 'has correct script' do
         let(:job) { create(:ci_build, :no_options, options: { script: ["ls -la\necho aaa", "date"] }) }

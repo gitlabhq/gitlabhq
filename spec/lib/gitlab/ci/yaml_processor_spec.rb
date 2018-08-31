@@ -21,7 +21,6 @@ module Gitlab
               stage: "test",
               stage_idx: 1,
               name: "rspec",
-              commands: "pwd\nrspec",
               coverage_regex: nil,
               tag_list: [],
               options: {
@@ -140,7 +139,6 @@ module Gitlab
              builds:
                [{ stage_idx: 1,
                   stage: "test",
-                  commands: "rspec",
                   tag_list: [],
                   name: "rspec",
                   allow_failure: false,
@@ -156,7 +154,6 @@ module Gitlab
              builds:
                [{ stage_idx: 2,
                   stage: "deploy",
-                  commands: "cap prod",
                   tag_list: [],
                   name: "prod",
                   allow_failure: false,

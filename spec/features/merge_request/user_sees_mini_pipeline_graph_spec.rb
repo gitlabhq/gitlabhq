@@ -5,7 +5,7 @@ describe 'Merge request < User sees mini pipeline graph', :js do
   let(:user) { project.creator }
   let(:merge_request) { create(:merge_request, source_project: project, head_pipeline: pipeline) }
   let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: 'master', status: 'running', sha: project.commit.id) }
-  let(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', commands: 'test') }
+  let(:build) { create(:ci_build, pipeline: pipeline, stage: 'test', options: { script: 'test' }) }
 
   before do
     build.run
