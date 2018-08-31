@@ -804,10 +804,6 @@ describe ProjectsController do
     end
 
     context 'object storage enabled' do
-      before do
-        stub_feature_flags(import_export_object_storage: true)
-      end
-
       context 'when project export is enabled' do
         it 'returns 302' do
           get :download_export, namespace_id: project.namespace, id: project

@@ -4,16 +4,18 @@ describe Gitlab::ImportExport::Importer do
   let(:user) { create(:user) }
   let(:test_path) { "#{Dir.tmpdir}/importer_spec" }
   let(:shared) { project.import_export_shared }
-  let(:project) { create(:project, import_source: File.join(test_path, 'test_project_export.tar.gz')) }
+  let(:project) { create(:project) }
+  let(:import_file) { fixture_file_upload('spec/features/projects/import_export/test_project_export.tar.gz') }
 
   subject(:importer) { described_class.new(project) }
 
   before do
     allow_any_instance_of(Gitlab::ImportExport).to receive(:storage_path).and_return(test_path)
     allow_any_instance_of(Gitlab::ImportExport::FileImporter).to receive(:remove_import_file)
+    stub_uploads_object_storage(FileUploader)
 
     FileUtils.mkdir_p(shared.export_path)
-    FileUtils.cp(Rails.root.join('spec/features/projects/import_export/test_project_export.tar.gz'), test_path)
+    ImportExportUpload.create(project: project, import_file: import_file)
   end
 
   after do
@@ -64,6 +66,14 @@ describe Gitlab::ImportExport::Importer do
         importer.execute
       end
 
+      it 'removes the import file' do
+        expect(importer).to receive(:remove_import_file).and_call_original
+
+        importer.execute
+
+        expect(project.import_export_upload.import_file&.file).to be_nil
+      end
+
       it 'sets the correct visibility_level when visibility level is a string' do
         project.create_or_update_import_data(
           data: { override_params: { visibility_level: Gitlab::VisibilityLevel::PRIVATE.to_s } }
@@ -85,7 +95,6 @@ describe Gitlab::ImportExport::Importer do
         allow(subject).to receive(:import_file).and_return(true)
         allow(subject).to receive(:check_version!).and_return(true)
         allow(subject).to receive(:restorers).and_return(restorers)
-        allow(restorers).to receive(:all?).and_return(true)
         allow(project).to receive(:import_data).and_return(double(data: { 'original_path' => existing_project.path }))
       end
 
