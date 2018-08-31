@@ -121,4 +121,25 @@ describe('RepoFile', () => {
       ).toContain('Locked by testuser');
     });
   });
+
+  it('calls scrollIntoView if made active', done => {
+    createComponent({
+      file: {
+        ...file(),
+        type: 'blob',
+        active: false,
+      },
+      level: 0,
+    });
+
+    spyOn(vm, 'scrollIntoView');
+
+    vm.file.active = true;
+
+    vm.$nextTick(() => {
+      expect(vm.scrollIntoView).toHaveBeenCalled();
+
+      done();
+    });
+  });
 });
