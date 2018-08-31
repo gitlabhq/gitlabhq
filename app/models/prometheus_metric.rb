@@ -1,4 +1,6 @@
 class PrometheusMetric < ActiveRecord::Base
+  prepend EE::PrometheusMetric
+
   belongs_to :project, validate: true, inverse_of: :prometheus_metrics
 
   enum group: {
