@@ -1,0 +1,6 @@
+---
+title: Importing a project no longer fails when visibility level holds a string value
+  type
+merge_request: 21242
+author:
+type: fixed
