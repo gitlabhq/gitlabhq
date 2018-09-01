@@ -1145,7 +1145,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   }
 
   .avatar-container {
-    flex: initial;
+    flex: 0 0 auto;
     margin-right: 0;
   }
 
