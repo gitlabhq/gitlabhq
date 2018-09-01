@@ -1,7 +1,6 @@
 - @no_container = true
 - page_title "Labels"
 - can_admin_label = can?(current_user, :admin_label, @group)
-- hide_class = ''
 - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
 - issuables = ['issues', 'merge requests']
 

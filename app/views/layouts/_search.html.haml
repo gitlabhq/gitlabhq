@@ -1,7 +1,3 @@
-- if controller.controller_path =~ /^groups/ && @group.persisted?
-  - label = _('This group')
-- if controller.controller_path =~ /^projects/ && @project.persisted?
-  - label = _('This project')
 - if @group && @group.persisted? && @group.path
   - group_data_attrs = { group_path: j(@group.path), name: @group.name, issues_path: issues_group_path(j(@group.path)), mr_path: merge_requests_group_path(j(@group.path)) }
 - if @project && @project.persisted?
