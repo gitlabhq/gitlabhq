@@ -16,6 +16,7 @@ class BranchFilterValidator < ActiveModel::EachValidator
 
     if value.present?
       value_without_wildcards = value.tr('*', 'x')
+
       unless Gitlab::GitRefValidator.validate(value_without_wildcards)
         record.errors[attribute] << "is not a valid branch name"
       end

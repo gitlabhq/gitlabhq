@@ -28,6 +28,12 @@ module TriggerableHooks
       public_send(trigger) # rubocop:disable GitlabSecurity/PublicSend
     end
 
+    def select_active(hooks_scope, data)
+      select do |hook|
+        ActiveHookFilter.new(hook).matches?(hooks_scope, data)
+      end
+    end
+
     private
 
     def triggerable_hooks(hooks)
