@@ -370,6 +370,10 @@ module API
       expose :can_push do |repo_branch, options|
         Gitlab::UserAccess.new(options[:current_user], project: options[:project]).can_push_to_branch?(repo_branch.name)
       end
+
+      expose :default do |repo_branch, options|
+        options[:project].default_branch == repo_branch.name
+      end
     end
 
     class TreeObject < Grape::Entity
