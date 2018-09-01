@@ -30,13 +30,6 @@ export default {
       return window.gon.user_color_scheme;
     },
   },
-  methods: {
-    discussionsByLine(line, leftOrRight) {
-      return line[leftOrRight] && line[leftOrRight].lineCode !== undefined
-        ? this.singleDiscussionByLineCode(line[leftOrRight].lineCode)
-        : [];
-    },
-  },
 };
 </script>
 
