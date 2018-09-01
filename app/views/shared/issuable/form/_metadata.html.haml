@@ -3,7 +3,6 @@
 - return unless can?(current_user, :"admin_#{issuable.to_ability_name}", issuable.project)
 
 - has_due_date = issuable.has_attribute?(:due_date)
-- has_labels = @labels && @labels.any?
 - form = local_assigns.fetch(:form)
 
 %hr
