@@ -804,7 +804,7 @@ GEM
       sexp_processor (~> 4.1)
     rubyntlm (0.6.2)
     rubypants (0.2.0)
-    rubyzip (1.2.1)
+    rubyzip (1.2.2)
     rufus-scheduler (3.4.0)
       et-orbi (~> 1.0)
     rugged (0.27.4)
