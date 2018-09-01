@@ -32,18 +32,25 @@ export const fetchDiffFiles = ({ state, commit }) => {
 export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
   Object.values(allLineDiscussions).forEach(discussions => {
     if (discussions.length > 0) {
-      const fileHash = discussions[0].fileHash;
+      const { fileHash } = discussions[0];
       const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
       if (selectedFile) {
-        const targetLine = selectedFile.parallelDiffLines.find(line => {
-          return (
+        const targetLine = selectedFile.parallelDiffLines.find(
+          line =>
             (line.left && line.left.lineCode === discussions[0].line_code) ||
-            (line.right && line.right.lineCode === discussions[0].line_code)
-          );
-        });
+            (line.right && line.right.lineCode === discussions[0].line_code),
+        );
 
         if (targetLine) {
           Object.assign(targetLine.right, { discussions });
+        }
+
+        const targetInlineLine = selectedFile.highlightedDiffLines.find(
+          line => line.lineCode === discussions[0].line_code,
+        );
+
+        if (targetInlineLine) {
+          Object.assign(targetInlineLine, { discussions });
         }
       }
     }
@@ -51,8 +58,8 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
 };
 
 export const startRenderDiffsQueue = ({ state, commit }) => {
-  const checkItem = () => {
-    return new Promise(resolve => {
+  const checkItem = () =>
+    new Promise(resolve => {
       const nextFile = state.diffFiles.find(
         file => !file.renderIt && (!file.collapsed || !file.text),
       );
@@ -73,7 +80,6 @@ export const startRenderDiffsQueue = ({ state, commit }) => {
         resolve();
       }
     });
-  };
 
   return new Promise(resolve => {
     checkItem()

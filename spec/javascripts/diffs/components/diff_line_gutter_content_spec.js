@@ -11,6 +11,16 @@ describe('DiffLineGutterContent', () => {
   const createComponent = (options = {}) => {
     const cmp = Vue.extend(DiffLineGutterContent);
     const props = Object.assign({}, options);
+    props.line = {
+      lineCode: 'LC_42',
+      type: 'new',
+      oldLine: null,
+      newLine: 1,
+      discussions: [],
+      text: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
+      richText: '+<span id="LC1" class="line" lang="plaintext">  - Bad dates</span>\n',
+      metaData: null,
+    };
     props.fileHash = getDiffFileMock().fileHash;
     props.contextLinesPath = '/context/lines/path';
 

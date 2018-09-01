@@ -21,18 +21,13 @@ export default {
       type: Number,
       required: true,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
     }),
     className() {
-      return this.discussions.length ? '' : 'js-temp-notes-holder';
+      return this.line.discussions.length ? '' : 'js-temp-notes-holder';
     },
   },
 };
@@ -50,8 +45,8 @@ export default {
     <td class="notes_content">
       <div class="content">
         <diff-discussions
-          v-if="discussions.length"
-          :discussions="discussions"
+          v-if="line.discussions.length"
+          :discussions="line.discussions"
         />
         <diff-line-note-form
           v-if="diffLineCommentForms[line.lineCode]"

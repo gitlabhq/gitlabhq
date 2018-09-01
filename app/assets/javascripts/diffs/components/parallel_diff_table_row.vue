@@ -1,6 +1,5 @@
 <script>
 import $ from 'jquery';
-import { mapGetters } from 'vuex';
 import DiffTableCell from './diff_table_cell.vue';
 import {
   NEW_LINE_TYPE,
