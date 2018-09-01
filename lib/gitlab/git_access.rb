@@ -237,6 +237,8 @@ module Gitlab
         end
       elsif user
         # User access is verified in check_change_access!
+      elsif authed_via_jwt?
+        # Authenticated via JWT
       else
         raise UnauthorizedError, ERROR_MESSAGES[:upload]
       end
@@ -342,6 +344,10 @@ module Gitlab
 
     def receive_pack_disabled_over_http?
       !Gitlab.config.gitlab_shell.receive_pack
+    end
+
+    def authed_via_jwt?
+      false
     end
 
     protected
