@@ -493,9 +493,9 @@ describe Ci::ProcessPipelineService, '#execute' do
 
   context 'when builds with auto-retries are configured' do
     before do
-      create_build('build:1', stage_idx: 0, user: user, options: { retry: 2 })
+      create_build('build:1', stage_idx: 0, user: user, options: { script: 'aa', retry: 2 })
       create_build('test:1', stage_idx: 1, user: user, when: :on_failure)
-      create_build('test:2', stage_idx: 1, user: user, options: { retry: 1 })
+      create_build('test:2', stage_idx: 1, user: user, options: { script: 'aa', retry: 1 })
     end
 
     it 'automatically retries builds in a valid order' do

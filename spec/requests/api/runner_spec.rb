@@ -267,7 +267,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
     let(:runner) { create(:ci_runner, :project, projects: [project]) }
     let(:job) do
       create(:ci_build, :artifacts, :extended_options,
-             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0, commands: "ls\ndate")
+             pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0)
     end
 
     describe 'POST /api/v4/jobs/request' do
@@ -402,7 +402,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
 
           let(:expected_steps) do
             [{ 'name' => 'script',
-               'script' => %w(ls date),
+               'script' => %w(bash),
                'timeout' => job.metadata_timeout,
                'when' => 'on_success',
                'allow_failure' => false },
@@ -568,7 +568,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:test_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
                                 stage: 'deploy', stage_idx: 1,
-                                options: { dependencies: [job2.name] })
+                                options: { script: ['bash'], dependencies: [job2.name] })
             end
 
             before do
@@ -592,7 +592,7 @@ describe API::Runner, :clean_gitlab_redis_shared_state do
             let!(:empty_dependencies_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
                                 stage: 'deploy', stage_idx: 1,
-                                options: { dependencies: [] })
+                                options: { script: ['bash'], dependencies: [] })
             end
 
             before do

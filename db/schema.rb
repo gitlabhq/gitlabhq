@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180826111825) do
+ActiveRecord::Schema.define(version: 20180831115821) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -352,6 +352,14 @@ ActiveRecord::Schema.define(version: 20180826111825) do
   add_index "ci_builds", ["token"], name: "index_ci_builds_on_token", unique: true, using: :btree
   add_index "ci_builds", ["updated_at"], name: "index_ci_builds_on_updated_at", using: :btree
   add_index "ci_builds", ["user_id"], name: "index_ci_builds_on_user_id", using: :btree
+
+  create_table "ci_builds_config", id: :bigserial, force: :cascade do |t|
+    t.integer "build_id", null: false
+    t.text "yaml_options"
+    t.text "yaml_variables"
+  end
+
+  add_index "ci_builds_config", ["build_id"], name: "index_ci_builds_config_on_build_id", unique: true, using: :btree
 
   create_table "ci_builds_metadata", force: :cascade do |t|
     t.integer "build_id", null: false
@@ -2264,6 +2272,7 @@ ActiveRecord::Schema.define(version: 20180826111825) do
   add_foreign_key "ci_builds", "ci_pipelines", column: "commit_id", name: "fk_d3130c9a7f", on_delete: :cascade
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
+  add_foreign_key "ci_builds_config", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "ci_builds", column: "build_id", on_delete: :cascade
   add_foreign_key "ci_builds_metadata", "projects", on_delete: :cascade
   add_foreign_key "ci_builds_runner_session", "ci_builds", column: "build_id", on_delete: :cascade

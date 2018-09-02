@@ -2,7 +2,7 @@
 
 module Ci
   class RetryBuildService < ::BaseService
-    CLONE_ACCESSORS = %i[pipeline project ref tag options commands name
+    CLONE_ACCESSORS = %i[pipeline project ref tag options name
                          allow_failure stage stage_id stage_idx trigger_request
                          yaml_variables when environment coverage_regex
                          description tag_list protected].freeze
@@ -22,6 +22,10 @@ module Ci
     def reprocess!(build)
       unless can?(current_user, :update_build, build)
         raise Gitlab::Access::AccessDeniedError
+      end
+
+      if build.archived?
+        raise Gitlab::Access::AccessDeniedError, "job archived"
       end
 
       attributes = CLONE_ACCESSORS.map do |attribute|
