@@ -43,8 +43,8 @@ export const fetchDiscussions = ({ commit }, path) =>
       commit(types.SET_INITIAL_DISCUSSIONS, discussions);
     });
 
-export const refetchDiscussionById = ({ commit }, { path, discussionId }) => {
-  return new Promise(resolve => {
+export const refetchDiscussionById = ({ commit }, { path, discussionId }) =>
+  new Promise(resolve => {
     service
       .fetchDiscussions(path)
       .then(res => res.json())
@@ -57,7 +57,6 @@ export const refetchDiscussionById = ({ commit }, { path, discussionId }) => {
       })
       .catch(() => {});
   });
-};
 
 export const deleteNote = ({ commit }, note) =>
   service.deleteNote(note.path).then(() => {
