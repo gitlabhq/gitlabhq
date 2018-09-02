@@ -1457,8 +1457,24 @@ describe Ci::Build do
       context 'with retries max config option' do
         subject { create(:ci_build, options: { retry: { max: 1 } }) }
 
-        it 'returns the number of configured max retries' do
-          expect(subject.retries_max).to eq 1
+        context 'when build_metadata_config is set' do
+          before do
+            stub_feature_flags(ci_build_metadata_config: true)
+          end
+
+          it 'returns the number of configured max retries' do
+            expect(subject.retries_max).to eq 1
+          end
+        end
+
+        context 'when build_metadata_config is not set' do
+          before do
+            stub_feature_flags(ci_build_metadata_config: false)
+          end
+
+          it 'returns the number of configured max retries' do
+            expect(subject.retries_max).to eq 1
+          end
         end
       end
 
@@ -1679,14 +1695,49 @@ describe Ci::Build do
     let(:options) do
       {
         image: "ruby:2.1",
-        services: [
-          "postgres"
-        ]
+        services: ["postgres"],
+        script: ["ls -a"]
       }
     end
 
     it 'contains options' do
-      expect(build.options).to eq(options)
+      expect(build.options).to eq(options.stringify_keys)
+    end
+
+    it 'allows to access with keys' do
+      expect(build.options[:image]).to eq('ruby:2.1')
+    end
+
+    it 'allows to access with strings' do
+      expect(build.options['image']).to eq('ruby:2.1')
+    end
+
+    context 'when ci_build_metadata_config is set' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: true)
+      end
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_options)).to eq(options.stringify_keys)
+      end
+
+      it 'does not persist data in build' do
+        expect(build.read_attribute(:options)).to be_nil
+      end
+    end
+
+    context 'when ci_build_metadata_config is disabled' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: false)
+      end
+
+      it 'persist data in build' do
+        expect(build.read_attribute(:options)).to eq(options.symbolize_keys)
+      end
+
+      it 'does not persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_options)).to be_nil
+      end
     end
   end
 
@@ -2030,56 +2081,6 @@ describe Ci::Build do
     end
   end
 
-  describe '#when' do
-    subject { build.when }
-
-    context 'when `when` is undefined' do
-      before do
-        build.when = nil
-      end
-
-      context 'use from gitlab-ci.yml' do
-        let(:project) { create(:project, :repository) }
-        let(:pipeline) { create(:ci_pipeline, project: project) }
-
-        before do
-          stub_ci_pipeline_yaml_file(config)
-        end
-
-        context 'when config is not found' do
-          let(:config) { nil }
-
-          it { is_expected.to eq('on_success') }
-        end
-
-        context 'when config does not have a questioned job' do
-          let(:config) do
-            YAML.dump({
-              test_other: {
-                script: 'Hello World'
-              }
-            })
-          end
-
-          it { is_expected.to eq('on_success') }
-        end
-
-        context 'when config has `when`' do
-          let(:config) do
-            YAML.dump({
-              test: {
-                script: 'Hello World',
-                when: 'always'
-              }
-            })
-          end
-
-          it { is_expected.to eq('always') }
-        end
-      end
-    end
-  end
-
   describe '#variables' do
     let(:container_registry_enabled) { false }
 
@@ -2147,62 +2148,6 @@ describe Ci::Build do
       end
 
       it { is_expected.to include(*predefined_variables) }
-
-      context 'when yaml variables are undefined' do
-        let(:pipeline) do
-          create(:ci_pipeline, project: project,
-                               sha: project.commit.id,
-                               ref: project.default_branch)
-        end
-
-        before do
-          build.yaml_variables = nil
-        end
-
-        context 'use from gitlab-ci.yml' do
-          before do
-            stub_ci_pipeline_yaml_file(config)
-          end
-
-          context 'when config is not found' do
-            let(:config) { nil }
-
-            it { is_expected.to include(*predefined_variables) }
-          end
-
-          context 'when config does not have a questioned job' do
-            let(:config) do
-              YAML.dump({
-                test_other: {
-                  script: 'Hello World'
-                }
-              })
-            end
-
-            it { is_expected.to include(*predefined_variables) }
-          end
-
-          context 'when config has variables' do
-            let(:config) do
-              YAML.dump({
-                test: {
-                  script: 'Hello World',
-                  variables: {
-                    KEY: 'value'
-                  }
-                }
-              })
-            end
-
-            let(:variables) do
-              [{ key: 'KEY', value: 'value', public: true }]
-            end
-
-            it { is_expected.to include(*predefined_variables) }
-            it { is_expected.to include(*variables) }
-          end
-        end
-      end
 
       describe 'variables ordering' do
         context 'when variables hierarchy is stubbed' do
@@ -2792,29 +2737,53 @@ describe Ci::Build do
   end
 
   describe '#yaml_variables' do
-    before do
-      build.update_attribute(:yaml_variables, variables)
+    let(:build) { create(:ci_build, pipeline: pipeline, yaml_variables: variables) }
+
+    let(:variables) do
+      [
+        { 'key' => :VARIABLE, 'value' => 'my value' },
+        { 'key' => 'VARIABLE2', 'value' => 'my value 2' }
+      ]
     end
 
-    context 'when serialized valu is a symbolized hash' do
-      let(:variables) do
-        [{ key: :VARIABLE, value: 'my value 1' }]
-      end
-
-      it 'keeps symbolizes keys and stringifies variables names' do
-        expect(build.yaml_variables)
-          .to eq [{ key: 'VARIABLE', value: 'my value 1' }]
+    shared_examples 'having consistent representation' do
+      it 'allows to access using symbols' do
+        expect(build.reload.yaml_variables.first[:key]).to eq('VARIABLE')
+        expect(build.reload.yaml_variables.first[:value]).to eq('my value')
+        expect(build.reload.yaml_variables.second[:key]).to eq('VARIABLE2')
+        expect(build.reload.yaml_variables.second[:value]).to eq('my value 2')
       end
     end
 
-    context 'when serialized value is a hash with string keys' do
-      let(:variables) do
-        [{ 'key' => :VARIABLE, 'value' => 'my value 2' }]
+    context 'when ci_build_metadata_config is set' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: true)
       end
 
-      it 'symblizes variables hash' do
-        expect(build.yaml_variables)
-          .to eq [{ key: 'VARIABLE', value: 'my value 2' }]
+      it_behaves_like 'having consistent representation'
+
+      it 'persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_variables)).not_to be_nil
+      end
+
+      it 'does not persist data in build' do
+        expect(build.read_attribute(:yaml_variables)).to be_nil
+      end
+    end
+
+    context 'when ci_build_metadata_config is disabled' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: false)
+      end
+
+      it_behaves_like 'having consistent representation'
+
+      it 'persist data in build' do
+        expect(build.read_attribute(:yaml_variables)).not_to be_nil
+      end
+
+      it 'does not persist data in build metadata' do
+        expect(build.metadata.read_attribute(:config_variables)).to be_nil
       end
     end
   end
@@ -2986,7 +2955,7 @@ describe Ci::Build do
     end
 
     context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { retry: { max: 3 } }, project: project, user: user) }
+      subject { create(:ci_build, :running, options: { script: ["ls -al"], retry: 3 }, project: project, user: user) }
 
       it 'retries build and assigns the same user to it' do
         expect(described_class).to receive(:retry)
@@ -3475,6 +3444,23 @@ describe Ci::Build do
     end
   end
 
+  describe 'degenerate!' do
+    let(:build) { create(:ci_build) }
+
+    subject { build.degenerate! }
+
+    before do
+      build.ensure_metadata
+    end
+
+    it 'drops metadata' do
+      subject
+
+      expect(build.reload).to be_degenerated
+      expect(build.metadata).to be_nil
+    end
+  end
+
   describe '#archived?' do
     context 'when build is degenerated' do
       subject { create(:ci_build, :degenerated) }
@@ -3499,6 +3485,99 @@ describe Ci::Build do
         end
 
         it { is_expected.not_to be_archived }
+      end
+    end
+  end
+
+  describe '#read_metadata_attribute' do
+    let(:build) { create(:ci_build, :degenerated) }
+    let(:build_options) { { "key" => "build" } }
+    let(:metadata_options) { { "key" => "metadata" } }
+    let(:default_options) { { "key" => "default" } }
+
+    subject { build.send(:read_metadata_attribute, :options, :config_options, default_options) }
+
+    context 'when build and metadata options is set' do
+      before do
+        build.write_attribute(:options, build_options)
+        build.ensure_metadata.write_attribute(:config_options, metadata_options)
+      end
+
+      it 'prefers build options' do
+        is_expected.to eq(build_options)
+      end
+    end
+
+    context 'when only metadata options is set' do
+      before do
+        build.write_attribute(:options, nil)
+        build.ensure_metadata.write_attribute(:config_options, metadata_options)
+      end
+
+      it 'returns metadata options' do
+        is_expected.to eq(metadata_options)
+      end
+    end
+
+    context 'when none is set' do
+      it 'returns default value' do
+        is_expected.to eq(default_options)
+      end
+    end
+  end
+
+  describe '#write_metadata_attribute' do
+    let(:build) { create(:ci_build, :degenerated) }
+    let(:options) { { "key" => "new options" } }
+    let(:existing_options) { { "key" => "existing options" } }
+
+    subject { build.send(:write_metadata_attribute, :options, :config_options, options) }
+
+    context 'when ci_build_metadata_config is set' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: true)
+      end
+
+      context 'when data in build is already set' do
+        before do
+          build.write_attribute(:options, existing_options)
+        end
+
+        it 'does set metadata options' do
+          subject
+
+          expect(build.metadata.read_attribute(:config_options)).to eq(options)
+        end
+
+        it 'does reset build options' do
+          subject
+
+          expect(build.read_attribute(:options)).to be_nil
+        end
+      end
+    end
+
+    context 'when ci_build_metadata_config is disabled' do
+      before do
+        stub_feature_flags(ci_build_metadata_config: false)
+      end
+
+      context 'when data in build metadata is already set' do
+        before do
+          build.ensure_metadata.write_attribute(:config_options, existing_options)
+        end
+
+        it 'does set metadata options' do
+          subject
+
+          expect(build.read_attribute(:options)).to eq(options)
+        end
+
+        it 'does reset build options' do
+          subject
+
+          expect(build.metadata.read_attribute(:config_options)).to be_nil
+        end
       end
     end
   end
