@@ -179,32 +179,45 @@ describe('DiffsStoreUtils', () => {
 
   describe('trimFirstCharOfLineContent', () => {
     it('trims the line when it starts with a space', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: ' diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: ' diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('trims the line when it starts with a +', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: '+diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: '+diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('trims the line when it starts with a -', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: '-diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: '-diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('does not trims the line when it starts with a letter', () => {
-      expect(utils.trimFirstCharOfLineContent({ richText: 'diff' })).toEqual({ richText: 'diff' });
+      expect(utils.trimFirstCharOfLineContent({ richText: 'diff' })).toEqual({
+        discussions: [],
+        richText: 'diff',
+      });
     });
 
     it('does not modify the provided object', () => {
       const lineObj = {
+        discussions: [],
         richText: ' diff',
       };
 
       utils.trimFirstCharOfLineContent(lineObj);
-      expect(lineObj).toEqual({ richText: ' diff' });
+      expect(lineObj).toEqual({ discussions: [], richText: ' diff' });
     });
 
     it('handles a undefined or null parameter', () => {
-      expect(utils.trimFirstCharOfLineContent()).toEqual({});
+      expect(utils.trimFirstCharOfLineContent()).toEqual({ discussions: [] });
     });
   });
 });

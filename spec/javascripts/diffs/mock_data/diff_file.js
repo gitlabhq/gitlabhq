@@ -99,6 +99,7 @@ export default {
       type: 'match',
       oldLine: null,
       newLine: null,
+      discussions: [],
       text: '',
       richText: '',
       metaData: {
