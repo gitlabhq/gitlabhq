@@ -231,7 +231,7 @@ describe Ci::BuildPresenter do
     let(:build) { create(:ci_build, :failed, :script_failure) }
 
     context 'when is a script or missing dependency failure' do
-      let(:failure_reasons) { %w(script_failure missing_dependency_failure) }
+      let(:failure_reasons) { %w(script_failure missing_dependency_failure archived_failure) }
 
       it 'should return false' do
         failure_reasons.each do |failure_reason|

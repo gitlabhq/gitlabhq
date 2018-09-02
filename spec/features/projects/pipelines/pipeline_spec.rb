@@ -18,7 +18,7 @@ describe 'Pipeline', :js do
 
     let!(:build_failed) do
       create(:ci_build, :failed,
-             pipeline: pipeline, stage: 'test', name: 'test', commands: 'test')
+             pipeline: pipeline, stage: 'test', name: 'test', options: { script: 'test' })
     end
 
     let!(:build_running) do

@@ -92,14 +92,15 @@ class Gitlab::Seeder::Pipelines
     []
   end
 
-
   def create_pipeline!(project, ref, commit)
     project.pipelines.create!(sha: commit.id, ref: ref, source: :push)
   end
 
   def build_create!(pipeline, opts = {})
     attributes = job_attributes(pipeline, opts)
-      .merge(commands: '$ build command')
+
+    attributes[:options] ||= {}
+    attributes[:options][:script] = 'build command'
 
     Ci::Build.create!(attributes).tap do |build|
       # We need to set build trace and artifacts after saving a build

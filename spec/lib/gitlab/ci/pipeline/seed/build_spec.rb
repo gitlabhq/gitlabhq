@@ -5,8 +5,7 @@ describe Gitlab::Ci::Pipeline::Seed::Build do
 
   let(:attributes) do
     { name: 'rspec',
-      ref: 'master',
-      commands: 'rspec' }
+      ref: 'master' }
   end
 
   subject do
