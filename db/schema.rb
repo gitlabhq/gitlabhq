@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180826111825) do
+ActiveRecord::Schema.define(version: 20180902070406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -948,6 +948,17 @@ ActiveRecord::Schema.define(version: 20180826111825) do
 
   add_index "group_custom_attributes", ["group_id", "key"], name: "index_group_custom_attributes_on_group_id_and_key", unique: true, using: :btree
   add_index "group_custom_attributes", ["key", "value"], name: "index_group_custom_attributes_on_key_and_value", using: :btree
+
+  create_table "group_group_links", force: :cascade do |t|
+    t.integer "shared_group_id", null: false
+    t.integer "shared_with_group_id", null: false
+    t.integer "group_access", default: 30, null: false
+    t.date "expires_at"
+  end
+
+  add_index "group_group_links", ["shared_group_id", "shared_with_group_id"], name: "index_group_group_links_on_shared_group_and_shared_with_group", unique: true, using: :btree
+  add_index "group_group_links", ["shared_group_id"], name: "index_group_group_links_on_shared_group_id", using: :btree
+  add_index "group_group_links", ["shared_with_group_id"], name: "index_group_group_links_on_shared_with_group_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
@@ -2318,6 +2329,8 @@ ActiveRecord::Schema.define(version: 20180826111825) do
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "group_group_links", "namespaces", column: "shared_group_id", name: "fk_d3a0488427", on_delete: :cascade
+  add_foreign_key "group_group_links", "namespaces", column: "shared_with_group_id", name: "fk_2b2353ca49", on_delete: :cascade
   add_foreign_key "import_export_uploads", "projects", on_delete: :cascade
   add_foreign_key "internal_ids", "namespaces", name: "fk_162941d509", on_delete: :cascade
   add_foreign_key "internal_ids", "projects", on_delete: :cascade

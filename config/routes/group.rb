@@ -51,6 +51,8 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       delete :leave, on: :collection
     end
 
+    resources :group_links, only: [:index, :create, :update, :destroy], constraints: { id: /\d+/ }
+
     resources :uploads, only: [:create] do
       collection do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: %r{[^/]+} }

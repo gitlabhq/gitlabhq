@@ -1,0 +1,21 @@
+.row
+  .col-sm-12
+    = form_tag group_group_links_path(@group), class: 'js-requires-input', method: :post do
+      .form-group
+        = label_tag :shared_group_id, 'Select a group to share with', class: 'label-bold'
+        -#= groups_select_tag(:link_group_id, data: { skip_groups: [7] }, class: "input-clamp", required: true)
+        = text_field_tag :shared_group_id, nil, class: 'form-control', id: 'foo'
+      .form-group
+        = label_tag :shared_group_access, 'Max access level', class: 'label-bold'
+        .select-wrapper
+          = select_tag :share_group_access, options_for_select(GroupGroupLink.access_options, GroupGroupLink.default_access), class: 'form-control select-control'
+          = icon('chevron-down')
+        .form-text.text-muted.append-bottom-10
+          = link_to 'Read more', help_page_path('user/permissions'), class: 'vlink'
+          about role permissions
+      .form-group
+        = label_tag :expires_at, 'Access expiration date', class: 'label-bold'
+        .clearable-input
+          = text_field_tag :expires_at, nil, class: 'form-control js-access-expiration-date-groups', placeholder: 'Expiration date', id: 'expires_at_groups'
+          %i.clear-icon.js-clear-input
+      = submit_tag 'Share', class: 'btn btn-create'

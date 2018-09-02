@@ -27,6 +27,8 @@ class Group < Namespace
   has_many :members_and_requesters, as: :source, class_name: 'GroupMember'
 
   has_many :milestones
+  has_many :group_group_links, foreign_key: :shared_with_group_id
+  has_many :shared_groups, through: :group_group_links, source: :shared_group
   has_many :project_group_links, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :shared_projects, through: :project_group_links, source: :project
 
