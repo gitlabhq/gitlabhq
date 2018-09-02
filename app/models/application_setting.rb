@@ -192,6 +192,8 @@ class ApplicationSetting < ActiveRecord::Base
             numericality: { less_than_or_equal_to: :gitaly_timeout_default },
             if: :gitaly_timeout_default
 
+  validates :user_default_internal_regex, js_regex: true, allow_nil: true
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -299,6 +301,7 @@ class ApplicationSetting < ActiveRecord::Base
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
       instance_statistics_visibility_private: false,
       user_default_external: false,
+      user_default_internal_regex: nil,
       user_show_add_ssh_key_message: true
     }
   end
@@ -433,6 +436,14 @@ class ApplicationSetting < ActiveRecord::Base
 
   def password_authentication_enabled?
     password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
+  end
+
+  def user_default_internal_regex_enabled?
+    user_default_external? && user_default_internal_regex.present?
+  end
+
+  def user_default_internal_regex_instance
+    Regexp.new(user_default_internal_regex, Regexp::IGNORECASE)
   end
 
   delegate :terms, to: :latest_terms, allow_nil: true

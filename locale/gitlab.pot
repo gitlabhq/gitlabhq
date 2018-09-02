@@ -727,6 +727,9 @@ msgstr ""
 msgid "AutoDevOps|enable Auto DevOps"
 msgstr ""
 
+msgid "Automatically marked as default internal user"
+msgstr ""
+
 msgid "Available"
 msgstr ""
 
@@ -2801,6 +2804,9 @@ msgstr ""
 msgid "GitLab.com import"
 msgstr ""
 
+msgid "GitLab’s issue tracker"
+msgstr ""
+
 msgid "Gitaly"
 msgstr ""
 
@@ -3187,6 +3193,9 @@ msgstr ""
 msgid "Internal - The project can be accessed by any logged in user."
 msgstr ""
 
+msgid "Internal users"
+msgstr ""
+
 msgid "Interval Pattern"
 msgstr ""
 
@@ -3385,6 +3394,9 @@ msgid "Latest changes"
 msgstr ""
 
 msgid "Learn more"
+msgstr ""
+
+msgid "Learn more about %{issue_boards_url}, to keep track of issues in multiple lists, using labels, assignees, and milestones. If you’re missing something from issue boards, please create an issue on %{gitlab_issues_url}."
 msgstr ""
 
 msgid "Learn more about Kubernetes"
@@ -4670,6 +4682,9 @@ msgid_plural "Refreshing in %d seconds to show the updated status..."
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "Regex pattern"
+msgstr ""
+
 msgid "Register / Sign In"
 msgstr ""
 
@@ -5277,6 +5292,9 @@ msgstr ""
 msgid "Specific Runners"
 msgstr ""
 
+msgid "Specify an e-mail address regex pattern to identify default internal users."
+msgstr ""
+
 msgid "Specify the following URL during the Runner setup:"
 msgstr ""
 
@@ -5553,6 +5571,9 @@ msgid "The secure token used by the Runner to checkout the project"
 msgstr ""
 
 msgid "The staging stage shows the time between merging the MR and deploying code to the production environment. The data will be automatically added once you deploy to production for the first time."
+msgstr ""
+
+msgid "The tabs below will be removed in a future version"
 msgstr ""
 
 msgid "The testing stage shows the time GitLab CI takes to run every pipeline for the related merge request. The data will automatically be added after your first pipeline finishes running."
@@ -5932,6 +5953,9 @@ msgid "To GitLab"
 msgstr ""
 
 msgid "To add an SSH key you need to %{generate_link_start}generate one%{link_end} or use an %{existing_link_start}existing key%{link_end}."
+msgstr ""
+
+msgid "To define internal users, first enable new users set to external"
 msgstr ""
 
 msgid "To get started you enter your FogBugz URL and login information below. In the next steps, you'll be able to map users and select the projects you want to import."
@@ -6588,6 +6612,9 @@ msgid "import flow"
 msgstr ""
 
 msgid "importing"
+msgstr ""
+
+msgid "issue boards"
 msgstr ""
 
 msgid "latest version"

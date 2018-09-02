@@ -255,6 +255,7 @@ module ApplicationSettingsHelper
       :instance_statistics_visibility_private,
       :user_default_external,
       :user_show_add_ssh_key_message,
+      :user_default_internal_regex,
       :user_oauth_applications,
       :version_check_enabled,
       :web_ide_clientside_preview_enabled

@@ -111,3 +111,42 @@ body {
 .with-performance-bar .layout-page {
   margin-top: $header-height + $performance-bar-height;
 }
+
+.fullscreen-layout {
+  padding-top: 0;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  overflow: hidden;
+
+  > #js-peek,
+  > .navbar-gitlab {
+    position: static;
+    top: auto;
+  }
+
+  .flash-container {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .alert-wrapper .flash-container .flash-alert:last-child,
+  .alert-wrapper .flash-container .flash-notice:last-child {
+    margin-bottom: 0;
+  }
+
+  .content-wrapper {
+    margin-top: 0;
+    padding-bottom: 0;
+    flex: 1;
+    min-height: 0;
+  }
+
+  &.flash-shown {
+    .content-wrapper {
+      margin-top: 0;
+    }
+  }
+}

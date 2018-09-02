@@ -43,8 +43,8 @@ module Projects
       @new_path = File.join(@new_namespace.try(:full_path) || '', project.path)
       @old_namespace = project.namespace
 
-      if Project.where(path: project.path, namespace_id: @new_namespace.try(:id)).exists?
-        raise TransferError.new("Project with same path in target namespace already exists")
+      if Project.where(namespace_id: @new_namespace.try(:id)).where('path = ? or name = ?', project.path, project.name).exists?
+        raise TransferError.new("Project with same name or path in target namespace already exists")
       end
 
       if project.has_container_registry_tags?
@@ -118,6 +118,7 @@ module Projects
 
     def rollback_side_effects
       rollback_folder_move
+      project.reload
       update_namespace_and_visibility(@old_namespace)
       write_repository_config(@old_path)
     end

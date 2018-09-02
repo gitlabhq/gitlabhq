@@ -89,7 +89,6 @@ GEM
     bindata (2.4.3)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    blankslate (2.1.2.4)
     bootsnap (1.3.1)
       msgpack (~> 1.0)
     bootstrap_form (2.7.0)
@@ -431,6 +430,8 @@ GEM
       multipart-post
       oauth (~> 0.5, >= 0.5.0)
     jquery-atwho-rails (1.3.2)
+    js_regex (2.2.1)
+      regexp_parser (>= 0.4.11, <= 0.5.0)
     json (1.8.6)
     json-jwt (1.9.4)
       activesupport
@@ -466,13 +467,12 @@ GEM
       actionmailer (>= 3.2)
       letter_opener (~> 1.0)
       railties (>= 3.2)
-    license_finder (3.1.1)
+    license_finder (5.4.0)
       bundler
-      httparty
       rubyzip
       thor
-      toml (= 0.1.2)
-      with_env (> 1.0)
+      toml (= 0.2.0)
+      with_env (= 1.1.0)
       xml-simple
     licensee (8.9.2)
       rugged (~> 0.24)
@@ -591,8 +591,7 @@ GEM
     parallel (1.12.1)
     parser (2.5.1.0)
       ast (~> 2.4.0)
-    parslet (1.5.0)
-      blankslate (~> 2.0)
+    parslet (1.8.2)
     path_expander (1.0.2)
     peek (1.0.1)
       concurrent-ruby (>= 0.9.0)
@@ -735,6 +734,7 @@ GEM
       redis-store (>= 1.2, < 2)
     redis-store (1.4.1)
       redis (>= 2.2, < 5)
+    regexp_parser (0.5.0)
     representable (3.0.4)
       declarative (< 0.1.0)
       declarative-option (< 0.2.0)
@@ -914,8 +914,8 @@ GEM
     tilt (2.0.8)
     timecop (0.8.1)
     timfel-krb5-auth (0.8.3)
-    toml (0.1.2)
-      parslet (~> 1.5.0)
+    toml (0.2.0)
+      parslet (~> 1.8.0)
     toml-rb (1.0.0)
       citrus (~> 3.0, > 3.0)
     trollop (2.1.3)
@@ -1084,13 +1084,14 @@ DEPENDENCIES
   influxdb (~> 0.2)
   jira-ruby (~> 1.4)
   jquery-atwho-rails (~> 1.3.2)
+  js_regex (~> 2.2.1)
   json-schema (~> 2.8.0)
   jwt (~> 1.5.6)
   kaminari (~> 1.0)
   knapsack (~> 1.16)
   kubeclient (~> 3.1.0)
   letter_opener_web (~> 1.3.0)
-  license_finder (~> 3.1)
+  license_finder (~> 5.4)
   licensee (~> 8.9)
   lograge (~> 0.5)
   loofah (~> 2.2)
@@ -1211,4 +1212,4 @@ DEPENDENCIES
   wikicloth (= 0.8.1)
 
 BUNDLED WITH
-   1.16.3
+   1.16.4

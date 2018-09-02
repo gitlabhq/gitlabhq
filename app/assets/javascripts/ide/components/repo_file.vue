@@ -95,14 +95,16 @@ export default {
       return this.file.changed || this.file.tempFile || this.file.staged;
     },
   },
+  watch: {
+    'file.active': function fileActiveWatch(active) {
+      if (this.file.type === 'blob' && active) {
+        this.scrollIntoView();
+      }
+    },
+  },
   mounted() {
     if (this.hasPathAtCurrentRoute()) {
       this.scrollIntoView(true);
-    }
-  },
-  updated() {
-    if (this.file.type === 'blob' && this.file.active) {
-      this.scrollIntoView();
     }
   },
   methods: {

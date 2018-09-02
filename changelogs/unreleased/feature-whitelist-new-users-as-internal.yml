@@ -1,0 +1,5 @@
+---
+title: Add an option to whitelist users based on email address as internal when the "New user set to external" setting is enabled.
+merge_request: 17711
+author: Roger Rüttimann
+type: added
