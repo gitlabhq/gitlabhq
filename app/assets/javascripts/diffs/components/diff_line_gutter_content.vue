@@ -65,11 +65,6 @@ export default {
       required: false,
       default: false,
     },
-    discussions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
   },
   computed: {
     ...mapState({
