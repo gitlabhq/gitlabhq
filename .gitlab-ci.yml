@@ -311,10 +311,13 @@ review-docs-cleanup:
   environment:
     name: review-docs/$CI_COMMIT_REF_SLUG
     action: stop
-  when: manual
   script:
     - gem install gitlab --no-ri --no-rdoc
     - ./$SCRIPT_NAME cleanup
+  when: manual
+  only:
+    - branches@gitlab-org/gitlab-ce
+    - branches@gitlab-org/gitlab-ee
 
 ##
 # Trigger a docker image build in CNG (Cloud Native GitLab) repository
