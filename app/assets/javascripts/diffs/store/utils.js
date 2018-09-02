@@ -161,7 +161,9 @@ export function addContextLines(options) {
  * @returns {Object}
  */
 export function trimFirstCharOfLineContent(line = {}) {
+  // eslint-disable-next-line no-param-reassign
   delete line.text;
+  // eslint-disable-next-line no-param-reassign
   line.discussions = [];
 
   const parsedLine = Object.assign({}, line);
