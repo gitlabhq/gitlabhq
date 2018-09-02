@@ -1,8 +1,10 @@
 - commit_message = @page.persisted? ? s_("WikiPageEdit|Update %{page_title}") : s_("WikiPageCreate|Create %{page_title}")
 - commit_message = commit_message % { page_title: @page.title }
+- markdown_version = params[:legacy_render] ? CacheMarkdownField::CACHE_REDCARPET_VERSION : 0
 
 = form_for [@project.namespace.becomes(Namespace), @project, @page], method: @page.persisted? ? :put : :post,
-           html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' } do |f|
+           html: { class: 'wiki-form common-note-form prepend-top-default js-quick-submit' },
+           data: { markdown_version: markdown_version } do |f|
   = form_errors(@page)
 
   - if @page.persisted?

@@ -12,7 +12,8 @@
     .blocks-container
       .block.block-first
         - if @sidebar_page
-          = render_wiki_content(@sidebar_page)
+          - context = params[:legacy_render] ? { markdown_engine: :redcarpet} : {}
+          = render_wiki_content(@sidebar_page, context)
         - else
           %ul.wiki-pages
             = render @sidebar_wiki_entries, context: 'sidebar'

@@ -111,17 +111,17 @@ module MarkupHelper
     prepare_for_rendering(html, context)
   end
 
-  def render_wiki_content(wiki_page)
+  def render_wiki_content(wiki_page, context = {})
     text = wiki_page.content
     return '' unless text.present?
 
-    context = {
+    context.merge!({
       pipeline: :wiki,
       project: @project,
       project_wiki: @project_wiki,
       page_slug: wiki_page.slug,
       issuable_state_filter_enabled: true
-    }
+    })
 
     html =
       case wiki_page.format

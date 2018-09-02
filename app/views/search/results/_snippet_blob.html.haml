@@ -21,7 +21,8 @@
       .file-content.wiki
         - snippet_chunks.each do |chunk|
           - unless chunk[:data].empty?
-            = markup(snippet.file_name, chunk[:data])
+            - context = params[:legacy_render] ? { markdown_engine: :redcarpet} : {}
+            = markup(snippet.file_name, chunk[:data], context)
           - else
             .file-content.code
               .nothing-here-block Empty file
