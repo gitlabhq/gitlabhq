@@ -189,7 +189,6 @@ describe Gitlab::Ci::Config::Entry::Job do
             .to eq(name: :rspec,
                    before_script: %w[ls pwd],
                    script: %w[rspec],
-                   commands: "ls\npwd\nrspec",
                    stage: 'test',
                    ignore: false,
                    after_script: %w[cleanup])

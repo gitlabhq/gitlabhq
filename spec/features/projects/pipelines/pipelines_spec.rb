@@ -109,7 +109,7 @@ describe 'Pipelines', :js do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
                             stage: 'test',
-                            commands: 'test')
+                            options: { script: 'test' })
         end
 
         before do
@@ -140,7 +140,7 @@ describe 'Pipelines', :js do
         let!(:build) do
           create(:ci_build, pipeline: pipeline,
                             stage: 'test',
-                            commands: 'test')
+                            options: { script: 'test' })
         end
 
         before do
@@ -202,7 +202,7 @@ describe 'Pipelines', :js do
             pipeline: pipeline,
             name: 'manual build',
             stage: 'test',
-            commands: 'test')
+            options: { script: 'test' })
         end
 
         before do

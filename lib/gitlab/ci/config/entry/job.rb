@@ -103,10 +103,6 @@ module Gitlab
             @config.merge(to_hash.compact)
           end
 
-          def commands
-            (before_script_value.to_a + script_value.to_a).join("\n")
-          end
-
           def manual_action?
             self.when == 'manual'
           end
@@ -134,7 +130,6 @@ module Gitlab
             { name: name,
               before_script: before_script_value,
               script: script_value,
-              commands: commands,
               image: image_value,
               services: services_value,
               stage: stage_value,

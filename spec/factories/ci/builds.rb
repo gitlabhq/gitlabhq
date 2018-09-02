@@ -7,7 +7,6 @@ FactoryBot.define do
     stage_idx 0
     ref 'master'
     tag false
-    commands 'ls -a'
     protected false
     created_at 'Di 29. Okt 09:50:00 CET 2013'
     pending
@@ -15,7 +14,8 @@ FactoryBot.define do
     options do
       {
         image: 'ruby:2.1',
-        services: ['postgres']
+        services: ['postgres'],
+        script: ['ls -a']
       }
     end
 
@@ -77,7 +77,8 @@ FactoryBot.define do
 
     trait :teardown_environment do
       environment 'staging'
-      options environment: { name: 'staging',
+      options script: ['bash'],
+              environment: { name: 'staging',
                              action: 'stop',
                              url: 'http://staging.example.com/$CI_JOB_NAME' }
     end
@@ -214,6 +215,7 @@ FactoryBot.define do
         {
             image: { name: 'ruby:2.1', entrypoint: '/bin/sh' },
             services: ['postgres', { name: 'docker:stable-dind', entrypoint: '/bin/sh', command: 'sleep 30', alias: 'docker' }],
+            script: ['bash'],
             after_script: %w(ls date),
             artifacts: {
                 name: 'artifacts_file',
