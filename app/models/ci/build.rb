@@ -543,12 +543,12 @@ module Ci
     end
 
     def options=(value)
-      unless Feature.enabled?(:ci_use_build_metadata_for_config)
-        super
-      else
+      if Feature.enabled?(:ci_use_build_metadata_for_config)
         # save and remove from this model
         ensure_metadata.yaml_options = value
         write_attribute(:options, nil)
+      else
+        super
       end
     end
 
@@ -559,12 +559,12 @@ module Ci
     end
 
     def yaml_variables=(value)
-      unless Feature.enabled?(:ci_use_build_metadata_for_config)
-        super
-      else
+      if Feature.enabled?(:ci_use_build_metadata_for_config)
         # save and remove from this model
         ensure_metadata.yaml_variables = value
         write_attribute(:yaml_variables, nil)
+      else
+        super
       end
     end
 
