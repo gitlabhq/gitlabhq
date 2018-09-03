@@ -49,12 +49,14 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
           }
         }
 
-        const targetInlineLine = selectedFile.highlightedDiffLines.find(
-          line => line.lineCode === discussions[0].line_code,
-        );
+        if (selectedFile.highlightedDiffLines) {
+          const targetInlineLine = selectedFile.highlightedDiffLines.find(
+            line => line.lineCode === discussions[0].line_code,
+          );
 
-        if (targetInlineLine) {
-          Object.assign(targetInlineLine, { discussions });
+          if (targetInlineLine) {
+            Object.assign(targetInlineLine, { discussions });
+          }
         }
       }
     }
