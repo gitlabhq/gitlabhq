@@ -18,7 +18,7 @@ export default function dropzoneInput(form) {
   const $uploadingErrorContainer = form.find('.uploading-error-container');
   const $uploadingErrorMessage = form.find('.uploading-error-message');
   const $uploadingProgressContainer = form.find('.uploading-progress-container');
-  const uploadsPath = window.uploads_path || null;
+  const uploadsPath = form.data('uploads-path') || window.uploads_path || null;
   const maxFileSize = gon.max_file_size || 10;
   const formTextarea = form.find('.js-gfm-input');
   let handlePaste;
