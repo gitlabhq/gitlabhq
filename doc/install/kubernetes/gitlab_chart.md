@@ -52,7 +52,7 @@ In order to deploy GitLab on Kubernetes, the following are required:
 To deploy GitLab, the following three parameters are required:
 
 - `global.hosts.domain`: the [base domain](preparation/networking.md) of the
-  wildcard host entry. For example, `exampe.com` if the wild card entry is
+  wildcard host entry. For example, `example.com` if the wild card entry is
   `*.example.com`.
 - `global.hosts.externalIP`: the [external IP](preparation/networking.md) which
   the wildcard DNS resolves to.
