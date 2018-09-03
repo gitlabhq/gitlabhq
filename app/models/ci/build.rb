@@ -35,10 +35,12 @@ module Ci
     end
 
     has_one :config, class_name: 'Ci::BuildConfig'
+    has_many :config_values, class_name: 'Ci::BuildConfigValue'
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session
+    accepts_nested_attributes_for :config_values
 
     delegate :timeout, to: :metadata, prefix: true, allow_nil: true
     delegate :url, to: :runner_session, prefix: true, allow_nil: true
