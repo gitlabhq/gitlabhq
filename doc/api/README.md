@@ -445,28 +445,21 @@ curl --request POST --header "PRIVATE-TOKEN: ********************" \
 
 ## `id` vs `iid`
 
-When you work with the API, you may notice two similar fields in API entities:
-`id` and `iid`. The main difference between them is scope.
+ Some resources have two similarly-named fields. For example, [issues](issues.md), [merge requests](merge_requests.md), and [project milestones](milestones.md). The fields are:
 
-For example, an issue might have `id: 46` and `iid: 5`.
+- `id`. ID that is unique across all projects.
+- `iid`. Additional, internal ID that is unique in the scope of a single project.
 
-| Parameter | Description |
-| --------- | ----------- |
-| `id`  | Is unique across all issues and is used for any API call |
-| `iid` | Is unique only in scope of a single project. When you browse issues or merge requests with the Web UI, you see the `iid` |
+> The `iid` is displayed in the web UI.
 
-That means that if you want to get an issue via the API you should use the `id`:
+If a resource has the `iid` field, it is often used instead of `id` to fetch the resource.
 
-```
-GET /projects/42/issues/:id
-```
+For example, suppose a project with `id: 42` has an issue with `id: 46` and `iid: 5`. In this case:
 
-On the other hand, if you want to create a link to a web page you should use
-the `iid`:
+- A valid API call to retrieve the issue is  `GET /projects/42/issues/5`
+- An invalid API call to retrieve the issue is `GET /projects/42/issues/46`.
 
-```
-GET /projects/42/issues/:iid
-```
+> Not all resources with the `iid` field are fetched by `iid`.
 
 ## Data validation and error reporting
 
