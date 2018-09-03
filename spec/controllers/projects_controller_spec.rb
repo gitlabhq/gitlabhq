@@ -284,6 +284,19 @@ describe ProjectsController do
     end
   end
 
+  describe 'GET edit' do
+    it 'sets the badge API endpoint' do
+      sign_in(user)
+      project.add_maintainer(user)
+
+      get :edit,
+          namespace_id: project.namespace.path,
+          id: project.path
+
+      expect(assigns(:badge_api_endpoint)).not_to be_nil
+    end
+  end
+
   describe "#update" do
     render_views
 
