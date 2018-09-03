@@ -25,7 +25,7 @@ module Ci
       end
 
       if build.archived?
-        raise Gitlab::Access::AccessDeniedError, "job archived"
+        raise Ci::Build::BuildArchivedError
       end
 
       attributes = CLONE_ACCESSORS.map do |attribute|

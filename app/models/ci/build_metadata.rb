@@ -13,6 +13,8 @@ module Ci
     belongs_to :build, class_name: 'Ci::Build'
     belongs_to :project
 
+    before_validation :set_build_project
+
     validates :build, presence: true
     validates :project, presence: true
 
@@ -35,6 +37,12 @@ module Ci
       timeout_source = timeout < project_timeout ? :runner_timeout_source : :project_timeout_source
 
       update(timeout: timeout, timeout_source: timeout_source)
+    end
+
+    private
+
+    def set_build_project
+      self.project_id ||= self.build&.project_id
     end
   end
 end

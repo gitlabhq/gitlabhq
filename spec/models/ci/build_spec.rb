@@ -1342,9 +1342,8 @@ describe Ci::Build do
     let(:options) do
       {
         image: "ruby:2.1",
-        services: [
-          "postgres"
-        ]
+        services: ["postgres"],
+        script: ["ls -a"]
       }
     end
 
@@ -1621,55 +1620,6 @@ describe Ci::Build do
 
         build.project.update(pending_delete: true)
         build.project.destroy!
-      end
-    end
-  end
-
-  describe '#when' do
-    subject { build.when }
-
-    context 'when `when` is undefined' do
-      before do
-        build.when = nil
-      end
-
-      context 'use from gitlab-ci.yml' do
-        let(:pipeline) { create(:ci_pipeline) }
-
-        before do
-          stub_ci_pipeline_yaml_file(config)
-        end
-
-        context 'when config is not found' do
-          let(:config) { nil }
-
-          it { is_expected.to eq('on_success') }
-        end
-
-        context 'when config does not have a questioned job' do
-          let(:config) do
-            YAML.dump({
-              test_other: {
-                script: 'Hello World'
-              }
-            })
-          end
-
-          it { is_expected.to eq('on_success') }
-        end
-
-        context 'when config has `when`' do
-          let(:config) do
-            YAML.dump({
-              test: {
-                script: 'Hello World',
-                when: 'always'
-              }
-            })
-          end
-
-          it { is_expected.to eq('always') }
-        end
       end
     end
   end
@@ -2000,61 +1950,6 @@ describe Ci::Build do
       end
 
       it { is_expected.to include(pipeline_schedule_variable.to_runner_variable) }
-    end
-
-    context 'when yaml_variables are undefined' do
-      let(:pipeline) do
-        create(:ci_pipeline, project: project,
-                             sha: project.commit.id,
-                             ref: project.default_branch)
-      end
-
-      before do
-        build.yaml_variables = nil
-      end
-
-      context 'use from gitlab-ci.yml' do
-        before do
-          stub_ci_pipeline_yaml_file(config)
-        end
-
-        context 'when config is not found' do
-          let(:config) { nil }
-
-          it { is_expected.to include(*predefined_variables) }
-        end
-
-        context 'when config does not have a questioned job' do
-          let(:config) do
-            YAML.dump({
-              test_other: {
-                script: 'Hello World'
-              }
-            })
-          end
-
-          it { is_expected.to include(*predefined_variables) }
-        end
-
-        context 'when config has variables' do
-          let(:config) do
-            YAML.dump({
-              test: {
-                script: 'Hello World',
-                variables: {
-                  KEY: 'value'
-                }
-              }
-            })
-          end
-          let(:variables) do
-            [{ key: 'KEY', value: 'value', public: true }]
-          end
-
-          it { is_expected.to include(*predefined_variables) }
-          it { is_expected.to include(*variables) }
-        end
-      end
     end
 
     context 'when container registry is enabled' do
@@ -2548,7 +2443,7 @@ describe Ci::Build do
     end
 
     context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { retry: 3 }, project: project, user: user) }
+      subject { create(:ci_build, :running, options: { script: ["ls -al"], retry: 3 }, project: project, user: user) }
 
       it 'retries build and assigns the same user to it' do
         expect(described_class).to receive(:retry)

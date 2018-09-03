@@ -11,6 +11,8 @@ module Ci
     include IgnorableColumn
     include Gitlab::Utils::StrongMemoize
 
+    BuildArchivedError = Class.new(StandardError)
+
     ignore_column :commands
 
     belongs_to :project, inverse_of: :builds
@@ -34,7 +36,7 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
-    has_one :metadata, class_name: 'Ci::BuildMetadata'
+    has_one :metadata, class_name: 'Ci::BuildMetadata', autosave: true
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
     accepts_nested_attributes_for :runner_session
@@ -154,8 +156,7 @@ module Ci
       end
 
       before_transition any => [:pending, :running] do |build|
-        # forbid transition if job is archived
-        !build.archived?
+        raise BuildArchivedError if build.archived? && Feature.enabled?(:ci_use_build_metadata_for_config)
       end
 
       after_transition any => [:pending] do |build|
@@ -206,7 +207,7 @@ module Ci
     end
 
     def ensure_metadata
-      metadata || build_metadata(project: project)
+      metadata || build_metadata
     end
 
     def archived?
@@ -559,7 +560,7 @@ module Ci
     end
 
     def yaml_variables=(value)
-      if Feature.enabled?(:ci_use_build_metadata_for_config)
+      if Feature.enabled?(:ci_use_build_metadata_for_config) && false
         # save and remove from this model
         ensure_metadata.yaml_variables = value
         write_attribute(:yaml_variables, nil)

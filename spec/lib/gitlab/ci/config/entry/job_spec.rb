@@ -195,16 +195,6 @@ describe Gitlab::Ci::Config::Entry::Job do
         end
       end
     end
-
-    describe '#commands' do
-      let(:config) do
-        { before_script: %w[ls pwd], script: 'rspec' }
-      end
-
-      it 'returns a string of commands concatenated with new line character' do
-        expect(entry.commands).to eq "ls\npwd\nrspec"
-      end
-    end
   end
 
   describe '#manual_action?' do
