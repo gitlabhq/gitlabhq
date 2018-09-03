@@ -219,6 +219,15 @@ installations from source.
 
 It logs information whenever a [repository check is run][repocheck] on a project.
 
+## `importer.log`
+
+Introduced in GitLab 11.3. This file lives in `/var/log/gitlab/gitlab-rails/importer.log` for
+Omnibus GitLab packages or in `/home/git/gitlab/log/importer.log` for
+installations from source.
+
+Currently it logs the progress of project imports from the Bitbucket Server
+importer. Future importers may use this file.
+
 ## Reconfigure Logs
 
 Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab 
