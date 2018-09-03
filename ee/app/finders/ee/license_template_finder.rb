@@ -17,7 +17,7 @@ module EE
         )
       end
 
-      super + extra
+      extra.push(*super)
     end
 
     private
