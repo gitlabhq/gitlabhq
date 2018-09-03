@@ -78,6 +78,13 @@ module EE
       log_geo_updated_event
     end
 
+    override :after_change_head
+    def after_change_head
+      super
+    ensure
+      log_geo_updated_event
+    end
+
     def log_geo_updated_event
       return unless ::Gitlab::Geo.primary?
 
