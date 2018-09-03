@@ -32,7 +32,7 @@ describe('IDE file templates dropdown component', () => {
     });
 
     it('calls async store method on Bootstrap dropdown event', () => {
-      spyOn(vm, 'fetchTemplateTypes');
+      spyOn(vm, 'fetchTemplateTypes').and.stub();
 
       $(vm.$el).trigger('show.bs.dropdown');
 
@@ -91,7 +91,7 @@ describe('IDE file templates dropdown component', () => {
     });
 
     it('calls clickItem on click', done => {
-      spyOn(vm, 'clickItem');
+      spyOn(vm, 'clickItem').and.stub();
 
       vm.$store.state.fileTemplates.templates = [
         {
@@ -158,7 +158,7 @@ describe('IDE file templates dropdown component', () => {
     });
 
     it('calls clickItem on click', done => {
-      spyOn(vm, 'clickItem');
+      spyOn(vm, 'clickItem').and.stub();
 
       vm.$nextTick(() => {
         vm.$el.querySelector('.dropdown-content button').click();

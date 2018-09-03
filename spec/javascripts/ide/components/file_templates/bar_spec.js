@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import { createStore } from '~/ide/stores';
 import Bar from '~/ide/components/file_templates/bar.vue';
-import { createComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
+import { mountComponentWithStore } from 'spec/helpers/vue_mount_component_helper';
 import { resetStore, file } from '../../helpers';
 
 describe('IDE file templates bar component', () => {
@@ -21,7 +21,7 @@ describe('IDE file templates bar component', () => {
       active: true,
     });
 
-    vm = createComponentWithStore(Component, store).$mount();
+    vm = mountComponentWithStore(Component, { store });
   });
 
   afterEach(() => {
@@ -35,7 +35,7 @@ describe('IDE file templates bar component', () => {
     });
 
     it('calls setSelectedTemplateType when clicking item', () => {
-      spyOn(vm, 'setSelectedTemplateType');
+      spyOn(vm, 'setSelectedTemplateType').and.stub();
 
       vm.$el.querySelector('.dropdown-content button').click();
 
@@ -66,7 +66,7 @@ describe('IDE file templates bar component', () => {
     });
 
     it('calls fetchTemplate on click', () => {
-      spyOn(vm, 'fetchTemplate');
+      spyOn(vm, 'fetchTemplate').and.stub();
 
       vm.$el
         .querySelectorAll('.dropdown-content')[1]
@@ -90,7 +90,7 @@ describe('IDE file templates bar component', () => {
   });
 
   it('calls undoFileTemplate when clicking undo button', () => {
-    spyOn(vm, 'undoFileTemplate');
+    spyOn(vm, 'undoFileTemplate').and.stub();
 
     vm.$el.querySelector('.btn-default').click();
 

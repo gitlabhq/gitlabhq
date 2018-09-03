@@ -206,6 +206,7 @@ export const resetOpenFiles = ({ commit }) => commit(types.RESET_OPEN_FILES);
 
 export const renameEntry = ({ dispatch, commit, state }, { path, name, entryPath = null }) => {
   const entry = state.entries[entryPath || path];
+
   commit(types.RENAME_ENTRY, { path, name, entryPath });
 
   if (entry.type === 'tree') {
@@ -214,7 +215,7 @@ export const renameEntry = ({ dispatch, commit, state }, { path, name, entryPath
     );
   }
 
-  if (!entryPath) {
+  if (!entryPath && !entry.tempFile) {
     dispatch('deleteEntry', path);
   }
 };

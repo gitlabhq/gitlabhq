@@ -1451,4 +1451,9 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   .dropdown {
     min-width: 180px;
   }
+
+  .dropdown-menu {
+    max-height: 222px;
+    overflow: hidden;
+  }
 }
