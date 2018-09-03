@@ -24,34 +24,17 @@ describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
   end
 
   describe '#execute' do
-    context 'without object storage' do
-      before do
-        stub_feature_flags(import_export_object_storage: false)
-      end
-
-      it 'removes the exported project file after the upload' do
-        allow(strategy).to receive(:send_file)
-        allow(strategy).to receive(:handle_response_error)
-
-        expect(project).to receive(:remove_exports)
-
-        strategy.execute(user, project)
-      end
+    before do
+      stub_feature_flags(import_export_object_storage: true)
     end
 
-    context 'with object storage' do
-      before do
-        stub_feature_flags(import_export_object_storage: true)
-      end
+    it 'removes the exported project file after the upload' do
+      allow(strategy).to receive(:send_file)
+      allow(strategy).to receive(:handle_response_error)
 
-      it 'removes the exported project file after the upload' do
-        allow(strategy).to receive(:send_file)
-        allow(strategy).to receive(:handle_response_error)
+      expect(project).to receive(:remove_exports)
 
-        expect(project).to receive(:remove_exports)
-
-        strategy.execute(user, project)
-      end
+      strategy.execute(user, project)
     end
   end
 end
