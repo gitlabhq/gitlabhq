@@ -7,6 +7,19 @@ import axios from './lib/utils/axios_utils';
 
 Dropzone.autoDiscover = false;
 
+/**
+ * Return the error message string from the given response.
+ *
+ * @param {String|Object} res
+ */
+function getErrorMessage(res) {
+  if (!res || _.isString(res)) {
+    return res;
+  }
+
+  return res.message;
+}
+
 export default function dropzoneInput(form) {
   const divHover = '<div class="div-dropzone-hover"></div>';
   const iconPaperclip = '<i class="fa fa-paperclip div-dropzone-icon"></i>';
@@ -84,9 +97,7 @@ export default function dropzoneInput(form) {
       // xhr object (xhr.responseText is error message).
       // On error we hide the 'Attach' and 'Cancel' buttons
       // and show an error.
-
-      // If there's xhr error message, let's show it instead of dropzone's one.
-      const message = xhr ? xhr.responseText : errorMessage;
+      const message = getErrorMessage(errorMessage || xhr.responseText);
 
       $uploadingErrorContainer.removeClass('hide');
       $uploadingErrorMessage.html(message);
