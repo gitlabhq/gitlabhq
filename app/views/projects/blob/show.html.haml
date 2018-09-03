@@ -6,7 +6,7 @@
 - signatures_path = namespace_project_signatures_path(namespace_id: @project.namespace.full_path, project_id: @project.path, id: @last_commit)
 .js-signature-container{ data: { 'signatures-path': signatures_path } }
 
-%div{ class: container_class }
+%div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
   = render 'projects/last_push'
 
   #tree-holder.tree-holder
