@@ -98,6 +98,7 @@ module QA
       end
 
       module Sanity
+        autoload :Failing, 'qa/scenario/test/sanity/failing'
         autoload :Selectors, 'qa/scenario/test/sanity/selectors'
       end
     end
