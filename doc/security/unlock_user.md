@@ -1,4 +1,4 @@
-# How to reset your root password
+# How to unlock a locked user
 
 Log into your server with root privileges. Then start a Ruby on Rails console.
 
@@ -22,19 +22,10 @@ or
 user = User.find_by(email: 'admin@local.host')
 ```
 
-Now you can change your password:
+Unlock the user:
 
 ```bash
-user.password = 'secret_pass'
-user.password_confirmation = 'secret_pass'
+user.unlock_access!
 ```
 
-It's important that you change both password and password_confirmation to make it work.
-
-Don't forget to save the changes.
-
-```bash
-user.save!
-```
-
-Exit the console and try to login with your new password.
+Exit the console, the user should now be able to log in again.
