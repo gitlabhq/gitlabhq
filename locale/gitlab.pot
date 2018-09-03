@@ -805,6 +805,9 @@ msgstr ""
 msgid "Badges|No image to preview"
 msgstr ""
 
+msgid "Badges|Please fill in a valid URL"
+msgstr ""
+
 msgid "Badges|Project Badge"
 msgstr ""
 
@@ -836,6 +839,9 @@ msgid "Badges|You are going to delete this badge. Deleted badges <strong>cannot<
 msgstr ""
 
 msgid "Badges|Your badges"
+msgstr ""
+
+msgid "Badges|e.g. %{exampleUrl}"
 msgstr ""
 
 msgid "Begin with the selected commit"
@@ -2897,6 +2903,15 @@ msgstr ""
 msgid "Group: %{group_name}"
 msgstr ""
 
+msgid "GroupSettings|Badges"
+msgstr ""
+
+msgid "GroupSettings|Customize your group badges."
+msgstr ""
+
+msgid "GroupSettings|Learn more about badges."
+msgstr ""
+
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
 msgstr ""
 
@@ -4534,6 +4549,15 @@ msgid "ProjectLifecycle|Stage"
 msgstr ""
 
 msgid "ProjectPage|Project ID: %{project_id}"
+msgstr ""
+
+msgid "ProjectSettings|Badges"
+msgstr ""
+
+msgid "ProjectSettings|Customize your project badges."
+msgstr ""
+
+msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "Projects"

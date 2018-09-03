@@ -28,7 +28,7 @@ export default {
       {{ s__('Badges|Your badges') }}
       <span
         v-show="!isLoading"
-        class="badge"
+        class="badge badge-pill"
       >{{ badges.length }}</span>
     </div>
     <loading-icon

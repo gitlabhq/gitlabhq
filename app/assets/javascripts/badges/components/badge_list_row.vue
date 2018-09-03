@@ -43,13 +43,13 @@ export default {
     <badge
       :image-url="badge.renderedImageUrl"
       :link-url="badge.renderedLinkUrl"
-      class="table-section section-30"
+      class="table-section section-40"
     />
-    <span class="table-section section-50 str-truncated">{{ badge.linkUrl }}</span>
-    <div class="table-section section-10">
-      <span class="badge">{{ badgeKindText }}</span>
+    <span class="table-section section-30 str-truncated">{{ badge.linkUrl }}</span>
+    <div class="table-section section-15">
+      <span class="badge badge-pill">{{ badgeKindText }}</span>
     </div>
-    <div class="table-section section-10 table-button-footer">
+    <div class="table-section section-15 table-button-footer">
       <div
         v-if="canEditBadge"
         class="table-action-buttons">
