@@ -174,7 +174,18 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
+
+Request body:
+
 - `description` (required) - Release notes with markdown support
+
+```json
+{
+  "description": "Amazing release. Wow"
+}
+```
+
+Response:
 
 ```json
 {
@@ -195,7 +206,18 @@ Parameters:
 
 - `id` (required) - The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user
 - `tag_name` (required) - The name of a tag
+
+Request body:
+
 - `description` (required) - Release notes with markdown support
+
+```json
+{
+  "description": "Amazing release. Wow"
+}
+```
+
+Response:
 
 ```json
 {

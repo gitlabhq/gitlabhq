@@ -1,6 +1,8 @@
 - @no_container = true
 - @sort ||= sort_value_recently_updated
 - page_title s_('TagsPage|Tags')
+= content_for :meta_tags do
+  = auto_discovery_link_tag(:atom, project_tags_url(@project, rss_url_options), title: "#{@project.name} tags")
 
 .flex-list{ class: container_class }
   .top-area.adjust
@@ -25,6 +27,8 @@
       - if can?(current_user, :push_code, @project)
         = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
           = s_('TagsPage|New tag')
+      = link_to project_tags_path(@project, rss_url_options), title: _("Tags feed"), class: 'btn rss-btn has-tooltip' do
+        = icon("rss")
 
   = render_if_exists 'projects/commits/mirror_status'
 

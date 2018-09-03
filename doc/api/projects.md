@@ -731,7 +731,7 @@ PUT /projects/:id
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
-| `name` | string | yes | The name of the project |
+| `name` | string | no | The name of the project |
 | `path` | string | no | Custom repository name for the project. By default generated based on name |
 | `default_branch` | string | no | `master` by default |
 | `description` | string | no | Short project description |

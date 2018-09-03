@@ -146,6 +146,9 @@ possible.
 [ce]: https://about.gitlab.com/features/#community
 [ee]: https://about.gitlab.com/features/#enterprise
 [omni-ce-ee]: https://docs.gitlab.com/omnibus/update/README.html#updating-community-edition-to-enterprise-edition
+<<<<<<< HEAD
 [omni-docker]: https://docs.gitlab.com/omnibus/docker/README.html
 [omni-update]: https://docs.gitlab.com/omnibus/update/README.html
 [omni-zero-downtime]: https://docs.gitlab.com/omnibus/update/README.html#zero-downtime-updates
+=======
+>>>>>>> upstream/master

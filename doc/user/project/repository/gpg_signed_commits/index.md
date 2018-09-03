@@ -55,6 +55,8 @@ started:
     ```sh
     gpg --full-gen-key
     ```
+    
+_NOTE: In some cases like Gpg4win on Windows and other Mac OS versions the command here may be ` gpg --gen-key`_
 
     This will spawn a series of questions.
 
