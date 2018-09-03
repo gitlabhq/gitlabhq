@@ -512,7 +512,10 @@ export const setCiStatusFavicon = pageUrl =>
       }
       return resetFavicon();
     })
-    .catch(resetFavicon);
+    .catch((error) => {
+      resetFavicon();
+      throw error;
+    });
 
 export const spriteIcon = (icon, className = '') => {
   const classAttribute = className.length > 0 ? `class="${className}"` : '';

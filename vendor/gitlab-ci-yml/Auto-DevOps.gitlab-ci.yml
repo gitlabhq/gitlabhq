@@ -825,7 +825,7 @@ rollout 100%:
     fi
 
     if [[ -n "$(helm ls -q "^$name$")" ]]; then
-      helm delete "$name"
+      helm delete --purge "$name"
     fi
   }
 

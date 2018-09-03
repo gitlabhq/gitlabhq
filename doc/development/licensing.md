@@ -100,7 +100,7 @@ If a gem uses a license which is not listed above, open an issue and ask. If a l
 
 Keep in mind that each license has its own restrictions (typically defined in their body text). Please make sure to comply with those restrictions at all times whenever an external library is used.
 
-Gems which are included only in the "development" or "test" groups by Bundler are exempt from license requirements, as they're not distributed for use in production.
+Dependencies which are only used in development or test environment are exempt from license requirements, as they're not distributed for use in production.
 
 **NOTE:** This document is **not** legal advice, nor is it comprehensive. It should not be taken as such.
 

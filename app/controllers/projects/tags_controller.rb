@@ -17,6 +17,11 @@ class Projects::TagsController < Projects::ApplicationController
     tag_names = @tags.map(&:name)
     @tags_pipelines = @project.pipelines.latest_successful_for_refs(tag_names)
     @releases = project.releases.where(tag: tag_names)
+
+    respond_to do |format|
+      format.html
+      format.atom { render layout: 'xml.atom' }
+    end
   end
 
   def show
