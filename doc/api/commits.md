@@ -464,7 +464,7 @@ Example response:
    },
    {
       "started_at" : null,
-      "name" : "flay",
+      "name" : "test",
       "allow_failure" : false,
       "status" : "pending",
       "created_at" : "2016-01-19T08:40:25.832Z",
