@@ -559,7 +559,7 @@ module Ci
     end
 
     def yaml_variables=(value)
-      unless BuildConfig.available? && Feature.enabled?(:ci_use_build_metadata_for_config)
+      unless Feature.enabled?(:ci_use_build_metadata_for_config)
         super
       else
         # save and remove from this model
