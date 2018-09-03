@@ -6,9 +6,7 @@ module Geo
 
     def sync_repository
       fetch_repository
-
-      update_gitattributes
-
+      update_default_branch
       mark_sync_as_successful
     rescue Gitlab::Shell::Error => e
       # In some cases repository does not exist, the only way to know about this is to parse the error text.
@@ -47,11 +45,10 @@ module Geo
       project.ensure_repository
     end
 
-    # Update info/attributes file using the contents of .gitattributes file from the default branch
-    def update_gitattributes
-      return if project.default_branch.nil?
-
-      repository.copy_gitattributes(project.default_branch)
+    # Update the default branch querying the remote to determine its HEAD
+    def update_default_branch
+      root_ref = repository.find_remote_root_ref(GEO_REMOTE_NAME)
+      project.change_head(root_ref) if root_ref.present?
     end
 
     def schedule_repack

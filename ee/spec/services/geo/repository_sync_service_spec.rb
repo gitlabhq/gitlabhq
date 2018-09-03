@@ -31,6 +31,11 @@ describe Geo::RepositorySyncService do
 
       allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
+
+      allow_any_instance_of(Repository)
+        .to receive(:find_remote_root_ref)
+        .with('geo')
+        .and_return('master')
     end
 
     it 'fetches project repository with JWT credentials' do
@@ -212,6 +217,17 @@ describe Geo::RepositorySyncService do
 
           it 'syncs gitattributes to info/attributes' do
             expect(repository).to receive(:copy_gitattributes)
+
+            subject.execute
+          end
+
+          it 'updates the default branch' do
+            allow(project.repository)
+              .to receive(:find_remote_root_ref)
+              .with('geo')
+              .and_return('development')
+
+            expect(project).to receive(:change_head).with('development').once
 
             subject.execute
           end
