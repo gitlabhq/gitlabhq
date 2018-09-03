@@ -34,7 +34,6 @@ module Ci
       has_one :"job_artifacts_#{key}", -> { where(file_type: value) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
     end
 
-    has_one :config, class_name: 'Ci::BuildConfig'
     has_one :metadata, class_name: 'Ci::BuildMetadata'
     has_one :runner_session, class_name: 'Ci::BuildRunnerSession', validate: true, inverse_of: :build
 
@@ -537,48 +536,36 @@ module Ci
       read_attribute(:when) || 'on_success'
     end
 
-    def config
-      return unless BuildConfig.available?
-
-      super
-    end
-
-    def ensure_config
-      config || build_config
-    end
-
     def options
       read_attribute(:options) ||
-        config&.yaml_options ||
+        metadata&.yaml_options ||
         {}
     end
 
     def options=(value)
-      unless BuildConfig.available? && Feature.enabled?(:ci_use_build_config)
+      unless Feature.enabled?(:ci_use_build_metadata_for_config)
         super
-        return
+      else
+        # save and remove from this model
+        ensure_metadata.yaml_options = value
+        write_attribute(:options, nil)
       end
-
-      # save and remove from this model
-      ensure_config.yaml_options = value
-      write_attribute(:options, nil)
     end
 
     def yaml_variables
       read_attribute(:yaml_variables) ||
-        config&.yaml_variables ||
+        metadata&.yaml_variables ||
         []
     end
 
     def yaml_variables=(value)
-      unless BuildConfig.available? && Feature.enabled?(:ci_use_build_config)
+      unless BuildConfig.available? && Feature.enabled?(:ci_use_build_metadata_for_config)
         super
-        return
+      else
+        # save and remove from this model
+        ensure_metadata.yaml_variables = value
+        write_attribute(:yaml_variables, nil)
       end
-
-      # save and remove from this model
-      ensure_config.yaml_variables = value
-      write_attribute(:yaml_variables, nil)
     end
 
     def user_variables

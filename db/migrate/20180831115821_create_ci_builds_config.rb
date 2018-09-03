@@ -9,12 +9,7 @@ class CreateCiBuildsConfig < ActiveRecord::Migration
   DOWNTIME = false
 
   def change
-    create_table :ci_builds_config, id: :bigserial do |t|
-      t.integer :build_id, null: false
-      t.text :yaml_options
-      t.text :yaml_variables
-      t.index :build_id, unique: true
-      t.foreign_key :ci_builds, column: :build_id, on_delete: :cascade
-    end
+    add_column :ci_builds_metadata, :yaml_options, :text
+    add_column :ci_builds_metadata, :yaml_variables, :text
   end
 end

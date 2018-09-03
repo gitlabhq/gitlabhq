@@ -16,6 +16,9 @@ module Ci
     validates :build, presence: true
     validates :project, presence: true
 
+    serialize :yaml_options # rubocop:disable Cop/ActiveRecordSerialize
+    serialize :yaml_variables, Gitlab::Serializer::Ci::Variables # rubocop:disable Cop/ActiveRecordSerialize
+
     chronic_duration_attr_reader :timeout_human_readable, :timeout
 
     enum timeout_source: {
