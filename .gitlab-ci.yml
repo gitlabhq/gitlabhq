@@ -239,7 +239,10 @@ stages:
     - export KNAPSACK_REPORT_PATH=knapsack/${CI_PROJECT_NAME}/${JOB_NAME[0]}_node_${CI_NODE_INDEX}_${CI_NODE_TOTAL}_report.json
     - cp ${EE_KNAPSACK_RSPEC_SUITE_REPORT_PATH} ${KNAPSACK_REPORT_PATH}
     - scripts/gitaly-test-spawn
-    - knapsack rspec "-Ispec --color --format documentation --tag ~geo"
+    - knapsack rspec "-Ispec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag ~geo"
+  artifacts:
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-ee-pg: &rspec-ee-pg
   <<: *rspec-metadata-ee
@@ -258,7 +261,10 @@ stages:
     - export CACHE_CLASSES=true
     - source scripts/prepare_postgres_fdw.sh
     - scripts/gitaly-test-spawn
-    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+    - bundle exec rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo ee/spec/
+  artifacts:
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-geo-pg-10-2: &rspec-metadata-pg-geo-10-2
   <<: *rspec-metadata
@@ -269,7 +275,10 @@ stages:
     - export CACHE_CLASSES=true
     - source scripts/prepare_postgres_fdw.sh
     - scripts/gitaly-test-spawn
-    - bundle exec rspec --color --format documentation --tag geo ee/spec/
+    - bundle exec rspec --color --format documentation --format RspecJunitFormatter --out junit_rspec.xml --tag geo ee/spec/
+  artifacts:
+    reports:
+      junit: junit_rspec.xml
 
 .rspec-ee-pg-rails5: &rspec-ee-pg-rails5
   <<: *rspec-ee-pg
