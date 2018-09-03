@@ -3,11 +3,8 @@
 module Gitlab
   module Email
     module Handler
-<<<<<<< HEAD
       prepend ::EE::Gitlab::Email::Handler
 
-=======
->>>>>>> upstream/master
       def self.handlers
         @handlers ||= load_handlers
       end
