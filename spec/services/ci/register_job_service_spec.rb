@@ -458,7 +458,12 @@ module Ci
         end
 
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
-        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['test'] } ) }
+
+        let!(:pending_job) do
+          create(:ci_build, :pending,
+            pipeline: pipeline, stage_idx: 1,
+            options: { script: ["bash"], dependencies: ['test'] })
+        end
 
         subject { execute(specific_runner) }
 
