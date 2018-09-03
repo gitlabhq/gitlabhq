@@ -30,9 +30,10 @@ The following languages and frameworks are supported.
 | C/C++                 | [Flawfinder](https://www.dwheeler.com/flawfinder/)                                     |
 | Python                | [bandit](https://github.com/PyCQA/bandit)                                              |
 | Ruby on Rails         | [brakeman](https://brakemanscanner.org)                                                |
+| Groovy (Gradle & Grail) | [find-sec-bugs](https://find-sec-bugs.github.io/)                                      |
 | Java (Maven & Gradle) | [find-sec-bugs](https://find-sec-bugs.github.io/)                                      |
 | Scala (sbt)           | [find-sec-bugs](https://find-sec-bugs.github.io/)                                      |
-| Go (experimental)     | [Gosec](https://github.com/securego/gosec)                                             |
+| Go                    | [Gosec](https://github.com/securego/gosec)                                             |
 | PHP                   | [phpcs-security-audit](https://github.com/FloeDesignTechnologies/phpcs-security-audit) |
 | .NET                  | [Security Code Scan](https://security-code-scan.github.io)                             |
 | Node.js               | [NodeJsScan](https://github.com/ajinabraham/NodeJsScan)                                |
