@@ -42,7 +42,11 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
         );
 
         if (targetLine) {
-          Object.assign(targetLine.right, { discussions });
+          if (targetLine.left && targetLine.left.lineCode === discussions[0].line_code) {
+            Object.assign(targetLine.left, { discussions });
+          } else {
+            Object.assign(targetLine.right, { discussions });
+          }
         }
 
         const targetInlineLine = selectedFile.highlightedDiffLines.find(
