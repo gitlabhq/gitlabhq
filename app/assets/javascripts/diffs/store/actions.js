@@ -57,6 +57,30 @@ export const assignDiscussionsToDiff = ({ state }, allLineDiscussions) => {
   });
 };
 
+export const removeDiscussionsFromDiff = ({ state }, removeDiscussion) => {
+  const { fileHash } = removeDiscussion;
+  const selectedFile = state.diffFiles.find(file => file.fileHash === fileHash);
+  if (selectedFile) {
+    const targetLine = selectedFile.parallelDiffLines.find(
+      line =>
+        (line.left && line.left.lineCode === removeDiscussion.line_code) ||
+        (line.right && line.right.lineCode === removeDiscussion.line_code),
+    );
+
+    if (targetLine) {
+      Object.assign(targetLine.right, { discussions: [] });
+    }
+
+    const targetInlineLine = selectedFile.highlightedDiffLines.find(
+      line => line.lineCode === removeDiscussion.line_code,
+    );
+
+    if (targetInlineLine) {
+      Object.assign(targetInlineLine, { discussions: [] });
+    }
+  }
+};
+
 export const startRenderDiffsQueue = ({ state, commit }) => {
   const checkItem = () =>
     new Promise(resolve => {
