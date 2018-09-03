@@ -1,0 +1,5 @@
+---
+title: 'Geo: LFS batch downloads are OK to be handled by secondary'
+merge_request: 7209
+author:
+type: fixed
