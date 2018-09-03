@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 $: << File.expand_path(File.dirname(__FILE__))
 
 Encoding.default_external = 'UTF-8'
@@ -212,10 +214,6 @@ module QA
       end
     end
 
-    module Shared
-      autoload :ClonePanel, 'qa/page/shared/clone_panel'
-    end
-
     module Profile
       autoload :PersonalAccessTokens, 'qa/page/profile/personal_access_tokens'
     end
@@ -249,6 +247,7 @@ module QA
     # Classes describing components that are used by several pages.
     #
     module Component
+      autoload :ClonePanel, 'qa/page/component/clone_panel'
       autoload :Dropzone, 'qa/page/component/dropzone'
       autoload :Select2, 'qa/page/component/select2'
     end
