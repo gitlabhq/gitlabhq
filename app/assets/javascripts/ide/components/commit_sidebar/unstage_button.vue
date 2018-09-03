@@ -39,8 +39,8 @@ export default {
       @click="unstageChange(path)"
     >
       <icon
-        :size="12"
-        name="history"
+        :size="16"
+        name="redo"
       />
     </button>
   </div>

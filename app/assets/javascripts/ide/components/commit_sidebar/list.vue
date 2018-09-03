@@ -56,6 +56,11 @@ export default {
       type: String,
       required: true,
     },
+    emptyStateText: {
+      type: String,
+      required: false,
+      default: __('No changes'),
+    },
   },
   computed: {
     titleText() {
@@ -91,17 +96,20 @@ export default {
           :name="iconName"
           :size="18"
         />
-        {{ titleText }}
+        <strong>
+          {{ titleText }}
+        </strong>
         <div class="d-flex ml-auto">
           <button
             v-tooltip
-            v-show="filesLength"
-            :class="{
-              'd-flex': filesLength
-            }"
             :title="actionBtnText"
+            :aria-label="actionBtnText"
+            :disabled="!filesLength"
+            :class="{
+              'disabled-content': !filesLength
+            }"
             type="button"
-            class="btn btn-default ide-staged-action-btn p-0 order-1 align-items-center"
+            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center"
             data-placement="bottom"
             data-container="body"
             data-boundary="viewport"
@@ -109,18 +117,10 @@ export default {
           >
             <icon
               :name="actionBtnIcon"
-              :size="12"
-              class="ml-auto mr-auto"
+              :size="16"
+              class="mr-0"
             />
           </button>
-          <span
-            :class="{
-              'rounded-right': !filesLength
-            }"
-            class="ide-commit-file-count order-0 rounded-left text-center"
-          >
-            {{ filesLength }}
-          </span>
         </div>
       </div>
     </header>
@@ -143,9 +143,9 @@ export default {
     </ul>
     <p
       v-else
-      class="multi-file-commit-list form-text text-muted"
+      class="multi-file-commit-list form-text text-muted text-center"
     >
-      {{ __('No changes') }}
+      {{ emptyStateText }}
     </p>
   </div>
 </template>

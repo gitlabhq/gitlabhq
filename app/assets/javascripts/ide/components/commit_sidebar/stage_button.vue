@@ -1,11 +1,14 @@
 <script>
+import $ from 'jquery';
 import { mapActions } from 'vuex';
 import Icon from '~/vue_shared/components/icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 
 export default {
   components: {
     Icon,
+    GlModal,
   },
   directives: {
     tooltip,
@@ -16,8 +19,19 @@ export default {
       required: true,
     },
   },
+  computed: {
+    modalId() {
+      return `discard-file-${this.path}`;
+    },
+    modalTitle() {
+      return `Discard changes to ${this.path}?`;
+    },
+  },
   methods: {
     ...mapActions(['stageChange', 'discardFileChanges']),
+    showDiscardModal() {
+      $(document.getElementById(this.modalId)).modal('show');
+    },
   },
 };
 </script>
@@ -25,51 +39,48 @@ export default {
 <template>
   <div
     v-once
-    class="multi-file-discard-btn dropdown"
+    class="multi-file-discard-btn"
   >
     <button
       v-tooltip
       :aria-label="__('Stage changes')"
       :title="__('Stage changes')"
       type="button"
-      class="btn btn-blank append-right-5 d-flex align-items-center"
+      class="btn btn-blank append-right-8 d-flex align-items-center"
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      @click.stop="stageChange(path)"
+      @click="stageChange(path)"
     >
       <icon
-        :size="12"
+        :size="16"
         name="mobile-issue-close"
       />
     </button>
     <button
       v-tooltip
-      :title="__('More actions')"
+      :aria-label="__('Discard changes')"
+      :title="__('Discard changes')"
       type="button"
       class="btn btn-blank d-flex align-items-center"
       data-container="body"
       data-boundary="viewport"
       data-placement="bottom"
-      data-toggle="dropdown"
-      data-display="static"
+      @click="showDiscardModal"
     >
       <icon
-        :size="12"
-        name="ellipsis_h"
+        :size="16"
+        name="remove"
       />
     </button>
-    <div class="dropdown-menu dropdown-menu-right">
-      <ul>
-        <li>
-          <button
-            type="button"
-            @click.stop="discardFileChanges(path)"
-          >
-            {{ __('Discard changes') }}
-          </button>
-        </li>
-      </ul>
-    </div>
+    <gl-modal
+      :id="modalId"
+      :header-title-text="modalTitle"
+      :footer-primary-button-text="__('Discard changes')"
+      footer-primary-button-variant="danger"
+      @submit="discardFileChanges(path)"
+    >
+      {{ __("You will loose all changes you've made to this file. This action cannot be undone.") }}
+    </gl-modal>
   </div>
 </template>

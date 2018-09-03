@@ -679,6 +679,7 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 
 .multi-file-commit-list-file-path {
   @include str-truncated(calc(100% - 30px));
+  user-select: none;
 
   &:active {
     text-decoration: none;
@@ -807,11 +808,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
 }
 
 .ide-staged-action-btn {
-  width: 22px;
-  margin-left: -1px;
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-
   > svg {
     top: 0;
   }
@@ -1455,4 +1451,10 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   .dropdown-content {
     max-height: 222px;
   }
+}
+
+.ide-commit-editor-header {
+  padding: 8px 16px;
+  background-color: $white-normal;
+  box-shadow: inset 0 -1px $white-dark;
 }
