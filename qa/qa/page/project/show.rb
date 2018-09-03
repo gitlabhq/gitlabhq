@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       class Show < Page::Base
-        include Page::Shared::ClonePanel
+        include Page::Component::ClonePanel
 
         view 'app/views/projects/_last_push.html.haml' do
           element :create_merge_request

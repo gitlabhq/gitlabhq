@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module QA
   module Page
-    module Shared
+    module Component
       module ClonePanel
         def self.included(base)
           base.view 'app/views/shared/_clone_panel.html.haml' do
