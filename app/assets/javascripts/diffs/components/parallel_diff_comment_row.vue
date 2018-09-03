@@ -57,7 +57,9 @@ export default {
       );
     },
     showRightSideCommentForm() {
-      return this.line.right.type && this.diffLineCommentForms[this.rightLineCode];
+      return (
+        this.line.right && this.line.right.type && this.diffLineCommentForms[this.rightLineCode]
+      );
     },
     className() {
       return (this.left && this.line.left.discussions.length > 0) ||
