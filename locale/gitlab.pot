@@ -3691,7 +3691,6 @@ msgstr ""
 msgid "Group: %{group_name}"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "GroupRoadmap|From %{dateWord}"
 msgstr ""
 
@@ -3726,7 +3725,8 @@ msgid "GroupRoadmap|To widen your search, change or remove filters. In the weeks
 msgstr ""
 
 msgid "GroupRoadmap|Until %{dateWord}"
-=======
+msgstr ""
+
 msgid "GroupSettings|Badges"
 msgstr ""
 
@@ -3734,7 +3734,6 @@ msgid "GroupSettings|Customize your group badges."
 msgstr ""
 
 msgid "GroupSettings|Learn more about badges."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
@@ -5705,13 +5704,22 @@ msgstr ""
 msgid "ProjectPage|Project ID: %{project_id}"
 msgstr ""
 
+msgid "ProjectSettings|Badges"
+msgstr ""
+
 msgid "ProjectSettings|Contact an admin to change this setting."
+msgstr ""
+
+msgid "ProjectSettings|Customize your project badges."
 msgstr ""
 
 msgid "ProjectSettings|Failed to protect the tag"
 msgstr ""
 
 msgid "ProjectSettings|Failed to update tag!"
+msgstr ""
+
+msgid "ProjectSettings|Learn more about badges."
 msgstr ""
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
@@ -5759,20 +5767,7 @@ msgstr ""
 msgid "PrometheusAlerts|Add alert"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "PrometheusAlerts|Alert set"
-=======
-msgid "ProjectSettings|Badges"
-msgstr ""
-
-msgid "ProjectSettings|Customize your project badges."
-msgstr ""
-
-msgid "ProjectSettings|Learn more about badges."
-msgstr ""
-
-msgid "Projects"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "PrometheusAlerts|Edit alert"
