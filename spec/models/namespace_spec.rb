@@ -394,12 +394,6 @@ describe Namespace do
           child.destroy
         end
       end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
-      end
     end
 
     context 'hashed storage' do
@@ -413,12 +407,6 @@ describe Namespace do
         namespace.destroy
 
         expect(File.exist?(deleted_path_in_dir)).to be(false)
-      end
-
-      it 'removes the exports folder' do
-        expect(namespace).to receive(:remove_exports!)
-
-        namespace.destroy
       end
     end
   end
@@ -443,7 +431,7 @@ describe Namespace do
     end
   end
 
-  describe '#self_and_hierarchy', :nested_groups do
+  describe '#self_and_hierarchy', :nested_groups dos
     let!(:group) { create(:group, path: 'git_lab') }
     let!(:nested_group) { create(:group, parent: group) }
     let!(:deep_nested_group) { create(:group, parent: nested_group) }
