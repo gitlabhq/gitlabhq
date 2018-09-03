@@ -24,6 +24,7 @@ export default {
       'commitId',
       'shouldRenderInlineCommentRow',
       'singleDiscussionByLineCode',
+      'discussionsByLineCode',
     ]),
     ...mapState({
       diffLineCommentForms: state => state.diffs.diffLineCommentForms,
