@@ -190,22 +190,27 @@ describe('Diffs Module Getters', () => {
     beforeEach(() => {
       line = {};
 
+      discussionMock.expanded = true;
+
       line.left = {
         lineCode: 'ABC',
+        discussions: [discussionMock],
       };
 
       line.right = {
         lineCode: 'DEF',
+        discussions: [discussionMock1],
       };
     });
 
     it('returns true when discussion is expanded', () => {
-      discussionMock.expanded = true;
-
       expect(getters.shouldRenderParallelCommentRow(localState)(line)).toEqual(true);
     });
 
     it('returns false when no discussion was found', () => {
+      line.left.discussions = [];
+      line.right.discussions = [];
+
       localState.diffLineCommentForms.ABC = false;
       localState.diffLineCommentForms.DEF = false;
 
@@ -220,32 +225,32 @@ describe('Diffs Module Getters', () => {
   });
 
   describe('shouldRenderInlineCommentRow', () => {
+    let line;
+
+    beforeEach(() => {
+      discussionMock.expanded = true;
+
+      line = {
+        lineCode: 'ABC',
+        discussions: [discussionMock],
+      };
+    });
+
     it('returns true when diffLineCommentForms has form', () => {
       localState.diffLineCommentForms.ABC = {};
 
-      expect(
-        getters.shouldRenderInlineCommentRow(localState)({
-          lineCode: 'ABC',
-        }),
-      ).toEqual(true);
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(true);
     });
 
     it('returns false when no line discussions were found', () => {
-      expect(
-        getters.shouldRenderInlineCommentRow(localState, {
-          singleDiscussionByLineCode: () => [],
-        })('DEF'),
-      ).toEqual(false);
+      line.discussions = [];
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(false);
     });
 
     it('returns true if all found discussions are expanded', () => {
       discussionMock.expanded = true;
 
-      expect(
-        getters.shouldRenderInlineCommentRow(localState, {
-          singleDiscussionByLineCode: () => [discussionMock],
-        })('ABC'),
-      ).toEqual(true);
+      expect(getters.shouldRenderInlineCommentRow(localState)(line)).toEqual(true);
     });
   });
 
