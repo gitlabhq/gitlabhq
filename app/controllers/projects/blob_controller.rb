@@ -127,7 +127,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     add_match_line
 
-    render json: @lines
+    render json: DiffLineSerializer.new.represent(@lines)
   end
 
   def add_match_line

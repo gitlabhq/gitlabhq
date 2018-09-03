@@ -1,0 +1,5 @@
+---
+title: Backport schema_changed.sh from EE which prints the diff if the schema is different
+merge_request: 21422
+author: Jasper Maes
+type: other

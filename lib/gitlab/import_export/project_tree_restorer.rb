@@ -94,7 +94,10 @@ module Gitlab
       end
 
       def restore_project
-        @project.update_columns(project_params)
+        Gitlab::Timeless.timeless(@project) do
+          @project.update(project_params)
+        end
+
         @project
       end
 

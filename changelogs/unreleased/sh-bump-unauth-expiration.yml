@@ -1,0 +1,5 @@
+---
+title: Bump unauthenticated session time from 1 hour to 2 hours
+merge_request: 21453
+author:
+type: other

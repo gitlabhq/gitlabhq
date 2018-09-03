@@ -42,6 +42,7 @@ Dir[Rails.root.join("spec/support/**/*.rb")].each { |f| require f }
 RSpec.configure do |config|
   config.use_transactional_fixtures = false
   config.use_instantiated_fixtures  = false
+  config.fixture_path = Rails.root
 
   config.verbose_retry = true
   config.display_try_failure_messages = true

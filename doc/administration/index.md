@@ -46,6 +46,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Plugins](plugins.md): With custom plugins, GitLab administrators can introduce custom integrations without modifying GitLab's source code.
 - [Enforcing Terms of Service](../user/admin_area/settings/terms.md)
 - [Third party offers](../user/admin_area/settings/third_party_offers.md)
+- [Compliance](compliance.md): A collection of features from across the application that you may configure to help ensure that your GitLab instance and DevOps workflow meet compliance standards.
 
 #### Customizing GitLab's appearance
 

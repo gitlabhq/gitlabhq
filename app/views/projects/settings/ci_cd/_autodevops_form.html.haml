@@ -5,7 +5,6 @@
       %fieldset.builds-feature.js-auto-devops-settings
         .form-group
           - message = auto_devops_warning_message(@project)
-          - ci_file_formatted = '<code>.gitlab-ci.yml</code>'.html_safe
           - if message
             %p.auto-devops-warning-message.settings-message.text-center
               = message.html_safe

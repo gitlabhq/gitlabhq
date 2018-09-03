@@ -78,13 +78,13 @@ export default {
 </script>
 
 <template>
-  <article class="ide">
+  <article class="ide position-relative d-flex flex-column align-items-stretch">
     <error-message
       v-if="errorMessage"
       :message="errorMessage"
     />
     <div
-      class="ide-view"
+      class="ide-view flex-grow d-flex"
     >
       <find-file
         v-show="fileFindVisible"

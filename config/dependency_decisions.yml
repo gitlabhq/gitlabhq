@@ -570,3 +570,10 @@
     :why: https://github.com/codesandbox-app/codesandbox-importers/blob/master/packages/import-utils/LICENSE
     :versions: []
     :when: 2018-08-03 12:23:24.083046000 Z
+- - :ignore_group
+  - devDependencies
+  - :who: Winnie Hellmann
+    :why: NPM packages used for development are not distributed with the final product and are therefore
+      exempt.
+    :versions: []
+    :when: 2018-08-30 12:06:35.668181000 Z

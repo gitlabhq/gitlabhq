@@ -94,7 +94,7 @@ where you'll find its default URL.
 >
 > - GitLab Pages [supports any SSG](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/), but,
 if you don't find yours among the templates, you'll need
-to configure your own `.gitlab-ci.yml`. Do do that, please
+to configure your own `.gitlab-ci.yml`. To do that, please
 read through the article [Creating and Tweaking GitLab CI/CD for GitLab Pages](getting_started_part_four.md). New SSGs are very welcome among
 the [example projects](https://gitlab.com/pages). If you set
 up a new one, please
