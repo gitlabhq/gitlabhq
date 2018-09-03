@@ -368,15 +368,6 @@ module Gitlab
 
     private
 
-    def gitlab_projects(shard_name, disk_path)
-      Gitlab::Git::GitlabProjects.new(
-        shard_name,
-        disk_path,
-        global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
-        logger: Rails.logger
-      )
-    end
-
     def gitlab_shell_fast_execute(cmd)
       output, status = gitlab_shell_fast_execute_helper(cmd)
 

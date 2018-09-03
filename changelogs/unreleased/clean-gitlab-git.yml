@@ -1,0 +1,5 @@
+---
+title: Remove Rugged and shell code from Gitlab::Git
+merge_request: 21488
+author:
+type: other

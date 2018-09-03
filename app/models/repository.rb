@@ -82,10 +82,6 @@ class Repository
 
   alias_method :raw, :raw_repository
 
-  def cleanup
-    @raw_repository&.cleanup
-  end
-
   # Don't use this! It's going away. Use Gitaly to read or write from repos.
   def path_to_repo
     @path_to_repo ||=

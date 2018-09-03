@@ -163,20 +163,6 @@ module Gitlab
           Gitlab::Git::WikiPage.new(wiki_page, version)
         end
       end
-
-      def committer_with_hooks(commit_details)
-        Gitlab::Git::CommitterWithHooks.new(self, commit_details.to_h)
-      end
-
-      def with_committer_with_hooks(commit_details, &block)
-        committer = committer_with_hooks(commit_details)
-
-        yield committer
-
-        committer.commit
-
-        nil
-      end
     end
   end
 end
