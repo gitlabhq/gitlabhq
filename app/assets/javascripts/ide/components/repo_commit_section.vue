@@ -97,7 +97,7 @@ export default {
         :active-file-key="activeFileKey"
         :empty-state-text="__('There are no unstaged changes')"
         action="stageAllChanges"
-        action-btn-icon="mobile-issue-close"
+        action-btn-icon="stage-all"
         item-action-component="stage-button"
         class="is-first"
         icon-name="unstaged"
@@ -111,7 +111,7 @@ export default {
         :active-file-key="activeFileKey"
         :empty-state-text="__('There are no staged changes')"
         action="unstageAllChanges"
-        action-btn-icon="history"
+        action-btn-icon="unstage-all"
         item-action-component="unstage-button"
         icon-name="staged"
       />

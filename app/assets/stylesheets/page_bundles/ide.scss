@@ -574,17 +574,6 @@ $ide-tree-text-start: $ide-activity-bar-width + $ide-tree-padding;
   padding: 12px 0;
 }
 
-.multi-file-commit-panel-header-title {
-  display: flex;
-  flex: 1;
-  align-items: center;
-
-  svg {
-    margin-right: $gl-btn-padding;
-    color: $theme-gray-700;
-  }
-}
-
 .multi-file-commit-panel-collapse-btn {
   border-left: 1px solid $white-dark;
   margin-left: auto;

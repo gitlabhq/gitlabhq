@@ -1,7 +1,9 @@
 <script>
+import $ from 'jquery';
 import { mapActions } from 'vuex';
 import { __, sprintf } from '~/locale';
 import Icon from '~/vue_shared/components/icon.vue';
+import GlModal from '~/vue_shared/components/gl_modal.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import ListItem from './list_item.vue';
 
@@ -9,6 +11,7 @@ export default {
   components: {
     Icon,
     ListItem,
+    GlModal,
   },
   directives: {
     tooltip,
@@ -73,11 +76,19 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['stageAllChanges', 'unstageAllChanges']),
+    ...mapActions(['stageAllChanges', 'unstageAllChanges', 'discardAllChanges']),
     actionBtnClicked() {
       this[this.action]();
+
+      $(this.$refs.actionBtn).tooltip('hide');
+    },
+    openDiscardModal() {
+      $('#discard-all-changes').modal('show');
     },
   },
+  discardModalText: __(
+    "You will loose all the unstaged changes you've made in this project. This action cannot be undone.",
+  ),
 };
 </script>
 
@@ -89,12 +100,13 @@ export default {
       class="multi-file-commit-panel-header"
     >
       <div
-        class="multi-file-commit-panel-header-title"
+        class="d-flex align-items-center flex-fill"
       >
         <icon
           v-once
           :name="iconName"
           :size="18"
+          class="append-right-8"
         />
         <strong>
           {{ titleText }}
@@ -102,6 +114,7 @@ export default {
         <div class="d-flex ml-auto">
           <button
             v-tooltip
+            ref="actionBtn"
             :title="actionBtnText"
             :aria-label="actionBtnText"
             :disabled="!filesLength"
@@ -118,6 +131,28 @@ export default {
             <icon
               :name="actionBtnIcon"
               :size="16"
+              class="mr-0"
+            />
+          </button>
+          <button
+            v-tooltip
+            v-if="!stagedList"
+            :title="__('Unstage all changes')"
+            :aria-label="__('Unstage all changes')"
+            :disabled="!filesLength"
+            :class="{
+              'disabled-content': !filesLength
+            }"
+            type="button"
+            class="d-flex ide-staged-action-btn p-0 border-0 align-items-center prepend-left-8"
+            data-placement="bottom"
+            data-container="body"
+            data-boundary="viewport"
+            @click="openDiscardModal"
+          >
+            <icon
+              :size="16"
+              name="remove-all"
               class="mr-0"
             />
           </button>
@@ -147,5 +182,15 @@ export default {
     >
       {{ emptyStateText }}
     </p>
+    <gl-modal
+      v-if="!stagedList"
+      id="discard-all-changes"
+      :footer-primary-button-text="__('Discard all changes')"
+      header-title-text="Discard all unstaged changes?"
+      footer-primary-button-variant="danger"
+      @submit="discardAllChanges"
+    >
+      {{ $options.discardModalText }}
+    </gl-modal>
   </div>
 </template>

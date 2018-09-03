@@ -111,7 +111,7 @@ describe('RepoCommitSection', () => {
       .then(vm.$nextTick)
       .then(() => {
         expect(vm.$el.querySelector('.ide-commit-list-container').textContent).toContain(
-          'No changes',
+          'There are no unstaged changes',
         );
       })
       .then(done)
@@ -133,7 +133,7 @@ describe('RepoCommitSection', () => {
   });
 
   it('discards a single file', done => {
-    vm.$el.querySelector('.multi-file-discard-btn .dropdown-menu button').click();
+    vm.$el.querySelector('.multi-file-commit-list li:first-child .js-modal-primary-action').click();
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.ide-commit-list-container').textContent).not.toContain('file1');
