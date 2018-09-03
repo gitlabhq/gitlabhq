@@ -3,7 +3,6 @@
     - if stage.status
       - detailed_status = stage.detailed_status(current_user)
       - icon_status = "#{detailed_status.icon}_borderless"
-      - status_klass = "ci-status-icon ci-status-icon-#{detailed_status.group}"
 
       .stage-container.dropdown{ class: klass }
         %button.mini-pipeline-graph-dropdown-toggle.has-tooltip.js-builds-dropdown-button{ class: "ci-status-icon-#{detailed_status.group}", type: 'button', data: { toggle: 'dropdown', title: "#{stage.name}: #{detailed_status.label}", placement: 'top', "stage-endpoint" => stage_ajax_project_pipeline_path(pipeline.project, pipeline, stage: stage.name) } }
