@@ -1,4 +1,5 @@
 class ProjectsController < Projects::ApplicationController
+  include API::Helpers::RelatedResourcesHelpers
   include IssuableCollections
   include ExtractsPath
   include PreviewMarkdown
@@ -34,6 +35,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def edit
+    @badge_api_endpoint = expose_url(api_v4_projects_badges_path(id: @project.id))
     render 'edit'
   end
 

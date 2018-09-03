@@ -140,12 +140,18 @@ are listed in the descriptions of the relevant settings.
 | `after_sign_up_text`                     | string           | no                                   | Text shown to the user after signing up |
 | `akismet_api_key`                        | string           | required by: `akismet_enabled`       | API key for akismet spam protection. |
 | `akismet_enabled`                        | boolean          | no                                   | (**If enabled, requires:** `akismet_api_key`) Enable or disable akismet spam protection. |
+<<<<<<< HEAD
 | `allow_group_owners_to_manage_ldap`      | boolean          | no                                   | **(Premium)** Set to `true` to allow group owners to manage LDAP |
+=======
+>>>>>>> upstream/master
 | `allow_local_requests_from_hooks_and_services` | boolean    | no                                   | Allow requests to the local network from hooks and services. |
 | `authorized_keys_enabled`                | boolean          | no                                   | By default, we write to the `authorized_keys` file to support Git over SSH without additional configuration. GitLab can be optimized to authenticate SSH keys via the database file. Only disable this if you have configured your OpenSSH server to use the AuthorizedKeysCommand. |
 | `auto_devops_domain`                     | string           | no                                   | Specify a domain to use by default for every project's Auto Review Apps and Auto Deploy stages. |
 | `auto_devops_enabled`                    | boolean          | no                                   | Enable Auto DevOps for projects by default. It will automatically build, test, and deploy applications based on a predefined CI/CD configuration. |
+<<<<<<< HEAD
 | `check_namespace_plan`                   | boolean          | no                                   | **(Premium)** Enabling this will make only licensed EE features available to projects if the project namespace's plan includes the feature or if the project is public. |
+=======
+>>>>>>> upstream/master
 | `circuitbreaker_access_retries`          | integer          | no                                   | The number of attempts GitLab will make to access a storage. |
 | `circuitbreaker_check_interval`          | integer          | no                                   | Number of seconds in between storage checks. |
 | `circuitbreaker_failure_count_threshold` | integer          | no                                   | The number of failures after which GitLab will completely prevent access to the storage.  |
@@ -167,6 +173,7 @@ are listed in the descriptions of the relevant settings.
 | `dsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded DSA key. Default is `0` (no restriction). `-1` disables DSA keys. |
 | `ecdsa_key_restriction`                  | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ECDSA key. Default is `0` (no restriction). `-1` disables ECDSA keys. |
 | `ed25519_key_restriction`                | integer          | no                                   | The minimum allowed curve size (in bits) of an uploaded ED25519 key. Default is `0` (no restriction). `-1` disables ED25519 keys. |
+<<<<<<< HEAD
 | `elasticsearch_aws`                      | boolean          | no                                   | **(Premium)** Enable the use of AWS hosted Elasticsearch |
 | `elasticsearch_aws_access_key`           | string           | no                                   | **(Premium)** AWS IAM access key |
 | `elasticsearch_aws_region`               | string           | no                                   | **(Premium)** The AWS region the elasticsearch domain is configured |
@@ -188,6 +195,11 @@ are listed in the descriptions of the relevant settings.
 | `external_authorization_service_url`     | string           | required by: `external_authorization_service_enabled` | **(Premium)** URL to which authorization requests will be directed |
 | `file_template_project_id`               | integer          | no                                   | **(Premium)** The ID of a project to load custom file templates from |
 | `geo_status_timeout`                     | integer          | no                                   | **(Premium)** The amount of seconds after which a request to get a secondary node status will time out. |
+=======
+| `email_author_in_body`                   | boolean          | no                                   | Some email servers do not support overriding the email sender name. Enable this option to include the name of the author of the issue, merge request or comment in the email body instead. |
+| `enabled_git_access_protocol`            | string           | no                                   | Enabled protocols for Git access. Allowed values are: `ssh`, `http`, and `nil` to allow both protocols. |
+| `enforce_terms`                          | boolean          | no                                   | (**If enabled, requires:** `terms`) Enforce application ToS to all users. |
+>>>>>>> upstream/master
 | `gitaly_timeout_default`                 | integer          | no                                   | Default Gitaly timeout, in seconds. This timeout is not enforced for git fetch/push operations or Sidekiq jobs. Set to `0` to disable timeouts. |
 | `gitaly_timeout_fast`                    | integer          | no                                   | Gitaly fast operation timeout, in seconds. Some Gitaly operations are expected to be fast. If they exceed this threshold, there may be a problem with a storage shard and 'failing fast' can help maintain the stability of the GitLab instance. Set to `0` to disable timeouts. |
 | `gitaly_timeout_medium`                  | integer          | no                                   | Medium Gitaly timeout, in seconds. This should be a value between the Fast and the Default timeout. Set to `0` to disable timeouts. |
@@ -196,7 +208,10 @@ are listed in the descriptions of the relevant settings.
 | `help_page_hide_commercial_content`      | boolean          | no                                   | Hide marketing-related entries from help. |
 | `help_page_support_url`                  | string           | no                                   | Alternate support URL for help page. |
 | `help_page_text`                         | string           | no                                   | Custom text displayed on the help page. |
+<<<<<<< HEAD
 | `help_text`                              | string           | no                                   | **(Premium)** GitLab server administrator information |
+=======
+>>>>>>> upstream/master
 | `hide_third_party_offers`                | boolean          | no                                   | Do not display offers from third parties within GitLab. |
 | `home_page_url`                          | string           | no                                   | Redirect to this URL when not logged in. |
 | `housekeeping_bitmaps_enabled`           | boolean          | required by: `housekeeping_enabled`  | Enable Git pack file bitmap creation. |
@@ -221,9 +236,12 @@ are listed in the descriptions of the relevant settings.
 | `metrics_sample_interval`                | integer          | required by: `metrics_enabled`       | The sampling interval in seconds. |
 | `metrics_timeout`                        | integer          | required by: `metrics_enabled`       | The amount of seconds after which InfluxDB will time out. |
 | `mirror_available`                       | boolean          | no                                   | Allow mirrors to be setup for projects. If disabled, only admins will be able to setup mirrors in projects. |
+<<<<<<< HEAD
 | `mirror_capacity_threshold`              | integer          | no                                   | **(Premium)** Minimum capacity to be available before scheduling more mirrors preemptively |
 | `mirror_max_capacity`                    | integer          | no                                   | **(Premium)** Maximum number of mirrors that can be synchronizing at the same time. |
 | `mirror_max_delay`                       | integer          | no                                   | **(Premium)** Maximum time (in minutes) between updates that a mirror can have when scheduled to synchronize. |
+=======
+>>>>>>> upstream/master
 | `pages_domain_verification_enabled`      | boolean          | no                                   | Require users to prove ownership of custom domains. Domain verification is an essential security measure for public GitLab sites. Users are required to demonstrate they control a domain before it is enabled. |
 | `password_authentication_enabled_for_git` | boolean         | no                                   | Enable authentication for Git over HTTP(S) via a GitLab account password. Default is `true`. |
 | `password_authentication_enabled_for_web` | boolean         | no                                   | Enable authentication for the web interface via a GitLab account password. Default is `true`. |
@@ -235,12 +253,18 @@ are listed in the descriptions of the relevant settings.
 | `polling_interval_multiplier`            | decimal          | no                                   | Interval multiplier used by endpoints that perform polling. Set to `0` to disable polling. |
 | `project_export_enabled`                 | boolean          | no                                   | Enable project export. |
 | `prometheus_metrics_enabled`             | boolean          | no                                   | Enable prometheus metrics. |
+<<<<<<< HEAD
 | `pseudonymizer_enabled`                  | boolean          | no                                   | **(Premium)** When enabled, GitLab will run a background job that will produce pseudonymized CSVs of the GitLab database that will be uploaded to your configured object storage directory.
+=======
+>>>>>>> upstream/master
 | `recaptcha_enabled`                      | boolean          | no                                   | (**If enabled, requires:** `recaptcha_private_key` and `recaptcha_site_key`) Enable recaptcha. |
 | `recaptcha_private_key`                  | string           | required by: `recaptcha_enabled`     | Private key for recaptcha. |
 | `recaptcha_site_key`                     | string           | required by: `recaptcha_enabled`     | Site key for recaptcha. |
 | `repository_checks_enabled`              | boolean          | no                                   | GitLab will periodically run `git fsck` in all project and wiki repositories to look for silent disk corruption issues. |
+<<<<<<< HEAD
 | `repository_size_limit`                  | integer          | no                                   | **(Premium)** Size limit per repository (MB) |
+=======
+>>>>>>> upstream/master
 | `repository_storages`                    | array of strings | no                                   | A list of names of enabled storage paths, taken from `gitlab.yml`. New projects will be created in one of these stores, chosen at random. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up Two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-admin users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction. |
@@ -249,8 +273,12 @@ are listed in the descriptions of the relevant settings.
 | `sentry_dsn`                             | string           | required by: `sentry_enabled`        | Sentry Data Source Name. |
 | `sentry_enabled`                         | boolean          | no                                   | (**If enabled, requires:** `sentry_dsn`) Sentry is an error reporting and logging tool which is currently not shipped with GitLab, available at https://getsentry.com. |
 | `session_expire_delay`                   | integer          | no                                   | Session duration in minutes. GitLab restart is required to apply changes |
+<<<<<<< HEAD
 | `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text` and `shared_runners_minutes`) Enable shared runners for new projects. |
 | `shared_runners_minutes`                 | integer          | required by: `shared_runners_enabled` | **(Premium)** Set the maximum number of pipeline minutes that a group can use on shared Runners per month. |
+=======
+| `shared_runners_enabled`                 | boolean          | no                                   | (**If enabled, requires:** `shared_runners_text`) Enable shared runners for new projects. |
+>>>>>>> upstream/master
 | `shared_runners_text`                    | string           | required by: `shared_runners_enabled` | Shared runners text. |
 | `sidekiq_throttling_enabled`             | boolean          | no                                   | (**If enabled, requires:** `sidekiq_throttling_factor` and `sidekiq_throttling_queues`) Enable Sidekiq Job Throttling. |
 | `sidekiq_throttling_factor`              | decimal          | required by: `sidekiq_throttling_enabled` | The factor by which the queues should be throttled. A value between `0.0` and `1.0`, exclusive. |
@@ -258,10 +286,13 @@ are listed in the descriptions of the relevant settings.
 | `sign_in_text`                           | string           | no                                   | Text on the login page. |
 | `signin_enabled`                         | string           | no                                   | (Deprecated: Use `password_authentication_enabled_for_web` instead) Flag indicating if password authentication is enabled for the web interface. |
 | `signup_enabled`                         | boolean          | no                                   | Enable registration. Default is `true`. |
+<<<<<<< HEAD
 | `slack_app_enabled`                      | boolean          | no                                   | **(Premium)** (**If enabled, requires:** `slack_app_id`, `slack_app_secret` and `slack_app_secret`) Enable Slack app. |
 | `slack_app_id`                           | string           | required by: slack_app_enabled`      | **(Premium)** The app id of the Slack-app. |
 | `slack_app_secret`                       | string           | required by: slack_app_enabled`      | **(Premium)** The app secret of the Slack-app. |
 | `slack_app_verification_token`           | string           | required by: slack_app_enabled`      | **(Premium)** The verification token of the Slack-app. |
+=======
+>>>>>>> upstream/master
 | `terminal_max_session_time`              | integer          | no                                   | Maximum time for web terminal websocket connection (in seconds). Set to `0` for unlimited time. |
 | `terms`                                  | text             | required by: `enforce_terms`         | (**Required by:** `enforce_terms`) Markdown content for the ToS. |
 | `throttle_authenticated_api_enabled`     | boolean          | no                                   | (**If enabled, requires:** `throttle_authenticated_api_period_in_seconds` and `throttle_authenticated_api_requests_per_period`) Enable authenticated API request rate limit. Helps reduce request volume (e.g. from crawlers or abusive bots). |
@@ -280,5 +311,9 @@ are listed in the descriptions of the relevant settings.
 | `usage_ping_enabled`                     | boolean          | no                                   | Every week GitLab will report license usage back to GitLab, Inc. |
 | `user_default_external`                  | boolean          | no                                   | Newly registered users will be external by default. |
 | `user_oauth_applications`                | boolean          | no                                   | Allow users to register any application to use GitLab as an OAuth provider. |
+<<<<<<< HEAD
 | `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false`, disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
+=======
+| `user_show_add_ssh_key_message`          | boolean          | no                                   | When set to `false` disable the "You won't be able to pull or push project code via SSH" warning shown to users with no uploaded SSH key. |
+>>>>>>> upstream/master
 | `version_check_enabled`                  | boolean          | no                                   | Let GitLab inform you when an update is available. |
