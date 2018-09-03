@@ -11,7 +11,13 @@ When enabled, every project in GitLab will have its own space to store Maven pac
 
 **Omnibus GitLab installations**
 
-# TODO: Update this section once https://gitlab.com/gitlab-org/gitlab-ee/issues/7253 is resolved
+1. Edit `/etc/gitlab/gitlab.rb` and add the following line:
+
+    ```ruby
+    gitlab_rails['packages_enabled'] = true
+    ```
+
+1. Save the file and [reconfigure GitLab][] for the changes to take effect.
 
 **Installations from source**
 
@@ -33,4 +39,5 @@ where:
 | --------- | ----------- |
 | `enabled` | `true` or `false`. Enables the packages repository in GitLab. By default this is `false`. |
 
+[reconfigure gitlab]: restart_gitlab.md#omnibus-gitlab-reconfigure "How to reconfigure Omnibus GitLab"
 [ee-5811]: https://gitlab.com/gitlab-org/gitlab-ee/issues/5811
