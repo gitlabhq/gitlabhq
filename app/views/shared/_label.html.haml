@@ -4,9 +4,6 @@
 - use_label_priority = local_assigns.fetch(:use_label_priority, false)
 - force_priority = local_assigns.fetch(:force_priority, use_label_priority ? label.priority.present? : false)
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
-- show_label_epics_link = @group&.feature_available?(:epics)
-- show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
-- show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 - tooltip_title = label_status_tooltip(label, status) if status
 
 %li.label-list-item{ id: label_css_id, data: { id: label.id } }

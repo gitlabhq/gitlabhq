@@ -1,6 +1,5 @@
 - if current_user
   - if note.emoji_awardable?
-    - user_authored = note.user_authored?(current_user)
     .note-actions-item
       = link_to '#', title: 'Add reaction', class: "note-action-button note-emoji-button js-add-award js-note-emoji has-tooltip", data: { position: 'right' } do
         = icon('spinner spin')
