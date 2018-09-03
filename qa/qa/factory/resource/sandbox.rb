@@ -6,40 +6,18 @@ module QA
       # creating it if it doesn't yet exist.
       #
       class Sandbox < Factory::Base
-        attr_reader :path, :api_object
+        attr_reader :path
 
         product :id do |factory|
-          factory.api_object ? factory.api_object[:id] : raise("unknown id")
+          factory.api_resource ? factory.api_resource[:id] : raise('Unknown id')
+        end
+
+        product :path do |factory|
+          factory.path
         end
 
         def initialize
           @path = Runtime::Namespace.sandbox_name
-        end
-
-        def api_get
-          response = get(Runtime::API::Request.new(api_client, "/groups/#{path}").url)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def api_post!
-          response = post(
-            Runtime::API::Request.new(api_client, '/groups').url,
-            path: path,
-            name: path)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def fabricate_via_api!
-          sandbox_object = api_get
-
-          if sandbox_object.key?(:web_url)
-            @api_object = sandbox_object
-
-            return sandbox_object[:web_url]
-          end
-
-          @api_object = api_post!
-          @api_object[:web_url]
         end
 
         def fabricate!
@@ -59,6 +37,22 @@ module QA
               end
             end
           end
+        end
+
+        def api_get_path
+          "/groups/#{path}"
+        end
+
+        def api_post_path
+          '/groups'
+        end
+
+        def api_post_body
+          {
+            path: path,
+            name: path,
+            visibility: 'public'
+          }
         end
       end
     end

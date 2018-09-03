@@ -3,37 +3,16 @@ module QA
     module Resource
       class Group < Factory::Base
         attr_accessor :path, :description
-        attr_reader :api_object
 
         dependency Factory::Resource::Sandbox, as: :sandbox
 
         product :id do |factory|
-          factory.api_object ? factory.api_object[:id] : raise("unknown id")
+          factory.api_resource ? factory.api_resource[:id] : raise('Unknown id')
         end
 
         def initialize
           @path = Runtime::Namespace.name
           @description = "QA test run at #{Runtime::Namespace.time}"
-        end
-
-        def api_get
-          response = get(Runtime::API::Request.new(api_client, "/groups/#{path}").url)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def api_post!
-          response = post(
-            Runtime::API::Request.new(api_client, '/groups').url,
-            parent_id: sandbox.id,
-            path: path,
-            name: path)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def fabricate_via_api!
-          @api_object = api_post!
-
-          @api_object[:web_url]
         end
 
         def fabricate!
@@ -59,6 +38,23 @@ module QA
               end
             end
           end
+        end
+
+        def api_get_path
+          "/groups/#{CGI.escape("#{sandbox.path}/#{path}")}"
+        end
+
+        def api_post_path
+          '/groups'
+        end
+
+        def api_post_body
+          {
+            parent_id: sandbox.id,
+            path: path,
+            name: path,
+            visibility: 'public'
+          }
         end
       end
     end

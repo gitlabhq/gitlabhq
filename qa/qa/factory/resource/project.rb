@@ -5,17 +5,17 @@ module QA
     module Resource
       class Project < Factory::Base
         attr_accessor :description
-        attr_reader :name, :api_object
+        attr_reader :name
 
         dependency Factory::Resource::Group, as: :group
 
         product :name do |factory|
-          factory.api_object ? factory.api_object[:name] : factory.name
+          factory.name
         end
 
         product :repository_ssh_location do |factory|
-          if factory.api_object
-            factory.api_object[:ssh_url_to_repo]
+          if factory.api_resource
+            factory.api_resource[:ssh_url_to_repo]
           else
             Page::Project::Show.act do
               choose_repository_clone_ssh
@@ -39,26 +39,6 @@ module QA
           @name = "#{raw_name}-#{SecureRandom.hex(8)}"
         end
 
-        def api_get
-          response = get(Runtime::API::Request.new(api_client, "/projects/#{name}").url)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def api_post!
-          response = post(
-            Runtime::API::Request.new(api_client, '/projects').url,
-            namespace_id: group.id,
-            path: name,
-            name: name,
-            description: description)
-          JSON.parse(response.body, symbolize_names: true)
-        end
-
-        def fabricate_via_api!
-          @api_object = api_post!
-          @api_object[:web_url]
-        end
-
         def fabricate!
           group.visit!
 
@@ -71,6 +51,24 @@ module QA
             page.set_visibility('Public')
             page.create_new_project
           end
+        end
+
+        def api_get_path
+          "/projects/#{name}"
+        end
+
+        def api_post_path
+          '/projects'
+        end
+
+        def api_post_body
+          {
+            namespace_id: group.id,
+            path: name,
+            name: name,
+            description: description,
+            visibility: 'public'
+          }
         end
       end
     end

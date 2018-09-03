@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'airborne'
 require 'forwardable'
 require 'capybara/dsl'
@@ -7,21 +9,14 @@ module QA
     class Base
       extend SingleForwardable
       include Airborne
+      include ApiFabricator
       extend Capybara::DSL
 
       def_delegators :evaluator, :dependency, :dependencies
       def_delegators :evaluator, :product, :attributes
 
-      def api_client
-        @api_client ||= Runtime::API::Client.new(:gitlab, new_session: false)
-      end
-
       def fabricate!(*_args)
         raise NotImplementedError
-      end
-
-      def fabricate_via_api!(*args)
-        fabricate!(*args)
       end
 
       def self.fabricate_via_api!(*args, &block)
@@ -42,17 +37,15 @@ module QA
 
           start = Time.now
           resource_url =
-            case via
-            when :gui
-              factory.fabricate!(*args)
-              current_url
-            when :api
+            if via == :api && factory.api_support?
               factory.fabricate_via_api!(*args)
             else
-              raise ArgumentError, "Unknown fabricate method '#{via}'. Supported methods are :gui and :api."
+              via = :gui
+              factory.fabricate!(*args)
+              current_url
             end
 
-          puts "Resource #{factory} built via '#{via}' in #{Time.now - start} seconds" if Runtime::Env.verbose?
+          puts "Resource #{factory.class.name} built via '#{via}' in #{Time.now - start} seconds" if Runtime::Env.verbose?
 
           break Factory::Product.populate!(factory, resource_url)
         end

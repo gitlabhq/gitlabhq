@@ -3,27 +3,28 @@ describe QA::Factory::Base do
   let(:product) { spy('product') }
   let(:product_location) { 'http://product_location' }
 
-  describe '.fabricate!' do
+  shared_examples 'fabrication method' do |fabrication_method_called, actual_fabrication_method = nil|
+    let(:fabrication_method_used) { actual_fabrication_method || fabrication_method_called }
+
     subject { Class.new(described_class) }
 
     before do
       allow(QA::Factory::Product).to receive(:new).with(product_location).and_return(product)
       allow(QA::Factory::Product).to receive(:populate!).and_return(product)
       allow(subject).to receive(:current_url).and_return(product_location)
+      allow(subject).to receive(:new).and_return(factory)
     end
 
     it 'instantiates the factory and calls factory method' do
       expect(subject).to receive(:new).and_return(factory)
 
-      subject.fabricate!('something')
+      subject.public_send(fabrication_method_called, 'something')
 
-      expect(factory).to have_received(:fabricate!).with('something')
+      expect(factory).to have_received(fabrication_method_used).with('something')
     end
 
     it 'returns fabrication product' do
-      allow(subject).to receive(:new).and_return(factory)
-
-      result = subject.fabricate!('something')
+      result = subject.public_send(fabrication_method_called, 'something')
 
       expect(result).to eq product
     end
@@ -31,12 +32,34 @@ describe QA::Factory::Base do
     it 'yields factory before calling factory method' do
       allow(subject).to receive(:new).and_return(factory)
 
-      subject.fabricate! do |factory|
+      subject.public_send(fabrication_method_called) do |factory|
         factory.something!
       end
 
       expect(factory).to have_received(:something!).ordered
-      expect(factory).to have_received(:fabricate!).ordered
+      expect(factory).to have_received(fabrication_method_used).ordered
+    end
+  end
+
+  describe '.fabricate!' do
+    it_behaves_like 'fabrication method', :fabricate!
+  end
+
+  describe '.fabricate_via_api!' do
+    context 'when factory does not support fabrication via the API' do
+      before do
+        allow(factory).to receive(:api_support?).and_return(false)
+      end
+
+      it_behaves_like 'fabrication method', :fabricate_via_api!, :fabricate!
+    end
+
+    context 'when factory supports fabrication via the API' do
+      before do
+        allow(factory).to receive(:api_support?).and_return(true)
+      end
+
+      it_behaves_like 'fabrication method', :fabricate_via_api!
     end
   end
 

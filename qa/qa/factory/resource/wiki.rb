@@ -10,7 +10,10 @@ module QA
         end
 
         def fabricate!
-          Page::Project::Menu.act { click_wiki }
+          project.visit!
+
+          Page::Project::Menu.perform { |menu_side| menu_side.click_wiki }
+
           Page::Project::Wiki::New.perform do |page|
             page.go_to_create_first_page
             page.set_title(@title)
