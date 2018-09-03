@@ -5411,6 +5411,9 @@ msgstr[1] ""
 msgid "Tags"
 msgstr ""
 
+msgid "Tags feed"
+msgstr ""
+
 msgid "Tags:"
 msgstr ""
 
