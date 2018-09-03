@@ -8,7 +8,8 @@
         "last_deployment",
         "environment_path",
         "created_at",
-        "updated_at"
+        "updated_at",
+        "secure_artifacts"
     ],
     "properties": {
         "id": {
@@ -68,6 +69,24 @@
         },
         "can_stop": {
             "type": "boolean"
+        },
+        "secure_artifacts": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "sast": {
+                    "type": "integer"
+                },
+                "dast": {
+                    "type": "string"
+                },
+                "container_scanning": {
+                    "type": "string"
+                },
+                "dependency_scanning": {
+                    "type": "string"
+                }
+            }
         }
     }
 }
