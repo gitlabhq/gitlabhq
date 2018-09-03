@@ -102,9 +102,15 @@ golang:
 ```
 
 ### Java examples
+
+There are a few tools that can produce JUnit reports in Java.
+
 #### Gradle
 
-Use the following job in `.gitlab-ci.yml`:
+In the following example, `gradle` is used to generate the test reports.
+If there are multiple test tasks defined, `gradle` will generate multiple
+directories under `build/test-results/`. In that case, you can leverage regex
+matching by defining the following path: `build/test-results/test/TEST-*.xml`:
 
 ```yaml
 java:
@@ -116,14 +122,11 @@ java:
       junit: build/test-results/test/TEST-*.xml
 ```
 
-If you define multiple tasks of kind test, it will generate multiple directories
-under `build/test-results/` directory.
-To address all subdirectory at once, you can leverage regex matching by defining following
-path: `build/test-results/test/TEST-*.xml`
+#### Maven
 
-### Java example with Maven
-
-For parsing Surefire and Failsafe test resports use the following job in `.gitlab-ci.yml`:
+For parsing [Surefire](https://maven.apache.org/surefire/maven-surefire-plugin/)
+and [Failsafe](https://maven.apache.org/surefire/maven-failsafe-plugin/) test
+reports, use the following job in `.gitlab-ci.yml`:
 
 ```yaml
 java:
