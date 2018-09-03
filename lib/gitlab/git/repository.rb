@@ -666,6 +666,14 @@ module Gitlab
         end
       end
 
+      def find_remote_root_ref(remote_name)
+        return unless remote_name.present?
+
+        wrapped_gitaly_errors do
+          gitaly_remote_client.find_remote_root_ref(remote_name)
+        end
+      end
+
       AUTOCRLF_VALUES = {
         "true" => true,
         "false" => false,
