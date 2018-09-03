@@ -797,12 +797,6 @@ module Ci
       options&.dig(:environment, :url) || persisted_environment&.external_url
     end
 
-    def build_attributes_from_config
-      return {} unless pipeline.config_processor
-
-      pipeline.config_processor.build_attributes(name)
-    end
-
     def update_project_statistics_after_save
       update_project_statistics(read_attribute(:artifacts_size).to_i - artifacts_size_was.to_i)
     end
